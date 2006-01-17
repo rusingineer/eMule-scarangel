@@ -1,0 +1,48 @@
+CHANGELOG FOR EMULE ScarAngel MOD
+
+eMule v0.46c ScarAngel v1.0:
+------------------------
+- XX.XX.2005 -
+-------------------------------------------------------------------------------
+based on eMule 0.46c Xtreme 4.7.2 compiled with vs2003 and Netfinity's fix
+
+Added: Status color [EastShare]
+Added: Last asked time & next asked time in prio column [EastShare/Xman/Max]
+Added: Diff QR [MorphXT/Max]
+Added: WebCache v2.0 Beta 1 [WC team/MorphXT]
+Added: Active Connection Control [Obelix/Max]
+Added: display CPU/MEM usage in transferwnd [$ick$]
+Added: ScarAngel Preferences Window [Stulle]
+Added: Global Hardlimit [Max/Stulle]
+Added: Push-small-files (boost can be configured manually) [Sivka/Stulle]
+Added: Push-rare-files [Tarod/ eF-Mod]
+Added: Different CreditSystems [EastShare/ MoprhXT/ Stulle]
+	+ lovelace, Pawcio, Ratio, EastShare, Sivka, S.W.A.T., Xman, official
+	+ The CreditSystem is always enabled
+Added: Save Upload Queue Waiting Time (SUQWT) [Moonlight/ EastShare/ MorphXT]
+Added: Show WC session stats [MorphXT]
+Added: Show source on title [Stulle]
+Added: Show emule´s infos in your MSN7 (or above) message field v2 [MOnKi/ikabot/Stulle]
+Added: Show global HL [Stulle]
+Added: Draw friends blue [Stulle]
+Added: Show HL per file constantaniously [Stulle]
+Added: Show global HL [Stulle]
+Added: Sivka File Settings [Sivka/Stulle]
+Added: Customized source dropping [Sivka/Stulle]
+Added: # of dropped sources this session in stats [Stulle]
+Added: show # of dropped sources per file in DownloadList [Stulle]
+Added: Several Mod Icons (ScarAngel, StulleMule, MAXmod, Xtreme, Morph, EastShare) [Stulle]
+Added: Preferences Banner [TPT/ MorphXT/emule-web.de team]
+
+Changed: ModID [Maella] management replaced with ModID [itsonlyme/SiRoB]
+Changed: Startup Banner, Program Icon [emule-web.de team]
+
+Sivka File Settings:
+ + You can customize time between src drops, enable/ disable src dropping and min src for dropping
+ + You can enable/ disable Global HL for a file
+ + Custom hardlimit moved to Sivka File Settings dialog
+
+customized source dropping:
+ + uses settings from Sivka File Settings
+ + uses seperate timer for Low2LowIP, NNS, FQ, HQR
+ + if not optional most dropping code is still Xtreme (not time...)
