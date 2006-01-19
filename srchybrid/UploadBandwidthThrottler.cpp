@@ -1,0 +1,1099 @@
+//this file is part of eMule
+//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either
+//version 2 of the License, or (at your option) any later version.
+//
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+//
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#include "stdafx.h"
+#include <math.h>
+#include "emule.h"
+#include "UploadBandwidthThrottler.h"
+//#include "EMSocket.h"
+#include "ListenSocket.h" //Xman x4 test //I use ClientRequestsockets 
+#include "opcodes.h"
+//#include "LastCommonRouteFinder.h" //Xman
+#include "OtherFunctions.h"
+#include "emuledlg.h"
+#include "Preferences.h" //Xman Xtreme Upload
+#include "BandWidthControl.h" // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+
+/**
+ * The constructor starts the thread.
+ */
+UploadBandwidthThrottler::UploadBandwidthThrottler(void) {
+	m_SentBytesSinceLastCall = 0;
+	m_SentBytesSinceLastCallOverhead = 0;
+    m_highestNumberOfFullyActivatedSlots = 0;
+	m_highestNumberOfFullyActivatedSlots_out =0;
+	//Xman Xtreme Upload
+	needslot=false;
+	recalculate=true;
+	nexttrickletofull=true;
+	//Xman end
+	threadEndedEvent = new CEvent(0, 1);
+	pauseEvent = new CEvent(TRUE, TRUE);
+
+	doRun = true;
+	AfxBeginThread(RunProc,(LPVOID)this, THREAD_PRIORITY_ABOVE_NORMAL); //Xman  
+}
+
+/**
+ * The destructor stops the thread. If the thread has already stoppped, destructor does nothing.
+ */
+UploadBandwidthThrottler::~UploadBandwidthThrottler(void) {
+	EndThread();
+	delete threadEndedEvent;
+	delete pauseEvent;
+}
+
+/**
+ * Find out how many bytes that has been put on the sockets since the last call to this
+ * method. Includes overhead of control packets.
+ *
+ * @return the number of bytes that has been put on the sockets since the last call
+ */
+uint64 UploadBandwidthThrottler::GetNumberOfSentBytesSinceLastCallAndReset() {
+	sendLocker.Lock();
+
+	uint64 numberOfSentBytesSinceLastCall = m_SentBytesSinceLastCall;
+	m_SentBytesSinceLastCall = 0;
+
+	sendLocker.Unlock();
+
+	return numberOfSentBytesSinceLastCall;
+}
+
+/**
+ * Find out how many bytes that has been put on the sockets since the last call to this
+ * method. Excludes overhead of control packets.
+ *
+ * @return the number of bytes that has been put on the sockets since the last call
+ */
+uint64 UploadBandwidthThrottler::GetNumberOfSentBytesOverheadSinceLastCallAndReset() {
+	sendLocker.Lock();
+
+	uint64 numberOfSentBytesSinceLastCall = m_SentBytesSinceLastCallOverhead;
+	m_SentBytesSinceLastCallOverhead = 0;
+
+	sendLocker.Unlock();
+
+	return numberOfSentBytesSinceLastCall;
+}
+
+/**
+ * Find out the highest number of slots that has been fed data in the normal standard loop
+ * of the thread since the last call of this method. This means all slots that haven't
+ * been in the trickle state during the entire time since the last call.
+ *
+ * @return the highest number of fully activated slots during any loop since last call
+ */
+/* Xman Xtreme Upload
+uint32 UploadBandwidthThrottler::GetHighestNumberOfFullyActivatedSlotsSinceLastCallAndReset() {
+    sendLocker.Lock();
+    
+    //if(m_highestNumberOfFullyActivatedSlots > (uint32)m_StandardOrder_list.GetSize()) {
+    //    theApp.QueueDebugLogLine(true, _T("UploadBandwidthThrottler: Throttler wants new slot when get-method called. m_highestNumberOfFullyActivatedSlots: %i m_StandardOrder_list.GetSize(): %i tick: %i"), m_highestNumberOfFullyActivatedSlots, m_StandardOrder_list.GetSize(), ::GetTickCount());
+    //}
+
+    uint32 highestNumberOfFullyActivatedSlots = m_highestNumberOfFullyActivatedSlots;
+    m_highestNumberOfFullyActivatedSlots = 0;
+
+    sendLocker.Unlock();
+
+    return highestNumberOfFullyActivatedSlots;
+}
+/*
+/**
+ * Add a socket to the list of sockets that have upload slots. The main thread will
+ * continously call send on these sockets, to give them chance to work off their queues.
+ * The sockets are called in the order they exist in the list, so the top socket (index 0)
+ * will be given a chance first to use bandwidth, and then the next socket (index 1) etc.
+ *
+ * It is possible to add a socket several times to the list without removing it inbetween,
+ * but that should be avoided.
+ *
+ * @param index insert the socket at this place in the list. An index that is higher than the
+ *              current number of sockets in the list will mean that the socket should be inserted
+ *              last in the list.
+ *
+ * @param socket the address to the socket that should be added to the list. If the address is NULL,
+ *               this method will do nothing.
+ */
+//Xman Xtreme Upload: this method is used
+/*
+void UploadBandwidthThrottler::AddToStandardList(uint32 index, ThrottledFileSocket* socket) {
+	if(socket != NULL) {
+		sendLocker.Lock();
+
+		RemoveFromStandardListNoLock(socket);
+		if(index > (uint32)m_StandardOrder_list.GetSize()) {
+			index = m_StandardOrder_list.GetSize();
+        }
+		m_StandardOrder_list.InsertAt(index, socket);
+			socket->SetTrickle();
+			socket->isready=false;
+		sendLocker.Unlock();
+	}
+}
+*/
+//Xman Xtreme Upload //method is currently not used
+void UploadBandwidthThrottler::ReplaceSocket(ThrottledFileSocket* oldsocket, ThrottledFileSocket* newsocket)
+{
+	sendLocker.Lock();
+	int slotnumber=-1;
+	bool isfull=false;
+	//bool isready=false;
+
+	if(oldsocket==NULL)theApp.QueueLogLine(false,_T("oldsocket NULL"));
+	if(newsocket==NULL) theApp.QueueLogLine(false,_T("newsocket NULL"));
+
+	if(oldsocket != NULL && newsocket != NULL)
+	{
+		for(slotnumber=0;slotnumber<m_StandardOrder_list.GetSize();slotnumber++)
+			if(m_StandardOrder_list.GetAt(slotnumber) == oldsocket)
+			{
+				//remember the values
+				isfull=oldsocket->IsFull();
+				//isready=oldsocket->isready;
+				RemoveFromStandardListNoLock(oldsocket);
+				break;
+			}
+	}
+	if(slotnumber>=0 && slotnumber<m_StandardOrder_list.GetSize()) //found
+	{
+		m_StandardOrder_list.InsertAt(slotnumber, newsocket);
+		if(isfull)
+		{
+			newsocket->SetFull();
+			m_StandardOrder_list_full.AddTail(newsocket);
+			m_highestNumberOfFullyActivatedSlots++;
+			SetNumberOfFullyActivatedSlots(m_highestNumberOfFullyActivatedSlots);
+		}
+		else
+			newsocket->SetTrickle();
+		if(newsocket->StandardPacketQueueIsEmpty()==false)
+			newsocket->isready=true;
+		else
+			newsocket->isready=false;
+		theApp.QueueLogLine(false,_T("->replaced socket on pos: %u isfull: %u "),slotnumber, isfull);
+	}
+	else
+	{
+		/*
+		m_StandardOrder_list.InsertAt(m_StandardOrder_list.GetSize(),newsocket);
+		newsocket->SetTrickle();
+		newsocket->isready=false;
+		recalculate=true;
+		*/
+		theApp.QueueLogLine(false,_T("-->tried to replace a not existing socket"));
+	}
+
+	sendLocker.Unlock();
+}
+//Xman Xtreme Upload: Peercache-part
+bool UploadBandwidthThrottler::ReplaceSocket(ThrottledFileSocket* normalsocket, ThrottledFileSocket* pcsocket, ThrottledFileSocket* newsocket)
+{
+	sendLocker.Lock();
+	int slotnumber=-1;
+	bool isfull=false;
+
+
+	if(newsocket==NULL)
+	{
+		theApp.QueueDebugLogLine(false, _T("ReplaceSocket-> NULL socket!"));
+		sendLocker.Unlock();
+		return false;
+	}
+
+	if(pcsocket!=NULL)
+	{
+		for(slotnumber=0;slotnumber<m_StandardOrder_list.GetSize();slotnumber++)
+			if(m_StandardOrder_list.GetAt(slotnumber) == pcsocket)
+			{
+				//remember the values
+				isfull=pcsocket->IsFull();
+				RemoveFromStandardListNoLock(pcsocket);
+				break;
+			}
+	}
+	if(slotnumber>=0 && slotnumber<m_StandardOrder_list.GetSize())
+	{
+		DEBUG_ONLY( Debug(_T("ReplaceSocket-> found peercachesocket!\n")));
+	}
+	else
+	{
+		if(normalsocket==NULL)
+			DEBUG_ONLY( Debug(_T("ReplaceSocket-> error: no peercachesocket and normal is NULL-socket!\n")));
+		else
+		{
+			for(slotnumber=0;slotnumber<m_StandardOrder_list.GetSize();slotnumber++)
+			{
+				if(m_StandardOrder_list.GetAt(slotnumber) == normalsocket)
+				{
+					//remember the values
+					isfull=normalsocket->IsFull();
+					RemoveFromStandardListNoLock(normalsocket);
+					break;
+				}
+			}
+			if(slotnumber>=0 && slotnumber<m_StandardOrder_list.GetSize())
+			{
+				DEBUG_ONLY( Debug(_T("ReplaceSocket-> found normalsocket!")));
+			}
+		}
+	}
+
+	if(slotnumber>=0 && slotnumber<m_StandardOrder_list.GetSize())
+	{
+		m_StandardOrder_list.InsertAt(slotnumber, newsocket);
+		if(isfull)
+		{
+			newsocket->SetFull();
+			m_StandardOrder_list_full.AddTail(newsocket);
+			m_highestNumberOfFullyActivatedSlots++;
+			SetNumberOfFullyActivatedSlots(m_highestNumberOfFullyActivatedSlots);
+		}
+		else
+			newsocket->SetTrickle();
+		if(newsocket->StandardPacketQueueIsEmpty()==false)
+			newsocket->isready=true;
+		else
+			newsocket->isready=false;
+		DEBUG_ONLY( Debug(_T("->replaced socket on pos: %u isfull: %u \n"),slotnumber, isfull));
+	}
+	else
+	{
+		DEBUG_ONLY( Debug(_T("ReplaceSocket-> found no socket to replace!\n")));
+		sendLocker.Unlock();
+		return false;
+	}
+	sendLocker.Unlock();
+	return true;
+
+}
+
+//Xman Xtreme Upload
+void UploadBandwidthThrottler::AddToStandardList(bool first, ThrottledFileSocket* socket) {
+	if(socket != NULL) {
+		sendLocker.Lock();
+
+		RemoveFromStandardListNoLock(socket);
+		if(first)
+		{
+			m_StandardOrder_list.InsertAt(0, socket);
+			socket->SetFull();
+			m_StandardOrder_list_full.AddTail(socket);
+			m_highestNumberOfFullyActivatedSlots++;
+			SetNumberOfFullyActivatedSlots(m_highestNumberOfFullyActivatedSlots);
+		}
+		else
+		{
+			m_StandardOrder_list.InsertAt(m_StandardOrder_list.GetSize(),socket);
+			socket->SetTrickle();
+		}
+		//Xman x4
+		if(socket->StandardPacketQueueIsEmpty()==false)
+			socket->isready=true;
+		else
+			socket->isready=false;
+
+		//Xman end
+
+		sendLocker.Unlock();
+	}
+}
+//Xman Xtreme Upload
+void UploadBandwidthThrottler::SetNoNeedSlot()
+{
+	sendLocker.Lock();
+			needslot=false;
+	sendLocker.Unlock();
+}
+
+void UploadBandwidthThrottler::SetNextTrickleToFull()
+{
+	sendLocker.Lock();
+		nexttrickletofull=true;
+	sendLocker.Unlock();
+}
+
+void UploadBandwidthThrottler::RecalculateOnNextLoop()
+{
+	sendLocker.Lock();
+	recalculate=true;
+	needslot=false;
+	sendLocker.Unlock();
+}
+//Xman end
+/**
+ * Remove a socket from the list of sockets that have upload slots.
+ *
+ * If the socket has mistakenly been added several times to the list, this method
+ * will return all of the entries for the socket.
+ *
+ * @param socket the address of the socket that should be removed from the list. If this socket
+ *               does not exist in the list, this method will do nothing.
+ */
+bool UploadBandwidthThrottler::RemoveFromStandardList(ThrottledFileSocket* socket) {
+    bool returnValue;
+	sendLocker.Lock();
+
+	returnValue = RemoveFromStandardListNoLock(socket);
+
+	sendLocker.Unlock();
+
+    return returnValue;
+}
+
+/**
+ * Remove a socket from the list of sockets that have upload slots. NOT THREADSAFE!
+ * This is an internal method that doesn't take the necessary lock before it removes
+ * the socket. This method should only be called when the current thread already owns
+ * the sendLocker lock!
+ *
+ * @param socket address of the socket that should be removed from the list. If this socket
+ *               does not exist in the list, this method will do nothing.
+ */
+bool UploadBandwidthThrottler::RemoveFromStandardListNoLock(ThrottledFileSocket* socket) {
+	// Find the slot
+	int slotCounter = 0;
+	bool foundSocket = false;
+	while(slotCounter < m_StandardOrder_list.GetSize() && foundSocket == false) {
+		if(m_StandardOrder_list.GetAt(slotCounter) == socket) {
+			// Remove the slot
+			//Xman Xtreme Upload
+			if(m_StandardOrder_list.GetAt(slotCounter)->IsFull()) 
+			{
+				m_highestNumberOfFullyActivatedSlots--;	
+				SetNumberOfFullyActivatedSlots(m_highestNumberOfFullyActivatedSlots);
+			}
+			//Xman end
+			m_StandardOrder_list.RemoveAt(slotCounter);
+			//Xman x4 re queue the socket for sending control packets (if it exists, if not the socket will be removed automatically)
+			socket->SetNoUploading();
+			QueueForSendingControlPacket(socket,true);
+			//Xman x4 end
+			foundSocket = true;
+		} else {
+			slotCounter++;
+        }
+	}
+
+	
+	POSITION pos;
+	pos=m_StandardOrder_list_full.Find(socket);
+	if(pos!=NULL)
+	{
+		m_StandardOrder_list_full.RemoveAt(pos);
+		//Xman final version:
+		if(m_StandardOrder_list.GetSize())
+		{
+			//calculate overhead of last 20 seconds
+			uint32 notused,m_currentAvgEmuleOut,m_currentAvgOverallSentBytes ,m_currentAvgNetworkOut,m_AvgOverhead;
+			theApp.pBandWidthControl->GetDatarates(20,
+				notused, notused,
+				m_currentAvgEmuleOut, m_currentAvgOverallSentBytes,
+				notused,m_currentAvgNetworkOut);
+			uint32 slotspeed=thePrefs.m_slotspeed*1024;
+			if(thePrefs.GetNAFCFullControl()==true)
+			{
+				m_AvgOverhead=m_currentAvgNetworkOut-m_currentAvgEmuleOut;
+			}
+			else
+			{
+				m_AvgOverhead=m_currentAvgOverallSentBytes-m_currentAvgEmuleOut;
+			}
+			uint32 realallowedDatarate = theApp.pBandWidthControl->GetMaxUpload()*1024 - m_AvgOverhead;
+			//Xman 4.6
+			//to be more accurate subtract the trickles
+			//(tricklespeed is 500 Bytes per seconds)
+			const uint16 counttrickles=m_StandardOrder_list.GetSize() - m_highestNumberOfFullyActivatedSlots;
+			realallowedDatarate -= ( counttrickles * 500);
+			const uint16 savedbytes = counttrickles > 1 ? 500 : 0;
+			//calculate the wanted slots
+			uint16 slots=realallowedDatarate/slotspeed;
+			if((realallowedDatarate-slots*slotspeed) > ((slots+1)*slotspeed-realallowedDatarate) - savedbytes)
+			{
+				slots++;
+			}
+			if(slots > m_highestNumberOfFullyActivatedSlots)
+				nexttrickletofull=true;
+		}
+	}
+	//Xman end
+
+/*
+    if(foundSocket && m_highestNumberOfFullyActivatedSlots > (uint32)m_StandardOrder_list.GetSize()) {
+        m_highestNumberOfFullyActivatedSlots = m_StandardOrder_list.GetSize();
+    }
+*/
+    return foundSocket;
+}
+
+/**
+* Notifies the send thread that it should try to call controlpacket send
+* for the supplied socket. It is allowed to call this method several times
+* for the same socket, without having controlpacket send called for the socket
+* first. The doublette entries are never filtered, since it is incurs less cpu
+* overhead to simply call Send() in the socket for each double. Send() will
+* already have done its work when the second Send() is called, and will just
+* return with little cpu overhead.
+*
+* @param socket address to the socket that requests to have controlpacket send
+*               to be called on it
+*/
+void UploadBandwidthThrottler::QueueForSendingControlPacket(ThrottledControlSocket* socket, bool hasSent) {
+	// Get critical section
+	tempQueueLocker.Lock();
+
+	if(doRun) {
+        if(hasSent) {
+            m_TempControlQueueFirst_list.AddTail(socket);
+        } else {
+            m_TempControlQueue_list.AddTail(socket);
+        }
+    }
+
+	// End critical section
+	tempQueueLocker.Unlock();
+}
+
+/**
+ * Remove the socket from all lists and queues. This will make it safe to
+ * erase/delete the socket. It will also cause the main thread to stop calling
+ * send() for the socket.
+ *
+ * @param socket address to the socket that should be removed
+ */
+void UploadBandwidthThrottler::RemoveFromAllQueues(ThrottledControlSocket* socket, bool lock) {
+	if(lock) {
+		// Get critical section
+		sendLocker.Lock();
+    }
+
+	if(doRun) {
+        // Remove this socket from control packet queue
+        {
+            POSITION pos1, pos2;
+	        for (pos1 = m_ControlQueue_list.GetHeadPosition();( pos2 = pos1 ) != NULL;) {
+		        m_ControlQueue_list.GetNext(pos1);
+		        ThrottledControlSocket* socketinQueue = m_ControlQueue_list.GetAt(pos2);
+
+                if(socketinQueue == socket) {
+                    m_ControlQueue_list.RemoveAt(pos2);
+                }
+            }
+        }
+        
+        {
+            POSITION pos1, pos2;
+	        for (pos1 = m_ControlQueueFirst_list.GetHeadPosition();( pos2 = pos1 ) != NULL;) {
+		        m_ControlQueueFirst_list.GetNext(pos1);
+		        ThrottledControlSocket* socketinQueue = m_ControlQueueFirst_list.GetAt(pos2);
+
+                if(socketinQueue == socket) {
+                    m_ControlQueueFirst_list.RemoveAt(pos2);
+                }
+            }
+        }
+
+		tempQueueLocker.Lock();
+        {
+            POSITION pos1, pos2;
+	        for (pos1 = m_TempControlQueue_list.GetHeadPosition();( pos2 = pos1 ) != NULL;) {
+		        m_TempControlQueue_list.GetNext(pos1);
+		        ThrottledControlSocket* socketinQueue = m_TempControlQueue_list.GetAt(pos2);
+
+                if(socketinQueue == socket) {
+                    m_TempControlQueue_list.RemoveAt(pos2);
+                }
+            }
+        }
+
+        {
+            POSITION pos1, pos2;
+	        for (pos1 = m_TempControlQueueFirst_list.GetHeadPosition();( pos2 = pos1 ) != NULL;) {
+		        m_TempControlQueueFirst_list.GetNext(pos1);
+		        ThrottledControlSocket* socketinQueue = m_TempControlQueueFirst_list.GetAt(pos2);
+
+                if(socketinQueue == socket) {
+                    m_TempControlQueueFirst_list.RemoveAt(pos2);
+                }
+            }
+        }
+		tempQueueLocker.Unlock();
+	}
+
+	if(lock) {
+		// End critical section
+		sendLocker.Unlock();
+    }
+}
+
+void UploadBandwidthThrottler::RemoveFromAllQueues(ThrottledFileSocket* socket) {
+	// Get critical section
+	sendLocker.Lock();
+
+	if(doRun) {
+		
+		// And remove it from upload slots
+		RemoveFromStandardListNoLock(socket);
+
+		RemoveFromAllQueues(socket, false); //Xman 
+	}
+
+	// End critical section
+	sendLocker.Unlock();
+}
+
+/**
+ * Make the thread exit. This method will not return until the thread has stopped
+ * looping. This guarantees that the thread will not access the CEMSockets after this
+ * call has exited.
+ */
+void UploadBandwidthThrottler::EndThread() {
+	sendLocker.Lock();
+
+	// signal the thread to stop looping and exit.
+	doRun = false;
+
+	sendLocker.Unlock();
+
+	Pause(false);
+
+	// wait for the thread to signal that it has stopped looping.
+	threadEndedEvent->Lock();
+}
+
+void UploadBandwidthThrottler::Pause(bool paused) {
+	if(paused) {
+		pauseEvent->ResetEvent();
+	} else {
+		pauseEvent->SetEvent();
+    }
+}
+
+/**
+ * Start the thread. Called from the constructor in this class.
+ *
+ * @param pParam
+ *
+ * @return
+ */
+UINT AFX_CDECL UploadBandwidthThrottler::RunProc(LPVOID pParam) {
+	DbgSetThreadName("UploadBandwidthThrottler");
+	InitThreadLocale();
+	UploadBandwidthThrottler* uploadBandwidthThrottler = (UploadBandwidthThrottler*)pParam;
+
+	return uploadBandwidthThrottler->RunInternal();
+}
+
+/**
+ * The thread method that handles calling send for the individual sockets.
+ *
+ * Control packets will always be tried to be sent first. If there is any bandwidth leftover
+ * after that, send() for the upload slot sockets will be called in priority order until we have run
+ * out of available bandwidth for this loop. Upload slots will not be allowed to go without having sent
+ * called for more than a defined amount of time (i.e. two seconds).
+ *
+ * @return always returns 0.
+ */
+UINT UploadBandwidthThrottler::RunInternal() {
+
+	DWORD lastLoopTick = ::GetTickCount();
+	//uint16 rememberedSlotCounterMain = 0;
+	uint16 rememberedSlotCounterTrickle = 0;
+	uint32 allowedDataRate = 1000;
+	sint64 uSlope=0;
+	sint64 uSlopehelp=0;
+	uint32 slotspeed=0; 
+	const uint32 TRICKLESPEED=500; //~0.5kbs
+	const uint16 MAXSLOPEBUFFERTIME=1; //1 sec
+	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+	uint64  m_lastOverallSentBytes = theApp.pBandWidthControl->GeteMuleOutOverall();
+    uint64  m_lastNetworkOut = theApp.pBandWidthControl->GetNetworkOut();
+	uint64  m_currentOverallSentBytes=m_lastOverallSentBytes;
+	uint64  m_currentNetworkOut=m_lastNetworkOut;
+	uint32	m_currentAvgOverallSentBytes=0;
+	uint32  m_currentAvgNetworkOut=0;
+	uint32  m_currentAvgEmuleOut=0;
+	uint32  m_AvgOverhead=0; 
+	
+    uint32 spentBytes = 0; //during one loop
+	uint32 spentOverhead=0; // " 
+
+	//Xman 4.4 Code-Improvement: reserve 1/3 of your uploadlimit for emule
+	//reason: if you have a big/long ftp-transfer, all bandwidth goes to the ftp-client
+	//and emule times out
+	sint64 uSlopehelp_minUpload=0; 
+
+	DWORD lastTickReachedBandwidth = ::GetTickCount();
+
+	while(doRun) 
+	{
+
+// ==> {Webcache} [Max] 
+		//This should probably be somewhere else.
+		if (thePrefs.expectingWebCachePing && (::GetTickCount() - thePrefs.WebCachePingSendTime > SEC2MS(30)))
+		{
+			thePrefs.expectingWebCachePing = false;
+			thePrefs.WebCacheDisabledThisSession = true; //Disable webcache downloads for the current proxy settings
+			//JP we need a modeless dialogue here!!
+//			AfxMessageBox(_T("Proxy configuration Test Failed please review your proxy-settings"));
+			theApp.QueueLogLine(false, _T("Proxy configuration Test Failed please review your proxy-settings. Webcache downloads have been deactivated until emule is restarted."));
+		}
+// <== {Webcache} [Max] 
+
+        pauseEvent->Lock();
+
+		DWORD timeSinceLastLoop = ::GetTickCount() - lastLoopTick;
+
+
+#define TIME_BETWEEN_UPLOAD_LOOPS_MIN 10 //Xman 10 are enough -> using higher prio for this thread
+#define TIME_BETWEEN_UPLOAD_LOOPS_MAX 50 //25
+        uint32 sleeptime=TIME_BETWEEN_UPLOAD_LOOPS_MIN;
+		///*
+		if(uSlope<0)
+			sleeptime=min((uint32)(-uSlope+1)/(allowedDataRate/1000),TIME_BETWEEN_UPLOAD_LOOPS_MAX);
+		if(sleeptime<TIME_BETWEEN_UPLOAD_LOOPS_MIN)
+			sleeptime=TIME_BETWEEN_UPLOAD_LOOPS_MIN;
+		//*/	
+	   if(timeSinceLastLoop < sleeptime) 
+	   {
+            Sleep(sleeptime-timeSinceLastLoop);
+       }
+
+		const DWORD thisLoopTick = ::GetTickCount();
+		timeSinceLastLoop = thisLoopTick - lastLoopTick;
+		lastLoopTick = thisLoopTick;
+		if(timeSinceLastLoop==0)
+		{	continue; //shouldn't happen
+			//theApp.QueueDebugLogLine(false,_T("UploadBandwidthThrottler: Application to fast"));
+		}
+		if(timeSinceLastLoop>1000)
+		{
+			timeSinceLastLoop=1000;	//compensate to 1 sec
+			//theApp.QueueDebugLogLine(false,_T("UploadBandwidthThrottler: Application hang"));
+		}
+
+		// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+		theApp.pBandWidthControl->Process(); 
+
+		// Get current speed from prefs
+		uint32 old_value;
+		old_value=allowedDataRate;
+		allowedDataRate = theApp.pBandWidthControl->GetMaxUpload()*1024; 
+		if((allowedDataRate<old_value) && (old_value -  allowedDataRate  >=1024)) 
+			recalculate=true; 
+		old_value=slotspeed;
+		slotspeed=thePrefs.m_slotspeed*1024;
+		if(slotspeed==0)
+			slotspeed=1024; //prevent division by zero
+		if(old_value != slotspeed)
+			recalculate=true;
+
+
+		uint32 minFragSize = thePrefs.GetMTU() - (20 /*IP*/ + 20 /*TCP*/); // Maella -MTU Configuration- //Xman Bandwidthtest
+		uint32 doubleSendSize = thePrefs.usedoublesendsize ? minFragSize*2 : minFragSize; // send two packages at a time so they can share an ACK
+		if(allowedDataRate < 6*1024) 
+		{
+			minFragSize = 536;
+			doubleSendSize = minFragSize; // don't send two packages at a time at very low speeds to give them a smoother load
+		}
+
+		const uint32 toadd=allowedDataRate*(float)timeSinceLastLoop/1000;
+		uSlopehelp +=toadd;
+		uSlopehelp_minUpload += (uint32)(toadd*0.33f); //Xman 4.4 Code-Improvement: reserve 1/3 of your uploadlimit for emule
+		m_currentOverallSentBytes=theApp.pBandWidthControl->GeteMuleOutOverall();
+		m_currentNetworkOut=theApp.pBandWidthControl->GetNetworkOut();
+		
+		///*
+		//fetch the last data + overhead / networkinterface
+		if(thePrefs.GetNAFCFullControl()==true)
+		{
+			//uSlope will hold the amount of data, we allow to send this loop
+			uSlopehelp -= (m_currentNetworkOut - m_lastNetworkOut);
+		}
+		else
+		{
+			uSlopehelp -= (m_currentOverallSentBytes - m_lastOverallSentBytes);
+		}
+        //*/
+		uSlopehelp_minUpload -= (uint32)(m_currentOverallSentBytes - m_lastOverallSentBytes); //Xman 4.4 Code-Improvement: reserve 1/3 of your uploadlimit for emule
+
+		// Keep current value for next processing    
+        m_lastOverallSentBytes = m_currentOverallSentBytes;
+        m_lastNetworkOut = m_currentNetworkOut;
+
+		//compensate:
+		//new Patch
+		if(uSlopehelp>3000 && allowedDataRate/slotspeed/2 > (uint32)m_StandardOrder_list.GetSize())
+			uSlopehelp=3000;
+		else
+		if(uSlopehelp > allowedDataRate*MAXSLOPEBUFFERTIME*0.33f) //max 0.3 x sec //Xman 
+			uSlopehelp=(sint64)allowedDataRate*MAXSLOPEBUFFERTIME*0.33f; 
+		else if(uSlopehelp < -(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.5f)) //max 0,2 sec
+			uSlopehelp=-((sint64)allowedDataRate*MAXSLOPEBUFFERTIME*0.5f);
+
+		//Xman 4.4 Code-Improvement: reserve 1/3 of your uploadlimit for emule
+		if(uSlopehelp_minUpload > allowedDataRate*MAXSLOPEBUFFERTIME*0.33f) //max 0.3 x sec //Xman 
+			uSlopehelp_minUpload=(sint64)allowedDataRate*MAXSLOPEBUFFERTIME*0.33f; 
+		else if(uSlopehelp_minUpload < -(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.5f)) //max 0,2 sec
+			uSlopehelp_minUpload=-((sint64)allowedDataRate*MAXSLOPEBUFFERTIME*0.5f);
+
+		
+		if(thePrefs.GetNAFCFullControl()==true && uSlopehelp_minUpload>uSlopehelp)
+			uSlope=uSlopehelp_minUpload;
+		else
+			uSlope=uSlopehelp;
+
+		sendLocker.Lock();
+
+	    spentBytes = 0;
+		spentOverhead=0;
+
+		//slot control:
+		//this section regulates the slot-state (trickle, full)
+		if(m_StandardOrder_list.GetSize() && recalculate)
+		{
+			recalculate=false;
+			//calculate overhead of last 20 seconds
+			uint32 notused;
+			theApp.pBandWidthControl->GetDatarates(20,
+										notused, notused,
+										m_currentAvgEmuleOut, m_currentAvgOverallSentBytes,
+										notused,m_currentAvgNetworkOut);
+
+			if(thePrefs.GetNAFCFullControl()==true)
+			{
+				m_AvgOverhead=m_currentAvgNetworkOut-m_currentAvgEmuleOut;
+			}
+			else
+			{
+				m_AvgOverhead=m_currentAvgOverallSentBytes-m_currentAvgEmuleOut;
+			}
+			uint32 realallowedDatarate = allowedDataRate-m_AvgOverhead;
+			//Xman 4.6
+			//to be more accurate subtract the trickles
+			//(tricklespeed is 500 Bytes per seconds)
+			const uint16 counttrickles=m_StandardOrder_list.GetSize() - m_highestNumberOfFullyActivatedSlots;
+			realallowedDatarate -= ( counttrickles * 500);
+			const uint16 savedbytes = counttrickles > 1 ? 500 : 0;
+
+			//calculate the wanted slots
+			uint16 slots=realallowedDatarate/slotspeed;
+			if(slots>=m_StandardOrder_list.GetSize())
+			{	//we don't have enough slots
+				needslot=true;
+				m_highestNumberOfFullyActivatedSlots=0;
+				m_StandardOrder_list_full.RemoveAll(); 
+				for(uint16 i=0;i<m_StandardOrder_list.GetSize();i++)
+				{
+					ThrottledFileSocket* socket = m_StandardOrder_list.GetAt(i);
+					socket->SetFull();
+					m_StandardOrder_list_full.AddTail(socket); 
+					m_highestNumberOfFullyActivatedSlots++;
+				}
+				SetNumberOfFullyActivatedSlots(m_highestNumberOfFullyActivatedSlots);
+			}
+			else
+			{	//calculate the best amount of full slots
+				if((realallowedDatarate-slots*slotspeed) > ((slots+1)*slotspeed-realallowedDatarate) - savedbytes)
+				{
+					slots++;
+				}
+				m_highestNumberOfFullyActivatedSlots=0;
+				m_StandardOrder_list_full.RemoveAll(); 
+				for(uint16 i=0;i<m_StandardOrder_list.GetSize();i++)
+				{
+					ThrottledFileSocket* socket = m_StandardOrder_list.GetAt(i);
+					if(i<slots)
+					{
+						socket->SetFull();
+						m_StandardOrder_list_full.AddTail(socket); 
+						m_highestNumberOfFullyActivatedSlots++;
+					}
+					else
+						socket->SetTrickle();
+				}
+				SetNumberOfFullyActivatedSlots(m_highestNumberOfFullyActivatedSlots);
+			}
+		}
+		else if(nexttrickletofull)		
+		{
+			if(m_StandardOrder_list.GetSize()==0 || m_StandardOrder_list.GetSize()<=m_highestNumberOfFullyActivatedSlots)
+			{
+				needslot=true;
+				nexttrickletofull=false; 
+			}
+			else
+			{
+				nexttrickletofull=false;
+				ThrottledFileSocket* socket = m_StandardOrder_list.GetAt(m_highestNumberOfFullyActivatedSlots);
+				socket->SetFull();
+				m_StandardOrder_list_full.AddTail(socket); 
+				m_highestNumberOfFullyActivatedSlots++;
+				SetNumberOfFullyActivatedSlots(m_highestNumberOfFullyActivatedSlots);
+			}
+		}
+
+
+		//Send Control Data:
+        if(uSlope >0) 
+		{
+		    tempQueueLocker.Lock();
+    
+		    // are there any sockets in m_TempControlQueue_list? Move them to normal m_ControlQueue_list;
+            while(!m_TempControlQueueFirst_list.IsEmpty()) {
+                ThrottledControlSocket* moveSocket = m_TempControlQueueFirst_list.RemoveHead();
+                m_ControlQueueFirst_list.AddTail(moveSocket);
+            }
+		    while(!m_TempControlQueue_list.IsEmpty()) {
+			    ThrottledControlSocket* moveSocket = m_TempControlQueue_list.RemoveHead();
+			    m_ControlQueue_list.AddTail(moveSocket);
+		    }
+    
+		    tempQueueLocker.Unlock();
+    
+		    // Send any queued up control packets first
+		    while(uSlope > 0 && spentBytes < uSlope && (!m_ControlQueueFirst_list.IsEmpty() || !m_ControlQueue_list.IsEmpty())) {
+			    ThrottledControlSocket* socket = NULL;
+    
+                if(!m_ControlQueueFirst_list.IsEmpty()) {
+                    socket = m_ControlQueueFirst_list.RemoveHead();
+                } else if(!m_ControlQueue_list.IsEmpty()) {
+                    socket = m_ControlQueue_list.RemoveHead();
+                }
+    
+			    if(socket != NULL) 
+				{
+					SocketSentBytes socketSentBytes = socket->SendControlData(/*uSlope-spentBytes*/  minFragSize, minFragSize); //Xman4.5
+				    uint32 lastSpentBytes = socketSentBytes.sentBytesControlPackets + socketSentBytes.sentBytesStandardPackets;
+				    spentBytes += lastSpentBytes;
+				    spentOverhead += socketSentBytes.sentBytesControlPackets;
+			    }
+		    }
+			uSlope -=spentBytes;
+		}
+
+		//Xman 3.1
+		if(m_highestNumberOfFullyActivatedSlots!=m_StandardOrder_list_full.GetSize())
+		{
+			theApp.QueueDebugLogLine(false, _T("Warning m_highestNumberOfFullyActivatedSlots not equal list"));
+			recalculate=true;
+		}
+
+		//First all the trickles:
+		if(m_StandardOrder_list.GetSize()==0 || (m_highestNumberOfFullyActivatedSlots >= (uint32)m_StandardOrder_list.GetSize()) )
+			needslot=true;
+		else
+		{
+			bool foundtrickle=false; //looks if we have a ready trickle
+			for(uint16 i=m_highestNumberOfFullyActivatedSlots;i<m_StandardOrder_list.GetSize();i++)
+			{
+				ThrottledFileSocket* socket = m_StandardOrder_list.GetAt(i);
+				if(socket!=NULL && socket->isready==true) 
+				{
+					if(socket->IsTrickle()==false)
+					{
+						theApp.QueueDebugLogLine(false, _T("Warning trickle on wrong possition"));
+						recalculate=true;
+					}
+					
+					foundtrickle=true;
+					if(timeSinceLastLoop==1000)
+					{
+						//application hang
+						socket->CSlope=1;
+					}
+					else
+					{
+						socket->CSlope+=(TRICKLESPEED*timeSinceLastLoop/1000);
+					}
+					//compensate:
+					if(socket->CSlope>(sint32)TRICKLESPEED*MAXSLOPEBUFFERTIME)
+						socket->CSlope=TRICKLESPEED*MAXSLOPEBUFFERTIME;
+
+					//now we can send:
+					if(uSlope >0 && socket->CSlope>0) 
+					{
+						    SocketSentBytes socketSentBytes = socket->SendFileAndControlData(minFragSize, minFragSize); 
+						    uint32 lastSpentBytes = socketSentBytes.sentBytesControlPackets + socketSentBytes.sentBytesStandardPackets;
+						    spentBytes += lastSpentBytes;
+						    spentOverhead += socketSentBytes.sentBytesControlPackets;
+							uSlope-=lastSpentBytes;
+							socket->CSlope-=socketSentBytes.sentBytesStandardPackets;
+					}
+				}
+			}
+			if(foundtrickle==false) //no ready trickle found, we need a new slot
+				needslot=true;
+		}
+		
+		/*
+		//Xman x4 just test slotfocus test to not timeout:
+		if(uSlope>0)
+		{
+			POSITION pos=m_StandardOrder_list_full.GetHeadPosition();
+			for(uint16 i=0;i<m_StandardOrder_list_full.GetCount();i++)
+			{
+				POSITION cur_pos = pos;
+				ThrottledFileSocket* socket = m_StandardOrder_list_full.GetNext(pos);
+				if(socket!=NULL  && socket->isready==true) 
+				{
+					if(uSlope>0 && thisLoopTick-socket->GetLastCalledSend() > SEC2MS(2))
+					{
+						SocketSentBytes socketSentBytes = socket->SendFileAndControlData(minFragSize,minFragSize); //Xman4.5  //Xman only one package  
+						uint32 lastSpentBytes = socketSentBytes.sentBytesControlPackets + socketSentBytes.sentBytesStandardPackets;
+						spentBytes += lastSpentBytes;
+						spentOverhead += socketSentBytes.sentBytesControlPackets;
+						uSlope-=lastSpentBytes;
+					}
+				}
+			}
+		}
+		*/
+
+		//send data to Full  clients:
+		if(uSlope>0)
+		{
+			POSITION pos=m_StandardOrder_list_full.GetHeadPosition();
+			for(uint16 i=0;i<m_StandardOrder_list_full.GetCount();i++)
+			{
+				POSITION cur_pos = pos;
+				ThrottledFileSocket* socket = m_StandardOrder_list_full.GetNext(pos);
+				if(socket!=NULL  && socket->isready==true) 
+				{
+					if(socket->IsFull()==false)
+					{
+						theApp.QueueDebugLogLine(false, _T("Warning full on wrong possition"));
+						recalculate=true;
+					}
+
+					
+					if(uSlope>0)
+					{
+						SocketSentBytes socketSentBytes = socket->SendFileAndControlData(doubleSendSize,doubleSendSize); //Xman4.5  //Xman only one package  
+						uint32 lastSpentBytes = socketSentBytes.sentBytesControlPackets + socketSentBytes.sentBytesStandardPackets;
+						spentBytes += lastSpentBytes;
+						spentOverhead += socketSentBytes.sentBytesControlPackets;
+						uSlope-=lastSpentBytes;
+						if(socketSentBytes.sentBytesStandardPackets>450)
+						{
+							m_StandardOrder_list_full.RemoveAt(cur_pos);
+							m_StandardOrder_list_full.AddTail(socket);
+						}	
+					}
+					else
+						break;
+				}
+			}
+		}
+		
+		uint16 countTrickles=m_StandardOrder_list.GetSize()-m_highestNumberOfFullyActivatedSlots;
+
+		//any data left ? this data is given to the trickles
+		if(uSlope>allowedDataRate*MAXSLOPEBUFFERTIME/6 && countTrickles>0) 
+		{
+			uint16 i=0;
+			for(i=m_highestNumberOfFullyActivatedSlots;i<m_StandardOrder_list.GetSize();i++)
+			{
+		        if(rememberedSlotCounterTrickle >= m_StandardOrder_list.GetSize()) 
+			    {
+				    rememberedSlotCounterTrickle = m_highestNumberOfFullyActivatedSlots;
+				}
+				ThrottledFileSocket* socket = m_StandardOrder_list.GetAt(rememberedSlotCounterTrickle);
+				if(socket!=NULL  && socket->isready==true) 
+				{
+					if(uSlope>0)
+					{
+							SocketSentBytes socketSentBytes = socket->SendFileAndControlData(minFragSize, minFragSize); //Xman final changed back to minfragsize
+						    uint32 lastSpentBytes = socketSentBytes.sentBytesControlPackets + socketSentBytes.sentBytesStandardPackets;
+						    spentBytes += lastSpentBytes;
+						    spentOverhead += socketSentBytes.sentBytesControlPackets;
+							uSlope-=lastSpentBytes;
+							socket->CSlope-=socketSentBytes.sentBytesStandardPackets;
+							if (lastSpentBytes>0 && socket->CSlope<-(sint32)minFragSize)
+							{
+								socket->CSlope=-(sint32)minFragSize; //otherwise we send to much and trickle could timeout
+							}
+					}
+					else
+						break;
+				}
+				rememberedSlotCounterTrickle++;
+			}
+		}
+	
+		//is any data left ? then go over the wanted speed
+		if(uSlope>allowedDataRate*MAXSLOPEBUFFERTIME/6) 
+		{
+			for(uint16 i=0;i<m_StandardOrder_list.GetSize() && uSlope>TRICKLESPEED;i++)
+			{
+				ThrottledFileSocket* socket = m_StandardOrder_list.GetAt(i);
+				if(socket!=NULL  && socket->isready==true ) 
+				{
+					SocketSentBytes socketSentBytes = socket->SendFileAndControlData(uSlope, doubleSendSize);
+				    uint32 lastSpentBytes = socketSentBytes.sentBytesControlPackets + socketSentBytes.sentBytesStandardPackets;
+				    spentBytes += lastSpentBytes;
+				    spentOverhead += socketSentBytes.sentBytesControlPackets;
+					uSlope-=lastSpentBytes;
+				}
+			}
+		}
+	    m_SentBytesSinceLastCall += spentBytes;
+	   // m_SentBytesSinceLastCallOverhead += spentOverhead; //not used
+   
+		//Xman x4 
+		if(uSlope<TRICKLESPEED)
+			lastTickReachedBandwidth=thisLoopTick;
+		else
+			if(thisLoopTick - lastTickReachedBandwidth  > 3000 && thePrefs.m_bandwidthnotreachedslots==true) //since 3 seconds bandwidth couldn't be reached
+			{
+				needslot=true;
+				lastTickReachedBandwidth=thisLoopTick;
+			}
+
+		// - Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+		theApp.pBandWidthControl->AddeMuleOutOverallNoHeader(spentBytes);
+		theApp.pBandWidthControl->AddeMuleOut(spentBytes-spentOverhead);
+
+        sendLocker.Unlock();
+
+	//end of the main loop
+	}
+
+
+
+	threadEndedEvent->SetEvent();
+
+	tempQueueLocker.Lock();
+	m_TempControlQueue_list.RemoveAll();
+	m_TempControlQueueFirst_list.RemoveAll();
+	tempQueueLocker.Unlock();
+
+	sendLocker.Lock();
+
+	m_ControlQueue_list.RemoveAll();
+	m_StandardOrder_list.RemoveAll();
+	sendLocker.Unlock();
+
+	return 0;
+}
