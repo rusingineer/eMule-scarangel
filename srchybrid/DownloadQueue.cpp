@@ -2285,15 +2285,16 @@ void CDownloadQueue::SetHardLimits()
 			thePrefs.SetGlobalHLUpdateTimer(1200);
 			thePrefs.SetPassiveMode(true);
 			m_bPassiveMode = true;
+			m_bAutoHLSrcReqAllowed = true;
 			m_uSourcesDif = ((thePrefs.GetGlobalHL() + m_uTollerance) - countsources)/aCount;
-			AddLogLine(true,_T("{GSL} Global source count lies in the tolerance range! PassiveMode!"));
+			AddDebugLogLine(true,_T("{GSL} Global source count lies in the tolerance range! PassiveMode!"));
 		}
 		else
 		{
+			m_bAutoHLSrcReqAllowed = true;
 			m_dwUpdateHL = ::GetTickCount();
 			return;
 		}
-		m_bAutoHLSrcReqAllowed = true;
 	}
 
 /********************\
@@ -2306,7 +2307,7 @@ void CDownloadQueue::SetHardLimits()
 		{
 			thePrefs.SetGlobalHLUpdateTimer(50);
 			thePrefs.SetPassiveMode(false);
-			AddLogLine(true,_T("{GSL} Global source count is not in the tolerance range! Disabled PassiveMode!"));
+			AddDebugLogLine(true,_T("{GSL} Global source count is not in the tolerance range! Disabled PassiveMode!"));
 		}
 		if(!m_bTooMuchSrc)
 		{

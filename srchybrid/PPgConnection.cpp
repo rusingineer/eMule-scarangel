@@ -460,8 +460,7 @@ BOOL CPPgConnection::OnApply()
 		{
 			thePrefs.SetPassiveMode(false);
 			thePrefs.SetGlobalHLUpdateTimer(50);
-//			AddDebugLogLine(true,_T("{GSL} Global Source Limit settings have changed! Disabled PassiveMode!"));
-			AddLogLine(true,_T("{GSL} Global Source Limit settings have changed! Disabled PassiveMode!"));
+			AddDebugLogLine(true,_T("{GSL} Global Source Limit settings have changed! Disabled PassiveMode!"));
 		}
 	}
 	// <== Global Source Limit [Max/Stulle] - Stulle

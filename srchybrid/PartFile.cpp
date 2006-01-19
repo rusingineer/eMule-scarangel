@@ -272,8 +272,7 @@ void CPartFile::Init(){
 	{
 		thePrefs.SetPassiveMode(false);
 		thePrefs.SetGlobalHLUpdateTimer(50);
-//		AddDebugLogLine(true,_T("{GSL} New file added! Disabled PassiveMode!"));
-		AddLogLine(true,_T("{GSL} New file added! Disabled PassiveMode!"));
+		AddDebugLogLine(true,_T("{GSL} New file added! Disabled PassiveMode!"));
 	}
 	// <== Global Source Limit [Max/Stulle] - Stulle
 
@@ -3940,8 +3939,7 @@ void CPartFile::ResumeFile(bool resort)
 	{
 		thePrefs.SetPassiveMode(false);
 		thePrefs.SetGlobalHLUpdateTimer(50);
-//		AddDebugLogLine(true,_T("{GSL} New file resumed! Disabled PassiveMode!"));
-		AddLogLine(true,_T("{GSL} New file resumed! Disabled PassiveMode!"));
+		AddDebugLogLine(true,_T("{GSL} New file resumed! Disabled PassiveMode!"));
 	}
 	// <== Global Source Limit [Max/Stulle] - Stulle
 
