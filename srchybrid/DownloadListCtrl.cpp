@@ -282,11 +282,6 @@ void CDownloadListCtrl::Localize()
 	strRes.ReleaseBuffer();
 
 	strRes = GetResString(IDS_DL_SOURCES);
-	// ==> dropped clients display - Stulle
-	/*
-	strRes.AppendFormat(_T(" %u"),m_uDroppedSrc);
-	*/
-	// <== dropped clients display - Stulle
 	// ==> show global HL - Stulle
 	if (thePrefs.GetShowGlobalHL())
 		strRes.AppendFormat(_T(" [%u]"),GlobalHardLimit);
@@ -1511,11 +1506,6 @@ void CDownloadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	CString strRes;
 	
 	strRes = GetResString(IDS_DL_SOURCES);
-	// ==> dropped clients display - Stulle
-	/*
-	strRes.AppendFormat(_T(" %u"),m_uDroppedSrc);
-	*/
-	// <== dropped clients display - Stulle
 	if (thePrefs.GetShowGlobalHL())
 		strRes.AppendFormat(_T(" [%u]"),GlobalHardLimit);
 
