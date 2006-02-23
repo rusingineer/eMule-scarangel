@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -51,9 +51,6 @@ CPreferencesDlg::CPreferencesDlg()
 	m_wndXtreme.m_psp.dwFlags &= ~PSH_HASHELP; //Xman Xtreme Mod
 	m_wndXtreme2.m_psp.dwFlags &= ~PSH_HASHELP; //Xman Xtreme Mod
 	m_wndScar.m_psp.dwFlags &= ~PSH_HASHELP; // ScarAngel Preferences window - Stulle
-
-	m_wndWebcachesettings.m_psp.dwFlags &= ~PSH_HASHELP;// {Webcache} [Max] 
-
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	m_wndDebug.m_psp.dwFlags &= ~PSH_HASHELP;
 #endif
@@ -83,8 +80,6 @@ CPreferencesDlg::CPreferencesDlg()
 	CTreePropSheet::SetPageIcon(&m_wndScar, _T("AAAEMULEAPP")); // ScarAngel Preferences window - Stulle
 	// <== This ain't no Xtreme - Stulle
 
-	CTreePropSheet::SetPageIcon(&m_wndWebcachesettings, _T("PREF_WEBCACHE"));// {Webcache} [Max] 
-
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	CTreePropSheet::SetPageIcon(&m_wndDebug, _T("Preferences"));
 #endif
@@ -106,9 +101,6 @@ CPreferencesDlg::CPreferencesDlg()
 	AddPage(&m_wndXtreme); //Xman Xtreme Mod
 	AddPage(&m_wndXtreme2); //Xman Xtreme Mod
 	AddPage(&m_wndScar); // ScarAngel Preferences window - Stulle
-
-	AddPage(&m_wndWebcachesettings); // {Webcache} [Max] 
-
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	AddPage(&m_wndDebug);
 #endif
@@ -139,13 +131,7 @@ BOOL CPreferencesDlg::OnInitDialog()
 {
 	ASSERT( !m_bSaveIniFile );
 	BOOL bResult = CTreePropSheet::OnInitDialog();
-        InitWindowStyles(this);
-
-
-// ==> {Webcache} [Max] 
-	SetActivePage(&m_wndWebcachesettings); //jp needs to be here to avoid a crash with Webcachesettings-Connection. See PPgConnection.cpp (320)
-	SetActivePage(&m_wndGeneral); // Superlexx - set the general settings page active
-// <== {Webcache} [Max] 
+	InitWindowStyles(this);
 
 	for (int i = 0; i < m_pages.GetSize(); i++)
 	{
@@ -156,7 +142,7 @@ BOOL CPreferencesDlg::OnInitDialog()
 		}
 	}
 
-	Localize();
+	Localize();	
 
 	// ==> Preferences Banner [TPT/ MorphXT] - Stulle
 	CBitmap bmp;
@@ -197,34 +183,30 @@ void CPreferencesDlg::Localize()
 	m_wndXtreme2.Localize(); //Xman Xtreme Mod
 	m_wndScar.Localize(); // ScarAngel Preferences window - Stulle
 
-	m_wndWebcachesettings.Localize(); // {Webcache} [Max] 
-
+	int c = 0;
 
 	CTreeCtrl* pTree = GetPageTreeControl();
 	if (pTree)
 	{
-		pTree->SetItemText(GetPageTreeItem(0), RemoveAmbersand(GetResString(IDS_PW_GENERAL)));
-		pTree->SetItemText(GetPageTreeItem(1), RemoveAmbersand(GetResString(IDS_PW_DISPLAY))); 
-		pTree->SetItemText(GetPageTreeItem(2), RemoveAmbersand(GetResString(IDS_PW_CONNECTION))); 
-		pTree->SetItemText(GetPageTreeItem(3), RemoveAmbersand(GetResString(IDS_PW_PROXY))); 
-		pTree->SetItemText(GetPageTreeItem(4), RemoveAmbersand(GetResString(IDS_PW_SERVER))); 
-		pTree->SetItemText(GetPageTreeItem(5), RemoveAmbersand(GetResString(IDS_PW_DIR))); 
-		pTree->SetItemText(GetPageTreeItem(6), RemoveAmbersand(GetResString(IDS_PW_FILES))); 
-		pTree->SetItemText(GetPageTreeItem(7), RemoveAmbersand(GetResString(IDS_PW_EKDEV_OPTIONS))); 
-		pTree->SetItemText(GetPageTreeItem(8), RemoveAmbersand(GetResString(IDS_STATSSETUPINFO))); 
-		pTree->SetItemText(GetPageTreeItem(9), RemoveAmbersand(GetResString(IDS_IRC)));
-		pTree->SetItemText(GetPageTreeItem(10), RemoveAmbersand(GetResString(IDS_SECURITY))); 
-		pTree->SetItemText(GetPageTreeItem(11), RemoveAmbersand(GetResString(IDS_SCHEDULER)));
-		pTree->SetItemText(GetPageTreeItem(12), RemoveAmbersand(GetResString(IDS_PW_WS)));
-		pTree->SetItemText(GetPageTreeItem(13), RemoveAmbersand(GetResString(IDS_PW_TWEAK)));
-		pTree->SetItemText(GetPageTreeItem(14), RemoveAmbersand(GetResString(IDS_XTREMESETTINGS)) + _T(" I")); //Xman Xtreme Mod
-		pTree->SetItemText(GetPageTreeItem(15), RemoveAmbersand(GetResString(IDS_XTREMESETTINGS)) + _T(" II")); //Xman Xtreme Mod
-		pTree->SetItemText(GetPageTreeItem(16), RemoveAmbersand(_T("ScarAngel"))); // ==> ScarAngel Preferences window - Stulle
-
-		pTree->SetItemText(GetPageTreeItem(17), RemoveAmbersand(GetResString(IDS_PW_WEBCACHE)));// {Webcache} [Max] 
-
+		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_PW_GENERAL)));
+		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_PW_DISPLAY))); 
+		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_PW_CONNECTION))); 
+		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_PW_PROXY))); 
+		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_PW_SERVER))); 
+		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_PW_DIR))); 
+		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_PW_FILES))); 
+		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_PW_EKDEV_OPTIONS))); 
+		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_STATSSETUPINFO))); 
+		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_IRC)));
+		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_SECURITY))); 
+		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_SCHEDULER)));
+		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_PW_WS)));
+		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_PW_TWEAK)));
+		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_XTREMESETTINGS)) + _T(" I")); //Xman Xtreme Mod
+		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_XTREMESETTINGS)) + _T(" II")); //Xman Xtreme Mod
+		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(_T("ScarAngel"))); // ScarAngel Preferences window - Stulle
 	#if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
-		pTree->SetItemText(GetPageTreeItem(18), _T("Debug"));
+		pTree->SetItemText(GetPageTreeItem(c++), _T("Debug"));
 	#endif
 	}
 
@@ -241,7 +223,7 @@ void CPreferencesDlg::Localize()
 void CPreferencesDlg::OnHelp()
 {
 	int iCurSel = GetActiveIndex();
-	if (iCurSel >= 0)
+	if (iCurSel >= 0 && iCurSel<=12) //Xman no crash on F1 (remark: 12 pages are official)
 	{
 		CPropertyPage* pPage = GetPage(iCurSel);
 		if (pPage)
@@ -272,7 +254,7 @@ BOOL CPreferencesDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 	return __super::OnCommand(wParam, lParam);
 }
 
-BOOL CPreferencesDlg::OnHelpInfo(HELPINFO* pHelpInfo)
+BOOL CPreferencesDlg::OnHelpInfo(HELPINFO* /*pHelpInfo*/)
 {
 	OnHelp();
 	return TRUE;

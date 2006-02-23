@@ -47,17 +47,11 @@ CMMSocket::CMMSocket(CMMServer* pOwner)
 
 CMMSocket::~CMMSocket(void)
 {
-	if (m_pBuf){
-		delete[] m_pBuf;
-		m_pBuf = NULL;
-	}
+	delete[] m_pBuf;
 	while (!m_PacketQueue.IsEmpty()){
 		delete m_PacketQueue.RemoveHead();
 	}
-	if (m_pSendBuffer){
-		delete[] m_pSendBuffer;
-		m_pSendBuffer = NULL;
-	}
+	delete[] m_pSendBuffer;
 }
 
 void CMMSocket::Close(){
@@ -68,7 +62,8 @@ void CMMSocket::Close(){
 	m_bClosed = true;
 }
 
-void CMMSocket::OnClose(int nErrorCode){
+void CMMSocket::OnClose(int /*nErrorCode*/)
+{
 	m_bClosed = true;
 	if (m_pOwner->m_pPendingCommandSocket == this){
 		m_pOwner->m_pPendingCommandSocket = NULL;
@@ -86,7 +81,6 @@ void CMMSocket::OnReceive(int nErrorCode){
 	if(dwSize == SOCKET_ERROR || dwSize == 0){
 		return;
 	}
-
 	//Xman
 	// - Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 	if (dwSize > 0)
@@ -218,6 +212,7 @@ bool CMMSocket::SendPacket(CMMPacket* packet, bool bQueueFirst){
 			// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 			theApp.pBandWidthControl->AddeMuleOutTCPOverall(m_nSent);		
 			//Xman end
+
 			if (m_nSent == m_nSendLen){
 				delete[] m_pSendBuffer;
 				m_pSendBuffer = NULL;
@@ -235,13 +230,15 @@ bool CMMSocket::SendPacket(CMMPacket* packet, bool bQueueFirst){
 	}
 }
 
-void CMMSocket::CheckForClosing(){
+void CMMSocket::CheckForClosing()
+{
 	if (m_nSendLen == 0 && m_PacketQueue.IsEmpty() && !m_bClosed){
 		m_dwTimedShutdown = ::GetTickCount() + 1000;
 	}
 }
 
-void CMMSocket::OnSend(int nErrorCode){
+void CMMSocket::OnSend(int /*nErrorCode*/)
+{
 	if(m_pSendBuffer != NULL){
 		uint32 res = Send(m_pSendBuffer+m_nSent,m_nSendLen-m_nSent);
 		if (res == SOCKET_ERROR){

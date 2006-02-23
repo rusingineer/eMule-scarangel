@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -42,7 +42,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 
-#define URLINDICATOR	_T("http:|www.|.de |.net |.com |.org |.to |.tk |.cc |.fr |ftp:|ed2k:")
+#define URLINDICATOR	_T("http:|www.|.de |.net |.com |.org |.to |.tk |.cc |.fr |ftp:|ed2k:|https:")
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -143,7 +143,7 @@ void CChatSelector::UpdateFonts(CFont* pFont)
 CChatItem* CChatSelector::StartSession(CUpDownClient* client, bool show)
 {
 	::SetFocus(m_hwndMessageBox);
-	if (GetTabByClient(client) != 0xFFFF){
+	if (GetTabByClient(client) != -1){
 		if (show){
 			SetCurSel(GetTabByClient(client));
 			ShowChat();
@@ -192,7 +192,7 @@ CChatItem* CChatSelector::StartSession(CUpDownClient* client, bool show)
 	return chatitem;
 }
 
-uint16 CChatSelector::GetTabByClient(CUpDownClient* client)
+int CChatSelector::GetTabByClient(CUpDownClient* client)
 {
 	for (int i = 0; i < GetItemCount(); i++){
 		TCITEM cur_item;
@@ -200,7 +200,7 @@ uint16 CChatSelector::GetTabByClient(CUpDownClient* client)
 		if (GetItem(i, &cur_item) && ((CChatItem*)cur_item.lParam)->client == client)
 			return i;
 	}
-	return (uint16)-1;
+	return -1;
 }
 
 CChatItem* CChatSelector::GetItemByClient(CUpDownClient* client)
@@ -216,7 +216,7 @@ CChatItem* CChatSelector::GetItemByClient(CUpDownClient* client)
 
 void CChatSelector::ProcessMessage(CUpDownClient* sender, const CString& message)
 {
-	
+	CChatItem* ci = GetItemByClient(sender);
 
 	CString strMessage(message);
 
@@ -234,6 +234,8 @@ void CChatSelector::ProcessMessage(CUpDownClient* sender, const CString& message
 		LPCTSTR reason=theApp.dlp->DLPCheckMessageSpam(strMessage);
 		if(reason)
 		{
+			if (ci)
+				EndSession(sender);
 			sender->BanLeecher(_T(""),0); //dirty trick to get the message
 			sender->BanLeecher(reason,7);
 			sender->ProcessBanMessage();
@@ -252,20 +254,25 @@ void CChatSelector::ProcessMessage(CUpDownClient* sender, const CString& message
 	while (!resToken.IsEmpty())
 	{
 		resToken.Trim();
-		if (strMessage.Find(resToken.MakeLower()) > -1)
+		if (strMessage.Find(resToken.MakeLower()) > -1){
+			if ( thePrefs.IsAdvSpamfilterEnabled() && !sender->IsFriend() && sender->GetMessagesSent() == 0 ){
+				sender->SetSpammer(true);
+				if (ci)
+					EndSession(sender);
+			}
 			return;
+		}
 		resToken = thePrefs.GetMessageFilter().Tokenize(_T("|"), curPos);
 	}
 
 
-	CChatItem* ci = GetItemByClient(sender);
 
 	// advanced spamfilter check
 	if (IsSpam(strMessage, sender))
 	{
 		if (!sender->IsSpammer()){
 			if (thePrefs.GetVerbose())
-				AddDebugLogLine(false, _T("'%s' has been marked as spammer"), sender->GetUserName());
+				AddLeecherLogLine(false, _T("'%s' has been marked as spammer"), sender->GetUserName());
 		}
 		sender->SetSpammer(true);
 		if (ci)
@@ -276,7 +283,7 @@ void CChatSelector::ProcessMessage(CUpDownClient* sender, const CString& message
 	bool isNewChatWindow = false;
 	if (!ci)
 	{
-		if (GetItemCount() >= thePrefs.GetMsgSessionsMax())
+		if ((UINT)GetItemCount() >= thePrefs.GetMsgSessionsMax())
 			return;
 		ci = StartSession(sender, false);
 		isNewChatWindow = true; 
@@ -312,7 +319,7 @@ bool CChatSelector::SendMessage(const CString& rstrMessage)
 	if (!ci)
 		return false;
 
-	if (ci->history.GetCount() == thePrefs.GetMaxChatHistoryLines())
+	if ((UINT)ci->history.GetCount() == thePrefs.GetMaxChatHistoryLines())
 		ci->history.RemoveAt(0);
 	ci->history.Add(rstrMessage);
 	ci->history_pos = ci->history.GetCount();
@@ -399,7 +406,7 @@ void CChatSelector::DeleteAllItems()
 	}
 }
 
-void CChatSelector::OnTimer(UINT_PTR nIDEvent)
+void CChatSelector::OnTimer(UINT_PTR /*nIDEvent*/)
 {
 	m_blinkstate = !m_blinkstate;
 	bool globalnotify = false;
@@ -476,7 +483,7 @@ void CChatSelector::ShowChat()
 	ci->notify = false;
 }
 
-void CChatSelector::OnTcnSelchangeChatsel(NMHDR *pNMHDR, LRESULT *pResult)
+void CChatSelector::OnTcnSelchangeChatsel(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	ShowChat();
 	*pResult = 0;
@@ -659,8 +666,8 @@ bool CChatSelector::IsSpam(CString strMessage, CUpDownClient* client)
 			resToken= CString(URLINDICATOR).Tokenize(_T("|"),curPos);
 		}
 	}
-	// second fixed criteria: he sent me 5  or more messages and I didn't answered him once
-	if (client->GetMessagesReceived() > 4 && client->GetMessagesSent() == 0)
+	// second fixed criteria: he sent me 4  or more messages and I didn't answered him once
+	if (client->GetMessagesReceived() > 3 && client->GetMessagesSent() == 0)
 		return true;
 
 	// to be continued

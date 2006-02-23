@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -46,13 +46,22 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 
-// CQueueListCtrl
 
 IMPLEMENT_DYNAMIC(CQueueListCtrl, CMuleListCtrl)
+
+BEGIN_MESSAGE_MAP(CQueueListCtrl, CMuleListCtrl)
+	ON_WM_CONTEXTMENU()
+	ON_WM_SYSCOLORCHANGE()
+	ON_NOTIFY_REFLECT(LVN_COLUMNCLICK, OnColumnClick)
+	ON_NOTIFY_REFLECT(NM_DBLCLK, OnNMDblclk)
+	ON_NOTIFY_REFLECT(LVN_GETDISPINFO, OnGetDispInfo)
+END_MESSAGE_MAP()
 
 CQueueListCtrl::CQueueListCtrl()
 	: CListCtrlItemWalk(this)
 {
+	SetGeneralPurposeFind(true, false);
+
 	// Barry - Refresh the queue every 10 secs
 	VERIFY( (m_hTimer = ::SetTimer(NULL, NULL, 10000, QueueUpdateTimer)) != NULL );
 	if (thePrefs.GetVerbose() && !m_hTimer)
@@ -81,14 +90,12 @@ void CQueueListCtrl::Init()
 	InsertColumn(9,GetResString(IDS_UPSTATUS),LVCFMT_LEFT,100,9);
 	InsertColumn(10,GetResString(IDS_CD_CSOFT), LVCFMT_LEFT, 90);	//Xman version see clientversion in every window
 
-	InsertColumn(11, _T("Webcache capable") ,LVCFMT_LEFT, 100); // {Webcache} [Max] 
-
 	// ==> push small files [sivka] - Stulle
-	InsertColumn(12,GetResString(IDS_SMALL),LVCFMT_LEFT,40,15);
+	InsertColumn(11,GetResString(IDS_SMALL),LVCFMT_LEFT,40,15);
 	// <== push small files [sivka] - Stulle
 
 	// ==> push rare file - Stulle
-	InsertColumn(13,GetResString(IDS_RARE),LVCFMT_LEFT,40,16);
+	InsertColumn(12,GetResString(IDS_RARE),LVCFMT_LEFT,40,16);
 	// <== push rare file - Stulle
 
 	SetAllIcons();
@@ -162,74 +169,61 @@ void CQueueListCtrl::Localize()
 		CString strRes;
 
 		strRes = GetResString(IDS_QL_USERNAME);
-		hdi.pszText = strRes.GetBuffer();
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(0, &hdi);
-		strRes.ReleaseBuffer();
 
 		strRes = GetResString(IDS_FILE);
-		hdi.pszText = strRes.GetBuffer();
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(1, &hdi);
-		strRes.ReleaseBuffer();
 
 		strRes = GetResString(IDS_FILEPRIO);
-		hdi.pszText = strRes.GetBuffer();
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(2, &hdi);
-		strRes.ReleaseBuffer();
 
 		strRes = GetResString(IDS_QL_RATING);
-		hdi.pszText = strRes.GetBuffer();
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(3, &hdi);
-		strRes.ReleaseBuffer();
 
 		strRes = GetResString(IDS_SCORE);
-		hdi.pszText = strRes.GetBuffer();
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(4, &hdi);
-		strRes.ReleaseBuffer();
 
 		strRes = GetResString(IDS_ASKED);
-		hdi.pszText = strRes.GetBuffer();
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(5, &hdi);
-		strRes.ReleaseBuffer();
 
 		strRes = GetResString(IDS_LASTSEEN);
-		hdi.pszText = strRes.GetBuffer();
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(6, &hdi);
-		strRes.ReleaseBuffer();
 
 		strRes = GetResString(IDS_ENTERQUEUE);
-		hdi.pszText = strRes.GetBuffer();
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(7, &hdi);
-		strRes.ReleaseBuffer();
 
 		strRes = GetResString(IDS_BANNED);
-		hdi.pszText = strRes.GetBuffer();
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(8, &hdi);
-		strRes.ReleaseBuffer();
 		
 		strRes = GetResString(IDS_UPSTATUS);
-		hdi.pszText = strRes.GetBuffer();
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(9, &hdi);
-		strRes.ReleaseBuffer();
 
 		//Xman version see clientversion in every window
 		strRes = GetResString(IDS_CD_CSOFT);
-		hdi.pszText = strRes.GetBuffer();
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(10, &hdi);
-		strRes.ReleaseBuffer();
 		//Xman end
 
 		// ==> push small files [sivka] - Stulle
 		strRes = GetResString(IDS_SMALL);
-		hdi.pszText = strRes.GetBuffer();
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(12, &hdi);
-		strRes.ReleaseBuffer();
 		// <== push small files [sivka] - Stulle
 
 		// ==> push rare file - Stulle
 		strRes = GetResString(IDS_RARE);
-		hdi.pszText = strRes.GetBuffer();
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(13, &hdi);
-		strRes.ReleaseBuffer();
 		// <== push rare file - Stulle
 //breakpoint
 	}
@@ -265,7 +259,7 @@ void CQueueListCtrl::RemoveClient(const CUpDownClient* client)
 	LVFINDINFO find;
 	find.flags = LVFI_PARAM;
 	find.lParam = (LPARAM)client;
-	sint32 result = FindItem(&find);
+	int result = FindItem(&find);
 	if (result != -1){
 		DeleteItem(result);
 		theApp.emuledlg->transferwnd->UpdateListCount(CTransferWnd::wnd2OnQueue);
@@ -290,7 +284,7 @@ void CQueueListCtrl::RefreshClient(const CUpDownClient* client)
 	LVFINDINFO find;
 	find.flags = LVFI_PARAM;
 	find.lParam = (LPARAM)client;
-	sint16 result = FindItem(&find);
+	int result = FindItem(&find);
 	if (result != -1)
 		Update(result);
 }
@@ -325,6 +319,8 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	// ==> draw PS files red - Stulle
 	/*
 		odc->SetBkColor(GetBkColor());
+	COLORREF crOldBackColor = odc->GetBkColor(); //Xman PowerRelease //Xman show LowIDs
+
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
 	*/
 	{
@@ -339,8 +335,8 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 		else
 			odc->SetBkColor(GetBkColor());
 	}
-	// <== draw PS files red - Stulle
 	COLORREF crOldBackColor = odc->GetBkColor(); //Xman PowerRelease //Xman show LowIDs
+	// <== draw PS files red - Stulle
 	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
 	CFont* pOldFont = dc.SelectObject(GetFont());
 	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
@@ -388,7 +384,6 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				else if (client->GetClientSoft() == SO_LPHANT){
 					image = 16;
 				}
-//breakpoint
 				else if (client->ExtProtocolAvailable()){
 					// ==> Mod Icons - Stulle
 					/*
@@ -397,7 +392,7 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					if(client->GetModClient() == MOD_NONE)
 						image = 4;
 					else
-						image = client->GetModClient() + 18;
+						image = (uint8)(client->GetModClient() + 18);
 					// <== Mod Icons - Stulle
 				}
 				else{
@@ -541,7 +536,7 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					Sbuffer = CastSecondsToHM((::GetTickCount() - client->GetLastUpRequest())/1000);
 					break;
 				case 7:
-					Sbuffer = CastSecondsToHM((::GetTickCount() - client->GetWaitStartTime())/1000);
+					Sbuffer = CastSecondsToHM((::GetTickCount() - (uint32)(client->GetWaitStartTime()))/1000);
 					break;
 				case 8:
 					if(client->IsBanned())
@@ -565,46 +560,24 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					break;
 				//Xman end
 
-// ==> {Webcache} [Max] 
-					case 11: {
-						if (client->SupportsWebCache())
-						{
-							Sbuffer = client->GetWebCacheName();
-							if (client->IsBehindOurWebCache())
-								dc->SetTextColor(RGB(0, 180, 0)); //if is behind our webcache display green
-							else if (Sbuffer != "")
-								dc->SetTextColor(RGB(255, 0, 0)); // if webcache info is there but not our own set red
-							else
-								Sbuffer = GetResString(IDS_WEBCACHE_NOPROXY);	// if no webcache info colour is black
-						   }
+ 				// ==> push small files [sivka] - Stulle
+				case 11:
+					{
+						if (client->GetSmallFilePush())
+							Sbuffer.Format(_T("%s"),GetResString(IDS_YES));
 						else
-							Sbuffer = "";
-						dc->DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
- 						dc->SetTextColor(RGB(0, 0, 0));
+							Sbuffer.Format(_T("%s"),GetResString(IDS_NO));
 						break;
 					}
-// <== {Webcache} [Max]
+				// <== push small files [sivka] - Stulle
 
- 					// ==> push small files [sivka] - Stulle
-					case 12:
-						{
-							if (client->GetSmallFilePush())
-								Sbuffer.Format(_T("%s"),GetResString(IDS_YES));
-							else
-								Sbuffer.Format(_T("%s"),GetResString(IDS_NO));
-							break;
-						}
-					// <== push small files [sivka] - Stulle
-
-					// ==> push rare file - Stulle
-					case 13:
-						Sbuffer.Format(_T("%.1f"), client->GetRareFilePushRatio()) ;
-						break;
-					// <== push rare file - Stulle
+				// ==> push rare file - Stulle
+				case 12:
+					Sbuffer.Format(_T("%.1f"), client->GetRareFilePushRatio()) ;
+					break;
+				// <== push rare file - Stulle
 		   	}
-
-			if( iColumn != 9 && iColumn != 0 && iColumn != 11)// {Webcache} [Max] 
-
+			if( iColumn != 9 && iColumn != 0)
 				dc.DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
 			dc.SetBkColor(crOldBackColor); //Xman PowerRelease //Xman show LowIDs
 			cur_rec.left += GetColumnWidth(iColumn);
@@ -636,16 +609,7 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	dc.SetTextColor(crOldTextColor);
 }
 
-BEGIN_MESSAGE_MAP(CQueueListCtrl, CMuleListCtrl)
-	ON_WM_CONTEXTMENU()
-	ON_WM_SYSCOLORCHANGE()
-	ON_NOTIFY_REFLECT(LVN_COLUMNCLICK, OnColumnClick)
-	ON_NOTIFY_REFLECT(NM_DBLCLK, OnNMDblclk)
-	ON_NOTIFY_REFLECT(LVN_GETDISPINFO, OnGetDispInfo)
-END_MESSAGE_MAP()
-
-// CQueueListCtrl message handlers
-void CQueueListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
+void CQueueListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 {
 	int iSel = GetNextItem(-1, LVIS_SELECTED | LVIS_FOCUSED);
 	const CUpDownClient* client = (iSel != -1) ? (CUpDownClient*)GetItemData(iSel) : NULL;
@@ -667,8 +631,9 @@ void CQueueListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient()) ? MF_ENABLED : MF_GRAYED), MP_MESSAGE, GetResString(IDS_SEND_MSG), _T("SENDMESSAGE"));
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && client->GetViewSharedFilesSupport()) ? MF_ENABLED : MF_GRAYED), MP_SHOWLIST, GetResString(IDS_VIEWFILES), _T("VIEWFILES"));
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && client->IsBanned()) ? MF_ENABLED : MF_GRAYED), MP_UNBAN, GetResString(IDS_UNBAN));
-	if (Kademlia::CKademlia::isRunning() && !Kademlia::CKademlia::isConnected())
+	if (Kademlia::CKademlia::IsRunning() && !Kademlia::CKademlia::IsConnected())
 		ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && client->GetKadPort()!=0) ? MF_ENABLED : MF_GRAYED), MP_BOOT, GetResString(IDS_BOOTSTRAP));
+	ClientMenu.AppendMenu(MF_STRING | (GetItemCount() > 0 ? MF_ENABLED : MF_GRAYED), MP_FIND, GetResString(IDS_FIND), _T("Search"));
 	// - show requested files (sivka/Xman)
 	ClientMenu.AppendMenu(MF_SEPARATOR); 
 	ClientMenu.AppendMenu(MF_STRING,MP_LIST_REQUESTED_FILES, GetResString(IDS_LISTREQUESTED), _T("FILEREQUESTED")); 
@@ -678,8 +643,17 @@ void CQueueListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	ClientMenu.TrackPopupMenu(TPM_LEFTALIGN |TPM_RIGHTBUTTON, point.x, point.y, this);
 }
 
-BOOL CQueueListCtrl::OnCommand(WPARAM wParam,LPARAM lParam )
+BOOL CQueueListCtrl::OnCommand(WPARAM wParam,LPARAM /*lParam*/)
 {
+	wParam = LOWORD(wParam);
+
+	switch (wParam)
+	{
+	case MP_FIND:
+		OnFindStart();
+		return TRUE;
+	}
+
 	int iSel = GetNextItem(-1, LVIS_SELECTED | LVIS_FOCUSED);
 	if (iSel != -1){
 		CUpDownClient* client = (CUpDownClient*)GetItemData(iSel);
@@ -720,15 +694,17 @@ BOOL CQueueListCtrl::OnCommand(WPARAM wParam,LPARAM lParam )
 					Update(iSel);
 				}
 				break;
+			case MP_DETAIL:
 			case MPG_ALTENTER:
-			case MP_DETAIL:{
+			case IDA_ENTER:
+			{
 				CClientDetailDialog dialog(client, this);
 				dialog.DoModal();
 				break;
-						   }
+			}
 			case MP_BOOT:
 				if (client->GetKadPort())
-					Kademlia::CKademlia::bootstrap(ntohl(client->GetIP()), client->GetKadPort());
+					Kademlia::CKademlia::Bootstrap(ntohl(client->GetIP()), client->GetKadPort());
 				break;
 			// - show requested files (sivka/Xman)
 			case MP_LIST_REQUESTED_FILES: { 
@@ -936,33 +912,20 @@ int CQueueListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 			break;
 		//Xman end
 
-// ==> {Webcache} [Max] 
-		case 11:
-			if (item1->SupportsWebCache() && item2->SupportsWebCache() )
-				return CompareLocaleStringNoCase(item1->GetWebCacheName(),item2->GetWebCacheName());
-			else
-				return item1->SupportsWebCache() - item2->SupportsWebCache();
-		case 111:
-			if (item2->SupportsWebCache() && item1->SupportsWebCache() )
-				return CompareLocaleStringNoCase(item2->GetWebCacheName(),item1->GetWebCacheName());
-			else
-				return item2->SupportsWebCache() - item1->SupportsWebCache();
-// <== {Webcache} [Max]
-
 		// ==> push small files [sivka] - Stulle
-		case 12:
+		case 11:
 			iResult=item1->GetSmallFilePush() - item2->GetSmallFilePush();
 			break;
-		case 112:
+		case 111:
 			iResult=item2->GetSmallFilePush() - item1->GetSmallFilePush();
 			break;
 		// <== push small files [sivka] - Stulle
 
 		// ==> push rare file - Stulle
-		case 13:
+		case 12:
 			iResult=(int)(item1->GetRareFilePushRatio()*100 - item2->GetRareFilePushRatio()*100);
 			break;
-		case 113: 
+		case 112: 
 			iResult=(int)(item2->GetRareFilePushRatio()*100 - item1->GetRareFilePushRatio()*100);
 			break;
 		// <== push rare file - Stulle
@@ -997,7 +960,7 @@ void CQueueListCtrl::UpdateAll()
 }
 
 // Barry - Refresh the queue every 10 secs
-void CALLBACK CQueueListCtrl::QueueUpdateTimer(HWND hwnd, UINT uiMsg, UINT idEvent, DWORD dwTime)
+void CALLBACK CQueueListCtrl::QueueUpdateTimer(HWND /*hwnd*/, UINT /*uiMsg*/, UINT /*idEvent*/, DWORD /*dwTime*/)
 {
 	// NOTE: Always handle all type of MFC exceptions in TimerProcs - otherwise we'll get mem leaks
 	try
@@ -1060,7 +1023,7 @@ void CQueueListCtrl::ShowSelectedUserDetails()
 	}
 }
 
-void CQueueListCtrl::OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult)
+void CQueueListCtrl::OnNMDblclk(NMHDR* /*pNMHDR*/, LRESULT *pResult)
 {
 	int iSel = GetNextItem(-1, LVIS_SELECTED | LVIS_FOCUSED);
 	if (iSel != -1) {

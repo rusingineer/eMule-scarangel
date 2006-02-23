@@ -1911,6 +1911,39 @@ BEGIN
     IDS_USS_STATE_PREPARING "Preparing..."
     IDS_USS_STATE_WAITING   "Waiting..."
     IDS_USS_STATE_ERROR     "Error!"
+    IDS_SHAREWARNING        "(Folder will be shared!)"
+    IDS_REMOVEALLSERVERS    "Do you really want to remove all servers?"
+    IDS_SEARCH_UNKATTR      "Unknown search attribute '%s'"
+    IDS_SEARCH_ATTRERR      "Syntax error in '%s' search attribute"
+    IDS_SEARCH_MISSINGANDRIGHT "Missing right side for AND operator"
+    IDS_SEARCH_OPRERR       "Syntax error in comparison operator '%s'"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DOWNLOAD_LANGFILE   "Downloading language file"
+    IDS_DOWNLOADING_SERVERMET_FROM "Downloading server.met from %s"
+    IDS_DOWNLOADING_SERVERMET "Downloading server.met..."
+    IDS_FULLALLOC           "Allocate full filesize for non-sparse part files"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH "Hash not found."
+    IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "Gap list corrupt."
+    IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST "Gap list not found."
+    IDS_X_SHAREAZA_IMPORT_HASH_SET_CORRUPT "Hash set corrupt."
+    IDS_X_SHAREAZA_IMPORT_NO_HASH_SET "Hash set not found."
+    IDS_CONVERTINGKNOWN2MET "Converting %s to %s to support large files..."
+    IDS_CONVERTINGKNOWN2FAILED 
+                            "...failed to convert known2.met, ignoring old records"
+    IDS_CONVERTINGKNOWN2DONE "... done, finished converting"
+    IDS_ERR_MET_BAD         "Error: the file %s is corrupted, unable to load known files"
+    IDS_SRV_LARGEFILES      "Support for large files"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_ERR_FSCANTHANDLEFILE 
+                            "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
+    IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
 END
 
 #endif    // Estonian resources

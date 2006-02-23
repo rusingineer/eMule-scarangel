@@ -108,7 +108,7 @@ void CSourceSaver::LoadSourcesFromFile(const CString& slsfile)
 			continue;
 		CString strPort = strLine.Left(pos);
 		strLine = strLine.Mid(pos+1);
-		uint16 wPort = _tstoi(strPort);
+		uint16 wPort = (uint16)_tstoi(strPort);
 		if (!wPort)
 			continue;
 

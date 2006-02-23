@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -70,7 +70,7 @@ public:
 	void ShowNotifier(LPCTSTR pszText, int iMsgType, LPCTSTR pszLink = NULL, bool bForceSoundOFF = false);
 	void SendNotificationMail(int iMsgType, LPCTSTR pszText);
 	void ShowUserCount();
-	void ShowMessageState(uint8 iconnr);
+	void ShowMessageState(UINT iconnr);
 	void SetActiveDialog(CWnd* dlg);
 	void ShowTransferRate(bool forceAll=false);
     void ShowPing();
@@ -88,6 +88,7 @@ public:
 	CString	GetAllLogEntries();
 	CString	GetAllDebugLogEntries();
 	CString GetServerInfoText();
+
 	CString	GetConnectionStateString();
 	UINT GetConnectionStateIconIndex() const;
 	CString	GetTransferRateString();
@@ -105,7 +106,9 @@ public:
 	void SetStatusBarPartsSize();
 	int ShowPreferences(UINT uStartPageID = (UINT)-1);
 	bool IsPreferencesDlgOpen() const;
+	bool IsTrayIconToFlash()	{ return m_iMsgIcon!=0; }
 
+	virtual void TrayMinimizeToTrayChange();
 	virtual void RestoreWindow();
 	virtual void HtmlHelp(DWORD_PTR dwData, UINT nCmd = 0x000F);
 
@@ -158,6 +161,8 @@ protected:
 	CMenu			m_menuUploadCtrl;
 	CMenu			m_menuDownloadCtrl;
 	char			m_acVCDNSBuffer[MAXGETHOSTSTRUCT];
+	bool			m_iMsgBlinkState;
+
 	//Xman versions check
 	char			m_acMVCDNSBuffer[MAXGETHOSTSTRUCT];
 	char			m_acDLPBuffer[MAXGETHOSTSTRUCT]; //Xman DLP
@@ -184,12 +189,13 @@ protected:
 
 	void StartConnection();
 	void CloseConnection();
+	void MinimizeWindow();
 	void PostStartupMinimized();
 	void UpdateTrayIcon(int iPercent);
 	void ShowConnectionStateIcon();
 	void ShowTransferStateIcon();
 	void ShowUserStateIcon();
-	void AddSpeedSelectorSys(CMenu* addToMenu);
+	void AddSpeedSelectorMenus(CMenu* addToMenu);
 	//Xman
 	// Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 	float  GetRecMaxUpload();
@@ -199,6 +205,10 @@ protected:
 	void ShowToolPopup(bool toolsonly = false);
 	void SetAllIcons();
 	bool CanClose();
+	int MapWindowToToolbarButton(CWnd* pWnd) const;
+	CWnd* MapToolbarButtonToWindow(int iButtonID) const;
+	int GetNextWindowToolbarButton(int iButtonID, int iDirection = 1) const;
+	bool IsWindowToolbarButton(int iButtonID) const;
 
 	virtual void DoDataExchange(CDataExchange* pDX);
 	virtual BOOL OnInitDialog();

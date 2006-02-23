@@ -1908,22 +1908,54 @@ END
 STRINGTABLE 
 BEGIN
     IDS_MODIFYCOLLECTION    "修改收藏集"
-    IDS_COLL_SIGN           "以用户名及userhash标记此收藏集"
+    IDS_COLL_SIGN           "以用户名及认证码标记此收藏集"
     IDS_AUTHOR              "制作者"
-    IDS_AUTHORKEY           "制作者的userhash"
+    IDS_AUTHORKEY           "制作者的认证码"
     IDS_COLL_ADDINCAT       "添加新的下载于此收藏集的分类中"
     IDS_VIEWCOLLECTION      "查看收藏集"
     IDS_COLL_TEXTFORMAT     "以简单文本方式保存收藏集"
     IDS_RUNNINGRESTRICTED   "eMule运行在受限状态下"
     IDS_USS_TRACEROUTEOFTENFAILED 
-                            "UploadSpeedSense: Tracerouting failed too many times. Disabling Upload SpeedSense."
-    IDS_USS_STARTING        "UploadSpeedSense: Done with preparations. Starting control of upload speed. (First 60 seconds will be in fast reaction mode)"
+                            "USS: 路由跟踪多次失败. 关闭USS."
+    IDS_USS_STARTING        "USS: 准备就绪. 开始控制上传速度. (起初的60秒内将采取快速反应模式)"
     IDS_USS_MANUALUPLOADLIMITDETECTED 
-                            "UploadSpeedSense: Raised upload limit in prefs detected. Going into fast reaction mode for 60 seconds."
-    IDS_USS_STATE_PREPARING "Preparing..."
-    IDS_USS_STATE_WAITING   "Waiting..."
-    IDS_USS_STATE_ERROR     "Error!"
+                            "USS: 检测到选项中的上传速度限制被提高. 进入快速反应模式60秒."
+    IDS_USS_STATE_PREPARING "正在处理..."
+    IDS_USS_STATE_WAITING   "请稍后..."
+    IDS_USS_STATE_ERROR     "错误!"
 
+    IDS_SHAREWARNING        "(文件夹将被共享!)"
+    IDS_REMOVEALLSERVERS    "你确定要删除所有的服务器?"
+    IDS_SEARCH_UNKATTR      "未知的搜索属性 '%s'"
+    IDS_SEARCH_ATTRERR      "搜索属性 '%s' 中有语法错误"
+    IDS_SEARCH_MISSINGANDRIGHT "未指定 AND 操作符的右侧操作数"
+    IDS_SEARCH_OPRERR       "比较操作符 '%s' 中有语法错误"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DOWNLOAD_LANGFILE   "正在下载语言文件..."
+    IDS_DOWNLOADING_SERVERMET_FROM "正在下载来自 %s 的 server.met 文件..."
+    IDS_DOWNLOADING_SERVERMET "正在下载 server.met 文件..."
+    IDS_FULLALLOC           "为非稀疏文件分配硬盘空间"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH "Hash 没有找到."
+    IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "Gap 列表已损坏."
+    IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST "Gap 列表未找到."
+    IDS_X_SHAREAZA_IMPORT_HASH_SET_CORRUPT "Hash set 损坏."
+    IDS_X_SHAREAZA_IMPORT_NO_HASH_SET "Hash set 未能找到."
+    IDS_CONVERTINGKNOWN2MET "正在转换 %s 至 %s 以便支持大文件..."
+    IDS_CONVERTINGKNOWN2FAILED 
+                              "...转换 known2.met 失败, 忽略旧的记录"
+    IDS_CONVERTINGKNOWN2DONE  "... 完成, 转换成功!"
+    IDS_ERR_MET_BAD         "错误:文件 %s 是损坏的, 不能读取已知的文件"
+    IDS_SRV_LARGEFILES      "支持大文件"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ERR_FSCANTHANDLEFILE 
+                            "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
+    IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
 END
 
 #endif    // Chinese (P.R.C.) resources

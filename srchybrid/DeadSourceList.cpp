@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2004 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -147,7 +147,6 @@ void CDeadSourceList::AddDeadSource(const CUpDownClient* pToAdd){
 			bDbgCheck = true;
 			m_mapDeadSources.SetAt(CDeadSource(pToAdd->GetUserHash()), BLOCKTIMEFW);
 		}
-// WebCache - just a comment - if pToAdd points to a proxy-client bDbgCheck will be false , {Webcache} [Max]  
 		//ASSERT( bDbgCheck );
 	}
 	if (::GetTickCount() - m_dwLastCleanUp  > CLEANUPTIME)

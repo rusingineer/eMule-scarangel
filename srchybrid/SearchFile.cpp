@@ -1,6 +1,6 @@
 // parts of this file are based on work from pan One (http://home-3.tiscali.nl/~meost/pms/)
 //this file is part of eMule
-//Copyright (C)2002-2004 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -123,7 +123,8 @@ void ConvertED2KTag(CTag*& pTag)
 
 IMPLEMENT_DYNAMIC(CSearchFile, CAbstractFile)
 
-CSearchFile::CSearchFile(const CSearchFile* copyfrom) : CAbstractFile(copyfrom)
+CSearchFile::CSearchFile(const CSearchFile* copyfrom)
+	: CAbstractFile(copyfrom)
 {
 	UpdateFileRatingCommentAvail();
 
@@ -133,7 +134,7 @@ CSearchFile::CSearchFile(const CSearchFile* copyfrom) : CAbstractFile(copyfrom)
 	m_nClientPort = copyfrom->GetClientPort();
 	m_pszDirectory = copyfrom->GetDirectory()? _tcsdup(copyfrom->GetDirectory()) : NULL;
 	m_nSearchID = copyfrom->GetSearchID();
-	m_nKademlia = copyfrom->IsKademlia();
+	m_bKademlia = copyfrom->IsKademlia();
 	
 	const CSimpleArray<SClient>& clients = copyfrom->GetClients();
 	for (int i = 0; i < clients.GetSize(); i++)
@@ -151,9 +152,9 @@ CSearchFile::CSearchFile(const CSearchFile* copyfrom) : CAbstractFile(copyfrom)
 }
 
 CSearchFile::CSearchFile(CFileDataIO* in_data, bool bOptUTF8, 
-						 uint32 nSearchID, uint32 nServerIP, uint16 nServerPort, LPCTSTR pszDirectory, bool nKademlia)
+						 uint32 nSearchID, uint32 nServerIP, uint16 nServerPort, LPCTSTR pszDirectory, bool bKademlia)
 {
-	m_nKademlia = nKademlia;
+	m_bKademlia = bKademlia;
 	m_nSearchID = nSearchID;
 	in_data->ReadHash16(m_abyFileHash);
 	m_nClientID = in_data->ReadUInt32();
@@ -175,13 +176,39 @@ CSearchFile::CSearchFile(CFileDataIO* in_data, bool bOptUTF8,
 	if (thePrefs.GetDebugServerSearchesLevel() > 1)
 		Debug(_T("Search Result: %s  Client=%u.%u.%u.%u:%u  Tags=%u\n"), md4str(m_abyFileHash), (uint8)m_nClientID,(uint8)(m_nClientID>>8),(uint8)(m_nClientID>>16),(uint8)(m_nClientID>>24), m_nClientPort, tagcount);
 
-	for (UINT i = 0; i < tagcount; i++){
-		CTag* toadd = new CTag(in_data, bOptUTF8);
+	// Copy/Convert ED2K-server tags to local tags
+	//
+	for (UINT i = 0; i < tagcount; i++)
+	{
+		CTag* tag = new CTag(in_data, bOptUTF8);
 		if (thePrefs.GetDebugServerSearchesLevel() > 1)
-			Debug(_T("  %s\n"), toadd->GetFullInfo());
-		ConvertED2KTag(toadd);
-		if (toadd)
-			taglist.Add(toadd);
+			Debug(_T("  %s\n"), tag->GetFullInfo(DbgGetFileMetaTagName));
+		ConvertED2KTag(tag);
+		if (tag)
+		{
+			// Convert ED2K-server file rating tag
+			//
+			// NOTE: Feel free to do more with the received numbers here, but please do not add that particular
+			// received tag to the local tag list with the received tag format (packed rating). Either create
+			// a local tag with an eMule known rating value and drop the percentage (which is currently done),
+			// or add a second tag which holds the percentage in addition to the eMule-known rating value.
+			// Be aware, that adding that tag in packed-rating format will create troubles in other code parts!
+			if (tag->GetNameID() == FT_FILERATING && tag->IsInt())
+			{
+				uint16 nPackedRating = (uint16)tag->GetInt();
+
+				// Percent of clients (related to 'Availability') which rated on that file
+				UINT uPercentClientRatings = HIBYTE(nPackedRating);
+				(void)uPercentClientRatings;
+
+				// Average rating used by clients
+				UINT uAvgRating = LOBYTE(nPackedRating);
+				m_uUserRating = uAvgRating / (255/5/*RatingExcellent*/);
+
+				tag->SetInt(m_uUserRating);
+			}
+			taglist.Add(tag);
+		}
 	}
 
 	// here we have two choices
@@ -195,7 +222,20 @@ CSearchFile::CSearchFile(CFileDataIO* in_data, bool bOptUTF8,
 	// that we are using 'wrong' file types in part files. (this has to be handled when creating the part files)
 	const CString& rstrFileType = GetStrTagValue(FT_FILETYPE);
 	SetFileName(GetStrTagValue(FT_FILENAME), false, rstrFileType.IsEmpty());
-	SetFileSize(GetIntTagValue(FT_FILESIZE));
+
+	uint64 ui64FileSize = GetInt64TagValue(FT_FILESIZE);
+	uint64 uFileSize_Hi = GetIntTagValue(FT_FILESIZE_HI);
+	if (uFileSize_Hi > 0){
+		if (ui64FileSize <= OLD_MAX_EMULE_FILE_SIZE){
+			ui64FileSize += (uFileSize_Hi << 32);
+			SetInt64TagValue(FT_FILESIZE, ui64FileSize);
+		}
+		else
+			ASSERT( false );
+
+		SetIntTagValue(FT_FILESIZE_HI, 0);
+	}
+	SetFileSize(ui64FileSize);
 	if (!rstrFileType.IsEmpty())
 	{
 		if (_tcscmp(rstrFileType, _T(ED2KFTSTR_PROGRAM))==0)
@@ -226,32 +266,9 @@ CSearchFile::CSearchFile(CFileDataIO* in_data, bool bOptUTF8,
 	m_eKnown = NotDetermined;
 }
 
-CSearchFile::CSearchFile(uint32 nSearchID, const uchar* pucFileHash, uint32 uFileSize, LPCTSTR pszFileName, int iFileType, int iAvailability)
-{
-	m_nSearchID = nSearchID;
-	md4cpy(m_abyFileHash, pucFileHash);
-	taglist.Add(new CTag(FT_FILESIZE, uFileSize));
-	taglist.Add(new CTag(FT_FILENAME, pszFileName));
-	taglist.Add(new CTag(FT_SOURCES, iAvailability));
-	SetFileName(pszFileName);
-	SetFileSize(uFileSize);
-	m_nKademlia = 0;
-	m_nClientID = 0;
-	m_nClientPort = 0;
-	m_nClientServerIP = 0;
-	m_nClientServerPort = 0;
-	m_pszDirectory = NULL;
-	m_list_bExpanded = false;
-	m_list_parent = NULL;
-	m_list_childcount = 0;
-	m_bPreviewPossible = false;
-	m_eKnown = NotDetermined;
-}
-
 CSearchFile::~CSearchFile()
 {
-	if (m_pszDirectory)
-		free(m_pszDirectory);
+	free(m_pszDirectory);
 	for (int i = 0; i < m_listImages.GetSize(); i++)
 		delete m_listImages[i];
 }
@@ -259,26 +276,26 @@ CSearchFile::~CSearchFile()
 void CSearchFile::UpdateFileRatingCommentAvail()
 {
 	bool bOldHasComment = m_bHasComment;
-	uint32 uOldUserRatings = m_uUserRating;
+	UINT uOldUserRatings = m_uUserRating;
 
 	m_bHasComment = false;
-	uint32 uRatings = 0;
-	uint32 uUserRatings = 0;
+	UINT uRatings = 0;
+	UINT uUserRatings = 0;
 
 	for(POSITION pos = m_kadNotes.GetHeadPosition(); pos != NULL; )
 	{
 		Kademlia::CEntry* entry = m_kadNotes.GetNext(pos);
 		if (!m_bHasComment && !entry->GetStrTagValue(TAG_DESCRIPTION).IsEmpty())
 			m_bHasComment = true;
-		uint16 rating = entry->GetIntTagValue(TAG_FILERATING);
-		if(rating!=0)
+		UINT rating = (UINT)entry->GetIntTagValue(TAG_FILERATING);
+		if (rating != 0)
 		{
 			uRatings++;
 			uUserRatings += rating;
 		}
 	}
 
-	if(uRatings)
+	if (uRatings)
 		m_uUserRating = uUserRatings / uRatings;
 	else
 		m_uUserRating = 0;
@@ -294,7 +311,7 @@ uint32 CSearchFile::AddSources(uint32 count)
 		CTag* pTag = taglist[i];
 		if (pTag->GetNameID() == FT_SOURCES)
 		{
-			if (m_nKademlia)
+			if (m_bKademlia)
 			{
 				if (count > pTag->GetInt())
 					pTag->SetInt(count);
@@ -323,7 +340,7 @@ uint32 CSearchFile::AddCompleteSources(uint32 count)
 		CTag* pTag = taglist[i];
 		if (pTag->GetNameID() == FT_COMPLETE_SOURCES)
 		{
-			if (m_nKademlia)
+			if (m_bKademlia)
 			{
 				if (count > pTag->GetInt())
 					pTag->SetInt(count);
@@ -352,12 +369,21 @@ int CSearchFile::IsComplete() const
 
 int CSearchFile::IsComplete(UINT uSources, UINT uCompleteSources) const
 {
-	if (IsKademlia())
+	if (IsKademlia()) {
 		return -1;		// unknown
-	else if (uSources > 0 && uCompleteSources > 0)
+	}
+	else if (GetDirectory() != NULL && uSources == 1 && uCompleteSources == 0) {
+		// If this 'search' result is from a remote client 'View Shared Files' answer, we don't yet have
+		// any 'complete' information (could though be implemented some day) -> don't show the file as
+		// incomplete though. Treat it as 'unknown'.
+		return -1;		// unknown
+	}
+	else if (uSources > 0 && uCompleteSources > 0) {
 		return 1;		// complete
-	else
+	}
+	else {
 		return 0;		// not complete
+	}
 }
 
 time_t CSearchFile::GetLastSeenComplete() const

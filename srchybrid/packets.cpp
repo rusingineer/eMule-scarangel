@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -138,7 +138,7 @@ Packet::~Packet(){
 	if (completebuffer)
 		delete[] completebuffer;
 	else
-		delete [] pBuffer;
+		delete[] pBuffer;
 	delete[] tempbuffer;
 }
 
@@ -149,10 +149,8 @@ char* Packet::GetPacket(){
 		return completebuffer;
 	}
 	else{
-		if (tempbuffer){
-			delete[] tempbuffer;
-			tempbuffer = NULL; // 'new' may throw an exception
-		}
+		delete[] tempbuffer;
+		tempbuffer = NULL; // 'new' may throw an exception
 		tempbuffer = new char[size+10];
 		memcpy(tempbuffer,GetHeader(),6);
 		memcpy(tempbuffer+6,pBuffer,size);
@@ -170,10 +168,8 @@ char* Packet::DetachPacket(){
 		return result;
 	}
 	else{
-		if (tempbuffer){
-			delete[] tempbuffer;
-			tempbuffer = NULL; // 'new' may throw an exception
-		}
+		delete[] tempbuffer;
+		tempbuffer = NULL; // 'new' may throw an exception
 		tempbuffer = new char[size+10];
 		memcpy(tempbuffer,GetHeader(),6);
 		memcpy(tempbuffer+6,pBuffer,size);
@@ -204,26 +200,15 @@ void Packet::PackPacket(){
 	ASSERT (!m_bSplitted);
 	uLongf newsize = size+300;
 	BYTE* output = new BYTE[newsize];
-	uint16 result = compress2(output,&newsize,(BYTE*)pBuffer,size,Z_BEST_COMPRESSION);
+	UINT result = compress2(output,&newsize,(BYTE*)pBuffer,size,Z_BEST_COMPRESSION);
 	if (result != Z_OK || size <= newsize){
 		delete[] output;
 		return;
 	}
-
-// ==> {Webcache} [Max] 
-	switch (prot)
-	{
-		case OP_KADEMLIAHEADER:
-			prot = OP_KADEMLIAPACKEDPROT;
-			break;
-		case OP_WEBCACHEPROT:
-			prot = OP_WEBCACHEPACKEDPROT;
-			break;
-		default:
-			prot = OP_PACKEDPROT;
-	}
-// <== {Webcache} [Max] 
-
+	if( prot == OP_KADEMLIAHEADER )
+		prot = OP_KADEMLIAPACKEDPROT;
+	else
+		prot = OP_PACKEDPROT;
 	memcpy(pBuffer,output,newsize);
 	size = newsize;
 	delete[] output;
@@ -231,13 +216,7 @@ void Packet::PackPacket(){
 }
 
 bool Packet::UnPackPacket(UINT uMaxDecompressedSize){
-
-// ==> {Webcache} [Max] 
-	ASSERT ( prot == OP_PACKEDPROT
-		|| prot == OP_KADEMLIAPACKEDPROT
-		|| prot == OP_WEBCACHEPACKEDPROT); 
-// <== {Webcache} [Max] 
-
+	ASSERT ( prot == OP_PACKEDPROT || prot == OP_KADEMLIAPACKEDPROT); 
 	uint32 nNewSize = size*10+300;
 	if (nNewSize > uMaxDecompressedSize){
 		//ASSERT(0);
@@ -245,28 +224,17 @@ bool Packet::UnPackPacket(UINT uMaxDecompressedSize){
 	}
 	BYTE* unpack = new BYTE[nNewSize];
 	uLongf unpackedsize = nNewSize;
-	uint16 result = uncompress(unpack,&unpackedsize,(BYTE*)pBuffer,size);
+	UINT result = uncompress(unpack,&unpackedsize,(BYTE*)pBuffer,size);
 	if (result == Z_OK){
 		ASSERT ( completebuffer == NULL );
 		ASSERT ( pBuffer != NULL );
 		size = unpackedsize;
 		delete[] pBuffer;
 		pBuffer = (char*)unpack;
-
-// ==> {Webcache} [Max] 
-		switch (prot)
-		{
-			case OP_KADEMLIAPACKEDPROT:
-				prot = OP_KADEMLIAHEADER;
-				break;
-			case OP_WEBCACHEPACKEDPROT:
-				prot = OP_WEBCACHEPROT;
-				break;
-			default:
-				prot = OP_EMULEPROT;
-		}
-// <== {Webcache} [Max]
-
+		if( prot == OP_KADEMLIAPACKEDPROT )
+			prot = OP_KADEMLIAHEADER;
+		else
+			prot =  OP_EMULEPROT;
 		return true;
 	}
 	delete[] unpack;
@@ -346,22 +314,34 @@ char* CRawPacket::DetachPacket()
 ///////////////////////////////////////////////////////////////////////////////
 // CTag
 
-CTag::CTag(LPCSTR pszName, uint32 uVal)
+CTag::CTag(LPCSTR pszName, uint64 uVal, bool bInt64)
 {
-	m_uType = TAGTYPE_UINT32;
+	ASSERT( uVal <= 0xFFFFFFFF || bInt64 );
+	if (bInt64){
+		m_uType = TAGTYPE_UINT64;
+	}
+	else{
+		m_uType = TAGTYPE_UINT32;
+	}
+	m_uVal = uVal;
 	m_uName = 0;
 	m_pszName = nstrdup(pszName);
-	m_uVal = uVal;
 	m_nBlobSize = 0;
 	ASSERT_VALID(this);
 }
 
-CTag::CTag(uint8 uName, uint32 uVal)
+CTag::CTag(uint8 uName, uint64 uVal, bool bInt64)
 {
-	m_uType = TAGTYPE_UINT32;
+	ASSERT( uVal <= 0xFFFFFFFF || bInt64 );
+	if (bInt64){
+		m_uType = TAGTYPE_UINT64;
+	}
+	else{
+		m_uType = TAGTYPE_UINT32;
+	}
+	m_uVal = uVal;
 	m_uName = uName;
 	m_pszName = NULL;
-	m_uVal = uVal;
 	m_nBlobSize = 0;
 	ASSERT_VALID(this);
 }
@@ -437,6 +417,8 @@ CTag::CTag(const CTag& rTag)
 		m_pstrVal = new CString(rTag.GetStr());
 	else if (rTag.IsInt())
 		m_uVal = rTag.GetInt();
+	else if (rTag.IsInt64(false))
+		m_uVal = rTag.GetInt64();
 	else if (rTag.IsFloat())
 		m_fVal = rTag.GetFloat();
 	else if (rTag.IsHash()){
@@ -499,6 +481,10 @@ CTag::CTag(CFileDataIO* data, bool bOptUTF8)
 	else if (m_uType == TAGTYPE_UINT32)
 	{
 		m_uVal = data->ReadUInt32();
+	}
+	else if (m_uType == TAGTYPE_UINT64)
+	{
+		m_uVal = data->ReadUInt64();
 	}
 	else if (m_uType == TAGTYPE_UINT16)
 	{
@@ -598,6 +584,17 @@ bool CTag::WriteNewEd2kTag(CFileDataIO* data, EUtf8Str eStrEncode) const
 		else
 			uType = TAGTYPE_UINT32;
 	}
+	else if (IsInt64(false))
+	{
+		if (m_uVal <= 0xFF)
+			uType = TAGTYPE_UINT8;
+		else if (m_uVal <= 0xFFFF)
+			uType = TAGTYPE_UINT16;
+		else if (m_uVal <= 0xFFFFFFFF)
+			uType = TAGTYPE_UINT32;
+		else
+			uType = TAGTYPE_UINT64;
+	}
 	else if (IsStr())
 	{
 		if (eStrEncode == utf8strRaw)
@@ -626,7 +623,7 @@ bool CTag::WriteNewEd2kTag(CFileDataIO* data, EUtf8Str eStrEncode) const
 		uStrValLen = pstrValA->GetLength();
 		pszValA = *pstrValA;
 		if (uStrValLen >= 1 && uStrValLen <= 16)
-			uType = TAGTYPE_STR1 + uStrValLen - 1;
+			uType = (uint8)(TAGTYPE_STR1 + uStrValLen - 1);
 		else
 			uType = TAGTYPE_STRING;
 	}
@@ -638,7 +635,7 @@ bool CTag::WriteNewEd2kTag(CFileDataIO* data, EUtf8Str eStrEncode) const
 	{
 		data->WriteUInt8(uType);
 		UINT uTagNameLen = strlen(m_pszName);
-		data->WriteUInt16(uTagNameLen);
+		data->WriteUInt16((uint16)uTagNameLen);
 		data->Write(m_pszName, uTagNameLen);
 	}
 	else
@@ -651,24 +648,28 @@ bool CTag::WriteNewEd2kTag(CFileDataIO* data, EUtf8Str eStrEncode) const
 	// Write tag data
 	if (uType == TAGTYPE_STRING)
 	{
-		data->WriteUInt16(uStrValLen);
+		data->WriteUInt16((uint16)uStrValLen);
 		data->Write(pszValA, uStrValLen);
 	}
 	else if (uType >= TAGTYPE_STR1 && uType <= TAGTYPE_STR16)
 	{
 		data->Write(pszValA, uStrValLen);
 	}
+	else if (uType == TAGTYPE_UINT64)
+	{
+		data->WriteUInt64(m_uVal);
+	}
 	else if (uType == TAGTYPE_UINT32)
 	{
-		data->WriteUInt32(m_uVal);
+		data->WriteUInt32((uint32)m_uVal);
 	}
 	else if (uType == TAGTYPE_UINT16)
 	{
-		data->WriteUInt16(m_uVal);
+		data->WriteUInt16((uint16)m_uVal);
 	}
 	else if (uType == TAGTYPE_UINT8)
 	{
-		data->WriteUInt8(m_uVal);
+		data->WriteUInt8((uint8)m_uVal);
 	}
 	else if (uType == TAGTYPE_FLOAT32)
 	{
@@ -700,14 +701,14 @@ bool CTag::WriteTagToFile(CFileDataIO* file, EUtf8Str eStrEncode) const
 
 	// don't write tags of unknown types, we wouldn't be able to read them in again 
 	// and the met file would be corrupted
-	if (IsStr() || IsInt() || IsFloat() || IsBlob())
+	if (IsStr() || IsInt() || IsFloat() || IsBlob() || IsInt64())
 	{
 		file->WriteUInt8(m_uType);
 		
 		if (m_pszName)
 		{
 			UINT taglen = strlen(m_pszName);
-			file->WriteUInt16(taglen);
+			file->WriteUInt16((uint16)taglen);
 			file->Write(m_pszName, taglen);
 		}
 		else
@@ -722,7 +723,11 @@ bool CTag::WriteTagToFile(CFileDataIO* file, EUtf8Str eStrEncode) const
 		}
 		else if (IsInt())
 		{
-			file->WriteUInt32(m_uVal);
+			file->WriteUInt32((uint32)m_uVal);
+		}
+		else if (IsInt64(false))
+		{
+			file->WriteUInt64(m_uVal);
 		}
 		else if (IsFloat())
 		{
@@ -758,6 +763,15 @@ void CTag::SetInt(uint32 uVal)
 		m_uVal = uVal;
 }
 
+void CTag::SetInt64(uint64 uVal)
+{
+	ASSERT( IsInt64(true) );
+	if (IsInt64(true)){
+		m_uVal = uVal;
+		m_uType = TAGTYPE_UINT64;
+	}
+}
+
 void CTag::SetStr(LPCTSTR pszVal)
 {
 	ASSERT( IsStr() );
@@ -769,7 +783,7 @@ void CTag::SetStr(LPCTSTR pszVal)
 	}
 }
 
-CString CTag::GetFullInfo() const
+CString CTag::GetFullInfo(CString (*pfnDbgGetFileMetaTagName)(UINT uMetaTagID)) const
 {
 	CString strTag;
 	if (m_pszName)
@@ -780,7 +794,10 @@ CString CTag::GetFullInfo() const
 	}
 	else
 	{
-		strTag.Format(_T("0x%02X"), m_uName);
+		if (pfnDbgGetFileMetaTagName)
+			strTag.Format(_T("\"%s\""), (*pfnDbgGetFileMetaTagName)(m_uName));
+		else
+			strTag.Format(_T("Tag0x%02X"), m_uName);
 	}
 	strTag += _T("=");
 	if (m_uType == TAGTYPE_STRING)
@@ -795,7 +812,11 @@ CString CTag::GetFullInfo() const
 	}
 	else if (m_uType == TAGTYPE_UINT32)
 	{
-		strTag.AppendFormat(_T("(Int32)%u"), m_uVal);
+		strTag.AppendFormat(_T("(Int32)%u"), (uint32)m_uVal);
+	}
+	else if (m_uType == TAGTYPE_UINT64)
+	{
+		strTag.AppendFormat(_T("(Int64)%I64u"), m_uVal);
 	}
 	else if (m_uType == TAGTYPE_UINT16)
 	{

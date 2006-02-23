@@ -11,6 +11,7 @@
 //#include "MuleToolbarCtrl.h" // TBH: minimule - Stulle
 #include "ClientCredits.h" // CreditSystems [EastShare/ MorphXT] - Stulle
 #include "log.h"
+#include "DownloadQueue.h" // Global Source Limit [Max/Stulle] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -28,6 +29,7 @@ BEGIN_MESSAGE_MAP(CPPgScar, CPropertyPage)
 	ON_WM_HSCROLL()
 	ON_WM_DESTROY()
 	ON_MESSAGE(UM_TREEOPTSCTRL_NOTIFY, OnTreeOptsCtrlNotify)
+	ON_WM_HELPINFO()
 END_MESSAGE_MAP()
 
 CPPgScar::CPPgScar()
@@ -160,7 +162,7 @@ CPPgScar::CPPgScar()
 	m_htiGlobalHlGroup = NULL;
 	m_htiGlobalHL = NULL;
 	m_htiGlobalHlLimit = NULL;
-	m_htiGlobalHlAggro = NULL;
+	m_htiGlobalHlAll = NULL;
 	m_htiGlobalHlDefault = NULL;
 	// <== Global Source Limit [Max/Stulle] - Stulle
 }
@@ -360,7 +362,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiGlobalHL = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ENABLE), m_htiGlobalHlGroup, m_bGlobalHL);
 		m_htiGlobalHlLimit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_GLOBAL_HL_LIMIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiGlobalHlGroup);
 		m_ctrlTreeOptions.AddEditBox(m_htiGlobalHlLimit, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		m_htiGlobalHlAggro = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_GLOBAL_HL_AGGRO),m_htiGlobalHlGroup,m_bGlobalHlAggro);
+		m_htiGlobalHlAll = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_GLOBAL_HL_ALL), m_htiGlobalHlGroup, m_bGlobalHlAll);
 		m_htiGlobalHlDefault = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_GLOBAL_HL_DEFAULT), m_htiGlobalHlGroup, m_bGlobalHlDefault);
 		m_ctrlTreeOptions.Expand(m_htiGlobalHlGroup, TVE_EXPAND);
 		// <== Global Source Limit [Max/Stulle] - Stulle
@@ -486,9 +488,8 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 */	// ==> Global Source Limit [Max/Stulle] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiGlobalHL, m_bGlobalHL);
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiGlobalHlLimit, m_iGlobalHL);
-	uint16 temp = (!thePrefs.m_bAcceptsourcelimit || thePrefs.m_uMaxGlobalSources > MAX_GSL) ? MAX_GSL : thePrefs.m_uMaxGlobalSources;
-	DDV_MinMaxInt(pDX, m_iGlobalHL, 0, temp);
-	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiGlobalHlAggro, m_bGlobalHlAggro);
+	DDV_MinMaxInt(pDX, m_iGlobalHL, 1000, MAX_GSL);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiGlobalHlAll, m_bGlobalHlAll);
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiGlobalHlDefault, m_bGlobalHlDefault);
 	// <== Global Source Limit [Max/Stulle] - Stulle
 /*
@@ -601,7 +602,7 @@ BOOL CPPgScar::OnInitDialog()
 */	// ==> Global Source Limit [Max/Stulle] - Stulle
 	m_bGlobalHL = thePrefs.IsUseGlobalHL();
 	m_iGlobalHL = thePrefs.GetGlobalHL();
-	m_bGlobalHlAggro = thePrefs.IsUseAgressiveMode();
+	m_bGlobalHlAll = thePrefs.GetGlobalHlAll();
 	m_bGlobalHlDefault = thePrefs.GetGlobalHlDefault();
 	// <== Global Source Limit [Max/Stulle] - Stulle
 
@@ -670,7 +671,7 @@ BOOL CPPgScar::OnApply()
 */
 	// ==> push small files [sivka] - Stulle
 	thePrefs.enablePushSmallFile = m_bEnablePushSmallFile;
-	thePrefs.m_iPushSmallBoost = m_iPushSmallFileBoost;
+	thePrefs.m_iPushSmallBoost = (uint16)m_iPushSmallFileBoost;
 	CString strBuffer;
 	((CSliderCtrl*)GetDlgItem(IDC_PUSHSMALL_SLIDER))->SetRange(1, PARTSIZE, TRUE);
 	thePrefs.m_iPushSmallFiles = ((CSliderCtrl*)GetDlgItem(IDC_PUSHSMALL_SLIDER))->GetPos();
@@ -704,7 +705,7 @@ BOOL CPPgScar::OnApply()
 */
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 	if(thePrefs.creditSystemMode != m_iCreditSystem){
-		thePrefs.creditSystemMode = m_iCreditSystem;
+		thePrefs.creditSystemMode = (uint8)m_iCreditSystem;
 		theApp.clientcredits->ResetCheckScoreRatio();
 	}
 	// <== CreditSystems [EastShare/ MorphXT] - Stulle
@@ -721,14 +722,14 @@ BOOL CPPgScar::OnApply()
 	// ==> file settings - Stulle
 	thePrefs.m_EnableAutoDropNNSDefault = m_bEnableAutoDropNNSDefault;
 	thePrefs.m_AutoNNS_TimerDefault = (m_iAutoNNS_TimerDefault*1000);
-	thePrefs.m_MaxRemoveNNSLimitDefault = m_iMaxRemoveNNSLimitDefault;
+	thePrefs.m_MaxRemoveNNSLimitDefault = (uint16)m_iMaxRemoveNNSLimitDefault;
 	thePrefs.m_EnableAutoDropFQSDefault = m_bEnableAutoDropFQSDefault;
 	thePrefs.m_AutoFQS_TimerDefault = (m_iAutoFQS_TimerDefault*1000);
-	thePrefs.m_MaxRemoveFQSLimitDefault = m_iMaxRemoveFQSLimitDefault;
+	thePrefs.m_MaxRemoveFQSLimitDefault = (uint16)m_iMaxRemoveFQSLimitDefault;
 	thePrefs.m_EnableAutoDropQRSDefault = m_bEnableAutoDropQRSDefault;
 	thePrefs.m_AutoHQRS_TimerDefault = (m_iAutoHQRS_TimerDefault*1000);
-	thePrefs.m_MaxRemoveQRSDefault = m_iMaxRemoveQRSDefault;
-	thePrefs.m_MaxRemoveQRSLimitDefault = m_iMaxRemoveQRSLimitDefault;
+	thePrefs.m_MaxRemoveQRSDefault = (uint16)m_iMaxRemoveQRSDefault;
+	thePrefs.m_MaxRemoveQRSLimitDefault = (uint16)m_iMaxRemoveQRSLimitDefault;
 	thePrefs.m_bHQRXmanDefault = m_iHQRXmanDefault == 1;
 	// <== file settings - Stulle
 /*
@@ -747,19 +748,20 @@ BOOL CPPgScar::OnApply()
 	thePrefs.SpreadCreditsSlotCounter = m_iSpreadCreditsSlotCounter;
 	// <== Spread Credits Slot - Stulle
 */	// ==> Global Source Limit [Max/Stulle] - Stulle
-	if (thePrefs.GetGlobalHL() != m_iGlobalHL ||
-		thePrefs.IsUseGlobalHL() != m_bGlobalHL)
+	if (thePrefs.GetGlobalHL() != (UINT)m_iGlobalHL ||
+		thePrefs.IsUseGlobalHL() != m_bGlobalHL ||
+		thePrefs.m_bGlobalHlAll != m_bGlobalHlAll)
 	{
 		thePrefs.m_bGlobalHL = m_bGlobalHL;
-		thePrefs.m_iGlobalHL = m_iGlobalHL;
-		if(thePrefs.GetPassiveMode())
+		thePrefs.m_uGlobalHL = m_iGlobalHL;
+		thePrefs.m_bGlobalHlAll = m_bGlobalHlAll;
+		if(m_bGlobalHL && theApp.downloadqueue->GetPassiveMode())
 		{
-			thePrefs.SetPassiveMode(false);
-			thePrefs.SetGlobalHLUpdateTimer(50);
+			theApp.downloadqueue->SetPassiveMode(false);
+			theApp.downloadqueue->SetUpdateHlTime(50000); // 50 sec
 			AddDebugLogLine(true,_T("{GSL} Global Source Limit settings have changed! Disabled PassiveMode!"));
 		}
 	}
-	thePrefs.m_bUseAgressiveMode = m_bGlobalHlAggro;
 	thePrefs.m_bGlobalHlDefault = m_bGlobalHlDefault;
 	// <== Global Source Limit [Max/Stulle] - Stulle
 
@@ -878,7 +880,7 @@ void CPPgScar::Localize(void)
 */		// ==> Global Source Limit [Max/Stulle] - Stulle
 		if (m_htiGlobalHL) m_ctrlTreeOptions.SetItemText(m_htiGlobalHL, GetResString(IDS_ENABLE));
 		if (m_htiGlobalHlLimit) m_ctrlTreeOptions.SetEditLabel(m_htiGlobalHlLimit, GetResString(IDS_GLOBAL_HL_LIMIT));
-		if (m_htiGlobalHlAggro) m_ctrlTreeOptions.SetItemText(m_htiGlobalHlAggro, GetResString(IDS_GLOBAL_HL_AGGRO));
+		if (m_htiGlobalHlAll) m_ctrlTreeOptions.SetItemText(m_htiGlobalHlAll, GetResString(IDS_GLOBAL_HL_ALL));
 		if (m_htiGlobalHlDefault) m_ctrlTreeOptions.SetItemText(m_htiGlobalHlDefault, GetResString(IDS_GLOBAL_HL_DEFAULT));
 		// <== Global Source Limit [Max/Stulle] - Stulle
 	}
@@ -1011,36 +1013,18 @@ void CPPgScar::OnDestroy()
 	m_htiGlobalHlGroup = NULL;
 	m_htiGlobalHL = NULL;
 	m_htiGlobalHlLimit = NULL;
-	m_htiGlobalHlAggro = NULL;
+	m_htiGlobalHlAll = NULL;
 	m_htiGlobalHlDefault = NULL;
 	// <== Global Source Limit [Max/Stulle] - Stulle
 
 	CPropertyPage::OnDestroy();
 }
-LRESULT CPPgScar::OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam)
+LRESULT CPPgScar::OnTreeOptsCtrlNotify(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
-	if (wParam == IDC_SCAR_OPTS){
+/*	if (wParam == IDC_SCAR_OPTS){
 		TREEOPTSCTRLNOTIFY* pton = (TREEOPTSCTRLNOTIFY*)lParam;
 
 	BOOL bCheck;
-
-		// ==> ban systems optional - Stulle
-		/*
-		if (m_htiEnableAntiLeecher && pton->hItem == m_htiEnableAntiLeecher)
-		{
-			if (m_ctrlTreeOptions.GetCheckBox(m_htiEnableAntiLeecher, bCheck))
-			{
-				if (m_htiBadModString)		m_ctrlTreeOptions.SetCheckBoxEnable(m_htiBadModString, bCheck);
-				if (m_htiBadNickBan)		m_ctrlTreeOptions.SetCheckBoxEnable(m_htiBadNickBan, bCheck);
-				if (m_htiGhostMod)			m_ctrlTreeOptions.SetCheckBoxEnable(m_htiGhostMod, bCheck);
-				if (m_htiAntiModIdFaker)	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiAntiModIdFaker, bCheck);
-				if (m_htiAntiNickThief)		m_ctrlTreeOptions.SetCheckBoxEnable(m_htiAntiNickThief, bCheck);
-				if (m_htiEmptyNick)			m_ctrlTreeOptions.SetCheckBoxEnable(m_htiEmptyNick, bCheck);
-				if (m_htiFakeEmule)			m_ctrlTreeOptions.SetCheckBoxEnable(m_htiFakeEmule, bCheck);
-				if (m_htiHiddenStr)			m_ctrlTreeOptions.SetCheckBoxEnable(m_htiHiddenStr, bCheck);
-			}
-		}
-		// <== ban systems optional - Stulle
 
 		// ==> Quick start [TPT] - Stulle
 		if (m_htiQuickStart && pton->hItem == m_htiQuickStart)
@@ -1050,11 +1034,10 @@ LRESULT CPPgScar::OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam)
 				if (m_htiQuickStartAfterIPChange)	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiQuickStartAfterIPChange, bCheck);
 			}
 		}
-		*/
 		// <== Quick start [TPT] - Stulle
-
+*/
 		SetModified();
-	}
+//	}
 	return 0;
 }
 
@@ -1076,3 +1059,24 @@ void CPPgScar::ShowPushSmallFileValues()
 	GetDlgItem(IDC_PUSHSMALL)->SetWindowText(CastItoXBytes(float(((CSliderCtrl*)GetDlgItem(IDC_PUSHSMALL_SLIDER))->GetPos())));
 }
 // <== push small files [sivka] - Stulle
+
+void CPPgScar::OnHelp()
+{
+	//theApp.ShowHelp(0);
+}
+
+BOOL CPPgScar::OnCommand(WPARAM wParam, LPARAM lParam)
+{
+	if (wParam == ID_HELP)
+	{
+		OnHelp();
+		return TRUE;
+	}
+	return __super::OnCommand(wParam, lParam);
+}
+
+BOOL CPPgScar::OnHelpInfo(HELPINFO* /*pHelpInfo*/)
+{
+	OnHelp();
+	return TRUE;
+}

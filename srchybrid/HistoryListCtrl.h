@@ -43,6 +43,7 @@ public:
 	void	Reload(void);
 	void	ShowComments(CKnownFile* file);
 	void	RemoveFile(CKnownFile* toremove);
+	void	RemoveFileFromView(CKnownFile* toremove); //only used for removing duplicated files
 	void	ClearHistory();
 	void	UpdateFile(const CKnownFile* file);
 

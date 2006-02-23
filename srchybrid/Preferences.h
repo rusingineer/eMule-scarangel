@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -39,7 +39,6 @@ enum ELogFileFormat;
 static const PriorityClasses[] = { REALTIME_PRIORITY_CLASS, HIGH_PRIORITY_CLASS, ABOVE_NORMAL_PRIORITY_CLASS, NORMAL_PRIORITY_CLASS, BELOW_NORMAL_PRIORITY_CLASS, IDLE_PRIORITY_CLASS };
 // [TPT] - Select process priority 
 
-
 // DO NOT EDIT VALUES like making a uint16 to uint32, or insert any value. ONLY append new vars
 #pragma pack(1)
 struct Preferences_Ext_Struct{
@@ -51,13 +50,13 @@ struct Preferences_Ext_Struct{
 
 // deadlake PROXYSUPPORT
 struct ProxySettings{
-	uint16 type;
-	uint16 port;
-	TCHAR name[50];
-	CHAR user[50];
-	CHAR password[50];
-	bool EnablePassword;
-	bool UseProxy;
+	uint16		type;
+	uint16		port;
+	CStringA	name;
+	CStringA	user;
+	CStringA	password;
+	bool		EnablePassword;
+	bool		UseProxy;
 };
 
 #pragma pack(1)
@@ -65,10 +64,8 @@ struct Category_Struct{
 	TCHAR	incomingpath[MAX_PATH];
 	TCHAR	title[64];
 	TCHAR	comment[255];
-
 	DWORD	color;
-	uint8	prio;
-
+	UINT	prio;
 	CString autocat;
 	bool	ac_regexpeval;
 
@@ -84,16 +81,19 @@ struct Category_Struct{
 class CPreferences
 {
 public:
-
 	static	CString	strNick;
 	// ZZ:UploadSpeedSense -->
 	static	uint16	minupload;
 	// ZZ:UploadSpeedSense <--
+	static	LPCSTR	m_pszBindAddrA;
+	static	CStringA m_strBindAddrA;
+	static	LPCWSTR	m_pszBindAddrW;
+	static	CStringW m_strBindAddrW;
 	static	uint16	port;
 	static	uint16	udpport;
 	static	uint16	nServerUDPPort;
-	static	uint16	maxconnections;
-	static	uint16	maxhalfconnections;
+	static	UINT	maxconnections;
+	static	UINT	maxhalfconnections;
 	static	bool	m_bConditionalTCPAccept;
 	static	bool	reconnect;
 	static	bool	m_bUseServerPriorities;
@@ -107,7 +107,7 @@ public:
 	static	bool	m_bAutoConnectToStaticServersOnly; // Barry
 	static	bool	autotakeed2klinks;	   // Barry
 	static	bool	addnewfilespaused;	   // Barry
-	static	uint8	depth3D;			   // Barry
+	static	UINT	depth3D;			   // Barry
 	static	bool	m_bEnableMiniMule;
 	static	int		m_iStraightWindowStyles;
 	static	bool	m_bRTLWindowsLayout;
@@ -115,9 +115,9 @@ public:
 	static	CString	m_strSkinProfileDir;
 	static	bool	m_bAddServersFromServer;
 	static	bool	m_bAddServersFromClients;
-	static	uint16	maxsourceperfile;
-	static	uint16	trafficOMeterInterval;
-	static	uint16	statsInterval;
+	static	UINT	maxsourceperfile;
+	static	UINT	trafficOMeterInterval;
+	static	UINT	statsInterval;
 	static	uchar	userhash[16];
 	static	WINDOWPLACEMENT EmuleWindowPlacement;
 	static	bool	beepOnError;
@@ -129,6 +129,7 @@ public:
 	*/
 	static	DWORD	m_adwStatsColors[16];
 	// <== Source Graph - Stulle
+	static  bool	m_bIconflashOnNewMessage;
 
 	static	bool	splashscreen;
 	static	bool	filterLANIPs;
@@ -227,9 +228,6 @@ public:
 	static	uint64	cumDownData_EMULECOMPAT;
 	static	uint64	cumDownData_SHAREAZA;
 	static	uint64	cumDownData_URL;
-
-	static	uint64	cumDownData_WEBCACHE;// {Webcache} [Max]
-
 	// Session client breakdown stats for received bytes...
 	static	uint64	sesDownData_EDONKEY;
 	static	uint64	sesDownData_EDONKEYHYBRID;
@@ -239,14 +237,6 @@ public:
 	static	uint64	sesDownData_EMULECOMPAT;
 	static	uint64	sesDownData_SHAREAZA;
 	static	uint64	sesDownData_URL;
-
-	// ==> {Webcache} [Max] 
-	static	uint64	sesDownData_WEBCACHE; 
-	static  uint32	ses_WEBCACHEREQUESTS; 
-	static	uint32	ses_successfull_WCDOWNLOADS;  
-	static  uint32	ses_PROXYREQUESTS; 
-        static  uint32	ses_successfullPROXYREQUESTS;
-	// <== {Webcache} [Max] 
 
 	// Cumulative port breakdown stats for received bytes...
 	static	uint64	cumDownDataPort_4662;
@@ -264,7 +254,7 @@ public:
 	static	float	cumConnAvgUpRate;
 	static	float	cumConnMaxAvgUpRate;
 	static	float	cumConnMaxUpRate;
-	static	uint64	cumConnRunTime;
+	static	time_t	cumConnRunTime;
 	static	uint32	cumConnNumReconnects;
 	static	uint32	cumConnAvgConnections;
 	static	uint32	cumConnMaxConnLimitReached;
@@ -286,10 +276,10 @@ public:
 	static	uint64	cumSharedLargestFileSize;
 
 	// Save the date when the statistics were last reset...
-	static	__int64 stat_datetimeLastReset;
+	static	time_t	stat_datetimeLastReset;
 
 	// Save new preferences for PPgStats
-	static	uint8	statsConnectionsGraphRatio; // This will store the divisor, i.e. for 1:3 it will be 3, for 1:20 it will be 20.
+	static	UINT	statsConnectionsGraphRatio; // This will store the divisor, i.e. for 1:3 it will be 3, for 1:20 it will be 20.
 	// Save the expanded branches of the stats tree
 	static	TCHAR	statsExpandedTreeItems[256];
 
@@ -323,9 +313,9 @@ public:
 	static	UINT	m_uDeadServerRetries;
 	static	DWORD	m_dwServerKeepAliveTimeout;
 	// -khaos--+++> Changed data type to avoid overflows
-	static	uint16	statsMax;
+	static	UINT	statsMax;
 	// <-----khaos-
-	static	uint8	statsAverageMinutes;
+	static	UINT	statsAverageMinutes;
 
 	static	CString	notifierConfiguration;
 	static	bool	notifierOnDownloadFinished;
@@ -343,7 +333,7 @@ public:
 	static	TCHAR	m_sircchannamefilter[50];
 	static	bool	m_bircaddtimestamp;
 	static	bool	m_bircusechanfilter;
-	static	uint16	m_iircchanneluserfilter;
+	static	UINT	m_iircchanneluserfilter;
 	static	TCHAR	m_sircperformstring[255];
 	static	bool	m_bircuseperform;
 	static	bool	m_birclistonconnect;
@@ -371,7 +361,7 @@ public:
 	static	int		m_iLastMainWndDlgID;
 	static	bool	m_bRestoreLastLogPane;
 	static	int		m_iLastLogPaneID;
-	static	uint16	MaxConperFive;
+	static	UINT	MaxConperFive;
 	static	bool	checkDiskspace;
 	static	UINT	m_uMinFreeDiskSpace;
 	static	bool	m_bSparsePartFiles;
@@ -379,21 +369,16 @@ public:
 	static	bool	m_bEnableVerboseOptions;
 	static	bool	m_bVerbose;
 	static	bool	m_bFullVerbose;
-	static  uint8	m_byLogLevel;
+	static  int		m_byLogLevel;
 	static	bool	m_bDebugSourceExchange; // Sony April 23. 2003, button to keep source exchange msg out of verbose log
 	static	bool	m_bLogBannedClients;
 	static	bool	m_bLogRatingDescReceived;
 	static	bool	m_bLogSecureIdent;
 	static	bool	m_bLogFilteredIPs;
 	static	bool	m_bLogFileSaving;
-        static  bool    m_bLogA4AF; // ZZ:DownloadManager
+    static  bool    m_bLogA4AF; // ZZ:DownloadManager
 	static	bool	m_bLogDrop; //Xman Xtreme Downloadmanager
 	static	bool	m_bLogUlDlEvents;
-
-	// ==> {Webcache} [Max]
-	static	bool	m_bLogWebCacheEvents;
-	// <== {Webcache} [Max] 
-
 	static	bool	m_bUseDebugDevice;
 	static	int		m_iDebugServerTCPLevel;
 	static	int		m_iDebugServerUDPLevel;
@@ -415,9 +400,7 @@ public:
 	static	bool	m_bExtControls;
 	static	bool	m_bTransflstRemain;
 
-	static	uint8	versioncheckdays;
-
-
+	static	UINT	versioncheckdays;
 	static	bool	showRatesInTitle;
 
 	static	TCHAR	TxtEditor[256];
@@ -447,19 +430,19 @@ public:
 	static	bool	msgonlyfriends;
 	static	bool	msgsecure;
 
-	static	uint8	filterlevel;
+	static	UINT	filterlevel;
 	static	UINT	m_iFileBufferSize;
 	static	UINT	m_iQueueSize;
 	static	int		m_iCommitFiles;
 
-	static	uint16	maxmsgsessions;
+	static	UINT	maxmsgsessions;
 	static	uint32	versioncheckLastAutomatic;
 	//Xman versions check
 	static	uint32	mversioncheckLastAutomatic;
 	//Xman end
-	static	TCHAR	messageFilter[512];
+	static	CString	messageFilter;
 	static	CString	commentFilter;
-	static	TCHAR	filenameCleanups[512];
+	static	CString	filenameCleanups;
 	static	TCHAR	datetimeformat[64];
 	static	TCHAR	datetimeformat4log[64];
 	static	LOGFONT m_lfHyperText;
@@ -469,6 +452,7 @@ public:
 	static	COLORREF m_crLogSuccess;
 	static	int		m_iExtractMetaData;
 	static	bool	m_bAdjustNTFSDaylightFileTime;
+	static  bool    m_bAllocFull;
 
 	// Web Server [kuchin]
 	static	TCHAR	m_sWebPassword[256];
@@ -484,8 +468,6 @@ public:
 
 	static	TCHAR	m_sTemplateFile[MAX_PATH];
 	static	ProxySettings proxy; // deadlake PROXYSUPPORT
-	static	bool	m_bIsASCWOP;
-	static	bool	m_bShowProxyErrors;
 	static  bool	m_bAllowAdminHiLevFunc;
 	static	CUIntArray m_aAllowedRemoteAccessIPs;
 
@@ -498,7 +480,7 @@ public:
 	static	bool	m_bUseAutocompl;
 	static	bool	m_bShowDwlPercentage;
 	static	bool	m_bRemoveFinishedDownloads;
-	static	uint16	m_iMaxChatHistory;
+	static	UINT	m_iMaxChatHistory;
 	static	bool	m_bShowActiveDownloadsBold;
 
 	static	int		m_iSearchMethod;
@@ -537,11 +519,13 @@ public:
 
     //static bool     m_bA4AFSaveCpu; // ZZ:DownloadManager
 
+    static bool     m_bHighresTimer;
+
 	static	CStringList shareddir_list;
 	static	CStringList addresses_list;
 
 	static	int		m_iDbgHeap;
-	static	uint8	m_nWebMirrorAlertLevel;
+	static	UINT	m_nWebMirrorAlertLevel;
 	static	bool	m_bRunAsUser;
 	static	bool	m_bPreferRestrictedOverUser;
 
@@ -564,59 +548,17 @@ public:
 	static bool		m_bRememberCancelledFiles;
 	static bool		m_bRememberDownloadedFiles;
 
-	//email notifier
+	//emil notifier
 	static bool		m_bNotifierSendMail;
 	static CString	m_strNotifierMailServer;
 	static CString	m_strNotifierMailSender;
 	static CString	m_strNotifierMailReceiver;
 
-// ==> {Webcache} [Max]
-	static	bool	m_bHighIdPossible; // JP detect fake HighID (from netfinity)
-	static	bool	WebCacheDisabledThisSession; //JP temp disabler
-	static	uint32	WebCachePingSendTime;//jp check proxy config
-	static	bool	expectingWebCachePing;//jp check proxy config
-	static	bool	IsWebCacheTestPossible(); //jp check proxy config
-	static	CString	webcacheName;		//jp move these to private?? and make member functions to set and change them??
-	static	uint16	webcachePort;
-	static	bool	webcacheReleaseAllowed; //jp webcache release
-	static	bool	IsWebcacheReleaseAllowed() {return webcacheReleaseAllowed;}//jp webcache release
-	static	bool	UpdateWebcacheReleaseAllowed();//jp webcache release
-	static	bool	WebCacheIsTransparent() {return webcacheName.GetLength() > 15 && webcacheName.Left(12) == "transparent@";}
-	static	uint16	webcacheBlockLimit;
-	static	void	SetWebCacheBlockLimit(uint16 limit) {webcacheBlockLimit = limit;}
-	static	uint16	GetWebCacheBlockLimit() {return webcacheBlockLimit;}
-	static	bool	webcacheExtraTimeout;
-	static	bool	PersistentConnectionsForProxyDownloads;
-	static	bool	WCAutoupdate;
-	static	void	SetWebCacheExtraTimeout(bool value) {webcacheExtraTimeout = value;}
-	static	bool	GetWebCacheExtraTimeout() {return webcacheExtraTimeout;}
-	static	bool	webcacheCachesLocalTraffic;
-	static	void	SetWebCacheCachesLocalTraffic(bool value) {webcacheCachesLocalTraffic = value;}
-	static	bool	GetWebCacheCachesLocalTraffic() {return webcacheCachesLocalTraffic;}
-	static	bool	webcacheEnabled;
-	static	bool	IsWebCacheDownloadEnabled() {return webcacheEnabled && !WebCacheDisabledThisSession;} //jp
-	static	bool	UsesCachedTCPPort();	//jp
-	static	bool	detectWebcacheOnStart; // jp detect webcache on startup
-	static	uint32	webcacheLastSearch;
-	static	void	SetWebCacheLastSearch(uint32 time) {webcacheLastSearch = time;}
-	static	uint32	GetWebCacheLastSearch() {return webcacheLastSearch;}
-	static	uint32	webcacheLastGlobalIP;
-	static	void	SetWebCacheLastGlobalIP(uint32 IP) {webcacheLastGlobalIP = IP;}
-	static	uint32	GetWebCacheLastGlobalIP() {return webcacheLastGlobalIP;}
-	static	CString	webcacheLastResolvedName;
-	static	void	SetLastResolvedName(CString name) {webcacheLastResolvedName = name;}
-	static	CString	GetLastResolvedName()	{return webcacheLastResolvedName;}
-	static	uint8	webcacheTrustLevel;
-	friend class CPPgWebcachesettings;
-// <== {Webcache} [Max]
-
 	// ==> Global Source Limit [Max/Stulle] - Stulle
-    static  uint16	m_iGlobalHL;
+    static  UINT	m_uGlobalHL;
 	static	bool	m_bGlobalHL;
-    static  bool	m_bGlobalHlDefault; 
-    static  bool	m_bUseAgressiveMode;
-    static  DWORD	m_dwGlobalHLUpdateTimer; 
-    static  bool	m_bPassiveMode;
+	static	bool	m_bGlobalHlAll;
+    static  bool	m_bGlobalHlDefault;
 	// <== Global Source Limit [Max/Stulle] - Stulle
 
 	// ==> push small files [sivka] - Stulle
@@ -727,15 +669,16 @@ public:
 	static	void	Init();
 	static	void	Uninit();
 
-	static	const CString& GetAppDir()				{return appdir;}
-	static	LPCTSTR GetIncomingDir()				{return incomingdir;}
-	static	LPCTSTR GetTempDir(uint8 id=0)			{return (LPCTSTR)tempdir.GetAt( (id<tempdir.GetCount())?id:0 );}
-	static	uint8	GetTempDirCount()				{return tempdir.GetCount();}
-	static	const CString& GetConfigDir()			{return configdir;}
+	static	const CString& GetAppDir()					{return appdir;}
+	static	LPCTSTR GetIncomingDir()					{return incomingdir;}
+	static	LPCTSTR GetTempDir(int id = 0)				{return (LPCTSTR)tempdir.GetAt((id < tempdir.GetCount()) ? id : 0);}
+	static	int		GetTempDirCount()					{return tempdir.GetCount();}
+	static	bool	CanFSHandleLargeFiles();
+	static	const CString& GetConfigDir()				{return configdir;}
 	static	LPCTSTR GetConfigFile();
-	static	const CString& GetWebServerDir()		{return m_strWebServerDir;}
-	static	const CString& GetFileCommentsFilePath(){return m_strFileCommentsFilePath;}
-	static	const CString& GetLogDir()				{return m_strLogDir;}
+	static	const CString& GetWebServerDir()			{return m_strWebServerDir;}
+	static	const CString& GetFileCommentsFilePath()	{return m_strFileCommentsFilePath;}
+	static	const CString& GetLogDir()					{return m_strLogDir;}
 
 	static	bool	IsTempFile(const CString& rstrDirectory, const CString& rstrName);
 	static	bool	IsConfigFile(const CString& rstrDirectory, const CString& rstrName);
@@ -745,34 +688,34 @@ public:
 	static	bool	Save();
 	static	void	SaveCats();
 
-	static	bool	GetUseServerPriorities()		{return m_bUseServerPriorities;}
-	static	bool	Reconnect()						{return reconnect;}
-	static	const CString& GetUserNick()			{return strNick;}
+	static	bool	GetUseServerPriorities()			{return m_bUseServerPriorities;}
+	static	bool	Reconnect()							{return reconnect;}
+	static	const CString& GetUserNick()				{return strNick;}
 	static	void	SetUserNick(LPCTSTR pszNick);
-	static	int		GetMaxUserNickLength()			{return 50;}
+	static	int		GetMaxUserNickLength()				{return 50;}
 
-	static	uint16	GetPort()						{return port;}
-	static	uint16	GetUDPPort()					{return udpport;}
-	static	uint16	GetServerUDPPort()				{return nServerUDPPort;}
-	static	uchar*	GetUserHash()					{return userhash;}
+	static	LPCSTR	GetBindAddrA()						{return m_pszBindAddrA; }
+	static	LPCWSTR	GetBindAddrW()						{return m_pszBindAddrW; }
+	static	uint16	GetPort()							{return port;}
+	static	uint16	GetUDPPort()						{return udpport;}
+	static	uint16	GetServerUDPPort()					{return nServerUDPPort;}
+	static	uchar*	GetUserHash()						{return userhash;}
 	// ZZ:UploadSpeedSense -->
-	static	uint16	GetMinUpload()					{return minupload;}
+	static	uint16	GetMinUpload()						{return minupload;}
 	// ZZ:UploadSpeedSense <--
-	static	bool	IsICHEnabled()					{return ICH;}
-	static	bool	GetAutoUpdateServerList()		{return m_bAutoUpdateServerList;}
-	static	bool	UpdateNotify()					{return updatenotify;}
-	static	bool	DoMinToTray()					{return mintotray;}
-	static	bool	DoAutoConnect()					{return autoconnect;}
-	static	void	SetAutoConnect(bool inautoconnect) {autoconnect = inautoconnect;}
-	static	bool	GetAddServersFromServer()		{return m_bAddServersFromServer;}
-	static	bool	GetAddServersFromClients()		{return m_bAddServersFromClients;}
-	static	bool*	GetMinTrayPTR() {return &mintotray;}
-	static	uint16	GetTrafficOMeterInterval()		{return trafficOMeterInterval;}
-	static	void	SetTrafficOMeterInterval(uint16 in) { trafficOMeterInterval=in;}
-	static	uint16	GetStatsInterval()				{return statsInterval;}
-	static	void	SetStatsInterval(uint16 in)		{statsInterval=in;}
-	static	void	Add2TotalDownloaded(uint64 in)	{totalDownloadedBytes+=in;}
-	static	void	Add2TotalUploaded(uint64 in)	{totalUploadedBytes+=in;}
+	static	bool	IsICHEnabled()						{return ICH;}
+	static	bool	GetAutoUpdateServerList()			{return m_bAutoUpdateServerList;}
+	static	bool	UpdateNotify()						{return updatenotify;}
+	static	bool	GetMinToTray()						{return mintotray;}
+	static	bool	DoAutoConnect()						{return autoconnect;}
+	static	void	SetAutoConnect(bool inautoconnect)	{autoconnect = inautoconnect;}
+	static	bool	GetAddServersFromServer()			{return m_bAddServersFromServer;}
+	static	bool	GetAddServersFromClients()			{return m_bAddServersFromClients;}
+	static	bool*	GetMinTrayPTR()						{return &mintotray;}
+	static	UINT	GetTrafficOMeterInterval()			{return trafficOMeterInterval;}
+	static	void	SetTrafficOMeterInterval(UINT in)	{trafficOMeterInterval=in;}
+	static	UINT	GetStatsInterval()					{return statsInterval;}
+	static	void	SetStatsInterval(UINT in)			{statsInterval=in;}
 
 	// -khaos--+++> Many, many, many, many methods.
 	static	void	SaveStats(int bBackUp = 0);
@@ -780,11 +723,6 @@ public:
 	static	void	SaveCompletedDownloadsStat();
 	static	bool	LoadStats(int loadBackUp = 0);
 	static	void	ResetCumulativeStatistics();
-
-	//		Functions from base code that update original cumulative stats, now obsolete. (KHAOS)
-	//void	Add2TotalDownloaded(uint64 in) {totalDownloadedBytes+=in;}
-	//void	Add2TotalUploaded(uint64 in) {totalUploadedBytes+=in;}
-	//		End functions from base code.
 
 	//--------------------------------------------------------------------------------------
 	//Xman Xtreme Mod:
@@ -816,6 +754,7 @@ public:
 	static bool	m_antileecherthief;
 	static bool	m_antileecherspammer;
 	static bool	m_antileecherxsexploiter;
+	static bool m_antileecheremcrypt;
 	static bool	m_antileechercommunity_action;
 	static bool	m_antileecherghost_action;
 	static bool	m_antileecherthief_action;
@@ -828,6 +767,7 @@ public:
 	static bool GetAntiLeecherThief() {return m_antileecher && m_antileecherthief;}
 	static bool GetAntiLeecherspammer() {return m_antileecher && m_antileecherspammer;}
 	static bool GetAntiLeecherXSExploiter() {return m_antileecher && m_antileecherxsexploiter;}
+	static bool GetAntiLeecheremcrypt() {return m_antileecher && m_antileecheremcrypt;}
 	static bool GetAntiLeecherCommunity_Action() {return m_antileechercommunity_action;}
 	static bool GetAntiLeecherGhost_Action() {return m_antileecherghost_action;}
 	static bool GetAntiLeecherThief_Action() {return m_antileecherthief_action;}
@@ -840,6 +780,7 @@ public:
 	static void SetAntiLeecherThief(bool in) {m_antileecherthief=in;}
 	static void SetAntiLeecherSpammer(bool in) {m_antileecherspammer=in;}
 	static void SetAntiLeecherXSExploiter(bool in) {m_antileecherxsexploiter=in;}
+	static void SetAntiLeecheremcrypt(bool in) {m_antileecheremcrypt=in;}
 	static void SetAntiLeecherCommunity_Action(bool in) {m_antileechercommunity_action=in;}
 	static void SetAntiLeecherGhost_Action(bool in) {m_antileecherghost_action=in;}
 	static void SetAntiLeecherThief_Action(bool in) {m_antileecherthief_action=in;}
@@ -935,7 +876,7 @@ public:
 	static void		SetShowSharedInHistory(bool on)	{ m_bHistoryShowShared = on; }
 	//Xman end
 
-	//Xman GlobalMaxHardlimit for fairness
+	//Xman GlobalMaxHarlimit for fairness
 	static uint32	m_uMaxGlobalSources;
 	static bool		m_bAcceptsourcelimit;
 
@@ -949,259 +890,245 @@ public:
 	//Xman end
 	//-----------------------------------------------------------------------------
 
-	//		Add to, increment and replace functions.  They're all named Add2 for the sake of some kind of naming
-	//		convention.
-	static	void	Add2DownCompletedFiles()			{ cumDownCompletedFiles++; }
-	static	void	SetConnMaxAvgDownRate(float in)		{ cumConnMaxAvgDownRate = in; }
-	static	void	SetConnMaxDownRate(float in)		{ cumConnMaxDownRate = in; }
-	static	void	SetConnAvgUpRate(float in)			{ cumConnAvgUpRate = in; }
-	static	void	SetConnMaxAvgUpRate(float in)		{ cumConnMaxAvgUpRate = in; }
-	static	void	SetConnMaxUpRate(float in)			{ cumConnMaxUpRate = in; }
-	static	void	SetConnPeakConnections(int in)		{ cumConnPeakConnections = in; }
-	static	void	SetUpAvgTime(int in)				{ cumUpAvgTime = in; }
-	static	void	Add2DownSAvgTime(int in)			{ sesDownAvgTime += in; }
-	static	void	SetDownCAvgTime(int in)				{ cumDownAvgTime = in; }
-	static	void	Add2ConnTransferTime(int in)		{ cumConnTransferTime += in; }
-	static	void	Add2ConnDownloadTime(int in)		{ cumConnDownloadTime += in; }
-	static	void	Add2ConnUploadTime(int in)			{ cumConnUploadTime += in; }
-	static	void	Add2DownSessionCompletedFiles()		{ sesDownCompletedFiles++; }
-	static	void	Add2SessionTransferData				(UINT uClientID, UINT uClientPort, BOOL bFromPF, BOOL bUpDown, uint32 bytes, bool sentToFriend = false);
-	static	void	Add2DownSuccessfulSessions()		{ sesDownSuccessfulSessions++;
-														  cumDownSuccessfulSessions++; }
-	static	void	Add2DownFailedSessions()			{ sesDownFailedSessions++;
-														  cumDownFailedSessions++; }
-	static	void	Add2LostFromCorruption(uint64 in)	{ sesLostFromCorruption += in;}
-	static	void	Add2SavedFromCompression(uint64 in) { sesSavedFromCompression += in;}
-	static	void	Add2SessionPartsSavedByICH(int in)	{ sesPartsSavedByICH += in;}
 
-	//		Functions that return stats stuff...
-	//		Saved stats for cumulative downline overhead
-	static	uint64	GetDownOverheadTotal()			{ return cumDownOverheadTotal;}
-	static	uint64	GetDownOverheadFileReq()		{ return cumDownOverheadFileReq;}
-	static	uint64	GetDownOverheadSrcEx()			{ return cumDownOverheadSrcEx;}
-	static	uint64	GetDownOverheadServer()			{ return cumDownOverheadServer;}
-	static	uint64	GetDownOverheadKad()			{ return cumDownOverheadKad;}
-	static	uint64	GetDownOverheadTotalPackets()	{ return cumDownOverheadTotalPackets;}
-	static	uint64	GetDownOverheadFileReqPackets() { return cumDownOverheadFileReqPackets;}
-	static	uint64	GetDownOverheadSrcExPackets()	{ return cumDownOverheadSrcExPackets;}
-	static	uint64	GetDownOverheadServerPackets()	{ return cumDownOverheadServerPackets;}
-	static	uint64	GetDownOverheadKadPackets()		{ return cumDownOverheadKadPackets;}
+	static	void	Add2DownCompletedFiles()			{cumDownCompletedFiles++;}
+	static	void	SetConnMaxAvgDownRate(float in)		{cumConnMaxAvgDownRate = in;}
+	static	void	SetConnMaxDownRate(float in)		{cumConnMaxDownRate = in;}
+	static	void	SetConnAvgUpRate(float in)			{cumConnAvgUpRate = in;}
+	static	void	SetConnMaxAvgUpRate(float in)		{cumConnMaxAvgUpRate = in;}
+	static	void	SetConnMaxUpRate(float in)			{cumConnMaxUpRate = in;}
+	static	void	SetConnPeakConnections(int in)		{cumConnPeakConnections = in;}
+	static	void	SetUpAvgTime(int in)				{cumUpAvgTime = in;}
+	static	void	Add2DownSAvgTime(int in)			{sesDownAvgTime += in;}
+	static	void	SetDownCAvgTime(int in)				{cumDownAvgTime = in;}
+	static	void	Add2ConnTransferTime(int in)		{cumConnTransferTime += in;}
+	static	void	Add2ConnDownloadTime(int in)		{cumConnDownloadTime += in;}
+	static	void	Add2ConnUploadTime(int in)			{cumConnUploadTime += in;}
+	static	void	Add2DownSessionCompletedFiles()		{sesDownCompletedFiles++;}
+	static	void	Add2SessionTransferData(UINT uClientID, UINT uClientPort, BOOL bFromPF, BOOL bUpDown, uint32 bytes, bool sentToFriend = false);
+	static	void	Add2DownSuccessfulSessions()		{sesDownSuccessfulSessions++;
+														 cumDownSuccessfulSessions++;}
+	static	void	Add2DownFailedSessions()			{sesDownFailedSessions++;
+														 cumDownFailedSessions++;}
+	static	void	Add2LostFromCorruption(uint64 in)	{sesLostFromCorruption += in;}
+	static	void	Add2SavedFromCompression(uint64 in) {sesSavedFromCompression += in;}
+	static	void	Add2SessionPartsSavedByICH(int in)	{sesPartsSavedByICH += in;}
 
-	//		Saved stats for cumulative upline overhead
-	static	uint64	GetUpOverheadTotal()			{ return cumUpOverheadTotal;}
-	static	uint64	GetUpOverheadFileReq()			{ return cumUpOverheadFileReq;}
-	static	uint64	GetUpOverheadSrcEx()			{ return cumUpOverheadSrcEx;}
-	static	uint64	GetUpOverheadServer()			{ return cumUpOverheadServer;}
-	static	uint64	GetUpOverheadKad()				{ return cumUpOverheadKad;}
-	static	uint64	GetUpOverheadTotalPackets()		{ return cumUpOverheadTotalPackets;}
-	static	uint64	GetUpOverheadFileReqPackets()	{ return cumUpOverheadFileReqPackets;}
-	static	uint64	GetUpOverheadSrcExPackets()		{ return cumUpOverheadSrcExPackets;}
-	static	uint64	GetUpOverheadServerPackets()	{ return cumUpOverheadServerPackets;}
-	static	uint64	GetUpOverheadKadPackets()		{ return cumUpOverheadKadPackets;}
+	// Saved stats for cumulative downline overhead
+	static	uint64	GetDownOverheadTotal()				{return cumDownOverheadTotal;}
+	static	uint64	GetDownOverheadFileReq()			{return cumDownOverheadFileReq;}
+	static	uint64	GetDownOverheadSrcEx()				{return cumDownOverheadSrcEx;}
+	static	uint64	GetDownOverheadServer()				{return cumDownOverheadServer;}
+	static	uint64	GetDownOverheadKad()				{return cumDownOverheadKad;}
+	static	uint64	GetDownOverheadTotalPackets()		{return cumDownOverheadTotalPackets;}
+	static	uint64	GetDownOverheadFileReqPackets()		{return cumDownOverheadFileReqPackets;}
+	static	uint64	GetDownOverheadSrcExPackets()		{return cumDownOverheadSrcExPackets;}
+	static	uint64	GetDownOverheadServerPackets()		{return cumDownOverheadServerPackets;}
+	static	uint64	GetDownOverheadKadPackets()			{return cumDownOverheadKadPackets;}
 
-	//		Saved stats for cumulative upline data
-	static	uint32	GetUpSuccessfulSessions()		{ return cumUpSuccessfulSessions;}
-	static	uint32	GetUpFailedSessions()			{ return cumUpFailedSessions;}
-	static	uint32	GetUpAvgTime()					{ return cumUpAvgTime;}
+	// Saved stats for cumulative upline overhead
+	static	uint64	GetUpOverheadTotal()				{return cumUpOverheadTotal;}
+	static	uint64	GetUpOverheadFileReq()				{return cumUpOverheadFileReq;}
+	static	uint64	GetUpOverheadSrcEx()				{return cumUpOverheadSrcEx;}
+	static	uint64	GetUpOverheadServer()				{return cumUpOverheadServer;}
+	static	uint64	GetUpOverheadKad()					{return cumUpOverheadKad;}
+	static	uint64	GetUpOverheadTotalPackets()			{return cumUpOverheadTotalPackets;}
+	static	uint64	GetUpOverheadFileReqPackets()		{return cumUpOverheadFileReqPackets;}
+	static	uint64	GetUpOverheadSrcExPackets()			{return cumUpOverheadSrcExPackets;}
+	static	uint64	GetUpOverheadServerPackets()		{return cumUpOverheadServerPackets;}
+	static	uint64	GetUpOverheadKadPackets()			{return cumUpOverheadKadPackets;}
 
-	//		Saved stats for cumulative downline data
-	static	uint32	GetDownCompletedFiles()			{ return cumDownCompletedFiles;}
-	static	uint32	GetDownC_SuccessfulSessions()	{ return cumDownSuccessfulSessions;}
-	static	uint32	GetDownC_FailedSessions()		{ return cumDownFailedSessions;}
-	static	uint32	GetDownC_AvgTime()				{ return cumDownAvgTime;}
-	//		Session download stats
-	static	uint32	GetDownSessionCompletedFiles()	{ return sesDownCompletedFiles;}
-	static	uint32	GetDownS_SuccessfulSessions()	{ return sesDownSuccessfulSessions;}
-	static	uint32	GetDownS_FailedSessions()		{ return sesDownFailedSessions;}
-	static	uint32	GetDownS_AvgTime()				{ return GetDownS_SuccessfulSessions()?sesDownAvgTime/GetDownS_SuccessfulSessions():0;}
+	// Saved stats for cumulative upline data
+	static	uint32	GetUpSuccessfulSessions()			{return cumUpSuccessfulSessions;}
+	static	uint32	GetUpFailedSessions()				{return cumUpFailedSessions;}
+	static	uint32	GetUpAvgTime()						{return cumUpAvgTime;}
 
-	//		Saved stats for corruption/compression
-	static	uint64	GetCumLostFromCorruption()			{ return cumLostFromCorruption;}
-	static	uint64	GetCumSavedFromCompression()		{ return cumSavedFromCompression;}
-	static	uint64	GetSesLostFromCorruption()			{ return sesLostFromCorruption;}
-	static	uint64	GetSesSavedFromCompression()		{ return sesSavedFromCompression;}
-	static	uint32	GetCumPartsSavedByICH()				{ return cumPartsSavedByICH;}
-	static	uint32	GetSesPartsSavedByICH()				{ return sesPartsSavedByICH;}
+	// Saved stats for cumulative downline data
+	static	uint32	GetDownCompletedFiles()				{return cumDownCompletedFiles;}
+	static	uint32	GetDownC_SuccessfulSessions()		{return cumDownSuccessfulSessions;}
+	static	uint32	GetDownC_FailedSessions()			{return cumDownFailedSessions;}
+	static	uint32	GetDownC_AvgTime()					{return cumDownAvgTime;}
+	
+	// Session download stats
+	static	uint32	GetDownSessionCompletedFiles()		{return sesDownCompletedFiles;}
+	static	uint32	GetDownS_SuccessfulSessions()		{return sesDownSuccessfulSessions;}
+	static	uint32	GetDownS_FailedSessions()			{return sesDownFailedSessions;}
+	static	uint32	GetDownS_AvgTime()					{return GetDownS_SuccessfulSessions() ? sesDownAvgTime / GetDownS_SuccessfulSessions() : 0;}
+
+	// Saved stats for corruption/compression
+	static	uint64	GetCumLostFromCorruption()			{return cumLostFromCorruption;}
+	static	uint64	GetCumSavedFromCompression()		{return cumSavedFromCompression;}
+	static	uint64	GetSesLostFromCorruption()			{return sesLostFromCorruption;}
+	static	uint64	GetSesSavedFromCompression()		{return sesSavedFromCompression;}
+	static	uint32	GetCumPartsSavedByICH()				{return cumPartsSavedByICH;}
+	static	uint32	GetSesPartsSavedByICH()				{return sesPartsSavedByICH;}
 
 	// Cumulative client breakdown stats for sent bytes
-	static	uint64	GetUpTotalClientData()			{ return   GetCumUpData_EDONKEY()
-															 + GetCumUpData_EDONKEYHYBRID()
-															 + GetCumUpData_EMULE()
-															 + GetCumUpData_MLDONKEY()
-															 + GetCumUpData_AMULE()
-															 + GetCumUpData_EMULECOMPAT()
-															 + GetCumUpData_SHAREAZA(); }
-	static	uint64	GetCumUpData_EDONKEY()			{ return (cumUpData_EDONKEY +		sesUpData_EDONKEY );}
-	static	uint64	GetCumUpData_EDONKEYHYBRID()	{ return (cumUpData_EDONKEYHYBRID +	sesUpData_EDONKEYHYBRID );}
-	static	uint64	GetCumUpData_EMULE()			{ return (cumUpData_EMULE +			sesUpData_EMULE );}
-	static	uint64	GetCumUpData_MLDONKEY()			{ return (cumUpData_MLDONKEY +		sesUpData_MLDONKEY );}
-	static	uint64	GetCumUpData_AMULE()			{ return (cumUpData_AMULE +			sesUpData_AMULE );}
-	static	uint64	GetCumUpData_EMULECOMPAT()		{ return (cumUpData_EMULECOMPAT +	sesUpData_EMULECOMPAT );}
-	static	uint64	GetCumUpData_SHAREAZA()			{ return (cumUpData_SHAREAZA +		sesUpData_SHAREAZA );}
+	static	uint64	GetUpTotalClientData()				{return   GetCumUpData_EDONKEY()
+																+ GetCumUpData_EDONKEYHYBRID()
+																+ GetCumUpData_EMULE()
+																+ GetCumUpData_MLDONKEY()
+																+ GetCumUpData_AMULE()
+																+ GetCumUpData_EMULECOMPAT()
+																+ GetCumUpData_SHAREAZA();}
+	static	uint64	GetCumUpData_EDONKEY()				{return (cumUpData_EDONKEY +		sesUpData_EDONKEY );}
+	static	uint64	GetCumUpData_EDONKEYHYBRID()		{return (cumUpData_EDONKEYHYBRID +	sesUpData_EDONKEYHYBRID );}
+	static	uint64	GetCumUpData_EMULE()				{return (cumUpData_EMULE +			sesUpData_EMULE );}
+	static	uint64	GetCumUpData_MLDONKEY()				{return (cumUpData_MLDONKEY +		sesUpData_MLDONKEY );}
+	static	uint64	GetCumUpData_AMULE()				{return (cumUpData_AMULE +			sesUpData_AMULE );}
+	static	uint64	GetCumUpData_EMULECOMPAT()			{return (cumUpData_EMULECOMPAT +	sesUpData_EMULECOMPAT );}
+	static	uint64	GetCumUpData_SHAREAZA()				{return (cumUpData_SHAREAZA +		sesUpData_SHAREAZA );}
+	
 	// Session client breakdown stats for sent bytes
-	static	uint64	GetUpSessionClientData()		{ return   sesUpData_EDONKEY 
-															 + sesUpData_EDONKEYHYBRID 
-															 + sesUpData_EMULE 
-															 + sesUpData_MLDONKEY 
-															 + sesUpData_AMULE
-															 + sesUpData_EMULECOMPAT
-															 + sesUpData_SHAREAZA; }
-	static	uint64	GetUpData_EDONKEY()				{ return sesUpData_EDONKEY;}
-	static	uint64	GetUpData_EDONKEYHYBRID()		{ return sesUpData_EDONKEYHYBRID;}
-	static	uint64	GetUpData_EMULE()				{ return sesUpData_EMULE;}
-	static	uint64	GetUpData_MLDONKEY()			{ return sesUpData_MLDONKEY;}
-	static	uint64	GetUpData_AMULE()				{ return sesUpData_AMULE;}
-	static	uint64	GetUpData_EMULECOMPAT()			{ return sesUpData_EMULECOMPAT;}
-	static	uint64	GetUpData_SHAREAZA()			{ return sesUpData_SHAREAZA;}
+	static	uint64	GetUpSessionClientData()			{return   sesUpData_EDONKEY 
+																+ sesUpData_EDONKEYHYBRID 
+																+ sesUpData_EMULE 
+																+ sesUpData_MLDONKEY 
+																+ sesUpData_AMULE
+																+ sesUpData_EMULECOMPAT
+																+ sesUpData_SHAREAZA;}
+	static	uint64	GetUpData_EDONKEY()					{return sesUpData_EDONKEY;}
+	static	uint64	GetUpData_EDONKEYHYBRID()			{return sesUpData_EDONKEYHYBRID;}
+	static	uint64	GetUpData_EMULE()					{return sesUpData_EMULE;}
+	static	uint64	GetUpData_MLDONKEY()				{return sesUpData_MLDONKEY;}
+	static	uint64	GetUpData_AMULE()					{return sesUpData_AMULE;}
+	static	uint64	GetUpData_EMULECOMPAT()				{return sesUpData_EMULECOMPAT;}
+	static	uint64	GetUpData_SHAREAZA()				{return sesUpData_SHAREAZA;}
 
 	// Cumulative port breakdown stats for sent bytes...
-	static	uint64	GetUpTotalPortData()			{ return   GetCumUpDataPort_4662() 
-															 + GetCumUpDataPort_OTHER()
-															 + GetCumUpDataPort_PeerCache(); }
-	static	uint64	GetCumUpDataPort_4662()			{ return (cumUpDataPort_4662 +		sesUpDataPort_4662 );}
-	static	uint64	GetCumUpDataPort_OTHER()		{ return (cumUpDataPort_OTHER +		sesUpDataPort_OTHER );}
-	static	uint64	GetCumUpDataPort_PeerCache()	{ return (cumUpDataPort_PeerCache +	sesUpDataPort_PeerCache );}
+	static	uint64	GetUpTotalPortData()				{return   GetCumUpDataPort_4662() 
+																+ GetCumUpDataPort_OTHER()
+																+ GetCumUpDataPort_PeerCache();}
+	static	uint64	GetCumUpDataPort_4662()				{return (cumUpDataPort_4662 +		sesUpDataPort_4662 );}
+	static	uint64	GetCumUpDataPort_OTHER()			{return (cumUpDataPort_OTHER +		sesUpDataPort_OTHER );}
+	static	uint64	GetCumUpDataPort_PeerCache()		{return (cumUpDataPort_PeerCache +	sesUpDataPort_PeerCache );}
 
 	// Session port breakdown stats for sent bytes...
-	static	uint64	GetUpSessionPortData()			{ return   sesUpDataPort_4662 
-															 + sesUpDataPort_OTHER
-															 + sesUpDataPort_PeerCache; }
-	static	uint64	GetUpDataPort_4662()			{ return sesUpDataPort_4662; }
-	static	uint64	GetUpDataPort_OTHER()			{ return sesUpDataPort_OTHER; }
-	static	uint64	GetUpDataPort_PeerCache()		{ return sesUpDataPort_PeerCache; }
+	static	uint64	GetUpSessionPortData()				{return   sesUpDataPort_4662 
+																+ sesUpDataPort_OTHER
+																+ sesUpDataPort_PeerCache;}
+	static	uint64	GetUpDataPort_4662()				{return sesUpDataPort_4662;}
+	static	uint64	GetUpDataPort_OTHER()				{return sesUpDataPort_OTHER;}
+	static	uint64	GetUpDataPort_PeerCache()			{return sesUpDataPort_PeerCache;}
 
 	// Cumulative DS breakdown stats for sent bytes...
-	static	uint64	GetUpTotalDataFile()			{ return (GetCumUpData_File() +		GetCumUpData_Partfile() );}
-	static	uint64	GetCumUpData_File()				{ return (cumUpData_File +			sesUpData_File );}
-	static	uint64	GetCumUpData_Partfile()			{ return (sesUpData_Partfile +		sesUpData_Partfile );}
+	static	uint64	GetUpTotalDataFile()				{return (GetCumUpData_File() +		GetCumUpData_Partfile() );}
+	static	uint64	GetCumUpData_File()					{return (cumUpData_File +			sesUpData_File );}
+	static	uint64	GetCumUpData_Partfile()				{return (cumUpData_Partfile +		sesUpData_Partfile );}
 	// Session DS breakdown stats for sent bytes...
-	static	uint64	GetUpSessionDataFile()			{ return (sesUpData_File +			sesUpData_Partfile );}
-	static	uint64	GetUpData_File()				{ return sesUpData_File;}
-	static	uint64	GetUpData_Partfile()			{ return sesUpData_Partfile;}
+	static	uint64	GetUpSessionDataFile()				{return (sesUpData_File +			sesUpData_Partfile );}
+	static	uint64	GetUpData_File()					{return sesUpData_File;}
+	static	uint64	GetUpData_Partfile()				{return sesUpData_Partfile;}
 
 	// Cumulative client breakdown stats for received bytes
-	static	uint64	GetDownTotalClientData()		{ return   GetCumDownData_EDONKEY() 
-															 + GetCumDownData_EDONKEYHYBRID() 
-															 + GetCumDownData_EMULE() 
-															 + GetCumDownData_MLDONKEY() 
-															 + GetCumDownData_AMULE()
-															 + GetCumDownData_EMULECOMPAT()
-															 + GetCumDownData_SHAREAZA()
-															 + GetCumDownData_URL();
-													}
-
-	static	uint64	GetCumDownData_EDONKEY()		{ return (cumDownData_EDONKEY +			sesDownData_EDONKEY);}
-	static	uint64	GetCumDownData_EDONKEYHYBRID()	{ return (cumDownData_EDONKEYHYBRID +	sesDownData_EDONKEYHYBRID);}
-	static	uint64	GetCumDownData_EMULE()			{ return (cumDownData_EMULE +			sesDownData_EMULE);}
-	static	uint64	GetCumDownData_MLDONKEY()		{ return (cumDownData_MLDONKEY +		sesDownData_MLDONKEY);}
-	static	uint64	GetCumDownData_AMULE()			{ return (cumDownData_AMULE +			sesDownData_AMULE);}
-	static	uint64	GetCumDownData_EMULECOMPAT()	{ return (cumDownData_EMULECOMPAT +		sesDownData_EMULECOMPAT);}
-	static	uint64	GetCumDownData_SHAREAZA()		{ return (cumDownData_SHAREAZA +		sesDownData_SHAREAZA);}
-	static	uint64	GetCumDownData_URL()			{ return (cumDownData_URL +				sesDownData_URL);}
-
-	static	uint64	GetCumDownData_WEBCACHE()		{ return (cumDownData_WEBCACHE +		sesDownData_WEBCACHE);} // {Webcache} [Max] 
-
+	static	uint64	GetDownTotalClientData()			{return   GetCumDownData_EDONKEY() 
+																+ GetCumDownData_EDONKEYHYBRID() 
+																+ GetCumDownData_EMULE() 
+																+ GetCumDownData_MLDONKEY() 
+																+ GetCumDownData_AMULE()
+																+ GetCumDownData_EMULECOMPAT()
+																+ GetCumDownData_SHAREAZA()
+																+ GetCumDownData_URL();}
+	static	uint64	GetCumDownData_EDONKEY()			{return (cumDownData_EDONKEY +			sesDownData_EDONKEY);}
+	static	uint64	GetCumDownData_EDONKEYHYBRID()		{return (cumDownData_EDONKEYHYBRID +	sesDownData_EDONKEYHYBRID);}
+	static	uint64	GetCumDownData_EMULE()				{return (cumDownData_EMULE +			sesDownData_EMULE);}
+	static	uint64	GetCumDownData_MLDONKEY()			{return (cumDownData_MLDONKEY +			sesDownData_MLDONKEY);}
+	static	uint64	GetCumDownData_AMULE()				{return (cumDownData_AMULE +			sesDownData_AMULE);}
+	static	uint64	GetCumDownData_EMULECOMPAT()		{return (cumDownData_EMULECOMPAT +		sesDownData_EMULECOMPAT);}
+	static	uint64	GetCumDownData_SHAREAZA()			{return (cumDownData_SHAREAZA +			sesDownData_SHAREAZA);}
+	static	uint64	GetCumDownData_URL()				{return (cumDownData_URL +				sesDownData_URL);}
+	
 	// Session client breakdown stats for received bytes
-	static	uint64	GetDownSessionClientData()		{ return   sesDownData_EDONKEY 
-															 + sesDownData_EDONKEYHYBRID 
-															 + sesDownData_EMULE 
-															 + sesDownData_MLDONKEY 
-															 + sesDownData_AMULE
-															 + sesDownData_EMULECOMPAT
-															 + sesDownData_SHAREAZA
-															 + sesDownData_URL;
-													}
-
-
-
-	static	uint64	GetDownData_EDONKEY()			{ return sesDownData_EDONKEY;}
-	static	uint64	GetDownData_EDONKEYHYBRID()		{ return sesDownData_EDONKEYHYBRID;}
-	static	uint64	GetDownData_EMULE()				{ return sesDownData_EMULE;}
-	static	uint64	GetDownData_MLDONKEY()			{ return sesDownData_MLDONKEY;}
-	static	uint64	GetDownData_AMULE()				{ return sesDownData_AMULE;}
-	static	uint64	GetDownData_EMULECOMPAT()		{ return sesDownData_EMULECOMPAT;}
-	static	uint64	GetDownData_SHAREAZA()			{ return sesDownData_SHAREAZA;}
-	static	uint64	GetDownData_URL()				{ return sesDownData_URL;}
-
-
-	static	uint64	GetDownData_WEBCACHE()			{ return sesDownData_WEBCACHE;} // {Webcache} [Max] 
+	static	uint64	GetDownSessionClientData()			{return   sesDownData_EDONKEY 
+																+ sesDownData_EDONKEYHYBRID 
+																+ sesDownData_EMULE 
+																+ sesDownData_MLDONKEY 
+																+ sesDownData_AMULE
+																+ sesDownData_EMULECOMPAT
+																+ sesDownData_SHAREAZA
+																+ sesDownData_URL;}
+	static	uint64	GetDownData_EDONKEY()				{return sesDownData_EDONKEY;}
+	static	uint64	GetDownData_EDONKEYHYBRID()			{return sesDownData_EDONKEYHYBRID;}
+	static	uint64	GetDownData_EMULE()					{return sesDownData_EMULE;}
+	static	uint64	GetDownData_MLDONKEY()				{return sesDownData_MLDONKEY;}
+	static	uint64	GetDownData_AMULE()					{return sesDownData_AMULE;}
+	static	uint64	GetDownData_EMULECOMPAT()			{return sesDownData_EMULECOMPAT;}
+	static	uint64	GetDownData_SHAREAZA()				{return sesDownData_SHAREAZA;}
+	static	uint64	GetDownData_URL()					{return sesDownData_URL;}
 
 	// Cumulative port breakdown stats for received bytes...
-	static	uint64	GetDownTotalPortData()			{ return   GetCumDownDataPort_4662() 
-															 + GetCumDownDataPort_OTHER()
-															 + GetCumDownDataPort_PeerCache(); }
-	static	uint64	GetCumDownDataPort_4662()		{ return cumDownDataPort_4662		+ sesDownDataPort_4662; }
-	static	uint64	GetCumDownDataPort_OTHER()		{ return cumDownDataPort_OTHER		+ sesDownDataPort_OTHER; }
-	static	uint64	GetCumDownDataPort_PeerCache()	{ return cumDownDataPort_PeerCache	+ sesDownDataPort_PeerCache; }
+	static	uint64	GetDownTotalPortData()				{return   GetCumDownDataPort_4662() 
+																+ GetCumDownDataPort_OTHER()
+																+ GetCumDownDataPort_PeerCache();}
+	static	uint64	GetCumDownDataPort_4662()			{return cumDownDataPort_4662		+ sesDownDataPort_4662;}
+	static	uint64	GetCumDownDataPort_OTHER()			{return cumDownDataPort_OTHER		+ sesDownDataPort_OTHER;}
+	static	uint64	GetCumDownDataPort_PeerCache()		{return cumDownDataPort_PeerCache	+ sesDownDataPort_PeerCache;}
 
 	// Session port breakdown stats for received bytes...
-	static	uint64	GetDownSessionDataPort()		{ return   sesDownDataPort_4662 
-															 + sesDownDataPort_OTHER
-															 + sesDownDataPort_PeerCache; }
-	static	uint64	GetDownDataPort_4662()			{ return sesDownDataPort_4662; }
-	static	uint64	GetDownDataPort_OTHER()			{ return sesDownDataPort_OTHER; }
-	static	uint64	GetDownDataPort_PeerCache()		{ return sesDownDataPort_PeerCache; }
+	static	uint64	GetDownSessionDataPort()			{return   sesDownDataPort_4662 
+																+ sesDownDataPort_OTHER
+																+ sesDownDataPort_PeerCache;}
+	static	uint64	GetDownDataPort_4662()				{return sesDownDataPort_4662;}
+	static	uint64	GetDownDataPort_OTHER()				{return sesDownDataPort_OTHER;}
+	static	uint64	GetDownDataPort_PeerCache()			{return sesDownDataPort_PeerCache;}
 
-	//		Saved stats for cumulative connection data
-	static	float	GetConnAvgDownRate()			{ return cumConnAvgDownRate;}
-	static	float	GetConnMaxAvgDownRate()			{ return cumConnMaxAvgDownRate;}
-	static	float	GetConnMaxDownRate()			{ return cumConnMaxDownRate;}
-	static	float	GetConnAvgUpRate()				{ return cumConnAvgUpRate;}
-	static	float	GetConnMaxAvgUpRate()			{ return cumConnMaxAvgUpRate;}
-	static	float	GetConnMaxUpRate()				{ return cumConnMaxUpRate;}
-	static	uint64	GetConnRunTime()				{ return cumConnRunTime;}
-	static	uint32	GetConnNumReconnects()			{ return cumConnNumReconnects;}
-	static	uint32	GetConnAvgConnections()			{ return cumConnAvgConnections;}
-	static	uint32	GetConnMaxConnLimitReached()	{ return cumConnMaxConnLimitReached;}
-	static	uint32	GetConnPeakConnections()		{ return cumConnPeakConnections;}
-	static	uint32	GetConnTransferTime()			{ return cumConnTransferTime;}
-	static	uint32	GetConnDownloadTime()			{ return cumConnDownloadTime;}
-	static	uint32	GetConnUploadTime()				{ return cumConnUploadTime;}
-	static	uint32	GetConnServerDuration()			{ return cumConnServerDuration;}
+	// Saved stats for cumulative connection data
+	static	float	GetConnAvgDownRate()				{return cumConnAvgDownRate;}
+	static	float	GetConnMaxAvgDownRate()				{return cumConnMaxAvgDownRate;}
+	static	float	GetConnMaxDownRate()				{return cumConnMaxDownRate;}
+	static	float	GetConnAvgUpRate()					{return cumConnAvgUpRate;}
+	static	float	GetConnMaxAvgUpRate()				{return cumConnMaxAvgUpRate;}
+	static	float	GetConnMaxUpRate()					{return cumConnMaxUpRate;}
+	static	time_t	GetConnRunTime()					{return cumConnRunTime;}
+	static	uint32	GetConnNumReconnects()				{return cumConnNumReconnects;}
+	static	uint32	GetConnAvgConnections()				{return cumConnAvgConnections;}
+	static	uint32	GetConnMaxConnLimitReached()		{return cumConnMaxConnLimitReached;}
+	static	uint32	GetConnPeakConnections()			{return cumConnPeakConnections;}
+	static	uint32	GetConnTransferTime()				{return cumConnTransferTime;}
+	static	uint32	GetConnDownloadTime()				{return cumConnDownloadTime;}
+	static	uint32	GetConnUploadTime()					{return cumConnUploadTime;}
+	static	uint32	GetConnServerDuration()				{return cumConnServerDuration;}
 
-	//		Saved records for servers / network
-	static	uint32	GetSrvrsMostWorkingServers()	{ return cumSrvrsMostWorkingServers;}
-	static	uint32	GetSrvrsMostUsersOnline()		{ return cumSrvrsMostUsersOnline;}
-	static	uint32	GetSrvrsMostFilesAvail()		{ return cumSrvrsMostFilesAvail;}
+	// Saved records for servers / network
+	static	uint32	GetSrvrsMostWorkingServers()		{return cumSrvrsMostWorkingServers;}
+	static	uint32	GetSrvrsMostUsersOnline()			{return cumSrvrsMostUsersOnline;}
+	static	uint32	GetSrvrsMostFilesAvail()			{return cumSrvrsMostFilesAvail;}
 
-	//		Saved records for shared files
-	static	uint32	GetSharedMostFilesShared()		{ return cumSharedMostFilesShared;}
-	static	uint64	GetSharedLargestShareSize()		{ return cumSharedLargestShareSize;}
-	static	uint64	GetSharedLargestAvgFileSize()	{ return cumSharedLargestAvgFileSize;}
-	static	uint64	GetSharedLargestFileSize()		{ return cumSharedLargestFileSize;}
+	// Saved records for shared files
+	static	uint32	GetSharedMostFilesShared()			{return cumSharedMostFilesShared;}
+	static	uint64	GetSharedLargestShareSize()			{return cumSharedLargestShareSize;}
+	static	uint64	GetSharedLargestAvgFileSize()		{return cumSharedLargestAvgFileSize;}
+	static	uint64	GetSharedLargestFileSize()			{return cumSharedLargestFileSize;}
 
-	//		Get the long date/time when the stats were last reset
-	static	__int64 GetStatsLastResetLng()			{ return stat_datetimeLastReset;}
+	// Get the long date/time when the stats were last reset
+	static	time_t GetStatsLastResetLng()				{return stat_datetimeLastReset;}
 	static	CString GetStatsLastResetStr(bool formatLong = true);
-	static	UINT	GetStatsSaveInterval()			{ return statsSaveInterval; }
+	static	UINT	GetStatsSaveInterval()				{return statsSaveInterval;}
 
-	//		Get and Set our new preferences
-	static	void	SetStatsMax(uint16 in)						{ statsMax = in; }
-	static	void	SetStatsConnectionsGraphRatio(uint8 in)		{ statsConnectionsGraphRatio = in; }
-	static	uint8	GetStatsConnectionsGraphRatio()				{ return statsConnectionsGraphRatio; }
-	static	void	SetExpandedTreeItems(CString in)			{ _stprintf(statsExpandedTreeItems,_T("%s"),in); }
-	static	CString GetExpandedTreeItems()						{ return statsExpandedTreeItems; }
-	// <-----khaos- End Statistics Methods
+	// Get and Set our new preferences
+	static	void	SetStatsMax(UINT in)				{statsMax = in;}
+	static	void	SetStatsConnectionsGraphRatio(UINT in) {statsConnectionsGraphRatio = in;}
+	static	UINT	GetStatsConnectionsGraphRatio()		{return statsConnectionsGraphRatio;}
+	static	void	SetExpandedTreeItems(CString in)	{_stprintf(statsExpandedTreeItems,_T("%s"),in);}
+	static	CString GetExpandedTreeItems()				{return statsExpandedTreeItems;}
 
-	//		Original Statistics Functions
-	static	uint64	GetTotalDownloaded()		{return totalDownloadedBytes;}
-	static	uint64	GetTotalUploaded()			{return totalUploadedBytes;}
-	//		End Original Statistics Functions
-	static	bool	IsErrorBeepEnabled()		{return beepOnError;}
-	static	bool	IsConfirmExitEnabled()		{return confirmExit;}
-	static	bool	UseSplashScreen()			{return splashscreen;}
-	static	bool	FilterLANIPs()				{return filterLANIPs;}
-	static	bool	GetAllowLocalHostIP()		{return m_bAllocLocalHostIP;}
-	static	bool	IsOnlineSignatureEnabled()	{return onlineSig;}
+	static	uint64	GetTotalDownloaded()				{return totalDownloadedBytes;}
+	static	uint64	GetTotalUploaded()					{return totalUploadedBytes;}
+
+	static	bool	IsErrorBeepEnabled()				{return beepOnError;}
+	static	bool	IsConfirmExitEnabled()				{return confirmExit;}
+	static	bool	UseSplashScreen()					{return splashscreen;}
+	static	bool	FilterLANIPs()						{return filterLANIPs;}
+	static	bool	GetAllowLocalHostIP()				{return m_bAllocLocalHostIP;}
+	static	bool	IsOnlineSignatureEnabled()			{return onlineSig;}
 
 	static	uint64	GetMaxDownloadInBytesPerSec(); //Xman Xtreme Mod
-	static	uint16	GetMaxConnections()			{return maxconnections;}
-	static	uint16	GetMaxHalfConnections()		{return maxhalfconnections;}
-	static	uint16	GetMaxSourcePerFileDefault(){return maxsourceperfile;}
-	static	UINT	GetDeadServerRetries()		{return m_uDeadServerRetries;}
-	static	DWORD	GetServerKeepAliveTimeout() {return m_dwServerKeepAliveTimeout;}
-	static	bool	GetConditionalTCPAccept()	{return m_bConditionalTCPAccept;}
-
+	static	UINT	GetMaxConnections()					{return maxconnections;}
+	static	UINT	GetMaxHalfConnections()				{return maxhalfconnections;}
+	static	UINT	GetMaxSourcePerFileDefault()		{return maxsourceperfile;}
+	static	UINT	GetDeadServerRetries()				{return m_uDeadServerRetries;}
+	static	DWORD	GetServerKeepAliveTimeout()			{return m_dwServerKeepAliveTimeout;}
+	static	bool	GetConditionalTCPAccept()			{return m_bConditionalTCPAccept;}
 
 	static	WORD	GetLanguageID();
 	static	void	SetLanguageID(WORD lid);
@@ -1215,8 +1142,8 @@ public:
 	static	CString GetHtmlCharset();
 
 	static	bool	IsDoubleClickEnabled()				{return transferDoubleclick;}
-	static	EViewSharedFilesAccess CanSeeShares(void) {return m_iSeeShares;}
-	static	uint8	GetToolTipDelay(void)				{return m_iToolDelayTime;}
+	static	EViewSharedFilesAccess CanSeeShares(void)	{return m_iSeeShares;}
+	static	UINT	GetToolTipDelay(void)				{return m_iToolDelayTime;}
 	static	bool	IsBringToFront()					{return bringtoforeground;}
 
 	static	UINT	GetSplitterbarPosition()			{return splitterbarPosition;}
@@ -1242,19 +1169,19 @@ public:
 	static	void	SetSplitterbarPositionShared(UINT pos) {splitterbarPositionShared=pos;}
 	//MORPH END   - Added by SiRoB, Splitting Bar [O²]
 	// -khaos--+++> Changed datatype to avoid overflows
-	static	uint16	GetStatsMax()						{return statsMax;}
+	static	UINT	GetStatsMax()						{return statsMax;}
 	// <-----khaos-
 	static	bool	UseFlatBar()						{return (depth3D==0);}
 	static	int		GetStraightWindowStyles()			{return m_iStraightWindowStyles;}
 
 	static	const CString& GetSkinProfile()				{return m_strSkinProfile;}
-	static	void	SetSkinProfile(LPCTSTR pszProfile)	{m_strSkinProfile = pszProfile; }
+	static	void	SetSkinProfile(LPCTSTR pszProfile)	{m_strSkinProfile = pszProfile;}
 
 	static	const CString& GetSkinProfileDir()			{return m_strSkinProfileDir;}
-	static	void	SetSkinProfileDir(LPCTSTR pszDir)	{m_strSkinProfileDir = pszDir; }
+	static	void	SetSkinProfileDir(LPCTSTR pszDir)	{m_strSkinProfileDir = pszDir;}
 
-	static	uint8	GetStatsAverageMinutes()			{return statsAverageMinutes;}
-	static	void	SetStatsAverageMinutes(uint8 in)	{statsAverageMinutes=in;}
+	static	UINT	GetStatsAverageMinutes()			{return statsAverageMinutes;}
+	static	void	SetStatsAverageMinutes(UINT in)	{statsAverageMinutes=in;}
 
 	static	const CString& GetNotifierConfiguration()	{return notifierConfiguration;}
 	static	void	SetNotifierConfiguration(LPCTSTR pszConfigPath) {notifierConfiguration = pszConfigPath;}
@@ -1272,12 +1199,12 @@ public:
 	static	bool	GetRTLWindowsLayout()				{return m_bRTLWindowsLayout;}
 
 	static	CString GetIRCNick()						{return m_sircnick;}
-	static	void	SetIRCNick( TCHAR in_nick[] )		{ _tcscpy(m_sircnick,in_nick);}
+	static	void	SetIRCNick(LPCTSTR in_nick)			{_tcscpy(m_sircnick, in_nick);}
 	static	CString GetIRCServer()						{return m_sircserver;}
 	static	bool	GetIRCAddTimestamp()				{return m_bircaddtimestamp;}
 	static	CString GetIRCChanNameFilter()				{return m_sircchannamefilter;}
 	static	bool	GetIRCUseChanFilter()				{return m_bircusechanfilter;}
-	static	uint16	GetIRCChannelUserFilter()			{return m_iircchanneluserfilter;}
+	static	UINT	GetIRCChannelUserFilter()			{return m_iircchanneluserfilter;}
 	static	CString GetIrcPerformString()				{return m_sircperformstring;}
 	static	bool	GetIrcUsePerform()					{return m_bircuseperform;}
 	static	bool	GetIRCListOnConnect()				{return m_birclistonconnect;}
@@ -1341,12 +1268,12 @@ public:
 	static	bool	GetShowCopyEd2kLinkCmd()			{return m_bShowCopyEd2kLinkCmd;}
 
 	// Barry
-	static	uint16	Get3DDepth()						{return depth3D;}
+	static	UINT	Get3DDepth()						{return depth3D;}
 	static	bool	AutoTakeED2KLinks()					{return autotakeed2klinks;}
 	static	bool	AddNewFilesPaused()					{return addnewfilespaused;}
 
-	static	bool	TransferlistRemainSortStyle()	{ return m_bTransflstRemain;}
-	static	void	TransferlistRemainSortStyle(bool in)	{ m_bTransflstRemain=in;}
+	static	bool	TransferlistRemainSortStyle()		{return m_bTransflstRemain;}
+	static	void	TransferlistRemainSortStyle(bool in){m_bTransflstRemain=in;}
 
 	static	DWORD	GetStatsColor(int index)			{return m_adwStatsColors[index];}
 	static	void	SetStatsColor(int index, DWORD value){m_adwStatsColors[index] = value;}
@@ -1355,7 +1282,7 @@ public:
 	static	bool	SetAllStatsColors(int iCount, const DWORD* pdwColors);
 	static	void	ResetStatsColor(int index);
 
-	static	void	SetMaxConsPerFive(uint16 in)		{MaxConperFive=in;}
+	static	void	SetMaxConsPerFive(UINT in)			{MaxConperFive=in;}
 	static	LPLOGFONT GetHyperTextLogFont()				{return &m_lfHyperText;}
 	static	void	SetHyperTextFont(LPLOGFONT plf)		{m_lfHyperText = *plf;}
 	static	LPLOGFONT GetLogFont()						{return &m_lfLogText;}
@@ -1364,8 +1291,8 @@ public:
 	static	COLORREF GetLogWarningColor()				{return m_crLogWarning;}
 	static	COLORREF GetLogSuccessColor()				{return m_crLogSuccess;}
 
-	static	uint16	GetMaxConperFive()					{return MaxConperFive;}
-	static	uint16	GetDefaultMaxConperFive();
+	static	UINT	GetMaxConperFive()					{return MaxConperFive;}
+	static	UINT	GetDefaultMaxConperFive();
 
 	static	bool	IsSafeServerConnectEnabled()		{return m_bSafeServerConnect;}
 	static	void	SetSafeServerConnectEnabled(bool in){m_bSafeServerConnect=in;}
@@ -1383,183 +1310,177 @@ public:
 	static	bool	GetSparsePartFiles()				{return m_bSparsePartFiles;}
 	static	void	SetSparsePartFiles(bool bEnable)	{m_bSparsePartFiles = bEnable;}
 
-	static	WINDOWPLACEMENT GetEmuleWindowPlacement() {return EmuleWindowPlacement; }
-	static	void	SetWindowLayout(WINDOWPLACEMENT in) {EmuleWindowPlacement=in; }
+
+	static	WINDOWPLACEMENT GetEmuleWindowPlacement()	{return EmuleWindowPlacement;}
+	static	void	SetWindowLayout(WINDOWPLACEMENT in) {EmuleWindowPlacement=in;}
 
 	static	bool	GetAutoConnectToStaticServersOnly() {return m_bAutoConnectToStaticServersOnly;}
-	static	uint8	GetUpdateDays()			{return versioncheckdays;}
-	static	uint32	GetLastVC()				{return versioncheckLastAutomatic;}
+	static	UINT	GetUpdateDays()						{return versioncheckdays;}
+	static	uint32	GetLastVC()							{return versioncheckLastAutomatic;}
 	static	void	UpdateLastVC();
 	//Xman versions check
 	static	uint32	GetLastMVC()				{return mversioncheckLastAutomatic;}
 	static	void	UpdateLastMVC();
 	//Xman end
-	static	int		GetIPFilterLevel()		{ return filterlevel;}
-	static	CString GetMessageFilter()		{ return CString(messageFilter);}
-	static	const CString& GetCommentFilter(){ return commentFilter; }
-	static	CString GetFilenameCleanups()	{ return CString(filenameCleanups);}
+	static	int		GetIPFilterLevel()					{return filterlevel;}
+	static	const CString& GetMessageFilter()			{return messageFilter;}
+	static	const CString& GetCommentFilter()			{return commentFilter;}
+	static	const CString& GetFilenameCleanups()		{return filenameCleanups;}
 
-	static	bool	ShowRatesOnTitle()		{ return showRatesInTitle;}
+	static	bool	ShowRatesOnTitle()					{return showRatesInTitle;}
 	static	void	LoadCats();
-	static	CString GetDateTimeFormat()		{ return CString(datetimeformat);}
-	static	CString GetDateTimeFormat4Log() { return CString(datetimeformat4log);}
+	static	CString GetDateTimeFormat()					{return CString(datetimeformat);}
+	static	CString GetDateTimeFormat4Log()				{return CString(datetimeformat4log);}
 
 	// Download Categories (Ornis)
-	static	int		AddCat(Category_Struct* cat) { catMap.Add(cat); return catMap.GetCount()-1;}
+	static	int		AddCat(Category_Struct* cat)		{catMap.Add(cat); return catMap.GetCount()-1;}
 	static	bool	MoveCat(UINT from, UINT to);
 	static	void	RemoveCat(int index);
-	static	int		GetCatCount()			{ return catMap.GetCount();}
+	static	int		GetCatCount()						{return catMap.GetCount();}
 	static  bool	SetCatFilter(int index, int filter);
 	static  int		GetCatFilter(int index);
 	static	bool	GetCatFilterNeg(int index);
 	static	void	SetCatFilterNeg(int index, bool val);
-	static	Category_Struct* GetCategory(int index) { if (index>=0 && index<catMap.GetCount()) return catMap.GetAt(index); else return NULL;}
-	static	TCHAR*	GetCatPath(uint8 index) { return catMap.GetAt(index)->incomingpath;}
-	static	DWORD	GetCatColor(uint8 index)	{ if (index>=0 && index<catMap.GetCount()) return catMap.GetAt(index)->color; else return 0;}
+	static	Category_Struct* GetCategory(int index)		{if (index>=0 && index<catMap.GetCount()) return catMap.GetAt(index); else return NULL;}
+	static	TCHAR*	GetCatPath(int index)				{return catMap.GetAt(index)->incomingpath;}
+	static	DWORD	GetCatColor(int index)				{if (index>=0 && index<catMap.GetCount()) return catMap.GetAt(index)->color; else return 0;}
 
-	static	bool	GetPreviewOnIconDblClk() { return m_bPreviewOnIconDblClk; }
-	static	bool	ShowRatingIndicator()	{ return indicateratings;}
-	static	bool	WatchClipboard4ED2KLinks()	{ return watchclipboard;}
-	static	bool	GetRemoveToBin()			{ return m_bRemove2bin;}
-	static	bool	FilterServerByIP()		{ return filterserverbyip;}
+	static	bool	GetPreviewOnIconDblClk()			{return m_bPreviewOnIconDblClk;}
+	static	bool	ShowRatingIndicator()				{return indicateratings;}
+	static	bool	WatchClipboard4ED2KLinks()			{return watchclipboard;}
+	static	bool	GetRemoveToBin()					{return m_bRemove2bin;}
+	static	bool	FilterServerByIP()					{return filterserverbyip;}
 
-	static	bool	GetLog2Disk()							{ return log2disk;}
-	static	bool	GetDebug2Disk()							{ return m_bVerbose && debug2disk;}
-	static	int		GetMaxLogBuff()							{ return iMaxLogBuff;}
-	static	UINT	GetMaxLogFileSize()						{ return uMaxLogFileSize; }
-	static	ELogFileFormat GetLogFileFormat()				{ return m_iLogFileFormat; }
+	static	bool	GetLog2Disk()						{return log2disk;}
+	static	bool	GetDebug2Disk()						{return m_bVerbose && debug2disk;}
+	static	int		GetMaxLogBuff()						{return iMaxLogBuff;}
+	static	UINT	GetMaxLogFileSize()					{return uMaxLogFileSize;}
+	static	ELogFileFormat GetLogFileFormat()			{return m_iLogFileFormat;}
 
 	// WebServer
-	static	uint16	GetWSPort()								{ return m_nWebPort; }
-	static	void	SetWSPort(uint16 uPort)					{ m_nWebPort=uPort; }
-	static	CString GetWSPass()								{ return CString(m_sWebPassword); }
+	static	uint16	GetWSPort()							{return m_nWebPort;}
+	static	void	SetWSPort(uint16 uPort)				{m_nWebPort=uPort;}
+	static	CString GetWSPass()							{return CString(m_sWebPassword);}
 	static	void	SetWSPass(CString strNewPass);
-	static	bool	GetWSIsEnabled()						{ return m_bWebEnabled; }
-	static	void	SetWSIsEnabled(bool bEnable)			{ m_bWebEnabled=bEnable; }
-	static	bool	GetWebUseGzip()							{ return m_bWebUseGzip; }
-	static	void	SetWebUseGzip(bool bUse)				{ m_bWebUseGzip=bUse; }
-	static	int		GetWebPageRefresh()						{ return m_nWebPageRefresh; }
-	static	void	SetWebPageRefresh(int nRefresh)			{ m_nWebPageRefresh=nRefresh; }
-	static	bool	GetWSIsLowUserEnabled()					{ return m_bWebLowEnabled; }
-	static	void	SetWSIsLowUserEnabled(bool in)			{ m_bWebLowEnabled=in; }
-	static	CString GetWSLowPass()							{ return CString(m_sWebLowPassword); }
-	static	int		GetWebTimeoutMins()						{ return m_iWebTimeoutMins;}
-	static  bool	GetWebAdminAllowedHiLevFunc()			{ return m_bAllowAdminHiLevFunc; }
+	static	bool	GetWSIsEnabled()					{return m_bWebEnabled;}
+	static	void	SetWSIsEnabled(bool bEnable)		{m_bWebEnabled=bEnable;}
+	static	bool	GetWebUseGzip()						{return m_bWebUseGzip;}
+	static	void	SetWebUseGzip(bool bUse)			{m_bWebUseGzip=bUse;}
+	static	int		GetWebPageRefresh()					{return m_nWebPageRefresh;}
+	static	void	SetWebPageRefresh(int nRefresh)		{m_nWebPageRefresh=nRefresh;}
+	static	bool	GetWSIsLowUserEnabled()				{return m_bWebLowEnabled;}
+	static	void	SetWSIsLowUserEnabled(bool in)		{m_bWebLowEnabled=in;}
+	static	CString GetWSLowPass()						{return CString(m_sWebLowPassword);}
+	static	int		GetWebTimeoutMins()					{return m_iWebTimeoutMins;}
+	static  bool	GetWebAdminAllowedHiLevFunc()		{return m_bAllowAdminHiLevFunc;}
 	static	void	SetWSLowPass(CString strNewPass);
-	static  const CUIntArray& GetAllowedRemoteAccessIPs()	{ return m_aAllowedRemoteAccessIPs; }
-	static	uint32	GetMaxWebUploadFileSizeMB()				{ return m_iWebFileUploadSizeLimitMB; }
+	static  const CUIntArray& GetAllowedRemoteAccessIPs(){return m_aAllowedRemoteAccessIPs;}
+	static	uint32	GetMaxWebUploadFileSizeMB()			{return m_iWebFileUploadSizeLimitMB;}
 
-	static	void	SetMaxSourcesPerFile(uint16 in)			{ maxsourceperfile=in;}
-	static	void	SetMaxConnections(uint16 in)			{ maxconnections =in;}
-	static	void	SetMaxHalfConnections(uint16 in)		{ maxhalfconnections =in;}
-	static	bool	IsSchedulerEnabled()					{ return scheduler;}
-	static	void	SetSchedulerEnabled(bool in)			{ scheduler=in;}
-	static	bool	GetDontCompressAvi()					{ return dontcompressavi;}
+	static	void	SetMaxSourcesPerFile(UINT in)		{maxsourceperfile=in;}
+	static	void	SetMaxConnections(UINT in)			{maxconnections =in;}
+	static	void	SetMaxHalfConnections(UINT in)		{maxhalfconnections =in;}
+	static	bool	IsSchedulerEnabled()				{return scheduler;}
+	static	void	SetSchedulerEnabled(bool in)		{scheduler=in;}
+	static	bool	GetDontCompressAvi()				{return dontcompressavi;}
 
-	static	bool	MsgOnlyFriends()						{ return msgonlyfriends;}
-	static	bool	MsgOnlySecure()							{ return msgsecure;}
-	static	uint16	GetMsgSessionsMax()						{ return maxmsgsessions;}
-	static	bool	IsSecureIdentEnabled()					{ return m_bUseSecureIdent;} // use clientcredits->CryptoAvailable() to check if crypting is really available and not this function
-	static	bool	IsAdvSpamfilterEnabled()				{ return m_bAdvancedSpamfilter;}
-	static	CString GetTemplate()							{ return CString(m_sTemplateFile);}
-	static	void	SetTemplate(CString in)					{ _stprintf(m_sTemplateFile,_T("%s"),in);}
-	static	bool	GetNetworkKademlia()					{ return networkkademlia;}
+	static	bool	MsgOnlyFriends()					{return msgonlyfriends;}
+	static	bool	MsgOnlySecure()						{return msgsecure;}
+	static	UINT	GetMsgSessionsMax()					{return maxmsgsessions;}
+	static	bool	IsSecureIdentEnabled()				{return m_bUseSecureIdent;} // use clientcredits->CryptoAvailable() to check if crypting is really available and not this function
+	static	bool	IsAdvSpamfilterEnabled()			{return m_bAdvancedSpamfilter;}
+	static	CString GetTemplate()						{return CString(m_sTemplateFile);}
+	static	void	SetTemplate(CString in)				{_stprintf(m_sTemplateFile,_T("%s"),in);}
+	static	bool	GetNetworkKademlia()				{return networkkademlia;}
 	static	void	SetNetworkKademlia(bool val);
-	static	bool	GetNetworkED2K()						{ return networked2k;}
-	static	void	SetNetworkED2K(bool val)				{ networked2k = val;}
+	static	bool	GetNetworkED2K()					{return networked2k;}
+	static	void	SetNetworkED2K(bool val)			{networked2k = val;}
 
 	// mobileMule
-	static	CString GetMMPass()								{ return CString(m_sMMPassword); }
+	static	CString GetMMPass()							{return CString(m_sMMPassword);}
 	static	void	SetMMPass(CString strNewPass);
-	static	bool	IsMMServerEnabled()						{ return m_bMMEnabled; }
-	static	void	SetMMIsEnabled(bool bEnable)			{ m_bMMEnabled=bEnable; }
-	static	uint16	GetMMPort()								{ return m_nMMPort; }
-	static	void	SetMMPort(uint16 uPort)					{ m_nMMPort=uPort; }
+	static	bool	IsMMServerEnabled()					{return m_bMMEnabled;}
+	static	void	SetMMIsEnabled(bool bEnable)		{m_bMMEnabled=bEnable;}
+	static	uint16	GetMMPort()							{return m_nMMPort;}
+	static	void	SetMMPort(uint16 uPort)				{m_nMMPort=uPort;}
 
 	// deadlake PROXYSUPPORT
-	static	const ProxySettings& GetProxy()					{ return proxy; }
-	static	void	SetProxySettings(const ProxySettings& proxysettings) { proxy = proxysettings; }
-	static	uint16	GetListenPort()							{ if (m_UseProxyListenPort) return ListenPort; else return port; }
-	static	void	SetListenPort(uint16 uPort)				{ ListenPort = uPort; m_UseProxyListenPort = true; }
-	static	void	ResetListenPort()						{ ListenPort = 0; m_UseProxyListenPort = false; }
-	static	void	SetUseProxy(bool in)					{ proxy.UseProxy=in;}
-	static	bool	GetShowProxyErrors()					{ return m_bShowProxyErrors; }
-	static	void	SetShowProxyErrors(bool bEnable)		{ m_bShowProxyErrors = bEnable; }
+	static	const ProxySettings& GetProxySettings()		{return proxy;}
+	static	void	SetProxySettings(const ProxySettings& proxysettings) {proxy = proxysettings;}
 
-	static	bool	IsProxyASCWOP()							{ return m_bIsASCWOP;}
-	static	void	SetProxyASCWOP(bool in)					{ m_bIsASCWOP=in;}
+	static	bool	ShowCatTabInfos()					{return showCatTabInfos;}
+	static	void	ShowCatTabInfos(bool in)			{showCatTabInfos=in;}
 
-	static	bool	ShowCatTabInfos()						{ return showCatTabInfos;}
-	static	void	ShowCatTabInfos(bool in)				{ showCatTabInfos=in;}
+	static	bool	AutoFilenameCleanup()				{return autofilenamecleanup;}
+	static	void	AutoFilenameCleanup(bool in)		{autofilenamecleanup=in;}
+	static	void	SetFilenameCleanups(CString in)		{filenameCleanups=in;}
 
-	static	bool	AutoFilenameCleanup()						{ return autofilenamecleanup;}
-	static	void	AutoFilenameCleanup(bool in)				{ autofilenamecleanup=in;}
-	static	void	SetFilenameCleanups(CString in)				{ _stprintf(filenameCleanups,_T("%s"),in);}
+	static	bool	GetResumeSameCat()					{return resumeSameCat;}
+	static	bool	IsGraphRecreateDisabled()			{return dontRecreateGraphs;}
+	static	bool	IsExtControlsEnabled()				{return m_bExtControls;}
+	static	void	SetExtControls(bool in)				{m_bExtControls=in;}
+	static	bool	GetRemoveFinishedDownloads()		{return m_bRemoveFinishedDownloads;}
 
-	static	bool	GetResumeSameCat()							{ return resumeSameCat;}
-	static	bool	IsGraphRecreateDisabled()					{ return dontRecreateGraphs;}
-	static	bool	IsExtControlsEnabled()						{ return m_bExtControls;}
-	static	void	SetExtControls(bool in)						{ m_bExtControls=in;}
-	static	bool	GetRemoveFinishedDownloads()				{ return m_bRemoveFinishedDownloads;}
-
-	static	uint16	GetMaxChatHistoryLines()					{ return m_iMaxChatHistory;}
-	static	bool	GetUseAutocompletion()						{ return m_bUseAutocompl;}
-	static	bool	GetUseDwlPercentage()						{ return m_bShowDwlPercentage;}
-	static	void	SetUseDwlPercentage(bool in)				{ m_bShowDwlPercentage=in;}
-	static	bool	GetShowActiveDownloadsBold()				{ return m_bShowActiveDownloadsBold; }
+	static	UINT	GetMaxChatHistoryLines()			{return m_iMaxChatHistory;}
+	static	bool	GetUseAutocompletion()				{return m_bUseAutocompl;}
+	static	bool	GetUseDwlPercentage()				{return m_bShowDwlPercentage;}
+	static	void	SetUseDwlPercentage(bool in)		{m_bShowDwlPercentage=in;}
+	static	bool	GetShowActiveDownloadsBold()		{return m_bShowActiveDownloadsBold;}
 
 	//Toolbar
-	static	const CString& GetToolbarSettings()					{ return m_sToolbarSettings; }
-	static	void	SetToolbarSettings(const CString& in)		{ m_sToolbarSettings = in; }
-	static	const CString& GetToolbarBitmapSettings()			{ return m_sToolbarBitmap; }
-	static	void	SetToolbarBitmapSettings(const CString& path){ m_sToolbarBitmap = path; }
-	static	const CString& GetToolbarBitmapFolderSettings()		{ return m_sToolbarBitmapFolder; }
-	static	void	SetToolbarBitmapFolderSettings(const CString& path){ m_sToolbarBitmapFolder = path; }
-	static	EToolbarLabelType GetToolbarLabelSettings()			{ return m_nToolbarLabels; }
-	static	void	SetToolbarLabelSettings(EToolbarLabelType eLabelType) { m_nToolbarLabels = eLabelType; }
-	static	bool	GetReBarToolbar()							{ return m_bReBarToolbar; }
+	static	const CString& GetToolbarSettings()					{return m_sToolbarSettings;}
+	static	void	SetToolbarSettings(const CString& in)		{m_sToolbarSettings = in;}
+	static	const CString& GetToolbarBitmapSettings()			{return m_sToolbarBitmap;}
+	static	void	SetToolbarBitmapSettings(const CString& path){m_sToolbarBitmap = path;}
+	static	const CString& GetToolbarBitmapFolderSettings()		{return m_sToolbarBitmapFolder;}
+	static	void	SetToolbarBitmapFolderSettings(const CString& path){m_sToolbarBitmapFolder = path;}
+	static	EToolbarLabelType GetToolbarLabelSettings()			{return m_nToolbarLabels;}
+	static	void	SetToolbarLabelSettings(EToolbarLabelType eLabelType) {m_nToolbarLabels = eLabelType;}
+	static	bool	GetReBarToolbar()							{return m_bReBarToolbar;}
 	static	bool	GetUseReBarToolbar();
-	static	CSize	GetToolbarIconSize()						{ return m_sizToolbarIconSize; }
-	static	void	SetToolbarIconSize(CSize siz)				{ m_sizToolbarIconSize = siz; }
+	static	CSize	GetToolbarIconSize()				{return m_sizToolbarIconSize;}
+	static	void	SetToolbarIconSize(CSize siz)		{m_sizToolbarIconSize = siz;}
 
-	static	bool	IsTransToolbarEnabled()						{ return m_bWinaTransToolbar; }
+	static	bool	IsTransToolbarEnabled()				{return m_bWinaTransToolbar;}
 
-	static	int		GetSearchMethod()							{ return m_iSearchMethod; }
-	static	void	SetSearchMethod(int iMethod)				{ m_iSearchMethod = iMethod; }
+	static	int		GetSearchMethod()					{return m_iSearchMethod;}
+	static	void	SetSearchMethod(int iMethod)		{m_iSearchMethod = iMethod;}
 
 	// ZZ:UploadSpeedSense -->
-	static	bool	IsDynUpEnabled()							{ return m_bDynUpEnabled; }
-	static	void	SetDynUpEnabled(bool newValue)				{ m_bDynUpEnabled = newValue; }
-	static	int		GetDynUpPingTolerance()						{ return m_iDynUpPingTolerance; }
-	static	int		GetDynUpGoingUpDivider()					{ return m_iDynUpGoingUpDivider; }
-	static	int		GetDynUpGoingDownDivider()					{ return m_iDynUpGoingDownDivider; }
-	static	int		GetDynUpNumberOfPings()						{ return m_iDynUpNumberOfPings; }
-    static  bool	IsDynUpUseMillisecondPingTolerance()        { return m_bDynUpUseMillisecondPingTolerance;} // EastShare - Added by TAHO, USS limit
-	static  int		GetDynUpPingToleranceMilliseconds()         { return m_iDynUpPingToleranceMilliseconds; } // EastShare - Added by TAHO, USS limit
-	static  void	SetDynUpPingToleranceMilliseconds(int in)   { m_iDynUpPingToleranceMilliseconds = in; }
+	static	bool	IsDynUpEnabled()					{ return m_bDynUpEnabled; } //Xman
+	static	void	SetDynUpEnabled(bool newValue)		{m_bDynUpEnabled = newValue;}
+	static	int		GetDynUpPingTolerance()				{return m_iDynUpPingTolerance;}
+	static	int		GetDynUpGoingUpDivider()			{return m_iDynUpGoingUpDivider;}
+	static	int		GetDynUpGoingDownDivider()			{return m_iDynUpGoingDownDivider;}
+	static	int		GetDynUpNumberOfPings()				{return m_iDynUpNumberOfPings;}
+    static  bool	IsDynUpUseMillisecondPingTolerance(){return m_bDynUpUseMillisecondPingTolerance;} // EastShare - Added by TAHO, USS limit
+	static  int		GetDynUpPingToleranceMilliseconds() {return m_iDynUpPingToleranceMilliseconds;} // EastShare - Added by TAHO, USS limit
+	static  void	SetDynUpPingToleranceMilliseconds(int in){m_iDynUpPingToleranceMilliseconds = in;}
 	// ZZ:UploadSpeedSense <--
 
-    //static bool     GetA4AFSaveCpu()                            { return m_bA4AFSaveCpu; } // ZZ:DownloadManager
+    //static bool     GetA4AFSaveCpu()                    {return m_bA4AFSaveCpu;} // ZZ:DownloadManager
 
-	static	CString	GetHomepageBaseURL()						{ return GetHomepageBaseURLForLevel(GetWebMirrorAlertLevel()); }
+    static bool     GetHighresTimer()                   {return m_bHighresTimer;}
+
+	static	CString	GetHomepageBaseURL()				{return GetHomepageBaseURLForLevel(GetWebMirrorAlertLevel());}
 	static	CString	GetVersionCheckBaseURL();					
-	static	void	SetWebMirrorAlertLevel(uint8 newValue)		{ m_nWebMirrorAlertLevel = newValue; }
-	static bool	IsDefaultNick(const CString strCheck);
-	static	uint8	GetWebMirrorAlertLevel();
-	static bool		UseSimpleTimeRemainingComputation()			{ return m_bUseOldTimeRemaining;}
+	static	void	SetWebMirrorAlertLevel(uint8 newValue){m_nWebMirrorAlertLevel = newValue;}
+	static	bool	IsDefaultNick(const CString strCheck);
+	static	UINT	GetWebMirrorAlertLevel();
+	static	bool	UseSimpleTimeRemainingComputation()	{return m_bUseOldTimeRemaining;}
 
 	static	bool	IsRunAsUserEnabled();
-	static	bool	IsPreferingRestrictedOverUser()				{return m_bPreferRestrictedOverUser;}
+	static	bool	IsPreferingRestrictedOverUser()		{return m_bPreferRestrictedOverUser;}
 
 	// PeerCache
-	static	bool	IsPeerCacheDownloadEnabled()				{ return m_bPeerCacheEnabled; }
-	static	uint32	GetPeerCacheLastSearch()					{ return m_uPeerCacheLastSearch; }
-	static	bool	WasPeerCacheFound()							{ return m_bPeerCacheWasFound; }
-	static	void	SetPeerCacheLastSearch(uint32 dwLastSearch) { m_uPeerCacheLastSearch = dwLastSearch; }
-	static	void	SetPeerCacheWasFound(bool bFound)			{ m_bPeerCacheWasFound = bFound; }
-	static	uint16	GetPeerCachePort()							{ return m_nPeerCachePort; }
-	static	void	SetPeerCachePort(uint16 nPort)				{ m_nPeerCachePort = nPort; }
-	static	bool	GetPeerCacheShow()							{ return m_bPeerCacheShow; }
+	static	bool	IsPeerCacheDownloadEnabled()		{return m_bPeerCacheEnabled;}
+	static	uint32	GetPeerCacheLastSearch()			{return m_uPeerCacheLastSearch;}
+	static	bool	WasPeerCacheFound()					{return m_bPeerCacheWasFound;}
+	static	void	SetPeerCacheLastSearch(uint32 dwLastSearch) {m_uPeerCacheLastSearch = dwLastSearch;}
+	static	void	SetPeerCacheWasFound(bool bFound)	{m_bPeerCacheWasFound = bFound;}
+	static	uint16	GetPeerCachePort()					{return m_nPeerCachePort;}
+	static	void	SetPeerCachePort(uint16 nPort)		{m_nPeerCachePort = nPort;}
+	static	bool	GetPeerCacheShow()					{return m_bPeerCacheShow;}
 
 	// Verbose log options
 	static	bool	GetEnableVerboseOptions()			{return m_bEnableVerboseOptions;}
@@ -1571,14 +1492,9 @@ public:
 	static	bool	GetLogSecureIdent()					{return m_bVerbose && m_bLogSecureIdent;}
 	static	bool	GetLogFilteredIPs()					{return m_bVerbose && m_bLogFilteredIPs;}
 	static	bool	GetLogFileSaving()					{return m_bVerbose && m_bLogFileSaving;}
-        static	bool	GetLogA4AF()    					{return m_bVerbose && m_bLogA4AF;} // ZZ:DownloadManager
+    static	bool	GetLogA4AF()    					{return m_bVerbose && m_bLogA4AF;} // ZZ:DownloadManager
 	static	bool	GetLogDrop()						{return m_bVerbose && m_bLogDrop;} //Xman Xtreme Downloadmanager
 	static	bool	GetLogUlDlEvents()					{return m_bVerbose && m_bLogUlDlEvents;}
-
-// ==> {Webcache} [Max] 
-	static	bool	GetLogWebCacheEvents()				        {return m_bVerbose && m_bLogWebCacheEvents;}
-// <== {Webcache} [Max] 
-
 	static	bool	GetUseDebugDevice()					{return m_bUseDebugDevice;}
 	static	int		GetDebugServerTCPLevel()			{return m_iDebugServerTCPLevel;}
 	static	int		GetDebugServerUDPLevel() 			{return m_iDebugServerUDPLevel;}
@@ -1588,10 +1504,10 @@ public:
 	static	int		GetDebugClientUDPLevel()			{return m_iDebugClientUDPLevel;}
 	static	int		GetDebugClientKadUDPLevel()			{return m_iDebugClientKadUDPLevel;}
 	static	int		GetDebugSearchResultDetailLevel()	{return m_iDebugSearchResultDetailLevel;}
-	static	uint8	GetVerboseLogPriority()	{return	m_byLogLevel;} // hard coded now, will of course be selectable later
+	static	int		GetVerboseLogPriority()				{return	m_byLogLevel;}
 
 	// Firewall settings
-	static  bool	IsOpenPortsOnStartupEnabled()		{return m_bOpenPortsOnStartUp; }
+	static  bool	IsOpenPortsOnStartupEnabled()		{return m_bOpenPortsOnStartUp;}
 	
 	//AICH Hash
 	static	bool	IsTrustingEveryHash()				{return m_bTrustEveryHash;} // this is a debug option
@@ -1607,18 +1523,18 @@ public:
 	static	CString	GetNotifierMailReceiver()			{return m_strNotifierMailReceiver;}
 
 	static	void	SetNotifierSendMail(bool nv)		{m_bNotifierSendMail = nv;}
+	static  bool	DoFlashOnNewMessage()				{return m_bIconflashOnNewMessage;}
 	static  void	ImportOldTableSetup();
 	static  void	IniCopy(CString si, CString di);
 
+	static	void	EstimateMaxUploadCap(uint32 nCurrentUpload);
+	static  bool	GetAllocCompleteMode()				{return m_bAllocFull;}
+	static  void	SetAllocCompleteMode(bool in)		{m_bAllocFull=in;}
+
 	// ==> Global Source Limit [Max/Stulle] - Stulle
-	static DWORD	GetGlobalHLUpdateTimer()	{return m_dwGlobalHLUpdateTimer;} 
-	static void		SetGlobalHLUpdateTimer(uint16 in)	{m_dwGlobalHLUpdateTimer= in;}
-	static uint16	GetGlobalHL()				{return m_iGlobalHL;}
-	static void		SetGlobalHL(uint16 in)		{m_iGlobalHL = in;}
+	static UINT		GetGlobalHL()				{return m_uGlobalHL;} 
 	static bool		IsUseGlobalHL()				{return m_bGlobalHL;} 
-	static bool		IsUseAgressiveMode()		{return m_bUseAgressiveMode;}
-	static bool		GetPassiveMode()			{return m_bPassiveMode;}
-	static void		SetPassiveMode(bool in)		{m_bPassiveMode = in;}
+	static bool		GetGlobalHlAll()			{return m_bGlobalHlAll;}
 	// <== Global Source Limit [Max/Stulle] - Stulle
 
 	// ==> push small files [sivka] - Stulle
@@ -1716,8 +1632,6 @@ protected:
 	static	CString m_strLogDir;
 	static	Preferences_Ext_Struct* prefsExt;
 	static	WORD m_wWinVer;
-	static	bool m_UseProxyListenPort;
-	static	uint16	ListenPort;
 	static	CArray<Category_Struct*,Category_Struct*> catMap;
 
 	static void	CreateUserHash();
@@ -1725,7 +1639,7 @@ protected:
 	static int	GetRecommendedMaxConnections();
 	static void LoadPreferences();
 	static void SavePreferences();
-	static CString GetHomepageBaseURLForLevel(uint8 nLevel);
+	static CString GetHomepageBaseURLForLevel(int nLevel);
 };
 
 extern CPreferences thePrefs;

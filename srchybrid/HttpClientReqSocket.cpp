@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2004 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -26,11 +26,6 @@
 #include "Log.h"
 //Xman
 #include "ClientList.h"
-
-// ==> {Webcache} [Max] 
-#include "WebCache/WebCachedBlockList.h"
-#include "WebCache/WebCacheProxyClient.h" 
-// <== {Webcache} [Max] 
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -88,7 +83,6 @@ void CHttpClientReqSocket::OnConnect(int nErrorCode)
 
 void CHttpClientReqSocket::DataReceived(const BYTE* pucData, UINT uSize)
 {
-	USES_CONVERSION; //yonatan - unicode bugfix , {Webcache} [Max]
 	bool bResult = false;
 	CString strError;
 	try
@@ -106,7 +100,7 @@ void CHttpClientReqSocket::DataReceived(const BYTE* pucData, UINT uSize)
 	{
 		TCHAR szError[MAX_CFEXP_ERRORMSG];
 		ex->GetErrorMessage(szError, ARRSIZE(szError));
-		strError.Format(_T("Error: HTTP socket: File exception - %s; %s"), szError, DbgGetClientInfo()); // {Webcache} [Max]
+		strError.Format(_T("Error: HTTP socket: File exception - %s"), szError);
 		if (thePrefs.GetVerbose())
 			AddDebugLogLine(false, _T("%s"), strError);
 		ex->Delete();
@@ -116,21 +110,6 @@ void CHttpClientReqSocket::DataReceived(const BYTE* pucData, UINT uSize)
 		strError.Format(_T("Error: HTTP socket: %s; %s"), ex, DbgGetClientInfo());
 		if (thePrefs.GetVerbose())
 			AddDebugLogLine(false, _T("%s"), strError);
-		
-// ==> {Webcache} [Max] 
-// yonatan http start //////////////////////////////////////////////////////////////////////////
-		// client removal experiment
-		if( GetClient() && GetClient()->IsProxy() ) {
-			Debug( _T("Restarting Proxy Downloads\n") );
-			SINGLEProxyClient->SetDownloadState( DS_NONE );
-			SINGLEProxyClient->SetWebCacheDownState( WCDS_NONE );
-			if (SINGLEProxyClient->ProxyClientIsBusy())
-				SINGLEProxyClient->DeleteBlock(); // make SingleProxyClient not busy
-			WebCachedBlockList.TryToDL(); // download next block
-		}
-// yonatan http end ////////////////////////////////////////////////////////////////////////////
-// <== {Webcache} [Max] 
-
 	}
 
 	if (!bResult && !deletethis)
@@ -138,9 +117,7 @@ void CHttpClientReqSocket::DataReceived(const BYTE* pucData, UINT uSize)
 		if (thePrefs.GetVerbose() && thePrefs.GetDebugClientTCPLevel() <= 0)
 		{
 			for (int i = 0; i < m_astrHttpHeaders.GetCount(); i++)
-				
-				AddDebugLogLine(false, _T("<%s"), CA2T(m_astrHttpHeaders.GetAt(i))); //yonatan - unicode bugfix , {Webcache} [Max]
-				
+				AddDebugLogLine(false, _T("<%hs"), m_astrHttpHeaders.GetAt(i));
 		}
 
 		// In case this socket is attached to an CUrlClient, we are dealing with the real CUpDownClient here
@@ -227,15 +204,7 @@ bool CHttpClientReqSocket::ProcessHttpPacket(const BYTE* pucData, UINT uSize)
 	}
 	else{
 		theStats.AddDownDataOverheadFileRequest(uSize);
-
-// ==> {Webcache} [Max] 
-// yonatan http start //////////////////////////////////////////////////////////////////////////
-		CString tmp;
-		tmp.Format( _T("Invalid HTTP socket state: %u"), GetHttpState() );
-		throw tmp;
-// yonatan http end ////////////////////////////////////////////////////////////////////////////
-// <== {Webcache} [Max] 
-
+		throw CString(_T("Invalid HTTP socket state"));
 	}
 
 	return true;
@@ -247,7 +216,7 @@ bool CHttpClientReqSocket::ProcessHttpResponse()
 	return false;
 }
 
-bool CHttpClientReqSocket::ProcessHttpResponseBody(const BYTE* pucData, UINT uSize)
+bool CHttpClientReqSocket::ProcessHttpResponseBody(const BYTE* /*pucData*/, UINT /*uSize*/)
 {
 	ASSERT(0);
 	return false;

@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -48,7 +48,7 @@ public:
 	//Xman Xtreme Upload
 	void	SetNoNeedSlot();
 	uint16	GetNumberOfFullyActivatedSlots()	{return m_highestNumberOfFullyActivatedSlots_out;}
-	void	SetNumberOfFullyActivatedSlots(uint16 in)	{m_highestNumberOfFullyActivatedSlots_out=m_highestNumberOfFullyActivatedSlots;}
+	void	SetNumberOfFullyActivatedSlots()	{m_highestNumberOfFullyActivatedSlots_out=m_highestNumberOfFullyActivatedSlots;}
 	void	SetNextTrickleToFull();
 	void	RecalculateOnNextLoop();
 	bool	needslot;

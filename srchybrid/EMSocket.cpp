@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -31,8 +31,6 @@
 #include "updownclient.h" //Xman Xtreme Upload
 #include "BandWidthControl.h" // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 #include "ListenSocket.h" //Xman 
-
-#include "WebCache/WebCacheSocket.h" //yonatan http , {Webcache} [Max]
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -83,6 +81,7 @@ namespace {
 		//va_list argptr;
 		//va_start(argptr, fmt);
 		//va_end(argptr);
+		UNREFERENCED_PARAMETER(fmt);
 #endif //EMSOCKET_DEBUG
 	}
 }
@@ -99,7 +98,6 @@ CEMSocket::CEMSocket(void){
 	pendingOnReceive = false;
 
 	// Download partial header
-	// memset(pendingHeader, 0, sizeof(pendingHeader));
 	pendingHeaderSize = 0;
 
 	// Download partial packet
@@ -114,7 +112,7 @@ CEMSocket::CEMSocket(void){
 
 	// deadlake PROXYSUPPORT
 	m_pProxyLayer = NULL;
-	m_ProxyConnectFailed = false;
+	m_bProxyConnectFailed = false;
 
     //m_startSendTick = 0;
     //m_lastSendLatency = 0;
@@ -126,12 +124,12 @@ CEMSocket::CEMSocket(void){
 
     m_numberOfSentBytesCompleteFile = 0;
     m_numberOfSentBytesPartFile = 0;
-    m_numberOfSentBytesControlPacket = 0;
+    //m_numberOfSentBytesControlPacket = 0; //Xman unused
 
     lastCalledSend = ::GetTickCount();
     lastSent = ::GetTickCount()-1000;
 
-	m_bAccelerateUpload = false;
+	//m_bAccelerateUpload = false; //Xman unused
 
     m_actualPayloadSize = 0;
     m_actualPayloadSizeSent = 0;
@@ -149,7 +147,7 @@ CEMSocket::CEMSocket(void){
 	//Xman count the blocksend to remove such clients if needed
 	blockedsendcount=0;
 
- }
+}
 
 CEMSocket::~CEMSocket(){
 	EMTrace("CEMSocket::~CEMSocket() on %d",(SOCKET)this);
@@ -182,7 +180,7 @@ CEMSocket::~CEMSocket(){
 
 // deadlake PROXYSUPPORT
 // By Maverick: Connection initialisition is done by class itself
-BOOL CEMSocket::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
+BOOL CEMSocket::Connect(LPCSTR lpszHostAddress, UINT nHostPort)
 {
 	InitProxySupport();
 	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
@@ -204,46 +202,44 @@ BOOL CEMSocket::Connect(SOCKADDR* pSockAddr, int iSockAddrLen)
 
 void CEMSocket::InitProxySupport()
 {
+	m_bProxyConnectFailed = false;
+
 	// ProxyInitialisation
-	const ProxySettings& settings = thePrefs.GetProxy();
-	m_ProxyConnectFailed = false;
+	const ProxySettings& settings = thePrefs.GetProxySettings();
 	if (settings.UseProxy && settings.type != PROXYTYPE_NOPROXY)
 	{
 		Close();
 
-		m_pProxyLayer=new CAsyncProxySocketLayer;
+		m_pProxyLayer = new CAsyncProxySocketLayer;
 		switch (settings.type)
 		{
-			case PROXYTYPE_SOCKS4:
-				m_pProxyLayer->SetProxy(PROXYTYPE_SOCKS4,settings.name,settings.port);
-				break;
-			case PROXYTYPE_SOCKS4A:
-				m_pProxyLayer->SetProxy(PROXYTYPE_SOCKS4A,settings.name,settings.port);
-				break;
-			case PROXYTYPE_SOCKS5:
-				if (settings.EnablePassword)
-					m_pProxyLayer->SetProxy(PROXYTYPE_SOCKS5,settings.name, settings.port, settings.user, settings.password);
-				else
-					m_pProxyLayer->SetProxy(PROXYTYPE_SOCKS5,settings.name,settings.port);
-				break;
-			case PROXYTYPE_HTTP11:
-				if (settings.EnablePassword)
-					m_pProxyLayer->SetProxy(PROXYTYPE_HTTP11,settings.name,settings.port, settings.user, settings.password);
-				else
-					m_pProxyLayer->SetProxy(PROXYTYPE_HTTP11,settings.name,settings.port);
-				break;
-			default: ASSERT(FALSE);
+		case PROXYTYPE_SOCKS4:
+		case PROXYTYPE_SOCKS4A:
+			m_pProxyLayer->SetProxy(settings.type, settings.name, settings.port);
+			break;
+		case PROXYTYPE_SOCKS5:
+		case PROXYTYPE_HTTP10:
+		case PROXYTYPE_HTTP11:
+			if (settings.EnablePassword)
+				m_pProxyLayer->SetProxy(settings.type, settings.name, settings.port, settings.user, settings.password);
+			else
+				m_pProxyLayer->SetProxy(settings.type, settings.name, settings.port);
+			break;
+		default:
+			ASSERT(0);
 		}
 		AddLayer(m_pProxyLayer);
 
 		// Connection Initialisation
-		Create();
+		Create(0, SOCK_STREAM, FD_READ | FD_WRITE | FD_OOB | FD_ACCEPT | FD_CONNECT | FD_CLOSE, thePrefs.GetBindAddrA());
 		AsyncSelect(FD_READ | FD_WRITE | FD_OOB | FD_ACCEPT | FD_CONNECT | FD_CLOSE);
 	}
 }
 
 void CEMSocket::ClearQueues(){
 	EMTrace("CEMSocket::ClearQueues on %d",(SOCKET)this);
+
+	sendLocker.Lock();
 	for(POSITION pos = controlpacket_queue.GetHeadPosition(); pos != NULL; )
 		delete controlpacket_queue.GetNext(pos);
 	controlpacket_queue.RemoveAll();
@@ -258,31 +254,27 @@ void CEMSocket::ClearQueues(){
 	pendingOnReceive = false;
 
 	// Download partial header
-	// memset(pendingHeader, 0, sizeof(pendingHeader));
 	pendingHeaderSize = 0;
 
 	// Download partial packet
-	if(pendingPacket != NULL){
-		delete pendingPacket;
-		pendingPacket = NULL;
-		pendingPacketSize = 0;
-	}
+	delete pendingPacket;
+	pendingPacket = NULL;
+	pendingPacketSize = 0;
 
 	// Upload control
-	if(sendbuffer != NULL){
-		delete[] sendbuffer;
-		sendbuffer = NULL;
-	}
+	delete[] sendbuffer;
+	sendbuffer = NULL;
+
 	sendblen = 0;
 	sent = 0;
 
+	sendLocker.Unlock(); //Xman
 }
 //Xman
 void CEMSocket::OnConnect(int nErrorCode){
 	if(nErrorCode == 0){
 		// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
-		theApp.pBandWidthControl->AddeMuleInTCPOverall(0);  // SYN + ACK
-		theApp.pBandWidthControl->AddeMuleOutTCPOverall(0); // ACK
+		theApp.pBandWidthControl->AddeMuleSYNACK();
 		// Maella end
 
 	}
@@ -307,20 +299,21 @@ void CEMSocket::OnClose(int nErrorCode){
 	//Xman
 	if(nErrorCode == 0){
 		// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
-		theApp.pBandWidthControl->AddeMuleInTCPOverall(0);
-		theApp.pBandWidthControl->AddeMuleOutTCPOverall(0);
+		theApp.pBandWidthControl->AddeMuleSYNACK();
 		// Maella end
 	}
 	//Xman end
-};
+}
 
 BOOL CEMSocket::AsyncSelect(long lEvent){
+#ifdef EMSOCKET_DEBUG
 	if (lEvent&FD_READ)
 		EMTrace("  FD_READ");
 	if (lEvent&FD_CLOSE)
 		EMTrace("  FD_CLOSE");
 	if (lEvent&FD_WRITE)
 		EMTrace("  FD_WRITE");
+#endif
 	// deadlake changed to AsyncSocketEx PROXYSUPPORT
 	if (m_SocketData.hSocket != INVALID_SOCKET)
 		return CAsyncSocketEx::AsyncSelect(lEvent);
@@ -349,6 +342,7 @@ void CEMSocket::OnReceive(int nErrorCode){
 	
 	ProcessReceiveData();
 }
+
 void CEMSocket::ProcessReceiveData()
 {
 	// the 2 meg size was taken from another place
@@ -407,31 +401,6 @@ void CEMSocket::ProcessReceiveData()
 	char *rptr = GlobalReadBuffer; // floating index initialized with begin of buffer
 	const char *rend = GlobalReadBuffer + ret; // end of buffer
 
-// ==> {Webcache} [Max] 
-// yonatan http start //////////////////////////////////////////////////////////////////////////
-	if( *(uint32*)GlobalReadBuffer == ' TEG' ) 
-        {
-		CWebCacheUpSocket* WCSocket;
-		if( !IsKindOf( RUNTIME_CLASS( CWebCacheUpSocket ) ) ) // yonatan http - WC-TODO: make sure this is a new, incoming connection?
-		{
-			// Turn this into a CWebCacheUpSocket and attach to client.
-			SOCKET s = Detach(); // Detach socket from this (CClientReqSocket)
-			WCSocket = new CWebCacheUpSocket(); // Create a new WebCache socket
-			WCSocket->Attach( s, FD_WRITE|FD_READ|FD_CLOSE );
-			if( WCSocket->ProcessFirstHttpGet( GlobalReadBuffer, ret ) ) 
-                        {
-				delete this;
-				return;
-			}
-		} 
-                else 
-                {
-			static_cast<CWebCacheUpSocket*>(this)->ProcessHttpPacket( (BYTE*)GlobalReadBuffer, ret );
-		}
-	}
-// yonatan http end ////////////////////////////////////////////////////////////////////////////
-// <== {Webcache} [Max] 
-
 	// Loop, processing packets until we run out of them
 	while ((rend - rptr >= PACKET_HEADER_SIZE) || ((pendingPacket != NULL) && (rend - rptr > 0)))
 	{
@@ -465,12 +434,6 @@ void CEMSocket::ProcessReceiveData()
 				case OP_EDONKEYPROT:
 				case OP_PACKEDPROT:
 				case OP_EMULEPROT:
-
-// ==> {Webcache} [Max] 
-				case OP_WEBCACHEPACKEDPROT:
-				case OP_WEBCACHEPROT: // yonatan - webcache protocol packets
-// <== {Webcache} [Max] 
-
 					break;
 				default:
 					EMTrace("CEMSocket::OnReceive ERROR Wrong header");
@@ -502,12 +465,27 @@ void CEMSocket::ProcessReceiveData()
 		// - Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 		switch(pendingPacket->opcode){
 			case OP_SENDINGPART:
-			case OP_COMPRESSEDPART:{
+			case OP_COMPRESSEDPART:
+			case OP_SENDINGPART_I64:
+			case OP_COMPRESSEDPART_I64:
+				{
 					// Don't wait to have recieved the full block (10k) to account it 
 					if(client != NULL){						
 						if(pendingPacketSize == 0){
-							// Statistic, the control (FileId+StartPos+EndPos => 24 bytes) header should not be included
-							uint32 receivedBytes = (toCopy > 24) ? (toCopy - 24) : 0;
+							// Statistic, the control (FileId+StartPos+EndPos) header should not be included
+							//FileID -> 16 Byte
+							//OP_SENDINGPART: 4 + 4 ->24
+							//OP_COMPRESSEDPART: 4 + 4 ->24
+							//OP_SENDINGPART_I64: 8 + 8 -> 32
+							//OP_COMPRESSEDPART_I64: 8 + 4 -> 28
+							uint8 headersize;
+							if(pendingPacket->opcode == OP_SENDINGPART || pendingPacket->opcode == OP_COMPRESSEDPART)
+								headersize=24;
+							else if(pendingPacket->opcode == OP_COMPRESSEDPART_I64)
+								headersize=28;
+							else
+								headersize=32;
+							uint32 receivedBytes = (toCopy > headersize) ? (toCopy - headersize) : 0;
 							client->AddDownloadRate(receivedBytes); 
 							theApp.pBandWidthControl->AddeMuleIn(receivedBytes);
 						}
@@ -557,22 +535,8 @@ void CEMSocket::ProcessReceiveData()
 }
 
 void CEMSocket::SetDownloadLimit(uint32 limit){	
-
-// ==> {Webcache} [Max] 
-        // JP added netfinity download throttler
-	// MOD BEGIN netfinity: Accumulate download limits
-	downloadLimit += limit; 
-	downloadLimitEnable = true;	
-	if(downloadLimit > 20 * limit && downloadLimit > 4500) // Allow a maximum of 2.0 sec to accumulate or 3 * MTU
-		downloadLimit = max(20 * limit, 4500); 
-        // MOD END netfinity
-// <== {Webcache} [Max] 
-
-/*(original code)
 	downloadLimit = limit;
 	downloadLimitEnable = true;	
-*/
-	
 	
 	// CPU load improvement
 	//Xman include ACK
@@ -649,15 +613,19 @@ void CEMSocket::SendPacket(Packet* packet, bool delpacket, bool controlpacket, u
 				theApp.uploadBandwidthThrottler->QueueForSendingControlPacket(this, HasSent());
 			}
 	    } else {
-            bool first = !((sendbuffer && !m_currentPacket_is_controlpacket) || !standartpacket_queue.IsEmpty());
+            //Xman unused
+			//bool first = !((sendbuffer && !m_currentPacket_is_controlpacket) || !standartpacket_queue.IsEmpty());
             StandardPacketQueueEntry queueEntry = { actualPayloadSize, packet };
 		    standartpacket_queue.AddTail(queueEntry);
 
+			//Xman unused
             // reset timeout for the first time
-            if (first) {
+            /*
+			if (first) {
                 lastFinishedStandard = ::GetTickCount();
                 m_bAccelerateUpload = true;	// Always accelerate first packet in a block
             }
+			*/
 	    }
     }
 
@@ -686,6 +654,7 @@ uint64 CEMSocket::GetSentBytesPartFileSinceLastCallAndReset() {
     return sentBytes;
 }
 //Xman: this mothod seems not to be used
+/*
 uint64 CEMSocket::GetSentBytesControlPacketSinceLastCallAndReset() {
     sendLocker.Lock();
 
@@ -696,7 +665,7 @@ uint64 CEMSocket::GetSentBytesControlPacketSinceLastCallAndReset() {
 
     return sentBytes;
 }
-
+*/
 uint64 CEMSocket::GetSentPayloadSinceLastCallAndReset() {
     sendLocker.Lock();
 
@@ -794,19 +763,14 @@ SocketSentBytes CEMSocket::Send(uint32 maxNumberOfBytesToSend, uint32 minFragSiz
 	//Xman  Code Improvement
 	//there is no need to lock when testing m_bBusy, because we have only one caller (uploadbandwidththrottler)
 	//the worse case is ONSend is triggered at the same time we are at this point.. but then we only have to wait until next uploadbandwidththrottler-loop
-	if (m_bBusy )//&& onlyAllowedToSendControlPacket) 
+	if (m_bBusy && onlyAllowedToSendControlPacket) 
 	{
-		//Xman count the blocksend to remove such clients if needed
-		if(!onlyAllowedToSendControlPacket)
-			blockedsendcount++;
-		//Xman 4.8: at high slotspeed the delay of the mainthread can be too high. better go official way and ignore buisy
-		else
-		{
 			SocketSentBytes returnVal = { true, 0, 0 };
 			return returnVal;
-		}
 	}
 	//Xman x4 Code Improvement end
+	
+
 
 	sendLocker.Lock();
 
@@ -835,6 +799,7 @@ SocketSentBytes CEMSocket::Send(uint32 maxNumberOfBytesToSend, uint32 minFragSiz
 	//Xman Xtreme Upload
 	//don't add the header of standardpackage:
 	bool newdatapacket=false;
+	uint8 sendingdata_opcode=0;
 	uint32	IPHeaderThisCall=0;
 	//Xman end
 
@@ -877,6 +842,7 @@ SocketSentBytes CEMSocket::Send(uint32 maxNumberOfBytesToSend, uint32 minFragSiz
 				// after sending (particular), subtract the header
                 // remember this for statistics purposes.
 				newdatapacket=true;
+				sendingdata_opcode=curPacket->opcode;
                 m_currentPackageIsFromPartFile = curPacket->IsFromPF();
             } else {
                 // Just to be safe. Shouldn't happen?
@@ -934,6 +900,13 @@ SocketSentBytes CEMSocket::Send(uint32 maxNumberOfBytesToSend, uint32 minFragSiz
 			    if (error == WSAEWOULDBLOCK){
                     m_bBusy = true;
 
+
+					//Xman 4.8.2 moved here
+					//Xman count the blocksend to remove such clients if needed
+					if(!onlyAllowedToSendControlPacket)
+						blockedsendcount++;
+					//Xman end
+
                     //m_wasBlocked = true;
                     sendLocker.Unlock();
 
@@ -945,7 +918,7 @@ SocketSentBytes CEMSocket::Send(uint32 maxNumberOfBytesToSend, uint32 minFragSiz
                     //DEBUG_ONLY( AddDebugLogLine(true,"EMSocket: An error has occured: %i", error) );
                 }
             } else {
-                // we managed to send some bytes. Perform bookkeeping.
+				// we managed to send some bytes. Perform bookkeeping.
                 m_bBusy = false;
                 m_hasSent = true;
 
@@ -955,11 +928,39 @@ SocketSentBytes CEMSocket::Send(uint32 maxNumberOfBytesToSend, uint32 minFragSiz
                 // Log send bytes in correct class
                 //Xman Xtreme Upload
 				//after sending a complete package we have to remove the header size
-				// Remove: header+FileId+StartPos+EndPos => 6+24 bytes
+				// Remove: header+FileId+StartPos+EndPos 
 				if(m_currentPacket_is_controlpacket == false) {
 					uint32 packetheadersize=0;
 					if(newdatapacket)
-						packetheadersize=  (result > 30) ? 30 : result;
+					{
+						//Header -> 6 Bytes
+						//FileID -> 16 Byte
+						//OP_SENDINGPART: 4 + 4 ->30
+						//OP_COMPRESSEDPART: 4 + 4 ->30
+						//OP_SENDINGPART_I64: 8 + 8 -> 36
+						//OP_COMPRESSEDPART_I64: 8 + 4 -> 32
+						switch(sendingdata_opcode)
+						{
+							case OP_SENDINGPART:
+							case OP_COMPRESSEDPART:
+							{
+								packetheadersize=  (result > 30) ? 30 : result;
+								break;
+							}
+							case OP_COMPRESSEDPART_I64:
+							{
+								packetheadersize=  (result > 32) ? 32 : result;
+								break;
+							}
+							case OP_SENDINGPART_I64:
+							{
+								packetheadersize=  (result > 36) ? 36 : result;
+								break;
+							}
+							default:
+								ASSERT(0);
+						}
+					}
                     if(m_currentPackageIsFromPartFile == true) {
                         m_numberOfSentBytesPartFile += (result-packetheadersize);
                     } else {
@@ -969,7 +970,7 @@ SocketSentBytes CEMSocket::Send(uint32 maxNumberOfBytesToSend, uint32 minFragSiz
 					sentControlPacketBytesThisCall += packetheadersize;
                 } else {
                     sentControlPacketBytesThisCall += result;
-                    m_numberOfSentBytesControlPacket += result;
+                    //m_numberOfSentBytesControlPacket += result; //Xman unused
                 }
 				newdatapacket=false; //to be sure if sending two (mini)data packets
 				// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
@@ -990,8 +991,9 @@ SocketSentBytes CEMSocket::Send(uint32 maxNumberOfBytesToSend, uint32 minFragSiz
                 m_actualPayloadSizeSent += m_actualPayloadSize;
                 m_actualPayloadSize = 0;
 
-                lastFinishedStandard = ::GetTickCount(); // reset timeout
-                m_bAccelerateUpload = false; // Safe until told otherwise
+				//Xman unused
+                //lastFinishedStandard = ::GetTickCount(); // reset timeout
+                //m_bAccelerateUpload = false; // Safe until told otherwise
             }
 
             sent = 0;
@@ -1153,89 +1155,65 @@ int CEMSocket::Receive(void* lpBuf, int nBufLen, int nFlags)
 	return SOCKET_ERROR;
 }
 
-
-// deadlake PROXYSUPPORT ( RESETS LAYER CHAIN BY MAVERICK )
 void CEMSocket::RemoveAllLayers()
 {
 	CAsyncSocketEx::RemoveAllLayers();
-	
-	// ProxyLayer Destruction
-	if (m_pProxyLayer) 
-	{
-		delete m_pProxyLayer;
-		m_pProxyLayer = NULL;
-	}
+	delete m_pProxyLayer;
+	m_pProxyLayer = NULL;
 }
 
-int CEMSocket::OnLayerCallback(const CAsyncSocketExLayer *pLayer, int nType, int nParam1, int nParam2)
+int CEMSocket::OnLayerCallback(const CAsyncSocketExLayer *pLayer, int nType, int nCode, WPARAM wParam, LPARAM lParam)
 {
-	ASSERT(pLayer);
-	if (nType==LAYERCALLBACK_STATECHANGE)
+	UNREFERENCED_PARAMETER(wParam);
+	ASSERT( pLayer );
+	if (nType == LAYERCALLBACK_STATECHANGE)
 	{
-		CString logline;
+		/*CString logline;
 		if (pLayer==m_pProxyLayer)
 		{
-			//logline.Format(_T("ProxyLayer changed state from %d to %d"), nParam2, nParam1);
-			//AddLogLine(false,logline);
+		//logline.Format(_T("ProxyLayer changed state from %d to %d"), wParam, nCode);
+		//AddLogLine(false,logline);
 		}else
-			//logline.Format(_T("Layer @ %d changed state from %d to %d"), pLayer, nParam2, nParam1);
-			//AddLogLine(false,logline);
+		//logline.Format(_T("Layer @ %d changed state from %d to %d"), pLayer, wParam, nCode);
+		//AddLogLine(false,logline);*/
 		return 1;
 	}
-	else if (nType==LAYERCALLBACK_LAYERSPECIFIC)
+	else if (nType == LAYERCALLBACK_LAYERSPECIFIC)
 	{
-		if (pLayer==m_pProxyLayer)
+		if (pLayer == m_pProxyLayer)
 		{
-			switch (nParam1)
+			switch (nCode)
 			{
-				// changed by deadlake -> errormessages could be ignored -> there's not a problem with the connection - 
-				// only the proxyserver handles the connections to low ( small bandwidth? )
-				case PROXYERROR_NOCONN:{
-					//TODO: This error message(s) should be outputed only during startup - otherwise we'll see a lot of
-					//them in the log window which would be of no use.
-					if (thePrefs.GetShowProxyErrors()){
-						CString strError(_T("Can't connect to proxy"));
-						CString strErrInf;
-						if (nParam2 && GetErrorMessage(nParam2, strErrInf))
-							strError += _T(" - ") + strErrInf;
-						LogWarning(false, _T("%s"), strError);
+			case PROXYERROR_NOCONN:
+				// We failed to connect to the proxy.
+				m_bProxyConnectFailed = true;
+				/* fall through */
+			case PROXYERROR_REQUESTFAILED:
+				// We are connected to the proxy but it failed to connect to the peer.
+				if (thePrefs.GetVerbose()) {
+					m_strLastProxyError = GetProxyError(nCode);
+					if (lParam && ((LPCSTR)lParam)[0] != '\0') {
+						m_strLastProxyError += _T(" - ");
+						m_strLastProxyError += (LPCSTR)lParam;
 					}
-					break;
+					// Appending the Winsock error code is actually not needed because that error code
+					// gets reported by to the original caller anyway and will get reported eventually
+					// by calling 'GetFullErrorMessage',
+					/*if (wParam) {
+					CString strErrInf;
+					if (GetErrorMessage(wParam, strErrInf, 1))
+					m_strLastProxyError += _T(" - ") + strErrInf;
+					}*/
 				}
-				case PROXYERROR_REQUESTFAILED:{
-					//TODO: This error message(s) should be outputed only during startup - otherwise we'll see a lot of
-					//them in the log window which would be of no use.
-					if (thePrefs.GetShowProxyErrors()){
-						CString strError(_T("Proxy request failed"));
-						if (nParam2){
-							strError += _T(" - ");
-							strError += (LPCSTR)nParam2;
-						}
-						LogWarning(false, _T("%s"), strError);
-					}
-					break;
-				}
-				case PROXYERROR_AUTHTYPEUNKNOWN:
-					LogWarning(false,_T("Required authtype reported by proxy server is unknown or unsupported"));
-					break;
-				case PROXYERROR_AUTHFAILED:
-					LogWarning(false,_T("Authentification failed"));
-					break;
-				case PROXYERROR_AUTHNOLOGON:
-					LogWarning(false,_T("Proxy requires authentification"));
-					break;
-				case PROXYERROR_CANTRESOLVEHOST:
-					LogWarning(false,_T("Can't resolve host of proxy"));
-					break;
-				default:{
-					LogWarning(false,_T("Proxy error - %s"), GetProxyError(nParam1));
-				}
+				break;
+			default:
+				m_strLastProxyError = GetProxyError(nCode);
+				LogWarning(false, _T("Proxy-Error: %s"), m_strLastProxyError);
 			}
 		}
 	}
 	return 1;
 }
-// end deadlake
 
 /**
  * Removes all packets from the standard queue that don't have to be sent for the socket to be able to send a control packet.
@@ -1266,7 +1244,7 @@ void CEMSocket::AssertValid() const
 	const_cast<CEMSocket*>(this)->sendLocker.Lock();
 
 	ASSERT( byConnected==ES_DISCONNECTED || byConnected==ES_NOTCONNECTED || byConnected==ES_CONNECTED );
-	CHECK_BOOL(m_ProxyConnectFailed);
+	CHECK_BOOL(m_bProxyConnectFailed);
 	CHECK_PTR(m_pProxyLayer);
 	(void)downloadLimit;
 	CHECK_BOOL(downloadLimitEnable);
@@ -1283,7 +1261,7 @@ void CEMSocket::AssertValid() const
     //(void)sendLocker;
     (void)m_numberOfSentBytesCompleteFile;
     (void)m_numberOfSentBytesPartFile;
-    (void)m_numberOfSentBytesControlPacket;
+    //(void)m_numberOfSentBytesControlPacket; //Xman unused
     CHECK_BOOL(m_currentPackageIsFromPartFile);
     (void)lastCalledSend;
     (void)m_actualPayloadSize;
@@ -1314,3 +1292,41 @@ void CEMSocket::SetTimeOut(UINT uTimeOut)
 {
 	m_uTimeOut = uTimeOut;
 }
+
+CString CEMSocket::GetFullErrorMessage(DWORD nErrorCode)
+{
+	CString strError;
+
+	// Proxy error
+	if (!GetLastProxyError().IsEmpty())
+	{
+		strError = GetLastProxyError();
+		// If we had a proxy error and the socket error is WSAECONNABORTED, we just 'aborted'
+		// the TCP connection ourself - no need to show that self-created error too.
+		if (nErrorCode == WSAECONNABORTED)
+			return strError;
+	}
+
+	// Winsock error
+	if (nErrorCode)
+	{
+		if (!strError.IsEmpty())
+			strError += _T(": ");
+		strError += GetErrorMessage(nErrorCode, 1);
+	}
+
+	return strError;
+}
+
+//Xman 4.8.2
+//Threadsafe Statechange
+void CEMSocket::SetConState(const uint8 state)
+{
+	if(byConnected == state)
+		return;
+
+	sendLocker.Lock();
+	byConnected = state;
+	sendLocker.Unlock();
+}
+//Xman end

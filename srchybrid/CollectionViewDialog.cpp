@@ -48,6 +48,13 @@ enum ECols
 };
 
 IMPLEMENT_DYNAMIC(CCollectionViewDialog, CDialog)
+
+BEGIN_MESSAGE_MAP(CCollectionViewDialog, CResizableDialog)
+	ON_NOTIFY(NM_DBLCLK, IDC_COLLECTIONVEWLIST, OnNMDblclkCollectionvewlist)
+	ON_BN_CLICKED(IDC_VIEWCOLLECTIONDL, OnBnClickedViewcollectiondl)
+	ON_BN_CLICKED(IDC_VCOLL_CLOSE, OnBnClickedOk)
+END_MESSAGE_MAP()
+
 CCollectionViewDialog::CCollectionViewDialog(CWnd* pParent /*=NULL*/)
 	: CResizableDialog(CCollectionViewDialog::IDD, pParent)
 	, m_pCollection(NULL)
@@ -72,16 +79,6 @@ void CCollectionViewDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COLLECTIONVIEWAUTHOR, m_CollectionViewAuthor);
 	DDX_Control(pDX, IDC_COLLECTIONVIEWAUTHORKEY, m_CollectionViewAuthorKey);
 }
-
-
-BEGIN_MESSAGE_MAP(CCollectionViewDialog, CResizableDialog)
-	ON_NOTIFY(NM_DBLCLK, IDC_COLLECTIONVEWLIST, OnNMDblclkCollectionvewlist)
-	ON_BN_CLICKED(IDC_VIEWCOLLECTIONDL, OnBnClickedViewcollectiondl)
-	ON_BN_CLICKED(IDC_VCOLL_CLOSE, OnBnClickedOk)
-END_MESSAGE_MAP()
-
-
-// CCollectionViewDialog message handlers
 
 void CCollectionViewDialog::SetCollection(CCollection* pCollection)
 {
@@ -159,7 +156,7 @@ BOOL CCollectionViewDialog::OnInitDialog(void)
 	return TRUE;
 }
 
-void CCollectionViewDialog::OnNMDblclkCollectionvewlist(NMHDR *pNMHDR, LRESULT *pResult)
+void CCollectionViewDialog::OnNMDblclkCollectionvewlist(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	DownloadSelected();
 	*pResult = 0;

@@ -60,7 +60,7 @@ void CNumEdit::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	}
 }
 
-LONG CNumEdit::OnPaste(UINT wParam, LONG lParam)
+LONG CNumEdit::OnPaste(UINT /*wParam*/, LONG /*lParam*/)
 {
 	// To do.....	
 	return 0L;

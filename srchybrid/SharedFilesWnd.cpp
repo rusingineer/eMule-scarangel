@@ -269,7 +269,7 @@ void CSharedFilesWnd::OnBnClickedReloadsharedfiles()
 	Reload();
 }
 
-void CSharedFilesWnd::OnLvnItemActivateSflist(NMHDR *pNMHDR, LRESULT *pResult)
+void CSharedFilesWnd::OnLvnItemActivateSflist(NMHDR* /*pNMHDR*/, LRESULT* /*pResult*/)
 {
 	ShowSelectedFilesSummary();
 }
@@ -381,11 +381,20 @@ void CSharedFilesWnd::OnNMClickSflist(NMHDR *pNMHDR, LRESULT *pResult)
 
 BOOL CSharedFilesWnd::PreTranslateMessage(MSG* pMsg) 
 {
-   if(pMsg->message == WM_KEYUP){
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		// Don't handle Ctrl+Tab in this window. It will be handled by main window.
+		if (pMsg->wParam == VK_TAB && GetAsyncKeyState(VK_CONTROL) < 0)
+			return FALSE;
+	}
+	else if (pMsg->message == WM_KEYUP)
+	{
+
 	   if (pMsg->hwnd == GetDlgItem(IDC_SFLIST)->m_hWnd)
-			OnLvnItemActivateSflist(0,0);
+			OnLvnItemActivateSflist(0, 0);
    }
-   if (pMsg->message == WM_MBUTTONUP){
+	else if (pMsg->message == WM_MBUTTONUP)
+	{
 		POINT point;
 		::GetCursorPos(&point);
 		CPoint p = point; 
@@ -462,7 +471,7 @@ void CSharedFilesWnd::Localize()
 	*/
 }
 
-void CSharedFilesWnd::OnTvnSelchangedShareddirstree(NMHDR *pNMHDR, LRESULT *pResult)
+void CSharedFilesWnd::OnTvnSelchangedShareddirstree(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	//Xman [MoNKi: -Downloaded History-]
 	if(m_ctlSharedDirTree.GetSelectedFilter() == m_ctlSharedDirTree.pHistory)
@@ -560,12 +569,12 @@ void CSharedFilesWnd::OnNMClickHistorylist(NMHDR *pNMHDR, LRESULT *pResult){
 	*pResult = 0;
 }
 
-void CSharedFilesWnd::OnLvnItemActivateHistorylist(NMHDR *pNMHDR, LRESULT *pResult)
+void CSharedFilesWnd::OnLvnItemActivateHistorylist(NMHDR* /*pNMHDR*/, LRESULT* /*pResult*/)
 {
 	ShowSelectedFilesSummary(true);
 }
 
-void CSharedFilesWnd::OnShowWindow( BOOL bShow,UINT nStatus )
+void CSharedFilesWnd::OnShowWindow( BOOL bShow,UINT /*nStatus*/ )
 {
 	if(bShow && m_ctlSharedDirTree.GetSelectedFilter() == m_ctlSharedDirTree.pHistory)
 	{

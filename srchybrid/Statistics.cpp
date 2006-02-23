@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -220,10 +220,10 @@ void CStatistics::UpdateConnectionStats(void)
 		theApp.pBandWidthControl->GetFullHistoryDatarates(plotinData[MINUTE], plotOutData[MINUTE],
 														  plotinData[SESSION], plotOutData[SESSION]);
 
-		currentDownloadRate = (float)plotinData[CURRENT]/1024.0;
-		sessionDownloadRate = (float)plotinData[SESSION]/1024.0;
-		currentUploadRate   = (float)plotOutData[CURRENT]/1024.0;
-		sessionUploadRate   = (float)plotOutData[SESSION]/1024.0;
+		currentDownloadRate = (float)plotinData[CURRENT]/1024.0f;
+		sessionDownloadRate = (float)plotinData[SESSION]/1024.0f;
+		currentUploadRate   = (float)plotOutData[CURRENT]/1024.0f;
+		sessionUploadRate   = (float)plotOutData[SESSION]/1024.0f;
 		// Maella end
 
 		//Xman Patch: be realistic:
@@ -329,3 +329,100 @@ void CStatistics::UpdateConnectionStats(void)
 // <-----khaos-
 
 
+#ifdef USE_MEM_STATS
+
+#ifdef _DEBUG
+#error "Does not work when _DEBUG defined!"
+#endif
+
+#ifdef _AFXDLL
+#error "Not supported for _AFXDLL!"
+#endif
+
+#if _MFC_VER!=0x0710
+#error "Not verified for this _MSC_VER!"
+#endif
+
+ULONGLONG g_aAllocStats[ALLOC_SLOTS];
+
+/////////////////////////////////////////////////////////////////////////////
+// Non-diagnostic memory routines
+
+int AFX_CDECL AfxNewHandler(size_t /* nSize */)
+{
+	AfxThrowMemoryException();
+	return 0;
+}
+
+#pragma warning(disable: 4273)
+
+_PNH _afxNewHandler = &AfxNewHandler;
+
+_PNH AFXAPI AfxGetNewHandler(void)
+{
+	return _afxNewHandler;
+}
+
+_PNH AFXAPI AfxSetNewHandler(_PNH pfnNewHandler)
+{
+	_PNH pfnOldHandler = _afxNewHandler;
+	_afxNewHandler = pfnNewHandler;
+	return pfnOldHandler;
+}
+
+AFX_STATIC_DATA const _PNH _pfnUninitialized = (_PNH)-1;
+
+inline int log2(unsigned x)
+{
+	int log = 0;
+	while (x >>= 1)
+		++log;
+	return log;
+}
+
+void* my_new(size_t n)
+{
+	int i;
+	if (n == 0)
+		i = 0;
+	else {
+		i = log2(n) + 1;
+		if (i >= ALLOC_SLOTS)
+			i = ALLOC_SLOTS - 1;
+	}
+	g_aAllocStats[i]++;
+
+	void* pResult;
+	for (;;)
+	{
+		pResult = malloc(n);
+		if (pResult != NULL)
+			return pResult;
+
+		if (_afxNewHandler == NULL || (*_afxNewHandler)(n) == 0)
+			break;
+	}
+	return pResult;
+}
+
+void* __cdecl operator new(size_t nSize)
+{
+	return my_new(nSize);
+}
+
+void* __cdecl operator new[](size_t nSize)
+{
+	return ::operator new(nSize);
+}
+
+void __cdecl operator delete(void* p)
+{
+	free(p);
+}
+
+void __cdecl operator delete[](void* p)
+{
+	::operator delete(p);
+}
+
+#endif

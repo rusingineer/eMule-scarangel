@@ -50,6 +50,7 @@ public:
    /**/ void AddeMuleOutOverallNoHeader(uint32 octets); 
    /**/ void AddeMuleOut(uint32 octets);
    /**/ void AddeMuleIn(uint32 octets);
+   /**/ void AddeMuleSYNACK();
 
    // Accessors, used for the control of the bandwidth (=> slope)
    /**/ uint64 GeteMuleOut() const;
@@ -67,7 +68,7 @@ public:
    //Xman end
 
    // Retrieve datarates for barline + upload slot management + Graphic
-   void GetDatarates(uint8 samples,
+   void GetDatarates(UINT samples,
                      uint32& eMuleIn, uint32& eMuleInOverall,
                      uint32& eMuleOut, uint32& eMuleOutOverall,
                      uint32& networkIn, uint32& networkOut) const;
@@ -84,7 +85,7 @@ public:
    float GetMaxUpload() const {return m_maxUploadLimit;}
 
    //Xman 1:3 Ratio (use this instead of GetMaxDownload()
-   //Xman GlobalMaxHardlimit for fairness	
+   //Xman GlobalMaxHarlimit for fairness	
 	float GetMaxDownloadEx(bool force);
 	float GetForcedDownloadlimit() const {return m_maxforcedDownloadlimit;}
 
@@ -131,7 +132,7 @@ private:
    float m_maxDownloadLimit; // Used for auto U/D limits
    float m_maxUploadLimit;
 
-   //Xman GlobalMaxHardlimit for fairness
+   //Xman GlobalMaxHarlimit for fairness
 	float m_maxforcedDownloadlimit;
 
    //Xman thread save

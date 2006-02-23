@@ -1882,10 +1882,43 @@ BEGIN
                             "UploadSpeedSense: Tracerouting faziet re a wezhioù. Disaotren Upload SpeedSense."
     IDS_USS_STARTING        "UploadSpeedSense: Echu eo gant ar prientiñ. O loc'hañ ar reoliñ eus an tizh treuzkas (an 60 eilenn kentañ a vo er mod reaktion trumm)"
     IDS_USS_MANUALUPLOADLIMITDETECTED 
-                            "UploadSpeedSense: harz treuzkas en dibaboù dizoloet. Aet d'ar mod reaktion trumm evit 60 eilenn."
+                            "UploadSpeedSense: harz treuzkas en dibaboù dizoloet. Aet d'ar mod respont trumm evit 60 eilenn."
     IDS_USS_STATE_PREPARING "O prientiñ..."
     IDS_USS_STATE_WAITING   "O c'hortoz..."
     IDS_USS_STATE_ERROR     "Fazi !"
+    IDS_SHAREWARNING        "(ingalet e vo an teuliad !)"
+    IDS_REMOVEALLSERVERS    "Ha fellout a ra deoc’h dilemel an holl servijerioù ?"
+    IDS_SEARCH_UNKATTR      "Doareenn glask dianav '%s'"
+    IDS_SEARCH_ATTRERR      "Fazi kevreañ en doareenn glask '%s'"
+    IDS_SEARCH_MISSINGANDRIGHT "Tu dehou evit an oberiadenn AND a vank"
+    IDS_SEARCH_OPRERR       "Fazi kevreañ en oberiadenn geñveriañ '%s'"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DOWNLOAD_LANGFILE   "O pellgargañ restr yezh"
+    IDS_DOWNLOADING_SERVERMET_FROM "O pellgargañ server.met adalek %s"
+    IDS_DOWNLOADING_SERVERMET "O pellgargañ server.met..."
+    IDS_FULLALLOC           "Mirout memor a-bezh evit lodennoù ar restroù non-sparse"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH "N'haller ket kavout an drailherezh."
+    IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "Roll Gap gwastet."
+    IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST "N'haller ket kavout ar roll Gap."
+    IDS_X_SHAREAZA_IMPORT_HASH_SET_CORRUPT "Keloù drailherezh gwastet."
+    IDS_X_SHAREAZA_IMPORT_NO_HASH_SET "N'haller ket kavout ar c’heloù drailherezh."
+    IDS_CONVERTINGKNOWN2MET "O treiñ %s davet %s evit skorañ restroù brasoc’h..."
+    IDS_CONVERTINGKNOWN2FAILED 
+                            "...fazi en ur zreiñ known2.met, laosket an enrolladennoù kozh a-gostez"
+    IDS_CONVERTINGKNOWN2DONE "... graet, treiñ echu"
+    IDS_ERR_MET_BAD         "Fazi: ar restr %s a zo gwastet, n'haller ket kargañ restroù anavezet"
+    IDS_SRV_LARGEFILES      "Skor evit restroù brasoc’h"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_ERR_FSCANTHANDLEFILE 
+                            "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
+    IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
 END
 
 #endif    // French (Bretan) resources

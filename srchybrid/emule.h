@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -20,11 +20,8 @@
 #endif
 #include "resource.h"
 
-// ==> {change} [Max]
 #define	DEFAULT_NICK		_T("http://www.emule-web.de/board")
-#define	DEFAULT_TCP_PORT	4662 
-// <== {change} [Max] 
-
+#define	DEFAULT_TCP_PORT	4662
 #define	DEFAULT_UDP_PORT	(DEFAULT_TCP_PORT+10)
 
 #define PORTTESTURL			_T("http://porttest.emule-project.net/connectiontest.php?tcpport=%i&udpport=%i&lang=%i")
@@ -124,6 +121,7 @@ public:
 	DWORD				m_dwProductVersionMS;
 	DWORD				m_dwProductVersionLS;
 	CString				m_strCurVersionLong;
+	CString				m_strCurVersionLongDbg;
 	UINT				m_uCurVersionShort;
 	UINT				m_uCurVersionCheck;
 	ULONGLONG			m_ullComCtrlVer;
@@ -138,11 +136,11 @@ public:
 
 	// ed2k link functions
 	//Xman [MoNKi: -Check already downloaded files-]
-	void		AddEd2kLinksToDownload(CString strLinks, uint8 cat, bool askIfAlreadyDownloaded = false);
+	void		AddEd2kLinksToDownload(CString strLinks, int cat, bool askIfAlreadyDownloaded = false);
 	//Xman end
 	void		SearchClipboard();
 	void		IgnoreClipboardLinks(CString strLinks) {m_strLastClipboardContents = strLinks;}
-	void		PasteClipboard(uint8 uCategory = 0);
+	void		PasteClipboard(int cat = 0);
 	bool		IsEd2kFileLinkInClipboard();
 	bool		IsEd2kServerLinkInClipboard();
 	bool		IsEd2kLinkInClipboard(LPCSTR pszLinkType, int iLinkTypeLen);
@@ -188,7 +186,7 @@ public:
 	bool		GetLangHelpFilePath(CString& strResult);
 	void		SetHelpFilePath(LPCTSTR pszHelpFilePath);
 	void		ShowHelp(UINT uTopic, UINT uCmd = HELP_CONTEXT);
-	bool		ShowWebHelp();
+	bool		ShowWebHelp(UINT uTopic);
 
     // Elandal:ThreadSafeLogging -->
     // thread safe log calls
@@ -231,6 +229,9 @@ protected:
 
 	uint32 m_dwPublicIP;
 	bool m_bAutoStart;
+
+private:
+	UINT     m_wTimerRes;
 
 public:
 	// ==> ModID [itsonlyme/SiRoB] - Stulle

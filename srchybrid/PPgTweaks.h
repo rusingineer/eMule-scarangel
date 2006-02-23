@@ -15,11 +15,6 @@ public:
 	void Localize(void);
 
 protected:
-
-	// ==> {Webcache} [Max] 
-	bool m_bLogWebCacheEvents;
-	// <== {Webcache} [Max] 
-
 	UINT m_iFileBufferSize;
 	UINT m_iQueueSize;
 	int m_iMaxConnPerFive;
@@ -48,6 +43,7 @@ protected:
 	bool m_bExtControls;
 	UINT m_uServerKeepAliveTimeout;
 	bool m_bSparsePartFiles;
+	bool m_bFullAlloc;
 	bool m_bCheckDiskspace;
 	float m_fMinFreeDiskSpaceMB;
 	CString m_sYourHostname;
@@ -86,14 +82,9 @@ protected:
 	HTREEITEM m_htiLogSecureIdent;
 	HTREEITEM m_htiLogFilteredIPs;
 	HTREEITEM m_htiLogFileSaving;
-        HTREEITEM m_htiLogA4AF;
+    HTREEITEM m_htiLogA4AF;
 	HTREEITEM m_htiLogDrop; //Xman Xtreme Downloadmanager
 	HTREEITEM m_htiLogUlDlEvents;
-
-	// ==> {Webcache} [Max] 
-	HTREEITEM m_htiLogWebCacheEvents; 
-	// <== {Webcache} [Max]
-
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 	/*
 	HTREEITEM m_htiCreditSystem;
@@ -109,6 +100,7 @@ protected:
 	HTREEITEM m_htiExtControls;
 	HTREEITEM m_htiServerKeepAliveTimeout;
 	HTREEITEM m_htiSparsePartFiles;
+	HTREEITEM m_htiFullAlloc;
 	HTREEITEM m_htiCheckDiskspace;
 	HTREEITEM m_htiMinFreeDiskSpace;
 	HTREEITEM m_htiYourHostname;
@@ -119,15 +111,15 @@ protected:
 	// ZZ:UploadSpeedSense -->
 	HTREEITEM m_htiDynUp;
 	HTREEITEM m_htiDynUpEnabled;
-        HTREEITEM m_htiDynUpMinUpload;
-        HTREEITEM m_htiDynUpPingTolerance;
-        HTREEITEM m_htiDynUpPingToleranceMilliseconds;
-        HTREEITEM m_htiDynUpPingToleranceGroup;
-        HTREEITEM m_htiDynUpRadioPingTolerance;
-        HTREEITEM m_htiDynUpRadioPingToleranceMilliseconds;
-        HTREEITEM m_htiDynUpGoingUpDivider;
-        HTREEITEM m_htiDynUpGoingDownDivider;
-        HTREEITEM m_htiDynUpNumberOfPings;
+    HTREEITEM m_htiDynUpMinUpload;
+    HTREEITEM m_htiDynUpPingTolerance;
+    HTREEITEM m_htiDynUpPingToleranceMilliseconds;
+    HTREEITEM m_htiDynUpPingToleranceGroup;
+    HTREEITEM m_htiDynUpRadioPingTolerance;
+    HTREEITEM m_htiDynUpRadioPingToleranceMilliseconds;
+    HTREEITEM m_htiDynUpGoingUpDivider;
+    HTREEITEM m_htiDynUpGoingDownDivider;
+    HTREEITEM m_htiDynUpNumberOfPings;
 	// ZZ:UploadSpeedSense <--
 	// ZZ:DownloadManager -->
 	HTREEITEM m_htiA4AFSaveCpu;
@@ -145,7 +137,7 @@ protected:
 	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 
 	DECLARE_MESSAGE_MAP()
-        afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+    afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg void OnDestroy();
 	afx_msg LRESULT OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnHelp();

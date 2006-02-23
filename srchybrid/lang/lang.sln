@@ -69,6 +69,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "languages - Norwegian (Nyno
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "languages - Albanian (Albania)", "sq_AL.vcproj", "{8104E8D8-7343-4BE7-8955-80A1F2D26EC2}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "languages - Ukrainian", "ua_UA.vcproj", "{8104E8D8-7343-4BE7-8955-80A1F2D26EC1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "languages - Maltese", "mt_MT.vcproj", "{EFE9605D-BF5C-4339-9A5A-32184D4BD03C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "languages - Asturian", "es_AS.vcproj", "{B0DAEE35-FD0F-4FAF-A7C1-3D52103B3E81}"
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		ConfigName.0 = Dynamic
@@ -146,6 +152,12 @@ Global
 		{DE470764-A818-4780-B590-78EB8D560E89}.Dynamic.Build.0 = Dynamic|Win32
 		{8104E8D8-7343-4BE7-8955-80A1F2D26EC2}.Dynamic.ActiveCfg = Dynamic|Win32
 		{8104E8D8-7343-4BE7-8955-80A1F2D26EC2}.Dynamic.Build.0 = Dynamic|Win32
+		{8104E8D8-7343-4BE7-8955-80A1F2D26EC1}.Dynamic.ActiveCfg = Dynamic|Win32
+		{8104E8D8-7343-4BE7-8955-80A1F2D26EC1}.Dynamic.Build.0 = Dynamic|Win32
+		{EFE9605D-BF5C-4339-9A5A-32184D4BD03C}.Dynamic.ActiveCfg = Dynamic|Win32
+		{EFE9605D-BF5C-4339-9A5A-32184D4BD03C}.Dynamic.Build.0 = Dynamic|Win32
+		{B0DAEE35-FD0F-4FAF-A7C1-3D52103B3E81}.Dynamic.ActiveCfg = Dynamic|Win32
+		{B0DAEE35-FD0F-4FAF-A7C1-3D52103B3E81}.Dynamic.Build.0 = Dynamic|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

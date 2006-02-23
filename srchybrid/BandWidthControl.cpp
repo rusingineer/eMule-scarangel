@@ -42,7 +42,7 @@ CBandWidthControl::CBandWidthControl()
 	m_maxUploadLimit = 0.0f;
 	m_errorTraced = false;
 
-	//Xman GlobalMaxHardlimit for fairness
+	//Xman GlobalMaxHarlimit for fairness
 	m_maxforcedDownloadlimit=0;
 
 	// Keep last result to detect an overflow
@@ -83,7 +83,7 @@ CBandWidthControl::~CBandWidthControl(){
    if(m_hIphlpapi != NULL){
       ::FreeLibrary(m_hIphlpapi);
    }
-  }
+}
 //Xman new adapter selection
 void CBandWidthControl::checkAdapterIndex(uint32 highid)
 {
@@ -273,24 +273,24 @@ void CBandWidthControl::Process()
 		/**/ 	if(m_fGetIfEntry(&ifRow) == NO_ERROR){
 		/**/ 		s_Log = 0;
 		/**/ 
-		/**/	//Xman prevent overflow on adapterchange:
-		/**/	if(ifRow.dwOutOctets >= m_networkOutOctets && ifRow.dwInOctets >= m_networkInOctets)
-		/**/	{
-		/**/		// Add the delta, since the last measure (convert 32 to 64 bits)
-		/**/		m_statistic.networkInOctets += (DWORD)(ifRow.dwInOctets - m_networkInOctets);
-		/**/		m_statistic.networkOutOctets += (DWORD)(ifRow.dwOutOctets - m_networkOutOctets);
-		/**/	}
-		/**/	//Xman show complete internettraffic
-		/**/	if(initialnetworkOutOctets==0)
-		/**/	{
-		/**/		initialnetworkOutOctets=m_statistic.networkOutOctets;
-		/**/		initialnetworkInOctets=m_statistic.networkInOctets;
-		/**/	}
-		/**/	//Xman end
+		/**/		//Xman prevent overflow on adapterchange:
+		/**/		if(ifRow.dwOutOctets >= m_networkOutOctets && ifRow.dwInOctets >= m_networkInOctets)
+		/**/		{
+		/**/			// Add the delta, since the last measure (convert 32 to 64 bits)
+		/**/			m_statistic.networkInOctets += (DWORD)(ifRow.dwInOctets - m_networkInOctets);
+		/**/			m_statistic.networkOutOctets += (DWORD)(ifRow.dwOutOctets - m_networkOutOctets);
+		/**/		}
+		/**/		//Xman show complete internettraffic
+		/**/		if(initialnetworkOutOctets==0)
+		/**/		{
+		/**/			initialnetworkOutOctets=m_statistic.networkOutOctets;
+		/**/			initialnetworkInOctets=m_statistic.networkInOctets;
+		/**/		}
+		/**/		//Xman end
 		/**/
-		/**/	// Keep last measure
-		/**/	m_networkOutOctets = ifRow.dwOutOctets; 
-		/**/	m_networkInOctets = ifRow.dwInOctets;
+		/**/		// Keep last measure
+		/**/		m_networkOutOctets = ifRow.dwOutOctets; 
+		/**/		m_networkInOctets = ifRow.dwInOctets;
 		/**/ 	}
 		/**/ 	else {
 		/**/ 		if(s_Log == 0){
@@ -327,7 +327,7 @@ void CBandWidthControl::Process()
 		m_maxDownloadLimit = thePrefs.GetMaxDownload();
 		m_maxUploadLimit = thePrefs.GetMaxUpload();
 		
-		//Xman GlobalMaxHardlimit for fairness
+		//Xman GlobalMaxHarlimit for fairness
 		//remark: we need a new downloadlimit, which is calculated by the real emule-upload
 		//we have to calculate it on each loop.
 		//also we need the additionally limit for NAFC, if the forced downloadlimit isn't be used
@@ -353,7 +353,7 @@ void CBandWidthControl::Process()
 					m_maxforcedDownloadlimit=1.0f;
 			}
 		}
-		//Xman end GlobalMaxHardlimit for fairness
+		//Xman end GlobalMaxHarlimit for fairness
 
 		if(thePrefs.GetNAFCFullControl() == true ){    
 			// Remark: Because there is only ONE writer thread to m_statisticHistory, there is no need to 
@@ -419,7 +419,7 @@ void CBandWidthControl::Process()
 	}
 }
 
-void CBandWidthControl::GetDatarates(uint8 samples, 
+void CBandWidthControl::GetDatarates(UINT samples, 
 									 uint32& eMuleIn, uint32& eMuleInOverall, 
 									 uint32& eMuleOut, uint32& eMuleOutOverall,
 									 uint32& networkIn, uint32& networkOut) const 
@@ -492,7 +492,7 @@ void CBandWidthControl::GetFullHistoryDatarates(uint32& eMuleInHistory, uint32& 
 //Xman 1:3 Ratio
 float CBandWidthControl::GetMaxDownloadEx(bool force)
 {
-	//Xman GlobalMaxHardlimit for fairness
+	//Xman GlobalMaxHarlimit for fairness
 	if(force && GeteMuleIn()>GeteMuleOut()*3) //session/amount based ratio
 		return GetForcedDownloadlimit();
 	//Xman end
@@ -584,7 +584,7 @@ uint64 CBandWidthControl::GetSessionNetworkOut() const
 //Xman end
 uint32 CBandWidthControl::GetStartTick() const 
 {
-   uint64 value;
+   uint32 value;
    m_statisticLocker.Lock();
    /**/ value = m_statistic.timeStamp;
    m_statisticLocker.Unlock();
@@ -641,4 +641,12 @@ void CBandWidthControl::AddeMuleIn(uint32 octets)
    m_statisticLocker.Lock();
    /**/ m_statistic.eMuleInOctets += octets;
    m_statisticLocker.Unlock();
+}
+
+void CBandWidthControl::AddeMuleSYNACK()
+{
+	m_statisticLocker.Lock();
+	/**/ m_statistic.eMuleInOverallOctets += 40; // IP + TCP
+	/**/ m_statistic.eMuleOutOverallOctets += 40; // IP + TCP
+	m_statisticLocker.Unlock();
 }

@@ -406,7 +406,7 @@ BEGIN
     IDS_PW_DISPLAY          "Mostrar"
     IDS_CAT_INVADD          "Mostrar tódolos dispoñibles"
     IDS_CAT_REINVADD        "Mostrar todo"
-    IDS_INDICATERATINGS     "Mostra-las descargas que teñan comentarios cun icono"
+    IDS_INDICATERATINGS     "Mostra-las descargas que teñan comentarios cunha icona"
     IDS_ALLOTHERS           "sen catalogar"
     IDS_TOCAT               "Asignar a categoría"
     IDS_CAT_UNASSIGN        "(sen asignar)"
@@ -440,7 +440,7 @@ BEGIN
     IDS_ERR_FILEOPEN        "Non se puido abrir %s (%s)"
     IDS_SEL_SKINDIR         "Seleccionar directorio de Peles..."
     IDS_ERR_REHASH          "Atención: %s podería estar corrupto, recodificando o hash das partes completadas"
-    IDS_SKIN_PROF           "Perfiles de Peles"
+    IDS_SKIN_PROF           "Perfís de Peles"
     IDS_ERR_PART_FNF        "Arquivo .part non atopado"
     IDS_ERR_OPENMETFILE     "Non se puido abri-lo arquivo part.met"
     IDS_KADOPEN             "Aberto"
@@ -1062,7 +1062,7 @@ BEGIN
     IDS_SHOWOVERHEAD        "Mostrar ancho de banda excedente"
     IDS_UPDOWNSMALL         "Subida: %.1f | Baixada: %.1f"
     IDS_EDITLIST            "Editar"
-    IDS_SP_ICONBAR          "Barra de velocidade do icono da área de notificación."
+    IDS_SP_ICONBAR          "Barra de velocidade da icona da área de notificación."
     IDS_RATINGRECV          "Calificación para o arquivo '%s' recibida: %i"
     IDS_DESCRIPTIONRECV     "Descripción para o arquivo '%s' recibida: %s"
     IDS_WEBSERVICES         "Servicios Web"
@@ -1134,7 +1134,7 @@ BEGIN
     IDS_FIRSTSAFECON        "Activa esta opción se queres que eMule se conecte de modo seguro.\n\nDesactivándoa permite ó eMule conectarse ós servidores un pouco máis rápido, pero pode que obteñas máis conexións con ID baixa. (Deshabilitado por defecto)"
     IDS_FIRSTRUNASSIST      "¿Queres que se inicie o asistente de configuración a primeira vez?"
     IDS_FIRSTAUTOCON        "Activa esta opción se queres que eMule se conecte ó inicio. (Deshabilitado por defecto)"
-    IDS_FIRSTCOMPLETE       "Acabas de completa-lo asistente de configuración.\n\nPodes cambiar todas estas opcións e máis pulsando o icono de Preferencias. Para máis información vai á axuda pulsando F1 dentro do eMule."
+    IDS_FIRSTCOMPLETE       "Acabas de completa-lo asistente de configuración.\n\nPodes cambiar todas estas opcións e máis pulsando a icona de Preferencias. Para máis información vai á axuda pulsando F1 dentro do eMule."
 END
 
 STRINGTABLE 
@@ -1586,9 +1586,9 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_TEXTLABELSONRIGHT   "á dereita do icono"
+    IDS_TEXTLABELSONRIGHT   "á dereita da icona"
     IDS_TEXTLABELS          "Etiquetas de texto"
-    IDS_ENABLETEXTLABELS    "baixo o icono"
+    IDS_ENABLETEXTLABELS    "baixo a icona"
     IDS_CUSTOMIZETOOLBAR    "Personalizar Barra de Ferramentas"
     IDS_MINBITRATE          "Min. bitrate [kBit/s]"
     IDS_KAD_RECHECKFW       "Comprobar Cortalumes"
@@ -1812,8 +1812,8 @@ BEGIN
     IDS_SELSKINPROFILEDIR   "Selecciona directorio de perfís de peles"
     IDS_ASKDLINCOMPLETE     "Arquivo potencialmente incompleto:\r\n\r\n%s\r\n\r\nSupostamente este arquivo está incompleto na rede e polo tanto é probable que non o poidas baixar! Queres baixar este arquivo?"
     IDS_DEADSOURCES         "Fontes Desaparecidas"
-    IDS_LARGEICONS          "Iconos Grandes"
-    IDS_SMALLICONS          "Iconos Pequenos"
+    IDS_LARGEICONS          "Iconas Grandes"
+    IDS_SMALLICONS          "Iconas Pequenas"
     IDS_SHORTTAGS           "Etiquetas curtas"
     IDS_THELOAD             "Cargar"
     IDS_PACKSENT            "Paquetes Enviados"
@@ -1927,6 +1927,39 @@ BEGIN
     IDS_USS_STATE_PREPARING "Preparando..."
     IDS_USS_STATE_WAITING   "Agardando..."
     IDS_USS_STATE_ERROR     "Erro!"
+    IDS_SHAREWARNING        "(A carpeta será compartida!)"
+    IDS_REMOVEALLSERVERS    "¿Seguro que queres borrar tódolos servidores?"
+    IDS_SEARCH_UNKATTR      "Atributo de busca '%s' descoñecido"
+    IDS_SEARCH_ATTRERR      "Erro de sintaxe no atributo de busca '%s'"
+    IDS_SEARCH_MISSINGANDRIGHT "Falta o lado dereito do operador AND"
+    IDS_SEARCH_OPRERR       "Erro de sintaxe no operador de comparación '%s'"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DOWNLOAD_LANGFILE   "Descargando arquivo de idioma"
+    IDS_DOWNLOADING_SERVERMET_FROM "Descargando server.met dende %s"
+    IDS_DOWNLOADING_SERVERMET "Descargando server.met..."
+    IDS_FULLALLOC           "Reserva-lo espacio necesario para arquivos de partes non dispersos"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH "Hash non atopado."
+    IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "A lista de ocos está corrupta."
+    IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST "Lista de ocos non atopada."
+    IDS_X_SHAREAZA_IMPORT_HASH_SET_CORRUPT "Conxunto de Hashes corrupto."
+    IDS_X_SHAREAZA_IMPORT_NO_HASH_SET "Conxunto de Hashes non atopado."
+    IDS_CONVERTINGKNOWN2MET "Convertindo %s a %s para soportar arquivos grandes..."
+    IDS_CONVERTINGKNOWN2FAILED 
+                            "...erro ó convertir known2.met, eliminando rexistros antigos"
+    IDS_CONVERTINGKNOWN2DONE "... feito, conversión terminada"
+    IDS_ERR_MET_BAD         "Erro: o arquivo %s está corrupto, non é posible cargar arquivos coñecidos"
+    IDS_SRV_LARGEFILES      "Soporte para arquivos grandes"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_ERR_FSCANTHANDLEFILE 
+                            "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
+    IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
 END
 
 #endif    // Galego: 0x56, 0x1 resources

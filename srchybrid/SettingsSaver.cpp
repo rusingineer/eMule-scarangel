@@ -77,7 +77,7 @@ void CSettingsSaver::LoadSettings(CPartFile* file)
 
 	daten.GetNext(pos);
 	if( ((CSettingsData*)daten.GetAt(pos))->dwData >= 50 && ((CSettingsData*)daten.GetAt(pos))->dwData <= 100)
-		file->SetMaxRemoveNNSLimit(((CSettingsData*)daten.GetAt(pos))->dwData);
+		file->SetMaxRemoveNNSLimit((uint16)(((CSettingsData*)daten.GetAt(pos))->dwData));
 	else
 		file->SetMaxRemoveNNSLimit(thePrefs.GetMaxRemoveNNSLimitDefault());
 
@@ -97,7 +97,7 @@ void CSettingsSaver::LoadSettings(CPartFile* file)
 
 	daten.GetNext(pos);
 	if( ((CSettingsData*)daten.GetAt(pos))->dwData >= 50 && ((CSettingsData*)daten.GetAt(pos))->dwData <= 100)
-		file->SetMaxRemoveFQSLimit(((CSettingsData*)daten.GetAt(pos))->dwData);
+		file->SetMaxRemoveFQSLimit((uint16)(((CSettingsData*)daten.GetAt(pos))->dwData));
 	else
 		file->SetMaxRemoveFQSLimit(thePrefs.GetMaxRemoveFQSLimitDefault());
 
@@ -117,13 +117,13 @@ void CSettingsSaver::LoadSettings(CPartFile* file)
 
 	daten.GetNext(pos);
 	if( ((CSettingsData*)daten.GetAt(pos))->dwData >= 1000 && ((CSettingsData*)daten.GetAt(pos))->dwData <= 10000)
-		file->SetMaxRemoveQRS(((CSettingsData*)daten.GetAt(pos))->dwData);
+		file->SetMaxRemoveQRS((uint16)(((CSettingsData*)daten.GetAt(pos))->dwData));
 	else
 		file->SetMaxRemoveQRS(thePrefs.GetMaxRemoveQRSDefault());
 
 	daten.GetNext(pos);
 	if( ((CSettingsData*)daten.GetAt(pos))->dwData >= 50 && ((CSettingsData*)daten.GetAt(pos))->dwData <= 100)
-		file->SetMaxRemoveQRSLimit(((CSettingsData*)daten.GetAt(pos))->dwData);
+		file->SetMaxRemoveQRSLimit((uint16)(((CSettingsData*)daten.GetAt(pos))->dwData));
 	else
 		file->SetMaxRemoveQRSLimit(thePrefs.GetMaxRemoveQRSLimitDefault());
 	// emulate StulleMule <= v2.2 files

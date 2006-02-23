@@ -319,11 +319,11 @@ BEGIN
     IDS_FSTAT_WAITING       "Esperando..."
     IDS_TIME                "Tempo"
     IDS_STATS_DDATA         "Dados recebidos: %s"
-    IDS_STATS_UDATA         "Dados Enviados [Sessão]: %s"
-    IDS_STATS_AVGDL         "Média de dados recebidos (Sessão): %s"
-    IDS_STATS_AVGUL         "Média de arquivos enviados (Sessão): %s"
+    IDS_STATS_UDATA         "Dados Enviados: %s"
+    IDS_STATS_AVGDL         "Média de dados recebidos: %s"
+    IDS_STATS_AVGUL         "Média de arquivos enviados: %s"
     IDS_STATS_FOUNDSRC      "Fontes encontradas: %i"
-    IDS_STATS_ACTDL         "Downloads ativos (amostra): %i"
+    IDS_STATS_ACTDL         "Downloads ativos: %i"
     IDS_STATS_ACTUL         "Uploads ativos: %i"
     IDS_STATS_WAITINGUSERS  "Uploads esperando: %i"
     IDS_STATS_RECONNECTS    "Reconectar: %i"
@@ -684,7 +684,7 @@ BEGIN
     IDS_SF_USER             "Total de Usuários"
     IDS_SF_FILE             "Total de Arquivos"
     IDS_UPLOADTIME          "Tempo de Upload"
-    IDS_LASTSEENCOMPL       "Última vez Concluído:"
+    IDS_LASTSEENCOMPL       "Visto Completo:"
     IDS_YES                 "Sim"
     IDS_NO                  "Não"
     IDS_UNBAN               "Desbanir"
@@ -1446,7 +1446,7 @@ BEGIN
     IDS_SOURCESINFO         "%i  (Útil: %i, NNP: %i, A4AF: %i)"
     IDS_SHOW_META_DATA      "Exibir &Dados Alvo..."
     IDS_META_DATA           "Dados Alvo"
-    IDS_TIMEBEFORE          "(%s passados)"
+    IDS_TIMEBEFORE          "(%s atrás)"
     IDS_FD_TIMEDATE         "Datas"
     IDS_FILEINFORMATION     "Informação do Arquivo"
     IDS_STATS_FREESPACE     "Espaço Livre"
@@ -1924,6 +1924,39 @@ BEGIN
     IDS_USS_STATE_PREPARING "Preparing..."
     IDS_USS_STATE_WAITING   "Waiting..."
     IDS_USS_STATE_ERROR     "Error!"
+    IDS_SHAREWARNING        "(Folder will be shared!)"
+    IDS_REMOVEALLSERVERS    "Do you really want to remove all servers?"
+    IDS_SEARCH_UNKATTR      "Unknown search attribute '%s'"
+    IDS_SEARCH_ATTRERR      "Syntax error in '%s' search attribute"
+    IDS_SEARCH_MISSINGANDRIGHT "Missing right side for AND operator"
+    IDS_SEARCH_OPRERR       "Syntax error in comparison operator '%s'"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DOWNLOAD_LANGFILE   "Downloading language file"
+    IDS_DOWNLOADING_SERVERMET_FROM "Downloading server.met from %s"
+    IDS_DOWNLOADING_SERVERMET "Downloading server.met..."
+    IDS_FULLALLOC           "Allocate full filesize for non-sparse part files"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH "Hash not found."
+    IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "Gap list corrupt."
+    IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST "Gap list not found."
+    IDS_X_SHAREAZA_IMPORT_HASH_SET_CORRUPT "Hash set corrupt."
+    IDS_X_SHAREAZA_IMPORT_NO_HASH_SET "Hash set not found."
+    IDS_CONVERTINGKNOWN2MET "Converting %s to %s to support large files..."
+    IDS_CONVERTINGKNOWN2FAILED 
+                            "...failed to convert known2.met, ignoring old records"
+    IDS_CONVERTINGKNOWN2DONE "... done, finished converting"
+    IDS_ERR_MET_BAD         "Error: the file %s is corrupted, unable to load known files"
+    IDS_SRV_LARGEFILES      "Support for large files"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_ERR_FSCANTHANDLEFILE 
+                            "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
+    IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
 END
 
 #endif    // Portuguese (Brazil) resources

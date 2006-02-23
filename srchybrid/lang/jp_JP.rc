@@ -75,7 +75,7 @@ BEGIN
     IDS_HTTPDOWNLOAD_GENERIC_ERROR 
                             "ファイルのダウンロード試行中にエラーが発生しました。エラー:%s"
     IDS_HTTPDOWNLOAD_FAIL_CONNECT_SERVER 
-                            "サーバーに接続中にエラーが発生しました。エラー:%s"
+                            "サーバーへの接続中にエラーが発生しました。エラー:%s"
     IDS_HTTPDOWNLOAD_INVALID_SERVER_RESPONSE 
                             "サーバーから有効な応答の受信に失敗しました"
     IDS_HTTPDOWNLOAD_INVALID_HTTP_RESPONSE 
@@ -198,7 +198,7 @@ BEGIN
     IDS_ERRORLIKE           "エラー"
     IDS_ASSIGNED2K          "eMuleはeD2Kリンクに関連づけられていません。eMuleをeD2Kリンクと関連づけますか(推奨)?"
     IDS_ERR_EMPTYADRESSESDAT 
-                            "サーバーリストアドレスのエントリが'adresses.dat'内で見つかりません。サーバーリストを自動更新する為に、このファイル内に有効なサーバーリストアドレスを貼り付けて下さい"
+                            "'adresses.dat'内にサーバーリストアドレスのエントリが見つかりません。サーバーリストを自動更新する為に、このファイル内に有効なサーバーリストアドレスを貼り付けて下さい"
 END
 
 STRINGTABLE 
@@ -269,10 +269,10 @@ BEGIN
     IDS_ERR_BADSERVERLISTRECEIVED "無効なサーバーリストパケットを受信しました"
     IDS_STATUS              "状態"
     IDS_DL_REMAINS          "残り"
-    IDS_UPDATEFROM          "URLから更新: (filter.dat又はPeerGuardian形式)"
+    IDS_UPDATEFROM          "URLから更新(filter.dat又はPeerGuardian形式):"
     IDS_QL_USERNAME         "ユーザー名"
     IDS_LOADURL             "読み込み"
-    IDS_DELETEAFTERALLOC    "ファイル'%s'は現在ディスク領域を割り当て中のため、その作業終了後に削除されます"
+    IDS_DELETEAFTERALLOC    "ファイル'%s'は現在ディスク領域を割り当て中のため、その作業が完了後に削除されます"
     IDS_ERR_PACKAGEHANDLING "サーバーからのパケット処理中にUnhandledエラーが発生しました(%s)"
     IDS_QL_RATING           "評価"
     IDS_CONNECTINGTO        "%sに接続中 (%s:%i)..."
@@ -309,7 +309,7 @@ BEGIN
     IDS_SHAREDFILES         "共有ファイル"
     IDS_PRIOVERYLOW         "最低"
     IDS_PRIORELEASE         "開放"
-    IDS_TRAYDLG_SPEED       "eMule 速度"
+    IDS_TRAYDLG_SPEED       "eMule 速度設定"
     IDS_FSTATUS_LOCKED      "ロック"
     IDS_KADALPHA            "Kademliaはまだ開発の初期段階ですので、テスト目的だけに使用することを推奨します。"
     IDS_FSTATUS_FRIENDSONLY "友達のみ"
@@ -353,7 +353,7 @@ BEGIN
     IDS_STATS_DEAD          "利用不能/削除済み: %i"
     IDS_DISABLED            "使用不可"
     IDS_STOPPED             "中止"
-    IDS_STATS_UPDATELABEL   "アップデート遅延: %i秒"
+    IDS_STATS_UPDATELABEL   "更新間隔: %i秒"
     IDS_QUEUECOUNT          "%u (%u Ban済)"
     IDS_NICKNAME            "ニックネーム: "
     IDS_CLIENTSFILENAME     "\nクライアントのファイル名: "
@@ -370,13 +370,13 @@ BEGIN
     IDS_ERR_CREDITFILEREAD  "クレジットファイルを読み込み中に予期せぬファイルエラーが発生しました: %s"
     IDS_ERR_FAILED_CREDITSAVE "クレジットファイルの保存に失敗しました"
     IDS_NOPARTSFOUND        "部品ファイルが見つかりません"
-    IDS_FOUNDPARTS          " %i個の部品ファイルが見つかりました"
+    IDS_FOUNDPARTS          "%i個の部品ファイルが見つかりました"
     IDS_NEWDOWNLOAD         "%sをダウンロード中"
     IDS_ERR_ALREADY_DOWNLOADING "ファイル%sは既にダウンロード中です"
     IDS_ERR_ALREADY_DOWNLOADED "ファイル%sを既に所有しています"
     IDS_ERR_SERVERMET_BAD   "エラー: known.metファイルが破損していた為、友達リストを読み込むことができません"
     IDS_ERR_SERVERMET_UNKNOWN 
-                            "known.metを読み込み中に予期せぬファイルエラーが発生しました: \n%s、友達リストを読み込むことができません"
+                            "known.metを読み込み中に予期せぬファイルエラーが発生しました: %s。 友達リストを読み込むことができません"
     IDS_ERR_CONNECTIONERROR "%sへ接続中にエラーが発生しました(%s:%i): %s"
     IDS_ERR_SOCKET          "サーバーソケット%s内でエラーが発生しました(%s:%i): %s"
     IDS_SHAREDFOUND         "%i共有ファイルが見つかりました"
@@ -396,7 +396,7 @@ BEGIN
     IDS_DL_TRANSFCOMPL      "完了"
     IDS_DL_ACTIVE_TIME      "ダウンロード時間"
     IDS_STATS_FILTEREDCLIENTS "フィルタ済: %i"
-    IDS_FILTERLABEL         "次の単語を含むメッセージをフィルタリンクﾞ: (「|」で区切る )"
+    IDS_FILTERLABEL         "次の単語を含むメッセージをフィルタリング(「|」で区切る):"
     IDS_ERR_LARGEREQBLOCK   "クライアントが大きすぎるブロックを要求しました"
     IDS_SHOWRATEONTITLE     "タイトルに転送速度を表示"
     IDS_TBN_NOMESSAGEHISTORY "履歴メッセージはありません!"
@@ -592,7 +592,7 @@ BEGIN
     IDS_PW_SCORE            "優先システムを使用する"
     IDS_PW_USC              "サーバー接続時にサーバーリストを更新"
     IDS_PW_UCC              "クライアント接続時にサーバーリストを更新"
-    IDS_PW_FILTER           "サーバーとクライアントのLANIPをフィルタリンクﾞ"
+    IDS_PW_FILTER           "サーバーとクライアントのLANIPをフィルタリング"
     IDS_PW_USS              "起動時にサーバーリストを自動更新"
     IDS_PW_MISC             "その他"
     IDS_PW_TRAY             "システムトレイに最小化"
@@ -803,7 +803,7 @@ BEGIN
     IDS_STREE               "統計ツリー"
     IDS_IRC_IGNOREQUITMESSAGE "終了情報メッセージを無視する"
     IDS_STATSSETUPINFO      "統計"
-    IDS_IRC_SOUNDEVENTS     "イベント時に次のサウンドを再生"
+    IDS_IRC_SOUNDEVENTS     "イベント時に音を鳴らす"
 END
 
 STRINGTABLE 
@@ -828,7 +828,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_DOWNLOADMOVIECHUNKS "まず始めにプレビュー用チャンクをダウンロードする"
+    IDS_DOWNLOADMOVIECHUNKS "最初にプレビュー用チャンクをダウンロードする"
     IDS_UPDATEQUEUE         "リアルタイムでキューリストを更新しない"
     IDS_RECOVER_SINGLE      "修復機能: 1ファイル修復"
     IDS_RECOVER_MULTIPLE    "修復機能: %ldファイル修復"
@@ -1163,7 +1163,7 @@ BEGIN
     IDS_EDIT                "編集..."
     IDS_FILTERLEVEL         "フィルタレベル"
     IDS_FILTERSERVERBYIPFILTER 
-                            "サーバーもフィルタリンクﾞ(ダイナミックIPサーバーも拒否)"
+                            "サーバーもフィルタリング(ダイナミックIPサーバーも拒否)"
     IDS_FILTERCOMMENTSLABEL "次の単語を含む解説を無視(「|」で区切る):"
     IDS_CLIENTLIST          "既知のクライアント"
     IDS_FOLDER              "フォルダ"
@@ -1189,7 +1189,7 @@ BEGIN
     IDS_FIRSTFULLCHUNK      "完全なチャンクをアップロードしたいならこのオプションを有効にして下さい。\n\n完全なチャンクをアップロードするということは、他のクライアントがチャンクを完成させる機会が増えるということです。これを無効にすればキューの進行が速くなります。またファイルの開放を専門に行うなら、この機能を有効にしておいた方が良いでしょう。"
     IDS_FIRSTSAFECON        "安全接続を使用してeMuleに接続させたいならこの機能を有効にして下さい。\n\nこの機能を無効にすればサーバー接続が幾分速くなりますが、Low ID接続になる機会が増えることになります。"
     IDS_FIRSTRUNASSIST      "セットアップウィザードを起動しますか?"
-    IDS_FIRSTAUTOCON        "eMule起動時に自動的に接続させるには、このオプションを有効にして下さい。"
+    IDS_FIRSTAUTOCON        "eMule起動時にネットワークへ自動的に接続します。"
     IDS_FIRSTCOMPLETE       "セットアップウィザードが完了しました。\n\nこれらを含めた全ての設定は、設定アイコンをクリックすることでいつでも変更することができます。設定の説明とサポートはeMule内でF1キーを押して表示されるヘルプを参照して下さい"
 END
 
@@ -1203,7 +1203,7 @@ BEGIN
     IDS_KAD_SEARCH_KEYWORD_ALREADY_SEARCHING 
                             "既にキーワード""%s""でのKad検索を実行しています。\r\n\r\nこのキーワードで再検索するには、このキーワード検索が終了するまで待機するか、検索結果タブを閉じて下さい。"
     IDS_KAD_SEARCH_KEYWORD_INVALID 
-                            "無効なKadキーワード。\r\n\r\nKad検索式には以下のフォーマットがあります:\r\n\r\n\t<kad-keyword> [ <ed2k-search-expression> ]\r\n\r\nThe <kad-keyword>は次の文字を含んではいけません:\r\n\r\n\t%s"
+                            "無効なKadキーワードです。\r\n\r\nKad検索式には以下のフォーマットがあります:\r\n\r\n\t<kad-keyword> [ <ed2k-search-expression> ]\r\n\r\n<kad-keyword>は次の文字を含んではいけません:\r\n\r\n\t%s"
     IDS_EDITCAT             "カテゴリープロパティを編集する"
     IDS_PW_WS               "ウェブインターフェース"
     IDS_ENABLED             "使用する"
@@ -1401,7 +1401,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_STATS_OLDCLIENTS    "古い"
+    IDS_STATS_OLDCLIENTS    "旧式"
     IDS_STATS_PRTDEF        "デフォルト"
     IDS_STATS_PRTOTHER      "その他"
     IDS_STATS_MNUTREETITLE  "統計ツリー"
@@ -1444,7 +1444,7 @@ BEGIN
     IDS_CUT                 "切り取り"
     IDS_STATS_SECUREIDENT   "安全な認証(成功 : 失敗 )"
     IDS_ONDISK              "ディスク上のサイズ: "
-    IDS_CLIENTCOL           "警告: 現在接続しているクライアントに一致するクライアントを見つけました:  \n%s(%s)と%s(%s)"
+    IDS_CLIENTCOL           "警告: 現在接続しているクライアントに一致するクライアントを見つけました: %s(%s)と%s(%s)"
     IDS_SEARCH_UNTERMSTRING "終了されていない文字列"
     IDS_SEARCH_GENERALERROR "一般エラー"
     IDS_SEARCH_MISSINGORRIGHT "右側のOR演算子がありません"
@@ -1463,7 +1463,7 @@ STRINGTABLE
 BEGIN
     IDS_VERSION             "バージョン"
     IDS_PASTE               "貼り付け"
-    IDS_A4AF                "ソースハンドリンクﾞ"
+    IDS_A4AF                "ソースハンドリング"
     IDS_MOBILEMULE          "モバイルMule"
     IDS_ENABLEMM            "モバイルeMuleを使用する"
     IDS_AUTOCAT_LABEL       "自動的に分類する(パターンは「|」で区切ります)"
@@ -1546,7 +1546,7 @@ BEGIN
     IDS_INSUFFICIENT        "ディスク容量が足りません"
     IDS_MINFREEDISKSPACE    "最小フリーディスク容量[MB]"
     IDS_WARNING             "警告"
-    IDS_IMPORTSPLPF         "部品ファイル(eM,eD,ON)をインポート"
+    IDS_IMPORTSPLPF         "部品ファイル(eM, eD, ON)をインポート"
     IDS_IMP_STEPREADPF      "一時フォルダを読み込み中"
     IDS_IMP_STEPBASICINF    "ダウンロード情報ファイルから基礎情報を検索中"
     IDS_IMP_STEPCRDESTFILE  "対象ファイルを作成中"
@@ -1651,7 +1651,7 @@ BEGIN
     IDS_WARNINGNOBS         "現在ブートストラップ休止中(既にKadに接続済み)"
     IDS_FIREWALLED          "ファイアーウォール"
     IDS_KADEMLIA            "Kad"
-    IDS_KADCONTACTLAB       "接点"
+    IDS_KADCONTACTLAB       "接触"
     IDS_KADDISTANCE         "距離"
     IDS_KEY                 "キー"
     IDS_NUMBER              "数値"
@@ -1802,7 +1802,7 @@ BEGIN
     IDS_USERSIP             "ユーザーIP"
     IDS_FEATURES            "機能"
     IDS_IRC_NEWNICK         "IRCニックネームを選択"
-    IDS_IRC_NEWNICKDESC     "ニックネームは英数字(A-Z, 0-9)で20文字以下でなければなりません。 設定→Ircでこの設定を変更することができます。"
+    IDS_IRC_NEWNICKDESC     "ニックネームは英数字(A-Z, 0-9)で20文字以下でなければなりません。 設定→IRCでこの設定を変更することができます。"
 END
 
 STRINGTABLE 
@@ -1828,7 +1828,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_COMCTRL32_DLL_TOOOLD 
-                            "Windows Common Controls library  \n(COMCTL32.DLL)のバージョンが古すぎます!\r\n\r\neMuleは適切な使用に耐えない程古いバージョンの""Windows  \nCommon Controls library (COMCTL32.DLL)""を検出しました。eMuleの機能を完全に利用する為には、""Windows Common Controls library (COMCTL32.DLL)""のバージョンを5.8以降のものにアップデートすることをお勧めします。\r\n\r\nMicrosoft (R)ダウンロードセンターで""Windows Common Controls library (COMCTL32.DLL)""のアップデータを入手/インストールして下さい。ダウンロードセンターを訪問しますか?"
+                            "Windows Common Controls library (COMCTL32.DLL)のバージョンが古すぎます!\r\n\r\neMuleは適切な使用に耐えない程古いバージョンの""Windows Common Controls library (COMCTL32.DLL)""を検出しました。eMuleの機能を完全に利用する為には、""Windows Common Controls library (COMCTL32.DLL)""のバージョンを5.8以降のものにアップデートすることをお勧めします。\r\n\r\nMicrosoft (R)ダウンロードセンターで""Windows Common Controls library (COMCTL32.DLL)""のアップデータを入手/インストールして下さい。ダウンロードセンターを訪問しますか?"
     IDS_ASREGEXPR           "正規表現として使用"
     IDS_STATIC_REGEXP       "表示フィルタ用正規表現:"
     IDS_CARE4ALL            "全ファイルを評価"
@@ -1867,7 +1867,7 @@ BEGIN
     IDS_USESPEECH           "通知メッセージを音声で伝える"
     IDS_TCPIP_CONNS         "TCP/IP接続"
     IDS_MANUAL_FILENAMECLEANUP 
-                            "選択したファイル名のクリーンアップをして宜しいですか?"
+                            "選択したファイル名のクリーンアップを行って宜しいですか?"
 END
 
 STRINGTABLE 
@@ -1929,6 +1929,39 @@ BEGIN
     IDS_USS_STATE_PREPARING "準備中..."
     IDS_USS_STATE_WAITING   "待機中..."
     IDS_USS_STATE_ERROR     "エラー!"
+    IDS_SHAREWARNING        "(フォルダが共有されます!)"
+    IDS_REMOVEALLSERVERS    "全てのサーバーを削除して本当に宜しいですか?"
+    IDS_SEARCH_UNKATTR      "'%s'は未知のの検索属性です"
+    IDS_SEARCH_ATTRERR      "検索属性'%s'内に構文エラーがあります"
+    IDS_SEARCH_MISSINGANDRIGHT "AND演算子の右側に文字列が見つかりません"
+    IDS_SEARCH_OPRERR       "演算子'%s'の使用が間違っています"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DOWNLOAD_LANGFILE   "言語ファイルをダウンロードしています"
+    IDS_DOWNLOADING_SERVERMET_FROM "%sからserver.metをダウンロードしています"
+    IDS_DOWNLOADING_SERVERMET "server.metをダウンロードしています..."
+    IDS_FULLALLOC           "非スパース部品ファイル用に完全なファイルサイズを割り当てる"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH "ハッシュが見つかりません。"
+    IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "ギャップリストが破損しています。"
+    IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST "ギャップリストが見つかりません。"
+    IDS_X_SHAREAZA_IMPORT_HASH_SET_CORRUPT "ハッシュセットが破損しています。"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH_SET "ハッシュセットが見つかりません。"
+    IDS_CONVERTINGKNOWN2MET "巨大ファイルをサポートするために%sから%sに変換しています..."
+    IDS_CONVERTINGKNOWN2FAILED 
+                            "...known2.metの変換に失敗しました。古い記録は無視されます"
+    IDS_CONVERTINGKNOWN2DONE "... 変換完了"
+    IDS_ERR_MET_BAD         "エラー: ファイル%sが破損していて既知のファイルを読み込むことが出来ません"
+    IDS_SRV_LARGEFILES      "巨大ファイル用のサポート"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_ERR_FSCANTHANDLEFILE 
+                            "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
+    IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
 END
 
 #endif    // 日本語 (Japanese) resources

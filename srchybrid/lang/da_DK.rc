@@ -1914,10 +1914,43 @@ BEGIN
                             "UploadSpeedSense: Tracerouting mislykket for mange gange. Deaktiverer Upload SpeedSense."
     IDS_USS_STARTING        "UploadSpeedSense: Afsluttet forberedelser. Starter kontrol af upload hastighed. (Første 60 sekunder vil være i hurtig-reaktion mode)"
     IDS_USS_MANUALUPLOADLIMITDETECTED 
-                            "UploadSpeedSense: Raised upload limit in prefs detected. Going into fast reaction mode for 60 seconds."
+                            "UploadSpeedSense: Forøget uploadbegrænsning i indstillingerne opdaget. Første 60 sekunder vil være i hurtig-reaktion mode."
     IDS_USS_STATE_PREPARING "Forbereder..."
     IDS_USS_STATE_WAITING   "Venter..."
     IDS_USS_STATE_ERROR     "Fejl!"
+    IDS_SHAREWARNING        "(Mappe vil blive delt!)"
+    IDS_REMOVEALLSERVERS    "Ønsker du virkelig at fjerne alle servere??"
+    IDS_SEARCH_UNKATTR      "Ukendt søgningsattribut '%s'"
+    IDS_SEARCH_ATTRERR      "Syntax fejl i '%s' søgningsattribut"
+    IDS_SEARCH_MISSINGANDRIGHT "Mangler højre side til AND operator"
+    IDS_SEARCH_OPRERR       "Syntax fejl i sammenligningsoperator '%s'"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DOWNLOAD_LANGFILE   "Downloader sprogfil"
+    IDS_DOWNLOADING_SERVERMET_FROM "Downloader server.met fra %s"
+    IDS_DOWNLOADING_SERVERMET "Downloader server.met..."
+    IDS_FULLALLOC           "Allokér fuld filstørrelse for non-sparse part filer"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH "Hash ikke fundet."
+    IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "Gap liste korrupt."
+    IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST "Gap liste ikke fundet."
+    IDS_X_SHAREAZA_IMPORT_HASH_SET_CORRUPT "Hash set korrupt."
+    IDS_X_SHAREAZA_IMPORT_NO_HASH_SET "Hash set ikke fundet."
+    IDS_CONVERTINGKNOWN2MET "Konvertere %s ttil %s for at understøtte store filer..."
+    IDS_CONVERTINGKNOWN2FAILED 
+                            "...mislykkedes at konvertere known2.met, ignorerer gamle optegnelser"
+    IDS_CONVERTINGKNOWN2DONE "... færdig, afsluttede konvertering"
+    IDS_ERR_MET_BAD         "Fejl: filen %s er korrupt, ude af stand til at loade kendte filer"
+    IDS_SRV_LARGEFILES      "Understøttelse for store filer"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_ERR_FSCANTHANDLEFILE 
+                            "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
+    IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
 END
 
 #endif    // Danish resources

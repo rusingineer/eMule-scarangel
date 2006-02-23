@@ -62,17 +62,17 @@ public:
 	virtual ~CSharedDirsTreeCtrl();
 	
 	void			Initalize(CSharedFilesCtrl* pSharedFilesCtrl);
+	void			SetAllIcons();
 
 	CDirectoryItem* GetSelectedFilter() const;
 	bool			IsCreatingTree() const		{return m_bCreatingTree;};
 	void			Localize();
 	void			EditSharedDirectories(CDirectoryItem* pDir, bool bAdd, bool bSubDirectories);
 	void			Reload(bool bFore = false);
-	
+
 	CDirectoryItem*		pHistory; //Xman [MoNKi: -Downloaded History-]
 
 protected:
-	DECLARE_MESSAGE_MAP()
 	virtual BOOL	OnCommand(WPARAM wParam, LPARAM lParam);
 	void			CreateMenues();
 	void			ShowFileDialog(CTypedPtrList<CPtrList, CKnownFile*>& aFiles, UINT uPshInvokePage = 0);
@@ -82,6 +82,8 @@ protected:
 	int				AddSystemIcon(HICON hIcon, int nSystemListPos);
 	void			FetchSharedDirsList();
 
+	DECLARE_MESSAGE_MAP()
+	afx_msg void	OnSysColorChange();
 	afx_msg void	OnContextMenu(CWnd* pWnd, CPoint point);
 	afx_msg	void	OnRButtonDown(UINT nFlags, CPoint point );
 	afx_msg	void	OnLButtonUp(UINT nFlags, CPoint point );
@@ -100,6 +102,7 @@ protected:
 	CSharedFilesCtrl*	m_pSharedFilesCtrl;
 	CStringList			m_strliSharedDirs;
 	CStringList			m_strliCatIncomingDirs;
+	CImageList			m_imlTree;
 
 private:
 	void	InitalizeStandardItems();
@@ -121,7 +124,7 @@ private:
 
 	bool			m_bCreatingTree;
 	bool			m_bUseIcons;
-	CMap<int, int, int, int> m_mapSystemIncons;
+	CMap<int, int, int, int> m_mapSystemIcons;
 };
 
 

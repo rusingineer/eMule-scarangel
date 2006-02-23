@@ -1524,7 +1524,7 @@ BEGIN
     IDS_FILEINFORMATION     "Информация"
     IDS_STATS_FREESPACE     "Свободное место"
     IDS_IRC_HELPCHANNEL     "Соединиться с каналом помощи"
-    IDS_IRC_HELPCHANNELPERFORM "/join #emule | /join #emule-english"
+    IDS_IRC_HELPCHANNELPERFORM "/join #emule | /join #emule-russian"
     IDS_IRC_ACCEPTLINKSFRIENDS "Только от друзей"
     IDS_COMPLSOURCES        "Полные источники"
     IDS_CHECKNOENDTIME      "Без конца"
@@ -1918,6 +1918,39 @@ BEGIN
     IDS_USS_STATE_PREPARING "Подготовка"
     IDS_USS_STATE_WAITING   "Ожидание"
     IDS_USS_STATE_ERROR     "Ошибка!"
+    IDS_SHAREWARNING        "(Folder will be shared!)"
+    IDS_REMOVEALLSERVERS    "Вы действительно хотите удалить все серверы?"
+    IDS_SEARCH_UNKATTR      "Не известный параметр поиска '%s'"
+    IDS_SEARCH_ATTRERR      "Синтаксическая ошибка в '%s' параметре поиска"
+    IDS_SEARCH_MISSINGANDRIGHT "Missing right side for AND operator"
+    IDS_SEARCH_OPRERR       "Syntax error in comparison operator '%s'"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DOWNLOAD_LANGFILE   "Загрузка языкового файла"
+    IDS_DOWNLOADING_SERVERMET_FROM "Загрузка списка сервера с %s"
+    IDS_DOWNLOADING_SERVERMET "Загрузка списка сервера"
+    IDS_FULLALLOC           "Allocate full filesize for non-sparse part files"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH "Хеш не найден."
+    IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "Gap список повреждён"
+    IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST "Gap список не найден"
+    IDS_X_SHAREAZA_IMPORT_HASH_SET_CORRUPT "Хеш повреждён"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH_SET "Хеш не найден"
+    IDS_CONVERTINGKNOWN2MET "Converting %s to %s to support large files..."
+    IDS_CONVERTINGKNOWN2FAILED 
+                            "...failed to convert known2.met, ignoring old records"
+    IDS_CONVERTINGKNOWN2DONE "... done, finished converting"
+    IDS_ERR_MET_BAD         "Ошибка: файл %s повреждён, невозможно загрузить список известных файлов"
+    IDS_SRV_LARGEFILES      "Поддержка больших файлов"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_ERR_FSCANTHANDLEFILE 
+                            "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
+    IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
 END
 
 #endif    // Russian resources

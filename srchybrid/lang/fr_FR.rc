@@ -80,7 +80,7 @@ BEGIN
     IDS_HTTPDOWNLOAD_ERROR_READFILE 
                             "Erreur durant le téléchargement du fichier, Erreur : %s"
     IDS_HTTPDOWNLOAD_PERCENTAGE 
-                            "Mise à jour liste de serveurs : %s%% de %s effectué"
+                            "Mise à jour de la liste : %s%% de %s effectué"
     IDS_HTTPDOWNLOAD_RETREIVEING_FILE "Récupération du fichier"
     IDS_HTTPDOWNLOAD_OF     "%s de %s"
     IDS_FILELINK            "Lien eD2K"
@@ -331,7 +331,7 @@ BEGIN
     IDS_STATS_AVGDL         "Vitesse moyenne de réception: %s"
     IDS_STATS_AVGUL         "Vitesse moyenne d'émission: %s"
     IDS_STATS_FOUNDSRC      "Sources trouvées: %i"
-    IDS_STATS_ACTDL         "Réceptions en cours (morceaux): %i"
+    IDS_STATS_ACTDL         "Réceptions en cours (parties): %i"
     IDS_STATS_ACTUL         "Emissions en cours: %i"
     IDS_STATS_WAITINGUSERS  "Clients en file d'attente: %i"
     IDS_STATS_RECONNECTS    "Nombre de reconnexions: %i"
@@ -654,7 +654,7 @@ BEGIN
     IDS_BANNED              "Banni(s)"
     IDS_PRIOVERYHIGH        "Très haute"
     IDS_UUSERS              "Util."
-    IDS_UFAILED             "Échec"
+    IDS_UFAILED             "Echec"
     IDS_OPENFILE            "Ouvrir fichier"
     IDS_DATE                "Date"
 END
@@ -984,7 +984,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ERR_NOVALIDFRIENDINFO 
-                            "Vous devez entrer une IP et N° de port valide !"
+                            "Vous devez entrer une adresse IP et un N° de port valides !"
     IDS_ADD                 "Ajouter"
     IDS_RECOVERED_PARTMET   "Fichier part.met récupéré pour : %s"
     IDS_CMT_QUEST           "Commenter ce fichier (Ce texte sera vu par tous les utilisateurs)"
@@ -1076,7 +1076,7 @@ BEGIN
     IDS_DL_TRANSFCOMPL      "Accompli "
     IDS_DL_ACTIVE_TIME      "Temps de réception "
     IDS_STATS_FILTEREDCLIENTS "Filtrés: %i"
-    IDS_FILTERLABEL         "Les messages filtrés contiennent : (Séparateur | )"
+    IDS_FILTERLABEL         "Filtrer les messages contenant : (Séparateur | )"
     IDS_ERR_LARGEREQBLOCK   "Le client demande un bloc trop important."
     IDS_SHOWRATEONTITLE     "Afficher les taux de transfert dans le titre"
     IDS_TBN_NOMESSAGEHISTORY "Pas d'historique des messages !"
@@ -1113,7 +1113,7 @@ BEGIN
     IDS_IPFILTERLOADED      "%i Filtres IP chargés"
     IDS_IPFILTER            "Filtres IP"
     IDS_EDIT                "Editer"
-    IDS_FILTERLEVEL         "Niveau de filtrage "
+    IDS_FILTERLEVEL         "Niveau du filtre "
     IDS_FILTERSERVERBYIPFILTER "Filtres serveurs (Serveurs en dynIP rejetés)"
     IDS_FILTERCOMMENTSLABEL "Ignorer les commentaires contenant : (Séparateur | )"
     IDS_CLIENTLIST          "Clients connus"
@@ -1135,9 +1135,9 @@ BEGIN
     IDS_DISABLEQUEUELIST    "Masquer la file d'attente"
     IDS_USECREDITSYSTEM     "Utiliser le système de crédit (Récompense les envois)"
     IDS_FIRSTAUTODOWN       "Activez cette option si vous désirez qu'eMule gère les priorités de vos téléchargements.\n\nCela permettra à eMule de faire en sorte que les fichiers avec beaucoup de sources n'interféreont pas avec les fichiers moins bien lotis. L'activation de cette option n'affectera que vos nouveaux téléchargements."
-    IDS_FIRSTAUTOUP         "Activez cette option si vous désirez qu'eMule gère les priorités de vos fichiers partagés.\n\nCela permettra à eMule de favoriser les fichiers rares au dépénd des fichiers les plus populaires, qui eux deviendront alors plus difficiles pour les autres à récupérer. Désactiver cette option permettra d'uploader davantages les fichiers populaires au détriment des fichiers les plus rares. L'activation de cette option n'affectera que les nouveaux fichiers en partage."
+    IDS_FIRSTAUTOUP         "Activez cette option si vous désirez qu'eMule gère les priorités de vos fichiers partagés.\n\nCela permettra à eMule de favoriser les fichiers rares au dépend des fichiers les plus populaires, qui eux deviendront alors plus difficiles à récupérer pour les autres. Désactiver cette option permettra d'émettre davantages les fichiers populaires au détriment des fichiers les plus rares. L'activation de cette option n'affectera que les nouveaux fichiers partagés."
     IDS_FIRSTCREDITSYSTEM   "Désirez-vous récompenser les personnes qui vous envoient des données ?\n\nCommunément appelé le Système de Crédit, cette option aide à combattre les leecheurs. Si vous êtes essentiellement un releaseur, vous aurez plutôt tendance à désactiver cette option."
-    IDS_FIRSTFULLCHUNK      "Activez cette option si vous voulez uploader des parties complètes.\n\nCeci augmente les chances des autres clients de compléter une partie. En désactivant cette option, la rotation dans votre file d'attente sera plus rapide. Si vous êtes essentiellement un releaseur, il est préférable d'activer cette option."
+    IDS_FIRSTFULLCHUNK      "Activez cette option si vous voulez émettre des parties complètes.\n\nCeci augmente les chances des autres clients de compléter une partie. En désactivant cette option, la rotation dans votre file d'attente sera plus rapide. Si vous êtes essentiellement un releaseur, il est préférable d'activer cette option."
     IDS_FIRSTSAFECON        "Activez cette option pour qu'eMule utilise la Connexion Respectueuse aux serveurs.\n\nDésactiver cette option permet une connexion un peu plus rapide aux serveurs, mais risque de vous octroyer beaucoup plus de faux LowID."
     IDS_FIRSTRUNASSIST      "Voulez-vous exécuter l'assistant de configuration ?"
     IDS_FIRSTAUTOCON        "Activez cette option si vous voulez qu'eMule se connecte au démarrage."
@@ -1276,7 +1276,7 @@ BEGIN
     IDS_AUTOCLEANUPFN       "Nettoyer le nom"
     IDS_ONNEWDOWNLOAD       "Initialisations"
     IDS_FILTERFILENAMEWORD  "Entrez les mots à filtrer, séparés par |"
-    IDS_FNFILTERTITLE       "Editer les filtres pour le nettoyage de nom de fichier"
+    IDS_FNFILTERTITLE       "Editer les filtres de nettoyage des noms de fichier"
     IDS_CHANGECATVIEW       "Filtrer l'affichage"
     IDS_STATUS_NOTCOMPLETED "Incomplet"
     IDS_STATS_CUMULATIVE    "Cumulatif"
@@ -1317,16 +1317,16 @@ BEGIN
     IDS_STATS_LOSTCORRUPT   "Perdu à cause de la corruption: %s"
     IDS_STATS_AVGDATAULSES  "Moyenne d'envoi par session"
     IDS_STATS_ICHSAVED      "Parties sauvées grâce à l'I.C.H.: %u"
-    IDS_STATS_MBRESET_TXT   "Etes-vous sûr de vouloir mettre à 0 vos statistiques cumulatives? \n\nSi vous changez d'avis, vous pouvez inverser cette action en cliquant sur le bouton 'Restaurer Stats'."
-    IDS_STATS_MBRESET_CAP   "Confirmer la remise à 0"
-    IDS_STATS_MBRESTORE_TXT "Etes-vous sûr de vouloir restaurer vos statistiques cumulatives à partir du fichier de sauvegarde? \n\nEn cliquant sur 'Restaurer Stats' à nouveau, vous rechargerez vos statistiques actuelles."
+    IDS_STATS_MBRESET_TXT   "Etes-vous sûr de vouloir réinitialiser vos statistiques cumulatives ? \n\nSi vous changez d'avis, vous pouvez annuler cette action en cliquant sur 'Restaurer les statistiques'."
+    IDS_STATS_MBRESET_CAP   "Confirmer la réinitialisation"
+    IDS_STATS_MBRESTORE_TXT "Etes-vous sûr de vouloir restaurer vos statistiques cumulatives à partir du fichier de sauvegarde ? \n\nEn cliquant à nouveau sur 'Restaurer les statistiques', vous rechargerez vos statistiques actuelles."
     IDS_STATS_MBRESTORE_CAP "Confirmer la restauration"
     IDS_ERR_NOSTATBKUP      "ERREUR: Le fichier de sauvegarde des statistiques n'a pas été trouvé..."
     IDS_STATS_NFOLOADEDBKUP "Données statistiques sauvegardées chargées..."
-    IDS_STATS_NFORESET      "Les statistiques ont été remises à 0 !"
-    IDS_STATS_BNRESET       "RAZ des statistiques"
-    IDS_STATS_BNRESTORE     "Restaurer les stats"
-    IDS_CONNECTIONSTATISTICS "Statistique de connexions"
+    IDS_STATS_NFORESET      "Les statistiques ont été réinitialisées !"
+    IDS_STATS_BNRESET       "Réinitialiser les statistiques"
+    IDS_STATS_BNRESTORE     "Restaurer les statistiques"
+    IDS_CONNECTIONSTATISTICS "Statistiques de connexions"
     IDS_PPGSTATS_YSCALE     "Echelle de l'axe Y (connexions) :"
 END
 
@@ -1361,12 +1361,12 @@ BEGIN
     IDS_STATS_MNUTREEHTML   "Fonctions HTML"
     IDS_STATS_EXPORT2HTML   "Exporter toutes les statistiques"
     IDS_CONDTCPACCEPT       "Rejeter les connexions trop rapides"
-    IDS_STATS_MNUTREECPYVIS "Copier les stats visibles"
+    IDS_STATS_MNUTREECPYVIS "Copier les statistiques visibles"
     IDS_STATS_MNUTREEEXPANDALL "Ouvrir toutes les sections"
     IDS_STATS_MNUTREECOLLAPSEALL "Fermer toutes les sections"
     IDS_STATS_MNUTREEEXPANDMAIN "Ouvrir les sections principales"
     IDS_STATS_LASTRESETSTATIC 
-                            "Statistiques remises à 0 pour la dernière fois : %s"
+                            "Dernière réinitialisation des statistiques le : %s"
     IDS_STATS_MONTHLY       "Mensuel"
     IDS_STATS_YEARLY        "Annuel"
 END
@@ -1375,7 +1375,7 @@ STRINGTABLE
 BEGIN
     IDS_STATS_TIMESTATS     "Statistiques temporelles"
     IDS_STATS_AVGANDPROJ    "Moyennes prévues"
-    IDS_STATS_TIMESINCERESET "Temps depuis la dernière remise à 0: %s"
+    IDS_STATS_TIMESINCERESET "Temps depuis la dernière réinitialisation : %s"
     IDS_CRYPT_INITFAILED    "Impossible d'initialiser les clés de cryptage - identification sécurisée désactivée"
     IDS_CD_IDENT            "Identification :"
     IDS_IDENTOK             "Réussi"
@@ -1533,7 +1533,7 @@ BEGIN
     IDS_IMP_DELSRC          "Voulez-vous supprimer les fichiers part sources des téléchargements dont l'importation a réussi ?"
     IDS_IMP_SIZE            "%s (Disque:%s)"
     IDS_IMP_STATUS          "Importation %s: %s"
-    IDS_DYNUPENABLED        "Contrôle automatiquement de la vitesse d'émission"
+    IDS_DYNUPENABLED        "Contrôle automatique de la vitesse d'émission"
 END
 
 STRINGTABLE 
@@ -1715,8 +1715,7 @@ BEGIN
     IDS_NETWORK_INFO        "Informations réseau"
     IDS_SP_TOTALUL          "Nombre total d'émissions"
     IDS_SP_ULFRIENDS        "Accès amis (émission)"
-    IDS_SP_ULSLOTSNOOVERHEAD 
-                            "Emission courante sans surplus de bande passante (accès amis uniquement)"
+    IDS_SP_ULSLOTSNOOVERHEAD "Emission sans surplus de bande passante"
     IDS_ST_ACTIVEU_ZZ       "Emissions actives"
     IDS_ST_ULCURRENT        "Emission + surplus bande passante"
     IDS_ST_ULSLOTSNOOVERHEAD "Emission"
@@ -1902,7 +1901,7 @@ BEGIN
     IDS_UNSHAREDIRSUB       "Départager avec sous-dossiers"
     IDS_ALLSHAREDFILES      "Tous les fichiers partagés"
     IDS_ALLDIRECTORIES      "Tous les dossiers"
-    IDS_SEARCHRELATED       "Chercher le fichier correspondant"
+    IDS_SEARCHRELATED       "Chercher les fichiers connexes"
     IDS_RELATED             "Correspondant"
     IDS_COLL_REPLACEEXISTING "Voulez-vous remplacer le fichier existant ?"
     IDS_COLL_ERR_DELETING   "Erreurs inconnues en supprimant l'ancien fichier. Quitter sans sauvegarder ?"
@@ -1923,6 +1922,43 @@ BEGIN
     IDS_USS_STATE_PREPARING "Préparation..."
     IDS_USS_STATE_WAITING   "En attente..."
     IDS_USS_STATE_ERROR     "Erreur !"
+    IDS_SHAREWARNING        "(le dossier sera partagé !)"
+    IDS_REMOVEALLSERVERS    "Voulez-vous vraiment supprimer tous les serveurs ?"
+    IDS_SEARCH_UNKATTR      "Argument de recherche '%s' inconnu"
+    IDS_SEARCH_ATTRERR      "Erreur de syntaxe dans l'attribut de recherche '%s'"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_SEARCH_MISSINGANDRIGHT 
+                            "Il manque la partie droite pour l'opérateur AND"
+    IDS_SEARCH_OPRERR       "Erreur de syntaxe dans l'opérateur de comparaison '%s'"
+    IDS_DOWNLOAD_LANGFILE   "Téléchargement du fichier de traduction"
+    IDS_DOWNLOADING_SERVERMET_FROM 
+                            "Téléchargement du fichier server.met à partir de %s"
+    IDS_DOWNLOADING_SERVERMET 
+                            "Téléchargement du fichier server.met en cours..."
+    IDS_FULLALLOC           "Allouer la taille réelle pour les fichiers non compressés"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH "Hachage non trouvé."
+    IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT 
+                            "Liste de contrôle des parties corrompue."
+    IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST 
+                            "Liste de contrôle des parties non trouvée."
+    IDS_X_SHAREAZA_IMPORT_HASH_SET_CORRUPT "Table de hachage corrompue."
+    IDS_X_SHAREAZA_IMPORT_NO_HASH_SET "Table de hachage non trouvée."
+    IDS_CONVERTINGKNOWN2MET "Conversion en cours de %s en %s pour la prise en charge des fichiers volumineux..."
+    IDS_CONVERTINGKNOWN2FAILED 
+                            "...échec de conversion du fichier known2.met, les anciennes données ne seront pas reprises."
+    IDS_CONVERTINGKNOWN2DONE "... effectué, conversion terminée."
+    IDS_ERR_MET_BAD         "Erreur : le fichier %s est corrumpu, impossible de charger la liste des fichiers connus."
+    IDS_SRV_LARGEFILES      "Prise en charge des fichiers volumineux."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ERR_FSCANTHANDLEFILE 
+                            "Téléchargement impossible car votre partition ne gère pas les fichiers de plus de 4 Go, songez à la convertir en NTFS"
+    IDS_NEWVERSIONAVLBETA   "Cette version Beta est obsolète. Du fait de leur nature, les versions Beta contiennent souvent des bugs, installez une version finale stable dès que possible !"
 END
 
 STRINGTABLE 
@@ -2055,6 +2091,7 @@ BEGIN
 	IDS_ACCEPTRATIO        "Accepter le ratio de session 1:3 si sources trouvées > limite de sources"
 	IDS_SHOWADDITIONALGRAPH "Montrer lignes de graphique additionnelles"
     	IDS_CHECK4UPDATEMOD     "Vérifier si nouvelle Xtreme version tous les"
+    	IDS_ANTILEECHEREMCRYPT_CHECK "Détection des emcrypt"
 END
 
 #endif    // Französisch (Frankreich) resources

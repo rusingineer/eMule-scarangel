@@ -369,7 +369,7 @@ END_MESSAGE_MAP()
 
 // CSplashScreenEx message handlers
 
-BOOL CSplashScreenEx::OnEraseBkgnd(CDC* pDC)
+BOOL CSplashScreenEx::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	return TRUE;
 }
@@ -380,7 +380,7 @@ void CSplashScreenEx::OnPaint()
 	DrawWindow(&dc);
 }
 
-LRESULT CSplashScreenEx::OnPrintClient(WPARAM wParam, LPARAM lParam)
+LRESULT CSplashScreenEx::OnPrintClient(WPARAM wParam, LPARAM /*lParam*/)
 {
 	CDC* pDC = CDC::FromHandle((HDC)wParam);
 	DrawWindow(pDC);
@@ -409,7 +409,7 @@ BOOL CSplashScreenEx::PreTranslateMessage(MSG* pMsg)
 	return CWnd::PreTranslateMessage(pMsg);
 }
 
-void CSplashScreenEx::OnTimer(UINT nIDEvent)
+void CSplashScreenEx::OnTimer(UINT /*nIDEvent*/)
 {
 	KillTimer(0);
 	Hide();

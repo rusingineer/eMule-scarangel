@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -120,7 +120,7 @@ void CCatDialog::DoDataExchange(CDataExchange* pDX)
 void CCatDialog::Localize()
 {
 	GetDlgItem(IDC_STATIC_TITLE)->SetWindowText(GetResString(IDS_TITLE));
-	GetDlgItem(IDC_STATIC_INCOMING)->SetWindowText(GetResString(IDS_PW_INCOMING));
+	GetDlgItem(IDC_STATIC_INCOMING)->SetWindowText(GetResString(IDS_PW_INCOMING) + _T("  ") + GetResString(IDS_SHAREWARNING) );
 	GetDlgItem(IDC_STATIC_COMMENT)->SetWindowText(GetResString(IDS_COMMENT));
 	GetDlgItem(IDCANCEL)->SetWindowText(GetResString(IDS_CANCEL));
 	GetDlgItem(IDC_STATIC_COLOR)->SetWindowText(GetResString(IDS_COLOR));
@@ -208,7 +208,7 @@ void CCatDialog::OnBnClickedCancel()
 	OnCancel();
 }
 
-LONG CCatDialog::OnSelChange(UINT lParam, LONG wParam)
+LONG CCatDialog::OnSelChange(UINT lParam, LONG /*wParam*/)
 {
 	if (lParam == CLR_DEFAULT)
 		newcolor = 0;		

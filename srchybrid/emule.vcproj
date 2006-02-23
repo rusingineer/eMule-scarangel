@@ -85,7 +85,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include;..\crypto.v52.1"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;SUPPORT_LARGE_FILES"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -153,10 +153,10 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="TRUE"
 				EnableFiberSafeOptimizations="TRUE"
-				OptimizeForProcessor="0"
+				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include;..\crypto.v52.1"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;SUPPORT_LARGE_FILES"
 				StringPooling="TRUE"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
@@ -172,7 +172,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="unicows.lib kernel32.lib advapi32.lib user32.lib gdi32.lib shell32.lib comdlg32.lib version.lib mpr.lib rasapi32.lib winmm.lib winspool.lib vfw32.lib secur32.lib oleacc.lib oledlg.lib sensapi.lib ws2_32.lib gdiplus.lib ADSIId.lib crypt32.lib"
+				AdditionalDependencies="unicows.lib kernel32.lib advapi32.lib user32.lib gdi32.lib shell32.lib comdlg32.lib version.lib mpr.lib rasapi32.lib winmm.lib winspool.lib vfw32.lib secur32.lib oleacc.lib oledlg.lib sensapi.lib gdiplus.lib ADSIId.lib crypt32.lib ws2_32.lib"
 				SuppressStartupBanner="TRUE"
 				IgnoreDefaultLibraryNames="kernel32.lib;advapi32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;version.lib;mpr.lib;rasapi32.lib;winmm.lib;winspool.lib;vfw32.lib;secur32.lib;oleacc.lib;oledlg.lib;sensapi.lib"
 				DelayLoadDLLs="oleacc.dll;gdiplus.dll"
@@ -229,7 +229,7 @@
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include;..\crypto.v52.1"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;_BETA"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;_BETA;SUPPORT_LARGE_FILES"
 				StringPooling="TRUE"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
@@ -245,7 +245,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="unicows.lib kernel32.lib advapi32.lib user32.lib gdi32.lib shell32.lib comdlg32.lib version.lib mpr.lib rasapi32.lib winmm.lib winspool.lib vfw32.lib secur32.lib oleacc.lib oledlg.lib sensapi.lib ws2_32.lib gdiplus.lib ADSIId.lib crypt32.lib"
+				AdditionalDependencies="unicows.lib kernel32.lib advapi32.lib user32.lib gdi32.lib shell32.lib comdlg32.lib version.lib mpr.lib rasapi32.lib winmm.lib winspool.lib vfw32.lib secur32.lib oleacc.lib oledlg.lib sensapi.lib gdiplus.lib ADSIId.lib crypt32.lib ws2_32.lib"
 				SuppressStartupBanner="TRUE"
 				IgnoreDefaultLibraryNames="kernel32.lib;advapi32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;version.lib;mpr.lib;rasapi32.lib;winmm.lib;winspool.lib;vfw32.lib;secur32.lib;oleacc.lib;oledlg.lib;sensapi.lib"
 				DelayLoadDLLs="oleacc.dll;gdiplus.dll"
@@ -392,30 +392,6 @@
 			</File>
 			<File
 				RelativePath="MD4.cpp">
-				<FileConfiguration
-					Name="Debug_Dump|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Unicode_Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Unicode_Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="testversion|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="MD4_asm.asm">
@@ -457,6 +433,9 @@
 			</File>
 			<File
 				RelativePath="Mdump.cpp">
+			</File>
+			<File
+				RelativePath=".\MediaInfo.cpp">
 			</File>
 			<File
 				RelativePath="MfcStaticBinaryCompatible.cpp">
@@ -512,24 +491,30 @@
 						Description="Performing Custom Build Step"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Unicode_Debug|Win32">
+					Name="Unicode_Debug|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="$(InputFileName)"
+						CommandLine="bison --no-lines --defines --output &quot;$(InputDir)$(InputName).cpp&quot; &quot;$(InputFileName)&quot;
+"
+						Outputs="$(ProjectDir)\$(InputName).cpp; $(ProjectDir)\$(InputName).hpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode_Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="testversion|Win32"
+					ExcludedFromBuild="TRUE">
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing Custom Build Step"
 						CommandLine=""
 						Outputs=""/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Unicode_Release|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Performing Custom Build Step"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="testversion|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Performing Custom Build Step"/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -558,6 +543,9 @@
 			</File>
 			<File
 				RelativePath="Quantize.cpp">
+			</File>
+			<File
+				RelativePath="RARFile.cpp">
 			</File>
 			<File
 				RelativePath="SafeFile.cpp">
@@ -592,12 +580,26 @@
 			<File
 				RelativePath="Scanner.l">
 				<FileConfiguration
-					Name="Unicode_Debug|Win32">
+					Name="Unicode_Debug|Win32"
+					ExcludedFromBuild="TRUE">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Performing Custom Build Step"
-						CommandLine=""
-						Outputs=""/>
+						Description="$(InputFileName)"
+						CommandLine="flex -L -8 -o&quot;$(ProjectDir)$(InputName).cpp&quot; &quot;-S$(ProjectDir)flex.skl&quot; &quot;$(InputPath)&quot;
+"
+						Outputs="$(ProjectDir)$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode_Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="testversion|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -746,6 +748,9 @@
 				Name="Kademlia"
 				Filter="">
 				<File
+					RelativePath="kademlia\io\BufferedFileIO.cpp">
+				</File>
+				<File
 					RelativePath="kademlia\io\ByteIO.cpp">
 				</File>
 				<File
@@ -863,6 +868,9 @@
 				RelativePath="DeadSourceList.h">
 			</File>
 			<File
+				RelativePath="Debug_FileSize.h">
+			</File>
+			<File
 				RelativePath="DebugHelpers.h">
 			</File>
 			<File
@@ -932,6 +940,9 @@
 				RelativePath="Mdump.h">
 			</File>
 			<File
+				RelativePath="MediaInfo.h">
+			</File>
+			<File
 				RelativePath="MMServer.h">
 			</File>
 			<File
@@ -981,6 +992,9 @@
 			</File>
 			<File
 				RelativePath="Quantize.h">
+			</File>
+			<File
+				RelativePath="RARFile.h">
 			</File>
 			<File
 				RelativePath="Resource.h">
@@ -1081,6 +1095,9 @@
 			<Filter
 				Name="Kademlia"
 				Filter="">
+				<File
+					RelativePath="kademlia\io\BufferedFileIO.h">
+				</File>
 				<File
 					RelativePath="kademlia\io\ByteIO.h">
 				</File>
@@ -2663,9 +2680,6 @@
 				RelativePath="res\Transfer.ico">
 			</File>
 			<File
-				RelativePath="res\transfers.ico">
-			</File>
-			<File
 				RelativePath="res\TransferUpDown.ico">
 			</File>
 			<File
@@ -2838,70 +2852,6 @@
 			</File>
 			<File
 				RelativePath=".\SplashScreenEx.h">
-			</File>
-		</Filter>
-		<Filter
-			Name="WebCache"
-			Filter="">
-			<File
-				RelativePath=".\WebCache\PPgWebcachesettings.cpp">
-			</File>
-			<File
-				RelativePath=".\WebCache\PPgWebcachesettings.h">
-			</File>
-			<File
-				RelativePath=".\WebCache\ThrottledChunkList.cpp">
-			</File>
-			<File
-				RelativePath=".\WebCache\ThrottledChunkList.h">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCache.cpp">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCache.h">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCacheClient.cpp">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCacheCryptography.cpp">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCacheCryptography.h">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCachedBlock.cpp">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCachedBlock.h">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCachedBlockList.cpp">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCachedBlockList.h">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCacheMFRList.cpp">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCacheMFRList.h">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCacheOHCBManager.cpp">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCacheOHCBManager.h">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCacheProxyClient.cpp">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCacheProxyClient.h">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCacheSocket.h">
 			</File>
 		</Filter>
 		<Filter

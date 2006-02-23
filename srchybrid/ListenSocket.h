@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -39,10 +39,7 @@ public:
 	void	SetClient(CUpDownClient* pClient);
 	void	Disconnect(LPCTSTR pszReason, CUpDownClient::UpStopReason reason = CUpDownClient::USR_NONE); // Maella -Upload Stop Reason-
 	void	WaitForOnConnect();
-	//void	ResetTimeOutTimer();
-
-	virtual void	ResetTimeOutTimer(); // {Webcache} [Max]
-
+	void	ResetTimeOutTimer();
 	bool	CheckTimeOut();
 	virtual UINT GetTimeOut();
 	virtual void Safe_Delete();
@@ -75,12 +72,9 @@ protected:
 		
 	bool	ProcessPacket(const BYTE* packet, uint32 size, UINT opcode);
 	bool	ProcessExtPacket(const BYTE* packet, uint32 size, UINT opcode, UINT uRawSize);
-	
-	bool	ProcessWebCachePacket(const BYTE* packet, uint32 size, UINT opcode, UINT uRawSize); // {Webcache} [Max]
-	
 	//Xman
 	// Maella -Dump information of unknown packet in debug tab-
-	void    PacketToDebugLogLine(bool isOpcodeKnown, const uchar* packet, uint32 size, UINT opcode, EDebugLogPriority dlpPriority);
+	void    PacketToDebugLogLine(bool isOpcodeKnown, const uchar* packet, uint32 size, UINT opcode);
 	// Maella end
 
 	void	SetConState(SocketState val);
@@ -107,7 +101,7 @@ public:
 	void	Process();
 	void	RemoveSocket(CClientReqSocket* todel);
 	void	AddSocket(CClientReqSocket* toadd);
-	uint16	GetOpenSockets()		{return socket_list.GetCount();}
+	UINT	GetOpenSockets()		{return socket_list.GetCount();}
 	void	KillAllSockets();
 	bool	TooManySockets(bool bIgnoreInterval = false);
 	uint32	GetMaxConnectionReached()	{return maxconnectionreached;}

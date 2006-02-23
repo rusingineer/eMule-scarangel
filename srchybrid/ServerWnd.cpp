@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -35,9 +35,6 @@
 #include "NetworkInfoDlg.h"
 #include "Log.h"
 #include "UserMsgs.h"
-
-
-#include <.\WebCache\WebCache.h> // {Webcache} [Max] 
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -140,13 +137,13 @@ BOOL CServerWnd::OnInitDialog()
 
 		// MOD Note: Do not remove this part - Merkur
 		m_strClickNewVersion = GetResString(IDS_EMULEW) + _T(" ") + GetResString(IDS_EMULEW3) + _T(" ") + GetResString(IDS_EMULEW2);
-		servermsgbox->AppendHyperLink(_T(""), _T(""), m_strClickNewVersion, _T(""), false);
+		servermsgbox->AppendHyperLink(_T(""), _T(""), m_strClickNewVersion, _T(""));
 		// MOD Note: end
 
 		//Xman versions check
 		servermsgbox->AppendText(_T("\n"));
 		m_strClickNewXtremeVersion=_T("Click to check for new Xtreme-Version");
-		servermsgbox->AppendHyperLink(_T(""),_T(""),m_strClickNewXtremeVersion,_T(""),false);
+		servermsgbox->AppendHyperLink(_T(""),_T(""),m_strClickNewXtremeVersion,_T(""));
 		//Xman end
 		servermsgbox->AppendText(_T("\n\n"));
 	}
@@ -257,6 +254,10 @@ BOOL CServerWnd::OnInitDialog()
 	AddAnchor(*debuglog, MIDDLE_LEFT, BOTTOM_RIGHT);
 	AddAnchor(*leecherlog, MIDDLE_LEFT, BOTTOM_RIGHT); //Xman Anti-Leecher-Log
 
+	// Set the tab control to the bottom of the z-order. This solves a lot of strange repainting problems with
+	// the rich edit controls (the log panes).
+	::SetWindowPos(StatusSelector, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOCOPYBITS | SWP_NOMOVE | SWP_NOSIZE);
+
 	debug = true;
 	ToggleDebugWindow();
 
@@ -355,10 +356,10 @@ bool CServerWnd::UpdateServerMetFromURL(CString strURL)
 	CString strTempFilename;
 	strTempFilename.Format(_T("%stemp-%d-server.met"), thePrefs.GetConfigDir(), ::GetTickCount());
 
-	Log(_T("Downloading server.met from %s"), strURL);
-
 	// try to download server.met
+	Log(GetResString(IDS_DOWNLOADING_SERVERMET_FROM), strURL);
 	CHttpDownloadDlg dlgDownload;
+	dlgDownload.m_strTitle = GetResString(IDS_DOWNLOADING_SERVERMET);
 	dlgDownload.m_sURLToDownload = strURL;
 	dlgDownload.m_sFileToDownloadInto = strTempFilename;
 	if (dlgDownload.DoModal() != IDOK) {
@@ -456,7 +457,7 @@ void CServerWnd::OnBnClickedAddserver()
 	else
 		GetDlgItem(IDC_IPADDRESS)->GetWindowText(serveraddr);
 
-	UINT uPort = 0;
+	uint16 uPort = 0;
 	if (_tcsncmp(serveraddr, _T("ed2k://"), 7) == 0){
 		CED2KLink* pLink = NULL;
 		try{
@@ -486,7 +487,7 @@ void CServerWnd::OnBnClickedAddserver()
 		}
 
 		BOOL bTranslated = FALSE;
-		uPort = GetDlgItemInt(IDC_SPORT, &bTranslated, FALSE);
+		uPort = (uint16)GetDlgItemInt(IDC_SPORT, &bTranslated, FALSE);
 		if (!bTranslated){
 			AfxMessageBox(GetResString(IDS_SRV_PORT));
 			return;
@@ -596,7 +597,7 @@ void CServerWnd::OnBnClickedUpdateServerMetFromUrl()
 			POSITION pos = thePrefs.addresses_list.GetHeadPosition();
 			while (!bDownloaded && pos != NULL)
 			{
-				strURL = thePrefs.addresses_list.GetNext(pos).GetBuffer();
+				strURL = thePrefs.addresses_list.GetNext(pos);
 				bDownloaded = UpdateServerMetFromURL(strURL);
 			}
 		}
@@ -634,7 +635,7 @@ void CServerWnd::OnBnClickedResetLog()
 	}
 }
 
-void CServerWnd::OnTcnSelchangeTab3(NMHDR *pNMHDR, LRESULT *pResult)
+void CServerWnd::OnTcnSelchangeTab3(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	UpdateLogTabSelection();
 	*pResult = 0;
@@ -749,29 +750,36 @@ CString CServerWnd::GetMyInfoString() {
 	return buffer;
 }
 
-BOOL CServerWnd::PreTranslateMessage(MSG* pMsg) 
+BOOL CServerWnd::PreTranslateMessage(MSG* pMsg)
 {
-	if (pMsg->message == WM_KEYDOWN){
-
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		// Don't handle Ctrl+Tab in this window. It will be handled by main window.
+		if (pMsg->wParam == VK_TAB && GetAsyncKeyState(VK_CONTROL) < 0)
+			return FALSE;
 		if (pMsg->wParam == VK_ESCAPE)
 			return FALSE;
 
-		if( m_pacServerMetURL && m_pacServerMetURL->IsBound() && ((pMsg->wParam == VK_DELETE) && (pMsg->hwnd == GetDlgItem(IDC_SERVERMETURL)->m_hWnd) && (GetAsyncKeyState(VK_MENU)<0 || GetAsyncKeyState(VK_CONTROL)<0)) )
+		if (m_pacServerMetURL && m_pacServerMetURL->IsBound() && (pMsg->wParam == VK_DELETE && pMsg->hwnd == GetDlgItem(IDC_SERVERMETURL)->m_hWnd && (GetAsyncKeyState(VK_MENU)<0 || GetAsyncKeyState(VK_CONTROL)<0)))
 			m_pacServerMetURL->Clear();
 
-		if (pMsg->wParam == VK_RETURN){
+		if (pMsg->wParam == VK_RETURN)
+		{
 			if (   pMsg->hwnd == GetDlgItem(IDC_IPADDRESS)->m_hWnd
 				|| pMsg->hwnd == GetDlgItem(IDC_SPORT)->m_hWnd
-				|| pMsg->hwnd == GetDlgItem(IDC_SNAME)->m_hWnd){
-
+				|| pMsg->hwnd == GetDlgItem(IDC_SNAME)->m_hWnd)
+			{
 				OnBnClickedAddserver();
 				return TRUE;
 			}
-			else if (pMsg->hwnd == GetDlgItem(IDC_SERVERMETURL)->m_hWnd){
-				if (m_pacServerMetURL && m_pacServerMetURL->IsBound() ){
+			else if (pMsg->hwnd == GetDlgItem(IDC_SERVERMETURL)->m_hWnd)
+			{
+				if (m_pacServerMetURL && m_pacServerMetURL->IsBound())
+				{
 					CString strText;
 					GetDlgItem(IDC_SERVERMETURL)->GetWindowText(strText);
-					if (!strText.IsEmpty()){
+					if (!strText.IsEmpty())
+					{
 						GetDlgItem(IDC_SERVERMETURL)->SetWindowText(_T("")); // this seems to be the only chance to let the dropdown list to disapear
 						GetDlgItem(IDC_SERVERMETURL)->SetWindowText(strText);
 						((CEdit*)GetDlgItem(IDC_SERVERMETURL))->SetSel(strText.GetLength(), strText.GetLength());
@@ -782,7 +790,7 @@ BOOL CServerWnd::PreTranslateMessage(MSG* pMsg)
 			}
 		}
 	}
-   
+
 	return CResizableDialog::PreTranslateMessage(pMsg);
 }
 
@@ -816,7 +824,7 @@ void CServerWnd::OnEnLinkServerBox(NMHDR *pNMHDR, LRESULT *pResult)
 		//Xman versions check
 		else if(strUrl==m_strClickNewXtremeVersion)
 		{
-			strUrl=_T("http://www.xtreme-mod.net");
+			strUrl=MOD_HPLINK;
 		}
 		//Xman end
 		ShellExecute(NULL, NULL, strUrl, NULL, NULL, SW_SHOWDEFAULT);
@@ -869,7 +877,7 @@ void CServerWnd::ResetHistory()
 	m_pacServerMetURL->Clear();
 }
 
-BOOL CServerWnd::OnHelpInfo(HELPINFO* pHelpInfo)
+BOOL CServerWnd::OnHelpInfo(HELPINFO* /*pHelpInfo*/)
 {
 	theApp.ShowHelp(eMule_FAQ_Update_Server);
 	return TRUE;
@@ -888,13 +896,12 @@ void CServerWnd::OnStnDblclickServlstIco()
 
 void CServerWnd::DoResize(int delta)
 {
-	CSplitterControl::ChangeHeight( GetDlgItem(IDC_SERVLIST) , delta);
-
-	CSplitterControl::ChangeHeight( GetDlgItem(IDC_TAB3) , -delta,CW_BOTTOMALIGN);
-	CSplitterControl::ChangeHeight( GetDlgItem(IDC_SERVMSG) , -delta,CW_BOTTOMALIGN);
-	CSplitterControl::ChangeHeight(GetDlgItem(IDC_LOGBOX), -delta, CW_BOTTOMALIGN);
-	CSplitterControl::ChangeHeight(GetDlgItem(IDC_DEBUG_LOG), -delta, CW_BOTTOMALIGN);
-	CSplitterControl::ChangeHeight(GetDlgItem(IDC_LEECHERLOG), -delta, CW_BOTTOMALIGN); //Xman Anti-Leecher-Log
+	CSplitterControl::ChangeHeight(&serverlistctrl, delta, CW_TOPALIGN);
+	CSplitterControl::ChangeHeight(&StatusSelector, -delta, CW_BOTTOMALIGN);
+	CSplitterControl::ChangeHeight(servermsgbox, -delta,CW_BOTTOMALIGN);
+	CSplitterControl::ChangeHeight(logbox, -delta, CW_BOTTOMALIGN);
+	CSplitterControl::ChangeHeight(debuglog, -delta, CW_BOTTOMALIGN);
+	CSplitterControl::ChangeHeight(leecherlog, -delta, CW_BOTTOMALIGN); //Xman Anti-Leecher-Log
 	UpdateSplitterRange();
 }
 
@@ -920,11 +927,11 @@ void CServerWnd::InitSplitter()
 	rcDlgItem.bottom = splitpos + 30;
 	GetDlgItem(IDC_LOGRESET)->MoveWindow(rcDlgItem);
 
-	GetDlgItem(IDC_TAB3)->GetWindowRect(rcDlgItem);
+	StatusSelector.GetWindowRect(rcDlgItem);
 	ScreenToClient(rcDlgItem);
 	rcDlgItem.top = splitpos + 10;
 	rcDlgItem.bottom = rcWnd.bottom-5;
-	GetDlgItem(IDC_TAB3)->MoveWindow(rcDlgItem);
+	StatusSelector.MoveWindow(rcDlgItem);
 
 	servermsgbox->GetWindowRect(rcDlgItem);
 	ScreenToClient(rcDlgItem);
@@ -961,8 +968,9 @@ void CServerWnd::InitSplitter()
 	ReattachAnchors();
 }
 
-void CServerWnd::ReattachAnchors() {
-	RemoveAnchor(IDC_SERVLIST);
+void CServerWnd::ReattachAnchors() 
+{
+	RemoveAnchor(serverlistctrl);
 	RemoveAnchor(StatusSelector);
 	RemoveAnchor(IDC_LOGRESET);
 	RemoveAnchor(*servermsgbox);
@@ -970,13 +978,26 @@ void CServerWnd::ReattachAnchors() {
 	RemoveAnchor(*debuglog);
 	RemoveAnchor(*leecherlog); //Xman Anti-Leecher-Log
 
-	AddAnchor(IDC_SERVLIST, TOP_LEFT, CSize(100, thePrefs.GetSplitterbarPositionServer()));
+	AddAnchor(serverlistctrl, TOP_LEFT, CSize(100, thePrefs.GetSplitterbarPositionServer()));
 	AddAnchor(StatusSelector, CSize(0, thePrefs.GetSplitterbarPositionServer()), BOTTOM_RIGHT);
 	AddAnchor(IDC_LOGRESET,  BOTTOM_RIGHT);
 	AddAnchor(*servermsgbox,  CSize(0, thePrefs.GetSplitterbarPositionServer()), BOTTOM_RIGHT);
 	AddAnchor(*logbox,  CSize(0, thePrefs.GetSplitterbarPositionServer()), BOTTOM_RIGHT);
 	AddAnchor(*debuglog,  CSize(0, thePrefs.GetSplitterbarPositionServer()), BOTTOM_RIGHT);
 	AddAnchor(*leecherlog,  CSize(0, thePrefs.GetSplitterbarPositionServer()), BOTTOM_RIGHT); //Xman Anti-Leecher-Log
+
+	GetDlgItem(IDC_LOGRESET)->Invalidate();
+
+	if (servermsgbox->IsWindowVisible())
+		servermsgbox->Invalidate();
+	if (logbox->IsWindowVisible())
+		logbox->Invalidate();
+	if (debuglog->IsWindowVisible())
+		debuglog->Invalidate();
+	//Xman Anti-Leecher-Log
+	if (leecherlog->IsWindowVisible())
+		leecherlog->Invalidate();
+	//Xman end
 }
 
 void CServerWnd::UpdateSplitterRange()
@@ -994,12 +1015,6 @@ void CServerWnd::UpdateSplitterRange()
 
 	LONG splitpos = rcDlgItem.bottom + SVWND_SPLITTER_YOFF;
 	thePrefs.SetSplitterbarPositionServer( (splitpos  * 100) / rcWnd.Height());
-
-	GetDlgItem(IDC_TAB3)->GetWindowRect(rcDlgItem);
-	ScreenToClient(rcDlgItem);
-	rcDlgItem.bottom = rcWnd.bottom-5;
-	rcDlgItem.top = splitpos + 10;
-	GetDlgItem(IDC_TAB3)->MoveWindow(rcDlgItem);
 
 	GetDlgItem(IDC_LOGRESET)->GetWindowRect(rcDlgItem);
 	ScreenToClient(rcDlgItem);
@@ -1055,7 +1070,7 @@ void CServerWnd::OnWindowPosChanged(WINDOWPOS* lpwndpos)
 	CResizableDialog::OnWindowPosChanged(lpwndpos);
 }
 
-void CServerWnd::OnSplitterMoved(NMHDR *pNMHDR, LRESULT *pResult)
+void CServerWnd::OnSplitterMoved(NMHDR* pNMHDR, LRESULT* /*pResult*/)
 {
 	SPC_NMHDR* pHdr = (SPC_NMHDR*)pNMHDR;
 	DoResize(pHdr->delta);

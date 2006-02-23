@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -37,22 +37,6 @@ static char THIS_FILE[] = __FILE__;
 
 
 IMPLEMENT_DYNAMIC(CPPgDisplay, CPropertyPage)
-CPPgDisplay::CPPgDisplay()
-	: CPropertyPage(CPPgDisplay::IDD)
-{
-	m_eSelectFont = sfServer;
-}
-
-CPPgDisplay::~CPPgDisplay()
-{
-}
-
-void CPPgDisplay::DoDataExchange(CDataExchange* pDX)
-{
-	CPropertyPage::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_PREVIEW, m_3DPreview);
-}
-
 
 BEGIN_MESSAGE_MAP(CPPgDisplay, CPropertyPage)
 	ON_BN_CLICKED(IDC_MINTRAY, OnSettingsChange)
@@ -79,8 +63,23 @@ BEGIN_MESSAGE_MAP(CPPgDisplay, CPropertyPage)
 	ON_BN_CLICKED(IDC_SHOWTRANSTOOLBAR,OnSettingsChange)
 	ON_BN_CLICKED(IDC_RESETHIST, OnBtnClickedResetHist)
 	ON_WM_HELPINFO()
-//	ON_NOTIFY(NM_CUSTOMDRAW, IDC_3DDEPTH, On3DDepth)
 END_MESSAGE_MAP()
+
+CPPgDisplay::CPPgDisplay()
+	: CPropertyPage(CPPgDisplay::IDD)
+{
+	m_eSelectFont = sfServer;
+}
+
+CPPgDisplay::~CPPgDisplay()
+{
+}
+
+void CPPgDisplay::DoDataExchange(CDataExchange* pDX)
+{
+	CPropertyPage::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_PREVIEW, m_3DPreview);
+}
 
 void CPPgDisplay::LoadSettings(void)
 {
@@ -167,7 +166,7 @@ BOOL CPPgDisplay::OnInitDialog()
 BOOL CPPgDisplay::OnApply()
 {
 	TCHAR buffer[510];
-
+	
 	if(m_bModified){ // show overhead on title - Stulle
 	
 		bool mintotray_old = thePrefs.mintotray;
@@ -242,21 +241,19 @@ BOOL CPPgDisplay::OnApply()
 			thePrefs.m_iToolDelayTime = 32;
 		else
 			thePrefs.m_iToolDelayTime = _tstoi(buffer);
-
+	
 		theApp.emuledlg->transferwnd->SetToolTipsDelay(thePrefs.GetToolTipDelay()*1000);
-
 		theApp.emuledlg->searchwnd->SetToolTipsDelay(thePrefs.GetToolTipDelay()*1000);
-
 		theApp.emuledlg->transferwnd->downloadlistctrl.SetStyle();
 
 		if ((IsDlgButtonChecked(IDC_SHOWTRANSTOOLBAR) != 0) != thePrefs.IsTransToolbarEnabled()){
 			thePrefs.m_bWinaTransToolbar = !thePrefs.m_bWinaTransToolbar;
 			theApp.emuledlg->transferwnd->ResetTransToolbar(thePrefs.m_bWinaTransToolbar);
-		theApp.emuledlg->transferwnd->ResetTransToolbar2(thePrefs.m_bWinaTransToolbar); //Xman uploadtoolbar
+			theApp.emuledlg->transferwnd->ResetTransToolbar2(thePrefs.m_bWinaTransToolbar); //Xman uploadtoolbar
 		}
 		else if ((IsDlgButtonChecked(IDC_SHOWTRANSTOOLBAR) != 0) && bResetToolbar){
 			theApp.emuledlg->transferwnd->ResetTransToolbar(thePrefs.m_bWinaTransToolbar);
-		theApp.emuledlg->transferwnd->ResetTransToolbar2(thePrefs.m_bWinaTransToolbar); //Xman uploadtoolbar
+			theApp.emuledlg->transferwnd->ResetTransToolbar2(thePrefs.m_bWinaTransToolbar); //Xman uploadtoolbar
 		}
 
 		LoadSettings();
@@ -272,7 +269,7 @@ BOOL CPPgDisplay::OnApply()
 		// <== Show sources on title - Stulle
 			// ==> ModID [itsonlyme/SiRoB] - Stulle
 			/*
-			_stprintf(buffer,_T("eMule v%s"),theApp.m_strCurVersionLong + _T(" ") + MOD_VERSION); // Xman // Maella -Support for tag ET_MOD_VERSION 0x55
+			_stprintf(buffer,_T("eMule v%s"),theApp.m_strCurVersionLong+ _T(" ") + MOD_VERSION); // Xman // Maella -Support for tag ET_MOD_VERSION 0x55
 			*/
 			// <== ModID [itsonlyme/SiRoB] - Stulle
 			_stprintf(buffer,_T("eMule v%s [%s]"),theApp.m_strCurVersionLong,theApp.m_strModLongVersion);
@@ -430,7 +427,7 @@ BOOL CPPgDisplay::OnCommand(WPARAM wParam, LPARAM lParam)
 	return __super::OnCommand(wParam, lParam);
 }
 
-BOOL CPPgDisplay::OnHelpInfo(HELPINFO* pHelpInfo)
+BOOL CPPgDisplay::OnHelpInfo(HELPINFO* /*pHelpInfo*/)
 {
 	OnHelp();
 	return TRUE;
@@ -441,16 +438,6 @@ void CPPgDisplay::DrawPreview()
 	int dep=((CSliderCtrl*)GetDlgItem(IDC_3DDEPTH))->GetPos();
 	m_3DPreview.SetSliderPos( dep);
 }
-/*
-void CPPgDisplay::On3DDepth(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
-	DrawPreview();
-theApp.AddLogLine(true,"ding");
-
-	*pResult = 0;
-}
-*/
 
 // ==> show overhead on title - Stulle
 void CPPgDisplay::OnEnChangeSREnabled()

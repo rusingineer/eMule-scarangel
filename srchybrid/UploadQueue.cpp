@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -487,11 +487,12 @@ bool CUploadQueue::AcceptNewClient(bool addOnNextConnect)
 
 	
 	if(addOnNextConnect 
-	 && ((thePrefs.m_openmoreslots //if openmoreslots, then it is allowed if only one trickle
-	 && (curUpSlots-theApp.uploadBandwidthThrottler->GetNumberOfFullyActivatedSlots()<=1) )
+		&& ((thePrefs.m_openmoreslots //if openmoreslots, then it is allowed if only one trickle
+		&& (curUpSlots-theApp.uploadBandwidthThrottler->GetNumberOfFullyActivatedSlots()<=1) )
 		|| (thePrefs.m_openmoreslots==false && curUpSlots<=MinSlots) //else it is allowed if only minslots
-	 || lastupslotHighID == true)) //or last client was highid
+		|| lastupslotHighID == true)) //or last client was highid
 		return true;
+
 
 	static uint32 lastchecktime; 
 	const uint32 thisTick=::GetTickCount();
@@ -545,22 +546,29 @@ bool CUploadQueue::ForceNewClient(bool allowEmptyWaitingQueue) {
 	uint32 eMuleIn;	uint32 eMuleInOverall;
 	uint32 eMuleOut; uint32 eMuleOutOverall;
 	uint32 networkIn; uint32 networkOut;
-	theApp.pBandWidthControl->GetDatarates(1, // 1 seconds
-		eMuleIn, eMuleInOverall,
-		eMuleOut, eMuleOutOverall,
-		networkIn, networkOut);
+	if (theApp.serverconnect->IsConnected()==false)
+	{
+		theApp.pBandWidthControl->GetDatarates(1, // 1 seconds
+			eMuleIn, eMuleInOverall,
+			eMuleOut, eMuleOutOverall,
+			networkIn, networkOut);
 
-	//Xman check out if eventually we don't have an internet-connection
-	if(eMuleOut==0)
-		internetmaybedown=true;
+		//Xman check out if eventually we don't have an internet-connection
+		if(eMuleOut==0)
+			internetmaybedown=true;
+		else
+			internetmaybedown=false;
+
+		if(theApp.IsConnected()==false)
+		{
+			if(eMuleOut==0)
+				return false;
+		}
+
+	}
 	else
 		internetmaybedown=false;
 
-	if(theApp.IsConnected()==false)
-	{
-		if(eMuleOut==0)
-			return false;
-	}
 
 	return AcceptNewClient();
 
@@ -664,14 +672,6 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 	}
 	//Xman end
 
-
-// ==> {Webcache} [Max] 
-// this file is shared but not a single chunk is complete, so don't enqueue the clients asking for it
-	CKnownFile* uploadReqfile = theApp.sharedfiles->GetFileByID(client->requpfileid);
-	if (uploadReqfile && uploadReqfile->IsPartFile() && ((CPartFile*)uploadReqfile)->GetAvailablePartCount() == 0)
-		return;
-// <== {Webcache} [Max] 
-
 	uint16 cSameIP = 0;
 	// check for double
 	POSITION pos1, pos2;
@@ -730,14 +730,14 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 			{
 				//cur_client has a valid secure hash, don't remove him
 				if (thePrefs.GetVerbose())
-					AddLeecherLogLine(false,CString(GetResString(IDS_SAMEUSERHASH)),client->GetUserName(),cur_client->GetUserName(),client->GetUserName() );
+					AddLeecherLogLine(false, GetResString(IDS_SAMEUSERHASH), client->GetUserName(), cur_client->GetUserName(),client->GetUserName() );
 				return;
 			}
 			if (client->credits != NULL && client->credits->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED)
 			{
 				//client has a valid secure hash, add him remove other one
 				if (thePrefs.GetVerbose())
-					AddLeecherLogLine(false,CString(GetResString(IDS_SAMEUSERHASH)),client->GetUserName(),cur_client->GetUserName(),cur_client->GetUserName() );
+					AddLeecherLogLine(false, GetResString(IDS_SAMEUSERHASH), client->GetUserName(), cur_client->GetUserName(),cur_client->GetUserName() );
 				// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 				waitinglist.GetAt(pos2)->ClearWaitStartTime();
 				// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
@@ -752,7 +752,7 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 			{
 				// remove both since we do not know who the bad one is
 				if (thePrefs.GetVerbose())
-					AddLeecherLogLine(false,CString(GetResString(IDS_SAMEUSERHASH)),client->GetUserName(),cur_client->GetUserName(),_T("Both") );
+					AddLeecherLogLine(false, GetResString(IDS_SAMEUSERHASH), client->GetUserName(), cur_client->GetUserName(),_T("Both") );
 				// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 				waitinglist.GetAt(pos2)->ClearWaitStartTime(); 
 				// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
@@ -821,7 +821,7 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 	}
 
 	// emule collection will bypass the queue
-	if (reqfile != NULL && CCollection::HasCollectionExtention(reqfile->GetFileName()) && reqfile->GetFileSize() < MAXPRIORITYCOLL_SIZE
+	if (reqfile != NULL && CCollection::HasCollectionExtention(reqfile->GetFileName()) && reqfile->GetFileSize() < (uint64)MAXPRIORITYCOLL_SIZE
 		&& !client->IsDownloading() && client->socket != NULL && client->socket->IsConnected())
 	{
 		client->SetCollectionUploadSlot(true);
@@ -846,7 +846,7 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
         client->IsFriend()==false  && // client is not a friend with friend slot
         client->GetCombinedFilePrioAndCredit() < GetAverageCombinedFilePrioAndCredit()) { // and client has lower credits/wants lower prio file than average client in queue
 			//Xman Queueoverflow Minimumcontingent
-			uint16 mincontingent=(thePrefs.GetQueueSize()/theApp.sharedfiles->GetCount()/2);
+			uint16 mincontingent=(uint16)(thePrefs.GetQueueSize()/theApp.sharedfiles->GetCount()/2);
 			if (reqfile->GetOnUploadqueue()> mincontingent)
 				return; // then block client from getting on queue
 			//Xman end
@@ -952,7 +952,7 @@ bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReaso
 				}
 				else*/ if(client->GetSessionUp() < SESSIONMAXTRANS)
 				{
-					int keeppct = (100 - (100 * client->GetSessionUp()/SESSIONMAXTRANS)) - 10;// At least 10% time credit 'penalty'
+					int keeppct = (int)((100 - (100 * client->GetSessionUp()/SESSIONMAXTRANS)) - 10);// At least 10% time credit 'penalty'
 					if (keeppct < 0)    keeppct = 0;
 					client->Credits()->SaveUploadQueueWaitTime(keeppct);
 					client->Credits()->SetSecWaitStartTime();
@@ -1049,7 +1049,7 @@ bool CUploadQueue::CheckForTimeOver(CUpDownClient* client){
 		CKnownFile* pDownloadingFile = theApp.sharedfiles->GetFileByID(client->requpfileid);
 		if(pDownloadingFile == NULL)
 			return true;
-		if (CCollection::HasCollectionExtention(pDownloadingFile->GetFileName()) && pDownloadingFile->GetFileSize() < MAXPRIORITYCOLL_SIZE)
+		if (CCollection::HasCollectionExtention(pDownloadingFile->GetFileName()) && pDownloadingFile->GetFileSize() < (uint64)MAXPRIORITYCOLL_SIZE)
 			return false;
 		else{
 			if (thePrefs.GetLogUlDlEvents())
@@ -1105,7 +1105,7 @@ bool returnvalue=false;
 	{	
 		// Allow the client to download a specified amount per session
 			if (thePrefs.GetLogUlDlEvents() && client->GetQueueSessionPayloadUp() > SESSIONMAXTRANS)
-				AddDebugLogLine(DLP_DEFAULT, false, _T("%s: Upload session ended due to max transferred amount. %s"), client->GetUserName(), CastItoXBytes(SESSIONMAXTRANS, false, false));
+				AddDebugLogLine(DLP_DEFAULT, false, _T("%s: Upload session will end soon due to max transferred amount. %s"), client->GetUserName(), CastItoXBytes(SESSIONMAXTRANS, false, false));
 			returnvalue=true;
 	}
 	
@@ -1131,12 +1131,14 @@ void CUploadQueue::DeleteAll(){
 }
 
 // Maella -One-queue-per-file- (idea bloodymad)
-uint16 CUploadQueue::GetWaitingPosition(CUpDownClient* client){
+UINT CUploadQueue::GetWaitingPosition(CUpDownClient* client){
+
+
 	if (!IsOnUploadQueue(client))
 		return 0;
 
-	uint16 rank = 1;
-	const uint32 myscore = client->GetScore(false);
+	UINT rank = 1;
+	const UINT myscore = client->GetScore(false);
 
 	if(thePrefs.GetEnableMultiQueue() == false){
 		for(POSITION pos = waitinglist.GetHeadPosition(); pos != NULL; ){
@@ -1160,7 +1162,7 @@ uint16 CUploadQueue::GetWaitingPosition(CUpDownClient* client){
 
 
 //Xman rework:
-VOID CALLBACK CUploadQueue::UploadTimer(HWND hwnd, UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
+VOID CALLBACK CUploadQueue::UploadTimer(HWND /*hwnd*/, UINT /*uMsg*/, UINT_PTR /*idEvent*/, DWORD /*dwTime*/)
 {
 
 	static bool inprocess;
@@ -1214,12 +1216,12 @@ VOID CALLBACK CUploadQueue::UploadTimer(HWND hwnd, UINT uMsg,UINT_PTR idEvent,DW
 		}
 		else if(counter == (400/TIMER_PERIOD)){
 
-			if( Kademlia::CKademlia::isRunning() )
+			if( Kademlia::CKademlia::IsRunning() )
 			{
-				Kademlia::CKademlia::process();
-				if(Kademlia::CKademlia::getPrefs()->hasLostConnection())
+				Kademlia::CKademlia::Process();
+				if(Kademlia::CKademlia::GetPrefs()->HasLostConnection())
 				{
-					Kademlia::CKademlia::stop();
+					Kademlia::CKademlia::Stop();
 					theApp.emuledlg->ShowConnectionState();
 				}
 			}
@@ -1237,10 +1239,13 @@ VOID CALLBACK CUploadQueue::UploadTimer(HWND hwnd, UINT uMsg,UINT_PTR idEvent,DW
 		else if(counter == (600/TIMER_PERIOD)){
 			
 			theApp.clientlist->Process();
+			if (theApp.emuledlg->IsTrayIconToFlash())
+				theApp.emuledlg->ShowTransferRate(true);
 			static showRate; showRate++;
 			if(showRate >= DISPLAY_REFRESH){
 				showRate = 0;
-				theApp.emuledlg->ShowTransferRate(); // Update GUI control bar + icon tray
+				if (!theApp.emuledlg->IsTrayIconToFlash())
+					theApp.emuledlg->ShowTransferRate(); // Update GUI control bar + icon tray
 				theApp.emuledlg->transferwnd->UpdateListCount(CTransferWnd::wnd2Uploading, -1); // Update the shown amount of clients in lists
 			}
 
@@ -1455,14 +1460,14 @@ void CUploadQueue::CompUploadRate(){
 // Maella end
 
 //Xman Xtreme Upload
-void CUploadQueue::ChangeSendBufferSize(int newvalue)
+void CUploadQueue::ChangeSendBufferSize(int newValue)
 {
 	for(POSITION pos=uploadinglist.GetHeadPosition(); pos!=NULL;)
 	{
 		CClientReqSocket* cur_socket=uploadinglist.GetNext(pos)->GetFileUploadSocket();
 		if(cur_socket)
 		{
-			int newValue = thePrefs.GetSendbuffersize(); // default: 8192;  
+			//int newValue = thePrefs.GetSendbuffersize(); // default: 8192;  
 			int setValue = 0;
 			int size = sizeof(newValue);
 			cur_socket->SetSockOpt(SO_SNDBUF, &newValue, sizeof(newValue), SOL_SOCKET);
@@ -1471,20 +1476,3 @@ void CUploadQueue::ChangeSendBufferSize(int newvalue)
 		}
 	}
 }
-
-// ==> {Webcache} [Max] 
-CUpDownClient*	CUploadQueue::FindClientByWebCacheUploadId(const uint32 id) // Superlexx - webcache - can be made more efficient
-{
-        if (uploadinglist.IsEmpty())
-		return 0;
-
-	for (POSITION pos = uploadinglist.GetHeadPosition(); pos != NULL;)
-	{
-		CUpDownClient* cur_client = uploadinglist.GetNext(pos);
-		if ( cur_client->m_uWebCacheUploadId == id )
-			return cur_client;
-	}
-	return 0;
-}
-// <== {Webcache} [Max] 
-

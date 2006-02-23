@@ -414,7 +414,7 @@ void CSysInfo::DetectUserAdmin()
     PTOKEN_GROUPS ptgGroups   = NULL;
     PSID   psidAdministrators = NULL;
     SID_IDENTIFIER_AUTHORITY siaNtAuthority = SECURITY_NT_AUTHORITY;
-    BOOL   bResult = FALSE;
+//    BOOL   bResult = FALSE;
     
     __try
     {

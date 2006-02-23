@@ -57,12 +57,12 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_SOCKETS_INIT_FAILED "Πρόβλημα στην αρχικοποίηση των windows sockets!"
-    IDS_ABOUTBOX            "&Σχετικά με το eMule..."
+    IDS_SOCKETS_INIT_FAILED     "Πρόβλημα στην αρχικοποίηση των windows sockets!"
+    IDS_ABOUTBOX                "&Σχετικά με το eMule..."
     IDS_HTTPDOWNLOAD_FILESTATUS "%s από %s"
-    IDS_HTTPDOWNLOAD_CONNECTED "Σύνδεση με τον %s"
-    IDS_HTTPDOWNLOAD_RESOLVING_NAME "Καθορισμός ονόματος: %s"
-    IDS_HTTPDOWNLOAD_RESOLVED_NAME "Καθορίστηκε το όνομα σε %s"
+    IDS_HTTPDOWNLOAD_CONNECTED  "Σύνδεση με τον %s"
+    IDS_HTTPDOWNLOAD_RESOLVING_NAME "Αναζήτηση ονόματος: %s"
+    IDS_HTTPDOWNLOAD_RESOLVED_NAME "Ορίστηκε το όνομα ως %s"
     IDS_HTTPDOWNLOAD_CONNECTING "Επιχειρείται σύνδεση με τον %s"
     IDS_HTTPDOWNLOAD_REDIRECTING "Επανακατεύθυνση σε %s"
 END
@@ -71,19 +71,13 @@ STRINGTABLE
 BEGIN
     IDS_HTTPDOWNLOAD_GETTING_FILE_INFORMATION "Απόκτηση πληροφοριών αρχείου"
     IDS_HTTPDOWNLOAD_FAIL_PARSE_ERROR "Πρόβλημα στη χρήση της διεύθυνσης: %s"
-    IDS_HTTPDOWNLOAD_GENERIC_ERROR 
-                            "Πρόβλημα κατά την προσπάθεια κατεβάσματος του αρχείου. Σφάλμα:%s"
-    IDS_HTTPDOWNLOAD_FAIL_CONNECT_SERVER 
-                            "Δημιουργήθηκε σφάλμα σύνδεσης με τον εξυπηρετητή. Σφάλμα:%s"
-    IDS_HTTPDOWNLOAD_INVALID_SERVER_RESPONSE 
-                            "Αποτυχία λήψης έγκυρης απόκρισης από τον εξυπηρετητή"
-    IDS_HTTPDOWNLOAD_INVALID_HTTP_RESPONSE 
-                            "Αποτυχία λήψης έγκυρης HTTP απόκρισης από τον εξυπηρετητή"
-    IDS_HTTPDOWNLOAD_ERROR_READFILE 
-                            "Πρόβλημα κατά το κατεβάσμα του αρχείου. Σφάλμα:%s"
-    IDS_HTTPDOWNLOAD_PERCENTAGE 
-                            "Ενημέρωση λίστας εξυπηρετητών: Ολοκληρώθηκαν %s%% από %s"
-    IDS_HTTPDOWNLOAD_RETREIVEING_FILE "Απόκτηση αρχείου"
+    IDS_HTTPDOWNLOAD_GENERIC_ERROR "Πρόβλημα κατά την προσπάθεια κατεβάσματος του αρχείου. Σφάλμα:%s"
+    IDS_HTTPDOWNLOAD_FAIL_CONNECT_SERVER "Δημιουργήθηκε σφάλμα σύνδεσης με τον εξυπηρετητή. Σφάλμα:%s"
+    IDS_HTTPDOWNLOAD_INVALID_SERVER_RESPONSE "Αποτυχία λήψης έγκυρης απόκρισης από τον εξυπηρετητή"
+    IDS_HTTPDOWNLOAD_INVALID_HTTP_RESPONSE "Αποτυχία λήψης έγκυρης HTTP απόκρισης από τον εξυπηρετητή"
+    IDS_HTTPDOWNLOAD_ERROR_READFILE "Πρόβλημα κατά το κατεβάσμα του αρχείου. Σφάλμα:%s"
+    IDS_HTTPDOWNLOAD_PERCENTAGE "Λήψη: Ολοκληρώθηκαν %s%% από %s"
+    IDS_HTTPDOWNLOAD_RETREIVEING_FILE "Λήψη αρχείου"
     IDS_HTTPDOWNLOAD_OF     "%s από %s"
     IDS_CANCEL              "Ακύρωση"
 END
@@ -94,11 +88,9 @@ BEGIN
     IDS_HTTPDOWNLOAD_TIMELEFT "%s (%s αντιγράφηκαν)"
     IDS_HSAV                "Διαθέσιμες υπογραφές"
     IDS_FD_CORR             "Χαλασμένο"
-    IDS_HTTPDOWNLOAD_OK_TO_OVERWRITE 
-                            "Το αρχείο '%s' υπάρχει ήδη.\nΘέλετε να το αντικαταστήσετε;"
+    IDS_HTTPDOWNLOAD_OK_TO_OVERWRITE "Το αρχείο '%s' υπάρχει ήδη.\nΘέλετε να το αντικαταστήσετε;"
     IDS_FD_RECOV            "Ανακτήθηκαν"
-    IDS_HTTPDOWNLOAD_FAIL_FILE_OPEN 
-                            "Πρόβλημα κατά το άνοιγμα του αρχείου που πρόκειται να κατέβει. Σφάλμα:%s"
+    IDS_HTTPDOWNLOAD_FAIL_FILE_OPEN "Πρόβλημα κατά το άνοιγμα του αρχείου που πρόκειται να κατέβει. Σφάλμα:%s"
     IDS_HTTPDOWNLOAD_ABORTING_TRANSFER "Εγκατάλειψη μεταφοράς"
     IDS_FD_COMPR            "Συμπίεση"
     IDS_WIZARD_NETWORK      "Επιλέξτε ποιο(α) δίκτυο(α) θέλετε να χρησιμοποιήσετε."
@@ -111,9 +103,8 @@ STRINGTABLE
 BEGIN
     IDS_MAIN_SOCKETERROR    "Ανεπανόρθωτο σφάλμα: Αδύνατη η δημιουργία socket στο port %i"
     IDS_MAIN_BTN_DISCONNECT "Απο&σύνδεση"
-    IDS_MAIN_BTN_DISCONNECT_TOOLTIP 
-                            "Αποσύνδεση από τον συνδεδεμένο εξυπηρετητή"
-    IDS_ERR_WRONGFILEID     "Εστάλει λανθασμένος κωδικός αρχείου"
+    IDS_MAIN_BTN_DISCONNECT_TOOLTIP "Αποσύνδεση από τον συνδεδεμένο εξυπηρετητή"
+    IDS_ERR_WRONGFILEID     "Αποστολή λανθασμένου κωδικού αρχείου"
     IDS_ERR_BADHASHSET      "Λήψη χαλασμένου ή μη έγκυρου σετ υπογραφών"
     IDS_ERR_BADDATABLOCK    "Λήψη χαλασμένου ή μη έγκυρου κομματιού δεδομένων"
     IDS_ERR_ILLFORMEDHASH   "’σχημα φτιαγμένη υπογραφή"
@@ -122,8 +113,7 @@ BEGIN
     IDS_ERR_WRONGPACKAGESIZE "Μη έγκυρο OP_REQUESTFILENAME μέγεθος πακέτου"
     IDS_ERR_WRONGHPACKAGESIZE "Μη έγκυρο OP_HASHSETREQUEST μέγεθος πακέτου"
     IDS_ERR_BADCLIENTACTION "Ένας χρήστης προκάλεσε σφάλμα ή έκανε κάτι κακό: %s. Αποσύνδεση του χρήστη!"
-    IDS_ERR_UNKNOWNCLIENTACTION 
-                            "’γνωστος χρήστης στέλνει πακέτα εκτεταμένου πρωτοκόλλου"
+    IDS_ERR_UNKNOWNCLIENTACTION "’γνωστος χρήστης στέλνει πακέτα εκτεταμένου πρωτοκόλλου"
     IDS_ERR_OPENMET         "Πρόβλημα: Αποτυχία στο άνοιγμα του αρχείου part.met! (%s => %s)"
     IDS_ERR_BADMETVERSION   "Πρόβλημα: Μη έγκυρη έκδοση του part.met! (%s => %s)"
     IDS_ERR_BADGAP          "Μη έγκυρο Gap-Tag στο αρχείο part.met"
@@ -132,20 +122,18 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ERR_EMPTYADRESSESDAT_TITLE "Αδυνατη η λήψη λίστας εξυπηρετητών"
-    IDS_ERR_BADSERVERMETVERSION 
-                            "Μη έγκυρη έκδοση ετικέτας στο server.met (0x%X)!"
+    IDS_ERR_BADSERVERMETVERSION "Μη έγκυρη έκδοση ετικέτας στο server.met (0x%X)!"
     IDS_SERVERSFOUND        "%i εξυπηρετητές βρέθηκαν στο server.met"
     IDS_SERVERSADDED        "%d εξυπηρετητές προστέθηκαν, %d αγνοήθηκαν (υπάρχουν/μη έγκυροι)"
     IDS_ERR_BADSERVERLIST   "Πρόβλημα: Το αρχείο server.met είναι χαλασμένο, αδύνατο το φόρτωμα της λίστας εξυπηρετητών!"
-    IDS_ERR_FILEERROR_SERVERMET 
-                            "Μη αναμενόμενο σφάλμα αρχείου κατά το διάβασμα του server.met: %s, αδύνατο το φόρτωμα της λίστας εξυπηρετητών"
+    IDS_ERR_FILEERROR_SERVERMET "Μη αναμενόμενο σφάλμα αρχείου κατά το διάβασμα του server.met: %s, αδύνατο το φόρτωμα της λίστας εξυπηρετητών"
     IDS_ERR_SAVESERVERMET   "Αποτυχία κατά το σώσιμο του server.met!"
     IDS_PASSIVE             "Παθητικά"
     IDS_MAIN_CONNECTEDTO    "Συνδεθήκατε στον: "
     IDS_MAIN_BTN_CANCEL     "&Ακύρωση"
-    IDS_AVAIL               "Κομμάτια: %d , διαθέσιμα: %d (%.1f%%)\n\n"
+    IDS_AVAIL               "Κομμάτια: %u, Διαθέσιμα: %u (%.1f%%)\n\n"
     IDS_TYPE                "Τύπος"
-    IDS_FILEID              "Κωδικός Αρχείου"
+    IDS_FILEID              "Κωδικός αρχείου"
     IDS_FILE                "Αρχείο"
     IDS_DOWNLOAD            "Κατέβασμα"
     IDS_SL_SERVERNAME       "Όνομα εξυπηρετητή"
@@ -161,8 +149,7 @@ BEGIN
     IDS_PRIONOPREF          "Χωρίς προτίμηση"
     IDS_CONNECTTHIS         "Σύνδεση στον επιλεγμένο εξυπηρετητή"
     IDS_CHAT_WELCOME        "Στιγμιαίο Μήνυμα\n  \nΔεξί-κλικ σε οποιονδήποτε χρήστη και επιλογή 'Απόστολή μηνύματος' ώστε να ξεκινήσει η συνομιλία"
-    IDS_MAIN_BTN_CANCEL_TOOLTIP 
-                            "Διακοπή της τρέχουσας προσπάθειας σύνδεσης"
+    IDS_MAIN_BTN_CANCEL_TOOLTIP "Διακοπή της τρέχουσας προσπάθειας σύνδεσης"
     IDS_MAIN_BTN_CONNECT    "&Σύνδεση"
     IDS_ERR_SAVESERVERMET2  "Αποτυχία κατα το σώσιμο του server.met! Ίσως χρειαστεί να σβήσετε το server.met και να μετονομάσετε το server.met.old σε server.met!"
     IDS_NOTCONNECTED        "Δεν υπάρχει σύνδεση"
@@ -175,13 +162,11 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ERR_WRITEERROR      "Μη αναμενόμενο σφάλμα αρχείου κατά το γράψιμο %s : %s"
-    IDS_ERR_COMPLETIONFAILED 
-                            "Μη αναμενόμενο σφάλμα αρχείου κατά την ολοκλήρωση του %s. Παύση αρχείου, επανεκκινήστε το eMule ώστε να ξαναξεκινήσει η προσπάθεια ολοκλήρωσης"
+    IDS_ERR_COMPLETIONFAILED "Μη αναμενόμενο σφάλμα αρχείου κατά την ολοκλήρωση του %s. Παύση αρχείου, επανεκκινήστε το eMule ώστε να ξαναξεκινήσει η προσπάθεια ολοκλήρωσης"
     IDS_ERR_DELETEFAILED    "Αδυναμία στο σβήσιμο του %s, θα χρειαστεί να το κάνετε μόνος(η) σας"
     IDS_DOWNLOADDONE        "Τελείωσε το κατέβασμα του αρχείου %s"
     IDS_ERR_DELETE          "Αδυναμία στο σβήσιμο του αρχείου %s"
-    IDS_ERR_HASHERRORWARNING 
-                            "Προσοχή! Αδυναμία στην υπογραφή κατεβασμένου κομματιού - μη ολοκληρωμένο σετ υπογραφών (%s)"
+    IDS_ERR_HASHERRORWARNING "Προσοχή! Αδυναμία στην υπογραφή κατεβασμένου κομματιού - μη ολοκληρωμένο σετ υπογραφών (%s)"
     IDS_ERR_INCOMPLETEHASH  "Πρόβλημα: Αδυναμία στην υπογραφή κατεβασμένου κομματιού - μη ολοκληρωμένο σετ υπογραφών (%s). Αυτό δεν πρέπει να συμβαίνει ποτέ"
     IDS_DOWNLOADING         "Κατεβαίνει"
     IDS_WAITING             "Αναμονή"
@@ -191,8 +176,7 @@ BEGIN
     IDS_PAUSED              "Σε παύση"
     IDS_ERRORLIKE           "Λανθασμένο"
     IDS_ASSIGNED2K          "Το eMule δεν είναι ρυθμισμένο για τα eD2K links. Θέλετε να ανατεθούν τώρα στο eMule τα eD2K links (συνίσταται);"
-    IDS_ERR_EMPTYADRESSESDAT 
-                            "Δεν βρέθηκε διεύθυνση λίστας εξυπηρετητών στο 'adresses.dat'. Παρακαλώ, επικολλήστε μια έγκυρη διεύθυνση λίστας εξυπηρετητών στο αρχείο αυτό, έτσι ώστε να ενημερωθεί αυτόματα η λίστα σας"
+    IDS_ERR_EMPTYADRESSESDAT "Δεν βρέθηκε διεύθυνση λίστας εξυπηρετητών στο 'adresses.dat'. Παρακαλώ, επικολλήστε μια έγκυρη διεύθυνση λίστας εξυπηρετητών στο αρχείο αυτό, έτσι ώστε να ενημερωθεί αυτόματα η λίστα σας"
 END
 
 STRINGTABLE 
@@ -205,7 +189,7 @@ BEGIN
     IDS_EXIT                "Έξοδος"
     IDS_CONNECTING          "Επιχειρείται σύνδεση"
     IDS_FAILED              "απέτυχε"
-    IDS_ERR_BADSERVERREPLY  "Ελήφθη χαλασμένη ή μη έγκυρη απόκριση login από τον εξυπηρετητή"
+    IDS_ERR_BADSERVERREPLY  "Λήψη χαλασμένης ή μη έγκυρης απόκρισης login από τον εξυπηρετητή"
     IDS_NEWCLIENTID         "Νέος κωδικός χρήστη %u"
     IDS_NOSHAREDFOLDERS     "Δεν υπάρχουν κοινόχρηστοι φάκελοι"
     IDS_SHAREDFOLDERS       "Κοινόχρηστοι φάκελοι"
@@ -220,7 +204,7 @@ BEGIN
     IDS_PRIOHIGH            "Υψηλή"
     IDS_DOWNLOADMENUTITLE   "Αρχεία που κατεβαίνουν"
     IDS_PRIORITY            "Προτεραιότητα"
-    IDS_NEWSERVERS          "Ελήφθησαν %d νέοι εξυπηρετητές"
+    IDS_NEWSERVERS          "Λήψη %d νέων εξυπηρετητών"
     IDS_DL_STOP             "&Σταμάτημα"
     IDS_DL_PAUSE            "&Παύση"
     IDS_DL_RESUME           "Συ&νέχιση"
@@ -250,7 +234,7 @@ BEGIN
     IDS_PROCDONE            "% ολοκληρώθηκε"
     IDS_SELECTINCOMINGDIR   "Διαλέξτε ένα φάκελο για τα εισερχόμενα αρχεία"
     IDS_SELECTTEMPDIR       "Διαλέξτε ένα φάκελο για τα προσωρινά αρχεία"
-    IDS_DL_FILENAME         "Όνομα Αρχείου"
+    IDS_DL_FILENAME         "Όνομα αρχείου"
     IDS_DL_SIZE             "Μέγεθος"
     IDS_DL_TRANSF           "Μεταφέρθηκαν"
 END
@@ -260,17 +244,16 @@ BEGIN
     IDS_DL_SPEED            "Ταχύτητα"
     IDS_DL_PROGRESS         "Μπάρα προόδου"
     IDS_DL_SOURCES          "Πηγές"
-    IDS_ERR_BADSERVERLISTRECEIVED 
-                            "Ελήφθη μη έγκυρο πακέτο λίστας εξυπηρετητών"
+    IDS_ERR_BADSERVERLISTRECEIVED "Λήψη μη έγκυρου πακέτου λίστας εξυπηρετητών"
     IDS_STATUS              "Κατάσταση"
-    IDS_DL_REMAINS          "Υπολείπονται"
+    IDS_DL_REMAINS          "Υπόλοιπο"
     IDS_UPDATEFROM          "Ανανέωση από URL: (αρχείο filter.dat ή PeerGuardian)"
     IDS_QL_USERNAME         "Όνομα χρήστη"
     IDS_ERR_PACKAGEHANDLING "Πρόβλημα κατά την επεξεργασία πακέτου από τον εξυπηρετητή (%s)"
     IDS_QL_RATING           "Εκτίμηση"
     IDS_CONNECTINGTO        "Επιχειρείται σύνδεση με τον %s (%s:%i)..."
     IDS_CLIENTS             "Χρήστες"
-    IDS_SEARCH_ANY          "Οποιοσδήποτε"
+    IDS_SEARCH_ANY          "Οτιδήποτε"
     IDS_SEARCH_AUDIO        "Μουσική"
 END
 
@@ -278,7 +261,7 @@ STRINGTABLE
 BEGIN
     IDS_SEARCH_PICS         "Φωτογραφία"
     IDS_SEARCH_PRG          "Πρόγραμμα"
-    IDS_SEARCH_VIDEO        "Βίντεο"
+    IDS_SEARCH_VIDEO        "Ταινία"
     IDS_SEARCH_CDIMG        "CD-Image"
     IDS_SEARCH_ARC          "Συμπιεσμένο"
     IDS_ERR_INVALIDLINK     "Αυτό το eD2K link δεν είναι έγκυρο (%s)"
@@ -296,15 +279,14 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_FAILEDDOWNLOADMET 
-                            "Αποτυχία κατά το κατέβασμα της λίστας εξυπηρετητών από %s"
+    IDS_ERR_FAILEDDOWNLOADMET "Αποτυχία κατά το κατέβασμα της λίστας εξυπηρετητών από %s"
     IDS_PERMISSION          "’δεια"
     IDS_SHAREDFILES         "Κοινόχρηστα Αρχεία"
     IDS_PRIOVERYLOW         "Πολύ χαμηλή"
     IDS_PRIORELEASE         "Ελεύθερο"
     IDS_FSTATUS_LOCKED      "Κλειδωμένο"
     IDS_KADALPHA            "Το Kademlia είναι ακόμα στο αρχικό στάδιο ανάπτυξης. Σας συνιστούμε να το ενεργοποιήσετε μόνο αν ενδιαφέρεστε να το δοκιμάσετε."
-    IDS_FSTATUS_FRIENDSONLY "Μόνο φίλοι"
+    IDS_FSTATUS_FRIENDSONLY "Φίλους μόνο"
     IDS_FSTATUS_PUBLIC      "Κοινόχρηστο"
     IDS_ERR_RENAMESF        "Αποτυχία στην μετονομασία του\r\n    ""%s""\r\nσε\r\n    ""%s""\r\n\r\n%hs"
     IDS_PRIOHIGHEST         "Υψηλότατη"
@@ -363,11 +345,10 @@ BEGIN
     IDS_NOPARTSFOUND        "Δεν βρέθηκαν αρχεία part"
     IDS_FOUNDPARTS          "Βρέθηκαν %i αρχεία part"
     IDS_NEWDOWNLOAD         "Προστέθηκε το αρχείο %s"
-    IDS_ERR_ALREADY_DOWNLOADING "Το αρχείο '%s' βρίσκεται ήδη στη λίστα σας"
-    IDS_ERR_ALREADY_DOWNLOADED "Το αρχείο '%s' το έχετε κατεβάσει παλιότερα"
+    IDS_ERR_ALREADY_DOWNLOADING "Το αρχείο %s βρίσκεται ήδη στη λίστα σας"
+    IDS_ERR_ALREADY_DOWNLOADED "Το αρχείο %s το έχετε κατεβάσει παλιότερα"
     IDS_ERR_SERVERMET_BAD   "Πρόβλημα: Το αρχείο known.met είναι χαλασμένο, αδύνατο το φόρτωμα των γνωστών αρχείων!"
-    IDS_ERR_SERVERMET_UNKNOWN 
-                            "Μη αναμενόμενο σφάλμα κατά την ανάγνωση του αρχείου known.met: %s, αδύνατο το φόρτωμα των γνωστών αρχείων"
+    IDS_ERR_SERVERMET_UNKNOWN "Μη αναμενόμενο σφάλμα κατά την ανάγνωση του αρχείου known.met: %s, αδύνατο το φόρτωμα των γνωστών αρχείων"
     IDS_ERR_CONNECTIONERROR "Πρόβλημα κατά τη σύνδεση με τον %s (%s:%i): %s"
     IDS_ERR_SOCKET          "Πρόβλημα στο socket εξυπηρετητή: %s (%s:%i): %s"
     IDS_SHAREDFOUND         "Βρέθηκαν %i γνωστά κοινόχρηστα αρχεία"
@@ -386,8 +367,7 @@ BEGIN
     IDS_LFILES              "αρχεία"
     IDS_DESC                "Περιγραφή: %s"
     IDS_PORT                "Port"
-    IDS_ERR_NOVALIDSERVERSFOUND 
-                            "Δεν βρέθηκαν έγκυροι εξυπηρετητές για σύνδεση στη λίστα εξυπηρετητών"
+    IDS_ERR_NOVALIDSERVERSFOUND "Δεν βρέθηκαν έγκυροι εξυπηρετητές για σύνδεση στη λίστα εξυπηρετητών"
     IDS_CONNECTEDTOREQ      "Δημιουργήθηκε σύνδεση με τον %s (%s:%i), αποστολή αίτησης login..."
     IDS_ERR_FATAL           "Καταστροφικό σφάλμα κατά την προσπάθεια σύνδεσης. Η σύνδεση με το Internet ίσως να μην είναι ενεργή!"
     IDS_ERR_LOSTC           "Χάθηκε η σύνδεση με τον %s (%s:%i)"
@@ -405,13 +385,13 @@ BEGIN
     IDS_SKIN_PROF           "Επιλογή Skin"
     IDS_ERR_PART_FNF        "Δεν βρέθηκε αρχείο .part"
     IDS_ERR_OPENMETFILE     "Αποτυχία στο άνοιγμα του αρχείου part.met"
-    IDS_KADOPEN             "Ανοιχτό"
-    IDS_ERR_SAVEMET         "ΠΡΟΒΛΗΜΑ κατά το σώσιμο του αρχείου part: %s (%s)"
+    IDS_KADOPEN             "Προσβάσιμο"
+    IDS_ERR_SAVEMET         "Πρόβλημα κατά το σώσιμο του αρχείου part: %s (%s)"
     IDS_ERR_FOUNDCORRUPTION "Βρέθηκε χαλασμένο κομμάτι (%i) στο %s"
     IDS_HASHINGDONE         "Τελείωσε η επανάληψη της υπογραφής του %s, φαίνεται πως το αρχείο είναι εντάξει!"
     IDS_ERR_PARTCORRUPT     "Το κατεβασμένο κομμάτι %i είναι χαλασμένο στο αρχείο %s"
     IDS_ICHWORKED           "ICH: Ανακτήθηκε το χαλασμένo κομμάτι %i από το αρχείο %s, σώθηκαν %s"
-    IDS_ERR_OUTOFSPACE      "Δεν υπάρχει αρκετός χώρος στο δίσκο για το κατέβασμα %s!"
+    IDS_ERR_OUTOFSPACE      "Δεν υπάρχει αρκετός χώρος στο δίσκο για το κατέβασμα του %s!"
     IDS_SE                  "Ανταλλαγή Πηγών"
 END
 
@@ -421,15 +401,15 @@ BEGIN
     IDS_CONNECTEDTO         "Πραγματοποιήθηκε σύνδεση με τον: %s"
     IDS_DL_PREVIEW          "Προεπισκόπηση"
     IDS_VIEWQUEUE           "Προβολή σειράς αναμονής"
-    IDS_VIEWUPLOADS         "Δείξε τα ανεβάσματα"
+    IDS_VIEWUPLOADS         "Προβολή ανεβασμάτων"
     IDS_TW_UPLOADS          "Ανεβάσματα"
     IDS_TW_DOWNLOADS        "Κατεβάσματα"
     IDS_TW_QUEUE            "Χρήστες σε αναμονή:"
     IDS_SW_SEARCHBOX        "Αναζήτηση"
     IDS_SW_NAME             "Όνομα"
     IDS_SW_GLOBAL           "Ευρύτερη"
-    IDS_SW_TYPE             "Τύπος Αρχείου"
-    IDS_SW_DIRECTDOWNLOAD   "’μεσο Κατέβασμα"
+    IDS_SW_TYPE             "Τύπος αρχείου"
+    IDS_SW_DIRECTDOWNLOAD   "Επικόλληση eD2K-link(s)"
     IDS_SW_LINK             "eD2K-link(s)"
     IDS_SW_START            "Έναρξη"
     IDS_SCHEDULER           "Προγραμματισμός"
@@ -437,10 +417,10 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_IRC                 "IRC"
+    IDS_IRC                 "&ΙRC"
     IDS_SW_RESULT           "Αποτελέσματα αναζήτησης"
     IDS_SW_DOWNLOAD         "Κατέβασμα επιλεγμένων"
-    IDS_SV_SERVERLIST       "Λίστα εξυπηρετητών"
+    IDS_SV_SERVERLIST       "Εξυπηρετητές"
     IDS_SV_SERVERINFO       "Πληροφορίες εξυπηρετητών"
     IDS_SV_LOG              "Καταγραφή γεγονότων"
     IDS_SV_NEWSERVER        "Νέος εξυπηρετητής"
@@ -464,7 +444,7 @@ BEGIN
     IDS_ADMIN               "Διαχειριστής"
     IDS_ACCESSDENIED        "Δεν έγινε επιτρεπτή η πρόσβαση!"
     IDS_WEB_LOWUSER         "Επισκέπτης"
-    IDS_WEB_ERR_CANTLOAD    "Αδύνατο το φόρτωμα διατάξεων: Αδύνατο το άνοιγμα του αρχείου %s"
+    IDS_WEB_ERR_CANTLOAD    "Αδύνατο το φόρτωμα διατάξεων. Αδύνατο το άνοιγμα του αρχείου %s"
     IDS_GLOBALSEARCH        "Ευρύτερη"
     IDS_METHOD              "Μέθοδος"
     IDS_SW_WEBBASED         "Αναζήτηση στο Web"
@@ -486,8 +466,8 @@ BEGIN
     IDS_FR                  "Παρασκευή"
     IDS_SA                  "Σάββατο"
     IDS_SO                  "Κυριακή"
-    IDS_WEB_ADMINLOGIN      "Εξυπηρετητής-Web Είσοδος διαχειριστή"
-    IDS_WEB_GUESTLOGIN      "Εξυπηρετητής-Web Είσοδος επισκέπτη"
+    IDS_WEB_ADMINLOGIN      "Εξυπηρετητής-Web: Είσοδος διαχειριστή"
+    IDS_WEB_GUESTLOGIN      "Εξυπηρετητής-Web: Είσοδος επισκέπτη"
     IDS_WEB_SESSIONEND      "Εξυπηρετητής-Web: Έξοδος"
     IDS_DETAILS             "Λεπτομέρειες"
     IDS_ACTION              "Ενέργεια"
@@ -521,7 +501,7 @@ BEGIN
     IDS_PW_NICK             "Ψευδώνυμο"
     IDS_PW_INCOMING         "Εισερχόμενα αρχεία"
     IDS_PW_TEMP             "Προσωρινά αρχεία"
-    IDS_PW_BROWSE           "Αναζήτηση"
+    IDS_PW_BROWSE           "Αναζήτηση..."
     IDS_PW_SHARED           "Κοινόχρηστοι φάκελοι (Με Ctrl+κλικ επιλογή υποφακέλων)"
     IDS_PW_CONNECTION       "Σύνδεση"
     IDS_PW_DOWNC            "Κάτω"
@@ -559,7 +539,7 @@ STRINGTABLE
 BEGIN
     IDS_PW_FILES            "Αρχεία"
     IDS_PW_ICH              "Χειρισμός χαλασμένων αρχείων"
-    IDS_PW_SHARE            "Προβολή κοινόχρηστων σε"
+    IDS_PW_SHARE            "Προβολή των κοινόχρηστων σε"
     IDS_PW_EVER             "Όλους"
     IDS_PW_FRIENDS          "Φίλους"
     IDS_PW_NOONE            "Κανέναν"
@@ -568,7 +548,7 @@ BEGIN
     IDS_EM_TRANS            "Μετα&φορά"
     IDS_EM_SERVER           "&Εξυπηρετητές"
     IDS_EM_SEARCH           "&Αναζήτηση"
-    IDS_EM_FILES            "&Κοινόχρηστα"
+    IDS_EM_FILES            "Κοι&νόχρηστα"
     IDS_EM_MESSAGES         "&Μηνύματα"
     IDS_EM_STATISTIC        "Σ&τατιστικά"
     IDS_EM_PREFS            "&Προτιμήσεις"
@@ -631,14 +611,14 @@ BEGIN
     IDS_ERR_WRONGPARTNUMBER "Λάθος αριθμός κομματιού"
     IDS_ERR_BADPORT         "Λανθασμένος αριθμός port"
     IDS_ERR_NOHELLO         "Ζητάει κάτι χωρίς να πει γειά"
-    IDS_ERR_INVALIDPACKAGE  "Ελήφθη μη έγκυρο ή χαλασμένο πακέτο"
-    IDS_ERR_CLIENTERROR     "(!) Ο χρήστης '%s' (IP:%s) προκάλεσε ένα σφάλμα: %s. Ο χρήστης αποσυνδέεται!"
+    IDS_ERR_INVALIDPACKAGE  "Λήψη μη έγκυρου ή χαλασμένου πακέτου"
+    IDS_ERR_CLIENTERROR     "Ο χρήστης '%s' (IP:%s) προκάλεσε σφάλμα: %s. Ο χρήστης αποσυνδέεται!"
 END
 
 STRINGTABLE 
 BEGIN
     IDS_ERR_BADSIZE         "Μη έγκυρο μέγεθος (OP_QUEUERANKING)"
-    IDS_ERR_BADCLIENT2      "(!) Ο χρήστης '%s' (IP:%s) προκάλεσε ένα σφάλμα: %u. Ο χρήστης αποσυνδέεται!"
+    IDS_ERR_BADCLIENT2      "Ο χρήστης '%s' (IP:%s) προκάλεσε σφάλμα: %u. Ο χρήστης αποσυνδέεται!"
     IDS_ERR_NOTAFILELINK    "Δεν είναι link αρχείου"
     IDS_ERR_CREATEPARTFILE  "Πρόβλημα: Αποτυχία κατά τη δημιουργία αρχείου part"
     IDS_ERR_UDP_MISCONF     "Πρόβλημα κατά την επεξεργασία εισερχόμενου πακέτου UDP (Πιθανότατα κακορυθμισμένος εξυπηρετητής)"
@@ -646,7 +626,7 @@ BEGIN
     IDS_FILEPRIO            "Προτεραιότητα"
     IDS_SCORE               "Βαθμολογία"
     IDS_ASKED               "Ερωτήσεις"
-    IDS_LASTSEEN            "Ρώτησε πριν από"
+    IDS_LASTSEEN            "Φάνηκε πριν"
     IDS_BANNED              "Εμποδίστηκαν"
     IDS_PRIOVERYHIGH        "Πολύ υψηλή"
     IDS_UUSERS              "Χρήστες"
@@ -744,10 +724,9 @@ BEGIN
     IDS_DENIED              "απαγορεύτηκε"
     IDS_PW_CON_DOWNLBL      "Κατέβασμα"
     IDS_PW_CON_UPLBL        "Ανέβασμα"
-    IDS_PW_AUTOCONNECTSTATICONLY 
-                            "Αυτόματη σύνδεση μόνο σε στατικούς εξυπηρετητές"
+    IDS_PW_AUTOCONNECTSTATICONLY "Αυτόματη σύνδεση μόνο σε στατικούς εξυπηρετητές"
     IDS_PW_CON_LIMITFRM     "Όρια"
-    IDS_PW_FILE_ICH         "I.C.H ενεργό"
+    IDS_PW_FILE_ICH         "ICH ενεργό"
     IDS_STATS_AVGLABEL      "Χρόνος για μέσο όρο γραφήματος: %i λεπτά"
     IDS_GRAPHS              "Γραφήματα"
     IDS_STREE               "Δέντρο στατιστικών"
@@ -762,17 +741,16 @@ BEGIN
     IDS_UPDATEQUEUE         "Ανανέωση λίστας αναμονής σε μη πραγματικό χρόνο"
     IDS_RECOVER_SINGLE      "1 αρχείο ανακτήθηκε"
     IDS_RECOVER_MULTIPLE    "%ld αρχεία ανακτήθηκαν"
-    IDS_ATTEMPTING_RECOVERY "Προσπάθεια ανάκτησης του αρχείου..."
+    IDS_ATTEMPTING_RECOVERY "Έναρξη ανάκτησης αρχείου"
     IDS_RECOVERY_SUCCESSFUL "Ανάκτηση αρχείου με επιτυχία"
     IDS_RECOVERY_FAILED     "Η ανάκτηση του αρχείου απέτυχε"
     IDS_STARTNEXTFILE       "Έναρξη επόμενου αρχείου, μετά από ολοκλήρωση"
     IDS_FULLCHUNKTRANS      "Προσπάθεια ανεβάσματος ολόκληρων κομματιών"
-    IDS_MANUALSERVERHIGHPRIO 
-                            "Όσοι τοποθετούνται γραπτώς, σε υψηλή προτεραιότητα"
+    IDS_MANUALSERVERHIGHPRIO "Όσοι τοποθετούνται γραπτώς, σε υψηλή προτεραιότητα"
     IDS_VERBOSE             "Λεπτομέρειες (Πρόσθετες πληροφορίες)"
     IDS_FLAT                "επίπεδη"
     IDS_ROUND               "στρογγυλή"
-    IDS_SAMEUSERHASH        "Ο χρήστης '%s' και ο '%s' έχουν την ίδια υπογραφή ή διεύθυνση IP - απομακρύνθηκε ο '%s'"
+    IDS_SAMEUSERHASH        "Οι χρήστες '%s' και '%s' έχουν την ίδια υπογραφή ή διεύθυνση IP - απομακρύνθηκε ο '%s'"
     IDS_SEARCHEXTENTION     "Κατάληξη"
     IDS_SEARCHAVAIL         "Διαθέσιμα"
 END
@@ -781,7 +759,7 @@ STRINGTABLE
 BEGIN
     IDS_HARDLIMIT           "Σκληρό όριο"
     IDS_COL_MORECOLORS      "περισσότερα..."
-    IDS_KBYTESEC            "kB/δευτ"
+    IDS_KBYTESEC            "kB/δ"
     IDS_TOOMANYCONNS        "Πάρα πολλές συνδέσεις"
     IDS_DOWNLOADRENAMED     "Υπάρχει ήδη αρχείο με αυτό το όνομα, το αρχείο σώθηκε ως %s"
     IDS_TBN_DOWNLOADDONE    "Κατέβηκε το:"
@@ -837,17 +815,17 @@ BEGIN
     IDS_IRC_PERFORM         "Εκτέλεση"
     IDS_IRC_USEPERFORM      "Σε σύνδεση, εκτέλεση της εντολής"
     IDS_IRC_ADDTOFRIENDLIST "Προσθήκη στους φίλους"
-    IDS_IRC_LOADCHANNELLISTONCON "Σε σύνδεση, φόρτωμα της λίστας καναλιών"
+    IDS_IRC_LOADCHANNELLISTONCON "Φόρτωμα της λίστας καναλιών"
     IDS_IRC_ADDASFRIEND     "σε πρόσθεσε σαν φίλο!"
     IDS_PW_WARNING          "Ο αριθμός που επιλέξατε για ""%s"" είναι μεγαλύτερος από αυτόν που υποστηρίζει το λειτουργικό σας:  %d\nΑυτό μπορεί να κάνει το σύστημά σας λιγότερο σταθερό.\n\nΕίναι σίγουρο ότι θέλετε να το κάνετε;"
     IDS_TAKEOVER            "Αλλαγή"
     IDS_CLEANUP             "Καθάρισμα"
     IDS_RENAME              "Μετονομασία"
-    IDS_IRC_ADDLINKTOIRC    "Πρόσθεση στο πρόχειρο του IRC, για να σταλεί σε φίλους"
+    IDS_IRC_ADDLINKTOIRC    "Πρόσθεση στο πρόχειρο του IRC"
     IDS_IRC_SENDLINK        "Αποστολή σε φίλο: "
     IDS_IRC_RECIEVEDLINK    "Ο %s έστειλε (%s) για να ξεκινήσει αυτόματα"
     IDS_IRC_ACCEPTLINKS     "Αποδοχή eD2K links από το IRC. (Με προσοχή!)"
-    IDS_SHARED              "Κοινό"
+    IDS_SHARED              "Κοινόχρηστο"
     IDS_DOWNLOADED          "Κατέβηκε"
 END
 
@@ -858,7 +836,7 @@ BEGIN
     IDS_PS_TBN_IMPORTANT    "Επείγον: Τελείωμα χώρου στον δίσκο ή απώλεια σύνδεσης με τον εξυπηρετητή"
     IDS_COLORS              "Χρώματα"
     IDS_SP_BACKGROUND       "Φόντο"
-    IDS_SP_GRID             "Πλέγμα"
+    IDS_SP_GRID             "Τίτλοι και πλέγμα"
     IDS_SP_DL1              "Κατέβασμα τρέχων"
     IDS_SP_DL2              "Κατέβασμα μέσου-χρόνου"
     IDS_SP_DL3              "Κατέβασμα μέσης-περιόδου"
@@ -893,15 +871,15 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_WIZARD              "Βοηθός"
+    IDS_WIZARD              "Βοηθός..."
     IDS_ADDFRIEND           "Προσθήκη στους φίλους"
     IDS_REMOVEFRIEND        "Αφαίρεση φίλου"
     IDS_REMOVEFROMSTOK      "Αφαιρέθηκε από τη λίστα των στατικών εξυπηρετητών"
     IDS_REMOVEFROMSTATIC    "Αφαίρεση από τη λίστα των στατικών εξυπηρετητών"
     IDS_LENGTH              "Διάρκεια"
-    IDS_VIDEO               "Εικόνα"
-    IDS_AUDIO               "Ήχος"
-    IDS_FILEINFO            "&Πληροφορίες"
+    IDS_VIDEO               "Ταινία"
+    IDS_AUDIO               "Μουσική"
+    IDS_FILEINFO            "Πολυμέσα"
     IDS_CODEC               "Κωδικοποίηση"
     IDS_BITRATE             "Bitrate"
     IDS_WIDTH               "Πλάτος"
@@ -934,21 +912,18 @@ END
 STRINGTABLE 
 BEGIN
     IDS_STATS_MAXDL         "Μέγιστος ρυθμός κατεβάσματος: %s"
-    IDS_IRC_EMULEPROTO_IGNOREADDFRIEND 
-                            "Μηνύματα για πρόσθεση φίλου"
+    IDS_IRC_EMULEPROTO_IGNOREADDFRIEND "Μηνύματα για πρόσθεση φίλου"
     IDS_PW_FASTSRVCON       "Γρήγορη σύνδεση με εξυπηρετητή"
     IDS_SOURCELINKFAILED    "Χρειάζεστε υψηλό κωδικό χρήστη για τη δημιουργία έγκυρου link πηγής"
     IDS_CREATESOURCELINK    "Αντιγραφή eD2K link στο πρόχειρο (πηγή)"
     IDS_ERR_LOADSERVERMET   "Αποτυχία κατά το φόρτωμα του server.met!"
-    IDS_ERR_CORRUPTCOMPRPKG "Χαλασμένο συμπιεσμένο πακέτο για το %s ελήφθη (λάθος %i)"
-    IDS_ERR_EMFRIENDSINVALID 
-                            "Το αρχείο emfriends.met είναι μη έγκυρο ή χαλασμένο!"
+    IDS_ERR_CORRUPTCOMPRPKG "Λήψη χαλασμένου συμπιεσμένου πακέτου για το %s (λάθος %i)"
+    IDS_ERR_EMFRIENDSINVALID "Το αρχείο emfriends.met είναι μη έγκυρο ή χαλασμένο!"
     IDS_ERR_READEMFRIENDS   "’γνωστο σφάλμα κατά την ανάγνωση του emfriends.met: %s"
-    IDS_ERR_KNOWNSERVERINFOREC "Ελήφθη άγνωστη πληροφορία εξυπηρετητή!"
-    IDS_ERR_TIMERCREATEFAILED 
-                            "Καταστροφικό σφάλμα: Αποτυχία κατά τη δημιουργία χρονοδιακόπτη"
-    IDS_WIZ_DOWN            "Κάτω (kbit/δ)"
-    IDS_WIZ_UP              "Πάνω (kbit/δ)"
+    IDS_ERR_KNOWNSERVERINFOREC "Λήψη άγνωστης πληροφορίας εξυπηρετητή!"
+    IDS_ERR_TIMERCREATEFAILED "Καταστροφικό σφάλμα: Αποτυχία κατά τη δημιουργία χρονοδιακόπτη"
+    IDS_WIZ_DOWN            "Κάτω (kbit/δευτ)"
+    IDS_WIZ_UP              "Πάνω (kbit/δευτ)"
     IDS_SELECT_INCOMINGDIR  "Επιλέξτε ένα φάκελο για τα εισερχόμενα αρχεία"
     IDS_SELECT_TEMPDIR      "Επιλέξτε ένα φάκελο για τα προσωρινά αρχεία"
     IDS_PRIOAUTO            "Αυτόματη"
@@ -976,23 +951,22 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_NOVALIDFRIENDINFO 
-                            "Πρέπει να τοποθετήσετε μία έγκυρη διεύθυνση IP και port!"
+    IDS_ERR_NOVALIDFRIENDINFO "Πρέπει να τοποθετήσετε μία έγκυρη διεύθυνση IP και port!"
     IDS_ADD                 "Πρόσθεση"
     IDS_RECOVERED_PARTMET   "Ανάκτηση αρχείου part.met για: %s"
     IDS_CMT_QUEST           "Σχολιάστε αυτό το αρχείο! (Το κείμενο αυτό θα προβληθεί σε όλους τους χρήστες)"
     IDS_CMT_AIDE            "Για μία ταινία, μπορείτε να σχολιάσετε την ποιότητα, την υπόθεση, τη διάρκεια, την γλώσσα... και αν είναι ψεύτικο μπορείτε να ενημερώσετε τους χρήστες του eMule... "
     IDS_CMT_TITLE           "%s σχόλια αρχείου"
-    IDS_CMT_ADD             "Αλλαγή των σχολίων αυτού του αρχείου..."
+    IDS_CMT_ADD             "Σχολιασμός του αρχείου..."
     IDS_CMT_NONE            "Χωρίς σχόλια"
     IDS_CMT_READ            "Σχόλια αρχείου:"
-    IDS_CMT_NOTCONNECTED    "Δεν σχολιάστηκε ακόμα..."
-    IDS_CMT_SHOWALL         "Προβολή σχολίων"
+    IDS_CMT_NOTCONNECTED    "Δεν συνδέθηκε ακόμα..."
+    IDS_CMT_SHOWALL         "Σχόλια..."
     IDS_CMT_REFRESH         "Ανανέωση"
-    IDS_CMT_READALL         "Όλα τα σχολία"
+    IDS_CMT_READALL         "Σχόλια"
     IDS_CMT_NOCOMMENT       "Δεν τοποθετήθηκαν σχόλια..."
     IDS_CMT_RATEQUEST       "Ποιότητα αρχείου"
-    IDS_CMT_RATEHELP        "Επιλέξτε την ποιότητα του αρχείου ή ενημερώστε τους χρήστες αν δεν είναι έγκυρο"
+    IDS_CMT_RATEHELP        "Επιλέξτε την ποιότητα του αρχείου ή ενημερώστε τους χρήστες αν δεν είναι έγκυρο!"
 END
 
 STRINGTABLE 
@@ -1008,27 +982,26 @@ BEGIN
     IDS_GIGA                "G"
     IDS_TERRA               "T"
     IDS_IRC_EMULEPROTO_IGNOREINFOMESSAGE "Παράβλεψη πρωτοκόλλου eMule"
-    IDS_SMARTLOWIDCHECK     "Χρήση έξυπνου ελέγχου χαμηλού ID, σε σύνδεση"
+    IDS_SMARTLOWIDCHECK     "Χρήση έξυπνου ελέγχου χαμηλού ID, κατά τη σύνδεση"
     IDS_SF_SRVOCC           "Κατάληψη εξυπηρετητών: %.2f%%"
     IDS_3DDEP               "Στυλ μπάρας προόδου"
-    IDS_AUTOTAKEED2KLINKS   "Αυτόματη λήψη eD2K Links μόνο κατά τη χρήση"
+    IDS_AUTOTAKEED2KLINKS   "Αυτόματη λήψη eD2K Links μόνο κατά τη χρήση του eMule"
     IDS_ADDNEWFILESPAUSED   "Πρόσθεση νέων αρχείων, σε κατάσταση παύσης"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_FD_STATS            "Χαθηκαν λόγω καταστροφής: %s       Κέρδος λόγω συμπίεσης: %s\nΠακέτα που σώθηκαν από το I.C.H: %i"
+    IDS_FD_STATS            "Χαθηκαν λόγω καταστροφής: %s       Κέρδος λόγω συμπίεσης: %s\nΠακέτα που σώθηκαν από το ICH: %i"
     IDS_ERR_NOHELP          "Δεν βρέθηκε αρχείο βοήθειας!\n Παρακαλώ επισκευθείτε τον δικτυακό μας τόπο για να βρείτε την τελευταία έκδοση του αρχείου βοήθειας (στο τμήμα download)."
     IDS_SHOWOVERHEAD        "Έυρος κατανάλωσης δικτύου ενεργό"
     IDS_UPDOWNSMALL         "Πάνω:%.1f | Κάτω:%.1f"
-    IDS_EDITLIST            "Λίστα"
+    IDS_EDITLIST            "Λίστα..."
     IDS_SP_ICONBAR          "Μπάρα ταχύτητας στην περιοχή ρολογιού"
-    IDS_RATINGRECV          "Ποιότητα για το αρχείο '%s' ελήφθη: %i"
-    IDS_DESCRIPTIONRECV     "Περιγραφή για το αρχείο '%s' ελήφθη: %s"
+    IDS_RATINGRECV          "Λήψη ποιότητας για το αρχείο '%s': %i"
+    IDS_DESCRIPTIONRECV     "Λήψη περιγραφής για το αρχείο '%s': %s"
     IDS_WEBSERVICES         "Υπηρεσίες Web"
-    IDS_WEBSVEDIT           "Αλλαγή υπηρεσιών Web"
-    IDS_IRC_EMULEPROTO_IGNORESENDLINK 
-                            "Μηνύματα για αποστολή link"
+    IDS_WEBSVEDIT           "Αλλαγή υπηρεσιών Web..."
+    IDS_IRC_EMULEPROTO_IGNORESENDLINK "Μηνύματα για αποστολή link"
     IDS_CHECK4UPDATE        "Έλεγχος νέας έκδοσης"
     IDS_STARTUP             "Εκκίνηση"
     IDS_NEWVERSIONAVL       "Μια νέα έκδοση του eMule είναι διαθέσιμη! Ελέγξτε την κεντρική σελίδα του προγράμματος για περισσότερες πληροφορίες."
@@ -1058,15 +1031,13 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_FILECOMPLETIONTHREAD 
-                            "Η δημιουργία thread για το τελείωμα του αρχείου απέτυχε"
+    IDS_ERR_FILECOMPLETIONTHREAD "Η δημιουργία thread για το τελείωμα του αρχείου απέτυχε"
     IDS_FILEBUFFERSIZE      "Μέγεθος προσωρινής μνήμης αποθήκευσης"
     IDS_QUEUESIZE           "Μέγεθος λίστας αναμονής"
     IDS_DAYS2               "ημέρες"
-    IDS_ERR_MAKEBAKCREDITFILE 
-                            "Απέτυχε η δημιουργία αντίγραφου ασφαλείας, του αρχείου πιστώσεως"
+    IDS_ERR_MAKEBAKCREDITFILE "Απέτυχε η δημιουργία αντίγραφου ασφαλείας, του αρχείου πιστώσεως"
     IDS_COMMENT             "Σχόλια"
-    IDS_IPFILTERED          "(!) Φιλτραρίστηκε το IP: %s (%s)"
+    IDS_IPFILTERED          "Φιλτραρίστηκε το IP: %s (%s)"
     IDS_DL_TRANSFCOMPL      "Ολοκληρωμένο"
     IDS_DL_ACTIVE_TIME      "Χρόνος κατεβάσματος"
     IDS_STATS_FILTEREDCLIENTS "Φιλτραρισμένοι: %i"
@@ -1082,15 +1053,15 @@ STRINGTABLE
 BEGIN
     IDS_STATS_RUNTIME       "Χρόνος λειτουργίας"
     IDS_ALL                 "Όλα"
-    IDS_CAT_ADD             "Πρόσθεση κατηγορίας"
-    IDS_CAT_EDIT            "Ορισμός κατηγορίας"
+    IDS_CAT_ADD             "Πρόσθεση κατηγορίας..."
+    IDS_CAT_EDIT            "Ορισμός κατηγορίας..."
     IDS_CAT_REMOVE          "Σβήσιμο κατηγορίας"
     IDS_CAT                 "Κατηγορία"
     IDS_TITLE               "Τίτλος"
     IDS_COLOR               "Χρώμα"
     IDS_DEFAULT             "Προτοποθετημένο"
     IDS_PW_DISPLAY          "Προβολή"
-    IDS_CAT_INVADD          "Προβολή όλων των μη προσδιορισμένων"
+    IDS_CAT_INVADD          "Προβολή των μη προσδιορισμένων"
     IDS_CAT_REINVADD        "Προβολή όλων"
     IDS_INDICATERATINGS     "Ένδειξη της ύπαρξης σχολίων/ποιότητας με εικονίδιο"
     IDS_ALLOTHERS           "Χωρίς κατηγορία"
@@ -1106,10 +1077,9 @@ BEGIN
     IDS_SECURITY            "Ασφάλεια"
     IDS_IPFILTERLOADED      "%i Φίλτρα IP φορτώθηκαν"
     IDS_IPFILTER            "Φίλτρο IP"
-    IDS_EDIT                "Ρύθμιση"
+    IDS_EDIT                "Ρύθμιση..."
     IDS_FILTERLEVEL         "Όριο φίλτρου"
-    IDS_FILTERSERVERBYIPFILTER 
-                            "Φιλτράρισμα εξυπηρετητών (απορρίπτει και δυναμικού-IP)"
+    IDS_FILTERSERVERBYIPFILTER "Φιλτράρισμα εξυπηρετητών (απορρίπτει και δυναμικού-IP)"
     IDS_FILTERCOMMENTSLABEL "Φιλτράρισμα μηνυμάτων που περιέχουν: (Χώρισμα |)"
     IDS_CLIENTLIST          "Γνωστοί χρήστες"
     IDS_FOLDER              "Φάκελος"
@@ -1136,28 +1106,24 @@ BEGIN
     IDS_FIRSTSAFECON        "Ενεργοποιήστε αυτή την επιλογή για να συνδέεστε κάνοντας χρήση της ασφαλούς σύνδεσης.\n\nΑπενεργοποιώντας αυτήν την επιλογή, θα επιτρέψετε στο eMule να συνδεθεί στους εξυπηρετητές λίγο γρηγορότερα, αλλά μπορεί να προκαλέσει τη δημιουργία περισσότερων λανθασμένων συνδέσεων χαμηλού-κωδικού (ανεπιθύμητο)."
     IDS_FIRSTRUNASSIST      "Θέλετε να ενεργοποιηθεί ο βοηθός ρύθμισης σε αυτή την πρώτη εκτέλεση;"
     IDS_FIRSTAUTOCON        "Ενεργοποιήστε αυτή την επιλογή αν θέλετε να συνδέεται το eMule αμέσως μετά την εκκίνηση."
-    IDS_FIRSTCOMPLETE       "Μόλις ολοκληρώσατε τις ερωτήσεις του βοηθού πρώτης εκτέλεσης.\r\rΌλες αυτές οι επιλογές και πολλές περισσότερες μπορούν να αλλάξουν με κλικ στο εικονίδιο των προτιμήσεων. Για την ερμηνεία τους και για υποστήριξη ελέγξτε το αρχείο βοήθειας, πατώντας το πλήκτρο F1 στο eMule!"
+    IDS_FIRSTCOMPLETE       "Μόλις ολοκληρώσατε τις ερωτήσεις του βοηθού πρώτης εκτέλεσης.\r\rΌλες αυτές οι επιλογές και πολλές περισσότερες μπορούν να αλλάξουν επιλέγοντας το εικονίδιο των προτιμήσεων. Για την ερμηνεία τους και για υποστήριξη ελέγξτε το αρχείο βοήθειας, πατώντας το πλήκτρο F1 στο eMule!"
 END
 
 STRINGTABLE 
 BEGIN
     IDS_ENTERUSERNAME       "Παρακαλώ τοποθετήστε ψευδώνυμο:"
     IDS_STATIC_CPUMEM       "Ελάττωση χρήσης μνήμης και επεξεργαστή"
-    IDS_KAD_SEARCH_KEYWORD_TOO_SHORT 
-                            "Πολύ μικρή(ές) λέξη(εις).\r\n\r\nΟι λέξεις που χρησιμοποιούνται σε μια Kademlia έκφραση αναζήτησης πρέπει να έχουν 3 χαρακτήρες το ελάχιστο."
+    IDS_KAD_SEARCH_KEYWORD_TOO_SHORT "Πολύ μικρή(ές) λέξη(εις).\r\n\r\nΟι λέξεις που χρησιμοποιούνται σε μια Kademlia έκφραση αναζήτησης πρέπει να έχουν 3 χαρακτήρες το ελάχιστο."
     IDS_LOG2DISK            "Αποθήκευση γεγονότων στο δίσκο"
-    IDS_KAD_SEARCH_KEYWORD_ALREADY_SEARCHING 
-                            "Υπάρχει ήδη μια ενεργή Kademlia αναζήτηση για την φράση ""%s"".\r\n\r\nΓια να ξαναψάξετε αυτή τη φράση, περιμένετε μέχρι να ολοκληρωθεί η τρέχουσα αναζήτηση ή κλείστε τη σελίδα των αποτελεσμάτων της."
-    IDS_KAD_SEARCH_KEYWORD_INVALID 
-                            "Μη έγκυρη Kademlia αναζήτηση.\r\n\r\nΜια αναζήτηση Kademlia έχει την ακόλουθη διάταξη:\r\n\r\n\t<φράση-Kademlia> [ <eD2K-έκφραση αναζήτησης> ]\r\n\r\nΗ <φράση-Kademlia> δεν πρέπει να περιέχει κανένα από τους ακόλουθους χαρακτήρες:\r\n\r\n\t%s"
+    IDS_KAD_SEARCH_KEYWORD_ALREADY_SEARCHING "Υπάρχει ήδη μια ενεργή Kademlia αναζήτηση για την φράση ""%s"".\r\n\r\nΓια να ξαναψάξετε αυτή τη φράση, περιμένετε μέχρι να ολοκληρωθεί η τρέχουσα αναζήτηση ή κλείστε τη σελίδα των αποτελεσμάτων της."
+    IDS_KAD_SEARCH_KEYWORD_INVALID "Μη έγκυρη Kademlia αναζήτηση.\r\n\r\nΜια αναζήτηση Kademlia έχει την ακόλουθη διάταξη:\r\n\r\n\t<φράση-Kademlia> [ <eD2K-έκφραση αναζήτησης> ]\r\n\r\nΗ <φράση-Kademlia> δεν πρέπει να περιέχει κανένα από τους ακόλουθους χαρακτήρες:\r\n\r\n\t%s"
     IDS_EDITCAT             "Ορισμός ιδιοτήτων κατηγορίας"
     IDS_PW_WS               "Εξυπηρετητής Web"
     IDS_ENABLED             "Σε λειτουργία"
     IDS_WEB_LOGIN           "Login"
     IDS_WEB_ENTER_PASSWORD  "Τοποθετήστε τον κωδικό πρόσβασής σας εδώ"
     IDS_WEB_LOGIN_NOW       "Σύνδεση τώρα"
-    IDS_WEB_CONFIRM_REMOVE_SERVER 
-                            "Είναι σίγουρη η επιλογή σας για την απομάκρυνση αυτού του εξυπηρετητή από τη λίστα;"
+    IDS_WEB_CONFIRM_REMOVE_SERVER "Είναι σίγουρη η επιλογή σας για την απομάκρυνση αυτού του εξυπηρετητή από τη λίστα;"
     IDS_WEB_CONTROL         "Πίνακας ελέγχου Web"
     IDS_WEB_LOGOUT          "Αποσύνδεση"
     IDS_WEB_ACTIONS         "Ενέργειες"
@@ -1169,8 +1135,7 @@ BEGIN
     IDS_WEB_HIDE_UPLOAD_QUEUE "Απόκρυψη λίστας αναμονής"
     IDS_WEB_GZIP_COMPRESSION "Συμπίεση Gzip"
     IDS_WEB_GZIP_COMMENT    "Μικρότερη διακίνηση δεδομένων, ειδικά στα γραφήματα"
-    IDS_WEB_UPLOAD_QUEUE_COMMENT 
-                            "Ενεργοποίηση ή απενεργοποίηση της προβολής της λίστας αναμονής, στη σελίδα μεταφοράς"
+    IDS_WEB_UPLOAD_QUEUE_COMMENT "Ενεργοποίηση ή απενεργοποίηση της προβολής της λίστας αναμονής, στη σελίδα μεταφοράς"
     IDS_WEB_REFRESH_TIME    "Χρόνος ανανέωσης των σελίδων"
     IDS_WEB_REFRESH_COMMENT "Χρόνος σε δευτερόλεπτα (μηδέν=απενεργοποίηση):"
     IDS_SV_URL              "URL"
@@ -1208,7 +1173,7 @@ STRINGTABLE
 BEGIN
     IDS_ALLUNASSIGNED       "όλα τα μη προσδιορισμένα"
     IDS_ACTSESSIONS         "συνδεμένοι χρήστες"
-    IDS_WEBSRV              "WebSrv."
+    IDS_WEBSRV              "WebServer"
     IDS_SW_REFETCHRES       "Να ξαναπαρθούν τα αποτελέσματα"
     IDS_FILEHASH            "Υπογραφή αρχείου"
     IDS_GLOBALSEARCH2       "Ευρύτερη αναζήτηση"
@@ -1230,12 +1195,11 @@ BEGIN
     IDS_SELECTALL           "Επιλογή όλων"
     IDS_AUTOSCROLL          "Αυτόματη κύλιση"
     IDS_WIZ1_WELCOME_TITLE  "Καλώς ήρθατε στο eMule"
-    IDS_WIZ1_WELCOME_ACTIONS 
-                            "Ο βοηθός αυτός θα σας καθοδηγήσει στα πρώτα βήματα της ρύθμισης του eMule."
-    IDS_WIZ1_WELCOME_BTN_HINT "Για να συνεχίσετε, κλικ στο επόμενο."
+    IDS_WIZ1_WELCOME_ACTIONS "Ο βοηθός αυτός θα σας καθοδηγήσει στα πρώτα βήματα της ρύθμισης του eMule."
+    IDS_WIZ1_WELCOME_BTN_HINT "Για να συνεχίσετε, επιλέξτε επόμενο."
     IDS_WIZ1_END_TITLE      "Ολοκληρώνοντας τον βοηθό"
     IDS_WIZ1                "Βοηθός ρυθμίσεων του eMule"
-    IDS_WIZ1_END_BTN_HINT   "Για να κλείσετε τον βοηθό, κλικ στο τέλος."
+    IDS_WIZ1_END_BTN_HINT   "Για να κλείσετε τον βοηθό, επιλέξτε τέλος."
     IDS_WIZ1_UPLOAD_SUBTITLE "Ανέβασμα ολόκληρου κομματιού"
     IDS_DL_RESUMENEXT       "Έναρξη επόμενου αρχείου"
     IDS_DONTCHANGE          "Χωρίς αλλαγή"
@@ -1255,7 +1219,7 @@ BEGIN
     IDS_HM_LINKHP           "Κεντρική σελίδα του eMule"
     IDS_HM_LINKFAQ          "Συχνές ερωτήσεις για το eMule"
     IDS_HM_LINKVC           "Έλεγχος νέας έκδοσης"
-    IDS_DEBUG_SOURCE_EXCHANGE "Προβολή μηνυμάτων ανταλλαγής πηγών"
+    IDS_DEBUG_SOURCE_EXCHANGE "Καταγραφή διαδικασίας ανταλλαγής πηγών"
     IDS_SHAREDREQ1          "Ο χρήστης %s (%u) ζήτησε τη λίστα των κοινόχρηστων φακέλων σας -> %s"
     IDS_SHAREDREQ2          "Ο χρήστης %s (%u) ζήτησε τη λίστα των κοινόχρηστων αρχείων για τον φάκελο '%s' -> %s"
     IDS_SHAREDANSW          "Ο χρήστης %s (%u) έκανε κοινόχρηστο τον φάκελο '%s'"
@@ -1268,7 +1232,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_SHAREDREQDENIED     "Ο χρήστης %s (%u) απαγόρεψε την πρόσβαση στη λίστα των κοινόχρηστων αρχείων/φακέλων του"
-    IDS_AUTOCLEANUPFN       "Καθάρισμα ονομάτων των αρχείων"
+    IDS_AUTOCLEANUPFN       "Καθάρισμα ονομάτων των νέων αρχείων"
     IDS_ONNEWDOWNLOAD       "Αρχικές ενέργειες"
     IDS_FILTERFILENAMEWORD  "Τοποθετείστε λέξεις για σβήσιμο, χωρισμένες με |"
     IDS_FNFILTERTITLE       "Ρύθμιση φίλτρου ονομάτων αρχείων"
@@ -1310,13 +1274,13 @@ BEGIN
     IDS_STATS_ULSES         "Περίοδοι ανεβάσματος"
     IDS_STATS_GAINCOMP      "Κέρδος λόγω συμπίεσης: %s"
     IDS_STATS_LOSTCORRUPT   "Χάθηκαν λόγω καταστροφής: %s"
-    IDS_STATS_AVGDATAULSES  "Ανέβηκαν ανά περίοδο (μέσος όρος)"
-    IDS_STATS_ICHSAVED      "Κομμάτια που σώθηκαν από το I.C.H: %u"
-    IDS_STATS_MBRESET_TXT   "Είναι σίγουρο ότι θέλετε να σβήσετε τα συσσωρευτικά στατιστικά σας;\n\nΑν αλλάξετε γνώμη, μπορείτε να ανατρέψετε αυτή την ενέργεια κάνοντας κλικ στο 'Επαναφορά στατιστικών'."
+    IDS_STATS_AVGDATAULSES  "ανέβηκαν ανά περίοδο (μέσος όρος)"
+    IDS_STATS_ICHSAVED      "Κομμάτια που σώθηκαν από το ICH: %u"
+    IDS_STATS_MBRESET_TXT   "Είναι σίγουρο ότι θέλετε να σβήσετε τα συσσωρευτικά στατιστικά σας;\n\nΑν αλλάξετε γνώμη, μπορείτε να ανατρέψετε αυτή την ενέργεια επιλέγοντας το 'Επαναφορά στατιστικών'."
     IDS_STATS_MBRESET_CAP   "Επιβεβαίωση σβησίματος"
-    IDS_STATS_MBRESTORE_TXT "Είναι σίγουρο ότι θέλετε να επαναφέρετε τα συσσωρευτικά στατιστικά σας από το αρχείο ασφαλείας;\n\nΚάνοντας κλικ στο 'Επαναφορά στατιστικών' ξανά θα ξαναφορτωθούν τα τρέχοντα στατιστικά."
+    IDS_STATS_MBRESTORE_TXT "Είναι σίγουρο ότι θέλετε να επαναφέρετε τα συσσωρευτικά στατιστικά σας από το αρχείο ασφαλείας;\n\nΕπιλέγοντας το 'Επαναφορά στατιστικών' ξανά θα ξαναφορτωθούν τα τρέχοντα στατιστικά."
     IDS_STATS_MBRESTORE_CAP "Επιβεβαίωση επαναφοράς"
-    IDS_ERR_NOSTATBKUP      "ΠΡΟΒΛΗΜΑ: Το αρχείο ασφαλείας των στατιστικών δεν βρέθηκε..."
+    IDS_ERR_NOSTATBKUP      "Πρόβλημα: Το αρχείο ασφαλείας των στατιστικών δεν βρέθηκε..."
     IDS_STATS_NFOLOADEDBKUP "Φορτώθηκαν τα στατιστικά από το αρχείο ασφαλείας..."
     IDS_STATS_NFORESET      "Τα στατιστικά σας σβήστηκαν!"
     IDS_STATS_BNRESET       "Σβήσιμο στατιστικών"
@@ -1354,7 +1318,7 @@ BEGIN
     IDS_STATS_MNUTREECPYSEL "Αντιγραφή επιλεγμένου κλαδιού"
     IDS_STATS_MNUTREECPYALL "Αντιγραφή όλων των στατιστικών"
     IDS_STATS_MNUTREEHTML   "Λειτουργίες HTML"
-    IDS_STATS_EXPORT2HTML   "Εξαγωγή όλων των στατιστικών"
+    IDS_STATS_EXPORT2HTML   "Εξαγωγή όλων των στατιστικών..."
     IDS_STATS_MNUTREECPYVIS "Αντιγραφή όλων που φαίνονται"
     IDS_STATS_MNUTREEEXPANDALL "’πλωμα όλων των τμημάτων"
     IDS_STATS_MNUTREECOLLAPSEALL "Μάζεμα όλων των τμημάτων"
@@ -1367,9 +1331,9 @@ END
 STRINGTABLE 
 BEGIN
     IDS_STATS_TIMESTATS     "Στατιστικά χρόνου"
-    IDS_STATS_AVGANDPROJ    "Σχεδιασμένοι μέσοι όροι"
+    IDS_STATS_AVGANDPROJ    "Υπολογισμένοι μέσοι όροι (με αναγωγή)"
     IDS_STATS_TIMESINCERESET "Χρόνος από το τελευταίο σβήσιμο: %s"
-    IDS_CRYPT_INITFAILED    "Αποτυχία στην αρχικοποίηση των cryptokeys - η ασφαλής εξακρίβωση απενεργοποιήθηκε"
+    IDS_CRYPT_INITFAILED    "Αποτυχία κατά την αρχικοποίηση των κωδικών κρυπτογράφησης - η ασφαλής εξακρίβωση απενεργοποιήθηκε"
     IDS_CD_IDENT            "Εξακρίβωση:"
     IDS_IDENTOK             "Επιτυχώς"
     IDS_IDENTFAILED         "Μη έγκυρο"
@@ -1389,7 +1353,7 @@ BEGIN
     IDS_CUT                 "Αποκοπή"
     IDS_STATS_SECUREIDENT   "Ασφαλείς εξακριβώσεις (Σωστές : Αποτυχημένες)"
     IDS_ONDISK              "Μέγεθος στον δίσκο: "
-    IDS_CLIENTCOL           "Προσοχή: Βρέθηκε χρήστης, που ταιριάζει με άλλο χρήστη ο οποίος είναι ήδη συνδεδεμένος: %s (%s) και %s (%s)"
+    IDS_CLIENTCOL           "Προσοχή: Βρέθηκε χρήστης που ταιριάζει με άλλο ήδη συνδεδεμένο χρήστη: %s (%s) και %s (%s)"
     IDS_SEARCH_UNTERMSTRING "Μη τερματισμένη φράση"
     IDS_SEARCH_GENERALERROR "Γενικό σφάλμα"
     IDS_SEARCH_MISSINGORRIGHT "Λείπει το δεξί σκέλος του όρου OR"
@@ -1414,8 +1378,8 @@ BEGIN
     IDS_ENABLEMM            "Ενεργοποίηση MobileMule"
     IDS_AUTOCAT_LABEL       "Αυτόματη κατηγοριοποίηση (φράσεις, χωρισμένες με |)"
     IDS_SHOWEXTSETTINGS     "Περισσότερα εργαλεία (εκτεταμένες επιλογές)"
-    IDS_TREEOPTIONS_TRUE    "Αλήθεια"
-    IDS_TREEOPTIONS_FALSE   "Ψέματα"
+    IDS_TREEOPTIONS_TRUE    "Αληθές"
+    IDS_TREEOPTIONS_FALSE   "Μη αληθές"
     IDS_TREEOPTIONS_OK      "Εντάξει"
     IDS_HYPERTEXT_FONT_HINT "Φόντο παραθύρων Εξυπηρετητή, Μηνυμάτων και IRC"
 END
@@ -1423,18 +1387,16 @@ END
 STRINGTABLE 
 BEGIN
     IDS_SELECT_FONT         "Επιλογή φόντου"
-    IDS_SERVER_LIMITS       "Μαλακό- / Σκληρό-Όριο αρχείου"
+    IDS_SERVER_LIMITS       "Μαλακό/Σκληρό όριο αρχείων"
     IDS_SERVERINFO          "Πληροφορίες Εξυπηρετητή"
     IDS_KBITSSEC            "KBits/δευτ"
     IDS_KBYTESSEC           "KBytes/δευτ"
     IDS_ERR_CREATE_DIR      "Αποτυχία κατά την δημιουργία του φακέλου %s ""%s"" - %s"
-    IDS_WRN_INCFILE_RESERVED 
-                            "Ο φάκελος των εισερχομένων δεν πρέπει να βρίσκεται στον φάκελο εγκατάστασης του eMule"
-    IDS_WRN_TEMPFILES_RESERVED 
-                            "Ο φάκελος προσωρινών αρχείων δεν πρέπει να βρίσκεται στον φάκελο εγκατάστασης του eMule"
+    IDS_WRN_INCFILE_RESERVED "Ο φάκελος των εισερχομένων δεν πρέπει να βρίσκεται στον φάκελο εγκατάστασης του eMule"
+    IDS_WRN_TEMPFILES_RESERVED "Ο φάκελος προσωρινών αρχείων δεν πρέπει να βρίσκεται στον φάκελο εγκατάστασης του eMule"
     IDS_WRN_INCTEMP_SAME    "Ο φάκελος των εισερχομένων και ο φάκελος προσωρινών αρχείων δεν πρέπει να είναι ίδιοι"
     IDS_MMFAILED            "Αποτυχία κατά την δημιουργία MobileMule Socket!"
-    IDS_MMSTARTED           "Ο εξυπηρετητής MobileMule ενεργοποιήθηκε στο Port %i. Έκδοση πρωτοκόλλου: %s"
+    IDS_MMSTARTED           "Ο εξυπηρετητής MobileMule ενεργοποιήθηκε στο port %i. Έκδοση πρωτοκόλλου: %s"
     IDS_SHOWDWLPERCENTAGE   "Προβολή ποσοστού ολοκλήρωσης στην μπάρα προόδου"
     IDS_TBN_ONNEWDOWNLOAD   "Πρόσθεση κατεβάσματος"
     IDS_ARTIST              "Καλλιτέχνης"
@@ -1445,15 +1407,14 @@ END
 STRINGTABLE 
 BEGIN
     IDS_CD_UPLOADREQ        "Ζητάω το:"
-    IDS_SETTINGCHANGED_RESTART 
-                            "Για να ενεργοποιηθούν οι αλλαγές, παρακαλώ επανεκκινήστε το eMule!"
+    IDS_SETTINGCHANGED_RESTART "Για να ενεργοποιηθούν οι αλλαγές, παρακαλώ επανεκκινήστε το eMule!"
     IDS_CREDITSEXPIRED      ", %i χρήστες σβήστηκαν (δεν φάνηκαν εδώ και 5 μήνες)"
-    IDS_SOURCESINFO         "%i  (Χρήσιμες: %i, NNP: %i, A4AF: %i)"
-    IDS_SHOW_META_DATA      "Προβολή &Meta Data..."
-    IDS_META_DATA           "Meta Data"
+    IDS_SOURCESINFO         "%i  (Χρήσιμες: %i, NNP: %i),  A4AF: %i"
+    IDS_SHOW_META_DATA      "Προβολή ετικετών..."
+    IDS_META_DATA           "Ετικέτες"
     IDS_TIMEBEFORE          "(%s πριν)"
     IDS_FD_TIMEDATE         "Ημερομηνίες"
-    IDS_FILEINFORMATION     "Πληροφορίες Αρχείου"
+    IDS_FILEINFORMATION     "Πληροφορίες αρχείου"
     IDS_STATS_FREESPACE     "Ελεύθερος χώρος"
     IDS_IRC_HELPCHANNEL     "Σύνδεση σε κανάλια βοήθειας"
     IDS_IRC_HELPCHANNELPERFORM "/join #emule | /join #emule-greek"
@@ -1477,17 +1438,15 @@ BEGIN
     IDS_DWTOT_TSN           "Συνολικός χώρος που χρειάζεται: %s"
     IDS_DWTOT_FS            "Ελεύθερος χώρος στον προσωρινό δίσκο: %s"
     IDS_NEEDFREEDISKSPACE   "%s (χρειάζεται να ελευθερώσετε %s!)"
-    IDS_SERVERKEEPALIVETIMEOUT 
-                            "Διάστημα ανανέωσης σύνδεσης εξυπηρετητή [λεπτά]"
+    IDS_SERVERKEEPALIVETIMEOUT "Διάστημα ανανέωσης σύνδεσης εξυπηρετητή [λεπτά]"
     IDS_MORE                "&Περισσότερα"
-    IDS_TOOLS               "&Εργαλεία"
+    IDS_TOOLS               "Ε&ργαλεία"
     IDS_SEARCHPARAMS        "Παράμετροι αναζήτησης"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_CREATEHOSTNAMESRCLINK 
-                            "Αντιγραφή eD2K Link στο πρόχειρο (Όνομα υπολογιστή)"
+    IDS_CREATEHOSTNAMESRCLINK "Αντιγραφή eD2K Link στο πρόχειρο (Όνομα υπολογιστή)"
     IDS_HASHINGFILESCOUNT   " (%u υπογράφονται)"
     IDS_CHECKDISKSPACE      "Έλεγχος χώρου στο δίσκο"
     IDS_YOURHOSTNAME        "Όνομα υπολογιστή για τα δικά σας eD2K links"
@@ -1518,7 +1477,7 @@ BEGIN
     IDS_IMP_ADDBTN          "Ει&σαγωγή"
     IDS_IMP_RETRYBTN        "&Επανάληψη επιλεγμένων"
     IDS_IMP_REMOVEBTN       "&Απομάκρυνση επιλεγμένων"
-    IDS_IMP_SELFOLDER       "Παρακαλώ επιλέξτε ένα μοναδικό φάκελο με αρχεία part ή τον παλιό προσωρινό σας φάκελο με όλους τους υποφακέλους που περιέχουν αρχεία part!"
+    IDS_IMP_SELFOLDER       "Παρακαλώ επιλέξτε ένα φάκελο για τα προσωρινά σας αρχεία! (οι υποφάκελοι θα συμπεριληφθούν)"
     IDS_IMP_DELSRC          "Θέλετε να σβήσετε τα πρωτότυπα αρχεία part που προστέθηκαν επιτυχώς;"
     IDS_IMP_SIZE            "%s (Δίσκος:%s)"
     IDS_IMP_STATUS          "Εισαγωγή %s: %s"
@@ -1532,15 +1491,14 @@ BEGIN
     IDS_DYNUP_GOINGDOWNDIVIDER "Επιβράδυνση στο κατέβασμα"
     IDS_DYNUP_NUMBEROFPINGS "Μέγιστος αριθμός ping για μέσο όρο"
     IDS_DYNUP_MINUPLOAD     "Ελάχιστη επιτρεπτή ταχύτητα ανεβάσματος"
-    IDS_ESTTIMELEFT         "Εκτίμηση υπόλοιπου χρόνου:"
-    IDS_TRANSFER_RATE_LABEL "Ταχύτητα μεταφοράς:"
+    IDS_ESTTIMELEFT         "Yπόλοιπο:"
+    IDS_TRANSFER_RATE_LABEL "Ταχύτητα:"
     IDS_SAVELOG             "Αποθήκευση γεγονότων"
     IDS_CMT_COPYCLIPBOARD   "Αντιγραφή σχολίου στο πρόχειρο"
     IDS_ASKDOWNLOADLANG     "Η γλώσσα που επιλέξατε δεν είναι εγκατεστημένη στον υπολογιστή σας. Θέλετε να την κατεβάσει το eMule από την διεύθυνση emule-project.net;"
     IDS_ASKDOWNLOADLANGCAP  "Κατέβασμα αρχείων γλώσσας"
     IDS_DELETESELECTED      "Σβήσιμο"
-    IDS_ERR_FAILEDDOWNLOADLANG 
-                            "Αποτυχία κατά το κατέβασμα και εγκατάσταση του αρχείου dll της επιλεγμένης γλώσσας από %s!"
+    IDS_ERR_FAILEDDOWNLOADLANG "Αποτυχία κατά το κατέβασμα και εγκατάσταση του αρχείου dll της επιλεγμένης γλώσσας από %s!"
     IDS_ERR_BADFOLDER       "Μη έγκυρος φάκελος.\nΟ φάκελος δεν μπορεί να δημιουργηθεί. Παρακαλώ ελέγξτε όνομα και τοποθεσία."
     IDS_AUTOREMOVEFD        "Αυτόματη απομάκρυνση ολοκληρωμένων κατεβασμάτων"
     IDS_MM_BLOCK            "3 αποτυχημένες απόπειρες σύνδεσης στο MobileMule καταγράφηκαν - κάθε επιπλέον απόπειρα θα εμποδιστεί για 10 λεπτά!"
@@ -1558,8 +1516,7 @@ BEGIN
     IDS_SRV_UDPFR           "Εκτεταμένο πρωτόκολλο UDP για αναζήτηση αρχείων"
     IDS_MINLENGTH           "Ελάχ. μήκος [ωω:λλ:δδ]"
     IDS_EM_HELP             "&Βοήθεια"
-    IDS_WRN_FRIENDDUPLIPPORT 
-                            "Ο φίλος δεν προστέθηκε.\r\n\r\nΥπάρχει ήδη ένας φίλος διαθέσιμος με την ίδια διεύθυνση IP και port."
+    IDS_WRN_FRIENDDUPLIPPORT "Ο φίλος δεν προστέθηκε.\r\n\r\nΥπάρχει ήδη ένας φίλος διαθέσιμος με την ίδια διεύθυνση IP και port."
     IDS_DYNUP               "Διαίσθηση ταχύτητας ανεβάσματος"
     IDS_KADOVERHEAD         "Kademlia (Πακέτα): %s (%s)"
     IDS_FIND                "Αναζήτηση..."
@@ -1578,7 +1535,7 @@ BEGIN
     IDS_DELETE              "Διαγραφή από τον δίσκο"
     IDS_BOOTSTRAP           "Εκκίνηση"
     IDS_VIAED2KSQ           "μέσω eD2K Εξυπηρετητή/Λίστα Αναμονής"
-    IDS_EM_KADEMLIA         "&Kademlia"
+    IDS_EM_KADEMLIA         "&Κademlia"
     IDS_VIAKAD              "μέσω Kademlia"
     IDS_VIASE               "μέσω Ανταλλαγής Πηγών"
     IDS_SELECTTOOLBARBITMAP "Επιλογή εικόνας για την μπάρα..."
@@ -1592,10 +1549,10 @@ BEGIN
     IDS_TEXTLABELSONRIGHT   "Δεξιά της εικόνας"
     IDS_TEXTLABELS          "Κείμενο"
     IDS_ENABLETEXTLABELS    "Κάτω από την εικόνα"
-    IDS_CUSTOMIZETOOLBAR    "Προσαρμογή μπάρας"
+    IDS_CUSTOMIZETOOLBAR    "Προσαρμογή μπάρας..."
     IDS_MINBITRATE          "Ελάχ. bitrate [kBit/δευτ]"
     IDS_KAD_RECHECKFW       "Επανέλεγχος Firewall"
-    IDS_SHAREDTITLE         "Κοινόχρηστο eD2K|Kad"
+    IDS_SHAREDTITLE         "eD2K|Kad (Κοινόχρηστο)"
     IDS_WARNINGNOBS         "Η εκκίνηση είναι μη ενεργή τώρα (Απενεργοποιημένο Kademlia ή ήδη συνδεδεμένο)"
     IDS_FIREWALLED          "Firewalled"
     IDS_KADEMLIA            "Kad"
@@ -1612,7 +1569,7 @@ BEGIN
     IDS_LOG_SECURE_IDENT    "Καταγραφή ασφαλών εξακριβώσεων"
     IDS_LOG_FILTERED_IPS    "Καταγραφή φιλτραρισμένων και/ή αγνοημένων IPs"
     IDS_LOG_FILE_SAVING     "Καταγραφή ενεργειών αποθήκευσης"
-	  IDS_IPFILTERFILES       "Όλα τα αρχεία φίλτρων IP (*ipfilter.dat;*ip.prefix;*.p2b;*.p2p;*.p2p.txt;*.zip;*.gz)|*ipfilter.dat;*ip.prefix;*.p2b;*.p2p;*.p2p.txt;*.zip;*.gz|Αρχεία φίλτρων IP του eMule (*ipfilter.dat;*ip.prefix)|*ipfilter.dat;*ip.prefix|Αρχεία του PeerGuardian (*.p2b;*.p2p;*.p2p.txt)|*.p2b;*.p2p;*.p2p.txt|Αρχεία κειμένου (*.txt)|*.txt|ZIP Files (*.zip;*.gz)|*.zip;*.gz|Όλα τα αρχεία (*.*)|*.*||"
+    IDS_IPFILTERFILES       "Όλα τα αρχεία φίλτρων IP (*ipfilter.dat;*ip.prefix;*.p2b;*.p2p;*.p2p.txt;*.zip;*.gz)|*ipfilter.dat;*ip.prefix;*.p2b;*.p2p;*.p2p.txt;*.zip;*.gz|Αρχεία φίλτρων IP του eMule (*ipfilter.dat;*ip.prefix)|*ipfilter.dat;*ip.prefix|Αρχεία του PeerGuardian (*.p2b;*.p2p;*.p2p.txt)|*.p2b;*.p2p;*.p2p.txt|Αρχεία κειμένου (*.txt)|*.txt|ZIP Files (*.zip;*.gz)|*.zip;*.gz|Όλα τα αρχεία (*.*)|*.*||"
     IDS_DELETEIPFILTERS     "Θέλετε πράγματι να σβήσετε τα επιλεγμένα φίλτρα IP;"
     IDS_TOTAL_IPFILTER_LABEL "Συνολικά φιλτραρισμένα IP:"
     IDS_TOTAL_IPS_LABEL     "Συνολικά IP:"
@@ -1645,22 +1602,20 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_DYNUP_PINGTOLERANCE_MS 			"Ανοχή ping (ms)"
-    IDS_DYNUP_RADIO_PINGTOLERANCE_HEADER 	"Μέθοδος ανοχής ping"
-    IDS_DYNUP_RADIO_PINGTOLERANCE_MS 		"Χιλιοστά δευτερολέπτου (ms)"
-    IDS_DYNUP_RADIO_PINGTOLERANCE_PERCENT 	"Ποσοστό (%)"
+    IDS_DYNUP_PINGTOLERANCE_MS "Ανοχή ping (ms)"
+    IDS_DYNUP_RADIO_PINGTOLERANCE_HEADER "Μέθοδος ανοχής ping"
+    IDS_DYNUP_RADIO_PINGTOLERANCE_MS "Χιλιοστά δευτερολέπτου (ms)"
+    IDS_DYNUP_RADIO_PINGTOLERANCE_PERCENT "Ποσοστό (%)"
     IDS_LOG_A4AF            "Καταγραφή ενεργειών A4AF"
     IDS_A4AF_SAVE_CPU       "Απενεργοποίηση ελέγχων A4AF"
     IDS_SEARCH_DOC          "Έγγραφο"
     IDS_DOWNLOAD_ALPHABETICAL "Κατέβασμα κατά αλφαβητική σειρά"
     IDS_INSTALL_SKIN        "Εγκατάσταση eMule Skin"
     IDS_INSTALL_SKIN_NODIR  "Δεν επιλέχθηκε φάκελος με eMule προφίλ Skin ή δεν είναι προσβάσιμος!"
-    IDS_INSTALL_SKIN_DIR_ERROR 
-                            "Αποτυχία κατά τη δημιουργία του φακέλου ""%s"" για το eMule Skin - %s"
-    IDS_INSTALL_SKIN_FILE_ERROR 
-                            "Αποτυχία κατά την αποσυμπίεση του αρχείου ""%s"" από το eMule Skin στο τοπικό αρχείο ""%s"" - %s"
+    IDS_INSTALL_SKIN_DIR_ERROR "Αποτυχία κατά τη δημιουργία του φακέλου ""%s"" για το eMule Skin - %s"
+    IDS_INSTALL_SKIN_FILE_ERROR "Αποτυχία κατά την αποσυμπίεση του αρχείου ""%s"" από το eMule Skin στο τοπικό αρχείο ""%s"" - %s"
     IDS_INSTALL_SKIN_PKG_ERROR "Μη έγκυρο πακέτο eMule Skin"
-    IDS_NEXT_REASK          "Επόμενη ερώτηση στον χρήστη"
+    IDS_NEXT_REASK          "Επόμενη ερώτηση"
     IDS_A4AF_FILES          "Αρχεία A4AF"
     IDS_STATS_FRATIO        "Λόγος Πάνω:Κάτω περιόδου (εκτός φίλων):"
     IDS_STATS_UDATA_FRIENDS "Ανέβηκαν σε θέσεις φίλων (Περίοδος): %s"
@@ -1685,7 +1640,7 @@ BEGIN
     IDS_NEWMSG              "Νέο μήνυμα από '%s' (IP:%s)"
     IDS_PREF_STARTNEXTFILECATONLY "μόνο από την ίδια κατηγορία"
     IDS_LOG_ULDL_EVENTS     "Καταγραφή ενεργειών ανεβάσματος/κατεβάσματος"
-    IDS_PEERCACHE_ENABLED   "Ο ISP σας υποστηρίζει την τεχνολογία PeerCache, ενεργοποιούνται τα κατεβάσματα μέσω αυτής!"
+    IDS_PEERCACHE_ENABLED   "Ο ISP σας υποστηρίζει την τεχνολογία PeerCache, ενεργοποιείται η λήψη μέσω αυτής!"
     IDS_IRC_EMULEPROTO_ALLOWADDFRIEND "Επιτρέπεται να σας προσθέσουν σαν φίλο"
 END
 
@@ -1698,12 +1653,11 @@ BEGIN
     IDS_STARTTEST           "Έλεγχος των ports"
     IDS_TESTINFO            "Μπορείτε να ελέγξετε, αν τα TCP και UDP ports είναι ελεύθερα για σύνδεση από μακριά. Η επιτυχία του ελέγχου αυτού είναι απαραίτητη, για να μπορούν οι άλλοι χρήστες και οι εξυπηρετητές να συνδέονται με εσάς. Η TCP port πρέπει να επιτύχει!"
     IDS_CONNECTIONTEST      "Έλεγχος σύνδεσης"
-    IDS_NOPORTCHANGEPOSSIBLE 
-                            "Η αλλαγή των ports δεν είναι δυνατή μετά τη σύνδεση με χρήστες ή κατά τη σύνδεση σε εξυπηρετητή/Kademlia!\n\nΠαρακαλώ επανεκκινήστε το eMule με τις νέες ρυθμίσεις των ports."
+    IDS_NOPORTCHANGEPOSSIBLE "Η αλλαγή των ports δεν είναι δυνατή μετά τη σύνδεση με χρήστες ή κατά τη σύνδεση σε εξυπηρετητή/Kademlia!\n\nΠαρακαλώ επανεκκινήστε το eMule με τις νέες ρυθμίσεις των ports."
     IDS_NETWORK_INFO        "Πληροφορίες δικτύου"
     IDS_SP_TOTALUL          "συνολικά ανεβάσματα"
     IDS_SP_ULFRIENDS        "Θέσεις ανεβάσματος φίλων"
-    IDS_SP_ULSLOTSNOOVERHEAD "Ανεβάσματα χωρίς κατανάλωση"
+    IDS_SP_ULSLOTSNOOVERHEAD "Ανέβασμα χωρίς κατανάλωση"
     IDS_ST_ACTIVEU_ZZ       "ενεργά ανεβάσματα"
     IDS_ST_ULCURRENT        "ανέβασμα+κατανάλωση"
     IDS_ST_ULSLOTSNOOVERHEAD "ανέβασμα"
@@ -1723,8 +1677,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_MAXHALFOPENCONS     "Μέγιστες ανολοκλήρωτες συνδέσεις"
-    IDS_WIZ_STARTWITHWINDOWS 
-                            "Ενεργοποιήστε αυτό για να εκκινεί το eMule όταν ξεκινάτε τα windows. (Προεπιλογή Όχι)"
+    IDS_WIZ_STARTWITHWINDOWS "Ενεργοποιήστε αυτό για να εκκινεί το eMule όταν ξεκινάτε τα windows. (Προεπιλογή Όχι)"
     IDS_KAD_WAITCBK         "Αναμονή απάντησης (Kademlia)"
     IDS_KAD_TOOMANDYKADLKPS "Πάρα πολλές αναζητήσεις (Kademlia)"
     IDS_PCDS_CLIENTWAIT     "ClientWait"
@@ -1739,7 +1692,7 @@ BEGIN
     IDS_BUDDYNONE           "Κανένας"
     IDS_INFO                "Πληροφορία"
     IDS_HALF                "Μισές"
-    IDS_CONCOMPL            "Ολόκληρες"
+    IDS_CONCOMPL            "Ολόκλ."
     IDS_KADSTATUS_STOPPING  "Σταμάτημα"
     IDS_KADSTATUS_ACTIVE    "Ενεργό"
 END
@@ -1763,7 +1716,7 @@ BEGIN
     IDS_META_SRCIP          "IP πηγής"
     IDS_META_SRCTYPE        "Τύπος πηγής"
     IDS_SEARCH_UNICODE      "Unicode αναζήτηση"
-    IDS_PERSEC              "/δευτ"
+    IDS_PERSEC              "/δ"
 END
 
 STRINGTABLE 
@@ -1773,11 +1726,11 @@ BEGIN
     IDS_LD_HOSTNAME         "Χρήση του ονόματος υπολογιστή (από τις προτιμήσεις) αντί του IP κατά τη δημιουργία ενός link-πηγής"
     IDS_SAVEACFAILED        "Αποτυχία κατά το σώσιμο του AICH σετ υπογραφών!"
     IDS_IACHHASH            "Υπογραφή AICH"
-    IDS_BYTESPERSEC         "B/δευτ"
-    IDS_KBYTESPERSEC        "KB/δευτ"
-    IDS_MBYTESPERSEC        "MB/δευτ"
-    IDS_GBYTESPERSEC        "GB/δευτ"
-    IDS_TBYTESPERSEC        "TB/δευτ"
+    IDS_BYTESPERSEC         "B/δ"
+    IDS_KBYTESPERSEC        "KB/δ"
+    IDS_MBYTESPERSEC        "MB/δ"
+    IDS_GBYTESPERSEC        "GB/δ"
+    IDS_TBYTESPERSEC        "TB/δ"
 END
 
 STRINGTABLE 
@@ -1808,7 +1761,7 @@ STRINGTABLE
 BEGIN
     IDS_SPARSEPARTFILES     "Δημιουργία νέων part αρχείων με NTFS συμπίεση (sparse)"
     IDS_ASPECTRATIO         "Κάδρο"
-    IDS_NEGATEFILTER        "αντίθετο φίλτρο"
+    IDS_NEGATEFILTER        "Αντίθετο φίλτρο"
     IDS_SEENCOMPL           "Φάνηκε ολόκληρο"
     IDS_SELSKINPROFILEDIR   "Επιλογή φακέλου των skins"
     IDS_ASKDLINCOMPLETE     "Πιθανότατα ανολοκλήρωτο αρχείο:\r\n\r\n%s\r\n\r\nΑυτό το αρχείο δεν είναι ολόκληρο στο δίκτυο και μάλλον δεν θα κατέβει επιτυχώς! Θέλετε πράγματι να το κατεβάσετε;"
@@ -1819,26 +1772,24 @@ BEGIN
     IDS_THELOAD             "Φόρτωμα"
     IDS_PACKSENT            "Σταλθέντα πακέτα"
     IDS_RESPONSES           "Απαντήσεις"
-    IDS_EXTRACT_META_DATA   "Εξαγωγή meta data"
+    IDS_EXTRACT_META_DATA   "Εξαγωγή ετικετών"
     IDS_META_DATA_MEDIADET  "DirectShow (για όλα τα άλλα αρχεία ήχου/βίντεο)"
     IDS_META_DATA_ID3LIB    "Βιβλιοθήκη ID3 (μόνο για αρχεία ήχου MPEG)"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_COMCTRL32_DLL_TOOOLD 
-                            "Η βιβλιοθήκη Common Controls των Windows (COMCTL32.DLL) είναι πολύ παλιά!\r\n\r\nΤο eMule εντόπισε μια έκδοση ""Windows Common Controls library (COMCTL32.DLL)"" που είναι πολύ παλιά ώστε να λειτουργήσει σωστά με το eMule. Για να εξασφαλίσετε πλήρη και χωρίς προβλήματα λειτουργικότητα σας συνιστούμε να αναβαθμίσετε το ""Windows Common Controls library (COMCTL32.DLL)"" τουλάχιστον στην έκδοση 5.8.\r\n\r\nΚατεβάστε και εγκαταστείστε ενημερωμένη ""Windows Common Controls library (COMCTL32.DLL)"" στο κέντρο λήψεων της Microsoft (R). Θέλετε να επισκεφθείτε τώρα τον σχετικό τόπο;"
+    IDS_COMCTRL32_DLL_TOOOLD "Η βιβλιοθήκη Common Controls των Windows (COMCTL32.DLL) είναι πολύ παλιά!\r\n\r\nΤο eMule εντόπισε μια έκδοση ""Windows Common Controls library (COMCTL32.DLL)"" που είναι πολύ παλιά ώστε να λειτουργήσει σωστά με το eMule. Για να εξασφαλίσετε πλήρη και χωρίς προβλήματα λειτουργικότητα σας συνιστούμε να αναβαθμίσετε το ""Windows Common Controls library (COMCTL32.DLL)"" τουλάχιστον στην έκδοση 5.8.\r\n\r\nΚατεβάστε και εγκαταστείστε ενημερωμένη ""Windows Common Controls library (COMCTL32.DLL)"" στο κέντρο λήψεων της Microsoft (R). Θέλετε να επισκεφθείτε τώρα τον σχετικό τόπο;"
     IDS_ASREGEXPR           "Σαν Regular Expression"
     IDS_STATIC_REGEXP       "Regular expression για φιλτράρισμα προβολής:"
     IDS_CARE4ALL            "Αξιολόγηση όλων των αρχείων"
     IDS_REGEXPRESSION       "Regular Expression"
-    IDS_SEARCHKAD           "Αναζήτηση στο Kademlia"
+    IDS_SEARCHKAD           "Αναζήτηση στο Kad"
     IDS_DWL_IPFILTERFILE    "Λήψη φίλτρου IP"
     IDS_DWLIPFILTERFAILED   "Η λήψη του φίλτρου IP απέτυχε"
     IDS_FINDBUDDY           "Αναζήτηση φίλου"
     IDS_ERR_IPFILTERZIPEXTR "Αδυναμία εξαγωγής φίλτρου IP από το κατεβασμένο συμπιεσμένο φίλτρο IP ""%s""."
-    IDS_ERR_IPFILTERCONTENTERR 
-                            "Το κατεβασμένο φίλτρο IP ""%s"" είναι ένα συμπιεσμένο αρχείο μη αναμενόμενων περιεχομένων."
+    IDS_ERR_IPFILTERCONTENTERR "Το κατεβασμένο φίλτρο IP ""%s"" είναι ένα συμπιεσμένο αρχείο μη αναμενόμενων περιεχομένων."
     IDS_STORENOTES          "Αποθήκευση σχολίων"
     IDS_NOTES               "Σχόλια"
     IDS_KADSEARCHALREADY    "Υπάρχει ήδη αναζήτηση σε εξέλιξη. Παρακαλώ προσπαθείστε αργότερα!"
@@ -1859,10 +1810,8 @@ BEGIN
     IDS_WEB_SESSIONTIMEOUT  "Διαθέσιμος χρόνος"
     IDS_WEB_ALLOWHILEVFUNC  "Tερματισμός eMule, επανεκκίνηση και κλείσιμο του Η/Υ"
     IDS_SETPFSLIMIT         "Ορισμός ορίου πηγών..."
-    IDS_SETPFSLIMITEXPLAINED 
-                            "Τοποθετείστε το νέο όριο πηγών για το(α) επιλεγμένο(α) αρχείο(α) ! \n(Βάλτε 0 για χρήση της γενικής ρύθμισης)"
-    IDS_UPDATECATINCOMINGDIRS 
-                            "Θέλετε οι εισερχόμενοι φάκελοι που περιέχονται στον παλιό εισερχόμενο φάκελο να ανανεωθούν τώρα;"
+    IDS_SETPFSLIMITEXPLAINED "Τοποθετείστε το νέο όριο πηγών για το(α) επιλεγμένο(α) αρχείο(α) ! \n(Βάλτε 0 για χρήση της γενικής ρύθμισης)"
+    IDS_UPDATECATINCOMINGDIRS "Θέλετε οι εισερχόμενοι φάκελοι που περιέχονται στον παλιό εισερχόμενο φάκελο να ανανεωθούν τώρα;"
     IDS_USESPEECH           "Ανάγνωση μηνυμάτων (TTS)"
     IDS_CONDTCPACCEPT       "Απόρριψη γρήγορων συνδέσεων"
     IDS_TCPIP_CONNS         "Συνδέσεις TCP/IP"
@@ -1889,14 +1838,84 @@ BEGIN
     IDS_COLL_TEXTFORMAT     "Αποθήκευση συλλογής σε απλό αρχείο κειμένου"
     IDS_SEARCHAUTHORCOLLECTION "Αναζήτηση στις συλλογές του δημιουργού"
     IDS_ERR_DUPL_FILES      "Διπλά κοινόχρηστα αρχεία: ""%s"" και ""%s"""
-    IDS_USS_TRACEROUTEOFTENFAILED 
-                            "Διαίσθηση ταχύτητας ανεβάσματος: Η διαδικασία του tracerouting απέτυχε πάρα πολλές φορές. Απενεργοποίηση της διαίσθησης της ταχύτητας ανεβάσματος."
+    IDS_USS_TRACEROUTEOFTENFAILED "Διαίσθηση ταχύτητας ανεβάσματος: Η διαδικασία του tracerouting απέτυχε πάρα πολλές φορές. Απενεργοποίηση της διαίσθησης της ταχύτητας ανεβάσματος."
     IDS_USS_STARTING        "Διαίσθηση ταχύτητας ανεβάσματος: Ολοκληρώθηκαν οι προετοιμασίες. Έναρξη ελέγχου της ταχύτητας ανεβάσματος. (Τα πρώτα 60 δευτερόλεπτα θα είναι σε κατάσταση γρήγορης αντίδρασης)"
-    IDS_USS_MANUALUPLOADLIMITDETECTED 
-                            "Διαίσθηση ταχύτητας ανεβάσματος: Ανιχνεύθηκε στις προτιμήσεις αυξημένο όριο ανεβάσματος. Ενεργοποίηση κατάστασης γρήγορης αντίδρασης για 60 δευτερόλεπτα."
+    IDS_USS_MANUALUPLOADLIMITDETECTED "Διαίσθηση ταχύτητας ανεβάσματος: Ανιχνεύθηκε στις προτιμήσεις αυξημένο όριο ανεβάσματος. Ενεργοποίηση κατάστασης γρήγορης αντίδρασης για 60 δευτερόλεπτα."
     IDS_USS_STATE_PREPARING "Προετοιμασία..."
     IDS_USS_STATE_WAITING   "Αναμονή..."
     IDS_USS_STATE_ERROR     "Σφάλμα!"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ALLDIRECTORIES      "Όλοι οι φάκελοι"
+    IDS_ALLSHAREDFILES      "Όλα τα κοινόχρηστα αρχεία"
+    IDS_AUTHOR              "Δημιουργός"
+    IDS_AUTHORKEY           "Κωδικός δημιουργού"
+    IDS_COLL_ADDINCAT       "Προσθήκη των νέων αρχείων σε κατηγορία συλλογών"
+    IDS_COLL_ERR_DELETING   "Κάποιο άγνωστο σφάλμα κατά τη διαγραφή του παλιού αρχείου. Έξοδος χωρίς αποθήκευση;"
+    IDS_COLL_REPLACEEXISTING "Θέλετε να αντικαταστήσετε το αρχείο που υπάρχει;"
+    IDS_COLL_SIGN           "Υπογραφή συλλογής με όνομα και κωδικό"
+    IDS_COLLECTIONLIST      "Λίστα συλλογών"
+    IDS_CREATECOLLECTION    "Δημιουργία συλλογής"
+    IDS_DELETEAFTERALLOC    "Το αρχείο '%s' δεσμεύει χώρο στον δίσκο αυτή τη στιγμή γι' αυτό θα διαγραφεί αμέσως μετά"
+    IDS_DL_TRY_TO_GET_PREVIEW_PARTS "Κατέβασμα αρχικά των κομματιών που απαιτούνται για προεπισκόπηση"
+    IDS_ERR_FAILEDTOLOAD    "Αποτυχία κατά το φόρτωμα του %s: %s "
+    IDS_INCOMING_FILES      "Εισερχόμενα αρχεία"
+    IDS_INCOMPLETE_FILES    "Ανολοκλήρωτα αρχεία"
+    IDS_LOADURL             "Φόρτωμα"
+    IDS_MODIFYCOLLECTION    "Τροποποίηση συλλογής"
+    IDS_OPTIONS             "Επιλογές"
+    IDS_PR_SHORT_HIGH       "[Hi]"
+    IDS_PR_SHORT_LOW        "[Lo]"
+    IDS_RELATED             "Σχετικά"
+    IDS_RUNNINGRESTRICTED   "Το eMule βρίσκεται σε κατάσταση περιορισμένων προνομίων"
+    IDS_SEARCH_EMULECOLLECTION "Συλλογή"
+    IDS_SEARCHRELATED       "Αναζήτηση σχετικών αρχείων"
+    IDS_SHARED_DIRECTORIES  "Κοινόχρηστοι φάκελοι"
+    IDS_SHARED_STATUS       "Κοινόχρηστα κομμάτια"
+    IDS_SHAREDIR            "Ορισμός κοινόχρηστου φακέλου"
+    IDS_SHAREDIRSUB         "Ορισμός κοινόχρηστου με τους υποφακέλους"
+    IDS_TRAYDLG_SPEED       "eMule - Ταχύτητα"
+    IDS_UNSHAREDIR          "Ορισμός ως μη κοινόχρηστου φακέλου"
+    IDS_UNSHAREDIRSUB       "Ορισμός ως μη κοινόχρηστου με τους υποφακέλους"
+    IDS_VIAPASSIVE          "μέσω παθητικής λήψης"
+    IDS_VIEWCOLLECTION      "Προβολή συλλογής"
+    IDS_WEB_REMOTE_LINK_ADDED "Προστέθηκε το Link: "
+    IDS_WEB_REMOTE_LINK_NOT_ADDED "Το Link δεν προστέθηκε. Λανθασμένος κωδικός."
+    IDS_SHAREWARNING        "(Ο φάκελος θα γίνει κοινόχρηστος!)"
+    IDS_REMOVEALLSERVERS    "Θέλετε να απομακρύνετε όλους τους εξυπηρετητές;"
+    IDS_SEARCH_UNKATTR      "’γνωστο όρος αναζήτησης '%s'"
+    IDS_SEARCH_ATTRERR      "Συντακτικό σφάλμα στον όρο αναζήτησης '%s'"
+    IDS_SEARCH_MISSINGANDRIGHT "Λείπει το δεξί σκέλος του όρου AND"
+    IDS_SEARCH_OPRERR       "Συντακτικό σφάλμα αναζήτησης, στον όρο σύγκρισης '%s'"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DOWNLOAD_LANGFILE   "Λήψη αρχείου γλώσσας"
+    IDS_DOWNLOADING_SERVERMET_FROM "Λήψη server.met από %s"
+    IDS_DOWNLOADING_SERVERMET "Λήψη server.met..."
+    IDS_FULLALLOC           "Δέσμευση πλήρους μεγέθους για αρχεία part (non-sparse)"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH "Δεν βρέθηκε υπογραφή."
+    IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "Χαλασμένη λίστα Gap."
+    IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST "Δεν βρέθηκε λίστα Gap."
+    IDS_X_SHAREAZA_IMPORT_HASH_SET_CORRUPT "Χαλασμένο σετ υπογραφών."
+    IDS_X_SHAREAZA_IMPORT_NO_HASH_SET "Δεν βρέθηκε σετ υπογραφών."
+    IDS_CONVERTINGKNOWN2MET "Μετατροπή του %s σε %s ώστε να υποστηρίζονται μεγάλου μεγέθους αρχεία..."
+    IDS_CONVERTINGKNOWN2FAILED 
+                            "...αποτυχία κατά τη μετατροπή του known2.met, τα παλιές καταχωρήσεις θα αγνοηθούν."
+    IDS_CONVERTINGKNOWN2DONE "... τελείωσε η μετατροπή"
+    IDS_ERR_MET_BAD         "Σφάλμα: Το αρχείο %s είναι χαλασμένο, αδυναμία στο φόρτωμα των γνωστών αρχείων."
+    IDS_SRV_LARGEFILES      "Υποστήριξη αρχείων μεγάλου μεγέθους"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_ERR_FSCANTHANDLEFILE 
+                            "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
+    IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
 END
 
 #endif    // Greek resources

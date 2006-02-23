@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -40,12 +40,6 @@
 #include "packets.h"
 #include "Statistics.h"
 
-// ==> {Webcache} [Max] 
-#include "PartFile.h"
-#include "SharedFileList.h"
-#include "WebCache/WebCache.h"
-// <== {Webcache} [Max] 
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -53,30 +47,24 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 
-CClientList::CClientList()
-{
+CClientList::CClientList(){
+	// ==> {relax on startup} [WiZaRd] 
 	/*
-        m_dwLastBannCleanUp = 0;
+	m_dwLastBannCleanUp = 0;
 	m_dwLastTrackedCleanUp = 0;
 	m_dwLastClientCleanUp = 0;
-        */
-
-// ==> {relax on startup} [WiZaRd] 
-    const uint32 cur_tick = ::GetTickCount(); 
-    m_dwLastBannCleanUp = cur_tick+CLIENTBANTIME; 
-    m_dwLastTrackedCleanUp = cur_tick+KEEPTRACK_TIME; 
-    m_dwLastClientCleanUp = cur_tick; 
-// <== {relax on startup} [WiZaRd] 
+	*/
+	const uint32 cur_tick = ::GetTickCount(); 
+	m_dwLastBannCleanUp = cur_tick+CLIENTBANTIME; 
+	m_dwLastTrackedCleanUp = cur_tick+KEEPTRACK_TIME; 
+	m_dwLastClientCleanUp = cur_tick; 
+	// <== {relax on startup} [WiZaRd] 
 
 	m_nBuddyStatus = Disconnected;
 	m_bannedList.InitHashTable(331);
 	m_trackedClientsList.InitHashTable(2011);
 	m_globDeadSourceList.Init(true);
 	m_pBuddy = NULL;
-
-
-	m_dwLastSendOHCBs = 0;// {Webcache} [Max]  
-
 }
 
 CClientList::~CClientList(){
@@ -135,7 +123,6 @@ void CClientList::ReleaseModStatistics(CRBMap<uint32, CRBMap<CString, uint32>* >
 }
 // Slugfiller: modid
 //Xman end
-
 
 void CClientList::GetStatistics(uint32 &ruTotalClients, int stats[NUM_CLIENTLIST_STATS], 
 								CMap<uint32, uint32, uint32, uint32>& clientVersionEDonkey, 
@@ -257,8 +244,7 @@ void CClientList::AddClient(CUpDownClient* toadd, bool bSkipDupTest)
 // ZZ:UploadSpeedSense -->
 bool CClientList::GiveClientsForTraceRoute() {
     // this is a host that lastCommonRouteFinder can use to traceroute
-    //return theApp.lastCommonRouteFinder->AddHostsToCheck(list);
-	return false; //Xman
+    return theApp.lastCommonRouteFinder->AddHostsToCheck(list);
 }
 // ZZ:UploadSpeedSense <--
 */
@@ -266,7 +252,7 @@ bool CClientList::GiveClientsForTraceRoute() {
 void CClientList::RemoveClient(CUpDownClient* toremove, LPCTSTR pszReason){
 	POSITION pos = list.Find(toremove);
 	if (pos){
-		theApp.uploadqueue->RemoveFromUploadQueue(toremove, /*strInfo*/pszReason);
+		theApp.uploadqueue->RemoveFromUploadQueue(toremove, pszReason);
 		theApp.uploadqueue->RemoveFromWaitingQueue(toremove);
 		// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 		if ( toremove != NULL && toremove->Credits() != NULL) {
@@ -297,7 +283,7 @@ bool CClientList::AttachToAlreadyKnown(CUpDownClient** client, CClientReqSocket*
 	CUpDownClient* tocheck = (*client);
 	CUpDownClient* found_client = NULL;
 	CUpDownClient* found_client2 = NULL;
-	for (pos1 = list.GetHeadPosition();( pos2 = pos1 ) != NULL;){
+	for (pos1 = list.GetHeadPosition(); (pos2 = pos1) != NULL; ){
 		list.GetNext(pos1);
 		CUpDownClient* cur_client =	list.GetAt(pos2);
 		if (tocheck->Compare(cur_client,false)){ //matching userhash
@@ -414,7 +400,6 @@ CUpDownClient* CClientList::FindClientByIP_KadPort(uint32 ip, uint16 port) const
 	return 0;
 }
 
-
 CUpDownClient* CClientList::FindClientByServerID(uint32 uServerIP, uint32 uED2KUserID) const
 {
 	uint32 uHybridUserID = ntohl(uED2KUserID);
@@ -456,6 +441,7 @@ void CClientList::RemoveAllBannedClients(){
 
 ///////////////////////////////////////////////////////////////////////////////
 // Tracked clients
+
 void CClientList::AddTrackClient(CUpDownClient* toadd){
 	CDeletedClient* pResult = 0;
 	if (m_trackedClientsList.Lookup(toadd->GetIP(), pResult)){
@@ -500,7 +486,7 @@ UINT CClientList::GetClientsFromIP(uint32 dwIP) const
 	return 0;
 }
 
-void CClientList::TrackBadRequest(const CUpDownClient* upcClient, sint32 nIncreaseCounter){
+void CClientList::TrackBadRequest(const CUpDownClient* upcClient, int nIncreaseCounter){
 	CDeletedClient* pResult = NULL;
 	if (upcClient->GetIP() == 0){
 		ASSERT( false );
@@ -601,7 +587,7 @@ void CClientList::Process()
 	{
 		m_KadList.GetNext(pos1);
 		CUpDownClient* cur_client =	m_KadList.GetAt(pos2);
-		if( !Kademlia::CKademlia::isRunning() )
+		if( !Kademlia::CKademlia::IsRunning() )
 		{
 			//Clear out this list if we stop running Kad.
 			//Setting the Kad state to KS_NONE causes it to be removed in the switch below.
@@ -621,7 +607,9 @@ void CClientList::Process()
 			case KS_CONNECTED_FWCHECK:
 				//We successfully connected to the client.
 				//We now send a ack to let them know.
-				Kademlia::CKademlia::getUDPListener()->sendNullPacket(KADEMLIA_FIREWALLED_ACK, ntohl(cur_client->GetIP()), cur_client->GetKadPort());
+				if (thePrefs.GetDebugClientKadUDPLevel() > 0)
+					DebugSend("KADEMLIA_FIREWALLED_ACK_RES", cur_client->GetIP(), cur_client->GetKadPort());
+				Kademlia::CKademlia::GetUDPListener()->SendNullPacket(KADEMLIA_FIREWALLED_ACK_RES, ntohl(cur_client->GetIP()), cur_client->GetKadPort());
 				//We are done with this client. Set Kad status to KS_NONE and it will be removed in the next cycle.
 				cur_client->SetKadState(KS_NONE);
 				break;
@@ -700,11 +688,11 @@ void CClientList::Process()
 	{
 		if( m_nBuddyStatus != Disconnected || m_pBuddy )
 		{
-			if( Kademlia::CKademlia::isRunning() && theApp.IsFirewalled() )
+			if( Kademlia::CKademlia::IsRunning() && theApp.IsFirewalled() )
 			{
 				//We are a lowID client and we just lost our buddy.
 				//Go ahead and instantly try to find a new buddy.
-				Kademlia::CKademlia::getPrefs()->setFindBuddy();
+				Kademlia::CKademlia::GetPrefs()->SetFindBuddy();
 			}
 			m_pBuddy = NULL;
 			m_nBuddyStatus = Disconnected;
@@ -712,26 +700,21 @@ void CClientList::Process()
 		}
 	}
 
-	if ( Kademlia::CKademlia::isConnected() )
+	if ( Kademlia::CKademlia::IsConnected() )
 	{
-		if( Kademlia::CKademlia::isFirewalled() )
+		if( Kademlia::CKademlia::IsFirewalled() )
 		{
-			if( m_nBuddyStatus == Disconnected && Kademlia::CKademlia::getPrefs()->getFindBuddy() )
+			if( m_nBuddyStatus == Disconnected && Kademlia::CKademlia::GetPrefs()->GetFindBuddy() )
 			{
 				//We are a firewalled client with no buddy. We have also waited a set time 
 				//to try to avoid a false firewalled status.. So lets look for a buddy..
-				Kademlia::CSearch *findBuddy = new Kademlia::CSearch;
-				findBuddy->setSearchTypes(Kademlia::CSearch::FINDBUDDY);
-				Kademlia::CUInt128 ID(true);
-				ID.xor(Kademlia::CKademlia::getPrefs()->getKadID());
-				findBuddy->setTargetID(ID);
-				if( !Kademlia::CSearchManager::startSearch(findBuddy) )
+				if( !Kademlia::CSearchManager::PrepareLookup(Kademlia::CSearch::FINDBUDDY, true, Kademlia::CUInt128(true).Xor(Kademlia::CKademlia::GetPrefs()->GetKadID())) )
 				{
 					//This search ID was already going. Most likely reason is that
 					//we found and lost our buddy very quickly and the last search hadn't
 					//had time to be removed yet. Go ahead and set this to happen again
 					//next time around.
-					Kademlia::CKademlia::getPrefs()->setFindBuddy();
+					Kademlia::CKademlia::GetPrefs()->SetFindBuddy();
 				}
 			}
 		}
@@ -755,14 +738,11 @@ void CClientList::Process()
 			m_pBuddy->SetKadState(KS_NONE);
 		}
 	}
-	
+
 	///////////////////////////////////////////////////////////////////////////
 	// Cleanup client list
 	//
 	//CleanUpClientList(); //Xman moved to uploadqueue
-
-
-	SendOHCBs();// {Webcache} [Max] 
 }
 
 #ifdef _DEBUG
@@ -795,18 +775,18 @@ bool CClientList::IsValidClient(CUpDownClient* tocheck) const
 
 void CClientList::RequestTCP(Kademlia::CContact* contact)
 {
-	uint32 nContactIP = ntohl(contact->getIPAddress());
+	uint32 nContactIP = ntohl(contact->GetIPAddress());
 	// don't connect ourself
-	if (theApp.serverconnect->GetLocalIP() == nContactIP && thePrefs.GetPort() == contact->getTCPPort())
+	if (theApp.serverconnect->GetLocalIP() == nContactIP && thePrefs.GetPort() == contact->GetTCPPort())
 		return;
 
-	CUpDownClient* pNewClient = FindClientByIP(nContactIP, contact->getTCPPort());
+	CUpDownClient* pNewClient = FindClientByIP(nContactIP, contact->GetTCPPort());
 
 	if (!pNewClient)
-		pNewClient = new CUpDownClient(0, contact->getTCPPort(), contact->getIPAddress(), 0, 0, false );
+		pNewClient = new CUpDownClient(0, contact->GetTCPPort(), contact->GetIPAddress(), 0, 0, false );
 
 	//Add client to the lists to be processed.
-	pNewClient->SetKadPort(contact->getUDPPort());
+	pNewClient->SetKadPort(contact->GetUDPPort());
 	pNewClient->SetKadState(KS_QUEUED_FWCHECK);
 	m_KadList.AddTail(pNewClient);
 	//This method checks if this is a dup already.
@@ -815,19 +795,19 @@ void CClientList::RequestTCP(Kademlia::CContact* contact)
 
 void CClientList::RequestBuddy(Kademlia::CContact* contact)
 {
-	uint32 nContactIP = ntohl(contact->getIPAddress());
+	uint32 nContactIP = ntohl(contact->GetIPAddress());
 	// don't connect ourself
-	if (theApp.serverconnect->GetLocalIP() == nContactIP && thePrefs.GetPort() == contact->getTCPPort())
+	if (theApp.serverconnect->GetLocalIP() == nContactIP && thePrefs.GetPort() == contact->GetTCPPort())
 		return;
-	CUpDownClient* pNewClient = FindClientByIP(nContactIP, contact->getTCPPort());
+	CUpDownClient* pNewClient = FindClientByIP(nContactIP, contact->GetTCPPort());
 	if (!pNewClient)
-		pNewClient = new CUpDownClient(0, contact->getTCPPort(), contact->getIPAddress(), 0, 0, false );
+		pNewClient = new CUpDownClient(0, contact->GetTCPPort(), contact->GetIPAddress(), 0, 0, false );
 
 	//Add client to the lists to be processed.
-	pNewClient->SetKadPort(contact->getUDPPort());
+	pNewClient->SetKadPort(contact->GetUDPPort());
 	pNewClient->SetKadState(KS_QUEUED_BUDDY);
 	byte ID[16];
-	contact->getClientID().toByteArray(ID);
+	contact->GetClientID().ToByteArray(ID);
 	pNewClient->SetUserHash(ID);
 	AddToKadList(pNewClient);
 	//This method checks if this is a dup already.
@@ -836,26 +816,26 @@ void CClientList::RequestBuddy(Kademlia::CContact* contact)
 
 void CClientList::IncomingBuddy(Kademlia::CContact* contact, Kademlia::CUInt128* buddyID )
 {
-	uint32 nContactIP = ntohl(contact->getIPAddress());
+	uint32 nContactIP = ntohl(contact->GetIPAddress());
 	//If eMule already knows this client, abort this.. It could cause conflicts.
 	//Although the odds of this happening is very small, it could still happen.
-	if (FindClientByIP(nContactIP, contact->getTCPPort()))
+	if (FindClientByIP(nContactIP, contact->GetTCPPort()))
 	{
 		return;
 	}
 
 	// don't connect ourself
-	if (theApp.serverconnect->GetLocalIP() == nContactIP && thePrefs.GetPort() == contact->getTCPPort())
+	if (theApp.serverconnect->GetLocalIP() == nContactIP && thePrefs.GetPort() == contact->GetTCPPort())
 		return;
 
 	//Add client to the lists to be processed.
-	CUpDownClient* pNewClient = new CUpDownClient(0, contact->getTCPPort(), contact->getIPAddress(), 0, 0, false );
-	pNewClient->SetKadPort(contact->getUDPPort());
+	CUpDownClient* pNewClient = new CUpDownClient(0, contact->GetTCPPort(), contact->GetIPAddress(), 0, 0, false );
+	pNewClient->SetKadPort(contact->GetUDPPort());
 	pNewClient->SetKadState(KS_INCOMING_BUDDY);
 	byte ID[16];
-	contact->getClientID().toByteArray(ID);
+	contact->GetClientID().ToByteArray(ID);
 	pNewClient->SetUserHash(ID);
-	buddyID->toByteArray(ID);
+	buddyID->ToByteArray(ID);
 	pNewClient->SetBuddyID(ID);
 	AddToKadList(pNewClient);
 	AddClient(pNewClient);
@@ -898,10 +878,7 @@ void CClientList::CleanUpClientList(){
 				&& pCurClient->GetDownloadState() == DS_NONE
 				&& pCurClient->GetChatState() == MS_NONE
 				&& pCurClient->GetKadState() == KS_NONE
-				&& pCurClient->socket == NULL
-				
-				&& !pCurClient->IsProxy()) // {Webcache} [Max]  
-				
+				&& pCurClient->socket == NULL)
 			{
 				const DWORD delta = GetTickCount() - pCurClient->m_lastCleanUpCheck;
 				if(delta > 7200000){ // 2 hour
@@ -969,90 +946,3 @@ void CClientList::ResetIP2Country(){
 
 }
 //EastShare End - added by AndCycle, IP to Country
-
-// ==> {Webcache} [Max] 
-// yonatan - not 2 be confused with the one in CUploadQueue!
-CUpDownClient*	CClientList::FindClientByWebCacheUploadId(const uint32 id)
-{
-	for (POSITION pos = list.GetHeadPosition(); pos != NULL;)
-	{
-		CUpDownClient* cur_client = list.GetNext(pos);
-		if ( cur_client->m_uWebCacheUploadId == id )
-			return cur_client;
-	}
-	return 0;
-}
-
-// Superlexx - OHCB manager
-// returns a list of multi-OHCB-supporting clients ( = v1.9a or newer ) that should receive this OHCB immediately
-CUpDownClientPtrList* CClientList::XpressOHCBRecipients(uint16 maxNrOfClients, const Requested_Block_Struct* block)
-{
-	uint16 part = block->StartOffset / PARTSIZE;
- 	CUpDownClientPtrList* newClients = new CUpDownClientPtrList;	// supporting multi-OHCB
-
-	for (POSITION pos = list.GetHeadPosition(); pos;)
-	{
-		CUpDownClient* cur_client = list.GetNext(pos);
-		if ( !(cur_client->HasLowID() || (cur_client->socket && cur_client->socket->IsConnected()))
-			&& cur_client->SupportsMultiOHCBs()
-			&& !cur_client->IsProxy()	// client isn't a proxy
-			&& cur_client->m_bIsAcceptingOurOhcbs
-			//&& theApp.sharedfiles->GetFileByID(cur_client->GetUploadFileID())	// client has requested a file - obsolete with MFR
-			//&& !md4cmp(cur_client->GetUploadFileID(), block->FileID ) // file hashes do match - obsolete with MFR
-			&& !cur_client->IsPartAvailable(part, block->FileID) // the MFR version
-			&& cur_client->IsBehindOurWebCache())	// inefficient
-			if (cur_client->socket && cur_client->socket->IsConnected())
-				newClients->AddHead(cur_client); // add connected clients to head
-			else
-				newClients->AddTail(cur_client);
-	}
-
-	CUpDownClientPtrList* toReturn = new CUpDownClientPtrList;
-
-	// TODO: optimize this, dependent on further protocol development
-	POSITION pos1 = newClients->GetHeadPosition();
-	while (pos1 != NULL
-		&& toReturn->GetCount() <= maxNrOfClients)
-		toReturn->AddTail(newClients->GetNext(pos1));
-
-	delete newClients;
-	return toReturn;
-}
-
-uint16 CClientList::GetNumberOfClientsBehindOurWebCacheHavingSameFileAndNeedingThisBlock(Pending_Block_Struct* pending, uint16 maxNrOfClients) // Superlexx - COtN
-{
-	uint16 toReturn = 0;
-	uint16 part = pending->block->StartOffset / PARTSIZE;
-
-	for (POSITION pos = list.GetHeadPosition(); pos && toReturn <= maxNrOfClients; list.GetNext(pos))
-	{
-		CUpDownClient* cur_client = list.GetAt( pos );
-		if( cur_client->m_bIsAcceptingOurOhcbs
-			&& !cur_client->IsProxy()
-//			&& cur_client != this // 'this' is the client we want to download data from - covered by IsPartAvaiable
-			&& cur_client->IsBehindOurWebCache()
-			&& !cur_client->IsPartAvailable(part, pending->block->FileID))
-			toReturn++;
-	}
-	return toReturn;
-}
-
-void CClientList::SendOHCBs()
-{
-	const uint32 now = ::GetTickCount();
-	if (now - m_dwLastSendOHCBs > WC_SENDOHCBS_INTERVAL)
-	{
-		m_dwLastSendOHCBs = now;
-		CUpDownClient* cur_client = NULL;
-		for (POSITION pos = list.GetHeadPosition(); pos;)
-		{
-			cur_client = list.GetNext(pos);
-			if (cur_client->SupportsWebCache()
-				&& cur_client->SupportsMultiOHCBs()
-				&& now - cur_client->lastMultiOHCBPacketSent > WC_MULTI_OHCB_SEND_TIME
-				&& cur_client->IsBehindOurWebCache())
-				cur_client->SendOHCBsNow();
-		}
-	}
-}
-// <== {Webcache} [Max] 

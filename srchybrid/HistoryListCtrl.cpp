@@ -199,6 +199,7 @@ IMPLEMENT_DYNAMIC(CHistoryListCtrl, CListCtrl)
 CHistoryListCtrl::CHistoryListCtrl()
 	: CListCtrlItemWalk(this)
 {
+	SetGeneralPurposeFind(true, false);
 }
 
 CHistoryListCtrl::~CHistoryListCtrl()
@@ -606,9 +607,8 @@ void CHistoryListCtrl::Localize() {
 				strRes = "No Text!!";
 		}
 
-		hdi.pszText = strRes.GetBuffer();
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(i, &hdi);
-		strRes.ReleaseBuffer();
 	}
 
 	CreateMenues();
@@ -647,7 +647,7 @@ void CHistoryListCtrl::CreateMenues()
 	m_HistoryMenu.AppendMenu(MF_STRING|MF_SEPARATOR); 
 }
 
-void CHistoryListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
+void CHistoryListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 {
 	CKnownFile* file = NULL;
 
@@ -687,7 +687,7 @@ void CHistoryListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 
 }
 
-void CHistoryListCtrl::OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult)
+void CHistoryListCtrl::OnNMDblclk(NMHDR* /*pNMHDR*/, LRESULT *pResult)
 {
 	int iSel = GetNextItem(-1, LVIS_SELECTED | LVIS_FOCUSED);
 	if (iSel != -1)
@@ -708,7 +708,7 @@ void CHistoryListCtrl::OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 }
 
-BOOL CHistoryListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
+BOOL CHistoryListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 {
 	UINT selectedCount = this->GetSelectedCount(); 
 	int iSel = GetSelectionMark();
@@ -837,6 +837,21 @@ void CHistoryListCtrl::RemoveFile(CKnownFile *toRemove) {
 		}
 	}
 }
+//Xman
+//only used for removing duplicated files to avoid a crash
+void CHistoryListCtrl::RemoveFileFromView(CKnownFile* toRemove)
+{
+	LVFINDINFO info;
+	info.flags = LVFI_PARAM;
+	info.lParam = (LPARAM)toRemove;
+	int nItem = FindItem(&info);
+	if(nItem != -1)
+	{
+		DeleteItem(nItem);
+	}
+	//remark: no need to update the count-info, because we only replace files
+}
+//Xman end
 
 void CHistoryListCtrl::ClearHistory() {
 	if(MessageBox(GetResString(IDS_DOWNHISTORY_CLEAR_QUESTION),GetResString(IDS_DOWNHISTORY),MB_YESNO)==IDYES)

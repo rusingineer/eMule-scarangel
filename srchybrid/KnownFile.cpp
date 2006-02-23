@@ -1,6 +1,6 @@
 // parts of this file are based on work from pan One (http://home-3.tiscali.nl/~meost/pms/)
 //this file is part of eMule
-//Copyright (C)2002-2004 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -47,42 +47,14 @@
 #include "Collection.h"
 #include "emuledlg.h"
 #include "SharedFilesWnd.h"
+#include "MediaInfo.h"
 #include "MuleStatusBarCtrl.h" //Xman Progress Hash (O2)
 
 // id3lib
+#pragma warning(disable:4100) // unreferenced formal parameter
 #include <id3/tag.h>
 #include <id3/misc_support.h>
-
-// DirectShow MediaDet
-#include <strmif.h>
-//#include <uuids.h>
-#define _DEFINE_GUID(name, l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8) \
-        EXTERN_C const GUID DECLSPEC_SELECTANY name \
-                = { l, w1, w2, { b1, b2,  b3,  b4,  b5,  b6,  b7,  b8 } }
-_DEFINE_GUID(MEDIATYPE_Video, 0x73646976, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);
-_DEFINE_GUID(MEDIATYPE_Audio, 0x73647561, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);
-_DEFINE_GUID(FORMAT_VideoInfo,0x05589f80, 0xc356, 0x11ce, 0xbf, 0x01, 0x00, 0xaa, 0x00, 0x55, 0x59, 0x5a);
-_DEFINE_GUID(FORMAT_WaveFormatEx,0x05589f81, 0xc356, 0x11ce, 0xbf, 0x01, 0x00, 0xaa, 0x00, 0x55, 0x59, 0x5a);
-#define MMNODRV			// mmsystem: Installable driver support
-#define MMNOSOUND		// mmsystem: Sound support
-//#define MMNOWAVE		// mmsystem: Waveform support
-#define MMNOMIDI		// mmsystem: MIDI support
-#define MMNOAUX			// mmsystem: Auxiliary audio support
-#define MMNOMIXER		// mmsystem: Mixer support
-#define MMNOTIMER		// mmsystem: Timer support
-#define MMNOJOY			// mmsystem: Joystick support
-#define MMNOMCI			// mmsystem: MCI support
-#define MMNOMMIO		// mmsystem: Multimedia file I/O support
-#define MMNOMMSYSTEM	// mmsystem: General MMSYSTEM functions
-#include <qedit.h>
-typedef struct tagVIDEOINFOHEADER {
-    RECT            rcSource;          // The bit we really want to use
-    RECT            rcTarget;          // Where the video should go
-    DWORD           dwBitRate;         // Approximate bit data rate
-    DWORD           dwBitErrorRate;    // Bit error rate for this stream
-    REFERENCE_TIME  AvgTimePerFrame;   // Average time per frame (100ns units)
-    BITMAPINFOHEADER bmiHeader;
-} VIDEOINFOHEADER;
+#pragma warning(default:4100) // unreferenced formal parameter
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -96,13 +68,10 @@ IMPLEMENT_DYNAMIC(CKnownFile, CAbstractFile)
 
 CKnownFile::CKnownFile()
 {
-
-	ReleaseViaWebCache = false; //JP webcache release , {Webcache} [Max]
-
 	m_iPartCount = 0;
 	m_iED2KPartCount = 0;
 	m_iED2KPartHashCount = 0;
-	m_tUtcLastModified = 0;
+	m_tUtcLastModified = (UINT)-1;
 	if(thePrefs.GetNewAutoUp()){
 		m_iUpPriority = PR_HIGH;
 		m_bAutoUpPriority = true;
@@ -221,16 +190,16 @@ void CKnownFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bo
 
 		if (!onlygreyrect) 
 		{
-			for (int i = 0; i < GetPartCount(); i++)
+			for (UINT i = 0; i < GetPartCount(); i++)
 			{
 				uint32 frequency = 0;
 				if(!m_AvailPartFrequency.IsEmpty()) {
 					frequency = m_AvailPartFrequency[i];
-	}
+				}
 
 				if(frequency > 0 ){
 					const COLORREF color = RGB(0, (22*(frequency-1) >= 210)? 0:210-(22*(frequency-1)), 255);
-					statusBar.FillRange(PARTSIZE*(i),PARTSIZE*(i+1),color);
+					statusBar.FillRange(PARTSIZE*(uint64)(i),PARTSIZE*(uint64)(i+1),color);
 				}
 			}
 		}
@@ -253,10 +222,10 @@ void CKnownFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bo
 //Xman end
 
 // SLUGFILLER: heapsortCompletesrc
-static void HeapSort(CArray<uint16,uint16> &count, uint32 first, uint32 last){
-	uint32 r;
-	for ( r = first; !(r & 0x80000000) && (r<<1) < last; ){
-		uint32 r2 = (r<<1)+1;
+static void HeapSort(CArray<uint16,uint16> &count, UINT first, UINT last){
+	UINT r;
+	for ( r = first; !(r & (UINT)INT_MIN) && (r<<1) < last; ){
+		UINT r2 = (r<<1)+1;
 		if (r2 != last)
 			if (count[r2] < count[r2+1])
 				r2++;
@@ -275,26 +244,26 @@ static void HeapSort(CArray<uint16,uint16> &count, uint32 first, uint32 last){
 void CKnownFile::UpdateFileRatingCommentAvail()
 {
 	bool bOldHasComment = m_bHasComment;
-	uint32 uOldUserRatings = m_uUserRating;
+	UINT uOldUserRatings = m_uUserRating;
 
 	m_bHasComment = false;
-	uint32 uRatings = 0;
-	uint32 uUserRatings = 0;
+	UINT uRatings = 0;
+	UINT uUserRatings = 0;
 
 	for(POSITION pos = m_kadNotes.GetHeadPosition(); pos != NULL; )
 	{
 		Kademlia::CEntry* entry = m_kadNotes.GetNext(pos);
 		if (!m_bHasComment && !entry->GetStrTagValue(TAG_DESCRIPTION).IsEmpty())
 			m_bHasComment = true;
-		uint16 rating = entry->GetIntTagValue(TAG_FILERATING);
-		if(rating!=0)
+		UINT rating = (UINT)entry->GetIntTagValue(TAG_FILERATING);
+		if (rating != 0)
 		{
 			uRatings++;
 			uUserRatings += rating;
 		}
 	}
 
-	if(uRatings)
+	if (uRatings)
 		m_uUserRating = uUserRatings / uRatings;
 	else
 		m_uUserRating = 0;
@@ -306,13 +275,13 @@ void CKnownFile::UpdateFileRatingCommentAvail()
 void CKnownFile::UpdatePartsInfo()
 {
 	// Cache part count
-	uint16 partcount = GetPartCount();
+	UINT partcount = GetPartCount();
 	bool flag = (time(NULL) - m_nCompleteSourcesTime > 0); 
-	
+
 	// Reset part counters
-	if(m_AvailPartFrequency.GetSize() < partcount)
+	if ((UINT)m_AvailPartFrequency.GetSize() < partcount)
 		m_AvailPartFrequency.SetSize(partcount);
-	for(int i = 0; i < partcount; i++)
+	for (UINT i = 0; i < partcount; i++)
 		m_AvailPartFrequency[i] = 0;
 
 	CArray<uint16, uint16> count;
@@ -322,14 +291,14 @@ void CKnownFile::UpdatePartsInfo()
 	{
 		CUpDownClient* cur_src = m_ClientUploadList.GetNext(pos);
 		//This could be a partfile that just completed.. Many of these clients will not have this information.
-		if(cur_src->m_abyUpPartStatus && cur_src->GetUpPartCount() == partcount )
+		if (cur_src->m_abyUpPartStatus && cur_src->GetUpPartCount() == partcount)
 		{
-			for (uint16 i = 0; i < partcount; i++)
+			for (UINT i = 0; i < partcount; i++)
 			{
 				if (cur_src->IsUpPartAvailable(i))
 					m_AvailPartFrequency[i] += 1;
 			}
-			if ( flag )
+			if (flag)
 				count.Add(cur_src->GetUpCompleteSourcesCount());
 		}
 	}
@@ -338,16 +307,16 @@ void CKnownFile::UpdatePartsInfo()
 	{
 		m_nCompleteSourcesCount = m_nCompleteSourcesCountLo = m_nCompleteSourcesCountHi = 0;
 
-		if( partcount > 0)
+		if (partcount > 0)
 			m_nCompleteSourcesCount = m_AvailPartFrequency[0];
-		for (uint16 i = 1; i < partcount; i++)
+		for (UINT i = 1; i < partcount; i++)
 		{
-			if( m_nCompleteSourcesCount > m_AvailPartFrequency[i])
+			if (m_nCompleteSourcesCount > m_AvailPartFrequency[i])
 				m_nCompleteSourcesCount = m_AvailPartFrequency[i];
 		}
-	
+
 		count.Add(m_nCompleteSourcesCount+1); // plus 1 since we have the file complete too
-	
+
 		int n = count.GetSize();
 		if (n > 0)
 		{
@@ -362,7 +331,7 @@ void CKnownFile::UpdatePartsInfo()
 				HeapSort(count, 0, r-1);
 			}
 			// SLUGFILLER: heapsortCompletesrc
-			
+
 			// calculate range
 			int i = n >> 1;			// (n / 2)
 			int j = (n * 3) >> 2;	// (n * 3) / 4
@@ -387,13 +356,13 @@ void CKnownFile::UpdatePartsInfo()
 					m_nCompleteSourcesCountHi = m_nCompleteSourcesCount;
 			}
 			else
-			//Many sources..
-			//For low guess
-			//	Use what we see.
-			//For normal guess
-			//	Adjust network accounts for 100%, we account for 0% with what we see and make sure we are still above the low.
-			//For high guess
-			//  Adjust network accounts for 100%, we account for 0% with what we see and make sure we are still above the normal.
+				//Many sources..
+				//For low guess
+				//	Use what we see.
+				//For normal guess
+				//	Adjust network accounts for 100%, we account for 0% with what we see and make sure we are still above the low.
+				//For high guess
+				//  Adjust network accounts for 100%, we account for 0% with what we see and make sure we are still above the normal.
 			{
 				m_nCompleteSourcesCountLo= m_nCompleteSourcesCount;
 				m_nCompleteSourcesCount= count.GetAt(j);
@@ -458,10 +427,10 @@ void CKnownFile::SetFileName(LPCTSTR pszFileName, bool bReplaceInvalidFileSystem
 	{
 		CString sKeyWords;
 		sKeyWords.Format(_T("%s %s"), m_pCollection->GetCollectionAuthorKeyString(), GetFileName());
-		Kademlia::CSearchManager::getWords(sKeyWords, &wordlist);
+		Kademlia::CSearchManager::GetWords(sKeyWords, &wordlist);
 	}
 	else
-		Kademlia::CSearchManager::getWords(GetFileName(), &wordlist);
+		Kademlia::CSearchManager::GetWords(GetFileName(), &wordlist);
 
 	if (pFile && pFile == this)
 		theApp.sharedfiles->AddKeywords(this);
@@ -498,20 +467,20 @@ bool CKnownFile::CreateFromFile(LPCTSTR in_directory, LPCTSTR in_filename, LPVOI
 		fclose(file);
 		return false; // not supported by network
 	}
-	SetFileSize(_filelength(file->_file));
+	SetFileSize((uint64)_filelengthi64(file->_file));
 
 	// we are reading the file data later in 8K blocks, adjust the internal file stream buffer accordingly
 	setvbuf(file, NULL, _IOFBF, 1024*8*2);
 
 	m_AvailPartFrequency.SetSize(GetPartCount());
-	for (uint32 i = 0; i < GetPartCount();i++)
+	for (UINT i = 0; i < GetPartCount();i++)
 		m_AvailPartFrequency[i] = 0;
 	
 	// create hashset
-	uint32 togo = m_nFileSize;
-	for (uint16 hashcount = 0; togo >= PARTSIZE; )
+	uint64 togo = m_nFileSize;
+	for (UINT hashcount = 0; togo >= PARTSIZE; )
 	{
-		CAICHHashTree* pBlockAICHHashTree = m_pAICHHashSet->m_pHashTree.FindHash(hashcount*PARTSIZE, PARTSIZE);
+		CAICHHashTree* pBlockAICHHashTree = m_pAICHHashSet->m_pHashTree.FindHash((uint64)hashcount*PARTSIZE, PARTSIZE);
 		ASSERT( pBlockAICHHashTree != NULL );
 
 		uchar* newhash = new uchar[16];
@@ -544,7 +513,7 @@ bool CKnownFile::CreateFromFile(LPCTSTR in_directory, LPCTSTR in_filename, LPVOI
 		if (pvProgressParam && theApp.emuledlg && theApp.emuledlg->IsRunning()){
 			ASSERT( ((CKnownFile*)pvProgressParam)->IsKindOf(RUNTIME_CLASS(CKnownFile)) );
 			ASSERT( ((CKnownFile*)pvProgressParam)->GetFileSize() == GetFileSize() );
-			UINT uProgress = (UINT)(((ULONGLONG)(GetFileSize() - togo) * 100) / GetFileSize());
+			UINT uProgress = (UINT)(uint64)(((uint64)(GetFileSize() - togo) * 100) / GetFileSize());
 			ASSERT( uProgress <= 100 );
 			VERIFY( PostMessage(theApp.emuledlg->GetSafeHwnd(), TM_FILEOPPROGRESS, uProgress, (LPARAM)pvProgressParam) );
 		}
@@ -554,7 +523,7 @@ bool CKnownFile::CreateFromFile(LPCTSTR in_directory, LPCTSTR in_filename, LPVOI
 	if (togo == 0)
 		pBlockAICHHashTree = NULL; // sha hashtree doesnt takes hash of 0-sized data
 	else{
-		pBlockAICHHashTree = m_pAICHHashSet->m_pHashTree.FindHash(hashcount*PARTSIZE, togo);
+		pBlockAICHHashTree = m_pAICHHashSet->m_pHashTree.FindHash((uint64)hashcount*PARTSIZE, togo);
 		ASSERT( pBlockAICHHashTree != NULL );
 	}
 	
@@ -601,10 +570,11 @@ bool CKnownFile::CreateFromFile(LPCTSTR in_directory, LPCTSTR in_filename, LPVOI
 	}
 
 	// set lastwrite date
-	struct _stat fileinfo = {0};
-	_fstat(file->_file, &fileinfo);
-	m_tUtcLastModified = fileinfo.st_mtime;
-	AdjustNTFSDaylightFileTime(m_tUtcLastModified, strFilePath);
+	struct _stat fileinfo;
+	if (_fstat(file->_file, &fileinfo) == 0){
+		m_tUtcLastModified = fileinfo.st_mtime;
+		AdjustNTFSDaylightFileTime(m_tUtcLastModified, strFilePath);
+	}
 	
 	fclose(file);
 	file = NULL;
@@ -635,10 +605,10 @@ bool CKnownFile::CreateAICHHashSetOnly()
 	setvbuf(file, NULL, _IOFBF, 1024*8*2);
 
 	// create aichhashset
-	uint32 togo = m_nFileSize;
-	for (uint16 hashcount = 0; togo >= PARTSIZE; )
+	uint64 togo = m_nFileSize;
+	for (UINT hashcount = 0; togo >= PARTSIZE; )
 	{
-		CAICHHashTree* pBlockAICHHashTree = m_pAICHHashSet->m_pHashTree.FindHash(hashcount*PARTSIZE, PARTSIZE);
+		CAICHHashTree* pBlockAICHHashTree = m_pAICHHashSet->m_pHashTree.FindHash((uint64)hashcount*PARTSIZE, PARTSIZE);
 		ASSERT( pBlockAICHHashTree != NULL );
 		if (!CreateHash(file, PARTSIZE, NULL, pBlockAICHHashTree)) {
 			LogError(_T("Failed to hash file \"%s\" - %hs"), GetFilePath(), strerror(errno));
@@ -657,7 +627,7 @@ bool CKnownFile::CreateAICHHashSetOnly()
 
 	if (togo != 0)
 	{
-		CAICHHashTree* pBlockAICHHashTree = m_pAICHHashSet->m_pHashTree.FindHash(hashcount*PARTSIZE, togo);
+		CAICHHashTree* pBlockAICHHashTree = m_pAICHHashSet->m_pHashTree.FindHash((uint64)hashcount*PARTSIZE, togo);
 		ASSERT( pBlockAICHHashTree != NULL );
 		if (!CreateHash(file, togo, NULL, pBlockAICHHashTree)) {
 			LogError(_T("Failed to hash file \"%s\" - %hs"), GetFilePath(), strerror(errno));
@@ -684,7 +654,7 @@ bool CKnownFile::CreateAICHHashSetOnly()
 	return true;	
 }
 
-void CKnownFile::SetFileSize(uint32 nFileSize)
+void CKnownFile::SetFileSize(EMFileSize nFileSize)
 {
 	CAbstractFile::SetFileSize(nFileSize);
 	m_pAICHHashSet->SetFileSize(nFileSize);
@@ -746,7 +716,7 @@ void CKnownFile::SetFileSize(uint32 nFileSize)
 	// PARTSIZE*2      2               3(!)            3(!)
 	// PARTSIZE*2+1    3               3               3
 
-	if (nFileSize == 0){
+	if (nFileSize == (uint64)0){
 		ASSERT(0);
 		m_iPartCount = 0;
 		m_iED2KPartCount = 0;
@@ -759,10 +729,10 @@ void CKnownFile::SetFileSize(uint32 nFileSize)
 	m_iPartCount = (uint16)(((uint64)nFileSize + (PARTSIZE - 1)) / PARTSIZE);
 
 	// nr. of parts to be used with OP_FILESTATUS
-	m_iED2KPartCount = nFileSize / PARTSIZE + 1;
+	m_iED2KPartCount = (uint16)((uint64)nFileSize / PARTSIZE + 1);
 
 	// nr. of parts to be used with OP_HASHSETANSWER
-	m_iED2KPartHashCount = nFileSize / PARTSIZE;
+	m_iED2KPartHashCount = (uint16)((uint64)nFileSize / PARTSIZE);
 	if (m_iED2KPartHashCount != 0)
 		m_iED2KPartHashCount += 1;
 }
@@ -878,12 +848,12 @@ bool CKnownFile::LoadTagsFromFile(CFileDataIO* file)
 				break;
 			}
 			case FT_FILESIZE:{
-				ASSERT( newtag->IsInt() );
-				if (newtag->IsInt())
+				ASSERT( newtag->IsInt64(true) );
+				if (newtag->IsInt64(true))
 				{
-					SetFileSize(newtag->GetInt());
+					SetFileSize(newtag->GetInt64());
 					m_AvailPartFrequency.SetSize(GetPartCount());
-					for (uint32 i = 0; i < GetPartCount();i++)
+					for (UINT i = 0; i < GetPartCount();i++)
 						m_AvailPartFrequency[i] = 0;
 				}
 				delete newtag;
@@ -929,7 +899,7 @@ bool CKnownFile::LoadTagsFromFile(CFileDataIO* file)
 				ASSERT( newtag->IsInt() );
 				if (newtag->IsInt())
 				{
-					m_iUpPriority = newtag->GetInt();
+					m_iUpPriority = (uint8)newtag->GetInt();
 					if( m_iUpPriority == PR_AUTO ){
 						m_iUpPriority = PR_HIGH;
 						m_bAutoUpPriority = true;
@@ -989,7 +959,7 @@ bool CKnownFile::LoadTagsFromFile(CFileDataIO* file)
 					break;
 				}
 				CAICHHash hash;
-				if (DecodeBase32(newtag->GetStr(),hash) == CAICHHash::GetHashSize())
+				if (DecodeBase32(newtag->GetStr(),hash) == (UINT)CAICHHash::GetHashSize())
 					m_pAICHHashSet->SetMasterHash(hash, AICH_HASHSETCOMPLETE);
 				else
 					ASSERT( false );
@@ -1036,7 +1006,7 @@ bool CKnownFile::WriteToFile(CFileDataIO* file)
 	// hashset
 	file->WriteHash16(m_abyFileHash);
 	UINT parts = hashlist.GetCount();
-	file->WriteUInt16(parts);
+	file->WriteUInt16((uint16)parts);
 	for (UINT i = 0; i < parts; i++)
 		file->WriteHash16(hashlist[i]);
 
@@ -1050,7 +1020,7 @@ bool CKnownFile::WriteToFile(CFileDataIO* file)
 	nametag.WriteTagToFile(file);
 	uTagCount++;
 	
-	CTag sizetag(FT_FILESIZE, m_nFileSize);
+	CTag sizetag(FT_FILESIZE, m_nFileSize, IsLargeFile());
 	sizetag.WriteTagToFile(file);
 	uTagCount++;
 	
@@ -1132,15 +1102,15 @@ bool CKnownFile::WriteToFile(CFileDataIO* file)
 	return true;
 }
 
-void CKnownFile::CreateHash(CFile* pFile, UINT Length, uchar* pMd4HashOut, CAICHHashTree* pShaHashOut, bool slowdown) const //Xman Nice Hash
+void CKnownFile::CreateHash(CFile* pFile, uint64 Length, uchar* pMd4HashOut, CAICHHashTree* pShaHashOut, bool slowdown) const //Xman Nice Hash
 {
 	ASSERT( pFile != NULL );
 	ASSERT( pMd4HashOut != NULL || pShaHashOut != NULL );
 
-	uint32  Required = Length;
+	uint64  Required = Length;
 	uchar   X[64*128];
-	uint32	posCurrentEMBlock = 0;
-	uint32	nIACHPos = 0;
+	uint64	posCurrentEMBlock = 0;
+	uint64	nIACHPos = 0;
 	CAICHHashAlgo* pHashAlg = m_pAICHHashSet->GetNewHashAlgo();
 	CMD4 md4;
 
@@ -1149,15 +1119,17 @@ void CKnownFile::CreateHash(CFile* pFile, UINT Length, uchar* pMd4HashOut, CAICH
 	//Xman end
 
 	while (Required >= 64){
-		uint32 len = Required / 64; 
-		if (len > sizeof(X)/(64 * sizeof(X[0]))) 
-			len = sizeof(X)/(64 * sizeof(X[0])); 
+		uint32 len; 
+		if ((Required / 64) > sizeof(X)/(64 * sizeof(X[0]))) 
+			len = sizeof(X)/(64 * sizeof(X[0]));
+		else
+			len = (uint32)Required / 64;
 		pFile->Read(&X, len*64);
 
 		// SHA hash needs 180KB blocks
 		if (pShaHashOut != NULL){
 			if (nIACHPos + len*64 >= EMBLOCKSIZE){
-				uint32 nToComplete = EMBLOCKSIZE - nIACHPos;
+				uint32 nToComplete = (uint32)(EMBLOCKSIZE - nIACHPos);
 				pHashAlg->Add(X, nToComplete);
 				ASSERT( nIACHPos + nToComplete == EMBLOCKSIZE );
 				pShaHashOut->SetBlockHash(EMBLOCKSIZE, posCurrentEMBlock, pHashAlg);
@@ -1187,21 +1159,21 @@ void CKnownFile::CreateHash(CFile* pFile, UINT Length, uchar* pMd4HashOut, CAICH
 
 	Required = Length % 64;
 	if (Required != 0){
-		pFile->Read(&X, Required);
+		pFile->Read(&X, (uint32)Required);
 
 		if (pShaHashOut != NULL){
 			if (nIACHPos + Required >= EMBLOCKSIZE){
-				uint32 nToComplete = EMBLOCKSIZE - nIACHPos;
+				uint32 nToComplete = (uint32)(EMBLOCKSIZE - nIACHPos);
 				pHashAlg->Add(X, nToComplete);
 				ASSERT( nIACHPos + nToComplete == EMBLOCKSIZE );
 				pShaHashOut->SetBlockHash(EMBLOCKSIZE, posCurrentEMBlock, pHashAlg);
 				posCurrentEMBlock += EMBLOCKSIZE;
 				pHashAlg->Reset();
-				pHashAlg->Add(X+nToComplete, Required - nToComplete);
+				pHashAlg->Add(X+nToComplete, (uint32)(Required - nToComplete));
 				nIACHPos = Required - nToComplete;
 			}
 			else{
-				pHashAlg->Add(X, Required);
+				pHashAlg->Add(X, (uint32)Required);
 				nIACHPos += Required;
 			}
 		}
@@ -1216,7 +1188,7 @@ void CKnownFile::CreateHash(CFile* pFile, UINT Length, uchar* pMd4HashOut, CAICH
 	}
 
 	if (pMd4HashOut != NULL){
-		md4.Add(X, Required);
+		md4.Add(X, (uint32)Required);
 		md4.Finish();
 		md4cpy(pMd4HashOut, md4.GetHash());
 	}
@@ -1224,7 +1196,7 @@ void CKnownFile::CreateHash(CFile* pFile, UINT Length, uchar* pMd4HashOut, CAICH
 	delete pHashAlg;
 }
 
-bool CKnownFile::CreateHash(FILE* fp, UINT uSize, uchar* pucHash, CAICHHashTree* pShaHashOut, bool slowdown) const //Xman Nice Hash
+bool CKnownFile::CreateHash(FILE* fp, uint64 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut, bool slowdown) const //Xman Nice Hash
 {
 	bool bResult = false;
 	CStdioFile file(fp);
@@ -1240,7 +1212,7 @@ bool CKnownFile::CreateHash(FILE* fp, UINT uSize, uchar* pucHash, CAICHHashTree*
 	return bResult;
 }
 
-bool CKnownFile::CreateHash(const uchar* pucData, UINT uSize, uchar* pucHash, CAICHHashTree* pShaHashOut, bool slowdown) const //Xman Nice Hash
+bool CKnownFile::CreateHash(const uchar* pucData, uint32 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut, bool slowdown) const //Xman Nice Hash
 {
 	bool bResult = false;
 	CMemFile file(const_cast<uchar*>(pucData), uSize);
@@ -1256,9 +1228,9 @@ bool CKnownFile::CreateHash(const uchar* pucData, UINT uSize, uchar* pucHash, CA
 	return bResult;
 }
 
-uchar* CKnownFile::GetPartHash(uint16 part) const
+uchar* CKnownFile::GetPartHash(UINT part) const
 {
-	if (part >= hashlist.GetCount())
+	if (part >= (UINT)hashlist.GetCount())
 		return NULL;
 	return hashlist[part];
 }
@@ -1304,15 +1276,12 @@ Packet*	CKnownFile::CreateSrcInfoPacket(const CUpDownClient* forClient) const
 		{
 			ASSERT( forClient->GetUpPartCount() == GetPartCount() );
 			const uint8* srcstatus = cur_src->GetUpPartStatus();
-			
-			if( srcstatus && (!forClient->SupportsWebCache() && !cur_src->SupportsWebCache())) // {Webcache} [Max] 
-// Superlexx - IFP - if both clients do support webcache, then they have IFP and might find empty sources useful; send that source even if they both are not behind same proxy to improve found webcache-enabled source number on those clients
-			
+			if (srcstatus)
 			{
 				ASSERT( cur_src->GetUpPartCount() == GetPartCount() );
 				if (cur_src->GetUpPartCount() == forClient->GetUpPartCount())
 				{
-					for (int x = 0; x < GetPartCount(); x++)
+					for (UINT x = 0; x < GetPartCount(); x++)
 					{
 						if (srcstatus[x] && !rcvstatus[x])
 						{
@@ -1347,7 +1316,7 @@ Packet*	CKnownFile::CreateSrcInfoPacket(const CUpDownClient* forClient) const
 			if (srcstatus)
 			{
 				ASSERT( cur_src->GetUpPartCount() == GetPartCount() );
-				for (int x = 0; x < GetPartCount(); x++ )
+				for (UINT x = 0; x < GetPartCount(); x++ )
 				{
 					if (srcstatus[x])
 					{
@@ -1412,7 +1381,7 @@ void CKnownFile::SetFileComment(LPCTSTR pszComment)
 	}
 }
 
-void CKnownFile::SetFileRating(uint8 uRating)
+void CKnownFile::SetFileRating(UINT uRating)
 {
 	if (m_uRating != uRating)
 	{
@@ -1582,7 +1551,7 @@ void CKnownFile::UpdateMetaDataTags()
 				// extra bytes which would have to be sent to the servers..
 
 				// bitrate
-				UINT uBitrate = mp3info->bitrate/1000;
+				UINT uBitrate = (mp3info->vbr_bitrate ? mp3info->vbr_bitrate : mp3info->bitrate) / 1000;
 				if (uBitrate){
 					CTag* pTag = new CTag(FT_MEDIA_BITRATE, (uint32)uBitrate);
 					AddTagUnique(pTag);
@@ -1597,42 +1566,42 @@ void CKnownFile::UpdateMetaDataTags()
 				ID3_FrameID eFrameID = frame->GetID();
 				switch (eFrameID)
 				{
-					case ID3FID_LEADARTIST:{
-						char* pszText = ID3_GetString(frame, ID3FN_TEXT);
-						CString strText(pszText);
-						strText.Trim();
-						if (!strText.IsEmpty()){
-							CTag* pTag = new CTag(FT_MEDIA_ARTIST, strText);
-							AddTagUnique(pTag);
-							m_uMetaDataVer = META_DATA_VER;
-						}
-						delete[] pszText;
-						break;
+				case ID3FID_LEADARTIST:{
+					char* pszText = ID3_GetString(frame, ID3FN_TEXT);
+					CString strText(pszText);
+					strText.Trim();
+					if (!strText.IsEmpty()){
+						CTag* pTag = new CTag(FT_MEDIA_ARTIST, strText);
+						AddTagUnique(pTag);
+						m_uMetaDataVer = META_DATA_VER;
 					}
-					case ID3FID_ALBUM:{
-						char* pszText = ID3_GetString(frame, ID3FN_TEXT);
-						CString strText(pszText);
-						strText.Trim();
-						if (!strText.IsEmpty()){
-							CTag* pTag = new CTag(FT_MEDIA_ALBUM, strText);
-							AddTagUnique(pTag);
-							m_uMetaDataVer = META_DATA_VER;
-						}
-						delete[] pszText;
-						break;
+					delete[] pszText;
+					break;
+									   }
+				case ID3FID_ALBUM:{
+					char* pszText = ID3_GetString(frame, ID3FN_TEXT);
+					CString strText(pszText);
+					strText.Trim();
+					if (!strText.IsEmpty()){
+						CTag* pTag = new CTag(FT_MEDIA_ALBUM, strText);
+						AddTagUnique(pTag);
+						m_uMetaDataVer = META_DATA_VER;
 					}
-					case ID3FID_TITLE:{
-						char* pszText = ID3_GetString(frame, ID3FN_TEXT);
-						CString strText(pszText);
-						strText.Trim();
-						if (!strText.IsEmpty()){
-							CTag* pTag = new CTag(FT_MEDIA_TITLE, strText);
-							AddTagUnique(pTag);
-							m_uMetaDataVer = META_DATA_VER;
-						}
-						delete[] pszText;
-						break;
+					delete[] pszText;
+					break;
+								  }
+				case ID3FID_TITLE:{
+					char* pszText = ID3_GetString(frame, ID3FN_TEXT);
+					CString strText(pszText);
+					strText.Trim();
+					if (!strText.IsEmpty()){
+						CTag* pTag = new CTag(FT_MEDIA_TITLE, strText);
+						AddTagUnique(pTag);
+						m_uMetaDataVer = META_DATA_VER;
 					}
+					delete[] pszText;
+					break;
+								  }
 				}
 			}
 			delete iter;
@@ -1643,160 +1612,233 @@ void CKnownFile::UpdateMetaDataTags()
 			ASSERT(0);
 		}
 	}
-	/*else if (thePrefs.GetExtractMetaData() > 1)
+	else
 	{
-		// starting the MediaDet object takes a noticeable amount of time.. avoid starting that object
-		// for files which are not expected to contain any Audio/Video data.
-		// note also: MediaDet does not work well for too short files (e.g. 16K)
-		EED2KFileType eFileType = GetED2KFileTypeID(GetFileName());
-		if ((eFileType == ED2KFT_AUDIO || eFileType == ED2KFT_VIDEO) && GetFileSize() >= 32768)
+		TCHAR szFullPath[MAX_PATH];
+		_tmakepath(szFullPath, NULL, GetPath(), GetFileName(), NULL);
+
+		bool bIsAVI = false;
+		SMediaInfo* mi = NULL;
+		try
 		{
-			// Avoid processing of some file types which are known to crash due to bugged DirectShow filters.
-			TCHAR szExt[_MAX_EXT];
-			_tsplitpath(GetFileName(), NULL, NULL, NULL, szExt);
-			_tcslwr(szExt);
-			if (_tcscmp(szExt, _T(".ogm"))!=0 && _tcscmp(szExt, _T(".ogg"))!=0 && _tcscmp(szExt, _T(".mkv"))!=0)
+			mi = new SMediaInfo;
+			if (GetRIFFHeaders(szFullPath, mi, bIsAVI))
 			{
-				TCHAR szFullPath[MAX_PATH];
-				_tmakepath(szFullPath, NULL, GetPath(), GetFileName(), NULL);
-				try{
-					CComPtr<IMediaDet> pMediaDet;
-					HRESULT hr = pMediaDet.CoCreateInstance(__uuidof(MediaDet));
-					if (SUCCEEDED(hr))
-					{
-						USES_CONVERSION;
-						if (SUCCEEDED(hr = pMediaDet->put_Filename(CComBSTR(T2W(szFullPath)))))
+				UINT uLengthSec = 0;
+				CStringA strCodec;
+				uint32 uBitrate = 0;
+				if (mi->iVideoStreams)
+				{
+					uLengthSec = (UINT)mi->fVideoLengthSec;
+					if (mi->video.bmiHeader.biCompression == BI_RGB)
+						strCodec = "rgb";
+					else if (mi->video.bmiHeader.biCompression == BI_RLE8)
+						strCodec = "rle8";
+					else if (mi->video.bmiHeader.biCompression == BI_RLE4)
+						strCodec = "rle4";
+					else if (mi->video.bmiHeader.biCompression == BI_BITFIELDS)
+						strCodec = "bitfields";
+					else{
+						memcpy(strCodec.GetBuffer(4), &mi->video.bmiHeader.biCompression, 4);
+						strCodec.ReleaseBuffer(4);
+						strCodec.MakeLower();
+					}
+					uBitrate = (mi->video.dwBitRate + 500) / 1000;
+				}
+				else if (mi->iAudioStreams)
+				{
+					uLengthSec = (UINT)mi->fAudioLengthSec;
+					uBitrate = (DWORD)(((mi->audio.nAvgBytesPerSec * 8.0) + 500.0) / 1000.0);
+					if (mi->audio.wFormatTag == 0x0055)
+						strCodec = "mp3";
+					else if (mi->audio.wFormatTag == 0x2000)
+						strCodec = "ac3";
+				}
+
+				if (uLengthSec) {
+					CTag* pTag = new CTag(FT_MEDIA_LENGTH, (uint32)uLengthSec);
+					AddTagUnique(pTag);
+					m_uMetaDataVer = META_DATA_VER;
+				}
+
+				if (!strCodec.IsEmpty()) {
+					CTag* pTag = new CTag(FT_MEDIA_CODEC, CString(strCodec));
+					AddTagUnique(pTag);
+					m_uMetaDataVer = META_DATA_VER;
+				}
+
+				if (uBitrate) {
+					CTag* pTag = new CTag(FT_MEDIA_BITRATE, (uint32)uBitrate);
+					AddTagUnique(pTag);
+					m_uMetaDataVer = META_DATA_VER;
+				}
+
+				delete mi;
+				return;
+			}
+		}
+		catch(...){
+			if (thePrefs.GetVerbose())
+				AddDebugLogLine(false, _T("Unhandled exception while extracting file meta (AVI) data from \"%s\""), szFullPath);
+			ASSERT(0);
+		}
+		delete mi;
+
+		if (thePrefs.GetExtractMetaData() >= 2)
+		{
+			// starting the MediaDet object takes a noticeable amount of time.. avoid starting that object
+			// for files which are not expected to contain any Audio/Video data.
+			// note also: MediaDet does not work well for too short files (e.g. 16K)
+			EED2KFileType eFileType = GetED2KFileTypeID(GetFileName());
+			if ((eFileType == ED2KFT_AUDIO || eFileType == ED2KFT_VIDEO) && GetFileSize() >= (uint64)32768)
+			{
+				// Avoid processing of some file types which are known to crash due to bugged DirectShow filters.
+				TCHAR szExt[_MAX_EXT];
+				_tsplitpath(GetFileName(), NULL, NULL, NULL, szExt);
+				_tcslwr(szExt);
+				if (_tcscmp(szExt, _T(".ogm"))!=0 && _tcscmp(szExt, _T(".ogg"))!=0 && _tcscmp(szExt, _T(".mkv"))!=0)
+				{
+					TCHAR szFullPath[MAX_PATH];
+					_tmakepath(szFullPath, NULL, GetPath(), GetFileName(), NULL);
+					try{
+						CComPtr<IMediaDet> pMediaDet;
+						HRESULT hr = pMediaDet.CoCreateInstance(__uuidof(MediaDet));
+						if (SUCCEEDED(hr))
 						{
-							// Get the first audio/video streams
-							long lAudioStream = -1;
-							long lVideoStream = -1;
-							double fVideoStreamLengthSec = 0.0;
-							DWORD dwVideoBitRate = 0;
-							DWORD dwVideoCodec = 0;
-							double fAudioStreamLengthSec = 0.0;
-							DWORD dwAudioBitRate = 0;
-							//DWORD dwAudioCodec = 0;
-							long lStreams;
-							if (SUCCEEDED(hr = pMediaDet->get_OutputStreams(&lStreams)))
+							USES_CONVERSION;
+							if (SUCCEEDED(hr = pMediaDet->put_Filename(CComBSTR(T2W(szFullPath)))))
 							{
-								for (long i = 0; i < lStreams; i++)
+								// Get the first audio/video streams
+								long lAudioStream = -1;
+								long lVideoStream = -1;
+								double fVideoStreamLengthSec = 0.0;
+								DWORD dwVideoBitRate = 0;
+								DWORD dwVideoCodec = 0;
+								double fAudioStreamLengthSec = 0.0;
+								DWORD dwAudioBitRate = 0;
+								//DWORD dwAudioCodec = 0;
+								long lStreams;
+								if (SUCCEEDED(hr = pMediaDet->get_OutputStreams(&lStreams)))
 								{
-									if (SUCCEEDED(hr = pMediaDet->put_CurrentStream(i)))
+									for (long i = 0; i < lStreams; i++)
 									{
-										GUID major_type;
-										if (SUCCEEDED(hr = pMediaDet->get_StreamType(&major_type)))
+										if (SUCCEEDED(hr = pMediaDet->put_CurrentStream(i)))
 										{
-											if (major_type == MEDIATYPE_Video)
+											GUID major_type;
+											if (SUCCEEDED(hr = pMediaDet->get_StreamType(&major_type)))
 											{
-												if (lVideoStream == -1){
-													lVideoStream = i;
-													pMediaDet->get_StreamLength(&fVideoStreamLengthSec);
+												if (major_type == MEDIATYPE_Video)
+												{
+													if (lVideoStream == -1){
+														lVideoStream = i;
+														pMediaDet->get_StreamLength(&fVideoStreamLengthSec);
 
-													AM_MEDIA_TYPE mt = {0};
-													if (SUCCEEDED(hr = pMediaDet->get_StreamMediaType(&mt))){
-														if (mt.formattype == FORMAT_VideoInfo){
-															VIDEOINFOHEADER* pVIH = (VIDEOINFOHEADER*)mt.pbFormat;
-															// do not use that 'dwBitRate', whatever this number is, it's not
-															// the bitrate of the encoded video stream. seems to be the bitrate
-															// of the uncompressed stream divided by 2 !??
-															//dwVideoBitRate = pVIH->dwBitRate / 1000;
+														AM_MEDIA_TYPE mt = {0};
+														if (SUCCEEDED(hr = pMediaDet->get_StreamMediaType(&mt))){
+															if (mt.formattype == FORMAT_VideoInfo){
+																VIDEOINFOHEADER* pVIH = (VIDEOINFOHEADER*)mt.pbFormat;
+																// do not use that 'dwBitRate', whatever this number is, it's not
+																// the bitrate of the encoded video stream. seems to be the bitrate
+																// of the uncompressed stream divided by 2 !??
+																//dwVideoBitRate = pVIH->dwBitRate / 1000;
 
-															// for AVI files this gives that used codec
-															// for MPEG(1) files this just gives "Y41P"
-															dwVideoCodec = pVIH->bmiHeader.biCompression;
+																// for AVI files this gives that used codec
+																// for MPEG(1) files this just gives "Y41P"
+																dwVideoCodec = pVIH->bmiHeader.biCompression;
+															}
 														}
+
+														if (mt.pUnk != NULL)
+															mt.pUnk->Release();
+														if (mt.pbFormat != NULL)
+															CoTaskMemFree(mt.pbFormat);
 													}
-
-													if (mt.pUnk != NULL)
-														mt.pUnk->Release();
-													if (mt.pbFormat != NULL)
-														CoTaskMemFree(mt.pbFormat);
 												}
-											}
-											else if (major_type == MEDIATYPE_Audio)
-											{
-												if (lAudioStream == -1){
-													lAudioStream = i;
-													pMediaDet->get_StreamLength(&fAudioStreamLengthSec);
+												else if (major_type == MEDIATYPE_Audio)
+												{
+													if (lAudioStream == -1){
+														lAudioStream = i;
+														pMediaDet->get_StreamLength(&fAudioStreamLengthSec);
 
-													AM_MEDIA_TYPE mt = {0};
-													if (SUCCEEDED(hr = pMediaDet->get_StreamMediaType(&mt))){
-														if (mt.formattype == FORMAT_WaveFormatEx){
-															WAVEFORMATEX* wfx = (WAVEFORMATEX*)mt.pbFormat;
-															dwAudioBitRate = (DWORD)(((wfx->nAvgBytesPerSec * 8.0) + 500.0) / 1000.0);
+														AM_MEDIA_TYPE mt = {0};
+														if (SUCCEEDED(hr = pMediaDet->get_StreamMediaType(&mt))){
+															if (mt.formattype == FORMAT_WaveFormatEx){
+																WAVEFORMATEX* wfx = (WAVEFORMATEX*)mt.pbFormat;
+																dwAudioBitRate = (DWORD)(((wfx->nAvgBytesPerSec * 8.0) + 500.0) / 1000.0);
+															}
 														}
+
+														if (mt.pUnk != NULL)
+															mt.pUnk->Release();
+														if (mt.pbFormat != NULL)
+															CoTaskMemFree(mt.pbFormat);
 													}
-
-													if (mt.pUnk != NULL)
-														mt.pUnk->Release();
-													if (mt.pbFormat != NULL)
-														CoTaskMemFree(mt.pbFormat);
 												}
-											}
-											else{
-												TRACE("%s - Unknown stream type\n", GetFileName());
-											}
+												else{
+													TRACE("%s - Unknown stream type\n", GetFileName());
+												}
 
-											if (lVideoStream != -1 && lAudioStream != -1)
-												break;
+												if (lVideoStream != -1 && lAudioStream != -1)
+													break;
+											}
 										}
 									}
 								}
-							}
 
-							UINT uLengthSec = 0;
-							CStringA strCodec;
-							uint32 uBitrate = 0;
-							if (fVideoStreamLengthSec > 0.0){
-								uLengthSec = (UINT)fVideoStreamLengthSec;
-								if (dwVideoCodec == BI_RGB)
-									strCodec = "rgb";
-								else if (dwVideoCodec == BI_RLE8)
-									strCodec = "rle8";
-								else if (dwVideoCodec == BI_RLE4)
-									strCodec = "rle4";
-								else if (dwVideoCodec == BI_BITFIELDS)
-									strCodec = "bitfields";
-								else{
-									memcpy(strCodec.GetBuffer(4), &dwVideoCodec, 4);
-									strCodec.ReleaseBuffer(4);
-									strCodec.MakeLower();
+								UINT uLengthSec = 0;
+								CStringA strCodec;
+								uint32 uBitrate = 0;
+								if (fVideoStreamLengthSec > 0.0){
+									uLengthSec = (UINT)fVideoStreamLengthSec;
+									if (dwVideoCodec == BI_RGB)
+										strCodec = "rgb";
+									else if (dwVideoCodec == BI_RLE8)
+										strCodec = "rle8";
+									else if (dwVideoCodec == BI_RLE4)
+										strCodec = "rle4";
+									else if (dwVideoCodec == BI_BITFIELDS)
+										strCodec = "bitfields";
+									else{
+										memcpy(strCodec.GetBuffer(4), &dwVideoCodec, 4);
+										strCodec.ReleaseBuffer(4);
+										strCodec.MakeLower();
+									}
+									uBitrate = dwVideoBitRate;
 								}
-								uBitrate = dwVideoBitRate;
-							}
-							else if (fAudioStreamLengthSec > 0.0){
-								uLengthSec = (UINT)fAudioStreamLengthSec;
-								uBitrate = dwAudioBitRate;
-							}
+								else if (fAudioStreamLengthSec > 0.0){
+									uLengthSec = (UINT)fAudioStreamLengthSec;
+									uBitrate = dwAudioBitRate;
+								}
 
-							if (uLengthSec){
-								CTag* pTag = new CTag(FT_MEDIA_LENGTH, (uint32)uLengthSec);
-								AddTagUnique(pTag);
-								m_uMetaDataVer = META_DATA_VER;
-							}
+								if (uLengthSec){
+									CTag* pTag = new CTag(FT_MEDIA_LENGTH, (uint32)uLengthSec);
+									AddTagUnique(pTag);
+									m_uMetaDataVer = META_DATA_VER;
+								}
 
-							if (!strCodec.IsEmpty()){
-								CTag* pTag = new CTag(FT_MEDIA_CODEC, CString(strCodec));
-								AddTagUnique(pTag);
-								m_uMetaDataVer = META_DATA_VER;
-							}
+								if (!strCodec.IsEmpty()){
+									CTag* pTag = new CTag(FT_MEDIA_CODEC, CString(strCodec));
+									AddTagUnique(pTag);
+									m_uMetaDataVer = META_DATA_VER;
+								}
 
-							if (uBitrate){
-								CTag* pTag = new CTag(FT_MEDIA_BITRATE, (uint32)uBitrate);
-								AddTagUnique(pTag);
-								m_uMetaDataVer = META_DATA_VER;
+								if (uBitrate){
+									CTag* pTag = new CTag(FT_MEDIA_BITRATE, (uint32)uBitrate);
+									AddTagUnique(pTag);
+									m_uMetaDataVer = META_DATA_VER;
+								}
 							}
 						}
 					}
-				}
-				catch(...){
-					if (thePrefs.GetVerbose())
-						AddDebugLogLine(false, _T("Unhandled exception while extracting meta data (MediaDet) from \"%s\""), szFullPath);
-					ASSERT(0);
+					catch(...){
+						if (thePrefs.GetVerbose())
+							AddDebugLogLine(false, _T("Unhandled exception while extracting meta data (MediaDet) from \"%s\""), szFullPath);
+						ASSERT(0);
+					}
 				}
 			}
 		}
-	}*/
+	}
 }
 
 void CKnownFile::SetPublishedED2K(bool val){
@@ -1806,6 +1848,7 @@ void CKnownFile::SetPublishedED2K(bool val){
 
 bool CKnownFile::PublishNotes()
 {
+
 	if(m_lastPublishTimeKadNotes > (uint32)time(NULL))
 	{
 		return false;
@@ -1826,6 +1869,7 @@ bool CKnownFile::PublishNotes()
 
 bool CKnownFile::PublishSrc()
 {
+
 	uint32 lastBuddyIP = 0;
 
 	if( theApp.IsFirewalled() )
@@ -1888,10 +1932,8 @@ void CKnownFile::GrabbingFinished(CxImage** imgResults, uint8 nFramesGrabbed, vo
 			AddDebugLogLine(false, _T("Couldn't find Sender of FrameGrabbing Request"));
 	}
 	//cleanup
-	for (int i = 0; i != nFramesGrabbed; i++){
-		if (imgResults[i] != NULL)
-			delete imgResults[i];
-	}
+	for (int i = 0; i != nFramesGrabbed; i++)
+		delete imgResults[i];
 	delete[] imgResults;
 }
 
@@ -1903,20 +1945,20 @@ uint32 *CKnownFile::CalcPartSpread(){
 	uint32 *ret = new uint32[parts];
 	uint32 min;
 	uint32 max = 0;
-	uint32 last = 0;
+	uint64 last = 0;
 
 	for (POSITION pos = statistic.spreadlist.GetHeadPosition(); pos != 0; statistic.spreadlist.GetNext(pos)){
 		Spread_Struct* cur_spread = statistic.spreadlist.GetAt(pos);
 		if (max < cur_spread->count)
 			max = cur_spread->count;
 	}
-	for (uint32 i = 0; i < parts; i++)
+	for (uint16 i = 0; i < parts; i++)
 		ret[i] = max;
 	min = max;
 	for (POSITION pos = statistic.spreadlist.GetHeadPosition(); pos != 0; statistic.spreadlist.GetNext(pos)){
 		Spread_Struct* cur_spread = statistic.spreadlist.GetAt(pos);
-		uint32 start = cur_spread->start/PARTSIZE;
-		uint32 end = (cur_spread->end-1)/PARTSIZE+1;
+		uint32 start = (uint32)(cur_spread->start/PARTSIZE);
+		uint32 end = (uint32)((cur_spread->end-1)/PARTSIZE+1);
 		if (end > parts)
 			end = parts;
 		if (start >= end)
@@ -1931,7 +1973,7 @@ uint32 *CKnownFile::CalcPartSpread(){
 	}
 	if (last < GetFileSize()) {
 		min = 0;
-		uint32 start = last/PARTSIZE;
+		uint32 start = (uint32)(last/PARTSIZE);
 		uint32 end = parts;
 		for (uint32 i = start; i < end; i++)
 			ret[i] = 0;
@@ -1940,19 +1982,19 @@ uint32 *CKnownFile::CalcPartSpread(){
 		parts--;
 	if (IsPartFile()) {		// Special case, ignore unshareables for min calculation
 		min = max;
-		for (uint32 i = 0; i < parts; i++){
+		for (uint16 i = 0; i < parts; i++){
 			//if (((CPartFile*)this)->IsPartShareable(i))	// SLUGFILLER: SafeHash
 			if (min > ret[i])
 				min = ret[i];
 		}
 	}
-	for (uint32 i = 0; i < parts; i++)
+	for (uint16 i = 0; i < parts; i++)
 		if (ret[i] > min)
 			ret[i] -= min;
 		else
 			ret[i] = 0;
 	return ret;
-};
+}
 
 bool CKnownFile::HideOvershares(CSafeMemFile* file, CUpDownClient* client){
 	uint16 parts = GetED2KPartCount();
@@ -1990,7 +2032,7 @@ bool CKnownFile::HideOvershares(CSafeMemFile* file, CUpDownClient* client){
 		bool allhidden=true;
 		for(uint16 i=0;i<parts;i++)
 		{
-			if (client->IsUpPartAvailable(i)==false && partspread[i]<hideos)
+			if (client->IsUpPartAvailable((UINT)i)==false && partspread[i]<hideos)
 			{
 				allhidden=false;
 				break;
@@ -2066,53 +2108,6 @@ uint32 CKnownFile::GetFileScore(uint32 downloadingTime)
 	return 0;
 }
 // Maella end
-
-
-// ==> {Webcache} [Max] 
-//JP webcache release START
-uint32 CKnownFile::GetNumberOfClientsRequestingThisFileUsingThisWebcache(CString webcachename, uint32 maxCount)
-{
-	if (maxCount == 0)
-		maxCount = 0xFFFFFFFF; //be careful with using 0 (unlimited) when calling this function cause it is O(n^2) and gets called for every webcache enabled client
-	uint32 returncounter = 0;
-	CList<uint32,uint32&> IP_List; //JP only count unique IPs
-	POSITION pos = m_ClientUploadList.GetHeadPosition();
-	while (pos != NULL)
-	{
-	CUpDownClient* cur_client = m_ClientUploadList.GetNext(pos);
-	if (cur_client->GetWebCacheName() == webcachename && !cur_client->HasLowID() && cur_client->GetUploadState() != US_BANNED) //MORPH - Changed by SiRoB, Code Optimization
-	{
-		//search for IP in IP_List
-		bool found = false;
-		POSITION pos2 = IP_List.GetHeadPosition();
-			uint32 cur_IP;
-		while (pos2 != NULL)
-		{
-			cur_IP = IP_List.GetNext(pos2);
-			if (cur_IP == cur_client->GetIP())
-			{
-				found = true;
-			}
-			//leave while look if IP was found
-			if (found) break;
-		}
-
-		//if not found add IP to list
-		if (!found)
-		{
-			uint32 user_IP = cur_client->GetIP();
-			IP_List.AddTail(user_IP);
-				returncounter++;
-		}
-	}
-	//Don't let this list get longer than 10 so we don't waste CPU-cycles
-	if (returncounter >= maxCount) break; 
-}
-IP_List.RemoveAll();
-return returncounter;
-}
-//JP webcache release END
-// <== {Webcache} [Max] 
 
 // ==> push rare file - Stulle
 float CKnownFile::GetFileRatio()

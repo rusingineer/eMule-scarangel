@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -45,10 +45,7 @@ public:
     SocketSentBytes  SendControlData(uint32 maxNumberOfBytesToSend, uint32 minFragSize); // ZZ:UploadBandWithThrottler (UDP)
 
 protected:
-	bool	ProcessPacket(const BYTE* packet, uint16 size, uint8 opcode, uint32 ip, uint16 port);
-	
-	
-	bool	ProcessWebCachePacket(const BYTE* packet, uint16 size, uint8 opcode, uint32 ip, uint16 port); // {Webcache} [Max]  
+	bool	ProcessPacket(const BYTE* packet, UINT size, uint8 opcode, uint32 ip, uint16 port);
 	
 	virtual void	OnSend(int nErrorCode);	
 	virtual void	OnReceive(int nErrorCode);

@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -35,6 +35,7 @@
 #include "emuledlg.h"
 #include "SearchDlg.h"
 #include "SearchListCtrl.h"
+#include "Log.h"
 
 
 #ifdef _DEBUG
@@ -149,6 +150,10 @@ UINT CSearchList::ProcessSearchAnswer(const uchar* in_packet, uint32 size,
 	UINT results = packet.ReadUInt32();
 	for (UINT i = 0; i < results; i++){
 		CSearchFile* toadd = new CSearchFile(&packet, Sender ? Sender->GetUnicodeSupport()!=utf8strNone : false, nSearchID, 0, 0, pszDirectory);
+		if (toadd->IsLargeFile() && (Sender == NULL || !Sender->SupportsLargeFiles())){
+			DebugLogWarning(_T("Client offers large file (%s) but doesn't announced support for it - ignoring file"), toadd->GetFileName());
+			continue;
+		}
 		if (Sender){
 			toadd->SetClientID(Sender->GetIP());
 			toadd->SetClientPort(Sender->GetUserPort());
@@ -262,7 +267,7 @@ void CSearchList::GetWebList(CQArray<SearchFileStruct, SearchFileStruct> *Search
 	for (POSITION pos = list.GetHeadPosition(); pos != NULL; )
 	{
 		const CSearchFile* pFile = list.GetNext(pos);
-		if (pFile == NULL || pFile->GetListParent() != NULL || pFile->GetFileSize() == 0 || pFile->GetFileName().IsEmpty())
+		if (pFile == NULL || pFile->GetListParent() != NULL || pFile->GetFileSize() == (uint64)0 || pFile->GetFileName().IsEmpty())
 			continue;
 
 		SearchFileStruct structFile;
@@ -297,7 +302,7 @@ void CSearchList::GetWebList(CQArray<SearchFileStruct, SearchFileStruct> *Search
 	}
 }
 
-void CSearchList::AddFileToDownloadByHash(const uchar* hash, uint8 cat)
+void CSearchList::AddFileToDownloadByHash(const uchar* hash, int cat)
 {
 	for (POSITION pos = list.GetHeadPosition(); pos != NULL; )
 	{
@@ -607,9 +612,9 @@ void CSearchList::AddResultCount(uint32 nSearchID, const uchar* hash, UINT nCoun
 	VERIFY( m_foundSourcesCount.Lookup(nSearchID, tempValue) );
 	m_foundSourcesCount.SetAt(nSearchID, tempValue + nCount);
 }
-
+// FIXME LARGE FILES
 void CSearchList::KademliaSearchKeyword(uint32 searchID, const Kademlia::CUInt128* fileID, 
-										LPCTSTR name, uint32 size, LPCTSTR type, UINT numProperties, ...)
+										LPCTSTR name, uint64 size, LPCTSTR type, UINT numProperties, ...)
 {
 	va_list args;
 	va_start(args, numProperties);
@@ -617,7 +622,7 @@ void CSearchList::KademliaSearchKeyword(uint32 searchID, const Kademlia::CUInt12
 	EUtf8Str eStrEncode = utf8strRaw;
 	CSafeMemFile* temp = new CSafeMemFile(250);
 	uchar fileid[16];
-	fileID->toByteArray(fileid);
+	fileID->ToByteArray(fileid);
 	temp->WriteHash16(fileid);
 	
 	temp->WriteUInt32(0);	// client IP
@@ -633,7 +638,7 @@ void CSearchList::KademliaSearchKeyword(uint32 searchID, const Kademlia::CUInt12
 	tagName.WriteTagToFile(temp, eStrEncode);
 	tagcount++;
 
-	CTag tagSize(FT_FILESIZE, size);
+	CTag tagSize(FT_FILESIZE, size, true); 
 	tagSize.WriteTagToFile(temp, eStrEncode);
 	tagcount++;
 

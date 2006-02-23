@@ -1917,6 +1917,39 @@ BEGIN
     IDS_USS_STATE_PREPARING "Förbereder..."
     IDS_USS_STATE_WAITING   "Väntar..."
     IDS_USS_STATE_ERROR     "Fel!"
+    IDS_SHAREWARNING        "(Katalogen kommer delas ut!)"
+    IDS_REMOVEALLSERVERS    "Är du säker på att du vill radera alla servrar?"
+    IDS_SEARCH_UNKATTR      "Okänt sökattribut '%s'"
+    IDS_SEARCH_ATTRERR      "Syntaxfel i '%s' sökattribut"
+    IDS_SEARCH_MISSINGANDRIGHT "Saknar högersidan på AND operator"
+    IDS_SEARCH_OPRERR       "Syntaxfel i jämförelse operator '%s'"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DOWNLOAD_LANGFILE   "Laddar hem språkfil"
+    IDS_DOWNLOADING_SERVERMET_FROM "Laddar hem server.met från %s"
+    IDS_DOWNLOADING_SERVERMET "Laddar hem server.met..."
+    IDS_FULLALLOC           "Allokera hela filstorleken för icke-sparse-delfiler"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH "Hash hittades inte."
+    IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "Gap-listan är korrupt."
+    IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST "Gap-listan hittades inte."
+    IDS_X_SHAREAZA_IMPORT_HASH_SET_CORRUPT "Hash:en är korrupt."
+    IDS_X_SHAREAZA_IMPORT_NO_HASH_SET "Hash:en hittades inte."
+    IDS_CONVERTINGKNOWN2MET "Konverterar %s till %s för att klara av stora filer..."
+    IDS_CONVERTINGKNOWN2FAILED 
+                            "...misslyckades att konvertera known2.met, ignorerar gamla noteringar ignoring old records"
+    IDS_CONVERTINGKNOWN2DONE "... lyckades, slutförde konverteringen"
+    IDS_ERR_MET_BAD         "Fel: filen %s är korrupt, kan inte ladda in kända filer"
+    IDS_SRV_LARGEFILES      "Stöd för stora filer"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_ERR_FSCANTHANDLEFILE 
+                            "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
+    IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
 END
 
 #endif    // Swedish resources

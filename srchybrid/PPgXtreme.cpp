@@ -13,6 +13,7 @@
 #include "UploadQueue.h"
 #include "BandWidthControl.h"
 
+
 // CPPgXtreme dialog
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -124,6 +125,8 @@ void CPPgXtreme::LoadSettings(void)
 		}
 		//Xman end
 
+
+
 		CheckDlgButton(IDC_OPENMORESLOTS, thePrefs.m_openmoreslots);
 
 		buffer.Format(_T("%u"), thePrefs.GetMTU());
@@ -155,6 +158,7 @@ BOOL CPPgXtreme::OnApply()
 		thePrefs.SetSendbuffersize(12000);
 	theApp.uploadqueue->ChangeSendBufferSize(thePrefs.GetSendbuffersize());
 
+
 	//Xman 1:3 Ratio
 	thePrefs.Set13Ratio(IsDlgButtonChecked(IDC_13RATIO)!=0);
 	//Xman end
@@ -169,12 +173,12 @@ BOOL CPPgXtreme::OnApply()
 	thePrefs.SetNAFCFullControl(IsDlgButtonChecked(IDC_NAFCFULLCONTROL)!=0);
 	theApp.pBandWidthControl->SetWasNAFCLastActive(thePrefs.GetNAFCFullControl()); //Xman x4.1
 
-	thePrefs.SetDatarateSamples(((CSliderCtrl*)GetDlgItem(IDC_SAMPLERATESLIDER))->GetPos());
+	thePrefs.SetDatarateSamples((uint8)((CSliderCtrl*)GetDlgItem(IDC_SAMPLERATESLIDER))->GetPos());
 
 	{
 		CString buffer;
 		GetDlgItem(IDC_MTU_EDIT)->GetWindowText(buffer);
-		int MTU = _tstoi(buffer);
+		uint16 MTU = (uint16)_tstoi(buffer);
 		if(MTU > 1500) MTU = 1500;
 		if(MTU < 500) MTU = 500;
 		thePrefs.SetMTU(MTU);
@@ -226,6 +230,7 @@ void CPPgXtreme::OnBnClickedNafcfullcontrol()
 {
 	OnSettingsChange();
 }
+
 void CPPgXtreme::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) 
 {
 	SetModified(TRUE);

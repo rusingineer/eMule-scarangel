@@ -1,11 +1,16 @@
 #include "stdafx.h"
 #include "MD4.h"
 #include "SHA.h"
+#pragma warning(disable:4244) // conversion from 'type1' to 'type2', possible loss of data
+#pragma warning(disable:4100) // unreferenced formal parameter
 //Xman
-#pragma warning(disable:4516) // access-declarations are deprecated; member using-declarations provide a better alternative
+#pragma warning(disable:4516)
 #include <crypto.v52.1/sha.h>
 #include <crypto.v52.1/md4.h>
 #pragma warning(default:4516)
+//Xman end
+#pragma warning(default:4100) // unreferenced formal parameter
+#pragma warning(default:4244) // conversion from 'type1' to 'type2', possible loss of data
 
 bool CheckHashingImplementations()
 {

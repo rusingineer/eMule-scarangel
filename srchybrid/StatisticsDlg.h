@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -107,8 +107,6 @@ private:
 	HTREEITEM h_total_size_left_on_drive;
 	HTREEITEM h_total_size_needed;
 
-	HTREEITEM   h_webcache,wc_data[3]; // {Webcache} [Max] 
-
 	void SetupLegend( int ResIdx, int ElmtIdx, int legendNr);
 	void SetStatsRanges(int min, int max);
 
@@ -124,6 +122,8 @@ private:
 	HTREEITEM h_debug,h_blocks,debug1,debug2,debug3,debug4,debug5;
 	CMap<const unsigned char *,const unsigned char *,HTREEITEM *,HTREEITEM *> blockFiles;
 #endif
+	HTREEITEM h_allocs;
+	HTREEITEM h_allocSizes[32];
 
 protected:
 	void SetAllIcons();

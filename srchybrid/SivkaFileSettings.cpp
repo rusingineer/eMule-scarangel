@@ -147,7 +147,7 @@ void CSivkaFileSettings::OnBnClickedTakeOver()
 	if(GetDlgItem(IDC_HARDLIMIT)->GetWindowTextLength() && thePrefs.m_MaxSourcesPerFileTakeOver)
 	{
 		GetDlgItem(IDC_HARDLIMIT)->GetWindowText(buffer,20);
-			app_prefs->m_MaxSourcesPerFileTemp = _tstoi(buffer);
+			app_prefs->m_MaxSourcesPerFileTemp = (uint16)_tstoi(buffer);
 	}
 	// ==> Global Source Limit (customize for files) - Stulle
 	app_prefs->m_bGlobalHlTakeOver = (IsDlgButtonChecked(IDC_GLOBAL_HL_TAKEOVER))!=0;
@@ -170,7 +170,7 @@ void CSivkaFileSettings::OnBnClickedTakeOver()
 	{
 		GetDlgItem(IDC_MAXREMOVENNSLIMIT)->GetWindowText(buffer,20);
 		if (_tstoi(buffer) >= 50 && _tstoi(buffer) <= 100)
-			app_prefs->m_MaxRemoveNNSLimitTemp = _tstoi(buffer);
+			app_prefs->m_MaxRemoveNNSLimitTemp = (uint16)_tstoi(buffer);
 	}
 
 	app_prefs->m_EnableAutoDropFQSTakeOver = (IsDlgButtonChecked(IDC_REMOVEFQSLIMITLABEL_TAKEOVER))!=0;
@@ -188,7 +188,7 @@ void CSivkaFileSettings::OnBnClickedTakeOver()
 	{
 		GetDlgItem(IDC_MAXREMOVEFQSLIMIT)->GetWindowText(buffer,20);
 		if (_tstoi(buffer) >= 50 && _tstoi(buffer) <= 100)
-			app_prefs->m_MaxRemoveFQSLimitTemp = _tstoi(buffer);
+			app_prefs->m_MaxRemoveFQSLimitTemp = (uint16)_tstoi(buffer);
 	}
 
 	app_prefs->m_EnableAutoDropQRSTakeOver = (IsDlgButtonChecked(IDC_REMOVEQRSLIMITLABEL_TAKEOVER))!=0;
@@ -206,14 +206,14 @@ void CSivkaFileSettings::OnBnClickedTakeOver()
 	{
 		GetDlgItem(IDC_REMOVEQRS)->GetWindowText(buffer,20);
 		if (_tstoi(buffer) >= 1000 && _tstoi(buffer) <= 10000)
-			app_prefs->m_MaxRemoveQRSTemp = _tstoi(buffer);
+			app_prefs->m_MaxRemoveQRSTemp = (uint16)_tstoi(buffer);
 	}
 	app_prefs->m_MaxRemoveQRSLimitTakeOver = (IsDlgButtonChecked(IDC_MAXREMOVEQRSLIMIT_TAKEOVER))!=0;
 	if(GetDlgItem(IDC_MAXREMOVEQRSLIMIT)->GetWindowTextLength() && app_prefs->m_MaxRemoveQRSLimitTakeOver && app_prefs->m_EnableAutoDropQRSTemp)
 	{
 		GetDlgItem(IDC_MAXREMOVEQRSLIMIT)->GetWindowText(buffer,20);
 		if (_tstoi(buffer) >= 50 && _tstoi(buffer) <= 100)
-			app_prefs->m_MaxRemoveQRSLimitTemp = _tstoi(buffer);
+			app_prefs->m_MaxRemoveQRSLimitTemp = (uint16)_tstoi(buffer);
 	}
 	app_prefs->m_bHQRXmanTakeOver = (IsDlgButtonChecked(IDC_HQR_XMAN_TAKEOVER))!=0;
 	if(app_prefs->m_bHQRXmanTakeOver)

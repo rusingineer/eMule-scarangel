@@ -42,7 +42,6 @@
 //Xman
 #include "BandWidthControl.h" // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -68,8 +67,7 @@ CMMServer::CMMServer(void)
 CMMServer::~CMMServer(void)
 {
 	DeleteSearchFiles();
-	if (m_pSocket)
-		delete m_pSocket;
+	delete m_pSocket;
 	if (h_timer != NULL){
 		KillTimer(0,h_timer);
 	}
@@ -89,16 +87,14 @@ void CMMServer::Init(){
 }
 
 void CMMServer::StopServer(){
-	if (m_pSocket){
-		delete m_pSocket;
-		m_pSocket = NULL;
-	}
+	delete m_pSocket;
+	m_pSocket = NULL;
 }
 
 void CMMServer::DeleteSearchFiles(){
 	for (int i = 0; i!= m_SendSearchList.GetSize(); i++){
 		delete m_SendSearchList[i];
-	};
+	}
 	m_SendSearchList.SetSize(0);
 }
 
@@ -158,11 +154,11 @@ void CMMServer::ProcessHelloPacket(CMMData* data, CMMSocket* sender){
 			// everything ok, new sessionid
 			AddLogLine(false, GetResString(IDS_MM_NEWUSER));
 			packet->WriteByte(MMT_OK);
-			m_nSessionID = rand();
+			m_nSessionID = (uint16)rand();
 			packet->WriteShort(m_nSessionID);
 			packet->WriteString(thePrefs.GetUserNick());
-			packet->WriteShort((thePrefs.GetMaxUpload() == UNLIMITED) ? 0 : thePrefs.GetMaxUpload());
-			packet->WriteShort((thePrefs.GetMaxDownload() == UNLIMITED) ? 0 : thePrefs.GetMaxDownload());
+			packet->WriteShort((uint16)((thePrefs.GetMaxUpload() >= UNLIMITED) ? 0 : thePrefs.GetMaxUpload()));
+			packet->WriteShort((uint16)((thePrefs.GetMaxDownload() >= UNLIMITED) ? 0 : (uint16)thePrefs.GetMaxDownload()));
 			ProcessStatusRequest(sender,packet);
 			//sender->SendPacket(packet);
 		}
@@ -184,14 +180,13 @@ void CMMServer::ProcessStatusRequest(CMMSocket* sender, CMMPacket* packet){
 	uint32 notUsed;
 	uint32 downloadrate;
 	theApp.pBandWidthControl->GetDatarates(thePrefs.GetDatarateSamples(),
-										   eMuleIn, notUsed,
-										   eMuleOut, notUsed,
-										   notUsed, notUsed);
+		eMuleIn, notUsed,
+		eMuleOut, notUsed,
+		notUsed, notUsed);
 
 	theApp.pBandWidthControl->GetFullHistoryDatarates(notUsed, notUsed,
-													  downloadrate, notUsed);
+		downloadrate, notUsed);
 
-	
 	packet->WriteShort((uint16)eMuleOut/100);
 	packet->WriteShort((uint16)((thePrefs.GetMaxGraphUploadRate()*1024)/100));
 	packet->WriteShort((uint16)eMuleIn/100);
@@ -222,9 +217,9 @@ void CMMServer::ProcessStatusRequest(CMMSocket* sender, CMMPacket* packet){
 	}
 
 	if(thePrefs.GetNetworkKademlia()){
-		if ( Kademlia::CKademlia::isConnected() ){
+		if ( Kademlia::CKademlia::IsConnected() ){
 			packet->WriteByte(2);
-			packet->WriteInt(Kademlia::CKademlia::getKademliaUsers());
+			packet->WriteInt(Kademlia::CKademlia::GetKademliaUsers());
 		}
 		else{
 			packet->WriteByte(1);
@@ -249,14 +244,14 @@ void CMMServer::ProcessFileListRequest(CMMSocket* sender, CMMPacket* packet){
 		packet->WriteByte(MMP_FILELISTANS);
 	
 	int nCount = thePrefs.GetCatCount();
-	packet->WriteByte(nCount);
+	packet->WriteByte((uint8)nCount);
 	for (int i = 0; i != nCount; i++){
 		packet->WriteString(thePrefs.GetCategory(i)->title);
 	}
 
 	nCount = (theApp.downloadqueue->GetFileCount() > m_nMaxDownloads)? m_nMaxDownloads : theApp.downloadqueue->GetFileCount();
 	m_SentFileList.SetSize(nCount);
-	packet->WriteByte(nCount);
+	packet->WriteByte((uint8)nCount);
 	for (int i = 0; i != nCount; i++){
 		// while this is not the fastest method the trace this list, it's not timecritical here
 		CPartFile* cur_file = theApp.downloadqueue->GetFileByIndex(i);
@@ -277,7 +272,7 @@ void CMMServer::ProcessFileListRequest(CMMSocket* sender, CMMPacket* packet){
 				packet->WriteByte(MMT_WAITING);
 		}
 		packet->WriteString(cur_file->GetFileName());
-		packet->WriteByte(cur_file->GetCategory());
+		packet->WriteByte((uint8)cur_file->GetCategory());
 
 		if (i < m_nMaxBufDownloads){
 			packet->WriteByte(1);
@@ -293,19 +288,19 @@ void CMMServer::ProcessFileListRequest(CMMSocket* sender, CMMPacket* packet){
 void CMMServer::ProcessFinishedListRequest(CMMSocket* sender){
 	CMMPacket* packet = new CMMPacket(MMP_FINISHEDANS);
 	int nCount = thePrefs.GetCatCount();
-	packet->WriteByte(nCount);
+	packet->WriteByte((uint8)nCount);
 	for (int i = 0; i != nCount; i++){
 		packet->WriteString(thePrefs.GetCategory(i)->title);
 	}
 
 	nCount = (m_SentFinishedList.GetCount() > 30)? 30 : m_SentFinishedList.GetCount();
-	packet->WriteByte(nCount);
+	packet->WriteByte((uint8)nCount);
 	for (int i = 0; i != nCount; i++){
 		CKnownFile* cur_file = m_SentFinishedList[i];
 		packet->WriteByte(0xFF);
 		packet->WriteString(cur_file->GetFileName());
 		if (cur_file->IsPartFile())
-			packet->WriteByte(((CPartFile*)cur_file)->GetCategory());
+			packet->WriteByte((uint8)(((CPartFile*)cur_file)->GetCategory()));
 		else
 			packet->WriteByte(0);
 	}
@@ -450,7 +445,9 @@ void  CMMServer::ProcessSearchRequest(CMMData* data, CMMSocket* sender){
 	bool bResSearchPacket = false;
 	try
 	{
-		bResSearchPacket = GetSearchPacket(&searchdata, &Params);
+		bool bServerSupports64Bit = theApp.serverconnect->GetCurrentServer() != NULL
+									&& (theApp.serverconnect->GetCurrentServer()->GetTCPFlags() & SRV_TCPFLG_LARGEFILES);
+		bResSearchPacket = GetSearchPacket(&searchdata, &Params, bServerSupports64Bit, NULL);
 	}
 	catch (CMsgBoxException* ex)
 	{
@@ -492,13 +489,13 @@ void  CMMServer::ProcessChangeLimitRequest(CMMData* data, CMMSocket* sender){
 	// Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 	float nNewUpload = data->ReadShort();
 	float nNewDownload = data->ReadShort();
-	//Xman end
 	thePrefs.SetMaxUpload(nNewUpload);
+	//Xman end
 	thePrefs.SetMaxDownload(nNewDownload);
 
 	CMMPacket* packet = new CMMPacket(MMP_CHANGELIMITANS);
-	packet->WriteShort((thePrefs.GetMaxUpload() == UNLIMITED) ? 0 : thePrefs.GetMaxUpload());
-	packet->WriteShort((thePrefs.GetMaxDownload() == UNLIMITED) ? 0 : thePrefs.GetMaxDownload());
+	packet->WriteShort((uint16)((thePrefs.GetMaxUpload() >= UNLIMITED) ? 0 : thePrefs.GetMaxUpload()));
+	packet->WriteShort((uint16)((thePrefs.GetMaxDownload() >= UNLIMITED) ? 0 : thePrefs.GetMaxDownload()));
 	sender->SendPacket(packet);
 }
 
@@ -524,7 +521,7 @@ void CMMServer::SearchFinished(bool bTimeOut){
 		m_pPendingCommandSocket->SendPacket(packet);
 	}
 	else{
-		uint16 results = theApp.searchlist->GetFoundFiles(MMS_SEARCHID);
+		UINT results = theApp.searchlist->GetFoundFiles(MMS_SEARCHID);
 		if (results > MAXRESULTS)
 			results = MAXRESULTS;
 		m_SendSearchList.SetSize(results);
@@ -532,12 +529,12 @@ void CMMServer::SearchFinished(bool bTimeOut){
 		packet->m_bSpecialHeader = true;
 		packet->WriteByte(MMT_OK);
 		packet->WriteByte((uint8)results);
-		for (int i = 0; i != results; i++){
+		for (UINT i = 0; i < results; i++){
 			CSearchFile* cur_file = theApp.searchlist->DetachNextFile(MMS_SEARCHID);
 			m_SendSearchList[i] = cur_file;
 			packet->WriteString(cur_file->GetFileName());
-			packet->WriteShort( cur_file->GetSourceCount() );
-			packet->WriteInt(cur_file->GetFileSize());
+			packet->WriteShort((uint16)cur_file->GetSourceCount());
+			packet->WriteInt64(cur_file->GetFileSize());
 		}
 		m_pPendingCommandSocket->SendPacket(packet);
 		theApp.searchlist->RemoveResults(MMS_SEARCHID);
@@ -555,7 +552,7 @@ void  CMMServer::ProcessDownloadRequest(CMMData* data, CMMSocket* sender){
 		return;		
 	}
 	CSearchFile* todownload = m_SendSearchList[byFileIndex];
-	theApp.downloadqueue->AddSearchToDownload(todownload,2,0);
+	theApp.downloadqueue->AddSearchToDownload(todownload, 2, 0);
 	CMMPacket* packet = new CMMPacket(MMP_DOWNLOADANS);
 	if (theApp.downloadqueue->GetFileByID(todownload->GetFileHash()) != NULL){
 		packet->WriteByte(MMT_OK);
@@ -670,7 +667,7 @@ CStringA CMMServer::GetContentType(){
 		return CStringA("application/octet-stream");
 }
 
-VOID CALLBACK CMMServer::CommandTimer(HWND hwnd, UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
+VOID CALLBACK CMMServer::CommandTimer(HWND /*hwnd*/, UINT /*uMsg*/, UINT_PTR /*idEvent*/, DWORD /*dwTime*/)
 {
 	// NOTE: Always handle all type of MFC exceptions in TimerProcs - otherwise we'll get mem leaks
 	try
@@ -715,7 +712,6 @@ VOID CALLBACK CMMServer::CommandTimer(HWND hwnd, UINT uMsg,UINT_PTR idEvent,DWOR
 				AddLogLine(true, _T("Unknown %s exception in "), __FUNCTION__);
 		}
 		// Maella end
-
 }
 
 void  CMMServer::ProcessStatisticsRequest(CMMData* data, CMMSocket* sender){
@@ -728,8 +724,8 @@ void  CMMServer::ProcessStatisticsRequest(CMMData* data, CMMSocket* sender){
 	ASSERT (nPos + nCompressEvery * nWidth == nRawDataSize || (nPos == 0 && nRawDataSize < nWidth));
 	
 	CMMPacket* packet = new CMMPacket(MMP_STATISTICSANS);
-	packet->WriteShort((nRawDataSize-nPos)*thePrefs.GetTrafficOMeterInterval());
-	packet->WriteShort(min(nWidth, nRawDataSize));
+	packet->WriteShort((uint16)((nRawDataSize-nPos)*thePrefs.GetTrafficOMeterInterval()));
+	packet->WriteShort((uint16)(min(nWidth, nRawDataSize)));
 	while (nPos < nRawDataSize){
 		nAddUp = nAddDown = nAddCon = 0;
 		for (i = 0; i != nCompressEvery; i++){
@@ -753,12 +749,12 @@ void  CMMServer::ProcessStatisticsRequest(CMMData* data, CMMSocket* sender){
 }
 
 void CMMServer::WriteFileInfo(CPartFile* selFile, CMMPacket* packet){
-	packet->WriteInt(selFile->GetFileSize());
-	packet->WriteInt(selFile->GetTransferred());
-	packet->WriteInt(selFile->GetCompletedSize());
-	packet->WriteShort(selFile->GetDownloadDatarate()/100); //Xman // Maella -Accurate measure of bandwidth
-	packet->WriteShort(selFile->GetSourceCount());
-	packet->WriteShort(selFile->GetTransferringSrcCount());
+	packet->WriteInt64( selFile->GetFileSize() );
+	packet->WriteInt64( selFile->GetTransferred() );
+	packet->WriteInt64( selFile->GetCompletedSize() );
+	packet->WriteShort((uint16)(selFile->GetDownloadDatarate()/100)); //Xman // Maella -Accurate measure of bandwidth
+	packet->WriteShort((uint16)(selFile->GetSourceCount()));
+	packet->WriteShort((uint16)(selFile->GetTransferringSrcCount()));
 	if (selFile->IsAutoDownPriority()){
 		packet->WriteByte(4);
 	}
@@ -766,8 +762,8 @@ void CMMServer::WriteFileInfo(CPartFile* selFile, CMMPacket* packet){
 		packet->WriteByte(selFile->GetDownPriority());
 	}
 	uint8* parts = selFile->MMCreatePartStatus();
-	packet->WriteShort(selFile->GetPartCount());
-	for (int i = 0; i != selFile->GetPartCount(); i++){
+	packet->WriteShort((uint16)selFile->GetPartCount());
+	for (UINT i = 0; i < selFile->GetPartCount(); i++){
 		packet->WriteByte(parts[i]);
 	}
 	delete[] parts;

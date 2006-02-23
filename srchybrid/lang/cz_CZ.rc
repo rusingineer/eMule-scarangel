@@ -968,7 +968,7 @@ BEGIN
     IDS_WIZARD_CUSTOM       "Vlastní"
     IDS_WIZARD_ENTERBELOW   "(vlož níže!)"
     IDS_STATS_MAXAVGDL      "Max. prùmìr rychlosti stahování: %s"
-    IDS_USS_MIN             "Warning: USS currently does not support upload speeds less then 10K. If you know your connection is not able to handle this, please disable USS."
+    IDS_USS_MIN             "Varování: USS v souèasné dobì nepodporuje rychlosti uploadu pod  10K. Pokud si uvìdomujete, že vaše pøipojení tuto rychlost nepøesáhne, deaktivujte prosím USS."
 END
 
 STRINGTABLE 
@@ -1865,48 +1865,81 @@ BEGIN
     IDS_PW_SMTPSERVER       "SMTP-Server:"
     IDS_PW_SENDERADDRESS    "Adresa odesílatele:"
     IDS_PW_SHOWTRANSTOOLBAR "Zobrazit rozšíøený panel nástrojù v oknì pøenosù"
-    IDS_MODIFYCOLLECTION    "Modify Collection"
-    IDS_VIEWCOLLECTION      "View Collection"
-    IDS_COLL_TEXTFORMAT     "Save collection In A Simple Text Format"
-    IDS_SEARCHAUTHORCOLLECTION "Search Author's Collections"
-    IDS_ERR_DUPL_FILES      "Duplicate shared files: ""%s"" and ""%s"""
+    IDS_MODIFYCOLLECTION    "Modifikovat kolekci"
+    IDS_VIEWCOLLECTION      "Prohlédnout kolekci"
+    IDS_COLL_TEXTFORMAT     "Uložit kolekci v jednoduchém textovém formátu"
+    IDS_SEARCHAUTHORCOLLECTION "Hledat kolekce autora"
+    IDS_ERR_DUPL_FILES      "Duplicitní sdílené soubory: ""%s"" a ""%s"""
     IDS_USS_TRACEROUTEOFTENFAILED 
-                            "UploadSpeedSense: Tracerouting failed too many times. Disabling Upload SpeedSense."
-    IDS_USS_STARTING        "UploadSpeedSense: Done with preparations. Starting control of upload speed. (First 60 seconds will be in fast reaction mode)"
+                            "UploadSpeedSense: Tracerouting selhal pøíliš mnohokrát. Upload SpeedSense bude deaktivován."
+    IDS_USS_STARTING        "UploadSpeedSense: Skonèila pøípravná fáze. Spouští se kontrola rychlosti uploadu. (Prvních 60 sekund bude nastaven režim rychlé reakce)"
     IDS_USS_MANUALUPLOADLIMITDETECTED 
-                            "UploadSpeedSense: Raised upload limit in prefs detected. Going into fast reaction mode for 60 seconds."
-    IDS_USS_STATE_PREPARING "Preparing..."
-    IDS_USS_STATE_WAITING   "Waiting..."
-    IDS_USS_STATE_ERROR     "Error!"
+                            "UploadSpeedSense: Bylo zjištìno navýšení limitu pro upload. Na 60 sekund bude nastaven režim rychlé reakce."
+    IDS_USS_STATE_PREPARING "Pøíprava..."
+    IDS_USS_STATE_WAITING   "Èekání..."
+    IDS_USS_STATE_ERROR     "Chyba!"
+    IDS_SHAREWARNING        "(Složka bude sdílena!)"
+    IDS_REMOVEALLSERVERS    "Opravdu si pøejete smazat všechny servery?"
+    IDS_SEARCH_UNKATTR      "Neznámý vyhledávací atribut '%s'"
+    IDS_SEARCH_ATTRERR      "Chyba syntaxe v '%s' vyhledávacím atributu"
+    IDS_SEARCH_MISSINGANDRIGHT "Chybìjící pravá strana pro operátor AND"
+    IDS_SEARCH_OPRERR       "Chyba synaxe v porovnávacím operátoru '%s'"
+    IDS_FULLALLOC           "Alokovat plnou velikost souboru pro non-sparse part soubory"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH "Hash nebyl nalezen."
+    IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "Gap list poškozen."
+    IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST "Gap nenalezen."
+    IDS_X_SHAREAZA_IMPORT_HASH_SET_CORRUPT "Hash set poškozen."
+    IDS_X_SHAREAZA_IMPORT_NO_HASH_SET "Hash set nenalezen."
+    IDS_CONVERTINGKNOWN2MET "Konvertuji %s do %s kvùli podpoøe velkých souborù..."
+    IDS_CONVERTINGKNOWN2FAILED 
+                            "...nepodaøilo se zkonvertovat known2.met, staré záznamy ignorovány"
+    IDS_CONVERTINGKNOWN2DONE "... hotovo, konvertování dokonèeno"
+    IDS_ERR_MET_BAD         "Chyba: soubor %s je poškozen, nelze naèíst známé soubory"
+    IDS_SRV_LARGEFILES      "Podpora velkých souborù"
 END
 #endif    // Czech resources
+
 STRINGTABLE 
 BEGIN
-    IDS_SHARED_STATUS       "Shared parts"
-    IDS_INCOMING_FILES      "Incoming Files"
-    IDS_INCOMPLETE_FILES    "Incomplete Files"
-    IDS_SHARED_DIRECTORIES  "Shared Directories"
-    IDS_SHAREDIR            "Share directory"
-    IDS_SHAREDIRSUB         "Share with subdirectories"
-    IDS_UNSHAREDIR          "Unshare directory"
-    IDS_UNSHAREDIRSUB       "Unshare with subdirectories"
-    IDS_ALLSHAREDFILES      "All Shared Files"
-    IDS_ALLDIRECTORIES      "All Directories"
-    IDS_SEARCHRELATED       "Find related files"
-    IDS_RELATED             "Related"
+    IDS_ERR_FSCANTHANDLEFILE 
+                            "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
+    IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_COLLECTIONLIST      "Collection List"
-    IDS_SEARCH_EMULECOLLECTION "Collection"
-    IDS_COLL_REPLACEEXISTING "Do you want to replace existing file?"
-    IDS_COLL_ERR_DELETING   "Some Unknown error in deleting old file. Exit without saving?"
-    IDS_CREATECOLLECTION    "Create Collection"
-    IDS_COLL_SIGN           "Sign Collection with Name and Key"
-    IDS_AUTHOR              "Author"
-    IDS_AUTHORKEY           "Author Key"
-    IDS_COLL_ADDINCAT       "Add new downloads in a Collection Category"
+    IDS_DOWNLOAD_LANGFILE   "Stahuji jazyková data"
+    IDS_DOWNLOADING_SERVERMET_FROM "Stahuji soubor server.met z %s"
+    IDS_DOWNLOADING_SERVERMET "Stahuji soubor server.met..."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_SHARED_STATUS       "Sdílené souèásti"
+    IDS_INCOMING_FILES      "Pøíchozí soubory"
+    IDS_INCOMPLETE_FILES    "Nekompletní soubory"
+    IDS_SHARED_DIRECTORIES  "Sdílené adresáøe"
+    IDS_SHAREDIR            "Sdílet adresáø"
+    IDS_SHAREDIRSUB         "Sdílet s podaresáøi"
+    IDS_UNSHAREDIR          "Nesdílet adresáø"
+    IDS_UNSHAREDIRSUB       "Nesdílet s podaresáøi"
+    IDS_ALLSHAREDFILES      "Všechny sdílené soubory"
+    IDS_ALLDIRECTORIES      "Všechny adresáøe"
+    IDS_SEARCHRELATED       "Nalézt související soubory"
+    IDS_RELATED             "Související"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_COLLECTIONLIST      "Seznam kolekce"
+    IDS_SEARCH_EMULECOLLECTION "KOlekce"
+    IDS_COLL_REPLACEEXISTING "Máte zájem o nahrazení existujících souborù?"
+    IDS_COLL_ERR_DELETING   "VYskytla se neznámá chyba bìhem mazání souboru. Máte zájem skonèit bez uložení?"
+    IDS_CREATECOLLECTION    "Vytvoøit kolekci"
+    IDS_COLL_SIGN           "Podepsat kolekci se jménem a klíèem"
+    IDS_AUTHOR              "Autor"
+    IDS_AUTHORKEY           "Klíè autora"
+    IDS_COLL_ADDINCAT       "Pøidat nové downloady v kategorii kolekce"
 END
 
 STRINGTABLE 

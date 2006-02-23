@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2004 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -27,14 +27,7 @@
 #include "ClientCredits.h"
 //Xman
 #include "emule.h"
-#include "BandwidthControl.h"
-
-
-// ==> {Webcache} [Max] 
-#include "WebCache\WebCacheProxyClient.h"
-#include "WebCache\WebCachedBlockList.h"
-#include "WebCache\WebCacheSocket.h"	// Superlexx - block transfer limiter
-// <== {Webcache} [Max] 
+#include "BandwidthControl.h" 
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -113,14 +106,14 @@ bool CUrlClient::SetUrl(LPCTSTR pszUrl, uint32 nIP)
 	if (Url.dwUrlPathLength == 0)			// we must know the URL path on that host
 		return false;
 
-	m_strHost = szHostName;
+	m_strHostA = szHostName;
 
 	TCHAR szEncodedUrl[INTERNET_MAX_URL_LENGTH];
 	DWORD dwEncodedUrl = ARRSIZE(szEncodedUrl);
 	if (!InternetCanonicalizeUrl(szUrl, szEncodedUrl, &dwEncodedUrl, ICU_ENCODE_PERCENT))
 		return false;
 	m_strUrlPath = szEncodedUrl;
-	m_nUrlStartPos = (UINT)-1;
+	m_nUrlStartPos = (uint64)-1;
 
 	SetUserName(szUrl);
 
@@ -186,9 +179,9 @@ bool CUrlClient::SendHttpBlockRequests()
 	CStringA strHttpRequest;
 	strHttpRequest.AppendFormat("GET %s HTTP/1.0\r\n", m_strUrlPath);
 	strHttpRequest.AppendFormat("Accept: */*\r\n");
-	strHttpRequest.AppendFormat("Range: bytes=%u-%u\r\n", m_uReqStart, m_uReqEnd);
+	strHttpRequest.AppendFormat("Range: bytes=%I64u-%I64u\r\n", m_uReqStart, m_uReqEnd);
 	strHttpRequest.AppendFormat("Connection: Keep-Alive\r\n");
-	strHttpRequest.AppendFormat("Host: %s\r\n", T2CA(m_strHost));
+	strHttpRequest.AppendFormat("Host: %s\r\n", m_strHostA);
 	strHttpRequest.AppendFormat("\r\n");
 
 	if (thePrefs.GetDebugClientTCPLevel() > 0)
@@ -200,7 +193,7 @@ bool CUrlClient::SendHttpBlockRequests()
 	return true;
 }
 
-bool CUrlClient::TryToConnect(bool bIgnoreMaxCon, CRuntimeClass* pClassSocket)
+bool CUrlClient::TryToConnect(bool bIgnoreMaxCon, CRuntimeClass* /*pClassSocket*/)
 {
 	return CUpDownClient::TryToConnect(bIgnoreMaxCon, RUNTIME_CLASS(CHttpClientDownSocket));
 }
@@ -211,7 +204,7 @@ bool CUrlClient::Connect()
 		return CUpDownClient::Connect();
 	//Try to always tell the socket to WaitForOnConnect before you call Connect.
 	socket->WaitForOnConnect();
-	socket->Connect(m_strHost, m_nUserPort);
+	socket->Connect(m_strHostA, m_nUserPort);
 	return true;
 }
 
@@ -239,9 +232,9 @@ bool CUrlClient::Disconnected(LPCTSTR pszReason, bool bFromSocket)
 
 	//TRACE(_T("%hs: HttpState=%u, Reason=%s\n"), __FUNCTION__, s==NULL ? -1 : s->GetHttpState(), pszReason);
 	// TODO: This is a mess..
-	//Xman can someone explain to me ?
+	//Xman 
 	//if (s && (s->GetHttpState() == HttpStateRecvExpected || s->GetHttpState() == HttpStateRecvBody))
-    //    m_fileReaskTimes.RemoveKey(reqfile); // ZZ:DownloadManager (one resk timestamp for each file)
+	//    m_fileReaskTimes.RemoveKey(reqfile); // ZZ:DownloadManager (one resk timestamp for each file)
 	return CUpDownClient::Disconnected(pszReason, bFromSocket);
 }
 
@@ -279,7 +272,7 @@ bool CUrlClient::ProcessHttpDownResponse(const CStringAArray& astrHeaders)
 		const CStringA& rstrHdr = astrHeaders.GetAt(i);
 		if (bExpectData && strnicmp(rstrHdr, "Content-Length:", 15) == 0)
 		{
-			UINT uContentLength = atoi((LPCSTR)rstrHdr + 15);
+			uint64 uContentLength = _atoi64((LPCSTR)rstrHdr + 15);
 			if (uContentLength != m_uReqEnd - m_uReqStart + 1){
 				if (uContentLength != reqfile->GetFileSize()){ // tolerate this case only
 					CString strError;
@@ -291,14 +284,14 @@ bool CUrlClient::ProcessHttpDownResponse(const CStringAArray& astrHeaders)
 		}
 		else if (bExpectData && strnicmp(rstrHdr, "Content-Range:", 14) == 0)
 		{
-			DWORD dwStart = 0, dwEnd = 0, dwLen = 0;
-			if (sscanf((LPCSTR)rstrHdr + 14," bytes %u - %u / %u", &dwStart, &dwEnd, &dwLen) != 3){
+			uint64 ui64Start = 0, ui64End = 0, ui64Len = 0;
+			if (sscanf((LPCSTR)rstrHdr + 14," bytes %I64u - %I64u / %I64u", &ui64Start, &ui64End, &ui64Len) != 3){
 				CString strError;
 				strError.Format(_T("Unexpected HTTP header field \"%hs\""), rstrHdr);
 				throw strError;
 			}
 
-			if (dwStart != m_uReqStart || dwEnd != m_uReqEnd || dwLen != reqfile->GetFileSize()){
+			if (ui64Start != m_uReqStart || ui64End != m_uReqEnd || ui64Len != reqfile->GetFileSize()){
 				CString strError;
 				strError.Format(_T("Unexpected HTTP header field \"%hs\""), rstrHdr);
 				throw strError;
@@ -368,28 +361,19 @@ void CUpDownClient::ProcessHttpBlockPacket(const BYTE* pucData, UINT uSize)
 	if (reqfile->IsStopped() || (reqfile->GetStatus() != PS_READY && reqfile->GetStatus() != PS_EMPTY))
 		throw CString(_T("Failed to process HTTP data block - File not ready for receiving data"));
 
-	if (m_nUrlStartPos == -1)
+	if (m_nUrlStartPos == (uint64)-1)
 		throw CString(_T("Failed to process HTTP data block - Unexpected file data"));
 
-	uint32 nStartPos = m_nUrlStartPos;
-	uint32 nEndPos = m_nUrlStartPos + uSize;
+	uint64 nStartPos = m_nUrlStartPos;
+	uint64 nEndPos = m_nUrlStartPos + uSize;
 
 	m_nUrlStartPos += uSize;
 
 //	if (thePrefs.GetDebugClientTCPLevel() > 0)
-//		Debug("  Start=%u  End=%u  Size=%u  %s\n", nStartPos, nEndPos, size, DbgGetFileInfo(reqfile->GetFileHash()));
+//		Debug("  Start=%I64u  End=%I64u  Size=%u  %s\n", nStartPos, nEndPos, size, DbgGetFileInfo(reqfile->GetFileHash()));
 
 	if (!(GetDownloadState() == DS_DOWNLOADING || GetDownloadState() == DS_NONEEDEDPARTS))
-         
-// ==> {Webcache} [Max] 
-	{ // yonatan http
-		//throw CString(_T("Failed to process HTTP data block - Invalid download state"));
-		CString err;
-		err.Format( _T("Failed to process HTTP data block - Invalid download state: %u"), GetDownloadState() );
-		throw err;
-	}
-// <== {Webcache} [Max] 
-
+		throw CString(_T("Failed to process HTTP data block - Invalid download state"));
 
 	m_dwLastBlockReceived = ::GetTickCount();
 
@@ -403,11 +387,11 @@ void CUpDownClient::ProcessHttpBlockPacket(const BYTE* pucData, UINT uSize)
 
 	//Xman
 	//remark: if the socket IsRawDataMode (means a httpsocket) we don't count the data at emsocket OnReceive, we have to do it at this point
+	//remark: this isn't fully accurate because we don't remove the headers
 	// - Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 	AddDownloadRate(uSize); 
 	theApp.pBandWidthControl->AddeMuleIn(uSize); 
 	//Xman end
-
 
 	for (POSITION pos = m_PendingBlocks_list.GetHeadPosition(); pos != NULL; )
 	{
@@ -415,35 +399,14 @@ void CUpDownClient::ProcessHttpBlockPacket(const BYTE* pucData, UINT uSize)
 		Pending_Block_Struct *cur_block = m_PendingBlocks_list.GetNext(pos);
 		if (cur_block->block->StartOffset <= nStartPos && nStartPos <= cur_block->block->EndOffset)
 		{
-		
-			if (thePrefs.GetDebugClientTCPLevel() > 1) { // yonatan http - used to be > 0){ ,{Webcache} [Max] 
-
+			if (thePrefs.GetDebugClientTCPLevel() > 0){
 				// NOTE: 'Left' is only accurate in case we have one(!) request block!
 				void* p = m_pPCDownSocket ? (void*)m_pPCDownSocket : (void*)socket;
-				Debug(_T("%08x  Start=%u  End=%u  Size=%u  Left=%u  %s\n"), p, nStartPos, nEndPos, uSize, cur_block->block->EndOffset - (nStartPos + uSize) + 1, DbgGetFileInfo(reqfile->GetFileHash()));
+				Debug(_T("%08x  Start=%I64u  End=%I64u  Size=%u  Left=%I64u  %s\n"), p, nStartPos, nEndPos, uSize, cur_block->block->EndOffset - (nStartPos + uSize) + 1, DbgGetFileInfo(reqfile->GetFileHash()));
 			}
 
-			
-// ==> {Webcache} [Max] 
-			byte* dec_pucData = (byte*)pucData;
-
-			if (IsDownloadingFromWebCache()) // Superlexx - encryption - decrypt the data
-			{
-				if (Crypt.useNewKey)	// we must use a new key
-				{
-					Crypt.RefreshRemoteKey();
-					Crypt.decryptor.SetKey(Crypt.remoteKey, WC_KEYLENGTH);
-					Crypt.useNewKey = false;
-
-					Crypt.decryptor.DiscardBytes(16); // we must throw away 16 bytes of the key stream since they were already used once, 16 is the file hash length
-				}
-				Crypt.decryptor.ProcessString(dec_pucData, uSize);
-			}
-// <== {Webcache} [Max] 
 			m_nLastBlockOffset = nStartPos;
-            
-			uint32 lenWritten = reqfile->WriteToBuffer(uSize, dec_pucData, nStartPos, nEndPos, cur_block->block, this); // Superlexx: write decrypted data, {Webcache} [Max] 		
-            
+			uint32 lenWritten = reqfile->WriteToBuffer(uSize, pucData, nStartPos, nEndPos, cur_block->block, this);
 			if (lenWritten > 0)
 			{
 				m_nTransferredDown += uSize;
@@ -452,54 +415,16 @@ void CUpDownClient::ProcessHttpBlockPacket(const BYTE* pucData, UINT uSize)
 				if (nEndPos >= cur_block->block->EndOffset)
 				{
 					reqfile->RemoveBlockFromList(cur_block->block->StartOffset, cur_block->block->EndOffset);
-                                         
-
-// ==> {Webcache} [Max] 
-					if (m_pWCDownSocket)
-						m_pWCDownSocket->blocksloaded++; //count downloaded blocks for this socket
-					//JP moved to CUpDownClient::SendWebCacheBlockRequests() and CWebCacheProxyClient::UpdateClient
-					if( !IsProxy() )
-					{
-						thePrefs.ses_successfullPROXYREQUESTS++;
-						PublishWebCachedBlock( cur_block->block );
-					} 
-					else 
-					{
-						SINGLEProxyClient->OnWebCachedBlockDownloaded( cur_block->block );
-						// JP moved to CWebCacheProxyClient::OnWebCachedBlockDownloaded
-					}
-                                        // WC-TODO:
-					
-					delete cur_block->block;//do we still need OnWebCachedBlockDownloaded with this????
-					delete cur_block;//do we still need OnWebCachedBlockDownloaded with this????
-// <== {Webcache} [Max] 
-
+					delete cur_block->block;
+					delete cur_block;
 					m_PendingBlocks_list.RemoveAt(posLast);
-                                        
-
-// ==> {Webcache} [Max] 
-					if( IsProxy() ) 
-                                        {
-						SetDownloadState( DS_NONE );
-						SetWebCacheDownState( WCDS_NONE );
-						WebCachedBlockList.TryToDL();
-						return;
-                                        }
-// <== {Webcache} [Max] 
 
 					if (m_PendingBlocks_list.IsEmpty())
 					{
 						if (thePrefs.GetDebugClientTCPLevel() > 0)
 							DebugSend("More block requests", this);
-						m_nUrlStartPos = (UINT)-1;
-
-// ==> {Webcache} [Max] 
-						if( GetWebCacheDownState() == WCDS_NONE )
-							SendHttpBlockRequests(); // original emule code
-						else
-							SendBlockRequests();
-// <== {Webcache} [Max] 
-
+						m_nUrlStartPos = (uint64)-1;
+						SendHttpBlockRequests();
 					}
 				}
 //				else
@@ -513,7 +438,7 @@ void CUpDownClient::ProcessHttpBlockPacket(const BYTE* pucData, UINT uSize)
 	TRACE("%s - Dropping packet\n", __FUNCTION__);
 }
 
-void CUrlClient::SendCancelTransfer(Packet* packet)
+void CUrlClient::SendCancelTransfer(Packet* /*packet*/)
 {
 	if (socket)
 	{

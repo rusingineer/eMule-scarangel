@@ -1745,8 +1745,8 @@ BEGIN
     IDS_META_COLLECTION     "Colecção"
     IDS_META_PARTPATH       "Caminho do ficheiro .part"
     IDS_META_PARTHASH       "Hash do ficheiro .part"
-    IDS_META_GAPSTART       "Início de interrupção"
-    IDS_META_GAPEND         "Fim de interrupção"
+    IDS_META_GAPSTART       "Início de Gap"
+    IDS_META_GAPEND         "Fim de Gap"
     IDS_FAIL                "Falhou"
     IDS_META_PREFERENCES    "Preferências"
     IDS_META_VERSION        "Versão"
@@ -1801,7 +1801,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_SPARSEPARTFILES     "Criar os novos ficheiros .part em estado 'rarefeito' (NTFS only)"
+    IDS_SPARSEPARTFILES     "Criar os novos ficheiros .part em estado rarefeito (apenas em NTFS)"
     IDS_ASPECTRATIO         "Rácio da Imagem"
     IDS_NEGATEFILTER        "negar filtro"
     IDS_SEENCOMPL           "Alguma vez visto completo"
@@ -1923,6 +1923,39 @@ BEGIN
     IDS_USS_STATE_PREPARING "A Preparar..."
     IDS_USS_STATE_WAITING   "Em Espera..."
     IDS_USS_STATE_ERROR     "Erro!"
+    IDS_SHAREWARNING        "(A pasta será partilhada!)"
+    IDS_REMOVEALLSERVERS    "Deseja realmente remover todos os servidores?"
+    IDS_SEARCH_UNKATTR      "Atributo de pesquisa desconhecido '%s'"
+    IDS_SEARCH_ATTRERR      "Erro de sintaxe no atributo de pesquisa '%s'"
+    IDS_SEARCH_MISSINGANDRIGHT "Falta o lado direito do operador AND"
+    IDS_SEARCH_OPRERR       "Erro de sintaxe no operador comparativo '%s'"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DOWNLOAD_LANGFILE   "A transferir o ficheiro da linguagem"
+    IDS_DOWNLOADING_SERVERMET_FROM "A transferir o server.met a partir de %s"
+    IDS_DOWNLOADING_SERVERMET "A transferir o server.met..."
+    IDS_FULLALLOC           "Reservar o tamanho total para os ficheiros .part não rarefeitos"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH "Hash não encontrada."
+    IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "Lista Gap corrompida."
+    IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST "Lista Gap não encontrada."
+    IDS_X_SHAREAZA_IMPORT_HASH_SET_CORRUPT "Repositório de Hashes corrompido."
+    IDS_X_SHAREAZA_IMPORT_NO_HASH_SET "Repositório de Hashes não encontrado."
+    IDS_CONVERTINGKNOWN2MET "A converter %s em %s para suportar ficheiros grandes..."
+    IDS_CONVERTINGKNOWN2FAILED 
+                            "...não foi possível converter known2.met, a ignorar registos antigos"
+    IDS_CONVERTINGKNOWN2DONE "... concluído, conversão finalizada"
+    IDS_ERR_MET_BAD         "Erro: o ficheiro %s está corrompido, não foi possível carregar a lista de ficheiros reconhecidos"
+    IDS_SRV_LARGEFILES      "Suporte para ficheiros grandes"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_ERR_FSCANTHANDLEFILE 
+                            "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
+    IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
 END
 
 #endif    // Portuguese (Portugal) resources

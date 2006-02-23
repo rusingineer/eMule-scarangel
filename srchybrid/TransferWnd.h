@@ -53,7 +53,7 @@ public:
 
 	void ShowQueueCount(uint32 number);
 	void UpdateListCount(EWnd2 listindex, int iCount = -1);
-	void UpdateFilesCount(int iCount, uint16 countsources, uint16 countreadyfiles); //Xman see all sources
+	void UpdateFilesCount(UINT iCount, UINT countsources, UINT countreadyfiles); //Xman see all sources
 
 // ==> {CPU/MEM usage} [Max] 
         void ShowCPU();
@@ -105,7 +105,7 @@ protected:
 	void	SetWnd2Icons(); //Xman uploadtoolbar
 	void	UpdateTabToolTips() {UpdateTabToolTips(-1);}
 	void	UpdateTabToolTips(int tab);
-	CString	GetTabStatistic(uint8 tab);
+	CString	GetTabStatistic(int tab);
 	int		GetTabUnderMouse(CPoint* point);
 	int		GetItemUnderMouse(CListCtrl* ctrl);
 	CString	GetCatTitle(int catid);

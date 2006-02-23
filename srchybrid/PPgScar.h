@@ -112,7 +112,7 @@ protected:
 */	// ==> Global Source Limit [Max/Stulle] - Stulle
 	bool m_bGlobalHL;
 	int m_iGlobalHL;
-	bool m_bGlobalHlAggro;
+	bool m_bGlobalHlAll;
 	// <== Global Source Limit [Max/Stulle] - Stulle
 
 	CTreeOptionsCtrlEx m_ctrlTreeOptions;
@@ -240,6 +240,7 @@ protected:
 	HTREEITEM m_htiGlobalHlGroup;
 	HTREEITEM m_htiGlobalHL;
 	HTREEITEM m_htiGlobalHlLimit;
+	HTREEITEM m_htiGlobalHlAll;
 	HTREEITEM m_htiGlobalHlAggro;
 	// <== Global Source Limit [Max/Stulle] - Stulle
 
@@ -251,7 +252,9 @@ protected:
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg void OnDestroy();
 	afx_msg LRESULT OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam);
-
+	afx_msg void OnHelp();
+	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
+	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()

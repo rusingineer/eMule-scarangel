@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -39,6 +39,8 @@ struct ServerMet_Struct {
 #define	SRV_TCPFLG_NEWTAGS			0x00000008
 #define	SRV_TCPFLG_UNICODE			0x00000010
 #define SRV_TCPFLG_RELATEDSEARCH	0x00000040
+#define SRV_TCPFLG_TYPETAGINTEGER	0x00000080
+#define SRV_TCPFLG_LARGEFILES		0x00000100
 
 // Server UDP flags
 #define	SRV_UDPFLG_EXT_GETSOURCES	0x00000001
@@ -46,6 +48,7 @@ struct ServerMet_Struct {
 #define	SRV_UDPFLG_NEWTAGS			0x00000008
 #define	SRV_UDPFLG_UNICODE			0x00000010
 #define	SRV_UDPFLG_EXT_GETSOURCES2	0x00000020
+#define SRV_UDPFLG_LARGEFILES		0x00000100
 
 class CServer{
 public:
@@ -79,8 +82,8 @@ public:
 	uint32	GetUsers() const						{return users;}
 	void	SetUserCount(uint32 in_users)			{users = in_users;}
 
-	uint32	GetPreferences() const					{return preferences;}
-	void	SetPreference(uint32 in_preferences)	{preferences = in_preferences;}
+	UINT	GetPreference() const					{return m_uPreference;}
+	void	SetPreference(UINT uPreference)			{m_uPreference = uPreference;}
 
 	uint32	GetPing() const							{return ping;}
 	void	SetPing(uint32 in_ping)					{ping = in_ping;}
@@ -99,7 +102,7 @@ public:
 	uint32	GetLastPinged() const					{return lastpinged;}
 	void	SetLastPinged(uint32 in_lastpinged)		{lastpinged = in_lastpinged;}
 
-	uint8	GetLastDescPingedCount() const			{return lastdescpingedcout;}
+	UINT	GetLastDescPingedCount() const			{return lastdescpingedcout;}
 	void	SetLastDescPingedCount(bool reset);
 
 	bool	IsStaticMember() const					{return staticservermember;}
@@ -131,6 +134,8 @@ public:
 
 	bool	GetUnicodeSupport() const				{return (GetTCPFlags() & SRV_TCPFLG_UNICODE)!=0;}
 	bool	GetRelatedSearchSupport() const			{return (GetTCPFlags() & SRV_TCPFLG_RELATEDSEARCH)!=0;}
+	bool	SupportsLargeFilesTCP() const			{return (GetTCPFlags() & SRV_TCPFLG_LARGEFILES)!=0;}
+	bool	SupportsLargeFilesUDP() const			{return (GetUDPFlags() & SRV_UDPFLG_LARGEFILES)!=0;}
 
 	bool	IsEqual(const CServer* pServer) const;
 
@@ -145,7 +150,7 @@ private:
 	uint32		maxusers;
 	uint32		softfiles;
 	uint32		hardfiles;
-	uint32		preferences;
+	UINT		m_uPreference;
 	uint32		ping;
 	CString		m_strDescription;
 	CString		m_strName;
@@ -160,7 +165,7 @@ private:
 	uint32		m_uUDPFlags;
 	uint32		m_uLowIDUsers;
 
-//EastShare Start - added by AndCycle, IP to Country
+	//EastShare Start - added by AndCycle, IP to Country
 public:
 	CString	GetCountryName() const;
 	int		GetCountryFlagIndex() const;
@@ -168,6 +173,5 @@ public:
 
 private:
 	struct	IPRange_Struct2* m_structServerCountry;
-//EastShare End - added by AndCycle, IP to Country
-
+	//EastShare End - added by AndCycle, IP to Country
 };

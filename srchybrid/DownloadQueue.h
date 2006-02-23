@@ -1,4 +1,5 @@
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//this file is part of eMule
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -69,9 +70,9 @@ public:
 	// add/remove entries
 	void	AddPartFilesToShare();
 	void	AddDownload(CPartFile* newfile, bool paused);
-	void	AddSearchToDownload(CSearchFile* toadd,uint8 paused=2,uint8 cat=0);
-	void	AddSearchToDownload(CString link,uint8 paused=2, uint8 cat=0);
-	void	AddFileLinkToDownload(class CED2KFileLink* pLink,uint8 cat=0);
+	void	AddSearchToDownload(CSearchFile* toadd, uint8 paused = 2, int cat = 0);
+	void	AddSearchToDownload(CString link, uint8 paused = 2, int cat = 0);
+	void	AddFileLinkToDownload(class CED2KFileLink* pLink, int cat = 0);
 	void	RemoveFile(CPartFile* toremove);
 	void	DeleteAll();
 
@@ -81,7 +82,6 @@ public:
 
 	bool	IsFileExisting(const uchar* fileid, bool bLogWarnings = true) const;
 	bool	IsPartFile(const CKnownFile* file) const;
-	bool	IsTempFile(const CString& rstrDirectory, const CString& rstrName) const;	// SLUGFILLER: SafeHash
 
 	CPartFile* GetFileByID(const uchar* filehash) const;
 	CPartFile* GetFileByIndex(int index) const;
@@ -119,11 +119,11 @@ public:
 	//Xman end
 
 	// categories
-	void	ResetCatParts(int cat);
-	void	SetCatPrio(int cat, uint8 newprio);
-    void    RemoveAutoPrioInCat(int cat, uint8 newprio); // ZZ:DownloadManager
-	void	SetCatStatus(int cat, int newstatus);
-	void	MoveCat(uint8 from, uint8 to);
+	void	ResetCatParts(UINT cat);
+	void	SetCatPrio(UINT cat, uint8 newprio);
+    void    RemoveAutoPrioInCat(UINT cat, uint8 newprio); // ZZ:DownloadManager
+	void	SetCatStatus(UINT cat, int newstatus);
+	void	MoveCat(UINT from, UINT to);
 	void	SetAutoCat(CPartFile* newfile);
 
 	// searching on local server
@@ -134,7 +134,7 @@ public:
 	// searching in Kad
 	void	SetLastKademliaFileRequest()				{lastkademliafilerequest = ::GetTickCount();}
 	bool	DoKademliaFileRequest();
-	void	KademliaSearchFile(uint32 searchID, const Kademlia::CUInt128* pcontactID, const Kademlia::CUInt128* pkadID, uint8 type, uint32 ip, uint16 tcp, uint16 udp, uint32 serverip, uint16 serverport, uint32 clientid);
+	void	KademliaSearchFile(uint32 searchID, const Kademlia::CUInt128* pcontactID, const Kademlia::CUInt128* pkadID, uint8 type, uint32 ip, uint16 tcp, uint16 udp, uint32 serverip, uint16 serverport);
 
 	// searching on global servers
 	void	StopUDPRequests();
@@ -149,7 +149,7 @@ public:
 
 	void	AddToResolved( CPartFile* pFile, SUnresolvedHostname* pUH );
 
-	CString GetOptimalTempDir(uint8 nCat, uint32 nFileSize);
+	CString GetOptimalTempDir(UINT nCat, EMFileSize nFileSize);
 
 	CServer* cur_udpserver;
 
@@ -168,27 +168,25 @@ public:
 	void	SetMaxDownPrioNew(uint8 newprio) {m_maxdownprionew=newprio;}
 	uint8	GetMaxDownPrioNew(void) const {return m_maxdownprionew;}
 	//Xman end
-	
-        //Xman GlobalMaxHardlimit for fairness
+
+	//Xman GlobalMaxHarlimit for fairness
 	void	IncGlobSources() {m_uGlobsources++;	}
 	void	DecGlobSources() {m_uGlobsources--;	}
 	uint32	GetGlobalSources() const {return m_uGlobsources;	}
 	uint8	GetLimitState() const {return m_limitstate;}
 	//Xman end
 
-	bool	ContainsUnstoppedFiles(); //jp webcache release , {Webcache} [Max]
-        
 protected:
 	bool	SendNextUDPPacket();
 	void	ProcessLocalRequests();
-	int		GetMaxFilesPerUDPServerPacket() const;
-	bool	SendGlobGetSourcesUDPPacket(CSafeMemFile* data, bool bExt2Packet);
+	bool	IsMaxFilesPerUDPServerPacketReached(uint32 nFiles, uint32 nIncludedLargeFiles) const;
+	bool	SendGlobGetSourcesUDPPacket(CSafeMemFile* data, bool bExt2Packet, uint32 nFiles, uint32 nIncludedLargeFiles);
 
 private:
 	// SLUGFILLER: checkDiskspace
 	bool	CompareParts(POSITION pos1, POSITION pos2);
 	void	SwapParts(POSITION pos1, POSITION pos2);
-	void	HeapSort(uint16 first, uint16 last);
+	void	HeapSort(UINT first, UINT last);
 	// SLUGFILLER: checkDiskspace
 
 //Xman see all sources
@@ -208,7 +206,7 @@ private:
 	// Maella end
 
 	//Xman askfordownload priority
-	int		m_toomanyconnections;
+	uint16		m_toomanyconnections;
 	//uint32	m_toomanytimestamp;
 	uint8 m_maxdownprio;
 	uint8 m_maxdownprionew;
@@ -219,8 +217,8 @@ private:
 	uint32		lastcheckdiskspacetime;	// SLUGFILLER: checkDiskspace
 	uint32		lastudpsearchtime;
 	uint32		lastudpstattime;
-	uint8		udcounter;
-	uint8		m_cRequestsSentToServer;
+	UINT		udcounter;
+	UINT		m_cRequestsSentToServer;
 	uint32		m_dwNextTCPSrcReq;
 	int			m_iSearchedServers;
 	uint32		lastkademliafilerequest;
@@ -232,7 +230,7 @@ private:
 	uint32		m_FailedTCPFileReask;
 	//Xman end
 
-	//Xman GlobalMaxHardlimit for fairness
+	//Xman GlobalMaxHarlimit for fairness
 	uint32		m_uGlobsources;
 	uint8		m_limitstate;
 
@@ -250,9 +248,17 @@ public:
 
 	// ==> Global Source Limit [Max/Stulle] - Stulle
 	void SetHardLimits();
+	void SetUpdateHlTime(DWORD in){m_dwUpdateHlTime = in;}
+	bool GetPassiveMode() const {return m_bPassiveMode;}
+	void SetPassiveMode(bool in){m_bPassiveMode=in;}
 	bool GetAutoHLSrcReqAllowed() const {return m_bAutoHLSrcReqAllowed;}
 protected:
 	DWORD m_dwUpdateHL;
+	DWORD m_dwUpdateHlTime;
+	bool m_bPassiveMode;
 	bool m_bAutoHLSrcReqAllowed;
 	// <== Global Source Limit [Max/Stulle] - Stulle
+
+public:
+	uint16 GetGlobalSourceCount(); // Show sources on title - Stulle
 };

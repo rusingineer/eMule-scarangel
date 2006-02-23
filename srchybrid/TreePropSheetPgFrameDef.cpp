@@ -8,7 +8,7 @@
 * Redistribution is appreciated.
 *
 * $Workfile:$
-* $Revision: 1.1 $
+* $Revision: 1.2 $
 * $Modtime:$
 * $Author: stulleamgym $
 *

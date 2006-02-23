@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -40,12 +40,7 @@
 #include "SHAHashSet.h"
 #include "SharedFileList.h"
 #include "Log.h"
-#include "UploadQueue.h" //Xman UDPReaskFNF-Fix against Leechers (idea by WiZaRd)
-
-// ==> {Webcache} [Max]
-#include "WebCache/WebCacheSocket.h" // yonatan http
-#include "SharedFileList.h"	// Superlexx - IFP
-// <== {Webcache} [Max] 
+#include "UploadQueue.h" //Xman UDPReaskFNF-Fix against Leechers (idea by WiZaRd)		
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -69,7 +64,7 @@ void CUpDownClient::DrawStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool
 
 	// Set size and fill with default color (grey)
 	CBarShader statusBar(rect->bottom - rect->top, rect->right - rect->left);
-	statusBar.SetFileSize((reqfile != NULL) ? (reqfile->GetFileSize()-1) : 1); 
+	statusBar.SetFileSize((reqfile != NULL) ? (reqfile->GetFileSize()-(uint64)1) : (uint64)1); 
 	statusBar.Fill(crNeither); 
 
 	if(onlygreyrect == false && reqfile != NULL && m_abyPartStatus > 0) { 
@@ -77,16 +72,16 @@ void CUpDownClient::DrawStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool
 		// Remark: The class std::vector has a much more powerfull constructor than the MFC CArray
 		std::vector<bool> gettingParts(m_nPartCount, false);
 		for(POSITION pos = m_PendingBlocks_list.GetHeadPosition(); pos != NULL; ){
-			UINT uPart = m_PendingBlocks_list.GetNext(pos)->block->StartOffset / PARTSIZE;
+			UINT uPart = (UINT)(m_PendingBlocks_list.GetNext(pos)->block->StartOffset / PARTSIZE);
 			if (uPart < m_nPartCount)
 				gettingParts[uPart] = true;
 		}
 
 		// Fill each block with a color matching the status
-		for(uint16 i = 0; i < m_nPartCount; i++){ 
+		for(UINT i = 0; i < m_nPartCount; i++){ 
 			if(m_abyPartStatus[i] != 0){ 
-				const uint32 uStart = PARTSIZE*i;
-				const uint32 uEnd = (reqfile->GetFileSize()-1 <= (uStart+PARTSIZE-1)) ? (reqfile->GetFileSize()-1) : (uStart+PARTSIZE-1);
+				const uint64 uStart = PARTSIZE*(uint64)i;
+				const uint64 uEnd = (reqfile->GetFileSize()-(uint64)1 <= (uStart+PARTSIZE-1)) ? (reqfile->GetFileSize()-(uint64)1) : (uStart+PARTSIZE-1);
 
 				if(reqfile->IsComplete(uStart, uEnd, false) == true) 
 					statusBar.FillRange(uStart, uEnd, crBoth);
@@ -227,7 +222,7 @@ bool CUpDownClient::AskForDownload()
 					m_downloadpriority++;
 				}
 			}
-			m_downloadpriority-=m_cFailed;
+			m_downloadpriority= (sint8)(m_downloadpriority - m_cFailed);
 			if(m_downloadpriority<0) m_downloadpriority=0;
 
 			if(m_downloadpriority<theApp.downloadqueue->GetMaxDownPrio())
@@ -289,11 +284,22 @@ bool CUpDownClient::IsSourceRequestAllowed() const
 } 
 
 //Xman Xtreme mod: modified version:
-bool CUpDownClient::IsSourceRequestAllowed(CPartFile* partfile, bool sourceExchangeCheck) const // ZZ:DownloadManager
+bool CUpDownClient::IsSourceRequestAllowed(CPartFile* partfile, bool /*sourceExchangeCheck*/) const // ZZ:DownloadManager
 { // ZZ:DownloadManager
 	DWORD dwTickCount = ::GetTickCount() + CONNECTION_LATENCY;
-	unsigned int nTimePassedClient = dwTickCount - GetLastSrcAnswerTime();
+
+	//unsigned int nTimePassedClient = dwTickCount - GetLastSrcAnswerTime();
+	//Xman if the remote client doesn't have any sources to send and we do an XS-request for
+	//the next file, it won't send sources, because it thinks it has already answered 
+	//because of this official bug we refer to GetLastAskedForSources() instead of GetLastSrcAnswerTime()
+	unsigned int nTimePassedClient = dwTickCount - GetLastAskedForSources();
+	//Xman end
+	
 	unsigned int nTimePassedFile   = dwTickCount - partfile->GetLastAnsweredTime(); // ZZ:DownloadManager
+	
+
+	
+	
 	bool bNeverAskedBefore = GetLastAskedForSources() == 0;
 
 	//Xman sourcecache
@@ -302,7 +308,7 @@ bool CUpDownClient::IsSourceRequestAllowed(CPartFile* partfile, bool sourceExcha
 		return false;
 	//Xman end
 
-	//Xman GlobalMaxHardlimit for fairness
+	//Xman GlobalMaxHarlimit for fairness
 	if(partfile->IsSourceSearchAllowed()==false)
 		return false;
 	//Xman end
@@ -408,13 +414,20 @@ void CUpDownClient::SendFileRequest()
 		return;
 	AddAskedCountDown();
 
-	CSafeMemFile dataFileReq(16+16+64);	// Superlexx - webcache - 64 extra bytes for webcache info data should be enough , {Webcache} [Max]  
+	CSafeMemFile dataFileReq(16+16);
 	dataFileReq.WriteHash16(reqfile->GetFileHash());
 
 	if (SupportMultiPacket())
 	{
-		if (thePrefs.GetDebugClientTCPLevel() > 0)
-			DebugSend("OP__MultiPacket", this, reqfile->GetFileHash());
+		if (SupportExtMultiPacket()){
+			dataFileReq.WriteUInt64(reqfile->GetFileSize());
+			if (thePrefs.GetDebugClientTCPLevel() > 0)
+				DebugSend("OP__MultiPacket_Ext", this, reqfile->GetFileHash());
+		}
+		else{
+			if (thePrefs.GetDebugClientTCPLevel() > 0)
+				DebugSend("OP__MultiPacket", this, reqfile->GetFileHash());
+		}
 
 		// OP_REQUESTFILENAME + ExtInfo
 		if (thePrefs.GetDebugClientTCPLevel() > 0)
@@ -428,13 +441,10 @@ void CUpDownClient::SendFileRequest()
 		// OP_SETREQFILEID
 		if (thePrefs.GetDebugClientTCPLevel() > 0)
 			DebugSend("OP__MPSetReqFileID", this, reqfile->GetFileHash());
-		
-		if (reqfile->GetPartCount() > 1
-			|| SupportsWebCache()) // Superlexx - webcache - IFP , {Webcache} [Max]  
-		
+		if (reqfile->GetPartCount() > 1)
 			dataFileReq.WriteUInt8(OP_SETREQFILEID);
-		
-			if (IsEmuleClient())
+
+		if (IsEmuleClient())
 		{
 			SetRemoteQueueFull(true);
 			SetRemoteQueueRank(0,false); //Xman
@@ -451,7 +461,11 @@ void CUpDownClient::SendFileRequest()
 					Debug(_T("  last source request was before %s\n"), CastSecondsToHM((GetTickCount() - GetLastAskedForSources())/1000));
 			}
 			
-			IncXSReqs();//>>> Anti-XS-Exploit (Xman)
+			//Xman because official client has a bug, only count the XSReqs under special conditions
+			//remark: this fails for complete sources the first time.. but this doesn't hurt
+			if( (m_bCompleteSource || !md4cmp(GetUploadFileID(), reqfile->GetFileHash())) //complete source of we want the same file
+				&& reqfile->GetValidSourcesCount() > 10) //if we know at least 10 good sources, the remote client should know at least one
+				IncXSReqs();//>>> Anti-XS-Exploit (Xman)
 
 			dataFileReq.WriteUInt8(OP_REQUESTSOURCES);
 			reqfile->SetLastAnsweredTimeTimeout();
@@ -468,26 +482,8 @@ void CUpDownClient::SendFileRequest()
 			dataFileReq.WriteUInt8(OP_AICHFILEHASHREQ);
 		}
 
-// ==> {Webcache} [Max] 
-		// Superlexx - webcache - the webcache-only tags, moved here from the hello packet
-		if (SupportsWebCache() && WebCacheInfoNeeded())
-		{
-			dataFileReq.WriteUInt8(WC_TAG_WEBCACHENAME);
-			dataFileReq.WriteString(thePrefs.webcacheName);
-
-			dataFileReq.WriteUInt8(WC_TAG_MASTERKEY);
-			dataFileReq.Write( Crypt.remoteMasterKey, WC_KEYLENGTH );
-			SetWebCacheInfoNeeded(false);
-
-			byte tmpID[4];
-			for (int i=0; i<4; i++)
-				tmpID[i] = Crypt.remoteMasterKey[i] ^ (thePrefs.GetUserHash())[i];
-			m_uWebCacheUploadId =*((uint32*)tmpID);
-		}
-// <== {Webcache} [Max] 
-
 		Packet* packet = new Packet(&dataFileReq, OP_EMULEPROT);
-		packet->opcode = OP_MULTIPACKET;
+		packet->opcode = SupportExtMultiPacket() ? OP_MULTIPACKET_EXT : OP_MULTIPACKET;
 		theStats.AddUpDataOverheadFileRequest(packet->size);
 		socket->SendPacket(packet, true);
 	}
@@ -508,10 +504,7 @@ void CUpDownClient::SendFileRequest()
 		// 26-Jul-2003: removed requesting the file status for files <= PARTSIZE for better compatibility with ed2k protocol (eDonkeyHybrid).
 		// if the remote client answers the OP_REQUESTFILENAME with OP_REQFILENAMEANSWER the file is shared by the remote client. if we
 		// know that the file is shared, we know also that the file is complete and don't need to request the file status.
-		
-		if (reqfile->GetPartCount() > 1
-			|| SupportsWebCache())	// Superlexx - webcache - webcache-enabled clients might use IFP , {Webcache} [Max]  
-	
+		if (reqfile->GetPartCount() > 1)
 		{
 			if (thePrefs.GetDebugClientTCPLevel() > 0)
 				DebugSend("OP__SetReqFileID", this, reqfile->GetFileHash());
@@ -538,7 +531,12 @@ void CUpDownClient::SendFileRequest()
 				else
 					Debug(_T("  last source request was before %s\n"), CastSecondsToHM((GetTickCount() - GetLastAskedForSources())/1000));
 			}
-			IncXSReqs();//>>> Anti-XS-Exploit (Xman)
+			//Xman because official client has a bug, only count the XSReqs under special conditions
+			//remark: this fails for complete sources the first time.. but this doesn't hurt
+			if( (m_bCompleteSource || !md4cmp(GetUploadFileID(), reqfile->GetFileHash())) //complete source of we want the same file
+				&& reqfile->GetValidSourcesCount() > 10) //if we know at least 10 good sources, the remote client should know at least one
+				IncXSReqs();//>>> Anti-XS-Exploit (Xman)
+
 			reqfile->SetLastAnsweredTimeTimeout();
 			Packet* packet = new Packet(OP_REQUESTSOURCES,16,OP_EMULEPROT);
 			md4cpy(packet->pBuffer,reqfile->GetFileHash());
@@ -638,19 +636,15 @@ void CUpDownClient::ProcessFileInfo(CSafeMemFile* data, CPartFile* file)
 	if (file != reqfile)
 		throw GetResString(IDS_ERR_WRONGFILEID) + _T(" (ProcessFileInfo; reqfile!=file)");
 	m_strClientFilename = data->ReadString(GetUnicodeSupport()!=utf8strNone);
+	if (thePrefs.GetDebugClientTCPLevel() > 0)
+		Debug(_T("  Filename=\"%s\"\n"), m_strClientFilename);
 	// 26-Jul-2003: removed requesting the file status for files <= PARTSIZE for better compatibility with ed2k protocol (eDonkeyHybrid).
 	// if the remote client answers the OP_REQUESTFILENAME with OP_REQFILENAMEANSWER the file is shared by the remote client. if we
 	// know that the file is shared, we know also that the file is complete and don't need to request the file status.
-	
-	if (reqfile->GetPartCount() == 1
-		&& !SupportsWebCache()) // Superlexx - webcache - webcache-enabled clients might use IFP , {Webcache} [Max]  
-	
+	if (reqfile->GetPartCount() == 1)
 	{
-		if (m_abyPartStatus)
-		{
-			delete[] m_abyPartStatus;
-			m_abyPartStatus = NULL;
-		}
+		delete[] m_abyPartStatus;
+		m_abyPartStatus = NULL;
 		m_nPartCount = reqfile->GetPartCount();
 		m_abyPartStatus = new uint8[m_nPartCount];
 		memset(m_abyPartStatus,1,m_nPartCount);
@@ -658,12 +652,12 @@ void CUpDownClient::ProcessFileInfo(CSafeMemFile* data, CPartFile* file)
 
 		if (thePrefs.GetDebugClientTCPLevel() > 0)
 		{
-		    int iNeeded = 0;
-		    for (int i = 0; i < m_nPartCount; i++)
-			    if (!reqfile->IsComplete(i*PARTSIZE,((i+1)*PARTSIZE)-1,false))
-				    iNeeded++;
+			int iNeeded = 0;
+			for (UINT i = 0; i < m_nPartCount; i++)
+				if (!reqfile->IsComplete((uint64)i*PARTSIZE, ((uint64)(i+1)*PARTSIZE)-1, false))
+					iNeeded++;
 			char* psz = new char[m_nPartCount + 1];
-			for (int i = 0; i < m_nPartCount; i++)
+			for (UINT i = 0; i < m_nPartCount; i++)
 				psz[i] = m_abyPartStatus[i] ? '#' : '.';
 			psz[i] = '\0';
 			Debug(_T("  Parts=%u  %hs  Needed=%u\n"), m_nPartCount, psz, iNeeded);
@@ -706,33 +700,33 @@ void CUpDownClient::ProcessFileStatus(bool bUdpPacket, CSafeMemFile* data, CPart
 		throw GetResString(IDS_ERR_WRONGFILEID) + _T(" (ProcessFileStatus; reqfile!=file)");
 	}
 	uint16 nED2KPartCount = data->ReadUInt16();
-	if (m_abyPartStatus)
-	{
-		delete[] m_abyPartStatus;
-		m_abyPartStatus = NULL;
-	}
+	delete[] m_abyPartStatus;
+	m_abyPartStatus = NULL;
 	bool bPartsNeeded = false;
 	int iNeeded = 0;
 	if (!nED2KPartCount)
 	{
 		m_nPartCount = reqfile->GetPartCount();
 		m_abyPartStatus = new uint8[m_nPartCount];
-		memset(m_abyPartStatus,1,m_nPartCount);
+		memset(m_abyPartStatus, 1, m_nPartCount);
 		bPartsNeeded = true;
 		m_bCompleteSource = true;
 		if (bUdpPacket ? (thePrefs.GetDebugClientUDPLevel() > 0) : (thePrefs.GetDebugClientTCPLevel() > 0))
 		{
-			for (int i = 0; i < m_nPartCount; i++)
+			for (UINT i = 0; i < m_nPartCount; i++)
 			{
-				if (!reqfile->IsComplete(i*PARTSIZE,((i+1)*PARTSIZE)-1, false))
+				if (!reqfile->IsComplete((uint64)i*PARTSIZE, ((uint64)(i+1)*PARTSIZE)-1, false))
 					iNeeded++;
 			}
 		}
 	}
 	else
 	{
-		if (reqfile->GetED2KPartCount() != nED2KPartCount)
-		{
+		if (reqfile->GetED2KPartCount() != nED2KPartCount) {
+			if (thePrefs.GetVerbose()) {
+				DebugLogWarning(_T("FileName: \"%s\""), m_strClientFilename);
+				DebugLogWarning(_T("FileStatus: %s"), DbgGetFileStatus(nED2KPartCount, data));
+			}
 			CString strError;
 			strError.Format(_T("ProcessFileStatus - wrong part number recv=%u  expected=%u  %s"), nED2KPartCount, reqfile->GetED2KPartCount(), DbgGetFileInfo(reqfile->GetFileHash()));
 			m_nPartCount = 0;
@@ -742,16 +736,16 @@ void CUpDownClient::ProcessFileStatus(bool bUdpPacket, CSafeMemFile* data, CPart
 
 		m_bCompleteSource = false;
 		m_abyPartStatus = new uint8[m_nPartCount];
-		uint16 done = 0;
+		UINT done = 0;
 		while (done != m_nPartCount)
 		{
 			uint8 toread = data->ReadUInt8();
-			for (sint32 i = 0;i != 8;i++)
+			for (UINT i = 0; i != 8; i++)
 			{
 				m_abyPartStatus[done] = ((toread>>i)&1)? 1:0; 	
 				if (m_abyPartStatus[done])
 				{
-					if (!reqfile->IsComplete(done*PARTSIZE,((done+1)*PARTSIZE)-1, false)){
+					if (!reqfile->IsComplete((uint64)done*PARTSIZE, ((uint64)(done+1)*PARTSIZE)-1, false)){
 						bPartsNeeded = true;
 						iNeeded++;
 					}
@@ -766,14 +760,13 @@ void CUpDownClient::ProcessFileStatus(bool bUdpPacket, CSafeMemFile* data, CPart
 	if (bUdpPacket ? (thePrefs.GetDebugClientUDPLevel() > 0) : (thePrefs.GetDebugClientTCPLevel() > 0))
 	{
 		TCHAR* psz = new TCHAR[m_nPartCount + 1];
-		for (int i = 0; i < m_nPartCount; i++)
+		for (UINT i = 0; i < m_nPartCount; i++)
 			psz[i] = m_abyPartStatus[i] ? _T('#') : _T('.');
 		psz[i] = _T('\0');
 		Debug(_T("  Parts=%u  %s  Needed=%u\n"), m_nPartCount, psz, iNeeded);
 		delete[] psz;
 	}
 
-	UpdateDisplayedInfo(); //Xman
 	reqfile->UpdateAvailablePartsCount();
 
 	// NOTE: This function is invoked from TCP and UDP socket!
@@ -815,11 +808,16 @@ void CUpDownClient::ProcessFileStatus(bool bUdpPacket, CSafeMemFile* data, CPart
 		{
 			SendStartupLoadReq();
 		}
+		//Xman 4.8.2 moved the update display here. Because in most  cases it has been already updated, if not it will be done now:
+		UpdateDisplayedInfo();
+		//Xman end
 	}
 	else
 	{
 		if (!bPartsNeeded)
+		{
 			SetDownloadState(DS_NONEEDEDPARTS, _T("No Needed Parts"), CUpDownClient::DSR_NONEEDEDPARTS); // - Maella -Download Stop Reason-
+		}
 		else
 			SetDownloadState(DS_ONQUEUE);
 	}
@@ -878,7 +876,13 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState, LPCTSTR pszReason
 
 		//Xman fix for startupload (downloading side)
 		if(nNewState==DS_NONEEDEDPARTS)
+		{
 			protocolstepflag1=false;
+			//Xman DiffQR + official bugfix 
+			SetRemoteQueueRank(0,false); //Xman display is updated few lines below
+			oldQR=0; 
+			//Xman end
+		}
 		//Xman end
 
 		if (reqfile){
@@ -958,7 +962,7 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState, LPCTSTR pszReason
 
 			ResetSessionDown(); //Xman filter clients with failed downloads
 
-			m_nDownloadState = nNewState;
+			m_nDownloadState = (_EDownloadState)nNewState;
 
 			ClearDownloadBlockRequests();
 			
@@ -986,15 +990,14 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState, LPCTSTR pszReason
 			//Xman end
 
 			if (nNewState == DS_NONE){
-				if (m_abyPartStatus)
-					delete[] m_abyPartStatus;
+				delete[] m_abyPartStatus;
 				m_abyPartStatus = NULL;
 				m_nPartCount = 0;
 			}
 			if (socket && nNewState != DS_ERROR )
 				socket->DisableDownloadLimit();
 		}
-		m_nDownloadState = nNewState;
+		m_nDownloadState = (_EDownloadState)nNewState;
 		if( GetDownloadState() == DS_DOWNLOADING ){
 			if ( IsEmuleClient() )
 				SetRemoteQueueFull(false);
@@ -1022,18 +1025,6 @@ void CUpDownClient::ProcessHashSet(const uchar* packet,uint32 size)
 		reqfile->hashsetneeded = true;
 		throw GetResString(IDS_ERR_BADHASHSET);
 	}
-
-// ==> {Webcache} [Max] 
-	// Superlexx - IFP
-	if (thePrefs.IsWebCacheDownloadEnabled() && reqfile->GetStatus() == PS_EMPTY)
-	{
-		reqfile = STATIC_DOWNCAST(CPartFile, reqfile);
-			reqfile->SetStatus(PS_READY);
-		theApp.sharedfiles->SafeAddKFile(reqfile);
-	}
-       	// Superlexx - IFP - end
-// <== {Webcache} [Max] 
-
 	SendStartupLoadReq();
 }
 
@@ -1045,16 +1036,16 @@ void CUpDownClient::CreateBlockRequests(int iMaxBlocks)
 		uint16 count;
 		//Xman bugfix
 		if(iMaxBlocks > m_PendingBlocks_list.GetCount()) {
-			count = iMaxBlocks - m_PendingBlocks_list.GetCount();
+			count = (uint16)(iMaxBlocks - m_PendingBlocks_list.GetCount());
 		 
 		
-		Requested_Block_Struct** toadd = new Requested_Block_Struct*[count];
-		if (reqfile->GetNextRequestedBlock(this,toadd,&count)){
-			for (int i = 0; i < count; i++)
-				m_DownloadBlocks_list.AddTail(toadd[i]);
+			Requested_Block_Struct** toadd = new Requested_Block_Struct*[count];
+			if (reqfile->GetNextRequestedBlock(this,toadd,&count)){
+				for (UINT i = 0; i < count; i++)
+					m_DownloadBlocks_list.AddTail(toadd[i]);
+			}
+			delete[] toadd;
 		}
-		delete[] toadd;
-	}
 		//Xman end
 	}
 
@@ -1074,60 +1065,9 @@ void CUpDownClient::SendBlockRequests()
 	if (!reqfile)
 		return;
 
-// ==> {Webcache} [Max] 
-// Superlexx - COtN - start
-	byte WC_TestFileHash[16] = { 0xE9, 0x05, 0x7A, 0xDC, 0x38, 0x05, 0x4A, 0xFA, 0x24, 0x81, 0x6E, 0x86, 0xBB, 0x08, 0xD2, 0x70 };
-	bool isTestFile = md4cmp(reqfile->GetFileHash(), WC_TestFileHash)==0;
-	bool doCache = false;
-	CreateBlockRequests(1);
-	if (m_PendingBlocks_list.IsEmpty())
-	{
-		SendCancelTransfer();
-		SetDownloadState(DS_NONEEDEDPARTS);
-		return;
-	}
-	if (thePrefs.GetLogWebCacheEvents()) //JP log webcache events
-		AddDebugLogLine(false, _T("Proxy-Connections for this file: %u Allowed: %u"), reqfile->GetNumberOfCurrentWebcacheConnectionsForThisFile(), reqfile->GetMaxNumberOfWebcacheConnectionsForThisFile());
-	if( thePrefs.IsWebCacheDownloadEnabled()
-		&& UsesCachedTCPPort() // uses a port that is usually cached
-		&& SupportsWebCache() // client knows webcache protocol
-		&& !HasLowID()	// has highID
-		&& AllowProxyConnection() // not too many open sockets to proxy
-// yonatan tmp -	&& ((thePrefs.WebCacheIsTransparent() && GetUserPort() == 80)|| (!thePrefs.WebCacheIsTransparent() && ResolveWebCacheName())) // found HTTP proxy // Superlexx - TPS
-		&& ( thePrefs.WebCacheIsTransparent() ?
-			GetUserPort() == 80			// yes - proceed if uploader uses port 80
-			: ResolveWebCacheName() )	// no - proceed if proxy address can be resolved
-		&& (thePrefs.GetWebCacheCachesLocalTraffic() || !IsBehindOurWebCache()) //JP changed to new IsBehindOurWebCache-function 		// WC-TODO: Shorter names?
-		&& reqfile->GetNumberOfCurrentWebcacheConnectionsForThisFile() < reqfile->GetMaxNumberOfWebcacheConnectionsForThisFile() ) //JP Throttle OHCB-production
-	{
-		if (isTestFile)
-			doCache = true;
-		else
-		{
-			Pending_Block_Struct* pending = m_PendingBlocks_list.GetHead();
-			//JP take successrate into account when deciding to do webcache download (rounded down)
-			// Superlexx: modified this to actually work ;)
-			uint32 minOHCBRecipients = (thePrefs.ses_WEBCACHEREQUESTS > 50 && thePrefs.ses_successfull_WCDOWNLOADS > 0) ? thePrefs.ses_WEBCACHEREQUESTS / thePrefs.ses_successfull_WCDOWNLOADS : 1;
-			if (theApp.clientlist->GetNumberOfClientsBehindOurWebCacheHavingSameFileAndNeedingThisBlock(pending, minOHCBRecipients) >= minOHCBRecipients)
-				doCache = true;
-#ifdef _DEBUG
-			doCache = true;
-#endif
-		}
-	}
-	
-	if( doCache ) {
-		ASSERT( GetDownloadState() == DS_DOWNLOADING );
-//		Crypt.useNewKey = true;	// Superlexx - moved this to SendWebCacheBlockRequests()
-		SendWebCacheBlockRequests();
-		return;
-	}
-// Superlexx - COtN - end
-// <== {Webcache} [Max] 
-
- // prevent locking of too many blocks when we are on a slow (probably standby/trickle) slot
-    int blockCount = 3;
-	if(IsEmuleClient() && m_byCompatibleClient==0 && reqfile->GetFileSize()-reqfile->GetCompletedSize() <= PARTSIZE*4) {
+	// prevent locking of too many blocks when we are on a slow (probably standby/trickle) slot
+	int blockCount = 3;
+	if(IsEmuleClient() && m_byCompatibleClient==0 && reqfile->GetFileSize()-reqfile->GetCompletedSize() <= (uint64)PARTSIZE*4) {
 		// if there's less than two chunks left, request fewer blocks for
 		// slow downloads, so they don't lock blocks from faster clients.
 		// Only trust eMule clients to be able to handle less blocks than three
@@ -1178,48 +1118,115 @@ void CUpDownClient::SendBlockRequests()
 		//Xman end
 		return;
 	}
-	const int iPacketSize = 16+(3*4)+(3*4); // 40
-	Packet* packet = new Packet(OP_REQUESTPARTS,iPacketSize);
-	CSafeMemFile data((const BYTE*)packet->pBuffer,iPacketSize);
-	data.WriteHash16(reqfile->GetFileHash());
+
+	bool bI64Offsets = false;
 	POSITION pos = m_PendingBlocks_list.GetHeadPosition();
 	for (uint32 i = 0; i != 3; i++){
 		if (pos){
 			Pending_Block_Struct* pending = m_PendingBlocks_list.GetNext(pos);
 			ASSERT( pending->block->StartOffset <= pending->block->EndOffset );
-			//ASSERT( pending->zStream == NULL );
-			//ASSERT( pending->totalUnzipped == 0 );
-			pending->fZStreamError = 0;
-			pending->fRecovered = 0;
-			data.WriteUInt32(pending->block->StartOffset);
-		}
-		else
-			data.WriteUInt32(0);
-	}
-	pos = m_PendingBlocks_list.GetHeadPosition();
-	for (uint32 i = 0; i != 3; i++){
-		if (pos){
-			Requested_Block_Struct* block = m_PendingBlocks_list.GetNext(pos)->block;
-			uint32 endpos = block->EndOffset+1;
-			data.WriteUInt32(endpos);
-			if (thePrefs.GetDebugClientTCPLevel() > 0){
-				CString strInfo;
-				strInfo.Format(_T("  Block request %u: "), i);
-				strInfo += DbgGetBlockInfo(block);
-				strInfo.AppendFormat(_T(",  Complete=%s"), reqfile->IsComplete(block->StartOffset, block->EndOffset, false) ? _T("Yes(NOTE:)") : _T("No"));
-				strInfo.AppendFormat(_T(",  PureGap=%s"), reqfile->IsPureGap(block->StartOffset, block->EndOffset) ? _T("Yes") : _T("No(NOTE:)"));
-				strInfo.AppendFormat(_T(",  AlreadyReq=%s"), reqfile->IsAlreadyRequested(block->StartOffset, block->EndOffset) ? _T("Yes") : _T("No(NOTE:)"));
-				strInfo += _T('\n');
-				Debug(strInfo);
+			if (pending->block->StartOffset > 0xFFFFFFFF || pending->block->EndOffset > 0xFFFFFFFF){
+				bI64Offsets = true;
+				if (!SupportsLargeFiles()){
+					ASSERT( false );
+					SendCancelTransfer();
+					SetDownloadState(DS_ERROR);
+				}
+				break;
 			}
 		}
-		else
-		{
-			data.WriteUInt32(0);
-			if (thePrefs.GetDebugClientTCPLevel() > 0)
-				Debug(_T("  Block request %u: <empty>\n"), i);
+	}
+
+	Packet* packet;
+	if (bI64Offsets){
+		const int iPacketSize = 16+(3*8)+(3*8); // 64
+		packet = new Packet(OP_REQUESTPARTS_I64, iPacketSize, OP_EMULEPROT);
+		CSafeMemFile data((const BYTE*)packet->pBuffer, iPacketSize);
+		data.WriteHash16(reqfile->GetFileHash());
+		pos = m_PendingBlocks_list.GetHeadPosition();
+		for (uint32 i = 0; i != 3; i++){
+			if (pos){
+				Pending_Block_Struct* pending = m_PendingBlocks_list.GetNext(pos);
+				ASSERT( pending->block->StartOffset <= pending->block->EndOffset );
+				//ASSERT( pending->zStream == NULL );
+				//ASSERT( pending->totalUnzipped == 0 );
+				pending->fZStreamError = 0;
+				pending->fRecovered = 0;
+				data.WriteUInt64(pending->block->StartOffset);
+			}
+			else
+				data.WriteUInt64(0);
+		}
+		pos = m_PendingBlocks_list.GetHeadPosition();
+		for (uint32 i = 0; i != 3; i++){
+			if (pos){
+				Requested_Block_Struct* block = m_PendingBlocks_list.GetNext(pos)->block;
+				uint64 endpos = block->EndOffset+1;
+				data.WriteUInt64(endpos);
+				if (thePrefs.GetDebugClientTCPLevel() > 0){
+					CString strInfo;
+					strInfo.Format(_T("  Block request %u: "), i);
+					strInfo += DbgGetBlockInfo(block);
+					strInfo.AppendFormat(_T(",  Complete=%s"), reqfile->IsComplete(block->StartOffset, block->EndOffset, false) ? _T("Yes(NOTE:)") : _T("No"));
+					strInfo.AppendFormat(_T(",  PureGap=%s"), reqfile->IsPureGap(block->StartOffset, block->EndOffset) ? _T("Yes") : _T("No(NOTE:)"));
+					strInfo.AppendFormat(_T(",  AlreadyReq=%s"), reqfile->IsAlreadyRequested(block->StartOffset, block->EndOffset) ? _T("Yes") : _T("No(NOTE:)"));
+					strInfo += _T('\n');
+					Debug(strInfo);
+				}
+			}
+			else
+			{
+				data.WriteUInt64(0);
+				if (thePrefs.GetDebugClientTCPLevel() > 0)
+					Debug(_T("  Block request %u: <empty>\n"), i);
+			}
 		}
 	}
+	else{
+		const int iPacketSize = 16+(3*4)+(3*4); // 40
+		packet = new Packet(OP_REQUESTPARTS,iPacketSize);
+		CSafeMemFile data((const BYTE*)packet->pBuffer, iPacketSize);
+		data.WriteHash16(reqfile->GetFileHash());
+		pos = m_PendingBlocks_list.GetHeadPosition();
+		for (uint32 i = 0; i != 3; i++){
+			if (pos){
+				Pending_Block_Struct* pending = m_PendingBlocks_list.GetNext(pos);
+				ASSERT( pending->block->StartOffset <= pending->block->EndOffset );
+				//ASSERT( pending->zStream == NULL );
+				//ASSERT( pending->totalUnzipped == 0 );
+				pending->fZStreamError = 0;
+				pending->fRecovered = 0;
+				data.WriteUInt32((uint32)pending->block->StartOffset);
+			}
+			else
+				data.WriteUInt32(0);
+		}
+		pos = m_PendingBlocks_list.GetHeadPosition();
+		for (uint32 i = 0; i != 3; i++){
+			if (pos){
+				Requested_Block_Struct* block = m_PendingBlocks_list.GetNext(pos)->block;
+				uint64 endpos = block->EndOffset+1;
+				data.WriteUInt32((uint32)endpos);
+				if (thePrefs.GetDebugClientTCPLevel() > 0){
+					CString strInfo;
+					strInfo.Format(_T("  Block request %u: "), i);
+					strInfo += DbgGetBlockInfo(block);
+					strInfo.AppendFormat(_T(",  Complete=%s"), reqfile->IsComplete(block->StartOffset, block->EndOffset, false) ? _T("Yes(NOTE:)") : _T("No"));
+					strInfo.AppendFormat(_T(",  PureGap=%s"), reqfile->IsPureGap(block->StartOffset, block->EndOffset) ? _T("Yes") : _T("No(NOTE:)"));
+					strInfo.AppendFormat(_T(",  AlreadyReq=%s"), reqfile->IsAlreadyRequested(block->StartOffset, block->EndOffset) ? _T("Yes") : _T("No(NOTE:)"));
+					strInfo += _T('\n');
+					Debug(strInfo);
+				}
+			}
+			else
+			{
+				data.WriteUInt32(0);
+				if (thePrefs.GetDebugClientTCPLevel() > 0)
+					Debug(_T("  Block request %u: <empty>\n"), i);
+			}
+		}
+	}
+
 	theStats.AddUpDataOverheadFileRequest(packet->size);
 	socket->SendPacket(packet,true,true);
 }
@@ -1239,15 +1246,16 @@ void CUpDownClient::SendBlockRequests()
 		   The requests will still not exceed 180k, but may be smaller to
 		   fill a gap.
 */
-void CUpDownClient::ProcessBlockPacket(const uchar *packet, uint32 size, bool packed)
+void CUpDownClient::ProcessBlockPacket(const uchar *packet, uint32 size, bool packed, bool bI64Offsets)
 {
+	/* TODO rewrite debugoutput
 	uint32 nDbgStartPos = *((uint32*)(packet+16));
 	if (thePrefs.GetDebugClientTCPLevel() > 1){
-		if (packed)
-			Debug(_T("  Start=%u  BlockSize=%u  Size=%u  %s\n"), nDbgStartPos, *((uint32*)(packet + 16+4)), size-24, DbgGetFileInfo(packet));
-		else
-			Debug(_T("  Start=%u  End=%u  Size=%u  %s\n"), nDbgStartPos, *((uint32*)(packet + 16+4)), *((uint32*)(packet + 16+4)) - nDbgStartPos, DbgGetFileInfo(packet));
-	}
+	if (packed)
+	Debug(_T("  Start=%u  BlockSize=%u  Size=%u  %s\n"), nDbgStartPos, *((uint32*)(packet + 16+4)), size-24, DbgGetFileInfo(packet));
+	else
+	Debug(_T("  Start=%u  End=%u  Size=%u  %s\n"), nDbgStartPos, *((uint32*)(packet + 16+4)), *((uint32*)(packet + 16+4)) - nDbgStartPos, DbgGetFileInfo(packet));
+	}*/
 
 	// Ignore if no data required
 	if (!(GetDownloadState() == DS_DOWNLOADING || GetDownloadState() == DS_NONEEDEDPARTS)){
@@ -1255,7 +1263,7 @@ void CUpDownClient::ProcessBlockPacket(const uchar *packet, uint32 size, bool pa
 		return;
 	}
 
-	const int HEADER_SIZE = 24;// FileId(16) + StartOffset(4) + EndOffset(4)
+
 
 	// Update stats
 	m_dwLastBlockReceived = ::GetTickCount();
@@ -1264,6 +1272,7 @@ void CUpDownClient::ProcessBlockPacket(const uchar *packet, uint32 size, bool pa
 	CSafeMemFile data(packet, size);
 	uchar fileID[16];
 	data.ReadHash16(fileID);
+	int nHeaderSize = 16;
 
 	// Check that this data is for the correct file
 	if ( (!reqfile) || md4cmp(packet, reqfile->GetFileHash()))
@@ -1272,21 +1281,38 @@ void CUpDownClient::ProcessBlockPacket(const uchar *packet, uint32 size, bool pa
 	}
 
 	// Find the start & end positions, and size of this chunk of data
-	uint32 nStartPos;
-	uint32 nEndPos;
+	uint64 nStartPos;
+	uint64 nEndPos;
 	uint32 nBlockSize = 0;
-	uint32 uTransferredFileDataSize = size - HEADER_SIZE;
-	nStartPos = data.ReadUInt32();
+
+	if (bI64Offsets){
+		nStartPos = data.ReadUInt64();
+		nHeaderSize += 8;
+	}
+	else{
+		nStartPos = data.ReadUInt32();
+		nHeaderSize += 4;
+	}
 	if (packed)
 	{
 		nBlockSize = data.ReadUInt32();
-		nEndPos = nStartPos + uTransferredFileDataSize;
+		nHeaderSize += 4;
+		nEndPos = nStartPos + (size - nHeaderSize);
 	}
-	else
-		nEndPos = data.ReadUInt32();
+	else{
+		if (bI64Offsets){
+			nEndPos = data.ReadUInt64();
+			nHeaderSize += 8;
+		}
+		else{
+			nEndPos = data.ReadUInt32();
+			nHeaderSize += 4;
+		}
+	}
+	uint32 uTransferredFileDataSize = size - nHeaderSize;
 
 	// Check that packet size matches the declared data size + header size (24)
-	if (nEndPos == nStartPos || size != ((nEndPos - nStartPos) + HEADER_SIZE))
+	if (nEndPos == nStartPos || size != ((nEndPos - nStartPos) + nHeaderSize))
 		throw GetResString(IDS_ERR_BADDATABLOCK) + _T(" (ProcessBlockPacket)");
 
 	// -khaos--+++>
@@ -1295,7 +1321,6 @@ void CUpDownClient::ProcessBlockPacket(const uchar *packet, uint32 size, bool pa
 	// bFromPF is not relevant to downloaded data.  It is purely an uploads statistic.
 	thePrefs.Add2SessionTransferData(GetClientSoft(), GetUserPort(), false, false, uTransferredFileDataSize, false);
 	// <-----khaos-
-
 
 	if (credits)
 		credits->AddDownloaded(uTransferredFileDataSize, GetIP());
@@ -1331,11 +1356,11 @@ void CUpDownClient::ProcessBlockPacket(const uchar *packet, uint32 size, bool pa
 			{
 				// Write to disk (will be buffered in part file class)
 				lenWritten = reqfile->WriteToBuffer(uTransferredFileDataSize, 
-													packet + HEADER_SIZE,
-													nStartPos,
-													nEndPos,
-													cur_block->block,
-													this);
+					packet + nHeaderSize,
+					nStartPos,
+					nEndPos,
+					cur_block->block,
+					this);
 			}
 			else // Packed
 			{
@@ -1348,7 +1373,7 @@ void CUpDownClient::ProcessBlockPacket(const uchar *packet, uint32 size, bool pa
 				BYTE *unzipped = new BYTE[lenUnzipped];
 
 				// Try to unzip the packet
-				int result = unzip(cur_block, packet + HEADER_SIZE, uTransferredFileDataSize, &unzipped, &lenUnzipped);
+				int result = unzip(cur_block, packet + nHeaderSize, uTransferredFileDataSize, &unzipped, &lenUnzipped);
 				// no block can be uncompressed to >2GB, 'lenUnzipped' is obviously errornous.
 				if (result == Z_OK && (int)lenUnzipped >= 0)
 				{
@@ -1431,8 +1456,6 @@ void CUpDownClient::ProcessBlockPacket(const uchar *packet, uint32 size, bool pa
 					// Request next block
 					if (thePrefs.GetDebugClientTCPLevel() > 0)
 						DebugSend("More block requests", this);
-
-					if (m_PendingBlocks_list.IsEmpty()) // Superlexx - tmp , {Webcache} [Max]  
 					SendBlockRequests();	
 				}
 			}
@@ -1526,7 +1549,7 @@ int CUpDownClient::unzip(Pending_Block_Struct* block, const BYTE* zipped, uint32
 		    BYTE *temp = new BYTE[newLength];
 			ASSERT( zS->total_out - block->totalUnzipped <= newLength );
 		    memcpy(temp, (*unzipped), (zS->total_out - block->totalUnzipped));
-		    delete [] (*unzipped);
+		    delete[] (*unzipped);
 		    (*unzipped) = temp;
 		    (*lenUnzipped) = newLength;
     
@@ -1634,33 +1657,7 @@ void CUpDownClient::CheckDownloadTimeout()
 			OnPeerCacheDownSocketTimeout();
 		}
 	}
-
-// ==> {Webcache} [Max] 
-// yonatan http start //////////////////////////////////////////////////////////////////////////
-        else if (IsDownloadingFromWebCache() && m_pWCDownSocket) // jp proxy stall fix removed: && m_pWCDownSocket->IsConnected())
-	{
-		ASSERT( DOWNLOADTIMEOUT < m_pWCDownSocket->GetTimeOut() );
-		if (m_pWCDownSocket->IsConnected())
-		{
-		if (GetTickCount() - m_dwLastBlockReceived > DOWNLOADTIMEOUT)
-		{
-				OnWebCacheDownSocketTimeout();
-			}
-		}
-        else //this shouldn't happen but aparently does maybe fixed by WebCacheDownSocket::OnConnect() function??
-		{
-			if (GetTickCount() - m_dwLastBlockReceived > DOWNLOADTIMEOUT)
-			{
-				if( thePrefs.GetLogWebCacheEvents() ) // yonatan tmp logging
-					AddDebugLogLine( false, _T("Disconnected WCDownSocket Timed Out!!! PLEASE TELL THE WEBCACHE DEVELOPERS IF YOU EVER SEE THIS") );
-				OnWebCacheDownSocketTimeout();
-			}
-		}
-	}
-	else if( !IsProxy() ) // proxies don't have a socket!
-// yonatan http end ////////////////////////////////////////////////////////////////////////////
-// <== {Webcache} [Max] 
-
+	else
 	{
 		if ((::GetTickCount() - m_dwLastBlockReceived) > DOWNLOADTIMEOUT)
 		{
@@ -1676,32 +1673,35 @@ void CUpDownClient::CheckDownloadTimeout()
 	}
 }
 
-UINT CUpDownClient::GetAvailablePartCount() const
+uint16 CUpDownClient::GetAvailablePartCount() const
 {
 	UINT result = 0;
-	for (int i = 0;i < m_nPartCount;i++){
+	for (UINT i = 0; i < m_nPartCount; i++){
 		if (IsPartAvailable(i))
 			result++;
 	}
-	return result;
+	return (uint16)result;
 }
+
 //Xman Xtreme Downloadmanager
-//0.46a: remark: since 0.46a the official emule also uses a updatedisplay-flag. The one of Xtreme-Mod is used in a different way!
-void CUpDownClient::SetRemoteQueueRank(uint16 nr, bool updatedisplay){ 
+//0.46a: remark: since 0.46a the official emuel also uses a updatedisplay-flag. The one of Xtreme-Mod is used in a different way!
+void CUpDownClient::SetRemoteQueueRank(UINT nr, bool updatedisplay){ 
 	if(reqfile) reqfile->CalcAvgQr(nr, m_nRemoteQueueRank);
-        //Xman DiffQR 
+	//Xman DiffQR 
 	if(m_nRemoteQueueRank!=0) oldQR=m_nRemoteQueueRank;
 	//Xman end
 	m_nRemoteQueueRank = nr;
 	if(updatedisplay)
-		UpdateDisplayedInfo();
+		UpdateDisplayedInfo(true);
 }
 //Xman end
 
 void CUpDownClient::UDPReaskACK(uint16 nNewQR)
 {
 	m_bUDPPending = false;
-	SetRemoteQueueRank(nNewQR); //Xman
+	if(GetDownloadState()!=DS_NONEEDEDPARTS) //Xman diffQR and official bugfix, which would sort this source wrong
+		SetRemoteQueueRank(nNewQR); //Xman
+
 	// Maella -Unnecessary Protocol Overload-
 	// Delay the next refresh of the download session initiated from CPartFile::Process()
 	m_dwLastAskedTime = ::GetTickCount();
@@ -1772,15 +1772,20 @@ void CUpDownClient::UDPReaskForDownload()
 	if( HasTooManyFailedUDP()) //Xman own method
 		return;
 
+
+	//Xman 4.8.2 code-Improvement
+	//it can happen that our UDP-packet is received by remote client 
+	//but the answer get always lost. In this case it makes no sence to send the second UDP-packet
+	if(m_bUDPPending==true && m_nTotalUDPPackets-1==m_nFailedUDPPackets)
+		return; //not one UDP-answer until know->don't try it again
+	//Xman end
+
 	// Time stamp
 	m_dwLastUDPReaskTime = GetTickCount();
 
 
-	//the line "m_bUDPPending = true;" use to be here
-	//deadlake PROXYSUPPORT
-	const ProxySettings& proxy = thePrefs.GetProxy();
-	if(m_nUDPPort != 0 && thePrefs.GetUDPPort() != 0 &&
-		!theApp.IsFirewalled() && !(socket && socket->IsConnected())&& (!proxy.UseProxy))
+	if (GetUDPPort() != 0 && GetUDPVersion() != 0 && thePrefs.GetUDPPort() != 0 &&
+		!theApp.IsFirewalled() && !(socket && socket->IsConnected()) && !thePrefs.GetProxySettings().UseProxy)
 	{ 
 		if( !HasLowID() )
 		{
@@ -1803,20 +1808,6 @@ void CUpDownClient::UDPReaskForDownload()
 			}
 			if (GetUDPVersion() > 2)
 				data.WriteUInt16(reqfile->m_nCompleteSourcesCount);
-
-// ==> {Webcache} [Max]
-		if (SupportsMultiOHCBs() &&	AttachMultiOHCBsRequest(data))
-		{
-			DebugSend("OP__MultiFileReask", this,reqfile->GetFileHash());
-			Packet* response = new Packet(&data, OP_WEBCACHEPROT);
-			response->opcode = OP_MULTI_FILE_REASK;
-			theStats.AddUpDataOverheadFileRequest(response->size);
-			theApp.downloadqueue->AddUDPFileReasks(); 
-			theApp.clientudp->SendPacket(response,GetIP(),GetUDPPort());
-		}
-		else
-// <== {Webcache} [Max] 
-		
 			if (thePrefs.GetDebugClientUDPLevel() > 0)
 				DebugSend("OP__ReaskFilePing", this, reqfile->GetFileHash());
 			Packet* response = new Packet(&data, OP_EMULEPROT);
@@ -1905,15 +1896,13 @@ const bool CUpDownClient::IsInNoNeededList(const CPartFile* fileToCheck) const
 // lookatmintime = proof, if the swapto file wasn't asket the last minrequesttime //Xman
 // allow_go_over_hardlimit = may swap a source to a file which has already enough sources
 bool CUpDownClient::SwapToAnotherFile(bool bIgnoreNoNeeded, bool ignoreSuspensions, bool bRemoveCompletely, CPartFile* toFile, bool lookatmintime, bool allow_go_over_hardlimit){
-	//Xman look for
+
 	//Xman 4.2 just in time swapping
 	//if (GetDownloadState() == DS_DOWNLOADING)
 	//	return false;
 
 	CPartFile* SwapTo = NULL;
 	CPartFile* cur_file = NULL;
-	//int cur_prio= -1;
-	//uint16 cursourcecount=65535; //Xman
 	POSITION finalpos = NULL;
 	CTypedPtrList<CPtrList, CPartFile*>* usedList=&m_OtherRequests_list; //Xman just to disable the warning
 
@@ -1938,11 +1927,7 @@ bool CUpDownClient::SwapToAnotherFile(bool bIgnoreNoNeeded, bool ignoreSuspensio
 					&& (ignoreSuspensions  || (!ignoreSuspensions && !IsSwapSuspended(cur_file)) ) )
 				{
 					SwapTo = cur_file;
-					//cur_prio=cur_file->GetDownPriority();
-					//cursourcecount=cur_file->GetSourceCount();//Xman
 					finalpos=pos;
-					//if (cur_prio==PR_HIGH)
-					//	break;
 				}
 			}
 		}
@@ -1970,11 +1955,7 @@ bool CUpDownClient::SwapToAnotherFile(bool bIgnoreNoNeeded, bool ignoreSuspensio
 					&& (ignoreSuspensions  || (!ignoreSuspensions && !IsSwapSuspended(cur_file)) ) )
 				{
 					SwapTo = cur_file;
-					//cur_prio=cur_file->GetDownPriority();
-					//cursourcecount=cur_file->GetSourceCount();//Xman
 					finalpos=pos;
-					//if (cur_prio==PR_HIGH)
-					//	break;
 				}
 			}
 		}
@@ -2033,7 +2014,7 @@ bool CUpDownClient::DoSwap(CPartFile* SwapTo, bool bRemoveCompletely) {
 		if(GetDownloadState()==DS_DOWNLOADING)
 		{
 			ClearDownloadBlockRequests();
-			m_lastPartAsked = 0xffff;
+			m_lastPartAsked = (uint16)-1; //0xFFFF
 		}
 		else
 		//Xman just in time swapping end
@@ -2120,7 +2101,7 @@ void CUpDownClient::StartDownload()
 	SetDownloadState(DS_DOWNLOADING);
 	InitTransferredDownMini();
 	SetDownStartTime();
-	m_lastPartAsked = 0xffff;
+	m_lastPartAsked = (uint16)-1; // =0xffff
 	SendBlockRequests();
 }
 
@@ -2159,18 +2140,6 @@ void CUpDownClient::SendCancelTransfer(Packet* packet)
 		m_pPCDownSocket = NULL;
 		SetPeerCacheDownState(PCDS_NONE);
 	}
-
-// ==> {Webcache} [Max]
-// yonatan http start //////////////////////////////////////////////////////////////////////////
-	if (m_pWCDownSocket)
-	{
-		m_pWCDownSocket->Safe_Delete();
-		m_pWCDownSocket = NULL;
-		SetWebCacheDownState(WCDS_NONE);
-	}
-// yonatan http end ////////////////////////////////////////////////////////////////////////////
-// <== {Webcache} [Max]
-
 }
 
 void CUpDownClient::SetRequestFile(CPartFile* pReqFile)
@@ -2190,10 +2159,10 @@ void CUpDownClient::ProcessAcceptUpload()
 		{
 			// PC-TODO: If remote client does not answer the PeerCache query within a timeout, 
 			// automatically fall back to ed2k download.
-			if ( !SupportPeerCache() // client knows peercahce protocol
-				||!thePrefs.IsPeerCacheDownloadEnabled() // user has enabled peercache downlaods
+			if (   !SupportPeerCache()						// client knows peercache protocol
+				|| !thePrefs.IsPeerCacheDownloadEnabled()	// user has enabled peercache downloads
 				|| !theApp.m_pPeerCache->IsCacheAvailable() // we have found our cache and its usable
-				|| !theApp.m_pPeerCache->IsClientPCCompatible(m_nClientVersion, GetClientSoft()) // the client version is accepted by the cahce
+				|| !theApp.m_pPeerCache->IsClientPCCompatible(GetVersion(), GetClientSoft()) // the client version is accepted by the cache
 				|| !SendPeerCacheFileRequest()) // request made
 			{
 				StartDownload();
@@ -2275,7 +2244,12 @@ void CUpDownClient::ProcessEdonkeyQueueRank(const uchar* packet, UINT size)
 	uint32 rank = data.ReadUInt32();
 	if (thePrefs.GetDebugClientTCPLevel() > 0)
 		Debug(_T("  QR=%u (prev. %d)\n"), rank, IsRemoteQueueFull() ? (UINT)-1 : (UINT)GetRemoteQueueRank());
-	SetRemoteQueueRank(rank); //Xman
+	//Xman DiffQR + official bugfix
+	//remark: at NONEEDEDPARTS we don't send STARTUPLOADREQUEST and therefore we shouldn't receive a querank
+	//but some versions (shareazas) send it. here I filter it out
+	if(GetDownloadState()!=DS_NONEEDEDPARTS)
+		SetRemoteQueueRank(rank); //Xman	
+	//Xman end
 	CheckQueueRankFlood();
 }
 
@@ -2287,7 +2261,13 @@ void CUpDownClient::ProcessEmuleQueueRank(const uchar* packet, UINT size)
 	if (thePrefs.GetDebugClientTCPLevel() > 0)
 		Debug(_T("  QR=%u\n"), rank); // no prev. QR available for eMule clients
 	SetRemoteQueueFull(false);
-	SetRemoteQueueRank(rank); //Xman
+	//Xman DiffQR + official bugfix
+	//remark: at NONEEDEDPARTS we don't send STARTUPLOADREQUEST and therefore we shouldn't receive a querank
+	//but some versions (shareazas) send it. here I filter it out
+	if(GetDownloadState()!=DS_NONEEDEDPARTS)
+		SetRemoteQueueRank(rank); //Xman	
+	//Xman end
+
 	CheckQueueRankFlood();
 }
 
@@ -2320,7 +2300,7 @@ void CUpDownClient::CheckQueueRankFlood()
 
 void CUpDownClient::SetReqFileAICHHash(CAICHHash* val)
 {
-	if(m_pReqFileAICHHash != NULL && m_pReqFileAICHHash != val)
+	if (m_pReqFileAICHHash != NULL && m_pReqFileAICHHash != val)
 		delete m_pReqFileAICHHash;
 	m_pReqFileAICHHash = val;
 }
@@ -2366,7 +2346,7 @@ void CUpDownClient::ProcessAICHAnswer(const uchar* packet, UINT size)
 		if ( (pPartFile->GetAICHHashset()->GetStatus() == AICH_TRUSTED || pPartFile->GetAICHHashset()->GetStatus() == AICH_VERIFIED)
 			 && ahMasterHash == pPartFile->GetAICHHashset()->GetMasterHash())
 		{
-			if(pPartFile->GetAICHHashset()->ReadRecoveryData(request.m_nPart*PARTSIZE, &data)){
+			if(pPartFile->GetAICHHashset()->ReadRecoveryData((uint64)request.m_nPart*PARTSIZE, &data)){
 				// finally all checks passed, everythings seem to be fine
 				AddDebugLogLine(DLP_DEFAULT, false, _T("AICH Packet Answer: Succeeded to read and validate received recoverydata"));
 				CAICHHashSet::RemoveClientAICHRequest(this);
@@ -2380,15 +2360,16 @@ void CUpDownClient::ProcessAICHAnswer(const uchar* packet, UINT size)
 			AddDebugLogLine(DLP_HIGH, false, _T("AICH Packet Answer: Masterhash differs from packethash or hashset has no trusted Masterhash"));
 	}
 	else
-			AddDebugLogLine(DLP_HIGH, false, _T("AICH Packet Answer: requested values differ from values in packet"));
+		AddDebugLogLine(DLP_HIGH, false, _T("AICH Packet Answer: requested values differ from values in packet"));
 
 	CAICHHashSet::ClientAICHRequestFailed(this);
 }
 
-void CUpDownClient::ProcessAICHRequest(const uchar* packet, UINT size){
-	if (size != 16 + 2 + CAICHHash::GetHashSize())
+void CUpDownClient::ProcessAICHRequest(const uchar* packet, UINT size)
+{
+	if (size != (UINT)(16 + 2 + CAICHHash::GetHashSize()))
 		throw CString(_T("Received AICH Request Packet with wrong size"));
-	
+
 	CSafeMemFile data(packet, size);
 	uchar abyHash[16];
 	data.ReadHash16(abyHash);
@@ -2398,13 +2379,13 @@ void CUpDownClient::ProcessAICHRequest(const uchar* packet, UINT size){
 	if (pKnownFile != NULL){
 		if (pKnownFile->GetAICHHashset()->GetStatus() == AICH_HASHSETCOMPLETE && pKnownFile->GetAICHHashset()->HasValidMasterHash()
 			&& pKnownFile->GetAICHHashset()->GetMasterHash() == ahMasterHash && pKnownFile->GetPartCount() > nPart
-			&& pKnownFile->GetFileSize() > EMBLOCKSIZE && pKnownFile->GetFileSize() - PARTSIZE*nPart > EMBLOCKSIZE)
+			&& pKnownFile->GetFileSize() > (uint64)EMBLOCKSIZE && (uint64)pKnownFile->GetFileSize() - PARTSIZE*(uint64)nPart > EMBLOCKSIZE)
 		{
 			CSafeMemFile fileResponse;
 			fileResponse.WriteHash16(pKnownFile->GetFileHash());
 			fileResponse.WriteUInt16(nPart);
 			pKnownFile->GetAICHHashset()->GetMasterHash().Write(&fileResponse);
-			if (pKnownFile->GetAICHHashset()->CreatePartRecoveryData(nPart*PARTSIZE, &fileResponse)){
+			if (pKnownFile->GetAICHHashset()->CreatePartRecoveryData((uint64)nPart*PARTSIZE, &fileResponse)){
 				AddDebugLogLine(DLP_HIGH, false, _T("AICH Packet Request: Sucessfully created and send recoverydata for %s to %s"), pKnownFile->GetFileName(), DbgGetClientInfo());
 				if (thePrefs.GetDebugClientTCPLevel() > 0)
 					DebugSend("OP__AichAnswer", this, pKnownFile->GetFileHash());
@@ -2417,13 +2398,13 @@ void CUpDownClient::ProcessAICHRequest(const uchar* packet, UINT size){
 				AddDebugLogLine(DLP_HIGH, false, _T("AICH Packet Request: Failed to create recoverydata for %s to %s"), pKnownFile->GetFileName(), DbgGetClientInfo());
 		}
 		else{
-				AddDebugLogLine(DLP_HIGH, false, _T("AICH Packet Request: Failed to create ecoverydata - Hashset not ready or requested Hash differs from Masterhash for %s to %s"), pKnownFile->GetFileName(), DbgGetClientInfo());
+			AddDebugLogLine(DLP_HIGH, false, _T("AICH Packet Request: Failed to create ecoverydata - Hashset not ready or requested Hash differs from Masterhash for %s to %s"), pKnownFile->GetFileName(), DbgGetClientInfo());
 		}
 
 	}
 	else
-				AddDebugLogLine(DLP_HIGH, false, _T("AICH Packet Request: Failed to find requested shared file -  %s"), DbgGetClientInfo());
-	
+		AddDebugLogLine(DLP_HIGH, false, _T("AICH Packet Request: Failed to find requested shared file -  %s"), DbgGetClientInfo());
+
 	if (thePrefs.GetDebugClientTCPLevel() > 0)
 		DebugSend("OP__AichAnswer", this, abyHash);
 	Packet* packAnswer = new Packet(OP_AICHANSWER, 16, OP_EMULEPROT);

@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -35,7 +35,6 @@ IMPLEMENT_DYNAMIC(CHTRichEditCtrl, CRichEditCtrl)
 BEGIN_MESSAGE_MAP(CHTRichEditCtrl, CRichEditCtrl)
 	ON_WM_CONTEXTMENU()
 	ON_WM_KEYDOWN()
-	ON_WM_PAINT()
 	ON_CONTROL_REFLECT(EN_ERRSPACE, OnEnErrspace)
 	ON_CONTROL_REFLECT(EN_MAXTEXT, OnEnMaxtext)
 	ON_NOTIFY_REFLECT_EX(EN_LINK, OnEnLink)
@@ -58,8 +57,6 @@ CHTRichEditCtrl::CHTRichEditCtrl()
 
 CHTRichEditCtrl::~CHTRichEditCtrl()
 {
-	if (m_hArrowCursor != NULL)
-		VERIFY( ::DestroyCursor(m_hArrowCursor) );
 }
 
 void CHTRichEditCtrl::Localize(){
@@ -337,16 +334,6 @@ void CHTRichEditCtrl::ScrollToLastLine(bool bForceLastLineAtBottom)
 			LineScroll(-iFirstVisible);
 	}
 
-	//Xman
-	//MORPH START - Added by SiRoB, Fix log scrollbar redraw
-	BOOL bIsVisible = IsWindowVisible();
-	if (bIsVisible) {
-		m_bNoPaint = true;
-		SetRedraw(FALSE);
-	}
-	//MORPH END  - Added by SiRoB, Fix log scrollbar redraw
-
-
 	// WM_VSCROLL does not work correctly under Win98 (or older version of comctl.dll)
 	SendMessage(WM_VSCROLL, SB_BOTTOM);
 	if (afxData.bWin95)
@@ -356,14 +343,6 @@ void CHTRichEditCtrl::ScrollToLastLine(bool bForceLastLineAtBottom)
 		SendMessage(WM_VSCROLL, MAKELONG(SB_THUMBPOSITION, iPos));
 		SendMessage(WM_VSCROLL, SB_ENDSCROLL);
 	}
-
-	//Xman
-	//MORPH START - Added by SiRoB, Fix log scrollbar redraw
-	if (bIsVisible) {
-		m_bNoPaint = false;
-		SetRedraw();
-	}
-	//MORPH END  - Added by SiRoB, Fix log scrollbar redraw
 }
 
 void CHTRichEditCtrl::AddString(int nPos, LPCTSTR pszString, bool bLink, COLORREF cr)
@@ -498,7 +477,7 @@ void CHTRichEditCtrl::Reset()
 		Invalidate();
 }
 
-void CHTRichEditCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
+void CHTRichEditCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 {
 	long lSelStart, lSelEnd;
 	GetSel(lSelStart, lSelEnd);
@@ -542,7 +521,7 @@ void CHTRichEditCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	VERIFY( menu.DestroyMenu() );
 }
 
-BOOL CHTRichEditCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
+BOOL CHTRichEditCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 {
 	switch (wParam)
 	{
@@ -641,6 +620,11 @@ void CHTRichEditCtrl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		// Ctrl+C: Copy listview items to clipboard
 		CopySelectedItems();
 	}
+	else if (nChar == VK_ESCAPE)
+	{
+		// dont minimize CHTRichEditCtrl
+		return ;
+	}
 
 	CRichEditCtrl::OnKeyDown(nChar, nRepCnt, nFlags);
 }
@@ -660,7 +644,7 @@ static const struct
 	{ _T("mailto:"),  7 }
 };
 
-void CHTRichEditCtrl::AppendText(const CString& sText, bool bInvalidate)
+void CHTRichEditCtrl::AppendText(const CString& sText)
 {
 	LPCTSTR psz = sText;
 	LPCTSTR pszStart = psz;
@@ -701,8 +685,11 @@ void CHTRichEditCtrl::AppendText(const CString& sText, bool bInvalidate)
 		AddLine(pszStart, -1);
 }
 
-void CHTRichEditCtrl::AppendHyperLink(const CString& sText, const CString& sTitle, const CString& sCommand, const CString& sDirectory, bool bInvalidate)
+void CHTRichEditCtrl::AppendHyperLink(const CString& sText, const CString& sTitle, const CString& sCommand, const CString& sDirectory)
 {
+	UNREFERENCED_PARAMETER(sText);
+	UNREFERENCED_PARAMETER(sTitle);
+	UNREFERENCED_PARAMETER(sDirectory);
 	ASSERT( sText.IsEmpty() );
 	ASSERT( sTitle.IsEmpty() );
 	ASSERT( sDirectory.IsEmpty() );

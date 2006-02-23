@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2004 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -15,8 +15,6 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
-
-#include "ListenSocket.h" // yonatan http , {Webcache} [Max]
 
 class Packet;
 
@@ -45,8 +43,6 @@ public:
 	void SetHttpState(EHttpSocketState eState);
 	void ClearHttpHeaders();
 
-        bool ProcessHttpPacket(const BYTE* packet, UINT size);//(public :) yonatan http - for ugly webcache cast in EMSocket.cpp , {Webcache} [Max]
-
 protected:
 	CHttpClientReqSocket(CUpDownClient* client = NULL);
 	virtual ~CHttpClientReqSocket();
@@ -58,15 +54,16 @@ protected:
 	CStringA			m_strHttpCurHdrLine;
 	CStringAArray		m_astrHttpHeaders;
 	int					m_iHttpHeadersSize;
-        
-        void ProcessHttpHeaderPacket(const char* packet, UINT size, LPBYTE& pBody, int& iSizeBody);
+
+	bool ProcessHttpPacket(const BYTE* packet, UINT size);
+	void ProcessHttpHeaderPacket(const char* packet, UINT size, LPBYTE& pBody, int& iSizeBody);
 
 	virtual bool ProcessHttpResponse();
 	virtual bool ProcessHttpResponseBody(const BYTE* pucData, UINT size);
 	virtual bool ProcessHttpRequest();
 };
 
-	
+
 ///////////////////////////////////////////////////////////////////////////////
 // CHttpClientDownSocket
 

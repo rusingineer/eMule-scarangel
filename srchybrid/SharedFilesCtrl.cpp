@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -19,6 +19,13 @@
 #include "emuledlg.h"
 #include "SharedFilesCtrl.h"
 #include "OtherFunctions.h"
+#include "FileInfoDialog.h"
+#include "MetaDataDlg.h"
+#include "ED2kLinkDlg.h"
+#include "CommentDialog.h"
+#include "HighColorTab.hpp"
+#include "ListViewWalkerPropertySheet.h"
+#include "UserMsgs.h"
 #include "ResizableLib/ResizableSheet.h"
 #include "KnownFile.h"
 #include "MapKey.h"
@@ -37,11 +44,157 @@
 #include "Collection.h"
 #include "CollectionCreateDialog.h"
 #include "CollectionViewDialog.h"
-#include "FileDetailDialog.h"
 #include "SharedDirsTreeCtrl.h"
 #include "SearchParams.h"
 #include "SearchDlg.h"
 #include "SearchResultsWnd.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+//////////////////////////////////////////////////////////////////////////////
+// CSharedFileDetailsSheet
+
+class CSharedFileDetailsSheet : public CListViewWalkerPropertySheet
+{
+	DECLARE_DYNAMIC(CSharedFileDetailsSheet)
+
+public:
+	CSharedFileDetailsSheet(CTypedPtrList<CPtrList, CKnownFile*>& aFiles, UINT uPshInvokePage = 0, CListCtrlItemWalk* pListCtrl = NULL);
+	virtual ~CSharedFileDetailsSheet();
+
+protected:
+	CFileInfoDialog		m_wndMediaInfo;
+	CMetaDataDlg		m_wndMetaData;
+	CED2kLinkDlg		m_wndFileLink;
+	CCommentDialog		m_wndFileComments;
+
+	UINT m_uPshInvokePage;
+	static LPCTSTR m_pPshStartPage;
+
+	void UpdateTitle();
+
+	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+	virtual BOOL OnInitDialog();
+
+	DECLARE_MESSAGE_MAP()
+	afx_msg void OnDestroy();
+	afx_msg LRESULT OnDataChanged(WPARAM, LPARAM);
+};
+
+LPCTSTR CSharedFileDetailsSheet::m_pPshStartPage;
+
+IMPLEMENT_DYNAMIC(CSharedFileDetailsSheet, CListViewWalkerPropertySheet)
+
+BEGIN_MESSAGE_MAP(CSharedFileDetailsSheet, CListViewWalkerPropertySheet)
+	ON_WM_DESTROY()
+	ON_MESSAGE(UM_DATA_CHANGED, OnDataChanged)
+END_MESSAGE_MAP()
+
+CSharedFileDetailsSheet::CSharedFileDetailsSheet(CTypedPtrList<CPtrList, CKnownFile*>& aFiles, UINT uPshInvokePage, CListCtrlItemWalk* pListCtrl)
+: CListViewWalkerPropertySheet(pListCtrl)
+{
+	m_uPshInvokePage = uPshInvokePage;
+	POSITION pos = aFiles.GetHeadPosition();
+	while (pos)
+		m_aItems.Add(aFiles.GetNext(pos));
+	m_psh.dwFlags &= ~PSH_HASHELP;
+
+	m_wndMediaInfo.m_psp.dwFlags &= ~PSP_HASHELP;
+	m_wndMediaInfo.m_psp.dwFlags |= PSP_USEICONID;
+	m_wndMediaInfo.m_psp.pszIcon = _T("MEDIAINFO");
+	m_wndMediaInfo.SetFiles(&m_aItems);
+	AddPage(&m_wndMediaInfo);
+
+	m_wndMetaData.m_psp.dwFlags &= ~PSP_HASHELP;
+	m_wndMetaData.m_psp.dwFlags |= PSP_USEICONID;
+	m_wndMetaData.m_psp.pszIcon = _T("METADATA");
+	if (m_aItems.GetSize() == 1 && thePrefs.IsExtControlsEnabled()) {
+		m_wndMetaData.SetFiles(&m_aItems);
+		AddPage(&m_wndMetaData);
+	}
+
+	m_wndFileLink.m_psp.dwFlags &= ~PSP_HASHELP;
+	m_wndFileLink.m_psp.dwFlags |= PSP_USEICONID;
+	m_wndFileLink.m_psp.pszIcon = _T("ED2KLINK");
+	m_wndFileLink.SetFiles(&m_aItems);
+	AddPage(&m_wndFileLink);
+
+	m_wndFileComments.m_psp.dwFlags &= ~PSP_HASHELP;
+	m_wndFileComments.m_psp.dwFlags |= PSP_USEICONID;
+	m_wndFileComments.m_psp.pszIcon = _T("FileComments");
+	m_wndFileComments.SetFiles(&m_aItems);
+	AddPage(&m_wndFileComments);
+
+	LPCTSTR pPshStartPage = m_pPshStartPage;
+	if (m_uPshInvokePage != 0)
+		pPshStartPage = MAKEINTRESOURCE(m_uPshInvokePage);
+	for (int i = 0; i < m_pages.GetSize(); i++)
+	{
+		CPropertyPage* pPage = GetPage(i);
+		if (pPage->m_psp.pszTemplate == pPshStartPage)
+		{
+			m_psh.nStartPage = i;
+			break;
+		}
+	}
+}
+
+CSharedFileDetailsSheet::~CSharedFileDetailsSheet()
+{
+}
+
+void CSharedFileDetailsSheet::OnDestroy()
+{
+	if (m_uPshInvokePage == 0)
+		m_pPshStartPage = GetPage(GetActiveIndex())->m_psp.pszTemplate;
+	CListViewWalkerPropertySheet::OnDestroy();
+}
+
+BOOL CSharedFileDetailsSheet::OnInitDialog()
+{
+	EnableStackedTabs(FALSE);
+	BOOL bResult = CListViewWalkerPropertySheet::OnInitDialog();
+	HighColorTab::UpdateImageList(*this);
+	InitWindowStyles(this);
+	EnableSaveRestore(_T("SharedFileDetailsSheet")); // call this after(!) OnInitDialog
+	UpdateTitle();
+	return bResult;
+}
+
+LRESULT CSharedFileDetailsSheet::OnDataChanged(WPARAM, LPARAM)
+{
+	UpdateTitle();
+	return 1;
+}
+
+void CSharedFileDetailsSheet::UpdateTitle()
+{
+	if (m_aItems.GetSize() == 1)
+		SetWindowText(GetResString(IDS_DETAILS) + _T(": ") + STATIC_DOWNCAST(CKnownFile, m_aItems[0])->GetFileName());
+	else
+		SetWindowText(GetResString(IDS_DETAILS));
+}
+
+BOOL CSharedFileDetailsSheet::OnCommand(WPARAM wParam, LPARAM lParam)
+{
+	if (wParam == ID_APPLY_NOW)
+	{
+		CSharedFilesCtrl* pSharedFilesCtrl = DYNAMIC_DOWNCAST(CSharedFilesCtrl, m_pListCtrl->GetListCtrl());
+		if (pSharedFilesCtrl)
+		{
+			for (int i = 0; i < m_aItems.GetSize(); i++) {
+				// so, and why does this not(!) work while the sheet is open ??
+				pSharedFilesCtrl->UpdateFile(DYNAMIC_DOWNCAST(CKnownFile, m_aItems[i]));
+			}
+		}
+	}
+
+	return CListViewWalkerPropertySheet::OnCommand(wParam, lParam);
+}
 
 //////////////////////////////////////////////////////////////////////////////
 // CSharedFilesCtrl
@@ -63,6 +216,7 @@ CSharedFilesCtrl::CSharedFilesCtrl()
 	memset(&sortstat, 0, sizeof(sortstat));
 	nAICHHashing = 0;
 	m_pDirectoryFilter = NULL;
+	SetGeneralPurposeFind(true, false);
 }
 
 CSharedFilesCtrl::~CSharedFilesCtrl()
@@ -136,70 +290,57 @@ void CSharedFilesCtrl::Localize()
 	CString strRes;
 
 	strRes = GetResString(IDS_DL_FILENAME);
-	hdi.pszText = strRes.GetBuffer();
+	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 	pHeaderCtrl->SetItem(0, &hdi);
-	strRes.ReleaseBuffer();
 
 	strRes = GetResString(IDS_DL_SIZE);
-	hdi.pszText = strRes.GetBuffer();
+	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 	pHeaderCtrl->SetItem(1, &hdi);
-	strRes.ReleaseBuffer();
 
 	strRes = GetResString(IDS_TYPE);
-	hdi.pszText = strRes.GetBuffer();
+	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 	pHeaderCtrl->SetItem(2, &hdi);
-	strRes.ReleaseBuffer();
 
 	strRes = GetResString(IDS_PRIORITY);
-	hdi.pszText = strRes.GetBuffer();
+	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 	pHeaderCtrl->SetItem(3, &hdi);
-	strRes.ReleaseBuffer();
 
 	strRes = GetResString(IDS_FILEID);
-	hdi.pszText = strRes.GetBuffer();
+	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 	pHeaderCtrl->SetItem(4, &hdi);
-	strRes.ReleaseBuffer();
 
 	strRes = GetResString(IDS_SF_REQUESTS);
-	hdi.pszText = strRes.GetBuffer();
+	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 	pHeaderCtrl->SetItem(5, &hdi);
-	strRes.ReleaseBuffer();
 
 	strRes = GetResString(IDS_SF_ACCEPTS);
-	hdi.pszText = strRes.GetBuffer();
+	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 	pHeaderCtrl->SetItem(6, &hdi);
-	strRes.ReleaseBuffer();
 
 	strRes = GetResString(IDS_SF_TRANSFERRED);
-	hdi.pszText = strRes.GetBuffer();
+	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 	pHeaderCtrl->SetItem(7, &hdi);
-	strRes.ReleaseBuffer();
 
 	strRes = GetResString(IDS_SHARED_STATUS);
-	hdi.pszText = strRes.GetBuffer();
+	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 	pHeaderCtrl->SetItem(8, &hdi);
-	strRes.ReleaseBuffer();
 
 	strRes = GetResString(IDS_FOLDER);
-	hdi.pszText = strRes.GetBuffer();
+	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 	pHeaderCtrl->SetItem(9, &hdi);
-	strRes.ReleaseBuffer();
 
 	strRes = GetResString(IDS_COMPLSOURCES);
-	hdi.pszText = strRes.GetBuffer();
+	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 	pHeaderCtrl->SetItem(10, &hdi);
-	strRes.ReleaseBuffer();
 
 	strRes = GetResString(IDS_SHAREDTITLE);
-	hdi.pszText = strRes.GetBuffer();
+	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 	pHeaderCtrl->SetItem(11, &hdi);
-	strRes.ReleaseBuffer();
 
 	//Xman see OnUploadqueue
 	strRes = GetResString(IDS_ONQUEUE);
-	hdi.pszText = strRes.GetBuffer();
+	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 	pHeaderCtrl->SetItem(12, &hdi);
-	strRes.ReleaseBuffer();
 	//Xman end
 
 	CreateMenues();
@@ -239,7 +380,7 @@ void CSharedFilesCtrl::AddFile(const CKnownFile* file)
 				// only tempfiles
 				if (!file->IsPartFile())
 					return;
-				else if (m_pDirectoryFilter->m_nCatFilter != -1 && m_pDirectoryFilter->m_nCatFilter != ((CPartFile*)file)->GetCategory())
+				else if (m_pDirectoryFilter->m_nCatFilter != -1 && (UINT)m_pDirectoryFilter->m_nCatFilter != ((CPartFile*)file)->GetCategory())
 					return;
 				break;
 			case SDI_DIRECTORY:
@@ -582,7 +723,7 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	dc.SetTextColor(crOldTextColor);
 }
 
-void CSharedFilesCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
+void CSharedFilesCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 {
 	// get merged settings
 	bool bFirstItem = true;
@@ -640,10 +781,12 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	bool bSingleCompleteFileSelected = (iSelectedItems == 1 && iCompleteFileSelected == 1);
 	m_SharedFilesMenu.EnableMenuItem(MP_OPEN, bSingleCompleteFileSelected ? MF_ENABLED : MF_GRAYED);
 	UINT uInsertedMenuItem = 0;
-	static const TCHAR _szSkinPkgSuffix[] = _T(".") EMULSKIN_BASEEXT _T(".zip");
+	static const TCHAR _szSkinPkgSuffix1[] = _T(".") EMULSKIN_BASEEXT _T(".zip");
+	static const TCHAR _szSkinPkgSuffix2[] = _T(".") EMULSKIN_BASEEXT _T(".rar");
 	if (bSingleCompleteFileSelected 
 		&& pSingleSelFile 
-		&& pSingleSelFile->GetFilePath().Right(ARRSIZE(_szSkinPkgSuffix)-1).CompareNoCase(_szSkinPkgSuffix) == 0)
+		&& (   pSingleSelFile->GetFilePath().Right(ARRSIZE(_szSkinPkgSuffix1)-1).CompareNoCase(_szSkinPkgSuffix1) == 0
+		|| pSingleSelFile->GetFilePath().Right(ARRSIZE(_szSkinPkgSuffix2)-1).CompareNoCase(_szSkinPkgSuffix2) == 0))
 	{
 		MENUITEMINFO mii = {0};
 		mii.cbSize = sizeof mii;
@@ -671,6 +814,8 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	m_SharedFilesMenu.EnableMenuItem(MP_ULFEEDBACK, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
 	//Xman end
 
+	m_SharedFilesMenu.EnableMenuItem(MP_FIND, GetItemCount() > 0 ? MF_ENABLED : MF_GRAYED);
+
 	m_CollectionsMenu.EnableMenuItem(MP_MODIFYCOLLECTION, ( pSingleSelFile != NULL && pSingleSelFile->m_pCollection != NULL ) ? MF_ENABLED : MF_GRAYED);
 	m_CollectionsMenu.EnableMenuItem(MP_VIEWCOLLECTION, ( pSingleSelFile != NULL && pSingleSelFile->m_pCollection != NULL ) ? MF_ENABLED : MF_GRAYED);
 	m_CollectionsMenu.EnableMenuItem(MP_SEARCHAUTHOR, ( pSingleSelFile != NULL && pSingleSelFile->m_pCollection != NULL && !pSingleSelFile->m_pCollection->GetAuthorKeyHashString().IsEmpty()) ? MF_ENABLED : MF_GRAYED);
@@ -683,8 +828,7 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 			m_SharedFilesMenu.EnableMenuItem(MP_GETKADSOURCELINK, MF_GRAYED);
 	}
 #endif
-	if (thePrefs.IsExtControlsEnabled())
-		m_SharedFilesMenu.EnableMenuItem(Irc_SetSendLink, iSelectedItems == 1 && theApp.emuledlg->ircwnd->IsConnected() ? MF_ENABLED : MF_GRAYED);
+	m_SharedFilesMenu.EnableMenuItem(Irc_SetSendLink, iSelectedItems == 1 && theApp.emuledlg->ircwnd->IsConnected() ? MF_ENABLED : MF_GRAYED);
 
 	CTitleMenu WebMenu;
 	WebMenu.CreateMenu();
@@ -702,8 +846,10 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 		VERIFY( m_SharedFilesMenu.RemoveMenu(uInsertedMenuItem, MF_BYCOMMAND) );
 }
 
-BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
+BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 {
+	wParam = LOWORD(wParam);
+
 	CTypedPtrList<CPtrList, CKnownFile*> selectedList;
 	POSITION pos = GetFirstSelectedItemPosition();
 	while (pos != NULL){
@@ -712,7 +858,9 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 			selectedList.AddTail((CKnownFile*)GetItemData(index));
 	}
 
-	if (wParam==MP_CREATECOLLECTION || selectedList.GetCount() > 0)
+	if (   wParam == MP_CREATECOLLECTION
+		|| wParam == MP_FIND
+		|| selectedList.GetCount() > 0)
 	{
 		CKnownFile* file = NULL;
 		if (selectedList.GetCount() == 1)
@@ -754,6 +902,7 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 #endif
 			// file operations
 			case MP_OPEN:
+			case IDA_ENTER:
 				if (file && !file->IsPartFile())
 					OpenFile(file);
 				break; 
@@ -762,19 +911,8 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					InstallSkin(file->GetFilePath());
 				break;
 			case MP_OPENFOLDER:
-				//Xman
-				//Fix For Shared Files "open Folder" [Avi-3k]
-				/* 
-				if (file && !file->IsPartFile()){
-					CString path = file->GetPath();
-					int bspos = path.ReverseFind(_T('\\'));
-					ShellExecute(NULL, _T("open"), path.Left(bspos), NULL, NULL, SW_SHOW);
-				}
-				*/
-				if (file && !file->IsPartFile()){
+				if (file && !file->IsPartFile())
 					ShellExecute(NULL, _T("open"), file->GetPath(), NULL, NULL, SW_SHOW);
-				}
-				//Xman end
 				break; 
 			case MP_RENAME:
 			case MPG_F2:
@@ -821,7 +959,8 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					MessageBeep(MB_OK);
 				break;
 			case MP_REMOVE:
-			case MPG_DELETE:{
+			case MPG_DELETE:
+			{
 				if (IDNO == AfxMessageBox(GetResString(IDS_CONFIRM_FILEDELETE),MB_ICONWARNING | MB_ICONQUESTION | MB_DEFBUTTON2 | MB_YESNO))
 					return TRUE;
 
@@ -878,6 +1017,9 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 			case MPG_ALTENTER:
 			case MP_DETAIL:
 				ShowFileDialog(selectedList);
+				break;
+			case MP_FIND:
+				OnFindStart();
 				break;
 			case MP_CREATECOLLECTION:
 			{
@@ -993,7 +1135,7 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					}
 					break;
 				}
-	// Xman: IcEcRacKer Copy UL-feedback
+			// Xman: IcEcRacKer Copy UL-feedback
 			case MP_ULFEEDBACK: 
 				{ 
 					CString feed; 
@@ -1249,7 +1391,7 @@ void CSharedFilesCtrl::OpenFile(const CKnownFile* file)
 		ShellOpenFile(file->GetFilePath(), NULL);
 }
 
-void CSharedFilesCtrl::OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult)
+void CSharedFilesCtrl::OnNMDblclk(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	int iSel = GetNextItem(-1, LVIS_SELECTED | LVIS_FOCUSED);
 	if (iSel != -1)
@@ -1316,6 +1458,7 @@ void CSharedFilesCtrl::CreateMenues()
 		m_SharedFilesMenu.AppendMenu(MF_STRING,MP_GETED2KLINK, GetResString(IDS_DL_LINK1), _T("ED2KLINK") );
 	else
 		m_SharedFilesMenu.AppendMenu(MF_STRING,MP_SHOWED2KLINK, GetResString(IDS_DL_SHOWED2KLINK), _T("ED2KLINK") );
+	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_FIND, GetResString(IDS_FIND), _T("Search"));
 	m_SharedFilesMenu.AppendMenu(MF_STRING|MF_SEPARATOR); 
 
 	// Xman: IcEcRacKer Copy UL-feedback
@@ -1330,12 +1473,6 @@ void CSharedFilesCtrl::CreateMenues()
 		m_SharedFilesMenu.AppendMenu(MF_STRING|MF_SEPARATOR);
 	}
 #endif
-
-
-
-
-
-
 }
 
 void CSharedFilesCtrl::ShowComments(CKnownFile* file)
@@ -1401,7 +1538,7 @@ void CSharedFilesCtrl::ShowFileDialog(CTypedPtrList<CPtrList, CKnownFile*>& aFil
 {
 	if (aFiles.GetSize() > 0)
 	{
-		CFileDetailDialog dialog(aFiles, uPshInvokePage, this);
+		CSharedFileDetailsSheet dialog(aFiles, uPshInvokePage, this);
 		dialog.DoModal();
 	}
 }

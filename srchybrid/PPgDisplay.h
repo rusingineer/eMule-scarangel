@@ -48,6 +48,5 @@ protected:
 	afx_msg void OnBtnClickedResetHist();
 	afx_msg void OnHelp();
 	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
-//	afx_msg void On3DDepth(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnEnChangeSREnabled(); // show overhead on title - Stulle
 };

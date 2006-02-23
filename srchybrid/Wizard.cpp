@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -91,7 +91,7 @@ void CConnectionWizardDlg::OnBnClickedApply()
 	if (GetDlgItem(IDC_WIZ_TRUEDOWNLOAD_BOX)->GetWindowTextLength())
 	{ 
 		GetDlgItem(IDC_WIZ_TRUEDOWNLOAD_BOX)->GetWindowText(buffer, 20);
-		download = _tstof(buffer);
+		download = (float)_tstof(buffer);
 	}
 	else
 	{
@@ -101,7 +101,7 @@ void CConnectionWizardDlg::OnBnClickedApply()
 	if (GetDlgItem(IDC_WIZ_TRUEUPLOAD_BOX)->GetWindowTextLength())
 	{ 
 		GetDlgItem(IDC_WIZ_TRUEUPLOAD_BOX)->GetWindowText(buffer, 20);
-		upload = _tstof(buffer);
+		upload = (float)_tstof(buffer);
 	}
 	else
 	{
@@ -156,8 +156,8 @@ void CConnectionWizardDlg::OnBnClickedApply()
 		thePrefs.SetMaxDownload(thePrefs.GetMaxDownload()); //check for limit
 		//Xman end
 
-		theApp.emuledlg->statisticswnd->SetARange(false, thePrefs.maxGraphUploadRate);
-		theApp.emuledlg->statisticswnd->SetARange(true, thePrefs.maxGraphDownloadRate);
+		theApp.emuledlg->statisticswnd->SetARange(false, (int)thePrefs.maxGraphUploadRate);
+		theApp.emuledlg->statisticswnd->SetARange(true, (int)thePrefs.maxGraphDownloadRate);
 
 		if (m_iOS == 1)
 			thePrefs.maxconnections = 50;
@@ -337,27 +337,28 @@ BOOL CConnectionWizardDlg::OnInitDialog()
 	//Xman no support for unlimited
 	//m_provider.InsertItem(0, GetResString(IDS_UNKNOWN));m_provider.SetItemText(0,1,_T(""));m_provider.SetItemText(0,2,_T(""));  
 	m_provider.InsertItem(0, GetResString(IDS_WIZARD_CUSTOM));m_provider.SetItemText(0,1,GetResString(IDS_WIZARD_ENTERBELOW));m_provider.SetItemText(0,2,GetResString(IDS_WIZARD_ENTERBELOW));
-	m_provider.InsertItem(1,_T("DSL (DSL, 1500/256"));m_provider.SetItemText(1,1,_T("1500"));m_provider.SetItemText(1,2,_T("256")); //Xman dummy
+	m_provider.InsertItem(1,_T("DSL (DSL, 768/128"));m_provider.SetItemText(1,1,_T("768"));m_provider.SetItemText(1,2,_T("128")); //Xman dummy
 	//Xman end
 	m_provider.InsertItem(2,_T("56-k Modem"));m_provider.SetItemText(2,1,_T("56"));m_provider.SetItemText(2,2,_T("56"));
 	m_provider.InsertItem(3,_T("ISDN"));m_provider.SetItemText(3,1,_T("64"));m_provider.SetItemText(3,2,_T("64"));
 	m_provider.InsertItem(4,_T("ISDN 2x"));m_provider.SetItemText(4,1,_T("128"));m_provider.SetItemText(4,2,_T("128"));
-	m_provider.InsertItem(5,_T("DSL"));m_provider.SetItemText(5,1,_T("256"));m_provider.SetItemText(5,2,_T("128"));
-	m_provider.InsertItem(6,_T("DSL"));m_provider.SetItemText(6,1,_T("384"));m_provider.SetItemText(6,2,_T("91"));
-	m_provider.InsertItem(7,_T("DSL"));m_provider.SetItemText(7,1,_T("512"));m_provider.SetItemText(7,2,_T("91"));
-	m_provider.InsertItem(8,_T("DSL"));m_provider.SetItemText(8,1,_T("512"));m_provider.SetItemText(8,2,_T("128"));
-	m_provider.InsertItem(9,_T("DSL"));m_provider.SetItemText(9,1,_T("640"));m_provider.SetItemText(9,2,_T("90"));
-	m_provider.InsertItem(10,_T("DSL (DSL, 768/128"));m_provider.SetItemText(10,1,_T("768"));m_provider.SetItemText(10,2,_T("128"));
-	m_provider.InsertItem(11,_T("DSL (T-DSL 1000)"));m_provider.SetItemText(11,1,_T("1024"));m_provider.SetItemText(11,2,_T("128"));
-	m_provider.InsertItem(12,_T("DSL (T-DSL 2000)"));m_provider.SetItemText(12,1,_T("2048"));m_provider.SetItemText(12,2,_T("192"));
-	m_provider.InsertItem(13,_T("DSL (T-DSL 3000)"));m_provider.SetItemText(13,1,_T("3072"));m_provider.SetItemText(13,2,_T("384"));
-	m_provider.InsertItem(14,_T("DSL (QDSL, NGI-DSL"));m_provider.SetItemText(14,1,_T("2048"));m_provider.SetItemText(14,2,_T("512"));
-	m_provider.InsertItem(15,_T("DSL 1500 ('DSL 1500')"));m_provider.SetItemText(15,1,_T("1536"));m_provider.SetItemText(15,2,_T("192"));
-	m_provider.InsertItem(16,_T("Cable"));m_provider.SetItemText(16,1,_T("187"));m_provider.SetItemText(16,2,_T("32"));
-	m_provider.InsertItem(17,_T("Cable"));m_provider.SetItemText(17,1,_T("187"));m_provider.SetItemText(17,2,_T("64"));
-	m_provider.InsertItem(18,_T("T1"));m_provider.SetItemText(18,1,_T("1500"));m_provider.SetItemText(18,2,_T("1500"));
-	m_provider.InsertItem(19,_T("T3+"));m_provider.SetItemText(19,1,_T("44 Mbps"));m_provider.SetItemText(19,2,_T("44 Mbps"));
-	
+
+	m_provider.InsertItem(5,_T("T DSL 1000 (T,Arcor,Freenet,1&1)"));m_provider.SetItemText(5,1,_T("1024"));m_provider.SetItemText(5,2,_T("128"));
+	m_provider.InsertItem(6,_T("T DSL 1500 (T)"));m_provider.SetItemText(6,1,_T("1536"));m_provider.SetItemText(6,2,_T("192"));
+	m_provider.InsertItem(7,_T("T DSL 2000 (T,Arcor,Freenet,Tiscali,Alice)"));m_provider.SetItemText(7,1,_T("2048"));m_provider.SetItemText(7,2,_T("192"));
+	m_provider.InsertItem(8,_T("Versatel DSL 2000"));m_provider.SetItemText(8,1,_T("2048"));m_provider.SetItemText(8,2,_T("384"));
+
+	m_provider.InsertItem(9,_T("T-DSL 3000 (T,Arcor)"));m_provider.SetItemText(9,1,_T("3072"));m_provider.SetItemText(9,2,_T("384"));
+	m_provider.InsertItem(10,_T("T DSL 6000 (T,Arcor)"));m_provider.SetItemText(10,1,_T("6016"));m_provider.SetItemText(10,2,_T("576"));
+	m_provider.InsertItem(11,_T("  DSL 6000 (Tiscali,Freenet,1&1)"));m_provider.SetItemText(11,1,_T("6016"));m_provider.SetItemText(11,2,_T("572"));
+	m_provider.InsertItem(12,_T("  DSL 6000 (Lycos,Alice)"));m_provider.SetItemText(12,1,_T("6016"));m_provider.SetItemText(12,2,_T("512"));
+	m_provider.InsertItem(13,_T("Versatel DSL 6000"));m_provider.SetItemText(13,1,_T("6144"));m_provider.SetItemText(13,2,_T("512"));
+
+	m_provider.InsertItem(14,_T("Cable"));m_provider.SetItemText(14,1,_T("187"));m_provider.SetItemText(16,2,_T("32"));
+	m_provider.InsertItem(15,_T("Cable"));m_provider.SetItemText(15,1,_T("187"));m_provider.SetItemText(17,2,_T("64"));
+	m_provider.InsertItem(16,_T("T1"));m_provider.SetItemText(16,1,_T("1500"));m_provider.SetItemText(18,2,_T("1500"));
+	m_provider.InsertItem(17,_T("T3+"));m_provider.SetItemText(17,1,_T("44 Mbps"));m_provider.SetItemText(19,2,_T("44 Mbps"));
+
 
 	m_provider.SetSelectionMark(0);
 	m_provider.SetItemState(0, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
@@ -368,7 +369,7 @@ BOOL CConnectionWizardDlg::OnInitDialog()
 	return TRUE;
 }
 
-void CConnectionWizardDlg::OnNMClickProviders(NMHDR *pNMHDR, LRESULT *pResult)
+void CConnectionWizardDlg::OnNMClickProviders(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	SetCustomItemsActivation();
 
@@ -378,26 +379,24 @@ void CConnectionWizardDlg::OnNMClickProviders(NMHDR *pNMHDR, LRESULT *pResult)
 	//case  0: down=   0;up=   13; break; //Xman no support for unlimited
 	//Xman changed
 	//case  0: down= ((thePrefs.maxGraphDownloadRate * 1024) + 500) / 1000 * 8; up= ((thePrefs.GetMaxGraphUploadRate() * 1024) + 500) / 1000 * 8; break;
-	case  0: down= thePrefs.GetMaxGraphDownloadRate()*8 ; up=thePrefs.GetMaxGraphUploadRate()*8; break;
-	case  1: down=  1500;up=  256; break;
-	case  2: down=   56;up=   33; break;
-	case  3: down=   64;up=   64; break;
-	case  4: down=  128;up=  128; break;
-	case  5: down=  256;up=  128; break;
-	case  6: down=  384;up=   91; break;
-	case  7: down=  512;up=   91; break;
-	case  8: down=  512;up=  128; break;
-	case  9: down=  640;up=   90; break;
-	case  10: down=  768;up=  128; break;
-	case 11: down= 1024;up=  128; break;
-	case 12: down= 2048;up=  192; break;
-	case 13: down= 3072;up=  384; break;
-	case 14: down= 2048;up=  512; break;
-	case 15: down= 1536;up=  192; break;
-	case 16: down=  187;up=   32; break;
-	case 17: down=  187;up=   64; break;
-	case 18: down= 1500;up= 1500; break;
-	case 19: down=44000;up=44000; break;
+	case  0: down= (UINT)thePrefs.GetMaxGraphDownloadRate()*8 ; up= (UINT)thePrefs.GetMaxGraphUploadRate()*8; break;
+	case  1: down=  768;	up=  128; break; //Xman dummy
+	case  2: down=   56;	up=   33; break;
+	case  3: down=   64;	up=   64; break;
+	case  4: down=  128;	up=  128; break;
+	case  5: down= 1024;	up=  128; break;
+	case  6: down= 1536;	up=  192; break;
+	case  7: down= 2048;	up=  192; break;
+	case  8: down= 2048;	up=  384; break;
+	case  9: down= 3072;	up=  384; break;
+	case 10: down= 6016;	up=  576; break;
+	case 11: down= 6016;	up=  572; break;
+	case 12: down= 6016;	up=  512; break;
+	case 13: down= 6144;	up=  512; break;
+	case 14: down=  187;	up=   32; break;
+	case 15: down=  187;	up=   64; break;
+	case 16: down= 1500;	up= 1500; break;
+	case 17: down=44000;	up=44000; break;
 	default: return;
 	}
 

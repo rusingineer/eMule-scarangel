@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -37,13 +37,6 @@
 #include "Log.h"
 //Xman
 #include "BandWidthControl.h" // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
-
-
-// ==> {Webcache} [Max] 
-#include "WebCache/WebCachedBlock.h" // yonatan http
-#include "SafeFile.h" // yonatan http (for udp ohcbs)
-#include "WebCache/WebCachedBlockList.h" // Superlexx - managed OHCB list
-// <== {Webcache} [Max]
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -120,7 +113,7 @@ void CClientUDPSocket::OnReceive(int nErrorCode)
 							unpack[1] = buffer[1];
 							try
 							{
-								Kademlia::CKademlia::processPacket(unpack, unpackedsize+2, ntohl(sockAddr.sin_addr.S_un.S_addr), ntohs(sockAddr.sin_port));
+								Kademlia::CKademlia::ProcessPacket(unpack, unpackedsize+2, ntohl(sockAddr.sin_addr.S_un.S_addr), ntohs(sockAddr.sin_port));
 							}
 							catch(...)
 							{
@@ -145,51 +138,11 @@ void CClientUDPSocket::OnReceive(int nErrorCode)
 				{
 					theStats.AddDownDataOverheadKad(length);
 					if (length >= 2)
-						Kademlia::CKademlia::processPacket(buffer, length, ntohl(sockAddr.sin_addr.S_un.S_addr), ntohs(sockAddr.sin_port));
+						Kademlia::CKademlia::ProcessPacket(buffer, length, ntohl(sockAddr.sin_addr.S_un.S_addr), ntohs(sockAddr.sin_port));
 					else
 						throw CString(_T("Kad packet too short"));
 					break;
 				}
-
-// ==> {Webcache} [Max] 
-				case OP_WEBCACHEPACKEDPROT:	// Superlexx - packed WC protocol
-				{ // taken from above, update this code once the source is beautified
-					if (length >= 2)
-					{
-						uint32 nNewSize = length*10+300;
-						byte* unpack = new byte[nNewSize];
-						uLongf unpackedsize = nNewSize-2;
-						int iZLibResult = uncompress(unpack+2, &unpackedsize, buffer+2, length-2);
-						if (iZLibResult == Z_OK)
-						{
-							unpack[0] = OP_WEBCACHEPROT;
-							unpack[1] = buffer[1];
-							ProcessWebCachePacket(unpack+2, unpackedsize, unpack[1], sockAddr.sin_addr.S_un.S_addr, ntohs(sockAddr.sin_port));
-						}
-						else
-						{
-							delete[] unpack;
-							CString strError;
-							strError.Format(_T("Failed to uncompress WebCache packet: zip error: %d (%hs)"), iZLibResult, zError(iZLibResult));
-							throw strError;
-						}
-						delete[] unpack;
-					}
-					else
-						throw CString(_T("Webcache protocol packet (compressed) too short"));
-					break;
-				}
-				
-				case OP_WEBCACHEPROT:
-				{
-					if (length >= 2)
-						ProcessWebCachePacket(buffer+2, length-2, buffer[1], sockAddr.sin_addr.S_un.S_addr, ntohs(sockAddr.sin_port));
-					else
-						throw CString(_T("Webcache protocol packet too short"));
-					break;
-				}
-// <== {Webcache} [Max]
-
 				default:
 				{
 					CString strError;
@@ -268,7 +221,7 @@ void CClientUDPSocket::OnReceive(int nErrorCode)
 	}
 }
 
-bool CClientUDPSocket::ProcessPacket(const BYTE* packet, uint16 size, uint8 opcode, uint32 ip, uint16 port)
+bool CClientUDPSocket::ProcessPacket(const BYTE* packet, UINT size, uint8 opcode, uint32 ip, uint16 port)
 {
 	switch(opcode)
 	{
@@ -327,7 +280,9 @@ bool CClientUDPSocket::ProcessPacket(const BYTE* packet, uint16 size, uint8 opco
 
 				//Xman uploading problem client
 				//we don't answer this client, to force a tcp connection, then we can add him to upload
-				if(sender->isupprob && sender->m_bAddNextConnect)
+				//Xman 4.8.2 update: we don't answer every client with the flag... because there are buggy clients (shareaza) out 
+				//with send UDP forever although they are LowIDs
+				if(sender->m_bAddNextConnect && theApp.uploadqueue->AcceptNewClient(true))
 					break;
 				//Xman end
 
@@ -387,7 +342,7 @@ bool CClientUDPSocket::ProcessPacket(const BYTE* packet, uint16 size, uint8 opco
 							//Xman end
 						}
 					}
-					data_out.WriteUInt16(theApp.uploadqueue->GetWaitingPosition(sender));
+					data_out.WriteUInt16((uint16)(theApp.uploadqueue->GetWaitingPosition(sender)));
 					if (thePrefs.GetDebugClientUDPLevel() > 0)
 						DebugSend("OP__ReaskAck", sender);
 					Packet* response = new Packet(&data_out, OP_EMULEPROT);
@@ -474,37 +429,6 @@ bool CClientUDPSocket::ProcessPacket(const BYTE* packet, uint16 size, uint8 opco
 			}
 			break;
 		}
-
-// ==> {Webcache} [Max] 
-// yonatan http start //////////////////////////////////////////////////////////////////////////
-		case OP_HTTP_CACHED_BLOCK:
-		{
-			theStats.AddDownDataOverheadOther(size);
-			uint32 *id = (uint32*)(packet+50);
-//			if (thePrefs.GetLogWebCacheEvents())
-//				AddDebugLogLine( false, _T("Recv UDP-WCB: %d"), *id );
-			CUpDownClient* sender = theApp.clientlist->FindClientByWebCacheUploadId( *id );
-
-			if( sender ) 
-			{
-				if (thePrefs.GetDebugClientUDPLevel() > 0)
-					DebugRecv("OP__Http_Cached_Block (UDP)", sender, NULL, ip);
-				if( thePrefs.IsWebCacheDownloadEnabled() )
-				{
-					if (thePrefs.GetLogWebCacheEvents())
-					AddDebugLogLine( false, _T("Received WCBlock - UDP") );
-					CWebCachedBlock* newblock = new CWebCachedBlock( packet, size, sender ); // Starts DL or places block on queue
-				}
-			} 
-			else 
-				if (thePrefs.GetLogWebCacheEvents())
-				AddDebugLogLine( false, _T("Received cached block info from unknown client (UDP)") );
-
-			break;
-		}
-// yonatan http end ////////////////////////////////////////////////////////////////////////////
-// <== {Webcache} [Max] 
-
 		default:
 			theStats.AddDownDataOverheadOther(size);
 			if (thePrefs.GetDebugClientUDPLevel() > 0)
@@ -516,159 +440,6 @@ bool CClientUDPSocket::ProcessPacket(const BYTE* packet, uint16 size, uint8 opco
 	}
 	return true;
 }
-
-
-// ==> {Webcache} [Max] 
-bool CClientUDPSocket::ProcessWebCachePacket(const BYTE* packet, uint16 size, uint8 opcode, uint32 ip, uint16 port)
-{
-	switch(opcode)
-	{
-		case OP_HTTP_CACHED_BLOCK:
-		{
-			theStats.AddDownDataOverheadOther(size);
-			uint32 *id = (uint32*)(packet+50);
-			CUpDownClient* sender = theApp.clientlist->FindClientByWebCacheUploadId( *id );
-
-			if( sender ) 
-			{
-				if (thePrefs.GetDebugClientUDPLevel() > 0)
-					DebugRecv("OP__Http_Cached_Block (UDP)", sender, NULL, ip);
-				if( thePrefs.IsWebCacheDownloadEnabled() )
-				{
-					if (thePrefs.GetLogWebCacheEvents())
-					AddDebugLogLine( false, _T("Received WCBlock - UDP") );
-					CWebCachedBlock* newblock = new CWebCachedBlock( packet, size, sender ); // Starts DL or places block on queue
-				}
-			} 
-			else 
-				if (thePrefs.GetLogWebCacheEvents())
-				AddDebugLogLine( false, _T("Received cached block info from unknown client (UDP)") );
-
-			break;
-		}
-		//JP for a future version
-		case OP_RESUME_SEND_OHCBS:
-		{
-			theStats.AddDownDataOverheadOther(size);
-			uint32 *id = (uint32*)(packet);
-			CUpDownClient* sender = theApp.clientlist->FindClientByWebCacheUploadId( *id );
-
-			if( sender ) 
-			{
-				sender->m_bIsAcceptingOurOhcbs = true;
-				if (thePrefs.GetLogWebCacheEvents())
-					AddDebugLogLine( false, _T("Received OP_RESUME_SEND_OHCBS from %s "), sender->DbgGetClientInfo() );
-			} 
-			else 
-				if (thePrefs.GetLogWebCacheEvents())
-				AddDebugLogLine( false, _T("Received OP_RESUME_SEND_OHCBS from unknown client") );
-			break;
-		}
-		case OP_XPRESS_MULTI_HTTP_CACHED_BLOCKS:
-		case OP_MULTI_HTTP_CACHED_BLOCKS:
-			{
-				CSafeMemFile data(packet,size);
-				CUpDownClient* sender = theApp.clientlist->FindClientByWebCacheUploadId( data.ReadUInt32() ); // data.ReadUInt32() is the uploadID
-				if (!sender) 
-					return false;
-				DebugRecv("OP__Multi_Http_Cached_Blocks", sender);
-				if (thePrefs.GetDebugClientTCPLevel() > 0)
-					theStats.AddDownDataOverheadOther(size);
-				if( thePrefs.IsWebCacheDownloadEnabled() && sender->SupportsWebCache() ) 
-				{
-					// CHECK HANDSHAKE?
-					if (thePrefs.GetLogWebCacheEvents())
-						AddDebugLogLine( false, _T("Received MultiWCBlocks - UDP") );
-					return WebCachedBlockList.ProcessWCBlocks(packet, size, opcode, sender);
-				}
-				break;
-			}
-		case OP_MULTI_FILE_REASK:
-			{
-				theStats.AddDownDataOverheadFileRequest(size);
-				CSafeMemFile data_in(packet, size);
-				uchar reqfilehash[16];
-				data_in.ReadHash16(reqfilehash);
-				CKnownFile* reqfile = theApp.sharedfiles->GetFileByID(reqfilehash);
-				if (!reqfile)
-				{
-					if (thePrefs.GetDebugClientUDPLevel() > 0)
-					{
-						DebugRecv("OP_MultiFileReask", NULL, reqfilehash, ip);
-						DebugSend("OP__FileNotFound", NULL);
-					}
-
-					Packet* response = new Packet(OP_FILENOTFOUND,0,OP_EMULEPROT);
-					theStats.AddUpDataOverheadFileRequest(response->size);
-					SendPacket(response, ip, port);
-					break;
-				}
-				CUpDownClient* sender = theApp.uploadqueue->GetWaitingClientByIP_UDP(ip, port);
-				if (sender)
-				{
-					if (thePrefs.GetDebugClientUDPLevel() > 0)
-						DebugRecv("OP_MultiFileReask", sender, reqfilehash, ip);
-
-					//Make sure we are still thinking about the same file
-					if (md4cmp(reqfilehash, sender->GetUploadFileID()) == 0)
-					{
-						sender->AddAskedCount();
-						sender->SetLastUpRequest();
-						sender->ProcessExtendedInfo(&data_in, reqfile);
-
-						sender->requestedFiles.AddFiles(&data_in, sender);
-
-						CSafeMemFile data_out(128);
-
-						if (reqfile->IsPartFile())
-							((CPartFile*)reqfile)->WritePartStatus(&data_out);
-						else
-							data_out.WriteUInt16(0);
-								
-						data_out.WriteUInt16(theApp.uploadqueue->GetWaitingPosition(sender));
-						if (thePrefs.GetDebugClientUDPLevel() > 0)
-							DebugSend("OP__ReaskAck", sender);
-						Packet* response = new Packet(&data_out, OP_EMULEPROT);
-						response->opcode = OP_REASKACK;
-						theStats.AddUpDataOverheadFileRequest(response->size);
-						theApp.clientudp->SendPacket(response, ip, port);
-					}
-					else
-					{
-						AddDebugLogLine(false, _T("Client UDP socket; MultiFileReask; reqfile does not match"));
-						TRACE(_T("reqfile:         %s\n"), DbgGetFileInfo(reqfile->GetFileHash()));
-						TRACE(_T("sender->GetRequestFile(): %s\n"), sender->GetRequestFile() ? DbgGetFileInfo(sender->GetRequestFile()->GetFileHash()) : _T("(null)"));
-					}
-				}
-				else
-				{
-					if (thePrefs.GetDebugClientUDPLevel() > 0)
-						DebugRecv("OP_MultiFileReask", NULL, reqfilehash, ip);
-
-					if (((uint32)theApp.uploadqueue->GetWaitingUserCount() + 50) > thePrefs.GetQueueSize())
-					{
-						if (thePrefs.GetDebugClientUDPLevel() > 0)
-							DebugSend("OP__QueueFull", NULL);
-						Packet* response = new Packet(OP_QUEUEFULL,0,OP_EMULEPROT);
-						theStats.AddUpDataOverheadFileRequest(response->size);
-						SendPacket(response, ip, port);
-					}
-				}
-				break;
-			}
-
-		default:
-			theStats.AddDownDataOverheadOther(size);
-			if (thePrefs.GetDebugClientUDPLevel() > 0)
-			{
-				CUpDownClient* sender = theApp.downloadqueue->GetDownloadClientByIP_UDP(ip, port);
-				Debug(_T("Unknown client UDP packet: host=%s:%u (%s) opcode=0x%02x  size=%u\n"), ipstr(ip), port, sender ? sender->DbgGetClientInfo() : _T(""), opcode, size);
-			}
-			return false;
-	}
-	return true;
-}
-// <== {Webcache} [Max] 
 
 void CClientUDPSocket::OnSend(int nErrorCode){
 	if (nErrorCode){
@@ -688,7 +459,7 @@ void CClientUDPSocket::OnSend(int nErrorCode){
 // <-- ZZ:UploadBandWithThrottler (UDP)
 }
 
-SocketSentBytes CClientUDPSocket::SendControlData(uint32 maxNumberOfBytesToSend, uint32 minFragSize){ // ZZ:UploadBandWithThrottler (UDP)
+SocketSentBytes CClientUDPSocket::SendControlData(uint32 maxNumberOfBytesToSend, uint32 /*minFragSize*/){ // ZZ:UploadBandWithThrottler (UDP)
 // ZZ:UploadBandWithThrottler (UDP) -->
 	// NOTE: *** This function is invoked from a *different* thread!
     sendLocker.Lock();
@@ -768,27 +539,27 @@ bool CClientUDPSocket::SendPacket(Packet* packet, uint32 dwIP, uint16 nPort){
 // <-- ZZ:UploadBandWithThrottler (UDP)
 }
 
-bool CClientUDPSocket::Create(){
-	bool ret=true;
+bool CClientUDPSocket::Create()
+{
+	bool ret = true;
 
-	if (thePrefs.GetUDPPort()) {
-		ret=CAsyncSocket::Create(thePrefs.GetUDPPort(),SOCK_DGRAM,FD_READ|FD_WRITE)!=FALSE;
+	if (thePrefs.GetUDPPort())
+	{
+		ret = CAsyncSocket::Create(thePrefs.GetUDPPort(), SOCK_DGRAM, FD_READ | FD_WRITE, thePrefs.GetBindAddrW()) != FALSE;
 		if (ret)
-			m_port=thePrefs.GetUDPPort();
+			m_port = thePrefs.GetUDPPort();
 	}
 
 	if (ret)
-		m_port=thePrefs.GetUDPPort();
+		m_port = thePrefs.GetUDPPort();
 
 	return ret;
 }
 
-bool CClientUDPSocket::Rebind(){
-	
-	if (thePrefs.GetUDPPort()==m_port)
+bool CClientUDPSocket::Rebind()
+{
+	if (thePrefs.GetUDPPort() == m_port)
 		return false;
-
 	Close();
-
 	return Create();
 }

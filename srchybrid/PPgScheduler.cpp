@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -32,6 +32,19 @@ static char THIS_FILE[] = __FILE__;
 
 
 IMPLEMENT_DYNAMIC(CPPgScheduler, CPropertyPage)
+
+BEGIN_MESSAGE_MAP(CPPgScheduler, CPropertyPage)
+	ON_NOTIFY(NM_CLICK, IDC_SCHEDLIST, OnNMDblclkList)
+	ON_NOTIFY(NM_DBLCLK, IDC_SCHEDACTION, OnNMDblclkActionlist)
+	ON_NOTIFY(NM_RCLICK, IDC_SCHEDACTION, OnNMRclickActionlist)
+	ON_BN_CLICKED(IDC_NEW, OnBnClickedAdd)
+	ON_BN_CLICKED(IDC_APPLY, OnBnClickedApply)
+	ON_BN_CLICKED(IDC_REMOVE, OnBnClickedRemove)
+	ON_BN_CLICKED(IDC_ENABLE, OnEnableChange)
+	ON_BN_CLICKED(IDC_CHECKNOENDTIME, OnDisableTime2)
+	ON_WM_HELPINFO()
+END_MESSAGE_MAP()
+
 CPPgScheduler::CPPgScheduler()
 	: CPropertyPage(CPPgScheduler::IDD)
 {
@@ -50,19 +63,6 @@ void CPPgScheduler::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_DATETIMEPICKER2, m_timeTo);
 	DDX_Control(pDX, IDC_SCHEDLIST, m_list);
 }
-
-
-BEGIN_MESSAGE_MAP(CPPgScheduler, CPropertyPage)
-	ON_NOTIFY(NM_CLICK, IDC_SCHEDLIST, OnNMDblclkList)
-	ON_NOTIFY(NM_DBLCLK, IDC_SCHEDACTION, OnNMDblclkActionlist)
-	ON_NOTIFY(NM_RCLICK, IDC_SCHEDACTION, OnNMRclickActionlist)
-	ON_BN_CLICKED(IDC_NEW, OnBnClickedAdd)
-	ON_BN_CLICKED(IDC_APPLY, OnBnClickedApply)
-	ON_BN_CLICKED(IDC_REMOVE, OnBnClickedRemove)
-	ON_BN_CLICKED(IDC_ENABLE, OnEnableChange)
-	ON_BN_CLICKED(IDC_CHECKNOENDTIME, OnDisableTime2)
-	ON_WM_HELPINFO()
-END_MESSAGE_MAP()
 
 BOOL CPPgScheduler::OnInitDialog()
 {
@@ -116,11 +116,12 @@ void CPPgScheduler::Localize(void)
 	}
 }
 
-void CPPgScheduler::OnNMDblclkList(NMHDR *pNMHDR, LRESULT *pResult){
+void CPPgScheduler::OnNMDblclkList(NMHDR* /*pNMHDR*/, LRESULT* /*pResult*/)
+{
 	if (m_list.GetSelectionMark()>-1) LoadSchedule(m_list.GetSelectionMark());
 }
 
-void CPPgScheduler::LoadSchedule(uint8 index) {
+void CPPgScheduler::LoadSchedule(int index) {
 
 	Schedule_Struct* schedule=theApp.scheduler->GetSchedule(index);
 	GetDlgItem(IDC_S_TITLE)->SetWindowText(schedule->title);
@@ -172,7 +173,7 @@ void CPPgScheduler::FillScheduleList() {
 
 void CPPgScheduler::OnBnClickedAdd()
 {
-	uint8 index;
+	int index;
 	Schedule_Struct* newschedule=new Schedule_Struct();
 	newschedule->day=0;
 	newschedule->enabled=false;
@@ -247,7 +248,7 @@ BOOL CPPgScheduler::OnApply(){
 	return CPropertyPage::OnApply();
 }
 
-CString CPPgScheduler::GetActionLabel(uint8 index) {
+CString CPPgScheduler::GetActionLabel(int index) {
 	switch (index) {
 		case ACTION_SETUPL		: return GetResString(IDS_PW_UPL);
 		case ACTION_SETDOWNL	: return GetResString(IDS_PW_DOWNL);
@@ -260,7 +261,7 @@ CString CPPgScheduler::GetActionLabel(uint8 index) {
 	return NULL;
 }
 
-CString CPPgScheduler::GetDayLabel(uint8 index) {
+CString CPPgScheduler::GetDayLabel(int index) {
 	switch (index) {
 		case DAY_DAYLY : return GetResString(IDS_DAYLY);
 		case DAY_MO		: return GetResString(IDS_MO);
@@ -277,8 +278,7 @@ CString CPPgScheduler::GetDayLabel(uint8 index) {
 	return NULL;
 }
 
-
-void CPPgScheduler::OnNMDblclkActionlist(NMHDR *pNMHDR, LRESULT *pResult)
+void CPPgScheduler::OnNMDblclkActionlist(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	if (m_actions.GetSelectionMark()!=-1) {
 		int ac=m_actions.GetItemData(m_actions.GetSelectionMark());
@@ -288,7 +288,7 @@ void CPPgScheduler::OnNMDblclkActionlist(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 }
 
-void CPPgScheduler::OnNMRclickActionlist(NMHDR *pNMHDR, LRESULT *pResult)
+void CPPgScheduler::OnNMRclickActionlist(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	POINT point;
 	::GetCursorPos(&point);
@@ -347,8 +347,8 @@ BOOL CPPgScheduler::OnCommand(WPARAM wParam, LPARAM lParam)
 	// add
 	if (wParam>=MP_SCHACTIONS && wParam<MP_SCHACTIONS+20 && m_actions.GetItemCount()<16)
 	{
-		uint8 action=wParam-MP_SCHACTIONS;
-		uint8 i=m_actions.GetItemCount();
+		int action=wParam-MP_SCHACTIONS;
+		int i=m_actions.GetItemCount();
 		m_actions.InsertItem(i,GetActionLabel(action));
 		m_actions.SetItemData(i,action);
 		m_actions.SetSelectionMark(i);
@@ -425,7 +425,7 @@ void CPPgScheduler::OnHelp()
 	theApp.ShowHelp(eMule_FAQ_Preferences_Scheduler);
 }
 
-BOOL CPPgScheduler::OnHelpInfo(HELPINFO* pHelpInfo)
+BOOL CPPgScheduler::OnHelpInfo(HELPINFO* /*pHelpInfo*/)
 {
 	OnHelp();
 	return TRUE;

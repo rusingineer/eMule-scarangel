@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -47,6 +47,7 @@ END_MESSAGE_MAP()
 
 CFriendListCtrl::CFriendListCtrl()
 {
+	SetGeneralPurposeFind(true, false);
 }
 
 CFriendListCtrl::~CFriendListCtrl()
@@ -64,6 +65,7 @@ void CFriendListCtrl::Init()
 	SetAllIcons();
 	theApp.friendlist->SetWindow(this);
 	LoadSettings();
+	SetSortArrow();
 }
 
 void CFriendListCtrl::OnSysColorChange()
@@ -94,9 +96,8 @@ void CFriendListCtrl::Localize()
 	CString strRes;
 
 	strRes = GetResString(IDS_QL_USERNAME);
-	hdi.pszText = strRes.GetBuffer();
+	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 	pHeaderCtrl->SetItem(0, &hdi);
-	strRes.ReleaseBuffer();
 
 	int iItems = GetItemCount();
 	for (int i = 0; i < iItems; i++)
@@ -153,7 +154,6 @@ void CFriendListCtrl::RemoveFriend(const CFriend* pFriend)
 
 void CFriendListCtrl::RefreshFriend(const CFriend* pFriend)
 {
-
 	//Xman CodeFix
 	if (!theApp.emuledlg->IsRunning())
 		return;
@@ -186,6 +186,7 @@ void CFriendListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	ClientMenu.AppendMenu(MF_STRING | (cur_friend ? MF_ENABLED : MF_GRAYED), MP_MESSAGE, GetResString(IDS_SEND_MSG), _T("SENDMESSAGE"));
 	ClientMenu.AppendMenu(MF_STRING | ((cur_friend==NULL || (cur_friend && cur_friend->GetLinkedClient() && !cur_friend->GetLinkedClient()->GetViewSharedFilesSupport())) ? MF_GRAYED : MF_ENABLED), MP_SHOWLIST, GetResString(IDS_VIEWFILES) , _T("VIEWFILES"));
 	ClientMenu.AppendMenu(MF_STRING, MP_FRIENDSLOT, GetResString(IDS_FRIENDSLOT), _T("FRIENDSLOT"));
+	ClientMenu.AppendMenu(MF_STRING | (GetItemCount() > 0 ? MF_ENABLED : MF_GRAYED), MP_FIND, GetResString(IDS_FIND), _T("Search"));
 
     ClientMenu.EnableMenuItem(MP_FRIENDSLOT, (cur_friend)?MF_ENABLED : MF_GRAYED);
 	ClientMenu.CheckMenuItem(MP_FRIENDSLOT, (cur_friend && cur_friend->GetFriendSlot()) ? MF_CHECKED : MF_UNCHECKED);
@@ -199,8 +200,10 @@ void CFriendListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	ClientMenu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
 }
 
-BOOL CFriendListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
+BOOL CFriendListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 {
+	wParam = LOWORD(wParam);
+
 	CFriend* cur_friend = NULL;
 	int iSel = GetNextItem(-1, LVIS_SELECTED | LVIS_FOCUSED);
 	if (iSel != -1) 
@@ -237,8 +240,9 @@ BOOL CFriendListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 			dialog2.DoModal();
 			break;
 		}
-		case MPG_ALTENTER:
 		case MP_DETAIL:
+		case MPG_ALTENTER:
+		case IDA_ENTER:
 			if (cur_friend)
 				ShowFriendDetails(cur_friend);
 			break;
@@ -269,19 +273,23 @@ BOOL CFriendListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 		}
 		// - show requested files (sivka/Xman)
 		case MP_LIST_REQUESTED_FILES:
-			{ 
-			if (cur_friend && cur_friend->GetLinkedClient())
-			{
-				cur_friend->GetLinkedClient()->ShowRequestedFiles(); 
-			}
-			break;
-		  }
+		{ 
+				if (cur_friend && cur_friend->GetLinkedClient())
+				{
+					cur_friend->GetLinkedClient()->ShowRequestedFiles(); 
+				}
+				break;
+		}
 		//Xman end
+
+		case MP_FIND:
+			OnFindStart();
+			break;
 	}
 	return true;
 }
 
-void CFriendListCtrl::OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult)
+void CFriendListCtrl::OnNMDblclk(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	int iSel = GetNextItem(-1, LVIS_SELECTED | LVIS_FOCUSED);
 	if (iSel != -1) 
@@ -344,7 +352,7 @@ int CFriendListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 	if (item1 == NULL || item2 == NULL)
 		return 0;
 
-	//Xman experimental code:
+	//Xman 
 	//sometimes I still receive crashdumps poiting to the CompareLocaleStringNoCase
 	//but this line may not crash, because items are not NULL and an empty String can't be the problem
 	//one user reported this happend when closing emule... maybe this part of code is called

@@ -1,4 +1,4 @@
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -27,7 +27,7 @@ enum EPartFileStatus{
 	PS_WAITINGFORHASH	= 2,
 	PS_HASHING			= 3,
 	PS_ERROR			= 4,
-	PS_INSUFFICIENT		= 5,	// SLUGFILLER: checkDiskspace
+	PS_INSUFFICIENT		= 5,
 	PS_UNKNOWN			= 6,
 	PS_PAUSED			= 7,
 	PS_COMPLETING		= 8,
@@ -41,6 +41,7 @@ enum EPartFileStatus{
 #define PR_VERYHIGH			3
 #define PR_AUTO				5 //UAP Hunter
 #define PR_POWER			6 //Xman PowerRelease
+
 
 //#define BUFFER_SIZE_LIMIT 500000 // Max bytes before forcing a flush
 #define BUFFER_TIME_LIMIT	60000	// Max milliseconds before forcing a flush
@@ -79,26 +80,27 @@ class CSafeMemFile;
 #pragma pack(1)
 struct Requested_Block_Struct
 {
-	uint32	StartOffset;
-	uint32	EndOffset;
+	uint64	StartOffset;
+	uint64	EndOffset;
 	uchar	FileID[16];
-	uint32  transferred; // Barry - This counts bytes completed
+	uint64  transferred; // Barry - This counts bytes completed
 };
 #pragma pack()
 
 struct Gap_Struct
 {
-	uint32 start;
-	uint32 end;
+	uint64 start;
+	uint64 end;
 };
 
 struct PartFileBufferedData
 {
 	BYTE *data;						// Barry - This is the data to be written
-	uint32 start;					// Barry - This is the start offset of the data
-	uint32 end;						// Barry - This is the end offset of the data
+	uint64 start;					// Barry - This is the start offset of the data
+	uint64 end;						// Barry - This is the end offset of the data
 	Requested_Block_Struct *block;	// Barry - This is the requested block that this data relates to
 };
+
 
 //Xman sourcecache
 enum ESourceFrom;
@@ -118,6 +120,7 @@ struct PartfileSourceCache
 #define SOURCECACHELIFETIME		MIN2MS(30)	//expires after 30 minutes
 //Xman end
 
+
 typedef CTypedPtrList<CPtrList, CUpDownClient*> CUpDownClientPtrList;
 
 class CPartFile : public CKnownFile
@@ -126,10 +129,10 @@ class CPartFile : public CKnownFile
 
 	friend class CPartFileConvert;
 public:
-	CPartFile(uint8 cat=0);
-	CPartFile(CSearchFile* searchresult,uint8 cat=0);  //used when downloading a new file
-	CPartFile(CString edonkeylink,uint8 cat=0);
-	CPartFile(class CED2KFileLink* fileLink,uint8 cat=0);
+	CPartFile(UINT cat = 0);
+	CPartFile(CSearchFile* searchresult, UINT cat = 0);
+	CPartFile(CString edonkeylink, UINT cat = 0);
+	CPartFile(class CED2KFileLink* fileLink, UINT cat = 0);
 	virtual ~CPartFile();
 
 	bool	IsPartFile() const { return !(status == PS_COMPLETE); }
@@ -147,9 +150,10 @@ public:
 
 	// local file system related properties
 	bool	IsNormalFile() const { return (m_dwFileAttributes & (FILE_ATTRIBUTE_COMPRESSED | FILE_ATTRIBUTE_SPARSE_FILE)) == 0; }
-	uint64	GetRealFileSize() const;
-	void	GetSizeToTransferAndNeededSpace(uint32& pui32SizeToTransfer, uint32& pui32NeededSpace) const;
-	uint32	GetNeededSpace() const; // SLUGFILLER: checkDiskspace
+	const bool	IsAllocating() const { return m_AllocateThread != NULL; }
+	EMFileSize	GetRealFileSize() const;
+	void	GetSizeToTransferAndNeededSpace(uint64& pui64SizeToTransfer, uint64& pui32NeededSpace) const;
+	uint64	GetNeededSpace() const;
 
 	// last file modification time (NT's version of UTC), to be used for stats only!
 	CTime	GetCFileDate() const { return CTime(m_tLastModified); }
@@ -159,37 +163,33 @@ public:
 	CTime	GetCrCFileDate() const { return CTime(m_tCreated); }
 	uint32	GetCrFileDate() const { return m_tCreated; }
 
-	void	InitializeFromLink(CED2KFileLink* fileLink, uint8 cat=0);
-	bool	CreateFromFile(LPCTSTR directory, LPCTSTR filename, LPVOID pvProgressParam) {return false;}// not supported in this class
-	bool	LoadFromFile(FILE* file) { return false; }
-	bool	WriteToFile(FILE* file) { return false; }
-	//Xman old version
-	//uint32	Process(uint32 reducedownload, uint8 m_icounter);
-	
+	void	InitializeFromLink(CED2KFileLink* fileLink, UINT cat = 0);
+	//uint32	Process(uint32 reducedownload, UINT icounter);
 	// Maella -New bandwidth control-
 	uint32	Process(uint32 maxammount, bool isLimited, bool fullProcess); // in byte, not in percent
 	// Maella end
 	//Xman end	
+
 	uint8	LoadPartFile(LPCTSTR in_directory, LPCTSTR filename, bool getsizeonly = false); //filename = *.part.met
-//	uint8	ImportShareazaTempfile(LPCTSTR in_directory,LPCTSTR in_filename , bool getsizeonly);
+	uint8	ImportShareazaTempfile(LPCTSTR in_directory,LPCTSTR in_filename , bool getsizeonly);
 
 	bool	SavePartFile();
 	void	PartFileHashFinished(CKnownFile* result);
-	bool	HashSinglePart(uint16 partnumber); // true = ok , false = corrupted
+	bool	HashSinglePart(UINT partnumber); // true = ok , false = corrupted
 
-	void	AddGap(uint32 start, uint32 end);
-	void	FillGap(uint32 start, uint32 end);
+	void	AddGap(uint64 start, uint64 end);
+	void	FillGap(uint64 start, uint64 end);
 	void	DrawStatusBar(CDC* dc, LPCRECT rect, bool bFlat) /*const*/;
 	virtual void	DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool	 bFlat) const;
-	bool	IsComplete(uint32 start, uint32 end, bool bIgnoreBufferedData) const;
-	bool	IsPureGap(uint32 start, uint32 end) const;
-	bool	IsAlreadyRequested(uint32 start, uint32 end) const;
-	bool    ShrinkToAvoidAlreadyRequested(uint32& start, uint32& end) const;
-	bool	IsCorruptedPart(uint16 partnumber) const;
-	uint32	GetTotalGapSizeInRange(uint32 uRangeStart, uint32 uRangeEnd) const;
-	uint32	GetTotalGapSizeInPart(UINT uPart) const;
+	bool	IsComplete(uint64 start, uint64 end, bool bIgnoreBufferedData) const;
+	bool	IsPureGap(uint64 start, uint64 end) const;
+	bool	IsAlreadyRequested(uint64 start, uint64 end) const;
+    bool    ShrinkToAvoidAlreadyRequested(uint64& start, uint64& end) const;
+	bool	IsCorruptedPart(UINT partnumber) const;
+	uint64	GetTotalGapSizeInRange(uint64 uRangeStart, uint64 uRangeEnd) const;
+	uint64	GetTotalGapSizeInPart(UINT uPart) const;
 	void	UpdateCompletedInfos();
-	void	UpdateCompletedInfos(uint32 uTotalGaps);
+	void	UpdateCompletedInfos(uint64 uTotalGaps);
 	virtual void	UpdatePartsInfo();
 
 	bool	GetNextRequestedBlock(CUpDownClient* sender, Requested_Block_Struct** newblocks, uint16* count) /*const*/;
@@ -205,7 +205,7 @@ public:
 	void	NotifyStatusChange();
 	bool	IsStopped() const { return stopped; }
 	bool	GetCompletionError() const { return m_bCompletionError; }
-	uint32  GetCompletedSize() const { return completedsize; }
+	EMFileSize  GetCompletedSize() const { return completedsize; }
 	CString getPartfileStatus() const;
 	int		getPartfileStatusRang() const;
 	void	SetActive(bool bActive);
@@ -216,14 +216,14 @@ public:
 	void	SetAutoDownPriority(bool NewAutoDownPriority) { m_bAutoDownPriority = NewAutoDownPriority; }
 	void	UpdateAutoDownPriority();
 
-	uint16	GetSourceCount() const { return srclist.GetCount(); }
-	uint16	GetSrcA4AFCount() const { return A4AFsrclist.GetCount(); }
-	uint16	GetSrcStatisticsValue(EDownloadState nDLState) const;
-	uint16	GetTransferringSrcCount() const;
-	uint32	GetTransferred() const { return m_uTransferred; }
-	//uint32	GetDatarate() const { return datarate; } //Xman
+	UINT	GetSourceCount() const { return srclist.GetCount(); }
+	UINT	GetSrcA4AFCount() const { return A4AFsrclist.GetCount(); }
+	UINT	GetSrcStatisticsValue(EDownloadState nDLState) const;
+	UINT	GetTransferringSrcCount() const;
+	uint64	GetTransferred() const { return m_uTransferred; }
+	//uint32	GetDatarate() const { return datarate; }
 	float	GetPercentCompleted() const { return percentcompleted; }
-	uint16	GetNotCurrentSourcesCount() const;
+	UINT	GetNotCurrentSourcesCount() const;
 	int		GetValidSourcesCount() const;
 	bool	IsArchive(bool onlyPreviewable = false) const; // Barry - Also want to preview archives
     bool    IsPreviewableFileType() const;
@@ -232,7 +232,7 @@ public:
 	uint32	GetDlActiveTime() const;
 
 	// Barry - Added as replacement for BlockReceived to buffer data before writing to disk
-	uint32	WriteToBuffer(uint32 transize, const BYTE *data, uint32 start, uint32 end, Requested_Block_Struct *block, const CUpDownClient* client);
+	uint32	WriteToBuffer(uint64 transize, const BYTE *data, uint64 start, uint64 end, Requested_Block_Struct *block, const CUpDownClient* client);
 	void	FlushBuffer(bool forcewait=false, bool bForceICH = false, bool bNoAICH = false);
 	// Barry - This will invert the gap list, up to caller to delete gaps when done
 	// 'Gaps' returned are really the filled areas, and guaranteed to be in order
@@ -240,7 +240,7 @@ public:
 
 	// Barry - Added to prevent list containing deleted blocks on shutdown
 	void	RemoveAllRequestedBlocks(void);
-	bool	RemoveBlockFromList(uint32 start, uint32 end);
+	bool	RemoveBlockFromList(uint64 start, uint64 end);
 	bool	IsInRequestedBlockList(const Requested_Block_Struct* block) const;
 	void	RemoveAllSources(bool bTryToSwap);
 
@@ -262,15 +262,15 @@ public:
 	virtual Packet* CreateSrcInfoPacket(const CUpDownClient* forClient) const;
 	void	AddClientSources(CSafeMemFile* sources, uint8 sourceexchangeversion, const CUpDownClient* pClient = NULL);
 
-	uint16	GetAvailablePartCount() const { return availablePartsCount; }
+	UINT	GetAvailablePartCount() const { return availablePartsCount; }
 	void	UpdateAvailablePartsCount();
 
 	uint32	GetLastAnsweredTime() const	{ return m_ClientSrcAnswered; }
 	void	SetLastAnsweredTime() { m_ClientSrcAnswered = ::GetTickCount(); }
 	void	SetLastAnsweredTimeTimeout();
 
-	UINT	GetCorruptionLoss() const { return m_uCorruptionLoss; }
-	UINT	GetCompressionGain() const { return m_uCompressionGain; }
+	uint64	GetCorruptionLoss() const { return m_uCorruptionLoss; }
+	uint64	GetCompressionGain() const { return m_uCompressionGain; }
 	uint32	GetRecoveredPartsByICH() const { return m_uPartsSavedDueICH; }
 
 	virtual void	UpdateFileRatingCommentAvail();
@@ -287,11 +287,11 @@ public:
 	CString GetInfoSummary() const;
 
 //	int		GetCommonFilePenalty() const;
-	void	UpdateDisplayedInfo(bool force = false); 
+	void	UpdateDisplayedInfo(bool force = false);
 
-	uint8	GetCategory() /*const*/;
-	uint8	GetConstCategory() const;  //Xman checkmark to catogory at contextmenu of downloadlist
-	void	SetCategory(uint8 cat,bool setprio=true);
+	UINT	GetCategory() /*const*/;
+	UINT	GetConstCategory() const;  //Xman checkmark to catogory at contextmenu of downloadlist
+	void	SetCategory(UINT cat);
 	bool	CheckShowItemInGivenCat(int inCategory) /*const*/;
 
 	uint8*	MMCreatePartStatus();
@@ -316,7 +316,7 @@ public:
 	uint32	m_LastSearchTime;
 	uint32	m_LastSearchTimeKad;
 	uint8	m_TotalSearchesKad;
-	uint32	m_iAllocinfo;
+	uint64	m_iAllocinfo;
 	CUpDownClientPtrList srclist;
 	CUpDownClientPtrList A4AFsrclist; //<<-- enkeyDEV(Ottavio84) -A4AF-
 	CTime	lastseencomplete;
@@ -331,17 +331,17 @@ public:
 	bool	hashsetneeded;
     //bool    AllowSwapForSourceExchange() { return ::GetTickCount()-lastSwapForSourceExchangeTick > 30*1000; } // ZZ:DownloadManager
     //void    SetSwapForSourceExchangeTick() { lastSwapForSourceExchangeTick = ::GetTickCount(); } // ZZ:DownloadManager
-
-	uint16  SetPrivateMaxSources(uint32 in)	{ return m_uMaxSources=in; } 
-	uint16  GetPrivateMaxSources() const	{ return m_uMaxSources; } 
-	uint16	GetMaxSources() const;
-	uint16	GetMaxSourcePerFileSoft() const;
-	uint16	GetMaxSourcePerFileUDP() const;
+	
+	UINT	SetPrivateMaxSources(uint32 in)	{ return m_uMaxSources = in; } 
+	UINT	GetPrivateMaxSources() const	{ return m_uMaxSources; } 
+	UINT	GetMaxSources() const;
+	UINT	GetMaxSourcePerFileSoft() const;
+	UINT	GetMaxSourcePerFileUDP() const;
 
     bool    GetPreviewPrio() const { return m_bpreviewprio; }
 	void    SetPreviewPrio(bool in) { m_bpreviewprio=in; }
 
-    static bool RightFileHasHigherPrio(CPartFile* left, CPartFile* right, bool allow_go_over_hardlimit=false);
+	static bool RightFileHasHigherPrio(CPartFile* left, CPartFile* right, bool allow_go_over_hardlimit=false); //Xman Xtreme Downloadmanager
 
 	CDeadSourceList	m_DeadSourceList;
 
@@ -352,8 +352,8 @@ public:
 	// Maella end
 
 	//Xman Xtreme Downloadmanager
-	void CalcAvgQr(uint16 inqr,uint16 oldqr);
-	uint16 GetAvgQr() const {return m_avgqr;}
+	void CalcAvgQr(UINT inqr,UINT oldqr);
+	UINT GetAvgQr() const {return m_avgqr;}
 	void	RemoveNoNeededPartsSources();
 	void	RemoveQueueFullSources();
 	void	RemoveLeecherSources(); //Xman Anti-Leecher
@@ -366,10 +366,11 @@ public:
 	uint32	GetSourceCacheAmount() const { return m_sourcecache.GetCount();}
 	//Xman end
 
-	//Xman GlobalMaxHardlimit for fairness
+	//Xman GlobalMaxHarlimit for fairness
 	bool	IsGlobalSourceAddAllowed();
 	bool	IsSourceSearchAllowed();
 	//Xman end
+
 
 #ifdef _DEBUG
 	// Diagnostic Support
@@ -378,15 +379,15 @@ public:
 #endif
 
 protected:
-	bool	GetNextEmptyBlockInPart(uint16 partnumber,Requested_Block_Struct* result) const;
+	bool	GetNextEmptyBlockInPart(uint16 partnumber, Requested_Block_Struct* result) const;
 	void	CompleteFile(bool hashingdone);
-	void	CreatePartFile(uint8 cat=0);
+	void	CreatePartFile(UINT cat = 0);
 	void	Init();
 	CSettingsSaver m_SettingsSaver; // file settings - Stulle
 
 private:
 	//Xman Xtreme Downloadmanager
-	uint16	m_avgqr;
+	UINT	m_avgqr;
 	uint32	m_sumqr;
 	uint16	m_countqr;
 	//Xman end
@@ -399,19 +400,19 @@ private:
 	static CBarShader s_LoadBar;
 	//static CBarShader s_ChunkBar; //Xman
 	uint32	m_iLastPausePurge;
-	//uint16	count;
-	uint16	m_anStates[STATES_COUNT];
-	uint32	completedsize;
-	UINT	m_uCorruptionLoss;
-	UINT	m_uCompressionGain;
+	//uint16	count; //Xman not used
+	UINT	m_anStates[STATES_COUNT];
+	EMFileSize	completedsize;
+	uint64	m_uCorruptionLoss;
+	uint64	m_uCompressionGain;
 	uint32	m_uPartsSavedDueICH;
 	CString m_fullname;
 	CString m_partmetfilename;
-	uint32	m_uTransferred;
-	uint16  m_uMaxSources;
+	uint64	m_uTransferred;
+	UINT	m_uMaxSources;
 	bool	paused;
 	bool	stopped;
-	bool	insufficient; // SLUGFILLER: checkDiskspace
+	bool	insufficient;
 	bool	m_bCompletionError;
 	uint8	m_iDownPriority;
 	bool	m_bAutoDownPriority;
@@ -426,7 +427,7 @@ private:
 	float	percentcompleted;
 	CList<uint16, uint16> corrupted_list;
 	uint32	m_ClientSrcAnswered;
-	uint16	availablePartsCount;
+	UINT	availablePartsCount;
 	CWinThread* m_AllocateThread;
 	DWORD	m_lastRefreshedDLDisplay;
 	CUpDownClientPtrList m_downloadingSourceList;
@@ -435,9 +436,9 @@ private:
     bool	m_bpreviewprio;
 	// Barry - Buffered data to be written
 	CTypedPtrList<CPtrList, PartFileBufferedData*> m_BufferedData_list;
-	uint32	m_nTotalBufferData;
+	uint64	m_nTotalBufferData;
 	uint32	m_nLastBufferFlushTime;
-	uint8	m_category;
+	UINT	m_category;
 	DWORD	m_dwFileAttributes;
 	time_t	m_tActivated;
 	uint32	m_nDlActiveTime;
@@ -456,7 +457,6 @@ private:
 	CSourceSaver m_sourcesaver; 
 	// Xman end
 
-
     //DWORD   lastSwapForSourceExchangeTick; // ZZ:DownloadManaager
 
 	//Xman sourcecache
@@ -466,49 +466,14 @@ private:
 
 	// ==> Global Source Limit [Max/Stulle] - Stulle
 private: 
-	uint16  m_uFileHardLimit; 
+	UINT	m_uFileHardLimit; 
 public: 
-//    void    SetAutoHL();
-	void	IncrHL(uint16 m_uSourcesDif);
+	void	IncrHL(UINT m_uSourcesDif);
 	void	DecrHL()	{m_uFileHardLimit = GetSourceCount();}
-	void	SetPassiveHL(uint16 m_uSourcesDif)	{m_uFileHardLimit = GetSourceCount() + m_uSourcesDif;};
-	uint16	GetFileHardLimit() const {return m_uFileHardLimit;} // Global Source Limit (customize for files) - Stulle
-	void	SetFileHardLimit(uint16 in){m_uFileHardLimit=in;}
+	void	SetPassiveHL(UINT m_uSourcesDif)	{m_uFileHardLimit = GetSourceCount() + m_uSourcesDif;};
+	UINT	GetFileHardLimit() const {return m_uFileHardLimit;}
+	void	InitHL();
 	// <== Global Source Limit [Max/Stulle] - Stulle
-
-// ==> {Webcache} [Max]
-	// JP added handling of proxy-sources on pause/cancel/resume START
-public:
-	void CancelProxyDownloads();
-	void PauseProxyDownloads();
-	void ResumeProxyDownloads();
-	// JP added handling of proxy-sources on pause/cancel/resume END
-	
-	//JP webcache column START
-	//JP added stuff from Gnaddelwarz
-	uint16	GetWebcacheSourceCount() const; //JP webcache column
-	uint16 GetWebcacheSourceOurProxyCount() const;
-	uint16 GetWebcacheSourceNotOurProxyCount() const;
-	void	CountWebcacheSources() const;
-	uint16	WebcacheSources;
-	uint16 WebcacheSourcesOurProxy;
-	uint16 WebcacheSourcesNotOurProxy;
-	uint32  LastWebcacheSourceCountTime; //JP speed up webcache column
-	//JP webcache column END
-
-	//JP webcache file detail dialogue START
-	uint32  WebCacheDownDataThisFile;
-	uint32	Webcacherequests;
-	uint32	SuccessfulWebcacherequests;
-	void	AddWebCachedBlockToStats( bool IsGood, uint32 bytes );
-	//JP webcache file detail dialogue END
-
-	//JP Throttle OHCB-production START
-	uint32 GetNumberOfBlocksForThisFile();
-	uint16 GetMaxNumberOfWebcacheConnectionsForThisFile();
-	uint16 GetNumberOfCurrentWebcacheConnectionsForThisFile();
-	//JP Throttle OHCB-production END
-// <== {Webcache} [Max] 
 
 	// ==> file settings - Stulle
 	bool	GetEnableAutoDropNNS() const {return m_EnableAutoDropNNS;}

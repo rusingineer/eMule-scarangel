@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -33,6 +33,7 @@
 #include "Kademlia/Kademlia/Kademlia.h"
 #include "Kademlia/net/KademliaUDPListener.h"
 
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -44,9 +45,18 @@ static char THIS_FILE[] = __FILE__;
 
 IMPLEMENT_DYNAMIC(CClientListCtrl, CMuleListCtrl)
 
+BEGIN_MESSAGE_MAP(CClientListCtrl, CMuleListCtrl)
+	ON_WM_CONTEXTMENU()
+	ON_WM_SYSCOLORCHANGE()
+	ON_NOTIFY_REFLECT(LVN_COLUMNCLICK, OnColumnClick)
+	ON_NOTIFY_REFLECT(NM_DBLCLK, OnNMDblclk)
+	ON_NOTIFY_REFLECT(LVN_GETDISPINFO, OnGetDispInfo)
+END_MESSAGE_MAP()
+
 CClientListCtrl::CClientListCtrl()
 	: CListCtrlItemWalk(this)
 {
+	SetGeneralPurposeFind(true, false);
 }
 
 void CClientListCtrl::Init()
@@ -139,51 +149,43 @@ void CClientListCtrl::Localize()
 		CString strRes;
 
 		strRes = GetResString(IDS_QL_USERNAME);
-		hdi.pszText = strRes.GetBuffer();
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(0, &hdi);
-		strRes.ReleaseBuffer();
 
 		strRes = GetResString(IDS_CL_UPLOADSTATUS);
-		hdi.pszText = strRes.GetBuffer();
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(1, &hdi);
-		strRes.ReleaseBuffer();
 
 		strRes = GetResString(IDS_CL_TRANSFUP);
-		hdi.pszText = strRes.GetBuffer();
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(2, &hdi);
-		strRes.ReleaseBuffer();
 
 		strRes = GetResString(IDS_CL_DOWNLSTATUS);
-		hdi.pszText = strRes.GetBuffer();
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(3, &hdi);
-		strRes.ReleaseBuffer();
 
 		strRes = GetResString(IDS_CL_TRANSFDOWN);
-		hdi.pszText = strRes.GetBuffer();
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(4, &hdi);
-		strRes.ReleaseBuffer();
 
 		strRes=GetResString(IDS_CD_CSOFT);
-		hdi.pszText = strRes.GetBuffer();
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(5, &hdi);
-		strRes.ReleaseBuffer();
 
 		strRes = GetResString(IDS_CONNECTED);
-		hdi.pszText = strRes.GetBuffer();
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(6, &hdi);
-		strRes.ReleaseBuffer();
 
-		strRes=GetResString(IDS_CD_UHASH);strRes.Remove(':');
-		hdi.pszText = strRes.GetBuffer();
+		strRes = GetResString(IDS_CD_UHASH);
+		strRes.Remove(':');
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(7, &hdi);
-		strRes.ReleaseBuffer();
 
 		//Xman
 		// khaos::kmod+
 		strRes=GetResString(IDS_IP);
-		hdi.pszText = strRes.GetBuffer();
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 		pHeaderCtrl->SetItem(8, &hdi);
-		strRes.ReleaseBuffer();
 		// khaos::kmod-
 
 	}
@@ -230,7 +232,7 @@ void CClientListCtrl::RemoveClient(const CUpDownClient* client)
 	LVFINDINFO find;
 	find.flags = LVFI_PARAM;
 	find.lParam = (LPARAM)client;
-	sint32 result = FindItem(&find);
+	int result = FindItem(&find);
 	if (result != -1){
 		DeleteItem(result);
 		theApp.emuledlg->transferwnd->UpdateListCount(CTransferWnd::wnd2Clients);
@@ -255,7 +257,7 @@ void CClientListCtrl::RefreshClient(const CUpDownClient* client)
 	LVFINDINFO find;
 	find.flags = LVFI_PARAM;
 	find.lParam = (LPARAM)client;
-	sint16 result = FindItem(&find);
+	int result = FindItem(&find);
 	if (result != -1)
 		Update(result);
 }
@@ -365,7 +367,7 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					if(client->GetModClient() == MOD_NONE)
 						image = 4;
 					else
-						image = client->GetModClient() + 18;
+						image = (uint8)(client->GetModClient() + 18);
 					// <== Mod Icons - Stulle
 				}
 				else{
@@ -484,17 +486,7 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	dc.SetTextColor(crOldTextColor);
 }
 
-BEGIN_MESSAGE_MAP(CClientListCtrl, CMuleListCtrl)
-	ON_WM_CONTEXTMENU()
-	ON_WM_SYSCOLORCHANGE()
-	ON_NOTIFY_REFLECT(LVN_COLUMNCLICK, OnColumnClick)
-	ON_NOTIFY_REFLECT(NM_DBLCLK, OnNMDblclk)
-	ON_NOTIFY_REFLECT(LVN_GETDISPINFO, OnGetDispInfo)
-END_MESSAGE_MAP()
-
-// CClientListCtrl message handlers
-	
-void CClientListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
+void CClientListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 {
 	int iSel = GetNextItem(-1, LVIS_SELECTED | LVIS_FOCUSED);
 	const CUpDownClient* client = (iSel != -1) ? (CUpDownClient*)GetItemData(iSel) : NULL;
@@ -514,8 +506,9 @@ void CClientListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	//Xman end
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient()) ? MF_ENABLED : MF_GRAYED), MP_MESSAGE, GetResString(IDS_SEND_MSG), _T("SENDMESSAGE"));
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && client->GetViewSharedFilesSupport()) ? MF_ENABLED : MF_GRAYED), MP_SHOWLIST, GetResString(IDS_VIEWFILES), _T("VIEWFILES"));
-	if (Kademlia::CKademlia::isRunning() && !Kademlia::CKademlia::isConnected())
+	if (Kademlia::CKademlia::IsRunning() && !Kademlia::CKademlia::IsConnected())
 		ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && client->GetKadPort()!=0) ? MF_ENABLED : MF_GRAYED), MP_BOOT, GetResString(IDS_BOOTSTRAP));
+	ClientMenu.AppendMenu(MF_STRING | (GetItemCount() > 0 ? MF_ENABLED : MF_GRAYED), MP_FIND, GetResString(IDS_FIND), _T("Search"));
 
 	// - show requested files (sivka/Xman)
 	ClientMenu.AppendMenu(MF_SEPARATOR); 
@@ -525,8 +518,17 @@ void CClientListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	ClientMenu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
 }
 
-BOOL CClientListCtrl::OnCommand(WPARAM wParam,LPARAM lParam )
+BOOL CClientListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 {
+	wParam = LOWORD(wParam);
+
+	switch (wParam)
+	{
+	case MP_FIND:
+		OnFindStart();
+		return TRUE;
+	}
+
 	int iSel = GetNextItem(-1, LVIS_SELECTED | LVIS_FOCUSED);
 	if (iSel != -1){
 		CUpDownClient* client = (CUpDownClient*)GetItemData(iSel);
@@ -567,15 +569,17 @@ BOOL CClientListCtrl::OnCommand(WPARAM wParam,LPARAM lParam )
 					Update(iSel);
 				}
 				break;
+			case MP_DETAIL:
 			case MPG_ALTENTER:
-			case MP_DETAIL:{
+			case IDA_ENTER:
+			{
 				CClientDetailDialog dialog(client, this);
 				dialog.DoModal();
 				break;
-						   }
+ 			}
 			case MP_BOOT:
 				if (client->GetKadPort())
-					Kademlia::CKademlia::bootstrap(ntohl(client->GetIP()), client->GetKadPort());
+					Kademlia::CKademlia::Bootstrap(ntohl(client->GetIP()), client->GetKadPort());
 				break;
 				// - show requested files (sivka/Xman)
 			case MP_LIST_REQUESTED_FILES: 
@@ -816,7 +820,8 @@ void CClientListCtrl::ShowSelectedUserDetails()
 	}
 }
 
-void CClientListCtrl::OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult) {
+void CClientListCtrl::OnNMDblclk(NMHDR* /*pNMHDR*/, LRESULT* pResult)
+{
 	int iSel = GetNextItem(-1, LVIS_SELECTED | LVIS_FOCUSED);
 	if (iSel != -1) {
 		CUpDownClient* client = (CUpDownClient*)GetItemData(iSel);

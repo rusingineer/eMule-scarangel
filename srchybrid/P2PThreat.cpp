@@ -156,7 +156,7 @@ CP2PThreat::TestRegistryKey(HKEY hParent, LPCTSTR pszKey, LPCTSTR pszName, LPCTS
 	{
 		TCHAR pszTempName[500], pszTempValue[500];
 		DWORD dwNameLen, dwValueLen, idx = 0;
-		if (pszName == _T("*"))
+		if (_tcscmp(pszName,_T("*"))==0) //(pszName == _T("*"))//Xman
 		{
 			while (!bFound)
 			{
@@ -172,7 +172,7 @@ CP2PThreat::TestRegistryKey(HKEY hParent, LPCTSTR pszKey, LPCTSTR pszName, LPCTS
 					bFound = true;
 			}
 		}
-		else if (pszName == _T("########"))
+		else if(_tcscmp(pszName,_T("########"))==0) //(pszName == _T("########"))//Xman
 		{
 			while (!bFound)
 			{

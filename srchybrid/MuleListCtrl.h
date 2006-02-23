@@ -106,7 +106,7 @@ public:
 	HIMAGELIST ApplyImageList(HIMAGELIST himl);
 
 	// General purpose listview find dialog+functions (optional)
-	void	SetGeneralPurposeFind(bool bEnable) { m_bGeneralPurposeFind = bEnable; }
+	void	SetGeneralPurposeFind(bool bEnable, bool bCanSearchInAllColumns = true) { m_bGeneralPurposeFind = bEnable; m_bCanSearchInAllColumns = bCanSearchInAllColumns; }
 	void	DoFind(int iStartItem, int iDirection /*1=down, 0 = up*/, BOOL bShowError);
 	void	DoFindNext(BOOL bShowError);
 
@@ -152,9 +152,12 @@ protected:
 	BOOL            m_bCustomDraw;
 	CImageList		m_imlHeaderCtrl;
 	CList<int, int>	m_liSortHistory;
+	UINT			m_uIDAccel;
+	HACCEL			m_hAccel;
 
 	// General purpose listview find dialog+functions (optional)
 	bool m_bGeneralPurposeFind;
+	bool m_bCanSearchInAllColumns;
 	CString m_strFindText;
 	bool m_bFindMatchCase;
 	int m_iFindDirection;
@@ -213,6 +216,7 @@ private:
 		return ((CMuleListCtrl*)lParamSort)->MultiSortProc(lParam1, lParam2);
 	}
 	// SLUGFILLER: multiSort
+
 };
 
 void GetContextMenuPosition(CListCtrl& lv, CPoint& point);

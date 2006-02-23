@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -32,14 +32,8 @@
 #include "ListenSocket.h"
 #include "ClientUDPSocket.h"
 #include "Log.h"
+#include "DownloadQueue.h" // Global Source Limit [Max/Stulle] - Stulle
 
-
-
-// ==> {Webcache} [Max] 
-#include "WebCache\PPgWebcachesettings.h" //jp
-#include "PreferencesDlg.h" //jp
-#include "emuleDlg.h" // webcache
-// <== {Webcache} [Max] 
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -71,7 +65,7 @@ BEGIN_MESSAGE_MAP(CPPgConnection, CPropertyPage)
 	ON_EN_CHANGE(IDC_MAXUP, OnSettingsChange)
 	ON_EN_KILLFOCUS(IDC_MAXUP, OnEnKillfocusMaxup)
 	//Xman end
-	//Xman GlobalMaxHardlimit for fairness
+	//Xman GlobalMaxHarlimit for fairness
 	ON_BN_CLICKED(IDC_ACCEPTRATIO, OnSettingsChange)
 	ON_BN_CLICKED(IDC_ACCEPTSOURCES, OnSettingsChange)
 	//Xman end
@@ -122,9 +116,9 @@ void CPPgConnection::OnEnChangePorts(uint8 istcpport)
 	// ports unchanged?
 	CString buffer;
 	GetDlgItem(IDC_PORT)->GetWindowText(buffer);
-	uint16 tcp = _tstoi(buffer);
+	uint16 tcp = (uint16)_tstoi(buffer);
 	GetDlgItem(IDC_UDPPORT)->GetWindowText(buffer);
-	uint16 udp = _tstoi(buffer);
+	uint16 udp = (uint16)_tstoi(buffer);
 
 	GetDlgItem(IDC_STARTTEST)->EnableWindow( 
 		tcp == theApp.listensocket->GetConnectedPort() && 
@@ -154,12 +148,12 @@ void CPPgConnection::OnEnChangeUDPDisable()
 	if (GetDlgItem(IDC_UDPPORT)->GetWindowTextLength())
 	{
 		GetDlgItem(IDC_UDPPORT)->GetWindowText(buffer, 20);
-		tempVal = _tstoi(buffer);
+		tempVal = (uint16)_tstoi(buffer);
 	}
 	
 	if (IsDlgButtonChecked(IDC_UDPDISABLE) || (!IsDlgButtonChecked(IDC_UDPDISABLE) && tempVal == 0))
 	{
-		tempVal = _tstoi(buffer) ? _tstoi(buffer)+10 : thePrefs.port+10;
+		tempVal = (uint16)_tstoi(buffer) ? (uint16)(_tstoi(buffer)+10) : (uint16)(thePrefs.port+10);
 		if (IsDlgButtonChecked(IDC_UDPDISABLE))
 			tempVal = 0;
 		strBuffer.Format(_T("%d"), tempVal);
@@ -277,7 +271,8 @@ void CPPgConnection::LoadSettings(void)
 		else
 			CheckDlgButton(IDC_NETWORK_ED2K, 0);
 
-		if (theApp.m_pFirewallOpener->DoesFWConnectionExist())
+		// don't try on XP SP2 or higher, not needed there anymore
+		if (IsRunningXPSP2() == 0 && theApp.m_pFirewallOpener->DoesFWConnectionExist())
 			GetDlgItem(IDC_OPENPORTS)->EnableWindow(true);
 		else
 			GetDlgItem(IDC_OPENPORTS)->EnableWindow(false);
@@ -289,7 +284,7 @@ void CPPgConnection::LoadSettings(void)
 		ShowLimitValues();
 		//Xman
 		
-		//Xman GlobalMaxHardlimit for fairness
+		//Xman GlobalMaxHarlimit for fairness
 		strBuffer.Format(_T("%u"),thePrefs.m_uMaxGlobalSources);
 		GetDlgItem(IDC_MAXGLOBALSOURCES)->SetWindowText(strBuffer);
 		if(thePrefs.m_bAcceptsourcelimit==true)
@@ -334,7 +329,7 @@ BOOL CPPgConnection::OnApply()
 	if(GetDlgItem(IDC_MAXUP)->GetWindowTextLength())
 	{
 		GetDlgItem(IDC_MAXUP)->GetWindowText(buffer,20);
-		float upload = _tstof(buffer);
+		float upload = (float)_tstof(buffer);
 		if(upload<= 0.0f || upload >= UNLIMITED)
 			thePrefs.SetMaxUpload(11.0f);
 		else if(upload<3.0f)
@@ -347,7 +342,7 @@ BOOL CPPgConnection::OnApply()
 	if(GetDlgItem(IDC_MAXDOWN)->GetWindowTextLength())
 	{
 		GetDlgItem(IDC_MAXDOWN)->GetWindowText(buffer,20);
-		double download = _tstof(buffer);
+		double download = (float)_tstof(buffer);
 		thePrefs.SetMaxDownload((download <= 0.0f || download >= UNLIMITED) ? UNLIMITED : (float)download);
 	}
 
@@ -362,31 +357,13 @@ BOOL CPPgConnection::OnApply()
 	if (GetDlgItem(IDC_PORT)->GetWindowTextLength())
 	{
 		GetDlgItem(IDC_PORT)->GetWindowText(buffer, 20);
-		uint16 nNewPort = (_tstoi(buffer)) ? _tstoi(buffer) : DEFAULT_TCP_PORT;
+		uint16 nNewPort = ((uint16)_tstoi(buffer)) ? (uint16)_tstoi(buffer) : (uint16)DEFAULT_TCP_PORT;
 		if (nNewPort != thePrefs.port){
 			thePrefs.port = nNewPort;
 			if (theApp.IsPortchangeAllowed())
 				theApp.listensocket->Rebind();
 			else
 				bRestartApp = true;
-
-			// ==> {Webcache} [Max] 
-			// yonatan WC-TODO: check out Rebind()
-			// jp webcachesettings
-			// this part crashes if Webcachesettings has not been active page at least once see PreferencesDlg.cpp (103)
-			if	(((!thePrefs.UsesCachedTCPPort())	// not a good port for webcace
-			&& thePrefs.IsWebCacheDownloadEnabled()		// webcache enabled
-			&& theApp.emuledlg->preferenceswnd->m_wndWebcachesettings.IsDlgButtonChecked(IDC_Activatewebcachedownloads))  //if webcache was disabled but the change was not saved yet, no need for the message because it will be saved now
-			|| (!thePrefs.UsesCachedTCPPort()		// not a good port for webcache
-				&& theApp.emuledlg->preferenceswnd->m_wndWebcachesettings.IsDlgButtonChecked(IDC_Activatewebcachedownloads))) //webcache enabled but not yet saved to thePrefs. would be saved now but shouldn't
-			{
-				AfxMessageBox(GetResString(IDS_WrongPortforWebcache),MB_OK | MB_ICONINFORMATION,0);
-				thePrefs.webcacheEnabled=false;			// disable webcache
-			}
-			
-			theApp.emuledlg->preferenceswnd->m_wndWebcachesettings.LoadSettings();
-			// <== {Webcache} [Max] 
-
 		}
 	}
 	
@@ -399,7 +376,7 @@ BOOL CPPgConnection::OnApply()
 	if (GetDlgItem(IDC_UDPPORT)->GetWindowTextLength())
 	{
 		GetDlgItem(IDC_UDPPORT)->GetWindowText(buffer, 20);
-		uint16 nNewPort = (_tstoi(buffer) && !IsDlgButtonChecked(IDC_UDPDISABLE)) ? _tstoi(buffer) : 0;
+		uint16 nNewPort = ((uint16)_tstoi(buffer) && !IsDlgButtonChecked(IDC_UDPDISABLE)) ? (uint16)_tstoi(buffer) : (uint16)0;
 		if (nNewPort != thePrefs.udpport){
 			thePrefs.udpport = nNewPort;
 			if (theApp.IsPortchangeAllowed())
@@ -446,26 +423,30 @@ BOOL CPPgConnection::OnApply()
 	CalculateMaxUpSlotSpeed();
 	thePrefs.m_slotspeed=(float)m_ctlMaxUp.GetPos()/10.0f;
 
-	//Xman GlobalMaxHardlimit for fairness
+	//Xman GlobalMaxHarlimit for fairness
 	GetDlgItem(IDC_MAXGLOBALSOURCES)->GetWindowText(buffer,20);
+	// ==> Global Source Limit [Max/Stulle] - Stulle
+	/*
 	thePrefs.m_uMaxGlobalSources=(_tstoi(buffer)) ? _tstoi(buffer) : 1000;
 	thePrefs.m_bAcceptsourcelimit=IsDlgButtonChecked(IDC_ACCEPTSOURCES)!=0;
 	//Xman end
+	*/
+	UINT temp = (_tstoi(buffer)) ? _tstoi(buffer) : 1000;
+	thePrefs.m_bAcceptsourcelimit=IsDlgButtonChecked(IDC_ACCEPTSOURCES)!=0;
 
-	// ==> Global Source Limit [Max/Stulle] - Stulle
-	if(thePrefs.m_uMaxGlobalSources < thePrefs.GetGlobalHL())
+	if(thePrefs.m_uMaxGlobalSources != temp &&
+		thePrefs.m_bAcceptsourcelimit == false &&
+		thePrefs.IsUseGlobalHL() &&
+		theApp.downloadqueue->GetPassiveMode())
 	{
-		thePrefs.SetGlobalHL((!thePrefs.m_bAcceptsourcelimit || thePrefs.m_uMaxGlobalSources > MAX_GSL) ? MAX_GSL : thePrefs.m_uMaxGlobalSources);
-		if(thePrefs.GetPassiveMode())
-		{
-			thePrefs.SetPassiveMode(false);
-			thePrefs.SetGlobalHLUpdateTimer(50);
-			AddDebugLogLine(true,_T("{GSL} Global Source Limit settings have changed! Disabled PassiveMode!"));
-		}
+		theApp.downloadqueue->SetPassiveMode(false);
+		theApp.downloadqueue->SetUpdateHlTime(50000); // 50 sec
+		AddDebugLogLine(true,_T("{GSL} Global Max Hardlimit changed! Disabled PassiveMode!"));
 	}
+	thePrefs.m_uMaxGlobalSources = temp;
 	// <== Global Source Limit [Max/Stulle] - Stulle
 
-	uint16 tempcon = thePrefs.maxconnections;
+	UINT tempcon = thePrefs.maxconnections;
 	if (GetDlgItem(IDC_MAXCON)->GetWindowTextLength())
 	{
 		GetDlgItem(IDC_MAXCON)->GetWindowText(buffer, 20);
@@ -533,7 +514,7 @@ void CPPgConnection::Localize(void)
 		GetDlgItem(IDC_UDPDISABLE)->SetWindowText(GetResString(IDS_UDPDISABLED));
 		GetDlgItem(IDC_OPENPORTS)->SetWindowText(GetResString(IDS_FO_PREFBUTTON));
 		SetDlgItemText(IDC_STARTTEST, GetResString(IDS_STARTTEST) );
-		//Xman GlobalMaxHardlimit for fairness
+		//Xman GlobalMaxHarlimit for fairness
 		GetDlgItem(IDC_STATIC_MAXGLOBALSOURCES)->SetWindowText(GetResString(IDS_MAXGLOBALSOURCES));
 		GetDlgItem(IDC_ACCEPTSOURCES)->SetWindowText(GetResString(IDS_ACCEPTSOURCES));
 		GetDlgItem(IDC_ACCEPTRATIO)->SetWindowText(GetResString(IDS_ACCEPTRATIO));
@@ -618,7 +599,7 @@ BOOL CPPgConnection::OnCommand(WPARAM wParam, LPARAM lParam)
 	return __super::OnCommand(wParam, lParam);
 }
 
-BOOL CPPgConnection::OnHelpInfo(HELPINFO* pHelpInfo)
+BOOL CPPgConnection::OnHelpInfo(HELPINFO* /*pHelpInfo*/)
 {
 	OnHelp();
 	return TRUE;
@@ -652,10 +633,10 @@ void CPPgConnection::OnStartPortTest()
 	CString buffer;
 
 	GetDlgItem(IDC_PORT)->GetWindowText(buffer);
-	uint16 tcp = _tstoi(buffer);
+	uint16 tcp = (uint16)_tstoi(buffer);
 
 	GetDlgItem(IDC_UDPPORT)->GetWindowText(buffer);
-	uint16 udp = _tstoi(buffer);
+	uint16 udp = (uint16)_tstoi(buffer);
 
 	TriggerPortTest(tcp, udp);
 }
@@ -701,22 +682,22 @@ void CPPgConnection::CalculateMaxUpSlotSpeed()
 	TCHAR buffer[21];
 	float maxUp=10;
 	if(GetDlgItem(IDC_MAXUP)->GetWindowText(buffer, 20)>0)
-		maxUp=_tstof(buffer);
+		maxUp=(float)_tstof(buffer);
 	float maxSlotSpeed=3.0f;
 	if (maxUp<6) maxSlotSpeed=2.0f;
 	if (maxUp>=10)
 		maxSlotSpeed=maxUp/(3+(maxUp-10)/20.0f);
-	if (maxSlotSpeed>10)
-		maxSlotSpeed=10;
+	if (maxSlotSpeed>XTREME_MAX_SLOTSPEED)
+		maxSlotSpeed=XTREME_MAX_SLOTSPEED;
 	float a=ceil(maxSlotSpeed*10.0f);
-	int b=a;
+	int b=(int)a;
 	if((float)m_ctlMaxUp.GetPos()>a)
 	{
 		m_ctlMaxUp.SetPos(b);
 	}
 	m_ctlMaxUp.SetRange(15,b,true);
 
-	//Xman GlobalMaxHardlimit for fairness
+	//Xman GlobalMaxHarlimit for fairness
 	CString strbuffer;
 	strbuffer.Format(_T("%u"),(uint32)(maxUp*400 - (maxUp-10.0f)*100));
 	GetDlgItem(IDC_MAXGLOBALSOURCES)->SetWindowText(strbuffer);

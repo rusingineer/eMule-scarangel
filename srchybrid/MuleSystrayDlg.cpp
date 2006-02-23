@@ -20,7 +20,7 @@ BEGIN_MESSAGE_MAP(CInputBox, CEdit)
     ON_WM_CONTEXTMENU()
 END_MESSAGE_MAP()
 
-void CInputBox::OnContextMenu(CWnd* pWnd, CPoint point)
+void CInputBox::OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/)
 {
 	//Cax2 - nothing to see here!
 }
@@ -28,7 +28,7 @@ void CInputBox::OnContextMenu(CWnd* pWnd, CPoint point)
 /////////////////////////////////////////////////////////////////////////////
 // CMuleSystrayDlg dialog
 
-CMuleSystrayDlg::CMuleSystrayDlg(CWnd* pParent, CPoint pt, int iMaxUp, int iMaxDown, int iCurUp, int iCurDown)
+CMuleSystrayDlg::CMuleSystrayDlg(CWnd* pParent, CPoint pt, int /*iMaxUp*/, int /*iMaxDown*/, int /*iCurUp*/, int /*iCurDown*/) //Xman
 	: CDialog(CMuleSystrayDlg::IDD, pParent)
 {
 	/* //Xman

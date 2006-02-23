@@ -73,7 +73,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION |
 CAPTION "Xtreme II"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Anti-Leecher",IDC_ANTILEECHER_GROUP,7,6,212,170
+    GROUPBOX        "Anti-Leecher",IDC_ANTILEECHER_GROUP,7,6,212,177
     CONTROL         "Enable Anti-Leecher-Feature",IDC_ANTILEECHER_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,31,197,12
     CONTROL         "Detect Leecher by UserName",IDC_ANTILEECHERNAME_CHECK,
@@ -94,30 +94,32 @@ BEGIN
                     BS_AUTOCHECKBOX | WS_TABSTOP,23,114,188,12
     CONTROL         "Detect XS-Exploiter",IDC_ANTILEECHERXSEXPLOITER_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,126,188,12
-    LTEXT           "Community Mods:",IDC_STATIC_LEECHERCOMMUNITY,14,141,92,
+    LTEXT           "Community Mods:",IDC_STATIC_LEECHERCOMMUNITY,14,151,92,
                     10,SS_WORDELLIPSIS
     CONTROL         "ban",IDC_RADIO_LEECHERCOMMUNITY_1,"Button",
-                    BS_AUTORADIOBUTTON | WS_GROUP,111,140,28,10
+                    BS_AUTORADIOBUTTON | WS_GROUP,111,151,28,10
     CONTROL         "reduce score",IDC_RADIO_LEECHERCOMMUNITY_2,"Button",
-                    BS_AUTORADIOBUTTON,140,141,77,10
+                    BS_AUTORADIOBUTTON,140,151,77,10
     CONTROL         "ban",IDC_RADIO_LEECHERGHOST_1,"Button",
                     BS_AUTORADIOBUTTON | NOT WS_VISIBLE | WS_GROUP | 
-                    WS_TABSTOP,111,163,28,10
+                    WS_TABSTOP,107,168,28,10
     CONTROL         "reduce score",IDC_RADIO_LEECHERGHOST_2,"Button",
-                    BS_AUTORADIOBUTTON | NOT WS_VISIBLE | WS_TABSTOP,140,164,
+                    BS_AUTORADIOBUTTON | NOT WS_VISIBLE | WS_TABSTOP,135,169,
                     76,10
-    LTEXT           "Ghost Mods:",IDC_STATIC_LEECHERGHOST,14,165,92,10,
+    LTEXT           "Ghost Mods:",IDC_STATIC_LEECHERGHOST,9,170,92,10,
                     SS_WORDELLIPSIS | NOT WS_VISIBLE
-    LTEXT           "Nick / Modthiefs",IDC_STATIC_LEECHERTHIEF,14,151,92,10,
+    LTEXT           "Nick / Modthiefs",IDC_STATIC_LEECHERTHIEF,14,161,92,10,
                     SS_WORDELLIPSIS
     CONTROL         "ban",IDC_RADIO_LEECHERTHIEF_1,"Button",
-                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,111,151,28,10
+                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,111,161,28,10
     CONTROL         "reduce score",IDC_RADIO_LEECHERTHIEF_2,"Button",
-                    BS_AUTORADIOBUTTON | WS_TABSTOP,140,151,77,10
+                    BS_AUTORADIOBUTTON | WS_TABSTOP,140,161,77,10
     CONTROL         "Show active downloads bold",IDC_ACTIVEDOWNLOADSBOLD,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,181,197,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,185,197,10
     CONTROL         "Show additional graph-lines",IDC_SHOWADDITIONALGRAPH,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,192,197,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,196,197,10
+    CONTROL         "Detect emcrypt",IDC_ANTILEECHEREMCRYPT_CHECK,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,23,137,188,12
 END
 
 IDD_HTTPDOWNLOAD DIALOGEX 0, 0, 231, 145
@@ -127,15 +129,20 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "",IDC_ANIMATE1,"SysAnimate32",ACS_TRANSPARENT,7,7,192,
                     32
-    LTEXT           "",IDC_STATUS,7,47,214,8
-    LTEXT           "",IDC_FILESTATUS,7,60,214,8
+    CONTROL         "",IDC_STATUS,"Static",SS_LEFTNOWORDWRAP | SS_NOPREFIX | 
+                    WS_GROUP,7,47,214,8
+    CONTROL         "",IDC_FILESTATUS,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,7,60,214,8
     CONTROL         "",IDC_PROGRESS1,"msctls_progress32",WS_BORDER,7,74,214,
                     10
-    LTEXT           "Estimated time left:",IDC_TIMELEFTTEXT,7,91,64,8
+    CONTROL         "Estimated time left:",IDC_TIMELEFTTEXT,"Static",
+                    SS_LEFTNOWORDWRAP | SS_NOPREFIX | WS_GROUP,7,91,64,8
     CONTROL         "",IDC_TIMELEFT,"Static",SS_LEFTNOWORDWRAP | SS_NOPREFIX | 
                     WS_GROUP,73,91,148,8
-    LTEXT           "",IDC_TRANSFER_RATE_LABEL,7,104,64,8
-    LTEXT           "",IDC_TRANSFER_RATE,73,104,148,8
+    CONTROL         "",IDC_TRANSFER_RATE_LABEL,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,7,104,64,8
+    CONTROL         "",IDC_TRANSFER_RATE,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,73,104,148,8
     DEFPUSHBUTTON   "&Cancel",IDCANCEL,171,122,50,14,BS_FLAT
 END
 
@@ -239,6 +246,8 @@ BEGIN
                     WS_GROUP,18,6,91,8
     CONTROL         "",IDC_SERVLIST,"SysListView32",LVS_OWNERDRAWFIXED | 
                     LVS_ALIGNLEFT | WS_TABSTOP,5,17,358,159,WS_EX_STATICEDGE
+    CONTROL         "",IDC_SPLITTER_SERVER,"Static",SS_BLACKFRAME | NOT 
+                    WS_VISIBLE,4,178,357,4
     CONTROL         "",IDC_TAB3,"SysTabControl32",WS_TABSTOP,5,191,358,96
     PUSHBUTTON      "Reset",IDC_LOGRESET,318,183,45,12,BS_FLAT
     CONTROL         "",IDC_SERVMSG,"Static",SS_BLACKFRAME | NOT WS_VISIBLE,9,
@@ -249,8 +258,6 @@ BEGIN
                     9,207,348,75
     CONTROL         "",IDC_LEECHERLOG,"Static",SS_BLACKFRAME | NOT 
                     WS_VISIBLE,9,207,348,75
-    CONTROL         "",IDC_SPLITTER_SERVER,"Static",SS_BLACKFRAME | NOT 
-                    WS_VISIBLE,4,178,357,4
 END
 
 IDD_SEARCH DIALOGEX 0, 0, 329, 220
@@ -281,7 +288,7 @@ STYLE DS_LOCALEDIT | DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD |
     WS_SYSMENU
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    CONTROL         "",IDC_CHATSEL,"SysTabControl32",0x0,144,16,363,270
+    CONTROL         "",IDC_CHATSEL,"SysTabControl32",0x0,144,24,363,262
     EDITTEXT        IDC_CMESSAGE,146,262,244,12,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "Send",IDC_CSEND,397,262,50,14,BS_FLAT
     PUSHBUTTON      "Close",IDC_CCLOSE,449,262,50,14,BS_FLAT
@@ -290,7 +297,7 @@ BEGIN
                     174,WS_EX_STATICEDGE
     CONTROL         "Messages",IDC_MESSAGES_LBL,"Static",SS_LEFTNOWORDWRAP | 
                     WS_GROUP,157,6,236,8
-    ICON            "",IDC_MESSAGEICON,144,4,21,20
+    ICON            "",IDC_MESSAGEICON,144,4,20,20
     CONTROL         "Friends",IDC_FRIENDS_LBL,"Static",SS_LEFTNOWORDWRAP | 
                     WS_GROUP,18,6,93,8
     ICON            "",IDC_FRIENDSICON,5,5,20,20,SS_NOTIFY
@@ -433,26 +440,23 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Proxy"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    GROUPBOX        "Settings",IDC_AUTH_LBL2,11,6,202,89,BS_FLAT
+    GROUPBOX        "Settings",IDC_AUTH_LBL2,11,6,202,79,BS_FLAT
     CONTROL         "Enable proxy",IDC_ENABLEPROXY,"Button",BS_AUTOCHECKBOX | 
                     BS_FLAT | WS_TABSTOP,18,17,178,9
-    COMBOBOX        IDC_PROXYTYPE,80,30,119,54,CBS_DROPDOWNLIST | WS_VSCROLL | 
-                    WS_TABSTOP
     LTEXT           "Proxy Type",IDC_PROXYTYPE_LBL,18,33,60,8
-    EDITTEXT        IDC_PROXYNAME,80,50,118,13,ES_AUTOHSCROLL
-    LTEXT           "Proxy Address",IDC_PROXYNAME_LBL,18,52,60,8
-    EDITTEXT        IDC_PROXYPORT,80,71,34,13,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "Proxy Port",IDC_PROXYPORT_LBL,18,73,60,8
-    GROUPBOX        "Authentication",IDC_AUTH_LBL,11,99,202,63,BS_FLAT
+    COMBOBOX        IDC_PROXYTYPE,80,30,119,71,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    LTEXT           "Proxy Address",IDC_PROXYNAME_LBL,18,50,60,8
+    EDITTEXT        IDC_PROXYNAME,80,48,118,13,ES_AUTOHSCROLL
+    LTEXT           "Proxy Port",IDC_PROXYPORT_LBL,18,66,60,8
+    EDITTEXT        IDC_PROXYPORT,80,64,34,13,ES_AUTOHSCROLL | ES_NUMBER
+    GROUPBOX        "Authentication",IDC_AUTH_LBL,11,89,202,63,BS_FLAT
     CONTROL         "Enable authentication",IDC_ENABLEAUTH,"Button",
-                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,23,110,157,9
-    EDITTEXT        IDC_USERNAME_A,80,124,118,13,ES_AUTOHSCROLL
-    LTEXT           "User Name",IDC_USERNAME_LBL,23,126,55,8
-    EDITTEXT        IDC_PASSWORD,80,141,118,13,ES_PASSWORD | ES_AUTOHSCROLL
-    LTEXT           "Password",IDC_PASSWORD_LBL,23,143,55,8
-    CONTROL         "Automatic server connect without Proxy",IDC_ASCWOP,
-                    "Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,12,169,
-                    201,9
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,18,100,187,9
+    LTEXT           "User Name",IDC_USERNAME_LBL,18,116,60,8
+    EDITTEXT        IDC_USERNAME_A,80,114,118,13,ES_AUTOHSCROLL
+    LTEXT           "Password",IDC_PASSWORD_LBL,18,132,60,8
+    EDITTEXT        IDC_PASSWORD,80,130,118,13,ES_PASSWORD | ES_AUTOHSCROLL
 END
 
 IDD_PPG_SERVER DIALOGEX 0, 0, 225, 225
@@ -916,17 +920,19 @@ BEGIN
                     WS_GROUP,65,86,132,8
     GROUPBOX        "Audio",IDC_FD_XI4,206,35,195,66,BS_FLAT
     RTEXT           "Codec:",IDC_FD_XI6,213,46,47,8
-    RTEXT           "Bitrate:",IDC_FD_XI8,213,56,47,8
-    RTEXT           "Channel:",IDC_FD_XI10,213,66,47,8
-    RTEXT           "Samplerate:",IDC_FD_XI12,213,76,47,8
     CONTROL         "-",IDC_ACODEC,"Static",SS_LEFTNOWORDWRAP | SS_NOPREFIX | 
-                    WS_GROUP,267,46,127,8
+                    WS_GROUP,264,46,130,8
+    RTEXT           "Bitrate:",IDC_FD_XI8,213,56,47,8
     CONTROL         "-",IDC_ABITRATE,"Static",SS_LEFTNOWORDWRAP | 
-                    SS_NOPREFIX | WS_GROUP,267,56,127,8
+                    SS_NOPREFIX | WS_GROUP,264,56,130,8
+    RTEXT           "Channel:",IDC_FD_XI10,213,66,47,8
     CONTROL         "-",IDC_ACHANNEL,"Static",SS_LEFTNOWORDWRAP | 
-                    SS_NOPREFIX | WS_GROUP,267,66,127,8
+                    SS_NOPREFIX | WS_GROUP,264,66,130,8
+    RTEXT           "Samplerate:",IDC_FD_XI12,213,76,47,8
     CONTROL         "-",IDC_ASAMPLERATE,"Static",SS_LEFTNOWORDWRAP | 
-                    SS_NOPREFIX | WS_GROUP,267,76,127,8
+                    SS_NOPREFIX | WS_GROUP,264,76,130,8
+    LTEXT           "Language:",IDC_STATIC,213,86,47,8,0,WS_EX_RIGHT
+    LTEXT           "-",IDC_ALANGUAGE,264,86,130,8
     CONTROL         "",IDC_FULL_FILE_INFO,"RichEdit20A",ES_MULTILINE | 
                     ES_AUTOHSCROLL | ES_READONLY | WS_VSCROLL | WS_HSCROLL | 
                     WS_TABSTOP,7,106,394,143,WS_EX_STATICEDGE
@@ -1442,7 +1448,7 @@ BEGIN
                     358,111,148,59
 END
 
-IDD_SOURCEDETAILWND DIALOGEX 0, 0, 322, 271
+IDD_SOURCEDETAILWND DIALOGEX 0, 0, 322, 220
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
 CAPTION "Client Details"
@@ -1490,16 +1496,16 @@ BEGIN
     LTEXT           "Uploaded total:",IDC_STATIC47,163,135,93,8
     CONTROL         "Static",IDC_DUPTOTAL,"Static",SS_LEFTNOWORDWRAP | 
                     SS_NOPREFIX | WS_GROUP,256,135,50,8
-    GROUPBOX        "Scores",IDC_STATIC50,7,156,308,47,BS_FLAT
-    LTEXT           "DL/UP Modifier:",IDC_STATIC51,19,169,87,8
+    GROUPBOX        "Scores",IDC_STATIC50,7,169,308,47,BS_FLAT
+    LTEXT           "DL/UP Modifier:",IDC_STATIC51,19,182,87,8
     CONTROL         "Static",IDC_DRATIO,"Static",SS_LEFTNOWORDWRAP | 
-                    SS_NOPREFIX | WS_GROUP,110,169,146,8
-    LTEXT           "Rating (total):",IDC_STATIC52,19,180,84,8
+                    SS_NOPREFIX | WS_GROUP,110,182,146,8
+    LTEXT           "Rating (total):",IDC_STATIC52,19,193,84,8
     CONTROL         "Static",IDC_DRATING,"Static",SS_LEFTNOWORDWRAP | 
-                    SS_NOPREFIX | WS_GROUP,110,180,53,8
-    LTEXT           "Uploadqueue Score:",IDC_STATIC53,19,191,91,8
+                    SS_NOPREFIX | WS_GROUP,110,193,53,8
+    LTEXT           "Uploadqueue Score:",IDC_STATIC53,19,204,91,8
     CONTROL         "Static",IDC_DSCORE,"Static",SS_LEFTNOWORDWRAP | 
-                    SS_NOPREFIX | WS_GROUP,110,191,105,8
+                    SS_NOPREFIX | WS_GROUP,110,204,105,8
     LTEXT           "Currently downloading:",IDC_STATIC48,19,102,86,8
     CONTROL         "Static",IDC_UPLOADING,"Static",SS_LEFTNOWORDWRAP | 
                     SS_NOPREFIX | WS_GROUP,110,102,202,8
@@ -1513,13 +1519,6 @@ BEGIN
                     SS_NOPREFIX | WS_GROUP,110,147,53,8
     CONTROL         "Static",IDC_UPLOADQUEURANK,"Static",SS_LEFTNOWORDWRAP | 
                     SS_NOPREFIX | WS_GROUP,256,147,50,8
-    GROUPBOX        "WebCache",IDC_STATIC57,7,212,308,55,BS_FLAT
-    LTEXT           "WebCache:",IDC_STATIC56,19,224,38,8
-    LTEXT           "Successful/Requested:",IDC_STATIC54,19,239,74,8
-    LTEXT           "Is trusted OHCB sender:",IDC_STATIC55,19,252,80,8
-    LTEXT           "Static",IDC_Webcache,110,225,195,8
-    LTEXT           "Static",IDC_WCSTATISTICS,110,240,197,8
-    LTEXT           "Static",IDC_TRUSTEDOHCBSENDER,110,252,197,8
 END
 
 IDD_META_DATA DIALOGEX 0, 0, 408, 130
@@ -1562,42 +1561,46 @@ BEGIN
                     14,78,72,8
     CONTROL         "Static",IDC_PARTCOUNT,"Static",SS_LEFTNOWORDWRAP | 
                     SS_NOPREFIX | WS_GROUP,92,78,224,8
-    CONTROL         "Hashset available:",IDC_HSAV,"Static",SS_LEFTNOWORDWRAP | 
-                    WS_GROUP,201,90,72,8
-    CONTROL         "Static",IDC_HASHSET,"Static",SS_LEFTNOWORDWRAP | 
-                    SS_NOPREFIX | WS_GROUP,279,90,40,8
     CONTROL         "Status:",IDC_FD_X5,"Static",SS_LEFTNOWORDWRAP | 
                     WS_GROUP,14,90,72,8
     CONTROL         "Static",IDC_PFSTATUS,"Static",SS_LEFTNOWORDWRAP | 
                     SS_NOPREFIX | WS_GROUP,92,90,102,8
+    CONTROL         "Hashset available:",IDC_HSAV,"Static",SS_LEFTNOWORDWRAP | 
+                    WS_GROUP,201,90,72,8
+    CONTROL         "Static",IDC_HASHSET,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,279,90,40,8
     CONTROL         "Sources:",IDC_FD_X7,"Static",SS_LEFTNOWORDWRAP | 
                     WS_GROUP,14,122,72,8
     CONTROL         "Static",IDC_SOURCECOUNT,"Static",SS_LEFTNOWORDWRAP | 
-                    SS_NOPREFIX | WS_GROUP,92,122,187,8
+                    SS_NOPREFIX | WS_GROUP,92,122,231,8
     CONTROL         "Datarate:",IDC_FD_X13,"Static",SS_LEFTNOWORDWRAP | 
                     WS_GROUP,14,132,72,8
     CONTROL         "Static",IDC_DATARATE,"Static",SS_LEFTNOWORDWRAP | 
-                    SS_NOPREFIX | WS_GROUP,92,132,102,8
+                    SS_NOPREFIX | WS_GROUP,92,132,231,8
     CONTROL         "Transferred:",IDC_FD_X14,"Static",SS_LEFTNOWORDWRAP | 
                     WS_GROUP,14,142,72,8
     CONTROL         "Static",IDC_TRANSFERRED,"Static",SS_LEFTNOWORDWRAP | 
-                    SS_NOPREFIX | WS_GROUP,92,142,95,8
-    CONTROL         "Corrupted:",IDC_FD_CORR,"Static",SS_LEFTNOWORDWRAP | 
-                    WS_GROUP,14,152,72,8
-    CONTROL         "Static",IDC_CORRUPTED,"Static",SS_LEFTNOWORDWRAP | 
-                    SS_NOPREFIX | WS_GROUP,92,152,102,8
-    CONTROL         "Compression:",IDC_FD_COMPR,"Static",SS_LEFTNOWORDWRAP | 
-                    WS_GROUP,14,162,72,8
-    CONTROL         "Static",IDC_COMPRESSION,"Static",SS_LEFTNOWORDWRAP | 
-                    SS_NOPREFIX | WS_GROUP,92,162,101,8
+                    SS_NOPREFIX | WS_GROUP,92,142,70,8
     CONTROL         "Completed:",IDC_FD_X12,"Static",SS_LEFTNOWORDWRAP | 
-                    WS_GROUP,201,132,70,8
+                    WS_GROUP,14,152,72,8
     CONTROL         "Static",IDC_COMPLSIZE,"Static",SS_LEFTNOWORDWRAP | 
-                    SS_NOPREFIX | WS_GROUP,269,132,47,8
+                    SS_NOPREFIX | WS_GROUP,92,152,70,8
+    CONTROL         "Remaining:",IDC_REMAINING_TEXT,"Static",
+                    SS_LEFTNOWORDWRAP | WS_GROUP,14,162,72,8
+    CONTROL         "Static",IDC_REMAINING,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,92,162,70,8
+    CONTROL         "Compression:",IDC_FD_COMPR,"Static",SS_LEFTNOWORDWRAP | 
+                    WS_GROUP,172,142,72,8
+    CONTROL         "Static",IDC_COMPRESSION,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,249,142,74,8
+    CONTROL         "Corrupted:",IDC_FD_CORR,"Static",SS_LEFTNOWORDWRAP | 
+                    WS_GROUP,172,152,72,8
+    CONTROL         "Static",IDC_CORRUPTED,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,249,152,74,8
     CONTROL         "Recovered:",IDC_FD_RECOV,"Static",SS_LEFTNOWORDWRAP | 
-                    WS_GROUP,201,142,70,8
+                    WS_GROUP,172,162,72,8
     CONTROL         "Static",IDC_RECOVERED,"Static",SS_LEFTNOWORDWRAP | 
-                    SS_NOPREFIX | WS_GROUP,269,142,47,8
+                    SS_NOPREFIX | WS_GROUP,249,162,74,8
     CONTROL         "Download started:",IDC_FD_X16,"Static",
                     SS_LEFTNOWORDWRAP | WS_GROUP,14,194,84,8
     CONTROL         "Static",IDC_FILECREATED,"Static",SS_LEFTNOWORDWRAP | 
@@ -1617,10 +1620,6 @@ BEGIN
     GROUPBOX        "General",IDC_FD_X0,7,7,320,98,BS_FLAT
     GROUPBOX        "Transfer",IDC_FD_X6,7,111,320,66,BS_FLAT
     GROUPBOX        "Dates",IDC_FD_X8,7,183,320,57,BS_FLAT
-    LTEXT           "WC Succ/Req:",IDC_WC_REQ_SUCC,201,152,47,8
-    LTEXT           "WC-Download:",IDC_WC_DOWNLOADED,201,162,49,8
-    LTEXT           "Static",IDC_WCReq,269,152,49,8
-    LTEXT           "Static",IDC_WCDOWNL,269,162,51,8
 END
 
 IDD_PREVIEWDIALOG DIALOGEX 0, 0, 280, 233
@@ -1778,7 +1777,7 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Dialog"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    GROUPBOX        "ED2k Link",IDC_LD_LINKGROUP,4,7,398,57
+    GROUPBOX        "eD2K Link",IDC_LD_LINKGROUP,4,7,398,57
     PUSHBUTTON      "Copy",IDC_LD_CLIPBOARDBUT,286,46,109,14,BS_FLAT
     EDITTEXT        IDC_LD_LINKEDI,14,20,381,21,ES_MULTILINE | 
                     ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
@@ -1829,44 +1828,67 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
 END
 
-IDD_PPG_WEBCACHESETTINGS DIALOGEX 0, 0, 230, 245
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
-CAPTION "WEBCACHE"
+IDD_COLLECTIONCREATEDIALOG DIALOGEX 0, 0, 470, 326
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU | WS_THICKFRAME
+CAPTION "Dialog"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Webcache Controls",IDC_STATIC_CONTROLS,7,7,216,30
-    CONTROL         "Enable Webcached Downloads",
-                    IDC_Activatewebcachedownloads,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,14,17,118,12
-    PUSHBUTTON      "show advanced controls",IDC_ADVANCEDCONTROLS,133,16,82,
-                    17
-    GROUPBOX        "ISP Proxyserver Settings",IDC_Webcache,7,41,216,161
-    LTEXT           "Address",IDC_STATIC_ADDRESS,14,55,38,9
-    LTEXT           "Static",IDC_STATIC_PORT,14,70,38,9
-    EDITTEXT        IDC_webcacheName,55,52,159,12,ES_AUTOHSCROLL
-    EDITTEXT        IDC_webcachePort,55,67,38,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "Test webcache configuration. Might take up to 30 Seconds",
-                    IDC_TestProxy,14,82,201,15
-    LTEXT           "Number of blocks to download before reconnecting to the proxy (may help to solve disconnects in some cases)",
-                    IDC_STATIC_NRBLOCKS,14,97,124,28
-    EDITTEXT        IDC_BLOCKS,141,108,30,13,ES_AUTOHSCROLL
-    LTEXT           "180k-Blocks",IDC_STATIC_BLOCKS,174,113,41,8
-    CONTROL         "Extra long timeout for webcache connections",
-                    IDC_EXTRATIMEOUT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    14,124,160,10
-    CONTROL         "This webcache does NOT cache traffic within the same ISP",
-                    IDC_LOCALTRAFFIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    14,136,203,10
-    CONTROL         "Persistent connections for proxy downloads",
-                    IDC_PERSISTENT_PROXY_CONNS,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,14,149,156,10
-    CONTROL         "Update webcachesettings automatically",
-                    IDC_UPDATE_WCSETTINGS,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,14,161,143,10
-    PUSHBUTTON      "Autodetect Webcache",IDC_DETECTWEBCACHE,14,175,201,12,
+    DEFPUSHBUTTON   "Save",IDC_CCOLL_SAVE,329,308,65,14,BS_FLAT
+    PUSHBUTTON      "Cancel",IDC_CCOLL_CANCEL,398,308,65,14,BS_FLAT
+    CONTROL         "",IDC_COLLECTIONLISTCTRL,"SysListView32",LVS_REPORT | 
+                    LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | WS_TABSTOP,249,17,
+                    214,194,WS_EX_STATICEDGE
+    CONTROL         "",IDC_COLLECTIONAVAILLIST,"SysListView32",LVS_REPORT | 
+                    LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | WS_TABSTOP,7,17,212,
+                    193,WS_EX_STATICEDGE
+    PUSHBUTTON      "<--",IDC_COLLECTIONREMOVE,225,117,16,14,BS_ICON | 
                     BS_FLAT
-    CTEXT           "You are using a TCP port that is usually not cached by ISP proxy-servers. Please change your TCP port to  21, 70, 80, 210, 443 563  or 1025-65535 to be able to activate the webcache download!",
-                    IDC_WrongPortWarning,21,203,194,35
+    PUSHBUTTON      "-->",IDC_COLLECTIONADD,225,97,16,14,BS_ICON | BS_FLAT
+    EDITTEXT        IDC_COLLECTIONNAMEEDIT,105,231,345,14,ES_AUTOHSCROLL
+    LTEXT           "Collection List",IDC_COLLECTIONLISTLABEL,265,7,90,8
+    PUSHBUTTON      "Shared Files",IDC_COLLECTIONVIEWSHAREBUTTON,23,4,87,13,
+                    BS_LEFT | BS_FLAT
+    ICON            "",IDC_COLLECTIONLISTICON,249,7,21,20
+    ICON            "",IDC_COLLECTIONSOURCELISTICON,7,7,21,20
+    CONTROL         "Sign Collection with Name and Key",
+                    IDC_COLLECTIONCREATESIGNCHECK,"Button",BS_AUTOCHECKBOX | 
+                    BS_FLAT | WS_TABSTOP,23,282,429,10
+    CONTROL         "Save collection In A Simple Text Format",
+                    IDC_COLLECTIONCREATEFORMAT,"Button",BS_AUTOCHECKBOX | 
+                    BS_FLAT | WS_TABSTOP,23,270,429,10
+    LTEXT           "Static",IDC_CCOLL_STATIC_NAME,23,233,75,10
+    GROUPBOX        "Basic Options",IDC_CCOLL_BASICOPTIONS,7,218,456,37,
+                    BS_FLAT
+    GROUPBOX        "Advanced Options",IDC_CCOLL_ADVANCEDOPTIONS,7,258,456,
+                    40,BS_FLAT
+END
+
+IDD_COLLECTIONVIEWDIALOG DIALOGEX 0, 0, 418, 270
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | 
+    WS_THICKFRAME
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Exit",IDC_VCOLL_CLOSE,345,251,66,14,BS_FLAT
+    CONTROL         "",IDC_COLLECTIONVEWLIST,"SysListView32",LVS_REPORT | 
+                    LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | WS_TABSTOP,7,17,404,
+                    140,WS_EX_STATICEDGE
+    PUSHBUTTON      "Download",IDC_VIEWCOLLECTIONDL,273,251,66,14,BS_FLAT
+    CONTROL         "Add new downloads in a Collection Catagory",
+                    IDC_COLLECTIONVIEWCATEGORYCHECK,"Button",BS_AUTOCHECKBOX | 
+                    BS_FLAT | WS_TABSTOP,24,226,377,10
+    LTEXT           "Collection List",IDC_COLLECTIONVIEWLISTLABEL,24,7,99,8
+    ICON            "",IDC_COLLECTIONVIEWLISTICON,7,7,21,20
+    LTEXT           "Author: ",IDC_COLLECTIONVIEWAUTHORLABEL,24,179,85,8
+    LTEXT           "Author Key: ",IDC_COLLECTIONVIEWAUTHORKEYLABEL,24,193,
+                    87,8
+    EDITTEXT        IDC_COLLECTIONVIEWAUTHOR,118,179,288,12,ES_AUTOHSCROLL | 
+                    ES_READONLY | NOT WS_BORDER
+    EDITTEXT        IDC_COLLECTIONVIEWAUTHORKEY,118,194,288,12,ES_MULTILINE | 
+                    ES_READONLY | NOT WS_BORDER
+    GROUPBOX        "Details",IDC_VCOLL_DETAILS,7,167,404,42,BS_FLAT
+    GROUPBOX        "Options",IDC_VCOLL_OPTIONS,7,213,404,30,BS_FLAT
 END
 
 // ==> ScarAngel Preferences window - Stulle
@@ -2211,6 +2233,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 401
         VERTGUIDE, 197
+        VERTGUIDE, 264
         VERTGUIDE, 394
         TOPMARGIN, 5
         BOTTOMMARGIN, 252
@@ -2475,7 +2498,11 @@ BEGIN
         VERTGUIDE, 14
         VERTGUIDE, 86
         VERTGUIDE, 92
+        VERTGUIDE, 172
         VERTGUIDE, 201
+        VERTGUIDE, 244
+        VERTGUIDE, 249
+        VERTGUIDE, 323
         VERTGUIDE, 327
         TOPMARGIN, 7
         BOTTOMMARGIN, 243
@@ -2565,12 +2592,30 @@ BEGIN
         BOTTOMMARGIN, 9
     END
 
-    IDD_PPG_WEBCACHESETTINGS, DIALOG
+    IDD_COLLECTIONCREATEDIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 223
+        RIGHTMARGIN, 463
+        VERTGUIDE, 23
+        VERTGUIDE, 105
+        VERTGUIDE, 169
+        VERTGUIDE, 249
+        VERTGUIDE, 265
         TOPMARGIN, 7
-        BOTTOMMARGIN, 238
+        BOTTOMMARGIN, 322
+        HORZGUIDE, 17
+    END
+
+    IDD_COLLECTIONVIEWDIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 411
+        VERTGUIDE, 24
+        VERTGUIDE, 78
+        VERTGUIDE, 118
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 265
+        HORZGUIDE, 17
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2762,6 +2807,10 @@ COLLECTION_VIEW         ICON                    "res\\emuleCollView.ico"
 COLLECTION_ADD          ICON                    "res\\emuleCollAdd.ico"
 COLLECTION_EDIT         ICON                    "res\\emuleCollEdit.ico"
 COLLECTION_SEARCH       ICON                    "res\\emuleCollSearch.ico"
+COLLECTION              ICON                    "res\\emuleColl.ico"
+ALLFILES                ICON                    "res\\all.ico"
+INCOMPLETE              ICON                    "res\\incomplete.ico"
+AABCOLLECTIONFILETYPE   ICON                    "res\\emuleCollectionFileType.ico"
 CLIENTEDONKEY           ICON                    "res\\ClienteDonkey.ico"
 CLIENTEDONKEYPLUS       ICON                    "res\\ClienteDonkeyPlus.ico"
 CLIENTFRIEND            ICON                    "res\\ClientFriend.ico"
@@ -2857,6 +2906,8 @@ BEGIN
     IDC_PROXYTYPE, 0x403, 8, 0
 0x6f53, 0x6b63, 0x2073, 0x0035, 
     IDC_PROXYTYPE, 0x403, 9, 0
+0x5448, 0x5054, 0x3120, 0x302e, "\000" 
+    IDC_PROXYTYPE, 0x403, 9, 0
 0x5448, 0x5054, 0x3120, 0x312e, "\000" 
     0
 END
@@ -2918,148 +2969,29 @@ OPENINCOMING.GIF        HTML                    "res\\FolderOpen.gif"
 RESTOREWINDOW.GIF       HTML                    "res\\RestoreWindow.gif"
 TABLEBACKGND.GIF        HTML                    "res\\MiniMuleBack.gif"
 PREFERENCES.GIF         HTML                    "res\\Preferences.gif"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_LISTVIEW ACCELERATORS 
+BEGIN
+    VK_RETURN,      IDA_ENTER,              VIRTKEY, NOINVERT
+END
+
 #endif    // Neutral resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// German (Germany) resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
-#ifdef _WIN32
-LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
-#pragma code_page(1252)
-#endif //_WIN32
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Icon
-//
-
-// Icon with lowest ID value placed first to ensure application icon
-// remains consistent on all systems.
-COLLECTION              ICON                    "res\\emuleColl.ico"
-ALLFILES                ICON                    "res\\all.ico"
-INCOMPLETE              ICON                    "res\\incomplete.ico"
-AABCOLLECTIONFILETYPE   ICON                    "res\\emuleCollectionFileType.ico"
-#endif    // German (Germany) resources
-/////////////////////////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
+// Englisch (USA) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 #ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
 #endif //_WIN32
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Dialog
-//
-
-IDD_COLLECTIONCREATEDIALOG DIALOGEX 0, 0, 470, 326
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | 
-    WS_SYSMENU | WS_THICKFRAME
-CAPTION "Dialog"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    DEFPUSHBUTTON   "Save",IDC_CCOLL_SAVE,329,308,65,14,BS_FLAT
-    PUSHBUTTON      "Cancel",IDC_CCOLL_CANCEL,398,308,65,14,BS_FLAT
-    CONTROL         "",IDC_COLLECTIONLISTCTRL,"SysListView32",LVS_REPORT | 
-                    LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | WS_TABSTOP,249,17,
-                    214,194,WS_EX_STATICEDGE
-    CONTROL         "",IDC_COLLECTIONAVAILLIST,"SysListView32",LVS_REPORT | 
-                    LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | WS_TABSTOP,7,17,212,
-                    193,WS_EX_STATICEDGE
-    PUSHBUTTON      "<--",IDC_COLLECTIONREMOVE,225,117,16,14,BS_ICON | 
-                    BS_FLAT
-    PUSHBUTTON      "-->",IDC_COLLECTIONADD,225,97,16,14,BS_ICON | BS_FLAT
-    EDITTEXT        IDC_COLLECTIONNAMEEDIT,105,231,345,14,ES_AUTOHSCROLL
-    LTEXT           "Collection List",IDC_COLLECTIONLISTLABEL,265,7,90,8
-    PUSHBUTTON      "Shared Files",IDC_COLLECTIONVIEWSHAREBUTTON,23,4,87,13,
-                    BS_LEFT | BS_FLAT
-    ICON            "",IDC_COLLECTIONLISTICON,249,7,21,20
-    ICON            "",IDC_COLLECTIONSOURCELISTICON,7,7,21,20
-    CONTROL         "Sign Collection with Name and Key",
-                    IDC_COLLECTIONCREATESIGNCHECK,"Button",BS_AUTOCHECKBOX | 
-                    BS_FLAT | WS_TABSTOP,23,282,429,10
-    CONTROL         "Save collection In A Simple Text Format",
-                    IDC_COLLECTIONCREATEFORMAT,"Button",BS_AUTOCHECKBOX | 
-                    BS_FLAT | WS_TABSTOP,23,270,429,10
-    LTEXT           "Static",IDC_CCOLL_STATIC_NAME,23,233,75,10
-    GROUPBOX        "Basic Options",IDC_CCOLL_BASICOPTIONS,7,218,456,37,
-                    BS_FLAT
-    GROUPBOX        "Advanced Options",IDC_CCOLL_ADVANCEDOPTIONS,7,258,456,
-                    40,BS_FLAT
-END
-
-IDD_COLLECTIONVIEWDIALOG DIALOGEX 0, 0, 418, 270
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | 
-    WS_THICKFRAME
-CAPTION "Dialog"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    DEFPUSHBUTTON   "Exit",IDC_VCOLL_CLOSE,345,251,66,14,BS_FLAT
-    CONTROL         "",IDC_COLLECTIONVEWLIST,"SysListView32",LVS_REPORT | 
-                    LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | WS_TABSTOP,7,17,404,
-                    140,WS_EX_STATICEDGE
-    PUSHBUTTON      "Download",IDC_VIEWCOLLECTIONDL,273,251,66,14,BS_FLAT
-    CONTROL         "Add new downloads in a Collection Catagory",
-                    IDC_COLLECTIONVIEWCATEGORYCHECK,"Button",BS_AUTOCHECKBOX | 
-                    BS_FLAT | WS_TABSTOP,24,226,377,10
-    LTEXT           "Collection List",IDC_COLLECTIONVIEWLISTLABEL,24,7,99,8
-    ICON            "",IDC_COLLECTIONVIEWLISTICON,7,7,21,20
-    LTEXT           "Author: ",IDC_COLLECTIONVIEWAUTHORLABEL,24,179,85,8
-    LTEXT           "Author Key: ",IDC_COLLECTIONVIEWAUTHORKEYLABEL,24,193,
-                    87,8
-    EDITTEXT        IDC_COLLECTIONVIEWAUTHOR,118,179,288,12,ES_AUTOHSCROLL | 
-                    ES_READONLY | NOT WS_BORDER
-    EDITTEXT        IDC_COLLECTIONVIEWAUTHORKEY,118,194,288,12,ES_MULTILINE | 
-                    ES_READONLY | NOT WS_BORDER
-    GROUPBOX        "Details",IDC_VCOLL_DETAILS,7,167,404,42,BS_FLAT
-    GROUPBOX        "Options",IDC_VCOLL_OPTIONS,7,213,404,30,BS_FLAT
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
-BEGIN
-    IDD_COLLECTIONCREATEDIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 463
-        VERTGUIDE, 23
-        VERTGUIDE, 105
-        VERTGUIDE, 169
-        VERTGUIDE, 249
-        VERTGUIDE, 265
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 322
-        HORZGUIDE, 17
-    END
-
-    IDD_COLLECTIONVIEWDIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 411
-        VERTGUIDE, 24
-        VERTGUIDE, 78
-        VERTGUIDE, 118
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 265
-        HORZGUIDE, 17
-    END
-END
-#endif    // APSTUDIO_INVOKED
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -3397,7 +3329,7 @@ BEGIN
     IDS_ERR_FILECOMPLETIONTHREAD "Creating file completion thread failed"
     IDS_FILEBUFFERSIZE      "File buffer size"
     IDS_QUEUESIZE           "Queue size"
-    IDS_DAYS2               "days"
+    IDS_DAYS2               "Days"
     IDS_ERR_MAKEBAKCREDITFILE "Failed to make backup of credit file"
     IDS_COMMENT             "Comments"
     IDS_IPFILTERED          "Filtered IP: %s (%s)"
@@ -3780,7 +3712,7 @@ BEGIN
     IDS_SECS                "secs"
     IDS_MINS                "mins"
     IDS_HOURS               "h"
-    IDS_DAYS                "D"
+    IDS_DAYS                "d"
     IDS_ED2KLINKFIX         "eD2K Links"
     IDS_RECONNECT           "Automatic connection to server will retry in %d seconds"
     IDS_SERVERADDED         "Server added: %s"
@@ -4479,9 +4411,9 @@ BEGIN
     IDS_SEARCH_MISSINGNOTRIGHT "Missing right side for NOT operator"
     IDS_SEARCH_MISSINGEXPRPARANT "Missing expression for '(' ')'"
     IDS_SEARCH_MISSINGCLOSINGPARANT "Missing closing ')'"
-    IDS_SEARCH_MISSINGANDLEFT "Missing left side of AND operator"
-    IDS_SEARCH_MISSINGORLEFT "Missing left side of OR operator"
-    IDS_SEARCH_MISSINGNOTLEFT "Missing left side of NOT operator"
+    IDS_SEARCH_MISSINGANDLEFT "Missing left side for AND operator"
+    IDS_SEARCH_MISSINGORLEFT "Missing left side for OR operator"
+    IDS_SEARCH_MISSINGNOTLEFT "Missing left side for NOT operator"
     IDS_SEARCH_EXPRERROR    "Failed to parse search expression"
     IDS_SEARCH_TOOCOMPLEX   "Expression too complex"
     IDS_SEARCH_INVALIDMINMAX "Invalid units for Min/Max file size specified"
@@ -4811,7 +4743,7 @@ BEGIN
     IDS_SEARCH_UNICODE      "Search with Unicode"
     IDS_PF_ADVANCEDCALC     "Use advanced calculation method for remaining time"
     IDS_PERSEC              "/s"
-    IDS_LD_ED2KLINK         "ED2K Link"
+    IDS_LD_ED2KLINK         "eD2K Link"
     IDS_LD_COPYCLIPBOARD    "Copy"
     IDS_LD_HOSTNAME         "Use host name (from preferences) instead of IP when creating a sourcelink"
     IDS_SAVEACFAILED        "Failed to save AICH Hashset!"
@@ -4912,7 +4844,7 @@ BEGIN
     IDS_UNSHAREDIRSUB       "Unshare with subdirectories"
     IDS_ALLSHAREDFILES      "All Shared Files"
     IDS_ALLDIRECTORIES      "All Directories"
-    IDS_SEARCHRELATED       "Find related files"
+    IDS_SEARCHRELATED       "Search Related Files"
     IDS_RELATED             "Related"
     IDS_COLL_REPLACEEXISTING "Do you want to replace existing file?"
     IDS_COLL_ERR_DELETING   "Some Unknown error in deleting old file. Exit without saving?"
@@ -4925,7 +4857,7 @@ BEGIN
     IDS_COLL_SIGN           "Sign Collection with Name and Key"
     IDS_AUTHOR              "Author"
     IDS_AUTHORKEY           "Author Key"
-    IDS_COLL_ADDINCAT       "Add new downloads in a Collection Catagory"
+    IDS_COLL_ADDINCAT       "Add new downloads in a Collection Category"
     IDS_VIEWCOLLECTION      "View Collection"
     IDS_COLL_TEXTFORMAT     "Save collection In A Simple Text Format"
     IDS_RUNNINGRESTRICTED   "eMule is running with reduced privileges"
@@ -4934,6 +4866,38 @@ BEGIN
     IDS_USS_STATE_PREPARING "Preparing..."
     IDS_USS_STATE_WAITING   "Waiting..."
     IDS_USS_STATE_ERROR     "Error!"
+    IDS_SHAREWARNING        "(Folder will be shared!)"
+    IDS_REMOVEALLSERVERS    "Do you really want to remove all servers?"
+    IDS_SEARCH_UNKATTR      "Unknown search attribute '%s'"
+    IDS_SEARCH_ATTRERR      "Syntax error in '%s' search attribute"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_SEARCH_MISSINGANDRIGHT "Missing right side for AND operator"
+    IDS_SEARCH_OPRERR       "Syntax error in comparison operator '%s'"
+    IDS_DOWNLOAD_LANGFILE   "Downloading language file"
+    IDS_DOWNLOADING_SERVERMET_FROM "Downloading server.met from %s"
+    IDS_DOWNLOADING_SERVERMET "Downloading server.met..."
+    IDS_FULLALLOC           "Allocate full filesize for non-sparse part files"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH "Hash not found."
+    IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "Gap list corrupt."
+    IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST "Gap list not found."
+    IDS_X_SHAREAZA_IMPORT_HASH_SET_CORRUPT "Hash set corrupt."
+    IDS_X_SHAREAZA_IMPORT_NO_HASH_SET "Hash set not found."
+    IDS_CONVERTINGKNOWN2MET "Converting %s to %s to support large files..."
+    IDS_CONVERTINGKNOWN2FAILED 
+                            "...failed to convert known2.met, ignoring old records"
+    IDS_CONVERTINGKNOWN2DONE "... done, finished converting"
+    IDS_ERR_MET_BAD         "Error: the file %s is corrupted, unable to load known files"
+    IDS_SRV_LARGEFILES      "Support for large files"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ERR_FSCANTHANDLEFILE 
+                            "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
+    IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
 END
 
 STRINGTABLE 
@@ -5071,6 +5035,7 @@ BEGIN
     IDS_ACCEPTRATIO         "Accept 1:3 session ratio if found sources > sourcelimit"
     IDS_SHOWADDITIONALGRAPH "Show additional graph-lines"
     IDS_CHECK4UPDATEMOD     "Check for new Xtreme version on startup"
+    IDS_ANTILEECHEREMCRYPT_CHECK "Detect emcrypt"
    IDS_STATS_WEBCACHE      "Webcache"
 END
 
@@ -5124,7 +5089,7 @@ BEGIN
     // ==> Global Source Limit [Max/Stulle] - Stulle
     IDS_GLOBAL_HL           "Global HL"
     IDS_GLOBAL_HL_LIMIT     "Global Hardlimit"
-    IDS_GLOBAL_HL_AGGRO     "Use aggressive mode"
+    IDS_GLOBAL_HL_ALL       "Use for all files"
     IDS_GLOBAL_HL_DEFAULT   "Global HL default for files"
     IDS_ENABLE              "Enable"
     // <== Global Source Limit [Max/Stulle] - Stulle
@@ -5182,16 +5147,16 @@ BEGIN
     IDS_SIVKA_DROPPING      "Use Sivka dropping method"
     IDS_HQR_WAY             "Dropping method"
     // <== file settings - Stulle
-	IDS_STATS_DROPPEDSOURCES "Dropped sources: %u" // # of dropped sources in session - Stulle
-	IDS_SHOW_DROPPED_SRC    "Dropped sources" // show # of dropped sources - Stulle
-	// ==> Source Graph - Stulle
+    IDS_STATS_DROPPEDSOURCES "Dropped sources: %u" // # of dropped sources in session - Stulle
+    IDS_SHOW_DROPPED_SRC    "Dropped sources" // show # of dropped sources - Stulle
+    // ==> Source Graph - Stulle
     IDS_SRCGRAPH            "Draw Source Graph"
     IDS_STATIC_STATSHL      "Min/ Max hardlimit value for graph:"
-	IDS_SP_SRCGRAPH         "Source Graph"
-	// <== Source Graph - Stulle
+    IDS_SP_SRCGRAPH         "Source Graph"
+    // <== Source Graph - Stulle
 END
 
-#endif    // English (U.S.) resources
+#endif    // Englisch (USA) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

@@ -10,7 +10,8 @@
 #define MP_EXIT					0x140
 #define	MP_ABOUTBOX				0x150
 #define MP_VERSIONCHECK			0x160
-#define MP_MVERSIONCHECK		0x170 //Xman versions check
+#define MP_MINIMIZETOTRAY		0x170
+#define MP_MVERSIONCHECK		0x180 //Xman versions check
 
 #define MP_MESSAGE				10102
 #define MP_DETAIL				10103
@@ -83,7 +84,6 @@
 #define MP_PRIONORMAL			10302
 #define MP_PRIOHIGH				10303
 #define MP_PRIOVERYHIGH			10304
-
 #define MP_GETED2KLINK			10305
 #define MP_GETHTMLED2KLINK		10306
 #define MP_METINFO				10307
@@ -169,7 +169,7 @@
 #define	MP_PREVIEW_APP_MIN		11200	// reserve 50 entries for preview apps
 #define	MP_PREVIEW_APP_MAX		(MP_PREVIEW_APP_MIN+49)
 
-#define Irc_Version				"(SMIRCv00.68)"
+#define Irc_Version				"(SMIRCv00.69)"
 #define Irc_Join				10240
 #define Irc_Close				10241
 #define Irc_Priv				10242
@@ -202,16 +202,12 @@
 #define	MP_LIST_REQUESTED_FILES 14012 // - show requested files (sivka/Xman)
 
 //Xman [MoNKi: -Downloaded History-]
-#define MP_VIEWSHAREDFILES		140013
-#define MP_CLEARHISTORY			140014
-#define MP_MERGEHISTORY			140015
+#define MP_VIEWSHAREDFILES		14013
+#define MP_CLEARHISTORY			14014
+#define MP_MERGEHISTORY			14015
 //Xman end
 
-#define MP_ULFEEDBACK           140016 // Xman: IcEcRacKer Copy UL-feedback
-#define MP_DROPLEECHER			140017	//Xman Anti-Leecher
-
-
-//Xman: only intern Filter Client:
-#define MP_FILTER_CLIENT		14002
+#define MP_ULFEEDBACK           14016 // Xman: IcEcRacKer Copy UL-feedback
+#define MP_DROPLEECHER			14017	//Xman Anti-Leecher
 
 #define MP_SIVKA_FILE_SETTINGS	20000 // file settings - Stulle

@@ -1,5 +1,5 @@
 //this file is part of eMule 
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -748,14 +748,14 @@ UINT LastCommonRouteFinder::RunInternal() {
 					goingUpDivider = 1;
 					goingDownDivider = 1;
                 } else if(tempTick - initTime < SEC2MS(30)) {
-                    goingUpDivider *= 0.25;
-                    goingDownDivider *= 0.25;
+                    goingUpDivider = (UINT)(goingUpDivider * 0.25);
+                    goingDownDivider = (UINT)(goingDownDivider * 0.25);
                 } else if(tempTick - initTime < SEC2MS(40)) {
-                    goingUpDivider *= 0.5;
-                    goingDownDivider *= 0.5;
+                    goingUpDivider = (UINT)(goingUpDivider * 0.5);
+                    goingDownDivider = (UINT)(goingDownDivider * 0.5);
                 } else if(tempTick - initTime < SEC2MS(60)) {
-                    goingUpDivider *= 0.75;
-                    goingDownDivider *= 0.75;
+                    goingUpDivider = (UINT)(goingUpDivider * 0.75);
+                    goingDownDivider = (UINT)(goingDownDivider * 0.75);
 				} else if(tempTick - initTime < SEC2MS(61)) {
 					lastUploadReset = tempTick;
 					prefsLocker.Lock();
@@ -844,7 +844,7 @@ UINT LastCommonRouteFinder::RunInternal() {
 					}
 
                     uint32 pingAverage = Median(pingDelays); //(pingDelaysTotal/pingDelays.GetCount());
-					sint32 normalized_ping = pingAverage - initial_ping;
+					int normalized_ping = pingAverage - initial_ping;
 
                     //{
                     //    prefsLocker.Lock();
@@ -860,7 +860,7 @@ UINT LastCommonRouteFinder::RunInternal() {
 					pingLocker.Unlock();
 
 					// Calculate Waiting Time
-					sint64 hping = ((sint32)soll_ping) - normalized_ping;
+					sint64 hping = ((int)soll_ping) - normalized_ping;
 
 					// Calculate change of upload speed
 					if(hping < 0) {
@@ -945,7 +945,7 @@ uint32 LastCommonRouteFinder::Median(UInt32Clist& list) {
 
         delete arr;
 
-        return returnVal;
+        return (UINT)returnVal;
     } else {
         // Undefined! Shouldn't be called with no elements in list.
         return 0;

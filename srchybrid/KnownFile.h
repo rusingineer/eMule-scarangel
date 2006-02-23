@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -39,12 +39,6 @@ public:
 	CKnownFile();
 	virtual ~CKnownFile();
 
-	// ==> {Webcache} [Max] 
-	bool ReleaseViaWebCache; //JP webcache release
-	uint32 GetNumberOfClientsRequestingThisFileUsingThisWebcache(CString webcachename, uint32 maxCount); //JP webcache release
-	void SetReleaseViaWebCache(bool WCRelease) {ReleaseViaWebCache=WCRelease;} //JP webcache release
-	// <== {Webcache} [Max] 
-
 	virtual void SetFileName(LPCTSTR pszFileName, bool bReplaceInvalidFileSystemChars = false); // 'bReplaceInvalidFileSystemChars' is set to 'false' for backward compatibility!
 
 	const CString& GetPath() const { return m_strDirectory; }
@@ -53,8 +47,8 @@ public:
 	const CString& GetFilePath() const { return m_strFilePath; }
 	void SetFilePath(LPCTSTR pszFilePath);
 
-	virtual bool CreateFromFile(LPCTSTR directory, LPCTSTR filename, LPVOID pvProgressParam); // create date, hashset and tags from a file
-	virtual bool LoadFromFile(CFileDataIO* file);	//load date, hashset and tags from a .met file
+	bool	CreateFromFile(LPCTSTR directory, LPCTSTR filename, LPVOID pvProgressParam); // create date, hashset and tags from a file
+	bool	LoadFromFile(CFileDataIO* file);	//load date, hashset and tags from a .met file
 	bool	WriteToFile(CFileDataIO* file);
 	bool	CreateAICHHashSetOnly();
 
@@ -63,16 +57,16 @@ public:
 	CTime	GetUtcCFileDate() const { return CTime(m_tUtcLastModified); }
 	uint32	GetUtcFileDate() const { return m_tUtcLastModified; }
 
-	virtual void SetFileSize(uint32 nFileSize);
+	virtual void SetFileSize(EMFileSize nFileSize);
 
 	// local available part hashs
-	uint16	GetHashCount() const { return hashlist.GetCount(); }
-	uchar*	GetPartHash(uint16 part) const;
+	UINT	GetHashCount() const { return hashlist.GetCount(); }
+	uchar*	GetPartHash(UINT part) const;
 	const CArray<uchar*, uchar*>& GetHashset() const { return hashlist; }
 	bool	SetHashset(const CArray<uchar*, uchar*>& aHashset);
 
 	// nr. of part hashs according the file size wrt ED2K protocol
-	UINT	GetED2KPartHashCount() const { return m_iED2KPartHashCount; }
+	uint16	GetED2KPartHashCount() const { return m_iED2KPartHashCount; }
 
 	// nr. of 9MB parts (file data)
 	__inline uint16 GetPartCount() const { return m_iPartCount; }
@@ -113,7 +107,7 @@ public:
 	// comment
 	void	SetFileComment(LPCTSTR pszComment);
 
-	void	SetFileRating(uint8 uRating);
+	void	SetFileRating(UINT uRating);
 
 	bool	GetPublishedED2K() const { return m_PublishedED2K; }
 	void	SetPublishedED2K(bool val);
@@ -170,9 +164,9 @@ protected:
 	bool	GrabImage(CString strFileName, uint8 nFramesToGrab, double dStartTime, bool bReduceColor, uint16 nMaxWidth, void* pSender);
 	bool	LoadTagsFromFile(CFileDataIO* file);
 	bool	LoadDateFromFile(CFileDataIO* file);
-	void	CreateHash(CFile* pFile, UINT uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL, bool slowdown=false) const; //Xman Nice Hash
-	bool	CreateHash(FILE* fp, UINT uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL, bool slowdown=false) const; //Xman Nice Hash
-	bool	CreateHash(const uchar* pucData, UINT uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL, bool slowdown=false) const; //Xman Nice Hash
+	void	CreateHash(CFile* pFile, uint64 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL, bool slowdown=false) const; //Xman Nice Hash
+	bool	CreateHash(FILE* fp, uint64 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL, bool slowdown=false) const; //Xman Nice Hash
+	bool	CreateHash(const uchar* pucData, uint32 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL, bool slowdown=false) const; //Xman Nice Hash
 	virtual void	UpdateFileRatingCommentAvail();
 
 	uint32	*CalcPartSpread();	//Xman PowerRelease

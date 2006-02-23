@@ -16,11 +16,9 @@ public:
 
 	CListCtrl* m_pListView;
 	CString m_strFindText;
+	bool m_bCanSearchInAllColumns;
 	int m_iSearchColumn;
 
-	//Xman enable search for all windows
-	bool m_bOnlyfirstcolumn;
-	//Xman end
 
 protected:
 	HICON m_icnWnd;

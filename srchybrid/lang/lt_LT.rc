@@ -1919,6 +1919,39 @@ BEGIN
     IDS_USS_STATE_PREPARING "Ruoðiuosi..."
     IDS_USS_STATE_WAITING   "Laukiu..."
     IDS_USS_STATE_ERROR     "Klaida!"
+    IDS_SHAREWARNING        "(Katalogas bus paðarintas!)"
+    IDS_REMOVEALLSERVERS    "Ar tikrai norite paðalinti visus serverius?"
+    IDS_SEARCH_UNKATTR      "Neþinomas paieðkos atributas '%s'"
+    IDS_SEARCH_ATTRERR      "Sintaksës klaida ðiame '%s' paieðkos atribute"
+    IDS_SEARCH_MISSINGANDRIGHT "Trûksta deðinës AND operatoriaus pusës"
+    IDS_SEARCH_OPRERR       "Sintakës klaida palyginimo operatoriuje '%s'"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DOWNLOAD_LANGFILE   "Gaunamas kalbos failas"
+    IDS_DOWNLOADING_SERVERMET_FROM "Gaunamas server.met ið %s"
+    IDS_DOWNLOADING_SERVERMET "Gaunamas server.met..."
+    IDS_FULLALLOC           "Rerervuoti visà failo dydþio vietà diske ne sparse part failams"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH "Nerastas hað."
+    IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "Neteisingas tuðèiø vietø sàraðas."
+    IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST "Nerastas tuðèiø vietø sàraðas."
+    IDS_X_SHAREAZA_IMPORT_HASH_SET_CORRUPT "Klaidingas hað rinkinys."
+    IDS_X_SHAREAZA_IMPORT_NO_HASH_SET "Nerastas hað rinkinys."
+    IDS_CONVERTINGKNOWN2MET "Dideliø failø palaikymui %s konvertuojamas á %s ..."
+    IDS_CONVERTINGKNOWN2FAILED 
+                            "... nepavyko konvertuoti known2.met, ignoruoju senus áraðus"
+    IDS_CONVERTINGKNOWN2DONE "... baigiau, konvertavimas pavyko"
+    IDS_ERR_MET_BAD         "Klaida: paþeistas %s failas, negaliu ákrauti þinomus failus"
+    IDS_SRV_LARGEFILES      "Dideliø failø palaikymas"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_ERR_FSCANTHANDLEFILE 
+                            "Jûs negalite gauti ðio failo, nes jûsø failø sistema nepalaiko didesniø failø nei 4GB, pagalvokite apie perëjimà prie NTFS"
+    IDS_NEWVERSIONAVLBETA   "Ði Beta versija yra pasenusi. Ji turi daug ávairiø klaidá, taigi yra labai svarbu atsinaujinti á normalià versijà kuo greièiau!"
 END
 
 #endif    // Lithuanian resources

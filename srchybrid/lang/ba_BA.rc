@@ -197,7 +197,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_LINKNOTADDED        "Ezin izan da lotura gehitu"
-    IDS_MAIN_EXIT           "Ziur zaude eMule itxi nahi duzula?"
+    IDS_MAIN_EXIT           "Ziur zaude eMule itxi nahi duzuna?"
     IDS_MAIN_EXITTITLE      "Ixteko konfirmazioa"
     IDS_MAIN_POPUP_RESTORE  "Leheneratu"
     IDS_CONNECTTOANYSERVER  "Edozein zerbitzaritara konektatu"
@@ -243,8 +243,8 @@ BEGIN
     IDS_NOCONNECTLOW2LOW    "Ezin da LowID-en arteko konexioa ezarri"
     IDS_UNKNOWN             "Ezezaguna"
     IDS_ASKED4ANOTHERFILE   "(A4AF) Beste fitxategi bat eskatu zaio"
-    IDS_Q_CANCELDL          "Ziur zaude fitxategi hauek ezeztatu eta ezabatu nahi dituzula?\n"
-    IDS_Q_CANCELDL2         "Ziur zaude fitxategi hau ezeztatu eta ezabatu nahi duzula?\n"
+    IDS_Q_CANCELDL          "Ziur zaude fitxategi hauek ezeztatu eta ezabatu nahi dituzuna?\n"
+    IDS_Q_CANCELDL2         "Ziur zaude fitxategi hau ezeztatu eta ezabatu nahi duzuna?\n"
     IDS_COPIED2CB           "Kopiatu egin da: \n"
     IDS_PROCDONE            "Osatutako %"
     IDS_SELECTINCOMINGDIR   "Karpeta bat aukeratu jaitsitako fitxategientzako"
@@ -445,7 +445,7 @@ BEGIN
     IDS_SW_DOWNLOAD         "Hautatutakoa jaitsi"
     IDS_SV_SERVERLIST       "Zerbitzari zerrenda"
     IDS_SV_SERVERINFO       "Zerbitzarien informazioa"
-    IDS_SV_LOG              "Erregistrua"
+    IDS_SV_LOG              "Erregistroa"
     IDS_SV_NEWSERVER        "Zerbitzari berria"
     IDS_SV_ADDRESS          "IP-a edo helbidea"
     IDS_SV_PORT             "Portua"
@@ -789,7 +789,7 @@ BEGIN
     IDS_TBN_DOWNLOADDONE    "Jaitsita:"
     IDS_TBN_DOWNLOADADDED   "Jaitsieretan gehitu da:"
     IDS_PW_TBN_USESOUND     "Soinua erabili"
-    IDS_PW_TBN_ONLOG        "Erregistruan datu berria jasotzean"
+    IDS_PW_TBN_ONLOG        "Erregistroan datu berria jasotzean"
     IDS_PW_TBN_ONCHAT       "Txat sesio berrian hastean"
     IDS_PW_TBN_POP_ALWAYS   "Txatean mezu berria jasotzean"
     IDS_PW_TBN_ONDOWNLOAD   "Jaitsierak amaitzean"
@@ -802,7 +802,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_PW_CON_CAPFRM       "Gaitasuna"
-    IDS_IRC_STATUSLOG       "Egoera erregistrua"
+    IDS_IRC_STATUSLOG       "Egoera erregistroa"
     IDS_IRC_STATUS          "Egoera"
     IDS_IRC_PRIVATECHANSTART "* iniciada sesión privada de chat"
     IDS_IRC_SLAPMSG         "* %s -k zaplasteko bat eman dio %s-ri!"
@@ -1157,7 +1157,7 @@ BEGIN
     IDS_WEB_ENTER_PASSWORD  "Idatzi zure pasahitza hemen"
     IDS_WEB_LOGIN_NOW       "Sesioa ireki orain"
     IDS_WEB_CONFIRM_REMOVE_SERVER 
-                            "Ziur zaude zerbitzari hau zerrendatik ezabatu nahi duzula?"
+                            "Ziur zaude zerbitzari hau zerrendatik ezabatu nahi duzuna?"
     IDS_WEB_CONTROL         "Web kontrol-panela"
     IDS_WEB_LOGOUT          "Sesioa itxi"
     IDS_WEB_ACTIONS         "Ekintzak"
@@ -1221,7 +1221,7 @@ BEGIN
     IDS_AUTH                "Autentifikazioa"
     IDS_SHOWCATINFO         "Kategoria bakoitzaren jaitsiera informazioa erakutsi"
     IDS_SW_SEARCHINGINFO    "Bilaketa burutzen ari da. Laster izango dituzu emaitzak!"
-    IDS_LOGENTRY            "Erregistruan sarrera"
+    IDS_LOGENTRY            "Erregistroan sarrera"
 END
 
 STRINGTABLE 
@@ -1849,9 +1849,9 @@ BEGIN
     IDS_WEB_REBOOT          "Sistema berrabiarazi"
     IDS_WEB_SHUTDOWNSYSTEM  "Sistema itzali"
     IDS_WEB_ADMINMENU       "Admin Menua"
-    IDS_WEB_MAIN_CLOSE      "Ziur zaude eMule ixtea nahi duzula?"
-    IDS_WEB_MAIN_REBOOT     "Ziur zaude sistema berrabiarazi nahi duzula?"
-    IDS_WEB_MAIN_SHUTDOWN   "Ziur zaude sistema itzali nahi duzula?"
+    IDS_WEB_MAIN_CLOSE      "Ziur zaude eMule itxi nahi duzuna?"
+    IDS_WEB_MAIN_REBOOT     "Ziur zaude sistema berrabiarazi nahi duzuna?"
+    IDS_WEB_MAIN_SHUTDOWN   "Ziur zaude sistema itzali nahi duzuna?"
     IDS_WEB_SHOW_UPLOAD_QUEUE_BANNED "Erakutsi blokeatutako bezeroak zerrendan"
     IDS_WEB_SHOW_UPLOAD_QUEUE_FRIEND "Erakutsi lagunak zerrendan"
     IDS_WEB_SESSIONTIMEOUT  "Sesioa denboraz kanpo gelditu da"
@@ -1926,6 +1926,39 @@ BEGIN
     IDS_USS_STATE_PREPARING "Prestatzen..."
     IDS_USS_STATE_WAITING   "Itxaroten..."
     IDS_USS_STATE_ERROR     "Errorea!"
+    IDS_SHAREWARNING        "(Karpeta konpartitu egingo da!)"
+    IDS_REMOVEALLSERVERS    "Ziur zaude zerbitzari guztiak ezabatu nahi dituzuna?"
+    IDS_SEARCH_UNKATTR      "Bilaketa atributu ezezaguna: '%s'"
+    IDS_SEARCH_ATTRERR      "Sintaxi errorea '%s' bilaketa atributuan"
+    IDS_SEARCH_MISSINGANDRIGHT "AND eragilearentzako eskuineko aldea falta da"
+    IDS_SEARCH_OPRERR       "Sintaxi errorea '%s' eragile konparatzailean"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DOWNLOAD_LANGFILE   "Hizkuntza fitxategia jaisten"
+    IDS_DOWNLOADING_SERVERMET_FROM "server.met jaisten %s-(e)tik"
+    IDS_DOWNLOADING_SERVERMET "server.met jaisten..."
+    IDS_FULLALLOC           "Fitxategiaren tamaina osoa gorde jende ugarik dituen fitxategientzako"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH "Hash-a ez da aurkitu."
+    IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "Gap zerrenda akatsduna."
+    IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST "Gap zerrenda ez da aurkitu."
+    IDS_X_SHAREAZA_IMPORT_HASH_SET_CORRUPT "Hashset akatsduna."
+    IDS_X_SHAREAZA_IMPORT_NO_HASH_SET "Hashset-a ez da aurkitu."
+    IDS_CONVERTINGKNOWN2MET "%s --> %s bilakatzen fitxategi handiak jasateko..."
+    IDS_CONVERTINGKNOWN2FAILED 
+                            "...arazoak known2.met bilakatzean, datu zaharrak baztertzen"
+    IDS_CONVERTINGKNOWN2DONE "...egina, bilakatzea amaitu da"
+    IDS_ERR_MET_BAD         "Errorea: %s fitxategiak akatsak ditu, ezin dira fitxategi ezagunak kargatu"
+    IDS_SRV_LARGEFILES      "Fitxategi handientzako euskarria"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_ERR_FSCANTHANDLEFILE 
+                            "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
+    IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
 END
 
 #endif    // Basque resources

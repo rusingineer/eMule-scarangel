@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -16,10 +16,11 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "stdafx.h"
 #include <math.h>
+#include <Mmsystem.h>
 #include "emule.h"
 #include "UploadBandwidthThrottler.h"
 //#include "EMSocket.h"
-#include "ListenSocket.h" //Xman x4 test //I use ClientRequestsockets 
+#include "ListenSocket.h" //Xman I use ClientRequestsockets 
 #include "opcodes.h"
 //#include "LastCommonRouteFinder.h" //Xman
 #include "OtherFunctions.h"
@@ -97,62 +98,7 @@ uint64 UploadBandwidthThrottler::GetNumberOfSentBytesOverheadSinceLastCallAndRes
 	return numberOfSentBytesSinceLastCall;
 }
 
-/**
- * Find out the highest number of slots that has been fed data in the normal standard loop
- * of the thread since the last call of this method. This means all slots that haven't
- * been in the trickle state during the entire time since the last call.
- *
- * @return the highest number of fully activated slots during any loop since last call
- */
-/* Xman Xtreme Upload
-uint32 UploadBandwidthThrottler::GetHighestNumberOfFullyActivatedSlotsSinceLastCallAndReset() {
-    sendLocker.Lock();
-    
-    //if(m_highestNumberOfFullyActivatedSlots > (uint32)m_StandardOrder_list.GetSize()) {
-    //    theApp.QueueDebugLogLine(true, _T("UploadBandwidthThrottler: Throttler wants new slot when get-method called. m_highestNumberOfFullyActivatedSlots: %i m_StandardOrder_list.GetSize(): %i tick: %i"), m_highestNumberOfFullyActivatedSlots, m_StandardOrder_list.GetSize(), ::GetTickCount());
-    //}
 
-    uint32 highestNumberOfFullyActivatedSlots = m_highestNumberOfFullyActivatedSlots;
-    m_highestNumberOfFullyActivatedSlots = 0;
-
-    sendLocker.Unlock();
-
-    return highestNumberOfFullyActivatedSlots;
-}
-/*
-/**
- * Add a socket to the list of sockets that have upload slots. The main thread will
- * continously call send on these sockets, to give them chance to work off their queues.
- * The sockets are called in the order they exist in the list, so the top socket (index 0)
- * will be given a chance first to use bandwidth, and then the next socket (index 1) etc.
- *
- * It is possible to add a socket several times to the list without removing it inbetween,
- * but that should be avoided.
- *
- * @param index insert the socket at this place in the list. An index that is higher than the
- *              current number of sockets in the list will mean that the socket should be inserted
- *              last in the list.
- *
- * @param socket the address to the socket that should be added to the list. If the address is NULL,
- *               this method will do nothing.
- */
-//Xman Xtreme Upload: this method is used
-/*
-void UploadBandwidthThrottler::AddToStandardList(uint32 index, ThrottledFileSocket* socket) {
-	if(socket != NULL) {
-		sendLocker.Lock();
-
-		RemoveFromStandardListNoLock(socket);
-		if(index > (uint32)m_StandardOrder_list.GetSize()) {
-			index = m_StandardOrder_list.GetSize();
-        }
-		m_StandardOrder_list.InsertAt(index, socket);
-			socket->SetTrickle();
-			socket->isready=false;
-		sendLocker.Unlock();
-	}
-}
-*/
 //Xman Xtreme Upload //method is currently not used
 void UploadBandwidthThrottler::ReplaceSocket(ThrottledFileSocket* oldsocket, ThrottledFileSocket* newsocket)
 {
@@ -184,7 +130,7 @@ void UploadBandwidthThrottler::ReplaceSocket(ThrottledFileSocket* oldsocket, Thr
 			newsocket->SetFull();
 			m_StandardOrder_list_full.AddTail(newsocket);
 			m_highestNumberOfFullyActivatedSlots++;
-			SetNumberOfFullyActivatedSlots(m_highestNumberOfFullyActivatedSlots);
+			SetNumberOfFullyActivatedSlots();
 		}
 		else
 			newsocket->SetTrickle();
@@ -268,7 +214,7 @@ bool UploadBandwidthThrottler::ReplaceSocket(ThrottledFileSocket* normalsocket, 
 			newsocket->SetFull();
 			m_StandardOrder_list_full.AddTail(newsocket);
 			m_highestNumberOfFullyActivatedSlots++;
-			SetNumberOfFullyActivatedSlots(m_highestNumberOfFullyActivatedSlots);
+			SetNumberOfFullyActivatedSlots();
 		}
 		else
 			newsocket->SetTrickle();
@@ -301,7 +247,7 @@ void UploadBandwidthThrottler::AddToStandardList(bool first, ThrottledFileSocket
 			socket->SetFull();
 			m_StandardOrder_list_full.AddTail(socket);
 			m_highestNumberOfFullyActivatedSlots++;
-			SetNumberOfFullyActivatedSlots(m_highestNumberOfFullyActivatedSlots);
+			SetNumberOfFullyActivatedSlots();
 		}
 		else
 		{
@@ -382,7 +328,7 @@ bool UploadBandwidthThrottler::RemoveFromStandardListNoLock(ThrottledFileSocket*
 			if(m_StandardOrder_list.GetAt(slotCounter)->IsFull()) 
 			{
 				m_highestNumberOfFullyActivatedSlots--;	
-				SetNumberOfFullyActivatedSlots(m_highestNumberOfFullyActivatedSlots);
+				SetNumberOfFullyActivatedSlots();
 			}
 			//Xman end
 			m_StandardOrder_list.RemoveAt(slotCounter);
@@ -411,7 +357,7 @@ bool UploadBandwidthThrottler::RemoveFromStandardListNoLock(ThrottledFileSocket*
 				notused, notused,
 				m_currentAvgEmuleOut, m_currentAvgOverallSentBytes,
 				notused,m_currentAvgNetworkOut);
-			uint32 slotspeed=thePrefs.m_slotspeed*1024;
+			uint32 slotspeed=(uint32)(thePrefs.m_slotspeed*1024);
 			if(thePrefs.GetNAFCFullControl()==true)
 			{
 				m_AvgOverhead=m_currentAvgNetworkOut-m_currentAvgEmuleOut;
@@ -420,15 +366,15 @@ bool UploadBandwidthThrottler::RemoveFromStandardListNoLock(ThrottledFileSocket*
 			{
 				m_AvgOverhead=m_currentAvgOverallSentBytes-m_currentAvgEmuleOut;
 			}
-			uint32 realallowedDatarate = theApp.pBandWidthControl->GetMaxUpload()*1024 - m_AvgOverhead;
+			uint32 realallowedDatarate = (uint32)(theApp.pBandWidthControl->GetMaxUpload()*1024 - m_AvgOverhead);
 			//Xman 4.6
 			//to be more accurate subtract the trickles
 			//(tricklespeed is 500 Bytes per seconds)
-			const uint16 counttrickles=m_StandardOrder_list.GetSize() - m_highestNumberOfFullyActivatedSlots;
+			const uint16 counttrickles=(uint16)m_StandardOrder_list.GetSize() - m_highestNumberOfFullyActivatedSlots;
 			realallowedDatarate -= ( counttrickles * 500);
 			const uint16 savedbytes = counttrickles > 1 ? 500 : 0;
 			//calculate the wanted slots
-			uint16 slots=realallowedDatarate/slotspeed;
+			uint16 slots=(uint16)(realallowedDatarate/slotspeed);
 			if((realallowedDatarate-slots*slotspeed) > ((slots+1)*slotspeed-realallowedDatarate) - savedbytes)
 			{
 				slots++;
@@ -617,7 +563,7 @@ UINT AFX_CDECL UploadBandwidthThrottler::RunProc(LPVOID pParam) {
  */
 UINT UploadBandwidthThrottler::RunInternal() {
 
-	DWORD lastLoopTick = ::GetTickCount();
+	DWORD lastLoopTick = timeGetTime();
 	//uint16 rememberedSlotCounterMain = 0;
 	uint16 rememberedSlotCounterTrickle = 0;
 	uint32 allowedDataRate = 1000;
@@ -644,29 +590,16 @@ UINT UploadBandwidthThrottler::RunInternal() {
 	//and emule times out
 	sint64 uSlopehelp_minUpload=0; 
 
-	DWORD lastTickReachedBandwidth = ::GetTickCount();
+	DWORD lastTickReachedBandwidth = timeGetTime();
 
 	while(doRun) 
 	{
-
-// ==> {Webcache} [Max] 
-		//This should probably be somewhere else.
-		if (thePrefs.expectingWebCachePing && (::GetTickCount() - thePrefs.WebCachePingSendTime > SEC2MS(30)))
-		{
-			thePrefs.expectingWebCachePing = false;
-			thePrefs.WebCacheDisabledThisSession = true; //Disable webcache downloads for the current proxy settings
-			//JP we need a modeless dialogue here!!
-//			AfxMessageBox(_T("Proxy configuration Test Failed please review your proxy-settings"));
-			theApp.QueueLogLine(false, _T("Proxy configuration Test Failed please review your proxy-settings. Webcache downloads have been deactivated until emule is restarted."));
-		}
-// <== {Webcache} [Max] 
-
         pauseEvent->Lock();
 
-		DWORD timeSinceLastLoop = ::GetTickCount() - lastLoopTick;
+		DWORD timeSinceLastLoop = timeGetTime() - lastLoopTick;
 
 
-#define TIME_BETWEEN_UPLOAD_LOOPS_MIN 10 //Xman 10 are enough -> using higher prio for this thread
+#define TIME_BETWEEN_UPLOAD_LOOPS_MIN 6 //Xman 6 are enough -> using higher prio for this thread
 #define TIME_BETWEEN_UPLOAD_LOOPS_MAX 50 //25
         uint32 sleeptime=TIME_BETWEEN_UPLOAD_LOOPS_MIN;
 		///*
@@ -680,7 +613,7 @@ UINT UploadBandwidthThrottler::RunInternal() {
             Sleep(sleeptime-timeSinceLastLoop);
        }
 
-		const DWORD thisLoopTick = ::GetTickCount();
+		const DWORD thisLoopTick = timeGetTime();
 		timeSinceLastLoop = thisLoopTick - lastLoopTick;
 		lastLoopTick = thisLoopTick;
 		if(timeSinceLastLoop==0)
@@ -699,11 +632,11 @@ UINT UploadBandwidthThrottler::RunInternal() {
 		// Get current speed from prefs
 		uint32 old_value;
 		old_value=allowedDataRate;
-		allowedDataRate = theApp.pBandWidthControl->GetMaxUpload()*1024; 
+		allowedDataRate = (uint32)(theApp.pBandWidthControl->GetMaxUpload()*1024); 
 		if((allowedDataRate<old_value) && (old_value -  allowedDataRate  >=1024)) 
 			recalculate=true; 
 		old_value=slotspeed;
-		slotspeed=thePrefs.m_slotspeed*1024;
+		slotspeed= (uint32)(thePrefs.m_slotspeed*1024);
 		if(slotspeed==0)
 			slotspeed=1024; //prevent division by zero
 		if(old_value != slotspeed)
@@ -718,7 +651,7 @@ UINT UploadBandwidthThrottler::RunInternal() {
 			doubleSendSize = minFragSize; // don't send two packages at a time at very low speeds to give them a smoother load
 		}
 
-		const uint32 toadd=allowedDataRate*(float)timeSinceLastLoop/1000;
+		const uint32 toadd=(uint32)(allowedDataRate*(float)timeSinceLastLoop/1000);
 		uSlopehelp +=toadd;
 		uSlopehelp_minUpload += (uint32)(toadd*0.33f); //Xman 4.4 Code-Improvement: reserve 1/3 of your uploadlimit for emule
 		m_currentOverallSentBytes=theApp.pBandWidthControl->GeteMuleOutOverall();
@@ -748,15 +681,15 @@ UINT UploadBandwidthThrottler::RunInternal() {
 			uSlopehelp=3000;
 		else
 		if(uSlopehelp > allowedDataRate*MAXSLOPEBUFFERTIME*0.33f) //max 0.3 x sec //Xman 
-			uSlopehelp=(sint64)allowedDataRate*MAXSLOPEBUFFERTIME*0.33f; 
+			uSlopehelp=(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.33f); 
 		else if(uSlopehelp < -(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.5f)) //max 0,2 sec
-			uSlopehelp=-((sint64)allowedDataRate*MAXSLOPEBUFFERTIME*0.5f);
+			uSlopehelp=-((sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.5f));
 
 		//Xman 4.4 Code-Improvement: reserve 1/3 of your uploadlimit for emule
 		if(uSlopehelp_minUpload > allowedDataRate*MAXSLOPEBUFFERTIME*0.33f) //max 0.3 x sec //Xman 
-			uSlopehelp_minUpload=(sint64)allowedDataRate*MAXSLOPEBUFFERTIME*0.33f; 
+			uSlopehelp_minUpload=(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.33f); 
 		else if(uSlopehelp_minUpload < -(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.5f)) //max 0,2 sec
-			uSlopehelp_minUpload=-((sint64)allowedDataRate*MAXSLOPEBUFFERTIME*0.5f);
+			uSlopehelp_minUpload=-((sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.5f));
 
 		
 		if(thePrefs.GetNAFCFullControl()==true && uSlopehelp_minUpload>uSlopehelp)
@@ -793,12 +726,12 @@ UINT UploadBandwidthThrottler::RunInternal() {
 			//Xman 4.6
 			//to be more accurate subtract the trickles
 			//(tricklespeed is 500 Bytes per seconds)
-			const uint16 counttrickles=m_StandardOrder_list.GetSize() - m_highestNumberOfFullyActivatedSlots;
+			const uint16 counttrickles=(uint16)m_StandardOrder_list.GetSize() - m_highestNumberOfFullyActivatedSlots;
 			realallowedDatarate -= ( counttrickles * 500);
 			const uint16 savedbytes = counttrickles > 1 ? 500 : 0;
 
 			//calculate the wanted slots
-			uint16 slots=realallowedDatarate/slotspeed;
+			uint16 slots=(uint16)(realallowedDatarate/slotspeed);
 			if(slots>=m_StandardOrder_list.GetSize())
 			{	//we don't have enough slots
 				needslot=true;
@@ -811,7 +744,7 @@ UINT UploadBandwidthThrottler::RunInternal() {
 					m_StandardOrder_list_full.AddTail(socket); 
 					m_highestNumberOfFullyActivatedSlots++;
 				}
-				SetNumberOfFullyActivatedSlots(m_highestNumberOfFullyActivatedSlots);
+				SetNumberOfFullyActivatedSlots();
 			}
 			else
 			{	//calculate the best amount of full slots
@@ -833,7 +766,7 @@ UINT UploadBandwidthThrottler::RunInternal() {
 					else
 						socket->SetTrickle();
 				}
-				SetNumberOfFullyActivatedSlots(m_highestNumberOfFullyActivatedSlots);
+				SetNumberOfFullyActivatedSlots();
 			}
 		}
 		else if(nexttrickletofull)		
@@ -850,7 +783,7 @@ UINT UploadBandwidthThrottler::RunInternal() {
 				socket->SetFull();
 				m_StandardOrder_list_full.AddTail(socket); 
 				m_highestNumberOfFullyActivatedSlots++;
-				SetNumberOfFullyActivatedSlots(m_highestNumberOfFullyActivatedSlots);
+				SetNumberOfFullyActivatedSlots();
 			}
 		}
 
@@ -1007,7 +940,7 @@ UINT UploadBandwidthThrottler::RunInternal() {
 			}
 		}
 		
-		uint16 countTrickles=m_StandardOrder_list.GetSize()-m_highestNumberOfFullyActivatedSlots;
+		uint16 countTrickles=(uint16)m_StandardOrder_list.GetSize()-m_highestNumberOfFullyActivatedSlots;
 
 		//any data left ? this data is given to the trickles
 		if(uSlope>allowedDataRate*MAXSLOPEBUFFERTIME/6 && countTrickles>0) 
@@ -1050,7 +983,7 @@ UINT UploadBandwidthThrottler::RunInternal() {
 				ThrottledFileSocket* socket = m_StandardOrder_list.GetAt(i);
 				if(socket!=NULL  && socket->isready==true ) 
 				{
-					SocketSentBytes socketSentBytes = socket->SendFileAndControlData(uSlope, doubleSendSize);
+					SocketSentBytes socketSentBytes = socket->SendFileAndControlData((uint32)uSlope, doubleSendSize);
 				    uint32 lastSpentBytes = socketSentBytes.sentBytesControlPackets + socketSentBytes.sentBytesStandardPackets;
 				    spentBytes += lastSpentBytes;
 				    spentOverhead += socketSentBytes.sentBytesControlPackets;

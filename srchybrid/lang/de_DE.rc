@@ -1160,7 +1160,7 @@ BEGIN
                             "Schlüsselwort zu kurz.\r\n\r\nDie Schlüsselwörter in Kad-Suchausdrücken müssen mindestens 3 Zeichen lang sein."
     IDS_LOG2DISK            "Log abspeichern"
     IDS_KAD_SEARCH_KEYWORD_ALREADY_SEARCHING 
-                            "Es ist bereits eine Kad Suche für das Schlüsselwort ""%s"" am laufen.\r\n\r\nUm erneut nach diesem Schlüsselwort zu suchen, warte bis diese Suche beendet ist oder schließe das entsprechende Suchresultatsfenster."
+                            "Eine Kad-Suche für das Schlüsselwort ""%s"" ist noch aktiv.\r\n\r\nUm erneut nach diesem Schlüsselwort zu suchen, warte bis diese Suche beendet ist oder schließe das entsprechende Suchresultatsfenster."
     IDS_KAD_SEARCH_KEYWORD_INVALID 
                             "Ungültiges Kad Schlüsselwort.\r\n\r\nEin Kad Suchausdruck hat das folgende Format:\r\n\r\n\t<kad-schlüsselwort> [ <ed2k-suchausdruck> ]\r\n\r\nDas <kad-schlüsselwort> darf keine der folgenden Zeichen enthalten:\r\n\r\n\t%s"
     IDS_EDITCAT             "Kategorie-Eigenschaften bearbeiten"
@@ -1170,7 +1170,7 @@ BEGIN
     IDS_WEB_ENTER_PASSWORD  "Bitte Passwort eingeben:"
     IDS_WEB_LOGIN_NOW       "Jetzt einloggen"
     IDS_WEB_CONFIRM_REMOVE_SERVER 
-                            "Sind sie sicher, diesen Server zu entfernen?"
+                            "Sind sie sich sicher, diesen Server zu entfernen?"
     IDS_WEB_CONTROL         "Web-Interface"
     IDS_WEB_LOGOUT          "Logout"
     IDS_WEB_ACTIONS         "Befehle"
@@ -1929,6 +1929,38 @@ BEGIN
     IDS_USS_STATE_PREPARING "Vorbereitung..."
     IDS_USS_STATE_WAITING   "Warte..."
     IDS_USS_STATE_ERROR     "Fehler!"
+    IDS_SHAREWARNING        "(Inhalt wird freigegeben!)"
+    IDS_REMOVEALLSERVERS    "Sind sie sich sicher, alle Server zu entfernen?"
+    IDS_SEARCH_UNKATTR      "Unbekanntes Suchattribut '%s'"
+    IDS_SEARCH_ATTRERR      "Syntaxfehler im Suchattribut '%s'"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_SEARCH_MISSINGANDRIGHT "Fehlende rechte Seite des AND Operators"
+    IDS_SEARCH_OPRERR       "Syntaxfehler im Vergleichsoperator '%s'"
+    IDS_DOWNLOAD_LANGFILE   "Lade Sprachdatei"
+    IDS_DOWNLOADING_SERVERMET_FROM "Lade server.met von %s"
+    IDS_DOWNLOADING_SERVERMET "Lade server.met..."
+    IDS_FULLALLOC           "Tempdateien mit voller Dateigröße anlegen (für non-sparse)"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH "Hash nicht gefunden."
+    IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "Gapliste fehlerhaft."
+    IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST "Gapliste nicht gefunden."
+    IDS_X_SHAREAZA_IMPORT_HASH_SET_CORRUPT "Hashset fehlerhaft."
+    IDS_X_SHAREAZA_IMPORT_NO_HASH_SET "Hashset nicht gefunden."
+    IDS_CONVERTINGKNOWN2MET "Konvertiere %s nach %s um große Dateien zu unterstützen..."
+    IDS_CONVERTINGKNOWN2FAILED 
+                            "...konnte known2.met nicht konvertieren. Alte Einträge werden ignoriert"
+    IDS_CONVERTINGKNOWN2DONE "... erfolgreich konvertiert"
+    IDS_ERR_MET_BAD         "Fehler: die Datei %s ist fehlerhaft - bekannte Dateien können nicht geladen werden"
+    IDS_SRV_LARGEFILES      "Unterstützung für große Dateien"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ERR_FSCANTHANDLEFILE 
+                            "Du kannst diese Datei nicht herunterladen, da dein Dateisystem keine Dateien größer als 4GB unterstützt! Überlege es nach NTFS zu konvertieren!"
+    IDS_NEWVERSIONAVLBETA   "Diese Betaverion ist veraltet. Da Betaversionen oft noch Fehler enthalten, wird dringend angeraten, möglichst bald auf eine stabile Version zu wechseln!"
 END
 
 STRINGTABLE 
@@ -2068,6 +2100,7 @@ BEGIN
     IDS_ACCEPTRATIO         "Akzeptiere 1:3 session-ratio wenn gefundene Quellen > Quellenlimit"
     IDS_SHOWADDITIONALGRAPH "Zeige zusätzliche Graphlinien"
     IDS_CHECK4UPDATEMOD     "Auf neuere Xtreme-Version prüfen"
+    IDS_ANTILEECHEREMCRYPT_CHECK "Erkenne emcrypt"
 END
 
 #endif    // Deutsch (Deutschland) resources

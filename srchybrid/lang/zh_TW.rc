@@ -907,7 +907,7 @@ BEGIN
     IDS_PW_UAP              "¥[¤J·sªº¤À¨ÉÀÉ®×®É¦Û°Ê³]©wÀu¥ýÅv"
     IDS_MAXCLIENT           "³Ì¤j¨Ï¥ÎªÌ¼Æ"
     IDS_PW_TWEAK            "©µ¦ù"
-    IDS_TWEAKS_WARNING      "Äµ§i:  ¤£­n§ó§ï³o¨Ç³]©w°£«D±zª¾¹D±z¦b°µ¤°»ò. §_«h®e©ö¨Ï±z¦Û¤vºô¸ô«~½è§óÁV.\n¦b¨S¦³§ó§ï³o¨Ç³]©w­È eMule ±N·|°õ¦æªº«Ü¦n."
+    IDS_TWEAKS_WARNING      "Äµ§i:  ¤£­n§ó§ï³o¨Ç³]©w°£«D±zª¾¹D±z¦b°µ¤°»ò. §_«h®e©ö¨Ï±z¦Û¤vºô¸ô«~½è§óÁV.\n§Y¨Ï¨S¦³§ó§ï³o¨Ç³]©w­È eMule ¤]¯à°õ¦æªº«Ü¦n."
     IDS_ADDAFRIEND          "¼W¥[¦n¤Í..."
     IDS_PAF_REQINFO         "¥²­nªº¸ê°T"
     IDS_PAF_MOREINFO        "ªþ¥[ªº¸ê°T"
@@ -998,7 +998,7 @@ BEGIN
     IDS_CB_TBN_ONNEWVERSION "¤w°»´ú¨ì·sª©ªº eMule"
     IDS_NONEWERVERSION      "¥¼°»´ú¨ì·sª©ªº eMule."
     IDS_VERSIONCHECK        "ª©¥»ÀË¬d"
-    IDS_VISITVERSIONCHECK   "\n\n±z²{¦b·Q­n°ÑÆ[³qª¾ºô­¶¶ÜÜ?"
+    IDS_VISITVERSIONCHECK   "\n\n±z²{¦b·Q­n°ÑÆ[³qª¾ºô­¶¶Ü?"
     IDS_PW_VIDEOPLAYER      "¼v¹³¼½©ñ¾¹"
     IDS_VIDEOBACKUP         "«Ø¥ß³Æ¥÷¨Ó¹wÄý"
     IDS_STATIC_EMPTY        "(ªÅ¥Õ=¹w³]­È)"
@@ -1899,6 +1899,39 @@ BEGIN
     IDS_USS_STATE_PREPARING "·Ç³Æ¤¤..."
     IDS_USS_STATE_WAITING   "µ¥«Ý¤¤..."
     IDS_USS_STATE_ERROR     "¿ù»~!"
+    IDS_SHAREWARNING        "(¸ê®Æ§¨±N·|³Q¤À¨É!)"
+    IDS_REMOVEALLSERVERS    "±z¯uªº·Q­n²¾°£¥þ³¡ªº¦øªA¾¹?"
+    IDS_SEARCH_UNKATTR      "¥¼ª¾ªº·j´MÄÝ©Ê '%s'"
+    IDS_SEARCH_ATTRERR      "»yªk¿ù»~¦b '%s' ·j´MÄÝ©Ê"
+    IDS_SEARCH_MISSINGANDRIGHT "AND ¹Bºâ¦¡¯Ê¤Ö¥kÃäªº­È"
+    IDS_SEARCH_OPRERR       "»yªk¿ù»~¦b¤ñ¸û¹Bºâ¦¡ '%s'"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DOWNLOAD_LANGFILE   "»y¨¥ÀÉ®×¤U¸ü¤¤"
+    IDS_DOWNLOADING_SERVERMET_FROM "server.met ±q %s ¤U¸ü¤¤"
+    IDS_DOWNLOADING_SERVERMET "server.met ¤U¸ü¤¤..."
+    IDS_FULLALLOC           "¤À°t§¹¾ãÀÉ®×¤j¤p¬°«D²¨ÃP³¡¤ÀÀÉ®×"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH "¤Á²Ó­È§ä¤£¨ì."
+    IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "¶¡Â_²M³æ·lÃa."
+    IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST "¶¡Â_²M³æ§ä¤£¨ì."
+    IDS_X_SHAREAZA_IMPORT_HASH_SET_CORRUPT "¤ù¬q¤Á²Ó­È·lÃa."
+    IDS_X_SHAREAZA_IMPORT_NO_HASH_SET "¤ù¬q¤Á²Ó­È§ä¤£¨ì."
+    IDS_CONVERTINGKNOWN2MET "Âà´« %s ¨ì %s ¨Ó¤ä´©¤jÀÉ®×..."
+    IDS_CONVERTINGKNOWN2FAILED 
+                            "...Âà´« known2.met ¥¢±Ñ, ©¿²¤ÂÂ°O¿ý"
+    IDS_CONVERTINGKNOWN2DONE "... §¹¦¨, ¤w¸g§¹¦¨Âà´«"
+    IDS_ERR_MET_BAD         "¿ù»~: ÀÉ®× %s ¤w¸g·lÃa, µLªk¸ü¤J¨ì¤wª¾ªºÀÉ®×"
+    IDS_SRV_LARGEFILES      "¤ä´©¤jÀÉ®×"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_ERR_FSCANTHANDLEFILE 
+                            "±z¤£¯à¤U¸ü³o­ÓÀÉ®×¦]¬°±zªºÀÉ®×¨t²Î¤£¤ä´©ÀÉ®×¤j©ó 4GB, ½Ð¦Ò¼{Âà´«ºÏºÐ®æ¦¡¬° NTFS"
+    IDS_NEWVERSIONAVLBETA   "³o­Ó´ú¸Õª©¥»¤w¸g¹L´Á. ¥Ñ©ó¬O´ú¸Õª©¥», ¥¦¥i¯à¥]§t³\¦h¯äÂÎ, ¥i¯àªº¸ÜºÉ§Ö§ó·s¨ìÃ­©wªºµo§Gª©¥»¬O­«­nªº!"
 END
 
 /////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -83,8 +83,7 @@ CStatisticsDlg::CStatisticsDlg(CWnd* pParent /*=NULL*/)
 
 CStatisticsDlg::~CStatisticsDlg()
 {
-	if (m_TimeToolTips)
-		delete m_TimeToolTips;
+	delete m_TimeToolTips;
 
 #ifdef _DEBUG
 	POSITION pos = blockFiles.GetStartPosition();
@@ -134,9 +133,6 @@ void CStatisticsDlg::SetAllIcons()
 	iml.Add(CTempIconLoader(_T("StatsMonth")));				// Time > Averages and Projections > Monthly
 	iml.Add(CTempIconLoader(_T("StatsYear")));				// Time > Averages and Projections > Yearly
 	iml.Add(CTempIconLoader(_T("HardDisk")));				// Diskspace
-
-	iml.Add(CTempIconLoader(_T("PREF_WEBCACHE")));               // {Webcache} [Max] 
-
 	stattree.SetImageList(&iml, TVSIL_NORMAL);
 	imagelistStatTree.DeleteImageList();
 	imagelistStatTree.Attach(iml.Detach());
@@ -167,27 +163,13 @@ BOOL CStatisticsDlg::OnInitDialog()
 
 	CreateMyTree();
 
-#ifdef _DEBUG
-	if (g_pfnPrevCrtAllocHook)
-	{
-		h_debug = stattree.InsertItem( _T("Debug info") );stattree.SetItemData(h_debug,0);
-		h_blocks = stattree.InsertItem(_T("Blocks"),h_debug);stattree.SetItemData(h_blocks,1);
-		debug1 =  stattree.InsertItem(_T("Free"),h_blocks);stattree.SetItemData(debug1,1);
-		debug2 =  stattree.InsertItem(_T("Normal"),h_blocks);stattree.SetItemData(debug2,1);
-		debug3 =  stattree.InsertItem(_T("CRT"),h_blocks);stattree.SetItemData(debug3,1);
-		debug4 =  stattree.InsertItem(_T("Ignore"),h_blocks);stattree.SetItemData(debug4,1);
-		debug5 =  stattree.InsertItem(_T("Client"),h_blocks);stattree.SetItemData(debug5,1);
-		stattree.Expand(h_debug,TVE_EXPAND);
-		stattree.Expand(h_blocks,TVE_EXPAND);
-	}
-#endif
 	// Setup download-scope
 	CRect rect;
 	GetDlgItem(IDC_SCOPE_D)->GetWindowRect(rect);
 	GetDlgItem(IDC_SCOPE_D)->DestroyWindow();
 	ScreenToClient(rect);
 	m_DownloadOMeter.Create(WS_VISIBLE | WS_CHILD, rect, this, IDC_SCOPE_D);
-	SetARange(true, thePrefs.GetMaxGraphDownloadRate());
+	SetARange(true, (int)thePrefs.GetMaxGraphDownloadRate());
 	m_DownloadOMeter.SetYUnits(GetResString(IDS_KBYTESPERSEC));
 	
 	// Setup upload-scope
@@ -195,7 +177,7 @@ BOOL CStatisticsDlg::OnInitDialog()
 	GetDlgItem(IDC_SCOPE_U)->DestroyWindow();
 	ScreenToClient(rect);
 	m_UploadOMeter.Create(WS_VISIBLE | WS_CHILD, rect, this, IDC_SCOPE_U);
-	SetARange(false, thePrefs.GetMaxGraphUploadRate());
+	SetARange(false, (int)thePrefs.GetMaxGraphUploadRate());
 	m_UploadOMeter.SetYUnits(GetResString(IDS_KBYTESPERSEC));
 	
 	// Setup additional graph-scope
@@ -334,9 +316,9 @@ BOOL CStatisticsDlg::OnInitDialog()
 
 void CStatisticsDlg::initCSize()
 {
-	uint8 x = thePrefs.GetSplitterbarPositionStat();
-	uint8 y = thePrefs.GetSplitterbarPositionStat_HL();
-	uint8 z = thePrefs.GetSplitterbarPositionStat_HR();
+	UINT x = thePrefs.GetSplitterbarPositionStat();
+	UINT y = thePrefs.GetSplitterbarPositionStat_HL();
+	UINT z = thePrefs.GetSplitterbarPositionStat_HR();
 	if (x > 90)
 		x = 100;
 	else if (x < 10)
@@ -691,7 +673,7 @@ void CStatisticsDlg::RepaintMeters()
 	m_UploadOMeter.SetLegendLabel(GetResString(IDS_ST_SESSION),SESSION);
 	m_UploadOMeter.SetLegendLabel(_T("eMule control + data"),OVERALL);
 	m_UploadOMeter.SetLegendLabel(_T("Network Adapter"),ADAPTER);
-
+	
 
 	m_Statistics.SetYUnits(GetResString(IDS_FSTAT_CONNECTION)); //Connections
 	Buffer.Format(_T("%s (1:%u)"), GetResString(IDS_ST_ACTIVEC), thePrefs.GetStatsConnectionsGraphRatio());
@@ -739,7 +721,7 @@ void CStatisticsDlg::ShowGraphs() {
 	uint32 plotinData[ADAPTER+1];
 
 	//Xman smooth-accurate-graph
-	uint8 wantedinterval= thePrefs.usesmoothgraph ? max(30,thePrefs.GetTrafficOMeterInterval()) : thePrefs.GetTrafficOMeterInterval();
+	UINT wantedinterval= thePrefs.usesmoothgraph ? max(30,thePrefs.GetTrafficOMeterInterval()) : thePrefs.GetTrafficOMeterInterval();
 
 	theApp.pBandWidthControl->GetDatarates(wantedinterval,
 										   plotinData[CURRENT], plotinData[OVERALL],
@@ -858,9 +840,6 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		uint32	statBadSessions =				0;
 		double	percentSessions =				0;
 		// Transfer Ratios
-
-		// NOTE TO MODDERS: WEBCACHE DOWNLOADS CURRENTLY EFFECT TRANSFER RATIOS - Beware of UL:DL limits!!! relevant functions: thePrefs.GetDownData_WEBCACHE(); thePrefs.GetCumDownData_WEBCACHE(); // {Webcache} [Max] 
-
 		if ( bEmuleIn>0 && bEmuleOut>0 ) 
 		{
 			// Session
@@ -2128,12 +2107,12 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		cbuffer.Format(GetResString(IDS_STATS_LASTRESETSTATIC), thePrefs.GetStatsLastResetStr(false));
         stattree.SetItemText(tvitime[0], cbuffer);
 		// Time Since Last Reset
-		__int64 timeDiff;
+		time_t timeDiff;
 		if (thePrefs.GetStatsLastResetLng()) 
 		{
 			time_t	timeNow;
 
-			time ( &timeNow );
+			time(&timeNow);
 			timeDiff = timeNow - thePrefs.GetStatsLastResetLng(); // In seconds
 			cbuffer.Format(GetResString(IDS_STATS_TIMESINCERESET), CastSecondsToLngHM(timeDiff));
 		}
@@ -2148,7 +2127,7 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		{
 			int i = 0;
 			// Run Time
-			__int64 sessionRunTime = (__int64)((GetTickCount()-theStats.starttime)/1000);
+			time_t sessionRunTime = (GetTickCount() - theStats.starttime) / 1000;
 			cbuffer.Format(_T("%s: %s"), GetResString(IDS_STATS_RUNTIME), CastSecondsToLngHM(sessionRunTime));
 			stattree.SetItemText(tvitime_s[i], cbuffer);
 			i++;
@@ -2184,7 +2163,7 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		{
 			int i = 0;
 			// Run Time
-			__int64 totalRunTime = (__int64)((GetTickCount()-theStats.starttime)/1000)+thePrefs.GetConnRunTime();
+			time_t totalRunTime = ((GetTickCount() - theStats.starttime)/1000) + thePrefs.GetConnRunTime();
 			cbuffer.Format(_T("%s: %s"), GetResString(IDS_STATS_RUNTIME), CastSecondsToLngHM(totalRunTime));
 			stattree.SetItemText(tvitime_t[i], cbuffer);
 			i++;
@@ -2357,8 +2336,8 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 							}
 						}
 						// Upload Sessions
-						uint32 statGoodSessions = (uint32) (theApp.uploadqueue->GetSuccessfullUpCount() + thePrefs.GetUpSuccessfulSessions() + theApp.uploadqueue->GetUploadQueueLength()) * avgModifier[mx];
-						uint32 statBadSessions = (uint32) (theApp.uploadqueue->GetFailedUpCount() + thePrefs.GetUpFailedSessions()) * avgModifier[mx];
+						uint32 statGoodSessions = (uint32) ((theApp.uploadqueue->GetSuccessfullUpCount() + thePrefs.GetUpSuccessfulSessions() + theApp.uploadqueue->GetUploadQueueLength()) * avgModifier[mx]);
+						uint32 statBadSessions = (uint32) ((theApp.uploadqueue->GetFailedUpCount() + thePrefs.GetUpFailedSessions()) * avgModifier[mx]);
 						double percentSessions;
 						cbuffer.Format(_T("%s: %u"), GetResString(IDS_STATS_ULSES), statGoodSessions + statBadSessions);
 						stattree.SetItemText(time_aap_up[mx][1], cbuffer);
@@ -2555,8 +2534,8 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 						cbuffer.Format(_T("%s: %I64u"), GetResString(IDS_STATS_COMPDL), (uint64) (thePrefs.GetDownCompletedFiles() * avgModifier[mx]) );
 						stattree.SetItemText(time_aap_down[mx][1], cbuffer);
 						// Set Cum Download Sessions
-						uint32	statGoodSessions = (uint32) (thePrefs.GetDownC_SuccessfulSessions() + myStats.a[1]) * avgModifier[mx];
-						uint32	statBadSessions = (uint32) thePrefs.GetDownC_FailedSessions() * avgModifier[mx];
+						uint32	statGoodSessions = (uint32) ((thePrefs.GetDownC_SuccessfulSessions() + myStats.a[1]) * avgModifier[mx]);
+						uint32	statBadSessions = (uint32) (thePrefs.GetDownC_FailedSessions() * avgModifier[mx]);
 						double	percentSessions;
 						cbuffer.Format(_T("%s: %u"), GetResString(IDS_STATS_DLSES), statGoodSessions+statBadSessions );
 						stattree.SetItemText(time_aap_down[mx][2], cbuffer);
@@ -3267,49 +3246,9 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 			cbuffer = buffer2;
 		stattree.SetItemText(h_total_size_left_on_drive, cbuffer);
 	}
-
-// ==> {Webcache} [Max] 
-	if (forceUpdate || stattree.IsExpanded(h_webcache)) 
-	{
-		
-		uint64 DownDataClient  = thePrefs.GetDownData_WEBCACHE();
-		uint64 DownDataTotal =   thePrefs.GetDownSessionClientData()+ thePrefs.GetDownData_WEBCACHE();// {Webcache} [Max]
-		double percentClientTransferred = 0;
-		if ( DownDataTotal!=0 && DownDataClient!=0 )
-			percentClientTransferred = (double) 100 * DownDataClient / DownDataTotal;
-		else
-			percentClientTransferred = 0;
-		cbuffer.Format( _T("Downloaded Session: %s (%1.1f%%)") , CastItoXBytes( DownDataClient ), percentClientTransferred );
-		stattree.SetItemText( wc_data[0] , cbuffer );
-
-        //jp webcache statistics START
-		DownDataClient = thePrefs.GetCumDownData_WEBCACHE();
-		DownDataTotal = thePrefs.GetDownTotalClientData() + thePrefs.GetCumDownData_WEBCACHE();
-		if ( DownDataTotal!=0 && DownDataClient!=0 )
-			percentClientTransferred = (double) 100 * DownDataClient / DownDataTotal;
-		else
-			percentClientTransferred = 0;
-		cbuffer.Format( _T("Downloaded Cumulative: %s (%1.1f%%)") , CastItoXBytes( DownDataClient ), percentClientTransferred );
-		stattree.SetItemText( wc_data[1] , cbuffer );
-		
-						//jp webcache statistics END
-		
-
-// Set Successful webcacherequests
-		double percentSessions = 0;
-		if (thePrefs.ses_WEBCACHEREQUESTS > 0)
-			percentSessions = (double) 100 * thePrefs.ses_successfull_WCDOWNLOADS / thePrefs.ses_WEBCACHEREQUESTS;
-		else 
-			percentSessions = (double) 0;
-
-		cbuffer.Format( _T("Successful WC-DL/WC-Requests: %u/%u (%1.1f%%)"), thePrefs.ses_successfull_WCDOWNLOADS, thePrefs.ses_WEBCACHEREQUESTS, percentSessions );
-		stattree.SetItemText( wc_data[2] , cbuffer ); // Set Succ WC Sessions
-	}
-// <== {Webcache} [Max] 
-	
 	// - End Set Tree Values
 
-	
+
 #ifdef _DEBUG
 	if (g_pfnPrevCrtAllocHook)
 	{
@@ -3356,6 +3295,29 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		}
 	}
 #endif
+
+#ifdef USE_MEM_STATS
+	if (forceUpdate || stattree.IsExpanded(h_allocs))
+	{
+		ULONGLONG ullTotalAllocs = 0;
+		for (int i = 0; i < ALLOC_SLOTS; i++)
+			ullTotalAllocs += g_aAllocStats[i];
+		for (int i = 0; i < ALLOC_SLOTS; i++)
+		{
+			unsigned uStart, uEnd;
+			if (i <= 1)
+				uStart = uEnd = i;
+			else {
+				uStart = 1 << (i - 1);
+				uEnd = (i == ALLOC_SLOTS - 1) ? (unsigned)-1 : (uStart << 1) - 1;
+			}
+			CString strLabel;
+			strLabel.Format(_T("Block size %08X-%08X: %s (%1.1f%%)"), uStart, uEnd, CastItoIShort(g_aAllocStats[i], false, 2), ullTotalAllocs != 0 ? g_aAllocStats[i] * 100.0 / ullTotalAllocs : 0.0);
+			stattree.SetItemText(h_allocSizes[i], strLabel);
+		}
+	}
+#endif
+
 	stattree.SetRedraw(true);
 
 } // ShowStatistics(bool forceRedraw = false){}
@@ -3369,7 +3331,7 @@ void CStatisticsDlg::UpdateConnectionsGraph()
 	m_Statistics.SetTrendRatio(0, thePrefs.GetStatsConnectionsGraphRatio());
 }
 
-void CStatisticsDlg::OnShowWindow(BOOL bShow,UINT nStatus)
+void CStatisticsDlg::OnShowWindow(BOOL /*bShow*/, UINT /*nStatus*/)
 {
 
 }
@@ -3660,13 +3622,37 @@ void CStatisticsDlg::CreateMyTree()
 	h_total_size_left_on_drive=stattree.InsertItem(GetResString(IDS_DWTOT_FS),h_total_downloads);
 	h_total_size_needed=stattree.InsertItem(GetResString(IDS_DWTOT_TSN),h_total_downloads);
 
+#ifdef _DEBUG
+	if (g_pfnPrevCrtAllocHook)
+	{
+		h_debug = stattree.InsertItem( _T("Debug info") );stattree.SetItemData(h_debug,0);
+		h_blocks = stattree.InsertItem(_T("Blocks"),h_debug);stattree.SetItemData(h_blocks,1);
+		debug1 =  stattree.InsertItem(_T("Free"),h_blocks);stattree.SetItemData(debug1,1);
+		debug2 =  stattree.InsertItem(_T("Normal"),h_blocks);stattree.SetItemData(debug2,1);
+		debug3 =  stattree.InsertItem(_T("CRT"),h_blocks);stattree.SetItemData(debug3,1);
+		debug4 =  stattree.InsertItem(_T("Ignore"),h_blocks);stattree.SetItemData(debug4,1);
+		debug5 =  stattree.InsertItem(_T("Client"),h_blocks);stattree.SetItemData(debug5,1);
+		stattree.Expand(h_debug,TVE_EXPAND);
+		stattree.Expand(h_blocks,TVE_EXPAND);
+	}
+#endif
 
-	// ==> {Webcache} [Max] 
-	h_webcache = stattree.InsertItem(GetResString(IDS_STATS_WEBCACHE),18,18);		
-	wc_data[0]=stattree.InsertItem(GetResString(IDS_STATS_WEBCACHE_1),h_webcache);
-	wc_data[1]=stattree.InsertItem(GetResString(IDS_STATS_WEBCACHE_2),h_webcache);
-	wc_data[2]=stattree.InsertItem(GetResString(IDS_STATS_WEBCACHE_3),h_webcache);
-	// <== {Webcache} [Max] 
+#ifdef USE_MEM_STATS
+	h_allocs = stattree.InsertItem(_T("Allocations"));
+	for (int i = 0; i < ALLOC_SLOTS; i++)
+	{
+		unsigned uStart, uEnd;
+		if (i <= 1)
+			uStart = uEnd = i;
+		else {
+			uStart = 1 << (i - 1);
+			uEnd = (i == ALLOC_SLOTS - 1) ? (unsigned)-1 : (uStart << 1) - 1;
+		}
+		CString strLabel;
+		strLabel.Format(_T("Block size %08X-%08X: %s (%1.1f%%)"), uStart, uEnd, CastItoIShort(g_aAllocStats[i], false, 2), 0.0);
+		h_allocSizes[i] = stattree.InsertItem(strLabel, h_allocs);
+	}
+#endif
 
 	// Make section headers bold in order to make the tree easier to view at a glance.
 	stattree.SetItemState(h_transfer, TVIS_BOLD, TVIS_BOLD);
@@ -3700,11 +3686,7 @@ void CStatisticsDlg::CreateMyTree()
 	stattree.SetItemState(hconn_sd, TVIS_BOLD, TVIS_BOLD);	
 	stattree.SetItemState(hconn_tg, TVIS_BOLD, TVIS_BOLD);	
 	stattree.SetItemState(hconn_tu, TVIS_BOLD, TVIS_BOLD);	
-	stattree.SetItemState(hconn_td, TVIS_BOLD, TVIS_BOLD);
-
-	// ==> {Webcache} [Max] 
-	stattree.SetItemState(h_webcache, TVIS_BOLD, TVIS_BOLD);
-	// <== {Webcache} [Max] 
+	stattree.SetItemState(hconn_td, TVIS_BOLD, TVIS_BOLD);	
 	
 	// Expand our purdy new tree...
 	stattree.ApplyExpandedMask(thePrefs.GetExpandedTreeItems());
@@ -3735,9 +3717,10 @@ void CStatisticsDlg::OnStnDblclickStatsscope()
 	theApp.emuledlg->ShowPreferences(IDD_PPG_STATS);
 }
 
-LRESULT CStatisticsDlg::OnOscopePositionMsg(WPARAM wParam, LPARAM lParam) {
+LRESULT CStatisticsDlg::OnOscopePositionMsg(WPARAM /*wParam*/, LPARAM lParam) 
+{
 
-	lParam/=thePrefs.GetZoomFactor(); //Xman 4.4 Bugfix for the zoomfaktor
+	lParam/=thePrefs.GetZoomFactor(); //Xman Maella Statistik-Zoom
 	time_t m_tNow= time(NULL)-lParam;
 
 	TCHAR szDate[128];
@@ -3759,6 +3742,13 @@ LRESULT CStatisticsDlg::OnOscopePositionMsg(WPARAM wParam, LPARAM lParam) {
 BOOL CStatisticsDlg::PreTranslateMessage(MSG* pMsg) 
 {
 	m_TimeToolTips->RelayEvent(pMsg);
+
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		// Don't handle Ctrl+Tab in this window. It will be handled by main window.
+		if (pMsg->wParam == VK_TAB && GetAsyncKeyState(VK_CONTROL) < 0)
+			return FALSE;
+	}
 
 	return CDialog::PreTranslateMessage(pMsg);
 }

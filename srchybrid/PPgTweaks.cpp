@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -72,11 +72,6 @@ CPPgTweaks::CPPgTweaks()
 	m_bLogA4AF = false;
 	m_bLogDrop = 0; //Xman Xtreme Downloadmanager
 	m_bLogUlDlEvents = false;
-
-// ==> {Webcache} [Max] 
-	m_bLogWebCacheEvents = false; 
-// <== {Webcache} [Max] 
-
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 	/*
 	m_bCreditSystem = false;
@@ -89,6 +84,7 @@ CPPgTweaks::CPPgTweaks()
 	m_bExtControls = false;
 	m_uServerKeepAliveTimeout = 0;
 	m_bSparsePartFiles = false;
+	m_bFullAlloc = false;
 	m_bCheckDiskspace = false;
 	m_fMinFreeDiskSpaceMB = 0.0F;
 	(void)m_sYourHostname;
@@ -123,11 +119,6 @@ CPPgTweaks::CPPgTweaks()
 	m_htiLogFilteredIPs = NULL;
 	m_htiLogFileSaving = NULL;
 	m_htiLogUlDlEvents = NULL;
-
-	// ==> {Webcache} [Max] 
-	m_htiLogWebCacheEvents = NULL; //jp log webcache events
-    // <== {Webcache} [Max] 
-
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 	/*
 	m_htiCreditSystem = NULL;
@@ -143,6 +134,7 @@ CPPgTweaks::CPPgTweaks()
 	m_htiExtControls = NULL;
 	m_htiServerKeepAliveTimeout = NULL;
 	m_htiSparsePartFiles = NULL;
+	m_htiFullAlloc = NULL;
 	m_htiCheckDiskspace = NULL;
 	m_htiMinFreeDiskSpace = NULL;
 	m_htiYourHostname = NULL;
@@ -235,6 +227,7 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 		// File related group
 		//
 		m_htiSparsePartFiles = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SPARSEPARTFILES), TVI_ROOT, m_bSparsePartFiles);
+		m_htiFullAlloc = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_FULLALLOC), TVI_ROOT, m_bFullAlloc);
 		m_htiCheckDiskspace = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CHECKDISKSPACE), TVI_ROOT, m_bCheckDiskspace);
 		m_htiMinFreeDiskSpace = m_ctrlTreeOptions.InsertItem(GetResString(IDS_MINFREEDISKSPACE), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiCheckDiskspace);
 		m_ctrlTreeOptions.AddEditBox(m_htiMinFreeDiskSpace, RUNTIME_CLASS(CNumTreeOptionsEdit));
@@ -267,11 +260,6 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 			m_htiLogA4AF = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOG_A4AF), m_htiVerboseGroup, m_bLogA4AF); // ZZ:DownloadManager
 			m_htiLogDrop = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOGDROP), m_htiVerboseGroup, m_bLogDrop); //Xman Xtreme Downloadmanager
 			m_htiLogUlDlEvents = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOG_ULDL_EVENTS), m_htiVerboseGroup, m_bLogUlDlEvents);
-
-			// ==> {Webcache} [Max] 
-			m_htiLogWebCacheEvents = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOG_WCEVENTS), m_htiVerboseGroup, m_bLogWebCacheEvents); 
-			// <== {Webcache} [Max] 
-
 		}
 
 		/////////////////////////////////////////////////////////////////////////////
@@ -346,6 +334,7 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	// File related group
 	//
 	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiSparsePartFiles, m_bSparsePartFiles);
+	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiFullAlloc, m_bFullAlloc);
 	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiCheckDiskspace, m_bCheckDiskspace);
 	DDX_Text(pDX, IDC_EXT_OPTS, m_htiMinFreeDiskSpace, m_fMinFreeDiskSpaceMB);
 	DDV_MinMaxFloat(pDX, m_fMinFreeDiskSpaceMB, 0.0, UINT_MAX / (1024*1024));
@@ -381,11 +370,6 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	if (m_htiLogDrop)               m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogDrop, m_bVerbose); //Xman Xtreme Downloadmanager
 	if (m_htiLogUlDlEvents)			DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiLogUlDlEvents, m_bLogUlDlEvents);
 	if (m_htiLogUlDlEvents)         m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogUlDlEvents, m_bVerbose);
-
-	// ==> {Webcache} [Max]
-	if (m_htiLogWebCacheEvents)		DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiLogWebCacheEvents, m_bLogWebCacheEvents);
-	if (m_htiLogWebCacheEvents)     m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogWebCacheEvents, m_bVerbose);
-	// <== {Webcache} [Max] 
 
 	/////////////////////////////////////////////////////////////////////////////
 	// USS group
@@ -429,11 +413,6 @@ BOOL CPPgTweaks::OnInitDialog()
         m_bLogA4AF = thePrefs.m_bLogA4AF;                   		    // do *not* use the according 'Get...' function here! // ZZ:DownloadManager
 		m_bLogDrop = thePrefs.m_bLogDrop; //Xman Xtreme Downloadmanager
 		m_bLogUlDlEvents = thePrefs.m_bLogUlDlEvents;
-
-		// ==> {Webcache} [Max]
-		m_bLogWebCacheEvents = thePrefs.m_bLogWebCacheEvents;
-		// <== {Webcache} [Max] 
-
 		m_iLogLevel = 5 - thePrefs.m_byLogLevel;
 	}
 	m_bLog2Disk = thePrefs.log2disk;
@@ -448,6 +427,7 @@ BOOL CPPgTweaks::OnInitDialog()
 	m_bExtControls = thePrefs.m_bExtControls;
 	m_uServerKeepAliveTimeout = thePrefs.m_dwServerKeepAliveTimeout / 60000;
 	m_bSparsePartFiles = thePrefs.m_bSparsePartFiles;
+	m_bFullAlloc= thePrefs.m_bAllocFull;
 	m_bCheckDiskspace = thePrefs.checkDiskspace;
 	m_fMinFreeDiskSpaceMB = (float)(thePrefs.m_uMinFreeDiskSpace / (1024.0 * 1024.0));
 	m_sYourHostname = thePrefs.GetYourHostname();
@@ -467,6 +447,7 @@ BOOL CPPgTweaks::OnInitDialog()
 	*/
     //m_bA4AFSaveCpu = thePrefs.GetA4AFSaveCpu(); // ZZ:DownloadManager
 
+	m_ctrlTreeOptions.SetImageListColorFlags(theApp.m_iDfltImageListColorFlags);
     CPropertyPage::OnInitDialog();
 	InitWindowStyles(this);
 	m_ctrlTreeOptions.SetItemHeight(m_ctrlTreeOptions.GetItemHeight() + 2);
@@ -547,12 +528,6 @@ BOOL CPPgTweaks::OnApply()
         thePrefs.m_bLogA4AF = m_bLogA4AF;
 		thePrefs.m_bLogDrop = m_bLogDrop; //Xman Xtreme Downloadmanager
 		thePrefs.m_bLogUlDlEvents = m_bLogUlDlEvents;
-
-                // ==> {Webcache} [Max] 
-		thePrefs.m_bLogWebCacheEvents = m_bLogWebCacheEvents;
-				// <== {Webcache} [Max] 
-
-
 		thePrefs.m_byLogLevel = 5 - m_iLogLevel;
 
 		thePrefs.m_bVerbose = m_bVerbose; // store after related options were stored!
@@ -576,6 +551,7 @@ BOOL CPPgTweaks::OnApply()
 	}
 	thePrefs.m_dwServerKeepAliveTimeout = m_uServerKeepAliveTimeout * 60000;
 	thePrefs.m_bSparsePartFiles = m_bSparsePartFiles;
+	thePrefs.m_bAllocFull= m_bFullAlloc;
 	thePrefs.checkDiskspace = m_bCheckDiskspace;
 	thePrefs.m_uMinFreeDiskSpace = (UINT)(m_fMinFreeDiskSpaceMB * (1024 * 1024));
 	if (thePrefs.GetYourHostname() != m_sYourHostname) {
@@ -588,7 +564,7 @@ BOOL CPPgTweaks::OnApply()
 	/* Xman
 	// ZZ:UploadSpeedSense -->
     thePrefs.m_bDynUpEnabled = m_bDynUpEnabled;
-    thePrefs.minupload = m_iDynUpMinUpload;
+    thePrefs.minupload = (uint16)m_iDynUpMinUpload;
     thePrefs.m_iDynUpPingTolerance = m_iDynUpPingTolerance;
     thePrefs.m_iDynUpPingToleranceMilliseconds = m_iDynUpPingToleranceMilliseconds;
     thePrefs.m_bDynUpUseMillisecondPingTolerance = (m_iDynUpRadioPingTolerance == 1);
@@ -610,7 +586,7 @@ BOOL CPPgTweaks::OnApply()
 	return CPropertyPage::OnApply();
 }
 
-void CPPgTweaks::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) 
+void CPPgTweaks::OnHScroll(UINT /*nSBCode*/, UINT /*nPos*/, CScrollBar* pScrollBar) 
 {
 	if (pScrollBar->GetSafeHwnd() == m_ctlFileBuffSize.m_hWnd)
 	{
@@ -661,11 +637,6 @@ void CPPgTweaks::Localize(void)
 		if (m_htiLogA4AF) m_ctrlTreeOptions.SetItemText(m_htiLogA4AF, GetResString(IDS_LOG_A4AF));
 		if (m_htiLogDrop) m_ctrlTreeOptions.SetItemText(m_htiLogDrop, GetResString(IDS_LOGDROP)); //Xman Xtreme Downloadmanager
 		if (m_htiLogUlDlEvents) m_ctrlTreeOptions.SetItemText(m_htiLogUlDlEvents, GetResString(IDS_LOG_ULDL_EVENTS));
-		
-		// ==> {Webcache} [Max] 
-		if (m_htiLogWebCacheEvents) m_ctrlTreeOptions.SetItemText(m_htiLogWebCacheEvents, GetResString(IDS_LOG_WCEVENTS));
-		// <== {Webcache} [Max] 
-		
 		if (m_htiCommit) m_ctrlTreeOptions.SetItemText(m_htiCommit, GetResString(IDS_COMMITFILES));
 		if (m_htiCommitNever) m_ctrlTreeOptions.SetItemText(m_htiCommitNever, GetResString(IDS_NEVER));
 		if (m_htiCommitOnShutdown) m_ctrlTreeOptions.SetItemText(m_htiCommitOnShutdown, GetResString(IDS_ONSHUTDOWN));
@@ -696,6 +667,7 @@ void CPPgTweaks::Localize(void)
 		*/
 		
 		//if (m_htiA4AFSaveCpu) m_ctrlTreeOptions.SetItemText(m_htiA4AFSaveCpu, GetResString(IDS_A4AF_SAVE_CPU)); // ZZ:DownloadManager
+		if (m_htiFullAlloc) m_ctrlTreeOptions.SetItemText(m_htiFullAlloc, GetResString(IDS_FULLALLOC));
 
         CString temp;
 		temp.Format(_T("%s: %s"), GetResString(IDS_FILEBUFFERSIZE), CastItoXBytes(m_iFileBufferSize, false, false));
@@ -723,15 +695,10 @@ void CPPgTweaks::OnDestroy()
 	m_htiLogSecureIdent = NULL;
 	m_htiLogFilteredIPs = NULL;
 	m_htiLogFileSaving = NULL;
-        m_htiLogA4AF = NULL;
+    m_htiLogA4AF = NULL;
 	m_htiLogDrop = NULL; //Xman Xtreme Downloadmanager
 	m_htiLogLevel = NULL;
 	m_htiLogUlDlEvents = NULL;
-
-	// ==> {Webcache} [Max] 
-	m_htiLogWebCacheEvents = NULL;
-	// <== {Webcache} [Max] 
-
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 	/*
 	m_htiCreditSystem = NULL;
@@ -747,6 +714,7 @@ void CPPgTweaks::OnDestroy()
 	m_htiExtControls = NULL;
 	m_htiServerKeepAliveTimeout = NULL;
 	m_htiSparsePartFiles = NULL;
+	m_htiFullAlloc = NULL;
 	m_htiCheckDiskspace = NULL;
 	m_htiMinFreeDiskSpace = NULL;
 	m_htiYourHostname = NULL;
@@ -756,15 +724,15 @@ void CPPgTweaks::OnDestroy()
 	// ZZ:UploadSpeedSense -->
 	m_htiDynUp = NULL;
 	m_htiDynUpEnabled = NULL;
-        m_htiDynUpMinUpload = NULL;
-        m_htiDynUpPingTolerance = NULL;
-        m_htiDynUpPingToleranceMilliseconds = NULL;
-        m_htiDynUpPingToleranceGroup = NULL;
-        m_htiDynUpRadioPingTolerance = NULL;
-        m_htiDynUpRadioPingToleranceMilliseconds = NULL;
-        m_htiDynUpGoingUpDivider = NULL;
-        m_htiDynUpGoingDownDivider = NULL;
-        m_htiDynUpNumberOfPings = NULL;
+    m_htiDynUpMinUpload = NULL;
+    m_htiDynUpPingTolerance = NULL;
+    m_htiDynUpPingToleranceMilliseconds = NULL;
+    m_htiDynUpPingToleranceGroup = NULL;
+    m_htiDynUpRadioPingTolerance = NULL;
+    m_htiDynUpRadioPingToleranceMilliseconds = NULL;
+    m_htiDynUpGoingUpDivider = NULL;
+    m_htiDynUpGoingDownDivider = NULL;
+    m_htiDynUpNumberOfPings = NULL;
 	// ZZ:UploadSpeedSense <--
 	// ZZ:DownloadManager -->
 	m_htiA4AFSaveCpu = NULL;
@@ -799,11 +767,6 @@ LRESULT CPPgTweaks::OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam)
                 if (m_htiLogA4AF)			    m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogA4AF, bCheck);
 				if (m_htiLogDrop)			    m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogDrop, bCheck); //Xman Xtreme Downloadmanager
 				if (m_htiLogUlDlEvents)			m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogUlDlEvents, bCheck);
-
-				// ==> {Webcache} [Max] 
-				if (m_htiLogWebCacheEvents)		m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogWebCacheEvents, bCheck);
-				// <== {Webcache} [Max] 
-
 			}
 		}
 		SetModified();
@@ -826,7 +789,7 @@ BOOL CPPgTweaks::OnCommand(WPARAM wParam, LPARAM lParam)
 	return __super::OnCommand(wParam, lParam);
 }
 
-BOOL CPPgTweaks::OnHelpInfo(HELPINFO* pHelpInfo)
+BOOL CPPgTweaks::OnHelpInfo(HELPINFO* /*pHelpInfo*/)
 {
 	OnHelp();
 	return TRUE;

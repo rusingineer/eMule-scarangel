@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -62,17 +62,20 @@ public:
 	virtual UINT GetTimeOut() const;
 	virtual void SetTimeOut(UINT uTimeOut);
 
-	virtual BOOL Connect(LPCTSTR lpszHostAddress, UINT nHostPort);
+	virtual BOOL Connect(LPCSTR lpszHostAddress, UINT nHostPort);
 	virtual BOOL Connect(SOCKADDR* pSockAddr, int iSockAddrLen);
 	void InitProxySupport();
 	virtual void RemoveAllLayers();
+	const CString GetLastProxyError() const { return m_strLastProxyError; }
+	bool GetProxyConnectFailed() const { return m_bProxyConnectFailed; }
 
 
-    DWORD GetLastCalledSend() { return lastCalledSend; }
+	CString GetFullErrorMessage(DWORD dwError);
 
+	DWORD GetLastCalledSend() { return lastCalledSend; }
     uint64 GetSentBytesCompleteFileSinceLastCallAndReset();
     uint64 GetSentBytesPartFileSinceLastCallAndReset();
-    uint64 GetSentBytesControlPacketSinceLastCallAndReset();
+    //uint64 GetSentBytesControlPacketSinceLastCallAndReset(); //Xman unused
     uint64 GetSentPayloadSinceLastCallAndReset();
     void TruncateQueues();
 
@@ -105,7 +108,7 @@ public:
 #endif
 
 protected:
-	virtual int	OnLayerCallback(const CAsyncSocketExLayer *pLayer, int nType, int nParam1, int nParam2);
+	virtual int	OnLayerCallback(const CAsyncSocketExLayer *pLayer, int nType, int nCode, WPARAM wParam, LPARAM lParam);
 	
 	virtual void	DataReceived(const BYTE* pcData, UINT uSize);
 	virtual bool	PacketReceived(Packet* packet) = 0;
@@ -117,12 +120,16 @@ protected:
 	virtual void	OnConnect(int nErrorCode); // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 	//Xman end
 
+	//Xman 4.8.2
+	//Threadsafe Statechange
+	void			SetConState(const uint8 state);
 
 	uint8	byConnected;
 	UINT	m_uTimeOut;
 
-	bool	m_ProxyConnectFailed;
+	bool	m_bProxyConnectFailed;
 	CAsyncProxySocketLayer* m_pProxyLayer;
+	CString m_strLastProxyError;
 
 private:
     virtual SocketSentBytes Send(uint32 maxNumberOfBytesToSend, uint32 minFragSize, bool onlyAllowedToSendControlPacket);
@@ -163,13 +170,13 @@ private:
 
     uint64 m_numberOfSentBytesCompleteFile;
     uint64 m_numberOfSentBytesPartFile;
-    uint64 m_numberOfSentBytesControlPacket;
+    //uint64 m_numberOfSentBytesControlPacket; //Xman unused
     bool m_currentPackageIsFromPartFile;
 
-	bool	m_bAccelerateUpload;
+	//bool	m_bAccelerateUpload; //Xman unused
     DWORD lastCalledSend;
     DWORD lastSent;
-	uint32	lastFinishedStandard;
+	//uint32	lastFinishedStandard; //Xman unused
 
     uint32 m_actualPayloadSize;
     uint32 m_actualPayloadSizeSent;

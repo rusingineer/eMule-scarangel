@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -62,11 +62,8 @@ public:
 	CUpDownClient*	GetNextClient(const CUpDownClient* update);
 
 	
-
-	CUpDownClient*	FindClientByWebCacheUploadId(const uint32 id); // {Webcache} [Max] 
-		
 	void	DeleteAll();
-	uint16	GetWaitingPosition(CUpDownClient* client);
+	UINT	GetWaitingPosition(CUpDownClient* client);
 	
 	uint32	GetSuccessfullUpCount()					{return successfullupcount;}
 	uint32	GetFailedUpCount()						{return failedupcount;}
@@ -82,10 +79,10 @@ public:
 	//Xman Xtreme Upload
 	uint16	currentuploadlistsize;
 	bool	internetmaybedown;
+	bool		AcceptNewClient(bool addOnNextConnect = false); //Xman 4.8.2 must be punlic because of access in ClientUDPSocket
 
 protected:
 	void	RemoveFromWaitingQueue(POSITION pos, bool updatewindow);
-	bool		AcceptNewClient(bool addOnNextConnect = false);
 	//bool		AcceptNewClient(uint32 curUploadSlots); //Xman Xtreme Upload
 	bool		ForceNewClient(bool allowEmptyWaitingQueue = false);
 
