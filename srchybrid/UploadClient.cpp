@@ -1457,9 +1457,8 @@ void CUpDownClient::BanLeecher(LPCTSTR pszReason, uint8 leechercategory){
 bool CUpDownClient::GetSmallFilePush() const
 {
 	CKnownFile* currequpfile = theApp.sharedfiles->GetFileByID(requpfileid);
-	return(thePrefs.GetEnablePushSmallFile() && 
-		currequpfile &&
-		currequpfile->GetFileSize() <= (uint64)thePrefs.GetPushSmallFileSize());
+	return(currequpfile &&
+		currequpfile->IsPushSmallFile());
 }
 // <== push small files [sivka] - Stulle
 

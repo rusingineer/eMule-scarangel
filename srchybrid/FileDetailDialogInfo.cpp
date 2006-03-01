@@ -86,7 +86,11 @@ BOOL CFileDetailDialogInfo::OnInitDialog()
 	AddAnchor(IDC_HASHSET, TOP_LEFT, TOP_RIGHT);
 
 	AddAnchor(IDC_SOURCECOUNT, TOP_LEFT, TOP_RIGHT);
+	// ==> Average download speed - Stulle
+	/*
 	AddAnchor(IDC_DATARATE, TOP_LEFT, TOP_RIGHT);
+	*/
+	// <== Average download speed - Stulle
 
 	AddAnchor(IDC_FILECREATED, TOP_LEFT, TOP_RIGHT);
 	AddAnchor(IDC_DL_ACTIVE_TIME, TOP_LEFT, TOP_RIGHT);
@@ -243,6 +247,7 @@ void CFileDetailDialogInfo::RefreshData()
 	UINT uValidSources = 0;
 	UINT uNNPSources = 0;
 	UINT uA4AFSources = 0;
+	double dAvgDlSpeed = 0; // Average download speed - Stulle
 	for (int i = 0; i < m_paFiles->GetSize(); i++)
 	{
 		const CPartFile* file = STATIC_DOWNCAST(CPartFile, (*m_paFiles)[i]);
@@ -256,6 +261,11 @@ void CFileDetailDialogInfo::RefreshData()
 		uDataRate += file->GetDownloadDatarate(); //Xman // Maella -Accurate measure of bandwidth
 		uCompleted += (uint64)file->GetCompletedSize();
 		iHashsetAvailable += (file->GetHashCount() == file->GetED2KPartHashCount()) ? 1 : 0;
+
+		// ==> Average download speed - Stulle
+		if(file->GetDlActiveTime() > 0)
+			dAvgDlSpeed += (double)(file->GetTransferred()/file->GetDlActiveTime());
+		// <== Average download speed - Stulle
 
 		if (file->IsPartFile())
 		{
@@ -280,6 +290,10 @@ void CFileDetailDialogInfo::RefreshData()
 	SetDlgItemText(IDC_SOURCECOUNT, str);
 
 	SetDlgItemText(IDC_DATARATE, CastItoXBytes(uDataRate, false, true));
+
+	// ==> Average download speed - Stulle
+	SetDlgItemText(IDC_AVGDL, CastItoXBytes(dAvgDlSpeed, false, true));
+	// <== Average download speed - Stulle
 
 	SetDlgItemText(IDC_TRANSFERRED, CastItoXBytes(uTransferred, false, false));
 
@@ -321,6 +335,7 @@ void CFileDetailDialogInfo::Localize()
 	GetDlgItem(IDC_FD_X14)->SetWindowText(GetResString(IDS_FD_TRANS));
 	GetDlgItem(IDC_FD_X12)->SetWindowText(GetResString(IDS_FD_COMPSIZE));
 	GetDlgItem(IDC_FD_X13)->SetWindowText(GetResString(IDS_FD_DATARATE));
+	GetDlgItem(IDC_FD_AVGDL)->SetWindowText(GetResString(IDS_FD_AVGDL)); // Average download speed - Stulle
 	GetDlgItem(IDC_FD_X15)->SetWindowText(GetResString(IDS_LASTSEENCOMPL));
 	GetDlgItem(IDC_FD_LASTCHANGE)->SetWindowText(GetResString(IDS_FD_LASTCHANGE));
 	GetDlgItem(IDC_FD_X8)->SetWindowText(GetResString(IDS_FD_TIMEDATE));

@@ -135,6 +135,10 @@ void CClientListCtrl::SetAllIcons()
 	imagelist.Add(CTempIconLoader(_T("XTREME"))); //22
 	imagelist.Add(CTempIconLoader(_T("MORPH"))); //23
 	imagelist.Add(CTempIconLoader(_T("EASTSHARE"))); //24
+	imagelist.Add(CTempIconLoader(_T("IONIX"))); //25
+	imagelist.Add(CTempIconLoader(_T("CYREX"))); //26
+	imagelist.Add(CTempIconLoader(_T("NEXTEMF"))); //27
+	imagelist.Add(CTempIconLoader(_T("NEO"))); //28
 	// <== Mod Icons - Stulle
 	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
 }

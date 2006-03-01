@@ -35,9 +35,9 @@
 // <== ModID [itsonlyme/SiRoB] - Stulle
 
 //Xman versions check
-#define MOD_MAIN_VER	4
-#define MOD_MIN_VER		8
-#define	MOD_BUILD_VER	2 //1=Xtreme x.x 2=Xtreme x.x.1
+#define MOD_MAIN_VER	5
+#define MOD_MIN_VER		0
+#define	MOD_BUILD_VER	1 //1=Xtreme x.x 2=Xtreme x.x.1
 
 //Xman Links:
 #define MOD_HPLINK _T("http://xtreme-mod.net")

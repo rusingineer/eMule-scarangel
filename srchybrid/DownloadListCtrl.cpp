@@ -236,6 +236,10 @@ void CDownloadListCtrl::SetAllIcons()
 	m_ImageList.Add(CTempIconLoader(_T("XTREME"))); //36
 	m_ImageList.Add(CTempIconLoader(_T("MORPH"))); //37
 	m_ImageList.Add(CTempIconLoader(_T("EASTSHARE"))); //38
+	m_ImageList.Add(CTempIconLoader(_T("IONIX"))); //39
+	m_ImageList.Add(CTempIconLoader(_T("CYREX"))); //40
+	m_ImageList.Add(CTempIconLoader(_T("NEXTEMF"))); //41
+	m_ImageList.Add(CTempIconLoader(_T("NEO"))); //42
 	// <== Mod Icons - Stulle
 	
 	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
@@ -1603,6 +1607,7 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 				bFirstItem = false;
 			}
 
+			m_FileMenu.EnableMenuItem((UINT_PTR)m_DropMenu.m_hMenu, (iSelectedItems > 0 && iFilesToStop > 0) ? MF_ENABLED : MF_GRAYED); // enable only when it makes sense - Stulle
 			m_FileMenu.EnableMenuItem((UINT_PTR)m_PrioMenu.m_hMenu, iFilesNotDone > 0 ? MF_ENABLED : MF_GRAYED);
 			m_PrioMenu.CheckMenuRadioItem(MP_PRIOLOW, MP_PRIOAUTO, uPrioMenuItem, 0);
 
@@ -2004,6 +2009,53 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					}
 					break;
 				// <== file settings - Stulle
+				// ==> advanced manual dropping - Stulle
+				case MP_DROPLOWTOLOWIPSRCS:
+					SetRedraw(false);
+					while(!selectedList.IsEmpty())
+					{ 
+						selectedList.GetHead()->RemoveLow2LowIPSourcesManual();
+						selectedList.RemoveHead();
+					}
+					SetRedraw(true);
+					break;
+				case MP_DROPUNKNOWNERRORBANNEDSRCS:
+					SetRedraw(false);
+					while(!selectedList.IsEmpty())
+					{ 
+						selectedList.GetHead()->RemoveUnknownErrorBannedSourcesManual();
+						selectedList.RemoveHead();
+					}
+					SetRedraw(true);
+					break;
+				case MP_DROPHIGHQRSRCSXMAN:
+					SetRedraw(false);
+					while(!selectedList.IsEmpty())
+					{ 
+						selectedList.GetHead()->RemoveHighQRSourcesManualXman();
+						selectedList.RemoveHead();
+					}
+					SetRedraw(true);
+					break;
+				case MP_DROPHIGHQRSRCSSIVKA:
+					SetRedraw(false);
+					while(!selectedList.IsEmpty())
+					{ 
+						selectedList.GetHead()->RemoveHighQRSourcesManualSivka();
+						selectedList.RemoveHead();
+					}
+					SetRedraw(true);
+					break;
+				case MP_CLEANUP_NNS_FQS_NONE_ERROR_BANNED_LOWTOLOWIP:
+					SetRedraw(false);
+					while(!selectedList.IsEmpty())
+					{ 
+						selectedList.GetHead()->CleanUp_NNS_FQS_NONE_ERROR_BANNED_LOWTOLOWIP_Sources();
+						selectedList.RemoveHead();
+					}
+					SetRedraw(true);
+					break;
+				// <== advanced manual dropping - Stulle
 				case MP_PAUSE:
 					SetRedraw(false);
 					while (!selectedList.IsEmpty()){
@@ -2793,6 +2845,11 @@ void CDownloadListCtrl::CreateMenues()
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPNONEEDEDSRCS, GetResString(IDS_DROPNONEEDEDSRCS)); 
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPQUEUEFULLSRCS, GetResString(IDS_DROPQUEUEFULLSRCS)); 
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPLEECHER, GetResString(IDS_DROPLEECHER));  //Xman Anti-Leecher
+	m_DropMenu.AppendMenu(MF_STRING, MP_DROPLOWTOLOWIPSRCS, _T("Drop LowIP to LowIP Sources"));
+	m_DropMenu.AppendMenu(MF_STRING, MP_DROPUNKNOWNERRORBANNEDSRCS, _T("Drop Unknown, Error and Banned Sources"));
+	m_DropMenu.AppendMenu(MF_STRING, MP_DROPHIGHQRSRCSXMAN, _T("Drop High Queue Rating Sources (Xman method)"));
+	m_DropMenu.AppendMenu(MF_STRING, MP_DROPHIGHQRSRCSSIVKA, _T("Drop High Queue Rating Sources (Sivka method)"));
+	m_DropMenu.AppendMenu(MF_STRING, MP_CLEANUP_NNS_FQS_NONE_ERROR_BANNED_LOWTOLOWIP, _T("CleanUp => NNS, FQS, UNK, ERR, BAN & L2L"));
 
 
 	m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_DropMenu.m_hMenu, GetResString(IDS_SubMenu_Drop),_T("DROPICON") );

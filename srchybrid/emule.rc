@@ -1575,8 +1575,18 @@ BEGIN
                     SS_NOPREFIX | WS_GROUP,92,122,231,8
     CONTROL         "Datarate:",IDC_FD_X13,"Static",SS_LEFTNOWORDWRAP | 
                     WS_GROUP,14,132,72,8
+// ==> Average download speed - Stulle
+/*
     CONTROL         "Static",IDC_DATARATE,"Static",SS_LEFTNOWORDWRAP | 
                     SS_NOPREFIX | WS_GROUP,92,132,231,8
+*/
+    CONTROL         "Static",IDC_DATARATE,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,92,132,70,8
+    CONTROL         "Avg DL speed:",IDC_FD_AVGDL,"Static",SS_LEFTNOWORDWRAP | 
+                    WS_GROUP,172,132,72,8
+    CONTROL         "Static",IDC_AVGDL,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,249,132,74,8
+// <== Average download speed - Stulle
     CONTROL         "Transferred:",IDC_FD_X14,"Static",SS_LEFTNOWORDWRAP | 
                     WS_GROUP,14,142,72,8
     CONTROL         "Static",IDC_TRANSFERRED,"Static",SS_LEFTNOWORDWRAP | 
@@ -2839,6 +2849,10 @@ MAXMOD                  ICON                    "res\\iconmax.ico"
 STULLE                  ICON                    "res\\iconstulle.ico"
 MORPH                   ICON                    "res\\Morph.ico"
 EASTSHARE               ICON                    "res\\EastShare.ico"
+IONIX                   ICON                    "res\\ionix.ico"
+CYREX                   ICON                    "res\\Cyrex2001.ico"
+NEXTEMF                 ICON                    "res\\nextEMF.ico"
+NEO                     ICON                    "res\\Client-Neo.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -5154,6 +5168,7 @@ BEGIN
     IDS_STATIC_STATSHL      "Min/ Max hardlimit value for graph:"
     IDS_SP_SRCGRAPH         "Source Graph"
     // <== Source Graph - Stulle
+	IDS_FD_AVGDL            "Avg DL speed:" // Average download speed - Stulle
 END
 
 #endif    // Englisch (USA) resources

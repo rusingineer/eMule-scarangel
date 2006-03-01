@@ -211,3 +211,11 @@
 #define MP_DROPLEECHER			14017	//Xman Anti-Leecher
 
 #define MP_SIVKA_FILE_SETTINGS	20000 // file settings - Stulle
+
+// ==> advanced manual dropping - Stulle
+#define MP_DROPLOWTOLOWIPSRCS	20001
+#define MP_DROPUNKNOWNERRORBANNEDSRCS 20002
+#define MP_DROPHIGHQRSRCSXMAN	20003
+#define MP_DROPHIGHQRSRCSSIVKA	20004
+#define MP_CLEANUP_NNS_FQS_NONE_ERROR_BANNED_LOWTOLOWIP 20005
+// <== advanced manual dropping - Stulle

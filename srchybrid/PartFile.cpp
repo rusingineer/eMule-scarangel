@@ -6824,10 +6824,159 @@ void CPartFile::IncrHL(UINT m_uSourcesDif)
 
 void CPartFile::InitHL()
 {
-	if(((int)(thePrefs.GetGlobalHL()*.95) - (int)(theApp.downloadqueue->GetGlobalSourceCount())) > 0)
+	UINT m_uGlobalHardlimit = 0;
+	if (thePrefs.m_bAcceptsourcelimit && thePrefs.m_uMaxGlobalSources < thePrefs.GetGlobalHL())
+		m_uGlobalHardlimit = thePrefs.m_uMaxGlobalSources;
+	else
+		m_uGlobalHardlimit = thePrefs.GetGlobalHL();
+
+	if(((int)(m_uGlobalHardlimit*.95) - (int)(theApp.downloadqueue->GetGlobalSourceCount())) > 0)
 		m_uFileHardLimit = 100;
 	else
 		m_uFileHardLimit = 10;
 	return;
 }
 // <== Global Source Limit [Max/Stulle] - Stulle
+
+// ==> advanced manual dropping - remove LowID to LowID sources from DL Queue - Stulle
+void CPartFile::RemoveLow2LowIPSourcesManual()
+{
+	uint16 m_ShowDroppedSrc_Temp = 0; // show # of dropped sources - Stulle
+
+	for(POSITION pos2, pos1 = srclist.GetHeadPosition(); (pos2=pos1)!=NULL; ){
+		CUpDownClient* cur_src = srclist.GetNext(pos1);
+		if(cur_src->GetDownloadState() == DS_LOWTOLOWIP &&
+			cur_src->HasLowID() &&
+			!theApp.DoCallback( cur_src ))
+		{
+			theApp.downloadqueue->RemoveSource(cur_src);
+			m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
+			theStats.droppedsources++; // # of dropped sources in session - Stulle
+		}
+	}
+	m_ShowDroppedSrc = (uint16)(m_ShowDroppedSrc+ m_ShowDroppedSrc_Temp); // show # of dropped sources - Stulle
+}
+// <== advanced manual dropping - remove LowID to LowID sources from DL Queue - Stulle
+
+// ==> advanced manual dropping - remove unknown, error and banned sources from DL Queue - Stulle
+void CPartFile::RemoveUnknownErrorBannedSourcesManual()
+{
+	uint16 m_ShowDroppedSrc_Temp = 0; // show # of dropped sources - Stulle
+
+	for(POSITION pos2, pos1 = srclist.GetHeadPosition(); (pos2=pos1)!=NULL; ){
+		CUpDownClient* cur_src = srclist.GetNext(pos1);
+		switch(cur_src->GetDownloadState()){
+			case DS_NONE:
+			case DS_ERROR:
+			case DS_BANNED:	
+				{
+					cur_src->droptime=::GetTickCount();
+					theApp.downloadqueue->RemoveSource(cur_src);
+					m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
+					theStats.droppedsources++; // # of dropped sources in session - Stulle
+				}
+			default: break;
+		}
+	}
+	m_ShowDroppedSrc = (uint16)(m_ShowDroppedSrc+ m_ShowDroppedSrc_Temp); // show # of dropped sources - Stulle
+}
+// <== advanced manual dropping - remove unknown, error and banned sources from DL Queue - Stulle
+
+// ==> advanced manual dropping - remove high queue rating sources from DL Queue - Stulle
+void CPartFile::RemoveHighQRSourcesManualSivka()
+{
+	uint16 m_ShowDroppedSrc_Temp = 0; // show # of dropped sources - Stulle
+
+	for(POSITION pos2, pos1 = srclist.GetHeadPosition(); (pos2=pos1)!=NULL; ){
+		CUpDownClient* cur_src = srclist.GetNext(pos1);
+		if(cur_src->GetRemoteQueueRank() > m_MaxRemoveQRS
+		&& cur_src->GetDownloadState() == DS_ONQUEUE){
+			cur_src->droptime=::GetTickCount();
+			theApp.downloadqueue->RemoveSource(cur_src);
+			m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
+			theStats.droppedsources++; // # of dropped sources in session - Stulle
+		}
+	}
+	m_ShowDroppedSrc = (uint16)(m_ShowDroppedSrc+ m_ShowDroppedSrc_Temp); // show # of dropped sources - Stulle
+}
+// <== advanced manual dropping - remove high queue rating sources from DL Queue - Stulle
+
+// ==> advanced manual dropping - remove high queue rating (xman) sources from DL Queue - Stulle
+void CPartFile::RemoveHighQRSourcesManualXman()
+{
+	uint16 m_ShowDroppedSrc_Temp = 0; // show # of dropped sources - Stulle
+
+	for(POSITION pos2, pos1 = srclist.GetHeadPosition(); (pos2=pos1)!=NULL; ){
+		CUpDownClient* cur_src = srclist.GetNext(pos1);
+		if(cur_src->GetDownloadState() == DS_ONQUEUE &&
+		cur_src->IsEmuleClient() &&
+		cur_src->Credits() && cur_src->credits->GetMyScoreRatio(cur_src->GetIP())<1.5f &&
+		(::GetTickCount() - cur_src->enterqueuetime>(90*60*1000)) &&
+		cur_src->GetRemoteQueueRank()>2000 &&
+		cur_src->GetRemoteQueueRank()>(GetAvgQr()*2+400))
+		{
+			cur_src->droptime=::GetTickCount();
+			theApp.downloadqueue->RemoveSource(cur_src);
+			m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
+			theStats.droppedsources++; // # of dropped sources in session - Stulle
+		}
+	}
+	m_ShowDroppedSrc = (uint16)(m_ShowDroppedSrc+ m_ShowDroppedSrc_Temp); // show # of dropped sources - Stulle
+}
+// <== advanced manual dropping - remove high queue rating (xman) sources from DL Queue - Stulle
+
+// ==> advanced manual dropping - CleanUp => NNS, FQS, UNKOWN, ERROR and BANNED sources from DL Queue - Stulle
+void CPartFile::CleanUp_NNS_FQS_NONE_ERROR_BANNED_LOWTOLOWIP_Sources()
+{
+	uint16 m_ShowDroppedSrc_Temp = 0; // show # of dropped sources - Stulle
+
+	for(POSITION pos2, pos1 = srclist.GetHeadPosition(); (pos2=pos1)!=NULL; ){
+		CUpDownClient* cur_src = srclist.GetNext(pos1);
+		switch(cur_src->GetDownloadState()){
+			case DS_NONEEDEDPARTS:
+				if (!cur_src->SwapToAnotherFile(false, false, false, NULL))
+				{
+					cur_src->droptime=::GetTickCount(); 
+					theApp.downloadqueue->RemoveSource(cur_src);
+					m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
+					theStats.droppedsources++; // # of dropped sources in session - Stulle
+				}
+				else
+					cur_src->DontSwapTo(this);
+				break;
+			case DS_ONQUEUE:
+				if(cur_src->IsRemoteQueueFull()){
+					if (!cur_src->SwapToAnotherFile(false, false, false, NULL))
+					{
+						cur_src->droptime=::GetTickCount(); 
+						theApp.downloadqueue->RemoveSource(cur_src);
+						m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
+						theStats.droppedsources++; // # of dropped sources in session - Stulle
+					}
+					else
+						cur_src->DontSwapTo(this);
+				}
+				break;
+			case DS_LOWTOLOWIP:
+				if(cur_src->HasLowID() &&
+				!theApp.DoCallback( cur_src ))
+				{
+					theApp.downloadqueue->RemoveSource(cur_src);
+					m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
+					theStats.droppedsources++; // # of dropped sources in session - Stulle
+				}
+			case DS_NONE:
+			case DS_ERROR:
+			case DS_BANNED:
+				{
+					cur_src->droptime=::GetTickCount(); 
+					theApp.downloadqueue->RemoveSource(cur_src);
+					m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
+					theStats.droppedsources++; // # of dropped sources in session - Stulle
+				}
+			default: break;
+		}
+	}
+	m_ShowDroppedSrc = (uint16)(m_ShowDroppedSrc+ m_ShowDroppedSrc_Temp); // show # of dropped sources - Stulle
+}
+// <== advanced manual dropping - CleanUp => NNS, FQS, UNKOWN, ERROR and BANNED sources from DL Queue - Stulle

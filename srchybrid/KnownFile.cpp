@@ -2128,3 +2128,11 @@ float CKnownFile::GetFileRatio()
 	return ratio ;
 }
 // <== push rare file - Stulle
+
+// ==> push small files [sivka] - Stulle
+bool CKnownFile::IsPushSmallFile()
+{
+	return(thePrefs.GetEnablePushSmallFile() && 
+		GetFileSize() <= (uint64)thePrefs.GetPushSmallFileSize());
+}
+// <== push small files [sivka] - Stulle

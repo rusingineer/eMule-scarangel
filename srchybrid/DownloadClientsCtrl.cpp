@@ -126,6 +126,10 @@ void CDownloadClientsCtrl::SetAllIcons()
 	m_ImageList.Add(CTempIconLoader(_T("XTREME"))); //23
 	m_ImageList.Add(CTempIconLoader(_T("MORPH"))); //24
 	m_ImageList.Add(CTempIconLoader(_T("EASTSHARE"))); //25
+	m_ImageList.Add(CTempIconLoader(_T("IONIX"))); //26
+	m_ImageList.Add(CTempIconLoader(_T("CYREX"))); //27
+	m_ImageList.Add(CTempIconLoader(_T("NEXTEMF"))); //28
+	m_ImageList.Add(CTempIconLoader(_T("NEO"))); //29
 	// <== Mod Icons - Stulle
 	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
 	// ==> Mod Icons - Stulle

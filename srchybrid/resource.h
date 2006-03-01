@@ -2635,6 +2635,11 @@
 #define IDS_STATIC_STATSHL              60346
 #define IDS_SP_SRCGRAPH                 60347
 // <== Source Graph - Stulle
+// ==> Average download speed - Stulle
+#define IDC_AVGDL                       60350
+#define IDC_FD_AVGDL                    60351
+#define IDS_FD_AVGDL                    60352
+// <== Average download speed - Stulle
 
 // Next default values for new objects
 // 

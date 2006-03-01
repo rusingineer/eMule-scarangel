@@ -742,7 +742,15 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 						client->SetUploadFileID(NULL); 
 						break;
 					}							
+					// ==> push small files [sivka] - Stulle
+					/*
 					else if(reqfileNr2!=NULL && reqfileNr1->GetUpPriorityEx()  < reqfileNr2->GetUpPriorityEx())
+					*/
+					else if(reqfileNr2!=NULL &&
+						(reqfileNr1->GetUpPriorityEx()  < reqfileNr2->GetUpPriorityEx() ||
+						reqfileNr1->IsPushSmallFile() < reqfileNr2->IsPushSmallFile() ||
+						(thePrefs.GetEnablePushRareFile() && reqfileNr1->GetFileRatio() < reqfileNr2->GetFileRatio()))) // second not; push rare file - Stulle
+					// <== push small files [sivka] - Stulle
 					{
 						if(thePrefs.GetLogUlDlEvents()){
 							AddDebugLogLine(false, _T("--> Upload session ended due wrong requested FileID (client=%s, expected=%s, asked=%s)"), 
@@ -2189,7 +2197,15 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 						client->SetUploadFileID(NULL); 
 						break;
 					}							
+					// ==> push small files [sivka] - Stulle
+					/*
 					else if(reqfileNr2!=NULL && reqfileNr1->GetUpPriorityEx()  < reqfileNr2->GetUpPriorityEx())
+					*/
+					else if(reqfileNr2!=NULL &&
+						(reqfileNr1->GetUpPriorityEx()  < reqfileNr2->GetUpPriorityEx() ||
+						reqfileNr1->IsPushSmallFile() < reqfileNr2->IsPushSmallFile() ||
+						(thePrefs.GetEnablePushRareFile() && reqfileNr1->GetFileRatio() < reqfileNr2->GetFileRatio()))) // second not; push rare file - Stulle
+					// <== push small files [sivka] - Stulle
 					{
 						if(thePrefs.GetLogUlDlEvents()){
 							AddDebugLogLine(false, _T("--> Upload session ended due wrong requested FileID (client=%s, expected=%s, asked=%s)"), 

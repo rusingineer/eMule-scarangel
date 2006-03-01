@@ -203,7 +203,11 @@ enum EModClient{
 	MOD_MAXMOD			= 3,
 	MOD_XTREME			= 4,
 	MOD_MORPH			= 5,
-	MOD_EASTSHARE			= 6
+	MOD_EASTSHARE		= 6,
+	MOD_IONIX			= 7,
+	MOD_CYREX			= 8,
+	MOD_NEXTEMF			= 9,
+	MOD_NEO				= 10
 };
 // <== Mod Icons - Stulle
 

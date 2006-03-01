@@ -205,4 +205,6 @@ private:
 
 public:
 	float	GetFileRatio(void) ; // push rare file - Stulle
+
+	bool	IsPushSmallFile(); // push small files [sivka] - Stulle
 };

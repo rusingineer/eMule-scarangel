@@ -530,4 +530,13 @@ public:
 private:
 	uint16	m_ShowDroppedSrc;
 	// <== show # of dropped sources - Stulle
+
+	// ==> advanced manual dropping - Stulle
+public:
+	void	RemoveLow2LowIPSourcesManual();
+	void	RemoveUnknownErrorBannedSourcesManual();
+	void	RemoveHighQRSourcesManualSivka();
+	void	RemoveHighQRSourcesManualXman();
+	void	CleanUp_NNS_FQS_NONE_ERROR_BANNED_LOWTOLOWIP_Sources();
+	// <== advanced manual dropping - Stulle
 };

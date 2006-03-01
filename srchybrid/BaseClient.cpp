@@ -721,6 +721,14 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 						m_uModClient = MOD_MORPH;
 					else if(StrStrI(m_strModVersion,_T("EastShare"))!=0)
 						m_uModClient = MOD_EASTSHARE;
+					else if(StrStrI(m_strModVersion,_T("iONiX"))!=0)
+						m_uModClient = MOD_IONIX;
+					else if(StrStrI(m_strModVersion,_T("Cyrex2001"))!=0)
+						m_uModClient = MOD_CYREX;
+					else if(StrStrI(m_strModVersion,_T("NextEMF"))!=0)
+						m_uModClient = MOD_NEXTEMF;
+					else if(StrStrI(m_strModVersion,_T("Neo Mule"))!=0)
+						m_uModClient = MOD_NEO;
 					else
 						m_uModClient = MOD_NONE;
 					// <== Mod Icons - Stulle
@@ -1331,6 +1339,14 @@ void CUpDownClient::ProcessMuleInfoPacket(const uchar* pachPacket, uint32 nSize)
 						m_uModClient = MOD_MORPH;
 					else if(StrStrI(m_strModVersion,_T("EastShare"))!=0)
 						m_uModClient = MOD_EASTSHARE;
+					else if(StrStrI(m_strModVersion,_T("iONiX"))!=0)
+						m_uModClient = MOD_IONIX;
+					else if(StrStrI(m_strModVersion,_T("Cyrex2001"))!=0)
+						m_uModClient = MOD_CYREX;
+					else if(StrStrI(m_strModVersion,_T("NextEMF"))!=0)
+						m_uModClient = MOD_NEXTEMF;
+					else if(StrStrI(m_strModVersion,_T("Neo Mule"))!=0)
+						m_uModClient = MOD_NEO;
 					else
 						m_uModClient = MOD_NONE;
 					// <== Mod Icons - Stulle

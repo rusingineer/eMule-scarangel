@@ -800,7 +800,20 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 		//this code checks the Up-Priority of the new request
 		uint8 oldUpPrio= ((CKnownFile*)theApp.sharedfiles->GetFileByID((uchar*)client->GetOldUploadFileID()))->GetUpPriorityEx();
 		uint8 newUpPrio= reqfile->GetUpPriorityEx();
+		// ==> push small files [sivka] - Stulle
+		/*
 		if(newUpPrio  < oldUpPrio)
+		*/
+		bool oldSmallPush= ((CKnownFile*)theApp.sharedfiles->GetFileByID((uchar*)client->GetOldUploadFileID()))->IsPushSmallFile();
+		bool newSmallPush= reqfile->IsPushSmallFile();
+		// ==> push rare file - Stulle
+		float oldRarePush= ((CKnownFile*)theApp.sharedfiles->GetFileByID((uchar*)client->GetOldUploadFileID()))->GetFileRatio();
+		float newRarePush= reqfile->GetFileRatio();
+		// <== push rare file - Stulle
+		if(newUpPrio  < oldUpPrio ||
+			newSmallPush < oldSmallPush ||
+			(thePrefs.GetEnablePushRareFile() && newRarePush < oldRarePush)) // push rare file - Stulle
+		// <== push small files [sivka] - Stulle
 		{
 			if(thePrefs.GetLogUlDlEvents()){
 				AddDebugLogLine(false, _T("--> Upload session ended due wrong requested FileID (in AddClientToQueue) (client=%s, expected=%s, asked=%s)"), 

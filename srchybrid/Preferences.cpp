@@ -2989,6 +2989,9 @@ void CPreferences::LoadPreferences()
 	uint32 temp;
 	// ==> Global Source Limit [Max/Stulle] - Stulle
 	m_bGlobalHL = ini.GetBool(_T("GlobalHL"), false);
+	uint32 m_uGlobalHlStandard = (uint32)(maxGraphUploadRate*0.9f);
+	m_uGlobalHlStandard = (uint32)((m_uGlobalHlStandard*400 - (m_uGlobalHlStandard-10.0f)*100)*0.65f);
+	m_uGlobalHlStandard = max(1000,min(m_uGlobalHlStandard,MAX_GSL));
 	temp = ini.GetInt(_T("GlobalHLvalue"), 3500);
 	m_uGlobalHL = (temp >= 1000 && temp <= MAX_GSL) ? temp : 3500;
 	m_bGlobalHlAll = ini.GetBool(_T("GlobalHlAll"),true);
