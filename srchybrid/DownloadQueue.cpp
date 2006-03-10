@@ -119,7 +119,7 @@ void CDownloadQueue::Init(){
 	m_dwUpdateHL = ::GetTickCount();
 	m_dwUpdateHlTime = 50000; // 50 sec on startup
 	m_bPassiveMode = false;
-	m_bAutoHLSrcReqAllowed = true;
+	m_bGlobalHLSrcReqAllowed = true;
 	// <== Global Source Limit [Max/Stulle] - Stulle
 
 	// find all part files, read & hash them if needed and store into a list
@@ -726,7 +726,7 @@ bool CDownloadQueue::CheckAndAddSource(CPartFile* sender,CUpDownClient* source){
 		//Xman check if this is a recent dropped source
 		if(source->droptime>0 /*it is a dropped source */ 
 			&& ((::GetTickCount() - source->GetLastAskedTime())<(50*60*1000) /*last asked was shorter than 50 minutes */  
-			|| (((::GetTickCount() - source->GetLastAskedTime())<(150*60*1000)) /*last asked was shorter than 150 minutes */ && (source->IsEmuleClient()==false || source->IsBanned()))	))
+			|| (((::GetTickCount() - source->GetLastAskedTime())<(150*60*1000)) /*last asked was shorter than 150 minutes */ && (source->IsEmuleClient()==false || source->IsLeecher()))	))
 		{
 			//AddDebugLogLine(false, _T("-o- rejected dropped client %s, %s reentering downloadqueue after time: %u min"), source->GetClientVerString(), source->GetUserName(), (::GetTickCount()-source->droptime)/60000);
 			return false;
@@ -769,7 +769,7 @@ bool CDownloadQueue::CheckAndAddKnownSource(CPartFile* sender,CUpDownClient* sou
 	//Xman check if this is a recent dropped source
 	if(source->droptime>0 /*it is a dropped source */ 
 		&& ((::GetTickCount() - source->GetLastAskedTime())<(50*60*1000) /*last asked was shorter than 50 minutes */  
-		|| (((::GetTickCount() - source->GetLastAskedTime())<(150*60*1000)) /*last asked was shorter than 150 minutes */ && (source->IsEmuleClient()==false || source->IsBanned()))	))
+		|| (((::GetTickCount() - source->GetLastAskedTime())<(150*60*1000)) /*last asked was shorter than 150 minutes */ && (source->IsEmuleClient()==false || source->IsLeecher()))	))
 	{
 		//AddDebugLogLine(false, _T("-o- rejected known dropped client %s, %s reentering downloadqueue after time: %u min"), source->GetClientVerString(), source->GetUserName(), (::GetTickCount()-source->droptime)/60000);
 		return false;
@@ -2268,6 +2268,13 @@ void CDownloadQueue::SetHardLimits()
 		}
 	}
 
+	if (aCount == 0) // nothing to check here
+	{
+		m_bGlobalHLSrcReqAllowed = true;
+		m_dwUpdateHL = ::GetTickCount();
+		return;
+	}
+
 /********************\
 * Get Src difference *
 \********************/
@@ -2296,13 +2303,13 @@ void CDownloadQueue::SetHardLimits()
 			m_dwUpdateHlTime = 300000; // 300 sec = 5 min
 			m_bPassiveMode = true;
 			m_bPassiveModeTemp = true;
-			m_bAutoHLSrcReqAllowed = true;
+			m_bGlobalHLSrcReqAllowed = true;
 			m_uSourcesDif = ((m_uGlobalHardlimit + m_uTollerance) - countsources)/aCount;
 			AddDebugLogLine(true,_T("{GSL} Global source count is in the tolerance range! PassiveMode!"));
 		}
 		else
 		{
-			m_bAutoHLSrcReqAllowed = true;
+			m_bGlobalHLSrcReqAllowed = true;
 			m_dwUpdateHL = ::GetTickCount();
 			return;
 		}
@@ -2328,10 +2335,10 @@ void CDownloadQueue::SetHardLimits()
 			if(!m_bTooMuchSrc && m_uMaxIncr < m_uSourcesDif)
 				m_uSourcesDif = m_uMaxIncr;
 
-			m_bAutoHLSrcReqAllowed = true;
+			m_bGlobalHLSrcReqAllowed = true;
 		}
 		else
-			m_bAutoHLSrcReqAllowed = false;
+			m_bGlobalHLSrcReqAllowed = false;
 	}
 
 /********************\

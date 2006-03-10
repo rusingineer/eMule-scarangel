@@ -2774,7 +2774,7 @@ void CPreferences::LoadPreferences()
 	m_strNotifierMailServer = ini.GetString(L"NotifierMailServer", L"");
 	m_strNotifierMailReceiver = ini.GetString(L"NotifierMailRecipient", L"");
 
-	m_bWinaTransToolbar = ini.GetBool(L"WinaTransToolbar", false);
+	m_bWinaTransToolbar = ini.GetBool(L"WinaTransToolbar", true); //Xman default true
 
 	///////////////////////////////////////////////////////////////////////////
 	// Section: "Proxy"
@@ -2992,8 +2992,8 @@ void CPreferences::LoadPreferences()
 	uint32 m_uGlobalHlStandard = (uint32)(maxGraphUploadRate*0.9f);
 	m_uGlobalHlStandard = (uint32)((m_uGlobalHlStandard*400 - (m_uGlobalHlStandard-10.0f)*100)*0.65f);
 	m_uGlobalHlStandard = max(1000,min(m_uGlobalHlStandard,MAX_GSL));
-	temp = ini.GetInt(_T("GlobalHLvalue"), 3500);
-	m_uGlobalHL = (temp >= 1000 && temp <= MAX_GSL) ? temp : 3500;
+	temp = ini.GetInt(_T("GlobalHLvalue"), m_uGlobalHlStandard);
+	m_uGlobalHL = (temp >= 1000 && temp <= MAX_GSL) ? temp : m_uGlobalHlStandard;
 	m_bGlobalHlAll = ini.GetBool(_T("GlobalHlAll"),true);
 	m_bGlobalHlDefault = ini.GetBool(_T("GlobalHlDefault"),false);
 	// <== Global Source Limit [Max/Stulle] - Stulle

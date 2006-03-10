@@ -34,7 +34,8 @@ static char THIS_FILE[] = __FILE__;
 
 #define HALF(X) (((X) + 1) / 2)
 
-CBarShader::CBarShader(uint32 height, uint32 width) : m_Spans(100) // Maella -Code Improvement (CPU load)- 
+CBarShader::CBarShader(uint32 height, uint32 width) 
+: m_Spans(100) // Maella -Code Improvement (CPU load)- 
 {
 	m_iWidth = width;
 	m_iHeight = height;

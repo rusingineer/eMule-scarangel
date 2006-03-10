@@ -150,7 +150,7 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 
 		case CS_LOVELACE:{
 			if ( GetCurrentIdentState(dwForIP) != IS_IDENTIFIED  && GetCurrentIdentState(dwForIP) != IS_NOTAVAILABLE && theApp.clientcredits->CryptoAvailable() ){
-				result = 0.985f; // this might be a bit more than the result... who care's!?!?!
+				result = 0.8f; // this might be a bit more than the result... who care's!?!?!
 				break;
 			}
 
@@ -175,7 +175,7 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 
 		case CS_PAWCIO:{	
 			if ( GetCurrentIdentState(dwForIP) != IS_IDENTIFIED  && GetCurrentIdentState(dwForIP) != IS_NOTAVAILABLE && theApp.clientcredits->CryptoAvailable() ){
-				result = 1.0f;
+				result = 0.8f;
 				break;
 			}
 
@@ -209,7 +209,7 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 		case CS_RATIO:
 		{
 			if ( GetCurrentIdentState(dwForIP) != IS_IDENTIFIED  && GetCurrentIdentState(dwForIP) != IS_NOTAVAILABLE && theApp.clientcredits->CryptoAvailable() ){
-				result = 1.0f;
+				result = 0.8f;
 				break;
 			}
 
@@ -304,7 +304,7 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 
 		case CS_SWAT:{
 			if ( GetCurrentIdentState(dwForIP) != IS_IDENTIFIED  && GetCurrentIdentState(dwForIP) != IS_NOTAVAILABLE && theApp.clientcredits->CryptoAvailable() ){
-				result = 1.0f;
+				result = 0.8f;
 				break;
 			}
 
@@ -342,7 +342,7 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 			if( GetCurrentIdentState(dwForIP) != IS_IDENTIFIED)
 			{
 				if ( GetCurrentIdentState(dwForIP) != IS_NOTAVAILABLE && theApp.clientcredits->CryptoAvailable() ){
-					result = 1.0f;
+					result = 0.8f;
 					break;
 				}
 				result = 0.8f;
@@ -393,7 +393,13 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 			10.0f : (float)(2*downloadTotal)/(float)uploadTotal;
 
 		// Factor 2
-		const float trunk = (float)sqrt(2.0 + (double)downloadTotal/1048576.0);
+		//Xman slightly changed to use linear function until half of chunk is transferred
+		float trunk;
+		if(downloadTotal < 4718592)  //half of a chunk and a good point to keep the function consistent
+			 trunk = (float)(1.0 + (double)downloadTotal/(1048576.0*3.0));
+		else
+			trunk = (float)sqrt(2.0 + (double)downloadTotal/1048576.0);
+		//Xman end
 
 		if(result>10.0f)
 		{
@@ -424,7 +430,7 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 		case CS_OFFICIAL:
 		default:{
 			if ( GetCurrentIdentState(dwForIP) != IS_IDENTIFIED  && GetCurrentIdentState(dwForIP) != IS_NOTAVAILABLE && theApp.clientcredits->CryptoAvailable() ){
-				result = 1.0f;
+				result = 0.8f;
 				break;
 			}
 

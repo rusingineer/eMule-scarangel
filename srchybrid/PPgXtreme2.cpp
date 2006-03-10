@@ -171,6 +171,7 @@ BOOL CPPgXtreme2::OnApply()
 	thePrefs.m_bShowAdditionalGraph=(IsDlgButtonChecked(IDC_SHOWADDITIONALGRAPH)!=0);
 	//Xman end
 
+
 	LoadSettings();
 	SetModified(FALSE);
 

@@ -1606,8 +1606,9 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 
 				bFirstItem = false;
 			}
-
+			//Xman from Stulle
 			m_FileMenu.EnableMenuItem((UINT_PTR)m_DropMenu.m_hMenu, (iSelectedItems > 0 && iFilesToStop > 0) ? MF_ENABLED : MF_GRAYED); // enable only when it makes sense - Stulle
+			//Xman end
 			m_FileMenu.EnableMenuItem((UINT_PTR)m_PrioMenu.m_hMenu, iFilesNotDone > 0 ? MF_ENABLED : MF_GRAYED);
 			m_PrioMenu.CheckMenuRadioItem(MP_PRIOLOW, MP_PRIOAUTO, uPrioMenuItem, 0);
 
@@ -1761,6 +1762,9 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	}
 	else{	// nothing selected
 		int total;
+		//Xman from Stulle
+		m_FileMenu.EnableMenuItem((UINT_PTR)m_DropMenu.m_hMenu, MF_GRAYED); // enable only when it makes sense - Stulle
+		//Xman end
 		m_FileMenu.EnableMenuItem((UINT_PTR)m_PrioMenu.m_hMenu, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_CANCEL, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_PAUSE, MF_GRAYED);
@@ -2845,11 +2849,13 @@ void CDownloadListCtrl::CreateMenues()
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPNONEEDEDSRCS, GetResString(IDS_DROPNONEEDEDSRCS)); 
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPQUEUEFULLSRCS, GetResString(IDS_DROPQUEUEFULLSRCS)); 
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPLEECHER, GetResString(IDS_DROPLEECHER));  //Xman Anti-Leecher
+	// ==> m000h
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPLOWTOLOWIPSRCS, _T("Drop LowIP to LowIP Sources"));
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPUNKNOWNERRORBANNEDSRCS, _T("Drop Unknown, Error and Banned Sources"));
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPHIGHQRSRCSXMAN, _T("Drop High Queue Rating Sources (Xman method)"));
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPHIGHQRSRCSSIVKA, _T("Drop High Queue Rating Sources (Sivka method)"));
 	m_DropMenu.AppendMenu(MF_STRING, MP_CLEANUP_NNS_FQS_NONE_ERROR_BANNED_LOWTOLOWIP, _T("CleanUp => NNS, FQS, UNK, ERR, BAN & L2L"));
+	// <== m000h
 
 
 	m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_DropMenu.m_hMenu, GetResString(IDS_SubMenu_Drop),_T("DROPICON") );

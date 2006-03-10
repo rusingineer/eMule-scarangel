@@ -2570,7 +2570,9 @@ bool CClientReqSocket::PacketReceivedCppEH(Packet* packet)
 {
 	bool bResult;
 	UINT uRawSize = packet->size;
-	//PacketToDebugLogLine(false, (const BYTE*)packet->pBuffer,packet->size,packet->opcode, DLP_LOW); //Xman for test
+#ifdef LOGTAG
+		PacketToDebugLogLine(false, (const BYTE*)packet->pBuffer,packet->size,packet->opcode); //Xman for test
+#endif
 	switch (packet->prot){
 		case OP_EDONKEYPROT:
 			bResult = ProcessPacket((const BYTE*)packet->pBuffer,packet->size,packet->opcode);

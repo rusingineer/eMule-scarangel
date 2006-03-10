@@ -599,12 +599,16 @@ UINT UploadBandwidthThrottler::RunInternal() {
 		DWORD timeSinceLastLoop = timeGetTime() - lastLoopTick;
 
 
-#define TIME_BETWEEN_UPLOAD_LOOPS_MIN 6 //Xman 6 are enough -> using higher prio for this thread
+#define TIME_BETWEEN_UPLOAD_LOOPS_MIN 8 //Xman 6 are enough -> using higher prio for this thread
 #define TIME_BETWEEN_UPLOAD_LOOPS_MAX 50 //25
         uint32 sleeptime=TIME_BETWEEN_UPLOAD_LOOPS_MIN;
 		///*
 		if(uSlope<0)
-			sleeptime=min((uint32)(-uSlope+1)/(allowedDataRate/1000),TIME_BETWEEN_UPLOAD_LOOPS_MAX);
+		{
+			//Xman 5.01 new High-Res-Timer oftenly sleep to short... it's probably too accurate (normal timer sleep always too long)
+			//to not do unnecessary loops sleep until we have 500 Bytes to spend.
+			sleeptime=min((uint32)ceil((float)((-uSlope+500)*1000)/allowedDataRate),TIME_BETWEEN_UPLOAD_LOOPS_MAX); //was 1 byte to spend
+		}
 		if(sleeptime<TIME_BETWEEN_UPLOAD_LOOPS_MIN)
 			sleeptime=TIME_BETWEEN_UPLOAD_LOOPS_MIN;
 		//*/	
@@ -696,6 +700,7 @@ UINT UploadBandwidthThrottler::RunInternal() {
 			uSlope=uSlopehelp_minUpload;
 		else
 			uSlope=uSlopehelp;
+
 
 		sendLocker.Lock();
 

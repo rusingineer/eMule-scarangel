@@ -69,7 +69,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 
-IMPLEMENT_DYNAMIC(CClientException, CException)
+//IMPLEMENT_DYNAMIC(CClientException, CException) //Xman unused
 IMPLEMENT_DYNAMIC(CUpDownClient, CObject)
 //Xman
 // Maella -Upload Stop Reason-
@@ -81,10 +81,7 @@ uint32 CUpDownClient::m_downStopReason[2][CUpDownClient::DSR_EXCEPTION+1];
 //Xman Anti-Leecher: simple Anti-Thief
 const CString CUpDownClient::str_ANTAddOn=CUpDownClient::GetANTAddOn();
 
-CUpDownClient::CUpDownClient(CClientReqSocket* sender)//Xman // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
-: m_upHistory_list(21),
-  m_downHistory_list(21)
-// Maella end
+CUpDownClient::CUpDownClient(CClientReqSocket* sender)
 {
 	socket = sender;
 	reqfile = NULL;
@@ -311,6 +308,7 @@ void CUpDownClient::Init()
 	m_bLeecher = 0;
 	old_m_pszUsername.Empty();
 	m_strBanMessage.Empty();
+	uhashsize=16;
 
 	//>>> Anti-XS-Exploit (Xman)
 	m_uiXSReqs = 0;
@@ -602,7 +600,10 @@ void CUpDownClient::ClearHelloProperties()
 bool CUpDownClient::ProcessHelloPacket(const uchar* pachPacket, uint32 nSize)
 {
 	CSafeMemFile data(pachPacket, nSize);
-	data.ReadUInt8(); // read size of userhash
+	//Xman Anti-Leecher
+	//data.ReadUInt8(); // read size of userhash
+	uhashsize=data.ReadUInt8();
+	//Xman end
 	// reset all client properties; a client may not send a particular emule tag any longer
 	ClearHelloProperties();
 	return ProcessHelloTypePacket(&data);
@@ -610,6 +611,9 @@ bool CUpDownClient::ProcessHelloPacket(const uchar* pachPacket, uint32 nSize)
 
 bool CUpDownClient::ProcessHelloAnswer(const uchar* pachPacket, uint32 nSize)
 {
+	//Xman Anti-Leecher
+	uhashsize=16;
+	//Xman end
 	CSafeMemFile data(pachPacket, nSize);
 	bool bIsMule = ProcessHelloTypePacket(&data);
 	m_bHelloAnswerPending = false;
@@ -1016,13 +1020,27 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 			if(data->GetPosition() < data->GetLength())
 			{
 				strBanReason= _T("extra bytes");
-				BanLeecher(strBanReason,1); // darkmule (or buggy)
+				BanLeecher(strBanReason,13); // darkmule (or buggy)
+				return bIsMule;
+			}
+			if(uhashsize!=16)
+			{
+				strBanReason= _T("wrong Hashsize");
+				BanLeecher(strBanReason,14); //new united community
 				return bIsMule;
 			}
 		}
 
 		//if it is now a good mod, remove the reducing of score but do a second test
 		if(IsLeecher()==1) //category 2 is snafu and always a hard ban, need only to check 1
+		{
+			m_bLeecher=0; //it's a good mod now
+			m_strBanMessage.Format(_T("unban - Client %s"),DbgGetClientInfo());
+			old_m_strClientSoftwareFULL.Empty();	//force recheck
+			old_m_pszUsername.Empty();
+		}
+
+		if(IsLeecher()==14 && !m_bHelloAnswerPending) //check if it is a Hello-Packet
 		{
 			m_bLeecher=0; //it's a good mod now
 			m_strBanMessage.Format(_T("unban - Client %s"),DbgGetClientInfo());

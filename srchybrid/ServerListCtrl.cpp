@@ -220,7 +220,8 @@ void CServerListCtrl::RemoveAllDeadServers()
 	for(POSITION pos = server_list->list.GetHeadPosition(); pos != NULL; server_list->list.GetNext(pos))
 	{
 		const CServer* cur_server = server_list->list.GetAt(pos);
-		if (cur_server->GetFailedCount() >= thePrefs.GetDeadServerRetries())
+		if (cur_server->GetFailedCount() >= thePrefs.GetDeadServerRetries() 
+			|| (thePrefs.FilterServerByIP() && theApp.ipfilter->IsFiltered(cur_server->GetIP()))) //BlueSonicBoy
 		{
 				//Xman
 				// Mighty Knife: Static server handling

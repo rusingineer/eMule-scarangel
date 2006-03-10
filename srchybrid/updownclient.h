@@ -608,7 +608,7 @@ public:
 	//Xman end
 	
 	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
-    UINT			GetUploadDatarate(UINT samples) const;
+    //UINT			GetUploadDatarate(UINT samples) const; //unused
     UINT			GetUploadDatarate() const {return m_nUpDatarate;}
 	UINT			GetDownloadDatarate() const {return m_nDownDatarate;}
 
@@ -768,6 +768,7 @@ private:
 	CString	old_m_strClientSoftwareFULL;
 	CString	old_m_pszUsername;
 	CString m_strBanMessage;
+	uint8 uhashsize;
 
 	//>>> Anti-XS-Exploit (Xman)
 	uint32 m_uiXSAnswer;

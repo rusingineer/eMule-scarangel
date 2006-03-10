@@ -1279,9 +1279,11 @@ bool CUpDownClient::IsDifferentPartBlock()
 	return different; 
 }
 // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+//unused
+/*
 uint32 CUpDownClient::GetUploadDatarate(uint32 samples) const {
 	UINT nUpDatarate = 0;
-    if(m_upHistory_list.GetSize() > 1 && samples >= 1){		//Xman Bugfix
+    if(m_upHistory_list.GetSize() > 1 && samples >= 1){		
 		// Retieve the location of the n previous sample
 		POSITION pos = m_upHistory_list.FindIndex(samples);
 		if(pos == NULL){
@@ -1296,6 +1298,7 @@ uint32 CUpDownClient::GetUploadDatarate(uint32 samples) const {
     }
     return nUpDatarate;
 }
+*/
 
 void CUpDownClient::CompUploadRate(){
 	// Add new sample
@@ -1382,7 +1385,7 @@ void CUpDownClient::AddUploadRate(UINT size)
 void CUpDownClient::BanLeecher(LPCTSTR pszReason, uint8 leechercategory){
 	//possible categories:
 	//0 = no leecher
-	//1 = bad hello
+	//1 = bad hello + reduce score
 	//2 = snafu
 	//3 = ghost
 	//4 = modstring soft
@@ -1394,6 +1397,8 @@ void CUpDownClient::BanLeecher(LPCTSTR pszReason, uint8 leechercategory){
 	//10 = username soft
 	//11 = nick thief
 	//12 = emcrypt
+	//13 = bad hello + ban
+	//14 = wrong HashSize + reduce score (=new united)
 
 	m_strBanMessage.Empty();
 	bool reducescore=false;
@@ -1402,6 +1407,7 @@ void CUpDownClient::BanLeecher(LPCTSTR pszReason, uint8 leechercategory){
 	case 1:
 	case 4:
 	case 10:
+	case 14:
 		reducescore=thePrefs.GetAntiLeecherCommunity_Action();
 		break;
 	case 12: //emcrypt

@@ -251,12 +251,12 @@ public:
 	void SetUpdateHlTime(DWORD in){m_dwUpdateHlTime = in;}
 	bool GetPassiveMode() const {return m_bPassiveMode;}
 	void SetPassiveMode(bool in){m_bPassiveMode=in;}
-	bool GetAutoHLSrcReqAllowed() const {return m_bAutoHLSrcReqAllowed;}
+	bool GetGlobalHLSrcReqAllowed() const {return m_bGlobalHLSrcReqAllowed;}
 protected:
 	DWORD m_dwUpdateHL;
 	DWORD m_dwUpdateHlTime;
 	bool m_bPassiveMode;
-	bool m_bAutoHLSrcReqAllowed;
+	bool m_bGlobalHLSrcReqAllowed;
 	// <== Global Source Limit [Max/Stulle] - Stulle
 
 public:

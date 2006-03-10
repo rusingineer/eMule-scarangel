@@ -364,8 +364,13 @@ bool CKnownFileList::SafeAddKFile(CKnownFile* toadd)
 		delete pFileInMap;
 
 		//Xman official bugfix for redownloading already downloaded file
+		//Xman 5.01 removed the patch for the moment
+		//remark: official emule has a bug at this point. download a shared file and you see:
+		//both files will be unshared. But this patch leads to a crash in an unknown situation
+		/*
 		if (theApp.sharedfiles && !theApp.sharedfiles->IsFilePtrInList(toadd))
 			theApp.sharedfiles->SafeAddKFile(toadd);
+		*/
 		
 		//Xman [MoNKi: -Downloaded History-]
 		theApp.emuledlg->sharedfileswnd->historylistctrl.AddFile(toadd);

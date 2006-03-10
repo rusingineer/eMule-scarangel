@@ -331,9 +331,8 @@ void CPartFile::Init(){
 	m_lastSoureCacheProcesstime=::GetTickCount();
 
 	// ==> Global Source Limit [Max/Stulle] - Stulle
-	m_uFileHardLimit = 100;
+	InitHL();
 	if(thePrefs.IsUseGlobalHL() &&
-		(thePrefs.GetGlobalHlAll() || m_bGlobalHL || ::GetTickCount()-theStats.starttime < MIN2MS(3)) && // new file is global hl or we just startetd
 		theApp.downloadqueue->GetPassiveMode())
 	{
 		theApp.downloadqueue->SetPassiveMode(false);
@@ -4195,7 +4194,7 @@ void CPartFile::ResumeFile(bool resort)
 	stopped = false;
 
 	// ==> Global Source Limit [Max/Stulle] - Stulle
-	m_uFileHardLimit = 150;
+	InitHL();
 	if(thePrefs.IsUseGlobalHL() && (thePrefs.GetGlobalHlAll() || m_bGlobalHL) && theApp.downloadqueue->GetPassiveMode())
 	{
 		theApp.downloadqueue->SetPassiveMode(false);
@@ -6769,7 +6768,7 @@ bool CPartFile::IsGlobalSourceAddAllowed()
 	// Well well, we activated Global HL  global and for this very file so we are free to 
 	// add sources here. Since Global HL will take full control of the max src we don't
 	// care about the settings of GlobalMaxHarlimit for fairness, it's used anyhow
-	if(thePrefs.IsUseGlobalHL() && (thePrefs.GetGlobalHlAll() || m_bGlobalHL) && theApp.downloadqueue->GetAutoHLSrcReqAllowed())
+	if(thePrefs.IsUseGlobalHL() && (thePrefs.GetGlobalHlAll() || m_bGlobalHL) && theApp.downloadqueue->GetGlobalHLSrcReqAllowed())
 		return true;
 	// <== Global Source Limit [Max/Stulle] - Stulle
 
@@ -6798,7 +6797,7 @@ bool CPartFile::IsSourceSearchAllowed()
 	// ==> Global Source Limit [Max/Stulle] - Stulle
 	// if we enabled GlobalHL for this file (and global) we will add new sources until we
 	// think there are too many and start reducing
-	if(thePrefs.IsUseGlobalHL() && m_bGlobalHL && theApp.downloadqueue->GetAutoHLSrcReqAllowed())
+	if(thePrefs.IsUseGlobalHL() && m_bGlobalHL && theApp.downloadqueue->GetGlobalHLSrcReqAllowed())
 		return true;
 	// <== Global Source Limit [Max/Stulle] - Stulle
 

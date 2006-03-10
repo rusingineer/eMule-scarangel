@@ -66,7 +66,7 @@ void CStatisticFile::AddTransferred(uint64 start, uint32 bytes){ //Xman PowerRel
 	theApp.knownfiles->transferred += bytes;
 	//Xman PowerRelease
 	if(!fileParent->IsPartFile() && fileParent->GetED2KPartCount()>3)
-		AddBlockTransferred(start, start+bytes+1, 1);
+		AddBlockTransferred(start, start+bytes/*+1*/, 1); //Xman David
 	//Xman end
 	theApp.sharedfiles->UpdateFile(fileParent);
 }

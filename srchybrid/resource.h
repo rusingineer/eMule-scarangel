@@ -2256,7 +2256,8 @@
 #define IDC_CCOLL_BASICOPTIONS          2950
 #define IDC_CCOLL_ADVANCEDOPTIONS       2951
 #define IDC_ALANGUAGE                   2952
-#define IDA_ENTER                       32771
+#define IDC_EDIT1                       2953
+#define IDC_XMANTEST                    2953
 #define IDS_DROPNONEEDEDSRCS            3000
 #define IDS_DROPQUEUEFULLSRCS           3001
 #define IDS_DROPQUEUETOOMANY            3002
@@ -2435,6 +2436,7 @@
 #define IDC_SHOWADDITIONALGRAPH         4073
 #define IDC_CHECK4UPDATEMOD             4074
 #define IDC_ANTILEECHEREMCRYPT_CHECK    4075
+#define IDA_ENTER                       32771
 #define IDC_Activatewebcachedownloads   4046
 #define IDC_ADVANCEDCONTROLS            4047
 #define IDC_Webcache                    4048
@@ -2647,7 +2649,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        1552
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         2953
+#define _APS_NEXT_CONTROL_VALUE         2954
 #define _APS_NEXT_SYMED_VALUE           1517
 #endif
 #endif

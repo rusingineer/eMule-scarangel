@@ -151,6 +151,14 @@ void CConnectionWizardDlg::OnBnClickedApply()
 		thePrefs.maxGraphDownloadRate = download;
 		thePrefs.maxGraphUploadRate = upload;
 
+		// ==> Global Source Limit [Max/Stulle] - Stulle
+		uint32 m_uGlobalHlStandard = (uint32)(upload*0.9f);
+		m_uGlobalHlStandard = (uint32)((m_uGlobalHlStandard*400 - (m_uGlobalHlStandard-10.0f)*100)*0.65f);
+		m_uGlobalHlStandard = max(1000,min(m_uGlobalHlStandard,MAX_GSL));
+		thePrefs.m_uGlobalHL = m_uGlobalHlStandard;
+		theApp.emuledlg->preferenceswnd->m_wndStulle.LoadSettings();
+		// <== Global Source Limit [Max/Stulle] - Stulle
+
 		thePrefs.SetMaxUpload(upload * 0.9f);
 		thePrefs.SetMaxDownload(download); 
 		thePrefs.SetMaxDownload(thePrefs.GetMaxDownload()); //check for limit
@@ -354,10 +362,10 @@ BOOL CConnectionWizardDlg::OnInitDialog()
 	m_provider.InsertItem(12,_T("  DSL 6000 (Lycos,Alice)"));m_provider.SetItemText(12,1,_T("6016"));m_provider.SetItemText(12,2,_T("512"));
 	m_provider.InsertItem(13,_T("Versatel DSL 6000"));m_provider.SetItemText(13,1,_T("6144"));m_provider.SetItemText(13,2,_T("512"));
 
-	m_provider.InsertItem(14,_T("Cable"));m_provider.SetItemText(14,1,_T("187"));m_provider.SetItemText(16,2,_T("32"));
-	m_provider.InsertItem(15,_T("Cable"));m_provider.SetItemText(15,1,_T("187"));m_provider.SetItemText(17,2,_T("64"));
-	m_provider.InsertItem(16,_T("T1"));m_provider.SetItemText(16,1,_T("1500"));m_provider.SetItemText(18,2,_T("1500"));
-	m_provider.InsertItem(17,_T("T3+"));m_provider.SetItemText(17,1,_T("44 Mbps"));m_provider.SetItemText(19,2,_T("44 Mbps"));
+	m_provider.InsertItem(14,_T("Cable"));m_provider.SetItemText(14,1,_T("187"));m_provider.SetItemText(14,2,_T("32"));
+	m_provider.InsertItem(15,_T("Cable"));m_provider.SetItemText(15,1,_T("187"));m_provider.SetItemText(15,2,_T("64"));
+	m_provider.InsertItem(16,_T("T1"));m_provider.SetItemText(16,1,_T("1500"));m_provider.SetItemText(16,2,_T("1500"));
+	m_provider.InsertItem(17,_T("T3+"));m_provider.SetItemText(17,1,_T("44 Mbps"));m_provider.SetItemText(17,2,_T("44 Mbps"));
 
 
 	m_provider.SetSelectionMark(0);
