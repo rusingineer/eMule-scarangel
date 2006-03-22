@@ -730,6 +730,10 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	int iSelectedItems = GetSelectedCount();
 	int iCompleteFileSelected = -1;
 	UINT uPrioMenuItem = 0;
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	bool uWCReleaseItem = true; //JP webcache release
+	bool uGreyOutWCRelease = true; //JP webcache release
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	const CKnownFile* pSingleSelFile = NULL;
 	POSITION pos = GetFirstSelectedItemPosition();
 	while (pos)
@@ -771,12 +775,27 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 		else if (uPrioMenuItem != uCurPrioMenuItem)
 			uPrioMenuItem = 0;
 
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		if (!pFile->ReleaseViaWebCache)
+			uWCReleaseItem = false;
+		if (!pFile->IsPartFile())
+			uGreyOutWCRelease = false;
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 		bFirstItem = false;
 	}
 
 	m_SharedFilesMenu.EnableMenuItem((UINT_PTR)m_PrioMenu.m_hMenu, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
 	//m_PrioMenu.CheckMenuRadioItem(MP_PRIOVERYLOW, MP_PRIOAUTO, uPrioMenuItem, 0);
 	m_PrioMenu.CheckMenuRadioItem(MP_PRIOVERYLOW, MP_PRIOPOWER, uPrioMenuItem, 0); //Xman PowerRelease 
+
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	m_PrioMenu.EnableMenuItem(MP_PRIOWCRELEASE, (thePrefs.UpdateWebcacheReleaseAllowed() && !uGreyOutWCRelease) ? MF_ENABLED : MF_GRAYED);
+	if (uWCReleaseItem && thePrefs.IsWebcacheReleaseAllowed()) //JP webcache release
+		m_PrioMenu.CheckMenuItem(MP_PRIOWCRELEASE, MF_CHECKED);
+	else
+		m_PrioMenu.CheckMenuItem(MP_PRIOWCRELEASE, MF_UNCHECKED);
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	bool bSingleCompleteFileSelected = (iSelectedItems == 1 && iCompleteFileSelected == 1);
 	m_SharedFilesMenu.EnableMenuItem(MP_OPEN, bSingleCompleteFileSelected ? MF_ENABLED : MF_GRAYED);
@@ -1085,8 +1104,22 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 			case MP_PRIOHIGH:
 			case MP_PRIOVERYHIGH:
 			case MP_PRIOPOWER:  //Xman PowerRelease
+			case MP_PRIOWCRELEASE: // WebCache [WC team/MorphXT] - Stulle/Max
 			case MP_PRIOAUTO:
 				{
+					// ==> WebCache [WC team/MorphXT] - Stulle/Max
+					// check if a click on MP_PRIOWCRELEASE should activate WC-release
+					bool activateWCRelease = false;
+					POSITION pos2 = selectedList.GetHeadPosition();
+					CKnownFile* cur_file = NULL;
+					while (pos2 != NULL)
+					{
+						cur_file = selectedList.GetNext(pos2);
+						if (!cur_file->ReleaseViaWebCache)
+							activateWCRelease = true;
+					}
+					// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 					POSITION pos = selectedList.GetHeadPosition();
 					while (pos != NULL)
 					{
@@ -1131,6 +1164,14 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 								file->UpdateAutoUpPriority();
 								UpdateFile(file); 
 								break;
+							// ==> WebCache [WC team/MorphXT] - Stulle/Max
+							case MP_PRIOWCRELEASE:
+								if (!file->IsPartFile())
+									file->SetReleaseViaWebCache(activateWCRelease);
+								else
+									file->SetReleaseViaWebCache(false);
+								break;
+							// <== WebCache [WC team/MorphXT] - Stulle/Max
 						}
 					}
 					break;
@@ -1427,6 +1468,10 @@ void CSharedFilesCtrl::CreateMenues()
 	m_PrioMenu.AppendMenu(MF_STRING,MP_PRIOVERYHIGH, GetResString(IDS_PRIORELEASE));
 	m_PrioMenu.AppendMenu(MF_STRING,MP_PRIOPOWER, GetResString(IDS_POWERRELEASE)); //Xman PowerRelease
 	m_PrioMenu.AppendMenu(MF_STRING,MP_PRIOAUTO, GetResString(IDS_PRIOAUTO));//UAP
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	m_PrioMenu.AppendMenu(MF_STRING|MF_SEPARATOR);//jp webcache release
+	m_PrioMenu.AppendMenu(MF_STRING,MP_PRIOWCRELEASE, _T("WC-Release"));//jp webcache release
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	m_CollectionsMenu.CreateMenu();
 	m_CollectionsMenu.AddMenuTitle(NULL, true);

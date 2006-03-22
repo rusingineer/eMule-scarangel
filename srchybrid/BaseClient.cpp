@@ -60,6 +60,7 @@
 #include "shahashset.h"
 #include "Log.h"
 #include "DLP.h" //Xman DLP
+#include "WebCache/WebCacheSocket.h" // WebCache [WC team/MorphXT] - Stulle/Max
 
 
 #ifdef _DEBUG
@@ -318,6 +319,39 @@ void CUpDownClient::Init()
 	//Xman end
 
 	m_uModClient = MOD_NONE; // Mod Icons - Stulle
+
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+    m_bProxy = false;
+	m_bIsAcceptingOurOhcbs = true;
+	m_bIsTrustedOHCBSender = true;
+	m_bIsAllowedToSendOHCBs = true;
+	m_uWebCacheFlags = 0;
+	m_pWCDownSocket = NULL;
+	m_pWCUpSocket = NULL;
+	m_WA_webCacheIndex = -1;
+	m_bWebcacheFailedTry = false;
+	m_bWebCacheSupport = false;
+	m_uWebCacheDownloadId = 0;
+	m_uWebCacheUploadId = 0;
+	m_eWebCacheDownState = WCDS_NONE;
+	m_eWebCacheUpState = WCUS_NONE;
+	b_webcacheInfoNeeded = false;
+	//JP trusted OHCB-Senders Start
+	WebCachedBlockRequests = 0;
+	SuccessfulWebCachedBlockDownloads = 0;
+	//JP trusted OHCB-Senders END
+	// Superlexx - encryption
+	Crypt.useNewKey = true;
+	Crypt.isProxy = false;
+	GenerateKey(Crypt.remoteMasterKey);	// generate a key - will be done right before sending
+	memset(Crypt.localMasterKey, 0, WC_KEYLENGTH);
+	// TODO: WC: remove this
+	//for (int i=0; i<WC_KEYLENGTH; i++) Crypt.localMasterKey[i] = 0; // fill with zeroes so we can say if the key is valid
+    lastMultiOHCBPacketSent = 0; // Superlexx - Multi-OHCB
+	m_bWebCacheSupportsMultiOHCBs = false;
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
+
+	m_pszFunnyNick = 0; // FunnyNick [SiRoB/Stulle] - Stulle
 }
 
 CUpDownClient::~CUpDownClient(){
@@ -344,7 +378,25 @@ CUpDownClient::~CUpDownClient(){
 		m_pPCUpSocket->Safe_Delete();
 	}
 
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	if (m_pWCDownSocket){
+		m_pWCDownSocket->client = NULL;
+		m_pWCDownSocket->Safe_Delete();
+	}
+	if (m_pWCUpSocket){
+		m_pWCUpSocket->client = NULL;
+		m_pWCUpSocket->Safe_Delete();
+	}
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 	free(m_pszUsername);
+
+	// ==> FunnyNick [SiRoB/Stulle] - Stulle
+	if (m_pszFunnyNick) {
+		delete[] m_pszFunnyNick;
+		m_pszFunnyNick = NULL;
+	}
+	// <== FunnyNick [SiRoB/Stulle] - Stulle
 
 	delete[] m_abyPartStatus;
 	m_abyPartStatus = NULL;
@@ -746,6 +798,22 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 				CheckForGPLEvilDoer();
 				break;
 
+			// ==> WebCache [WC team/MorphXT] - Stulle/Max
+			case WC_TAG_VOODOO:
+				if (temptag.IsInt()) {
+					m_bWebCacheSupport = temptag.IsInt() && temptag.GetInt() == 'ARC4';
+				}
+				break;
+			case WC_TAG_FLAGS:
+				if (m_bWebCacheSupport && temptag.IsInt())
+				{
+					m_uWebCacheFlags = temptag.GetInt();
+					b_webcacheInfoNeeded = m_uWebCacheFlags & WC_FLAGS_INFO_NEEDED;
+					m_bWebCacheSupportsMultiOHCBs = (m_uWebCacheFlags & WC_FLAGS_MULTI_OHCBS)!=0;
+				}
+				break;
+			// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 			case CT_EMULE_UDPPORTS:
 				// 16 KAD Port
 				// 16 UDP Port
@@ -858,8 +926,12 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 				break;
 
 			//Xman Anti-Leecher
+			// ==> WebCache [WC team/MorphXT] - Stulle/Max
+			/*
 			case 0x69: //Webcache WC_TAG_VOODOO
 			case 0x6A: //Webcache WC_TAG_FLAGS
+			*/
+			// <== WebCache [WC team/MorphXT] - Stulle/Max
 			case 0x3D: //ICS
 				nonofficialopcodes=true; //Xman Anti-Leecher
 				break;
@@ -1103,6 +1175,7 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 	}
 	//Xman end
 
+	UpdateFunnyNick(); // FunnyNick [SiRoB/Stulle] - Stulle
 
 	return bIsMule;
 }
@@ -1488,6 +1561,7 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 	if (bSendModVersion) tagcount+=1;
 	//Xman END   - Added by SiRoB, Don't send MOD_VERSION to client that don't support it to reduce overhead
 
+	if (bSendModVersion || m_clientSoft == SO_LPHANT) tagcount+=(1/*WC_VOODOO*/+1/*WC_FLAGS*/); // WebCache [WC team/MorphXT] - Stulle/Max
 
 	data->WriteUInt32(tagcount);
 
@@ -1606,6 +1680,23 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 		tagMODVersion.WriteTagToFile(data);
 	}
 	//Xman end - modID
+
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	if (bSendModVersion || m_clientSoft == SO_LPHANT)
+	{
+		CTag tagWebCacheVoodoo( WC_TAG_VOODOO, (uint32)'ARC4' );
+		tagWebCacheVoodoo.WriteTagToFile(data);
+		uint32 flags = WC_FLAGS_UDP | WC_FLAGS_NO_OHCBS | WC_FLAGS_MULTI_OHCBS;
+		bool localMasterKeyNeeded = true;
+		for(int i=0; localMasterKeyNeeded && i < WC_KEYLENGTH; i++)
+		localMasterKeyNeeded = (Crypt.localMasterKey[i]==0);
+		if (b_webcacheInfoNeeded || m_WA_webCacheIndex == -1 || localMasterKeyNeeded)
+			flags |= WC_FLAGS_INFO_NEEDED;
+		CTag tagWebCacheFlags( WC_TAG_FLAGS, flags);
+		tagWebCacheFlags.WriteTagToFile(data);
+	}
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 	uint32 dwIP;
 	uint16 nPort;
 	if (theApp.serverconnect->IsConnected()){
@@ -1896,6 +1987,20 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket, UpStopReas
 			m_pPCUpSocket->client = NULL;
 			m_pPCUpSocket->Safe_Delete();
 		}
+
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		SetWebCacheDownState(WCDS_NONE);
+		SetWebCacheUpState(WCUS_NONE);
+		if (m_pWCDownSocket){
+			m_pWCDownSocket->client = NULL;
+			m_pWCDownSocket->Safe_Delete();
+		}
+		if (m_pWCUpSocket){
+			m_pWCUpSocket->client = NULL;
+			m_pWCUpSocket->Safe_Delete();
+		}
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 		m_fSentOutOfPartReqs = 0;
 		return false;
 	}
@@ -2454,6 +2559,8 @@ void CUpDownClient::SetUserName(LPCTSTR pszNewName)
 		m_pszUsername = _tcsdup(pszNewName);
 	else
 		m_pszUsername = NULL;
+
+	UpdateFunnyNick(); // FunnyNick [SiRoB/Stulle] - Stulle
 }
 
 void CUpDownClient::RequestSharedFileList()
@@ -3227,6 +3334,24 @@ CString CUpDownClient::GetDownloadStateDisplayString() const
 			strState += _T(" Hit");
 	//}
 
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	switch (m_eWebCacheDownState)
+	{
+	case WCDS_WAIT_CLIENT_REPLY:
+		strState += _T(" ProxyWait");
+		break;
+	case WCDS_WAIT_CACHE_REPLY:
+		strState += _T(" WC-Bug:CacheWait"); // not needed...
+		break;
+	case WCDS_DOWNLOADINGVIA:
+		strState += _T(" Via Proxy");
+		break;
+	case WCDS_DOWNLOADINGFROM:
+		strState += _T(" From Proxy");
+		break;
+	}
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 	//Xman 4.2
 	if(GetUploadState()==US_UPLOADING)
 		strState = _T(">>") + strState;
@@ -3286,6 +3411,11 @@ CString CUpDownClient::GetUploadStateDisplayString() const
 		if (m_ePeerCacheUpState != PCUS_NONE && m_bPeerCacheUpHit)
 			strState += _T(" Hit");
 	//}
+
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	if( m_eWebCacheUpState == WCUS_UPLOADING )
+		strState += _T(" Via Proxy");
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	//Xman 4.2
 	if(GetDownloadState()==DS_DOWNLOADING)
@@ -3492,3 +3622,236 @@ float CUpDownClient::GetXtremeVersion(CString modversion) const
 	// <== ModID [itsonlyme/SiRoB] - Stulle
 }
 //Xman end
+
+// ==> FunnyNick [SiRoB/Stulle] - Stulle
+//most of the code from xrmb FunnyNick
+void CUpDownClient::UpdateFunnyNick()
+{
+	if(m_pszUsername == NULL || 
+		!IsEd2kClient() || //MORPH - Changed by Stulle, no FunnyNick for http DL
+		_tcsnicmp(m_pszUsername, _T("http://"),7) != 0 &&
+		_tcsnicmp(m_pszUsername, _T("0."),2) != 0 &&
+		_tcsicmp(m_pszUsername, _T("")) != 0)
+		return;
+	// preffix table
+const static LPCTSTR apszPreFix[] =
+	{
+	_T("ATX-"),			//0
+	_T("Gameboy "),
+	_T("PS/2-"),
+	_T("USB-"),
+	_T("Angry "),
+	_T("Atrocious "),
+	_T("Attractive "),
+	_T("Bad "),
+	_T("Barbarious "),
+	_T("Beautiful "),
+	_T("Black "),		//10
+	_T("Blond "),
+	_T("Blue "),
+	_T("Bright "),
+	_T("Brown "),
+	_T("Cool "),
+	_T("Cruel "),
+	_T("Cubic "),
+	_T("Cute "),
+	_T("Dance "),
+	_T("Dark "),		//20
+	_T("Dinky "),
+	_T("Drunk "),
+	_T("Dumb "),
+	_T("E"),
+	_T("Electro "),
+	_T("Elite "),
+	_T("Fast "),
+	_T("Flying "),
+	_T("Fourios "),
+	_T("Frustraded "),	//30
+	_T("Funny "),
+	_T("Furious "),
+	_T("Giant "),
+	_T("Giga "),
+	_T("Green "),
+	_T("Handsome "),
+	_T("Hard "),
+	_T("Harsh "),
+	_T("Hiphop "),
+	_T("Holy "),		//40
+	_T("Horny "),
+	_T("Hot "),
+	_T("House "),
+	_T("I"),
+	_T("Lame "),
+	_T("Leaking "),
+	_T("Lone "),
+	_T("Lovely "),
+	_T("Lucky "),
+	_T("Micro "),		//50
+	_T("Mighty "),
+	_T("Mini "),
+	_T("Nice "),
+	_T("Orange "),
+	_T("Pretty "),
+	_T("Red "),
+	_T("Sexy "),
+	_T("Slow "),
+	_T("Smooth "),
+	_T("Stinky "),		//60
+	_T("Strong "),
+	_T("Super "),
+	_T("Unholy "),
+	_T("White "),
+	_T("Wild "),
+	_T("X"),
+	_T("XBox "),
+	_T("Yellow "),
+	_T("Kentucky Fried "),
+	_T("Mc"),			//70
+	_T("Alien "),
+	_T("Bavarian "),
+	_T("Crazy "),
+	_T("Death "),
+	_T("Drunken "),
+	_T("Fat "),
+	_T("Hazardous "),
+	_T("Holy "),
+	_T("Infested "),
+	_T("Insane "),		//80
+	_T("Mutated "),
+	_T("Nasty "),
+	_T("Purple "),
+	_T("Radioactive "),
+	_T("Ugly "),
+	_T("Green "),		//86
+	};
+#define NB_PREFIX 87 
+#define MAX_PREFIXSIZE 15
+
+// suffix table
+const static LPCTSTR apszSuffix[] =
+	{
+	_T("16"),		//0
+	_T("3"),
+	_T("6"),
+	_T("7"),
+	_T("Abe"),
+	_T("Bee"),
+	_T("Bird"),
+	_T("Boy"),
+	_T("Cat"),
+	_T("Cow"),
+	_T("Crow"),		//10
+	_T("DJ"),
+	_T("Dad"),
+	_T("Deer"),
+	_T("Dog"),
+	_T("Donkey"),
+	_T("Duck"),
+	_T("Eagle"),
+	_T("Elephant"),
+	_T("Fly"),
+	_T("Fox"),		//20
+	_T("Frog"),
+	_T("Girl"),
+	_T("Girlie"),
+	_T("Guinea Pig"),
+	_T("Hasi"),
+	_T("Hawk"),
+	_T("Jackal"),
+	_T("Lizard"),
+	_T("MC"),
+	_T("Men"),		//30
+	_T("Mom"),
+	_T("Mouse"),
+	_T("Mule"),
+	_T("Pig"),
+	_T("Rabbit"),
+	_T("Rat"),
+	_T("Rhino"),
+	_T("Smurf"),
+	_T("Snail"),
+	_T("Snake"),	//40
+	_T("Star"),
+	_T("Tiger"),
+	_T("Wolf"),
+	_T("Butterfly"),
+	_T("Elk"),
+	_T("Godzilla"),
+	_T("Horse"),
+	_T("Penguin"),
+	_T("Pony"), 
+	_T("Reindeer"),	//50
+	_T("Sheep"),
+	_T("Sock Puppet"),
+	_T("Worm"),
+	_T("Bermuda")	//54
+	};
+#define NB_SUFFIX 55 
+#define MAX_SUFFIXSIZE 11
+
+	//--- if we get an id, we can generate the same random name for this user over and over... so much about randomness :) ---
+	if(m_achUserHash)
+	{
+		uint32	x=0x7d726d62; // < xrmb :)
+		uint8	a=m_achUserHash[5]  ^ m_achUserHash[7]  ^ m_achUserHash[15] ^ m_achUserHash[4];
+		uint8	b=m_achUserHash[11] ^ m_achUserHash[9]  ^ m_achUserHash[12] ^ m_achUserHash[1];
+		uint8	c=m_achUserHash[3]  ^ m_achUserHash[14] ^ m_achUserHash[6]  ^ m_achUserHash[13];
+		uint8	d=m_achUserHash[2]  ^ m_achUserHash[0]  ^ m_achUserHash[10] ^ m_achUserHash[8];
+		uint32	e=(a<<24) + (b<<16) + (c<<8) + d;
+		srand(e^x);
+	}
+
+	if (m_pszFunnyNick) {
+		delete[] m_pszFunnyNick;
+		m_pszFunnyNick = NULL;
+	}
+
+	CString tag = _T("");
+	uint8 uTagLength = 0;
+	switch (thePrefs.GetFnTag())	{	
+		case CS_NONE:
+			break;
+
+		case CS_SHORT:
+			tag= _T("[FN]");
+			uTagLength = 4+2;
+			break;
+
+		case CS_FULL:
+			tag= _T("[FunnyNick]");
+			uTagLength = 11+2;
+			break;
+
+		case CS_CUST:
+			tag= (thePrefs.GetFnCustomTag());
+			uTagLength = (uint8)(tag.GetLength()+2);
+			break;
+	}
+
+	m_pszFunnyNick = new TCHAR[uTagLength+MAX_PREFIXSIZE+MAX_SUFFIXSIZE];
+	// pick random suffix and prefix
+	if(uTagLength==0)
+	{
+		_tcscpy(m_pszFunnyNick, apszPreFix[rand()%NB_PREFIX]);
+		_tcscat(m_pszFunnyNick, apszSuffix[rand()%NB_SUFFIX]);
+	}
+	else if (!thePrefs.GetFnTagAtEnd())
+	{
+		_tcscpy(m_pszFunnyNick, tag);
+		_tcscat(m_pszFunnyNick, _T(" "));
+		_tcscat(m_pszFunnyNick, apszPreFix[rand()%NB_PREFIX]);
+		_tcscat(m_pszFunnyNick, apszSuffix[rand()%NB_SUFFIX]);
+	}
+	else
+	{
+		_tcscpy(m_pszFunnyNick, apszPreFix[rand()%NB_PREFIX]);
+		_tcscat(m_pszFunnyNick, apszSuffix[rand()%NB_SUFFIX]);
+		_tcscat(m_pszFunnyNick, _T(" "));
+		_tcscat(m_pszFunnyNick, tag);
+	}
+
+	//--- make the rand random again ---
+	if(m_achUserHash)
+		srand((unsigned)time(NULL));
+}
+// <== FunnyNick [SiRoB/Stulle] - Stulle

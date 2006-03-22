@@ -539,4 +539,42 @@ public:
 	void	RemoveHighQRSourcesManualXman();
 	void	CleanUp_NNS_FQS_NONE_ERROR_BANNED_LOWTOLOWIP_Sources();
 	// <== advanced manual dropping - Stulle
+
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+private:
+	// JP added handling of proxy-sources on pause/cancel/resume START
+	public:
+	void CancelProxyDownloads();
+	void PauseProxyDownloads();
+	void ResumeProxyDownloads();
+	// JP added handling of proxy-sources on pause/cancel/resume END
+	
+	//JP webcache column START
+	//JP added stuff from Gnaddelwarz
+	uint16	GetWebcacheSourceCount() const; //JP webcache column
+	UINT GetWebcacheSourceOurProxyCount() const;
+	uint16 GetWebcacheSourceNotOurProxyCount() const;
+	void	CountWebcacheSources() const;
+	uint16	WebcacheSources;
+	uint16 WebcacheSourcesOurProxy;
+	uint16 WebcacheSourcesNotOurProxy;
+	uint32  LastWebcacheSourceCountTime; //JP speed up webcache column
+	//JP webcache column END
+
+	//JP webcache file detail dialogue START
+	uint64  WebCacheDownDataThisFile;
+	uint32	Webcacherequests;
+	uint32	SuccessfulWebcacherequests;
+	void	AddWebCachedBlockToStats( bool IsGood, uint64 bytes );
+	//JP webcache file detail dialogue END
+
+	//JP Throttle OHCB-production START
+	UINT GetNumberOfBlocksForThisFile();
+	UINT GetMaxNumberOfWebcacheConnectionsForThisFile();
+	UINT GetNumberOfCurrentWebcacheConnectionsForThisFile();
+	//JP Throttle OHCB-production END
+
+public:
+	void	AddRequestedBlock(Requested_Block_Struct* block);
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 };

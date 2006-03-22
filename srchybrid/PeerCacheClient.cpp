@@ -597,6 +597,14 @@ bool CUpDownClient::SendHttpBlockRequests()
 	ASSERT( GetDownloadState() == DS_DOWNLOADING );
 	ASSERT( m_ePeerCacheDownState == PCDS_WAIT_CLIENT_REPLY || m_ePeerCacheDownState == PCDS_DOWNLOADING );
 
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	ASSERT( m_ePeerCacheDownState == PCDS_WAIT_CLIENT_REPLY
+		|| m_ePeerCacheDownState == PCDS_DOWNLOADING
+		|| m_eWebCacheDownState == WCDS_WAIT_CLIENT_REPLY // yonatan http
+		|| m_eWebCacheDownState == WCDS_DOWNLOADINGVIA // JP  http
+		|| m_eWebCacheDownState == WCDS_DOWNLOADINGFROM ); // JP  http); 
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 	m_bPeerCacheDownHit = false;
 	m_dwLastBlockReceived = ::GetTickCount();
 	if (reqfile == NULL)

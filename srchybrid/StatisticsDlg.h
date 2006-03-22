@@ -75,10 +75,19 @@ private:
 	HTREEITEM	hup_soh, up_soh[4], hup_toh, up_toh[4]; // Upline Overhead
 	HTREEITEM	up_ssessions[4], up_tsessions[4]; // Breakdown of Upload Sessions
 	HTREEITEM	h_download, h_down_session, down_S[8], h_down_total, down_T[6]; // Downloads Session and Total Items and Headers
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	/*
 	HTREEITEM	hdown_scb, down_scb[8], hdown_spb, down_spb[3]; // Session Downloaded Byte Breakdowns
 	HTREEITEM	hdown_tcb, down_tcb[8], hdown_tpb, down_tpb[3]; // Total Downloaded Byte Breakdowns
+	*/
+	HTREEITEM	hdown_scb, down_scb[9], hdown_spb, down_spb[3]; // Session Downloaded Byte Breakdowns
+	HTREEITEM	hdown_tcb, down_tcb[9], hdown_tpb, down_tpb[3]; // Total Downloaded Byte Breakdowns
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	HTREEITEM	hdown_soh, down_soh[4], hdown_toh, down_toh[4]; // Downline Overhead
-	HTREEITEM	down_ssessions[4], down_tsessions[4], down_sources[23 /*+1 Xman x4 Xtreme Mod: Count failed tcp-connections */]; // Breakdown of Download Sessions and Sources
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+//	HTREEITEM	down_ssessions[4], down_tsessions[4], down_sources[23 /*+1 Xman x4 Xtreme Mod: Count failed tcp-connections */]; // Breakdown of Download Sessions and Sources
+	HTREEITEM	down_ssessions[6], down_tsessions[4], down_sources[23 /*+1 Xman x4 Xtreme Mod: Count failed tcp-connections */]; // Breakdown of Download Sessions and Sources
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	HTREEITEM	h_connection, h_conn_session, h_conn_total; // Connection Section Headers
 	HTREEITEM	hconn_sg, conn_sg[5], hconn_su, conn_su[4], hconn_sd, conn_sd[4]; // Connection Session Section Headers and Items
 	HTREEITEM	hconn_tg, conn_tg[4], hconn_tu, conn_tu[3], hconn_td, conn_td[3]; // Connection Total Section Headers and Items
@@ -95,7 +104,12 @@ private:
 	HTREEITEM	time_aap_up_hd[3][3], time_aap_down_hd[3][2];
 	HTREEITEM	time_aap_up[3][3], time_aap_up_dc[3][7], time_aap_up_dp[3][3];
 	HTREEITEM	time_aap_up_ds[3][2], time_aap_up_s[3][2], time_aap_up_oh[3][4];
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	/*
 	HTREEITEM	time_aap_down[3][7], time_aap_down_dc[3][8], time_aap_down_dp[3][3];
+	*/
+	HTREEITEM	time_aap_down[3][7], time_aap_down_dc[3][9], time_aap_down_dp[3][3];
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	HTREEITEM	time_aap_down_s[3][2], time_aap_down_oh[3][4];
 	// <-----khaos- End Changes
 
@@ -106,6 +120,8 @@ private:
 	HTREEITEM h_total_size_left_to_dl;
 	HTREEITEM h_total_size_left_on_drive;
 	HTREEITEM h_total_size_needed;
+
+	HTREEITEM   h_webcache,wc_data[3]; // {Webcache} [Max] 
 
 	void SetupLegend( int ResIdx, int ElmtIdx, int legendNr);
 	void SetStatsRanges(int min, int max);

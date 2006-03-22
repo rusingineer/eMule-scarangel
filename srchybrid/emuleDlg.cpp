@@ -592,6 +592,9 @@ BOOL CemuleDlg::OnInitDialog()
 	{
 		// temporary disable the 'startup minimized' option, otherwise no window will be shown at all
 		m_bStartMinimized = false;
+
+		thePrefs.detectWebcacheOnStart = true; //jp detect webcache on startup // WebCache [WC team/MorphXT] - Stulle/Max
+
 		DestroySplash();
 
 		extern BOOL FirstTimeWizard();

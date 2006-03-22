@@ -207,4 +207,10 @@ public:
 	float	GetFileRatio(void) ; // push rare file - Stulle
 
 	bool	IsPushSmallFile(); // push small files [sivka] - Stulle
+
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	bool ReleaseViaWebCache; //JP webcache release
+	uint32 GetNumberOfClientsRequestingThisFileUsingThisWebcache(CString webcachename, uint32 maxCount);
+	void SetReleaseViaWebCache(bool WCRelease) {ReleaseViaWebCache=WCRelease;}
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 };

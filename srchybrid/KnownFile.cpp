@@ -100,6 +100,8 @@ CKnownFile::CKnownFile()
 	// Maella -One-queue-per-file- (idea bloodymad)
 	m_startUploadTime = ::GetTickCount();
 	// Maella end
+
+	ReleaseViaWebCache = false; //JP webcache release // WebCache [WC team/MorphXT] - Stulle/Max
 }
 
 CKnownFile::~CKnownFile()
@@ -545,7 +547,10 @@ bool CKnownFile::CreateFromFile(LPCTSTR in_directory, LPCTSTR in_filename, LPVOI
 	}
 	else{
 		// now something went pretty wrong
-		DebugLogError(LOG_STATUSBAR, _T("Failed to calculate AICH Hashset from file %s"), GetFileName());
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		if(thePrefs.GetLogICHEvents()) //JP log ICH events
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
+			DebugLogError(LOG_STATUSBAR, _T("Failed to calculate AICH Hashset from file %s"), GetFileName());
 	}
 
 	if (!hashcount){
@@ -645,7 +650,10 @@ bool CKnownFile::CreateAICHHashSetOnly()
 	}
 	else{
 		// now something went pretty wrong
-		DebugLogError(LOG_STATUSBAR, _T("Failed to calculate AICH Hashset from file %s"), GetFileName());
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		if(thePrefs.GetLogICHEvents()) //JP log ICH events
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
+			DebugLogError(LOG_STATUSBAR, _T("Failed to calculate AICH Hashset from file %s"), GetFileName());
 	}
 
 	fclose(file);
@@ -1276,7 +1284,12 @@ Packet*	CKnownFile::CreateSrcInfoPacket(const CUpDownClient* forClient) const
 		{
 			ASSERT( forClient->GetUpPartCount() == GetPartCount() );
 			const uint8* srcstatus = cur_src->GetUpPartStatus();
+			// ==> WebCache [WC team/MorphXT] - Stulle/Max
+			/*
 			if (srcstatus)
+			*/
+			if( srcstatus && (!forClient->SupportsWebCache() && !cur_src->SupportsWebCache())) // Superlexx - IFP - if both clients do support webcache, then they have IFP and might find empty sources useful; send that source even if they both are not behind same proxy to improve found webcache-enabled source number on those clients
+			// <== WebCache [WC team/MorphXT] - Stulle/Max
 			{
 				ASSERT( cur_src->GetUpPartCount() == GetPartCount() );
 				if (cur_src->GetUpPartCount() == forClient->GetUpPartCount())
@@ -2136,3 +2149,47 @@ bool CKnownFile::IsPushSmallFile()
 		GetFileSize() <= (uint64)thePrefs.GetPushSmallFileSize());
 }
 // <== push small files [sivka] - Stulle
+
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+uint32 CKnownFile::GetNumberOfClientsRequestingThisFileUsingThisWebcache(CString webcachename, uint32 maxCount)
+{
+	if (maxCount == 0)
+		maxCount = 0xFFFFFFFF; //be careful with using 0 (unlimited) when calling this function cause it is O(n^2) and gets called for every webcache enabled client
+uint32 returncounter = 0;
+CList<uint32,uint32&> IP_List; //JP only count unique IPs
+POSITION pos = m_ClientUploadList.GetHeadPosition();
+while (pos != NULL)
+{
+	CUpDownClient* cur_client = m_ClientUploadList.GetNext(pos);
+	if (cur_client->GetWebCacheName() == webcachename && !cur_client->HasLowID() && cur_client->GetUploadState() != US_BANNED) //MORPH - Changed by SiRoB, Code Optimization
+	{
+		//search for IP in IP_List
+		bool found = false;
+		POSITION pos2 = IP_List.GetHeadPosition();
+			uint32 cur_IP;
+		while (pos2 != NULL)
+		{
+			cur_IP = IP_List.GetNext(pos2);
+			if (cur_IP == cur_client->GetIP())
+			{
+				found = true;
+			}
+			//leave while look if IP was found
+			if (found) break;
+		}
+
+		//if not found add IP to list
+		if (!found)
+		{
+			uint32 user_IP = cur_client->GetIP();
+			IP_List.AddTail(user_IP);
+				returncounter++;
+		}
+	}
+	//Don't let this list get longer than 10 so we don't waste CPU-cycles
+	if (returncounter >= maxCount) break; 
+}
+IP_List.RemoveAll();
+return returncounter;
+}
+// <== WebCache [WC team/MorphXT] - Stulle/Max

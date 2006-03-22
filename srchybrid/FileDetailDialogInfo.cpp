@@ -247,6 +247,11 @@ void CFileDetailDialogInfo::RefreshData()
 	UINT uValidSources = 0;
 	UINT uNNPSources = 0;
 	UINT uA4AFSources = 0;
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	uint32	uWebcacherequests = 0; //JP webcache
+	uint32	uSuccessfulWebcacherequests = 0;//jp webcache
+	uint64  uWebcachedownloaded = 0;//jp webcache
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	double dAvgDlSpeed = 0; // Average download speed - Stulle
 	for (int i = 0; i < m_paFiles->GetSize(); i++)
 	{
@@ -261,6 +266,11 @@ void CFileDetailDialogInfo::RefreshData()
 		uDataRate += file->GetDownloadDatarate(); //Xman // Maella -Accurate measure of bandwidth
 		uCompleted += (uint64)file->GetCompletedSize();
 		iHashsetAvailable += (file->GetHashCount() == file->GetED2KPartHashCount()) ? 1 : 0;
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		uWebcacherequests += file->Webcacherequests;//jp webcache
+		uSuccessfulWebcacherequests += file->SuccessfulWebcacherequests;//jp webcache
+		uWebcachedownloaded += file->WebCacheDownDataThisFile;//jp webcache
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 		// ==> Average download speed - Stulle
 		if(file->GetDlActiveTime() > 0)
@@ -311,6 +321,12 @@ void CFileDetailDialogInfo::RefreshData()
 
 	str.Format(_T("%s (%.1f%%)"), CastItoXBytes(uCompression, false, false), uTransferred!=0 ? (uCompression * 100.0 / uTransferred) : 0.0);
 	SetDlgItemText(IDC_COMPRESSION, str);
+
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	str.Format(_T("%u/%u (%1.1f%%)"), uSuccessfulWebcacherequests, uWebcacherequests, uWebcacherequests != 0 ?(uSuccessfulWebcacherequests * 100.0) / uWebcacherequests:0.0);
+	SetDlgItemText(IDC_WCReq, str);
+	SetDlgItemText(IDC_WCDOWNL, CastItoXBytes(uWebcachedownloaded, false, false));
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 }
 
 void CFileDetailDialogInfo::OnDestroy()
@@ -347,4 +363,8 @@ void CFileDetailDialogInfo::Localize()
 	GetDlgItem(IDC_FD_COMPR)->SetWindowText(GetResString(IDS_FD_COMPR)+_T(':'));
 	GetDlgItem(IDC_FD_XAICH)->SetWindowText(GetResString(IDS_IACHHASH)+_T(':'));
 	SetDlgItemText(IDC_REMAINING_TEXT, GetResString(IDS_DL_REMAINS)+_T(':'));
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	GetDlgItem(IDC_WC_REQ_SUCC)->SetWindowText(GetResString(IDS_WC_REQ_SUCC));
+	GetDlgItem(IDC_WC_DOWNLOADED)->SetWindowText(GetResString(IDS_WC_DOWNLOADED));
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 }

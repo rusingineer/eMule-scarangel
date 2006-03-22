@@ -2876,6 +2876,70 @@
 				RelativePath=".\SysInfo\SystemInfo.h">
 			</File>
 		</Filter>
+		<Filter
+			Name="WebCache"
+			Filter="">
+			<File
+				RelativePath=".\WebCache\PPgWebcachesettings.cpp">
+			</File>
+			<File
+				RelativePath=".\WebCache\PPgWebcachesettings.h">
+			</File>
+			<File
+				RelativePath=".\WebCache\ThrottledChunkList.cpp">
+			</File>
+			<File
+				RelativePath=".\WebCache\ThrottledChunkList.h">
+			</File>
+			<File
+				RelativePath=".\WebCache\WebCache.cpp">
+			</File>
+			<File
+				RelativePath=".\WebCache\WebCache.h">
+			</File>
+			<File
+				RelativePath=".\WebCache\WebCacheClient.cpp">
+			</File>
+			<File
+				RelativePath=".\WebCache\WebCacheCryptography.cpp">
+			</File>
+			<File
+				RelativePath=".\WebCache\WebCacheCryptography.h">
+			</File>
+			<File
+				RelativePath=".\WebCache\WebCachedBlock.cpp">
+			</File>
+			<File
+				RelativePath=".\WebCache\WebCachedBlock.h">
+			</File>
+			<File
+				RelativePath=".\WebCache\WebCachedBlockList.cpp">
+			</File>
+			<File
+				RelativePath=".\WebCache\WebCachedBlockList.h">
+			</File>
+			<File
+				RelativePath=".\WebCache\WebCacheMFRList.cpp">
+			</File>
+			<File
+				RelativePath=".\WebCache\WebCacheMFRList.h">
+			</File>
+			<File
+				RelativePath=".\WebCache\WebCacheOHCBManager.cpp">
+			</File>
+			<File
+				RelativePath=".\WebCache\WebCacheOHCBManager.h">
+			</File>
+			<File
+				RelativePath=".\WebCache\WebCacheProxyClient.cpp">
+			</File>
+			<File
+				RelativePath=".\WebCache\WebCacheProxyClient.h">
+			</File>
+			<File
+				RelativePath=".\WebCache\WebCacheSocket.h">
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 		<Global

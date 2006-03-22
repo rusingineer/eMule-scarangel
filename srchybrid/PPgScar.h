@@ -14,41 +14,20 @@ public:
 // Dialog Data
 	enum { IDD = IDD_PPG_SCAR };
 protected:
-
-/*
-	// ==> Sivka-Ban - Stulle
-	bool m_bEnableSivkaBan;
-	int m_iSivkaAskTime;
-	int m_iSivkaAskCounter;
-	bool m_bSivkaAskLog;
-	// <== Sivka-Ban - Stulle
-	// ==> ban systems optional - Stulle
-	bool m_bEnableAntiLeecher; //MORPH - Added by IceCream, enable Anti-leecher
-	bool m_bBadModString;
-	bool m_bBadNickBan;
-	bool m_bGhostMod;
-	bool m_bAntiModIdFaker;
-	bool m_bAntiNickThief; // AntiNickThief - Stulle
-	bool m_bEmptyNick;
-	bool m_bFakeEmule;
-	bool m_bHiddenStr;
-	// <== ban systems optional - Stulle
-	bool m_bEnableAntiCreditHack; //MORPH - Added by IceCream, enable Anti-CreditHack
-	int m_iClientBanTime; // adjust ClientBanTime - Stulle
-*/
 	// ==> push small files [sivka] - Stulle
 	bool m_bEnablePushSmallFile;
 	int  m_iPushSmallFileBoost;
 	// <== push small files [sivka] - Stulle
 	bool m_bEnablePushRareFile; // push rare file - Stulle
-/*
-	// ==> FunnyNick Tag - Stulle
+
+	// ==> FunnyNick [SiRoB/Stulle] - Stulle
+	bool m_bFnActive;
 	int m_iFnTag;
 	CString   m_sFnCustomTag;
 	bool m_bFnTagAtEnd;
-	// <== FunnyNick Tag - Stulle
+	// <== FunnyNick [SiRoB/Stulle] - Stulle
 
-	// ==> Quick start [TPT] - Stulle
+/*	// ==> Quick start [TPT] - Stulle
 	bool m_bQuickStart;
 	int m_iQuickStartMaxTime;
 	int m_iQuickStartMaxConnPerFive;
@@ -77,7 +56,6 @@ protected:
 	bool m_bShowFileHLconst; // show HL per file constantaniously - Stulle
 	bool m_bShowInMSN7; // Show in MSN7 [TPT] - Stulle
 //	bool m_bTrayComplete; // Completed in Tray - Stulle
-	bool m_bCountWCSessionStats; // Show WC session stats [MorphXT] - Stulle
 
 	// ==> file settings - Stulle
 	bool m_bEnableAutoDropNNSDefault;
@@ -117,47 +95,26 @@ protected:
 
 	CTreeOptionsCtrlEx m_ctrlTreeOptions;
 	bool m_bInitializedTreeOpts;
-/*
-	HTREEITEM m_htiSecu;
-	// ==> Sivka-Ban - Stulle
-	HTREEITEM m_htiSivkaBanGroup;
-	HTREEITEM m_htiEnableSivkaBan;
-	HTREEITEM m_htiSivkaAskTime;
-	HTREEITEM m_htiSivkaAskCounter;
-	HTREEITEM m_htiSivkaAskLog;
-	// <== Sivka-Ban - Stulle
-	// ==> ban systems optional - Stulle
-	HTREEITEM m_htiAntiLeecherGroup;
-	HTREEITEM m_htiEnableAntiLeecher; //MORPH - Added by IceCream, enable Anti-leecher
-	HTREEITEM m_htiBadModString;
-	HTREEITEM m_htiBadNickBan;
-	HTREEITEM m_htiGhostMod;
-	HTREEITEM m_htiAntiModIdFaker;
-	HTREEITEM m_htiAntiNickThief; // AntiNickThief - Stulle
-	HTREEITEM m_htiEmptyNick;
-	HTREEITEM m_htiFakeEmule;
-	HTREEITEM m_htiHiddenStr;
-	// <== ban systems optional - Stulle
-	HTREEITEM m_htiEnableAntiCreditHack; //MORPH - Added by IceCream, enable Anti-CreditHack
-	HTREEITEM m_htiClientBanTime; // adjust ClientBanTime - Stulle
-*/
+
 	HTREEITEM m_htiPush; // push files - Stulle
 	// ==> push small files [sivka] - Stulle
 	HTREEITEM m_htiEnablePushSmallFile;
 	HTREEITEM m_htiPushSmallFileBoost;
 	// <== push small files [sivka] - Stulle
 	HTREEITEM m_htiEnablePushRareFile; // push rare file - Stulle
-/*
-	// ==> FunnyNick Tag - Stulle
+
+	// ==> FunnyNick [SiRoB/Stulle] - Stulle
 	HTREEITEM m_htiFnTag;
+	HTREEITEM m_htiFnActive;
+	HTREEITEM m_htiFnTagMode;
 	HTREEITEM m_htiNoTag;
 	HTREEITEM m_htiShortTag;
 	HTREEITEM m_htiFullTag;
 	HTREEITEM m_htiCustomTag;
 	HTREEITEM m_htiFnCustomTag;
 	HTREEITEM m_htiFnTagAtEnd;
-	// <== FunnyNick Tag - Stulle
-*/
+	// <== FunnyNick [SiRoB/Stulle] - Stulle
+
 	HTREEITEM m_htiConTweaks;
 /*	// ==> Quick start [TPT] - Stulle
 	HTREEITEM m_htiQuickStartGroup;
@@ -199,7 +156,6 @@ protected:
 	HTREEITEM m_htiShowFileHLconst; // show HL per file constantaniously - Stulle
 	HTREEITEM m_htiShowInMSN7; // Show in MSN7 [TPT] - Stulle
 //	HTREEITEM m_htiTrayComplete; // Completed in Tray - Stulle
-	HTREEITEM m_htiCountWCSessionStats; // Show WC session stats [MorphXT] - Stulle
 
 	// ==> file settings - Stulle
 	HTREEITEM m_htiFileDefaults;

@@ -156,7 +156,6 @@ void CConnectionWizardDlg::OnBnClickedApply()
 		m_uGlobalHlStandard = (uint32)((m_uGlobalHlStandard*400 - (m_uGlobalHlStandard-10.0f)*100)*0.65f);
 		m_uGlobalHlStandard = max(1000,min(m_uGlobalHlStandard,MAX_GSL));
 		thePrefs.m_uGlobalHL = m_uGlobalHlStandard;
-		theApp.emuledlg->preferenceswnd->m_wndStulle.LoadSettings();
 		// <== Global Source Limit [Max/Stulle] - Stulle
 
 		thePrefs.SetMaxUpload(upload * 0.9f);

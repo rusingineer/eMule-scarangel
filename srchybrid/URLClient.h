@@ -40,7 +40,12 @@ public:
 	virtual bool Disconnected(LPCTSTR pszReason, bool bFromSocket = false);
 
 	virtual bool SendHelloPacket();
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	/*
 	virtual void SendBlockRequests();
+	*/
+	virtual void SendBlockRequests(bool ed2k = false);
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	virtual bool SendHttpBlockRequests();
 	virtual void SendFileRequest();
 	virtual void SendCancelTransfer(Packet* packet);

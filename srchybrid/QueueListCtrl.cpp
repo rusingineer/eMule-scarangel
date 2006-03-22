@@ -98,6 +98,8 @@ void CQueueListCtrl::Init()
 	InsertColumn(12,GetResString(IDS_RARE),LVCFMT_LEFT,40,16);
 	// <== push rare file - Stulle
 
+	InsertColumn(13, GetResString(IDS_WC_SOURCES) ,LVCFMT_LEFT, 100,14); // WebCache [WC team/MorphXT] - Stulle/Max
+
 	SetAllIcons();
 	Localize();
 	LoadSettings();
@@ -221,14 +223,20 @@ void CQueueListCtrl::Localize()
 		// ==> push small files [sivka] - Stulle
 		strRes = GetResString(IDS_SMALL);
 		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
-		pHeaderCtrl->SetItem(12, &hdi);
+		pHeaderCtrl->SetItem(11, &hdi);
 		// <== push small files [sivka] - Stulle
 
 		// ==> push rare file - Stulle
 		strRes = GetResString(IDS_RARE);
 		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
-		pHeaderCtrl->SetItem(13, &hdi);
+		pHeaderCtrl->SetItem(12, &hdi);
 		// <== push rare file - Stulle
+
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		strRes = GetResString(IDS_WC_SOURCES);
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
+		pHeaderCtrl->SetItem(13, &hdi);
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
 //breakpoint
 	}
 }
@@ -580,8 +588,33 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					Sbuffer.Format(_T("%.1f"), client->GetRareFilePushRatio()) ;
 					break;
 				// <== push rare file - Stulle
+
+				// ==> WebCache [WC team/MorphXT] - Stulle/Max
+				case 13: {
+					if (client->SupportsWebCache())
+					{
+						Sbuffer = client->GetWebCacheName();
+						if (client->IsBehindOurWebCache())
+							dc->SetTextColor(RGB(0, 180, 0)); //if is behind our webcache display green
+						else if (Sbuffer != "")
+							dc->SetTextColor(RGB(255, 0, 0)); // if webcache info is there but not our own set red
+						else
+							Sbuffer = GetResString(IDS_WEBCACHE_NOPROXY);	// if no webcache info colour is black
+					   }
+					else
+						Sbuffer = "";
+					dc->DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
+ 					dc->SetTextColor(RGB(0, 0, 0));
+					break;
+				}
+				// <== WebCache [WC team/MorphXT] - Stulle/Max
 		   	}
+			// ==> WebCache [WC team/MorphXT] - Stulle/Max
+			/*
 			if( iColumn != 9 && iColumn != 0)
+			*/
+			if( iColumn != 9 && iColumn != 0 && iColumn != 13)
+			// <== WebCache [WC team/MorphXT] - Stulle/Max
 				dc.DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
 			dc.SetBkColor(crOldBackColor); //Xman PowerRelease //Xman show LowIDs
 			cur_rec.left += GetColumnWidth(iColumn);
@@ -933,6 +966,21 @@ int CQueueListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 			iResult=(int)(item2->GetRareFilePushRatio()*100 - item1->GetRareFilePushRatio()*100);
 			break;
 		// <== push rare file - Stulle
+
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		case 14:
+			if (item1->SupportsWebCache() && item2->SupportsWebCache() )
+				iResult=CompareLocaleStringNoCase(item1->GetWebCacheName(),item2->GetWebCacheName());
+			else
+				iResult=item1->SupportsWebCache() - item2->SupportsWebCache();
+			break;
+		case 114:
+			if (item2->SupportsWebCache() && item1->SupportsWebCache() )
+				iResult=CompareLocaleStringNoCase(item2->GetWebCacheName(),item1->GetWebCacheName());
+			else
+				iResult=item2->SupportsWebCache() - item1->SupportsWebCache();
+			break;
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 		default:
 			iResult=0;

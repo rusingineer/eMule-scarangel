@@ -26,6 +26,7 @@
 #include <io.h>
 #include <share.h>
 #include <Mmsystem.h>
+#include "secrunasuser.h" // yonatan - moved up... // WebCache [WC team/MorphXT] - Stulle/Max
 #include "emule.h"
 #include "opcodes.h"
 #include "mdump.h" 
@@ -60,7 +61,11 @@
 #include "UpDownClient.h"
 #include "ED2KLink.h"
 #include "Preferences.h"
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+/*
 #include "secrunasuser.h"
+*/
+// <== WebCache [WC team/MorphXT] - Stulle/Max
 #include "SafeFile.h"
 #include "PeerCacheFinder.h"
 #include "emuleDlg.h"
@@ -76,6 +81,10 @@
 #include "BandWidthControl.h" // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 #include "DLP.h" //Xman DLP
 #include "P2PThreat.h" // netfinity: Detect worms that are harmful to P2P apps
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+#include "WebCache/WebCache.h" // jp detect webcache on startup
+#include "WebCache/WebCacheMFRList.h"	// Superlexx - MFR
+// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 CLogFile theLog;
 CLogFile theVerboseLog;
@@ -1306,6 +1315,19 @@ void CemuleApp::SetPublicIP(const uint32 dwIP){
 		AddDebugLogLine(DLP_VERYLOW, false, _T("Deleted public IP"));
 	
 	m_dwPublicIP = dwIP;
+
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	// jp detect Webcache on Startup
+	// Removed for now | Avoid warning - Stulle
+	/*
+	if (thePrefs.IsWebCacheDownloadEnabled() && false && thePrefs.WCAutoupdate //Webcache Fix
+		&& m_dwPublicIP != 0 )
+	{
+		thePrefs.detectWebcacheOnStart = false;
+		AutodetectWebcache();
+	}
+	*/
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 }
 
 

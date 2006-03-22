@@ -205,10 +205,25 @@ void Packet::PackPacket(){
 		delete[] output;
 		return;
 	}
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	/*
 	if( prot == OP_KADEMLIAHEADER )
 		prot = OP_KADEMLIAPACKEDPROT;
 	else
 		prot = OP_PACKEDPROT;
+	*/
+	switch (prot)
+	{
+		case OP_KADEMLIAHEADER:
+		prot = OP_KADEMLIAPACKEDPROT;
+			break;
+		case OP_WEBCACHEPROT:
+			prot = OP_WEBCACHEPACKEDPROT;
+			break;
+		default:
+		prot = OP_PACKEDPROT;
+	}
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	memcpy(pBuffer,output,newsize);
 	size = newsize;
 	delete[] output;
@@ -216,7 +231,14 @@ void Packet::PackPacket(){
 }
 
 bool Packet::UnPackPacket(UINT uMaxDecompressedSize){
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	/*
 	ASSERT ( prot == OP_PACKEDPROT || prot == OP_KADEMLIAPACKEDPROT); 
+	*/
+	ASSERT ( prot == OP_PACKEDPROT
+		|| prot == OP_KADEMLIAPACKEDPROT
+		|| prot == OP_WEBCACHEPACKEDPROT); 
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	uint32 nNewSize = size*10+300;
 	if (nNewSize > uMaxDecompressedSize){
 		//ASSERT(0);
@@ -231,10 +253,25 @@ bool Packet::UnPackPacket(UINT uMaxDecompressedSize){
 		size = unpackedsize;
 		delete[] pBuffer;
 		pBuffer = (char*)unpack;
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		/*
 		if( prot == OP_KADEMLIAPACKEDPROT )
 			prot = OP_KADEMLIAHEADER;
 		else
 			prot =  OP_EMULEPROT;
+		*/
+		switch (prot)
+		{
+			case OP_KADEMLIAPACKEDPROT:
+				prot = OP_KADEMLIAHEADER;
+				break;
+			case OP_WEBCACHEPACKEDPROT:
+				prot = OP_WEBCACHEPROT;
+				break;
+			default:
+			prot =  OP_EMULEPROT;
+		}
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
 		return true;
 	}
 	delete[] unpack;

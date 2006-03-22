@@ -228,6 +228,7 @@ public:
 	static	uint64	cumDownData_EMULECOMPAT;
 	static	uint64	cumDownData_SHAREAZA;
 	static	uint64	cumDownData_URL;
+	static	uint64	cumDownData_WEBCACHE; // WebCache [WC team/MorphXT] - Stulle/Max
 	// Session client breakdown stats for received bytes...
 	static	uint64	sesDownData_EDONKEY;
 	static	uint64	sesDownData_EDONKEYHYBRID;
@@ -237,6 +238,13 @@ public:
 	static	uint64	sesDownData_EMULECOMPAT;
 	static	uint64	sesDownData_SHAREAZA;
 	static	uint64	sesDownData_URL;
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	static	uint64	sesDownData_WEBCACHE;
+	static  uint32	ses_WEBCACHEREQUESTS;
+	static	uint32	ses_successfull_WCDOWNLOADS;
+	static  uint32	ses_PROXYREQUESTS;
+    static  uint32	ses_successfullPROXYREQUESTS;
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	// Cumulative port breakdown stats for received bytes...
 	static	uint64	cumDownDataPort_4662;
@@ -379,6 +387,10 @@ public:
     static  bool    m_bLogA4AF; // ZZ:DownloadManager
 	static	bool	m_bLogDrop; //Xman Xtreme Downloadmanager
 	static	bool	m_bLogUlDlEvents;
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	static	bool	m_bLogWebCacheEvents;//JP log webcache events
+	static	bool	m_bLogICHEvents;//JP log ICH events
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	static	bool	m_bUseDebugDevice;
 	static	int		m_iDebugServerTCPLevel;
 	static	int		m_iDebugServerUDPLevel;
@@ -575,7 +587,6 @@ public:
 	static bool ShowGlobalHL; // show global HL - Stulle
 	static bool ShowFileHLconst; // show HL per file constantaniously - Stulle
 	static bool m_bShowInMSN7; //Show in MSN7 [TPT] - Stulle
-	static bool m_bCountWCSessionStats; // Show WC session stats [MorphXT] - Stulle
 
 	static uint8 creditSystemMode; // CreditSystems [EastShare/ MorphXT] - Stulle
 
@@ -628,6 +639,53 @@ public:
 	static uint16  m_iStatsHLMax;
 	static uint16  m_iStatsHLDif;
 	// <== Source Graph - Stulle
+
+	// ==> FunnyNick [SiRoB/Stulle] - Stulle
+	static bool		m_bFunnyNick;
+	static uint8	FnTagMode;
+	static TCHAR	m_sFnCustomTag [256];
+	static bool		m_bFnTagAtEnd;
+	// <== FunnyNick [SiRoB/Stulle] - Stulle
+
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	static	bool	m_bHighIdPossible; // JP detect fake HighID (from netfinity)
+	static	bool	WebCacheDisabledThisSession; //JP temp disabler
+	static	uint32	WebCachePingSendTime;//jp check proxy config
+	static	bool	expectingWebCachePing;//jp check proxy config
+	static	bool	IsWebCacheTestPossible(); //jp check proxy config
+	static	CString	webcacheName;		//jp move these to private?? and make member functions to set and change them??
+	static	uint16	webcachePort;
+	static	bool	webcacheReleaseAllowed; //jp webcache release
+	static	bool	IsWebcacheReleaseAllowed() {return webcacheReleaseAllowed;}//jp webcache release
+	static	bool	UpdateWebcacheReleaseAllowed();//jp webcache release
+	static	bool	WebCacheIsTransparent() {return webcacheName.GetLength() > 15 && webcacheName.Left(12) == "transparent@";}
+	static	uint16	webcacheBlockLimit;
+	static	void	SetWebCacheBlockLimit(uint16 limit) {webcacheBlockLimit = limit;}
+	static	uint16	GetWebCacheBlockLimit() {return webcacheBlockLimit;}
+	static	bool	webcacheExtraTimeout;
+	static	bool	PersistentConnectionsForProxyDownloads;
+	static	bool	WCAutoupdate;
+	static	void	SetWebCacheExtraTimeout(bool value) {webcacheExtraTimeout = value;}
+	static	bool	GetWebCacheExtraTimeout() {return webcacheExtraTimeout;}
+	static	bool	webcacheCachesLocalTraffic;
+	static	void	SetWebCacheCachesLocalTraffic(bool value) {webcacheCachesLocalTraffic = value;}
+	static	bool	GetWebCacheCachesLocalTraffic() {return webcacheCachesLocalTraffic;}
+	static	bool	webcacheEnabled;
+	static	bool	IsWebCacheDownloadEnabled() {return webcacheEnabled && !WebCacheDisabledThisSession;} //jp
+	static	bool	UsesCachedTCPPort();	//jp
+	static	bool	detectWebcacheOnStart; // jp detect webcache on startup
+	static	uint32	webcacheLastSearch;
+	static	void	SetWebCacheLastSearch(uint32 time) {webcacheLastSearch = time;}
+	static	uint32	GetWebCacheLastSearch() {return webcacheLastSearch;}
+	static	uint32	webcacheLastGlobalIP;
+	static	void	SetWebCacheLastGlobalIP(uint32 IP) {webcacheLastGlobalIP = IP;}
+	static	uint32	GetWebCacheLastGlobalIP() {return webcacheLastGlobalIP;}
+	static	CString	webcacheLastResolvedName;
+	static	void	SetLastResolvedName(CString name) {webcacheLastResolvedName = name;}
+	static	CString	GetLastResolvedName()	{return webcacheLastResolvedName;}
+	// Superlexx end
+	static	uint8	webcacheTrustLevel;
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	enum Table
 	{
@@ -1028,6 +1086,7 @@ public:
 																+ GetCumDownData_AMULE()
 																+ GetCumDownData_EMULECOMPAT()
 																+ GetCumDownData_SHAREAZA()
+																+ GetCumDownData_WEBCACHE() // WebCache [WC team/MorphXT] - Stulle/Max
 																+ GetCumDownData_URL();}
 	static	uint64	GetCumDownData_EDONKEY()			{return (cumDownData_EDONKEY +			sesDownData_EDONKEY);}
 	static	uint64	GetCumDownData_EDONKEYHYBRID()		{return (cumDownData_EDONKEYHYBRID +	sesDownData_EDONKEYHYBRID);}
@@ -1037,6 +1096,7 @@ public:
 	static	uint64	GetCumDownData_EMULECOMPAT()		{return (cumDownData_EMULECOMPAT +		sesDownData_EMULECOMPAT);}
 	static	uint64	GetCumDownData_SHAREAZA()			{return (cumDownData_SHAREAZA +			sesDownData_SHAREAZA);}
 	static	uint64	GetCumDownData_URL()				{return (cumDownData_URL +				sesDownData_URL);}
+	static	uint64	GetCumDownData_WEBCACHE()			{return (cumDownData_WEBCACHE +		sesDownData_WEBCACHE);} // WebCache [WC team/MorphXT] - Stulle/Max
 	
 	// Session client breakdown stats for received bytes
 	static	uint64	GetDownSessionClientData()			{return   sesDownData_EDONKEY 
@@ -1046,6 +1106,7 @@ public:
 																+ sesDownData_AMULE
 																+ sesDownData_EMULECOMPAT
 																+ sesDownData_SHAREAZA
+																+ sesDownData_WEBCACHE // WebCache [WC team/MorphXT] - Stulle/Max
 																+ sesDownData_URL;}
 	static	uint64	GetDownData_EDONKEY()				{return sesDownData_EDONKEY;}
 	static	uint64	GetDownData_EDONKEYHYBRID()			{return sesDownData_EDONKEYHYBRID;}
@@ -1055,6 +1116,7 @@ public:
 	static	uint64	GetDownData_EMULECOMPAT()			{return sesDownData_EMULECOMPAT;}
 	static	uint64	GetDownData_SHAREAZA()				{return sesDownData_SHAREAZA;}
 	static	uint64	GetDownData_URL()					{return sesDownData_URL;}
+	static	uint64	GetDownData_WEBCACHE()				{return sesDownData_WEBCACHE;} // WebCache [WC team/MorphXT] - Stulle/Max
 
 	// Cumulative port breakdown stats for received bytes...
 	static	uint64	GetDownTotalPortData()				{return   GetCumDownDataPort_4662() 
@@ -1495,6 +1557,10 @@ public:
     static	bool	GetLogA4AF()    					{return m_bVerbose && m_bLogA4AF;} // ZZ:DownloadManager
 	static	bool	GetLogDrop()						{return m_bVerbose && m_bLogDrop;} //Xman Xtreme Downloadmanager
 	static	bool	GetLogUlDlEvents()					{return m_bVerbose && m_bLogUlDlEvents;}
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	static	bool	GetLogWebCacheEvents()				{return m_bVerbose && m_bLogWebCacheEvents;}//JP log webcache events
+	static	bool	GetLogICHEvents()					{return m_bVerbose && m_bLogICHEvents;}//JP log ICH events
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	static	bool	GetUseDebugDevice()					{return m_bUseDebugDevice;}
 	static	int		GetDebugServerTCPLevel()			{return m_iDebugServerTCPLevel;}
 	static	int		GetDebugServerUDPLevel() 			{return m_iDebugServerUDPLevel;}
@@ -1554,7 +1620,6 @@ public:
 	static bool		GetShowMSN7()			{return m_bShowInMSN7;}
 	static void		SetShowMSN7(bool state)	{ m_bShowInMSN7 = state;}
 	// <== Show in MSN7 [TPT] - Stulle
-	static bool		GetCountWCSessionStats()	{return m_bCountWCSessionStats;} // Show WC session stats [MorphXT] - Stulle
 
 	static	uint8	GetCreditSystem()		{return creditSystemMode;} // CreditSystems [EastShare/ MorphXT] - Stulle
 
@@ -1622,6 +1687,13 @@ public:
 	static uint16  GetStatsHLMax()		{ return m_iStatsHLMax; }
 	static uint16  GetStatsHLDif()		{ return m_iStatsHLDif; }
 	// <== Source Graph - Stulle
+
+	// ==> FunnyNick [SiRoB/Stulle] - Stulle
+	static	bool	DisplayFunnyNick()					{return m_bFunnyNick;}
+	static	uint8	GetFnTag()	{return FnTagMode;}
+	static	CString GetFnCustomTag ()						{ return m_sFnCustomTag; }
+	static	bool	GetFnTagAtEnd()	{return m_bFnTagAtEnd;}
+	// <== FunnyNick [SiRoB/Stulle] - Stulle
 
 protected:
 	static	CString appdir;

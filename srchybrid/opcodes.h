@@ -168,6 +168,11 @@
 #define OP_PACKEDPROT			0xD4
 #define OP_EMULEPROT			0xC5
 #define OP_MLDONKEYPROT			0x00
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+#define OP_WEBCACHEPROT			0x57 
+#define	OP_WEBCACHEPACKEDPROT	0x58
+#define OP_THE_LETTER_G			0x47	// yonatan http - first byte in an http GET header
+// <== WebCache [WC team/MorphXT] - Stulle/Max
 #define	MET_HEADER				0x0E
 #define	MET_HEADER_I64TAGS		0x0F
 	
@@ -300,6 +305,16 @@
 #define OP_SENDINGPART_I64		0xA2	// <HASH 16><von 8><bis 8><Daten len:(von-bis)>
 #define	OP_REQUESTPARTS_I64		0xA3	// <HASH 16><von[3] 8*3><bis[3] 8*3>
 #define OP_MULTIPACKET_EXT		0xA4		
+
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+#define OP_HTTP_CACHED_BLOCK		0xFF	// <Proxy-ip 4><IP 4><PORT 2><filehash 16><startoffset 4><endoffset 4><key 16>
+#define OP_DONT_SEND_OHCBS			0xFE	// protocol == OP_WEBCACHEPROT
+#define	OP_RESUME_SEND_OHCBS		0xFD	// protocol == OP_WEBCACHEPROT
+#define	OP_MULTI_HTTP_CACHED_BLOCKS	0xFC	// <downloadID 4><nrOfBlocks 4><Proxy-ip 4><IP 4><PORT 2><filehash 16><startoffset 4><endoffset 4><key 16>... ; protocol == OP_WEBCACHEPROT or OP_WEBCACHEPACKEDPROT
+#define OP_XPRESS_MULTI_HTTP_CACHED_BLOCKS	0xFB	// same as OP_MULTI_HTTP_CACHED_BLOCKS, but the first OHCB must be added to the queue head (downloaded ASAP)
+#define	OP_MULTI_FILE_REQ			0xFA	// TCP only, protocol == OP_WEBCACHEPROT or OP_WEBCACHEPACKEDPROT
+#define	OP_MULTI_FILE_REASK			0xF9	// UDP/TCP, protocol == OP_WEBCACHEPROT or OP_WEBCACHEPACKEDPROT
+// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 // extened prot client <-> extened prot client UDP
 #define OP_REASKFILEPING		0x90	// <HASH 16>

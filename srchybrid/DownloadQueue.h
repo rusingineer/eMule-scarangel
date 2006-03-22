@@ -261,4 +261,6 @@ protected:
 
 public:
 	uint16 GetGlobalSourceCount(); // Show sources on title - Stulle
+
+	bool	ContainsUnstoppedFiles(); // WebCache [WC team/MorphXT] - Stulle/Max
 };

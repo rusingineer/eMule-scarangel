@@ -2437,82 +2437,6 @@
 #define IDC_CHECK4UPDATEMOD             4074
 #define IDC_ANTILEECHEREMCRYPT_CHECK    4075
 #define IDA_ENTER                       32771
-#define IDC_Activatewebcachedownloads   4046
-#define IDC_ADVANCEDCONTROLS            4047
-#define IDC_Webcache                    4048
-#define IDC_STATIC_ADDRESS              4049
-#define IDC_STATIC_PORT                 4050
-#define IDC_webcacheName                4051
-#define IDC_webcachePort                4052
-#define IDC_TestProxy                   4053
-#define IDC_STATIC_NRBLOCKS             4054
-#define IDC_BLOCKS                      4055
-#define IDC_STATIC_BLOCKS               4056
-#define IDC_LOCALTRAFFIC                4057
-#define IDC_UPDATE_WCSETTINGS           4059
-#define IDC_DETECTWEBCACHE              4060
-#define IDC_PERSISTENT_PROXY_CONNS      4061
-#define IDC_WrongPortWarning            4062
-#define IDS_STATS_WEBCACHE              4063
-#define IDS_STATS_WEBCACHE_1            4064
-#define IDS_STATS_WEBCACHE_2            4065
-#define IDS_STATS_WEBCACHE_3            4066
-#define IDS_WC_ADDRESS                  4067
-#define IDS_WC_ADVANCED                 4068
-#define IDS_WC_AUTO                     4069
-#define IDS_WC_BLOCK                    4070
-#define IDS_WC_CONTROLS                 4071
-#define IDS_WC_ENABLE                   4072
-#define IDS_WC_HIDE_ADV                 4073
-#define IDS_WC_LINK                     4074
-#define IDS_WC_LOCAL                    4075
-#define IDS_WC_PERSISTENT               4076
-#define IDS_WC_PORT                     4077
-#define IDS_WC_SUBMIT_WEB               4078
-#define IDS_WC_TEST                     4079
-#define IDS_WC_TIMEOUT                  4080
-#define IDS_WC_UPDATESETTING            4081
-#define IDS_WC_WRONGPORT                4082
-#define IDS_WEBCACHE_ISP                4083
-#define IDS_WrongPortforWebcache        4084
-#define IDC_WC_REQ_SUCC                 4085
-#define IDC_WC_DOWNLOADED               4086
-#define IDC_WCReq                       4087
-#define IDC_WCDOWNL                     4088
-#define IDC_TRUSTEDOHCBSENDER           4089
-#define IDC_WCSTATISTICS                4090
-#define IDS_PW_WEBCACHE                 4091
-#define IDS_WC_NRBLOCKS                 4092
-#define IDS_WEBCACHE_NOPROXY            4093
-#define IDS_WEBCACHE_NOSUPPORT          4094
-#define IDS_CD_WCTRUSTSENDER            4095
-#define IDS_CD_WCSUCCFAIL               4096
-#define IDC_STATIC54                    4097
-#define IDC_STATIC55                    4098
-#define IDC_STATIC56                    4099
-#define IDC_STATIC57                    4100
-#define IDS_WEBCACHE                    4101
-#define IDS_LOG_WCEVENTS                4102
-#define IDS_LOG_IACH                    4103
-//#define IDC_WEBCACHELINK2               4104
-#define IDD_PPG_WEBCACHESETTINGS        4105
-#define IDS_WCDOWNL                     4106
-#define IDS_WC_REQ_SUCC                 4107
-#define IDS_WC_DOWNLOADED               4108
-#define IDC_EXTRATIMEOUT                4109
-/*
-#define IDD_PPG_SUPPORT                 4110
-#define IDS_PW_SUPPORT                  4111
-#define IDC_DDoS_Link                   4112
-#define IDC_Emule_Web_Link              4113
-#define IDD_PPG_Max                     4114
-#define IDS_PW_Max                      4115
-#define IDC_MaxSourcesHL                4116
-#define IDC_AutoHLUpdate                4117
-#define IDC_AutoHL                      4118
-#define IDC_AGRESSIV_MODE               4119
-*/
-#define IDC_STATIC_CONTROLS             4120
 #define IDC_CPU                         4121
 #define IDC_CPUCOUNT                    4122
 #define IDC_MEM                         4123
@@ -2567,9 +2491,6 @@
 #define IDS_SUQWT_LOAD                  60070
 #define IDS_SUQWT                       60071
 // <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-// ==> Show WC session stats [MorphXT] - Stulle
-#define IDS_COUNT_WC_STATS              60080
-// <== Show WC session stats [MorphXT] - Stulle
 #define IDS_SHOW_FILE_HL_CONST          60090 // show HL per file constantaniously - Stulle
 #define IDS_PS_FILES_RED                60240 // draw PS files red - Stulle
 #define IDS_FRIENDS_BLUE                60250 // draw friends blue - Stulle
@@ -2642,6 +2563,90 @@
 #define IDC_FD_AVGDL                    60351
 #define IDS_FD_AVGDL                    60352
 // <== Average download speed - Stulle
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+#define IDS_WEBCACHE_ISP                60360
+#define IDS_WC_PORT                     60361
+#define IDS_WC_ADDRESS                  60362
+#define IDS_WC_CONTROLS                 60363
+#define IDS_WC_ENABLE                   60364
+#define IDS_WC_WRONGPORT                60365
+#define IDS_WC_AUTO                     60366
+#define IDS_WC_NRBLOCKS                 60367
+#define IDS_WC_BLOCK                    60368
+#define IDS_WC_TIMEOUT                  60369
+#define IDS_WC_LOCAL                    60370
+#define IDS_WC_SUBMIT_EMAIL             60371
+#define IDS_WC_LINK                     60372
+#define IDS_WC_PERSISTENT               60373
+#define IDS_WC_ADVANCED                 60374
+#define IDS_WC_TEST                     60375
+#define IDS_WC_HIDE_ADV                 60376
+#define IDS_WC_SUBMIT_WEB               60377
+#define IDS_WC_SOURCES                  60378
+#define IDS_WC_UPDATESETTING            60379
+#define IDS_WEBCACHE_NOSUPPORT          60380
+#define IDS_STATS_SUCCESSFULLWC         60381
+#define IDS_STATS_FAILEDWC              60382
+#define IDS_COUNTWCSESSIONSTATS         60383
+#define IDS_WEBCACHE_NOPROXY            60384
+#define IDS_CD_WCSUCCFAIL               60385
+#define IDS_CD_WCTRUSTSENDER            60386
+#define IDS_WCDOWNL                     60387
+#define IDS_WC_REQ_SUCC                 60388
+#define IDS_WC_DOWNLOADED               60389
+#define IDS_WC_DESACTIVATED             60390
+#define IDS_WC_REACTIVATED              60391
+#define IDS_WC_NEWPROXYIP               60392
+#define IDS_WrongPortforWebcache        60393
+#define IDD_PPG_WEBCACHESETTINGS        60394
+#define IDC_Webcache                    60395
+#define IDC_webcacheName                60396
+#define IDC_webcachePort                60397
+#define IDC_Activatewebcachedownloads   60398
+#define IDC_WrongPortWarning            60399
+#define IDC_DETECTWEBCACHE              60400
+#define IDC_STATIC_BLOCKS               60401
+#define IDC_WEBCACHELINK                60402
+#define IDC_BLOCKS                      60403
+#define IDC_EXTRATIMEOUT                60404
+#define IDC_LOCALTRAFFIC                60405
+#define IDC_ADVANCEDCONTROLS            60406
+#define IDC_WEBCACHELINK2               60407
+#define IDC_PERSISTENT_PROXY_CONNS      60408
+#define IDC_UPDATE_WCSETTINGS           60409
+#define IDS_PW_WEBCACHE                 60410
+#define IDC_STATIC54                    60411
+#define IDC_STATIC55                    60412
+#define IDC_STATIC56                    60413
+#define IDC_STATIC57                    60414
+#define IDC_WCSTATISTICS                60415
+#define IDS_LOG_WCEVENTS                60416
+#define IDS_LOG_IACH                    60417
+#define IDC_TRUSTEDOHCBSENDER           60418
+#define IDC_WCReq                       60419
+#define IDC_WCDOWNL                     60420
+#define IDC_WC_REQ_SUCC                 60421
+#define IDC_WC_DOWNLOADED               60422
+#define IDC_STATIC_PORT                 60423
+#define IDC_STATIC_CONTROLS             60424
+#define IDC_STATIC_NRBLOCKS             60425
+#define IDC_TestProxy                   60426
+#define IDC_STATIC_ADDRESS              60427
+#define IDS_STATS_WEBCACHE              60428
+#define IDS_STATS_WEBCACHE_1            60429
+#define IDS_STATS_WEBCACHE_2            60430
+#define IDS_STATS_WEBCACHE_3            60431
+// <== WebCache [WC team/MorphXT] - Stulle/Max
+// ==> FunnyNick [SiRoB/Stulle] - Stulle
+#define IDS_FUNNYNICK                   60440
+#define IDS_FN_TAG                      60441
+#define IDS_NO_TAG                      60442
+#define IDS_SHORT_TAG                   60443
+#define IDS_FULL_TAG                    60444
+#define IDS_CUSTOM_TAG                  60445
+#define IDS_SET_CUSTOM_TAG              60446
+#define IDS_FN_TAG_AT_END               60447
+// <== FunnyNick [SiRoB/Stulle] - Stulle
 
 // Next default values for new objects
 // 

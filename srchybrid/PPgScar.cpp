@@ -38,30 +38,6 @@ CPPgScar::CPPgScar()
 	, m_ctrlTreeOptions(theApp.m_iDfltImageListColorFlags)
 {
 	m_bInitializedTreeOpts = false;
-/*
-	m_htiSecu = NULL;
-	// ==> Sivka-Ban - Stulle
-	m_htiSivkaBanGroup = NULL;
-	m_htiEnableSivkaBan = NULL;
-	m_htiSivkaAskTime = NULL;
-	m_htiSivkaAskCounter = NULL;
-	m_htiSivkaAskLog = NULL;
-	// <== Sivka-Ban - Stulle
-	// ==> ban systems optional - Stulle
-	m_htiAntiLeecherGroup = NULL;
-	m_htiEnableAntiLeecher = NULL; //MORPH - Added by IceCream, activate Anti-leecher
-	m_htiBadModString = NULL;
-	m_htiBadNickBan = NULL;
-	m_htiGhostMod = NULL;
-	m_htiAntiModIdFaker = NULL;
-	m_htiAntiNickThief = NULL; // AntiNickThief - Stulle
-	m_htiEmptyNick = NULL;
-	m_htiFakeEmule = NULL;
-	m_htiHiddenStr = NULL;
-	// <== ban systems optional - Stulle
-	m_htiEnableAntiCreditHack = NULL; //MORPH - Added by IceCream, activate Anti-CreditHack
-	m_htiClientBanTime = NULL; // adjust ClientBanTime - Stulle
-*/
 	m_htiPush = NULL; // push files - Stulle
 	// ==> push small files [sivka] - Stulle
 	m_htiEnablePushSmallFile = NULL;
@@ -70,16 +46,18 @@ CPPgScar::CPPgScar()
 	// <== push small files [sivka] - Stulle
 	m_htiEnablePushRareFile = NULL;  // push rare file - Stulle
 
-/*	// ==> FunnyNick Tag - Stulle
+	// ==> FunnyNick [SiRoB/Stulle] - Stulle
 	m_htiFnTag = NULL;
+	m_htiFnActive = NULL;
+	m_htiFnTagMode = NULL;
 	m_htiNoTag = NULL;
 	m_htiShortTag = NULL;
 	m_htiFullTag = NULL;
 	m_htiCustomTag = NULL;
 	m_htiFnCustomTag = NULL;
 	m_htiFnTagAtEnd = NULL;
-	// <== FunnyNick Tag - Stulle
-*/
+	// <== FunnyNick [SiRoB/Stulle] - Stulle
+
 	m_htiConTweaks = NULL;
 /*	// ==> Quick start [TPT] - Stulle
 	m_htiQuickStartGroup = NULL;
@@ -122,7 +100,6 @@ CPPgScar::CPPgScar()
 	m_htiShowFileHLconst = NULL; // show HL per file constantaniously - Stulle
 	m_htiShowInMSN7 = NULL; // Show in MSN7 [TPT] - Stulle
 //	m_htiTrayComplete = NULL; // Completed in Tray - Stulle
-	m_htiCountWCSessionStats = NULL; // Show WC session stats [MorphXT] - Stulle
 
 	// ==> file settings - Stulle
 	m_htiFileDefaults = NULL;
@@ -177,9 +154,8 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SCAR_OPTS, m_ctrlTreeOptions);
 	if (!m_bInitializedTreeOpts)
 	{
-//		int iImgSecu = 8;
 		int iImgPush = 8;
-//		int iImgFunnyNick = 8;
+		int iImgFunnyNick = 8;
 		int iImgConTweaks = 8;
 //		int iImgQuickstart = 8;
 		int iImgCS = 8; // CreditSystems [EastShare/ MorphXT] - Stulle
@@ -191,9 +167,8 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 
 		CImageList* piml = m_ctrlTreeOptions.GetImageList(TVSIL_NORMAL);
 		if (piml){
-//			iImgSecu = piml->Add(CTempIconLoader(_T("SECURITY")));
 			iImgPush = piml->Add(CTempIconLoader(_T("SPEED")));
-//			iImgFunnyNick = piml->Add(CTempIconLoader(_T("FUNNYNICK")));
+			iImgFunnyNick = piml->Add(CTempIconLoader(_T("FUNNYNICK")));
 			iImgConTweaks =  piml->Add(CTempIconLoader(_T("CONNECTION")));
 //			iImgQuickstart = piml->Add(CTempIconLoader(_T("QUICKSTART"))); // Thx to the eF-Mod team for the icon
 			iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS"))); // CreditSystems [EastShare/ MorphXT] - Stulle
@@ -205,37 +180,6 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		}
 		
 		CString Buffer;
-/*
-		m_htiSecu = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_SECURITY), iImgSecu, TVI_ROOT);
-		// ==> Sivka-Ban - Stulle
-		m_htiSivkaBanGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_SIVKA_BAN_CONTROL), iImgSecu, m_htiSecu);
-		m_htiEnableSivkaBan = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SIVKA_BAN),m_htiSivkaBanGroup, m_bEnableSivkaBan);
-		m_htiSivkaAskTime = m_ctrlTreeOptions.InsertItem(GetResString(IDS_SIVKA_ASK_TIME), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiSivkaBanGroup);
-		m_ctrlTreeOptions.AddEditBox(m_htiSivkaAskTime, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		m_htiSivkaAskCounter = m_ctrlTreeOptions.InsertItem(GetResString(IDS_SIVKA_ASK_COUNTER), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiSivkaBanGroup);
-		m_ctrlTreeOptions.AddEditBox(m_htiSivkaAskCounter, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		m_htiSivkaAskLog = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SIVKA_ASK_LOG), m_htiSivkaBanGroup, m_bSivkaAskLog);
-		// <== Sivka-Ban - Stulle
-		// ==> ban systems optional - Stulle
-		m_htiAntiLeecherGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_ANTI_LEECHER_GROUP), iImgSecu, m_htiSecu);
-		m_htiEnableAntiLeecher = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SUC_ENABLED), m_htiAntiLeecherGroup, m_bEnableAntiLeecher); //MORPH - Added by IceCream, Enable Anti-leecher
-		m_htiBadModString = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_BAD_MOD_STRING), m_htiAntiLeecherGroup, m_bBadModString);
-		m_htiBadNickBan = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_BAD_NICK_BAN), m_htiAntiLeecherGroup, m_bBadNickBan);
-		m_htiGhostMod = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_GHOST_MOD), m_htiAntiLeecherGroup, m_bGhostMod);
-		m_htiAntiModIdFaker = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTI_MOD_FAKER), m_htiAntiLeecherGroup, m_bAntiModIdFaker);
-		m_htiAntiNickThief = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTI_NICK_THIEF), m_htiAntiLeecherGroup, m_bAntiNickThief); // AntiNickThief - Stulle
-		m_htiEmptyNick = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_EMPTY_NICK), m_htiAntiLeecherGroup, m_bEmptyNick);
-		m_htiFakeEmule = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_FAKE_EMULE), m_htiAntiLeecherGroup, m_bFakeEmule);
-		m_htiHiddenStr = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_HIDDEN_STR), m_htiAntiLeecherGroup, m_bHiddenStr);
-		m_ctrlTreeOptions.Expand(m_htiEnableAntiLeecher, TVE_EXPAND);
-		// <== ban systems optional - Stulle
-		m_htiEnableAntiCreditHack = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTI_CREDITHACK), m_htiSecu, m_bEnableAntiCreditHack); //MORPH - Added by IceCream, Enable Anti-CreditHack
-		// ==> adjust ClientBanTime - Stulle
-		m_htiClientBanTime = m_ctrlTreeOptions.InsertItem(GetResString(IDS_CLIENT_BAN_TIME), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiSecu);
-		m_ctrlTreeOptions.AddEditBox(m_htiClientBanTime, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		// <== adjust ClientBanTime - Stulle
-		m_ctrlTreeOptions.Expand(m_htiSecu, TVE_EXPAND);
-*/		
 		m_htiPush = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_PUSH), iImgPush, TVI_ROOT); // push files - Stulle
 		// ==> push small files [sivka]  - Stulle
 		m_htiEnablePushSmallFile = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PUSH_SMALL), m_htiPush, m_bEnablePushSmallFile);
@@ -244,18 +188,21 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		// <== push small files [sivka]  - Stulle
 		m_htiEnablePushRareFile = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PUSH_RARE), m_htiPush, m_bEnablePushRareFile); // push rare file - Stulle
 
-/*		// ==> FunnyNick Tag - Stulle
-		m_htiFnTag = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_FN_TAG), iImgFunnyNick, TVI_ROOT);
-		m_htiNoTag = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_NO_TAG), m_htiFnTag, m_iFnTag == 0);
-		m_htiShortTag = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_SHORT_TAG), m_htiFnTag, m_iFnTag == 1);
-		m_htiFullTag = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_FULL_TAG), m_htiFnTag, m_iFnTag == 2);
-		m_htiCustomTag = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_CUSTOM_TAG),m_htiFnTag,m_iFnTag == 3);
+		// ==> FunnyNick [SiRoB/Stulle] - Stulle
+		m_htiFnTag = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_FUNNYNICK), iImgFunnyNick, TVI_ROOT);
+		m_htiFnActive = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ENABLE), m_htiFnTag, m_bFnActive);
+		m_htiFnTagMode = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_FN_TAG), iImgFunnyNick, m_htiFnTag);
+		m_htiNoTag = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_NO_TAG), m_htiFnTagMode, m_iFnTag == 0);
+		m_htiShortTag = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_SHORT_TAG), m_htiFnTagMode, m_iFnTag == 1);
+		m_htiFullTag = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_FULL_TAG), m_htiFnTagMode, m_iFnTag == 2);
+		m_htiCustomTag = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_CUSTOM_TAG),m_htiFnTagMode,m_iFnTag == 3);
 		m_htiFnCustomTag = m_ctrlTreeOptions.InsertItem(GetResString(IDS_SET_CUSTOM_TAG), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiCustomTag);
 		m_ctrlTreeOptions.AddEditBox(m_htiFnCustomTag, RUNTIME_CLASS(CTreeOptionsEdit));
+		if(m_bFnActive) m_ctrlTreeOptions.Expand(m_htiCustomTag, TVE_EXPAND);
+		m_ctrlTreeOptions.Expand(m_htiFnTagMode, TVE_EXPAND);
 		m_htiFnTagAtEnd = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_FN_TAG_AT_END), m_htiFnTag, m_bFnTagAtEnd);
-		m_ctrlTreeOptions.Expand(m_htiCustomTag, TVE_EXPAND);
-		// <== FunnyNick Tag - Stulle
-*/
+		// <== FunnyNick [SiRoB/Stulle] - Stulle
+
 //		m_htiConTweaks = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_CON_TWEAKS), iImgConTweaks, TVI_ROOT);
 /*		m_htiQuickStartGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_QUICK_START_GROUP), iImgQuickstart, m_htiConTweaks);
 		// ==> Quick start [TPT] - Stulle
@@ -307,7 +254,6 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiShowFileHLconst = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOW_FILE_HL_CONST), m_htiDisplay, m_bShowFileHLconst); // show HL per file constantaniously - Stulle
 		m_htiShowInMSN7 = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOWINMSN7), m_htiDisplay, m_bShowInMSN7); // Show in MSN7 [TPT] - Stulle
 //		m_htiTrayComplete = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_TRAY_COMPLETE), m_htiDisplay, m_bTrayComplete); // Completed in Tray - Stulle
-		m_htiCountWCSessionStats = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_COUNT_WC_STATS),m_htiDisplay,m_bCountWCSessionStats); // Show WC session stats [MorphXT] - Stulle
 
 		// ==> file settings - Stulle
 		m_htiFileDefaults = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_FILE_DEFAULTS), iImgDropDefaults, TVI_ROOT);
@@ -370,32 +316,6 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.SendMessage(WM_VSCROLL, SB_TOP);
 		m_bInitializedTreeOpts = true;
 	}
-/*
-	// ==> Sivka-Ban - Stulle
-	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiEnableSivkaBan, m_bEnableSivkaBan);
-	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiSivkaAskTime, m_iSivkaAskTime);
-	DDV_MinMaxInt(pDX, m_iSivkaAskTime, 5, 10);
-	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiSivkaAskCounter, m_iSivkaAskCounter);
-	DDV_MinMaxInt(pDX, m_iSivkaAskCounter, 5, 15);
-	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSivkaAskLog, m_bSivkaAskLog);
-	// <== Sivka-Ban - Stulle
-	// ==> ban systems optional - Stulle
-	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiEnableAntiLeecher, m_bEnableAntiLeecher); //MORPH - Added by IceCream, enable Anti-leecher
-	if(m_htiBadModString)	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiBadModString, m_bBadModString);
-	if(m_htiBadNickBan)		DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiBadNickBan, m_bBadNickBan);
-	if(m_htiGhostMod)		DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiGhostMod, m_bGhostMod);
-	if(m_htiAntiModIdFaker)	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiAntiModIdFaker, m_bAntiModIdFaker);
-	if(m_htiAntiNickThief)	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiAntiNickThief, m_bAntiNickThief); // AntiNickThief - Stulle
-	if(m_htiEmptyNick)		DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiEmptyNick, m_bEmptyNick);
-	if(m_htiFakeEmule)		DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiFakeEmule, m_bFakeEmule);
-	if(m_htiHiddenStr)		DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiHiddenStr, m_bHiddenStr);
-	// <== ban systems optional - Stulle
-	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiEnableAntiCreditHack, m_bEnableAntiCreditHack); //MORPH - Added by IceCream, enable Anti-CreditHack
-	// ==> adjust ClientBanTime - Stulle
-	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiClientBanTime, m_iClientBanTime);
-	DDV_MinMaxInt(pDX, m_iClientBanTime, 1, 10);
-	// <== adjust ClientBanTime - Stulle
-*/
 	// ==> push small files [sivka] - Stulle
     DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiEnablePushSmallFile, m_bEnablePushSmallFile);
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiPushSmallFileBoost, m_iPushSmallFileBoost);
@@ -403,13 +323,14 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	// <== push small files [sivka] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiEnablePushRareFile, m_bEnablePushRareFile); // push rare file - Stulle
 
-/*	// ==> FunnyNick Tag - Stulle
-	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiFnTag, (int &)m_iFnTag);
-	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiFnCustomTag, m_sFnCustomTag);
-	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiFnTagAtEnd, m_bFnTagAtEnd);
-	// <== FunnyNick Tag - Stulle
+	// ==> FunnyNick [SiRoB/Stulle] - Stulle
+	if(m_htiFnActive)	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiFnActive, m_bFnActive);
+	if(m_htiFnTagMode)	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiFnTagMode, (int &)m_iFnTag);
+	if(m_htiFnCustomTag)DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiFnCustomTag, m_sFnCustomTag);
+	if(m_htiFnTagAtEnd)	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiFnTagAtEnd, m_bFnTagAtEnd);
+	// <== FunnyNick [SiRoB/Stulle] - Stulle
 	
-	// ==> Quick start [TPT] - Stulle
+/*	// ==> Quick start [TPT] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiQuickStart, m_bQuickStart);
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiQuickStartMaxTime, m_iQuickStartMaxTime);
 	DDV_MinMaxInt(pDX, m_iQuickStartMaxTime, 8, 18);
@@ -445,7 +366,6 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowFileHLconst, m_bShowFileHLconst); // show HL per file constantaniously - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowInMSN7, m_bShowInMSN7); // Show in MSN7 [TPT] - Stulle
 //	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiTrayComplete, m_bTrayComplete); // Completed in Tray - Stulle
-	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiCountWCSessionStats, m_bCountWCSessionStats); // Show WC session stats [MorphXT] - Stulle
 
 	// ==> file settings - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiAutoNNS, m_bEnableAutoDropNNSDefault);
@@ -492,20 +412,15 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiGlobalHlAll, m_bGlobalHlAll);
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiGlobalHlDefault, m_bGlobalHlDefault);
 	// <== Global Source Limit [Max/Stulle] - Stulle
-/*
-	// ==> ban systems optional - Stulle
-	if (m_htiBadModString)		m_ctrlTreeOptions.SetCheckBoxEnable(m_htiBadModString, m_bEnableAntiLeecher);
-	if (m_htiBadNickBan)		m_ctrlTreeOptions.SetCheckBoxEnable(m_htiBadNickBan, m_bEnableAntiLeecher);
-	if (m_htiGhostMod)			m_ctrlTreeOptions.SetCheckBoxEnable(m_htiGhostMod, m_bEnableAntiLeecher);
-	if (m_htiAntiModIdFaker)	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiAntiModIdFaker, m_bEnableAntiLeecher);
-	if (m_htiAntiNickThief)		m_ctrlTreeOptions.SetCheckBoxEnable(m_htiAntiNickThief, m_bEnableAntiLeecher);
-	if (m_htiEmptyNick)			m_ctrlTreeOptions.SetCheckBoxEnable(m_htiEmptyNick, m_bEnableAntiLeecher);
-	if (m_htiFakeEmule)			m_ctrlTreeOptions.SetCheckBoxEnable(m_htiFakeEmule, m_bEnableAntiLeecher);
-	if (m_htiHiddenStr)			m_ctrlTreeOptions.SetCheckBoxEnable(m_htiHiddenStr, m_bEnableAntiLeecher);
-	// <== ban systems optional - Stulle
 
-	// ==> Quick start [TPT] - Stulle
-	if (m_htiQuickStartAfterIPChange)	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiQuickStartAfterIPChange, m_bQuickStartAfterIPChange);
+	// ==> FunnyNick [SiRoB/Stulle] - Stulle
+	if(m_htiFnTagMode)	m_ctrlTreeOptions.SetGroupEnable(m_htiFnTagMode, m_bFnActive);
+	if(m_htiFnTagAtEnd)	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiFnTagAtEnd, m_bFnActive);
+	if(m_bFnActive) m_ctrlTreeOptions.Expand(m_htiCustomTag, TVE_EXPAND);
+	else m_ctrlTreeOptions.Expand(m_htiCustomTag, TVE_COLLAPSE);
+	// <== FunnyNick [SiRoB/Stulle] - Stulle
+/*	// ==> Quick start [TPT] - Stulle
+	if (m_htiQuickStartAfterIPChange)	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiQuickStartAfterIPChange, m_bQuickStart);
 	// <== Quick start [TPT] - Stulle
 */
 }
@@ -513,40 +428,20 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 
 BOOL CPPgScar::OnInitDialog()
 {
-/*
-	// ==> Sivka-Ban - Stulle
-	m_bEnableSivkaBan = thePrefs.enableSivkaBan;
-	m_iSivkaAskTime = (int)(thePrefs.SivkaAskTime);
-	m_iSivkaAskCounter = (int)(thePrefs.SivkaAskCounter);
-	m_bSivkaAskLog = thePrefs.SivkaAskLog;
-	// <== Sivka-Ban - Stulle
-	// ==> ban systems optional - Stulle
-	m_bEnableAntiLeecher = thePrefs.enableAntiLeecher; //MORPH - Added by IceCream, enabnle Anti-leecher
-	m_bBadModString = thePrefs.IsBadModString();
-	m_bBadNickBan = thePrefs.IsBadNickBan();
-	m_bGhostMod = thePrefs.IsGhostMod();
-	m_bAntiModIdFaker = thePrefs.IsAntiModIdFaker();
-	m_bAntiNickThief = thePrefs.IsAntiNickThief(); // AntiNickThief - Stulle
-	m_bEmptyNick = thePrefs.IsEmptyNick();
-	m_bFakeEmule = thePrefs.IsFakeEmule();
-	m_bHiddenStr = thePrefs.IsHiddenStr();
-	// <== ban systems optional - Stulle
-	m_bEnableAntiCreditHack = thePrefs.enableAntiCreditHack; //MORPH - Added by IceCream, enabnle Anti-CreditHack
-	m_iClientBanTime = thePrefs.GetClientBanTime()/3600000; // adjust ClientBanTime - Stulle
-*/
 	// ==> push small files [sivka] - Stulle
 	m_bEnablePushSmallFile = thePrefs.GetEnablePushSmallFile();
 	m_iPushSmallFileBoost = thePrefs.GetPushSmallFileBoost();
 	// <== push small files [sivka] - Stulle
 	m_bEnablePushRareFile = thePrefs.enablePushRareFile; // push rare file - Stulle
 
-/*	// ==> FunnyNick Tag - Stulle
+	// ==> FunnyNick [SiRoB/Stulle] - Stulle
+	m_bFnActive = thePrefs.DisplayFunnyNick();
 	m_iFnTag = thePrefs.GetFnTag();
 	m_sFnCustomTag = thePrefs.m_sFnCustomTag;
 	m_bFnTagAtEnd = thePrefs.GetFnTagAtEnd();
-	// <== FunnyNick Tag - Stulle
+	// <== FunnyNick [SiRoB/Stulle] - Stulle
 
-	// ==> Quick start [TPT] - Stulle
+/*	// ==> Quick start [TPT] - Stulle
 	m_bQuickStart = thePrefs.GetQuickStart();
 	m_iQuickStartMaxTime = (int)(thePrefs.GetQuickStartMaxTime());
 	m_iQuickStartMaxConnPerFive = (int)(thePrefs.GetQuickStartMaxConnPerFive());
@@ -570,7 +465,6 @@ BOOL CPPgScar::OnInitDialog()
 	m_bShowFileHLconst = thePrefs.GetShowFileHLconst(); // show HL per file constantaniously - Stulle
 	m_bShowInMSN7 = thePrefs.GetShowMSN7(); // Show in MSN7 [TPT] - Stulle
 //	m_bTrayComplete = thePrefs.GetTrayComplete(); // Completed in Tray - Stulle
-	m_bCountWCSessionStats = thePrefs.GetCountWCSessionStats(); // Show WC session stats [MorphXT] - Stulle
 
 	// ==> file settings - Stulle
 	m_bEnableAutoDropNNSDefault = thePrefs.m_EnableAutoDropNNSDefault;
@@ -648,27 +542,6 @@ BOOL CPPgScar::OnApply()
 	
 	if (!UpdateData())
 		return FALSE;
-/*
-	// ==> Sivka-Ban - Stulle
-	thePrefs.enableSivkaBan = m_bEnableSivkaBan;
-	thePrefs.SivkaAskTime = m_iSivkaAskTime;
-	thePrefs.SivkaAskCounter = m_iSivkaAskCounter;
-	thePrefs.SivkaAskLog = m_bSivkaAskLog;
-	// <== Sivka-Ban - Stulle
-	// ==> ban systems optional - Stulle
-	thePrefs.enableAntiLeecher = m_bEnableAntiLeecher; //MORPH - Added by IceCream, enable Anti-leecher
-	thePrefs.m_bBadModString = m_bBadModString;
-	thePrefs.m_bBadNickBan = m_bBadNickBan;
-	thePrefs.m_bGhostMod = m_bGhostMod;
-	thePrefs.m_bAntiModIdFaker = m_bAntiModIdFaker;
-	thePrefs.m_bAntiNickThief = m_bAntiNickThief; // AntiNickThief - Stulle
-	thePrefs.m_bEmptyNick = m_bEmptyNick;
-	thePrefs.m_bFakeEmule = m_bFakeEmule;
-	thePrefs.m_bHiddenStr = m_bHiddenStr;
-	// <== ban systems optional - Stulle
-	thePrefs.enableAntiCreditHack = m_bEnableAntiCreditHack; //MORPH - Added by IceCream, enable Anti-CreditHack
-	thePrefs.m_dwClientBanTime = m_iClientBanTime*3600000; // adjust ClientBanTime - Stulle
-*/
 	// ==> push small files [sivka] - Stulle
 	thePrefs.enablePushSmallFile = m_bEnablePushSmallFile;
 	thePrefs.m_iPushSmallBoost = (uint16)m_iPushSmallFileBoost;
@@ -677,16 +550,15 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_iPushSmallFiles = ((CSliderCtrl*)GetDlgItem(IDC_PUSHSMALL_SLIDER))->GetPos();
 	// <== push small files [sivka] - Stulle
 	thePrefs.enablePushRareFile = m_bEnablePushRareFile; // push rare file - Stulle
-/*
-	// ==> FunnyNick Tag - Stulle
-	if(thePrefs.FnTagMode != m_iFnTag){
-		thePrefs.FnTagMode = m_iFnTag;
-	}
+
+	// ==> FunnyNick [SiRoB/Stulle] - Stulle
+	thePrefs.m_bFunnyNick = m_bFnActive;
+	thePrefs.FnTagMode = (uint8)m_iFnTag;
 	_stprintf (thePrefs.m_sFnCustomTag,_T("%s"), m_sFnCustomTag);
 	thePrefs.m_bFnTagAtEnd = m_bFnTagAtEnd;
-	// <== FunnyNick Tag - Stulle
+	// <== FunnyNick [SiRoB/Stulle] - Stulle
 
-	// ==> Quick start [TPT] - Stulle
+/*	// ==> Quick start [TPT] - Stulle
 	thePrefs.m_bQuickStart = m_bQuickStart;
 	thePrefs.m_iQuickStartMaxTime = m_iQuickStartMaxTime;
 	thePrefs.m_iQuickStartMaxConnPerFive = m_iQuickStartMaxConnPerFive;
@@ -717,7 +589,6 @@ BOOL CPPgScar::OnApply()
 	thePrefs.ShowFileHLconst = m_bShowFileHLconst; // show HL per file constantaniously - Stulle
 	thePrefs.m_bShowInMSN7 = m_bShowInMSN7; // Show in MSN7 [TPT] - Stulle
 //	thePrefs.m_bTrayComplete = m_bTrayComplete; // Completed in Tray - Stulle
-	thePrefs.m_bCountWCSessionStats = m_bCountWCSessionStats; // Show WC session stats [MorphXT] - Stulle
 
 	// ==> file settings - Stulle
 	thePrefs.m_EnableAutoDropNNSDefault = m_bEnableAutoDropNNSDefault;
@@ -791,39 +662,19 @@ void CPPgScar::Localize(void)
 	if(m_hWnd)
 	{
 		GetDlgItem(IDC_WARNING)->SetWindowText(GetResString(IDS_TWEAKS_WARNING));
-/*
-		// ==> Sivka-Ban - Stulle
-		if (m_htiEnableSivkaBan) m_ctrlTreeOptions.SetItemText(m_htiEnableSivkaBan, GetResString(IDS_SIVKA_BAN));
-		if (m_htiSivkaAskTime) m_ctrlTreeOptions.SetEditLabel(m_htiSivkaAskTime, GetResString(IDS_SIVKA_ASK_TIME));
-		if (m_htiSivkaAskCounter) m_ctrlTreeOptions.SetEditLabel(m_htiSivkaAskCounter, GetResString(IDS_SIVKA_ASK_COUNTER));
-		if (m_htiSivkaAskLog) m_ctrlTreeOptions.SetItemText(m_htiSivkaAskLog, GetResString(IDS_SIVKA_ASK_LOG));
-		// <== Sivka-Ban - Stulle
-		// ==> ban systems optional - Stulle
-		if (m_htiEnableAntiLeecher) m_ctrlTreeOptions.SetItemText(m_htiEnableAntiLeecher, GetResString(IDS_SUC_ENABLED)); //MORPH - Added by IceCream, enable Anti-leecher
-		if (m_htiBadModString) m_ctrlTreeOptions.SetItemText(m_htiBadModString, GetResString(IDS_BAD_MOD_STRING));
-		if (m_htiBadNickBan) m_ctrlTreeOptions.SetItemText(m_htiBadNickBan, GetResString(IDS_BAD_NICK_BAN));
-		if (m_htiGhostMod) m_ctrlTreeOptions.SetItemText(m_htiGhostMod, GetResString(IDS_GHOST_MOD));
-		if (m_htiAntiModIdFaker) m_ctrlTreeOptions.SetItemText(m_htiAntiModIdFaker, GetResString(IDS_ANTI_MOD_FAKER));
-		if (m_htiAntiNickThief) m_ctrlTreeOptions.SetItemText(m_htiAntiNickThief, GetResString(IDS_ANTI_NICK_THIEF)); // AntiNickThief - Stulle
-		if (m_htiEmptyNick) m_ctrlTreeOptions.SetItemText(m_htiEmptyNick, GetResString(IDS_EMPTY_NICK));
-		if (m_htiFakeEmule) m_ctrlTreeOptions.SetItemText(m_htiFakeEmule, GetResString(IDS_FAKE_EMULE));
-		if (m_htiHiddenStr) m_ctrlTreeOptions.SetItemText(m_htiHiddenStr, GetResString(IDS_HIDDEN_STR));
-		// <== ban systems optional - Stulle
-		if (m_htiEnableAntiCreditHack) m_ctrlTreeOptions.SetItemText(m_htiEnableAntiCreditHack, GetResString(IDS_ANTI_CREDITHACK)); //MORPH - Added by IceCream, enable Anti-CreditHack
-		if (m_htiClientBanTime) m_ctrlTreeOptions.SetEditLabel(m_htiClientBanTime, GetResString(IDS_CLIENT_BAN_TIME)); // adjust ClientBanTime - Stulle
-*/
 		// ==> push small files [sivka] - Stulle
 		if (m_htiEnablePushSmallFile) m_ctrlTreeOptions.SetItemText(m_htiEnablePushSmallFile, GetResString(IDS_PUSH_SMALL));
 		if (m_htiPushSmallFileBoost) m_ctrlTreeOptions.SetEditLabel(m_htiPushSmallFileBoost, GetResString(IDS_PUSH_SMALL_BOOST));
 		// <== push small files [sivka] - Stulle
 		if (m_htiEnablePushRareFile) m_ctrlTreeOptions.SetItemText(m_htiEnablePushRareFile, GetResString(IDS_PUSH_RARE)); // push rare file - Stulle
-/*
-		// ==> FunnyNick Tag - Stulle
+
+		// ==> FunnyNick [SiRoB/Stulle] - Stulle
+		if (m_htiFnActive) m_ctrlTreeOptions.SetItemText(m_htiFnActive,GetResString(IDS_ENABLE));
 		if (m_htiFnCustomTag) m_ctrlTreeOptions.SetEditLabel(m_htiFnCustomTag, GetResString(IDS_SET_CUSTOM_TAG));
 		if (m_htiFnTagAtEnd) m_ctrlTreeOptions.SetItemText(m_htiFnTagAtEnd, GetResString(IDS_FN_TAG_AT_END));
-		// <== FunnyNick Tag - Stulle
+		// <== FunnyNick [SiRoB/Stulle] - Stulle
 
-		// ==> Quick start [TPT] - Stulle
+/*		// ==> Quick start [TPT] - Stulle
 		if (m_htiQuickStart) m_ctrlTreeOptions.SetItemText(m_htiQuickStart, GetResString(IDS_QUICK_START));
 		if (m_htiQuickStartMaxTime) m_ctrlTreeOptions.SetEditLabel(m_htiQuickStartMaxTime, GetResString(IDS_QUICK_START_MAX_TIME));
 		if (m_htiQuickStartMaxConnPerFive) m_ctrlTreeOptions.SetEditLabel(m_htiQuickStartMaxConnPerFive, GetResString(IDS_QUICK_START_MAX_CONN_PER_FIVE));
@@ -846,7 +697,6 @@ void CPPgScar::Localize(void)
 		if (m_htiShowFileHLconst) m_ctrlTreeOptions.SetItemText(m_htiShowFileHLconst, GetResString(IDS_SHOW_FILE_HL_CONST)); // show HL per file constantaniously - Stulle
 		if (m_htiShowInMSN7) m_ctrlTreeOptions.SetItemText(m_htiShowInMSN7, GetResString(IDS_SHOWINMSN7)); // Show in MSN7 [TPT] - Stulle
 //		if (m_htiTrayComplete) m_ctrlTreeOptions.SetItemText(m_htiTrayComplete, GetResString(IDS_TRAY_COMPLETE)); // Completed in Tray - Stulle
-		if (m_htiCountWCSessionStats) m_ctrlTreeOptions.SetItemText(m_htiCountWCSessionStats, GetResString(IDS_COUNT_WC_STATS)); // Show WC session stats [MorphXT] - Stulle
 
 		// ==> file settings - Stulle
 		if (m_htiAutoNNS) m_ctrlTreeOptions.SetItemText(m_htiAutoNNS, GetResString(IDS_AUTO_NNS));
@@ -892,38 +742,15 @@ void CPPgScar::OnDestroy()
 	m_ctrlTreeOptions.DeleteAllItems();
 	m_ctrlTreeOptions.DestroyWindow();
 	m_bInitializedTreeOpts = false;
-/*
-	m_htiSecu = NULL;
-	// ==> Sivka-Ban - Stulle
-	m_htiSivkaBanGroup = NULL;
-	m_htiEnableSivkaBan = NULL;
-	m_htiSivkaAskTime = NULL;
-	m_htiSivkaAskCounter = NULL;
-	m_htiSivkaAskLog = NULL;
-	// <== Sivka-Ban - Stulle
-	// ==> ban systems optional - Stulle
-	m_htiAntiLeecherGroup = NULL;
-	m_htiEnableAntiLeecher = NULL; //MORPH - Added by IceCream, activate Anti-leecher
-	m_htiBadModString = NULL;
-	m_htiBadNickBan = NULL;
-	m_htiGhostMod = NULL;
-	m_htiAntiModIdFaker = NULL;
-	m_htiAntiNickThief = NULL; // AntiNickThief - Stulle
-	m_htiEmptyNick = NULL;
-	m_htiFakeEmule = NULL;
-	m_htiHiddenStr = NULL;
-	// <== ban systems optional - Stulle
-	m_htiEnableAntiCreditHack = NULL; //MORPH - Added by IceCream, activate Anti-CreditHack
-	m_htiClientBanTime = NULL; // adjust ClientBanTime - Stulle
-*/
 	m_htiPush = NULL; // push files - Stulle
 	// ==> push small files [sivka] - Stulle
 	m_htiEnablePushSmallFile = NULL;
 	m_htiPushSmallFileBoost = NULL;
 	// <== push small files [sivka] - Stulle
 	m_htiEnablePushRareFile = NULL; // push rare file - Stulle
-/*
-	// ==> FunnyNick Tag - Stulle
+
+	// ==> FunnyNick [SiRoB/Stulle] - Stulle
+	m_htiFnActive = NULL;
 	m_htiFnTag = NULL;
 	m_htiNoTag = NULL;
 	m_htiShortTag = NULL;
@@ -931,10 +758,10 @@ void CPPgScar::OnDestroy()
 	m_htiCustomTag = NULL;
 	m_htiFnCustomTag = NULL;
 	m_htiFnTagAtEnd = NULL;
-	// <== FunnyNick Tag - Stulle
+	// <== FunnyNick [SiRoB/Stulle] - Stulle
 
 	m_htiConTweaks = NULL;
-	// ==> Quick start [TPT] - Stulle
+/*	// ==> Quick start [TPT] - Stulle
 	m_htiQuickStartGroup = NULL;
 	m_htiQuickStart = NULL;
 	m_htiQuickStartMaxTime = NULL;
@@ -974,7 +801,6 @@ void CPPgScar::OnDestroy()
 	m_htiShowFileHLconst = NULL; // show HL per file constantaniously - Stulle
 	m_htiShowInMSN7 = NULL; // Show in MSN7 [TPT] - Stulle
 //	m_htiTrayComplete = NULL; // Completed in Tray - Stulle
-	m_htiCountWCSessionStats = NULL; // Show WC session stats [MorphXT] - Stulle
 
 	// ==> file settings - Stulle
 	m_htiFileDefaults = NULL;
@@ -1019,14 +845,26 @@ void CPPgScar::OnDestroy()
 
 	CPropertyPage::OnDestroy();
 }
-LRESULT CPPgScar::OnTreeOptsCtrlNotify(WPARAM /*wParam*/, LPARAM /*lParam*/)
+LRESULT CPPgScar::OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam)
 {
-/*	if (wParam == IDC_SCAR_OPTS){
+	if (wParam == IDC_SCAR_OPTS){
 		TREEOPTSCTRLNOTIFY* pton = (TREEOPTSCTRLNOTIFY*)lParam;
 
 	BOOL bCheck;
 
-		// ==> Quick start [TPT] - Stulle
+		// ==> FunnyNick [SiRoB/Stulle] - Stulle
+		if (m_htiFnActive && pton->hItem == m_htiFnActive)
+		{
+			if (m_ctrlTreeOptions.GetCheckBox(m_htiFnActive, bCheck))
+			{
+				if(m_htiFnTagMode)	m_ctrlTreeOptions.SetGroupEnable(m_htiFnTagMode, bCheck);
+				if(m_htiFnTagAtEnd)	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiFnTagAtEnd, bCheck);
+				if(bCheck) m_ctrlTreeOptions.Expand(m_htiCustomTag, TVE_EXPAND);
+				else m_ctrlTreeOptions.Expand(m_htiCustomTag, TVE_COLLAPSE);
+			}
+		}
+		// <== FunnyNick [SiRoB/Stulle] - Stulle
+/*		// ==> Quick start [TPT] - Stulle
 		if (m_htiQuickStart && pton->hItem == m_htiQuickStart)
 		{
 			if (m_ctrlTreeOptions.GetCheckBox(m_htiQuickStart, bCheck))
@@ -1034,10 +872,10 @@ LRESULT CPPgScar::OnTreeOptsCtrlNotify(WPARAM /*wParam*/, LPARAM /*lParam*/)
 				if (m_htiQuickStartAfterIPChange)	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiQuickStartAfterIPChange, bCheck);
 			}
 		}
-		// <== Quick start [TPT] - Stulle
-*/
+*/		// <== Quick start [TPT] - Stulle
+
 		SetModified();
-//	}
+	}
 	return 0;
 }
 

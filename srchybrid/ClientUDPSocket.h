@@ -59,4 +59,9 @@ private:
 	CTypedPtrList<CPtrList, UDPPack*> controlpacket_queue;
 
     CCriticalSection sendLocker; // ZZ:UploadBandWithThrottler (UDP)
+
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+protected:
+	bool	ProcessWebCachePacket(const BYTE* packet, uint32 size, uint8 opcode, uint32 ip, uint16 port); //JP WEBCACHE
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 };

@@ -16,6 +16,8 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
 
+#include "ListenSocket.h" // WebCache [WC team/MorphXT] - Stulle/Max
+
 class Packet;
 
 typedef enum EHttpSocketState
@@ -55,7 +57,9 @@ protected:
 	CStringAArray		m_astrHttpHeaders;
 	int					m_iHttpHeadersSize;
 
+public: // WebCache [WC team/MorphXT] - Stulle/Max
 	bool ProcessHttpPacket(const BYTE* packet, UINT size);
+protected: // WebCache [WC team/MorphXT] - Stulle/Max
 	void ProcessHttpHeaderPacket(const char* packet, UINT size, LPBYTE& pBody, int& iSizeBody);
 
 	virtual bool ProcessHttpResponse();

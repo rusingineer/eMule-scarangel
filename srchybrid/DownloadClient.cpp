@@ -41,6 +41,10 @@
 #include "SharedFileList.h"
 #include "Log.h"
 #include "UploadQueue.h" //Xman UDPReaskFNF-Fix against Leechers (idea by WiZaRd)		
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+#include "WebCache/WebCacheSocket.h" // yonatan http
+#include "SharedFileList.h"	// Superlexx - IFP
+// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -441,7 +445,12 @@ void CUpDownClient::SendFileRequest()
 		// OP_SETREQFILEID
 		if (thePrefs.GetDebugClientTCPLevel() > 0)
 			DebugSend("OP__MPSetReqFileID", this, reqfile->GetFileHash());
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		/*
 		if (reqfile->GetPartCount() > 1)
+		*/
+		if (reqfile->GetPartCount() > 1	|| SupportsWebCache())
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
 			dataFileReq.WriteUInt8(OP_SETREQFILEID);
 
 		if (IsEmuleClient())
@@ -482,6 +491,24 @@ void CUpDownClient::SendFileRequest()
 			dataFileReq.WriteUInt8(OP_AICHFILEHASHREQ);
 		}
 
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		// Superlexx - webcache - the webcache-only tags, moved here from the hello packet
+		if (SupportsWebCache() && WebCacheInfoNeeded())
+		{
+			dataFileReq.WriteUInt8(WC_TAG_WEBCACHENAME);
+			dataFileReq.WriteString(thePrefs.webcacheName);
+
+			dataFileReq.WriteUInt8(WC_TAG_MASTERKEY);
+			dataFileReq.Write( Crypt.remoteMasterKey, WC_KEYLENGTH );
+			SetWebCacheInfoNeeded(false);
+
+			byte tmpID[4];
+			for (int i=0; i<4; i++)
+				tmpID[i] = Crypt.remoteMasterKey[i] ^ (thePrefs.GetUserHash())[i];
+			m_uWebCacheUploadId =*((uint32*)tmpID);
+		}
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 		Packet* packet = new Packet(&dataFileReq, OP_EMULEPROT);
 		packet->opcode = SupportExtMultiPacket() ? OP_MULTIPACKET_EXT : OP_MULTIPACKET;
 		theStats.AddUpDataOverheadFileRequest(packet->size);
@@ -504,7 +531,13 @@ void CUpDownClient::SendFileRequest()
 		// 26-Jul-2003: removed requesting the file status for files <= PARTSIZE for better compatibility with ed2k protocol (eDonkeyHybrid).
 		// if the remote client answers the OP_REQUESTFILENAME with OP_REQFILENAMEANSWER the file is shared by the remote client. if we
 		// know that the file is shared, we know also that the file is complete and don't need to request the file status.
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		/*
 		if (reqfile->GetPartCount() > 1)
+		*/
+		if (reqfile->GetPartCount() > 1
+			|| SupportsWebCache())	// Superlexx - webcache - webcache-enabled clients might use IFP
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
 		{
 			if (thePrefs.GetDebugClientTCPLevel() > 0)
 				DebugSend("OP__SetReqFileID", this, reqfile->GetFileHash());
@@ -641,7 +674,13 @@ void CUpDownClient::ProcessFileInfo(CSafeMemFile* data, CPartFile* file)
 	// 26-Jul-2003: removed requesting the file status for files <= PARTSIZE for better compatibility with ed2k protocol (eDonkeyHybrid).
 	// if the remote client answers the OP_REQUESTFILENAME with OP_REQFILENAMEANSWER the file is shared by the remote client. if we
 	// know that the file is shared, we know also that the file is complete and don't need to request the file status.
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	/*
 	if (reqfile->GetPartCount() == 1)
+	*/
+	if (reqfile->GetPartCount() == 1
+		&& !SupportsWebCache()) // Superlexx - webcache - webcache-enabled clients might use IFP
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	{
 		delete[] m_abyPartStatus;
 		m_abyPartStatus = NULL;
@@ -899,6 +938,8 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState, LPCTSTR pszReason
 
         if(nNewState == DS_DOWNLOADING && socket){
 		    socket->SetTimeOut(CONNECTION_TIMEOUT*4);
+
+			m_bWebcacheFailedTry = false; // WebCache [WC team/MorphXT] - Stulle/Max
 			
 			//Xman Xtreme Mod: improved socket-options
 			int newValue = 16*1024;
@@ -1025,6 +1066,17 @@ void CUpDownClient::ProcessHashSet(const uchar* packet,uint32 size)
 		reqfile->hashsetneeded = true;
 		throw GetResString(IDS_ERR_BADHASHSET);
 	}
+
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	// Superlexx - IFP
+	if (thePrefs.IsWebCacheDownloadEnabled() && reqfile->GetStatus() == PS_EMPTY)
+	{
+		reqfile = STATIC_DOWNCAST(CPartFile, reqfile);
+			reqfile->SetStatus(PS_READY);
+		theApp.sharedfiles->SafeAddKFile(reqfile);
+	}
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 	SendStartupLoadReq();
 }
 
@@ -1056,9 +1108,74 @@ void CUpDownClient::CreateBlockRequests(int iMaxBlocks)
 		m_PendingBlocks_list.AddTail(pblock);
 	}
 }
-
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+/*
 void CUpDownClient::SendBlockRequests()
 {
+*/
+void CUpDownClient::SendBlockRequests(bool ed2krequest)
+{
+	if(!(ed2krequest || m_bWebcacheFailedTry)  && reqfile && thePrefs.IsWebCacheDownloadEnabled()
+		&& UsesCachedTCPPort() // uses a port that is usually cached
+		&& SupportsWebCache() // client knows webcache protocol
+		&& !HasLowID()	// has highID
+		&& AllowProxyConnection() // not too many open sockets to proxy
+// yonatan tmp -	&& ((thePrefs.WebCacheIsTransparent() && GetUserPort() == 80)|| (!thePrefs.WebCacheIsTransparent() && ResolveWebCacheName())) // found HTTP proxy // Superlexx - TPS
+		&& ( thePrefs.WebCacheIsTransparent() ?
+			GetUserPort() == 80			// yes - proceed if uploader uses port 80
+			: ResolveWebCacheName() )	// no - proceed if proxy address can be resolved
+		&& (thePrefs.GetWebCacheCachesLocalTraffic() || !IsBehindOurWebCache()) //JP changed to new IsBehindOurWebCache-function 		// WC-TODO: Shorter names?
+		&& reqfile->GetNumberOfCurrentWebcacheConnectionsForThisFile() < reqfile->GetMaxNumberOfWebcacheConnectionsForThisFile() ) //JP Throttle OHCB-production
+	{
+		if (thePrefs.GetLogWebCacheEvents()) //JP log webcache events
+			AddDebugLogLine(false, _T("Proxy-Connections for this file: %u Allowed: %u"), reqfile->GetNumberOfCurrentWebcacheConnectionsForThisFile(), reqfile->GetMaxNumberOfWebcacheConnectionsForThisFile());
+		// Superlexx - COtN - start
+		byte WC_TestFileHash[16] = { 0xE9, 0x05, 0x7A, 0xDC, 0x38, 0x05, 0x4A, 0xFA, 0x24, 0x81, 0x6E, 0x86, 0xBB, 0x08, 0xD2, 0x70 };
+		bool isTestFile = md4cmp(reqfile->GetFileHash(), WC_TestFileHash)==0;
+		bool doCache = false;
+		CreateBlockRequests(1);
+		if (m_PendingBlocks_list.IsEmpty())
+		{
+			SendCancelTransfer();
+			SetDownloadState(DS_NONEEDEDPARTS);
+			// ==> Change due to Xtreme DL manager - Stulle
+			/*
+			SwapToAnotherFile(_T("A4AF for NNP file. CUpDownClient::SendBlockRequests()"), true, false, false, NULL, true, true);
+			*/
+			if(SwapToAnotherFile(true, false, false))
+			{
+				if(thePrefs.GetLogA4AF())
+					AddDebugLogLine(false, _T("A4AF for NNP file. CUpDownClient::SendBlockRequests()"));
+			}
+			//<== Change due to Xtreme DL manager - Stulle
+			return;
+		}
+		if (isTestFile)
+			doCache = true;
+		else
+		{
+			Pending_Block_Struct* pending = m_PendingBlocks_list.GetHead();
+#ifndef _DEBUG
+			//JP take successrate into account when deciding to do webcache download (rounded down)
+			// Superlexx: modified this to actually work ;)
+			uint32 minOHCBRecipients = (thePrefs.ses_WEBCACHEREQUESTS > 50 && thePrefs.ses_successfull_WCDOWNLOADS > 0) ? thePrefs.ses_WEBCACHEREQUESTS / thePrefs.ses_successfull_WCDOWNLOADS : 1;
+			if (theApp.clientlist->GetNumberOfClientsBehindOurWebCacheHavingSameFileAndNeedingThisBlock(pending, minOHCBRecipients) >= minOHCBRecipients)
+#endif _DEBUG
+				doCache = true;
+		}
+	
+		if( doCache ) {
+			ASSERT( GetDownloadState() == DS_DOWNLOADING );
+//		Crypt.useNewKey = true;	// Superlexx - moved this to SendWebCacheBlockRequests()
+			if (SendWebCacheBlockRequests()) //MORPH - Changed by SiRoB, Webcache Fix Allow going throw ed2k request
+			return;
+		}
+	}
+// Superlexx - COtN - end
+	if (ed2krequest)
+		m_bWebcacheFailedTry = true;
+	
+// <== WebCache [WC team/MorphXT] - Stulle/Max
 	if (thePrefs.GetDebugClientTCPLevel() > 0)
 		DebugSend("OP__RequestParts", this, reqfile!=NULL ? reqfile->GetFileHash() : NULL);
 	m_dwLastBlockReceived = ::GetTickCount();
@@ -1657,7 +1774,36 @@ void CUpDownClient::CheckDownloadTimeout()
 			OnPeerCacheDownSocketTimeout();
 		}
 	}
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	/*
 	else
+	*/
+	else if (IsDownloadingFromWebCache() && m_pWCDownSocket) // jp proxy stall fix removed: && m_pWCDownSocket->IsConnected())
+	{
+		ASSERT( DOWNLOADTIMEOUT < m_pWCDownSocket->GetTimeOut() );
+		if (m_pWCDownSocket->IsConnected())
+		{
+		if (GetTickCount() - m_dwLastBlockReceived > DOWNLOADTIMEOUT)
+		{
+				OnWebCacheDownSocketTimeout();
+			}
+		} else if (m_pWCDownSocket->GetConState() == ES_NOTCONNECTED) {
+			if (GetTickCount() - m_dwLastBlockReceived > DOWNLOADTIMEOUT)
+			{
+				OnWebCacheDownSocketTimeout();
+			}
+		} else //this shouldn't happen but aparently does maybe fixed by WebCacheDownSocket::OnConnect() function??
+		{
+			if (GetTickCount() - m_dwLastBlockReceived > DOWNLOADTIMEOUT)
+			{
+				if( thePrefs.GetLogWebCacheEvents() ) // yonatan tmp logging
+					AddDebugLogLine( false, _T("Disconnected WCDownSocket Timed Out!!! PLEASE TELL THE WEBCACHE DEVELOPERS IF YOU EVER SEE THIS") );
+				OnWebCacheDownSocketTimeout();
+			}
+		}
+	}
+	else if( !IsProxy() ) // proxies don't have a socket!
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	{
 		if ((::GetTickCount() - m_dwLastBlockReceived) > DOWNLOADTIMEOUT)
 		{
@@ -1808,23 +1954,37 @@ void CUpDownClient::UDPReaskForDownload()
 			}
 			if (GetUDPVersion() > 2)
 				data.WriteUInt16(reqfile->m_nCompleteSourcesCount);
-			if (thePrefs.GetDebugClientUDPLevel() > 0)
-				DebugSend("OP__ReaskFilePing", this, reqfile->GetFileHash());
-			Packet* response = new Packet(&data, OP_EMULEPROT);
-			response->opcode = OP_REASKFILEPING;
-			theStats.AddUpDataOverheadFileRequest(response->size);
-			if(!m_bUDPPending) //Xman don't add the second udpreask, otherwise wrong statistic
-			{			
-				theApp.downloadqueue->AddUDPFileReasks();
-				m_nTotalUDPPackets++;
-			}
-			m_bUDPPending = true;
-			theApp.clientudp->SendPacket(response,GetIP(),GetUDPPort());
-			//Xman make more per UDP at  clients with new UDP protocol, but let them the possibility to passive find you
-			if(GetUDPVersion()>3 && m_OtherNoNeeded_list.IsEmpty() && m_OtherRequests_list.IsEmpty() && (GetNextTCPAskedTime()  < MIN2MS(45) + ::GetTickCount())
-				&& (m_bCompleteSource || GetUploadState()==US_ONUPLOADQUEUE))
-				SetNextTCPAskedTime(GetNextTCPAskedTime() + GetJitteredFileReaskTime());
 
+			// ==> WebCache [WC team/MorphXT] - Stulle/Max
+			if (SupportsMultiOHCBs() &&	AttachMultiOHCBsRequest(data))
+			{
+				DebugSend("OP__MultiFileReask", this, reqfile->GetFileHash());
+				Packet* response = new Packet(&data, OP_WEBCACHEPROT);
+				response->opcode = OP_MULTI_FILE_REASK;
+				theStats.AddUpDataOverheadFileRequest(response->size);
+				theApp.downloadqueue->AddUDPFileReasks();
+				theApp.clientudp->SendPacket(response,GetIP(),GetUDPPort());
+			}
+			else
+			{
+			// <== WebCache [WC team/MorphXT] - Stulle/Max
+				if (thePrefs.GetDebugClientUDPLevel() > 0)
+					DebugSend("OP__ReaskFilePing", this, reqfile->GetFileHash());
+				Packet* response = new Packet(&data, OP_EMULEPROT);
+				response->opcode = OP_REASKFILEPING;
+				theStats.AddUpDataOverheadFileRequest(response->size);
+				if(!m_bUDPPending) //Xman don't add the second udpreask, otherwise wrong statistic
+				{			
+					theApp.downloadqueue->AddUDPFileReasks();
+					m_nTotalUDPPackets++;
+				}
+				m_bUDPPending = true;
+				theApp.clientudp->SendPacket(response,GetIP(),GetUDPPort());
+				//Xman make more per UDP at  clients with new UDP protocol, but let them the possibility to passive find you
+				if(GetUDPVersion()>3 && m_OtherNoNeeded_list.IsEmpty() && m_OtherRequests_list.IsEmpty() && (GetNextTCPAskedTime()  < MIN2MS(45) + ::GetTickCount())
+					&& (m_bCompleteSource || GetUploadState()==US_ONUPLOADQUEUE))
+					SetNextTCPAskedTime(GetNextTCPAskedTime() + GetJitteredFileReaskTime());
+			} // WebCache [WC team/MorphXT] - Stulle/Max
 		}
 		else if (HasLowID() && GetBuddyIP() && GetBuddyPort() && HasValidBuddyID())
 		{
@@ -2140,6 +2300,15 @@ void CUpDownClient::SendCancelTransfer(Packet* packet)
 		m_pPCDownSocket = NULL;
 		SetPeerCacheDownState(PCDS_NONE);
 	}
+
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	if (m_pWCDownSocket)
+	{
+		m_pWCDownSocket->Safe_Delete();
+		m_pWCDownSocket = NULL;
+		SetWebCacheDownState(WCDS_NONE);
+	}
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 }
 
 void CUpDownClient::SetRequestFile(CPartFile* pReqFile)
@@ -2348,19 +2517,31 @@ void CUpDownClient::ProcessAICHAnswer(const uchar* packet, UINT size)
 		{
 			if(pPartFile->GetAICHHashset()->ReadRecoveryData((uint64)request.m_nPart*PARTSIZE, &data)){
 				// finally all checks passed, everythings seem to be fine
-				AddDebugLogLine(DLP_DEFAULT, false, _T("AICH Packet Answer: Succeeded to read and validate received recoverydata"));
+				// ==> WebCache [WC team/MorphXT] - Stulle/Max
+				if(thePrefs.GetLogICHEvents()) //JP log ICH events
+				// <== WebCache [WC team/MorphXT] - Stulle/Max
+					AddDebugLogLine(DLP_DEFAULT, false, _T("AICH Packet Answer: Succeeded to read and validate received recoverydata"));
 				CAICHHashSet::RemoveClientAICHRequest(this);
 				pPartFile->AICHRecoveryDataAvailable(request.m_nPart);
 				return;
 			}
 			else
-				AddDebugLogLine(DLP_DEFAULT, false, _T("AICH Packet Answer: Succeeded to read and validate received recoverydata"));
+				// ==> WebCache [WC team/MorphXT] - Stulle/Max
+				if(thePrefs.GetLogICHEvents()) //JP log ICH events
+				// <== WebCache [WC team/MorphXT] - Stulle/Max
+					AddDebugLogLine(DLP_DEFAULT, false, _T("AICH Packet Answer: Succeeded to read and validate received recoverydata"));
 		}
 		else
-			AddDebugLogLine(DLP_HIGH, false, _T("AICH Packet Answer: Masterhash differs from packethash or hashset has no trusted Masterhash"));
+			// ==> WebCache [WC team/MorphXT] - Stulle/Max
+			if(thePrefs.GetLogICHEvents()) //JP log ICH events
+			// <== WebCache [WC team/MorphXT] - Stulle/Max
+				AddDebugLogLine(DLP_HIGH, false, _T("AICH Packet Answer: Masterhash differs from packethash or hashset has no trusted Masterhash"));
 	}
 	else
-		AddDebugLogLine(DLP_HIGH, false, _T("AICH Packet Answer: requested values differ from values in packet"));
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		if(thePrefs.GetLogICHEvents()) //JP log ICH events
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
+			AddDebugLogLine(DLP_HIGH, false, _T("AICH Packet Answer: requested values differ from values in packet"));
 
 	CAICHHashSet::ClientAICHRequestFailed(this);
 }
@@ -2386,7 +2567,10 @@ void CUpDownClient::ProcessAICHRequest(const uchar* packet, UINT size)
 			fileResponse.WriteUInt16(nPart);
 			pKnownFile->GetAICHHashset()->GetMasterHash().Write(&fileResponse);
 			if (pKnownFile->GetAICHHashset()->CreatePartRecoveryData((uint64)nPart*PARTSIZE, &fileResponse)){
-				AddDebugLogLine(DLP_HIGH, false, _T("AICH Packet Request: Sucessfully created and send recoverydata for %s to %s"), pKnownFile->GetFileName(), DbgGetClientInfo());
+				// ==> WebCache [WC team/MorphXT] - Stulle/Max
+				if(thePrefs.GetLogICHEvents()) //JP log ICH events
+				// <== WebCache [WC team/MorphXT] - Stulle/Max
+					AddDebugLogLine(DLP_HIGH, false, _T("AICH Packet Request: Sucessfully created and send recoverydata for %s to %s"), pKnownFile->GetFileName(), DbgGetClientInfo());
 				if (thePrefs.GetDebugClientTCPLevel() > 0)
 					DebugSend("OP__AichAnswer", this, pKnownFile->GetFileHash());
 				Packet* packAnswer = new Packet(&fileResponse, OP_EMULEPROT, OP_AICHANSWER);
@@ -2395,15 +2579,24 @@ void CUpDownClient::ProcessAICHRequest(const uchar* packet, UINT size)
 				return;
 			}
 			else
-				AddDebugLogLine(DLP_HIGH, false, _T("AICH Packet Request: Failed to create recoverydata for %s to %s"), pKnownFile->GetFileName(), DbgGetClientInfo());
+				// ==> WebCache [WC team/MorphXT] - Stulle/Max
+				if(thePrefs.GetLogICHEvents()) //JP log ICH events
+				// <== WebCache [WC team/MorphXT] - Stulle/Max
+					AddDebugLogLine(DLP_HIGH, false, _T("AICH Packet Request: Failed to create recoverydata for %s to %s"), pKnownFile->GetFileName(), DbgGetClientInfo());
 		}
 		else{
-			AddDebugLogLine(DLP_HIGH, false, _T("AICH Packet Request: Failed to create ecoverydata - Hashset not ready or requested Hash differs from Masterhash for %s to %s"), pKnownFile->GetFileName(), DbgGetClientInfo());
+			// ==> WebCache [WC team/MorphXT] - Stulle/Max
+			if(thePrefs.GetLogICHEvents()) //JP log ICH events
+			// <== WebCache [WC team/MorphXT] - Stulle/Max
+				AddDebugLogLine(DLP_HIGH, false, _T("AICH Packet Request: Failed to create ecoverydata - Hashset not ready or requested Hash differs from Masterhash for %s to %s"), pKnownFile->GetFileName(), DbgGetClientInfo());
 		}
 
 	}
 	else
-		AddDebugLogLine(DLP_HIGH, false, _T("AICH Packet Request: Failed to find requested shared file -  %s"), DbgGetClientInfo());
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		if(thePrefs.GetLogICHEvents()) //JP log ICH events
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
+			AddDebugLogLine(DLP_HIGH, false, _T("AICH Packet Request: Failed to find requested shared file -  %s"), DbgGetClientInfo());
 
 	if (thePrefs.GetDebugClientTCPLevel() > 0)
 		DebugSend("OP__AichAnswer", this, abyHash);
@@ -2427,7 +2620,10 @@ void CUpDownClient::ProcessAICHFileHash(CSafeMemFile* data, CPartFile* file)
 		pPartFile->GetAICHHashset()->UntrustedHashReceived(ahMasterHash, GetConnectIP());
 	}
 	else
-		AddDebugLogLine(DLP_HIGH, false, _T("ProcessAICHFileHash(): PartFile not found or Partfile differs from requested file, %s"), DbgGetClientInfo());
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		if(thePrefs.GetLogICHEvents()) //JP log ICH events
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
+			AddDebugLogLine(DLP_HIGH, false, _T("ProcessAICHFileHash(): PartFile not found or Partfile differs from requested file, %s"), DbgGetClientInfo());
 }
 
 //Xman

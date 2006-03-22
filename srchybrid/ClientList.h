@@ -18,6 +18,7 @@
 #include "DeadSourceList.h"
 //Xman
 #include <atlcoll.h>	// Slugfiller: modid
+#include "UpDownClient.h" // WebCache [WC team/MorphXT] - Stulle/Max
 
 class CClientReqSocket;
 class CUpDownClient;
@@ -148,4 +149,15 @@ private:
 public:
 	void ResetIP2Country();
 //EastShare End - added by AndCycle, IP to Country
+
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+// yonatan - not 2 be confused with the one in CUploadQueue!
+	CUpDownClient*	FindClientByWebCacheUploadId(const uint32 id);
+// Superlexx - OHCB manager
+	CUpDownClientPtrList* XpressOHCBRecipients(uint32 maxNrOfClients, const Requested_Block_Struct* block);
+	void SendOHCBs(); // sends OHCBs to every client every x minutes
+	uint32 m_dwLastSendOHCBs;
+// Superlexx - COtN - moved here from the CUpDownClient
+	UINT GetNumberOfClientsBehindOurWebCacheHavingSameFileAndNeedingThisBlock(Pending_Block_Struct* pending, UINT maxNrOfClients);
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 };

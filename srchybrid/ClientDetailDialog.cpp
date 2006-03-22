@@ -73,6 +73,12 @@ BOOL CClientDetailPage::OnInitDialog()
 	AddAnchor(IDC_STATIC50, TOP_LEFT, TOP_RIGHT);
 	AddAnchor(IDC_DDOWNLOADING, TOP_LEFT, TOP_RIGHT);
 	AddAnchor(IDC_UPLOADING, TOP_LEFT, TOP_RIGHT);
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	AddAnchor(IDC_STATIC57, TOP_LEFT, TOP_RIGHT);
+	AddAnchor(IDC_WCSTATISTICS, TOP_LEFT, TOP_RIGHT);
+	AddAnchor(IDC_Webcache, TOP_LEFT, TOP_RIGHT);
+	AddAnchor(IDC_TRUSTEDOHCBSENDER, TOP_LEFT, TOP_RIGHT);
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	Localize();
 	return TRUE;
@@ -224,6 +230,26 @@ BOOL CClientDetailPage::OnSetActive()
 			buffer.Format( _T("%s"), GetResString(IDS_DISCONNECTED));
 		GetDlgItem(IDC_CLIENTDETAIL_KADCON)->SetWindowText(buffer);
 
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		if(client->SupportsWebCache() && client->GetWebCacheName() == "")
+			GetDlgItem(IDC_Webcache)->SetWindowText(GetResString(IDS_WEBCACHE_NOPROXY));
+		if(client->SupportsWebCache() && client->GetWebCacheName() != "")
+			GetDlgItem(IDC_Webcache)->SetWindowText(client->GetWebCacheName()); // Superlexx - webcache //JP changed to new GetWebcacheName-function
+    	if(!client->SupportsWebCache())
+			GetDlgItem(IDC_Webcache)->SetWindowText(GetResString(IDS_WEBCACHE_NOSUPPORT));
+
+		double percentSessions = 0;
+		if (client->WebCachedBlockRequests != 0)
+			percentSessions = (double) 100 * client->SuccessfulWebCachedBlockDownloads / client->WebCachedBlockRequests;
+		buffer.Format( _T("%u/%u (%1.1f%%)"), client->SuccessfulWebCachedBlockDownloads, client->WebCachedBlockRequests, percentSessions );
+		GetDlgItem(IDC_WCSTATISTICS)->SetWindowText(buffer); //JP Client WC-Statistics
+		if (client->IsTrustedOHCBSender())
+			buffer.Format(GetResString(IDS_YES));
+		else
+			buffer.Format(GetResString(IDS_NO));
+		GetDlgItem(IDC_TRUSTEDOHCBSENDER)->SetWindowText(buffer); //JP Is trusted OHCB sender
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 		m_bDataChanged = false;
 	}
 	return TRUE;
@@ -258,6 +284,12 @@ void CClientDetailPage::Localize()
 	GetDlgItem(IDC_STATIC51)->SetWindowText(GetResString(IDS_CD_MOD));
 	GetDlgItem(IDC_STATIC52)->SetWindowText(GetResString(IDS_CD_RATING));
 	GetDlgItem(IDC_STATIC53)->SetWindowText(GetResString(IDS_CD_USCORE));
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	GetDlgItem(IDC_STATIC54)->SetWindowText(GetResString(IDS_CD_WCSUCCFAIL));
+	GetDlgItem(IDC_STATIC55)->SetWindowText(GetResString(IDS_CD_WCTRUSTSENDER));
+	GetDlgItem(IDC_STATIC56)->SetWindowText(GetResString(IDS_PW_WEBCACHE) + _T(":"));
+	GetDlgItem(IDC_STATIC57)->SetWindowText(GetResString(IDS_PW_WEBCACHE));
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	GetDlgItem(IDC_STATIC133x)->SetWindowText(GetResString(IDS_CD_IDENT));
 	GetDlgItem(IDC_CLIENTDETAIL_KAD)->SetWindowText(GetResString(IDS_KADEMLIA) + _T(":"));
 }

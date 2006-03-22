@@ -219,3 +219,5 @@
 #define MP_DROPHIGHQRSRCSSIVKA	20004
 #define MP_CLEANUP_NNS_FQS_NONE_ERROR_BANNED_LOWTOLOWIP 20005
 // <== advanced manual dropping - Stulle
+
+#define MP_PRIOWCRELEASE		20010 // WebCache [WC team/MorphXT] - Stulle/Max

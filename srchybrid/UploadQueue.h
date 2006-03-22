@@ -119,4 +119,9 @@ private:
     float   m_fAverageCombinedFilePrioAndCredit;
 
     DWORD   m_dwLastResortedUploadSlots;
+
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+public:
+	CUpDownClient*	FindClientByWebCacheUploadId(const uint32 id); // Superlexx - webcache
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 };

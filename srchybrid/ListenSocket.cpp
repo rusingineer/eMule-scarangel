@@ -48,6 +48,13 @@
 #include "Log.h"
 //Xman
 #include "BandWidthControl.h" // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+#include "WebCache/WebCacheSocket.h"
+#include "WebCache/WebCachedBlock.h"
+#include "WebCache/WebCacheProxyClient.h"
+#include "WebCache/WebCachedBlockList.h"
+#include "WebCache/WebCacheOHCBManager.h"
+// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -220,7 +227,12 @@ bool CClientReqSocket::CheckTimeOut()
 	
 	//there are some clients which are uploading to us.. and also get an uploadslot from us..
 	//but they don't send a blockrequest. the socket won't timeout and we have a 0-uploadsocket
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	/*
 	if(client && client->GetUploadState()==US_UPLOADING && isready==false && client->HasPeerCacheState()==false && client->GetUpStartTimeDelay()>=MIN2MS(1)) //Xman Xtreme Upload: Peercache-part
+	*/
+	if(client && client->GetUploadState()==US_UPLOADING && isready==false && client->HasPeerCacheState()==false && client->HasWebCacheState()==false && client->GetUpStartTimeDelay()>=MIN2MS(1)) //Xman Xtreme Upload: Peercache-part
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	{
 		//timeout_timer = ::GetTickCount();
 		theApp.uploadqueue->RemoveFromUploadQueue(client, _T("0-Uploadsocket"),CUpDownClient::USR_SOCKET); // Maella -Upload Stop Reason-
@@ -1243,6 +1255,22 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 					client->SetFileListRequested(0);
                     break;
                 }
+				// ==> WebCache [WC team/MorphXT] - Stulle/Max
+				case OP_HTTP_CACHED_BLOCK:
+				{
+					if (thePrefs.GetDebugClientTCPLevel() > 0)
+						DebugRecv("OP__Http_Cached_Block", client);
+					theStats.AddDownDataOverheadOther(size);
+					if( thePrefs.IsWebCacheDownloadEnabled() && client->SupportsWebCache() ) {
+						// CHECK HANDSHAKE?
+						if (thePrefs.GetLogWebCacheEvents())
+							AddDebugLogLine( false, _T("Received WCBlock by TCP: %s"), client->DbgGetClientInfo() );
+						//MORPH - Changed By SiRoB, WebCache Fix
+						(void*) new CWebCachedBlock( packet, size, client ); // Starts DL or places block on queue
+					}
+					break;
+				}
+				// <== WebCache [WC team/MorphXT] - Stulle/Max
 				default:
 					theStats.AddDownDataOverheadOther(size);
 					//Xman final version: don't log too much
@@ -1359,6 +1387,7 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
                 case OP_MULTIPACKET:
 				case OP_MULTIPACKET_EXT:
 				{
+					bool webcacheInfoReceived = false; // WebCache [WC team/MorphXT] - Stulle/Max
 					if (thePrefs.GetDebugClientTCPLevel() > 0){
 						if (opcode == OP_MULTIPACKET_EXT)
 							DebugRecv("OP_MultiPacket_Ext", client, (size >= 24) ? packet : NULL);
@@ -1540,6 +1569,43 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 								}
 								break;
 							}
+							// ==> WebCache [WC team/MorphXT] - Stulle/Max
+							case WC_TAG_WEBCACHENAME:
+							{
+								CString webcachename = data_in.ReadString( false ); // shouldn't these always be ASCII?
+								if( client->SupportsWebCache() )
+								{
+									webcacheInfoReceived = true;
+									webcachename.Trim();
+									webcachename.MakeLower();
+									if ( webcachename.IsEmpty() )
+										client->m_WA_webCacheIndex = -1;
+									else
+									{
+										int index = GetWebCacheIndex(webcachename);
+										client->m_WA_webCacheIndex = (index >= 0) ? index : AddWebCache(webcachename);
+									}
+								}
+								break;
+							}
+							case WC_TAG_MASTERKEY:
+							{
+								byte tmpKey[WC_KEYLENGTH];
+								data_in.Read( tmpKey, WC_KEYLENGTH );
+								if( client->SupportsWebCache() )
+								{
+									webcacheInfoReceived = true;
+									for(int i=0;i<WC_KEYLENGTH;i++)
+										client->Crypt.localMasterKey[i] = tmpKey[i];
+
+									byte tmpID[4];
+									for (int i=0; i<4; i++)
+										tmpID[i] = client->Crypt.localMasterKey[i] ^ (client->GetUserHash())[i];
+									client->m_uWebCacheDownloadId = *((uint32*)tmpID);
+								}
+								break;
+							}
+							// <== WebCache [WC team/MorphXT] - Stulle/Max
 							default:
 								{
 									CString strError;
@@ -1548,6 +1614,30 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 								}
 						}
 					}
+
+					// ==> WebCache [WC team/MorphXT] - Stulle/Max
+					// Superlexx - webcache - send webcacheInfo in the answer when needed
+					if( client->SupportsWebCache() && (client->WebCacheInfoNeeded() || webcacheInfoReceived))
+					{
+						data_out.WriteUInt8(WC_TAG_WEBCACHENAME);
+						data_out.WriteString(thePrefs.webcacheName);
+						
+						/*data_out.WriteUInt8(WC_TAG_WEBCACHEID);
+						client->m_uWebCacheUploadId = GetRandomUInt32();
+						data_out.WriteUInt32(client->m_uWebCacheUploadId);*/
+						
+						data_out.WriteUInt8(WC_TAG_MASTERKEY);
+						data_out.Write( client->Crypt.remoteMasterKey, WC_KEYLENGTH );
+
+						byte tmpID[4];
+						for (int i=0; i<4; i++)
+							tmpID[i] = client->Crypt.remoteMasterKey[i] ^ (thePrefs.GetUserHash())[i];
+						client->m_uWebCacheUploadId = *((uint32*)tmpID);
+						
+						client->SetWebCacheInfoNeeded(false);
+					}
+					// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 					if( data_out.GetLength() > 16  && !bAnswerFNF)
 					{
 						if (thePrefs.GetDebugClientTCPLevel() > 0)
@@ -1613,6 +1703,42 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 								client->ProcessAICHFileHash(&data_in, reqfile);
 								break;
 							}
+							// ==> WebCache [WC team/MorphXT] - Stulle/Max
+							case WC_TAG_WEBCACHENAME:
+							{
+								CString webcachename = data_in.ReadString(false);
+								if( client->SupportsWebCache() )
+								{
+									webcachename.Trim();
+									webcachename.MakeLower();
+									if ( webcachename.IsEmpty() )
+										client->m_WA_webCacheIndex = -1;
+									else
+									{
+										int index = GetWebCacheIndex(webcachename);
+										client->m_WA_webCacheIndex = (index >= 0) ? index : AddWebCache(webcachename);
+									}
+								}
+								break;
+							}
+							case WC_TAG_MASTERKEY:
+							{
+								byte tmpKey[WC_KEYLENGTH];
+								data_in.Read( tmpKey, WC_KEYLENGTH );
+								//data_in.Read( client->Crypt.remoteMasterKey, WC_KEYLENGTH );
+								if( client->SupportsWebCache() )
+								{
+									for(int i=0;i<WC_KEYLENGTH;i++)
+										client->Crypt.localMasterKey[i] = tmpKey[i];
+
+									byte tmpID[4];
+									for (int i=0; i<4; i++)
+										tmpID[i] = client->Crypt.localMasterKey[i] ^ (client->GetUserHash())[i];
+									client->m_uWebCacheDownloadId = *((uint32*)tmpID);
+								}
+								break;
+							}
+							// <== WebCache [WC team/MorphXT] - Stulle/Max
 							default:
 								{
 									CString strError;
@@ -1621,6 +1747,23 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 								}
 						}
 					}
+
+					// ==> WebCache [WC team/MorphXT] - Stulle/Max
+					if (client->SupportsWebCache()
+						&& client->SupportsMultiOHCBs()
+						&& client->IsTrustedOHCBSender())
+					{
+						Packet* tosend = client->CreateMFRPacket();
+						if (tosend)
+						{
+							if (thePrefs.GetDebugClientTCPLevel() > 0)
+								DebugSend("OP__multiFileRequest", client, reqfile->GetFileHash());
+							theStats.AddUpDataOverheadOther(tosend->size);
+							SendPacket(tosend, true);
+						}
+					}
+					// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 					break;
 				}
 				case OP_EMULEINFO:
@@ -2587,6 +2730,19 @@ bool CClientReqSocket::PacketReceivedCppEH(Packet* packet)
 		case OP_EMULEPROT:
 			bResult = ProcessExtPacket((const BYTE*)packet->pBuffer, packet->size, packet->opcode, uRawSize);
 			break;
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		case OP_WEBCACHEPACKEDPROT:	// Superlexx - packed WC protocol
+			if (!packet->UnPackPacket())
+			{
+				if (thePrefs.GetVerbose())
+					AddDebugLogLine(false, _T("Failed to decompress client WC TCP packet; %s; %s"), DbgGetClientTCPPacket(packet->prot, packet->opcode, packet->size), DbgGetClientInfo());
+				bResult = false;
+				break;
+			}
+		case OP_WEBCACHEPROT:
+			bResult = ProcessWebCachePacket((const BYTE*)packet->pBuffer, packet->size, packet->opcode, uRawSize);
+			break;
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
 		default:{
 			theStats.AddDownDataOverheadOther(uRawSize);
 			if (thePrefs.GetVerbose())
@@ -2858,6 +3014,11 @@ int CALLBACK AcceptConnectionCond(LPWSABUF lpCallerId, LPWSABUF /*lpCallerData*/
 		LPSOCKADDR_IN pSockAddr = (LPSOCKADDR_IN)lpCallerId->buf;
 		ASSERT( pSockAddr->sin_addr.S_un.S_addr != 0 && pSockAddr->sin_addr.S_un.S_addr != INADDR_NONE );
 
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		if (IsGoodIP(pSockAddr->sin_addr.S_un.S_addr, true))
+			thePrefs.m_bHighIdPossible = true;
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 		if (theApp.ipfilter->IsFiltered(pSockAddr->sin_addr.S_un.S_addr)){
 			if (thePrefs.GetLogFilteredIPs())
 				AddDebugLogLine(false, _T("Rejecting connection attempt (IP=%s) - IP filter (%s)"), ipstr(pSockAddr->sin_addr.S_un.S_addr), theApp.ipfilter->GetLastHit());
@@ -2999,6 +3160,11 @@ void CListenSocket::OnAccept(int nErrorCode)
 
 				ASSERT( SockAddr.sin_addr.S_un.S_addr != 0 && SockAddr.sin_addr.S_un.S_addr != INADDR_NONE );
 
+				// ==> WebCache [WC team/MorphXT] - Stulle/Max
+				if (IsGoodIP(SockAddr.sin_addr.S_un.S_addr, true))
+					thePrefs.m_bHighIdPossible = true;
+				// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 				if (theApp.ipfilter->IsFiltered(SockAddr.sin_addr.S_un.S_addr)){
 					if (thePrefs.GetLogFilteredIPs())
 						AddDebugLogLine(false, _T("Rejecting connection attempt (IP=%s) - IP filter (%s)"), ipstr(SockAddr.sin_addr.S_un.S_addr), theApp.ipfilter->GetLastHit());
@@ -3027,6 +3193,13 @@ void CListenSocket::OnAccept(int nErrorCode)
 // Maella -Code Improvement-
 void CListenSocket::Process()
 {
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	if( !SINGLEProxyClient )
+		WebCachedBlockList.TryToDL();
+	else
+		SINGLEProxyClient->CheckDownloadTimeout();
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 	// Update counter
 	m_OpenSocketsInterval = 0;
 	// Check state	
@@ -3177,3 +3350,94 @@ float CListenSocket::GetMaxConperFiveModifier(){
 	return 1.0f - (SpikeSize/SpikeTolerance);
 }
 //Xman end
+
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+bool CClientReqSocket::ProcessWebCachePacket(const BYTE* packet, uint32 size, UINT opcode, UINT uRawSize)
+{
+	if (thePrefs.m_iDbgHeap >= 2)
+		ASSERT_VALID(client);
+	switch(opcode)
+	{
+		case OP_DONT_SEND_OHCBS:
+			if (thePrefs.GetDebugClientTCPLevel() > 0)
+				DebugRecv("OP__Dont_Send_Ohcbs recv", client);
+			if (thePrefs.GetLogWebCacheEvents())
+			AddDebugLogLine( false, _T("OP__Dont_Send_Ohcbs RECEIVED")); // yonatan tmp
+			theStats.AddDownDataOverheadOther(size);
+			if( client->SupportsWebCache() && client->SupportsOhcbSuppression() )
+				client->m_bIsAcceptingOurOhcbs = false;
+			return true;
+		//JP TEST THIS!!! (WE ARE NOT USING IT YET)
+		case OP_RESUME_SEND_OHCBS: //we are not using it yet, but might in the future
+			if (thePrefs.GetDebugClientTCPLevel() > 0)
+				DebugRecv("OP_RESUME_SEND_OHCBS received from", client);
+			if (thePrefs.GetLogWebCacheEvents())
+				AddDebugLogLine( false, _T("OP_RESUME_SEND_OHCBS RECEIVED")); // yonatan tmp
+			theStats.AddDownDataOverheadOther(size);
+			if( client->SupportsWebCache() && client->SupportsOhcbSuppression() )
+				client->m_bIsAcceptingOurOhcbs = true;
+			return true;
+		case OP_HTTP_CACHED_BLOCK:
+			if (thePrefs.GetDebugClientTCPLevel() > 0)
+				DebugRecv("OP__Http_Cached_Block", client);
+			theStats.AddDownDataOverheadOther(size);
+			if( thePrefs.IsWebCacheDownloadEnabled() && client->SupportsWebCache() ) 
+			{
+				// CHECK HANDSHAKE?
+				if (thePrefs.GetLogWebCacheEvents())
+					AddDebugLogLine( false, _T("Received WCBlock by TCP from client: %s"), client->DbgGetClientInfo() );
+				//MORPH - Changed By SiRoB, WebCache Fix
+					(void*) new CWebCachedBlock( packet, size, client ); // Starts DL or places block on queue
+			}
+			return true;
+		case OP_XPRESS_MULTI_HTTP_CACHED_BLOCKS:
+		case OP_MULTI_HTTP_CACHED_BLOCKS:
+            if (thePrefs.GetDebugClientTCPLevel() > 0)
+				DebugRecv("OP__Multi_Http_Cached_Blocks", client);
+			theStats.AddDownDataOverheadOther(size);
+			if( thePrefs.IsWebCacheDownloadEnabled() && client->SupportsWebCache() ) 
+			{
+				// CHECK HANDSHAKE?
+				if (thePrefs.GetLogWebCacheEvents())
+					AddDebugLogLine( false, _T("Received MultiWCBlocks by TCP from client: %s"), client->DbgGetClientInfo() );
+				//CWebCachedBlock* newblock = new CWebCachedBlock( (char*)packet, size, client ); // Starts DL or places block on queue
+				CSafeMemFile data((BYTE*)packet,size);
+				uint32 uploadID;
+				uploadID = data.ReadUInt32();
+				if (client->m_uWebCacheUploadId != uploadID)
+					return false;
+
+				return WebCachedBlockList.ProcessWCBlocks(packet, size, opcode, client);
+			}
+			return false;
+		case OP_MULTI_FILE_REQ:
+			{
+				if (!client->SupportsMultiOHCBs() || !client->SupportsWebCache())
+					break;
+//				client->requestedFiles.RemoveAll();
+//				client->requestedFiles.AddFiles(&CSafeMemFile(BYTE(packet)));
+				CSafeMemFile data_in((BYTE*)packet,size);
+				client->requestedFiles.AddFiles(&data_in, client);
+
+				Packet* toSend = WC_OHCBManager.GetWCBlocksForClient(client);
+				if(toSend)
+				{
+					if (thePrefs.GetDebugClientTCPLevel() > 0)
+						DebugSend("OP__multiOHCB", client);
+					theStats.AddUpDataOverheadOther(toSend->size);
+					SendPacket(toSend, true);
+				}
+				return true;
+			}
+		default:
+			theStats.AddDownDataOverheadOther(uRawSize);
+			// ==> Xman way | We know the opcode - Stulle
+			/*
+			PacketToDebugLogLine(_T("WebCache"), packet, size, opcode);
+			*/
+			PacketToDebugLogLine(true, packet, size, opcode);
+			// <== Xman way | We know the opcode - Stulle
+	}
+	return false;
+}
+// <== WebCache [WC team/MorphXT] - Stulle/Max

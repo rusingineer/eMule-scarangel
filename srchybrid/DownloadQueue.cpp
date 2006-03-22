@@ -329,6 +329,18 @@ void CDownloadQueue::AddFileLinkToDownload(CED2KFileLink* pLink, int cat)
 		}
 	}
 
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	if (!theApp.sharedfiles->GetFileByID(pLink->GetHashKey())	// not already in the shared files list
+		&& partfile							// valid pointer
+		&& !partfile->hashsetneeded			// hash set not needed
+		&& thePrefs.IsWebCacheDownloadEnabled()			// webcache downloading on
+		&& partfile->GetStatus() == PS_EMPTY)	// file not stopped or paused
+	{
+			partfile->SetStatus(PS_READY);
+		theApp.sharedfiles->SafeAddKFile(partfile);
+	}
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 	if (pLink->HasHostnameSources())
 	{
 		POSITION pos = pLink->m_HostnameSourcesList.GetHeadPosition();
@@ -362,6 +374,8 @@ void CDownloadQueue::AddDownload(CPartFile* newfile,bool paused) {
 	msgTemp.Format(GetResString(IDS_NEWDOWNLOAD) + _T("\n"), newfile->GetFileName());
 	theApp.emuledlg->ShowNotifier(msgTemp, TBN_DOWNLOADADDED);
 	ExportPartMetFilesOverview();
+
+	thePrefs.UpdateWebcacheReleaseAllowed(); // WebCache [WC team/MorphXT] - Stulle/Max
 }
 
 bool CDownloadQueue::IsFileExisting(const uchar* fileid, bool bLogWarnings) const
@@ -392,6 +406,20 @@ void CDownloadQueue::Process(){
 	// <== Global Source Limit [Max/Stulle] - Stulle
 	
 	ProcessLocalRequests(); // send src requests to local server
+
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	////JP Proxy configuration testing START!!! This should probably be somewhere else.
+	if (thePrefs.expectingWebCachePing && (::GetTickCount() - thePrefs.WebCachePingSendTime > SEC2MS(30)))
+	{
+		thePrefs.expectingWebCachePing = false;
+		thePrefs.WebCacheDisabledThisSession = true; //Disable webcache downloads for the current proxy settings
+		//JP we need a modeless dialogue here!!
+		//			AfxMessageBox(_T("Proxy configuration Test Failed please review your proxy-settings"));
+		//MORPH - Changed by SiRoB, New ResolveWebcachename
+		theApp.QueueLogLine(false, _T("Proxy configuration Test Failed please review your proxy-settings. Webcache downloads have been deactivated until new proxy is tested."));
+	}
+	////JP Proxy configuration testing END!!! This should probably be somewhere else.
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	// Elapsed time (TIMER_PERIOD not accurate)	
 	uint32 deltaTime = ::GetTickCount() - m_lastProcessTime;
@@ -2332,7 +2360,7 @@ void CDownloadQueue::SetHardLimits()
 			uint16 m_uMaxIncr = m_uTollerance/aCount;
 			m_uSourcesDif /= aCount;
 
-			if(!m_bTooMuchSrc && m_uMaxIncr < m_uSourcesDif)
+			if(m_uMaxIncr < m_uSourcesDif)
 				m_uSourcesDif = m_uMaxIncr;
 
 			m_bGlobalHLSrcReqAllowed = true;
@@ -2376,3 +2404,16 @@ uint16 CDownloadQueue::GetGlobalSourceCount()
 	return m_uSourceCountTemp;
 }
 // <== Show sources on title - Stulle
+
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+bool CDownloadQueue::ContainsUnstoppedFiles()
+{
+	bool returnval = false;
+	for (POSITION pos = filelist.GetHeadPosition(); pos != 0; )
+	{
+		CPartFile* pPartFile = filelist.GetNext(pos);
+		if (pPartFile->IsPartFile() && !pPartFile->IsStopped())
+			returnval = true;
+	}
+	return returnval;
+}// <== WebCache [WC team/MorphXT] - Stulle/Max

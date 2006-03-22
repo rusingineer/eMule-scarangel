@@ -40,6 +40,7 @@
 #include "Log.h"
 #include "Collection.h"
 #include <math.h> //Xman
+#include "WebCache\WebCacheSocket.h" // WebCache [WC team/MorphXT] - Stulle/Max
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -257,6 +258,11 @@ uint32 CUpDownClient::GetScore(bool sysvalue, bool isdownloading, bool onlybasev
 	if (m_pszUsername == NULL || GetUploadFileID() == NULL)
 		return 0;
 
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	if (IsProxy())
+		return 0;
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 	if (credits == 0){
 		ASSERT ( IsKindOf(RUNTIME_CLASS(CUrlClient)) );
 		return 0;
@@ -324,6 +330,41 @@ uint32 CUpDownClient::GetScore(bool sysvalue, bool isdownloading, bool onlybasev
 	float modif = credits->GetScoreRatio(this);
 	fBaseValue *= modif;
 	// <== CreditSystems [EastShare/ MorphXT] - Stulle
+
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	// ==> punish clients not using port 80 - Stulle
+	/*
+        // Superlexx - TPS - reward clients using port 80
+	if(thePrefs.IsWebCacheDownloadEnabled() // only if we have webcache downloading on
+		&& SupportsWebCache()				// and if the remote client supports webcache
+		&& thePrefs.WebCacheIsTransparent()	// our proxy is transparent
+		&& GetUserPort() == 80				// remote client uses port 80
+		&& !HasLowID())						// remote client has HighID
+		fBaseValue *= (float)1.2;
+	*/
+        // Superlexx - TPS - reward clients using port 80
+	if(thePrefs.IsWebCacheDownloadEnabled() // only if we have webcache downloading on
+		&& SupportsWebCache()				// and if the remote client supports webcache
+		&& thePrefs.WebCacheIsTransparent()	// our proxy is transparent
+		&& !(GetUserPort() == 80)			// remote client doesn't use port 80
+		&& !HasLowID())						// remote client has HighID
+		fBaseValue *= (float)0.8;
+	// <== punish clients not using port 80 - Stulle
+
+	// boost clients if webcache upload will likely result in 3 or more proxy-downloads
+	if (SupportsWebCache() 
+		&& GetWebCacheName() != _T("") 
+		&& thePrefs.IsWebcacheReleaseAllowed()
+		&& currequpfile->ReleaseViaWebCache)
+	{
+		uint32 WebCacheClientCounter = currequpfile->GetNumberOfClientsRequestingThisFileUsingThisWebcache(GetWebCacheName(), 10);
+		if (WebCacheClientCounter >= 3)
+		{
+			fBaseValue *= WebCacheClientCounter;
+			fBaseValue += 5000;
+		}
+	}
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	if (!onlybasevalue)
 	{
@@ -485,10 +526,25 @@ void CUpDownClient::CreateNextBlockPackage(){
 
 			SetUploadFileID(srcfile);
 
+			// ==> WebCache [WC team/MorphXT] - Stulle/Max
+			if (IsUploadingToWebCache()) // Superlexx - encryption: encrypt here
+			{
+				Crypt.RefreshLocalKey();
+				Crypt.encryptor.SetKey(Crypt.localKey, WC_KEYLENGTH);
+				Crypt.encryptor.DiscardBytes(16); // we must throw away 16 bytes of the key stream since they were already used once, 16 is the file hash length
+				Crypt.encryptor.ProcessString(filedata, togo);
+			}
+			// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 			// check extension to decide whether to compress or not
 			// Decide whether to compress the packets or not
+			// ==> WebCache [WC team/MorphXT] - Stulle/Max
+			/*
 			bool compFlag = (m_byDataCompVer == 1) && (IsUploadingToPeerCache() == false);
-			
+			*/
+			bool compFlag = (m_byDataCompVer == 1) && (IsUploadingToPeerCache() == false) && (IsUploadingToWebCache() == false);
+			// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 			//Xman Code Improvement for choosing to use compression
 			if(compFlag == true)
 			{
@@ -737,6 +793,58 @@ void CUpDownClient::CreateStandartPackets(byte* data,uint32 togo, Requested_Bloc
 			m_pPCUpSocket->SendPacket(packet, true, false, nPacketSize);
 			free(pRawPacketData);
 		}
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		else if (IsUploadingToWebCache())
+		{
+			if (m_pWCUpSocket == NULL){
+				ASSERT(0);
+				CString strError;
+				strError.Format(_T("Failed to upload to WebCache - missing socket; %s"), DbgGetClientInfo());
+				throw strError;
+			}
+			USES_CONVERSION;
+			CSafeMemFile dataHttp(10240);
+			if (m_iHttpSendState == 0) // yonatan - not sure it's wise to use this (also used by PC).
+			{
+				// ==> removed unused - Stulle
+				/*
+				CKnownFile* srcfile = theApp.sharedfiles->GetFileByID(GetUploadFileID());
+				*/
+				// <== removed unused - Stulle
+				CStringA str;
+//				str.AppendFormat("HTTP/1.1 200 OK\r\n"); // DFA
+				str.AppendFormat("HTTP/1.0 200 OK\r\n");
+				str.AppendFormat("Content-Length: %I64u\r\n", currentblock->EndOffset - currentblock->StartOffset);
+				str.AppendFormat("Expires: Mon, 03 Sep 2007 01:23:45 GMT\r\n" ); // rolled-back to 1.1b code (possible bug w/soothsayers' proxy)
+				str.AppendFormat("Cache-Control: public\r\n");
+				str.AppendFormat("Cache-Control: no-transform\r\n");
+				str.AppendFormat("Connection: keep-alive\r\nProxy-Connection: keep-alive\r\n");
+				str.AppendFormat("Server: eMule/%s %s\r\n", T2CA(theApp.m_strCurVersionLong), T2CA(theApp.m_strModVersion));
+				str.AppendFormat("\r\n");
+				dataHttp.Write((LPCSTR)str, str.GetLength());
+				theStats.AddUpDataOverheadFileRequest((UINT)dataHttp.GetLength());
+
+				m_iHttpSendState = 1;
+				if (thePrefs.GetDebugClientTCPLevel() > 0){
+					DebugSend("WebCache-HTTP", this, GetUploadFileID());
+					Debug(_T("  %hs\n"), str);
+				}
+			}
+			dataHttp.Write(data, nPacketSize);
+			data += nPacketSize;
+
+			if (thePrefs.GetDebugClientTCPLevel() > 1){
+				DebugSend("WebCache-HTTP data", this, GetUploadFileID());
+				Debug(_T("  Start=%I64u  End=%I64u  Size=%u\n"), statpos, endpos, nPacketSize);
+			}
+
+			UINT uRawPacketSize = (UINT)dataHttp.GetLength();
+			LPBYTE pRawPacketData = dataHttp.Detach();
+			CRawPacket* packet = new CRawPacket((char*)pRawPacketData, uRawPacketSize, bFromPF);
+			m_pWCUpSocket->SendPacket(packet, true, false, nPacketSize);
+			free(pRawPacketData);
+		}
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
 		else
 		{
 			Packet* packet;
@@ -934,6 +1042,22 @@ uint32 CUpDownClient::SendBlockData(){
         }
 		else
 			uUpStatsPort = GetUserPort();
+
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		if(m_pWCUpSocket && IsUploadingToWebCache()) {
+			uUpStatsPort = (UINT)-1; //<<0.45a
+
+            // Check if filedata has been sent via the normal socket since last call.
+            uint64 sentBytesCompleteFileNormalSocket = socket->GetSentBytesCompleteFileSinceLastCallAndReset();
+            uint64 sentBytesPartFileNormalSocket = socket->GetSentBytesPartFileSinceLastCallAndReset();
+
+			if(thePrefs.GetVerbose() && (sentBytesCompleteFileNormalSocket + sentBytesPartFileNormalSocket > 0)) {
+                AddDebugLogLine(false, _T("Sent file data via normal socket when in WC mode. Bytes: %I64i."), sentBytesCompleteFileNormalSocket + sentBytesPartFileNormalSocket);
+			}
+        }
+		else
+			uUpStatsPort = GetUserPort(); //<<0.45a
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	    // Extended statistics information based on which client software and which port we sent this data to...
 	    // This also updates the grand total for sent bytes, etc.  And where this data came from.
@@ -1211,6 +1335,14 @@ CClientReqSocket* CUpDownClient::GetFileUploadSocket(bool bLog) const //Xman Xtr
             AddDebugLogLine(false, _T("%s got peercache socket."), DbgGetClientInfo());
         return m_pPCUpSocket;
     }
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+    else if(m_pWCUpSocket && IsUploadingToWebCache())
+	{
+        if (bLog && thePrefs.GetVerbose())
+            AddDebugLogLine(false, _T("%s got webcache socket."), DbgGetClientInfo());
+        return m_pWCUpSocket;
+	}
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	else
 	{
         if (bLog && thePrefs.GetVerbose())

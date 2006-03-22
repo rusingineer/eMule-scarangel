@@ -296,6 +296,7 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	/*
 	else
 		odc->SetBkColor(GetBkColor());
+	COLORREF crOldBackColor = odc->GetBkColor(); //Xman show LowIDs
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
 	*/
 	else
@@ -311,8 +312,8 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 		else
 			odc->SetBkColor(GetBkColor());
 	}
-	// <== draw friends blue - Stulle
 	COLORREF crOldBackColor = odc->GetBkColor(); //Xman show LowIDs
+	// <== draw friends blue - Stulle
 	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
 	CFont* pOldFont = dc.SelectObject(GetFont());
 	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect

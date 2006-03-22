@@ -30,7 +30,8 @@
 //Xman
 #include "updownclient.h" //Xman Xtreme Upload
 #include "BandWidthControl.h" // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
-#include "ListenSocket.h" //Xman 
+#include "ListenSocket.h" //Xman
+#include "WebCache/WebCacheSocket.h" // WebCache [WC team/MorphXT] - Stulle/Max
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -401,6 +402,24 @@ void CEMSocket::ProcessReceiveData()
 	char *rptr = GlobalReadBuffer; // floating index initialized with begin of buffer
 	const char *rend = GlobalReadBuffer + ret; // end of buffer
 
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	if( *(uint32*)GlobalReadBuffer == ' TEG' ) {
+		CWebCacheUpSocket* WCSocket;
+		if( !IsKindOf( RUNTIME_CLASS( CWebCacheUpSocket ) ) ) { // yonatan http - WC-TODO: make sure this is a new, incoming connection?
+			// Turn this into a CWebCacheUpSocket and attach to client.
+			SOCKET s = Detach(); // Detach socket from this (CClientReqSocket)
+			WCSocket = new CWebCacheUpSocket(); // Create a new WebCache socket
+			WCSocket->Attach( s, FD_WRITE|FD_READ|FD_CLOSE );
+			if( WCSocket->ProcessFirstHttpGet( GlobalReadBuffer, ret ) ) {
+				delete this;
+				return;
+			}
+		} else {
+			static_cast<CWebCacheUpSocket*>(this)->ProcessHttpPacket( (BYTE*)GlobalReadBuffer, ret );
+		}
+	}
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 	// Loop, processing packets until we run out of them
 	while ((rend - rptr >= PACKET_HEADER_SIZE) || ((pendingPacket != NULL) && (rend - rptr > 0)))
 	{
@@ -434,6 +453,10 @@ void CEMSocket::ProcessReceiveData()
 				case OP_EDONKEYPROT:
 				case OP_PACKEDPROT:
 				case OP_EMULEPROT:
+				// ==> WebCache [WC team/MorphXT] - Stulle/Max
+				case OP_WEBCACHEPACKEDPROT:
+				case OP_WEBCACHEPROT: // yonatan - webcache protocol packets
+				// <== WebCache [WC team/MorphXT] - Stulle/Max
 					break;
 				default:
 					EMTrace("CEMSocket::OnReceive ERROR Wrong header");
@@ -535,8 +558,16 @@ void CEMSocket::ProcessReceiveData()
 }
 
 void CEMSocket::SetDownloadLimit(uint32 limit){	
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	/*
 	downloadLimit = limit;
 	downloadLimitEnable = true;	
+	*/
+	downloadLimit += limit; 
+	downloadLimitEnable = true;	
+	if(downloadLimit > 20 * limit && downloadLimit > 4500) // Allow a maximum of 2.0 sec to accumulate or 3 * MTU
+		downloadLimit = max(20 * limit, 4500); 
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	
 	// CPU load improvement
 	//Xman include ACK

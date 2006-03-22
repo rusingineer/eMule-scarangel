@@ -148,7 +148,7 @@ void CDownloadListCtrl::Init()
 	InsertColumn(12, GetResString(IDS_CAT) ,LVCFMT_LEFT, 100);
 	InsertColumn(13,GetResString(IDS_AVGQR),LVCFMT_LEFT, 70); //Xman Xtreme-Downloadmanager AVG-QR
 	
-	InsertColumn(14, _T("Webcache capable") ,LVCFMT_LEFT, 100); //JP Webcache column , {Webcache} [Max]  
+	InsertColumn(14, GetResString(IDS_WC_SOURCES) ,LVCFMT_LEFT, 100); // WebCache [WC team/MorphXT] - Stulle/Max
 	InsertColumn(15, GetResString(IDS_SHOW_DROPPED_SRC) ,LVCFMT_LEFT, 80); // show # of dropped sources - Stulle
 
 	SetAllIcons();
@@ -228,7 +228,7 @@ void CDownloadListCtrl::SetAllIcons()
 	m_ImageList.Add(CTempIconLoader(_T("ClientAMulePlus")));		//29
 	m_ImageList.Add(CTempIconLoader(_T("ClientLPhant")));			//30
 	m_ImageList.Add(CTempIconLoader(_T("ClientLPhantPlus")));		//31
-	m_ImageList.Add(CTempIconLoader(_T("PREF_WEBCACHE"))); //jp webcacheclient icon , {Webcache} [Max]  
+	m_ImageList.Add(CTempIconLoader(_T("PREF_WEBCACHE"))); //32 // WebCache [WC team/MorphXT] - Stulle/Max
 	// ==> Mod Icons - Stulle
 	m_ImageList.Add(CTempIconLoader(_T("AAAEMULEAPP"))); //33
 	m_ImageList.Add(CTempIconLoader(_T("STULLE"))); //34
@@ -319,6 +319,12 @@ void CDownloadListCtrl::Localize()
 	strRes = GetResString(IDS_AVGQR); 
 	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 	pHeaderCtrl->SetItem(13, &hdi);
+
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	strRes = GetResString(IDS_WC_SOURCES);
+	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
+	pHeaderCtrl->SetItem(14, &hdi);
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	// ==> show # of dropped sources - Stulle
 	strRes = GetResString(IDS_SHOW_DROPPED_SRC);
@@ -609,16 +615,20 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
                     buffer = _T("");
 				}
 // <-- ZZ:DownloadManager
-				// ==> show HL per file constantaniously - Stulle
+				// ==> Global Source Limit [Max/Stulle] - Stulle
 				/*
 				if (thePrefs.IsExtControlsEnabled() && lpPartFile->GetPrivateMaxSources() != 0)
 					buffer.AppendFormat(_T(" [%i]"), lpPartFile->GetPrivateMaxSources());
 				*/
-				if (!thePrefs.IsUseGlobalHL() && thePrefs.IsExtControlsEnabled() && lpPartFile->GetPrivateMaxSources() != 0)
-					buffer.AppendFormat(_T(" [%i]"), lpPartFile->GetPrivateMaxSources());
+				if (thePrefs.IsUseGlobalHL())
+					buffer.AppendFormat(_T(" [%i]"), lpPartFile->GetMaxSources());
+				// ==> show HL per file constantaniously - Stulle
 				else if (thePrefs.GetShowFileHLconst())
 					buffer.AppendFormat(_T(" [%i]"), lpPartFile->GetMaxSources());
 				// <== show HL per file constantaniously - Stulle
+				else if (thePrefs.IsExtControlsEnabled() && lpPartFile->GetPrivateMaxSources() != 0)
+					buffer.AppendFormat(_T(" [%i]"), lpPartFile->GetPrivateMaxSources());
+				// <== Global Source Limit [Max/Stulle] - Stulle
 				dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT | DT_RIGHT);
 			}
 			break;
@@ -719,6 +729,37 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 			break;
 		}
 
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		case 14:
+			{
+				UINT wcsc = lpPartFile->GetWebcacheSourceCount();
+				UINT wcsc_our = 0;
+				UINT wcsc_not_our = 0;
+				if(thePrefs.IsExtControlsEnabled())
+				{
+				wcsc_our = lpPartFile->GetWebcacheSourceOurProxyCount();
+				wcsc_not_our = lpPartFile->GetWebcacheSourceNotOurProxyCount();
+				}
+
+				UINT sc = lpPartFile->GetSourceCount() + lpPartFile->GetSrcA4AFCount();
+				double PercentWCClients;
+				if (sc !=0)
+					PercentWCClients = (double) 100 * wcsc / sc;
+				else
+					PercentWCClients = 0;
+                if(wcsc > 0 && !(lpPartFile->GetStatus() == PS_PAUSED && wcsc == 0) && lpPartFile->GetStatus() != PS_COMPLETE) {
+					if(thePrefs.IsExtControlsEnabled())
+						buffer.Format(_T("%i/%i/%i (%1.1f%%)"), wcsc, wcsc_our, wcsc_not_our, PercentWCClients);
+					else
+                    buffer.Format(_T("%i (%1.1f%%)"), wcsc, PercentWCClients);
+                } else {
+                    buffer = _T("");
+				}
+				dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT | DT_RIGHT);
+			}
+			break;
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 		// ==> show # of dropped sources - Stulle
 		case 15:
 			{
@@ -810,6 +851,10 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 				else if (lpUpDownClient->GetClientSoft() == SO_LPHANT){
 					image = 30;
 				}
+				// ==> WebCache [WC team/MorphXT] - Stulle/Max
+				else if (lpUpDownClient->GetClientSoft() == SO_WEBCACHE)
+					image = 32;
+				// <== WebCache [WC team/MorphXT] - Stulle/Max
 				else if (lpUpDownClient->ExtProtocolAvailable()){
 					// ==> Mod Icons - Stulle
 					/*
@@ -1140,6 +1185,26 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 				dc->DrawText(buffer, buffer.GetLength(), const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
 			}
 			break;
+
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		case 14: {
+			if (lpUpDownClient->SupportsWebCache())
+			{
+				buffer = lpUpDownClient->GetWebCacheName();
+				if (lpUpDownClient->IsBehindOurWebCache())
+					dc->SetTextColor(RGB(0, 180, 0)); //if is behind our webcache display green
+				else if (buffer != "")
+					dc->SetTextColor(RGB(255, 0, 0)); // if webcache info is there but not our own set red
+				else
+					buffer = GetResString(IDS_WEBCACHE_NOPROXY);	// if no webcache info colour is black
+			}
+			else
+				buffer = "";
+			dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
+ 			dc->SetTextColor(RGB(0, 0, 0));
+			break;
+		}
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 		}
 	}
@@ -2678,6 +2743,12 @@ int CDownloadListCtrl::Compare(const CPartFile* file1, const CPartFile* file2, L
 			break;
 		//Xman end
 
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		case 14:
+			comp=file1->GetWebcacheSourceCount() - file2->GetWebcacheSourceCount();
+			break;
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 		// ==> show # of dropped sources - Stulle
 		case 15:
 		{
@@ -2771,6 +2842,14 @@ int CDownloadListCtrl::Compare(const CUpDownClient *client1, const CUpDownClient
 			return -1;
 		return client1->GetDiffQR() - client2->GetDiffQR();
 	//Xman end
+	
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	case 14:
+		if (client1->SupportsWebCache() && client2->SupportsWebCache() )
+		return CompareLocaleStringNoCase(client1->GetWebCacheName(),client2->GetWebCacheName());
+		else
+			return client1->SupportsWebCache() - client2->SupportsWebCache();
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	default:
 		return 0;
@@ -2849,13 +2928,13 @@ void CDownloadListCtrl::CreateMenues()
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPNONEEDEDSRCS, GetResString(IDS_DROPNONEEDEDSRCS)); 
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPQUEUEFULLSRCS, GetResString(IDS_DROPQUEUEFULLSRCS)); 
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPLEECHER, GetResString(IDS_DROPLEECHER));  //Xman Anti-Leecher
-	// ==> m000h
+	// ==> advanced manual dropping - Stulle
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPLOWTOLOWIPSRCS, _T("Drop LowIP to LowIP Sources"));
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPUNKNOWNERRORBANNEDSRCS, _T("Drop Unknown, Error and Banned Sources"));
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPHIGHQRSRCSXMAN, _T("Drop High Queue Rating Sources (Xman method)"));
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPHIGHQRSRCSSIVKA, _T("Drop High Queue Rating Sources (Sivka method)"));
 	m_DropMenu.AppendMenu(MF_STRING, MP_CLEANUP_NNS_FQS_NONE_ERROR_BANNED_LOWTOLOWIP, _T("CleanUp => NNS, FQS, UNK, ERR, BAN & L2L"));
-	// <== m000h
+	// <== advanced manual dropping - Stulle
 
 
 	m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_DropMenu.m_hMenu, GetResString(IDS_SubMenu_Drop),_T("DROPICON") );

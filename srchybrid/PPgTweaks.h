@@ -31,6 +31,10 @@ protected:
     bool m_bLogA4AF;
 	bool m_bLogDrop; //Xman Xtreme Downloadmanager
 	bool m_bLogUlDlEvents;
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	bool m_bLogWebCacheEvents;//JP log webcache events
+	bool m_bLogICHEvents;//JP log ICH events
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 	/*
 	bool m_bCreditSystem;
@@ -85,6 +89,10 @@ protected:
     HTREEITEM m_htiLogA4AF;
 	HTREEITEM m_htiLogDrop; //Xman Xtreme Downloadmanager
 	HTREEITEM m_htiLogUlDlEvents;
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	HTREEITEM m_htiLogWebCacheEvents; //jp log webcache events
+	HTREEITEM m_htiLogICHEvents; //JP log ICH events
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 	/*
 	HTREEITEM m_htiCreditSystem;

@@ -39,7 +39,12 @@ public:
 	void	SetClient(CUpDownClient* pClient);
 	void	Disconnect(LPCTSTR pszReason, CUpDownClient::UpStopReason reason = CUpDownClient::USR_NONE); // Maella -Upload Stop Reason-
 	void	WaitForOnConnect();
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	/*
 	void	ResetTimeOutTimer();
+	*/
+	virtual void	ResetTimeOutTimer(); // yonatan http - made virtual, WC-TODO ?
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	bool	CheckTimeOut();
 	virtual UINT GetTimeOut();
 	virtual void Safe_Delete();
@@ -84,6 +89,11 @@ protected:
 	uint32	deltimer;
 	bool	m_bPortTestCon;
 	uint32	m_nOnConnect;
+
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+protected:
+	bool	ProcessWebCachePacket(const BYTE* packet, uint32 size, UINT opcode, UINT uRawSize); // yonatan - webcache protocol packets
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 };
 
 

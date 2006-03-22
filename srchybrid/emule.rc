@@ -210,10 +210,12 @@ BEGIN
     CONTROL         "",IDC_DOWNLOADCLIENTS,"SysListView32",LVS_REPORT | 
                     LVS_SINGLESEL | LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | NOT 
                     WS_VISIBLE | WS_TABSTOP,5,171,500,107,WS_EX_STATICEDGE
+// ==> {CPU/MEM usage} [Max] 
     LTEXT           "CPU : ",IDC_CPU,209,280,21,8
     LTEXT           "count",IDC_CPUCOUNT,233,280,19,8
     LTEXT           "RAM :",IDC_MEM,267,280,20,8
     LTEXT           "count",IDC_MEMCOUNT,295,280,19,8
+// <== {CPU/MEM usage} [Max] 
 END
 
 IDD_SERVER DIALOGEX 0, 35, 511, 289
@@ -1448,7 +1450,12 @@ BEGIN
                     358,111,148,59
 END
 
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+/*
 IDD_SOURCEDETAILWND DIALOGEX 0, 0, 322, 220
+*/
+IDD_SOURCEDETAILWND DIALOGEX 0, 0, 322, 277
+// <== WebCache [WC team/MorphXT] - Stulle/Max
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
 CAPTION "Client Details"
@@ -1519,6 +1526,18 @@ BEGIN
                     SS_NOPREFIX | WS_GROUP,110,147,53,8
     CONTROL         "Static",IDC_UPLOADQUEURANK,"Static",SS_LEFTNOWORDWRAP | 
                     SS_NOPREFIX | WS_GROUP,256,147,50,8
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+    GROUPBOX        "WebCache",IDC_STATIC57,7,222,308,51
+    LTEXT           "WebCache:",IDC_STATIC56,19,234,64,10
+    CONTROL         "Static",IDC_Webcache,"Static",SS_LEFTNOWORDWRAP | 
+                   SS_NOPREFIX | WS_GROUP,110,234,197,10
+    LTEXT           "Successful/Requested:",IDC_STATIC54,19,247,84,10
+    CONTROL         "Static",IDC_WCSTATISTICS,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,110,247,197,8
+    LTEXT           "Is trusted OHCB sender:",IDC_STATIC55,19,260,100,10
+    CONTROL         "Static",IDC_TRUSTEDOHCBSENDER,"Static",
+                    SS_LEFTNOWORDWRAP | SS_NOPREFIX | WS_GROUP,110,260,197,8
+// <== WebCache [WC team/MorphXT] - Stulle/Max
 END
 
 IDD_META_DATA DIALOGEX 0, 0, 408, 130
@@ -1532,7 +1551,12 @@ BEGIN
                     SS_LEFTNOWORDWRAP | SS_NOPREFIX | WS_GROUP,4,118,302,8
 END
 
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+/*
 IDD_FILEDETAILS_INFO DIALOGEX 0, 0, 334, 250
+*/
+IDD_FILEDETAILS_INFO DIALOGEX 0, 0, 334, 260
+// <== WebCache [WC team/MorphXT] - Stulle/Max
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "File Details"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
@@ -1611,6 +1635,8 @@ BEGIN
                     WS_GROUP,172,162,72,8
     CONTROL         "Static",IDC_RECOVERED,"Static",SS_LEFTNOWORDWRAP | 
                     SS_NOPREFIX | WS_GROUP,249,162,74,8
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+/*
     CONTROL         "Download started:",IDC_FD_X16,"Static",
                     SS_LEFTNOWORDWRAP | WS_GROUP,14,194,84,8
     CONTROL         "Static",IDC_FILECREATED,"Static",SS_LEFTNOWORDWRAP | 
@@ -1630,6 +1656,35 @@ BEGIN
     GROUPBOX        "General",IDC_FD_X0,7,7,320,98,BS_FLAT
     GROUPBOX        "Transfer",IDC_FD_X6,7,111,320,66,BS_FLAT
     GROUPBOX        "Dates",IDC_FD_X8,7,183,320,57,BS_FLAT
+*/
+    CONTROL         "Download started:",IDC_FD_X16,"Static",
+                    SS_LEFTNOWORDWRAP | WS_GROUP,14,204,84,8
+    CONTROL         "Static",IDC_FILECREATED,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,101,204,222,8
+    CONTROL         "Download time:",IDC_DL_ACTIVE_TIME_LBL,"Static",
+                    SS_LEFTNOWORDWRAP | WS_GROUP,14,214,84,8
+    CONTROL         "Static",IDC_DL_ACTIVE_TIME,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,101,214,222,8
+    CONTROL         "Seen complete:",IDC_FD_X15,"Static",SS_LEFTNOWORDWRAP | 
+                    WS_GROUP,14,224,81,8
+    CONTROL         "Static",IDC_LASTSEENCOMPL,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,101,224,222,8
+    CONTROL         "Last receive:",IDC_FD_LASTCHANGE,"Static",
+                    SS_LEFTNOWORDWRAP | WS_GROUP,14,234,84,8
+    CONTROL         "Static",IDC_LASTRECEIVED,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,101,234,222,8
+    GROUPBOX        "General",IDC_FD_X0,7,7,320,98,BS_FLAT
+    GROUPBOX        "Transfer",IDC_FD_X6,7,111,320,76,BS_FLAT
+    GROUPBOX        "Dates",IDC_FD_X8,7,193,320,57,BS_FLAT
+    CONTROL         "Static",IDC_WCReq,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,92,172,70,8
+    CONTROL         "Static",IDC_WCDOWNL,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,249,172,74,8
+    CONTROL         "WC Succ/Req:",IDC_WC_REQ_SUCC,"Static",
+                    SS_LEFTNOWORDWRAP | WS_GROUP,14,172,72,8
+    CONTROL         "WC-Download:",IDC_WC_DOWNLOADED,"Static",
+                    SS_LEFTNOWORDWRAP | WS_GROUP,172,172,72,8
+// <== WebCache [WC team/MorphXT] - Stulle/Max
 END
 
 IDD_PREVIEWDIALOG DIALOGEX 0, 0, 280, 233
@@ -1969,6 +2024,50 @@ BEGIN
     DEFPUSHBUTTON   "Close",IDOK,162,161/*206*/,56,12,BS_FLAT
 END
 // <== file settings - Stulle
+
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+IDD_PPG_WEBCACHESETTINGS DIALOGEX 0, 0, 230, 244
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "WEBCACHE"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    GROUPBOX        "ISP Proxyserver Settings",IDC_Webcache,7,41,216,161
+    EDITTEXT        IDC_webcacheName,55,52,159,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_webcachePort,55,67,38,12,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Port",IDC_STATIC_PORT,14,70,38,9
+    LTEXT           "Address",IDC_STATIC_ADDRESS,14,55,38,9
+    GROUPBOX        "Webcache Controls",IDC_STATIC_CONTROLS,7,7,216,30
+    CONTROL         "Enable Webcached Downloads",
+                    IDC_Activatewebcachedownloads,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,14,17,118,12
+    CTEXT           "You are using a TCP port that is usually not cached by ISP proxy-servers. Please change your TCP port to  21, 70, 80, 210, 443 563  or 1025-65535 to be able to activate the webcache download!",
+                    IDC_WrongPortWarning,21,203,194,34,NOT WS_VISIBLE
+    PUSHBUTTON      "Autodetect Webcache",IDC_DETECTWEBCACHE,14,175,201,12,
+                    BS_FLAT
+    LTEXT           "Number of blocks to download before reconnecting to the proxy (may help to solve disconnects in some cases)",
+                    IDC_STATIC_NRBLOCKS,14,97,124,28
+    RTEXT           "180k-Blocks",IDC_STATIC_BLOCKS,174,113,41,8
+    EDITTEXT        IDC_BLOCKS,141,108,30,13,ES_AUTOHSCROLL
+    CONTROL         "Extra long timeout for webcache connections",
+                    IDC_EXTRATIMEOUT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    14,124,168,13
+    CONTROL         "This webcache does NOT cache traffic within the same ISP",
+                    IDC_LOCALTRAFFIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    14,136,201,14
+    CONTROL         "",IDC_WEBCACHELINK2,"Static",SS_BLACKFRAME | NOT 
+                    WS_VISIBLE,14,190,201,10
+    CONTROL         "Persistent connections for proxy downloads",
+                    IDC_PERSISTENT_PROXY_CONNS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,14,149,201,14
+    PUSHBUTTON      "show advanced controls",IDC_ADVANCEDCONTROLS,133,16,82,
+                    17
+    PUSHBUTTON      "Test webcache configuration. Might take up to 30 Seconds",
+                    IDC_TestProxy,14,82,201,15
+    CONTROL         "Update webcachesettings automatically",
+                    IDC_UPDATE_WCSETTINGS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,14,161,201,14
+END
+// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2853,6 +2952,7 @@ IONIX                   ICON                    "res\\ionix.ico"
 CYREX                   ICON                    "res\\Cyrex2001.ico"
 NEXTEMF                 ICON                    "res\\nextEMF.ico"
 NEO                     ICON                    "res\\Client-Neo.ico"
+FUNNYNICK               ICON                    "res\\FunnyNick.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -5050,48 +5150,6 @@ BEGIN
     IDS_SHOWADDITIONALGRAPH "Show additional graph-lines"
     IDS_CHECK4UPDATEMOD     "Check for new Xtreme version on startup"
     IDS_ANTILEECHEREMCRYPT_CHECK "Detect emcrypt"
-   IDS_STATS_WEBCACHE      "Webcache"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_WC_TIMEOUT          "Extra long timeout for webcache connections"
-    IDS_WC_UPDATESETTING    "Update webcachesettings automatically"
-    IDS_WC_WRONGPORT        "You are using a TCP port that is usually not cached by ISP proxy-servers. Please change your TCP port to  21, 70, 80, 210, 443 563  or 1025-65535 to be able to activate the webcache download!"
-    IDS_WEBCACHE_ISP        "ISP Proxyserver Settings"
-    IDS_PW_WEBCACHE         "WebCache"
-    IDS_WC_NRBLOCKS         "Number of blocks to download before reconnecting to the proxy (may help to solve disconnects in some cases)"
-    IDS_WEBCACHE_NOPROXY    "no proxy set"
-    IDS_WEBCACHE_NOSUPPORT  "not supported"
-    IDS_CD_WCTRUSTSENDER    "Is trusted OHCB sender:"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_CD_WCSUCCFAIL       "Successful/Requested:"
-    IDS_WEBCACHE            "WEBCACHE"
-    IDS_LOG_WCEVENTS        "Log WebCache Events"
-    IDS_LOG_IACH            "Log IACH Events"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_STATS_WEBCACHE_1    "Data 1:"
-    IDS_STATS_WEBCACHE_2    "Data 2:"
-    IDS_STATS_WEBCACHE_3    "Data 3:"
-    IDS_WC_ADDRESS          "Address"
-    IDS_WC_ADVANCED         "Show advanced controls"
-    IDS_WC_AUTO             "Autodetect Webcache"
-    IDS_WC_BLOCK            "180k-Blocks"
-    IDS_WC_CONTROLS         "Webcache Controls"
-    IDS_WC_ENABLE           "Enable Webcached Downloads"
-    IDS_WC_HIDE_ADV         "Hide advanced controls"
-    IDS_WC_LINK             "Link: "
-    IDS_WC_LOCAL            "This webcache does NOT cache traffic within the same ISP"
-    IDS_WC_PERSISTENT       "Persistent connections for proxy downloads"
-    IDS_WC_PORT             "Port"
-    IDS_WC_SUBMIT_WEB       "Submit webcache info via webform"
-    IDS_WC_TEST             "Test webcache configuration. Might take up to 30 Seconds"
 END
 
 STRINGTABLE 
@@ -5138,7 +5196,6 @@ BEGIN
     IDS_SUQWT_LOAD          "Load %s"
     IDS_SUQWT               "Enable SaveUploadQueueWaitingTime (SUQWT)"
     // <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-    IDS_COUNT_WC_STATS      "Count WC-Sessions to session stats" // Show WC session stats [MorphXT] - Stulle
     IDS_SHOW_FILE_HL_CONST  "Show HL per file constantaniously" // show HL per file constantaniously - Stulle
     IDS_PS_FILES_RED        "Draw PS files red" // draw PS files red - Stulle
     IDS_FRIENDS_BLUE        "Draw friends blue" // draw friends blue - Stulle
@@ -5168,7 +5225,59 @@ BEGIN
     IDS_STATIC_STATSHL      "Min/ Max hardlimit value for graph:"
     IDS_SP_SRCGRAPH         "Source Graph"
     // <== Source Graph - Stulle
-	IDS_FD_AVGDL            "Avg DL speed:" // Average download speed - Stulle
+    IDS_FD_AVGDL            "Avg DL speed:" // Average download speed - Stulle
+    // ==> WebCache [WC team/MorphXT] - Stulle/Max
+    IDS_PW_WEBCACHE         "WebCache"
+    IDS_WrongPortforWebcache 
+                            "Webcache Download disabled: Only transfers on Port   21, 70,  80, 210, 443, 563 and in the range from 1025 to 65535 are cached. Please use one of these Ports if you want to enable the Webcache Feature"
+    IDS_WEBCACHE_NOSUPPORT  "not supported"
+    IDS_STATS_SUCCESSFULLWC "Successful WC-DL/WC-Requests:"
+    IDS_STATS_FAILEDWC      "Failed WC-DL/WC-Requests:"
+    IDS_WEBCACHE_ISP        "ISP Proxyserver Settings"
+    IDS_WC_PORT             "Port"
+    IDS_WC_ADDRESS          "Address"
+    IDS_WC_CONTROLS         "Webcache Controls"
+    IDS_WC_ENABLE           "Enable Webcached Downloads"
+    IDS_WC_WRONGPORT        "You are using a TCP port that is usually not cached by ISP proxy-servers. Please change your TCP port to  21, 70, 80, 210, 443 563  or 1025-65535 to be able to activate the webcache download!"
+    IDS_WC_AUTO             "Autodetect Webcache"
+    IDS_WC_NRBLOCKS         "Number of blocks to download before reconnecting to the proxy (may help to solve disconnects in some cases)"
+    IDS_WC_BLOCK            "180k-Blocks"
+    IDS_WC_TIMEOUT          "Extra long timeout for webcache connections"
+    IDS_WC_LOCAL            "This webcache does NOT cache traffic within the same ISP"
+    IDS_WC_SUBMIT_EMAIL     "Submit these settings via email"
+    IDS_WC_LINK             "Link: "
+    IDS_WC_PERSISTENT       "Persistent connections for proxy downloads"
+    IDS_WC_ADVANCED         "Show advanced controls"
+    IDS_WC_TEST             "Test webcache configuration. Might take up to 30 Seconds"
+    IDS_WC_HIDE_ADV         "Hide advanced controls"
+    IDS_WC_SUBMIT_WEB       "Submit webcache info via webform"
+    IDS_WC_SOURCES          "Webcache Capable"
+    IDS_WC_UPDATESETTING    "Update webcachesettings automatically"
+    IDS_LOG_WCEVENTS        "Log WebCache Events"
+    IDS_LOG_IACH            "Log IACH Events"
+    IDS_WEBCACHE_NOPROXY    "no proxy set"
+    IDS_CD_WCSUCCFAIL       "Successful/Requested:"
+    IDS_CD_WCTRUSTSENDER    "Is trusted OHCB sender:"
+    IDS_WCDOWNL             "not working yet"
+    IDS_WC_REQ_SUCC         "WC Succ/Req:"
+    IDS_WC_DOWNLOADED       "WC-Download:"
+    IDS_WC_REACTIVATED      " Webcache has been reactivated."
+    IDS_WC_NEWPROXYIP       "A new proxy ip has been detected: %s."
+    IDS_STATS_WEBCACHE      "Webcache"
+    IDS_STATS_WEBCACHE_1    "Data 1:"
+    IDS_STATS_WEBCACHE_2    "Data 2:"
+    IDS_STATS_WEBCACHE_3    "Data 3:"
+    // <== WebCache [WC team/MorphXT] - Stulle/Max
+    // ==> FunnyNick [SiRoB/Stulle] - Stulle
+    IDS_FUNNYNICK           "FunnyNick"
+    IDS_FN_TAG              "FunnyNick Tag"
+    IDS_NO_TAG              "No Tag"
+    IDS_SHORT_TAG           "[FN]"
+    IDS_FULL_TAG            "[FunnyNick]"
+	IDS_CUSTOM_TAG          "Custom Tag"
+	IDS_SET_CUSTOM_TAG      "Set custom tag"
+	IDS_FN_TAG_AT_END       "Show Tag at the end"
+    // <== FunnyNick [SiRoB/Stulle] - Stulle
 END
 
 #endif    // Englisch (USA) resources

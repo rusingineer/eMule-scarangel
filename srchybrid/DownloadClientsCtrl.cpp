@@ -118,7 +118,7 @@ void CDownloadClientsCtrl::SetAllIcons()
 	m_ImageList.Add(CTempIconLoader(_T("ClientLPhantPlus")));		//17
 	m_ImageList.Add(CTempIconLoader(_T("LEECHER")));				//18 //Xman Anti-Leecher
 	//Xman end
-	m_ImageList.Add(CTempIconLoader(_T("PREF_WEBCACHE"))); // [TPT] - WebCache , {Webcache} [Max] // 19
+	m_ImageList.Add(CTempIconLoader(_T("PREF_WEBCACHE"))); // 19 // WebCache [WC team/MorphXT] - Stulle/Max
 	// ==> Mod Icons - Stulle
 	m_ImageList.Add(CTempIconLoader(_T("AAAEMULEAPP"))); //20
 	m_ImageList.Add(CTempIconLoader(_T("STULLE"))); //21
@@ -313,6 +313,11 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					else if (client->GetClientSoft() == SO_LPHANT){
 						image = 16;
 					}
+					// ==> WebCache [WC team/MorphXT] - Stulle/Max
+					else if (client->GetClientSoft() == SO_WEBCACHE) {
+						image = 19;
+					}
+					// <== WebCache [WC team/MorphXT] - Stulle/Max
 					else if (client->ExtProtocolAvailable()){
 						// ==> Mod Icons - Stulle
 						/*

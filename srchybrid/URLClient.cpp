@@ -28,6 +28,11 @@
 //Xman
 #include "emule.h"
 #include "BandwidthControl.h" 
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+#include "WebCache\WebCacheProxyClient.h"
+#include "WebCache\WebCachedBlockList.h"
+#include "WebCache\WebCacheSocket.h"	// Superlexx - block transfer limiter
+// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -135,7 +140,12 @@ CUrlClient::~CUrlClient()
 {
 }
 
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+/*
 void CUrlClient::SendBlockRequests()
+*/
+void CUrlClient::SendBlockRequests(bool /*ed2k*/)
+// <== WebCache [WC team/MorphXT] - Stulle/Max
 {
 	ASSERT(0);
 }
@@ -373,7 +383,16 @@ void CUpDownClient::ProcessHttpBlockPacket(const BYTE* pucData, UINT uSize)
 //		Debug("  Start=%I64u  End=%I64u  Size=%u  %s\n", nStartPos, nEndPos, size, DbgGetFileInfo(reqfile->GetFileHash()));
 
 	if (!(GetDownloadState() == DS_DOWNLOADING || GetDownloadState() == DS_NONEEDEDPARTS))
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		/*
 		throw CString(_T("Failed to process HTTP data block - Invalid download state"));
+		*/
+	{
+		CString err;
+		err.Format( _T("Failed to process HTTP data block - Invalid download state: %u"), GetDownloadState() );
+		throw err;
+	}
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	m_dwLastBlockReceived = ::GetTickCount();
 
@@ -399,14 +418,41 @@ void CUpDownClient::ProcessHttpBlockPacket(const BYTE* pucData, UINT uSize)
 		Pending_Block_Struct *cur_block = m_PendingBlocks_list.GetNext(pos);
 		if (cur_block->block->StartOffset <= nStartPos && nStartPos <= cur_block->block->EndOffset)
 		{
+			// ==> WebCache [WC team/MorphXT] - Stulle/Max
+			/*
 			if (thePrefs.GetDebugClientTCPLevel() > 0){
+			*/
+			if (thePrefs.GetDebugClientTCPLevel() > 1){
+			// <== WebCache [WC team/MorphXT] - Stulle/Max
 				// NOTE: 'Left' is only accurate in case we have one(!) request block!
 				void* p = m_pPCDownSocket ? (void*)m_pPCDownSocket : (void*)socket;
 				Debug(_T("%08x  Start=%I64u  End=%I64u  Size=%u  Left=%I64u  %s\n"), p, nStartPos, nEndPos, uSize, cur_block->block->EndOffset - (nStartPos + uSize) + 1, DbgGetFileInfo(reqfile->GetFileHash()));
 			}
 
+			// ==> WebCache [WC team/MorphXT] - Stulle/Max
+			byte* dec_pucData = (byte*)pucData;
+
+			if (IsDownloadingFromWebCache()) // Superlexx - encryption - decrypt the data
+			{
+				if (Crypt.useNewKey)	// we must use a new key
+				{
+					Crypt.RefreshRemoteKey();
+					Crypt.decryptor.SetKey(Crypt.remoteKey, WC_KEYLENGTH);
+					Crypt.useNewKey = false;
+
+					Crypt.decryptor.DiscardBytes(16); // we must throw away 16 bytes of the key stream since they were already used once, 16 is the file hash length
+				}
+				Crypt.decryptor.ProcessString(dec_pucData, uSize);
+			}
+			// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 			m_nLastBlockOffset = nStartPos;
+			// ==> WebCache [WC team/MorphXT] - Stulle/Max
+			/*
 			uint32 lenWritten = reqfile->WriteToBuffer(uSize, pucData, nStartPos, nEndPos, cur_block->block, this);
+			*/
+			uint32 lenWritten = reqfile->WriteToBuffer(uSize, dec_pucData, nStartPos, nEndPos, cur_block->block, this); // Superlexx: write decrypted data
+			// <== WebCache [WC team/MorphXT] - Stulle/Max
 			if (lenWritten > 0)
 			{
 				m_nTransferredDown += uSize;
@@ -415,16 +461,50 @@ void CUpDownClient::ProcessHttpBlockPacket(const BYTE* pucData, UINT uSize)
 				if (nEndPos >= cur_block->block->EndOffset)
 				{
 					reqfile->RemoveBlockFromList(cur_block->block->StartOffset, cur_block->block->EndOffset);
+
+					// ==> WebCache [WC team/MorphXT] - Stulle/Max
+					if (m_pWCDownSocket)
+						m_pWCDownSocket->blocksloaded++; //count downloaded blocks for this socket
+					//JP moved to CUpDownClient::SendWebCacheBlockRequests() and CWebCacheProxyClient::UpdateClient
+					if( !IsProxy() && m_pWCDownSocket)
+					{
+						thePrefs.ses_successfullPROXYREQUESTS++;
+						PublishWebCachedBlock( cur_block->block );
+					} 
+					else if (IsProxy())
+					{
+						SINGLEProxyClient->OnWebCachedBlockDownloaded( cur_block->block );
+						// JP moved to CWebCacheProxyClient::OnWebCachedBlockDownloaded
+					}
+					// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 					delete cur_block->block;
 					delete cur_block;
 					m_PendingBlocks_list.RemoveAt(posLast);
+
+					// ==> WebCache [WC team/MorphXT] - Stulle/Max
+					if( IsProxy() ) {
+						SetDownloadState( DS_NONE );
+						SetWebCacheDownState( WCDS_NONE );
+						WebCachedBlockList.TryToDL();
+						return;
+					}
+					// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 					if (m_PendingBlocks_list.IsEmpty())
 					{
 						if (thePrefs.GetDebugClientTCPLevel() > 0)
 							DebugSend("More block requests", this);
 						m_nUrlStartPos = (uint64)-1;
+						// ==> WebCache [WC team/MorphXT] - Stulle/Max
+						/*
 						SendHttpBlockRequests();
+						*/
+						if( GetWebCacheDownState() == WCDS_NONE )
+							SendHttpBlockRequests();
+						else
+							SendBlockRequests();
+						// <== WebCache [WC team/MorphXT] - Stulle/Max
 					}
 				}
 //				else

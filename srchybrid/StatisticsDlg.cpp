@@ -133,6 +133,9 @@ void CStatisticsDlg::SetAllIcons()
 	iml.Add(CTempIconLoader(_T("StatsMonth")));				// Time > Averages and Projections > Monthly
 	iml.Add(CTempIconLoader(_T("StatsYear")));				// Time > Averages and Projections > Yearly
 	iml.Add(CTempIconLoader(_T("HardDisk")));				// Diskspace
+
+	iml.Add(CTempIconLoader(_T("PREF_WEBCACHE")));               // {Webcache} [Max]
+
 	stattree.SetImageList(&iml, TVSIL_NORMAL);
 	imagelistStatTree.DeleteImageList();
 	imagelistStatTree.Attach(iml.Detach());
@@ -839,6 +842,11 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		uint32	statGoodSessions =				0;
 		uint32	statBadSessions =				0;
 		double	percentSessions =				0;
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		uint32  failedWCSessions =				thePrefs.ses_WEBCACHEREQUESTS - thePrefs.ses_successfull_WCDOWNLOADS;
+//		double  percentWCSessions =				0;
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 		// Transfer Ratios
 		if ( bEmuleIn>0 && bEmuleOut>0 ) 
 		{
@@ -991,6 +999,16 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 						cbuffer.Format( _T("URL: %s (%1.1f%%)") , CastItoXBytes( DownDataClient, false, false ), percentClientTransferred );
 						stattree.SetItemText( down_scb[i] , cbuffer );
 						i++;
+						// ==> WebCache [WC team/MorphXT] - Stulle/Max
+						DownDataClient = thePrefs.GetDownData_WEBCACHE();
+						if ( DownDataTotal!=0 && DownDataClient!=0 )
+							percentClientTransferred = (double) 100 * DownDataClient / DownDataTotal;
+						else
+							percentClientTransferred = 0;
+						cbuffer.Format( _T("WEBCACHE: %s (%1.1f%%)") , CastItoXBytes( DownDataClient ), percentClientTransferred );
+						stattree.SetItemText( down_scb[i] , cbuffer );
+						i++;
+						// <== WebCache [WC team/MorphXT] - Stulle/Max
 					}
 					// Downloaded Data By Port
 					if (forceUpdate || stattree.IsExpanded(hdown_spb)) 
@@ -1116,8 +1134,15 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 					i++;
 				}
 				// Set Download Sessions
+				// ==> WebCache [WC team/MorphXT] - Stulle/Max
+				// never count WC requests to session stats
+				/*
 				statGoodSessions =	thePrefs.GetDownS_SuccessfulSessions() + myStats.a[1]; // Add Active Downloads
 				statBadSessions =	thePrefs.GetDownS_FailedSessions();
+				*/
+				statGoodSessions =	(thePrefs.GetDownS_SuccessfulSessions() + myStats.a[1]) - thePrefs.ses_successfull_WCDOWNLOADS; // Add Active Downloads
+				statBadSessions =	thePrefs.GetDownS_FailedSessions() - failedWCSessions;
+				// <== WebCache [WC team/MorphXT] - Stulle/Max
 				cbuffer.Format( _T("%s: %u") , GetResString(IDS_STATS_DLSES) , statGoodSessions + statBadSessions );
 				stattree.SetItemText( down_S[4] , cbuffer );
 				if (forceUpdate || stattree.IsExpanded(down_S[4])) 
@@ -1190,6 +1215,26 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 					// Maella end					
 					stattree.SetItemText( down_ssessions[1] , cbuffer );
 					// Set Average Download Time
+					// ==> WebCache [WC team/MorphXT] - Stulle/Max
+					// Set Successful webcacherequests
+					percentSessions = 0;
+					if (thePrefs.ses_WEBCACHEREQUESTS > 0)
+						percentSessions = (double) 100 * thePrefs.ses_successfull_WCDOWNLOADS / thePrefs.ses_WEBCACHEREQUESTS;
+					else 
+						percentSessions = (double) 0;
+
+					cbuffer.Format(GetResString(IDS_STATS_SUCCESSFULLWC) + _T(" %u/%u (%1.1f%%)"), thePrefs.ses_successfull_WCDOWNLOADS, thePrefs.ses_WEBCACHEREQUESTS, percentSessions );
+					stattree.SetItemText( down_ssessions[4] , cbuffer ); // Set Succ WC Sessions
+
+					percentSessions = 0;
+					if (thePrefs.ses_WEBCACHEREQUESTS > 0)
+						percentSessions = (double) 100 * failedWCSessions / thePrefs.ses_WEBCACHEREQUESTS;
+					else
+						percentSessions = (double) 0;
+
+					cbuffer.Format(GetResString(IDS_STATS_FAILEDWC) + _T(" %u/%u (%1.1f%%)"), failedWCSessions, thePrefs.ses_WEBCACHEREQUESTS, percentSessions);
+					stattree.SetItemText( down_ssessions[5] , cbuffer );
+					// <== WebCache [WC team/MorphXT] - Stulle/Max
 					cbuffer.Format(_T("%s: %s"), GetResString(IDS_STATS_AVGDLTIME), CastSecondsToLngHM(thePrefs.GetDownS_AvgTime()));
 					stattree.SetItemText( down_ssessions[3] , cbuffer );
 				}
@@ -1328,6 +1373,16 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 						cbuffer.Format( _T("URL: %s (%1.1f%%)") , CastItoXBytes( DownDataClient, false, false ), percentClientTransferred );
 						stattree.SetItemText( down_tcb[i] , cbuffer );
 						i++;
+						// ==> WebCache [WC team/MorphXT] - Stulle/Max
+						DownDataClient = thePrefs.GetCumDownData_WEBCACHE();
+						if ( DownDataTotal!=0 && DownDataClient!=0 )
+							percentClientTransferred = (double) 100 * DownDataClient / DownDataTotal;
+						else
+							percentClientTransferred = 0;
+						cbuffer.Format( _T("WEBCACHE: %s (%1.1f%%)") , CastItoXBytes( DownDataClient ), percentClientTransferred );
+						stattree.SetItemText( down_tcb[i] , cbuffer );
+						i++;
+						// <== WebCache [WC team/MorphXT] - Stulle/Max
 					}
 					// Downloaded Data By Port
 					if (forceUpdate || stattree.IsExpanded(hdown_tpb)) 
@@ -2496,6 +2551,16 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 								cbuffer.Format( _T("URL: %s (%1.1f%%)") , CastItoXBytes( DownDataClient, false, false ), percentClientTransferred );
 								stattree.SetItemText( time_aap_down_dc[mx][i] , cbuffer );
 								i++;
+								// ==> WebCache [WC team/MorphXT] - Stulle/Max
+								DownDataClient = (uint64)(thePrefs.GetCumDownData_WEBCACHE() * avgModifier[mx]);
+								if ( DownDataTotal!=0 && DownDataClient!=0 )
+									percentClientTransferred = (double) 100 * DownDataClient / DownDataTotal;
+								else
+									percentClientTransferred = 0;
+								cbuffer.Format( _T("WEBCACHE: %s (%1.1f%%)") , CastItoXBytes( DownDataClient ), percentClientTransferred );
+								stattree.SetItemText( time_aap_down_dc[mx][i] , cbuffer );
+								i++;
+								// <== WebCache [WC team/MorphXT] - Stulle/Max
 							}
 							// Downloaded Data By Port
 							if (forceUpdate || stattree.IsExpanded(time_aap_down_hd[mx][1])) 
@@ -3246,6 +3311,47 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 			cbuffer = buffer2;
 		stattree.SetItemText(h_total_size_left_on_drive, cbuffer);
 	}
+
+	// ==> {Webcache} [Max] 
+	// NOTE TO MODDERS: WEBCACHE DOWNLOADS CURRENTLY EFFECT TRANSFER RATIOS - Beware of UL:DL limits!!! relevant functions: thePrefs.GetDownData_WEBCACHE(); thePrefs.GetCumDownData_WEBCACHE();  
+	if (forceUpdate || stattree.IsExpanded(h_webcache)) 
+	{
+
+		uint64 DownDataClient  = thePrefs.GetDownData_WEBCACHE();
+		uint64 DownDataTotal =   thePrefs.GetDownSessionClientData()/*+ thePrefs.GetDownData_WEBCACHE()*/;// {Webcache} [Max]
+		double percentClientTransferred = 0;
+		if ( DownDataTotal!=0 && DownDataClient!=0 )
+			percentClientTransferred = (double) 100 * DownDataClient / DownDataTotal;
+		else
+			percentClientTransferred = 0;
+		cbuffer.Format( _T("Downloaded Session: %s (%1.1f%%)") , CastItoXBytes( DownDataClient),percentClientTransferred);
+		stattree.SetItemText( wc_data[0] , cbuffer );
+
+		//jp webcache statistics START
+		DownDataClient = thePrefs.GetCumDownData_WEBCACHE();
+		DownDataTotal = thePrefs.GetDownTotalClientData()/* + thePrefs.GetCumDownData_WEBCACHE()*/;
+		if ( DownDataTotal!=0 && DownDataClient!=0 )
+			percentClientTransferred = (double) 100 * DownDataClient/DownDataTotal;
+		else
+			percentClientTransferred = 0;
+		cbuffer.Format( _T("Downloaded Cumulative: %s (%1.1f%%)") , CastItoXBytes( DownDataClient ), percentClientTransferred );
+		stattree.SetItemText( wc_data[1] , cbuffer );
+
+		//jp webcache statistics END
+
+
+		// Set Successful webcacherequests
+		double percentSessions = 0;
+		if (thePrefs.ses_WEBCACHEREQUESTS > 0)
+			percentSessions = (double) 100 * thePrefs.ses_successfull_WCDOWNLOADS / thePrefs.ses_WEBCACHEREQUESTS;
+		else 
+			percentSessions = (double) 0;
+
+		cbuffer.Format( _T("Successful WC-DL/WC-Requests: %u/%u (%1.1f%%)"), thePrefs.ses_successfull_WCDOWNLOADS, thePrefs.ses_WEBCACHEREQUESTS, percentSessions );
+		stattree.SetItemText( wc_data[2] , cbuffer ); // Set Succ WC Sessions
+	}
+	// <== {Webcache} [Max] 
+
 	// - End Set Tree Values
 
 
@@ -3493,7 +3599,12 @@ void CStatisticsDlg::CreateMyTree()
 		down_spb[i] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), hdown_spb);
 	for(int i = 0; i<ARRSIZE(down_sources); i++) 
 		down_sources[i] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), down_S[3]);
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	/*
 	for(int i = 0; i<4; i++) 
+	*/
+	for(int i = 0; i<6; i++) 
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 		down_ssessions[i] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), down_S[4]);
 	hdown_soh= stattree.InsertItem(GetResString(IDS_STATS_OVRHD),h_down_session);				// Downline Overhead (Session)
 	for(int i = 0; i<ARRSIZE(down_soh); i++) 
@@ -3572,7 +3683,12 @@ void CStatisticsDlg::CreateMyTree()
 		for(int i = 0; i<7; i++)
 			time_aap_down[x][i] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING),time_aap_hdown[x]);
 		time_aap_down_hd[x][0] = stattree.InsertItem(GetResString(IDS_CLIENTS),time_aap_down[x][0]);							// Clients Section
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		/*
 		for(int i = 0; i<8; i++)
+		*/
+		for(int i = 0; i<9; i++)
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
 			time_aap_down_dc[x][i] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), time_aap_down_hd[x][0]);
 		time_aap_down_hd[x][1] = stattree.InsertItem(GetResString(IDS_PORT),time_aap_down[x][0]);								// Ports Section
 		for(int i = 0; i<ARRSIZE(time_aap_down_dp[0]); i++)
@@ -3621,6 +3737,13 @@ void CStatisticsDlg::CreateMyTree()
 	h_total_size_left_to_dl=stattree.InsertItem(GetResString(IDS_DWTOT_TSL),h_total_downloads);
 	h_total_size_left_on_drive=stattree.InsertItem(GetResString(IDS_DWTOT_FS),h_total_downloads);
 	h_total_size_needed=stattree.InsertItem(GetResString(IDS_DWTOT_TSN),h_total_downloads);
+
+	// ==> {Webcache} [Max] 
+	h_webcache = stattree.InsertItem(GetResString(IDS_STATS_WEBCACHE),18,18);		
+	wc_data[0]=stattree.InsertItem(GetResString(IDS_STATS_WEBCACHE_1),h_webcache);
+	wc_data[1]=stattree.InsertItem(GetResString(IDS_STATS_WEBCACHE_2),h_webcache);
+	wc_data[2]=stattree.InsertItem(GetResString(IDS_STATS_WEBCACHE_3),h_webcache);
+	// <== {Webcache} [Max]
 
 #ifdef _DEBUG
 	if (g_pfnPrevCrtAllocHook)
@@ -3687,6 +3810,10 @@ void CStatisticsDlg::CreateMyTree()
 	stattree.SetItemState(hconn_tg, TVIS_BOLD, TVIS_BOLD);	
 	stattree.SetItemState(hconn_tu, TVIS_BOLD, TVIS_BOLD);	
 	stattree.SetItemState(hconn_td, TVIS_BOLD, TVIS_BOLD);	
+	
+	// ==> {Webcache} [Max] 
+	stattree.SetItemState(h_webcache, TVIS_BOLD, TVIS_BOLD);
+	// <== {Webcache} [Max] 
 	
 	// Expand our purdy new tree...
 	stattree.ApplyExpandedMask(thePrefs.GetExpandedTreeItems());

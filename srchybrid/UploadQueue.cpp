@@ -672,6 +672,13 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 	}
 	//Xman end
 
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	// this file is shared but not a single chunk is complete, so don't enqueue the clients asking for it
+	CKnownFile* uploadReqfile = theApp.sharedfiles->GetFileByID(client->requpfileid);
+	if (uploadReqfile && uploadReqfile->IsPartFile() && ((CPartFile*)uploadReqfile)->GetAvailablePartCount() == 0 && !(((CPartFile*)uploadReqfile)->GetStatus(true)==PS_ERROR && ((CPartFile*)uploadReqfile)->GetCompletionError()))
+		return;
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 	uint16 cSameIP = 0;
 	// check for double
 	POSITION pos1, pos2;
@@ -928,8 +935,10 @@ bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReaso
 
             bool removed = theApp.uploadBandwidthThrottler->RemoveFromStandardList(client->socket);
             bool pcRemoved = theApp.uploadBandwidthThrottler->RemoveFromStandardList((CClientReqSocket*)client->m_pPCUpSocket);
+            bool wcRemoved = theApp.uploadBandwidthThrottler->RemoveFromStandardList((CClientReqSocket*)client->m_pWCUpSocket); // WebCache [WC team/MorphXT] - Stulle/Max
 			(void)removed;
 			(void)pcRemoved;
+			(void)wcRemoved; // WebCache [WC team/MorphXT] - Stulle/Max
             //if(thePrefs.GetLogUlDlEvents() && !(removed || pcRemoved)) {
             //    AddDebugLogLine(false, _T("UploadQueue: Didn't find socket to delete. Adress: 0x%x"), client->socket);
             //}
@@ -1399,6 +1408,9 @@ void CUploadQueue::ReSortUploadSlots(bool force) {
             ret=theApp.uploadBandwidthThrottler->RemoveFromStandardList((CClientReqSocket*)cur_client->m_pPCUpSocket);
 			if(ret && cur_client->HasPeerCacheState())
 				DEBUG_ONLY( Debug( _T("removed m_pPCUpSocket from uploadbandwidththrottler")));
+			// ==> WebCache [WC team/MorphXT] - Stulle/Max
+			(void) theApp.uploadBandwidthThrottler->RemoveFromStandardList((CClientReqSocket*)cur_client->m_pWCUpSocket);
+			// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 
             tempUploadinglist.AddTail(cur_client);
@@ -1489,3 +1501,17 @@ void CUploadQueue::ChangeSendBufferSize(int newValue)
 		}
 	}
 }
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+// MORPH START - Added by Commander, WebCache 1.2e
+CUpDownClient*	CUploadQueue::FindClientByWebCacheUploadId(const uint32 id) // Superlexx - webcache - can be made more efficient
+{
+	for (POSITION pos = uploadinglist.GetHeadPosition(); pos != NULL;)
+	{
+		CUpDownClient* cur_client = uploadinglist.GetNext(pos);
+		if ( cur_client->m_uWebCacheUploadId == id )
+			return cur_client;
+	}
+	return 0;
+}
+// MORPH END - Added by Commander, WebCache 1.2e
+// <== WebCache [WC team/MorphXT] - Stulle/Max

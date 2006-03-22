@@ -8,12 +8,12 @@ based on eMule 0.47a Xtreme 5.0 compiled with vs2003 and Netfinity's fix
 
 Added: Status color [EastShare]
 Added: Last asked time & next asked time in prio column [EastShare/Xman/Max]
-Added: WebCache v2.0 Beta 1 [WC team/MorphXT]
+Added: WebCache [WC team/MorphXT]
 Added: Active Connection Control [Obelix/Max]
 Added: display CPU/MEM usage in transferwnd [$ick$]
 Added: Relax on Startup [WiZaRd]
 Added: ScarAngel Preferences Window [Stulle]
-Added: Global Hardlimit [Max/Stulle]
+Added: Global Hardlimit [Stulle/many ideas by Max]
 Added: Push-small-files (boost can be configured manually) [Sivka/Stulle]
 Added: Push-rare-files [Tarod/ eF-Mod]
 Added: Different CreditSystems [EastShare/ MoprhXT/ Stulle]
@@ -31,9 +31,14 @@ Added: Sivka File Settings [Sivka/Stulle]
 Added: Customized source dropping [Sivka/Stulle]
 Added: # of dropped sources this session in stats [Stulle]
 Added: show # of dropped sources per file in DownloadList [Stulle]
-Added: Several Mod Icons (ScarAngel, StulleMule, MAXmod, Xtreme, Morph, EastShare) [Stulle]
+Added: Several Mod Icons [Stulle]
+	+ note: supports ScarAngel, StulleMule, MAXmod, Xtreme, Morph,
+		EastShare, iONiX, Cyrex2001, NextEMF, Neo Mule
 Added: Preferences Banner [TPT/ MorphXT/emule-web.de team]
 Added: Display number of currently blocked after drop clients [Stulle]
+Added: Advanced manual dropping [Stulle]
+Added: Fake HighID check [netfinity]
+Added: FunnyNick [SiRoB/Stulle]
 
 Changed: ModID [Maella] management replaced with ModID [itsonlyme/SiRoB]
 Changed: Startup Banner, Program Icon [emule-web.de team]
@@ -47,3 +52,10 @@ customized source dropping:
  + uses settings from Sivka File Settings
  + uses seperate timer for Low2LowIP, NNS, FQ, HQR
  + if not optional most dropping code is still Xtreme (not time...)
+
+advanced manual dropping:
+ + Low2LowIP
+ + unknown, error and banned
+ + high queue rating sources (Xman method)
+ + high queue rating sources (Sivka method)
+ + CleanUp => NNS, FQS, unknown, error and banned

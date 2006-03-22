@@ -249,6 +249,7 @@ uint64	CPreferences::cumDownData_AMULE;
 uint64	CPreferences::cumDownData_EMULECOMPAT;
 uint64	CPreferences::cumDownData_SHAREAZA;
 uint64	CPreferences::cumDownData_URL;
+uint64	CPreferences::cumDownData_WEBCACHE; // WebCache [WC team/MorphXT] - Stulle/Max
 uint64	CPreferences::sesDownData_EDONKEY;
 uint64	CPreferences::sesDownData_EDONKEYHYBRID;
 uint64	CPreferences::sesDownData_EMULE;
@@ -257,6 +258,13 @@ uint64	CPreferences::sesDownData_AMULE;
 uint64	CPreferences::sesDownData_EMULECOMPAT;
 uint64	CPreferences::sesDownData_SHAREAZA;
 uint64	CPreferences::sesDownData_URL;
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+uint64	CPreferences::sesDownData_WEBCACHE; //jp webcache statistics
+uint32	CPreferences::ses_WEBCACHEREQUESTS; //jp webcache statistics needs to be uint32 or the statistics won't work
+uint32	CPreferences::ses_PROXYREQUESTS; //jp webcache statistics
+uint32	CPreferences::ses_successfullPROXYREQUESTS; //jp webcache statistics
+uint32	CPreferences::ses_successfull_WCDOWNLOADS; //jp webcache statistics needs to be uint32 or the statistics won't work
+// <== WebCache [WC team/MorphXT] - Stulle/Max
 uint64	CPreferences::cumDownDataPort_4662;
 uint64	CPreferences::cumDownDataPort_OTHER;
 uint64	CPreferences::cumDownDataPort_PeerCache;
@@ -370,6 +378,10 @@ bool	CPreferences::m_bLogFileSaving;
 bool	CPreferences::m_bLogA4AF; // ZZ:DownloadManager
 bool	CPreferences::m_bLogDrop; //Xman Xtreme Downloadmanager
 bool	CPreferences::m_bLogUlDlEvents;
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+bool	CPreferences::m_bLogWebCacheEvents;//JP log webcache events
+bool	CPreferences::m_bLogICHEvents;//JP log ICH events
+// <== WebCache [WC team/MorphXT] - Stulle/Max
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 bool	CPreferences::m_bUseDebugDevice = true;
 #else
@@ -547,7 +559,6 @@ bool	CPreferences::showOverheadInTitle; // show overhead on title - Stulle
 bool	CPreferences::ShowGlobalHL; // show global HL - Stulle
 bool	CPreferences::ShowFileHLconst; // show HL per file constantaniously - Stulle
 bool	CPreferences::m_bShowInMSN7; //Show in MSN7 [TPT] - Stulle
-bool	CPreferences::m_bCountWCSessionStats; // Show WC session stats [MorphXT] - Stulle
 
 uint8	CPreferences::creditSystemMode; // CreditSystems [EastShare/ MorphXT] - Stulle
 
@@ -601,11 +612,70 @@ uint16  CPreferences::m_iStatsHLMax;
 uint16  CPreferences::m_iStatsHLDif;
 // <== Source Graph - Stulle
 
+// ==> FunnyNick [SiRoB/Stulle] - Stulle
+bool	CPreferences::m_bFunnyNick;
+uint8	CPreferences::FnTagMode;
+TCHAR	CPreferences::m_sFnCustomTag [256];
+bool	CPreferences::m_bFnTagAtEnd;
+// <== FunnyNick [SiRoB/Stulle] - Stulle
+
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+CString	CPreferences::webcacheName;
+uint16	CPreferences::webcachePort;
+bool	CPreferences::webcacheReleaseAllowed; //jp webcache release
+uint16	CPreferences::webcacheBlockLimit;
+bool	CPreferences::PersistentConnectionsForProxyDownloads; //jp persistent proxy connections
+bool	CPreferences::WCAutoupdate; //jp WCAutoupdate
+bool	CPreferences::webcacheExtraTimeout;
+bool	CPreferences::webcacheCachesLocalTraffic;
+bool	CPreferences::webcacheEnabled;
+bool	CPreferences::detectWebcacheOnStart; //jp detect webcache on startup
+uint32	CPreferences::webcacheLastSearch;
+CString	CPreferences::webcacheLastResolvedName;
+uint32	CPreferences::webcacheLastGlobalIP;
+bool	CPreferences::UsesCachedTCPPort()  //jp
+{
+	if ((thePrefs.GetPort()==80) || (thePrefs.GetPort()==21) || (thePrefs.GetPort()==443) || (thePrefs.GetPort()==563) || (thePrefs.GetPort()==70) || (thePrefs.GetPort()==210) || ((thePrefs.GetPort()>=1025) && (thePrefs.GetPort()<=65535))) return true;
+	else return false;
+}
+//JP proxy configuration test start
+bool	CPreferences::m_bHighIdPossible;
+bool	CPreferences::WebCacheDisabledThisSession;//jp temp disabled
+uint32	CPreferences::WebCachePingSendTime;//jp check proxy config
+bool	CPreferences::expectingWebCachePing;//jp check proxy config
+bool	CPreferences::IsWebCacheTestPossible()//jp check proxy config
+{
+	return (theApp.GetPublicIP() != 0 //we have a public IP
+		&& theApp.serverconnect->IsConnected() //connected to a server
+		&& !theApp.serverconnect->IsLowID()//don't have LowID
+		&& m_bHighIdPossible
+		&& !theApp.listensocket->TooManySockets());// no fake high ID
+}
+//JP proxy configuration test end
+uint8	CPreferences::webcacheTrustLevel;
+bool	CPreferences::UpdateWebcacheReleaseAllowed()
+{
+	webcacheReleaseAllowed = true;
+	if (theApp.downloadqueue->ContainsUnstoppedFiles())
+		webcacheReleaseAllowed = false;
+	return webcacheReleaseAllowed;
+}
+// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 CPreferences::CPreferences()
 {
 #ifdef _DEBUG
 	m_iDbgHeap = 1;
 #endif
+
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+//JP set standard values for stuff that doesn't need to be saved. This should probably be somewhere else
+expectingWebCachePing = false;
+WebCachePingSendTime = 0;
+WebCacheDisabledThisSession = false;
+webcacheReleaseAllowed = true; //jp webcache release
+m_bHighIdPossible = false; // JP detect fake HighID (from netfinity)
+// <== WebCache [WC team/MorphXT] - Stulle/Max
 }
 
 CPreferences::~CPreferences()
@@ -979,6 +1049,7 @@ void CPreferences::SaveStats(int bBackUp){
 	ini.WriteUInt64(L"DownDataPort_4662", GetCumDownDataPort_4662());
 	ini.WriteUInt64(L"DownDataPort_OTHER", GetCumDownDataPort_OTHER());
 	ini.WriteUInt64(L"DownDataPort_PeerCache", GetCumDownDataPort_PeerCache());
+	ini.WriteUInt64(L"DownData_WEBCACHE", GetCumDownData_WEBCACHE()); // WebCache [WC team/MorphXT] - Stulle/Max
 
 	ini.WriteUInt64(L"DownOverheadTotal",theStats.GetDownDataOverheadFileRequest() +
 										theStats.GetDownDataOverheadSourceExchange() +
@@ -1267,6 +1338,7 @@ void CPreferences::Add2SessionTransferData(UINT uClientID, UINT uClientPort, BOO
 				case SO_LPHANT:
 				case SO_XMULE:			sesDownData_EMULECOMPAT+=bytes;	break;
 				case SO_URL:			sesDownData_URL+=bytes;			break;
+				case SO_WEBCACHE:		sesDownData_WEBCACHE+=bytes;	break; // WebCache [WC team/MorphXT] - Stulle/Max
 			}
 
 			switch (uClientPort){
@@ -1326,6 +1398,7 @@ void CPreferences::ResetCumulativeStatistics(){
 	cumUpData_AMULE=0;
 	cumUpData_EMULECOMPAT=0;
 	cumUpData_SHAREAZA=0;
+	cumDownData_WEBCACHE=0; // WebCache [WC team/MorphXT] - Stulle/Max
 	cumUpDataPort_4662=0;
 	cumUpDataPort_OTHER=0;
 	cumUpDataPort_PeerCache=0;
@@ -1483,6 +1556,7 @@ bool CPreferences::LoadStats(int loadBackUp)
 	cumDownData_AMULE				= ini.GetUInt64(L"DownData_AMULE");
 	cumDownData_SHAREAZA			= ini.GetUInt64(L"DownData_SHAREAZA");
 	cumDownData_URL					= ini.GetUInt64(L"DownData_URL");
+	cumDownData_WEBCACHE			= ini.GetUInt64(_T("DownData_WEBCACHE")); // WebCache [WC team/MorphXT] - Stulle/Max
 
 	// Load cumulative port breakdown stats for received bytes
 	cumDownDataPort_4662			= ini.GetUInt64(L"DownDataPort_4662");
@@ -1587,6 +1661,15 @@ bool CPreferences::LoadStats(int loadBackUp)
 		sesDownData_EMULECOMPAT		= 0;
 		sesDownData_SHAREAZA		= 0;
 		sesDownData_URL				= 0;
+
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		sesDownData_WEBCACHE		= 0; // Superlexx - webcache - statistics
+		ses_WEBCACHEREQUESTS		= 0; //jp webcache statistics (from proxy)
+		ses_successfull_WCDOWNLOADS	= 0; //jp webcache statistics (from proxy)
+		ses_PROXYREQUESTS           = 0; //jp webcache statistics (via proxy)
+		ses_successfullPROXYREQUESTS= 0; //jp webcache statistics (via proxy)
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 		sesDownDataPort_4662		= 0;
 		sesDownDataPort_OTHER		= 0;
 		sesDownDataPort_PeerCache	= 0;
@@ -1883,6 +1966,10 @@ void CPreferences::SavePreferences()
     ini.WriteBool(L"LogA4AF", m_bLogA4AF);                           // do *not* use the according 'Get...' function here!
 	ini.WriteBool(L"LogDrop", m_bLogDrop); //Xman Xtreme Downloadmanager
 	ini.WriteBool(L"LogUlDlEvents", m_bLogUlDlEvents);
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	ini.WriteBool(L"LogWebCacheEvents", m_bLogWebCacheEvents);//JP log webcache events
+	ini.WriteBool(L"LogICHEvents", m_bLogICHEvents);//JP log ICH events
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	// following options are for debugging or when using an external debug device viewer only.
 	ini.WriteInt(L"DebugServerTCP",m_iDebugServerTCPLevel);
@@ -2134,7 +2221,7 @@ void CPreferences::SavePreferences()
 	//--------------------------------------------------------------------------
 
 	// ==> Global Source Limit [Max/Stulle] - Stulle
-	ini.WriteBool(_T("GlobalHL"), m_bGlobalHL);
+	ini.WriteBool(_T("GlobalHL"), m_bGlobalHL,_T("ScarAngel"));
 	ini.WriteInt(_T("GlobalHLvalue"), m_uGlobalHL);
 	ini.WriteBool(_T("GlobalHlAll"),m_bGlobalHlAll);
 	ini.WriteBool(_T("GlobalHlDefault"), m_bGlobalHlDefault);
@@ -2154,7 +2241,6 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("ShowGlobalHL"),ShowGlobalHL); // show global HL - Stulle
 	ini.WriteBool(_T("ShowFileHLconst"),ShowFileHLconst); // show HL per file constantaniously - Stulle
 	ini.WriteBool(_T("ShowInMSN7"), m_bShowInMSN7); //Show in MSN7 [TPT] - Stulle
-	ini.WriteBool(_T("CountWCSessionStats"),m_bCountWCSessionStats); // Show WC session stats [MorphXT] - Stulle
 
 	ini.WriteInt(_T("CreditSystemMode"), creditSystemMode); // CreditSystems [EastShare/ MorphXT] - Stulle
 
@@ -2179,6 +2265,29 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("StatsHLMin"), m_iStatsHLMin);
 	ini.WriteInt(_T("StatsHLMax"), m_iStatsHLMax);
 	// <== Source Graph - Stulle
+
+	// ==> FunnyNick [SiRoB/Stulle] - Stulle
+	ini.WriteBool(_T("DisplayFunnyNick"), m_bFunnyNick);
+	ini.WriteInt(_T("FnTagMode"), FnTagMode);
+	ini.WriteString(_T("FnCustomTag"), m_sFnCustomTag);
+	ini.WriteBool(_T("FnTagAtEnd"), m_bFnTagAtEnd);
+	// <== FunnyNick [SiRoB/Stulle] - Stulle
+
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	ini.WriteString(L"webcacheName", webcacheName);
+	ini.WriteInt(L"webcachePort", webcachePort);
+	ini.WriteInt(L"WebCacheBlockLimit", webcacheBlockLimit);
+	ini.WriteBool(L"PersistentConnectionsForProxyDownloads", PersistentConnectionsForProxyDownloads); //JP persistent proxy connections
+	ini.WriteBool(L"WCAutoupdate", WCAutoupdate); //JP WCAutoupdate
+	ini.WriteBool(L"WebCacheExtraTimeout", webcacheExtraTimeout);
+	ini.WriteBool(L"WebCacheCachesLocalTraffic", webcacheCachesLocalTraffic);
+	ini.WriteBool(L"WebCacheEnabled", webcacheEnabled);
+	ini.WriteBool(L"detectWebcacheOnStart", detectWebcacheOnStart); // jp detect webcache on startup
+	ini.WriteUInt64(L"WebCacheLastSearch", (uint64)webcacheLastSearch);
+	ini.WriteUInt64(L"WebCacheLastGlobalIP", (uint64)webcacheLastGlobalIP);
+	ini.WriteString(L"WebCacheLastResolvedName", webcacheLastResolvedName);
+	ini.WriteUInt64(L"webcacheTrustLevel", (uint64)webcacheTrustLevel);
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 }
 
 void CPreferences::ResetStatsColor(int index)
@@ -2591,6 +2700,10 @@ void CPreferences::LoadPreferences()
         m_bLogA4AF=ini.GetBool(L"LogA4AF",false); // ZZ:DownloadManager
 		m_bLogDrop=ini.GetBool(_T("LogDrop"),false); //Xman Xtreme Downloadmanager
 		m_bLogUlDlEvents=ini.GetBool(L"LogUlDlEvents",true);
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		m_bLogWebCacheEvents=ini.GetBool(_T("LogWebCacheEvents"),true);//JP log webcache events
+		m_bLogICHEvents=ini.GetBool(_T("LogICHEvents"),true);//JP log ICH events
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
 	}
 	else
 	{
@@ -2988,7 +3101,7 @@ void CPreferences::LoadPreferences()
 
 	uint32 temp;
 	// ==> Global Source Limit [Max/Stulle] - Stulle
-	m_bGlobalHL = ini.GetBool(_T("GlobalHL"), false);
+	m_bGlobalHL = ini.GetBool(_T("GlobalHL"), false,_T("ScarAngel"));
 	uint32 m_uGlobalHlStandard = (uint32)(maxGraphUploadRate*0.9f);
 	m_uGlobalHlStandard = (uint32)((m_uGlobalHlStandard*400 - (m_uGlobalHlStandard-10.0f)*100)*0.65f);
 	m_uGlobalHlStandard = max(1000,min(m_uGlobalHlStandard,MAX_GSL));
@@ -3014,7 +3127,6 @@ void CPreferences::LoadPreferences()
 	ShowGlobalHL = ini.GetBool(_T("ShowGlobalHL"),false); // show global HL - Stulle
 	ShowFileHLconst = ini.GetBool(_T("ShowFileHLconst"),true); // show HL per file constantaniously - Stulle
 	m_bShowInMSN7 = ini.GetBool(_T("ShowInMSN7"), false); //Show in MSN7 [TPT] - Stulle
-	m_bCountWCSessionStats = ini.GetBool(_T("CountWCSessionStats"),false); // Show WC session stats [MorphXT] - Stulle
 
 	creditSystemMode = (uint8)ini.GetInt(_T("CreditSystemMode"), 1/*lovelace*/); // CreditSystems [EastShare/ MorphXT] - Stulle
 
@@ -3047,6 +3159,32 @@ void CPreferences::LoadPreferences()
 	m_iStatsHLMax = (uint16)ini.GetInt(_T("StatsHLMax"), 4000);
 	m_iStatsHLDif = m_iStatsHLMax-m_iStatsHLMin;
 	// <== Source Graph - Stulle
+
+	// ==> FunnyNick [SiRoB/Stulle] - Stulle
+	m_bFunnyNick = ini.GetBool(_T("DisplayFunnyNick"), true);
+	FnTagMode = (uint8)ini.GetInt(_T("FnTagMode"), 2);
+	_stprintf (m_sFnCustomTag,_T("%s"),ini.GetString (_T("FnCustomTag")));
+	m_bFnTagAtEnd = ini.GetBool(_T("FnTagAtEnd"), false);
+	// <== FunnyNick [SiRoB/Stulle] - Stulle
+
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	webcacheName = ini.GetString(_T("webcacheName"), _T(""));
+	webcachePort=(uint16)ini.GetInt(_T("webcachePort"),0);
+	webcacheBlockLimit=(uint16)ini.GetInt(_T("webcacheBlockLimit"));
+	webcacheExtraTimeout=ini.GetBool(_T("webcacheExtraTimeout"));
+	PersistentConnectionsForProxyDownloads=ini.GetBool(_T("PersistentConnectionsForProxyDownloads"), false);
+	WCAutoupdate=ini.GetBool(_T("WCAutoupdate"), true);
+	webcacheCachesLocalTraffic=ini.GetBool(_T("webcacheCachesLocalTraffic"), true);
+	webcacheEnabled=ini.GetBool(_T("webcacheEnabled"),false); //webcache disabled on first start so webcache detection on start gets called.
+	detectWebcacheOnStart=ini.GetBool(_T("detectWebcacheOnStart"), true); // jp detect webcache on startup
+	webcacheLastSearch=(uint32)ini.GetUInt64(_T("webcacheLastSearch"));
+	webcacheLastGlobalIP=(uint32)ini.GetUInt64(_T("webcacheLastGlobalIP"));
+	webcacheLastResolvedName=ini.GetString(_T("webcacheLastResolvedName"),0);
+	webcacheTrustLevel=(uint8)ini.GetUInt64(_T("webcacheTrustLevel"),30);
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
+
+	// ==> FunnyNick [SiRoB/Stulle] - Stulle
+	// <== FunnyNick [SiRoB/Stulle] - Stulle
 }
 
 //Xman Xtreme Upload

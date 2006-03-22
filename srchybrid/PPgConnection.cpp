@@ -33,6 +33,10 @@
 #include "ClientUDPSocket.h"
 #include "Log.h"
 #include "DownloadQueue.h" // Global Source Limit [Max/Stulle] - Stulle
+// ==> WebCache [WC team/MorphXT] - Stulle/Max
+#include "WebCache\PPgWebcachesettings.h" //jp
+#include "PreferencesDlg.h" //jp
+// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 
 #ifdef _DEBUG
@@ -364,6 +368,22 @@ BOOL CPPgConnection::OnApply()
 				theApp.listensocket->Rebind();
 			else
 				bRestartApp = true;
+
+			// ==> WebCache [WC team/MorphXT] - Stulle/Max
+			// yonatan WC-TODO: check out Rebind()
+			// this part crashes if Webcachesettings has not been active page at least once see PreferencesDlg.cpp (103)
+			if	(((!thePrefs.UsesCachedTCPPort())	// not a good port for webcace
+			&& thePrefs.IsWebCacheDownloadEnabled()		// webcache enabled
+			&& theApp.emuledlg->preferenceswnd->m_wndWebcachesettings.IsDlgButtonChecked(IDC_Activatewebcachedownloads))  //if webcache was disabled but the change was not saved yet, no need for the message because it will be saved now
+			|| (!thePrefs.UsesCachedTCPPort()		// not a good port for webcache
+				&& theApp.emuledlg->preferenceswnd->m_wndWebcachesettings.IsDlgButtonChecked(IDC_Activatewebcachedownloads))) //webcache enabled but not yet saved to thePrefs. would be saved now but shouldn't
+			{
+				AfxMessageBox(GetResString(IDS_WrongPortforWebcache),MB_OK | MB_ICONINFORMATION,0);
+				thePrefs.webcacheEnabled=false;			// disable webcache
+			}
+			
+			theApp.emuledlg->preferenceswnd->m_wndWebcachesettings.LoadSettings();
+			// <== WebCache [WC team/MorphXT] - Stulle/Max
 		}
 	}
 	
