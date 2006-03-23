@@ -818,8 +818,8 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 		float newRarePush= reqfile->GetFileRatio();
 		// <== push rare file - Stulle
 		if(newUpPrio  < oldUpPrio ||
-			newSmallPush < oldSmallPush ||
-			(thePrefs.GetEnablePushRareFile() && newRarePush < oldRarePush)) // push rare file - Stulle
+			(newSmallPush==false && oldSmallPush==true) ||
+			newRarePush < oldRarePush) // push rare file - Stulle
 		// <== push small files [sivka] - Stulle
 		{
 			if(thePrefs.GetLogUlDlEvents()){

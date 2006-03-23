@@ -244,7 +244,6 @@ public:
 	CString		m_strModLongVersion;
 	CString		m_strModVersionPure;
 	uint8		m_uModLength;
-	CString		m_strModNickAdd;
 	// <== ModID [itsonlyme/SiRoB] - Stulle
 };
 

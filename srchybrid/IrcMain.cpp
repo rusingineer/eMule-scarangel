@@ -1542,13 +1542,7 @@ void CIrcMain::ParsePerform()
 			// be change to what ever channel by just changing the language.. I will just have to check these strings
 			// before release.
 			// This also allows the help string to do more then join one channel. It could add other features later.
-
-			// ==> {IRC channel} [Max]
-			/*
 			CString sJoinHelpChannel = GetResString(IDS_IRC_HELPCHANNELPERFORM);
-			*/
-			CString sJoinHelpChannel = _T("/join #emule | /join #emule-deutschland");
-			// <== {IRC channel} [Max]
 			sJoinHelpChannel.Trim();
 			if (!sJoinHelpChannel.IsEmpty())
 			{

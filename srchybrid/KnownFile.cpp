@@ -2125,6 +2125,8 @@ uint32 CKnownFile::GetFileScore(uint32 downloadingTime)
 // ==> push rare file - Stulle
 float CKnownFile::GetFileRatio()
 {
+	if(!thePrefs.GetEnablePushRareFile())
+		return 1.0f;
 	// MatzeHH formula I think is better than herbert's one (Tarod)
 	if (statistic.GetRequests() == 0) return 2.0f ;
 

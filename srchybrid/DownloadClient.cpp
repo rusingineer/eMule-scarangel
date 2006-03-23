@@ -1573,7 +1573,9 @@ void CUpDownClient::ProcessBlockPacket(const uchar *packet, uint32 size, bool pa
 					// Request next block
 					if (thePrefs.GetDebugClientTCPLevel() > 0)
 						DebugSend("More block requests", this);
-					SendBlockRequests();	
+
+					if (m_PendingBlocks_list.IsEmpty()) // Superlexx - tmp // added from original... really needed? - Max
+						SendBlockRequests();	
 				}
 			}
 

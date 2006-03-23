@@ -800,9 +800,7 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 
 			// ==> WebCache [WC team/MorphXT] - Stulle/Max
 			case WC_TAG_VOODOO:
-				if (temptag.IsInt()) {
-					m_bWebCacheSupport = temptag.IsInt() && temptag.GetInt() == 'ARC4';
-				}
+				m_bWebCacheSupport = temptag.IsInt() && temptag.GetInt() == 'ARC4';
 				break;
 			case WC_TAG_FLAGS:
 				if (m_bWebCacheSupport && temptag.IsInt())
@@ -1582,7 +1580,9 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 		/*
 		CTag tagName(CT_NAME, (!m_bGPLEvildoer) ? thePrefs.GetUserNick() + _T(' ') + str_ANTAddOn + MOD_NICK_ADD : _T("Please use a GPL-conform version of eMule") ); //Xman Anti-Leecher: simple Anti-Thief
 		*/
-		CTag tagName(CT_NAME, (!m_bGPLEvildoer) ? thePrefs.GetUserNick() + _T(' ') + str_ANTAddOn + theApp.m_strModNickAdd : _T("Please use a GPL-conform version of eMule") );
+		CString m_strTemp = thePrefs.GetUserNick();
+		m_strTemp.AppendFormat(_T(" %s «%s»"), str_ANTAddOn, theApp.m_strModVersion);
+		CTag tagName(CT_NAME, (!m_bGPLEvildoer) ? m_strTemp : _T("Please use a GPL-conform version of eMule") );
 		// <== ModID [itsonlyme/SiRoB] - Stulle
 		tagName.WriteTagToFile(data, utf8strRaw);
 	}

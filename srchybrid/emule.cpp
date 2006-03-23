@@ -276,7 +276,6 @@ CemuleApp::CemuleApp(LPCTSTR lpszAppName)
 	m_strModVersionPure = CemuleApp::m_szMVersion;
 	m_strModVersionPure.AppendFormat(_T(" "));
 	m_uModLength = (uint8)(m_strModVersionPure.GetLength()); // one space included!
-	m_strModNickAdd = (_T(" «%s»"), m_strModVersion);
 	// <== ModID [itsonlyme/SiRoB] - Stulle
 }
 
