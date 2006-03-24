@@ -208,7 +208,7 @@ enum ESourceFrom{
 #define _EUploadState		EUploadState
 #define _EDownloadState		EDownloadState
 #define _ESourceFrom		ESourceFrom
-#define _EModClient			EModClient
+#define _EModClient			EModClient // Mod Icons - Stulle
 #else
 #define _EClientSoftware	uint8
 #define _EChatState			uint8
@@ -217,7 +217,7 @@ enum ESourceFrom{
 #define _EUploadState		uint8
 #define _EDownloadState		uint8
 #define _ESourceFrom		uint8
-#define _EModClient			uint8
+#define _EModClient			uint8 // Mod Icons - Stulle
 #endif
 
 // ==> Mod Icons - Stulle

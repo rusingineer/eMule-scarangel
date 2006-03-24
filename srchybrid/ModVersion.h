@@ -22,7 +22,7 @@
 #define MOD_VERSION_MJR		1
 #define MOD_VERSION_MIN		0
 #define MOD_VERSION_BUILD   0
-#define	MOD_VERSION			_T("ScarAngel a6")
-#define	MOD_VERSION_LONG	_T("ScarAngel a6 v")
+#define	MOD_VERSION			_T("ScarAngel a7")
+#define	MOD_VERSION_LONG	_T("ScarAngel a7 v")
 //END - This part should not be changed in anyway
 //MORPH END  - Added by SiRoB, [-modname-]
