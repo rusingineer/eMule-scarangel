@@ -692,6 +692,17 @@ public:
 	static	uint8	webcacheTrustLevel;
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
+	// ==> Quick start [TPT] - Stulle/Max
+	static bool	m_bQuickStart;
+	static uint16  m_iQuickStartMaxTime;
+	static UINT    m_iQuickStartMaxConn;
+	static uint16  m_iQuickStartMaxConnPerFive;
+	static UINT    m_iQuickStartMaxConnBack;
+	static uint16  m_iQuickStartMaxConnPerFiveBack;
+	static bool	m_bQuickStartAfterIPChange;
+	// <== Quick start [TPT] - Stulle/Max
+
+
 	enum Table
 	{
 		tableDownload, 
@@ -1705,6 +1716,18 @@ public:
 	static	void	UpdateLastSVC();
 	// <== ScarAngel Version Check - Stulle
 
+	// ==> Quick start [TPT] - Stulle/Max
+	static bool		GetQuickStart()						{return m_bQuickStart;}
+	static void		SetMaxCon(int in)					{maxconnections=in;} 
+	static UINT		GetMaxCon()							{ return maxconnections;}
+	static uint16	GetQuickStartMaxTime()				{ return m_iQuickStartMaxTime; }
+	static UINT		GetQuickStartMaxConn()				{ return m_iQuickStartMaxConn; }
+	static uint16	GetQuickStartMaxConnPerFive()		{ return m_iQuickStartMaxConnPerFive; }
+	static UINT		GetQuickStartMaxConnBack()			{ return m_iQuickStartMaxConnBack; }
+	static uint16	GetQuickStartMaxConnPerFiveBack()	{ return m_iQuickStartMaxConnPerFiveBack; }
+	static bool		GetQuickStartAfterIPChange()		{ return m_bQuickStartAfterIPChange;}
+	// <== Quick start [TPT] - Stulle/Max
+
 protected:
 	static	CString appdir;
 	static	CString configdir;
@@ -1722,6 +1745,9 @@ protected:
 	static void LoadPreferences();
 	static void SavePreferences();
 	static CString GetHomepageBaseURLForLevel(int nLevel);
+
+	
+
 };
 
 extern CPreferences thePrefs;

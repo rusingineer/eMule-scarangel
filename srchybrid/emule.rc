@@ -2964,6 +2964,7 @@ CYREX                   ICON                    "res\\Cyrex2001.ico"
 NEXTEMF                 ICON                    "res\\nextEMF.ico"
 NEO                     ICON                    "res\\Client-Neo.ico"
 FUNNYNICK               ICON                    "res\\FunnyNick.ico"
+QUICKSTART              ICON                    "res\\quickstart.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -5297,6 +5298,17 @@ BEGIN
     IDS_NEWSVERSIONAVL      "A new version of eMule ScarAngel is available! Check the project-homepage for more information."
     IDS_NEWSVERSIONAVLPOPUP "A new version of eMule ScarAngel is available. Click here to read about the new version!"
     // <== ScarAngel Version Check - Stulle
+
+    // ==> Quick start [TPT] - Stulle/Max
+    IDS_QUICK_START_GROUP   "Quickstart"
+    IDS_QUICK_START         "Enable Quickstart"
+    IDS_QUICK_START_MAX_TIME "Time for Quickstart [8-18 min.]"
+    IDS_QUICK_START_MAX_CONN_PER_FIVE "max. con./5sec"
+    IDS_QUICK_START_MAX_CONN "max. con."
+    IDS_QUICK_START_AFTER_IP_CHANGE "Enable Quickstart after IP Change"
+	IDS_QUICK_START_MAX_CONN_PER_FIVE_BACK "Return to max. con./5sec"
+    IDS_QUICK_START_MAX_CONN_BACK "Return to max. con."
+    // <== Quick start [TPT] - Stulle/Max
 END
 
 #endif    // Englisch (USA) resources

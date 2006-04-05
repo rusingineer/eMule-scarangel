@@ -2660,6 +2660,17 @@
 #define IDS_NEWSVERSIONAVLPOPUP         60475
 // <== ScarAngel Version Check - Stulle
 
+// ==> Quick start [TPT] - Stulle/Max
+#define IDS_QUICK_START_GROUP           60476
+#define IDS_QUICK_START                 60477
+#define IDS_QUICK_START_MAX_TIME        60478
+#define IDS_QUICK_START_MAX_CONN_PER_FIVE 60479
+#define IDS_QUICK_START_MAX_CONN        60480
+#define IDS_QUICK_START_AFTER_IP_CHANGE 60481
+#define IDS_QUICK_START_MAX_CONN_PER_FIVE_BACK 60482
+#define IDS_QUICK_START_MAX_CONN_BACK   60483
+// <== Quick start [TPT] - Stulle/Max
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

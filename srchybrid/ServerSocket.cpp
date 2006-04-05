@@ -303,6 +303,15 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 								(serverconnect->GetClientID() < 16777216)  ? _T("low") : _T("high"),
 								(s_lastValidId < 16777216 && serverconnect->GetClientID() < 16777216) ? 
 								_T("") : _T(", all sources will be reasked immediately"));
+
+							// ==> Quick start [TPT] - Stulle/Max
+							if(thePrefs.GetQuickStart() && thePrefs.GetQuickStartAfterIPChange())
+							{
+								theApp.downloadqueue->quickflag = 0;
+								theApp.downloadqueue->quickflags = 0;
+							}
+							// <== Quick start [TPT] - Stulle/Max
+
 						}
 						else {
 							theApp.clientlist->TrigReaskForDownload(false);

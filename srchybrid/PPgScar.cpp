@@ -59,7 +59,7 @@ CPPgScar::CPPgScar()
 	// <== FunnyNick [SiRoB/Stulle] - Stulle
 
 	m_htiConTweaks = NULL;
-/*	// ==> Quick start [TPT] - Stulle
+	// ==> Quick start [TPT] - Stulle/Max
 	m_htiQuickStartGroup = NULL;
 	m_htiQuickStart = NULL;
 	m_htiQuickStartMaxTime = NULL;
@@ -68,9 +68,9 @@ CPPgScar::CPPgScar()
 	m_htiQuickStartMaxConnPerFiveBack = NULL;
 	m_htiQuickStartMaxConnBack = NULL;
 	m_htiQuickStartAfterIPChange = NULL;
-	// <== Quick start [TPT] - Stulle
-	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources - Stulle
-*/	m_htiACC = NULL; // ACC [Max/WiZaRd] - Max
+	// <== Quick start [TPT] - Stulle/Max
+//	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources - Stulle
+	m_htiACC = NULL; // ACC [Max/WiZaRd] - Max
 /*
 	// ==> Anti Uploader Ban - Stulle
 	m_htiAntiUploaderBanLimit = NULL;
@@ -158,7 +158,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		int iImgPush = 8;
 		int iImgFunnyNick = 8;
 		int iImgConTweaks = 8;
-//		int iImgQuickstart = 8;
+		int iImgQuickstart = 8;
 		int iImgCS = 8; // CreditSystems [EastShare/ MorphXT] - Stulle
 		int iImgDisplay = 8;
 		int iImgDropDefaults = 8;
@@ -171,7 +171,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 			iImgPush = piml->Add(CTempIconLoader(_T("SPEED")));
 			iImgFunnyNick = piml->Add(CTempIconLoader(_T("FUNNYNICK")));
 			iImgConTweaks =  piml->Add(CTempIconLoader(_T("CONNECTION")));
-//			iImgQuickstart = piml->Add(CTempIconLoader(_T("QUICKSTART"))); // Thx to the eF-Mod team for the icon
+			iImgQuickstart = piml->Add(CTempIconLoader(_T("QUICKSTART"))); // Thx to the eF-Mod team for the icon
 			iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS"))); // CreditSystems [EastShare/ MorphXT] - Stulle
 			iImgDisplay = piml->Add(CTempIconLoader(_T("DISPLAY")));
 			iImgDropDefaults = piml->Add(CTempIconLoader(_T("DROPDEFAULTS")));
@@ -205,8 +205,8 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		// <== FunnyNick [SiRoB/Stulle] - Stulle
 
 		m_htiConTweaks = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_CON_TWEAKS), iImgConTweaks, TVI_ROOT);
-/*		m_htiQuickStartGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_QUICK_START_GROUP), iImgQuickstart, m_htiConTweaks);
-		// ==> Quick start [TPT] - Stulle
+		m_htiQuickStartGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_QUICK_START_GROUP), iImgQuickstart, m_htiConTweaks);
+		// ==> Quick start [TPT] - Stulle/Max
 		m_htiQuickStart = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_QUICK_START), m_htiQuickStartGroup, m_bQuickStart);
 		m_htiQuickStartMaxTime = m_ctrlTreeOptions.InsertItem(GetResString(IDS_QUICK_START_MAX_TIME), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiQuickStart);
 		m_ctrlTreeOptions.AddEditBox(m_htiQuickStartMaxTime, RUNTIME_CLASS(CNumTreeOptionsEdit));
@@ -220,11 +220,11 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.AddEditBox(m_htiQuickStartMaxConnBack, RUNTIME_CLASS(CNumTreeOptionsEdit));
 		m_ctrlTreeOptions.Expand(m_htiQuickStart, TVE_EXPAND);
 		m_htiQuickStartAfterIPChange = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_QUICK_START_AFTER_IP_CHANGE), m_htiQuickStartGroup, m_bQuickStartAfterIPChange);
-		// <== Quick start [TPT] - Stulle
+		// <== Quick start [TPT] - Stulle/Max
 		// ==> Timer for ReAsk File Sources - Stulle
-		m_htiReAskFileSrc = m_ctrlTreeOptions.InsertItem(GetResString(IDS_REASK_FILE_SRC), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiConTweaks);
-		m_ctrlTreeOptions.AddEditBox(m_htiReAskFileSrc, RUNTIME_CLASS(CNumTreeOptionsEdit));
-*/		// <== Timer for ReAsk File Sources - Stulle
+//		m_htiReAskFileSrc = m_ctrlTreeOptions.InsertItem(GetResString(IDS_REASK_FILE_SRC), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiConTweaks);
+//		m_ctrlTreeOptions.AddEditBox(m_htiReAskFileSrc, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		// <== Timer for ReAsk File Sources - Stulle
 		m_htiACC = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ACC), m_htiConTweaks, m_bACC); // ACC [Max/WiZaRd] - Max
 /*
 		// ==> Anti Uploader Ban - Stulle
@@ -332,7 +332,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	if(m_htiFnTagAtEnd)	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiFnTagAtEnd, m_bFnTagAtEnd);
 	// <== FunnyNick [SiRoB/Stulle] - Stulle
 	
-/*	// ==> Quick start [TPT] - Stulle
+	// ==> Quick start [TPT] - Stulle/Max
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiQuickStart, m_bQuickStart);
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiQuickStartMaxTime, m_iQuickStartMaxTime);
 	DDV_MinMaxInt(pDX, m_iQuickStartMaxTime, 8, 18);
@@ -345,11 +345,11 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiQuickStartMaxConnBack, m_iQuickStartMaxConnBack);
 	DDV_MinMaxInt(pDX, m_iQuickStartMaxConnBack, 1, INT_MAX);
 	if(m_htiQuickStartAfterIPChange) DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiQuickStartAfterIPChange, m_bQuickStartAfterIPChange);
-	// <== Quick start [TPT] - Stulle
+	// <== Quick start [TPT] - Stulle/Max
 	// ==> Timer for ReAsk File Sources - Stulle
-	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiReAskFileSrc, m_iReAskFileSrc);
-	DDV_MinMaxInt(pDX, m_iReAskFileSrc, 29, 55);
-*/	// <== Timer for ReAsk File Sources - Stulle
+//	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiReAskFileSrc, m_iReAskFileSrc);
+//	DDV_MinMaxInt(pDX, m_iReAskFileSrc, 29, 55);
+	// <== Timer for ReAsk File Sources - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiACC, m_bACC); // ACC [Max/WiZaRd] - Max
 /*
 	// ==> Anti Uploader Ban - Stulle
@@ -422,10 +422,10 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	if(m_bFnActive) m_ctrlTreeOptions.Expand(m_htiCustomTag, TVE_EXPAND);
 	else m_ctrlTreeOptions.Expand(m_htiCustomTag, TVE_COLLAPSE);
 	// <== FunnyNick [SiRoB/Stulle] - Stulle
-/*	// ==> Quick start [TPT] - Stulle
+	// ==> Quick start [TPT] - Stulle/Max
 	if (m_htiQuickStartAfterIPChange)	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiQuickStartAfterIPChange, m_bQuickStart);
-	// <== Quick start [TPT] - Stulle
-*/
+	// <== Quick start [TPT] - Stulle/Max
+
 }
 
 
@@ -444,7 +444,7 @@ BOOL CPPgScar::OnInitDialog()
 	m_bFnTagAtEnd = thePrefs.GetFnTagAtEnd();
 	// <== FunnyNick [SiRoB/Stulle] - Stulle
 
-/*	// ==> Quick start [TPT] - Stulle
+	// ==> Quick start [TPT] - Stulle/Max
 	m_bQuickStart = thePrefs.GetQuickStart();
 	m_iQuickStartMaxTime = (int)(thePrefs.GetQuickStartMaxTime());
 	m_iQuickStartMaxConnPerFive = (int)(thePrefs.GetQuickStartMaxConnPerFive());
@@ -452,9 +452,9 @@ BOOL CPPgScar::OnInitDialog()
 	m_iQuickStartMaxConnPerFiveBack = (int)(thePrefs.GetQuickStartMaxConnPerFiveBack());
 	m_iQuickStartMaxConnBack = (int)(thePrefs.GetQuickStartMaxConnBack());
 	m_bQuickStartAfterIPChange = thePrefs.GetQuickStartAfterIPChange();
-	// <== Quick start [TPT] - Stulle
-	m_iReAskFileSrc = (thePrefs.GetReAskTimeDif() + FILEREASKTIME)/60000; // Timer for ReAsk File Sources - Stulle
-*/	m_bACC = thePrefs.GetACC(); // ACC [Max/WiZaRd] - Max
+	// <== Quick start [TPT] - Stulle/Max
+//	m_iReAskFileSrc = (thePrefs.GetReAskTimeDif() + FILEREASKTIME)/60000; // Timer for ReAsk File Sources - Stulle
+	m_bACC = thePrefs.GetACC(); // ACC [Max/WiZaRd] - Max
 /*
 	// ==> Anti Uploader Ban - Stulle
 	m_iAntiUploaderBanLimit = thePrefs.GetAntiUploaderBanLimit();
@@ -562,7 +562,7 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_bFnTagAtEnd = m_bFnTagAtEnd;
 	// <== FunnyNick [SiRoB/Stulle] - Stulle
 
-/*	// ==> Quick start [TPT] - Stulle
+	// ==> Quick start [TPT] - Stulle/Max
 	thePrefs.m_bQuickStart = m_bQuickStart;
 	thePrefs.m_iQuickStartMaxTime = m_iQuickStartMaxTime;
 	thePrefs.m_iQuickStartMaxConnPerFive = m_iQuickStartMaxConnPerFive;
@@ -570,9 +570,9 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_iQuickStartMaxConnPerFiveBack = m_iQuickStartMaxConnPerFiveBack;
 	thePrefs.m_iQuickStartMaxConnBack = m_iQuickStartMaxConnBack;
 	thePrefs.m_bQuickStartAfterIPChange = m_bQuickStartAfterIPChange;
-	// <== Quick start [TPT] - Stulle
-	thePrefs.m_uReAskTimeDif = (m_iReAskFileSrc-29)*60000; // Timer for ReAsk File Sources - Stulle
-*/	thePrefs.m_bACC = m_bACC; // ACC [Max/WiZaRd] - Max
+	// <== Quick start [TPT] - Stulle/Max
+//	thePrefs.m_uReAskTimeDif = (m_iReAskFileSrc-29)*60000; // Timer for ReAsk File Sources - Stulle
+	thePrefs.m_bACC = m_bACC; // ACC [Max/WiZaRd] - Max
 /*
 	// ==> Anti Uploader Ban - Stulle
 	thePrefs.m_iAntiUploaderBanLimit = m_iAntiUploaderBanLimit;
@@ -679,7 +679,7 @@ void CPPgScar::Localize(void)
 		if (m_htiFnTagAtEnd) m_ctrlTreeOptions.SetItemText(m_htiFnTagAtEnd, GetResString(IDS_FN_TAG_AT_END));
 		// <== FunnyNick [SiRoB/Stulle] - Stulle
 
-/*		// ==> Quick start [TPT] - Stulle
+		// ==> Quick start [TPT] - Stulle/Max
 		if (m_htiQuickStart) m_ctrlTreeOptions.SetItemText(m_htiQuickStart, GetResString(IDS_QUICK_START));
 		if (m_htiQuickStartMaxTime) m_ctrlTreeOptions.SetEditLabel(m_htiQuickStartMaxTime, GetResString(IDS_QUICK_START_MAX_TIME));
 		if (m_htiQuickStartMaxConnPerFive) m_ctrlTreeOptions.SetEditLabel(m_htiQuickStartMaxConnPerFive, GetResString(IDS_QUICK_START_MAX_CONN_PER_FIVE));
@@ -687,9 +687,9 @@ void CPPgScar::Localize(void)
 		if (m_htiQuickStartMaxConnPerFiveBack) m_ctrlTreeOptions.SetEditLabel(m_htiQuickStartMaxConnPerFiveBack, GetResString(IDS_QUICK_START_MAX_CONN_PER_FIVE_BACK));
 		if (m_htiQuickStartMaxConnBack) m_ctrlTreeOptions.SetEditLabel(m_htiQuickStartMaxConnBack, GetResString(IDS_QUICK_START_MAX_CONN_BACK));
 		if (m_htiQuickStartAfterIPChange) m_ctrlTreeOptions.SetItemText(m_htiQuickStartAfterIPChange, GetResString(IDS_QUICK_START_AFTER_IP_CHANGE));
-		// <== Quick start [TPT] - Stulle
-		if (m_htiReAskFileSrc) m_ctrlTreeOptions.SetEditLabel(m_htiReAskFileSrc, GetResString(IDS_REASK_FILE_SRC)); // Timer for ReAsk File Sources - Stulle
-*/		if (m_htiACC) m_ctrlTreeOptions.SetItemText(m_htiACC, GetResString(IDS_ACC)); // ACC [Max/WiZaRd] - Max
+		// <== Quick start [TPT] - Stulle/Max
+//		if (m_htiReAskFileSrc) m_ctrlTreeOptions.SetEditLabel(m_htiReAskFileSrc, GetResString(IDS_REASK_FILE_SRC)); // Timer for ReAsk File Sources - Stulle
+		if (m_htiACC) m_ctrlTreeOptions.SetItemText(m_htiACC, GetResString(IDS_ACC)); // ACC [Max/WiZaRd] - Max
 /*
 		// ==> Anti Uploader Ban - Stulle
 		if (m_htiAntiUploaderBanLimit) m_ctrlTreeOptions.SetEditLabel(m_htiAntiUploaderBanLimit, GetResString(IDS_UNBAN_UPLOADER));
@@ -767,7 +767,7 @@ void CPPgScar::OnDestroy()
 	// <== FunnyNick [SiRoB/Stulle] - Stulle
 
 	m_htiConTweaks = NULL;
-/*	// ==> Quick start [TPT] - Stulle
+	// ==> Quick start [TPT] - Stulle/Max
 	m_htiQuickStartGroup = NULL;
 	m_htiQuickStart = NULL;
 	m_htiQuickStartMaxTime = NULL;
@@ -776,9 +776,9 @@ void CPPgScar::OnDestroy()
 	m_htiQuickStartMaxConnPerFiveBack = NULL;
 	m_htiQuickStartMaxConnBack = NULL;
 	m_htiQuickStartAfterIPChange = NULL;
-	// <== Quick start [TPT] - Stulle
-	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources - Stulle
-*/	m_htiACC = NULL; // ACC [Max/WiZaRd] - Max
+	// <== Quick start [TPT] - Stulle/Max
+//	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources - Stulle
+	m_htiACC = NULL; // ACC [Max/WiZaRd] - Max
 /*
 	// ==> Anti Uploader Ban - Stulle
 	m_htiAntiUploaderBanLimit = NULL;
@@ -871,7 +871,7 @@ LRESULT CPPgScar::OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam)
 			}
 		}
 		// <== FunnyNick [SiRoB/Stulle] - Stulle
-/*		// ==> Quick start [TPT] - Stulle
+		// ==> Quick start [TPT] - Stulle/Max
 		if (m_htiQuickStart && pton->hItem == m_htiQuickStart)
 		{
 			if (m_ctrlTreeOptions.GetCheckBox(m_htiQuickStart, bCheck))
@@ -879,7 +879,7 @@ LRESULT CPPgScar::OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam)
 				if (m_htiQuickStartAfterIPChange)	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiQuickStartAfterIPChange, bCheck);
 			}
 		}
-*/		// <== Quick start [TPT] - Stulle
+		// <== Quick start [TPT] - Stulle/Max
 
 		SetModified();
 	}

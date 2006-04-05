@@ -52,6 +52,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+DWORD quicktime; // Quick start [TPT] - Stulle/Max
+
 CDownloadQueue::CDownloadQueue()
 {
 	filesrdy = 0;
@@ -91,6 +93,12 @@ CDownloadQueue::CDownloadQueue()
 	m_limitstate=0;
 
     //m_dwLastA4AFtime = 0; // ZZ:DownloadManager
+
+	// ==> Quick start [TPT] - Stulle/Max
+	quickflag = 0;
+	quickflags = 0;
+	// <== Quick start [TPT] - Stulle/Max
+
 }
 
 void CDownloadQueue::AddPartFilesToShare()
@@ -414,6 +422,43 @@ void CDownloadQueue::Process(){
 	}
 	////JP Proxy configuration testing END!!! This should probably be somewhere else.
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
+
+	// ==> Quick start [TPT] - Stulle/Max
+	static DWORD QuickStartEndTime=0;
+	if(thePrefs.GetQuickStart() && theApp.serverconnect->IsConnected() && quickflag == 0)
+	{
+		if(quickflags == 0)
+		{
+			quicktime = ::GetTickCount();
+			if (thePrefs.GetQuickStartMaxConnPerFiveBack() < thePrefs.GetQuickStartMaxConnPerFive()) // return values manual - Stulle
+				thePrefs.SetMaxConsPerFive(thePrefs.GetQuickStartMaxConnPerFive());
+			if (thePrefs.GetQuickStartMaxConnBack() < thePrefs.GetQuickStartMaxConn()) // return values manual - Stulle
+				thePrefs.SetMaxCon(thePrefs.GetQuickStartMaxConn());
+			quickflags = 1;
+			AddLogLine(true, _T("***** Quick Start actived for %u min. *****"), thePrefs.GetQuickStartMaxTime());
+			AddLogLine(false, _T("***** Max.Con.: %i *****"), thePrefs.GetMaxCon());
+			AddLogLine(false, _T("***** Max.Con./5sec: %i *****"), thePrefs.GetMaxConperFive());
+
+			DWORD QuickStartTime = MIN2MS(thePrefs.GetQuickStartMaxTime());
+			QuickStartEndTime = quicktime + QuickStartTime;
+			// this is sooooooooo useless...
+			//			for(POSITION pos = theApp.downloadqueue->filelist.GetHeadPosition(); pos != NULL;) 
+			//			{ 
+			//					CPartFile* cur_file = theApp.downloadqueue->filelist.GetNext(pos); 
+			//			}
+		}
+		if (QuickStartEndTime <= ::GetTickCount() || theApp.m_app_state == APP_STATE_SHUTINGDOWN)
+		{
+			thePrefs.SetMaxConsPerFive(thePrefs.GetQuickStartMaxConnPerFiveBack()); // return values manual - Stulle
+			thePrefs.SetMaxCon(thePrefs.GetQuickStartMaxConnBack()); // return values manual - Stulle
+			quickflag = 1;
+			AddLogLine(true , _T("***** Quick Start ended *****"));
+			AddLogLine(false, _T("***** Max.Con.: %i *****"), thePrefs.GetMaxCon());
+			AddLogLine(false, _T("***** Max.Con./5sec: %i *****"), thePrefs.GetMaxConperFive());
+		}
+	}
+	// <== Quick start [TPT] - Stulle/Max
+
 
 	// Elapsed time (TIMER_PERIOD not accurate)	
 	uint32 deltaTime = ::GetTickCount() - m_lastProcessTime;
