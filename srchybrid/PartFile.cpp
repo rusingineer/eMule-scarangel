@@ -2709,7 +2709,6 @@ uint32 CPartFile::Process(uint32 maxammount, bool isLimited, bool fullProcess)
 							{
 								theApp.downloadqueue->RemoveSource( cur_src );
 								m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
-								theStats.droppedsources++; // # of dropped sources in session - Stulle
 								lastpurgetime = dwCurTick;
 							}
 							break;
@@ -2764,7 +2763,6 @@ uint32 CPartFile::Process(uint32 maxammount, bool isLimited, bool fullProcess)
 								theApp.downloadqueue->RemoveSource( cur_src );
 								m_TimerForAutoNNS = dwCurTick;
 								m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
-								theStats.droppedsources++; // # of dropped sources in session - Stulle
 								break;
 							}			
 						}
@@ -2892,7 +2890,6 @@ uint32 CPartFile::Process(uint32 maxammount, bool isLimited, bool fullProcess)
 									cur_src->droptime=dwCurTick;
 									theApp.downloadqueue->RemoveSource(cur_src);
 									m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
-									theStats.droppedsources++; // # of dropped sources in session - Stulle
 									m_TimerForAutoFQS = dwCurTick;
 									break;
 								}
@@ -2922,7 +2919,6 @@ uint32 CPartFile::Process(uint32 maxammount, bool isLimited, bool fullProcess)
 								theApp.downloadqueue->RemoveSource(cur_src);
 								m_TimerForAutoHQRS = dwCurTick;
 								m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
-								theStats.droppedsources++; // # of dropped sources in session - Stulle
 								break;
 							}
 							else
@@ -2954,7 +2950,6 @@ uint32 CPartFile::Process(uint32 maxammount, bool isLimited, bool fullProcess)
 										m_RemoteQueueRank_Old = 0xFFFF;
 										m_RemoteQueueRank_New = m_MaxRemoveQRS;
 										m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
-										theStats.droppedsources++; // # of dropped sources in session - Stulle
 										break;
 									}
 									else
@@ -6747,6 +6742,8 @@ void CPartFile::RemoveNoNeededPartsSources()
 		}
 	}
 	UpdateDisplayedInfo(true);
+
+	m_ShowDroppedSrc = (uint16)(m_ShowDroppedSrc+ removed); // show # of dropped sources - Stulle
 }
 
 void CPartFile::RemoveQueueFullSources()
@@ -6770,11 +6767,14 @@ void CPartFile::RemoveQueueFullSources()
 		}
 	}	
 	UpdateDisplayedInfo(true);
+
+	m_ShowDroppedSrc = (uint16)(m_ShowDroppedSrc+ removed); // show # of dropped sources - Stulle
 }
 
 //Xman Anti-Leecher
 void CPartFile::RemoveLeecherSources()
 {
+	uint16 m_ShowDroppedSrc_Temp = 0; // show # of dropped sources - Stulle
 	//uint32 removed = 0;	
 
 	for(POSITION pos = srclist.GetHeadPosition(); pos != NULL; )
@@ -6784,10 +6784,13 @@ void CPartFile::RemoveLeecherSources()
 		{
 				cur_src->droptime=::GetTickCount(); 
 				theApp.downloadqueue->RemoveSource(cur_src);
+				m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
 				//removed ++; // Count removed source
 		}
 	}	
 	UpdateDisplayedInfo(true);
+
+	m_ShowDroppedSrc = (uint16)(m_ShowDroppedSrc+ m_ShowDroppedSrc_Temp); // show # of dropped sources - Stulle
 }
 //Xman end
 
@@ -6910,7 +6913,8 @@ bool CPartFile::IsSourceSearchAllowed()
 	//ActiveConnections > 75% MaxConnetions
 
 	// using a different compare sign (> to <) has the same effect as ! in front
-	if(thePrefs.maxconnections * 2 < theApp.listensocket->GetOpenSockets() *3)
+	if(thePrefs.GetACC() &&
+		thePrefs.maxconnections * 2 < theApp.listensocket->GetOpenSockets() *3)
 		return false;
 	// <== ACC [Max/WiZaRd] - Max
 
@@ -6970,9 +6974,10 @@ void CPartFile::RemoveLow2LowIPSourcesManual()
 		{
 			theApp.downloadqueue->RemoveSource(cur_src);
 			m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
-			theStats.droppedsources++; // # of dropped sources in session - Stulle
 		}
 	}
+	UpdateDisplayedInfo(true);
+
 	m_ShowDroppedSrc = (uint16)(m_ShowDroppedSrc+ m_ShowDroppedSrc_Temp); // show # of dropped sources - Stulle
 }
 // <== advanced manual dropping - remove LowID to LowID sources from DL Queue - Stulle
@@ -6992,11 +6997,12 @@ void CPartFile::RemoveUnknownErrorBannedSourcesManual()
 					cur_src->droptime=::GetTickCount();
 					theApp.downloadqueue->RemoveSource(cur_src);
 					m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
-					theStats.droppedsources++; // # of dropped sources in session - Stulle
 				}
 			default: break;
 		}
 	}
+	UpdateDisplayedInfo(true);
+
 	m_ShowDroppedSrc = (uint16)(m_ShowDroppedSrc+ m_ShowDroppedSrc_Temp); // show # of dropped sources - Stulle
 }
 // <== advanced manual dropping - remove unknown, error and banned sources from DL Queue - Stulle
@@ -7013,9 +7019,10 @@ void CPartFile::RemoveHighQRSourcesManualSivka()
 			cur_src->droptime=::GetTickCount();
 			theApp.downloadqueue->RemoveSource(cur_src);
 			m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
-			theStats.droppedsources++; // # of dropped sources in session - Stulle
 		}
 	}
+	UpdateDisplayedInfo(true);
+
 	m_ShowDroppedSrc = (uint16)(m_ShowDroppedSrc+ m_ShowDroppedSrc_Temp); // show # of dropped sources - Stulle
 }
 // <== advanced manual dropping - remove high queue rating sources from DL Queue - Stulle
@@ -7037,9 +7044,10 @@ void CPartFile::RemoveHighQRSourcesManualXman()
 			cur_src->droptime=::GetTickCount();
 			theApp.downloadqueue->RemoveSource(cur_src);
 			m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
-			theStats.droppedsources++; // # of dropped sources in session - Stulle
 		}
 	}
+	UpdateDisplayedInfo(true);
+
 	m_ShowDroppedSrc = (uint16)(m_ShowDroppedSrc+ m_ShowDroppedSrc_Temp); // show # of dropped sources - Stulle
 }
 // <== advanced manual dropping - remove high queue rating (xman) sources from DL Queue - Stulle
@@ -7058,7 +7066,6 @@ void CPartFile::CleanUp_NNS_FQS_NONE_ERROR_BANNED_LOWTOLOWIP_Sources()
 					cur_src->droptime=::GetTickCount(); 
 					theApp.downloadqueue->RemoveSource(cur_src);
 					m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
-					theStats.droppedsources++; // # of dropped sources in session - Stulle
 				}
 				else
 					cur_src->DontSwapTo(this);
@@ -7070,7 +7077,6 @@ void CPartFile::CleanUp_NNS_FQS_NONE_ERROR_BANNED_LOWTOLOWIP_Sources()
 						cur_src->droptime=::GetTickCount(); 
 						theApp.downloadqueue->RemoveSource(cur_src);
 						m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
-						theStats.droppedsources++; // # of dropped sources in session - Stulle
 					}
 					else
 						cur_src->DontSwapTo(this);
@@ -7082,7 +7088,6 @@ void CPartFile::CleanUp_NNS_FQS_NONE_ERROR_BANNED_LOWTOLOWIP_Sources()
 				{
 					theApp.downloadqueue->RemoveSource(cur_src);
 					m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
-					theStats.droppedsources++; // # of dropped sources in session - Stulle
 				}
 			case DS_NONE:
 			case DS_ERROR:
@@ -7091,11 +7096,12 @@ void CPartFile::CleanUp_NNS_FQS_NONE_ERROR_BANNED_LOWTOLOWIP_Sources()
 					cur_src->droptime=::GetTickCount(); 
 					theApp.downloadqueue->RemoveSource(cur_src);
 					m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
-					theStats.droppedsources++; // # of dropped sources in session - Stulle
 				}
 			default: break;
 		}
 	}
+	UpdateDisplayedInfo(true);
+
 	m_ShowDroppedSrc = (uint16)(m_ShowDroppedSrc+ m_ShowDroppedSrc_Temp); // show # of dropped sources - Stulle
 }
 // <== advanced manual dropping - CleanUp => NNS, FQS, UNKOWN, ERROR and BANNED sources from DL Queue - Stulle

@@ -3166,11 +3166,6 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		cbuffer.Format(_T("Leecher: %u"), theStats.leecherclients);
 		stattree.SetItemText(cligen[6], cbuffer);
 		//Xman end
-
-		// ==> # of dropped sources in session - Stulle
-		cbuffer.Format(GetResString(IDS_STATS_DROPPEDSOURCES), theStats.droppedsources);
-		stattree.SetItemText(cligen[7], cbuffer);
-		// <== # of dropped sources in session - Stulle
 	}//Xman Code Improvement
 
 	} // - END CLIENTS SECTION
@@ -3714,7 +3709,6 @@ void CStatisticsDlg::CreateMyTree()
 	for(int i = 0; i<3; i++)
 		cligen[i] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), h_clients);
 	cligen[6] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), h_clients); //Xman Anti-Leecher
-	cligen[7] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), h_clients); // # of dropped sources in session - Stulle
 
 	h_servers = stattree.InsertItem(GetResString(IDS_FSTAT_SERVERS),4,4);					// Servers section
 	for(int i = 0; i<6; i++)

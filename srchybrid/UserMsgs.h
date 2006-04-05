@@ -45,6 +45,9 @@ enum EUserWndMessages
 	UM_OSCOPEPOSITION,
 	//Xman versions check
 	UM_MVERSIONCHECK_RESPONSE,
-	UM_DLPVERSIONCHECK_RESPONSE //Xman DLP
+	UM_DLPVERSIONCHECK_RESPONSE, //Xman DLP
 	//Xman end
+	// ==> ScarAngel Version Check - Stulle
+	UM_SVERSIONCHECK_RESPONSE
+	// <== ScarAngel Version Check - Stulle
 };

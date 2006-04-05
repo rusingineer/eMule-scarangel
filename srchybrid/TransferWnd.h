@@ -23,6 +23,8 @@
 #include "QueueListCtrl.h"
 #include "ClientListCtrl.h"
 #include "DownloadClientsCtrl.h"
+#include "progressctrlx.h" // Client queue progress bar [Commander] - Stulle
+
 
 class CDropDownButton;
 class CToolTipCtrlX;
@@ -55,10 +57,7 @@ public:
 	void UpdateListCount(EWnd2 listindex, int iCount = -1);
 	void UpdateFilesCount(UINT iCount, UINT countsources, UINT countreadyfiles); //Xman see all sources
 
-// ==> {CPU/MEM usage} [Max] 
-        void ShowCPU();
-        void ShowMem(double number);
-// <== {CPU/MEM usage} [Max] 
+	void ShowRessources(); // CPU/MEM usage [$ick$/Stulle] - Max
 
 	void Localize();
 	void UpdateCatTabTitles(bool force = true);
@@ -94,6 +93,12 @@ protected:
 	POINT		m_pLastMousePoint;
 	uint32		m_dwShowListIDC;	
 	CToolTipCtrlX* m_tooltipCats;
+	// ==> Client queue progress bar [Commander] - Stulle
+	CProgressCtrlX queueBar;
+	CProgressCtrlX queueBar2;
+	CFont bold;
+	// <== Client queue progress bar [Commander] - Stulle
+
 
 	void	ShowWnd2(EWnd2 uList);
 	void	SetWnd2(EWnd2 uWnd2);

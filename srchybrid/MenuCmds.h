@@ -12,6 +12,7 @@
 #define MP_VERSIONCHECK			0x160
 #define MP_MINIMIZETOTRAY		0x170
 #define MP_MVERSIONCHECK		0x180 //Xman versions check
+#define MP_SVERSIONCHECK		0x190 // ScarAngel Version Check - Stulle
 
 #define MP_MESSAGE				10102
 #define MP_DETAIL				10103

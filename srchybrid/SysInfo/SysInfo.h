@@ -58,17 +58,17 @@
 
 
 typedef struct _MYOSVERSIONINFOEXA {
-    DWORD dwOSVersionInfoSize;
-    DWORD dwMajorVersion;
-    DWORD dwMinorVersion;
-    DWORD dwBuildNumber;
-    DWORD dwPlatformId;
-    TCHAR szCSDVersion[128];
-    WORD  wServicePackMajor;
-    WORD  wServicePackMinor;
-    WORD  wSuiteMask;
-    BYTE  wProductType;
-    BYTE  wReserved;
+	DWORD dwOSVersionInfoSize;
+	DWORD dwMajorVersion;
+	DWORD dwMinorVersion;
+	DWORD dwBuildNumber;
+	DWORD dwPlatformId;
+	TCHAR szCSDVersion[128];
+	WORD  wServicePackMajor;
+	WORD  wServicePackMinor;
+	WORD  wSuiteMask;
+	BYTE  wProductType;
+	BYTE  wReserved;
 } MYOSVERSIONINFOEXA, *MYPOSVERSIONINFOEXA, *MYLPOSVERSIONINFOEXA;
 
 typedef MYOSVERSIONINFOEXA MYOSVERSIONINFOEX;
@@ -76,15 +76,15 @@ typedef MYPOSVERSIONINFOEXA MYPOSVERSIONINFOEX;
 typedef MYLPOSVERSIONINFOEXA MYLPOSVERSIONINFOEX;
 
 typedef struct _MYMEMORYSTATUSEX {
-  DWORD dwLength; 
-  DWORD dwMemoryLoad; 
-  DWORDLONG ullTotalPhys; 
-  DWORDLONG ullAvailPhys; 
-  DWORDLONG ullTotalPageFile; 
-  DWORDLONG ullAvailPageFile; 
-  DWORDLONG ullTotalVirtual; 
-  DWORDLONG ullAvailVirtual; 
-  DWORDLONG ullAvailExtendedVirtual;
+	DWORD dwLength; 
+	DWORD dwMemoryLoad; 
+	DWORDLONG ullTotalPhys; 
+	DWORDLONG ullAvailPhys; 
+	DWORDLONG ullTotalPageFile; 
+	DWORDLONG ullAvailPageFile; 
+	DWORDLONG ullTotalVirtual; 
+	DWORDLONG ullAvailVirtual; 
+	DWORDLONG ullAvailExtendedVirtual;
 } MYMEMORYSTATUSEX, *LPMYMEMORYSTATUSEX;
 
 typedef BOOL (WINAPI *pGlobalMemoryStatusEx)(LPMYMEMORYSTATUSEX lpBuffer);
@@ -97,16 +97,16 @@ typedef BOOL (WINAPI *pGlobalMemoryStatusEx)(LPMYMEMORYSTATUSEX lpBuffer);
 
 
 typedef struct _PROCESS_MEMORY_COUNTERS {
-    DWORD cb;
-    DWORD PageFaultCount;
-    SIZE_T PeakWorkingSetSize;
-    SIZE_T WorkingSetSize;
-    SIZE_T QuotaPeakPagedPoolUsage;
-    SIZE_T QuotaPagedPoolUsage;
-    SIZE_T QuotaPeakNonPagedPoolUsage;
-    SIZE_T QuotaNonPagedPoolUsage;
-    SIZE_T PagefileUsage;
-    SIZE_T PeakPagefileUsage;
+	DWORD cb;
+	DWORD PageFaultCount;
+	SIZE_T PeakWorkingSetSize;
+	SIZE_T WorkingSetSize;
+	SIZE_T QuotaPeakPagedPoolUsage;
+	SIZE_T QuotaPagedPoolUsage;
+	SIZE_T QuotaPeakNonPagedPoolUsage;
+	SIZE_T QuotaNonPagedPoolUsage;
+	SIZE_T PagefileUsage;
+	SIZE_T PeakPagefileUsage;
 } PROCESS_MEMORY_COUNTERS;
 
 typedef PROCESS_MEMORY_COUNTERS *PPROCESS_MEMORY_COUNTERS;
@@ -173,6 +173,7 @@ public:
 	DWORD GetIEMajor() { return m_dwIEMajor; };
 
 	DWORD GetProcessMemoryUsage();
+	uint32 GetProcessMemoryUsageInt(); // changed - Stulle
 	DWORD GetMemoryLoad() { return m_dwMemoryLoad; };
 	DWORD64 GetAvailVirtual() { return m_dwAvailVirtual; };
 	DWORD64 GetTotalVirtual() { return m_dwTotalVirtual; };

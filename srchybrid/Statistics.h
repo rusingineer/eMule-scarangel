@@ -144,7 +144,6 @@ public:
 	static uint32	filteredclients;
 	static DWORD	starttime;
 	static uint32	leecherclients; //Xman Anti-Leecher
-	static uint32	droppedsources; // # of dropped sources in session - Stulle
 
 private:
 	//Xman

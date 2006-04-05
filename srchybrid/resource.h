@@ -2546,7 +2546,6 @@
 #define IDS_SIVKA_DROPPING              60317
 #define IDS_HQR_WAY                     60318
 // <== file settings - Stulle
-#define IDS_STATS_DROPPEDSOURCES        60320 // # of dropped sources in session - Stulle
 #define IDS_SHOW_DROPPED_SRC            60330 // show # of dropped sources - Stulle
 // ==> Source Graph - Stulle
 #define IDC_SRCGRAPH_GRP                60340
@@ -2647,6 +2646,19 @@
 #define IDS_SET_CUSTOM_TAG              60446
 #define IDS_FN_TAG_AT_END               60447
 // <== FunnyNick [SiRoB/Stulle] - Stulle
+// ==> Client queue progress bar [Commander] - Stulle
+#define IDS_CLIENTQUEUEPROGRESSBAR      60450
+#define IDC_QUEUE                       60451
+#define IDC_QUEUE2                      60452
+// <== Client queue progress bar [Commander] - Stulle
+#define IDS_ACC                         60460 // ACC [Max/WiZaRd] - Max
+// ==> ScarAngel Version Check - Stulle
+#define IDS_VISITSVERSIONCHECK          60470
+#define IDS_SVERSIONCHECK               60471
+#define IDS_NONEWSVERVERSION            60472
+#define IDS_NEWSVERSIONAVL              60473
+#define IDS_NEWSVERSIONAVLPOPUP         60475
+// <== ScarAngel Version Check - Stulle
 
 // Next default values for new objects
 // 

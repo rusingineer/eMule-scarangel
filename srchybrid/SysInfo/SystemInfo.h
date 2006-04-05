@@ -10,5 +10,7 @@ public:
 	~CSystemInfo();
 
 	int		GetCpuUsage();
-	DWORD	GetMemoryUsage();
+	uint32	GetMemoryUsage();
+	int		GetGlobalCpuUsage(); // added - Stulle
+	uint32	GetGlobalMemoryUsage();
 };

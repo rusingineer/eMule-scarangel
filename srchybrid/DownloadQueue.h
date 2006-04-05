@@ -153,11 +153,6 @@ public:
 
 	CServer* cur_udpserver;
 
-// ==> {CPU/MEM usage} [Max] 
-	double cpuse; 
-    double memuse; 
-// <== {CPU/MEM usage} [Max] 
-
 	//Xman
 	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 	void	CompDownloadRate();
@@ -258,6 +253,8 @@ protected:
 	bool m_bPassiveMode;
 	bool m_bGlobalHLSrcReqAllowed;
 	// <== Global Source Limit [Max/Stulle] - Stulle
+
+	DWORD m_dwResTimer; // CPU/MEM usage [$ick$/Stulle] - Max
 
 public:
 	uint16 GetGlobalSourceCount(); // Show sources on title - Stulle

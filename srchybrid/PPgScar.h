@@ -36,9 +36,9 @@ protected:
 	int m_iQuickStartMaxConnBack;
 	bool m_bQuickStartAfterIPChange;
 	// <== Quick start [TPT] - Stulle
-	bool m_bIsreaskSourceAfterIPChange; // Xman -Reask sources after IP change- v2 - Stulle
 	int m_iReAskFileSrc; // Timer for ReAsk File Sources - Stulle
-
+*/	bool m_bACC; // ACC [Max/WiZaRd] - Max
+/*
 	// ==> Anti Uploader Ban - Stulle
 	int m_iAntiUploaderBanLimit;
 	int m_iAntiUploaderBanCase;
@@ -55,6 +55,7 @@ protected:
 	bool m_bShowGlobalHL; // show global HL - Stulle
 	bool m_bShowFileHLconst; // show HL per file constantaniously - Stulle
 	bool m_bShowInMSN7; // Show in MSN7 [TPT] - Stulle
+	bool m_bQueueProgressBar; // Client queue progress bar [Commander] - Stulle
 //	bool m_bTrayComplete; // Completed in Tray - Stulle
 
 	// ==> file settings - Stulle
@@ -126,9 +127,9 @@ protected:
 	HTREEITEM m_htiQuickStartMaxConnBack;
 	HTREEITEM m_htiQuickStartAfterIPChange;
 	// <== Quick start [TPT] - Stulle
-	HTREEITEM m_htiIsreaskSourceAfterIPChange; // Xman -Reask sources after IP change- v2 - Stulle
 	HTREEITEM m_htiReAskFileSrc; // Timer for ReAsk File Sources - Stulle
-
+*/	HTREEITEM m_htiACC; // ACC [Max/WiZaRd] - Max
+/*
 	// ==> Anti Uploader Ban - Stulle
 	HTREEITEM m_htiAntiUploaderBanLimit;
 	HTREEITEM m_htiAntiCase1;
@@ -155,6 +156,7 @@ protected:
 	HTREEITEM m_htiShowGlobalHL; // show global HL - Stulle
 	HTREEITEM m_htiShowFileHLconst; // show HL per file constantaniously - Stulle
 	HTREEITEM m_htiShowInMSN7; // Show in MSN7 [TPT] - Stulle
+	HTREEITEM m_htiQueueProgressBar; // Client queue progress bar [Commander] - Stulle
 //	HTREEITEM m_htiTrayComplete; // Completed in Tray - Stulle
 
 	// ==> file settings - Stulle

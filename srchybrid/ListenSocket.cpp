@@ -760,8 +760,8 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 					*/
 					else if(reqfileNr2!=NULL &&
 						(reqfileNr1->GetUpPriorityEx()  < reqfileNr2->GetUpPriorityEx() ||
-						(reqfileNr1->IsPushSmallFile()==false && reqfileNr2->IsPushSmallFile()==true)/* ||
-						(reqfileNr1->GetFileRatio() < reqfileNr2->GetFileRatio())*/)) // push rare file - Stulle
+						(reqfileNr1->IsPushSmallFile()==false && reqfileNr2->IsPushSmallFile()==true) ||
+						((int)(10*reqfileNr1->GetFileRatio()) < (int)(10*reqfileNr2->GetFileRatio())))) // push rare file - Stulle
 					// <== push small files [sivka] - Stulle
 					{
 						if(thePrefs.GetLogUlDlEvents()){
@@ -2346,8 +2346,8 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 					*/
 					else if(reqfileNr2!=NULL &&
 						(reqfileNr1->GetUpPriorityEx()  < reqfileNr2->GetUpPriorityEx() ||
-						(reqfileNr1->IsPushSmallFile()==false && reqfileNr2->IsPushSmallFile()==true)/* ||
-						(reqfileNr1->GetFileRatio() < reqfileNr2->GetFileRatio())*/)) // push rare file - Stulle
+						(reqfileNr1->IsPushSmallFile()==false && reqfileNr2->IsPushSmallFile()==true) ||
+						((int)(10*reqfileNr1->GetFileRatio()) < (int)(10*reqfileNr2->GetFileRatio())))) // push rare file - Stulle
 					// <== push small files [sivka] - Stulle
 					{
 						if(thePrefs.GetLogUlDlEvents()){

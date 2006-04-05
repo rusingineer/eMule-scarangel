@@ -44,21 +44,13 @@
 #include "BandWidthControl.h"
 #include "ListenSocket.h"
 
-// ==> {CPU/MEM usage} [Max] 
-#include ".\SysInfo\SystemInfo.h" 
-#include ".\SysInfo\SysInfo.h"
-// <== {CPU/MEM usage} [Max]
+#include ".\SysInfo\SystemInfo.h" // CPU/MEM usage [$ick$/Stulle] - Max 
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
-// ==> {CPU/MEM usage} [Max] 
-DWORD Timer = ::GetTickCount();
-double mem_m = NULL;
-// <== {CPU/MEM usage} [Max]
 
 CDownloadQueue::CDownloadQueue()
 {
@@ -121,6 +113,8 @@ void CDownloadQueue::Init(){
 	m_bPassiveMode = false;
 	m_bGlobalHLSrcReqAllowed = true;
 	// <== Global Source Limit [Max/Stulle] - Stulle
+
+	m_dwResTimer = ::GetTickCount(); // CPU/MEM usage [$ick$/Stulle] - Max
 
 	// find all part files, read & hash them if needed and store into a list
 	CFileFind ff;
@@ -609,16 +603,13 @@ void CDownloadQueue::Process(){
 	}
 	//end - Maella -New bandwidth control-
 
-// ==> {CPU/MEM usage} [Max] 
-	if( ::GetTickCount() - Timer > 2500 ) 
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max 
+	if(::GetTickCount() > m_dwResTimer) 
 		{
-			mem_m = (theApp.sysinfo->GetMemoryUsage()/1024);
-			memuse = mem_m;
-			theApp.emuledlg->transferwnd->ShowCPU();
-			theApp.emuledlg->transferwnd->ShowMem(memuse);
-			Timer = ::GetTickCount();
+			theApp.emuledlg->transferwnd->ShowRessources();
+			m_dwResTimer = ::GetTickCount() + 2500;
 		}
-// <== {CPU/MEM usage} [Max] 
+	// <== CPU/MEM usage [$ick$/Stulle] - Max 
 
 	CheckDiskspaceTimed();
 	

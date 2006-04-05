@@ -18,7 +18,8 @@ enum TbnMsg {
 	TBN_IMPORTANTEVENT,
 	TBN_NEWVERSION,
 	TBN_DOWNLOADADDED,
-	TBN_NEWMVERSION //Xman versions check
+	TBN_NEWMVERSION, //Xman versions check
+	TBN_NEWSVERSION // ScarAngel Version Check - Stulle
 };
 //END - enkeyDEV(kei-kun) -TaskbarNotifier-
 

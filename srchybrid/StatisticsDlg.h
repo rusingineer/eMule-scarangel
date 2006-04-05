@@ -91,7 +91,7 @@ private:
 	HTREEITEM	h_connection, h_conn_session, h_conn_total; // Connection Section Headers
 	HTREEITEM	hconn_sg, conn_sg[5], hconn_su, conn_su[4], hconn_sd, conn_sd[4]; // Connection Session Section Headers and Items
 	HTREEITEM	hconn_tg, conn_tg[4], hconn_tu, conn_tu[3], hconn_td, conn_td[3]; // Connection Total Section Headers and Items
-	HTREEITEM	h_clients, cligen[8/*6*Official+1*Leecher+1*Stulle*/], hclisoft, clisoft[8]; //Xman Anti-Leecher // # of dropped sources in session - Stulle
+	HTREEITEM	h_clients, cligen[7/*6*Official+1*Leecher*/], hclisoft, clisoft[8]; //Xman Anti-Leecher
 	HTREEITEM	cli_versions[MAX_CLIENTS_WITH_SUB_VERSION*MAX_SUB_CLIENT_VERSIONS];
 	HTREEITEM	cli_other[MAX_SUB_CLIENT_VERSIONS/2];
 	HTREEITEM	hclinet, clinet[4]; // Clients Section

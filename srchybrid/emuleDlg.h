@@ -100,6 +100,9 @@ public:
 	//Xman versions check
 	void DoMVersioncheck(bool manual);
 	//Xman end
+	// ==> ScarAngel Version Check - Stulle
+	void DoSVersioncheck(bool manual);
+	// <== ScarAngel Version Check - Stulle
 	void ApplyHyperTextFont(LPLOGFONT pFont);
 	void ApplyLogFont(LPLOGFONT pFont);
 	void ProcessED2KLink(LPCTSTR pszData);
@@ -168,6 +171,9 @@ protected:
 	char			m_acDLPBuffer[MAXGETHOSTSTRUCT]; //Xman DLP
 	bool			m_bCheckwasDone;
 	//Xman end
+	// ==> ScarAngel Version Check - Stulle
+	char			m_acSVCDNSBuffer[MAXGETHOSTSTRUCT];
+	// <== ScarAngel Version Check - Stulle
 
 	// Splash screen
 	CSplashScreenEx *m_pSplashWnd; //Xman Splashscreen
@@ -272,6 +278,9 @@ protected:
 	afx_msg LRESULT OnMVersionCheckResponse(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnDLPVersionCheckResponse(WPARAM wParam, LPARAM lParam); //Xman DLP
 	//Xman end
+
+	// ScarAngel Version Check - Stulle
+	afx_msg	LRESULT	OnSVersionCheckResponse(WPARAM wParam, LPARAM lParam);
 
 	// Peercache DNS
 	afx_msg LRESULT OnPeerCacheResponse(WPARAM wParam, LPARAM lParam);

@@ -34,10 +34,7 @@
 #include "SharedFilesWnd.h"
 #include "UploadBandwidthThrottler.h" //Xman Xtreme upload
 
-// ==> {CPU/MEM usage} [Max] 
-#include ".\SysInfo\SystemInfo.h" 
-#include ".\SysInfo\SysInfo.h"
-// <== {CPU/MEM usage} [Max] 
+#include ".\SysInfo\SystemInfo.h" // CPU/MEM usage [$ick$/Stulle] - Max
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -131,16 +128,20 @@ BOOL CTransferWnd::OnInitDialog()
 	//AddAnchor(*m_btnWnd2, CSize(0, thePrefs.GetSplitterbarPosition()), BOTTOM_RIGHT); //Xman uploadtoolbar
 	AddAnchor(IDC_DOWNLOADCLIENTS, CSize(0, thePrefs.GetSplitterbarPosition()), BOTTOM_RIGHT);
 	AddAnchor(IDC_QUEUECOUNT, BOTTOM_LEFT);
+	// ==> Client queue progress bar [Commander] - Stulle
+	AddAnchor(IDC_QUEUE, BOTTOM_LEFT, BOTTOM_CENTER);
+	AddAnchor(IDC_QUEUE2, BOTTOM_CENTER, BOTTOM_RIGHT);
+	// <== Client queue progress bar [Commander] - Stulle
 	AddAnchor(IDC_QUEUECOUNT_LABEL, BOTTOM_LEFT);
 	AddAnchor(IDC_QUEUE_REFRESH_BUTTON, BOTTOM_RIGHT);
 	AddAnchor(IDC_DLTAB, CSize(50, 0), TOP_RIGHT);
 
-// ==> {CPU/MEM usage} [Max] 
-    AddAnchor(IDC_MEMCOUNT,BOTTOM_LEFT); // contador
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max 
+	AddAnchor(IDC_MEMCOUNT,BOTTOM_LEFT); // contador
 	AddAnchor(IDC_MEM,BOTTOM_LEFT); // texto
-    AddAnchor(IDC_CPUCOUNT,BOTTOM_LEFT);  
+	AddAnchor(IDC_CPUCOUNT,BOTTOM_LEFT);  
 	AddAnchor(IDC_CPU,BOTTOM_LEFT); 
-// <== {CPU/MEM usage} [Max] 
+	// <== CPU/MEM usage [$ick$/Stulle] - Max 
 
 	switch (thePrefs.GetTransferWnd1()) {
 		default:
@@ -202,6 +203,22 @@ BOOL CTransferWnd::OnInitDialog()
 
 	VerifyCatTabSize();
     Localize();
+	// ==> Client queue progress bar [Commander] - Stulle
+	bold.CreateFont(10,0,0,1,FW_BOLD,0,0,0,0,3,2,1,34,_T("Small Fonts"));
+
+	queueBar.SetFont(&bold);
+	queueBar.SetBkColor(GetSysColor(COLOR_WINDOW));
+	queueBar.SetShowPercent();
+	queueBar.SetGradientColors(RGB(0, 224, 0), RGB(224, 224, 0));
+	queueBar2.SetFont(&bold);
+	queueBar2.SetBkColor(GetSysColor(COLOR_WINDOW));
+	queueBar2.SetShowPercent();
+	queueBar2.SetGradientColors(RGB(224, 224, 0), RGB(224, 0, 0));
+	if(!thePrefs.ShowClientQueueProgressBar()){
+		GetDlgItem(IDC_QUEUE)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_QUEUE2)->ShowWindow(SW_HIDE);
+	}
+	// <== Client queue progress bar [Commander] - Stulle
 
 	return true;
 }
@@ -211,6 +228,27 @@ void CTransferWnd::ShowQueueCount(uint32 number)
 	TCHAR buffer[100];
 	_stprintf(buffer,_T("%u (%u ") + GetResString(IDS_BANNED).MakeLower() + _T(")"), number,theApp.clientlist->GetBannedCount() );
 	GetDlgItem(IDC_QUEUECOUNT)->SetWindowText(buffer);
+
+	// ==> Client queue progress bar [Commander] - Stulle
+	if(!thePrefs.ShowClientQueueProgressBar()){
+		GetDlgItem(IDC_QUEUE)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_QUEUE2)->ShowWindow(SW_HIDE);
+	}
+	else{
+		GetDlgItem(IDC_QUEUE)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_QUEUE2)->ShowWindow(SW_SHOW);
+		UINT iMaxQueueSize = thePrefs.GetQueueSize() + max(thePrefs.GetQueueSize()/4, 200);
+		queueBar.SetRange32(0, thePrefs.GetQueueSize()); //Softlimit -> GetQueueSize | Hardlimit -> (GetQueueSize + (GetQueueSize/4))
+		queueBar2.SetRange32(thePrefs.GetQueueSize()+1, iMaxQueueSize);
+		if (number<=thePrefs.GetQueueSize()){
+			queueBar.SetPos(number);
+			queueBar2.SetPos(thePrefs.GetQueueSize()+1);
+		}else {
+			queueBar.SetPos(thePrefs.GetQueueSize());
+			queueBar2.SetPos(number);
+		}
+	}
+	// <== Client queue progress bar [Commander] - Stulle
 }
 
 void CTransferWnd::DoDataExchange(CDataExchange* pDX)
@@ -219,6 +257,10 @@ void CTransferWnd::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_DOWNLOAD_ICO, *m_btnWnd1);
 	DDX_Control(pDX, IDC_UPLOAD_ICO, *m_btnWnd2);
 	DDX_Control(pDX, IDC_DLTAB, m_dlTab);
+	// ==> Client queue progress bar [Commander] - Stulle
+	DDX_Control(pDX, IDC_QUEUE, queueBar);
+	DDX_Control(pDX, IDC_QUEUE2, queueBar2);
+	// <== Client queue progress bar [Commander] - Stulle
 	DDX_Control(pDX, IDC_UPLOADLIST, uploadlistctrl);
 	DDX_Control(pDX, IDC_DOWNLOADLIST, downloadlistctrl);
 	DDX_Control(pDX, IDC_QUEUELIST, queuelistctrl);
@@ -285,11 +327,25 @@ void CTransferWnd::UpdateSplitterRange()
 	RemoveAnchor(IDC_CLIENTLIST);
 	RemoveAnchor(IDC_DOWNLOADCLIENTS);
 
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max 
+	RemoveAnchor(IDC_MEMCOUNT);
+	RemoveAnchor(IDC_MEM);
+	RemoveAnchor(IDC_CPUCOUNT);
+	RemoveAnchor(IDC_CPU);
+	// <== CPU/MEM usage [$ick$/Stulle] - Max 
+
 	AddAnchor(IDC_DOWNLOADLIST, TOP_LEFT, CSize(100, thePrefs.GetSplitterbarPosition()));
 	AddAnchor(IDC_UPLOADLIST, CSize(0, thePrefs.GetSplitterbarPosition()), BOTTOM_RIGHT);
 	AddAnchor(IDC_QUEUELIST, CSize(0, thePrefs.GetSplitterbarPosition()), BOTTOM_RIGHT);
 	AddAnchor(IDC_CLIENTLIST, CSize(0, thePrefs.GetSplitterbarPosition()), BOTTOM_RIGHT);
 	AddAnchor(IDC_DOWNLOADCLIENTS, CSize(0, thePrefs.GetSplitterbarPosition()), BOTTOM_RIGHT);
+
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max 
+    AddAnchor(IDC_MEMCOUNT,BOTTOM_LEFT,BOTTOM_RIGHT); // contador
+	AddAnchor(IDC_MEM,BOTTOM_LEFT,BOTTOM_RIGHT); // texto
+    AddAnchor(IDC_CPUCOUNT,BOTTOM_LEFT,BOTTOM_RIGHT);  
+	AddAnchor(IDC_CPU,BOTTOM_LEFT,BOTTOM_RIGHT); 
+	// <== CPU/MEM usage [$ick$/Stulle] - Max 
 
 	m_wndSplitter.SetRange(rcDown.top + 50, rcUp.bottom - 40);
 }
@@ -1582,7 +1638,12 @@ void CTransferWnd::ShowList(uint32 dwListIDC)
 	CRect rcDown;
 	GetDlgItem(dwListIDC)->GetWindowRect(rcDown);
 	ScreenToClient(rcDown);
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max
+	/*
 	rcDown.bottom = rcWnd.bottom - 20;
+	*/
+	rcDown.bottom = rcWnd.bottom - 35;
+	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	rcDown.top = 28;
 	m_wndSplitter.DestroyWindow();
 	RemoveAnchor(dwListIDC);
@@ -1674,28 +1735,48 @@ void CTransferWnd::ShowSplitWindow(bool bReDraw)
 	uploadlistctrl.GetWindowRect(rcDown);
 	ScreenToClient(rcDown);
 	rcDown.right = rcWnd.right - 7;
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max
+	/*
 	rcDown.bottom = rcWnd.bottom - 20;
+	*/
+	rcDown.bottom = rcWnd.bottom - 35;
+	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	rcDown.top = splitpos + 20;
 	uploadlistctrl.MoveWindow(rcDown);
 
 	queuelistctrl.GetWindowRect(rcDown);
 	ScreenToClient(rcDown);
 	rcDown.right = rcWnd.right - 7;
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max
+	/*
 	rcDown.bottom = rcWnd.bottom - 20;
+	*/
+	rcDown.bottom = rcWnd.bottom - 35;
+	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	rcDown.top = splitpos + 20;
 	queuelistctrl.MoveWindow(rcDown);
 
 	clientlistctrl.GetWindowRect(rcDown);
 	ScreenToClient(rcDown);
 	rcDown.right = rcWnd.right - 7;
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max
+	/*
 	rcDown.bottom = rcWnd.bottom - 20;
+	*/
+	rcDown.bottom = rcWnd.bottom - 35;
+	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	rcDown.top = splitpos + 20;
 	clientlistctrl.MoveWindow(rcDown);
 
 	downloadclientsctrl.GetWindowRect(rcDown);
 	ScreenToClient(rcDown);
 	rcDown.right = rcWnd.right - 7;
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max
+	/*
 	rcDown.bottom = rcWnd.bottom - 20;
+	*/
+	rcDown.bottom = rcWnd.bottom - 35;
+	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	rcDown.top = splitpos + 20;
 	downloadclientsctrl.MoveWindow(rcDown);
 
@@ -1948,21 +2029,18 @@ void CTransferWnd::ResetTransToolbar2(bool bShowToolbar, bool bResetLists)
 		ShowWnd2(wnd2Uploading);
 }
 //Xman end
-// ==> {CPU/MEM usage} [Max] 
-void CTransferWnd::ShowCPU()
+
+// ==> CPU/MEM usage [$ick$/Stulle] - Max 
+void CTransferWnd::ShowRessources()
 {
 	TCHAR buffer[100];
 
-       _stprintf(buffer,_T("%3d%%"),theApp.sysinfo->GetCpuUsage());
-        SetDlgItemText(IDC_CPU, _T("CPU :"));
+	_stprintf(buffer,_T("%3d%% (%3d%%)"),theApp.sysinfo->GetCpuUsage(),theApp.sysinfo->GetGlobalCpuUsage());
+	SetDlgItemText(IDC_CPU, _T("CPU :"));
 	this->GetDlgItem(IDC_CPUCOUNT)->SetWindowText(buffer);
-}
-void CTransferWnd::ShowMem(double number)
-{
-	TCHAR buffer[100];
 
-        _stprintf(buffer,_T("%.f MB"),number);
-      	SetDlgItemText(IDC_MEM, _T("RAM :"));
+	_stprintf(buffer,_T("%s (%s)"),CastItoXBytes(theApp.sysinfo->GetMemoryUsage()),CastItoXBytes(theApp.sysinfo->GetGlobalMemoryUsage()));
+	SetDlgItemText(IDC_MEM, _T("RAM :"));
 	this->GetDlgItem(IDC_MEMCOUNT)->SetWindowText(buffer);
 }
-// <== {CPU/MEM usage} [Max] 
+// <== CPU/MEM usage [$ick$/Stulle] - Max 

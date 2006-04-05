@@ -2103,6 +2103,142 @@ BEGIN
     IDS_ANTILEECHEREMCRYPT_CHECK "Erkenne emcrypt"
 END
 
+STRINGTABLE 
+BEGIN
+    // ==> ScarAngel Preferences window - Stulle
+    IDS_CON_TWEAKS          "Verbindungs Tweaks"
+    IDS_MISC                "Verschiedene Einstellungen"
+    // <== ScarAngel Preferences window - Stulle
+    // ==> Global Source Limit [Max/Stulle] - Stulle
+    IDS_GLOBAL_HL           "Globales Quellenlimit (GQL)"
+    IDS_GLOBAL_HL_LIMIT     "Globales Quellenlimit"
+    IDS_GLOBAL_HL_DEFAULT   "GQL als Standard für Dateien"
+    IDS_GLOBAL_HL_ALL       "GQL für alle Dateien nutzen"
+    IDS_ENABLE              "Aktivieren"
+    // <== Global Source Limit [Max/Stulle] - Stulle
+    IDS_PUSH                "Push settings" // push files - Stulle
+    // ==> push small files [sivka] - Stulle
+    IDS_PUSH_SMALL          "Pushe kleine Dateien"
+    IDS_SMALL               "Klein"
+    IDS_PUSH_SMALL_BOOST    "Pushe kleine Dateien Faktor"
+    // <== push small files [sivka] - Stulle
+    // ==> push rare file - Stulle
+    IDS_PUSH_RARE           "Pushe seltene Dateien"
+    IDS_RARE                "Selten"
+    // <== push rare file - Stulle
+    IDS_SHOWINMSN7          "Zeige eMule Status in MSN7 (or above) Nachrichten Feld" //Show in MSN7 [TPT] - Stulle
+    // ==> Show sources on title - Stulle
+    IDS_SHOWSRCONTITLE      "Zeige Quellen im Titel"
+    IDS_SHOWSRCSTRING       "Quellen:"
+    // <== Show sources on title - Stulle
+    IDS_SHOWOVERHEADONTITLE "Zeige Overhead im Titel"// show overhead on title - Stulle
+    // ==> CreditSystems [EastShare/ MorphXT] - Stulle
+    IDS_CREDIT_SYSTEM       "Credit System"
+    IDS_OFFICIAL_CREDIT     "Official Credit"
+    IDS_LOVELACE_CREDIT     "Lovelace Credit"
+    IDS_RATIO_CREDIT        "Ratio Credit"
+    IDS_PAWCIO_CREDIT       "Pawcio Credit"
+    IDS_EASTSHARE_CREDIT    "EastShare Credit"
+    IDS_SIVKA_CREDIT        "Sivka Credit"
+    IDS_SWAT_CREDIT         "S.W.A.T. Credit"
+    IDS_XMAN_CREDIT         "Xman Credit"
+    // <== CreditSystems [EastShare/ MorphXT] - Stulle
+    // ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
+    IDS_SUQWT_LOAD          "Lade %s"
+    IDS_SUQWT               "Speichern der Wartezeit in der Warteliste (SUQWT)"
+    // <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
+    IDS_SHOW_FILE_HL_CONST  "Zeige HL pro Datei kontinuierlich" // show HL per file constantaniously - Stulle
+    IDS_PS_FILES_RED        "Hinterlege PS Dateien rot" // draw PS files red - Stulle
+    IDS_FRIENDS_BLUE        "Hinterlege Freunde blau" // draw friends blue - Stulle
+    IDS_SHOW_GLOBAL_HL      "Zeige globales Hardlimit" // show global HL - Stulle
+    // ==> file settings - Stulle
+    IDS_NNS_TIMERLABEL      "AutoNNS Timer 0...60 Sek"
+    IDS_REMOVENNSLIMITLABEL "Starte droping NNS > X%"
+    IDS_FQS_TIMERLABEL      "AutoFQS Timer 0...60 Sek"
+    IDS_REMOVEFQSLIMITLABEL "Starte droping FullQS > X%"
+    IDS_HQRS_TIMERLABEL     "AutoHQRS Timer 0...60 Sek"
+    IDS_REMOVEQRSLABEL      "Maximal erlaubte QR <= X"
+    IDS_REMOVEQRSLIMITLABEL "Starte droping HighQRS > X%"
+    IDS_AUTO_NNS            "Automatisches drop NNS einschalten"
+    IDS_AUTO_FQS            "Automatisches drop FullQS einschalten"
+    IDS_AUTO_QRS            "Automatisches auto drop HighQS einschalten"
+    IDS_SIVKAFILESETTINGS   "Sivka - Datei(en) Einstellungen"
+    IDS_HARDLIMIT_LABEL     "Hard Limit (0=Nutze standard)"
+    IDS_FILE_DEFAULTS       "Standard Dateieinstellung"
+    IDS_XMAN_DROPPING       "Nutze Xmans Quellen entfernen"
+    IDS_SIVKA_DROPPING      "Nutze Sivka Quellen entfernen"
+    IDS_HQR_WAY             "Drop System"
+    // <== file settings - Stulle
+    IDS_SHOW_DROPPED_SRC    "Quellen entfernt" // show # of dropped sources - Stulle
+    // ==> Source Graph - Stulle
+    IDS_SRCGRAPH            "Zeichne Quellen Graph"
+    IDS_STATIC_STATSHL      "Min/ Max Hard Limit Wert für Graph:"
+    IDS_SP_SRCGRAPH         "Quellen Graph"
+    // <== Source Graph - Stulle
+    IDS_FD_AVGDL             "Durchschn. DL Geschw.:" // Average download speed - Stulle
+    // ==> WebCache [WC team/MorphXT] - Stulle/Max
+    IDS_PW_WEBCACHE         "WebCache"
+    IDS_WrongPortforWebcache 
+                            "Webcache Download deaktiviert: Bitter einen der Ports   21, 70,  80, 210, 443, 563 oder zwischen 1025 und 65535 verwenden wenn Webcache funktionieren soll."
+    IDS_WEBCACHE_NOSUPPORT  "nicht unterstützt"
+    IDS_STATS_SUCCESSFULLWC "Erfolgreiche WC-DL/WC-Anforderungen:"
+    IDS_STATS_FAILEDWC      "Fehlgeschlagene WC-DL/WC-Anforderungen:"
+    IDS_WEBCACHE_ISP        "ISP-Proxyserver-Einstellungen"
+    IDS_WC_PORT             "Port:"
+    IDS_WC_ADDRESS          "Addresse:"
+    IDS_WC_CONTROLS         "Webcache Einstellungen"
+    IDS_WC_ENABLE           "Webcache-Downloads aktivieren"
+    IDS_WC_WRONGPORT        "Webcache Download deaktiviert: Nur Transfers über die Ports 21, 70, 80, 210, 443, 563 und im Bereich von 1025 bis 65535 werden gecached. Bitte einen dieser Ports einstellen, um Webcache nutzen zu können."
+    IDS_WC_AUTO             "Webcache automatisch erkennen"
+    IDS_WC_NRBLOCKS         "Zu ladende Blocks bis zum Proxy-Reconnect (Nur bei Verbindungsabbrüchen)"
+    IDS_WC_BLOCK            "180k-Blocks"
+    IDS_WC_TIMEOUT          "Extralange Timeouts für Webcache Verbindungen."
+    IDS_WC_LOCAL            "Dieser WC cachet nicht innerhalb desselben ISPs"
+    IDS_WC_SUBMIT_EMAIL     "Diese Einstellungen per E-Mail einsenden"
+    IDS_WC_LINK             "Link: "
+    IDS_WC_PERSISTENT       "Persistente Verbindungen für Proxy Downloads"
+    IDS_WC_ADVANCED         "detaillierte Einstellungen"
+    IDS_WC_TEST             "Webcache-Konfiguration testen. Kann bis 30 Sek. dauern."
+    IDS_WC_HIDE_ADV         "einfache Einstellungen"
+    IDS_WC_SUBMIT_WEB       "Diese Informationen per Webform einsenden"
+    IDS_WC_SOURCES          "Webcache Quellen"
+    IDS_WC_UPDATESETTING    "Update Webcache Einstellungen automatisch"
+    IDS_LOG_WCEVENTS        "WebCache-Ereignisse protokollieren"
+    IDS_LOG_IACH            "IACH-Ereignisse protokollieren"
+    IDS_WEBCACHE_NOPROXY    "kein Proxy gesetzt"
+    IDS_CD_WCSUCCFAIL       "Erfolgreich/Angefordert:"
+    IDS_CD_WCTRUSTSENDER    "Verifizierter OHCB-Sender:"
+    IDS_WCDOWNL             "ohne Funktion"
+    IDS_WC_REQ_SUCC         "WC Erf./Angef.:"
+    IDS_WC_DOWNLOADED       "WC-Download:"
+    IDS_WC_REACTIVATED      "Webcache wurde reaktiviert."
+    IDS_WC_NEWPROXYIP       "Neue Proxi IP: %s."
+    IDS_STATS_WEBCACHE      "Webcache"
+    IDS_STATS_WEBCACHE_1    "Data 1:"
+    IDS_STATS_WEBCACHE_2    "Data 2:"
+    IDS_STATS_WEBCACHE_3    "Data 3:"
+    // <== WebCache [WC team/MorphXT] - Stulle/Max
+    // ==> FunnyNick [SiRoB/Stulle] - Stulle
+    IDS_FUNNYNICK           "FunnyNick"
+    IDS_FN_TAG              "FunnyNick Tag"
+    IDS_NO_TAG              "Kein Tag"
+    IDS_SHORT_TAG           "[FN]"
+    IDS_FULL_TAG            "[FunnyNick]"
+    IDS_CUSTOM_TAG          "Eigenen Tag"
+    IDS_SET_CUSTOM_TAG      "Setze eigenen Tag"
+    IDS_FN_TAG_AT_END       "Zeige Tag am Ende"
+    // <== FunnyNick [SiRoB/Stulle] - Stulle
+    IDS_CLIENTQUEUEPROGRESSBAR "Zeige Fortschritt der Warteschlange" // Client queue progress bar [Commander] - Stulle
+    IDS_ACC                 "Aktive Verbindungskontrolle einschalten" // ACC [Max/WiZaRd] - Max
+    // ==> ScarAngel Version Check - Stulle
+    IDS_VISITSVERSIONCHECK  "\n\nMöchtest du die ScarAngel Webseite besuchen?"
+    IDS_SVERSIONCHECK       "&Versioncheck (ScarAngel)"
+    IDS_NONEWSVERVERSION    "Es ist keine neuere ScarAngel Version verfügbar.."
+    IDS_NEWSVERSIONAVL      "Eine neue ScarAngel Version ist verfügbar! Besuche die Projekt-Homepage um mehr Informationen zu erhalten."
+    IDS_NEWSVERSIONAVLPOPUP "Eine neuere Version von ScarAngel ist verfügbar. Klicke hier um mehr über die neue Version zu erfahren!"
+    // <== ScarAngel Version Check - Stulle
+END
+
 #endif    // Deutsch (Deutschland) resources
 /////////////////////////////////////////////////////////////////////////////
 

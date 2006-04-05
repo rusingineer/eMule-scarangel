@@ -203,6 +203,8 @@ BEGIN
     CONTROL         "",IDC_UPLOADLIST,"SysListView32",LVS_REPORT | 
                     LVS_SINGLESEL | LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | 
                     WS_TABSTOP,5,234,500,43,WS_EX_STATICEDGE
+// ==> CPU/MEM usage [$ick$/Stulle] - Max
+/*
     LTEXT           "Clients on queue:",IDC_QUEUECOUNT_LABEL,6,280,87,8
     LTEXT           "0",IDC_QUEUECOUNT,100,280,78,8
     PUSHBUTTON      "Refresh",IDC_QUEUE_REFRESH_BUTTON,437,278,68,11,BS_FLAT | 
@@ -210,12 +212,21 @@ BEGIN
     CONTROL         "",IDC_DOWNLOADCLIENTS,"SysListView32",LVS_REPORT | 
                     LVS_SINGLESEL | LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | NOT 
                     WS_VISIBLE | WS_TABSTOP,5,171,500,107,WS_EX_STATICEDGE
-// ==> {CPU/MEM usage} [Max] 
-    LTEXT           "CPU : ",IDC_CPU,209,280,21,8
-    LTEXT           "count",IDC_CPUCOUNT,233,280,19,8
-    LTEXT           "RAM :",IDC_MEM,267,280,20,8
-    LTEXT           "count",IDC_MEMCOUNT,295,280,19,8
-// <== {CPU/MEM usage} [Max] 
+*/
+    LTEXT           "Clients on queue:",IDC_QUEUECOUNT_LABEL,6,270,87,8
+    LTEXT           "0",IDC_QUEUECOUNT,100,270,89,8
+    PUSHBUTTON      "Refresh",IDC_QUEUE_REFRESH_BUTTON,437,268,68,11,BS_FLAT | 
+                    NOT WS_VISIBLE
+    CONTROL         "",IDC_DOWNLOADCLIENTS,"SysListView32",LVS_REPORT | 
+                    LVS_SINGLESEL | LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | NOT 
+                    WS_VISIBLE | WS_TABSTOP,5,226,500,43,WS_EX_STATICEDGE
+    CONTROL         "",IDC_QUEUE,"msctls_progress32",0x1,193,270,180,7
+    CONTROL         "",IDC_QUEUE2,"msctls_progress32",0x1,375,270,60,7
+    LTEXT           "CPU : ",IDC_CPU,6,280,21,8
+    LTEXT           "",IDC_CPUCOUNT,30,280,60,8
+    LTEXT           "RAM :",IDC_MEM,104,280,20,8
+    LTEXT           "",IDC_MEMCOUNT,132,280,80,8
+// <== CPU/MEM usage [$ick$/Stulle] - Max
 END
 
 IDD_SERVER DIALOGEX 0, 35, 511, 289
@@ -5218,7 +5229,6 @@ BEGIN
     IDS_SIVKA_DROPPING      "Use Sivka dropping method"
     IDS_HQR_WAY             "Dropping method"
     // <== file settings - Stulle
-    IDS_STATS_DROPPEDSOURCES "Dropped sources: %u" // # of dropped sources in session - Stulle
     IDS_SHOW_DROPPED_SRC    "Dropped sources" // show # of dropped sources - Stulle
     // ==> Source Graph - Stulle
     IDS_SRCGRAPH            "Draw Source Graph"
@@ -5278,6 +5288,15 @@ BEGIN
 	IDS_SET_CUSTOM_TAG      "Set custom tag"
 	IDS_FN_TAG_AT_END       "Show Tag at the end"
     // <== FunnyNick [SiRoB/Stulle] - Stulle
+    IDS_CLIENTQUEUEPROGRESSBAR "Show progress of client queue" // Client queue progress bar [Commander] - Stulle
+    IDS_ACC                 "Enable Active Connection Control" // ACC [Max/WiZaRd] - Max
+    // ==> ScarAngel Version Check - Stulle
+    IDS_VISITSVERSIONCHECK  "\n\nDo you want to visit the ScarAngel web site?"
+    IDS_SVERSIONCHECK       "&Versioncheck (ScarAngel)"
+    IDS_NONEWSVERVERSION    "No new eMule ScarAngel version detected."
+    IDS_NEWSVERSIONAVL      "A new version of eMule ScarAngel is available! Check the project-homepage for more information."
+    IDS_NEWSVERSIONAVLPOPUP "A new version of eMule ScarAngel is available. Click here to read about the new version!"
+    // <== ScarAngel Version Check - Stulle
 END
 
 #endif    // Englisch (USA) resources

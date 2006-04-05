@@ -109,7 +109,6 @@ float	CStatistics::currentMaxDownloadRate;
 float	CStatistics::sessionDownloadRate;
 float	CStatistics::sessionMaxDownloadRate;
 uint32	CStatistics::leecherclients; //Xman Anti-Leecher
-uint32	CStatistics::droppedsources; // # of dropped sources in session - Stulle
 
 CStatistics::CStatistics()
 {
@@ -145,7 +144,6 @@ CStatistics::CStatistics()
 	transferStarttime=0;
 	serverConnectTime=0;
 	filteredclients=0;
-	droppedsources=0; // # of dropped sources in session - Stulle
 	starttime=0;
 	
 	//m_nDownDataRateMSOverhead = 0;

@@ -204,7 +204,7 @@ void CSysInfo::DetectOSType()
 	// Check for OSVERSIONINFOEX-compatibility
 	// It works only on Windows NT 4.0 Service Pack 6 or better
 	if ((m_dwWinMajor>=5) || (m_dwServicePack>=6))
-		{ bOSINFOEXWorking=TRUE; };
+	{ bOSINFOEXWorking=TRUE; };
 
 	if (m_dwWinMajor==4)
 	{
@@ -236,9 +236,9 @@ void CSysInfo::DetectOSType()
 				{
 					// Windows XP
 					if (osvi.wSuiteMask & MY_VER_SUITE_PERSONAL)
-						{ m_sOSType+=_T(XHE_s); }
+					{ m_sOSType+=_T(XHE_s); }
 					else
-						{ m_sOSType+=_T(XPR_s); };
+					{ m_sOSType+=_T(XPR_s); };
 				};
 
 				if ((osvi.dwMajorVersion==5) && (osvi.dwMinorVersion==0))
@@ -268,7 +268,7 @@ void CSysInfo::DetectOSType()
 			};
 
 			if (osvi.wProductType==MY_VER_NT_DOMAIN_CONTROLLER)
-				{ m_sOSType+=_T(DOM_s); };
+			{ m_sOSType+=_T(DOM_s); };
 		};
 	};
 
@@ -294,19 +294,19 @@ void CSysInfo::DetectNumProcessors()
 //
 void CSysInfo::DetectIEVersion()
 {
-    LONG	lresult;
-    HKEY	NewKey;
+	LONG	lresult;
+	HKEY	NewKey;
 
-    lresult = RegOpenKeyEx(HKEY_LOCAL_MACHINE,_T(IE_CONFIGURATION_KEY),
-        0,KEY_EXECUTE,&NewKey);
+	lresult = RegOpenKeyEx(HKEY_LOCAL_MACHINE,_T(IE_CONFIGURATION_KEY),
+		0,KEY_EXECUTE,&NewKey);
 
-    if (ERROR_SUCCESS!=lresult) return;		// key not found
+	if (ERROR_SUCCESS!=lresult) return;		// key not found
 
-    TCHAR szKeyValue[100]; memset(szKeyValue, 0, 100);
-    DWORD dwType=REG_SZ; DWORD dwSize=100;
+	TCHAR szKeyValue[100]; memset(szKeyValue,0,100);
+	DWORD dwType=REG_SZ; DWORD dwSize=100;
 
-    lresult=RegQueryValueEx(NewKey,_T("Version"),NULL,&dwType,
-        (LPBYTE)szKeyValue,&dwSize);
+	lresult=RegQueryValueEx(NewKey,_T("Version"),NULL,&dwType,
+		(LPBYTE)szKeyValue,&dwSize);
 
 	RegCloseKey(NewKey);
 
@@ -320,45 +320,45 @@ void CSysInfo::DetectIEVersion()
 //
 void CSysInfo::DetectCPUType()
 {
-    LONG	lresult;
-    HKEY	NewKey;
+	LONG	lresult;
+	HKEY	NewKey;
 
-    lresult = RegOpenKeyEx(HKEY_LOCAL_MACHINE,_T(CPU_CONFIGURATION_KEY),
-        0,KEY_EXECUTE,&NewKey);
+	lresult = RegOpenKeyEx(HKEY_LOCAL_MACHINE,_T(CPU_CONFIGURATION_KEY),
+		0,KEY_EXECUTE,&NewKey);
 
-    if (ERROR_SUCCESS != lresult) return;		// key not found
+	if (ERROR_SUCCESS != lresult) return;		// key not found
 
-    TCHAR szKeyValue[100]; memset(szKeyValue, 0, 100);
-    DWORD dwType=REG_SZ; DWORD dwSize=100;
+	TCHAR szKeyValue[100]; memset(szKeyValue,0,100);
+	DWORD dwType=REG_SZ; DWORD dwSize=100;
 
-    lresult=RegQueryValueEx(NewKey,_T("Identifier"),NULL,
-        &dwType,(LPBYTE)szKeyValue,&dwSize);
+	lresult=RegQueryValueEx(NewKey,_T("Identifier"),NULL,
+		&dwType,(LPBYTE)szKeyValue,&dwSize);
 
 	if ((lresult==ERROR_SUCCESS) && (dwSize>0)) 
-		{ m_sCPUIdentifier=szKeyValue; };
+	{ m_sCPUIdentifier=szKeyValue; };
 
-	memset(szKeyValue, 0, 100); dwType=REG_SZ; dwSize=100;
-    
+	memset(szKeyValue,0,100); dwType=REG_SZ; dwSize=100;
+
 	lresult=RegQueryValueEx(NewKey,_T("VendorIdentifier"),NULL,
-        &dwType,(LPBYTE)szKeyValue,&dwSize);
-	
-	if ((lresult==ERROR_SUCCESS) && (dwSize>0))
-		{ m_sCPUVendorIdentifier=szKeyValue; };
-
-	memset(szKeyValue, 0, 100); dwType=REG_SZ; dwSize=100;
-
-    lresult=RegQueryValueEx(NewKey,_T("ProcessorNameString"),
-        NULL,&dwType,(LPBYTE)szKeyValue,&dwSize);
+		&dwType,(LPBYTE)szKeyValue,&dwSize);
 
 	if ((lresult==ERROR_SUCCESS) && (dwSize>0))
-		{ m_sCPUNameString=szKeyValue; };
+	{ m_sCPUVendorIdentifier=szKeyValue; };
+
+	memset(szKeyValue,0,100); dwType=REG_SZ; dwSize=100;
+
+	lresult=RegQueryValueEx(NewKey,_T("ProcessorNameString"),
+		NULL,&dwType,(LPBYTE)szKeyValue,&dwSize);
+
+	if ((lresult==ERROR_SUCCESS) && (dwSize>0))
+	{ m_sCPUNameString=szKeyValue; };
 
 	DWORD dwData=0; dwType=REG_DWORD; dwSize=sizeof(dwData);
-    lresult=RegQueryValueEx(NewKey,_T("~MHz"),NULL,
-        &dwType,(LPBYTE)(&dwData),&dwSize);
+	lresult=RegQueryValueEx(NewKey,_T("~MHz"),NULL,
+		&dwType,(LPBYTE)(&dwData),&dwSize);
 
 	if ((lresult==ERROR_SUCCESS) && (dwSize>0))
-		{ m_dwCPUSpeed=dwData; };
+	{ m_dwCPUSpeed=dwData; };
 
 	RegCloseKey(NewKey);
 }
@@ -368,25 +368,25 @@ void CSysInfo::DetectCPUType()
 //
 void CSysInfo::DetectADOVersion()
 {
-    LONG	lresult;
-    HKEY	NewKey;
+	LONG	lresult;
+	HKEY	NewKey;
 
-    lresult = RegOpenKeyEx(HKEY_LOCAL_MACHINE,_T(ADO_CONFIGURATION_KEY),
-        0,KEY_EXECUTE,&NewKey);
+	lresult = RegOpenKeyEx(HKEY_LOCAL_MACHINE,_T(ADO_CONFIGURATION_KEY),
+		0,KEY_EXECUTE,&NewKey);
 
-    if (ERROR_SUCCESS != lresult) return;		// key not found
+	if (ERROR_SUCCESS != lresult) return;		// key not found
 
-    TCHAR szKeyValue[100]; memset(szKeyValue, 0, 100);
-    DWORD dwType=REG_SZ; DWORD dwSize=100;
+	TCHAR szKeyValue[100]; memset(szKeyValue,0,100);
+	DWORD dwType=REG_SZ; DWORD dwSize=100;
 
-    lresult=RegQueryValueEx(NewKey,_T("FullInstallVer"),
-        NULL,&dwType,(LPBYTE)szKeyValue,&dwSize);
+	lresult=RegQueryValueEx(NewKey,_T("FullInstallVer"),
+		NULL,&dwType,(LPBYTE)szKeyValue,&dwSize);
 
 	if (ERROR_SUCCESS!=lresult)
 	{
-		memset(szKeyValue, 0, 100); dwType=REG_SZ; dwSize=100;
+		memset(szKeyValue,0,100); dwType=REG_SZ; dwSize=100;
 
-	    lresult=RegQueryValueEx(NewKey,_T("Version"),
+		lresult=RegQueryValueEx(NewKey,_T("Version"),
 			NULL,&dwType,(LPBYTE)szKeyValue,&dwSize);
 	};
 
@@ -408,69 +408,69 @@ void CSysInfo::DetectUserAdmin()
 		return;
 	};
 
-    HANDLE hAccessToken       = NULL;
-    PBYTE  pInfoBuffer        = NULL;
-    DWORD  dwInfoBufferSize   = 1024;
-    PTOKEN_GROUPS ptgGroups   = NULL;
-    PSID   psidAdministrators = NULL;
-    SID_IDENTIFIER_AUTHORITY siaNtAuthority = SECURITY_NT_AUTHORITY;
-//    BOOL   bResult = FALSE;
-    
-    __try
-    {
+	HANDLE hAccessToken       = NULL;
+	PBYTE  pInfoBuffer        = NULL;
+	DWORD  dwInfoBufferSize   = 1024;
+	PTOKEN_GROUPS ptgGroups   = NULL;
+	PSID   psidAdministrators = NULL;
+	SID_IDENTIFIER_AUTHORITY siaNtAuthority = SECURITY_NT_AUTHORITY;
+	//BOOL   bResult = FALSE;
+
+	__try
+	{
 		// init security token
-        if( !AllocateAndInitializeSid( 
-            &siaNtAuthority, 2, SECURITY_BUILTIN_DOMAIN_RID,
-            DOMAIN_ALIAS_RID_ADMINS, 0,0,0,0,0,0, &psidAdministrators ) )
-                __leave;
-        
-        // for Windows NT 4.0 only
-        if( !OpenProcessToken( GetCurrentProcess(),TOKEN_QUERY,&hAccessToken ) )
-            __leave;
+		if( !AllocateAndInitializeSid( 
+			&siaNtAuthority, 2, SECURITY_BUILTIN_DOMAIN_RID,
+			DOMAIN_ALIAS_RID_ADMINS, 0,0,0,0,0,0, &psidAdministrators ) )
+			__leave;
 
-        do
-        {
-            if( pInfoBuffer )
-                delete pInfoBuffer;
-            pInfoBuffer = new BYTE[dwInfoBufferSize];
-            if( !pInfoBuffer )
-                __leave;
-            SetLastError( 0 );
-            if( !GetTokenInformation( 
-                    hAccessToken, 
-                    TokenGroups, pInfoBuffer,
-                    dwInfoBufferSize, &dwInfoBufferSize ) &&
-                ( ERROR_INSUFFICIENT_BUFFER != GetLastError() )
-               )
-                __leave;
-            else
-                ptgGroups = (PTOKEN_GROUPS)pInfoBuffer;
-        }
-        while( GetLastError() );
-        
-        for( UINT i = 0; i < ptgGroups->GroupCount; i++ )
-        {
-            if( EqualSid(psidAdministrators,ptgGroups->Groups[i].Sid) )
-            {
-                m_bUserAdmin=TRUE;
-                __leave;
-            }
-        } 
-    }
+		// for Windows NT 4.0 only
+		if( !OpenProcessToken( GetCurrentProcess(),TOKEN_QUERY,&hAccessToken ) )
+			__leave;
 
-    __finally
-    {
-        if( hAccessToken )
-            CloseHandle( hAccessToken );
-        if( pInfoBuffer )
-            delete pInfoBuffer;
-        if( psidAdministrators )
-            FreeSid( psidAdministrators );
-    }
+		do
+		{
+			if( pInfoBuffer )
+				delete pInfoBuffer;
+			pInfoBuffer = new BYTE[dwInfoBufferSize];
+			if( !pInfoBuffer )
+				__leave;
+			SetLastError( 0 );
+			if( !GetTokenInformation( 
+				hAccessToken, 
+				TokenGroups, pInfoBuffer,
+				dwInfoBufferSize, &dwInfoBufferSize ) &&
+				( ERROR_INSUFFICIENT_BUFFER != GetLastError() )
+				)
+				__leave;
+			else
+				ptgGroups = (PTOKEN_GROUPS)pInfoBuffer;
+		}
+		while( GetLastError() );
+
+		for( UINT i = 0; i < ptgGroups->GroupCount; i++ )
+		{
+			if( EqualSid(psidAdministrators,ptgGroups->Groups[i].Sid) )
+			{
+				m_bUserAdmin=TRUE;
+				__leave;
+			}
+		} 
+	}
+
+	__finally
+	{
+		if( hAccessToken )
+			CloseHandle( hAccessToken );
+		if( pInfoBuffer )
+			delete pInfoBuffer;
+		if( psidAdministrators )
+			FreeSid( psidAdministrators );
+	}
 }
 
 BOOL CSysInfo::GetFileInfo(LPCTSTR lpszFileName, DWORD *v_major, DWORD *v_minor,
-	 	DWORD *v_build, DWORD *v_something, DWORD *size)
+						   DWORD *v_build, DWORD *v_something, DWORD *size)
 {
 	*v_major=0; *v_minor=0; *v_build=0; *v_something=0; *size=0;
 	if (lpszFileName==NULL) return FALSE;
@@ -486,7 +486,7 @@ BOOL CSysInfo::GetFileInfo(LPCTSTR lpszFileName, DWORD *v_major, DWORD *v_minor,
 	{
 		// Convert LPCTSTR to LPTSTR
 		lpFileName=new TCHAR[i+1];
-		memset(lpFileName, 0, i+1);
+		memset(lpFileName,0,i+1);
 		_tcscpy(lpFileName,lpszFileName);
 	}
 	else
@@ -497,7 +497,7 @@ BOOL CSysInfo::GetFileInfo(LPCTSTR lpszFileName, DWORD *v_major, DWORD *v_minor,
 	{
 		LPVOID lpVoid;
 		lpVoid=malloc(InfoSize);
-		memset(lpVoid, 0, InfoSize);
+		memset(lpVoid,0,InfoSize);
 		if (GetFileVersionInfo(lpFileName,NULL,InfoSize,lpVoid))
 		{
 			if (VerQueryValue(lpVoid,_T("\\"),(LPVOID *)&fi,&size_fileinfo))
@@ -535,7 +535,7 @@ BOOL CSysInfo::GetFileInfo(LPCTSTR lpszFileName, DWORD *v_major, DWORD *v_minor,
 // Get file information in the explicit system directory (e.g. c:\winnt\system32)
 //
 BOOL CSysInfo::GetSystemFileInfo(LPCTSTR lpszFileName, DWORD *v_major, DWORD *v_minor,
-	 	DWORD *v_build, DWORD *v_something, DWORD *size)
+								 DWORD *v_build, DWORD *v_something, DWORD *size)
 {
 	*v_major=0; *v_minor=0; *v_build=0; *v_something=0; *size=0;
 
@@ -560,7 +560,7 @@ void CSysInfo::DetectLoginUserName()
 void CSysInfo::DetectWorkingDir()
 {
 	LPTSTR pStr;
-	
+
 	pStr=m_sWorkingDir.GetBuffer(250);
 	DWORD dwRes=::GetModuleFileName(NULL,pStr,200);
 	m_sWorkingDir.ReleaseBuffer();
@@ -578,7 +578,7 @@ DWORD CSysInfo::GetProcessMemoryUsage()
 {
 	if (m_GetProcessMemoryInfo!=NULL)
 	{
-	    // Get a handle to the process.
+		// Get a handle to the process.
 		HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS,FALSE,getpid());
 		if (hProcess)
 		{
@@ -593,6 +593,28 @@ DWORD CSysInfo::GetProcessMemoryUsage()
 	else
 		return 0;
 }
+
+// ==> changed - Stulle
+uint32 CSysInfo::GetProcessMemoryUsageInt()
+{
+	if (m_GetProcessMemoryInfo!=NULL)
+	{
+		// Get a handle to the process.
+		HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS,FALSE,getpid());
+		if (hProcess)
+		{
+			m_GetProcessMemoryInfo(hProcess,&m_ProcMemCounters,sizeof(m_ProcMemCounters));
+			CloseHandle(hProcess);
+			uint32 f=m_ProcMemCounters.WorkingSetSize;
+			return f;
+		}
+		else
+			return 0;
+	}
+	else
+		return 0;
+}
+// <== changed - Stulle
 
 //
 // Detect memory sizes
@@ -685,9 +707,9 @@ void CSysInfo::DetectAdaptersIphlpapi()
 
 	// GetAdaptersInfo works only in Windows 2000+ or in Windows 98+
 	if (IsWindowsNT())
-		{ if (m_dwWinMajor<5) { m_bIphlpapiCompat=FALSE; return; }; }
+	{ if (m_dwWinMajor<5) { m_bIphlpapiCompat=FALSE; return; }; }
 	else
-		{ if (m_dwWinMinor<10) { m_bIphlpapiCompat=FALSE; return; }; };
+	{ if (m_dwWinMinor<10) { m_bIphlpapiCompat=FALSE; return; }; };
 
 	m_bIphlpapiCompat=TRUE;
 
@@ -706,7 +728,7 @@ void CSysInfo::DetectAdaptersIphlpapi()
 	if (m_pai!=NULL)
 	{
 		m_bIphlpapiAllocated=TRUE;
-		memset(m_pai, 0, t+1);
+		memset(m_pai,0,t+1);
 		// Call GetAdaptersInfo to obtain list of NICs
 		DWORD r=(*m_GetAdaptersInfo)(m_pai,&t);
 		if (r==ERROR_SUCCESS)
@@ -740,9 +762,9 @@ LPCSTR CSysInfo::GetAPIAdapterDescr(int i)
 
 		// return pointer to the adapter description
 		if (tmp_pai==NULL)
-			{ return NULL; }
+		{ return NULL; }
 		else
-			{ return (LPCSTR)tmp_pai->Description; };
+		{ return (LPCSTR)tmp_pai->Description; };
 	}
 	else
 		return NULL;
@@ -762,9 +784,9 @@ LPCSTR CSysInfo::GetAPIAdapterName(int i)
 
 		// return pointer to the adapter name
 		if (tmp_pai==NULL)
-			{ return NULL; }
+		{ return NULL; }
 		else
-			{ return (LPCSTR)tmp_pai->AdapterName; };
+		{ return (LPCSTR)tmp_pai->AdapterName; };
 	}
 	else
 		return NULL;
@@ -918,7 +940,7 @@ BOOL CSysInfo::GetAPIAdapterSpeedStatus(int i, DWORD *pdwSpeed, DWORD *pdwStatus
 		return FALSE;
 
 	MIB_IFROW ifrow;
-	memset(&ifrow, 0, sizeof(MIB_IFROW));
+	memset(&ifrow,0,sizeof(MIB_IFROW));
 	ifrow.dwIndex=AdapterIndex;
 
 	if ((*m_GetIfEntry)(&ifrow)==NO_ERROR)
@@ -946,7 +968,7 @@ int CSysInfo::MIBRefreshAddresses()
 	int i,nAddresses=0; BOOL bDiff=FALSE;
 
 	for(i=0;i<MAX_IPADDRESSES;i++)
-		{ m_dwMIBIPArray_tmp[i]=0; };
+	{ m_dwMIBIPArray_tmp[i]=0; };
 
 	nAddresses=m_mib.MIB_GetIPAddress(&m_dwMIBIPArray_tmp[0],MAX_IPADDRESSES,m_bMIBShowLoopback);
 	if (m_nMIBAddresses!=nAddresses)
@@ -1003,7 +1025,7 @@ void CSysInfo::DetectAdaptersMIB()
 		m_pMIBAdapters=(tSTRUCTNICINFO *)malloc(sizeof(tSTRUCTNICINFO)*m_nMIBAdapters);
 		if (m_pMIBAdapters!=NULL)
 		{
-			memset(m_pMIBAdapters, 0, sizeof(tSTRUCTNICINFO)*m_nMIBAdapters);
+			memset(m_pMIBAdapters,0,sizeof(tSTRUCTNICINFO)*m_nMIBAdapters);
 			m_bMIBAllocated=TRUE;
 			m_mib.GetNICInfo(m_pMIBAdapters);
 		};
@@ -1013,13 +1035,13 @@ void CSysInfo::DetectAdaptersMIB()
 LPCSTR CSysInfo::GetMIBAdapterDescr(int i)
 {
 	if ((m_nMIBAdapters<=0) || (m_nMIBAdapters<=i) || (!m_bMIBAllocated))
-		{ return NULL; }
+	{ return NULL; }
 
 	tSTRUCTNICINFO	*pInfo; pInfo=m_pMIBAdapters;
 	int j; j=i;
 
 	while (j!=0)
-		{ pInfo++; j--; };
+	{ pInfo++; j--; };
 
 	return (LPCSTR)&pInfo->Description[0];
 }
@@ -1027,15 +1049,15 @@ LPCSTR CSysInfo::GetMIBAdapterDescr(int i)
 void CSysInfo::GetMIBAdapterIPStr(int i, LPTSTR lpIPStr)
 {
 	if ((m_nMIBAdapters<=0) || (m_nMIBAdapters<=i) || (!m_bMIBAllocated))
-		{ return; }
+	{ return; }
 
 	tSTRUCTNICINFO	*pInfo; pInfo=m_pMIBAdapters;
 	int j; j=i;
 
 	while (j!=0)
-		{ pInfo++; j--; };
+	{ pInfo++; j--; };
 
-	TCHAR szIPTmp[20]; memset(szIPTmp, 0, 20);
+	TCHAR szIPTmp[20]; memset(szIPTmp,0,20);
 	_stprintf(szIPTmp,_T("%d.%d.%d.%d"),pInfo->IP[0],pInfo->IP[1],pInfo->IP[2],pInfo->IP[3]);
 	_tcscpy(lpIPStr,szIPTmp);
 }
@@ -1043,13 +1065,13 @@ void CSysInfo::GetMIBAdapterIPStr(int i, LPTSTR lpIPStr)
 DWORD CSysInfo::GetMIBAdapterIPDword(int i)
 {
 	if ((m_nMIBAdapters<=0) || (m_nMIBAdapters<=i) || (!m_bMIBAllocated))
-		{ return 0; }
+	{ return 0; }
 
 	tSTRUCTNICINFO	*pInfo; pInfo=m_pMIBAdapters;
 	int j; j=i;
 
 	while (j!=0)
-		{ pInfo++; j--; };
+	{ pInfo++; j--; };
 
 	DWORD dwIP=0, dwTmp;
 
@@ -1068,15 +1090,15 @@ DWORD CSysInfo::GetMIBAdapterIPDword(int i)
 void CSysInfo::GetMIBAdapterMaskStr(int i, LPTSTR lpMaskStr)
 {
 	if ((m_nMIBAdapters<=0) || (m_nMIBAdapters<=i) || (!m_bMIBAllocated))
-		{ return; }
+	{ return; }
 
 	tSTRUCTNICINFO	*pInfo; pInfo=m_pMIBAdapters;
 	int j; j=i;
 
 	while (j!=0)
-		{ pInfo++; j--; };
+	{ pInfo++; j--; };
 
-	TCHAR szMaskTmp[20]; memset(szMaskTmp, 0, 20);
+	TCHAR szMaskTmp[20]; memset(szMaskTmp,0,20);
 	_stprintf(szMaskTmp,_T("%d.%d.%d.%d"),pInfo->SubnetMask[0],pInfo->SubnetMask[1],pInfo->SubnetMask[2],pInfo->SubnetMask[3]);
 	_tcscpy(lpMaskStr,szMaskTmp);
 }
@@ -1084,13 +1106,13 @@ void CSysInfo::GetMIBAdapterMaskStr(int i, LPTSTR lpMaskStr)
 DWORD CSysInfo::GetMIBAdapterMaskDword(int i)
 {
 	if ((m_nMIBAdapters<=0) || (m_nMIBAdapters<=i) || (!m_bMIBAllocated))
-		{ return 0; }
+	{ return 0; }
 
 	tSTRUCTNICINFO	*pInfo; pInfo=m_pMIBAdapters;
 	int j; j=i;
 
 	while (j!=0)
-		{ pInfo++; j--; };
+	{ pInfo++; j--; };
 
 	DWORD dwIP=0, dwTmp;
 
@@ -1109,13 +1131,13 @@ DWORD CSysInfo::GetMIBAdapterMaskDword(int i)
 DWORD CSysInfo::GetMIBAdapterSpeed(int i)
 {
 	if ((m_nMIBAdapters<=0) || (m_nMIBAdapters<=i) || (!m_bMIBAllocated))
-		{ return 0; }
+	{ return 0; }
 
 	tSTRUCTNICINFO	*pInfo; pInfo=m_pMIBAdapters;
 	int j; j=i;
 
 	while (j!=0)
-		{ pInfo++; j--; };
+	{ pInfo++; j--; };
 
 	return pInfo->Speed;
 }
@@ -1129,7 +1151,7 @@ DWORD CSysInfo::GetMIBAdapterOperStatus(int i)
 	int j; j=i;
 
 	while (j!=0)
-		{ pInfo++; j--; };
+	{ pInfo++; j--; };
 
 	return pInfo->OperStatus;
 }
@@ -1137,15 +1159,14 @@ DWORD CSysInfo::GetMIBAdapterOperStatus(int i)
 int CSysInfo::GetMIBAdapterType(int i)
 {
 	if ((m_nMIBAdapters<=0) || (m_nMIBAdapters<=i) || (!m_bMIBAllocated))
-		{ return 0; }
+	{ return 0; }
 
 	tSTRUCTNICINFO	*pInfo; pInfo=m_pMIBAdapters;
 	int j; j=i;
 
 	while (j!=0)
-		{ pInfo++; j--; };
+	{ pInfo++; j--; };
 
 	return pInfo->type;
-}
-#endif MIB
+}#endif MIB
 #endif NET_INFO*/

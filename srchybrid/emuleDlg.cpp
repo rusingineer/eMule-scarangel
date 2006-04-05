@@ -187,6 +187,9 @@ BEGIN_MESSAGE_MAP(CemuleDlg, CTrayDialog)
 	ON_MESSAGE(UM_DLPVERSIONCHECK_RESPONSE, OnDLPVersionCheckResponse) //Xman DLP
 	//Xman end
 
+	// ScarAngel Version Check - Stulle
+	ON_MESSAGE(UM_SVERSIONCHECK_RESPONSE, OnSVersionCheckResponse)
+
 	// PeerCache DNS
 	ON_MESSAGE(UM_PEERCHACHE_RESPONSE, OnPeerCacheResponse)
 
@@ -359,6 +362,11 @@ BOOL CemuleDlg::OnInitDialog()
 		ASSERT( (MP_MVERSIONCHECK & 0xFFF0) == MP_MVERSIONCHECK && MP_MVERSIONCHECK < 0xF000);
 		pSysMenu->AppendMenu(MF_STRING, MP_MVERSIONCHECK, _T("Xtreme-Version-Check"));
 		//Xman end
+
+		// ==> ScarAngel Version Check - Stulle
+		ASSERT( (MP_SVERSIONCHECK & 0xFFF0) == MP_SVERSIONCHECK && MP_SVERSIONCHECK < 0xF000);
+		pSysMenu->AppendMenu(MF_STRING, MP_SVERSIONCHECK, GetResString(IDS_SVERSIONCHECK));
+		// <== ScarAngel Version Check - Stulle
 
 		// remaining system menu entries are created later...
 	}
@@ -783,6 +791,11 @@ void CemuleDlg::StopTimer()
 		DoMVersioncheck(false);
 	//Xman end
 
+	// ==> ScarAngel Version Check - Stulle
+	if (thePrefs.UpdateNotifyMod())
+		DoSVersioncheck(false);
+	// <== ScarAngel Version Check - Stulle
+
 	if (theApp.pstrPendingLink != NULL){
 		OnWMData(NULL, (LPARAM)&theApp.sendstruct);
 		delete theApp.pstrPendingLink;
@@ -821,6 +834,12 @@ void CemuleDlg::OnSysCommand(UINT nID, LPARAM lParam)
 		DoMVersioncheck(true);
 		break;
 	//Xman end
+
+	// ==> ScarAngel Version Check - Stulle
+	case MP_SVERSIONCHECK:
+		DoSVersioncheck(true);
+		break;
+	// <== ScarAngel Version Check - Stulle
 
 	case MP_CONNECT:
 		StartConnection();
@@ -2316,6 +2335,17 @@ void CemuleDlg::ShowNotifier(LPCTSTR pszText, int iMsgType, LPCTSTR pszLink, boo
 		break;
 	//Xman end
 
+	// ==> ScarAngel Version Check - Stulle
+	case TBN_NEWSVERSION:
+		{	
+			m_wndTaskbarNotifier->Show(pszText, iMsgType, pszLink);
+			bShowIt = true;
+			pszSoundEvent = _T("eMule_NewVersion");
+			iSoundPrio = 1;
+		}
+		break;
+	// <== ScarAngel Version Check - Stulle
+
 	case TBN_NULL:
 		m_wndTaskbarNotifier->Show(pszText, iMsgType, pszLink);
 		bShowIt = true;
@@ -2407,6 +2437,13 @@ LRESULT CemuleDlg::OnTaskbarNotifierClicked(WPARAM /*wParam*/, LPARAM lParam)
 		}
 	//Xman end
 
+	// ==> ScarAngel Version Check - Stulle
+	case TBN_NEWSVERSION:
+	{
+		ShellExecute(NULL, NULL, _T("http://scarangel.sourceforge.net/"), NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
+		break;
+	}
+	// <== ScarAngel Version Check - Stulle
 	}
 	return 0;
 }
@@ -2495,6 +2532,9 @@ void CemuleDlg::Localize()
 		//Xman versions check
 		VERIFY( pSysMenu->ModifyMenu(MP_MVERSIONCHECK, MF_BYCOMMAND | MF_STRING, MP_MVERSIONCHECK, _T("Xtreme_Version_Check")) );
 		//Xman end
+		// ==> ScarAngel Version Check - Stulle
+		VERIFY( pSysMenu->ModifyMenu(MP_SVERSIONCHECK, MF_BYCOMMAND | MF_STRING, MP_SVERSIONCHECK, GetResString(IDS_SVERSIONCHECK)) );
+		// <== ScarAngel Version Check - Stulle
 
 		switch (thePrefs.GetWindowsVersion())
 		{
@@ -3711,3 +3751,52 @@ void CemuleDlg::TrayMinimizeToTrayChange()
 	}
 	CTrayDialog::TrayMinimizeToTrayChange();
 }
+
+// ==> ScarAngel Version Check - Stulle
+void CemuleDlg::DoSVersioncheck(bool manual) {
+	if (!manual && thePrefs.GetLastSVC()!=0) {
+		CTime last(thePrefs.GetLastSVC());
+		time_t tLast=safe_mktime(last.GetLocalTm());
+		time_t tNow=safe_mktime(CTime::GetCurrentTime().GetLocalTm());
+		if ( (difftime(tNow,tLast) / 86400)<thePrefs.GetUpdateDays() )
+			return;
+	}
+	if (WSAAsyncGetHostByName(m_hWnd, UM_SVERSIONCHECK_RESPONSE, "scarvercheck.dyndns.info", m_acSVCDNSBuffer, sizeof(m_acSVCDNSBuffer)) == 0){
+		AddLogLine(true,GetResString(IDS_NEWVERSIONFAILED));
+	}
+}
+
+LRESULT CemuleDlg::OnSVersionCheckResponse(WPARAM /*wParam*/, LPARAM lParam)
+{
+	if (WSAGETASYNCERROR(lParam) == 0)
+	{
+		int iBufLen = WSAGETASYNCBUFLEN(lParam);
+		if (iBufLen >= sizeof(HOSTENT))
+		{
+			LPHOSTENT pHost = (LPHOSTENT)m_acSVCDNSBuffer;
+			if (pHost->h_length == 4 && pHost->h_addr_list && pHost->h_addr_list[0])
+			{
+				uint32 dwResult = ((LPIN_ADDR)(pHost->h_addr_list[0]))->s_addr;
+				uint8 abyCurVer[4] = { (uint8)(CemuleApp::m_nMVersionBld + 1), (uint8)(CemuleApp::m_nMVersionMin), (uint8)(CemuleApp::m_nMVersionMjr), 0};
+				dwResult &= 0x00FFFFFF;
+				if (dwResult > *(uint32*)abyCurVer){
+					thePrefs.UpdateLastSVC();
+					SetActiveWindow();
+					Log(LOG_SUCCESS|LOG_STATUSBAR,GetResString(IDS_NEWSVERSIONAVL));
+					ShowNotifier(GetResString(IDS_NEWSVERSIONAVLPOPUP), TBN_NEWSVERSION);
+					if (AfxMessageBox(GetResString(IDS_NEWSVERSIONAVL)+GetResString(IDS_VISITSVERSIONCHECK),MB_YESNO)==IDYES) {
+						ShellExecute(NULL, NULL, _T("http://scarangel.sourceforge.net/"), NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
+					}
+				}
+				else{
+					thePrefs.UpdateLastSVC();
+					AddLogLine(true,GetResString(IDS_NONEWSVERVERSION));
+				}
+				return 0;
+			}
+		}
+	}
+	LogWarning(LOG_STATUSBAR,GetResString(IDS_NEWVERSIONFAILED));
+	return 0;
+}
+// <== ScarAngel Version Check - Stulle

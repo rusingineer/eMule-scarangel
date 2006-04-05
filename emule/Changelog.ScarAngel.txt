@@ -1,47 +1,58 @@
 CHANGELOG FOR EMULE ScarAngel MOD
 
-eMule v0.47a ScarAngel v1.0:
+eMule v0.47a ScarAngel v1.1:
 ------------------------
 - XX.XX.2005 -
 -------------------------------------------------------------------------------
-based on eMule 0.47a Xtreme 5.0 compiled with vs2003 and Netfinity's fix
+based on eMule 0.47a Xtreme 5.0.1 compiled with vs2003 and Netfinity's fix
 
-Added: Status color [EastShare]
-Added: Last asked time & next asked time in prio column [EastShare/Xman/Max]
-Added: WebCache [WC team/MorphXT]
+Changed: Trayicon (red/yellow/green square indicating connection) [Stulle] - Stulle
+
+Fixed: (minor) Forgot to count Xtreme's manual drops for the dropped src column [Stulle] - Stulle
+Fixed: (minor) Forgot to add UpdateDisplayedInfo(true) after new manual drops [Stulle] - Stulle
+
+
+eMule v0.47a ScarAngel v1.0:
+------------------------
+- 02.04.2005 -
+-------------------------------------------------------------------------------
+based on eMule 0.47a Xtreme 5.0.1 compiled with vs2003 and Netfinity's fix
+
+Added: Status color [EastShare] - Max
+Added: Last asked time & next asked time in prio column [EastShare/Xman/Max] - Max
+Added: WebCache [WC team/MorphXT] - Stulle/Max
 Added: Active Connection Control [Obelix/Max]
-Added: display CPU/MEM usage in transferwnd [$ick$]
-Added: Relax on Startup [WiZaRd]
-Added: ScarAngel Preferences Window [Stulle]
-Added: Global Hardlimit [Stulle/many ideas by Max]
-Added: Push-small-files (boost can be configured manually) [Sivka/Stulle]
-Added: Push-rare-files [Tarod/ eF-Mod]
-Added: Different CreditSystems [EastShare/ MoprhXT/ Stulle]
+Added: display CPU/MEM usage in transferwnd [$ick$/Stulle] - Max
+Added: Relax on Startup [WiZaRd] - Max
+Added: ScarAngel Preferences Window [Stulle] - Stulle
+Added: Global Hardlimit [Stulle/many ideas by Max] - Stulle
+Added: Push-small-files (boost can be configured manually) [Sivka/Stulle] - Stulle
+Added: Push-rare-files [Tarod/ eF-Mod] - Stulle
+Added: Different CreditSystems [EastShare/ MoprhXT/ Stulle] - Stulle
 	+ lovelace, Pawcio, Ratio, EastShare, Sivka, S.W.A.T., Xman, official
 	+ The CreditSystem is always enabled
-Added: Save Upload Queue Waiting Time (SUQWT) [Moonlight/ EastShare/ MorphXT]
-Added: Show WC session stats [MorphXT]
-Added: Show source on title [Stulle]
-Added: Show emule´s infos in your MSN7 (or above) message field v2 [MOnKi/ikabot/Stulle]
-Added: Show global HL [Stulle]
-Added: Draw friends blue [Stulle]
-Added: Show HL per file constantaniously [Stulle]
-Added: Show global HL [Stulle]
-Added: Sivka File Settings [Sivka/Stulle]
-Added: Customized source dropping [Sivka/Stulle]
-Added: # of dropped sources this session in stats [Stulle]
-Added: show # of dropped sources per file in DownloadList [Stulle]
-Added: Several Mod Icons [Stulle]
+Added: Save Upload Queue Waiting Time (SUQWT) [Moonlight/ EastShare/ MorphXT] - Stulle
+Added: Show source on title [Stulle] - Stulle
+Added: Show emule´s infos in your MSN7 (or above) message field v2 [MOnKi/ikabot/Stulle] - Stulle
+Added: Show global HL [Stulle] - Stulle
+Added: Draw friends blue [Stulle] - Stulle
+Added: Show HL per file constantaniously [Stulle] - Stulle
+Added: Show global HL [Stulle] - Stulle
+Added: Sivka File Settings [Sivka/Stulle] - Stulle
+Added: Customized source dropping [Sivka/Stulle] - Stulle
+Added: show # of dropped sources per file in DownloadList [Stulle] - Stulle
+Added: Several Mod Icons [Stulle] - Stulle
 	+ note: supports ScarAngel, StulleMule, MAXmod, Xtreme, Morph,
 		EastShare, iONiX, Cyrex2001, NextEMF, Neo Mule
-Added: Preferences Banner [TPT/ MorphXT/emule-web.de team]
-Added: Display number of currently blocked after drop clients [Stulle]
-Added: Advanced manual dropping [Stulle]
-Added: Fake HighID check [netfinity]
-Added: FunnyNick [SiRoB/Stulle]
+Added: Preferences Banner [TPT/ MorphXT/emule-web.de team] - Stulle
+Added: Advanced manual dropping [Stulle] - Stulle
+Added: Fake HighID check [netfinity] - Stulle
+Added: FunnyNick [SiRoB/Stulle] - Stulle
+Added: Client queue progress bar [Commander] - Stulle
+Added: ScarAngel Version Check [Official/MorphXT/Stulle] - Stulle 
 
-Changed: ModID [Maella] management replaced with ModID [itsonlyme/SiRoB]
-Changed: Startup Banner, Program Icon [emule-web.de team]
+Changed: ModID [Maella] management replaced with ModID [itsonlyme/SiRoB] - Stulle
+Changed: Startup Banner, Program Icon [emule-web.de team] - Stulle
 
 Sivka File Settings:
  + You can customize time between src drops, enable/ disable src dropping and min src for dropping
@@ -59,3 +70,7 @@ advanced manual dropping:
  + high queue rating sources (Xman method)
  + high queue rating sources (Sivka method)
  + CleanUp => NNS, FQS, unknown, error and banned
+
+CPU/ Memory usage display in TransferWnd:
++ Display order: "CPU : CPU usage of eMule (CPU usage of the whole system)"
+	"Mem : Memory usage of eMule (currently used physical Mem/ RAM of System)"

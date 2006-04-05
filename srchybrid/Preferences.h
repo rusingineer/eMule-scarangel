@@ -587,6 +587,7 @@ public:
 	static bool ShowGlobalHL; // show global HL - Stulle
 	static bool ShowFileHLconst; // show HL per file constantaniously - Stulle
 	static bool m_bShowInMSN7; //Show in MSN7 [TPT] - Stulle
+    static bool m_bClientQueueProgressBar; // Client queue progress bar [Commander] - Stulle
 
 	static uint8 creditSystemMode; // CreditSystems [EastShare/ MorphXT] - Stulle
 
@@ -646,6 +647,10 @@ public:
 	static TCHAR	m_sFnCustomTag [256];
 	static bool		m_bFnTagAtEnd;
 	// <== FunnyNick [SiRoB/Stulle] - Stulle
+
+	static bool		m_bACC; // ACC [Max/WiZaRd] - Max
+
+	static uint32	m_uScarVerCheckLastAutomatic; // ScarAngel Version Check - Stulle
 
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
 	static	bool	m_bHighIdPossible; // JP detect fake HighID (from netfinity)
@@ -1616,10 +1621,8 @@ public:
 	static	bool	ShowOverheadOnTitle()	{ return showOverheadInTitle;} // show overhead on title - Stulle
 	static	bool	GetShowGlobalHL()		{ return ShowGlobalHL; } // show global HL - Stulle
 	static	bool	GetShowFileHLconst()	{ return ShowFileHLconst; } // show HL per file constantaniously - Stulle
-	// ==> Show in MSN7 [TPT] - Stulle
-	static bool		GetShowMSN7()			{return m_bShowInMSN7;}
-	static void		SetShowMSN7(bool state)	{ m_bShowInMSN7 = state;}
-	// <== Show in MSN7 [TPT] - Stulle
+	static	bool	GetShowMSN7()			{ return m_bShowInMSN7;} // Show in MSN7 [TPT] - Stulle
+	static	bool	ShowClientQueueProgressBar()	{ return m_bClientQueueProgressBar;} // Client queue progress bar [Commander] - Stulle
 
 	static	uint8	GetCreditSystem()		{return creditSystemMode;} // CreditSystems [EastShare/ MorphXT] - Stulle
 
@@ -1689,11 +1692,18 @@ public:
 	// <== Source Graph - Stulle
 
 	// ==> FunnyNick [SiRoB/Stulle] - Stulle
-	static	bool	DisplayFunnyNick()					{return m_bFunnyNick;}
-	static	uint8	GetFnTag()	{return FnTagMode;}
-	static	CString GetFnCustomTag ()						{ return m_sFnCustomTag; }
-	static	bool	GetFnTagAtEnd()	{return m_bFnTagAtEnd;}
+	static	bool	DisplayFunnyNick()	{return m_bFunnyNick;}
+	static	uint8	GetFnTag()			{return FnTagMode;}
+	static	CString GetFnCustomTag ()	{ return m_sFnCustomTag; }
+	static	bool	GetFnTagAtEnd()		{return m_bFnTagAtEnd;}
 	// <== FunnyNick [SiRoB/Stulle] - Stulle
+
+	static	bool	GetACC()			{ return m_bACC; } // ACC [Max/WiZaRd] - Max
+
+	// ==> ScarAngel Version Check - Stulle
+	static	uint32	GetLastSVC()				{return m_uScarVerCheckLastAutomatic;}
+	static	void	UpdateLastSVC();
+	// <== ScarAngel Version Check - Stulle
 
 protected:
 	static	CString appdir;

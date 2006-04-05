@@ -19,8 +19,9 @@
 	#error include 'stdafx.h' before including this file for PCH
 #endif
 #include "resource.h"
+#include ".\SysInfo\SystemInfo.h" // CPU/MEM usage [$ick$/Stulle] - Max 
 
-#define	DEFAULT_NICK		_T("http://www.emule-web.de/board")
+#define	DEFAULT_NICK		_T("ScarAngel @ http://scarangel.sourceforge.net")
 #define	DEFAULT_TCP_PORT	4662
 #define	DEFAULT_UDP_PORT	(DEFAULT_TCP_PORT+10)
 
@@ -56,7 +57,7 @@ struct SLogItem;
 class CIP2Country; //EastShare - added by AndCycle, IP to Country
 class CDLP;	//Xman DLP
 
-class CSystemInfo;  // {CPU/MEM usage} [Max] 
+class CSystemInfo;  // CPU/MEM usage [$ick$/Stulle] - Max 
 
 enum AppState{
 	APP_STATE_RUNNING=0,
@@ -105,7 +106,7 @@ public:
 
 	CDLP*				dlp;
 
-	CSystemInfo*		sysinfo; // {CPU/MEM usage} [Max] 
+	CSystemInfo*		sysinfo; // CPU/MEM usage [$ick$/Stulle] - Max 
 
 	HANDLE				m_hMutexOneInstance;
 	int					m_iDfltImageListColorFlags;

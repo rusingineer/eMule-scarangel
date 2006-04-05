@@ -2864,6 +2864,15 @@
 				RelativePath=".\SysInfo\CPUUsageReader.h">
 			</File>
 			<File
+				RelativePath=".\SysInfo\GetCpuUsage.cpp">
+			</File>
+			<File
+				RelativePath=".\SysInfo\GetCpuUsage.h">
+			</File>
+			<File
+				RelativePath=".\SysInfo\PerfCounters.h">
+			</File>
+			<File
 				RelativePath=".\SysInfo\SysInfo.cpp">
 			</File>
 			<File

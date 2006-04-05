@@ -70,8 +70,8 @@ CPPgScar::CPPgScar()
 	m_htiQuickStartAfterIPChange = NULL;
 	// <== Quick start [TPT] - Stulle
 	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources - Stulle
-	m_htiIsreaskSourceAfterIPChange = NULL; // Xman -Reask sources after IP change- v2 - Stulle
-
+*/	m_htiACC = NULL; // ACC [Max/WiZaRd] - Max
+/*
 	// ==> Anti Uploader Ban - Stulle
 	m_htiAntiUploaderBanLimit = NULL;
 	m_htiAntiCase1 = NULL;
@@ -99,6 +99,7 @@ CPPgScar::CPPgScar()
 	m_htiShowGlobalHL = NULL; // show global HL - Stulle
 	m_htiShowFileHLconst = NULL; // show HL per file constantaniously - Stulle
 	m_htiShowInMSN7 = NULL; // Show in MSN7 [TPT] - Stulle
+	m_htiQueueProgressBar = NULL; // Client queue progress bar [Commander] - Stulle
 //	m_htiTrayComplete = NULL; // Completed in Tray - Stulle
 
 	// ==> file settings - Stulle
@@ -203,7 +204,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiFnTagAtEnd = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_FN_TAG_AT_END), m_htiFnTag, m_bFnTagAtEnd);
 		// <== FunnyNick [SiRoB/Stulle] - Stulle
 
-//		m_htiConTweaks = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_CON_TWEAKS), iImgConTweaks, TVI_ROOT);
+		m_htiConTweaks = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_CON_TWEAKS), iImgConTweaks, TVI_ROOT);
 /*		m_htiQuickStartGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_QUICK_START_GROUP), iImgQuickstart, m_htiConTweaks);
 		// ==> Quick start [TPT] - Stulle
 		m_htiQuickStart = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_QUICK_START), m_htiQuickStartGroup, m_bQuickStart);
@@ -220,12 +221,12 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.Expand(m_htiQuickStart, TVE_EXPAND);
 		m_htiQuickStartAfterIPChange = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_QUICK_START_AFTER_IP_CHANGE), m_htiQuickStartGroup, m_bQuickStartAfterIPChange);
 		// <== Quick start [TPT] - Stulle
-		m_htiIsreaskSourceAfterIPChange = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_RSAIC), m_htiConTweaks, m_bIsreaskSourceAfterIPChange); // Xman -Reask sources after IP change- v2 - Stulle
 		// ==> Timer for ReAsk File Sources - Stulle
 		m_htiReAskFileSrc = m_ctrlTreeOptions.InsertItem(GetResString(IDS_REASK_FILE_SRC), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiConTweaks);
 		m_ctrlTreeOptions.AddEditBox(m_htiReAskFileSrc, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		// <== Timer for ReAsk File Sources - Stulle
-
+*/		// <== Timer for ReAsk File Sources - Stulle
+		m_htiACC = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ACC), m_htiConTweaks, m_bACC); // ACC [Max/WiZaRd] - Max
+/*
 		// ==> Anti Uploader Ban - Stulle
 		m_htiAntiUploaderBanLimit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_UNBAN_UPLOADER), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, TVI_ROOT);
 		m_ctrlTreeOptions.AddEditBox(m_htiAntiUploaderBanLimit, RUNTIME_CLASS(CNumTreeOptionsEdit));
@@ -253,6 +254,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiShowGlobalHL = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOW_GLOBAL_HL), m_htiDisplay, m_bShowGlobalHL); // show global HL - Stulle
 		m_htiShowFileHLconst = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOW_FILE_HL_CONST), m_htiDisplay, m_bShowFileHLconst); // show HL per file constantaniously - Stulle
 		m_htiShowInMSN7 = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOWINMSN7), m_htiDisplay, m_bShowInMSN7); // Show in MSN7 [TPT] - Stulle
+		m_htiQueueProgressBar = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CLIENTQUEUEPROGRESSBAR), m_htiDisplay, m_bQueueProgressBar); // Client queue progress bar [Commander] - Stulle
 //		m_htiTrayComplete = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_TRAY_COMPLETE), m_htiDisplay, m_bTrayComplete); // Completed in Tray - Stulle
 
 		// ==> file settings - Stulle
@@ -344,12 +346,12 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxInt(pDX, m_iQuickStartMaxConnBack, 1, INT_MAX);
 	if(m_htiQuickStartAfterIPChange) DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiQuickStartAfterIPChange, m_bQuickStartAfterIPChange);
 	// <== Quick start [TPT] - Stulle
-	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiIsreaskSourceAfterIPChange, m_bIsreaskSourceAfterIPChange); // Xman -Reask sources after IP change- v2 - Stulle
 	// ==> Timer for ReAsk File Sources - Stulle
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiReAskFileSrc, m_iReAskFileSrc);
 	DDV_MinMaxInt(pDX, m_iReAskFileSrc, 29, 55);
-	// <== Timer for ReAsk File Sources - Stulle
-
+*/	// <== Timer for ReAsk File Sources - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiACC, m_bACC); // ACC [Max/WiZaRd] - Max
+/*
 	// ==> Anti Uploader Ban - Stulle
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiAntiUploaderBanLimit, m_iAntiUploaderBanLimit);
 	DDV_MinMaxInt(pDX, m_iAntiUploaderBanLimit, 0, 20);
@@ -365,6 +367,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowGlobalHL, m_bShowGlobalHL); // show global HL - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowFileHLconst, m_bShowFileHLconst); // show HL per file constantaniously - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowInMSN7, m_bShowInMSN7); // Show in MSN7 [TPT] - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiQueueProgressBar, m_bQueueProgressBar); // Client queue progress bar [Commander] - Stulle
 //	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiTrayComplete, m_bTrayComplete); // Completed in Tray - Stulle
 
 	// ==> file settings - Stulle
@@ -450,9 +453,9 @@ BOOL CPPgScar::OnInitDialog()
 	m_iQuickStartMaxConnBack = (int)(thePrefs.GetQuickStartMaxConnBack());
 	m_bQuickStartAfterIPChange = thePrefs.GetQuickStartAfterIPChange();
 	// <== Quick start [TPT] - Stulle
-	m_bIsreaskSourceAfterIPChange = thePrefs.IsRASAIC(); // Xman -Reask sources after IP change- v2 - Stulle
 	m_iReAskFileSrc = (thePrefs.GetReAskTimeDif() + FILEREASKTIME)/60000; // Timer for ReAsk File Sources - Stulle
-
+*/	m_bACC = thePrefs.GetACC(); // ACC [Max/WiZaRd] - Max
+/*
 	// ==> Anti Uploader Ban - Stulle
 	m_iAntiUploaderBanLimit = thePrefs.GetAntiUploaderBanLimit();
 	m_iAntiUploaderBanCase = thePrefs.GetAntiUploaderBanCase();
@@ -464,6 +467,7 @@ BOOL CPPgScar::OnInitDialog()
 	m_bShowGlobalHL = thePrefs.GetShowGlobalHL(); // show global HL - Stulle
 	m_bShowFileHLconst = thePrefs.GetShowFileHLconst(); // show HL per file constantaniously - Stulle
 	m_bShowInMSN7 = thePrefs.GetShowMSN7(); // Show in MSN7 [TPT] - Stulle
+	m_bQueueProgressBar = thePrefs.ShowClientQueueProgressBar(); // Client queue progress bar [Commander] - Stulle
 //	m_bTrayComplete = thePrefs.GetTrayComplete(); // Completed in Tray - Stulle
 
 	// ==> file settings - Stulle
@@ -567,9 +571,9 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_iQuickStartMaxConnBack = m_iQuickStartMaxConnBack;
 	thePrefs.m_bQuickStartAfterIPChange = m_bQuickStartAfterIPChange;
 	// <== Quick start [TPT] - Stulle
-	thePrefs.m_breaskSourceAfterIPChange = m_bIsreaskSourceAfterIPChange; // Xman -Reask sources after IP change- v2 - Stulle
 	thePrefs.m_uReAskTimeDif = (m_iReAskFileSrc-29)*60000; // Timer for ReAsk File Sources - Stulle
-
+*/	thePrefs.m_bACC = m_bACC; // ACC [Max/WiZaRd] - Max
+/*
 	// ==> Anti Uploader Ban - Stulle
 	thePrefs.m_iAntiUploaderBanLimit = m_iAntiUploaderBanLimit;
 	thePrefs.AntiUploaderBanCaseMode = m_iAntiUploaderBanCase;
@@ -588,6 +592,7 @@ BOOL CPPgScar::OnApply()
 	thePrefs.ShowGlobalHL = m_bShowGlobalHL; // show global HL - Stulle
 	thePrefs.ShowFileHLconst = m_bShowFileHLconst; // show HL per file constantaniously - Stulle
 	thePrefs.m_bShowInMSN7 = m_bShowInMSN7; // Show in MSN7 [TPT] - Stulle
+	thePrefs.m_bClientQueueProgressBar = m_bQueueProgressBar; // Client queue progress bar [Commander] - Stulle
 //	thePrefs.m_bTrayComplete = m_bTrayComplete; // Completed in Tray - Stulle
 
 	// ==> file settings - Stulle
@@ -683,9 +688,9 @@ void CPPgScar::Localize(void)
 		if (m_htiQuickStartMaxConnBack) m_ctrlTreeOptions.SetEditLabel(m_htiQuickStartMaxConnBack, GetResString(IDS_QUICK_START_MAX_CONN_BACK));
 		if (m_htiQuickStartAfterIPChange) m_ctrlTreeOptions.SetItemText(m_htiQuickStartAfterIPChange, GetResString(IDS_QUICK_START_AFTER_IP_CHANGE));
 		// <== Quick start [TPT] - Stulle
-		if (m_htiIsreaskSourceAfterIPChange) m_ctrlTreeOptions.SetItemText(m_htiIsreaskSourceAfterIPChange, GetResString(IDS_RSAIC)); // Xman -Reask sources after IP change- v2 - Stulle
 		if (m_htiReAskFileSrc) m_ctrlTreeOptions.SetEditLabel(m_htiReAskFileSrc, GetResString(IDS_REASK_FILE_SRC)); // Timer for ReAsk File Sources - Stulle
-
+*/		if (m_htiACC) m_ctrlTreeOptions.SetItemText(m_htiACC, GetResString(IDS_ACC)); // ACC [Max/WiZaRd] - Max
+/*
 		// ==> Anti Uploader Ban - Stulle
 		if (m_htiAntiUploaderBanLimit) m_ctrlTreeOptions.SetEditLabel(m_htiAntiUploaderBanLimit, GetResString(IDS_UNBAN_UPLOADER));
 		// <== Anti Uploader Ban - Stulle
@@ -696,6 +701,7 @@ void CPPgScar::Localize(void)
 		if (m_htiShowGlobalHL) m_ctrlTreeOptions.SetItemText(m_htiShowGlobalHL, GetResString(IDS_SHOW_GLOBAL_HL)); // show global HL - Stulle
 		if (m_htiShowFileHLconst) m_ctrlTreeOptions.SetItemText(m_htiShowFileHLconst, GetResString(IDS_SHOW_FILE_HL_CONST)); // show HL per file constantaniously - Stulle
 		if (m_htiShowInMSN7) m_ctrlTreeOptions.SetItemText(m_htiShowInMSN7, GetResString(IDS_SHOWINMSN7)); // Show in MSN7 [TPT] - Stulle
+		if (m_htiQueueProgressBar) m_ctrlTreeOptions.SetItemText(m_htiQueueProgressBar, GetResString(IDS_CLIENTQUEUEPROGRESSBAR)); // Client queue progress bar [Commander] - Stulle
 //		if (m_htiTrayComplete) m_ctrlTreeOptions.SetItemText(m_htiTrayComplete, GetResString(IDS_TRAY_COMPLETE)); // Completed in Tray - Stulle
 
 		// ==> file settings - Stulle
@@ -772,8 +778,8 @@ void CPPgScar::OnDestroy()
 	m_htiQuickStartAfterIPChange = NULL;
 	// <== Quick start [TPT] - Stulle
 	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources - Stulle
-	m_htiIsreaskSourceAfterIPChange = NULL; // Xman -Reask sources after IP change- v2 - Stulle
-
+*/	m_htiACC = NULL; // ACC [Max/WiZaRd] - Max
+/*
 	// ==> Anti Uploader Ban - Stulle
 	m_htiAntiUploaderBanLimit = NULL;
 	m_htiAntiCase1 = NULL;
@@ -800,6 +806,7 @@ void CPPgScar::OnDestroy()
 	m_htiShowGlobalHL = NULL; // show global HL - Stulle
 	m_htiShowFileHLconst = NULL; // show HL per file constantaniously - Stulle
 	m_htiShowInMSN7 = NULL; // Show in MSN7 [TPT] - Stulle
+	m_htiQueueProgressBar = NULL;
 //	m_htiTrayComplete = NULL; // Completed in Tray - Stulle
 
 	// ==> file settings - Stulle

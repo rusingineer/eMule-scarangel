@@ -559,6 +559,7 @@ bool	CPreferences::showOverheadInTitle; // show overhead on title - Stulle
 bool	CPreferences::ShowGlobalHL; // show global HL - Stulle
 bool	CPreferences::ShowFileHLconst; // show HL per file constantaniously - Stulle
 bool	CPreferences::m_bShowInMSN7; //Show in MSN7 [TPT] - Stulle
+bool CPreferences::m_bClientQueueProgressBar; // Client queue progress bar [Commander] - Stulle
 
 uint8	CPreferences::creditSystemMode; // CreditSystems [EastShare/ MorphXT] - Stulle
 
@@ -618,6 +619,10 @@ uint8	CPreferences::FnTagMode;
 TCHAR	CPreferences::m_sFnCustomTag [256];
 bool	CPreferences::m_bFnTagAtEnd;
 // <== FunnyNick [SiRoB/Stulle] - Stulle
+
+bool	CPreferences::m_bACC; // ACC [Max/WiZaRd] - Max
+
+uint32	CPreferences::m_uScarVerCheckLastAutomatic; // ScarAngel Version Check - Stulle
 
 // ==> WebCache [WC team/MorphXT] - Stulle/Max
 CString	CPreferences::webcacheName;
@@ -906,6 +911,8 @@ void CPreferences::SetStandartValues()
 	//Xman versions check
 	mversioncheckLastAutomatic=0;
 	//Xman end
+
+	m_uScarVerCheckLastAutomatic=0; // ScarAngel Version Check - Stulle
 
 //	Save();
 }
@@ -2241,6 +2248,7 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("ShowGlobalHL"),ShowGlobalHL); // show global HL - Stulle
 	ini.WriteBool(_T("ShowFileHLconst"),ShowFileHLconst); // show HL per file constantaniously - Stulle
 	ini.WriteBool(_T("ShowInMSN7"), m_bShowInMSN7); //Show in MSN7 [TPT] - Stulle
+	ini.WriteBool(_T("ClientQueueProgressBar"),m_bClientQueueProgressBar); // Client queue progress bar [Commander] - Stulle
 
 	ini.WriteInt(_T("CreditSystemMode"), creditSystemMode); // CreditSystems [EastShare/ MorphXT] - Stulle
 
@@ -2272,6 +2280,10 @@ void CPreferences::SavePreferences()
 	ini.WriteString(_T("FnCustomTag"), m_sFnCustomTag);
 	ini.WriteBool(_T("FnTagAtEnd"), m_bFnTagAtEnd);
 	// <== FunnyNick [SiRoB/Stulle] - Stulle
+
+	ini.WriteBool(_T("ActiveConnectionControl"), m_bACC); // ACC [Max/WiZaRd] - Max
+
+	ini.WriteInt(_T("ScarVerCheckLastAutomatic"), m_uScarVerCheckLastAutomatic); // ScarAngel Version Check - Stulle
 
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
 	ini.WriteString(L"webcacheName", webcacheName);
@@ -3127,6 +3139,7 @@ void CPreferences::LoadPreferences()
 	ShowGlobalHL = ini.GetBool(_T("ShowGlobalHL"),false); // show global HL - Stulle
 	ShowFileHLconst = ini.GetBool(_T("ShowFileHLconst"),true); // show HL per file constantaniously - Stulle
 	m_bShowInMSN7 = ini.GetBool(_T("ShowInMSN7"), false); //Show in MSN7 [TPT] - Stulle
+	m_bClientQueueProgressBar=ini.GetBool(_T("ClientQueueProgressBar"),true); // Client queue progress bar [Commander] - Stulle
 
 	creditSystemMode = (uint8)ini.GetInt(_T("CreditSystemMode"), 1/*lovelace*/); // CreditSystems [EastShare/ MorphXT] - Stulle
 
@@ -3166,6 +3179,10 @@ void CPreferences::LoadPreferences()
 	_stprintf (m_sFnCustomTag,_T("%s"),ini.GetString (_T("FnCustomTag")));
 	m_bFnTagAtEnd = ini.GetBool(_T("FnTagAtEnd"), false);
 	// <== FunnyNick [SiRoB/Stulle] - Stulle
+
+	m_bACC = ini.GetBool(_T("ActiveConnectionControl"),true); // ACC [Max/WiZaRd] - Max
+
+	m_uScarVerCheckLastAutomatic = ini.GetInt(_T("ScarVerCheckLastAutomatic"),0); // ScarAngel Version Check - Stulle
 
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
 	webcacheName = ini.GetString(_T("webcacheName"), _T(""));
@@ -3572,3 +3589,10 @@ bool CPreferences::CanFSHandleLargeFiles()	{
 	}
 	return bResult && !IsFileOnFATVolume(GetIncomingDir());
 }
+
+// ==> ScarAngel Version Check - Stulle
+void CPreferences::UpdateLastSVC()
+{
+	m_uScarVerCheckLastAutomatic = safe_mktime(CTime::GetCurrentTime().GetLocalTm());
+}
+// <== ScarAngel Version Check - Stulle

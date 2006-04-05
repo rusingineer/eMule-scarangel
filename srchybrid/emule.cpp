@@ -20,8 +20,6 @@
 #endif
 #include "stdafx.h"
 
-#include ".\SysInfo\SystemInfo.h" // {CPU/MEM usage} [Max] 
-
 #include <locale.h>
 #include <io.h>
 #include <share.h>
@@ -537,7 +535,7 @@ BOOL CemuleApp::InitInstance()
 	emuledlg = &dlg;
 	m_pMainWnd = &dlg;
 
-	sysinfo = new CSystemInfo();// {CPU/MEM usage} [Max] 
+	sysinfo = new CSystemInfo();// CPU/MEM usage [$ick$/Stulle] - Max 
 
 	// Barry - Auto-take ed2k links
 	if (thePrefs.AutoTakeED2KLinks())

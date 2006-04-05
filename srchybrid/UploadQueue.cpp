@@ -814,14 +814,12 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 		bool oldSmallPush= ((CKnownFile*)theApp.sharedfiles->GetFileByID((uchar*)client->GetOldUploadFileID()))->IsPushSmallFile();
 		bool newSmallPush= reqfile->IsPushSmallFile();
 		// ==> push rare file - Stulle
-		/*
-		float oldRarePush= ((CKnownFile*)theApp.sharedfiles->GetFileByID((uchar*)client->GetOldUploadFileID()))->GetFileRatio();
-		float newRarePush= reqfile->GetFileRatio();
-		*/
+		int oldRarePush= (int)(10*((CKnownFile*)theApp.sharedfiles->GetFileByID((uchar*)client->GetOldUploadFileID()))->GetFileRatio());
+		int newRarePush= (int)(10*reqfile->GetFileRatio());
 		// <== push rare file - Stulle
 		if(newUpPrio  < oldUpPrio ||
-			(newSmallPush==false && oldSmallPush==true)/* ||
-			newRarePush < oldRarePush*/) // push rare file - Stulle
+			(newSmallPush==false && oldSmallPush==true) ||
+			newRarePush < oldRarePush) // push rare file - Stulle
 		// <== push small files [sivka] - Stulle
 		{
 			if(thePrefs.GetLogUlDlEvents()){
