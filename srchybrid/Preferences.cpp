@@ -667,7 +667,7 @@ bool	CPreferences::UpdateWebcacheReleaseAllowed()
 }
 // <== WebCache [WC team/MorphXT] - Stulle/Max
 
-// ==> Quick start [TPT] - Stulle/Max
+// ==> Quick start [TPT] - Max
 bool	CPreferences::m_bQuickStart;
 uint16  CPreferences::m_iQuickStartMaxTime;
 UINT	CPreferences::m_iQuickStartMaxConn;
@@ -675,7 +675,7 @@ uint16  CPreferences::m_iQuickStartMaxConnPerFive;
 UINT	CPreferences::m_iQuickStartMaxConnBack;
 uint16  CPreferences::m_iQuickStartMaxConnPerFiveBack;
 bool	CPreferences::m_bQuickStartAfterIPChange;
-// <== Quick start [TPT] - Stulle/Max
+// <== Quick start [TPT] - Max
 
 CPreferences::CPreferences()
 {
@@ -2311,7 +2311,7 @@ void CPreferences::SavePreferences()
 	ini.WriteUInt64(L"webcacheTrustLevel", (uint64)webcacheTrustLevel);
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
-	// ==> Quick start [TPT] - Stulle/Max
+	// ==> Quick start [TPT] - Max
 	ini.WriteBool(_T("QuickStart"), m_bQuickStart);
 	ini.WriteInt(_T("QuickStartMaxTime"), m_iQuickStartMaxTime);
 	ini.WriteInt(_T("QuickStartMaxConn"), m_iQuickStartMaxConn);
@@ -2319,7 +2319,7 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("QuickStartMaxConnBack"), m_iQuickStartMaxConnBack);
 	ini.WriteInt(_T("QuickStartMaxConnPerFiveBack"), m_iQuickStartMaxConnPerFiveBack);
 	ini.WriteBool(_T("QuickStartAfterIPChange"), m_bQuickStartAfterIPChange);
-	// <== Quick start [TPT] - Stulle/Max
+	// <== Quick start [TPT] - Max
 }
 
 void CPreferences::ResetStatsColor(int index)
@@ -3220,7 +3220,7 @@ void CPreferences::LoadPreferences()
 	webcacheTrustLevel=(uint8)ini.GetUInt64(_T("webcacheTrustLevel"),30);
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
-	// ==> Quick start [TPT] - Stulle/Max
+	// ==> Quick start [TPT] - Max
 	m_bQuickStart=ini.GetBool(_T("QuickStart"),false);
 	if (MaxConperFive == m_iQuickStartMaxConnPerFive) { MaxConperFive = 30; }
 	m_iQuickStartMaxTime=(uint16)ini.GetInt(_T("QuickStartMaxTime"), 10);
@@ -3230,8 +3230,7 @@ void CPreferences::LoadPreferences()
 	m_iQuickStartMaxConnBack=ini.GetInt(_T("QuickStartMaxConnBack"), 400);
 	m_iQuickStartMaxConnPerFiveBack=(uint16)ini.GetInt(_T("QuickStartMaxConnPerFiveBack"), 30);
 	m_bQuickStartAfterIPChange=ini.GetBool(_T("QuickStartAfterIPChange"),false);
-	// <== Quick start [TPT] - Stulle/Max
-	
+	// <== Quick start [TPT] - Max
 }
 
 //Xman Xtreme Upload

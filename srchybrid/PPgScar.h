@@ -27,7 +27,7 @@ protected:
 	bool m_bFnTagAtEnd;
 	// <== FunnyNick [SiRoB/Stulle] - Stulle
 
-	// ==> Quick start [TPT] - Stulle/Max
+	// ==> Quick start [TPT] - Max
 	bool m_bQuickStart;
 	int m_iQuickStartMaxTime;
 	int m_iQuickStartMaxConnPerFive;
@@ -35,7 +35,7 @@ protected:
 	int m_iQuickStartMaxConnPerFiveBack;
 	int m_iQuickStartMaxConnBack;
 	bool m_bQuickStartAfterIPChange;
-	// <== Quick start [TPT] - Stulle/Max
+	// <== Quick start [TPT] - Max
 //	int m_iReAskFileSrc; // Timer for ReAsk File Sources - Stulle
 	bool m_bACC; // ACC [Max/WiZaRd] - Max
 /*
@@ -117,7 +117,7 @@ protected:
 	// <== FunnyNick [SiRoB/Stulle] - Stulle
 
 	HTREEITEM m_htiConTweaks;
-	// ==> Quick start [TPT] - Stulle/Max
+	// ==> Quick start [TPT] - Max
 	HTREEITEM m_htiQuickStartGroup;
 	HTREEITEM m_htiQuickStart;
 	HTREEITEM m_htiQuickStartMaxTime;
@@ -126,7 +126,7 @@ protected:
 	HTREEITEM m_htiQuickStartMaxConnPerFiveBack;
 	HTREEITEM m_htiQuickStartMaxConnBack;
 	HTREEITEM m_htiQuickStartAfterIPChange;
-	// <== Quick start [TPT] - Stulle/Max
+	// <== Quick start [TPT] - Max
 //	HTREEITEM m_htiReAskFileSrc; // Timer for ReAsk File Sources - Stulle
 	HTREEITEM m_htiACC; // ACC [Max/WiZaRd] - Max
 /*

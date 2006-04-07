@@ -52,7 +52,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-DWORD quicktime; // Quick start [TPT] - Stulle/Max
+DWORD quicktime; // Quick start [TPT] - Max
 
 CDownloadQueue::CDownloadQueue()
 {
@@ -94,10 +94,10 @@ CDownloadQueue::CDownloadQueue()
 
     //m_dwLastA4AFtime = 0; // ZZ:DownloadManager
 
-	// ==> Quick start [TPT] - Stulle/Max
+	// ==> Quick start [TPT] - Max
 	quickflag = 0;
 	quickflags = 0;
-	// <== Quick start [TPT] - Stulle/Max
+	// <== Quick start [TPT] - Max
 
 }
 
@@ -423,7 +423,7 @@ void CDownloadQueue::Process(){
 	////JP Proxy configuration testing END!!! This should probably be somewhere else.
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
-	// ==> Quick start [TPT] - Stulle/Max
+	// ==> Quick start [TPT] - Max
 	static DWORD QuickStartEndTime=0;
 	if(thePrefs.GetQuickStart() && theApp.serverconnect->IsConnected() && quickflag == 0)
 	{
@@ -457,7 +457,7 @@ void CDownloadQueue::Process(){
 			AddLogLine(false, _T("***** Max.Con./5sec: %i *****"), thePrefs.GetMaxConperFive());
 		}
 	}
-	// <== Quick start [TPT] - Stulle/Max
+	// <== Quick start [TPT] - Max
 
 
 	// Elapsed time (TIMER_PERIOD not accurate)	

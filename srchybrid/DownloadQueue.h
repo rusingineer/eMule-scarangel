@@ -261,8 +261,8 @@ public:
 
 	bool	ContainsUnstoppedFiles(); // WebCache [WC team/MorphXT] - Stulle/Max
 
-	// ==> Quick start [TPT] - Stulle/Max
+	// ==> Quick start [TPT] - Max
 	int quickflag;
 	int quickflags;
-	// <== Quick start [TPT] - Stulle/Max
+	// <== Quick start [TPT] - Max
 };
