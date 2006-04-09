@@ -1009,7 +1009,7 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 		}
 
 		case 7:		// prio
-			// ==> {last asked time,next asked time} [Max] 
+			// ==> last asked time,next asked time - Max 
 			/*
 			if (lpUpDownClient->GetDownloadState()==DS_ONQUEUE){
 				if (lpUpDownClient->IsRemoteQueueFull()){
@@ -1031,26 +1031,38 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 			}
                         */ 
 			{
-				
-				//CString tempbuffer;
+				//lastAskedTime
 				uint32 lastAskedTime = lpUpDownClient->GetLastAskedTime();
-				uint32 nextAskedTime = (lpUpDownClient->GetJitteredFileReaskTime()+lpUpDownClient->GetLastAskedTime()-::GetTickCount())/1000;
-				
-				
+
 				if ( lastAskedTime )
 					buffer=_T("LR: ")+ CastSecondsToHM(( ::GetTickCount() - lastAskedTime) /1000);
 				else
-					buffer=_T("LR: ? ");
+					buffer=_T("LR: 0 ");
 				
-				if ( nextAskedTime )
-					buffer=buffer +_T(" NR: ")+CastSecondsToHM( nextAskedTime);
+				
+				//nextAskedTime
+				uint32 nextAskedTime = lpUpDownClient->GetJitteredFileReaskTime();
+				
+				if(lpUpDownClient->GetDownloadState()==DS_NONEEDEDPARTS)
+					nextAskedTime *=2;
+
+				if(lpUpDownClient->HasTooManyFailedUDP() || lpUpDownClient->GetDownloadState()==DS_NONEEDEDPARTS || (lpUpDownClient->HasLowID() && !(lpUpDownClient->GetBuddyIP() && lpUpDownClient->GetBuddyPort() && lpUpDownClient->HasValidBuddyID())))
+				{
+					if ( (nextAskedTime+lpUpDownClient->GetLastAskedTime()) < ::GetTickCount() )
+						buffer=buffer+_T("NR: 0");
+					else
+						buffer=buffer+_T(" NR: ")+ CastSecondsToHM((nextAskedTime+lpUpDownClient->GetLastAskedTime()-::GetTickCount())/1000);
+				}
 				else
-					buffer=buffer+_T(" NR: ? ");
-
-
+				{
+					if (lpUpDownClient->GetNextTCPAskedTime()<=::GetTickCount() || (nextAskedTime+lpUpDownClient->GetLastAskedTime()) < ::GetTickCount() )
+						buffer=buffer+_T("NR: 0");
+					else
+						buffer=buffer+_T(" NR: ")+ CastSecondsToHM((nextAskedTime+lpUpDownClient->GetLastAskedTime()-::GetTickCount())/1000)+_T(" NR-TCP: ")+ CastSecondsToHM((lpUpDownClient->GetNextTCPAskedTime()-::GetTickCount())/1000);
+				}
 				dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), (DLC_DT_TEXT | DT_RIGHT) & ~DT_LEFT);
 			}
-			// <== {last asked time,next asked time} [Max] 	
+			// <== last asked time,next asked time - Max 	
 		
 			break;
 

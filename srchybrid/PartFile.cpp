@@ -6879,7 +6879,7 @@ void CPartFile::ProcessSourceCache()
 				sourcesadded++;
 		}
 		if(sourcesadded>0 && thePrefs.GetDebugSourceExchange())
-			AddDebugLogLine(false,_T("-->%u sources added via sourcache. file: %s"),sourcesadded,GetFileName()); 
+			AddDebugLogLine(false,_T("-->%u sources added via sourcecache. file: %s"),sourcesadded,GetFileName()); 
 	}
 }
 //Xman end
