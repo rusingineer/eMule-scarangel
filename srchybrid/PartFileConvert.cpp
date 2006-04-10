@@ -121,6 +121,13 @@ UINT AFX_CDECL CPartFileConvert::run(LPVOID /*lpParam*/)
 	DbgSetThreadName("Partfile-Converter");
 	InitThreadLocale();
 
+	//Xman
+	// BEGIN SLUGFILLER: SafeHash
+	CReadWriteLock lock(&theApp.m_threadlock);
+	if (!lock.ReadLock(0))
+		return 0;
+	// END SLUGFILLER: SafeHash
+
 	int imported=0;
 
 	for (;;)

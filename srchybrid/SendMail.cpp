@@ -313,6 +313,14 @@ CNotifierMailThread::~CNotifierMailThread()
 BOOL CNotifierMailThread::InitInstance()
 {
 	DbgSetThreadName("NotifierMailThread");
+
+	//Xman
+	// BEGIN SLUGFILLER: SafeHash
+	CReadWriteLock lock(&theApp.m_threadlock);
+	if (!lock.ReadLock(0))
+		return 0;
+	// END SLUGFILLER: SafeHash
+
 	if (theApp.emuledlg != NULL && theApp.emuledlg->IsRunning())
 	{
 		sm_critSect.Lock();

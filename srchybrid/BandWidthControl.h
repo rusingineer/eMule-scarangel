@@ -94,6 +94,10 @@ public:
    void SetWasNAFCLastActive(bool in) {wasNAFCLastActive=in;}	
    bool GetwasNAFCLastActive() {return wasNAFCLastActive;} 
 
+#ifdef PRINT_STATISTIC
+   void PrintStatistic();
+#endif
+
 private:
    // Adapter access
    DWORD getAdapterIndex();

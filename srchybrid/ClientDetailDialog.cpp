@@ -91,6 +91,13 @@ BOOL CClientDetailPage::OnSetActive()
 
 	if (m_bDataChanged)
 	{
+
+		//Xman Code Fix
+		//don't know how this happend, but happend with a friend:
+		if(m_paClients==NULL)
+			return FALSE;
+		//Xman end
+
 		CUpDownClient* client = STATIC_DOWNCAST(CUpDownClient, (*m_paClients)[0]);
 
 		CString buffer;
@@ -174,7 +181,7 @@ BOOL CClientDetailPage::OnSetActive()
 			// Xman Creditsystem
 			// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 			if (thePrefs.GetCreditSystem() == 7) // is Xman CS¿
-				buffer.Format(_T("%.1f %+.1f [%.1f]"),(float)client->Credits()->GetScoreRatio(client)- (float)client->Credits()->GetBonusFaktor(),(float)client->Credits()->GetBonusFaktor(),(float)client->Credits()->GetMyScoreRatio(client->GetIP()));	//  See own credits VQB
+				buffer.Format(_T("%.1f %+.1f [%.1f]"),(float)client->Credits()->GetScoreRatio(client)- (float)client->Credits()->GetBonusFaktor(client),(float)client->Credits()->GetBonusFaktor(client),(float)client->Credits()->GetMyScoreRatio(client->GetIP()));	//  See own credits VQB
 			else
 				buffer.Format(_T("%.1f [%.1f]"),(float)client->Credits()->GetScoreRatio(client),(float)client->Credits()->GetMyScoreRatio(client->GetIP()));	//  See own credits VQB
 			// <== CreditSystems [EastShare/ MorphXT] - Stulle

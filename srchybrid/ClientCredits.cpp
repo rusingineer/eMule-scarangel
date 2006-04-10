@@ -37,6 +37,7 @@
 #include "Log.h"
 //Xman
 #include "updownclient.h"
+#include "ClientList.h" //Xman Extened credit- table-arragement
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -53,8 +54,7 @@ CClientCredits::CClientCredits(CreditStruct* in_credits)
 	m_dwUnSecureWaitTime = 0;
 	m_dwSecureWaitTime = 0;
 	m_dwWaitTimeIP = 0;
-	//Xman Credit System
-	m_bonusfaktor=0;
+	m_bmarktodelete=false; //Xman Extened credit- table-arragement
 
 	m_bCheckScoreRatio = true; // CreditSystems [EastShare/ MorphXT] - Stulle
 }
@@ -76,8 +76,7 @@ CClientCredits::CClientCredits(const uchar* key)
 	// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 
 	m_dwWaitTimeIP = 0;
-	//Xman Credit System
-	m_bonusfaktor=0;
+	m_bmarktodelete=false; //Xman Extened credit- table-arragement
 
 	m_bCheckScoreRatio = true; // CreditSystems [EastShare/ MorphXT] - Stulle
 }
@@ -136,7 +135,7 @@ uint64	CClientCredits::GetDownloadedTotal() const{
 }
 
 // ==> CreditSystems [EastShare/ MorphXT] - Stulle
-float CClientCredits::GetScoreRatio(const CUpDownClient* client)
+const float CClientCredits::GetScoreRatio(const CUpDownClient* client) const
 {
 	if(m_bCheckScoreRatio == false){//only refresh ScoreRatio when really need
 		return m_fLastScoreRatio;
@@ -338,23 +337,22 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 		case CS_XMAN:{
 	#define PENALTY_UPSIZE 8388608 //8 MB
 
+	float m_bonusfaktor=0;
+
 	// Check the client ident status
-			if( GetCurrentIdentState(dwForIP) != IS_IDENTIFIED)
-			{
-				if ( GetCurrentIdentState(dwForIP) != IS_NOTAVAILABLE && theApp.clientcredits->CryptoAvailable() ){
-					result = 0.8f;
-					break;
-				}
-				result = 0.8f;
-				break;
+	if((GetCurrentIdentState(dwForIP) == IS_IDFAILED || GetCurrentIdentState(dwForIP) == IS_IDBADGUY || GetCurrentIdentState(dwForIP) == IS_IDNEEDED) && 
+		theApp.clientcredits->CryptoAvailable() == true){
+			// bad guy - no credits for you
+			//return 1.0f;
+			return 0.8f; //Xman 80% for non SUI-clients.. (and also bad guys)
 		}
 
 		// Cache value
 		const uint64 downloadTotal = GetDownloadedTotal();
 
-		// Check if this client has any credit (sent >1MB)
+		// Check if this client has any credit (sent >1.65MB)
 		const float difference2=(float)client->GetTransferredUp() - client->GetTransferredDown();	
-		if(downloadTotal < 1000000)
+		if(downloadTotal < 1650000)
 		{	
 			if ( difference2 > (2*PENALTY_UPSIZE))
 				m_bonusfaktor=(-0.2f);
@@ -479,9 +477,99 @@ bool CClientCredits::GetHasScore(const CUpDownClient* client)
 }
 // <== CreditSystems [EastShare/ MorphXT] - Stulle
 
+//because the bonusfactor is only used for displaying client-details, it's cheaper to recalculate it than saving it
+const float CClientCredits::GetBonusFaktor(const CUpDownClient* client) const
+{
+	uint32 dwForIP=client->GetIP();
+#define PENALTY_UPSIZE 8388608 //8 MB
+
+	float m_bonusfaktor=0;
+
+	// Check the client ident status
+	if((GetCurrentIdentState(dwForIP) == IS_IDFAILED || GetCurrentIdentState(dwForIP) == IS_IDBADGUY || GetCurrentIdentState(dwForIP) == IS_IDNEEDED) && 
+		theApp.clientcredits->CryptoAvailable() == true){
+			// bad guy - no credits for you
+			//return 1.0f;
+			return m_bonusfaktor; //Xman 80% for non SUI-clients.. (and also bad guys)
+		}
+
+		// Cache value
+		const uint64 downloadTotal = GetDownloadedTotal();
+
+		// Check if this client has any credit (sent >1.65MB)
+		const float difference2=(float)client->GetTransferredUp() - client->GetTransferredDown();	
+		if(downloadTotal < 1650000)
+		{	
+			if ( difference2 > (2*PENALTY_UPSIZE))
+				m_bonusfaktor=(-0.2f);
+			else if (difference2 > PENALTY_UPSIZE)
+				m_bonusfaktor=(-0.1f);
+			else
+				m_bonusfaktor=0;
+
+			return (m_bonusfaktor);
+		}
+
+		// Cache value
+		const uint64 uploadTotal = GetUploadedTotal();
+
+
+		// Bonus Faktor calculation
+		float difference = (float)downloadTotal - uploadTotal;
+		if (difference>=0)
+		{
+			m_bonusfaktor=difference/10485760.0f - (1.5f/(downloadTotal/10485760.0f));  //pro MB difference 0.1 - pro MB download 0.1
+			if (m_bonusfaktor<0)
+				m_bonusfaktor=0;
+		}
+		else 
+		{
+			difference=abs(difference);
+			if (difference> (2*PENALTY_UPSIZE) && difference2 > (2*PENALTY_UPSIZE))
+				m_bonusfaktor=(-0.2f);
+			else if (difference>PENALTY_UPSIZE && difference2 > PENALTY_UPSIZE)
+				m_bonusfaktor=(-0.1f);
+			else
+				m_bonusfaktor=0;
+		}
+		// Factor 1
+		float result = (uploadTotal == 0) ?
+			10.0f : (float)(2*downloadTotal)/(float)uploadTotal;
+
+		// Factor 2
+		//Xman slightly changed to use linear function until half of chunk is transferred
+		float trunk;
+		if(downloadTotal < 4718592)  //half of a chunk and a good point to keep the function consistent
+			trunk = (float)(1.0 + (double)downloadTotal/(1048576.0*3.0));
+		else
+			trunk = (float)sqrt(2.0 + (double)downloadTotal/1048576.0);
+		//Xman end
+
+		if(result>10.0f)
+		{
+			result=10.0f;
+			m_bonusfaktor=0;
+		}
+		else
+			result += m_bonusfaktor;
+		if(result>10.0f)
+		{
+			m_bonusfaktor -= (result-10.0f);
+			result=10.0f;;
+		}
+
+		if(result > trunk)
+		{
+			result = trunk;
+			m_bonusfaktor=0;
+		}
+
+		return m_bonusfaktor;
+}
+
 //Xman
 // See own credits - VQB
-float CClientCredits::GetMyScoreRatio(uint32 dwForIP) const
+const float CClientCredits::GetMyScoreRatio(uint32 dwForIP) const
 {
 	// check the client ident status
 	// ==> Code Optimization [SiRoB] - Stulle
@@ -681,6 +769,11 @@ void CClientCreditsList::LoadList()
 			{
 				file.Close(); // close the file before copying
 
+			//Xman don't overwrite bak files if last sessions crashed
+			if(thePrefs.eMuleChrashedLastSession())
+				::CopyFile(strFileName, strBakFileName, TRUE); //allow one copy
+			else
+			//Xman end
 				if (!::CopyFile(strFileName, strBakFileName, FALSE))
 					LogError(GetResString(IDS_ERR_MAKEBAKCREDITFILE));
 
@@ -711,12 +804,13 @@ void CClientCreditsList::LoadList()
 				m_mapClients.RemoveAll();
 			}
 			UINT count = file.ReadUInt32();
-			//Morph Start - added by AndCycle, minor tweak - prime
-			/*
-			m_mapClients.InitHashTable(count+5000); // TODO: should be prime number... and 20% larger
-			*/
-			m_mapClients.InitHashTable((int)(count*1.5) > 5003?getPrime((int)(count*1.5)):5003);
-			//Morph End - added by AndCycle, minor tweak - prime
+			//Xman Extened credit- table-arragement
+			UINT calc=UINT(count*1.2f);
+			calc = calc + calc%2 + 1;
+			m_mapClients.InitHashTable(calc + 20000); //optimized for 20 000 new contacts
+
+			//m_mapClients.InitHashTable(count+5000); // TODO: should be prime number... and 20% larger
+			//Xman end
 
 			const uint32 dwExpired = time(NULL) - 12960000; // today - 150 day
 			uint32 cDeleted = 0;
@@ -918,14 +1012,57 @@ CClientCredits* CClientCreditsList::GetCredit(const uchar* key)
 		m_mapClients.SetAt(CCKey(result->GetKey()), result);
 	}
 	result->SetLastSeen();
+
+	result->UnMarkToDelete(); //Xman Extened credit- table-arragement
 	return result;
 }
 
 void CClientCreditsList::Process()
 {
+
+#define HOURS_KEEP_IN_MEMORY 6	//Xman Extened credit- table-arragement
+
 	if (::GetTickCount() - m_nLastSaved > MIN2MS(13))
+	{
+		//Xman Extened credit- table-arragement
+		CClientCredits* cur_credit;
+		CCKey tmpkey(0);
+		POSITION pos = m_mapClients.GetStartPosition();
+		while (pos){
+			m_mapClients.GetNextAssoc(pos, tmpkey, cur_credit);
+
+			if(cur_credit->GetMarkToDelete() && (time(NULL) - cur_credit->GetLastSeen() > (3600 * HOURS_KEEP_IN_MEMORY))) //not seen for > 3 hours
+			{
+				//two security-checks, it can happen that there is a second user using this hash
+				// ==> m000h
+				/*
+				if(cur_credit->GetUploadedTotal()==0 && cur_credit->GetDownloadedTotal()==0
+					&& theApp.clientlist->FindClientByUserHash(cur_credit->GetKey())==NULL)
+				*/
+				if(theApp.clientcredits->IsSaveUploadQueueWaitTime() == false &&
+				cur_credit->GetUploadedTotal()==0 && cur_credit->GetDownloadedTotal()==0
+					&& theApp.clientlist->FindClientByUserHash(cur_credit->GetKey())==NULL)
+				// <== m000h
+				{
+					//this key isn't longer used
+					m_mapClients.RemoveKey(CCKey(cur_credit->GetKey()));
+					delete cur_credit;
+				}
+				else
+					cur_credit->UnMarkToDelete();
+			}
+		}
+		//Xman end
 		SaveList();
 }
+}
+
+#ifdef PRINT_STATISTIC
+void	CClientCreditsList::PrintStatistic()
+{
+	AddLogLine(false,_T("used Credit-Objects: %u"), m_mapClients.GetSize());
+}
+#endif
 
 void CClientCredits::InitalizeIdent()
 {
@@ -1256,7 +1393,7 @@ sint64 CClientCredits::GetSecureWaitStartTime(uint32 dwForIP)
 					buffer+=buffer2;
 				}
 				if (thePrefs.GetLogSecureIdent())
-				AddDebugLogLine(false,"Warning: WaitTime resetted due to Invalid Ident for Userhash %s",buffer.GetBuffer());*/
+					AddDebugLogLine(false,"Warning: WaitTime resetted due to Invalid Ident for Userhash %s",buffer);*/
 
 				// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 				/*

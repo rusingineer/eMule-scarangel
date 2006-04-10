@@ -18,6 +18,10 @@ public:
 	bool Process();
 	void DeleteFile();
 
+#ifdef PRINT_STATISTIC
+	uint32 GetSavedSources()	{return m_sourceList.GetSize();}
+#endif
+
 protected:
 	class CSourceData
 	{

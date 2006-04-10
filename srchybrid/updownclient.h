@@ -617,7 +617,7 @@ public:
 	//
 	bool IsDownloadingFromPeerCache() const;
 	bool IsUploadingToPeerCache() const;
-	bool HasPeerCacheState() {return m_ePeerCacheUpState == PCUS_WAIT_CACHE_REPLY || m_ePeerCacheUpState == PCUS_UPLOADING;} //Xman Xtreme Upload: Peercache-part
+	bool HasPeerCacheState() {return m_ePeerCacheUpState!=PCUS_NONE; /* m_ePeerCacheUpState == PCUS_WAIT_CACHE_REPLY || m_ePeerCacheUpState == PCUS_UPLOADING;*/} //Xman Xtreme Upload: Peercache-part
 	void SetPeerCacheDownState(EPeerCacheDownState eState);
 	void SetPeerCacheUpState(EPeerCacheUpState eState);
 
@@ -729,6 +729,7 @@ public:
 	void   SetNextTCPAskedTime(uint32 time) {m_dwNextTCPAskedTime = time;}
 	uint32 GetLastFileAskedTime(CPartFile* pFile) {return m_partStatusMap[pFile].dwStartUploadReqTime;}
 	uint32 GetJitteredFileReaskTime() const {return m_jitteredFileReaskTime;} // range 25.5..29.5 min 
+	void   CalculateJitteredFileReaskTime(bool longer); //Xman 5.1 
 	//Xman own method
 	bool   HasTooManyFailedUDP() const {return m_nTotalUDPPackets > 3 && ((float)(m_nFailedUDPPackets/m_nTotalUDPPackets) > .3);} 
 	//Maella end
@@ -746,6 +747,24 @@ public:
 	void CleanUp(CPartFile* pDeletedFile);
 	DWORD m_lastCleanUpCheck;
 	// Maella end
+
+#ifdef PRINT_STATISTIC
+	uint32 GetPartStatusMapCount()	{return m_partStatusMap.size();}
+	uint32 GetupHistoryCount()		{return m_upHistory_list.GetSize();}
+	uint32 GetdownHistoryCount()	{return m_DownloadBlocks_list.GetSize();}
+	uint32 GetDontSwapListCount()	{return m_DontSwap_list.GetSize();}
+	uint32 GetBlockRequestedCount() {return m_BlockRequests_queue.GetSize();}
+	uint32 GetDoneBlocksCount()		{return m_DoneBlocks_list.GetSize();}
+	uint32 GetRequestedFilesCount() {return m_RequestedFiles_list.GetSize();}
+	uint32 GetPendingBlockCount()	{return m_PendingBlocks_list.GetSize();}
+	uint32 GetDownloadBlockCount()	{return m_DownloadBlocks_list.GetSize();}
+	uint32 GetNoNeededListCount()	{return m_OtherNoNeeded_list.GetSize();}
+	uint32 GetOtherRequestListCount() {return m_OtherRequests_list.GetSize();}
+#endif
+
+	// BEGIN SiRoB: ReadBlockFromFileThread
+	void	SetReadBlockFromFileBuffer(byte* pdata) {filedata = pdata;};
+	// END SiRoB: ReadBlockFromFileThread
 
 
 // Maella -Unnecessary Protocol Overload-
@@ -787,6 +806,11 @@ private:
 	bool isduringswap;	//indicates, that we are during a swap operation
 	UINT oldQR; //Xman diffQR
 
+	// BEGIN SiRoB: ReadBlockFromFileThread
+	byte* filedata;
+	// END SiRoB: ReadBlockFromFileThread
+
+
 	// Maella -Upload Stop Reason-
 public:
 	static void   AddUpStopCount(bool failed, UpStopReason reason) {++m_upStopReason[failed?0:1][reason];}
@@ -813,6 +837,8 @@ private:
 	CString	old_m_pszUsername;
 	CString m_strBanMessage;
 	uint8 uhashsize;
+	uint8 m_uNickchanges; //Xman Anti-Nick-Changer
+	uint32 m_ulastNickChage; //Xman Anti-Nick-Changer
 
 	//>>> Anti-XS-Exploit (Xman)
 	uint32 m_uiXSAnswer;
@@ -838,6 +864,7 @@ private:
 	}
 
 	//Xman end
+
 
 //Xman end
 //--------------------------------------------------------------------------------------
@@ -1148,3 +1175,23 @@ protected:
 	// <== FunnyNick [SiRoB/Stulle] - Stulle
 };
 //#pragma pack()
+
+//Xman
+// BEGIN SiRoB: ReadBlockFromFileThread
+class CReadBlockFromFileThread : public CWinThread
+{
+	DECLARE_DYNCREATE(CReadBlockFromFileThread)
+protected:
+	CReadBlockFromFileThread()	{}
+public:
+	virtual	BOOL	InitInstance() {return true;}
+	virtual int		Run();
+	void			SetReadBlockFromFile(CKnownFile* pfile, uint64 startOffset, uint32 togo, CUpDownClient* client);
+private:
+	uint64			StartOffset;
+	uint32			togo;
+	CUpDownClient*	m_client;
+	CKnownFile*		srcfile;
+	CSyncObject*	lockFile;
+};
+// END SiRoB: ReadBlockFromFileThread

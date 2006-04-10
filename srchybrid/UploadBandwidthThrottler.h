@@ -53,6 +53,10 @@ public:
 	void	RecalculateOnNextLoop();
 	bool	needslot;
 
+#ifdef PRINT_STATISTIC
+	void	PrintStatistic();
+#endif
+
 private:
     static UINT RunProc(LPVOID pParam);
     UINT RunInternal();

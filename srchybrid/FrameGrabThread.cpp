@@ -78,6 +78,13 @@ BOOL CFrameGrabThread::InitInstance()
 }
 
 BOOL CFrameGrabThread::Run(){
+	//Xman
+	// BEGIN SLUGFILLER: SafeHash
+	CReadWriteLock lock(&theApp.m_threadlock);
+	if (!lock.ReadLock(0))
+		return 0;
+	// END SLUGFILLER: SafeHash
+
 	imgResults = new CxImage*[nFramesToGrab];
 	FrameGrabResult_Struct* result = new FrameGrabResult_Struct;
 	result->nImagesGrabbed = (uint8)GrabFrames();

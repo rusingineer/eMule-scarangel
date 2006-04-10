@@ -88,17 +88,18 @@ void CQueueListCtrl::Init()
 	InsertColumn(7,GetResString(IDS_ENTERQUEUE),LVCFMT_LEFT,110,7);
 	InsertColumn(8,GetResString(IDS_BANNED),LVCFMT_LEFT,60,8);
 	InsertColumn(9,GetResString(IDS_UPSTATUS),LVCFMT_LEFT,100,9);
-	InsertColumn(10,GetResString(IDS_CD_CSOFT), LVCFMT_LEFT, 90);	//Xman version see clientversion in every window
+	InsertColumn(10,GetResString(IDS_CD_CSOFT), LVCFMT_LEFT, 90, 10);	//Xman version see clientversion in every window
+	InsertColumn(11, GetResString(IDS_UPDOWNUPLOADLIST), LVCFMT_LEFT, 90, 11); //Xman show complete up/down in queuelist
 
 	// ==> push small files [sivka] - Stulle
-	InsertColumn(11,GetResString(IDS_SMALL),LVCFMT_LEFT,40,15);
+	InsertColumn(12,GetResString(IDS_SMALL),LVCFMT_LEFT,40,15);
 	// <== push small files [sivka] - Stulle
 
 	// ==> push rare file - Stulle
-	InsertColumn(12,GetResString(IDS_RARE),LVCFMT_LEFT,40,16);
+	InsertColumn(13,GetResString(IDS_RARE),LVCFMT_LEFT,40,16);
 	// <== push rare file - Stulle
 
-	InsertColumn(13, GetResString(IDS_WC_SOURCES) ,LVCFMT_LEFT, 100,14); // WebCache [WC team/MorphXT] - Stulle/Max
+	InsertColumn(14, GetResString(IDS_WC_SOURCES) ,LVCFMT_LEFT, 100,14); // WebCache [WC team/MorphXT] - Stulle/Max
 
 	SetAllIcons();
 	Localize();
@@ -220,22 +221,28 @@ void CQueueListCtrl::Localize()
 		pHeaderCtrl->SetItem(10, &hdi);
 		//Xman end
 
+		//Xman show complete up/down in queuelist
+		strRes = GetResString(IDS_UPDOWNUPLOADLIST);
+		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
+		pHeaderCtrl->SetItem(11, &hdi);
+		//Xman end
+
 		// ==> push small files [sivka] - Stulle
 		strRes = GetResString(IDS_SMALL);
 		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
-		pHeaderCtrl->SetItem(11, &hdi);
+		pHeaderCtrl->SetItem(12, &hdi);
 		// <== push small files [sivka] - Stulle
 
 		// ==> push rare file - Stulle
 		strRes = GetResString(IDS_RARE);
 		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
-		pHeaderCtrl->SetItem(12, &hdi);
+		pHeaderCtrl->SetItem(13, &hdi);
 		// <== push rare file - Stulle
 
 		// ==> WebCache [WC team/MorphXT] - Stulle/Max
 		strRes = GetResString(IDS_WC_SOURCES);
 		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
-		pHeaderCtrl->SetItem(13, &hdi);
+		pHeaderCtrl->SetItem(14, &hdi);
 		// <== WebCache [WC team/MorphXT] - Stulle/Max
 //breakpoint
 	}
@@ -451,7 +458,7 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					if(theApp.ip2country->ShowCountryFlag() ){
 						cur_rec.left+=20;
 						POINT point2= {cur_rec.left,cur_rec.top+1};
-						theApp.ip2country->GetFlagImageList()->DrawIndirect(dc, client->GetCountryFlagIndex(), point2, CSize(18,16), CPoint(0,0), ILD_NORMAL);
+						theApp.ip2country->GetFlagImageList()->Draw(dc, client->GetCountryFlagIndex(), point2, ILD_NORMAL);
 					}
 					//EastShare End - added by AndCycle, IP to Country
 
@@ -572,8 +579,17 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					break;
 				//Xman end
 
- 				// ==> push small files [sivka] - Stulle
+				//Xman show complete up/down in queuelist
 				case 11:
+					if(client->Credits() )
+					{
+						Sbuffer.Format(_T("%s/ %s"), CastItoXBytes(client->credits->GetUploadedTotal()), CastItoXBytes(client->credits->GetDownloadedTotal()));
+					}
+					break;
+				//Xman end
+
+ 				// ==> push small files [sivka] - Stulle
+				case 12:
 					{
 						if (client->GetSmallFilePush())
 							Sbuffer.Format(_T("%s"),GetResString(IDS_YES));
@@ -584,13 +600,13 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				// <== push small files [sivka] - Stulle
 
 				// ==> push rare file - Stulle
-				case 12:
+				case 13:
 					Sbuffer.Format(_T("%.1f"), client->GetRareFilePushRatio()) ;
 					break;
 				// <== push rare file - Stulle
 
 				// ==> WebCache [WC team/MorphXT] - Stulle/Max
-				case 13: {
+				case 14: {
 					if (client->SupportsWebCache())
 					{
 						Sbuffer = client->GetWebCacheName();
@@ -949,20 +965,39 @@ int CQueueListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 			break;
 		//Xman end
 
-		// ==> push small files [sivka] - Stulle
+		//Xman show complete up/down in queuelist
 		case 11:
-			iResult=item1->GetSmallFilePush() - item2->GetSmallFilePush();
+			if(item1->Credits() && item2->Credits())
+			{
+				iResult=CompareUnsigned64(item1->credits->GetUploadedTotal(), item2->credits->GetUploadedTotal());
+			}
+			else
+				iResult=0;
 			break;
 		case 111:
+			if(item1->Credits() && item2->Credits())
+			{
+				iResult=CompareUnsigned64(item2->credits->GetUploadedTotal(), item1->credits->GetUploadedTotal());
+			}
+			else
+				iResult=0;
+			break;
+		//Xman end
+
+		// ==> push small files [sivka] - Stulle
+		case 12:
+			iResult=item1->GetSmallFilePush() - item2->GetSmallFilePush();
+			break;
+		case 112:
 			iResult=item2->GetSmallFilePush() - item1->GetSmallFilePush();
 			break;
 		// <== push small files [sivka] - Stulle
 
 		// ==> push rare file - Stulle
-		case 12:
+		case 13:
 			iResult=(int)(item1->GetRareFilePushRatio()*100 - item2->GetRareFilePushRatio()*100);
 			break;
-		case 112: 
+		case 113: 
 			iResult=(int)(item2->GetRareFilePushRatio()*100 - item1->GetRareFilePushRatio()*100);
 			break;
 		// <== push rare file - Stulle

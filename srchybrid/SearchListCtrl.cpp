@@ -926,7 +926,7 @@ BOOL CSearchListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					else{
 						CUpDownClient* newclient = new CUpDownClient(NULL, file->GetClientPort(),file->GetClientID(),file->GetClientServerIP(),file->GetClientServerPort(), true);
 						if (!theApp.clientlist->AttachToAlreadyKnown(&newclient,NULL)){
-							theApp.clientlist->AddClient(newclient);
+							theApp.clientlist->AddClient(newclient,true); //Xman Code Improvement don't search new generated clients in lists
 						}
 						newclient->SendPreviewRequest(file);
 						// add to res - later
@@ -983,6 +983,9 @@ void CSearchListCtrl::CreateMenues()
 		m_SearchFileMenu.AppendMenu(MF_STRING, MP_RESUMEPAUSED, GetResString(IDS_DOWNLOAD) + _T(" (") + GetResString(IDS_PAUSED) + _T(")"));
 	if (thePrefs.IsExtControlsEnabled())
 		m_SearchFileMenu.AppendMenu(MF_STRING, MP_DETAIL, GetResString(IDS_SHOWDETAILS), _T("FileInfo"));
+	//Xman add search to cancelled
+	m_SearchFileMenu.AppendMenu(MF_STRING, MP_ADDSEARCHCANCELLED, GetResString(IDS_MARKCANCELLED));
+	//Xman end
 	m_SearchFileMenu.AppendMenu(MF_STRING, MP_CMT, GetResString(IDS_CMT_ADD), _T("FILECOMMENTS"));
 	m_SearchFileMenu.AppendMenu(MF_SEPARATOR);
 	m_SearchFileMenu.AppendMenu(MF_STRING, MP_GETED2KLINK, GetResString(IDS_DL_LINK1), _T("ED2KLink"));

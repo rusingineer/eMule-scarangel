@@ -83,6 +83,9 @@ public:
 	bool	IsFileExisting(const uchar* fileid, bool bLogWarnings = true) const;
 	bool	IsPartFile(const CKnownFile* file) const;
 
+	//Xman
+	bool	IsTempFile(const CString& rstrDirectory, const CString& rstrName) const;	// SLUGFILLER: SafeHash
+
 	CPartFile* GetFileByID(const uchar* filehash) const;
 	CPartFile* GetFileByIndex(int index) const;
 	CPartFile* GetFileByKadFileSearchID(uint32 ID) const;
@@ -170,6 +173,10 @@ public:
 	uint32	GetGlobalSources() const {return m_uGlobsources;	}
 	uint8	GetLimitState() const {return m_limitstate;}
 	//Xman end
+
+#ifdef PRINT_STATISTIC
+	void	PrintStatistic();
+#endif
 
 protected:
 	bool	SendNextUDPPacket();

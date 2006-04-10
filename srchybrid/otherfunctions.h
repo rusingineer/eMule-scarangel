@@ -368,5 +368,3 @@ void	UpdateMSN(float upRate, float upOvRate, float downRate, float downOvRate, b
 void	UpdateMSN1(uint64 Receiver, uint64 Sent, uint64 Src);
 void	UpdateMSN2(CString Connection);
 // <== Show in MSN7 [TPT] - Stulle
-
-int getPrime(int lower_bound); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle

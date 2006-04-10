@@ -323,7 +323,9 @@ CSharedFileList::CSharedFileList(CServerConnect* in_server)
 	m_lastPublishKadSrc = 0;
 	m_lastPublishKadNotes = 0;
 	m_currFileKey = 0;
-	FindSharedFiles();
+	//Xman
+	//FindSharedFiles();
+	// SLUGFILLER: SafeHash remove - delay load shared files
 }
 
 CSharedFileList::~CSharedFileList(){
@@ -357,7 +359,18 @@ void CSharedFileList::CopySharedFileMap(CMap<CCKey,const CCKey&,CKnownFile*,CKno
 
 void CSharedFileList::FindSharedFiles()
 {
+	//Xman
+	// BEGIN SLUGFILLER: SafeHash
+	while (!waitingforhash_list.IsEmpty()) {
+		UnknownFile_Struct* nextfile = waitingforhash_list.RemoveHead();
+		delete nextfile;
+	}
+	// END SLUGFILLER: SafeHash
+
+	// SLUGFILLER: SafeHash remove - only called after the download queue is created
+	/*
 	if (!m_Files_map.IsEmpty())
+	*/
 	{
 		CSingleLock listlock(&m_mutWriteList);
 		
@@ -533,7 +546,8 @@ void CSharedFileList::AddFilesFromDirectory(const CString& rstrDirectory)
 		{
 			//not in knownfilelist - start adding thread to hash file if the hashing of this file isnt already waiting
 			// SLUGFILLER: SafeHash - don't double hash, MY way
-			if (!IsHashing(rstrDirectory, ff.GetFileName()) && !thePrefs.IsTempFile(rstrDirectory, ff.GetFileName())){
+			//Xman
+			if (!IsHashing(rstrDirectory, ff.GetFileName()) && !theApp.downloadqueue->IsTempFile(rstrDirectory, ff.GetFileName()) && !thePrefs.IsConfigFile(rstrDirectory, ff.GetFileName())){
 				UnknownFile_Struct* tohash = new UnknownFile_Struct;
 				tohash->strDirectory = rstrDirectory;
 				tohash->strName = ff.GetFileName();
@@ -580,6 +594,27 @@ bool CSharedFileList::SafeAddKFile(CKnownFile* toadd, bool bOnlyAdd)
 	return bAdded;
 }
 
+//Xman official bugfix for redownloading already downloaded file
+//same as above but without RemoveHashing. It isn't needed and it can crash there
+bool CSharedFileList::SafeAddKFileWithOutRemoveHasing(CKnownFile* toadd, bool bOnlyAdd)
+{
+	bool bAdded = false;
+	bAdded = AddFile(toadd);
+	if (bOnlyAdd)
+		return bAdded;
+	if (bAdded && output)
+	{
+		output->AddFile(toadd);
+		//Xman [MoNKi: -Downloaded History-]
+		if(!toadd->IsPartFile())
+			theApp.emuledlg->sharedfileswnd->historylistctrl.AddFile(toadd); 
+		//Xman end
+	}
+	m_lastPublishED2KFlag = true;
+	return bAdded;
+}
+//Xman end
+
 void CSharedFileList::RepublishFile(CKnownFile* pFile)
 {
 	CServer* pCurServer = server->GetCurrentServer();
@@ -592,7 +627,8 @@ void CSharedFileList::RepublishFile(CKnownFile* pFile)
 
 bool CSharedFileList::AddFile(CKnownFile* pFile)
 {
-	ASSERT( pFile->GetHashCount() == pFile->GetED2KPartHashCount() );
+	//Xman
+	ASSERT( pFile->GetHashCount() == pFile->GetED2KPartCount() );	// SLUGFILLER: SafeHash - use GetED2KPartCount
 	ASSERT( !pFile->IsKindOf(RUNTIME_CLASS(CPartFile)) || !STATIC_DOWNCAST(CPartFile, pFile)->hashsetneeded );
 
 	CCKey key(pFile->GetFileHash());
@@ -651,6 +687,41 @@ void CSharedFileList::FileHashingFinished(CKnownFile* file)
 	ASSERT( !IsFilePtrInList(file) );
 	ASSERT( !theApp.knownfiles->IsFilePtrInList(file) );
 
+	//Xman
+	// BEGIN SLUGFILLER: SafeHash
+	//Borschtsch
+	bool dontadd = true;
+	if (!CompareDirectories(thePrefs.GetIncomingDir(), file->GetPath()))
+		dontadd = false;
+	if (dontadd) {
+		for (int i = 0; i < thePrefs.GetCatCount(); i++) {
+			Category_Struct* pCatStruct = thePrefs.GetCategory(i);
+			if (pCatStruct != NULL){
+				if (CompareDirectories(pCatStruct->incomingpath, file->GetPath()))
+					continue;
+				dontadd = false;
+				break;
+			}
+		}
+	}
+	if (dontadd) {
+		for (POSITION pos = thePrefs.shareddir_list.GetHeadPosition(); pos != 0; ) {
+			if (CompareDirectories(thePrefs.shareddir_list.GetNext(pos), file->GetPath()))
+				continue;
+			dontadd = false;
+			break;
+		}
+	}
+	if (dontadd) {
+		RemoveFromHashing(file);
+		if (!IsFilePtrInList(file) && !theApp.knownfiles->IsFilePtrInList(file))
+			delete file;
+		else
+			ASSERT(0);
+		return;
+	}
+	// END SLUGFILLER: SafeHash
+
 	CKnownFile* found_file = GetFileByID(file->GetFileHash());
 	if (found_file == NULL)
 	{
@@ -690,10 +761,15 @@ void CSharedFileList::RemoveFile(CKnownFile* pFile)
 
 void CSharedFileList::Reload()
 {
+	//Xman
+	// BEGIN SLUGFILLER: SafeHash - don't allow to be called until after the control is loaded
+	if (!output)
+		return;
+	// END SLUGFILLER: SafeHash
 	m_keywords->RemoveAllKeywordReferences();
 	FindSharedFiles();
 	m_keywords->PurgeUnreferencedKeywords();
-	if (output)
+	// SLUGFILLER: SafeHash remove - check moved up
 		output->ReloadFileList();
 }
 
@@ -701,7 +777,9 @@ void CSharedFileList::SetOutputCtrl(CSharedFilesCtrl* in_ctrl)
 {
 	output = in_ctrl;
 	output->ReloadFileList();
-	HashNextFile();		// SLUGFILLER: SafeHash - if hashing not yet started, start it now
+	//Xman
+	//HashNextFile();		// SLUGFILLER: SafeHash - if hashing not yet started, start it now
+	Reload();		// SLUGFILLER: SafeHash - load shared files after everything
 }
 
 uint8 GetRealPrio(uint8 in)
@@ -1120,14 +1198,15 @@ bool CSharedFileList::IsFilePtrInList(const CKnownFile* file) const
 }
 
 void CSharedFileList::HashNextFile(){
-	// SLUGFILLER: SafeHash
-	if (!theApp.emuledlg || !::IsWindow(theApp.emuledlg->m_hWnd))	// wait for the dialog to open
+	// BEGIN SLUGFILLER: SafeHash
+	//Xman
+	if (!theApp.emuledlg || !theApp.emuledlg->IsRunning() || !::IsWindow(theApp.emuledlg->m_hWnd))	// wait for the dialog to open
 		return;
 	if (theApp.emuledlg && theApp.emuledlg->IsRunning())
 		theApp.emuledlg->sharedfileswnd->sharedfilesctrl.ShowFilesCount();
 	if (!currentlyhashing_list.IsEmpty())	// one hash at a time
 		return;
-	// SLUGFILLER: SafeHash
+	// END SLUGFILLER: SafeHash
 	if (waitingforhash_list.IsEmpty())
 		return;
 	UnknownFile_Struct* nextfile = waitingforhash_list.RemoveHead();
@@ -1139,7 +1218,7 @@ void CSharedFileList::HashNextFile(){
 	//delete nextfile;
 }
 
-// SLUGFILLER: SafeHash
+// BEGIN SLUGFILLER: SafeHash
 bool CSharedFileList::IsHashing(const CString& rstrDirectory, const CString& rstrName){
 	for (POSITION pos = waitingforhash_list.GetHeadPosition(); pos != 0; ){
 		const UnknownFile_Struct* pFile = waitingforhash_list.GetNext(pos);
@@ -1180,7 +1259,7 @@ void CSharedFileList::HashFailed(UnknownFile_Struct* hashed){
 	}
 	delete hashed;
 }
-// SLUGFILLER: SafeHash
+// END SLUGFILLER: SafeHash
 
 IMPLEMENT_DYNCREATE(CAddFileThread, CWinThread)
 
@@ -1210,13 +1289,24 @@ int CAddFileThread::Run()
 	if ( !(m_pOwner || m_partfile) || m_strFilename.IsEmpty() || !theApp.emuledlg->IsRunning() )
 		return 0;
 	
+	//Xman
+	// BEGIN SLUGFILLER: SafeHash
+	CReadWriteLock lock(&theApp.m_threadlock);
+	if (!lock.ReadLock(0))
+		return 0;
+	// END SLUGFILLER: SafeHash
+
 	CoInitialize(NULL);
 
 	// locking that hashing thread is needed because we may create a couple of those threads at startup when rehashing
 	// potentially corrupted downloading part files. if all those hash threads would run concurrently, the io-system would be
 	// under very heavy load and slowly progressing
+	//Xman
+	// SLUGFILLER: SafeHash remove - locking code removed, unnecessary
+	/*
 	CSingleLock sLock1(&theApp.hashing_mut); // only one filehash at a time
 	sLock1.Lock();
+	*/
 
 	CString strFilePath;
 	_tmakepath(strFilePath.GetBuffer(MAX_PATH), NULL, m_strDirectory, m_strFilename, NULL);
@@ -1253,7 +1343,11 @@ int CAddFileThread::Run()
 		delete newrecord;
 	}
 
+	//Xman
+	// SLUGFILLER: SafeHash remove - locking code removed, unnecessary
+	/*
 	sLock1.Unlock();
+	*/
 	CoUninitialize();
 
 	return 0;

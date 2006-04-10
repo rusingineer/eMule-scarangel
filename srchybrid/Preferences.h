@@ -960,6 +960,11 @@ public:
 	static bool		updatenotifymod;
 	static bool		UpdateNotifyMod()	{return updatenotifymod;}
 
+	//Xman don't overwrite bak files if last sessions crashed
+	static bool		m_this_session_aborted_in_an_unnormal_way;
+	static bool		m_last_session_aborted_in_an_unnormal_way;
+	static bool		eMuleChrashedLastSession()		{ return m_last_session_aborted_in_an_unnormal_way;}
+
 	//Xman end
 	//-----------------------------------------------------------------------------
 

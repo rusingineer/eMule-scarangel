@@ -51,7 +51,7 @@
 #include "SharedFileList.h"
 #include "ED2KLink.h"
 //#include "Splashscreen.h"  //Xman slpashscreen
-#include "SplashScreenEx.h" //Xman splashscreen
+//#include "SplashScreenEx.h" //Xman splashscreen
 #include "PartFileConvert.h"
 #include "EnBitmap.h"
 #include "Wizard.h"
@@ -199,6 +199,16 @@ BEGIN_MESSAGE_MAP(CemuleDlg, CTrayDialog)
 	ON_MESSAGE(TM_FINISHEDHASHING, OnFileHashed)
 	ON_MESSAGE(TM_FILEOPPROGRESS, OnFileOpProgress)
 	ON_MESSAGE(TM_HASHFAILED, OnHashFailed)
+	//Xman
+	// BEGIN SLUGFILLER: SafeHash
+	ON_MESSAGE(TM_PARTHASHEDOK, OnPartHashedOK)
+	ON_MESSAGE(TM_PARTHASHEDCORRUPT, OnPartHashedCorrupt)
+	ON_MESSAGE(TM_PARTHASHEDOKAICHRECOVER, OnPartHashedOKAICHRecover)
+	ON_MESSAGE(TM_PARTHASHEDCORRUPTAICHRECOVER, OnPartHashedCorruptAICHRecover)
+	// END SLUGFILLER: SafeHash
+	ON_MESSAGE(TM_READBLOCKFROMFILEDONE, OnReadBlockFromFileDone) // SiRoB: ReadBlockFromFileThread
+	ON_MESSAGE(TM_FLUSHDONE, OnFlushDone) // SiRoB: Flush Thread
+	//Xman end
 	ON_MESSAGE(TM_FRAMEGRABFINISHED, OnFrameGrabFinished)
 	ON_MESSAGE(TM_FILEALLOCEXC, OnFileAllocExc)
 	ON_MESSAGE(TM_FILECOMPLETED, OnFileCompleted)
@@ -250,8 +260,10 @@ CemuleDlg::CemuleDlg(CWnd* pParent /*=NULL*/)
 	m_hTimer = 0;
 	notifierenabled = false;
 	m_pDropTarget = new CMainFrameDropTarget;
-	m_pSplashWnd = NULL;
-	m_dwSplashTime = (DWORD)-1;
+	//Xman new slpash-screen arrangement
+	//m_pSplashWnd = NULL;
+	//m_dwSplashTime = (DWORD)-1;
+	//Xman end
 	m_pSystrayDlg = NULL;
 	m_pMiniMule = NULL;
 	m_uLastSysTrayIconCookie = SYS_TRAY_ICON_COOKIE_FORCE_UPDATE;
@@ -325,6 +337,8 @@ BOOL CemuleDlg::OnInitDialog()
 	if (thePrefs.IsFirstStart())
 		m_bStartMinimized = false;
 
+	//Xman new slpash-screen arrangement
+	/*
 	// show splashscreen as early as possible to "entertain" user while starting emule up
 	if (thePrefs.UseSplashScreen() && !m_bStartMinimized)
 	{
@@ -339,6 +353,7 @@ BOOL CemuleDlg::OnInitDialog()
 			ShowSplash();
 		}
 	}
+	*/
 
 	// Create global GUI objects
 	theApp.CreateAllFonts();
@@ -603,7 +618,12 @@ BOOL CemuleDlg::OnInitDialog()
 
 		thePrefs.detectWebcacheOnStart = true; //jp detect webcache on startup // WebCache [WC team/MorphXT] - Stulle/Max
 
-		DestroySplash();
+		//Xman
+		// SLUGFILLER: SafeHash remove - wait until emule is ready before opening the wizard
+		/*
+		//Xman new slpash-screen arrangement
+		//DestroySplash();
+		theApp.DestroySplash();
 
 		extern BOOL FirstTimeWizard();
 		if (FirstTimeWizard()){
@@ -611,6 +631,7 @@ BOOL CemuleDlg::OnInitDialog()
 			CConnectionWizardDlg conWizard;
 			conWizard.DoModal();
 		}
+		*/
 	}
 
 	VERIFY( m_pDropTarget->Register(this) );
@@ -618,9 +639,12 @@ BOOL CemuleDlg::OnInitDialog()
 	// initalize PeerCache
 	theApp.m_pPeerCache->Init(thePrefs.GetPeerCacheLastSearch(), thePrefs.WasPeerCacheFound(), thePrefs.IsPeerCacheDownloadEnabled(), thePrefs.GetPeerCachePort());
 	
+	//Xman
+	// SiRoB: SafeHash fix (see StartupTimer)
+	/*
 	// start aichsyncthread
 	AfxBeginThread(RUNTIME_CLASS(CAICHSyncThread), THREAD_PRIORITY_BELOW_NORMAL,0);
-
+	*/
 
 	return TRUE;
 }
@@ -686,7 +710,11 @@ void CALLBACK CemuleDlg::StartupTimer(HWND /*hwnd*/, UINT /*uiMsg*/, UINT /*idEv
 			case 0:
 				theApp.emuledlg->status++;
 				theApp.emuledlg->ready = true;
+				//Xman
+				// SLUGFILLER: SafeHash remove - moved down
+				/*
 				theApp.sharedfiles->SetOutputCtrl(&theApp.emuledlg->sharedfileswnd->sharedfilesctrl);
+				*/
 				theApp.emuledlg->status++;
 				break;
 			case 1:
@@ -707,6 +735,7 @@ void CALLBACK CemuleDlg::StartupTimer(HWND /*hwnd*/, UINT /*uiMsg*/, UINT /*idEv
 			case 4:{
 				bool bError = false;
 				theApp.emuledlg->status++;
+				theApp.UpdateSplash(_T("initializing  files to download ...")); //Xman new slpash-screen arrangement
 
 				// NOTE: If we have an unhandled exception in CDownloadQueue::Init, MFC will silently catch it
 				// and the creation of the TCP and the UDP socket will not be done -> client will get a LowID!
@@ -750,17 +779,61 @@ void CALLBACK CemuleDlg::StartupTimer(HWND /*hwnd*/, UINT /*uiMsg*/, UINT /*idEv
 					/*
 					AddLogLine(true, GetResString(IDS_MAIN_READY),theApp.m_strCurVersionLong + _T(" ") + MOD_VERSION); // XMan // Maella -Support for tag ET_MOD_VERSION 0x55
 					*/
-					AddLogLine(true, GetResString(IDS_MAIN_READY),theApp.m_strCurVersionLong + _T(" ") + theApp.m_strModLongVersion); // XMan // Maella -Support for tag ET_MOD_VERSION 0x55
+					AddLogLine(true, GetResString(IDS_MAIN_READY),theApp.m_strCurVersionLong + _T(" ") + theApp.m_strModLongVersion);
 					// <== ModID [itsonlyme/SiRoB] - Stulle
 				}
+				//Xman
+				// SLUGFILLER: SafeHash remove - moved down
+				/*
 				if (thePrefs.DoAutoConnect())
 					theApp.emuledlg->OnBnClickedButton2();
+				*/
 				theApp.emuledlg->status++;
 				break;
 			}
 			case 5:
 				break;
+			//Xman
+			// BEGIN SLUGFILLER: SafeHash - delay load shared files
+			case 6:
+				theApp.emuledlg->status++;
+				theApp.sharedfiles->SetOutputCtrl(&theApp.emuledlg->sharedfileswnd->sharedfilesctrl);
+
+				// BEGIN SiRoB: SafeHash fix originaly in OnInitDialog (delay load shared files)
+				// start aichsyncthread
+				theApp.UpdateSplash(_T("Synchronize AICH-Hashes...")); //Xman new slpash-screen arrangement
+				AfxBeginThread(RUNTIME_CLASS(CAICHSyncThread), THREAD_PRIORITY_BELOW_NORMAL,0);
+				// END SiRoB: SafeHash
+				theApp.emuledlg->status++;
+				break;
+			case 7:
+				break;
+			case 255:
+				break;
+			// END SLUGFILLER: SafeHash
 			default:
+			//Xman
+			// BEGIN SLUGFILLER: SafeHash
+				theApp.emuledlg->status = 255;
+				theApp.UpdateSplash(_T("Ready")); //Xman new slpash-screen arrangement
+				//autoconnect only after emule loaded completely
+				if(thePrefs.DoAutoConnect())
+					theApp.emuledlg->OnBnClickedButton2();
+				// wait until emule is ready before opening the wizard
+				if (thePrefs.IsFirstStart())
+				{
+					//Xman new slpash-screen arrangement
+					//DestroySplash();
+					theApp.DestroySplash();
+					//Xman end
+					extern BOOL FirstTimeWizard();
+					if (FirstTimeWizard()){
+						// start connection wizard
+						CConnectionWizardDlg conWizard;
+						conWizard.DoModal();
+					}
+				}
+			// END SLUGFILLER: SafeHash
 				theApp.emuledlg->StopTimer();
 		}
 	}
@@ -782,6 +855,8 @@ void CemuleDlg::StopTimer()
 		VERIFY( ::KillTimer(NULL, m_hTimer) );
 		m_hTimer = 0;
 	}
+
+	theApp.spashscreenfinished=true; //Xman new slpash-screen arrangement
 
 	if (thePrefs.UpdateNotify())
 		DoVersioncheck(false);
@@ -963,7 +1038,10 @@ void CemuleDlg::AddLogText(UINT uFlags, LPCTSTR pszText)
 				statusbar->SetText(pszText, SBarLog, 0);
 		}
 		else
+		{
+			theApp.DestroySplash(); //Xman new slpash-screen arrangement
 			AfxMessageBox(pszText);
+		}
 	}
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	Debug(_T("%s\n"), pszText);
@@ -1733,13 +1811,98 @@ LRESULT CemuleDlg::OnFileOpProgress(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-// SLUGFILLER: SafeHash
+//Xman
+// BEGIN SLUGFILLER: SafeHash
 LRESULT CemuleDlg::OnHashFailed(WPARAM /*wParam*/, LPARAM lParam)
 {
+	// BEGIN SiRoB: Fix crash at shutdown
+	if (theApp.m_app_state == APP_STATE_SHUTINGDOWN) {
+		UnknownFile_Struct* hashed = (UnknownFile_Struct*)lParam;
+		delete hashed;
+		return FALSE;
+	}
+	// END SiRoB: Fix crash at shutdown
 	theApp.sharedfiles->HashFailed((UnknownFile_Struct*)lParam);
 	return 0;
 }
-// SLUGFILLER: SafeHash
+
+LRESULT CemuleDlg::OnPartHashedOK(WPARAM wParam,LPARAM lParam)
+{
+	// BEGIN SiRoB: Fix crash at shutdown
+	if (theApp.m_app_state == APP_STATE_SHUTINGDOWN)
+		return FALSE;
+	// END SiRoB: Fix crash at shutdown
+	CPartFile* pOwner = (CPartFile*)lParam;
+	if (theApp.downloadqueue->IsPartFile(pOwner))	// could have been canceled
+		pOwner->PartHashFinished((UINT)wParam, false);
+	return 0;
+}
+
+LRESULT CemuleDlg::OnPartHashedCorrupt(WPARAM wParam,LPARAM lParam)
+{
+	// BEGIN SiRoB: Fix crash at shutdown
+	if (theApp.m_app_state == APP_STATE_SHUTINGDOWN)
+		return FALSE;
+	// END SiRoB: Fix crash at shutdown
+	CPartFile* pOwner = (CPartFile*)lParam;
+	if (theApp.downloadqueue->IsPartFile(pOwner))	// could have been canceled
+		pOwner->PartHashFinished((UINT)wParam, true);
+	return 0;
+}
+
+LRESULT CemuleDlg::OnPartHashedOKAICHRecover(WPARAM wParam,LPARAM lParam)
+{
+	// BEGIN SiRoB: Fix crash at shutdown
+	if (theApp.m_app_state == APP_STATE_SHUTINGDOWN)
+		return FALSE;
+	// END SiRoB: Fix crash at shutdown
+	CPartFile* pOwner = (CPartFile*)lParam;
+	if (theApp.downloadqueue->IsPartFile(pOwner))	// could have been canceled
+		pOwner->PartHashFinishedAICHRecover((UINT)wParam, false);
+	return 0;
+}
+
+LRESULT CemuleDlg::OnPartHashedCorruptAICHRecover(WPARAM wParam,LPARAM lParam)
+{
+	// BEGIN SiRoB: Fix crash at shutdown
+	if (theApp.m_app_state == APP_STATE_SHUTINGDOWN)
+		return FALSE;
+	// END SiRoB: Fix crash at shutdown
+	CPartFile* pOwner = (CPartFile*)lParam;
+	if (theApp.downloadqueue->IsPartFile(pOwner))	// could have been canceled
+		pOwner->PartHashFinishedAICHRecover((UINT)wParam, true);
+	return 0;
+}
+// END SLUGFILLER: SafeHash
+
+// BEGIN SiRoB: ReadBlockFromFileThread
+LRESULT CemuleDlg::OnReadBlockFromFileDone(WPARAM wParam,LPARAM lParam)
+{
+	CUpDownClient* client = (CUpDownClient*) lParam;
+	if (theApp.m_app_state != APP_STATE_SHUTINGDOWN && theApp.uploadqueue->IsDownloading(client))	// could have been canceled
+	{
+		client->SetReadBlockFromFileBuffer((byte*)wParam);
+		client->CreateNextBlockPackage(); //complete the process
+	}
+	else if (wParam != -1 && wParam != -2 && wParam != NULL)
+		delete[] (byte*)wParam;
+	return 0;
+}
+// END SiRoB: ReadBlockFromFileThread
+// BEGIN SiRoB: Flush Thread
+LRESULT CemuleDlg::OnFlushDone(WPARAM wParam,LPARAM lParam)
+{
+	CPartFile* partfile = (CPartFile*) lParam;
+	if (theApp.m_app_state != APP_STATE_SHUTINGDOWN && theApp.downloadqueue->IsPartFile(partfile))	// could have been canceled
+		partfile->FlushDone((FlushDone_Struct*)wParam);
+	else {
+		delete[] ((FlushDone_Struct*)wParam)->changedPart;
+		delete	(FlushDone_Struct*)wParam;
+	}
+	return 0;
+}
+// END SiRoB: Flush Thread
+
 
 LRESULT CemuleDlg::OnFileAllocExc(WPARAM wParam,LPARAM lParam)
 {
@@ -1802,6 +1965,23 @@ void CemuleDlg::OnClose()
 	if (!CanClose() )
 		return;
 
+	//Xman new slpash-screen arrangement
+	if (thePrefs.UseSplashScreen())
+		{
+			//Xman don't show splash on old windows->crash
+			switch (thePrefs.GetWindowsVersion())
+			{
+			case _WINVER_98_:
+			case _WINVER_95_:	
+			case _WINVER_ME_:
+				break;
+			default:
+				theApp.ShowSplash(false);
+			}
+		}
+	theApp.UpdateSplash(_T("Shutting down ..."));
+	//Xman end
+
 	Log(_T("Closing eMule"));
 	CloseTTS();
 	m_pDropTarget->Revoke();
@@ -1852,9 +2032,13 @@ void CemuleDlg::OnClose()
 
 	Kademlia::CKademlia::Stop();
 
+	theApp.UpdateSplash(_T("waiting for hash end")); //Xman new slpash-screen arrangement
+
 	// try to wait untill the hashing thread notices that we are shutting down
 	CSingleLock sLock1(&theApp.hashing_mut); // only one filehash at a time
 	sLock1.Lock(2000);
+
+	theApp.UpdateSplash(_T("saving settings ...")); //Xman new slpash-screen arrangement
 
 	// saving data & stuff
 	theApp.emuledlg->preferenceswnd->m_wndSecurity.DeleteDDB();
@@ -1879,8 +2063,14 @@ void CemuleDlg::OnClose()
 
 	theApp.m_pPeerCache->Save();
 	theApp.scheduler->RestoreOriginals();
+	//Xman don't overwrite bak files if last sessions crashed
+	//remark: it would be better to set the flag after all deletions, but this isn't possible, because the prefs need access to the objects when saving
+	thePrefs.m_this_session_aborted_in_an_unnormal_way=false;
 	thePrefs.Save();
+	//Xman end
 	thePerfLog.Shutdown();
+
+	theApp.UpdateSplash(_T("clearing displayed items ...")); //Xman new slpash-screen arrangement
 
 	// explicitly delete all listview items which may hold ptrs to objects which will get deleted
 	// by the dtors (some lines below) to avoid potential problems during application shutdown.
@@ -1906,6 +2096,11 @@ void CemuleDlg::OnClose()
 
 	searchwnd->SendMessage(WM_CLOSE);
 
+	theApp.UpdateSplash(_T("clearing lists ..."));  //Xman new slpash-screen arrangement
+
+	//Xman
+	theApp.m_threadlock.WriteLock();	// SLUGFILLER: SafeHash - Last chance, let all running threads close before we start deleting
+
     // NOTE: Do not move those dtors into 'CemuleApp::InitInstance' (althought they should be there). The
 	// dtors are indirectly calling functions which access several windows which would not be available 
 	// after we have closed the main window -> crash!
@@ -1917,16 +2112,20 @@ void CemuleDlg::OnClose()
 	delete theApp.serverlist;		theApp.serverlist = NULL;
 	delete theApp.knownfiles;		theApp.knownfiles = NULL;
 	delete theApp.searchlist;		theApp.searchlist = NULL;
+	theApp.UpdateSplash(_T("saving credits ..."));  //Xman new slpash-screen arrangement
 	delete theApp.clientcredits;	theApp.clientcredits = NULL;
+	theApp.UpdateSplash(_T("clearing queues ..."));  //Xman new slpash-screen arrangement
 	delete theApp.downloadqueue;	theApp.downloadqueue = NULL;
 	delete theApp.uploadqueue;		theApp.uploadqueue = NULL;
 	delete theApp.clientlist;		theApp.clientlist = NULL;
 	delete theApp.friendlist;		theApp.friendlist = NULL;
 	delete theApp.scheduler;		theApp.scheduler = NULL;
+	theApp.UpdateSplash(_T("unload IP-Filter ..."));  //Xman new slpash-screen arrangement
 	delete theApp.ipfilter;			theApp.ipfilter = NULL;
 	delete theApp.webserver;		theApp.webserver = NULL;
 	delete theApp.m_pPeerCache;		theApp.m_pPeerCache = NULL;
 	delete theApp.m_pFirewallOpener;theApp.m_pFirewallOpener = NULL;
+	theApp.UpdateSplash(_T("shutdown bandwidthcontrol ..."));  //Xman new slpash-screen arrangement
 	delete theApp.uploadBandwidthThrottler; theApp.uploadBandwidthThrottler = NULL;
 	//Xman
 	//delete theApp.lastCommonRouteFinder; theApp.lastCommonRouteFinder = NULL;
@@ -1936,11 +2135,15 @@ void CemuleDlg::OnClose()
 	delete theApp.pBandWidthControl;theApp.pBandWidthControl = NULL;
 	// Maella end
 
+	theApp.UpdateSplash(_T("unload IP to Country ..."));  //Xman new slpash-screen arrangement
+
 	//EastShare Start - added by AndCycle, IP to Country
 	delete theApp.ip2country;		theApp.ip2country = NULL;
 	//EastShare End   - added by AndCycle, IP to Country
 
 	delete theApp.dlp; theApp.dlp=NULL; //Xman DLP
+
+	theApp.UpdateSplash(_T("Shutdown done")); //Xman new slpash-screen arrangement
 
 	thePrefs.Uninit();
 	theApp.m_app_state = APP_STATE_DONE;
@@ -2993,6 +3196,7 @@ LRESULT CemuleDlg::OnVersionCheckResponse(WPARAM /*wParam*/, LPARAM lParam)
 				uint8 abyCurVer[4] = { (uint8)(CemuleApp::m_nVersionBld + 1), (uint8)(CemuleApp::m_nVersionUpd), (uint8)(CemuleApp::m_nVersionMin), (uint8)0};
 				dwResult &= 0x00FFFFFF;
 				if (dwResult > *(uint32*)abyCurVer){
+					if(theApp.IsSplash()) theApp.DestroySplash(); //Xman new slpash-screen arrangement
 					SetActiveWindow();
 #ifndef _BETA
 					Log(LOG_SUCCESS|LOG_STATUSBAR,GetResString(IDS_NEWVERSIONAVL));
@@ -3051,6 +3255,7 @@ LRESULT CemuleDlg::OnMVersionCheckResponse(WPARAM /*wParam*/, LPARAM lParam)
 				dwResult &= 0x00FFFFFF;
 				thePrefs.UpdateLastMVC();
 				if (dwResult > *(uint32*)abyCurVer){
+					if(theApp.IsSplash()) theApp.DestroySplash(); //Xman new slpash-screen arrangement
 					SetActiveWindow();
 					Log(LOG_SUCCESS|LOG_STATUSBAR,GetResString(IDS_NEWXTREMEVERSION));
 					ShowNotifier(GetResString(IDS_NEWXTREMEVERSION), TBN_NEWMVERSION);
@@ -3093,6 +3298,7 @@ LRESULT CemuleDlg::OnDLPVersionCheckResponse(WPARAM /*wParam*/, LPARAM lParam)
 				dwResult &= 0x00FFFFFF;
 				thePrefs.UpdateLastMVC();
 				if (theApp.dlp->IsDLPavailable() && dwResult > theApp.dlp->GetDLPVersion()){
+					if(theApp.IsSplash()) theApp.DestroySplash(); //Xman new slpash-screen arrangement
 					SetActiveWindow();
 					Log(LOG_SUCCESS|LOG_STATUSBAR,GetResString(IDS_NEWDLP));
 					ShowNotifier(GetResString(IDS_NEWDLP), TBN_NEWMVERSION);
@@ -3113,6 +3319,9 @@ LRESULT CemuleDlg::OnDLPVersionCheckResponse(WPARAM /*wParam*/, LPARAM lParam)
 }
 //Xman end (DLP and versionscheck)
 
+//Xman new slpash-screen arrangement
+//moved to emule.cpp
+/*
 void CemuleDlg::ShowSplash()
 {
 	//Xman Splashscreen
@@ -3124,29 +3333,18 @@ void CemuleDlg::ShowSplash()
 		{
 			ASSERT(m_hWnd);
 
-			// ==> ModID [itsonlyme/SiRoB] - Stulle
-			/*
 			if (m_pSplashWnd->Create(this,MOD_MAJOR_VERSION ,0,CSS_FADE | CSS_CENTERSCREEN | CSS_SHADOW))
-			*/
-			CString temp = _T("eMule v") + theApp.m_strCurVersionLong;
-			if (m_pSplashWnd->Create(this,temp ,0,CSS_FADE | CSS_CENTERSCREEN | CSS_SHADOW))
-			// <== ModID [itsonlyme/SiRoB] - Stulle
 			{
 				m_pSplashWnd->SetBitmap(IDB_SPLASH,0,255,0);
 				m_pSplashWnd->SetTextFont(_T("Tahoma"),155,CSS_TEXT_BOLD);
-				CRect x=CRect(75,230,325,265);
+				CRect x=CRect(10,230,210,265);
 				m_pSplashWnd->SetTextRect(x);
 				m_pSplashWnd->SetTextColor(RGB(0,0,0));
 				m_pSplashWnd->SetTextFormat(DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 				m_pSplashWnd->Show();
 				Sleep(1000);
 				m_dwSplashTime = ::GetCurrentTime();
-				// ==> ModID [itsonlyme/SiRoB] - Stulle
-				/*
 				m_pSplashWnd->SetText(MOD_VERSION);
-				*/
-				m_pSplashWnd->SetText(theApp.m_strModLongVersion);
-				// <== ModID [itsonlyme/SiRoB] - Stulle
 			}
 			else
 			{
@@ -3167,17 +3365,19 @@ void CemuleDlg::DestroySplash()
 		m_pSplashWnd = NULL;
 	}
 }
+*/
 
 LRESULT CemuleDlg::OnKickIdle(UINT /*nWhy*/, long /*lIdleCount*/)
 {
 	LRESULT lResult = 0;
 
-	if (m_pSplashWnd)
+	//Xman new slpash-screen arrangement
+	if (theApp.IsSplash() && theApp.spashscreenfinished)
 	{
-		if (::GetCurrentTime() - m_dwSplashTime > 2500)
+		if (::GetCurrentTime() - theApp.m_dwSplashTime > 3500) 
 		{
 			// timeout expired, destroy the splash window
-			DestroySplash();
+			theApp.DestroySplash();
 			UpdateWindow();
 		}
 		else
@@ -3186,6 +3386,7 @@ LRESULT CemuleDlg::OnKickIdle(UINT /*nWhy*/, long /*lIdleCount*/)
 			lResult = 1;
 		}
 	}
+	//Xman end
 
 	if (m_bStartMinimized)
 		PostStartupMinimized();
@@ -3303,7 +3504,9 @@ BOOL CemuleDlg::PreTranslateMessage(MSG* pMsg)
 {
 	BOOL bResult = CTrayDialog::PreTranslateMessage(pMsg);
 
-	if (m_pSplashWnd && m_pSplashWnd->m_hWnd != NULL &&
+	//Xman new slpash-screen arrangement
+	//if (m_pSplashWnd && m_pSplashWnd->m_hWnd != NULL &&
+	if (theApp.IsSplash() && 
 		(pMsg->message == WM_KEYDOWN	   ||
 		pMsg->message == WM_SYSKEYDOWN	   ||
 		pMsg->message == WM_LBUTTONDOWN   ||
@@ -3313,9 +3516,10 @@ BOOL CemuleDlg::PreTranslateMessage(MSG* pMsg)
 		pMsg->message == WM_NCRBUTTONDOWN ||
 		pMsg->message == WM_NCMBUTTONDOWN))
 	{
-		DestroySplash();
+		theApp.DestroySplash();
 		UpdateWindow();
 	}
+	//Xman end
 	else
 	{
 		if (pMsg->message == WM_KEYDOWN)

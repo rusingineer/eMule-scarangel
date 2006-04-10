@@ -121,7 +121,7 @@ private:
 	HTREEITEM h_total_size_left_on_drive;
 	HTREEITEM h_total_size_needed;
 
-	HTREEITEM   h_webcache,wc_data[3]; // {Webcache} [Max] 
+	HTREEITEM   h_webcache,wc_data[3]; // WebCache [WC team/MorphXT] - Stulle/Max
 
 	void SetupLegend( int ResIdx, int ElmtIdx, int legendNr);
 	void SetStatsRanges(int min, int max);

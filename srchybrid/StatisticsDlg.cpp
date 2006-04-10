@@ -134,7 +134,7 @@ void CStatisticsDlg::SetAllIcons()
 	iml.Add(CTempIconLoader(_T("StatsYear")));				// Time > Averages and Projections > Yearly
 	iml.Add(CTempIconLoader(_T("HardDisk")));				// Diskspace
 
-	iml.Add(CTempIconLoader(_T("PREF_WEBCACHE")));               // {Webcache} [Max]
+	iml.Add(CTempIconLoader(_T("PREF_WEBCACHE")));               // WebCache [WC team/MorphXT] - Stulle/Max
 
 	stattree.SetImageList(&iml, TVSIL_NORMAL);
 	imagelistStatTree.DeleteImageList();
@@ -3166,6 +3166,7 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		cbuffer.Format(_T("Leecher: %u"), theStats.leecherclients);
 		stattree.SetItemText(cligen[6], cbuffer);
 		//Xman end
+
 	}//Xman Code Improvement
 
 	} // - END CLIENTS SECTION
@@ -3307,7 +3308,7 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		stattree.SetItemText(h_total_size_left_on_drive, cbuffer);
 	}
 
-	// ==> {Webcache} [Max] 
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
 	// NOTE TO MODDERS: WEBCACHE DOWNLOADS CURRENTLY EFFECT TRANSFER RATIOS - Beware of UL:DL limits!!! relevant functions: thePrefs.GetDownData_WEBCACHE(); thePrefs.GetCumDownData_WEBCACHE();  
 	if (forceUpdate || stattree.IsExpanded(h_webcache)) 
 	{
@@ -3345,7 +3346,7 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		cbuffer.Format( _T("Successful WC-DL/WC-Requests: %u/%u (%1.1f%%)"), thePrefs.ses_successfull_WCDOWNLOADS, thePrefs.ses_WEBCACHEREQUESTS, percentSessions );
 		stattree.SetItemText( wc_data[2] , cbuffer ); // Set Succ WC Sessions
 	}
-	// <== {Webcache} [Max] 
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	// - End Set Tree Values
 
@@ -3709,7 +3710,6 @@ void CStatisticsDlg::CreateMyTree()
 	for(int i = 0; i<3; i++)
 		cligen[i] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), h_clients);
 	cligen[6] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), h_clients); //Xman Anti-Leecher
-
 	h_servers = stattree.InsertItem(GetResString(IDS_FSTAT_SERVERS),4,4);					// Servers section
 	for(int i = 0; i<6; i++)
 		srv[i] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), h_servers);		// Servers Items
@@ -3732,12 +3732,12 @@ void CStatisticsDlg::CreateMyTree()
 	h_total_size_left_on_drive=stattree.InsertItem(GetResString(IDS_DWTOT_FS),h_total_downloads);
 	h_total_size_needed=stattree.InsertItem(GetResString(IDS_DWTOT_TSN),h_total_downloads);
 
-	// ==> {Webcache} [Max] 
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
 	h_webcache = stattree.InsertItem(GetResString(IDS_STATS_WEBCACHE),18,18);		
 	wc_data[0]=stattree.InsertItem(GetResString(IDS_STATS_WEBCACHE_1),h_webcache);
 	wc_data[1]=stattree.InsertItem(GetResString(IDS_STATS_WEBCACHE_2),h_webcache);
 	wc_data[2]=stattree.InsertItem(GetResString(IDS_STATS_WEBCACHE_3),h_webcache);
-	// <== {Webcache} [Max]
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 #ifdef _DEBUG
 	if (g_pfnPrevCrtAllocHook)
@@ -3805,9 +3805,9 @@ void CStatisticsDlg::CreateMyTree()
 	stattree.SetItemState(hconn_tu, TVIS_BOLD, TVIS_BOLD);	
 	stattree.SetItemState(hconn_td, TVIS_BOLD, TVIS_BOLD);	
 	
-	// ==> {Webcache} [Max] 
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
 	stattree.SetItemState(h_webcache, TVIS_BOLD, TVIS_BOLD);
-	// <== {Webcache} [Max] 
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	
 	// Expand our purdy new tree...
 	stattree.ApplyExpandedMask(thePrefs.GetExpandedTreeItems());

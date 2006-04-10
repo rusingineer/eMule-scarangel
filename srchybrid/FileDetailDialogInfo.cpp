@@ -265,7 +265,8 @@ void CFileDetailDialogInfo::RefreshData()
 		uCompression += file->GetCompressionGain();
 		uDataRate += file->GetDownloadDatarate(); //Xman // Maella -Accurate measure of bandwidth
 		uCompleted += (uint64)file->GetCompletedSize();
-		iHashsetAvailable += (file->GetHashCount() == file->GetED2KPartHashCount()) ? 1 : 0;
+		//Xman
+		iHashsetAvailable += (file->GetHashCount() == file->GetED2KPartCount()) ? 1 : 0;	// SLUGFILLER: SafeHash - use GetED2KPartCount
 		// ==> WebCache [WC team/MorphXT] - Stulle/Max
 		uWebcacherequests += file->Webcacherequests;//jp webcache
 		uSuccessfulWebcacherequests += file->SuccessfulWebcacherequests;//jp webcache

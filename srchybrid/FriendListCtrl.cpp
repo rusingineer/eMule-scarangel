@@ -218,7 +218,7 @@ BOOL CFriendListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					CUpDownClient* chatclient = new CUpDownClient(0,cur_friend->m_nLastUsedPort,cur_friend->m_dwLastUsedIP,0,0,true);
 					chatclient->SetUserName(cur_friend->m_strName);
 					chatclient->SetUserHash(cur_friend->m_abyUserhash);
-					theApp.clientlist->AddClient(chatclient);
+					theApp.clientlist->AddClient(chatclient,true); //Xman Code Improvement don't search new generated clients in lists
 					theApp.emuledlg->chatwnd->StartSession(chatclient);
 				}
 			}
@@ -254,7 +254,7 @@ BOOL CFriendListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 				else{
 					CUpDownClient* newclient = new CUpDownClient(0,cur_friend->m_nLastUsedPort,cur_friend->m_dwLastUsedIP,0,0,true);
 					newclient->SetUserName(cur_friend->m_strName);
-					theApp.clientlist->AddClient(newclient);
+					theApp.clientlist->AddClient(newclient,true); //Xman Code Improvement don't search new generated clients in lists
 					newclient->RequestSharedFileList();
 				}
 			}

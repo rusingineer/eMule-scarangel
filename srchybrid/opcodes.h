@@ -20,12 +20,12 @@
 /*
 //Xman
 //ModID
-#define MOD_VERSION		_T("Xtreme 5.0.1") 
+#define MOD_VERSION		_T("Xtreme 5.1") 
 
 //Xman versions check
 #define MOD_MAIN_VER	5
-#define MOD_MIN_VER		0
-#define	MOD_BUILD_VER	2 //1=Xtreme x.x 2=Xtreme x.x.1
+#define MOD_MIN_VER		1
+#define	MOD_BUILD_VER	1 //1=Xtreme x.x 2=Xtreme x.x.1
 
 //Xman Anti-Leecher: simple Anti-Thief
 #define MOD_MAJOR_VERSION _T("eMule v0.47a") 
@@ -36,8 +36,8 @@
 
 //Xman versions check
 #define MOD_MAIN_VER	5
-#define MOD_MIN_VER		0
-#define	MOD_BUILD_VER	2 //1=Xtreme x.x 2=Xtreme x.x.1
+#define MOD_MIN_VER		1
+#define	MOD_BUILD_VER	1 //1=Xtreme x.x 2=Xtreme x.x.1
 
 //Xman Links:
 #define MOD_HPLINK _T("http://xtreme-mod.net")
@@ -151,7 +151,7 @@
 #define MINWAIT_BEFORE_DLDISPLAY_WINDOWUPDATE   1000
 #define MINWAIT_BEFORE_ULDISPLAY_WINDOWUPDATE   1000
 #define CLIENTBANTIME			HR2MS(4)	// 2h //Xman changed to 4 hours
-#define TRACKED_CLEANUP_TIME	HR2MS(1)	// 1 hour
+#define TRACKED_CLEANUP_TIME	MIN2MS(30)	// 1 hour //Xman changed to 30 minutes
 #define KEEPTRACK_TIME			HR2MS(2)	// 2h	//how long to keep track of clients which were once in the uploadqueue
 #define LOCALSERVERREQUESTS		20000		// only one local src request during this timespan (WHERE IS THIS USED?)
 #define DISKSPACERECHECKTIME	MIN2MS(15)
@@ -563,6 +563,7 @@
 #define TIMER_PERIOD			100			// base period in [ms] (emule default is 100 [ms])
 #endif
 #define DISPLAY_REFRESH			1			// GUI refresh rate in [s] (emule default is 3 [s])
+#define DISPLAY_REFRESH_CLIENTLIST			3*DISPLAY_REFRESH //GUI clientlist refresh
 #define XTREME_MAX_SLOTSPEED	15
 // Maella end
 

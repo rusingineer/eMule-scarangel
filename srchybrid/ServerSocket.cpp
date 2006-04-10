@@ -527,7 +527,7 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 					else
 					{
 						client = new CUpDownClient(0,nPort,dwIP,0,0,true);
-						theApp.clientlist->AddClient(client);
+						theApp.clientlist->AddClient(client,true); //Xman Code Improvement don't search new generated clients in lists
 						client->TryToConnect();
 					}
 				}

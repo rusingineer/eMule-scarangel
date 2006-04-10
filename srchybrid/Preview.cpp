@@ -59,6 +59,13 @@ BOOL CPreviewThread::InitInstance()
 
 BOOL CPreviewThread::Run()
 {
+	//Xman
+	// BEGINSLUGFILLER: SafeHash
+	CReadWriteLock lock(&theApp.m_threadlock);
+	if (!lock.ReadLock(0))
+		return 0;
+	// END SLUGFILLER: SafeHash
+
 	ASSERT (m_pPartfile) ;
 	CFile destFile;
 	CFile srcFile;

@@ -287,7 +287,7 @@ void CClientReqSocket::Disconnect(LPCTSTR pszReason, CUpDownClient::UpStopReason
 void CClientReqSocket::Delete_Timed(){
 // it seems that MFC Sockets call socketfunctions after they are deleted, even if the socket is closed
 // and select(0) is set. So we need to wait some time to make sure this doesn't happens
-	if (::GetTickCount() - deltimer > 10000)
+	if (::GetTickCount() - deltimer > 14000) //Xman changed from 10 to 14 seconds = ~ 15 sec
 		delete this;
 }
 
@@ -412,7 +412,7 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 					}
 					else 
 					{
-						theApp.clientlist->AddClient(client);
+						theApp.clientlist->AddClient(client, bNewClient ? true : false); //Xman Code Improvement don't search new generated clients in lists
 						client->SetCommentDirty();
 						client->ProcessBanMessage(); //Xman Anti-Leecher
 					}
@@ -492,6 +492,7 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 							break;
 						}
 
+
 						// if we are downloading this file, this could be a new source
 						// no passive adding of files with only one part
 						if (reqfile->IsPartFile() && reqfile->GetFileSize() > (uint64)PARTSIZE)
@@ -499,7 +500,6 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 							if (((CPartFile*)reqfile)->GetMaxSources() > ((CPartFile*)reqfile)->GetSourceCount() && ((CPartFile*)reqfile)->IsGlobalSourceAddAllowed()==true) //Xman GlobalMaxHarlimit for fairness
 								theApp.downloadqueue->CheckAndAddKnownSource((CPartFile*)reqfile, client, true);
 						}
-
 
 
 						// send filename etc
@@ -805,6 +805,9 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 							}
 						}
 					}
+					//Xman for SiRoB: ReadBlockFromFileThread
+					if(client->GetUploadState() == US_UPLOADING)
+						client->CreateNextBlockPackage();
 					break;
 				}
 				case OP_CANCELTRANSFER:
@@ -998,7 +1001,9 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 					}
 					else
 					{
-						AddLogLine(true, GetResString(IDS_REQ_SHAREDFILES), client->GetUserName(), client->GetUserIDHybrid(), GetResString(IDS_DENIED));
+						//Xman show his IP
+						CString buffer(CString(client->GetUserName()) + _T(" [") + client->GetUserIPString() + _T("]"));
+						AddLogLine(true, GetResString(IDS_REQ_SHAREDFILES), buffer, client->GetUserIDHybrid(), GetResString(IDS_DENIED));
 					}
 
 					// now create the memfile for the packet
@@ -1450,13 +1455,17 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 						client->SetWaitStartTime();
 					*/
 					// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
+					
+					//Xman Code Improvement: Add passive source after we evaluated OP_REQUESTFILENAME
 					// if we are downloading this file, this could be a new source
 					// no passive adding of files with only one part
+					/*
 					if (reqfile->IsPartFile() && reqfile->GetFileSize() > (uint64)PARTSIZE)
 					{
 						if (((CPartFile*)reqfile)->GetMaxSources() > ((CPartFile*)reqfile)->GetSourceCount() && ((CPartFile*)reqfile)->IsGlobalSourceAddAllowed()==true) //Xman GlobalMaxHarlimit for fairness
 							theApp.downloadqueue->CheckAndAddKnownSource((CPartFile*)reqfile, client, true);
 					}
+					*/
 					// check to see if this is a new file they are asking for
 					if (md4cmp(client->GetUploadFileID(), reqfilehash) != 0)
 						client->SetCommentDirty();
@@ -1489,6 +1498,17 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 									bAnswerFNF = true;
 									break;
 								}
+								
+								//Xman Code Improvement: Add passive source after we evaluated OP_REQUESTFILENAME
+								// if we are downloading this file, this could be a new source
+								// no passive adding of files with only one part
+								if (reqfile->IsPartFile() && reqfile->GetFileSize() > (uint64)PARTSIZE)
+								{
+									if (((CPartFile*)reqfile)->GetMaxSources() > ((CPartFile*)reqfile)->GetSourceCount() && ((CPartFile*)reqfile)->IsGlobalSourceAddAllowed()==true) //Xman GlobalMaxHarlimit for fairness
+										theApp.downloadqueue->CheckAndAddKnownSource((CPartFile*)reqfile, client, true);
+								}
+								//Xman end
+
 								data_out.WriteUInt8(OP_REQFILENAMEANSWER);
 								data_out.WriteString(reqfile->GetFileName(), client->GetUnicodeSupport());
 								break;
@@ -1667,10 +1687,37 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 					//Make sure we are downloading this file.
 					if (reqfile==NULL){
 						client->CheckFailedFileIdReqs(reqfilehash);
+						//Xman Code Fix
+						//following situation: we are downloading a cue file (100 bytes) from many sources
+						//this file will be finished earlier than our sources are answering
+						//throwing an exception will filter good sources
+						//swapping can't be done at this point, so I let it just timeout.
+						CKnownFile* reqfiletocheck = theApp.sharedfiles->GetFileByID(reqfilehash);
+						if(reqfiletocheck!=NULL)
+						{
+							
+							AddDebugLogLine(false, _T("client send NULL reqfile: %s"), client->DbgGetClientInfo());
+							break;
+						}
+						else
 						throw GetResString(IDS_ERR_WRONGFILEID) + _T(" (OP_MULTIPACKETANSWER; reqfile==NULL)");
+						//Xman end
 					}
 					if (client->GetRequestFile()==NULL)
-						throw GetResString(IDS_ERR_WRONGFILEID) + _T(" (OP_MULTIPACKETANSWER; client->GetRequestFile()==NULL)");
+					{
+						//Xman Code Fix
+						CKnownFile* reqfiletocheck = theApp.sharedfiles->GetFileByID(client->GetRequestFile()->GetFileHash());
+						if(reqfiletocheck!=NULL)
+						{
+
+							AddDebugLogLine(false, _T("client has NULL reqfile: %s"), client->DbgGetClientInfo());
+							break;
+						}
+						else
+							throw GetResString(IDS_ERR_WRONGFILEID) + _T(" (OP_MULTIPACKETANSWER; client->GetRequestFile()==NULL)");
+						//Xman end
+						
+					}
 					if (reqfile != client->GetRequestFile())
 						throw GetResString(IDS_ERR_WRONGFILEID) + _T(" (OP_MULTIPACKETANSWER; reqfile!=client->GetRequestFile())");
 					uint8 opcode_in;
@@ -2391,6 +2438,9 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 							}
 						}
 					}
+					//Xman for SiRoB: ReadBlockFromFileThread
+					if(client->GetUploadState() == US_UPLOADING)
+						client->CreateNextBlockPackage();
 					break;
 				}
 				case OP_COMPRESSEDPART:

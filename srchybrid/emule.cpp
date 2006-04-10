@@ -19,7 +19,6 @@
 #include <crtdbg.h>
 #endif
 #include "stdafx.h"
-
 #include <locale.h>
 #include <io.h>
 #include <share.h>
@@ -79,6 +78,8 @@
 #include "BandWidthControl.h" // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 #include "DLP.h" //Xman DLP
 #include "P2PThreat.h" // netfinity: Detect worms that are harmful to P2P apps
+//Xman new slpash-screen arrangement
+#include "SplashScreenEx.h"
 // ==> WebCache [WC team/MorphXT] - Stulle/Max
 #include "WebCache/WebCache.h" // jp detect webcache on startup
 #include "WebCache/WebCacheMFRList.h"	// Superlexx - MFR
@@ -224,6 +225,8 @@ CemuleApp::CemuleApp(LPCTSTR lpszAppName)
 	m_sizSmallSystemIcon.cx = 16;
 	m_sizSmallSystemIcon.cy = 16;
 	m_iDfltImageListColorFlags = ILC_COLOR;
+
+	m_pSplashWnd = NULL; //Xman new slpash-screen arrangement
 
 	//Xman dynamic IP-Filters
 	ipdlgisopen=false;
@@ -495,6 +498,38 @@ BOOL CemuleApp::InitInstance()
 	thePrefs.Init();
 	theStats.Init();
 
+	//Xman new slpash-screen arrangement
+	m_dwSplashTime = (DWORD)-1;
+	{
+		//use temporary variables to determine if we should show the splash
+		bool bStartMinimized = thePrefs.GetStartMinimized();
+		if (!bStartMinimized)
+			bStartMinimized = theApp.DidWeAutoStart();
+
+		// temporary disable the 'startup minimized' option, otherwise no window will be shown at all
+		if (thePrefs.IsFirstStart())
+			bStartMinimized = false;
+
+		// show splashscreen as early as possible to "entertain" user while starting emule up
+		if (thePrefs.UseSplashScreen() && !bStartMinimized)
+		{
+			//Xman final version: don't show splash on old windows->crash
+			switch (thePrefs.GetWindowsVersion())
+			{
+				case _WINVER_98_:
+				case _WINVER_95_:	
+				case _WINVER_ME_:
+					break;
+				default:
+					ShowSplash(true);
+			}
+		}
+	}
+
+	UpdateSplash(_T("Loading ...")); 
+	//Xman end
+
+
 	// check if we have to restart eMule as Secure user
 	if (thePrefs.IsRunAsUserEnabled()){
 		CSecRunAsUser rau;
@@ -594,6 +629,7 @@ BOOL CemuleApp::InitInstance()
 		}
 	}
 
+	UpdateSplash(_T("Loading bandwidthcontrol ...")); //Xman new slpash-screen arrangement
 
 	// ZZ:UploadSpeedSense -->
     //Xman
@@ -605,9 +641,11 @@ BOOL CemuleApp::InitInstance()
 	// ZZ:UploadSpeedSense <--
 	//Xman end
 
-
+	UpdateSplash(_T("Loading DLP ...")); //Xman new slpash-screen arrangement
 	dlp = new CDLP(thePrefs.GetAppDir()); //Xman DLP
+	UpdateSplash(_T("Loading IP to Country ...")); //Xman new slpash-screen arrangement
 	ip2country = new CIP2Country(); //EastShare - added by AndCycle, IP to Country
+	UpdateSplash(_T("Loading lists ...")); //Xman new slpash-screen arrangement
 	clientlist = new CClientList();
 	friendlist = new CFriendList();
 	searchlist = new CSearchList();
@@ -617,9 +655,12 @@ BOOL CemuleApp::InitInstance()
 	sharedfiles = new CSharedFileList(serverconnect);
 	listensocket = new CListenSocket();
 	clientudp	= new CClientUDPSocket();
+	UpdateSplash(_T("Loading credits ...")); //Xman new slpash-screen arrangement
 	clientcredits = new CClientCreditsList();
+	UpdateSplash(_T("Loading queues ...")); //Xman new slpash-screen arrangement
 	downloadqueue = new CDownloadQueue();	// bugfix - do this before creating the uploadqueue
 	uploadqueue = new CUploadQueue();
+	UpdateSplash(_T("Loading IPfilter ...")); //Xman new slpash-screen arrangement
 	ipfilter 	= new CIPFilter();
 	webserver = new CWebServer(); // Webserver [kuchin]
 	mmserver = new CMMServer();
@@ -627,6 +668,13 @@ BOOL CemuleApp::InitInstance()
 	m_pPeerCache = new CPeerCacheFinder();
 	
 	thePerfLog.Startup();
+
+	//Xman don't overwrite bak files if last sessions crashed
+	thePrefs.m_this_session_aborted_in_an_unnormal_way=true;
+	thePrefs.Save();
+	//Xman end
+
+	UpdateSplash(_T("initializing  main-window ...")); //Xman new slpash-screen arrangement
 	dlg.DoModal();
 
 
@@ -654,6 +702,8 @@ BOOL CemuleApp::InitInstance()
 
 	ClearDebugLogQueue(true);
 	ClearLogQueue(true);
+
+	DestroySplash(); //Xman new slpash-screen arrangement
 
 	AddDebugLogLine(DLP_VERYLOW, _T("%hs: returning: FALSE"), __FUNCTION__);
 	return FALSE;
@@ -1289,7 +1339,7 @@ void CemuleApp::SetPublicIP(const uint32 dwIP){
 		{
 			uint32 test=dwIP;
 			CString tmp;
-			tmp.Format(_T("new IP detected: %u.%u.%u.%u, NAFC-Adapter will be checked"), (uint8)test, (uint8)(test>>8), (uint8)(test>>16), (uint8)(test>>24));
+			tmp.Format(_T("received an IP: %u.%u.%u.%u, NAFC-Adapter will be checked"), (uint8)test, (uint8)(test>>8), (uint8)(test>>16), (uint8)(test>>24));
 			AddLogLine(false,tmp);
 			theApp.pBandWidthControl->checkAdapterIndex(dwIP);
 		}
@@ -2023,3 +2073,70 @@ void CemuleApp::UpdateDesktopColorDepth()
 	// Doesn't help..
 	//m_aExtToSysImgIdx.RemoveAll();
 }
+
+//Xman new slpash-screen arrangement
+void CemuleApp::ShowSplash(bool start)
+{
+	ASSERT( m_pSplashWnd == NULL );
+	if (m_pSplashWnd == NULL)
+	{
+		m_pSplashWnd = new CSplashScreenEx();
+		if (m_pSplashWnd != NULL)
+		{
+
+			// ==> ModID [itsonlyme/SiRoB] - Stulle
+			/*
+			if (m_pSplashWnd->Create(NULL,MOD_MAJOR_VERSION ,0,CSS_FADE | CSS_CENTERSCREEN | CSS_SHADOW | CSS_HIDEONCLICK))
+			*/
+			CString temp = _T("eMule v") + theApp.m_strCurVersionLong;
+			if (m_pSplashWnd->Create(NULL,temp ,0,CSS_FADE | CSS_CENTERSCREEN | CSS_SHADOW | CSS_HIDEONCLICK))
+			// <== ModID [itsonlyme/SiRoB] - Stulle
+			{
+				m_pSplashWnd->SetBitmap(IDB_SPLASH,0,255,0);
+				m_pSplashWnd->SetTextFont(_T("Tahoma"),155,CSS_TEXT_BOLD);
+				//CRect x=CRect(10,230,210,265);
+				// ==> changed - Stulle
+				/*
+				CRect x=CRect(10,230,210,248);
+				*/
+				CRect x=CRect(75,230,325,248);
+				// <== changed - Stulle
+				m_pSplashWnd->SetTextRect(x);
+				m_pSplashWnd->SetTextColor(RGB(0,0,0));
+				m_pSplashWnd->SetTextFormat(DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+				m_pSplashWnd->Show();
+				spashscreenfinished=false;
+				if(start) Sleep(1000);
+				m_dwSplashTime = ::GetCurrentTime();
+				// ==> ModID [itsonlyme/SiRoB] - Stulle
+				/*
+				m_pSplashWnd->SetText(MOD_VERSION);
+				*/
+				m_pSplashWnd->SetText(theApp.m_strModLongVersion);
+				// <== ModID [itsonlyme/SiRoB] - Stulle
+			}
+			else
+			{
+				delete m_pSplashWnd;
+				m_pSplashWnd = NULL;
+				spashscreenfinished=true;
+			}
+		}
+	}
+}
+void CemuleApp::DestroySplash()
+{
+	if (m_pSplashWnd != NULL)
+	{
+		m_pSplashWnd->DestroyWindow();
+		m_pSplashWnd->Hide();
+		delete m_pSplashWnd;
+		m_pSplashWnd = NULL;
+	}
+	spashscreenfinished=true;
+}
+void CemuleApp::UpdateSplash(LPCTSTR Text){
+	if(m_pSplashWnd)
+		m_pSplashWnd->SetText2(Text);
+}
+//Xman end

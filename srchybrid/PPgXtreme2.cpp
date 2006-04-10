@@ -11,7 +11,6 @@
 #include "opcodes.h"
 #include "DLP.h" //Xman DLP
 
-
 // CPPgXtreme dialog
 #ifdef _DEBUG
 #define new DEBUG_NEW

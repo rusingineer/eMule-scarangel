@@ -42,7 +42,14 @@ class CtrlItem_Struct : public CObject
 	DECLARE_DYNAMIC(CtrlItem_Struct)
 
 public:
+
+#ifdef PRINT_STATISTIC
+	static uint32	amount;
+	CtrlItem_Struct()	{amount++;}
+	~CtrlItem_Struct() { status.DeleteObject(); amount--;}
+#else
 	~CtrlItem_Struct() { status.DeleteObject(); }
+#endif
 
 	ItemType         type;
 	CPartFile*       owner;
@@ -113,6 +120,10 @@ public:
 
 	//Xman Xtreme Downloadmanager
 	void    StopSingleClient (CUpDownClient* single);	
+
+#ifdef PRINT_STATISTIC
+	void	PrintStatistic();
+#endif
 
 protected:
 	CImageList  m_ImageList;

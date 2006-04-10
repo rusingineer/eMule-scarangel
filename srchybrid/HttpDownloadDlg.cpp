@@ -346,6 +346,13 @@ UINT AFX_CDECL CHttpDownloadDlg::_DownloadThread(LPVOID pParam)
 {
 	DbgSetThreadName("HttpDownload");
 	InitThreadLocale();
+	//Xman
+	// BEGIN SLUGFILLER: SafeHash
+	CReadWriteLock lock(&theApp.m_threadlock);
+	if (!lock.ReadLock(0))
+		return 0;
+	// END SLUGFILLER: SafeHash
+
 	//Convert from the SDK world to the C++ world
 	CHttpDownloadDlg* pDlg = (CHttpDownloadDlg*) pParam;
 	ASSERT(pDlg);

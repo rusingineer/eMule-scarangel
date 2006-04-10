@@ -94,8 +94,8 @@ void CUploadListCtrl::Init()
 	InsertColumn(5,GetResString(IDS_UPLOADTIME),LVCFMT_LEFT,60,5);
 	InsertColumn(6,GetResString(IDS_STATUS),LVCFMT_LEFT,110,6);
 	InsertColumn(7,GetResString(IDS_UPSTATUS),LVCFMT_LEFT,100,7);
-	InsertColumn(8,	GetResString(IDS_CD_CSOFT), LVCFMT_LEFT, 90);	//Xman version see clientversion in every window
-	InsertColumn(9, GetResString(IDS_UPDOWNUPLOADLIST), LVCFMT_LEFT, 90); //Xman show complete up/down in uploadlist
+	InsertColumn(8,	GetResString(IDS_CD_CSOFT), LVCFMT_LEFT, 90, 8);	//Xman version see clientversion in every window
+	InsertColumn(9, GetResString(IDS_UPDOWNUPLOADLIST), LVCFMT_LEFT, 90, 9); //Xman show complete up/down in uploadlist
 	
 
 	SetAllIcons();
@@ -441,7 +441,7 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					if(theApp.ip2country->ShowCountryFlag() ){
 						cur_rec.left+=20;
 						POINT point2= {cur_rec.left,cur_rec.top+1};
-						theApp.ip2country->GetFlagImageList()->DrawIndirect(dc, client->GetCountryFlagIndex(), point2, CSize(18,16), CPoint(0,0), ILD_NORMAL);
+						theApp.ip2country->GetFlagImageList()->Draw(dc, client->GetCountryFlagIndex(), point2, ILD_NORMAL);
 					}
 					//EastShare End - added by AndCycle, IP to Country
 

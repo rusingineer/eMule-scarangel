@@ -19,6 +19,10 @@
 	#error include 'stdafx.h' before including this file for PCH
 #endif
 #include "resource.h"
+//Xman
+#include "ReadWriteLock.h"	// SLUGFILLER: SafeHash
+#include "Version.h"		// netfinity: Mod version
+
 #include ".\SysInfo\SystemInfo.h" // CPU/MEM usage [$ick$/Stulle] - Max 
 
 #define	DEFAULT_NICK		_T("ScarAngel @ http://scarangel.sourceforge.net")
@@ -56,6 +60,7 @@ struct SLogItem;
 
 class CIP2Country; //EastShare - added by AndCycle, IP to Country
 class CDLP;	//Xman DLP
+class CSplashScreenEx; //Xman new slpash-screen arrangement
 
 class CSystemInfo;  // CPU/MEM usage [$ick$/Stulle] - Max 
 
@@ -99,6 +104,8 @@ public:
 	CBandWidthControl*	pBandWidthControl;
 	// Maella end
 
+	CSplashScreenEx*	m_pSplashWnd; //Xman new slpash-screen arrangement
+
 	//Xman dynamic IP-Filters
 	bool				ipdlgisopen;
 
@@ -128,6 +135,8 @@ public:
 	ULONGLONG			m_ullComCtrlVer;
 	AppState			m_app_state; // defines application state for shutdown 
 	CMutex				hashing_mut;
+	//Xman
+	CReadWriteLock		m_threadlock;	// SLUGFILLER: SafeHash - This will ensure eMule goes last
 	CString*			pstrPendingLink;
 	COPYDATASTRUCT		sendstruct;
 
@@ -139,6 +148,16 @@ public:
 	//Xman [MoNKi: -Check already downloaded files-]
 	void		AddEd2kLinksToDownload(CString strLinks, int cat, bool askIfAlreadyDownloaded = false);
 	//Xman end
+
+	//Xman new slpash-screen arrangement
+	void			ShowSplash(bool start=false);
+	void			UpdateSplash(LPCTSTR Text);
+	void			DestroySplash();
+	bool			IsSplash()			{ return (m_pSplashWnd != NULL); }
+	bool			spashscreenfinished;
+	uint32			m_dwSplashTime;
+	//Xman end
+
 	void		SearchClipboard();
 	void		IgnoreClipboardLinks(CString strLinks) {m_strLastClipboardContents = strLinks;}
 	void		PasteClipboard(int cat = 0);

@@ -129,6 +129,9 @@ void CDownloadQueue::Init(){
 	int count = 0;
 
 	for (int i=0;i<thePrefs.tempdir.GetCount();i++) {
+		//Xman
+		CStringList metsfound;	// SLUGFILLER: SafeHash - ensure each met is loaded once per tempdir
+
 		CString searchPath=thePrefs.GetTempDir(i);
 
 		searchPath += _T("\\*.part.met");
@@ -139,12 +142,22 @@ void CDownloadQueue::Init(){
 			end = !ff.FindNextFile();
 			if (ff.IsDirectory())
 				continue;
+			//Xman
+			// BEGIN SLUGFILLER: SafeHash - one is enough
+			if (metsfound.Find(CString(ff.GetFileName()).MakeLower()))
+				continue;
+			metsfound.AddTail(CString(ff.GetFileName()).MakeLower());
+			// END SLUGFILLER: SafeHash
 			CPartFile* toadd = new CPartFile();
 			if (toadd->LoadPartFile(thePrefs.GetTempDir(i), ff.GetFileName())){
 				count++;
 				filelist.AddTail(toadd);			// to downloadqueue
+				//Xman
+				// SLUGFILLER: SafeHash remove - part files are shared later
+				/*
 				if (toadd->GetStatus(true) == PS_READY)
 					theApp.sharedfiles->SafeAddKFile(toadd); // part files are always shared files
+				*/
 				theApp.emuledlg->transferwnd->downloadlistctrl.AddFile(toadd);// show in downloadwindow
 			}
 			else
@@ -159,13 +172,24 @@ void CDownloadQueue::Init(){
 			end = !ff.FindNextFile();
 			if (ff.IsDirectory())
 				continue;
+			//Xman
+			// BEGIN SLUGFILLER: SafeHash - one is enough
+			if (metsfound.Find(RemoveFileExtension(CString(ff.GetFileName()).MakeLower())))
+				continue;
+			metsfound.AddTail(RemoveFileExtension(CString(ff.GetFileName()).MakeLower()));
+			// END SLUGFILLER: SafeHash
+
 			CPartFile* toadd = new CPartFile();
 			if (toadd->LoadPartFile(thePrefs.GetTempDir(i),ff.GetFileName())){
 				toadd->SavePartFile(); // resave backup
 				count++;
 				filelist.AddTail(toadd);			// to downloadqueue
+				//Xman
+				// SLUGFILLER: SafeHash remove - part files are shared later
+				/*
 				if (toadd->GetStatus(true) == PS_READY)
 					theApp.sharedfiles->SafeAddKFile(toadd); // part files are always shared files
+				*/
 				theApp.emuledlg->transferwnd->downloadlistctrl.AddFile(toadd);// show in downloadwindow
 
 				AddLogLine(false, GetResString(IDS_RECOVERED_PARTMET), toadd->GetFileName());
@@ -716,6 +740,24 @@ bool CDownloadQueue::IsPartFile(const CKnownFile* file) const
 	}
 	return false;
 }
+
+//Xman
+// BEGIN SLUGFILLER: SafeHash
+bool CDownloadQueue::IsTempFile(const CString& , const CString& rstrName) const
+{
+	// do not share a part file from the temp directory, if there is still a corresponding entry in
+	// the download queue -- because that part file is not yet complete.
+	CString othername = rstrName + _T(".met");
+	for (POSITION pos = filelist.GetHeadPosition();pos != 0;){
+		CPartFile* cur_file = filelist.GetNext(pos);
+		if (!othername.CompareNoCase(cur_file->GetPartMetFileName()))
+			return true;
+	}
+
+	return false;
+}
+// END SLUGFILLER: SafeHash
+
 
 //Xman Xtreme Downloadmanager
 bool CDownloadQueue::CheckAndAddSource(CPartFile* sender,CUpDownClient* source){
@@ -2236,6 +2278,35 @@ void CDownloadQueue::CompDownloadRate(){
 	}
 }
 // Maella end
+
+#ifdef PRINT_STATISTIC
+void CDownloadQueue::PrintStatistic()
+{
+	uint32 Savedsources=0;
+	uint32 Gaplist=0;
+	uint32 Requestedblocklist=0;
+	uint32 SrcpartFrequency=0;
+	uint32 BufferedData=0;
+	uint32 A4AFsrclist=0;
+	for (POSITION pos = filelist.GetHeadPosition(); pos != 0; ){
+		CPartFile* cur_file = filelist.GetNext(pos);
+		Savedsources += cur_file->GetSavedSources();
+		Gaplist += cur_file->GetGapList();
+		Requestedblocklist += cur_file->GetRequestedBlocklist();
+		SrcpartFrequency += cur_file->GetSrcpartFrequency();
+		BufferedData += cur_file->GetBufferedData();
+		A4AFsrclist += cur_file->GetA4AFsrclist();
+	}
+	AddLogLine(false, _T("sum of all paartfiles at downloadqueue:"));
+	AddLogLine(false, _T("Savedsources: %u"), Savedsources);
+	AddLogLine(false, _T("Gaplist: %u"), Gaplist);
+	AddLogLine(false, _T("Requestedblocklist: %u"), Requestedblocklist);
+	AddLogLine(false, _T("SrcpartFrequency: %u"), SrcpartFrequency);
+	AddLogLine(false, _T("BufferedData: %u"), BufferedData);
+	AddLogLine(false, _T("A4AFsrclist: %u"), A4AFsrclist);
+	AddLogLine(false, _T("---------------------------------------"));
+}
+#endif
 
 // ==> file settings - Stulle
 void CDownloadQueue::InitTempVariables(CPartFile* file)

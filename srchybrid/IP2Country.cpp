@@ -17,7 +17,7 @@ the IP to country data is provided by http://ip-to-country.webhosting.info/
 #include "emule.h"
 #include "otherfunctions.h"
 #include <flag/resource.h>
-#include "log.h"
+#include "Log.h"
 #include "Preferences.h" //Xman
 
 //refresh list
@@ -40,6 +40,9 @@ static char THIS_FILE[] = __FILE__;
 
 // N/A flag is the first Res, so it should at index zero
 #define NO_FLAG 0
+
+CImageList CIP2Country::CountryFlagImageList;
+IPRange_Struct2 CIP2Country::defaultIP2Country;
 
 void FirstCharCap(CString *pstrTarget)
 {
@@ -64,8 +67,8 @@ CIP2Country::CIP2Country(){
 	defaultIP2Country.IPstart = 0;
 	defaultIP2Country.IPend = 0;
 
-	defaultIP2Country.ShortCountryName = GetResString(IDS_IP2COUNTRY_NASHORT);
-	defaultIP2Country.MidCountryName = GetResString(IDS_IP2COUNTRY_NASHORT);
+	//defaultIP2Country.ShortCountryName = GetResString(IDS_IP2COUNTRY_NASHORT);
+	//defaultIP2Country.MidCountryName = GetResString(IDS_IP2COUNTRY_NASHORT);
 	defaultIP2Country.LongCountryName = GetResString(IDS_IP2COUNTRY_NALONG);
 
 	defaultIP2Country.FlagIndex = NO_FLAG;
@@ -97,6 +100,7 @@ void CIP2Country::Load(){
 	EnableIP2Country = LoadFromFile();
 
 	//if(m_bRunning) Reset(); //Xman not needed
+	CountryIDtoFlagIndex.RemoveAll(); //Xman after loading /mapping we don't need it anymore
 
 	AddLogLine(false, GetResString(IDS_IP2COUNTRY_LOADED));
 }
@@ -207,7 +211,8 @@ bool CIP2Country::LoadFromFile(){
 				{
 					IPRange_Struct2* pCur = m_iplist[i];
 					if (   pCur->IPstart >= pPrv->IPstart && pCur->IPstart <= pPrv->IPend	 // overlapping
-						|| pCur->IPstart == pPrv->IPend+1 && pCur->ShortCountryName == pPrv->ShortCountryName) // adjacent
+						//Xman: Xtreme only uses the long names... use it here too
+						|| pCur->IPstart == pPrv->IPend+1 && pCur->LongCountryName == pPrv->LongCountryName) // adjacent
 					{
 						if (pCur->IPstart != pPrv->IPstart || pCur->IPend != pPrv->IPend) // don't merge identical entries
 						{
@@ -345,7 +350,7 @@ bool CIP2Country::LoadCountryFlagLib(){
 			IDI_COUNTRY_FLAG_CS, //by propaganda
 			IDI_COUNTRY_FLAG_TP, //by commander
 
-			65535//the end
+			242//the end ->242 used country-flags
 		};
 
 		CString countryID[] = {
@@ -378,16 +383,18 @@ bool CIP2Country::LoadCountryFlagLib(){
 		CountryFlagImageList.Create(18,16,theApp.m_iDfltImageListColorFlags|ILC_MASK,0,1);
 		CountryFlagImageList.SetBkColor(CLR_NONE);
 
+		//Xman Code Improcement
 		//the res Array have one element to be the STOP
-		for(UINT cur_pos = 0; resID[cur_pos] != 65535; cur_pos++){
-			#pragma warning(disable:4244) //Xman
+		uint16 elemens=sizeof(countryID)/sizeof(CString);
+		//for(uint16 cur_pos = 0; resID[cur_pos] != 242; cur_pos++){
+		for(uint16 cur_pos = 0; cur_pos < elemens; cur_pos++){
 			CountryIDtoFlagIndex.SetAt(countryID[cur_pos], cur_pos);
-			#pragma warning(default:4244) //Xman
 			iconHandle = LoadIcon(_hCountryFlagDll, MAKEINTRESOURCE(resID[cur_pos]));
 			if(iconHandle == NULL) throw CString(GetResString(IDS_IP2COUNTRY_ERROR5));
 			
 			CountryFlagImageList.Add(iconHandle);
 		}
+		//Xman end
 	
 
 	}
@@ -427,12 +434,12 @@ void CIP2Country::RemoveAllFlags(){
 	AddLogLine(false, GetResString(IDS_IP2COUNTRY_FLAGUNLD));
 }
 
-void CIP2Country::AddIPRange(uint32 IPfrom,uint32 IPto, TCHAR* shortCountryName, TCHAR* midCountryName, TCHAR* longCountryName){
+void CIP2Country::AddIPRange(uint32 IPfrom,uint32 IPto, TCHAR* shortCountryName, TCHAR* /*midCountryName*/, TCHAR* longCountryName){
 	IPRange_Struct2* newRange = new IPRange_Struct2();
 	newRange->IPstart = IPfrom;
 	newRange->IPend = IPto;
-	newRange->ShortCountryName = shortCountryName;
-	newRange->MidCountryName = midCountryName;
+	//newRange->ShortCountryName = shortCountryName;
+	//newRange->MidCountryName = midCountryName;
 	newRange->LongCountryName = longCountryName;
 
 	if(EnableCountryFlag){
@@ -467,7 +474,8 @@ static int __cdecl CmpIP2CountryByAddr(const void* pvKey, const void* pvElement)
 	return 0;
 }
 
-struct IPRange_Struct2* CIP2Country::GetCountryFromIP(uint32 ClientIP){
+struct IPRange_Struct2* CIP2Country::GetCountryFromIP(uint32 ClientIP) const
+{
 
 	if(EnableIP2Country == false || ClientIP == 0){
 		return &defaultIP2Country;
@@ -505,7 +513,8 @@ CString CIP2Country::GetCountryNameFromRef(IPRange_Struct2* m_structCountry, boo
 		return GetResString(IDS_DISABLED);	
 	return _T("");
 }
-bool CIP2Country::ShowCountryFlag(){
+bool CIP2Country::ShowCountryFlag() const
+{
 
 	return 
 		//user wanna see flag,

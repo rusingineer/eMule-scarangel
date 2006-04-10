@@ -1301,7 +1301,9 @@ void CMuleListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct) {
 			pDC->FrameRect(rcHighlight, &CBrush(m_crFocusLine));
 	}
 
-	pDC->Flush();
+	//Xman Code Improvement
+	//not needed
+	//pDC->Flush();
 	if (m_crWindowTextBk == CLR_NONE)
 		pDC->SetBkMode(iOldBkMode);
 	pDC->SelectObject(pOldFont);

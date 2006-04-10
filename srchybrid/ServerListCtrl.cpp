@@ -1049,7 +1049,6 @@ void CServerListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 		//it's our server
 		GetFont()->GetLogFont(&lfFont);
 		lfFont.lfWeight = FW_BOLD;
-		CFont fontBold;
 		fontCustom.CreateFontIndirect(&lfFont);
 		dc.SelectObject(&fontCustom);
 		dc->SetTextColor(RGB(0,0,192));
@@ -1101,7 +1100,7 @@ void CServerListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 					POINT point2= {cur_rec.left,cur_rec.top+1};
 					if(theApp.ip2country->ShowCountryFlag() ){
-						theApp.ip2country->GetFlagImageList()->DrawIndirect(dc, server->GetCountryFlagIndex(), point2, CSize(18,16), CPoint(0,0), ILD_NORMAL);
+						theApp.ip2country->GetFlagImageList()->Draw(dc, server->GetCountryFlagIndex(), point2, ILD_NORMAL);
 					}
 					else
 						imagelist.DrawIndirect(dc, 0, point2, CSize(16,16), CPoint(0,0), ILD_NORMAL);
@@ -1244,9 +1243,11 @@ void CServerListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			else
 				dc->FrameRect(&outline_rec, &CBrush(m_crNoFocusLine));
 		}
+
 		if (m_crWindowTextBk == CLR_NONE)
 			dc.SetBkMode(iOldBkMode);
 		dc.SelectObject(pOldFont);
 		dc.SetTextColor(crOldTextColor);
+		fontCustom.DeleteObject();
 }
 //Commander - Added: CountryFlag - End

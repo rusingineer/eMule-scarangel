@@ -150,9 +150,9 @@ public:
 	uint64	GetDownloadedTotal() const;
 	//float	GetScoreRatio(uint32 dwForIP) const;
 	//Xman Credit System
-	float	GetScoreRatio(const CUpDownClient* client); //Xman Credit System
-	float	GetMyScoreRatio(uint32 dwForIP) const; // See own credits
-	float	GetBonusFaktor()				{return m_bonusfaktor;} //Xman Credit System
+	const float	GetScoreRatio(const CUpDownClient* client) const; //Xman Credit System
+	const float	GetMyScoreRatio(uint32 dwForIP) const; // See own credits
+	const float	GetBonusFaktor(const CUpDownClient* client)	const;			  //Xman Credit System
 	//Xman end
 
 	void	SetLastSeen()					{m_pCredits->nLastSeen = time(NULL);}
@@ -167,6 +167,12 @@ public:
 	sint64	GetSecureWaitStartTime(uint32 dwForIP);
 	// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	void	SetSecWaitStartTime(uint32 dwForIP);
+	//Xman Extened credit- table-arragement
+	void	MarkToDelete() {m_bmarktodelete=true;} 
+	void	UnMarkToDelete() {m_bmarktodelete=false;}
+	bool	GetMarkToDelete() const {return m_bmarktodelete;} 
+	uint32	GetLastSeen() const {return m_pCredits->nLastSeen;}
+	//Xman end
 
 	void	ResetCheckScoreRatio() {m_bCheckScoreRatio = true;} // CreditSystems [EastShare/ MorphXT] - Stulle
 
@@ -195,7 +201,7 @@ private:
 	sint64			m_dwUnSecureWaitTime;
 	// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	uint32			m_dwWaitTimeIP;			   // client IP assigned to the waittime
-	float			m_bonusfaktor;			//Xman Credit System
+	bool			m_bmarktodelete;			//Xman Extened credit- table-arragement
 
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 	bool			m_bCheckScoreRatio;
@@ -220,6 +226,10 @@ public:
 	uint8	GetPubKeyLen() const			{return m_nMyPublicKeyLen;}
 	byte*	GetPublicKey()					{return m_abyMyPublicKey;}
 	bool	CryptoAvailable();
+
+#ifdef PRINT_STATISTIC
+	void	PrintStatistic();
+#endif
 
 	void	ResetCheckScoreRatio(); // CreditSystems [EastShare/ MorphXT] - Stulle
 

@@ -47,7 +47,7 @@
 #include "SharedFileList.h"
 //Xman
 #include "Log.h"
-#include "ClientList.h"
+//#include "ClientList.h"
 #include "SivkaFileSettings.h" // file settings - Stulle
 
 #ifdef _DEBUG
@@ -558,20 +558,23 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 				rcDraw.top++;
 
 				// added
+				//Xman Code Improvement
 				int iWidth = rcDraw.Width();
 				int iHeight = rcDraw.Height();
-				if (lpCtrlItem->status == (HBITMAP)NULL)
-					VERIFY(lpCtrlItem->status.CreateBitmap(1, 1, 1, 8, NULL));
+				//if (lpCtrlItem->status == (HBITMAP)NULL)
+				//	VERIFY(lpCtrlItem->status.CreateBitmap(1, 1, 1, 8, NULL));
 				CDC cdcStatus;
-				HGDIOBJ hOldBitmap;
+				//HGDIOBJ hOldBitmap;
 				cdcStatus.CreateCompatibleDC(dc);
-				int cx = lpCtrlItem->status.GetBitmapDimension().cx; 
+				int cx = 0;
+				if (lpCtrlItem->status != (HBITMAP)NULL)
+					cx = lpCtrlItem->status.GetBitmapDimension().cx; 
 				DWORD dwTicks = GetTickCount();
-				if(lpCtrlItem->dwUpdated + DLC_BARUPDATE < dwTicks || cx !=  iWidth || !lpCtrlItem->dwUpdated) {
+				if(lpCtrlItem->status == (HBITMAP)NULL || lpCtrlItem->dwUpdated + DLC_BARUPDATE < dwTicks || cx !=  iWidth || !lpCtrlItem->dwUpdated) {
 					lpCtrlItem->status.DeleteObject(); 
 					lpCtrlItem->status.CreateCompatibleBitmap(dc,  iWidth, iHeight); 
 					lpCtrlItem->status.SetBitmapDimension(iWidth,  iHeight); 
-					hOldBitmap = cdcStatus.SelectObject(lpCtrlItem->status); 
+					cdcStatus.SelectObject(lpCtrlItem->status); 
 
 					RECT rec_status; 
 					rec_status.left = 0; 
@@ -582,11 +585,11 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 
 					lpCtrlItem->dwUpdated = dwTicks + (rand() % 128); 
 				} else 
-					hOldBitmap = cdcStatus.SelectObject(lpCtrlItem->status); 
+					cdcStatus.SelectObject(lpCtrlItem->status);
 
 				dc->BitBlt(rcDraw.left, rcDraw.top, iWidth, iHeight,  &cdcStatus, 0, 0, SRCCOPY); 
-				cdcStatus.SelectObject(hOldBitmap);
-				//added end
+				//cdcStatus.SelectObject(hOldBitmap);
+				//Xman end
 
 				if (thePrefs.GetUseDwlPercentage()) {
 					// HoaX_69: BEGIN Display percent in progress bar
@@ -900,7 +903,7 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 				//EastShare Start - added by AndCycle, IP to Country 
 				if(theApp.ip2country->ShowCountryFlag() ){
 					POINT point3= {cur_rec.left,cur_rec.top+1};
-					theApp.ip2country->GetFlagImageList()->DrawIndirect(dc, lpUpDownClient->GetCountryFlagIndex(), point3, CSize(18,16), CPoint(0,0), ILD_NORMAL);
+					theApp.ip2country->GetFlagImageList()->Draw(dc, lpUpDownClient->GetCountryFlagIndex(), point3, ILD_NORMAL);
 					cur_rec.left+=20;
 				}
 				//EastShare End - added by AndCycle, IP to Country
@@ -967,20 +970,23 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 				rcDraw.bottom--; 
 				rcDraw.top++; 
 
+				//Xman Code Improvement
 				int iWidth = rcDraw.Width();
 				int iHeight = rcDraw.Height();
-				if (lpCtrlItem->status == (HBITMAP)NULL)
-					VERIFY(lpCtrlItem->status.CreateBitmap(1, 1, 1, 8, NULL)); 
+				//if (lpCtrlItem->status == (HBITMAP)NULL)
+					//VERIFY(lpCtrlItem->status.CreateBitmap(1, 1, 1, 8, NULL)); 
 				CDC cdcStatus;
-				HGDIOBJ hOldBitmap;
+				//HGDIOBJ hOldBitmap;
 				cdcStatus.CreateCompatibleDC(dc);
-				int cx = lpCtrlItem->status.GetBitmapDimension().cx;
+				int cx = 0;
+				if (lpCtrlItem->status != (HBITMAP)NULL)
+					cx = lpCtrlItem->status.GetBitmapDimension().cx; 
 				DWORD dwTicks = GetTickCount();
-				if(lpCtrlItem->dwUpdated + DLC_BARUPDATE < dwTicks || cx !=  iWidth  || !lpCtrlItem->dwUpdated) { 
+				if(lpCtrlItem->status == (HBITMAP)NULL || lpCtrlItem->dwUpdated + DLC_BARUPDATE < dwTicks || cx !=  iWidth  || !lpCtrlItem->dwUpdated) { 
 					lpCtrlItem->status.DeleteObject(); 
 					lpCtrlItem->status.CreateCompatibleBitmap(dc,  iWidth, iHeight); 
 					lpCtrlItem->status.SetBitmapDimension(iWidth,  iHeight); 
-					hOldBitmap = cdcStatus.SelectObject(lpCtrlItem->status); 
+					cdcStatus.SelectObject(lpCtrlItem->status); 
 
 					RECT rec_status; 
 					rec_status.left = 0; 
@@ -991,10 +997,11 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 
 					lpCtrlItem->dwUpdated = dwTicks + (rand() % 128); 
 				} else 
-					hOldBitmap = cdcStatus.SelectObject(lpCtrlItem->status); 
+					cdcStatus.SelectObject(lpCtrlItem->status); 
 
 				dc->BitBlt(rcDraw.left, rcDraw.top, iWidth, iHeight,  &cdcStatus, 0, 0, SRCCOPY); 
-				cdcStatus.SelectObject(hOldBitmap);
+				//cdcStatus.SelectObject(hOldBitmap);
+				//Xman end
 			}
 			break;
 
@@ -1033,16 +1040,16 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 			{
 				//lastAskedTime
 				uint32 lastAskedTime = lpUpDownClient->GetLastAskedTime();
-
+				
 				if ( lastAskedTime )
 					buffer=_T("LR: ")+ CastSecondsToHM(( ::GetTickCount() - lastAskedTime) /1000);
 				else
 					buffer=_T("LR: 0 ");
 				
-				
+
 				//nextAskedTime
 				uint32 nextAskedTime = lpUpDownClient->GetJitteredFileReaskTime();
-				
+
 				if(lpUpDownClient->GetDownloadState()==DS_NONEEDEDPARTS)
 					nextAskedTime *=2;
 
@@ -3394,7 +3401,17 @@ void CDownloadListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 								ipstr(server), client->GetServerPort()); //Xman Xtreme Downloadmanager
 					info += _T('\n');
 					info.AppendFormat(GetResString(IDS_SOURCEINFO), client->GetAskedCountDown(), client->GetAvailablePartCount());
-					info.AppendFormat(_T("\nUDP reask possible: %s"), client->HasTooManyFailedUDP() ? _T("no") : _T("yes")); //Xman Xtreme-Downloadmanager 
+					//Xman Xtreme Downloadmanager
+					info.AppendFormat(_T("\nUDP reask possible: %s"), client->HasTooManyFailedUDP() || (client->HasLowID() && !(client->GetBuddyIP() && client->GetBuddyPort() && client->HasValidBuddyID())) ? _T("no") : _T("yes")); //Xman Xtreme-Downloadmanager 
+					if(client->HasLowID())
+					{
+						if(client->GetBuddyIP() && client->GetBuddyPort() && client->HasValidBuddyID())
+							info.AppendFormat(_T("\nclient has buddy"));
+						else
+							info.AppendFormat(_T("\nclient has no buddy"));
+					}
+					//Xman end
+
 					//Xman Anti-Leecher
 					//>>> Anti-XS-Exploit (Xman)
 					info.AppendFormat(_T("\n XS-Exploiter: %s. Req:%u Ans:%u"), client->IsXSExploiter() ? _T("yes") : _T("no"), client->GetXSAnswers() > client->GetXSReqs() ? client->GetXSAnswers() : client->GetXSReqs() , client->GetXSAnswers());
@@ -3573,4 +3590,13 @@ void CDownloadListCtrl::StopSingleClient(CUpDownClient* single)
 	}
 }
 //Xman end
+#ifdef PRINT_STATISTIC
 
+uint32 CtrlItem_Struct::amount;
+
+void CDownloadListCtrl::PrintStatistic()
+{
+	AddLogLine(false, _T("DownloadlistControl: Listitems: %u"), m_ListItems.size());
+	AddLogLine(false, _T("DownloadlistControl: CtrlItem_Structs: %u"), CtrlItem_Struct::amount);
+}
+#endif

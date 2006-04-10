@@ -269,6 +269,16 @@ bool CUpDownClient::AskForDownload()
 	// Maella -Unnecessary Protocol Overload-
 	// Delay the next refresh of the download session initiated from CPartFile::Process()
 	m_dwLastAskedTime = ::GetTickCount();
+	
+	//Xman 5.1
+	//increase the reask-time for  non UDP-clients
+	//and give them the chance to connect first. Xtreme will use the connection, see partfile->process
+	//remark: don't do this for LowID-Clients, because they aren't reasked, but flagged
+	//see TryToConnect
+	if((!HasLowID() && HasTooManyFailedUDP()) && GetJitteredFileReaskTime()< MIN2MS(30) )
+		CalculateJitteredFileReaskTime(true);
+	else if((HasLowID()) && GetJitteredFileReaskTime() > MIN2MS(30))
+		CalculateJitteredFileReaskTime(false);
 	m_dwNextTCPAskedTime = m_dwLastAskedTime + GetJitteredFileReaskTime();
 	// Maella end
 
@@ -1061,6 +1071,8 @@ void CUpDownClient::ProcessHashSet(const uchar* packet,uint32 size)
 	CSafeMemFile data(packet, size);
 	if (reqfile->LoadHashsetFromFile(&data,true)){
 		m_fHashsetRequesting = 0;
+		//Xman
+		reqfile->PerformFirstHash();		// SLUGFILLER: SafeHash - Rehash
 	}
 	else{
 		reqfile->hashsetneeded = true;
@@ -1108,6 +1120,7 @@ void CUpDownClient::CreateBlockRequests(int iMaxBlocks)
 		m_PendingBlocks_list.AddTail(pblock);
 	}
 }
+
 // ==> WebCache [WC team/MorphXT] - Stulle/Max
 /*
 void CUpDownClient::SendBlockRequests()
@@ -1190,7 +1203,7 @@ void CUpDownClient::SendBlockRequests(bool ed2krequest)
 		// Only trust eMule clients to be able to handle less blocks than three
 		if(m_nDownDatarate10 < 600) { //Xman Xtreme Mod
 			blockCount = 1;
-		} else if(m_nDownDatarate10 < 1200) { //Xman Xtreme Mod
+		} else if(m_nDownDatarate10 < 2400) { //Xman Xtreme Mod, Xman 5.1 raised from 1200
 			blockCount = 2;
 		}
 	}
@@ -1573,7 +1586,7 @@ void CUpDownClient::ProcessBlockPacket(const uchar *packet, uint32 size, bool pa
 					// Request next block
 					if (thePrefs.GetDebugClientTCPLevel() > 0)
 						DebugSend("More block requests", this);
-
+					// WebCache [WC team/MorphXT] - Stulle/Max
 					if (m_PendingBlocks_list.IsEmpty()) // Superlexx - tmp // added from original... really needed? - Max
 						SendBlockRequests();	
 				}
@@ -1757,11 +1770,14 @@ void CUpDownClient::CompDownloadRate(){
 
 	// Check and then refresh GUI
 	m_displayDownDatarateCounter++;
-	if(m_displayDownDatarateCounter >= DISPLAY_REFRESH && GetDownloadState() == DS_DOWNLOADING){
-		m_displayDownDatarateCounter = 0;
+	//Xman Code Improvement: slower refresh for clientlist
+	if(m_displayDownDatarateCounter%DISPLAY_REFRESH == 0 ){
 		theApp.emuledlg->transferwnd->downloadlistctrl.UpdateItem(this);
-		theApp.emuledlg->transferwnd->clientlistctrl.RefreshClient(this);
 		theApp.emuledlg->transferwnd->downloadclientsctrl.RefreshClient(this);
+	}
+	if(m_displayDownDatarateCounter%DISPLAY_REFRESH_CLIENTLIST == 0 ){
+		theApp.emuledlg->transferwnd->clientlistctrl.RefreshClient(this);
+		m_displayDownDatarateCounter = 0;
 	}
 }
 

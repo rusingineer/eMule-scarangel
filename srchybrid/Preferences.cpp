@@ -126,6 +126,12 @@ bool	CPreferences::m_bShowAdditionalGraph;
 //Xman versions check
 bool	CPreferences::updatenotifymod;
 
+
+//Xman don't overwrite bak files if last sessions crashed
+bool	CPreferences::m_this_session_aborted_in_an_unnormal_way;
+bool	CPreferences::m_last_session_aborted_in_an_unnormal_way;
+
+
 //Xman end
 //-------------------------------------------------------------------------------
 
@@ -2234,6 +2240,9 @@ void CPreferences::SavePreferences()
 	//Xman versions check
 	ini.WriteBool(L"updatenotifymod", updatenotifymod);
 
+	//Xman don't overwrite bak files if last sessions crashed
+	ini.WriteBool(L"last_session_aborted_in_an_unnormal_way", m_this_session_aborted_in_an_unnormal_way);
+
 	//Xman end
 	//--------------------------------------------------------------------------
 
@@ -3127,6 +3136,10 @@ void CPreferences::LoadPreferences()
 
 	//Xman versions check
 	updatenotifymod = ini.GetBool(L"updatenotifymod",true);
+
+
+	//Xman don't overwrite bak files if last sessions crashed
+	m_last_session_aborted_in_an_unnormal_way = ini.GetBool(L"last_session_aborted_in_an_unnormal_way",false);
 
 	//Xman end
 	//--------------------------------------------------------------------------

@@ -13,6 +13,13 @@
 #include "UploadQueue.h"
 #include "BandWidthControl.h"
 
+#ifdef PRINT_STATISTIC
+#include "UploadBandwidthThrottler.h"
+#include "ClientCredits.h"
+#include "ClientList.h"
+#include "TransferWnd.h"
+#include "DownloadQueue.h"
+#endif
 
 // CPPgXtreme dialog
 #ifdef _DEBUG
@@ -199,6 +206,8 @@ void CPPgXtreme::Localize(void)
 	{
 		CString buffer;
 
+		GetDlgItem(IDC_UPLOADMANAGEMENT)->SetWindowText(GetResString(IDS_UPLOADMANAGEMENT_FRAME));
+
 		//Xman amount base ratio:
 		GetDlgItem(IDC_13RATIO)->SetWindowText(GetResString(IDS_13RATIO));
 
@@ -272,6 +281,18 @@ void CPPgXtreme::OnBnClickedForumlink()
 
 void CPPgXtreme::OnBnClickedVotelink()
 {
+#ifdef PRINT_STATISTIC
+	AddLogLine(false,_T("############################################"));
+	AddLogLine(false,_T("##"));
+	theApp.uploadBandwidthThrottler->PrintStatistic();
+	theApp.clientcredits->PrintStatistic();
+	theApp.clientlist->PrintStatistic();
+	theApp.pBandWidthControl->PrintStatistic();
+	theApp.emuledlg->transferwnd->downloadlistctrl.PrintStatistic();
+	theApp.downloadqueue->PrintStatistic();
+	AddLogLine(false,_T("############################################"));
+#else
 	ShellExecute(NULL, NULL, MOD_VOTELINK, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
+#endif
 }
 */

@@ -36,6 +36,7 @@ public:
 	void Hide();
 
 	void SetText(LPCTSTR szText);
+	void SetText2(LPCTSTR szText);  //Xman new slpash-screen arrangement
 	void SetTextFont(LPCTSTR szFont,int nSize,int nStyle);
 	void SetTextDefaultFont();
 	void SetTextColor(COLORREF crTextColor);
@@ -47,14 +48,19 @@ protected:
 	CWnd *m_pWndParent;
 	CBitmap m_bitmap;
 	CFont m_myFont;
+	CFont m_myFont2; //Xman new slpash-screen arrangement
 	HRGN m_hRegion;
 	
 	DWORD m_dwStyle;
 	DWORD m_dwTimeout;
 	CString m_strText;
+	CString m_strText2; //Xman new slpash-screen arrangement
 	CRect m_rcText;
+	CRect m_rcText2; //Xman new slpash-screen arrangement
 	UINT m_uTextFormat;
+	UINT m_uTextFormat2 ; //Xman new slpash-screen arrangement
 	COLORREF m_crTextColor;
+	COLORREF m_crTextColor2; //Xman new slpash-screen arrangement
 
 	int m_nBitmapWidth;
 	int m_nBitmapHeight;

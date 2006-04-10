@@ -463,7 +463,7 @@ bool CUploadQueue::AcceptNewClient(bool addOnNextConnect)
 					if(::GetTickCount() - oldestblocktime<HR2MS(1))
 					{
 						//5 block-drops during 1 hour is too much->warn the user and disable the feature
-						LogWarning(_T("Warning: your upload seems to be too high. Please review your settings! \n look at your uploadgraph, the white or the yellow(with NAFC) uploadline should be stable \n this message is only generated one time"));
+						LogWarning(_T("Warning: your upload settings seems to be too high. Please review your settings! \n look at the uploadgraph, the white or the yellow(with NAFC) line should be straight \n this message is only generated once"));
 						checkforuploadblock=false;
 					}
 					m_blockstoplist.RemoveTail();
@@ -1090,8 +1090,8 @@ bool returnvalue=false;
     }
 
 
-	//Xman: we allow a min of 1.5 MB
-	if (!thePrefs.TransferFullChunks() && client->GetSessionUp() >= 1572864
+	//Xman: we allow a min of 1.8 MB
+	if (!thePrefs.TransferFullChunks() && client->GetSessionUp() >= 1887437
 		&& m_dwnextallowedscoreremove < ::GetTickCount() //Xman avoid to short upload-periods
 		)
 	{
@@ -1156,7 +1156,13 @@ void CUploadQueue::DeleteAll(){
 UINT CUploadQueue::GetWaitingPosition(CUpDownClient* client){
 
 
+	//Xman
+	//MORPH - Changed by SiRoB, Optimization
+	/*
 	if (!IsOnUploadQueue(client))
+	*/
+	ASSERT((client->GetUploadState() == US_ONUPLOADQUEUE) == IsOnUploadQueue(client));
+	if (client->GetUploadState() != US_ONUPLOADQUEUE)
 		return 0;
 
 	UINT rank = 1;
@@ -1195,6 +1201,19 @@ VOID CALLBACK CUploadQueue::UploadTimer(HWND /*hwnd*/, UINT /*uMsg*/, UINT_PTR /
 		if (!theApp.emuledlg->IsRunning())
 			return;
 
+		//Xman
+		// BEGIN SLUGFILLER: SafeHash - let eMule start first
+		if (theApp.emuledlg->status != 255)
+			return;
+		// END SLUGFILLER: SafeHash
+
+		//Xman 5.1
+		//Xman skip High-CPU-Load
+		static uint32 lastprocesstime;
+		if(::GetTickCount() - lastprocesstime <=0)
+			return;
+		else
+			lastprocesstime=::GetTickCount();
 
 		//Xman final version
 		//Xman todo: only a warning... no return! there is any problem here I first have to find out

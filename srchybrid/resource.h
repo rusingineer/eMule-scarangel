@@ -2256,8 +2256,6 @@
 #define IDC_CCOLL_BASICOPTIONS          2950
 #define IDC_CCOLL_ADVANCEDOPTIONS       2951
 #define IDC_ALANGUAGE                   2952
-#define IDC_EDIT1                       2953
-#define IDC_XMANTEST                    2953
 #define IDS_DROPNONEEDEDSRCS            3000
 #define IDS_DROPQUEUEFULLSRCS           3001
 #define IDS_DROPQUEUETOOMANY            3002
@@ -2360,6 +2358,8 @@
 #define IDS_SHOWADDITIONALGRAPH         3169
 #define IDS_CHECK4UPDATEMOD             3170
 #define IDS_ANTILEECHEREMCRYPT_CHECK    3171
+#define IDS_UPLOADMANAGEMENT_FRAME      3172
+#define IDS_UPLOADSLOTSPEED_LABEL       3173
 #define IDD_PPG_Xtreme                  4000
 #define IDC_13RATIO                     4001
 #define IDC_UPREDUCTION                 4002

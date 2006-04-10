@@ -563,10 +563,10 @@ BOOL CPPgScar::OnApply()
 
 	// ==> Quick start [TPT] - Max
 	thePrefs.m_bQuickStart = m_bQuickStart;
-	thePrefs.m_iQuickStartMaxTime = m_iQuickStartMaxTime;
-	thePrefs.m_iQuickStartMaxConnPerFive = m_iQuickStartMaxConnPerFive;
+	thePrefs.m_iQuickStartMaxTime = (uint16)m_iQuickStartMaxTime;
+	thePrefs.m_iQuickStartMaxConnPerFive = (uint16)m_iQuickStartMaxConnPerFive;
 	thePrefs.m_iQuickStartMaxConn = m_iQuickStartMaxConn;
-	thePrefs.m_iQuickStartMaxConnPerFiveBack = m_iQuickStartMaxConnPerFiveBack;
+	thePrefs.m_iQuickStartMaxConnPerFiveBack = (uint16)m_iQuickStartMaxConnPerFiveBack;
 	thePrefs.m_iQuickStartMaxConnBack = m_iQuickStartMaxConnBack;
 	thePrefs.m_bQuickStartAfterIPChange = m_bQuickStartAfterIPChange;
 	// <== Quick start [TPT] - Max

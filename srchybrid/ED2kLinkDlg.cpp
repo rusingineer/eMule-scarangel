@@ -109,7 +109,8 @@ BOOL CED2kLinkDlg::OnSetActive()
 		BOOL bShow = FALSE;
 		for (int i = 0; i != m_paFiles->GetSize(); i++){
 			const CKnownFile* file = STATIC_DOWNCAST(CKnownFile, (*m_paFiles)[i]);
-			if (!(file->GetHashCount() > 0 && file->GetHashCount() == file->GetED2KPartHashCount())){
+			//Xman
+			if (!(file->GetHashCount() > 0 && file->GetHashCount() == file->GetED2KPartCount())){	// SLUGFILLER: SafeHash - use GetED2KPartCount
 				continue;
 			}
 			bShow = TRUE;
@@ -184,7 +185,8 @@ void CED2kLinkDlg::UpdateLink()
 		const CKnownFile* file = STATIC_DOWNCAST(CKnownFile, (*m_paFiles)[i]);
 		strLinks += CreateED2kLink(file, false);
 		
-		if (bHashset && file->GetHashCount() > 0 && file->GetHashCount() == file->GetED2KPartHashCount()){
+		//Xman
+		if (bHashset && file->GetHashCount() > 0 && file->GetHashCount() == file->GetED2KPartCount()){	// SLUGFILLER: SafeHash - use GetED2KPartCount
 			strLinks += _T("p=");
 			for (UINT j = 0; j < file->GetHashCount(); j++)
 			{

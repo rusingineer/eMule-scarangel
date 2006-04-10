@@ -142,7 +142,13 @@ void CChatSelector::UpdateFonts(CFont* pFont)
 
 CChatItem* CChatSelector::StartSession(CUpDownClient* client, bool show)
 {
-	::SetFocus(m_hwndMessageBox);
+	// raccoonI: eMule steals focus when message from new client is received -->
+	if (show)
+	{
+		::SetFocus(m_hwndMessageBox);
+	}
+	// raccoonI: eMule steals focus when message from new client is received <--
+
 	if (GetTabByClient(client) != -1){
 		if (show){
 			SetCurSel(GetTabByClient(client));

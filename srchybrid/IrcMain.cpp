@@ -1542,12 +1542,15 @@ void CIrcMain::ParsePerform()
 			// be change to what ever channel by just changing the language.. I will just have to check these strings
 			// before release.
 			// This also allows the help string to do more then join one channel. It could add other features later.
-			//CString sJoinHelpChannel = GetResString(IDS_IRC_HELPCHANNELPERFORM);
+			// ==> own IRC channel - Max
+			/*
+			CString sJoinHelpChannel = GetResString(IDS_IRC_HELPCHANNELPERFORM);
+			*/
+			//remark: IDS_IRC_HELPCHANNELPERFORM is not needed...because there is no other support channel for MAXmod and ScarAngel @ the moment - Max
+			//        don't link to #emule-german, #emule-english a.s.o. ->this channels only support the original client
 
-//remark: IDS_IRC_HELPCHANNELPERFORM is not needed...because there is no other support channel for MAXmod and ScarAngel @ the moment - Max
-//        don't link to #emule-german, #emule-english a.s.o. ->this channels only support the original client
-
-			CString sJoinHelpChannel = _T("/join #emule | /join #emule-deutschland");// own IRC channel - Max
+			CString sJoinHelpChannel = _T("/join #emule | /join #emule-deutschland");
+			// <== own IRC channel - Max
 
 			sJoinHelpChannel.Trim();
 			if (!sJoinHelpChannel.IsEmpty())

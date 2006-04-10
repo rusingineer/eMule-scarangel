@@ -412,6 +412,7 @@ void CSharedFilesCtrl::AddFile(const CKnownFile* file)
 	int iItem = InsertItem(LVIF_TEXT|LVIF_PARAM, GetItemCount(), LPSTR_TEXTCALLBACK, 0, 0, 0, (LPARAM)file);
 	if (iItem >= 0)
 		Update(iItem);
+	ShowFilesCount(); //Xman Code Improvement for ShowFilesCount
 }
 
 void CSharedFilesCtrl::RemoveFile(const CKnownFile* file)
@@ -716,7 +717,6 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 		else
 			dc.FrameRect(&outline_rec, &CBrush(m_crNoFocusLine));
 	}
-	
 	if (m_crWindowTextBk == CLR_NONE)
 		dc.SetBkMode(iOldBkMode);
 	dc.SelectObject(pOldFont);
@@ -1027,7 +1027,13 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 				}
 				SetRedraw(TRUE);
 				if (bRemovedItems)
+				{
 					AutoSelectItem();
+					//Xman
+					// raccoonI: summary not updated after deleting shared file -->
+					theApp.emuledlg->sharedfileswnd->ShowSelectedFilesSummary();
+					// raccoonI: summary not updated after deleting shared file <--
+				}
 				break; 
 			}
 			case MP_CMT:

@@ -35,10 +35,20 @@ typedef CTypedPtrList<CPtrList, CUpDownClient*> CUpDownClientPtrList;
 // this class / list is a bit overkill, but currently needed to avoid any exploit possibtility
 // it will keep track of certain clients attributes for 2 hours, while the CUpDownClient object might be deleted already
 // currently: IP, Port, UserHash
+
+//Xman Extened credit- table-arragement
+//make the Tracked-client-list independent 
+/*
 struct PORTANDHASH{
 	uint16 nPort;
 	void* pHash;
 };
+*/
+struct PORTANDHASH{
+	uint16 nPort;
+	uchar pHash[16];
+};
+//Xman end
 
 class CDeletedClient{
 public:
@@ -131,6 +141,10 @@ public:
 
 	//Xman -Reask sources after IP change- v2 (main part by Maella)
 	void TrigReaskForDownload(bool immediate);
+
+#ifdef PRINT_STATISTIC
+	void PrintStatistic();
+#endif
 
 //protected:
 	void	CleanUpClientList(); // Maella -Extended clean-up II-

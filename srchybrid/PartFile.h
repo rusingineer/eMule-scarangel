@@ -101,6 +101,15 @@ struct PartFileBufferedData
 	Requested_Block_Struct *block;	// Barry - This is the requested block that this data relates to
 };
 
+//Xman
+// BEGIN SiRoB: Flush Thread
+struct FlushDone_Struct
+{
+	bool	bIncreasedFile;
+	bool	bForceICH;
+	bool*	changedPart;
+};
+// END SiRoB: Flush Thread
 
 //Xman sourcecache
 enum ESourceFrom;
@@ -128,6 +137,9 @@ class CPartFile : public CKnownFile
 	DECLARE_DYNAMIC(CPartFile)
 
 	friend class CPartFileConvert;
+	//Xman
+	friend class CPartHashThread;	// SLUGFILLER: SafeHash
+
 public:
 	CPartFile(UINT cat = 0);
 	CPartFile(CSearchFile* searchresult, UINT cat = 0);
@@ -175,7 +187,14 @@ public:
 
 	bool	SavePartFile();
 	void	PartFileHashFinished(CKnownFile* result);
-	bool	HashSinglePart(UINT partnumber); // true = ok , false = corrupted
+	//Xman
+	//bool	HashSinglePart(UINT partnumber); // true = ok , false = corrupted
+	// BEGIN SLUGFILLER: SafeHash - replaced old handlers, full hash checker remains for file completion
+	void	PartHashFinished(UINT partnumber, bool corrupt);
+	void	PartHashFinishedAICHRecover(UINT partnumber, bool corrupt);
+	bool	IsPartShareable(UINT partnumber) const;
+	bool	IsRangeShareable(uint64 start, uint64 end) const;
+	// END SLUGFILLER: SafeHash
 
 	void	AddGap(uint64 start, uint64 end);
 	void	FillGap(uint64 start, uint64 end);
@@ -234,6 +253,12 @@ public:
 	// Barry - Added as replacement for BlockReceived to buffer data before writing to disk
 	uint32	WriteToBuffer(uint64 transize, const BYTE *data, uint64 start, uint64 end, Requested_Block_Struct *block, const CUpDownClient* client);
 	void	FlushBuffer(bool forcewait=false, bool bForceICH = false, bool bNoAICH = false);
+	//Xman
+	// BEGIN SiRoB: Flush Thread
+	void	FlushDone(FlushDone_Struct* FlushSetting);
+	void	SetFlushThread(bool state) { m_bIsFlushThread = state; };
+	bool	IsFlushThread() { return m_bIsFlushThread; };
+	// END SiRoB: Flush Thread
 	// Barry - This will invert the gap list, up to caller to delete gaps when done
 	// 'Gaps' returned are really the filled areas, and guaranteed to be in order
 	void	GetFilledList(CTypedPtrList<CPtrList, Gap_Struct*> *filled) const;
@@ -304,6 +329,9 @@ public:
 	void	FlushBuffersExceptionHandler();
 
 	void	PerformFileCompleteEnd(DWORD dwResult);
+	//Xman
+	void	PerformFirstHash();		// SLUGFILLER: SafeHash
+
 
 	void	SetFileOp(EPartFileOp eFileOp);
 	EPartFileOp GetFileOp() const { return m_eFileOp; }
@@ -371,6 +399,15 @@ public:
 	bool	IsSourceSearchAllowed();
 	//Xman end
 
+#ifdef PRINT_STATISTIC
+	uint32	GetSavedSources()	{return m_sourcesaver.GetSavedSources();}
+	uint32	GetGapList()		{return gaplist.GetSize();}
+	uint32  GetRequestedBlocklist() {return requestedblocks_list.GetCount();}
+	uint32	GetSrcpartFrequency()	{return m_SrcpartFrequency.GetSize();}
+	uint32	GetBufferedData()		{return m_BufferedData_list.GetSize();}
+	uint32	GetA4AFsrclist()		{return A4AFsrclist.GetSize();}
+#endif
+
 
 #ifdef _DEBUG
 	// Diagnostic Support
@@ -395,6 +432,9 @@ private:
 	static UINT CompleteThreadProc(LPVOID pvParams); // Lord KiRon - Used as separate thread to complete file
 	static UINT AFX_CDECL AllocateSpaceThread(LPVOID lpParam);
 	void		CharFillRange(CString* buffer,uint32 start, uint32 end, char color) const;
+	//Xman
+	void		ParseICHResult();	// SLUGFILLER: SafeHash
+
 
 	CCorruptionBlackBox	m_CorruptionBlackBox;
 	static CBarShader s_LoadBar;
@@ -424,6 +464,13 @@ private:
 	CTypedPtrList<CPtrList, Gap_Struct*> gaplist;
 	CTypedPtrList<CPtrList, Requested_Block_Struct*> requestedblocks_list;
 	CArray<uint16,uint16> m_SrcpartFrequency;
+	//Xman
+	// BEGIN SLUGFILLER: SafeHash
+	CArray<bool,bool> m_PartsShareable;
+	uint16	m_PartsHashing;
+	CMutex	ICH_mut;	// ICH locks the file
+	CList<uint16,uint16>	m_ICHPartsComplete;
+	// END SLUGFILLER: SafeHash
 	float	percentcompleted;
 	CList<uint16, uint16> corrupted_list;
 	uint32	m_ClientSrcAnswered;
@@ -463,6 +510,9 @@ private:
 	CList<PartfileSourceCache>	m_sourcecache;
 	uint32						m_lastSoureCacheProcesstime;
 	//Xman end
+
+	//Xman
+	bool	m_bIsFlushThread; //MORPH Added by SiRoB, Flush Thread
 
 	// ==> Global Source Limit [Max/Stulle] - Stulle
 private: 
@@ -578,3 +628,42 @@ public:
 	void	AddRequestedBlock(Requested_Block_Struct* block);
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
 };
+
+//Xman
+// BEGIN SLUGFILLER: SafeHash
+class CPartHashThread : public CWinThread
+{
+	DECLARE_DYNCREATE(CPartHashThread)
+protected:
+	CPartHashThread()	{}
+public:
+	virtual	BOOL	InitInstance() {return true;}
+	virtual int		Run();
+	uint16	SetFirstHash(CPartFile* pOwner);
+	void	SetSinglePartHash(CPartFile* pOwner, uint16 part, bool ICHused = false, bool AICHRecover = false);
+private:
+	CPartFile*				m_pOwner;
+	bool					m_ICHused;
+	bool					m_AICHRecover;
+	CString					directory;
+	CString					filename;
+	CArray<uint16,uint16>	m_PartsToHash;
+	CArray<uchar*,uchar*>	m_DesiredHashes;
+};
+// END SLUGFILLER: SafeHash
+
+// BEGIN SiRoB: Flush Thread
+class CPartFileFlushThread : public CWinThread
+{
+	DECLARE_DYNCREATE(CPartFileFlushThread)
+protected:
+	CPartFileFlushThread()	{}
+public:
+	virtual	BOOL	InitInstance() {return true;}
+	virtual int		Run();
+	void	SetPartFile(CPartFile* pOwner, FlushDone_Struct* changedPart);
+private:
+	CPartFile*				m_partfile;
+	FlushDone_Struct*			m_FlushSetting;
+};
+// END SiRoB: Flush Thread

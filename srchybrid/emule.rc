@@ -5162,6 +5162,8 @@ BEGIN
     IDS_SHOWADDITIONALGRAPH "Show additional graph-lines"
     IDS_CHECK4UPDATEMOD     "Check for new Xtreme version on startup"
     IDS_ANTILEECHEREMCRYPT_CHECK "Detect emcrypt"
+    IDS_UPLOADMANAGEMENT_FRAME "Upload Management"
+    IDS_UPLOADSLOTSPEED_LABEL "Upload Slot Speed"
 END
 
 STRINGTABLE 

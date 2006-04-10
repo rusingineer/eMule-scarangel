@@ -91,7 +91,10 @@ public:
 	void	SetHasComment(bool in) { m_bHasComment = in; }
 	UINT	UserRating() const { return m_uUserRating; }
 	bool	HasRating()	const { return m_uUserRating > 0; }
-	bool	HasBadRating()	const { return ( HasRating() && (m_uUserRating < 2)); }
+	//Xman Code Improvement by Avi-3k
+	//bool	HasBadRating()	const { return ( HasRating() && (m_uUserRating < 2)); }
+	bool	HasBadRating()  const { return (m_uUserRating == 1); }
+	//Xman end
 	void	SetUserRating(UINT in) { m_uUserRating = in; }
 	const CString& GetFileComment() /*const*/;
 	UINT	GetFileRating() /*const*/;

@@ -742,10 +742,11 @@ CString GetRateString(UINT rate)
 		return GetResString(IDS_CMT_FAKE); 
 	case 2: 
 		return GetResString(IDS_CMT_POOR); 
+	//Xman fixed by Aenarion[ITA]
 	case 3: 
-		return GetResString(IDS_CMT_GOOD); 
-	case 4: 
 		return GetResString(IDS_CMT_FAIR); 
+	case 4: 
+		return GetResString(IDS_CMT_GOOD); 
 	case 5: 
 		return GetResString(IDS_CMT_EXCELLENT); 
 	} 
@@ -2173,16 +2174,17 @@ CString DbgGetBlockInfo(const Requested_Block_Struct* block)
 CString DbgGetBlockInfo(uint64 StartOffset, uint64 EndOffset)
 {
 	CString strInfo;
-	strInfo.Format(_T("%u-%u (%u bytes)"), StartOffset, EndOffset, EndOffset - StartOffset + 1);
+	// netfinity: Fixed printing of offset and byte count (need to use 64 bit format codes)
+	strInfo.Format(_T("%I64u-%I64u (%I64u bytes)"), StartOffset, EndOffset, EndOffset - StartOffset + 1);
 
-	strInfo.AppendFormat(_T(", Part %u"), StartOffset/PARTSIZE);
+	strInfo.AppendFormat(_T(", Part %u"), (unsigned int) StartOffset/PARTSIZE);
 	if (StartOffset/PARTSIZE != EndOffset/PARTSIZE)
-		strInfo.AppendFormat(_T("-%u(**)"), EndOffset/PARTSIZE);
+		strInfo.AppendFormat(_T("-%u(**)"), (unsigned int) EndOffset/PARTSIZE);
 
-	strInfo.AppendFormat(_T(", Block %u"), StartOffset/EMBLOCKSIZE);
+	strInfo.AppendFormat(_T(", Block %u"), (unsigned int) StartOffset/EMBLOCKSIZE);
 	if (StartOffset/EMBLOCKSIZE != EndOffset/EMBLOCKSIZE)
 	{
-		strInfo.AppendFormat(_T("-%u"), EndOffset/EMBLOCKSIZE);
+		strInfo.AppendFormat(_T("-%u"), (unsigned int) EndOffset/EMBLOCKSIZE);
 		if (EndOffset/EMBLOCKSIZE - StartOffset/EMBLOCKSIZE > 1)
 			strInfo += _T("(**)");
 	}
@@ -3375,22 +3377,3 @@ void UpdateMSN2(CString Connection)
 	MSNStr.ReleaseBuffer();
 }
 // <== Show in MSN7 [TPT] - Stulle
-
-// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-int getPrime(int lower_bound)
-{
-	int cur_no = lower_bound-1;
-	bool prime = false;
-	while(!prime){
-		cur_no++;
-		prime = true;
-		for(int cur_i = 2,end = (int)sqrt((double)cur_no); cur_i<=end; cur_i++){
-			if(cur_no%cur_i==0){
-				prime = false;
-				break;
-			}
-		}
-	}
-	return cur_no;
-}
-// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle

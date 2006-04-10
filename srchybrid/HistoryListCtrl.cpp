@@ -477,7 +477,9 @@ void CHistoryListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct) {
 			pDC.FrameRect(rcHighlight, &CBrush(m_crFocusLine));
 	}
 
-	pDC.Flush();
+	//Xman Code Improvement
+	//not needed
+	//pDC.Flush();
 	//restore old font
 	pDC.SelectObject(pOldFont);
 	pDC.SetTextColor(crOldTextColor);

@@ -111,7 +111,10 @@ bool CServerList::Init()
 {
 	// auto update the list by using an url
 	if (thePrefs.GetAutoUpdateServerList())
+	{
+		if(theApp.IsSplash()) theApp.DestroySplash(); //Xman new slpash-screen arrangement
 		AutoUpdate();
+	}
 	
 	// Load Metfile
 	CString strPath;

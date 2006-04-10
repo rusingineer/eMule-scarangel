@@ -553,12 +553,16 @@ bool CKnownFile::CreateFromFile(LPCTSTR in_directory, LPCTSTR in_filename, LPVOI
 			DebugLogError(LOG_STATUSBAR, _T("Failed to calculate AICH Hashset from file %s"), GetFileName());
 	}
 
+	//Xman
+	hashlist.Add(lasthash);		// SLUGFILLER: SafeHash - better handling of single-part files
 	if (!hashcount){
 		md4cpy(m_abyFileHash, lasthash);
-		delete[] lasthash;
+		//delete[] lasthash;
+		// SLUGFILLER: SafeHash remove - removed delete
 	} 
 	else {
-		hashlist.Add(lasthash);
+		//hashlist.Add(lasthash);
+		// SLUGFILLER: SafeHash remove - moved up
 		uchar* buffer = new uchar[hashlist.GetCount()*16];
 		for (int i = 0; i < hashlist.GetCount(); i++)
 			md4cpy(buffer+(i*16), hashlist[i]);
@@ -775,7 +779,8 @@ bool CKnownFile::LoadHashsetFromFile(CFileDataIO* file, bool checkhash){
 		return false;	// wrong file?
 	}
 	else{
-		if (parts != GetED2KPartHashCount()){
+		//Xman
+		if (parts != GetED2KPartCount()){	// SLUGFILLER: SafeHash - use GetED2KPartCount
 			// delete hashset
 			for (int i = 0; i < hashlist.GetSize(); i++)
 				delete[] hashlist[i];
@@ -988,7 +993,8 @@ bool CKnownFile::LoadTagsFromFile(CFileDataIO* file)
 	if (m_uMetaDataVer == 0)
 		RemoveMetaDataTags();
 
-	return true;
+	//Xman
+	return m_nFileSize!=(uint64)0;		// SLUGFILLER: SafeHash - Must have a filesize tag
 }
 
 bool CKnownFile::LoadDateFromFile(CFileDataIO* file){
@@ -1002,7 +1008,18 @@ bool CKnownFile::LoadFromFile(CFileDataIO* file){
 	bool ret2 = LoadHashsetFromFile(file,false);
 	bool ret3 = LoadTagsFromFile(file);
 	UpdatePartsInfo();
-	return ret1 && ret2 && ret3 && GetED2KPartHashCount()==GetHashCount();// Final hash-count verification, needs to be done after the tags are loaded.
+	//Xman
+	if (GetED2KPartCount() <= 1) {	// ignore loaded hash for 1-chunk files
+		for (int i = 0; i < hashlist.GetSize(); i++)
+			delete[] hashlist[i];
+		hashlist.RemoveAll();
+		uchar* cur_hash = new uchar[16];
+		md4cpy(cur_hash, m_abyFileHash);
+		hashlist.Add(cur_hash);
+		ret2 = true;
+	} else if (GetED2KPartCount()!=GetHashCount())
+		ret2 = false;	// Final hash-count verification, needs to be done after the tags are loaded.
+	return ret1 && ret2 && ret3;
 	// SLUGFILLER: SafeHash
 }
 
@@ -1114,6 +1131,8 @@ void CKnownFile::CreateHash(CFile* pFile, uint64 Length, uchar* pMd4HashOut, CAI
 {
 	ASSERT( pFile != NULL );
 	ASSERT( pMd4HashOut != NULL || pShaHashOut != NULL );
+	//Xman
+	CSingleLock sLock1(&(theApp.hashing_mut), TRUE);	// SLUGFILLER: SafeHash - only one chunk-hash at a time
 
 	uint64  Required = Length;
 	uchar   X[64*128];

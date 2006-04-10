@@ -4,16 +4,18 @@
 #pragma once
 #include <atlcoll.h>
 
+//Xman Xtreme only uses the long names
 struct IPRange_Struct2{
 	uint32          IPstart;
 	uint32          IPend;
-	CString			ShortCountryName;
-	CString			MidCountryName;
+	//CString			ShortCountryName;
+	//CString			MidCountryName;
 	CString			LongCountryName;
 	WORD			FlagIndex;
 };
 
 //EastShare Start - added by AndCycle, IP to Country
+/*
 enum IP2CountryNameSelection{
 
 	IP2CountryName_DISABLE = 0,
@@ -21,6 +23,7 @@ enum IP2CountryNameSelection{
 	IP2CountryName_MID,
 	IP2CountryName_LONG
 };
+*/
 //EastShare End - added by AndCycle, IP to Country
 
 #define DFLT_IP2COUNTRY_FILENAME  _T("ip-to-country.csv")//Commander - Added: IP2Country auto-updating
@@ -43,7 +46,7 @@ class CIP2Country
 		void	Refresh();
 
 		bool	IsIP2Country()			{return EnableIP2Country;}
-		bool	ShowCountryFlag();
+		bool	ShowCountryFlag() const;
 
 		IPRange_Struct2*	GetDefaultIP2Country() {return &defaultIP2Country;}
 
@@ -54,11 +57,11 @@ class CIP2Country
 
 		void	AddIPRange(uint32 IPfrom,uint32 IPto, TCHAR* shortCountryName, TCHAR* midCountryName, TCHAR* longCountryName);
 
-		IPRange_Struct2*	GetCountryFromIP(uint32 IP);
+		IPRange_Struct2*	GetCountryFromIP(uint32 IP) const;
 		CString	GetCountryNameFromRef(IPRange_Struct2* m_structServerCountry, bool longname=false);
-		WORD	GetFlagResIDfromCountryCode(CString shortCountryName);
+		//WORD	GetFlagResIDfromCountryCode(CString shortCountryName);
 
-		CImageList* GetFlagImageList() {return &CountryFlagImageList;}
+		CImageList* GetFlagImageList() const {return &CountryFlagImageList;}
 		//void    UpdateIP2CountryURL();//Commander - Added: IP2Country auto-updating
 		CString GetDefaultFilePath() const;
 	private:
@@ -67,11 +70,11 @@ class CIP2Country
 		bool	m_bRunning;
 
 		HINSTANCE _hCountryFlagDll;
-		CImageList	CountryFlagImageList;
+		static CImageList	CountryFlagImageList;
 
 		bool	EnableIP2Country;
 		bool	EnableCountryFlag;
-		struct	IPRange_Struct2 defaultIP2Country;
+		static struct	IPRange_Struct2 defaultIP2Country;
 
 		CIP2CountryArray m_iplist;
 		CRBMap<CString, uint16>	CountryIDtoFlagIndex;

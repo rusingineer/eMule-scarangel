@@ -53,6 +53,13 @@ BOOL CAICHSyncThread::InitInstance()
 
 int CAICHSyncThread::Run()
 {
+	//Xman
+	// BEGIN SLUGFILLER: SafeHash
+	CReadWriteLock lock(&theApp.m_threadlock);
+	if (!lock.ReadLock(0))
+		return 0;
+	// END SLUGFILLER: SafeHash
+
 	if ( !theApp.emuledlg->IsRunning() )
 		return 0;
 	// we need to keep a lock on this file while the thread is running

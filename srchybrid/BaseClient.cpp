@@ -82,14 +82,20 @@ uint32 CUpDownClient::m_downStopReason[2][CUpDownClient::DSR_EXCEPTION+1];
 //Xman Anti-Leecher: simple Anti-Thief
 const CString CUpDownClient::str_ANTAddOn=CUpDownClient::GetANTAddOn();
 
-CUpDownClient::CUpDownClient(CClientReqSocket* sender)
+CUpDownClient::CUpDownClient(CClientReqSocket* sender)//Xman // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+: m_upHistory_list(3),
+m_downHistory_list(3)
+// Maella end
 {
 	socket = sender;
 	reqfile = NULL;
 	Init();
 }
 
-CUpDownClient::CUpDownClient(CPartFile* in_reqfile, uint16 in_port, uint32 in_userid,uint32 in_serverip, uint16 in_serverport, bool ed2kID)
+CUpDownClient::CUpDownClient(CPartFile* in_reqfile, uint16 in_port, uint32 in_userid,uint32 in_serverip, uint16 in_serverport, bool ed2kID)//Xman // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+: m_upHistory_list(3),
+m_downHistory_list(3)
+// Maella end
 {
 	//Converting to the HybridID system.. The ED2K system didn't take into account of IP address ending in 0..
 	//All IP addresses ending in 0 were assumed to be a lowID because of the calculations.
@@ -219,7 +225,7 @@ void CUpDownClient::Init()
 	m_nClientVersion = 0;
 	m_lastRefreshedDLDisplay = 0;
 	m_dwDownStartTime = 0;
-	m_nLastBlockOffset = 0;
+	m_nLastBlockOffset = (uint64)-1; //Displayfix by Sirob
 	m_bUnicodeSupport = false;
 	m_SecureIdentState = IS_UNAVAILABLE;
 	m_dwLastSignatureIP = 0;
@@ -282,13 +288,7 @@ void CUpDownClient::Init()
 	// Maella end
 
 	// Maella -Unnecessary Protocol Overload-
-	// Remark: a client will be remove from an upload queue after 3*FILEREASKTIME (~1 hour)
-	//         a two small value increases the traffic + causes a banishment if lower than 10 minutes
-	//         srand() is already called a few times..
-	uint32 jitter = rand() * (4*60) / RAND_MAX; // 0..4 minutes, keep in mind integer overflow
-	m_jitteredFileReaskTime = FILEREASKTIME - (90*1000) + 1000*jitter - (2*60*1000); // -2..+2 minutes, keep the same average overload
-	//Xman: result between 25.5 and 29.5 this is useful to use TCP-Connection from older clients
-
+	CalculateJitteredFileReaskTime(false); //Xman 5.1 
 	m_dwLastAskedTime = 0;
 	m_dwLastUDPReaskTime = 0;
 	m_dwNextTCPAskedTime = 0;
@@ -310,11 +310,17 @@ void CUpDownClient::Init()
 	old_m_pszUsername.Empty();
 	m_strBanMessage.Empty();
 	uhashsize=16;
+	//Xman Anti-Nick-Changer
+	m_uNickchanges=0;
+	m_ulastNickChage=0; //no need to initalize
+	//Xman end
 
 	//>>> Anti-XS-Exploit (Xman)
 	m_uiXSReqs = 0;
 	m_uiXSAnswer = 0;
 	//<<< Anti-XS-Exploit
+
+	filedata = NULL; // SiRoB: ReadBlockFromFileThread
 
 	//Xman end
 
@@ -439,7 +445,21 @@ CUpDownClient::~CUpDownClient(){
 	
 	// Maella -Unnecessary Protocol Overload-
 	m_partStatusMap.clear();
+	//Xman end
 	
+	//Xman Extened credit- table-arragement
+	if(Credits())
+	{
+		Credits()->SetLastSeen(); //ensure we keep the credits at least 6 hours in memory, without this line our LastSeen can be outdated if we did only UDP
+		// ==> m000h
+		/*
+		if(Credits()->GetDownloadedTotal()==0 && Credits()->GetUploadedTotal()==0) //just to save some CPU-cycles, a second test is done at credits
+		*/
+		if(theApp.clientcredits->IsSaveUploadQueueWaitTime() == false &&
+			Credits()->GetDownloadedTotal()==0 && Credits()->GetUploadedTotal()==0)
+		// <== m000h
+			Credits()->MarkToDelete();
+	}
 	//Xman end
 }
 //Xman Anti-Leecher
@@ -490,10 +510,32 @@ void CUpDownClient::TestLeecher(){
 	if (thePrefs.GetAntiLeecherName())
 	{
 
+		//Xman Anti-Nick-Changer
+		if(m_pszUsername!=NULL && old_m_pszUsername.IsEmpty()==false)
+		{
+			if(old_m_pszUsername!=m_pszUsername)
+			{
+				if(IsLeecher()==0 && m_strModVersion.IsEmpty() //check only if it isn't a known leecher and doesn't send modversion
+					&& ::GetTickCount() - m_ulastNickChage < HR2MS(3)) //last nickchane was in less than 3 hours
+				{
+					m_uNickchanges++;
+					if(m_uNickchanges >=3)
+						BanLeecher(_T("Nick-Changer"),5); //hard ban
+				}
+			}
+			else
+			{
+				//decrease the value if it's the same nick
+				if(m_uNickchanges>0)
+					m_uNickchanges--;
+			}
+		}
+		//Xman end Anti-Nick-Changer
 		
 		if(m_pszUsername!=NULL && (old_m_pszUsername.IsEmpty() || old_m_pszUsername!=m_pszUsername)) //remark: because old_m_pszUsername is CString and there operator != is defined, it isn't a pointer comparison 
 		{
 			old_m_pszUsername = m_pszUsername;
+			m_ulastNickChage=::GetTickCount(); //Xman Anti-Nick-Changer
 			LPCTSTR reason=theApp.dlp->DLPCheckUsername_Hard(m_pszUsername);
 			if(reason)
 			{
@@ -1014,13 +1056,26 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 	CClientCredits* pFoundCredits = theApp.clientcredits->GetCredit(m_achUserHash);
 	if (credits == NULL){
 		credits = pFoundCredits;
-		if (!theApp.clientlist->ComparePriorUserhash(m_dwUserIP, m_nUserPort, pFoundCredits)){
+		//Xman Extened credit- table-arragement
+		//if (!theApp.clientlist->ComparePriorUserhash(m_dwUserIP, m_nUserPort, pFoundCredits)){
+		if (!theApp.clientlist->ComparePriorUserhash(m_dwUserIP, m_nUserPort, m_achUserHash)){
 			//if (thePrefs.GetLogBannedClients())
 				AddLeecherLogLine(false, _T("Clients: %s (%s), Banreason: Userhash changed (Found in TrackedClientsList)"), GetUserName(), ipstr(GetConnectIP())); //Xman
 			Ban();
 		}	
 	}
 	else if (credits != pFoundCredits){
+		//Xman Extened credit- table-arragement
+		credits->SetLastSeen(); //ensure to keep it at least 5 hours
+		// ==> m000h
+		/*
+		if(Credits()->GetDownloadedTotal()==0 && Credits()->GetUploadedTotal()==0) //just to save some CPU-cycles, a second test is done at credits
+		*/
+		if(theApp.clientcredits->IsSaveUploadQueueWaitTime() == false &&
+			Credits()->GetDownloadedTotal()==0 && Credits()->GetUploadedTotal()==0)
+		// <== m000h
+			credits->MarkToDelete(); //check also if the old hash is used by an other client
+		//Xman end
 		// userhash change ok, however two hours "waittime" before it can be used
 		credits = pFoundCredits;
 		//if (thePrefs.GetLogBannedClients())
@@ -1063,7 +1118,6 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 
 	if (thePrefs.GetVerbose() && GetServerIP() == INADDR_NONE)
 		AddDebugLogLine(false, _T("Received invalid server IP %s from %s"), ipstr(GetServerIP()), DbgGetClientInfo());
-
 
 	//Xman Anti-Leecher
 	if(thePrefs.GetAntiLeecher())
@@ -1555,7 +1609,8 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 
 	//Xman ModID
 	//Xman - Added by SiRoB, Don't send MOD_VERSION to client that don't support it to reduce overhead
-	bool bSendModVersion = m_strModVersion.GetLength() || m_pszUsername==NULL;
+	//Xman send modtring only to non Leechers or Modthiefs
+	bool bSendModVersion = (m_strModVersion.GetLength() || m_pszUsername==NULL) && (IsLeecher()==0 || IsLeecher()==6);
 	if (bSendModVersion) tagcount+=1;
 	//Xman END   - Added by SiRoB, Don't send MOD_VERSION to client that don't support it to reduce overhead
 
@@ -1574,7 +1629,8 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 		CTag tagName(CT_NAME, _T("You are using a spyware infected emule version") );
 		tagName.WriteTagToFile(data, utf8strRaw);
 	}
-	else
+	//Xman send Nickaddon only to non Leechers or NickThiefs/ModThiefs
+	else if(IsLeecher()==0 || IsLeecher()==11 || IsLeecher()==6) 
 	{
 		// ==> ModID [itsonlyme/SiRoB] - Stulle
 		/*
@@ -1584,6 +1640,12 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 		m_strTemp.AppendFormat(_T(" %s «%s»"), str_ANTAddOn, theApp.m_strModVersion);
 		CTag tagName(CT_NAME, (!m_bGPLEvildoer) ? m_strTemp : _T("Please use a GPL-conform version of eMule") );
 		// <== ModID [itsonlyme/SiRoB] - Stulle
+		tagName.WriteTagToFile(data, utf8strRaw);
+	}
+	//else send the standard-nick
+	else
+	{
+		CTag tagName(CT_NAME, (!m_bGPLEvildoer) ? thePrefs.GetUserNick()  : _T("Please use a GPL-conform version of eMule") ); //Xman Anti-Leecher: simple Anti-Thief
 		tagName.WriteTagToFile(data, utf8strRaw);
 	}
 	//Xman end
@@ -1807,10 +1869,12 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket, UpStopReas
 	else{
 		// ensure that all possible block requests are removed from the partfile
 		ClearDownloadBlockRequests();
+		/* //Xman Code Imrpovement moved down
 		if(GetDownloadState() == DS_CONNECTED){
 			theApp.clientlist->m_globDeadSourceList.AddDeadSource(this);
 			theApp.downloadqueue->RemoveSource(this);
 	    }
+		*/
 	}
 
 	// we had still an AICH request pending, handle it
@@ -1862,6 +1926,8 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket, UpStopReas
 		case US_WAITCALLBACK:
 			theApp.clientlist->m_globDeadSourceList.AddDeadSource(this);
 		case US_ERROR: //Xman Xtreme Mod: this clients get IP-Filtered!
+		//Xman 5.1 why we should keep it ?
+		case US_BANNED:
 			bDelete = true;
 	}
 
@@ -1928,6 +1994,7 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket, UpStopReas
 					bAddDeadSource = false;
 
 			}
+		case DS_CONNECTED: //Xman Code Improvement delete non answering clients
 		case DS_WAITCALLBACK:
 			if (bAddDeadSource)
 				theApp.clientlist->m_globDeadSourceList.AddDeadSource(this);
@@ -1956,7 +2023,9 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket, UpStopReas
 	if (m_Friend)
 		theApp.friendlist->RefreshFriend(m_Friend);
 
-	theApp.emuledlg->transferwnd->clientlistctrl.RefreshClient(this);
+	//Xman Code Improvement: don't refresh list-item on deletion
+	if(bDelete==false)
+		theApp.emuledlg->transferwnd->clientlistctrl.RefreshClient(this);
 
 	if (bDelete)
 	{
@@ -2119,7 +2188,8 @@ bool CUpDownClient::TryToConnect(bool bIgnoreMaxCon, CRuntimeClass* pClassSocket
 	}
 	else
 	{
-		ConnectionEstablished();
+		if (CheckHandshakeFinished()) //Xman fix by eklmn
+			ConnectionEstablished();
 		return true;
 	}
 	// MOD Note: Do not change this part - Merkur
@@ -2318,7 +2388,7 @@ void CUpDownClient::ConnectionEstablished()
 				//Xman: in every case, we add this client to our downloadqueue
 				CKnownFile* partfile = theApp.downloadqueue->GetFileByID(this->GetUploadFileID());
 				if (partfile && partfile->IsPartFile())
-					theApp.downloadqueue->CheckAndAddKnownSource((CPartFile*)partfile,this);
+					theApp.downloadqueue->CheckAndAddKnownSource((CPartFile*)partfile,this,true);
 				//Xman end
 			}
 	}
@@ -3620,6 +3690,28 @@ float CUpDownClient::GetXtremeVersion(CString modversion) const
 
 	return (float)_tstof(modversion.Mid(theApp.m_uModLength));
 	// <== ModID [itsonlyme/SiRoB] - Stulle
+}
+//Xman end
+
+
+//Xman 5.1
+// Maella -Unnecessary Protocol Overload-
+void CUpDownClient::CalculateJitteredFileReaskTime(bool longer)
+{
+	if(longer==false)
+	{
+		// Maella -Unnecessary Protocol Overload-
+		// Remark: a client will be remove from an upload queue after 3*FILEREASKTIME (~1 hour)
+		//         a two small value increases the traffic + causes a banishment if lower than 10 minutes
+		//         srand() is already called a few times..
+		uint32 jitter = rand() * (35*6) / RAND_MAX; // 0..3.5 minutes, keep in mind integer overflow
+		m_jitteredFileReaskTime = FILEREASKTIME - (60*1000) + 1000*jitter - (2*60*1000); // -2..+2 minutes, keep the same average overload
+		//Xman: result between 26 and 29.5 this is useful to use TCP-Connection from older clients
+	}
+	else
+		m_jitteredFileReaskTime = FILEREASKTIME + (3*60*1000); //32 min
+		//this gives the client the chance to connect first
+		//this connection can be used by Xtreme, see partfile->process
 }
 //Xman end
 

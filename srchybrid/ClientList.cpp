@@ -66,8 +66,8 @@ CClientList::CClientList(){
 	// <== {relax on startup} [WiZaRd] 
 
 	m_nBuddyStatus = Disconnected;
-	m_bannedList.InitHashTable(331);
-	m_trackedClientsList.InitHashTable(2011);
+	m_bannedList.InitHashTable(571); //Xman changed, was 331
+	m_trackedClientsList.InitHashTable(4999); //Xman changed, was 2011
 	m_globDeadSourceList.Init(true);
 	m_pBuddy = NULL;
 
@@ -449,6 +449,8 @@ void CClientList::RemoveAllBannedClients(){
 ///////////////////////////////////////////////////////////////////////////////
 // Tracked clients
 
+//Xman Extened credit- table-arragement
+/*
 void CClientList::AddTrackClient(CUpDownClient* toadd){
 	CDeletedClient* pResult = 0;
 	if (m_trackedClientsList.Lookup(toadd->GetIP(), pResult)){
@@ -467,6 +469,34 @@ void CClientList::AddTrackClient(CUpDownClient* toadd){
 		m_trackedClientsList.SetAt(toadd->GetIP(), new CDeletedClient(toadd));
 	}
 }
+*/
+//Xman end
+
+//Xman Extened credit- table-arragement
+//make the Tracked-client-list independent 
+void CClientList::AddTrackClient(CUpDownClient* toadd){
+	CDeletedClient* pResult = 0;
+	if (m_trackedClientsList.Lookup(toadd->GetIP(), pResult)){
+		pResult->m_dwInserted = ::GetTickCount();
+		for (int i = 0; i != pResult->m_ItemsList.GetCount(); i++){
+			if (pResult->m_ItemsList[i].nPort == toadd->GetUserPort()){
+				// already tracked, update
+				//Xman don't keep a track of the credit-pointer, but of the hash
+				md4cpy(pResult->m_ItemsList[i].pHash, toadd->GetUserHash());
+				return;
+			}
+		}
+		//Xman new tracked port & hash
+		PORTANDHASH porthash;
+		porthash.nPort=toadd->GetUserPort();
+		md4cpy(porthash.pHash,toadd->GetUserHash());
+		pResult->m_ItemsList.Add(porthash);
+	}
+	else{
+		m_trackedClientsList.SetAt(toadd->GetIP(), new CDeletedClient(toadd));
+	}
+}
+//Xman end
 
 // true = everything ok, hash didn't changed
 // false = hash changed
@@ -475,7 +505,11 @@ bool CClientList::ComparePriorUserhash(uint32 dwIP, uint16 nPort, void* pNewHash
 	if (m_trackedClientsList.Lookup(dwIP, pResult)){
 		for (int i = 0; i != pResult->m_ItemsList.GetCount(); i++){
 			if (pResult->m_ItemsList[i].nPort == nPort){
-				if (pResult->m_ItemsList[i].pHash != pNewHash)
+				//Xman Extened credit- table-arragement
+				//make the Tracked-client-list independent 
+				//if (pResult->m_ItemsList[i].pHash != pNewHash)
+				if (md4cmp(pResult->m_ItemsList[i].pHash , pNewHash)!=0)
+				//Xman end
 					return false;
 				else
 					break;
@@ -791,15 +825,30 @@ void CClientList::RequestTCP(Kademlia::CContact* contact)
 
 	CUpDownClient* pNewClient = FindClientByIP(nContactIP, contact->GetTCPPort());
 
+	const bool bNewClient = pNewClient == NULL; //Xman Code Improvement don't search new generated clients in lists (seen by Wizard)
+
 	if (!pNewClient)
 		pNewClient = new CUpDownClient(0, contact->GetTCPPort(), contact->GetIPAddress(), 0, 0, false );
 
 	//Add client to the lists to be processed.
 	pNewClient->SetKadPort(contact->GetUDPPort());
 	pNewClient->SetKadState(KS_QUEUED_FWCHECK);
+	//Xman Code Improvement don't search new generated clients in lists (seen by Wizard)
+	/*
 	m_KadList.AddTail(pNewClient);
 	//This method checks if this is a dup already.
 	AddClient(pNewClient);
+	*/
+	//Xman no need to check for dupe in clientlist, either we found it or it's new
+	//if not new do a dupe check in kad-list and don't add to clientlist
+	if(bNewClient)
+	{
+		m_KadList.AddTail(pNewClient);
+		AddClient(pNewClient, true); 
+	}
+	else
+		AddToKadList(pNewClient); 
+	//Xman end
 }
 
 void CClientList::RequestBuddy(Kademlia::CContact* contact)
@@ -809,6 +858,9 @@ void CClientList::RequestBuddy(Kademlia::CContact* contact)
 	if (theApp.serverconnect->GetLocalIP() == nContactIP && thePrefs.GetPort() == contact->GetTCPPort())
 		return;
 	CUpDownClient* pNewClient = FindClientByIP(nContactIP, contact->GetTCPPort());
+	
+	const bool bNewClient = pNewClient == NULL; //Xman Code Improvement don't search new generated clients in lists (seen by Wizard)
+
 	if (!pNewClient)
 		pNewClient = new CUpDownClient(0, contact->GetTCPPort(), contact->GetIPAddress(), 0, 0, false );
 
@@ -818,9 +870,22 @@ void CClientList::RequestBuddy(Kademlia::CContact* contact)
 	byte ID[16];
 	contact->GetClientID().ToByteArray(ID);
 	pNewClient->SetUserHash(ID);
+	//Xman Code Improvement don't search new generated clients in lists (seen by Wizard)
+	/*
 	AddToKadList(pNewClient);
 	//This method checks if this is a dup already.
 	AddClient(pNewClient);
+	*/
+	//Xman no need to check for dupe in clientlist, either we found it or it's new
+	//if not new do a dupe check in kad-list and don't add to clientlist
+	if(bNewClient)
+	{
+		m_KadList.AddTail(pNewClient);
+		AddClient(pNewClient, true); 
+	}
+	else
+		AddToKadList(pNewClient); 
+	//Xman end
 }
 
 void CClientList::IncomingBuddy(Kademlia::CContact* contact, Kademlia::CUInt128* buddyID )
@@ -846,8 +911,13 @@ void CClientList::IncomingBuddy(Kademlia::CContact* contact, Kademlia::CUInt128*
 	pNewClient->SetUserHash(ID);
 	buddyID->ToByteArray(ID);
 	pNewClient->SetBuddyID(ID);
-	AddToKadList(pNewClient);
-	AddClient(pNewClient);
+	//Xman Code Improvement don't search new generated clients in lists (seen by Wizard)
+	//Xman it's a new client -> no dupe check
+	//AddToKadList(pNewClient);
+	//AddClient(pNewClient);
+	m_KadList.AddTail(pNewClient);
+	AddClient(pNewClient, true); 
+	//Xman end
 }
 
 void CClientList::RemoveFromKadList(CUpDownClient* torem){
@@ -921,12 +991,66 @@ void CClientList::CleanUp(CPartFile* pDeletedFile){
 }
 // Maella end
 
+#ifdef PRINT_STATISTIC
+void CClientList::PrintStatistic()
+{
+	AddLogLine(false,_T("Clients in Clientlist: %u"), list.GetSize());
+	AddLogLine(false, _T("Clients in Bannedlist: %u"), m_bannedList.GetSize());
+	AddLogLine(false, _T("Tracked Clients: %u"), m_trackedClientsList.GetSize());
+	AddLogLine(false, _T("Clients in Kadlist: %u"), m_KadList.GetSize());
+
+	AddLogLine(false, _T("sum of listelements of all known clients:"));
+	uint32 PartStatusMapCount=0;
+	uint32 upHistoryCount=0;
+	uint32 downHistoryCount=0;
+	uint32 DontSwapListCount=0;
+	uint32 BlockRequestedCount=0;
+	uint32 DoneBlocksCount=0;
+	uint32 RequestedFilesCount=0;
+	uint32 PendingBlockCount=0;
+	uint32 DownloadBlockCount=0;
+	uint32 NoNeededListCount=0;
+	uint32 OtherRequestListCount=0;
+	for(POSITION pos = list.GetHeadPosition(); pos != NULL;){		
+		CUpDownClient* cur_client =	list.GetNext(pos);
+		PartStatusMapCount += cur_client->GetPartStatusMapCount();
+		upHistoryCount += cur_client->GetupHistoryCount();
+		downHistoryCount += cur_client->GetdownHistoryCount();
+		DontSwapListCount += cur_client->GetDontSwapListCount();
+		BlockRequestedCount += cur_client->GetBlockRequestedCount();
+		DoneBlocksCount += cur_client->GetDoneBlocksCount();
+		RequestedFilesCount += cur_client->GetRequestedFilesCount();
+		PendingBlockCount += cur_client->GetPendingBlockCount();
+		DownloadBlockCount += cur_client->GetDownloadBlockCount();
+		NoNeededListCount += cur_client->GetNoNeededListCount();
+		OtherRequestListCount += cur_client->GetOtherRequestListCount();
+	}	
+	AddLogLine(false, _T("PartStatusMapCount: %u"), PartStatusMapCount);
+	AddLogLine(false, _T("upHistoryCount: %u"), upHistoryCount);
+	AddLogLine(false, _T("downHistoryCount %u"), downHistoryCount);
+	AddLogLine(false, _T("DontSwapListCount: %u"), DontSwapListCount);
+	AddLogLine(false, _T("BlockRequestedCount: %u"), BlockRequestedCount);
+	AddLogLine(false, _T("DoneBlocksCount: %u"), DoneBlocksCount);
+	AddLogLine(false, _T("RequestedFilesCount: %u"), RequestedFilesCount);
+	AddLogLine(false, _T("PendingBlockCount: %u"), PendingBlockCount);
+	AddLogLine(false, _T("DownloadBlockCount: %u"), DownloadBlockCount);
+	AddLogLine(false, _T("NoNeededListCount: %u"), NoNeededListCount);
+	AddLogLine(false, _T("OtherRequestListCount: %u"), OtherRequestListCount);
+	AddLogLine(false, _T("------------------------------------------------"));
+}
+#endif
 
 CDeletedClient::CDeletedClient(const CUpDownClient* pClient)
 {
 	m_cBadRequest = 0;
 	m_dwInserted = ::GetTickCount();
-	PORTANDHASH porthash = { pClient->GetUserPort(), pClient->Credits()};
+	//Xman Extened credit- table-arragement
+	//make the Tracked-client-list independent 
+	//track new port & hash
+	PORTANDHASH porthash;
+	porthash.nPort= pClient->GetUserPort();
+	md4cpy(porthash.pHash,pClient->GetUserHash());
+	//Xman end
 	m_ItemsList.Add(porthash);
 }
 

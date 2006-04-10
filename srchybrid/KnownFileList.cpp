@@ -46,7 +46,8 @@ static char THIS_FILE[] = __FILE__;
 
 CKnownFileList::CKnownFileList()
 {
-	m_Files_map.InitHashTable(2063);
+	//Xman Init-Hashtable optimization
+	//m_Files_map.InitHashTable(2063); //moved down
 	m_mapCancelledFiles.InitHashTable(1031);
 	accepted = 0;
 	requested = 0;
@@ -80,6 +81,9 @@ bool CKnownFileList::LoadKnownFiles(){
 			}
 			LogError(LOG_STATUSBAR, _T("%s"), strError);
 		}
+		//Xman Init-Hashtable optimization
+		m_Files_map.InitHashTable(1031);
+		//Xman end
 		return false;
 	}
 	setvbuf(file.m_pStream, NULL, _IOFBF, 16384);
@@ -89,16 +93,25 @@ bool CKnownFileList::LoadKnownFiles(){
 		uint8 header = file.ReadUInt8();
 		if (header != MET_HEADER && header != MET_HEADER_I64TAGS){
 			file.Close();
+			//Xman Init-Hashtable optimization
+			m_Files_map.InitHashTable(1031);
+			//Xman end
 			return false;
 		}
 		AddDebugLogLine(false, _T("Known.met file version is %u (%s support 64bit tags)"), header, (header == MET_HEADER) ? _T("doesn't") : _T("does")); 
 
 		UINT RecordsNumber = file.ReadUInt32();
+
+		//Xman Init-Hashtable optimization
+		m_Files_map.InitHashTable(UINT(RecordsNumber*1.2f + 1031));
+		//Xman end
+
 		for (UINT i = 0; i < RecordsNumber; i++) {
 			pRecord = new CKnownFile();
 			if (!pRecord->LoadFromFile(&file)){
 				TRACE(_T("*** Failed to load entry %u (name=%s  hash=%s  size=%I64u  parthashs=%u expected parthashs=%u) from known.met\n"), i, 
-					pRecord->GetFileName(), md4str(pRecord->GetFileHash()), pRecord->GetFileSize(), pRecord->GetHashCount(), pRecord->GetED2KPartHashCount());
+					//Xman
+					pRecord->GetFileName(), md4str(pRecord->GetFileHash()), pRecord->GetFileSize(), pRecord->GetHashCount(), pRecord->GetED2KPartCount());	// SLUGFILLER: SafeHash - removed unnececery hash counter
 				delete pRecord;
 				pRecord = NULL;
 				continue;
@@ -118,6 +131,11 @@ bool CKnownFileList::LoadKnownFiles(){
 		}
 		error->Delete();
 		delete pRecord;
+		//Xman Init-Hashtable optimization
+		if(m_Files_map.GetHashTableSize()==0)
+			m_Files_map.InitHashTable(1031);
+		//Xman end
+
 		return false;
 	}
 
@@ -126,7 +144,12 @@ bool CKnownFileList::LoadKnownFiles(){
 
 bool CKnownFileList::LoadCancelledFiles(){
 	if (!thePrefs.IsRememberingCancelledFiles())
+	{
+		//Xman Init-Hashtable optimization
+		m_mapCancelledFiles.InitHashTable(209);
+		//Xman end
 		return true;
+	}
 	CString fullpath=thePrefs.GetConfigDir();
 	fullpath.Append(CANCELLED_MET_FILENAME);
 	CSafeBufferedFile file;
@@ -141,6 +164,9 @@ bool CKnownFileList::LoadCancelledFiles(){
 			}
 			LogError(LOG_STATUSBAR, _T("%s"), strError);
 		}
+		//Xman Init-Hashtable optimization
+		m_mapCancelledFiles.InitHashTable(209);
+		//Xman end
 		return false;
 	}
 	setvbuf(file.m_pStream, NULL, _IOFBF, 16384);
@@ -149,10 +175,16 @@ bool CKnownFileList::LoadCancelledFiles(){
 		uint8 header = file.ReadUInt8();
 		if (header != MET_HEADER){
 			file.Close();
+			//Xman Init-Hashtable optimization
+			m_mapCancelledFiles.InitHashTable(209);
+			//Xman end
 			return false;
 		}
 
 		UINT RecordsNumber = file.ReadUInt32();
+		//Xman Init-Hashtable optimization
+		m_mapCancelledFiles.InitHashTable(UINT(RecordsNumber * 1.2f + 209));
+		//Xman end
 		for (UINT i = 0; i < RecordsNumber; i++) {
 			file.ReadHash16(ucHash);
 			uint8 nCount = file.ReadUInt8();
@@ -173,6 +205,10 @@ bool CKnownFileList::LoadCancelledFiles(){
 			LogError(LOG_STATUSBAR, GetResString(IDS_ERR_FAILEDTOLOAD), CANCELLED_MET_FILENAME, buffer);
 		}
 		error->Delete();
+		//Xman Init-Hashtable optimization
+		if(m_mapCancelledFiles.GetHashTableSize()==0)
+			m_mapCancelledFiles.InitHashTable(209);
+		//Xman end
 		return false;
 	}
 	return true;
@@ -364,13 +400,12 @@ bool CKnownFileList::SafeAddKFile(CKnownFile* toadd)
 		delete pFileInMap;
 
 		//Xman official bugfix for redownloading already downloaded file
-		//Xman 5.01 removed the patch for the moment
+		//Xman 5.1 readded but modified
 		//remark: official emule has a bug at this point. download a shared file and you see:
 		//both files will be unshared. But this patch leads to a crash in an unknown situation
-		/*
 		if (theApp.sharedfiles && !theApp.sharedfiles->IsFilePtrInList(toadd))
-			theApp.sharedfiles->SafeAddKFile(toadd);
-		*/
+			theApp.sharedfiles->SafeAddKFileWithOutRemoveHasing(toadd);
+
 		
 		//Xman [MoNKi: -Downloaded History-]
 		theApp.emuledlg->sharedfileswnd->historylistctrl.AddFile(toadd);

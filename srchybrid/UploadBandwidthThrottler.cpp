@@ -546,10 +546,28 @@ void UploadBandwidthThrottler::Pause(bool paused) {
 UINT AFX_CDECL UploadBandwidthThrottler::RunProc(LPVOID pParam) {
 	DbgSetThreadName("UploadBandwidthThrottler");
 	InitThreadLocale();
+	//Xman
+	// BEGIN SLUGFILLER: SafeHash
+	CReadWriteLock lock(&theApp.m_threadlock);
+	if (!lock.ReadLock(0))
+		return 0;
+	// END SLUGFILLER: SafeHash
+
 	UploadBandwidthThrottler* uploadBandwidthThrottler = (UploadBandwidthThrottler*)pParam;
 
 	return uploadBandwidthThrottler->RunInternal();
 }
+
+#ifdef PRINT_STATISTIC
+void UploadBandwidthThrottler::PrintStatistic()
+{
+	sendLocker.Lock();
+	uint32 amount=m_ControlQueue_list.GetCount();
+	amount += m_ControlQueueFirst_list.GetCount();
+	AddLogLine(false, _T("Queued Control-Sockets: %u"), amount);
+	sendLocker.Unlock();
+}
+#endif
 
 /**
  * The thread method that handles calling send for the individual sockets.
@@ -655,9 +673,6 @@ UINT UploadBandwidthThrottler::RunInternal() {
 			doubleSendSize = minFragSize; // don't send two packages at a time at very low speeds to give them a smoother load
 		}
 
-		const uint32 toadd=(uint32)(allowedDataRate*(float)timeSinceLastLoop/1000);
-		uSlopehelp +=toadd;
-		uSlopehelp_minUpload += (uint32)(toadd*0.33f); //Xman 4.4 Code-Improvement: reserve 1/3 of your uploadlimit for emule
 		m_currentOverallSentBytes=theApp.pBandWidthControl->GeteMuleOutOverall();
 		m_currentNetworkOut=theApp.pBandWidthControl->GetNetworkOut();
 		
@@ -675,15 +690,19 @@ UINT UploadBandwidthThrottler::RunInternal() {
         //*/
 		uSlopehelp_minUpload -= (uint32)(m_currentOverallSentBytes - m_lastOverallSentBytes); //Xman 4.4 Code-Improvement: reserve 1/3 of your uploadlimit for emule
 
+		//don't go over limit during the start-phase
+		if(uSlopehelp>0 && allowedDataRate/slotspeed/2 > (uint32)m_StandardOrder_list.GetSize())
+			uSlopehelp=0;
+		const uint32 toadd=(uint32)(allowedDataRate*(float)timeSinceLastLoop/1000);
+		uSlopehelp +=toadd;
+		uSlopehelp_minUpload += (uint32)(toadd*0.33f); //Xman 4.4 Code-Improvement: reserve 1/3 of your uploadlimit for emule
+
+
 		// Keep current value for next processing    
         m_lastOverallSentBytes = m_currentOverallSentBytes;
         m_lastNetworkOut = m_currentNetworkOut;
 
 		//compensate:
-		//new Patch
-		if(uSlopehelp>3000 && allowedDataRate/slotspeed/2 > (uint32)m_StandardOrder_list.GetSize())
-			uSlopehelp=3000;
-		else
 		if(uSlopehelp > allowedDataRate*MAXSLOPEBUFFERTIME*0.33f) //max 0.3 x sec //Xman 
 			uSlopehelp=(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.33f); 
 		else if(uSlopehelp < -(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.5f)) //max 0,2 sec

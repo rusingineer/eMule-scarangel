@@ -176,10 +176,13 @@ protected:
 	// <== ScarAngel Version Check - Stulle
 
 	// Splash screen
+	//Xman new slpash-screen arrangement
+	/*
 	CSplashScreenEx *m_pSplashWnd; //Xman Splashscreen
 	DWORD m_dwSplashTime;
 	void ShowSplash();
 	void DestroySplash();
+	*/
 
 	// Mini Mule
 	CMiniMule* m_pMiniMule;
@@ -254,6 +257,20 @@ protected:
 	afx_msg LRESULT OnWMData(WPARAM wParam,LPARAM lParam);
 	afx_msg LRESULT OnFileHashed(WPARAM wParam,LPARAM lParam);
 	afx_msg LRESULT OnHashFailed(WPARAM wParam,LPARAM lParam);
+	//Xman
+	// BEGIN SLUGFILLER: SafeHash
+	afx_msg LRESULT OnPartHashedOK(WPARAM wParam,LPARAM lParam);
+	afx_msg LRESULT OnPartHashedCorrupt(WPARAM wParam,LPARAM lParam);
+	afx_msg LRESULT OnPartHashedOKAICHRecover(WPARAM wParam,LPARAM lParam);
+	afx_msg LRESULT OnPartHashedCorruptAICHRecover(WPARAM wParam,LPARAM lParam);
+	// END SLUGFILLER: SafeHash
+	// BEGIN SiRoB: ReadBlockFromFileThread
+	afx_msg LRESULT OnReadBlockFromFileDone(WPARAM wParam,LPARAM lParam);
+	// BEGIN SiRoB: ReadBlockFromFileThread
+	// END SiRoB: Flush Thread
+	afx_msg LRESULT OnFlushDone(WPARAM wParam,LPARAM lParam);
+	// END SiRoB: Flush Thread
+
 	afx_msg LRESULT OnFileAllocExc(WPARAM wParam,LPARAM lParam);
 	afx_msg LRESULT OnFileCompleted(WPARAM wParam,LPARAM lParam);
 	afx_msg LRESULT OnFileOpProgress(WPARAM wParam,LPARAM lParam);
@@ -301,6 +318,15 @@ enum EEMuleAppMsgs
 	//thread messages
 	TM_FINISHEDHASHING = WM_APP + 10,
 	TM_HASHFAILED,
+	//Xman
+	// BEGIN SLUGFILLER: SafeHash - new handling
+	TM_PARTHASHEDOK,
+	TM_PARTHASHEDCORRUPT,
+	TM_PARTHASHEDOKAICHRECOVER,
+	TM_PARTHASHEDCORRUPTAICHRECOVER,
+	// END SLUGFILLER: SafeHash
+	TM_READBLOCKFROMFILEDONE, // SiRoB: ReadBlockFromFileThread
+	TM_FLUSHDONE, // SiRoB: Flush Thread
 	TM_FRAMEGRABFINISHED,
 	TM_FILEALLOCEXC,
 	TM_FILECOMPLETED,

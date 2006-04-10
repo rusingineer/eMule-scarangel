@@ -149,6 +149,7 @@ void CTrayMenuBtn::OnPaint()
 
 	dc.BitBlt(0,0,rClient.Width(),rClient.Height(),&MemDC,0,0,SRCCOPY);
 	MemDC.SelectObject(pOldBMP);
+	MemBMP.DeleteObject(); //Xman Code Improvement 
 	if(pOldFONT)
 		MemDC.SelectObject(pOldFONT);
 }

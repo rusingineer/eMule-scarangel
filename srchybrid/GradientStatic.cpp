@@ -216,6 +216,9 @@ void CGradientStatic::DrawVerticalText(CRect *pRect)
 	DrawRotatedText(m_Mem.dc.m_hDC, strText, rText, 90);
 	
 	m_Mem.dc.SelectObject(pOldFont);
+
+	//Xman Code Imrovement
+	Font.DeleteObject();
 }	
 
 void CGradientStatic::SetFont(CFont *pFont)

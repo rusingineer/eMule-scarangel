@@ -100,6 +100,13 @@ UINT AFX_CDECL CArchiveRecovery::run(LPVOID lpParam)
 	DbgSetThreadName("ArchiveRecovery");
 	InitThreadLocale();
 
+	//Xman
+	// BEGIN SLUGFILLER: SafeHash
+	CReadWriteLock lock(&theApp.m_threadlock);
+	if (!lock.ReadLock(0))
+		return 0;
+	// END SLUGFILLER: SafeHash
+
 	if (!performRecovery(tp->partFile, tp->filled, tp->preview, tp->bCreatePartFileCopy))
 		theApp.QueueLogLine(true, _T("%s \"%s\""), GetResString(IDS_RECOVERY_FAILED), tp->partFile->GetFileName());
 

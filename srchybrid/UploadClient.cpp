@@ -101,7 +101,7 @@ void CUpDownClient::DrawUpStatusBar(CDC* dc, RECT* rect, bool onlygreyrect, bool
 		    }
 	    }
 	    if (!m_DoneBlocks_list.IsEmpty()){
-		    block = m_DoneBlocks_list.GetTail();
+		    block = m_DoneBlocks_list.GetHead(); //Xman fix by Sirob
 		    if(block){
 			    uint32 start = (uint32)(block->StartOffset/PARTSIZE);
 			    statusBar.FillRange((uint64)start*PARTSIZE, (uint64)(start+1)*PARTSIZE, crNextSending);
@@ -281,7 +281,8 @@ uint32 CUpDownClient::GetScore(bool sysvalue, bool isdownloading, bool onlybasev
 	if (IsFriend() && GetFriendSlot() && !HasLowID())
 		return 0x0FFFFFFF;
 
-	if (IsBanned() || m_bGPLEvildoer)
+	//if (IsBanned() || m_bGPLEvildoer)
+	if (GetUploadState()==US_BANNED || m_bGPLEvildoer) //Xman Code Improvement 
 		return 0;
 
 	if (sysvalue && HasLowID() && !(socket && socket->IsConnected())){
@@ -435,8 +436,21 @@ public:
 	CSyncObject* m_pObject;
 };
 
-//Xman Maella Code Improvement
+
+//Xman Code Improvement
+// BEGIN SiRoB: ReadBlockFromFileThread
 void CUpDownClient::CreateNextBlockPackage(){
+
+	//Xman ReadBlockFromFileThread Improvement
+	if(filedata == (byte*)-2)
+		return; //operation in progress
+	//Xman end
+
+	//Xman Full Chunk
+	if(upendsoon)
+		return;
+	//Xman end
+
     // See if we can do an early return. There may be no new blocks to load from disk and add to buffer, or buffer may be large enough allready.
     if(m_BlockRequests_queue.IsEmpty() || // There are no new blocks requested
        m_addedPayloadQueueSession > GetQueueSessionPayloadUp() && m_addedPayloadQueueSession-GetQueueSessionPayloadUp() > 160*1024) { // the buffered data is large enough allready //Xman changed
@@ -444,169 +458,148 @@ void CUpDownClient::CreateNextBlockPackage(){
     }
 
     CFile file;
+
 	CString fullname;
 	bool bFromPF = true; // Statistic to breakdown uploaded data by complete file vs. partfile.
 	
-	static byte filedata[EMBLOCKSIZE*3]; // works because mono-thread
-	CSyncHelper lockFile;
 	try{
-		// Buffer new data if current buffer is less than 200 KBytes
-        while (!m_BlockRequests_queue.IsEmpty() &&
-               (m_addedPayloadQueueSession <= GetQueueSessionPayloadUp() || m_addedPayloadQueueSession-GetQueueSessionPayloadUp() < EMBLOCKSIZE)) { //Xman changed  
-			//Xman Full Chunk
-		    //at this point we do the check if it is time to kick the client
-		    //if we kick soon, we don't add new packages
-			upendsoon=theApp.uploadqueue->CheckForTimeOver(this);
-			if(upendsoon==true)
-				break;
+		// Buffer new data if current buffer is less than 180 KBytes
+		while (!m_BlockRequests_queue.IsEmpty() && /*filedata != (byte*)-2 &&*/
+				(m_addedPayloadQueueSession <= GetQueueSessionPayloadUp() || m_addedPayloadQueueSession-GetQueueSessionPayloadUp() < EMBLOCKSIZE)) { //Xman changed  
+				//Xman Full Chunk
+				//at this point we do the check if it is time to kick the client
+				//if we kick soon, we don't add new packages
+				//Xman ReadBlockFromFileThread:
+				//-->we first have to check if we have unprocessed data (can happen if full chunk is disabled)
+				//-->first process it, then check for timeOver
+				//-->in case of an exception, allow to throw it
+				if(filedata==NULL)
+					upendsoon=theApp.uploadqueue->CheckForTimeOver(this);
+				if(upendsoon==true)
+					break;
 			//Xman end
+
 			Requested_Block_Struct* currentblock = m_BlockRequests_queue.GetHead();
 			CKnownFile* srcfile = theApp.sharedfiles->GetFileByID(currentblock->FileID);
 			if (!srcfile)
 				throw GetResString(IDS_ERR_REQ_FNF);
 
-			if (srcfile->IsPartFile() && ((CPartFile*)srcfile)->GetStatus() != PS_COMPLETE){
-				// Do not access a part file, if it is currently moved into the incoming directory.
-				// Because the moving of part file into the incoming directory may take a noticable 
-				// amount of time, we can not wait for 'm_FileCompleteMutex' and block the main thread.
-				if (!((CPartFile*)srcfile)->m_FileCompleteMutex.Lock(0)){ // just do a quick test of the mutex's state and return if it's locked.
-					return;
-				}
-				lockFile.m_pObject = &((CPartFile*)srcfile)->m_FileCompleteMutex;
-				// If it's a part file which we are uploading the file remains locked until we've read the
-				// current block. This way the file completion thread can not (try to) "move" the file into
-				// the incoming directory.
-
-				fullname = RemoveFileExtension(((CPartFile*)srcfile)->GetFullName());
-			}
-			else{
-				fullname.Format(_T("%s\\%s"),srcfile->GetPath(),srcfile->GetFileName());
-			}
-		
 			uint64 i64uTogo;
 			if (currentblock->StartOffset > currentblock->EndOffset){
 				i64uTogo = currentblock->EndOffset + (srcfile->GetFileSize() - currentblock->StartOffset);
 			}
 			else{
 				i64uTogo = currentblock->EndOffset - currentblock->StartOffset;
+					// BEGIN SiRoB, SLUGFILLER: SafeHash
+					/*
 				if (srcfile->IsPartFile() && !((CPartFile*)srcfile)->IsComplete(currentblock->StartOffset,currentblock->EndOffset-1, true))
+					*/
+					if (srcfile->IsPartFile() && !((CPartFile*)srcfile)->IsRangeShareable(currentblock->StartOffset,currentblock->EndOffset-1))	// SLUGFILLER: SafeHash - final safety precaution
+					// END SiRoB, SLUGFILLER: SafeHash
 					throw GetResString(IDS_ERR_INCOMPLETEBLOCK);
 			}
 
-			if( i64uTogo >= sizeof(filedata) )
+				if( i64uTogo > EMBLOCKSIZE*3 )
 				throw GetResString(IDS_ERR_LARGEREQBLOCK);
 			uint32 togo = (uint32)i64uTogo;
 
-			if (!srcfile->IsPartFile()){
-				bFromPF = false; // This is not a part file...
-				if (!file.Open(fullname,CFile::modeRead|CFile::osSequentialScan|CFile::shareDenyNone))
+
+				if (filedata == NULL) {
+					CReadBlockFromFileThread* readblockthread = (CReadBlockFromFileThread*) AfxBeginThread(RUNTIME_CLASS(CReadBlockFromFileThread), THREAD_PRIORITY_NORMAL,0, CREATE_SUSPENDED);
+					readblockthread->SetReadBlockFromFile(srcfile, currentblock->StartOffset, togo, this);
+					readblockthread->ResumeThread();
+					filedata = (byte*)-2;
+					return;
+				} else if (filedata == (byte*)-1) {
+					//An error occured
+					theApp.sharedfiles->Reload();
 					throw GetResString(IDS_ERR_OPEN);
-				file.Seek(currentblock->StartOffset,0);
-				
-				if (uint32 done = file.Read(filedata,togo) != togo){
-					file.SeekToBegin();
-					file.Read(filedata + done,togo-done);
 				}
-				file.Close();
-			}
-			else{
-				CPartFile* partfile = (CPartFile*)srcfile;
-
-				partfile->m_hpartfile.Seek(currentblock->StartOffset,0);
 				
-				if (uint32 done = partfile->m_hpartfile.Read(filedata,togo) != togo){
-					partfile->m_hpartfile.SeekToBegin();
-					partfile->m_hpartfile.Read(filedata + done,togo-done);
-				}
-			}
-			if (lockFile.m_pObject){
-				lockFile.m_pObject->Unlock(); // Unlock the (part) file as soon as we are done with accessing it.
-				lockFile.m_pObject = NULL;
-			}
+				if (!srcfile->IsPartFile())
+					bFromPF = false; // This is not a part file...
 
-			SetUploadFileID(srcfile);
+				SetUploadFileID(srcfile);
 
-			// ==> WebCache [WC team/MorphXT] - Stulle/Max
-			if (IsUploadingToWebCache()) // Superlexx - encryption: encrypt here
-			{
-				Crypt.RefreshLocalKey();
-				Crypt.encryptor.SetKey(Crypt.localKey, WC_KEYLENGTH);
-				Crypt.encryptor.DiscardBytes(16); // we must throw away 16 bytes of the key stream since they were already used once, 16 is the file hash length
-				Crypt.encryptor.ProcessString(filedata, togo);
-			}
-			// <== WebCache [WC team/MorphXT] - Stulle/Max
-
-			// check extension to decide whether to compress or not
-			// Decide whether to compress the packets or not
-			// ==> WebCache [WC team/MorphXT] - Stulle/Max
-			/*
-			bool compFlag = (m_byDataCompVer == 1) && (IsUploadingToPeerCache() == false);
-			*/
-			bool compFlag = (m_byDataCompVer == 1) && (IsUploadingToPeerCache() == false) && (IsUploadingToWebCache() == false);
-			// <== WebCache [WC team/MorphXT] - Stulle/Max
-
-			//Xman Code Improvement for choosing to use compression
-			if(compFlag == true)
-			{
-				/* moved to abstractfile
-				// Check extension
-				int pos = srcfile->GetFileName().ReverseFind(_T('.'));
-				if(pos != -1)
+				// ==> WebCache [WC team/MorphXT] - Stulle/Max
+				if (IsUploadingToWebCache()) // Superlexx - encryption: encrypt here
 				{
-					CString ext = srcfile->GetFileName().Mid(pos);
-					ext.MakeLower();
-
-					// Skip compressed file
-					if(thePrefs.GetDontCompressAvi() && ext == _T(".avi"))
-						compFlag = false;
-					else if(ext == _T(".zip") || ext == _T(".rar") || ext == _T(".ace") || ext == _T(".ogm") || ext == _T(".cbz") || ext == _T(".cbr"))
-						compFlag = false;
+					Crypt.RefreshLocalKey();
+					Crypt.encryptor.SetKey(Crypt.localKey, WC_KEYLENGTH);
+					Crypt.encryptor.DiscardBytes(16); // we must throw away 16 bytes of the key stream since they were already used once, 16 is the file hash length
+					Crypt.encryptor.ProcessString(filedata, togo);
 				}
+				// <== WebCache [WC team/MorphXT] - Stulle/Max
+
+				// check extension to decide whether to compress or not
+				//Xman Code Improvement for choosing to use compression
+				// Decide whether to compress the packets or not
+				// ==> WebCache [WC team/MorphXT] - Stulle/Max
+				/*
+				bool compFlag = (m_byDataCompVer == 1) && (IsUploadingToPeerCache() == false);
 				*/
-				if(srcfile->IsCompressible()==false)
-					compFlag=false;
+				bool compFlag = (m_byDataCompVer == 1) && (IsUploadingToPeerCache() == false) && (IsUploadingToWebCache() == false);
+				// <== WebCache [WC team/MorphXT] - Stulle/Max
+
+				if(compFlag == true)
+				{
+					/* moved to abstractfile
+					// Check extension
+					int pos = srcfile->GetFileName().ReverseFind(_T('.'));
+					if(pos != -1)
+					{
+						CString ext = srcfile->GetFileName().Mid(pos);
+						ext.MakeLower();
+
+						// Skip compressed file
+						if(thePrefs.GetDontCompressAvi() && ext == _T(".avi"))
+							compFlag = false;
+						else if(ext == _T(".zip") || ext == _T(".rar") || ext == _T(".ace") || ext == _T(".ogm") || ext == _T(".cbz") || ext == _T(".cbr"))
+							compFlag = false;
+					}
+					*/
+					if(srcfile->IsCompressible()==false)
+						compFlag=false;
+				}
+
+				if (compFlag == true)
+					CreatePackedPackets(filedata,togo,currentblock,bFromPF);
+				else
+					CreateStandartPackets(filedata,togo,currentblock,bFromPF);
+				//Xman end
+
+				//Xman Xtreme Upload 
+				if(GetFileUploadSocket() && GetFileUploadSocket()->isready==false)
+				{
+					GetFileUploadSocket()->isready=true;
+					//socket->isready=true;
+					theApp.uploadBandwidthThrottler->SetNoNeedSlot();
+				}
+
+				// file statistic
+				srcfile->statistic.AddTransferred(currentblock->StartOffset, togo); //Xman PowerRelease
+
+				m_addedPayloadQueueSession += togo;
+
+				m_DoneBlocks_list.AddHead(m_BlockRequests_queue.RemoveHead());
+
+				// Maella -One-queue-per-file- (idea bloodymad)
+				srcfile->UpdateStartUploadTime();
+				// Maella end
+
+				delete[] filedata;
+				filedata = NULL;
 			}
-			//Xman end
-
-			if (compFlag == true)
-				CreatePackedPackets(filedata,togo,currentblock,bFromPF);
-			else
-				CreateStandartPackets(filedata,togo,currentblock,bFromPF);
-			//Xman Xtreme Upload 
-			if(GetFileUploadSocket() && GetFileUploadSocket()->isready==false)
-			{
-				GetFileUploadSocket()->isready=true;
-				//socket->isready=true;
-				theApp.uploadBandwidthThrottler->SetNoNeedSlot();
-			}
-
-			// file statistic
-			srcfile->statistic.AddTransferred(currentblock->StartOffset, togo); //Xman PowerRelease
-			//Xman todo: better we add this, after packet was sent
-
-            m_addedPayloadQueueSession += togo;
-
-			m_DoneBlocks_list.AddHead(m_BlockRequests_queue.RemoveHead());
-
-			// Maella -One-queue-per-file- (idea bloodymad)
-			srcfile->UpdateStartUploadTime();
-			// Maella end
-
-		}
 	}
 	catch(CString error)
 	{
-		//Xman Reload shared files on filenotfound exception
-		if (error==GetResString(IDS_ERR_OPEN) || error==GetResString(IDS_ERR_REQ_FNF))
-		{
-			theApp.sharedfiles->Reload();
-			AddDebugLogLine(false, _T("file not found, reloading shared files"));
-		}
-		//Xman end
-
 		if (thePrefs.GetVerbose())
 			DebugLogWarning(GetResString(IDS_ERR_CLIENTERRORED), GetUserName(), error);
 		theApp.uploadqueue->RemoveFromUploadQueue(this, _T("Client error: ") + error, CUpDownClient::USR_EXCEPTION); // Maella -Upload Stop Reason-
+		if (filedata != (byte*)-2 && filedata != (byte*)-1 && filedata != NULL) {
+			delete[] filedata;
+			filedata = NULL;
+		}
 		return;
 	}
 	catch(CFileException* e)
@@ -620,11 +613,17 @@ void CUpDownClient::CreateNextBlockPackage(){
 		if (thePrefs.GetVerbose())
 			DebugLogWarning(_T("Failed to create upload package for %s - %s"), GetUserName(), szError);
 		theApp.uploadqueue->RemoveFromUploadQueue(this, ((CString)_T("Failed to create upload package.")) + szError, CUpDownClient::USR_EXCEPTION); // Maella -Upload Stop Reason-
+		if (filedata != (byte*)-2 && filedata != (byte*)-1 && filedata != NULL) {
+			delete[] filedata;
+			filedata = NULL;
+		}
 		e->Delete();
 		return;
 	}
 }
+// END SiRoB: ReadBlockFromFileThread
 //Xman end
+
 bool CUpDownClient::ProcessExtendedInfo(CSafeMemFile* data, CKnownFile* tempreqfile, bool isUDP) //Xman better passive source finding
 {
 	delete[] m_abyUpPartStatus;
@@ -702,10 +701,9 @@ bool CUpDownClient::ProcessExtendedInfo(CSafeMemFile* data, CKnownFile* tempreqf
 						m_OtherRequests_list.AddHead((CPartFile*)tempreqfile);
 
 						if (thePrefs.GetVerbose())
-							AddDebugLogLine(false, _T("Source '%s' has some part(s) available now for '%s'"), 
-							GetUserName(),
-							tempreqfile->GetFileName());					
-						break; 
+							AddDebugLogLine(false, _T("->a source has now parts available. %s, file: %s"), DbgGetClientInfo(), tempreqfile->GetFileName());
+						//break; 
+						return true; //we are ready here
 					}
 				}
 			}
@@ -722,14 +720,24 @@ bool CUpDownClient::ProcessExtendedInfo(CSafeMemFile* data, CKnownFile* tempreqf
 		//the client was a NNS but isn't any more
 		if(GetDownloadState()==DS_NONEEDEDPARTS && reqfile==tempreqfile)
 			TrigNextSafeAskForDownload(reqfile);
-		else
-		//the client maybe isn't in our downloadqueue.. let's look if we should add the client
-		if((credits && credits->GetMyScoreRatio(GetIP())>=1.8f && ((CPartFile*)tempreqfile)->GetSourceCount() < ((CPartFile*)tempreqfile)->GetMaxSources())
-			|| ((CPartFile*)tempreqfile)->GetSourceCount() < ((CPartFile*)tempreqfile)->GetMaxSources()*0.8f + 1)
+		else if(GetDownloadState()!=DS_ONQUEUE)
 		{
-			if(((CPartFile*)tempreqfile)->IsGlobalSourceAddAllowed()) //Xman GlobalMaxHarlimit for fairness
-				theApp.downloadqueue->CheckAndAddKnownSource((CPartFile*)tempreqfile,this, true);
-			//AddDebugLogLine(false,_T("->check source on reaskping: %s"),DbgGetClientInfo());
+			//the client maybe isn't in our downloadqueue.. let's look if we should add the client
+			if((credits && credits->GetMyScoreRatio(GetIP())>=1.8f && ((CPartFile*)tempreqfile)->GetSourceCount() < ((CPartFile*)tempreqfile)->GetMaxSources())
+				|| ((CPartFile*)tempreqfile)->GetSourceCount() < ((CPartFile*)tempreqfile)->GetMaxSources()*0.8f + 1)
+			{
+				if(((CPartFile*)tempreqfile)->IsGlobalSourceAddAllowed()) //Xman GlobalMaxHarlimit for fairness
+					if(theApp.downloadqueue->CheckAndAddKnownSource((CPartFile*)tempreqfile,this, true))
+						AddDebugLogLine(false, _T("->found new source on reask-ping: %s, file: %s"), DbgGetClientInfo(), tempreqfile->GetFileName());
+			}
+		}
+		else
+		{
+			if (AddRequestForAnotherFile((CPartFile*)tempreqfile))
+			{
+				theApp.emuledlg->transferwnd->downloadlistctrl.AddSource((CPartFile*)tempreqfile,this,true);
+				AddDebugLogLine(false, _T("->found new A4AF source on reask-ping: %s, file: %s"), DbgGetClientInfo(), tempreqfile->GetFileName());
+			}
 		}
 	}
 	return true;
@@ -1079,7 +1087,7 @@ uint32 CUpDownClient::SendBlockData(){
 		//Xman Full Chunk
 		//in CreateNextBlockPackage we saw this upload end soon,
 		//after all packets are send, we cancel this upload
-		if (upendsoon && socket->StandardPacketQueueIsEmpty()) {
+		if (upendsoon && s->StandardPacketQueueIsEmpty()) {
 			theApp.uploadqueue->RemoveFromUploadQueue(this, _T("Completed transfer"),CUpDownClient::USR_COMPLETEDRANSFER ,true ); // Maella -Upload Stop Reason-
 			SendOutOfPartReqsAndAddToWaitingQueue();
         } 
@@ -1151,6 +1159,15 @@ void CUpDownClient::ClearUploadBlockRequests()
 	for (POSITION pos = m_DoneBlocks_list.GetHeadPosition();pos != 0;)
 		delete m_DoneBlocks_list.GetNext(pos);
 	m_DoneBlocks_list.RemoveAll();
+
+	//Xman
+	// BEGIN SiRoB: ReadBlockFromFileThread
+	if (filedata != (byte*)-1 && filedata != (byte*)-2 && filedata != NULL) {
+		delete[] filedata;
+		filedata = NULL;
+	}
+	// END SiRoB: ReadBlockFromFileThread
+
 }
 
 void CUpDownClient::SendRankingInfo(){
@@ -1458,11 +1475,15 @@ void CUpDownClient::CompUploadRate(){
 
 	// Check and then refresh GUI
 	m_displayUpDatarateCounter++;
-	if(m_displayUpDatarateCounter >= DISPLAY_REFRESH){ // && GetUploadState() == US_UPLOADING){ => already in upload list
-		m_displayUpDatarateCounter = 0;
+	//Xman Code Improvement: slower refresh for clientlist
+	if(m_displayUpDatarateCounter%DISPLAY_REFRESH == 0 ){
 		theApp.emuledlg->transferwnd->uploadlistctrl.RefreshClient(this);
-		theApp.emuledlg->transferwnd->clientlistctrl.RefreshClient(this);
 	}
+	if(m_displayUpDatarateCounter%DISPLAY_REFRESH_CLIENTLIST == 0 ){
+		theApp.emuledlg->transferwnd->clientlistctrl.RefreshClient(this);
+		m_displayUpDatarateCounter = 0;
+	}
+
 }
 // Maella end
 
@@ -1591,6 +1612,106 @@ void CUpDownClient::BanLeecher(LPCTSTR pszReason, uint8 leechercategory){
 		socket->ShutDown(SD_RECEIVE); // let the socket timeout, since we dont want to risk to delete the client right now. This isnt acutally perfect, could be changed later
 }
 //Xman end
+
+
+//Xman
+//MORPH START - Changed by SiRoB, ReadBlockFromFileThread
+IMPLEMENT_DYNCREATE(CReadBlockFromFileThread, CWinThread)
+
+void CReadBlockFromFileThread::SetReadBlockFromFile(CKnownFile* pfile, uint64 startOffset, uint32 toread, CUpDownClient* client) {
+	srcfile = pfile;
+	StartOffset = startOffset;
+	togo = toread;
+	m_client = client;
+} 
+
+int CReadBlockFromFileThread::Run() {
+	DbgSetThreadName("CReadBlockFromFileThread");
+
+	InitThreadLocale();
+	// SLUGFILLER: SafeHash
+	CReadWriteLock lock(&theApp.m_threadlock);
+	if (!lock.ReadLock(0))
+		return 0;
+	// SLUGFILLER: SafeHash
+
+	CFile file;
+	byte* filedata = NULL;
+	CSyncHelper lockFile;
+	try{
+		CString fullname;
+		if (srcfile->IsPartFile() && ((CPartFile*)srcfile)->GetStatus() != PS_COMPLETE){
+			((CPartFile*)srcfile)->m_FileCompleteMutex.Lock();
+			lockFile.m_pObject = &((CPartFile*)srcfile)->m_FileCompleteMutex;
+			// If it's a part file which we are uploading the file remains locked until we've read the
+			// current block. This way the file completion thread can not (try to) "move" the file into
+			// the incoming directory.
+
+			fullname = RemoveFileExtension(((CPartFile*)srcfile)->GetFullName());
+		}
+		else{
+			fullname.Format(_T("%s\\%s"),srcfile->GetPath(),srcfile->GetFileName());
+		}
+
+		if (!file.Open(fullname,CFile::modeRead|CFile::osSequentialScan|CFile::shareDenyNone))
+			throw GetResString(IDS_ERR_OPEN);
+
+		file.Seek(StartOffset,0);
+
+		filedata = new byte[togo+500];
+		if (uint32 done = file.Read(filedata,togo) != togo){
+			file.SeekToBegin();
+			file.Read(filedata + done,togo-done);
+		}
+		file.Close();
+
+		if (lockFile.m_pObject){
+			lockFile.m_pObject->Unlock(); // Unlock the (part) file as soon as we are done with accessing it.
+			lockFile.m_pObject = NULL;
+		}
+
+		if (theApp.emuledlg && theApp.emuledlg->IsRunning())
+			PostMessage(theApp.emuledlg->m_hWnd,TM_READBLOCKFROMFILEDONE, (WPARAM)filedata,(LPARAM)m_client);
+		else {
+			delete[] filedata;
+			filedata = NULL;
+		}
+	}
+	catch(CString error)
+	{
+		if (thePrefs.GetVerbose())
+			DebugLogWarning(GetResString(IDS_ERR_CLIENTERRORED), m_client->GetUserName(), error);
+		if (theApp.emuledlg && theApp.emuledlg->IsRunning())
+			PostMessage(theApp.emuledlg->m_hWnd,TM_READBLOCKFROMFILEDONE,(WPARAM)-1,(LPARAM)m_client);
+		else if (filedata != (byte*)-1 && filedata != (byte*)-2 && filedata != NULL)
+			delete[] filedata;
+		return 1;
+	}
+	catch(CFileException* e)
+	{
+		TCHAR szError[MAX_CFEXP_ERRORMSG];
+		e->GetErrorMessage(szError, ARRSIZE(szError));
+		if (thePrefs.GetVerbose())
+			DebugLogWarning(_T("Failed to create upload package for %s - %s"), m_client->GetUserName(), szError);
+		if (theApp.emuledlg && theApp.emuledlg->IsRunning())
+			PostMessage(theApp.emuledlg->m_hWnd,TM_READBLOCKFROMFILEDONE,(WPARAM)-1,(LPARAM)m_client);
+		else if (filedata != (byte*)-1 && filedata != (byte*)-2 && filedata != NULL)
+			delete[] filedata;
+		e->Delete();
+		return 2;
+	}
+	catch(...)
+	{
+		if (theApp.emuledlg && theApp.emuledlg->IsRunning())
+			PostMessage(theApp.emuledlg->m_hWnd,TM_READBLOCKFROMFILEDONE,(WPARAM)-1,(LPARAM)m_client);
+		else if (filedata != (byte*)-1 && filedata != (byte*)-2 && filedata != NULL)
+			delete[] filedata;
+		return 3;
+	}
+	return 0;
+}
+//MORPH END    - Changed by SiRoB, ReadBlockFromFileThread
+
 // ==> push small files [sivka] - Stulle
 bool CUpDownClient::GetSmallFilePush() const
 {

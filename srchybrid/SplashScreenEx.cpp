@@ -21,7 +21,7 @@ IMPLEMENT_DYNAMIC(CSplashScreenEx, CWnd)
 CSplashScreenEx::CSplashScreenEx()
 {
 	m_pWndParent=NULL;
-	m_strText="";
+	m_strText=_T("");
 	m_hRegion=0;
 	m_nBitmapWidth=0;
 	m_nBitmapHeight=0;
@@ -40,6 +40,29 @@ CSplashScreenEx::CSplashScreenEx()
 		m_fnAnimateWindow = NULL;
 
 	SetTextDefaultFont();
+
+	//Xman new slpash-screen arrangement
+	//initialize the second text
+	m_strText2=_T("");
+	// ==> changed - Stulle
+	/*
+	m_rcText2.SetRect(10,252,210,270);
+	*/
+	m_rcText2.SetRect(75,252,325,270);
+	// <== changed - Stulle
+	m_crTextColor2=RGB(0,0,0);
+	m_uTextFormat2=DT_SINGLELINE | DT_CENTER | DT_VCENTER;
+	LOGFONT lf;
+	m_myFont2.CreatePointFont(110,_T("Tahoma"));
+	m_myFont2.GetLogFont(&lf);
+
+	lf.lfWeight = FW_NORMAL;
+	lf.lfItalic=FALSE;
+	lf.lfUnderline=FALSE;
+
+	m_myFont2.DeleteObject();
+	m_myFont2.CreateFontIndirect(&lf);
+	//Xman end
 }
 
 CSplashScreenEx::~CSplashScreenEx()
@@ -48,13 +71,15 @@ CSplashScreenEx::~CSplashScreenEx()
 
 BOOL CSplashScreenEx::Create(CWnd *pWndParent,LPCTSTR szText,DWORD dwTimeout,DWORD dwStyle)
 {
-	ASSERT(pWndParent!=NULL);
+	if(pWndParent)
 	m_pWndParent = pWndParent;
+	else
+		m_pWndParent = this;
 
 	if (szText!=NULL)
 		m_strText = szText;
 	else
-		m_strText="";
+		m_strText=_T("");
 
 	m_dwTimeout = dwTimeout;
 	m_dwStyle = dwStyle;
@@ -77,7 +102,7 @@ BOOL CSplashScreenEx::Create(CWnd *pWndParent,LPCTSTR szText,DWORD dwTimeout,DWO
 	if (m_dwStyle & CSS_SHADOW)
 		wcx.style|=CS_DROPSHADOW;
 
-	ATOM classAtom = RegisterClassEx(&wcx);
+	static ATOM classAtom = RegisterClassEx(&wcx);
 
 	// didn't work? try not using dropshadow (may not be supported)
 
@@ -92,7 +117,7 @@ BOOL CSplashScreenEx::Create(CWnd *pWndParent,LPCTSTR szText,DWORD dwTimeout,DWO
 			return FALSE;
 	}
 
-	if (!CreateEx(WS_EX_TOOLWINDOW | WS_EX_TOPMOST,_T("SplashScreenExClass"),NULL,WS_POPUP,0,0,0,0,pWndParent->m_hWnd,NULL))
+	if (!CreateEx(WS_EX_TOOLWINDOW | WS_EX_TOPMOST,_T("SplashScreenExClass"),NULL,WS_POPUP,0,0,0,0,m_pWndParent->m_hWnd,NULL))
 		return FALSE;
 
 	return TRUE;
@@ -215,6 +240,14 @@ void CSplashScreenEx::SetText(LPCTSTR szText)
 	RedrawWindow();
 }
 
+//Xman new slpash-screen arrangement
+void CSplashScreenEx::SetText2(LPCTSTR szText)
+{
+	m_strText2=szText;
+	RedrawWindow();
+}
+//Xman end
+
 void CSplashScreenEx::SetTextColor(COLORREF crTextColor)
 {
 	m_crTextColor=crTextColor;
@@ -254,7 +287,7 @@ void CSplashScreenEx::Hide()
 	else
 		ShowWindow(SW_HIDE);
 
-	DestroyWindow();
+	//DestroyWindow(); //Xman to use with CSS_HIDEONCLICK, emule will destroy it!
 }
 
 HRGN CSplashScreenEx::CreateRgnFromBitmap(HBITMAP hBmp, COLORREF color)
@@ -315,7 +348,9 @@ HRGN CSplashScreenEx::CreateRgnFromBitmap(HBITMAP hBmp, COLORREF color)
 				wasfirst = true;
 			}
 		}
-		dcBmp.DeleteDC();	//release the bitmap
+		//Xman changed
+		//dcBmp.DeleteDC();	//release the bitmap
+		::ReleaseDC(NULL,dcBmp);
 		// create region
 		//  Under WinNT the ExtCreateRegion returns NULL (by Fable@aramszu.net) 
 		//	HRGN hRgn = ExtCreateRegion( NULL, RDHDR + pRgnData->nCount * sizeof(RECT), (LPRGNDATA)pRgnData );
@@ -356,6 +391,12 @@ void CSplashScreenEx::DrawWindow(CDC *pDC)
 	pDC->SetTextColor(m_crTextColor);
 
 	pDC->DrawText(m_strText,-1,m_rcText,m_uTextFormat);
+
+	//Xman new slpash-screen arrangement
+	pOldFont=pDC->SelectObject(&m_myFont2);
+	pDC->SetTextColor(m_crTextColor2);
+	pDC->DrawText(m_strText2,-1,m_rcText2,m_uTextFormat2);
+	//Xman end
 
 	pDC->SelectObject(pOldFont);
 
