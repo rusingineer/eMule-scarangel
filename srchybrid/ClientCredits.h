@@ -150,7 +150,12 @@ public:
 	uint64	GetDownloadedTotal() const;
 	//float	GetScoreRatio(uint32 dwForIP) const;
 	//Xman Credit System
+	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
+	/*
 	const float	GetScoreRatio(const CUpDownClient* client) const; //Xman Credit System
+	*/
+	float	GetScoreRatio(const CUpDownClient* client);
+	// <== CreditSystems [EastShare/ MorphXT] - Stulle
 	const float	GetMyScoreRatio(uint32 dwForIP) const; // See own credits
 	const float	GetBonusFaktor(const CUpDownClient* client)	const;			  //Xman Credit System
 	//Xman end

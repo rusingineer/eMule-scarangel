@@ -135,7 +135,10 @@ uint64	CClientCredits::GetDownloadedTotal() const{
 }
 
 // ==> CreditSystems [EastShare/ MorphXT] - Stulle
+/*
 const float CClientCredits::GetScoreRatio(const CUpDownClient* client) const
+*/
+float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 {
 	if(m_bCheckScoreRatio == false){//only refresh ScoreRatio when really need
 		return m_fLastScoreRatio;
