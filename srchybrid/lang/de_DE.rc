@@ -2101,6 +2101,8 @@ BEGIN
     IDS_SHOWADDITIONALGRAPH "Zeige zusätzliche Graphlinien"
     IDS_CHECK4UPDATEMOD     "Auf neuere Xtreme-Version prüfen"
     IDS_ANTILEECHEREMCRYPT_CHECK "Erkenne emcrypt"
+    IDS_UPLOADMANAGEMENT_FRAME "Upload Verwaltung"
+    IDS_UPLOADSLOTSPEED_LABEL "Upload Slot Geschwindigkeit"
 END
 
 STRINGTABLE 
@@ -2237,6 +2239,16 @@ BEGIN
     IDS_NEWSVERSIONAVL      "Eine neue ScarAngel Version ist verfügbar! Besuche die Projekt-Homepage um mehr Informationen zu erhalten."
     IDS_NEWSVERSIONAVLPOPUP "Eine neuere Version von ScarAngel ist verfügbar. Klicke hier um mehr über die neue Version zu erfahren!"
     // <== ScarAngel Version Check - Stulle
+// ==> Quick start [TPT] - Max
+    IDS_QUICK_START_GROUP   "Schnellstart"
+    IDS_QUICK_START         "Schalte Schnellstart ein"
+    IDS_QUICK_START_MAX_TIME "Zeit für Schnellstart [8-18 Min.]"
+    IDS_QUICK_START_MAX_CONN_PER_FIVE "Max. Verb./5sec"
+    IDS_QUICK_START_MAX_CONN "Max. Verb."
+    IDS_QUICK_START_AFTER_IP_CHANGE "Schalte Schnellstart nach IP-Wechsel ein"
+	IDS_QUICK_START_MAX_CONN_PER_FIVE_BACK "Zurück zu Max. Verb./5sec"
+    IDS_QUICK_START_MAX_CONN_BACK "Zurück zu Max. Verb."
+// <== Quick start [TPT] - Max
 END
 
 #endif    // Deutsch (Deutschland) resources

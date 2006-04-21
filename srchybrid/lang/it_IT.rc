@@ -2110,6 +2110,152 @@ BEGIN
     IDS_ANTILEECHEREMCRYPT_CHECK "trovati emcrypt"
 END
 
+STRINGTABLE 
+BEGIN
+    // ==> ScarAngel Preferences window - Stulle
+    IDS_CON_TWEAKS          "Strumenti di connessione"
+   	IDS_MISC                "Altre impostazioni"
+    // <== ScarAngel Preferences window - Stulle
+    // ==> Global Source Limit [Max/Stulle] - Stulle
+    IDS_GLOBAL_HL           "Limite Fonti Globale"
+    IDS_GLOBAL_HL_LIMIT     "Limite Fonti Globale"
+    IDS_GLOBAL_HL_ALL       "Usa per tutti i file"
+    IDS_GLOBAL_HL_DEFAULT   "Limite Fonti Globale default per i file"
+    IDS_ENABLE              "Abilita"
+    // <== Global Source Limit [Max/Stulle] - Stulle
+    IDS_PUSH                "Opzioni Accelerazione" // push files - Stulle
+    // ==> push small files [sivka] - Stulle
+    IDS_PUSH_SMALL          "Accelera File Piccoli"
+  	IDS_SMALL               "Piccoli"
+  	IDS_PUSH_SMALL_BOOST    "Accelera File Piccoli"
+    // <== push small files [sivka] - Stulle
+    // ==> push rare file - Stulle
+    IDS_PUSH_RARE           "Accelera file rari"
+    IDS_RARE                "Rari"
+    // <== push rare file - Stulle
+    IDS_SHOWINMSN7          "Visualizza stato di eMule nel campo messaggio di MSN7 (o superiore)" //Show in MSN7 [TPT] - Stulle
+    // ==> Show sources on title - Stulle
+    IDS_SHOWSRCONTITLE      "Visuallizza fonti nella barra del titolo"
+    IDS_SHOWSRCSTRING       "Fonti:"
+    // <== Show sources on title - Stulle
+    IDS_SHOWOVERHEADONTITLE "Visualizza overhead nella barra del titolo"// show overhead on title - Stulle
+    // ==> CreditSystems [EastShare/ MorphXT] - Stulle
+    IDS_CREDIT_SYSTEM       "Sistema dei crediti"
+    IDS_OFFICIAL_CREDIT     "Crediti Ufficiali"
+    IDS_LOVELACE_CREDIT     "Crediti lovelace "
+    IDS_RATIO_CREDIT        "Crediti Ratio"
+    IDS_PAWCIO_CREDIT       "Crediti Pawcio"
+    IDS_EASTSHARE_CREDIT    "Crediti EastShare"
+    IDS_SIVKA_CREDIT        "Crediti Sivka"
+    IDS_SWAT_CREDIT         "Crediti S.W.A.T."
+    IDS_XMAN_CREDIT         "Crediti Xman"
+    // <== CreditSystems [EastShare/ MorphXT] - Stulle
+    // ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
+    IDS_SUQWT_LOAD          "Carica %s"
+    IDS_SUQWT               "Abilita SalvaTempoDiAttesaInCoda (SUQWT)"
+    // <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
+    IDS_SHOW_FILE_HL_CONST  "Visualiza HL per file costantemente" // show HL per file constantaniously - Stulle
+    IDS_PS_FILES_RED        "Colora in rosso i file in PowerRelease" // draw PS files red - Stulle
+    IDS_FRIENDS_BLUE        "Colora in blu gli amici" // draw friends blue - Stulle
+    IDS_SHOW_GLOBAL_HL      "Visualizza Limite Fonti Globale" // show global HL - Stulle
+    // ==> file settings - Stulle
+    IDS_NNS_TIMERLABEL      "Rimozione Automatica NNS ogni 0...60 sec"
+    IDS_REMOVENNSLIMITLABEL "Avvia rimozione NNS > X%"
+    IDS_FQS_TIMERLABEL      "AutoFQS ogni 0...60 sec"
+    IDS_REMOVEFQSLIMITLABEL "Avvia rimozione FullQS > X%"
+    IDS_HQRS_TIMERLABEL     "AutoHQRS ogni 0...120 sec"
+    IDS_REMOVEQRSLABEL      "Massima QR permesso <= X"
+    IDS_REMOVEQRSLIMITLABEL "Avvia rimozione HighQRS > X%"
+    IDS_AUTO_NNS            "Abilita rimozione automatica NNS"
+    IDS_AUTO_FQS            "Abilita rimozione automatica FullQS"
+    IDS_AUTO_QRS            "Abilita rimozione automatica HighQS"
+    IDS_SIVKAFILESETTINGS   "Opzioni Sivka - File"
+    IDS_HARDLIMIT_LABEL     "Hard Limit (0=default)"
+    IDS_FILE_DEFAULTS       "Opzioni comuni su File"
+    IDS_XMAN_DROPPING       "Usa il metodo di rimozione Xman"
+    IDS_SIVKA_DROPPING      "Usa il metodo di rimozione Sivka"
+    IDS_HQR_WAY             "Metodo di rimozione"
+    // <== file settings - Stulle
+    IDS_SHOW_DROPPED_SRC    "Fonti rimosse" // show # of dropped sources - Stulle
+    // ==> Source Graph - Stulle
+    IDS_SRCGRAPH            "Disegna grafico fonte"
+    IDS_STATIC_STATSHL      "Min/ Max hardlimit value for graph:"
+    IDS_SP_SRCGRAPH         "Grafico fonte"
+    // <== Source Graph - Stulle
+    IDS_FD_AVGDL            "Velocità media di Download:" // Average download speed - Stulle
+    // ==> WebCache [WC team/MorphXT] - Stulle/Max
+    IDS_PW_WEBCACHE         "WebCache"
+    IDS_WrongPortforWebcache 
+                            "Download da Webcache disabilitato: trasferimenti memorizzati solo sulla porta  21, 70,  80, 210, 443, 563 e da 1025 a 65535. Si prega di usare una di queste porte se si vuole abilitare la Webcache in futuro"
+    IDS_WEBCACHE_NOSUPPORT  "Non supportata"
+    IDS_STATS_SUCCESSFULLWC "Riuscito WC-DL/WC-Richiesti:"
+    IDS_STATS_FAILEDWC      "Fallito WC-DL/WC-Richiesti:"
+    IDS_WEBCACHE_ISP        "Settaggi ISP Proxyserver"
+    IDS_WC_PORT             "Porta"
+    IDS_WC_ADDRESS          "Indirizzo"
+    IDS_WC_CONTROLS         "Controlli Webcache"
+    IDS_WC_ENABLE           "Abilita Download da Webcache"
+    IDS_WC_WRONGPORT        "Stai usando una porta TCP che normalmente non è memorizzata dagli ISP proxy-servers. Si prega di cambiare la porta TCP in  21, 70, 80, 210, 443 563  oppure 1025-65535 per abilitare il download dalla webcache!"
+    IDS_WC_AUTO             "Rilevamento Automatico Webcache"
+    IDS_WC_NRBLOCKS         "Numero di blocchi da scaricare prima della riconnessione al proxy (può risolvere problemi di disconnessione)"
+    IDS_WC_BLOCK            "Blocchi-180k"
+    IDS_WC_TIMEOUT          "Timeout extra lungo per le connessioni webcache"
+    IDS_WC_LOCAL            "Webcache che non memorizza dati all'interno dell'ISP"
+    IDS_WC_SUBMIT_EMAIL     "Invia questi settaggi via email"
+    IDS_WC_LINK             "Link: "
+    IDS_WC_PERSISTENT       "Connessioni persistenti per download da proxy"
+    IDS_WC_ADVANCED         "Controlli Avanzati"
+    IDS_WC_TEST             "Testa configurazione webcache. Può durare anche 30 secondi"
+    IDS_WC_HIDE_ADV         "Nascondi"
+    IDS_WC_SUBMIT_WEB       "Invia informazioni webcache via formulario web"
+    IDS_WC_SOURCES          "Capacità Webcache"
+    IDS_WC_UPDATESETTING    "Aggiorna automaticamente settaggi webcache"
+    IDS_LOG_WCEVENTS        "Log eventi WebCache "
+    IDS_LOG_IACH            "Log eventi IACH "
+    IDS_WEBCACHE_NOPROXY    "Nessuno proxy settato"
+    IDS_CD_WCSUCCFAIL       "Riuscito/Richiesto:"
+    IDS_CD_WCTRUSTSENDER    "Il mittende di fiducia OHCB:"
+    IDS_WCDOWNL             "Non funzionante"
+    IDS_WC_REQ_SUCC         "WC Riuscito/Richiesto:"
+    IDS_WC_DOWNLOADED       "WC-Download:"
+    IDS_WC_REACTIVATED      " Webcache è stata riattivata."
+    IDS_WC_NEWPROXYIP       "Un nuovo ip proxy è stato rilevato: %s."
+    IDS_STATS_WEBCACHE      "Webcache"
+    IDS_STATS_WEBCACHE_1    "Data 1:"
+    IDS_STATS_WEBCACHE_2    "Data 2:"
+    IDS_STATS_WEBCACHE_3    "Data 3:"
+    // <== WebCache [WC team/MorphXT] - Stulle/Max
+    // ==> FunnyNick [SiRoB/Stulle] - Stulle
+    IDS_FUNNYNICK           "FunnyNick"
+    IDS_FN_TAG              "FunnyNick Tag"
+    IDS_NO_TAG              "Senza Tag"
+    IDS_SHORT_TAG           "[FN]"
+    IDS_FULL_TAG            "[FunnyNick]"
+   	IDS_CUSTOM_TAG          "Modifica Tag"
+  	IDS_SET_CUSTOM_TAG      "Imposta tag"
+  	IDS_FN_TAG_AT_END       "Visualizza tag alla fine"
+    // <== FunnyNick [SiRoB/Stulle] - Stulle
+    IDS_CLIENTQUEUEPROGRESSBAR "Visualizza progresso della coda del client " // Client queue progress bar [Commander] - Stulle
+    IDS_ACC                 "Abilita Controllo Connessione Attiva" // ACC [Max/WiZaRd] - Max
+    // ==> ScarAngel Version Check - Stulle
+    IDS_VISITSVERSIONCHECK  "\n\nVuoi visitare il sito web di ScarAngel?"
+    IDS_SVERSIONCHECK       "&Controllo versione (ScarAngel)"
+    IDS_NONEWSVERVERSION    "Non è stata trovata una nuova versione di eMule ScarAngel."
+    IDS_NEWSVERSIONAVL      "E' stata trovata una nuova versione di eMule ScarAngel! Controlla l'home del progetto per informazioni."
+    IDS_NEWSVERSIONAVLPOPUP "E' stata trovata una nuova versione di eMule ScarAngel. Clicca qui per avere informazioni sulla nuova versione!"
+    // <== ScarAngel Version Check - Stulle
+// ==> Quick start [TPT] - Max
+    IDS_QUICK_START_GROUP   "Partenza veloce"
+    IDS_QUICK_START         "Attiva partenza veloce"
+    IDS_QUICK_START_MAX_TIME "Attesa per partenza veloce [8-18 min.]"
+    IDS_QUICK_START_MAX_CONN_PER_FIVE "max. con./5sec"
+    IDS_QUICK_START_MAX_CONN "max. con."
+    IDS_QUICK_START_AFTER_IP_CHANGE "Attiva partenza veloce dopo cambio IP"
+	IDS_QUICK_START_MAX_CONN_PER_FIVE_BACK "Ritorna a max. con./5sec"
+    IDS_QUICK_START_MAX_CONN_BACK "Ritorna a max. con."
+// <== Quick start [TPT] - Max
+END
+
 #endif    // Italienisch (Italien) resources
 /////////////////////////////////////////////////////////////////////////////
 
