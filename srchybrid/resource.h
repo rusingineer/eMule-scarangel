@@ -2437,10 +2437,6 @@
 #define IDC_CHECK4UPDATEMOD             4074
 #define IDC_ANTILEECHEREMCRYPT_CHECK    4075
 #define IDA_ENTER                       32771
-#define IDC_CPU                         4121
-#define IDC_CPUCOUNT                    4122
-#define IDC_MEM                         4123
-#define IDC_MEMCOUNT                    4124
 // ==> ScarAngel Preferences window - Stulle
 #define IDD_PPG_SCAR                    60000
 #define IDC_SCAR_OPTS                   60001
@@ -2635,40 +2631,60 @@
 #define IDS_STATS_WEBCACHE_1            60429
 #define IDS_STATS_WEBCACHE_2            60430
 #define IDS_STATS_WEBCACHE_3            60431
+#define IDC_MSG_WEBCACHEFAIL            60432
+#define IDC_MSG_WEBCACHE_NOAUTODEC      60433
+#define IDC_MSG_WEBCACHE_NOIP           60434
+#define IDC_MSG_WEBCACHE_CONFIGALT      60435
+#define IDC_MSG_WEBCACHE_NOACTIVE       60436
+#define IDC_MSG_WEBCACHE_ERRRESOLVE     60437
+#define IDC_MSG_WEBCACHE_TRANSPAR       60438
+#define IDC_MSG_WEBCACHE_TESTRUNNING    60439
+#define IDC_MSG_WEBCACHE_TESTERR        60440
+#define IDC_MSG_WEBCACHE_ALREADYRUNNING 60441
+#define IDC_MSG_WEBCACHE_TESTREQ        60442
 // <== WebCache [WC team/MorphXT] - Stulle/Max
 // ==> FunnyNick [SiRoB/Stulle] - Stulle
-#define IDS_FUNNYNICK                   60440
-#define IDS_FN_TAG                      60441
-#define IDS_NO_TAG                      60442
-#define IDS_SHORT_TAG                   60443
-#define IDS_FULL_TAG                    60444
-#define IDS_CUSTOM_TAG                  60445
-#define IDS_SET_CUSTOM_TAG              60446
-#define IDS_FN_TAG_AT_END               60447
+#define IDS_FUNNYNICK                   60500
+#define IDS_FN_TAG                      60501
+#define IDS_NO_TAG                      60502
+#define IDS_SHORT_TAG                   60503
+#define IDS_FULL_TAG                    60504
+#define IDS_CUSTOM_TAG                  60505
+#define IDS_SET_CUSTOM_TAG              60506
+#define IDS_FN_TAG_AT_END               60507
 // <== FunnyNick [SiRoB/Stulle] - Stulle
 // ==> Client queue progress bar [Commander] - Stulle
-#define IDS_CLIENTQUEUEPROGRESSBAR      60450
-#define IDC_QUEUE                       60451
-#define IDC_QUEUE2                      60452
+#define IDS_CLIENTQUEUEPROGRESSBAR      60510
+#define IDC_QUEUE                       60511
+#define IDC_QUEUE2                      60512
 // <== Client queue progress bar [Commander] - Stulle
-#define IDS_ACC                         60460 // ACC [Max/WiZaRd] - Max
+#define IDS_ACC                         60520 // ACC [Max/WiZaRd] - Max
 // ==> ScarAngel Version Check - Stulle
-#define IDS_VISITSVERSIONCHECK          60470
-#define IDS_SVERSIONCHECK               60471
-#define IDS_NONEWSVERVERSION            60472
-#define IDS_NEWSVERSIONAVL              60473
-#define IDS_NEWSVERSIONAVLPOPUP         60475
+#define IDS_VISITSVERSIONCHECK          60530
+#define IDS_SVERSIONCHECK               60531
+#define IDS_NONEWSVERVERSION            60532
+#define IDS_NEWSVERSIONAVL              60533
+#define IDS_NEWSVERSIONAVLPOPUP         60535
 // <== ScarAngel Version Check - Stulle
 // ==> Quick start [TPT] - Max
-#define IDS_QUICK_START_GROUP           60476
-#define IDS_QUICK_START                 60477
-#define IDS_QUICK_START_MAX_TIME        60478
-#define IDS_QUICK_START_MAX_CONN_PER_FIVE 60479
-#define IDS_QUICK_START_MAX_CONN        60480
-#define IDS_QUICK_START_AFTER_IP_CHANGE 60481
-#define IDS_QUICK_START_MAX_CONN_PER_FIVE_BACK 60482
-#define IDS_QUICK_START_MAX_CONN_BACK   60483
+#define IDS_QUICK_START_GROUP           60540
+#define IDS_QUICK_START                 60541
+#define IDS_QUICK_START_MAX_TIME        60542
+#define IDS_QUICK_START_MAX_CONN_PER_FIVE 60543
+#define IDS_QUICK_START_MAX_CONN        60544
+#define IDS_QUICK_START_AFTER_IP_CHANGE 60545
+#define IDS_QUICK_START_MAX_CONN_PER_FIVE_BACK 60546
+#define IDS_QUICK_START_MAX_CONN_BACK   60547
 // <== Quick start [TPT] - Max
+#define IDS_CLIENTPERCENTAGE            60550 // Show Client Percentage [Commander/MorphXT] - Mondgott
+// ==> CPU/MEM usage [$ick$/Stulle] - Max
+#define IDC_CPU                         60560
+#define IDC_CPUCOUNT                    60561
+#define IDC_MEM                         60562
+#define IDC_MEMCOUNT                    60563
+#define IDS_SYS_INFO_GROUP              60564
+#define IDS_SYS_INFO_GLOBAL             60565
+// <== CPU/MEM usage [$ick$/Stulle] - Max
 
 // Next default values for new objects
 // 

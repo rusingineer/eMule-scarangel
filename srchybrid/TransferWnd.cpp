@@ -141,6 +141,12 @@ BOOL CTransferWnd::OnInitDialog()
 	AddAnchor(IDC_MEM,BOTTOM_LEFT); // texto
 	AddAnchor(IDC_CPUCOUNT,BOTTOM_LEFT);  
 	AddAnchor(IDC_CPU,BOTTOM_LEFT); 
+	bool bEnable = thePrefs.GetSysInfo();
+	GetDlgItem(IDC_CPU)->ShowWindow((bEnable ? SW_SHOW : SW_HIDE));
+	GetDlgItem(IDC_CPUCOUNT)->ShowWindow((bEnable ? SW_SHOW : SW_HIDE));
+	GetDlgItem(IDC_MEM)->ShowWindow((bEnable ? SW_SHOW : SW_HIDE));
+	GetDlgItem(IDC_MEMCOUNT)->ShowWindow((bEnable ? SW_SHOW : SW_HIDE));
+	QueueListResize(bEnable?15:0);
 	// <== CPU/MEM usage [$ick$/Stulle] - Max 
 
 	switch (thePrefs.GetTransferWnd1()) {
@@ -1642,7 +1648,8 @@ void CTransferWnd::ShowList(uint32 dwListIDC)
 	/*
 	rcDown.bottom = rcWnd.bottom - 20;
 	*/
-	rcDown.bottom = rcWnd.bottom - 35;
+	uint8 m_uTemp = (thePrefs.GetSysInfo() ? 35 : 20);
+	rcDown.bottom = rcWnd.bottom - m_uTemp;
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	rcDown.top = 28;
 	m_wndSplitter.DestroyWindow();
@@ -1739,7 +1746,8 @@ void CTransferWnd::ShowSplitWindow(bool bReDraw)
 	/*
 	rcDown.bottom = rcWnd.bottom - 20;
 	*/
-	rcDown.bottom = rcWnd.bottom - 35;
+	uint8 m_uTemp = (thePrefs.GetSysInfo() ? 35 : 20);
+	rcDown.bottom = rcWnd.bottom - m_uTemp;
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	rcDown.top = splitpos + 20;
 	uploadlistctrl.MoveWindow(rcDown);
@@ -1751,7 +1759,7 @@ void CTransferWnd::ShowSplitWindow(bool bReDraw)
 	/*
 	rcDown.bottom = rcWnd.bottom - 20;
 	*/
-	rcDown.bottom = rcWnd.bottom - 35;
+	rcDown.bottom = rcWnd.bottom - m_uTemp;
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	rcDown.top = splitpos + 20;
 	queuelistctrl.MoveWindow(rcDown);
@@ -1763,7 +1771,7 @@ void CTransferWnd::ShowSplitWindow(bool bReDraw)
 	/*
 	rcDown.bottom = rcWnd.bottom - 20;
 	*/
-	rcDown.bottom = rcWnd.bottom - 35;
+	rcDown.bottom = rcWnd.bottom - m_uTemp;
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	rcDown.top = splitpos + 20;
 	clientlistctrl.MoveWindow(rcDown);
@@ -1775,7 +1783,7 @@ void CTransferWnd::ShowSplitWindow(bool bReDraw)
 	/*
 	rcDown.bottom = rcWnd.bottom - 20;
 	*/
-	rcDown.bottom = rcWnd.bottom - 35;
+	rcDown.bottom = rcWnd.bottom - m_uTemp;
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	rcDown.top = splitpos + 20;
 	downloadclientsctrl.MoveWindow(rcDown);
@@ -2033,14 +2041,113 @@ void CTransferWnd::ResetTransToolbar2(bool bShowToolbar, bool bResetLists)
 // ==> CPU/MEM usage [$ick$/Stulle] - Max 
 void CTransferWnd::ShowRessources()
 {
-	TCHAR buffer[100];
+	if(thePrefs.GetSysInfo() == false)
+		return;
 
-	_stprintf(buffer,_T("%3d%% (%3d%%)"),theApp.sysinfo->GetCpuUsage(),theApp.sysinfo->GetGlobalCpuUsage());
+	CString buffer = NULL;
+
+	buffer.Format(_T("%3d%%"),theApp.sysinfo->GetCpuUsage());
+	if(thePrefs.GetSysInfoGlobal())
+		buffer.AppendFormat(_T(" (%3d%%)"),theApp.sysinfo->GetGlobalCpuUsage());
+//	_stprintf(buffer,_T("%3d%% (%3d%%)"),theApp.sysinfo->GetCpuUsage(),theApp.sysinfo->GetGlobalCpuUsage());
 	SetDlgItemText(IDC_CPU, _T("CPU :"));
 	this->GetDlgItem(IDC_CPUCOUNT)->SetWindowText(buffer);
 
-	_stprintf(buffer,_T("%s (%s)"),CastItoXBytes(theApp.sysinfo->GetMemoryUsage()),CastItoXBytes(theApp.sysinfo->GetGlobalMemoryUsage()));
+	buffer.Format(_T("%s"),CastItoXBytes(theApp.sysinfo->GetMemoryUsage()));
+	if(thePrefs.GetSysInfoGlobal())
+		buffer.AppendFormat(_T(" (%s)"),CastItoXBytes(theApp.sysinfo->GetGlobalMemoryUsage()));
+//	_stprintf(buffer,_T("%s (%s)"),CastItoXBytes(theApp.sysinfo->GetMemoryUsage()),CastItoXBytes(theApp.sysinfo->GetGlobalMemoryUsage()));
 	SetDlgItemText(IDC_MEM, _T("RAM :"));
 	this->GetDlgItem(IDC_MEMCOUNT)->SetWindowText(buffer);
+
+	return;
+}
+
+void CTransferWnd::EnableSysInfo(bool bEnable)
+{
+	GetDlgItem(IDC_CPU)->ShowWindow((bEnable ? SW_SHOW : SW_HIDE));
+	GetDlgItem(IDC_CPUCOUNT)->ShowWindow((bEnable ? SW_SHOW : SW_HIDE));
+	GetDlgItem(IDC_MEM)->ShowWindow((bEnable ? SW_SHOW : SW_HIDE));
+	GetDlgItem(IDC_MEMCOUNT)->ShowWindow((bEnable ? SW_SHOW : SW_HIDE));
+
+	uint8 value = bEnable?15:0;
+
+	CRect rcDown,rcW;
+	GetWindowRect(rcW);
+	ScreenToClient(rcW);
+
+	GetDlgItem(IDC_UPLOADLIST)->GetWindowRect(rcDown);
+	ScreenToClient(rcDown);
+	rcDown.bottom=rcW.bottom-20-value;
+	uploadlistctrl.MoveWindow(rcDown);
+
+	GetDlgItem(IDC_DOWNLOADCLIENTS)->GetWindowRect(rcDown);
+	ScreenToClient(rcDown);
+	rcDown.bottom=rcW.bottom-20-value;
+	downloadclientsctrl.MoveWindow(rcDown);
+
+	GetDlgItem(IDC_QUEUELIST)->GetWindowRect(rcDown);
+	ScreenToClient(rcDown);
+	rcDown.bottom=rcW.bottom-20-value;
+	queuelistctrl.MoveWindow(rcDown);
+
+	GetDlgItem(IDC_CLIENTLIST)->GetWindowRect(rcDown);
+	ScreenToClient(rcDown);
+	rcDown.bottom=rcW.bottom-20-value;
+	clientlistctrl.MoveWindow(rcDown);
+
+	QueueListResize(value);
+	Localize();
+
+	return;
+}
+
+void CTransferWnd::QueueListResize(uint8 value)
+{
+	CRect rcDown,rcW;
+	GetWindowRect(rcW);
+	ScreenToClient(rcW);
+
+	RemoveAnchor(IDC_QUEUE_REFRESH_BUTTON);
+    RemoveAnchor(IDC_QUEUE); //Commander - Added: ClientQueueProgressBar
+	RemoveAnchor(IDC_QUEUE2); //Commander - Added: ClientQueueProgressBar
+	RemoveAnchor(IDC_QUEUECOUNT_LABEL);
+	RemoveAnchor(IDC_QUEUECOUNT);
+
+	GetDlgItem(IDC_QUEUE_REFRESH_BUTTON)->GetWindowRect(rcDown);
+	ScreenToClient(rcDown);
+	rcDown.top=rcW.bottom-19-value;
+	rcDown.bottom=rcW.bottom-3-value;
+	GetDlgItem(IDC_QUEUE_REFRESH_BUTTON)->MoveWindow(rcDown);
+
+	GetDlgItem(IDC_QUEUE)->GetWindowRect(rcDown);
+	ScreenToClient(rcDown);
+	rcDown.top=rcW.bottom-17-value;
+	rcDown.bottom=rcW.bottom-5-value;
+	GetDlgItem(IDC_QUEUE)->MoveWindow(rcDown);
+
+	GetDlgItem(IDC_QUEUE2)->GetWindowRect(rcDown);
+	ScreenToClient(rcDown);
+	rcDown.top=rcW.bottom-17-value;
+	rcDown.bottom=rcW.bottom-5-value;
+	GetDlgItem(IDC_QUEUE2)->MoveWindow(rcDown);
+
+	GetDlgItem(IDC_QUEUECOUNT_LABEL)->GetWindowRect(rcDown);
+	ScreenToClient(rcDown);
+	rcDown.top=rcW.bottom-18-value;
+	rcDown.bottom=rcW.bottom-5-value;
+	GetDlgItem(IDC_QUEUECOUNT_LABEL)->MoveWindow(rcDown);
+
+	GetDlgItem(IDC_QUEUECOUNT)->GetWindowRect(rcDown);
+	ScreenToClient(rcDown);
+	rcDown.top=rcW.bottom-18-value;
+	rcDown.bottom=rcW.bottom-5-value;
+	GetDlgItem(IDC_QUEUECOUNT)->MoveWindow(rcDown);
+
+	AddAnchor(IDC_QUEUECOUNT,BOTTOM_LEFT);
+	AddAnchor(IDC_QUEUECOUNT_LABEL,BOTTOM_LEFT);
+    AddAnchor(IDC_QUEUE, BOTTOM_LEFT, BOTTOM_CENTER); //Commander - Added: ClientQueueProgressBar
+	AddAnchor(IDC_QUEUE2, BOTTOM_CENTER, BOTTOM_RIGHT); //Commander - Added: ClientQueueProgressBar
+	AddAnchor(IDC_QUEUE_REFRESH_BUTTON, BOTTOM_RIGHT);
 }
 // <== CPU/MEM usage [$ick$/Stulle] - Max 

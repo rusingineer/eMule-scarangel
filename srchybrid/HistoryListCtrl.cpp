@@ -24,7 +24,7 @@
 #include "emule.h"
 #include "Preferences.h"
 #include "emuledlg.h"
-#include "MemDc.h"
+#include "MemDC.h"
 #include "knownfilelist.h"
 #include "SharedFileList.h"
 #include "menucmds.h"

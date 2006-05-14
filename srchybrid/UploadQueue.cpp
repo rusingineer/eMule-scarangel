@@ -247,7 +247,7 @@ bool CUploadQueue::AddUpNextClient(LPCTSTR pszReason, CUpDownClient* directadd){
 	}
 
 	// tell the client that we are now ready to upload
-	if (!newclient->socket || !newclient->socket->IsConnected())
+	if (!newclient->socket || !newclient->socket->IsConnected() || !newclient->CheckHandshakeFinished()) //Xman Fix Connection Collision (Sirob)
 	{
 		newclient->SetUploadState(US_CONNECTING);
 		if (!newclient->TryToConnect(true))

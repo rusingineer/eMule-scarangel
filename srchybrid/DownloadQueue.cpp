@@ -2014,7 +2014,7 @@ void CDownloadQueue::KademliaSearchFile(uint32 searchID, const Kademlia::CUInt12
 	if (theApp.ipfilter->IsFiltered(ED2Kip))
 	{
 		if (thePrefs.GetLogFilteredIPs())
-			AddDebugLogLine(false, _T("IPfiltered source IP=%s (%s) received from Kademlia"), ipstr(ED2Kip), theApp.ipfilter->GetLastHit());
+			AddDebugLogLine(false, _T("IPfiltered source IP=%s (%s) received from Kademlia for File: %s"), ipstr(ED2Kip), theApp.ipfilter->GetLastHit(), temp->GetFileName()); //Xman show filename
 		return;
 	}
 	if( (ip == Kademlia::CKademlia::GetIPAddress() || ED2Kip == theApp.serverconnect->GetClientID()) && tcp == thePrefs.GetPort())

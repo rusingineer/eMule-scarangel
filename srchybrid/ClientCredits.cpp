@@ -347,7 +347,7 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 		theApp.clientcredits->CryptoAvailable() == true){
 			// bad guy - no credits for you
 			//return 1.0f;
-			return 0.8f; //Xman 80% for non SUI-clients.. (and also bad guys)
+			result = 0.8f; //Xman 80% for non SUI-clients.. (and also bad guys)
 		}
 
 		// Cache value
@@ -1037,7 +1037,7 @@ void CClientCreditsList::Process()
 			if(cur_credit->GetMarkToDelete() && (time(NULL) - cur_credit->GetLastSeen() > (3600 * HOURS_KEEP_IN_MEMORY))) //not seen for > 3 hours
 			{
 				//two security-checks, it can happen that there is a second user using this hash
-				// ==> m000h
+				// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 				/*
 				if(cur_credit->GetUploadedTotal()==0 && cur_credit->GetDownloadedTotal()==0
 					&& theApp.clientlist->FindClientByUserHash(cur_credit->GetKey())==NULL)
@@ -1045,7 +1045,7 @@ void CClientCreditsList::Process()
 				if(theApp.clientcredits->IsSaveUploadQueueWaitTime() == false &&
 				cur_credit->GetUploadedTotal()==0 && cur_credit->GetDownloadedTotal()==0
 					&& theApp.clientlist->FindClientByUserHash(cur_credit->GetKey())==NULL)
-				// <== m000h
+				// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 				{
 					//this key isn't longer used
 					m_mapClients.RemoveKey(CCKey(cur_credit->GetKey()));

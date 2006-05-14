@@ -481,6 +481,14 @@ bool CWebCacheUpSocket::ProcessFirstHttpGet( const char* header, UINT uSize )
 				thePrefs.expectingWebCachePing = false;
 				AfxMessageBox(_T("Proxy configuration Test Successfull"));
 				AddLogLine(false, _T("Proxy configuration Test Successfull"));
+				//MORPH START - Added by SiRoB, Reactivate Webcache proxy on webcache test succefull
+				if (thePrefs.WebCacheDisabledThisSession) {
+					thePrefs.WebCacheDisabledThisSession = false;
+					Log(LOG_STATUSBAR, GetResString(IDS_WC_REACTIVATED));
+					thePrefs.ses_PROXYREQUESTS = 0;
+					thePrefs.ses_successfullPROXYREQUESTS = 0;
+				}
+				//MORPH END   - Added by SiRoB, Reactivate Webcache proxy on webcache test succefull
 			}
 			else 
 				if (thePrefs.GetLogWebCacheEvents())
@@ -1396,6 +1404,7 @@ bool CUpDownClient::AttachMultiOHCBsRequest(CSafeMemFile &data)
 		|| !SupportsMultiOHCBs())
 		return false;
 	ASSERT(reqfile);
+	//MORPH - Changed By SiRoB, WebCache Fix
 	uint8 fileCount = 1+m_OtherRequests_list.GetCount()+m_OtherNoNeeded_list.GetCount();
 	data.WriteUInt8(fileCount); // number of requested files will be written here later
 //	byte fileHash[] = new byte[16];

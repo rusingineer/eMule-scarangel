@@ -318,7 +318,7 @@ bool CClientList::AttachToAlreadyKnown(CUpDownClient** client, CClientReqSocket*
 					if (found_client->Credits() && found_client->Credits()->GetCurrentIdentState(found_client->GetIP()) == IS_IDENTIFIED){
 						if (thePrefs.GetLogBannedClients())
 							AddDebugLogLine(false, _T("Clients: %s (%s), Banreason: Userhash invalid"), tocheck->GetUserName(), ipstr(tocheck->GetConnectIP()));
-						tocheck->Ban();
+						tocheck->Ban(_T("Userhash invalid")); //Xman
 						return false;
 					}
 	
@@ -953,7 +953,7 @@ void CClientList::CleanUpClientList(){
 		uint32 cDeleted = 0;
 		for (POSITION pos = list.GetHeadPosition(); pos != NULL;){
 			CUpDownClient* pCurClient =	list.GetNext(pos);
-			if ((pCurClient->GetUploadState() == US_NONE || pCurClient->GetUploadState() == US_BANNED && !pCurClient->IsBanned())
+			if ((pCurClient->GetUploadState() == US_NONE /*|| pCurClient->GetUploadState() == US_BANNED && !pCurClient->IsBanned()*/) //Xman Code Improvement: how should this happen ?
 				&& pCurClient->GetDownloadState() == DS_NONE
 				&& pCurClient->GetChatState() == MS_NONE
 				&& pCurClient->GetKadState() == KS_NONE

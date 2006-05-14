@@ -412,7 +412,7 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 					}
 					else 
 					{
-						theApp.clientlist->AddClient(client, bNewClient ? true : false); //Xman Code Improvement don't search new generated clients in lists
+						theApp.clientlist->AddClient(client, bNewClient ); //Xman Code Improvement don't search new generated clients in lists
 						client->SetCommentDirty();
 						client->ProcessBanMessage(); //Xman Anti-Leecher
 					}
@@ -2710,7 +2710,7 @@ void CClientReqSocket::OnConnect(int nErrorCode)
 	if (nErrorCode)
 	{
 	    CString strTCPError;
-		if (thePrefs.GetVerbose())
+		//if (thePrefs.GetVerbose()) //Xman Bugfix, thanks Howe
 		{
 			strTCPError = GetFullErrorMessage(nErrorCode);
 			if ((nErrorCode != WSAECONNREFUSED && nErrorCode != WSAETIMEDOUT) || !GetLastProxyError().IsEmpty())

@@ -2965,6 +2965,7 @@ NEXTEMF                 ICON                    "res\\nextEMF.ico"
 NEO                     ICON                    "res\\Client-Neo.ico"
 FUNNYNICK               ICON                    "res\\FunnyNick.ico"
 QUICKSTART              ICON                    "res\\quickstart.ico"
+SYSINFO                 ICON                    "res\\SysInfo.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2999,6 +3000,7 @@ IDR_HTTPDOWNLOAD_ANI    AVI                     "res\\inetdownload.avi"
 // JPG
 //
 BANNER                  JPG                     "res\\banner_quer.jpg"
+ABOUT                   JPG                     "res\\logo.jpg"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -5280,6 +5282,25 @@ BEGIN
     IDS_STATS_WEBCACHE_1    "Data 1:"
     IDS_STATS_WEBCACHE_2    "Data 2:"
     IDS_STATS_WEBCACHE_3    "Data 3:"
+    IDC_MSG_WEBCACHEFAIL    "Your proxy-server does not seem to be caching data. There was no successful Webcache-Requests out of more than 100 that were sent. Please review your proxy-configuration. WebCache downloads have been disabled until a new proxy is tested!"
+    IDC_MSG_WEBCACHE_NOAUTODEC 
+                            "Sorry, your ISP is not in the database,\nyour ISP identifier is %s\nTo enable autodetection, please find out and submit your ISPs proxy."
+    IDC_MSG_WEBCACHE_NOIP   "No public IP, please connect to an ed2k-server or Kad.\nYour TCP port must be reachable (highID) if you are connected to a server,\nbut it's not necessary when connected to Kad"
+    IDC_MSG_WEBCACHE_CONFIGALT 
+                            "Webcache autodetection detected a change in the Webcache-configuration, webcache has been deactivated until a new proxy is tested.\n You can deactivate automatic webcache configuration in the Advanced Webcachesettings."
+    IDC_MSG_WEBCACHE_NOACTIVE 
+                            "Webcache Autodetection has detected that your ISP-proxy does not cache data. Webcache disabled."
+    IDC_MSG_WEBCACHE_ERRRESOLVE 
+                            "WebCache Error - Failed to resolve HTTP proxy address:\n%s\nPlease review your webcache settings"
+    IDC_MSG_WEBCACHE_TRANSPAR 
+                            "Proxy Test can not test Transparent proxies. Test Canceled!"
+    IDC_MSG_WEBCACHE_TESTRUNNING 
+                            "Performing Proxy Test! Please check the log in the serverwindow for the results!"
+    IDC_MSG_WEBCACHE_TESTERR "Proxy Test Error!"
+    IDC_MSG_WEBCACHE_ALREADYRUNNING 
+                            "No New Test Started. There is already a Test in progress"
+    IDC_MSG_WEBCACHE_TESTREQ 
+                            "No Test Performed. Not all requirements met.\n Requirements:\n1. You have to be connected to a server\n2. You need to have a valid public IP\n3. You need to have a high ID\n4. Test does not work if you have too many open connections"
     // <== WebCache [WC team/MorphXT] - Stulle/Max
     // ==> FunnyNick [SiRoB/Stulle] - Stulle
     IDS_FUNNYNICK           "FunnyNick"
@@ -5310,6 +5331,11 @@ BEGIN
 	IDS_QUICK_START_MAX_CONN_PER_FIVE_BACK "Return to max. con./5sec"
     IDS_QUICK_START_MAX_CONN_BACK "Return to max. con."
     // <== Quick start [TPT] - Max
+    IDS_CLIENTPERCENTAGE    "Show Client Percentage" // Show Client Percentage [Commander/MorphXT] - Mondgott
+    // ==> CPU/MEM usage [$ick$/Stulle] - Stulle
+    IDS_SYS_INFO_GROUP      "System information"
+    IDS_SYS_INFO_GLOBAL     "Enable global information"
+    // <== CPU/MEM usage [$ick$/Stulle] - Stulle
 END
 
 #endif    // Englisch (USA) resources

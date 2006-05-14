@@ -150,10 +150,20 @@ COScopeCtrl::COScopeCtrl(int NTrends)
 
 COScopeCtrl::~COScopeCtrl()
 {
+	//Xman Code Fix
 	if (m_pbitmapOldGrid != NULL)
-		m_dcGrid.SelectObject(m_pbitmapOldGrid);  
+	{
+		CBitmap* oldBitmap = CBitmap::FromHandle(m_pbitmapOldGrid);
+		m_dcGrid.SelectObject(oldBitmap);
+		//m_dcGrid.SelectObject(m_pbitmapOldGrid);  
+	}
 	if (m_pbitmapOldPlot != NULL)
-		m_dcPlot.SelectObject(m_pbitmapOldPlot);  
+	{
+		CBitmap* oldBitmap = CBitmap::FromHandle(m_pbitmapOldPlot);
+		m_dcPlot.SelectObject(oldBitmap);
+		//m_dcPlot.SelectObject(m_pbitmapOldPlot);  
+	}
+	//Xman end
 	delete[] m_PlotData;
 }
 
@@ -305,7 +315,11 @@ void COScopeCtrl::InvalidateCtrl(bool deleteGraph)
 		m_dcGrid.CreateCompatibleDC(&dc);
 		m_bitmapGrid.DeleteObject();
 		m_bitmapGrid.CreateCompatibleBitmap(&dc, m_nClientWidth, m_nClientHeight);
-		m_pbitmapOldGrid = m_dcGrid.SelectObject(&m_bitmapGrid);
+		//Xman Code Fix
+		//m_pbitmapOldGrid = m_dcGrid.SelectObject(&m_bitmapGrid);
+		CBitmap* oldBitmap = m_dcGrid.SelectObject(&m_bitmapGrid);
+		m_pbitmapOldGrid = (HBITMAP)oldBitmap->GetSafeHandle();
+		//Xman end
 	}
 	
 	COLORREF crLabelBk;
@@ -527,7 +541,11 @@ void COScopeCtrl::InvalidateCtrl(bool deleteGraph)
 		m_dcPlot.CreateCompatibleDC(&dc);
 		m_bitmapPlot.DeleteObject();
 		m_bitmapPlot.CreateCompatibleBitmap(&dc, m_nClientWidth, m_nClientHeight);
-		m_pbitmapOldPlot = m_dcPlot.SelectObject(&m_bitmapPlot);
+		//Xman Code Fix
+		CBitmap* oldBitmap = m_dcPlot.SelectObject(&m_bitmapPlot);
+		m_pbitmapOldPlot = (HBITMAP)oldBitmap->GetSafeHandle();
+		//m_pbitmapOldPlot = m_dcPlot.SelectObject(&m_bitmapPlot);
+		//Xman end
 	}
 	
 	// make sure the plot bitmap is cleared
@@ -815,19 +833,33 @@ void COScopeCtrl::OnSize(UINT nType, int cx, int cy)
 	CClientDC dc(this);
 	if (m_pbitmapOldGrid && m_bitmapGrid.GetSafeHandle() && m_dcGrid.GetSafeHdc())
 	{
-		m_dcGrid.SelectObject(m_pbitmapOldGrid);
+		//Xman Code Fix
+		//remark: if you SelectObject() the returned pointer is only valid during the same message-loop. To save it longer, you must be tricky:
+		CBitmap* oldBitmap = CBitmap::FromHandle(m_pbitmapOldGrid);
+		m_dcGrid.SelectObject(oldBitmap);
+		//m_dcGrid.SelectObject(m_pbitmapOldGrid);
 		m_bitmapGrid.DeleteObject();
 		m_bitmapGrid.CreateCompatibleBitmap(&dc, m_nClientWidth, m_nClientHeight);
-		m_pbitmapOldGrid = m_dcGrid.SelectObject(&m_bitmapGrid);
+		//m_pbitmapOldGrid = m_dcGrid.SelectObject(&m_bitmapGrid);
+		oldBitmap = m_dcGrid.SelectObject(&m_bitmapGrid);
+		m_pbitmapOldGrid = (HBITMAP)oldBitmap->GetSafeHandle();
+		//Xman end
 	}
 	
 	// destroy and recreate the plot bitmap
 	if (m_pbitmapOldPlot && m_bitmapPlot.GetSafeHandle() && m_dcPlot.GetSafeHdc())
 	{
-		m_dcPlot.SelectObject(m_pbitmapOldPlot);
+		//Xman Code Fix
+		//remark: if you SelectObject() the returned pointer is only valid during the same message-loop. To save it longer, you must be tricky:
+		CBitmap* oldBitmap = CBitmap::FromHandle(m_pbitmapOldPlot);
+		m_dcPlot.SelectObject(oldBitmap);
+		//m_dcPlot.SelectObject(m_pbitmapOldPlot);
 		m_bitmapPlot.DeleteObject();
 		m_bitmapPlot.CreateCompatibleBitmap(&dc, m_nClientWidth, m_nClientHeight);
-		m_pbitmapOldPlot = m_dcPlot.SelectObject(&m_bitmapPlot);
+		//m_pbitmapOldPlot = m_dcPlot.SelectObject(&m_bitmapPlot);
+		oldBitmap = m_dcPlot.SelectObject(&m_bitmapPlot);
+		m_pbitmapOldPlot = (HBITMAP)oldBitmap->GetSafeHandle();
+
 	}
 	
 	InvalidateCtrl();
@@ -933,13 +965,21 @@ void COScopeCtrl::OnMouseMove(UINT nFlags, CPoint point)
 void COScopeCtrl::OnSysColorChange()
 {
 	if (m_pbitmapOldGrid != NULL) {
-		m_dcGrid.SelectObject(m_pbitmapOldGrid);
+		//Xman Code Fix
+		//m_dcGrid.SelectObject(m_pbitmapOldGrid);
+		CBitmap* oldBitmap = CBitmap::FromHandle(m_pbitmapOldGrid);
+		m_dcGrid.SelectObject(oldBitmap);
+		//Xman end
 		m_pbitmapOldGrid = NULL;
 	}
 	VERIFY( m_dcGrid.DeleteDC() );
 
 	if (m_pbitmapOldPlot != NULL) {
-		m_dcPlot.SelectObject(m_pbitmapOldPlot);
+		//Xman Code Fix
+		//m_dcPlot.SelectObject(m_pbitmapOldPlot);
+		CBitmap* oldBitmap = CBitmap::FromHandle(m_pbitmapOldPlot);
+		m_dcPlot.SelectObject(oldBitmap);
+		//Xman end
 		m_pbitmapOldPlot = NULL;
 	}
 	VERIFY( m_dcPlot.DeleteDC() );

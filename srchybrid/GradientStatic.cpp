@@ -36,6 +36,10 @@ CGradientStatic::~CGradientStatic()
 		m_Mem.bmp.DeleteObject();
 	if(m_Mem.dc.GetSafeHdc())
 		m_Mem.dc.DeleteDC();
+	//Xman Code Improvement
+	if(m_cfFont.GetSafeHandle())
+		m_cfFont.DeleteObject();
+	//Xman end
 }
 
 

@@ -332,12 +332,18 @@ void CEMSocket::OnReceive(int nErrorCode){
 	}
 	
 	// Check current connection state
+	//Xman threadsafe!
+	sendLocker.Lock();
 	if(byConnected == ES_DISCONNECTED){
+		sendLocker.Unlock();
 		return;
 	}
 	else {	
 		byConnected = ES_CONNECTED; // ES_DISCONNECTED, ES_NOTCONNECTED, ES_CONNECTED
 	}
+	sendLocker.Unlock();
+	//Xman end threadsafe
+
 	//Xman include ACK
 	theApp.pBandWidthControl->AddeMuleOutTCPOverall(0); //ACK
 	
@@ -641,7 +647,8 @@ void CEMSocket::SendPacket(Packet* packet, bool delpacket, bool controlpacket, u
 			//Xman Code Improvement
 			if(isreadyforsending)
 			{
-				theApp.uploadBandwidthThrottler->QueueForSendingControlPacket(this, HasSent());
+				if(!IsSocketUploading()) //Xman improved socket queuing
+					theApp.uploadBandwidthThrottler->QueueForSendingControlPacket(this, HasSent());
 			}
 	    } else {
             //Xman unused
@@ -731,12 +738,20 @@ void CEMSocket::OnSend(int nErrorCode){
     } else
 		byConnected = ES_CONNECTED;
 
+	/*
 	//Xman Code Improvement
 	if((m_currentPacket_is_controlpacket || isreadyforsending==false) && (sendbuffer!=NULL || !controlpacket_queue.IsEmpty()))
 	{
         // queue up for control packet
 		theApp.uploadBandwidthThrottler->QueueForSendingControlPacket(this, HasSent());
     }
+	*/
+	//Xman improved socket queuing
+	if((m_currentPacket_is_controlpacket && sendbuffer!=NULL) || !controlpacket_queue.IsEmpty()) {
+		// queue up for control packet
+		if(!IsSocketUploading())
+			theApp.uploadBandwidthThrottler->QueueForSendingControlPacket(this, HasSent());
+	}
 	isreadyforsending=true;
 	//Xman end
     sendLocker.Unlock();
@@ -799,24 +814,31 @@ SocketSentBytes CEMSocket::Send(uint32 maxNumberOfBytesToSend, uint32 minFragSiz
 			SocketSentBytes returnVal = { true, 0, 0 };
 			return returnVal;
 	}
-	//Xman x4 Code Improvement end
+	//Xman Code Improvement end
 	
 
 
 	sendLocker.Lock();
 
+	//Xman 5.1.1: //Xman improved socket queuing
+	//due to the new socket-queueing this should only happen in very very rare cases
+	//no need for an extra check.. let it happen
+	/*
 	//Xman uploadbandwidththrottler: a uploading client shouldn't get data on the control-packet-sending-loop (see uploadbandwidththrottler)
 	//this little improvement allow a bit better upload-control
-	if(ThrottledFileSocket::IsSocketUploading() && onlyAllowedToSendControlPacket)
+	if(IsSocketUploading() && onlyAllowedToSendControlPacket)
 	{
 		sendLocker.Unlock();
+		theApp.QueueDebugLogLine(false, _T("-=-> uploading socket tries to send control packets"));
 		SocketSentBytes returnVal = { true, 0, 0 };
 		return returnVal;
 	}
+	*/
 	//Xman end
 
 
-    if (byConnected == ES_DISCONNECTED) {
+    //if (byConnected == ES_DISCONNECTED) {
+	if (byConnected != ES_CONNECTED) { //Xman changed 5.1.1
         sendLocker.Unlock();
         SocketSentBytes returnVal = { false, 0, 0 };
         return returnVal;
@@ -1031,7 +1053,10 @@ SocketSentBytes CEMSocket::Send(uint32 maxNumberOfBytesToSend, uint32 minFragSiz
         }
     }
 
-    
+    //Xman improved socket queuing
+	//this shouldn't be necessary anymore, because each send force an OnSend() 
+	//and there we do the re queuing
+	/*
 	if(onlyAllowedToSendControlPacket && (!controlpacket_queue.IsEmpty() || sendbuffer != NULL && m_currentPacket_is_controlpacket)) {
         // enter control packet send queue
         // we might enter control packet queue several times for the same package,
@@ -1039,7 +1064,8 @@ SocketSentBytes CEMSocket::Send(uint32 maxNumberOfBytesToSend, uint32 minFragSiz
         // that we only enter the queue once.
 		theApp.uploadBandwidthThrottler->QueueForSendingControlPacket(this, HasSent());
     }
-
+	*/
+	//Xman end
 
     //CleanSendLatencyList();
 

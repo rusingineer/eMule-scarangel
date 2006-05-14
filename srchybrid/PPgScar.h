@@ -49,6 +49,10 @@ protected:
 	int m_iCreditSystem;
 	// <== CreditSystems [EastShare/ MorphXT] - Stulle
 
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max
+	bool m_bSysInfo;
+	bool m_bSysInfoGlobal;
+	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	bool showSrcInTitle; // Show sources on title - Stulle
 //	bool m_bPsFilesRed; // draw PS files red - Stulle
 	bool m_bFriendsBlue; // draw friends blue - Stulle
@@ -57,6 +61,7 @@ protected:
 	bool m_bShowInMSN7; // Show in MSN7 [TPT] - Stulle
 	bool m_bQueueProgressBar; // Client queue progress bar [Commander] - Stulle
 //	bool m_bTrayComplete; // Completed in Tray - Stulle
+	bool m_bShowClientPercentage; // Show Client Percentage [Commander/MorphXT] - Mondgott
 
 	// ==> file settings - Stulle
 	bool m_bEnableAutoDropNNSDefault;
@@ -150,6 +155,11 @@ protected:
 	// <== CreditSystems [EastShare/ MorphXT] - Stulle
 
 	HTREEITEM m_htiDisplay;
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max
+	HTREEITEM m_htiSysInfoGroup;
+	HTREEITEM m_htiSysInfo;
+	HTREEITEM m_htiSysInfoGlobal;
+	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	HTREEITEM m_htiShowSrcOnTitle; // Show sources on title - Stulle
 //	HTREEITEM m_htiPsFilesRed; // draw PS files red - Stulle
 	HTREEITEM m_htiFriendsBlue; // draw friends blue - Stulle
@@ -158,6 +168,7 @@ protected:
 	HTREEITEM m_htiShowInMSN7; // Show in MSN7 [TPT] - Stulle
 	HTREEITEM m_htiQueueProgressBar; // Client queue progress bar [Commander] - Stulle
 //	HTREEITEM m_htiTrayComplete; // Completed in Tray - Stulle
+	HTREEITEM m_htiShowClientPercentage; // Show Client Percentage [Commander/MorphXT] - Mondgott
 
 	// ==> file settings - Stulle
 	HTREEITEM m_htiFileDefaults;

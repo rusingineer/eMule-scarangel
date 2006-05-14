@@ -74,7 +74,8 @@ bool CSearchManager::IsSearching(uint32 uSearchID)
 void CSearchManager::StopSearch(uint32 uSearchID, bool bDelayDelete)
 {
 	// Stop a specific searchID
-	for (SearchMap::iterator itSearchMap = m_mapSearches.begin(); itSearchMap != m_mapSearches.end(); ++itSearchMap)
+	SearchMap::iterator itSearchMap = m_mapSearches.begin();
+	while( itSearchMap != m_mapSearches.end())
 	{
 		if (itSearchMap->second->m_uSearchID == uSearchID)
 		{
@@ -85,10 +86,11 @@ void CSearchManager::StopSearch(uint32 uSearchID, bool bDelayDelete)
 			{
 				// Delete this search now.
 				delete itSearchMap->second;
-				itSearchMap = m_mapSearches.erase(itSearchMap);
+				itSearchMap = --m_mapSearches.erase(itSearchMap);
 			}
 			return;
 		}
+		++itSearchMap;
 	}
 }
 
@@ -350,7 +352,8 @@ void CSearchManager::JumpStart()
 	// Find any searches that has stalled and jumpstart them.
 	// This will also prune all searches.
 	time_t tNow = time(NULL);
-	for (SearchMap::iterator itSearchMap = m_mapSearches.begin(); itSearchMap != m_mapSearches.end(); ++itSearchMap)
+	SearchMap::iterator itSearchMap = m_mapSearches.begin();
+	while (itSearchMap != m_mapSearches.end())
 	{
 		// Each type has it's own criteria for being deleted or jumpstarted.
 		switch(itSearchMap->second->GetSearchTypes())
@@ -361,6 +364,7 @@ void CSearchManager::JumpStart()
 					{
 						delete itSearchMap->second;
 						itSearchMap = m_mapSearches.erase(itSearchMap);
+						continue;
 					}
 					else if (itSearchMap->second->GetAnswers() >= SEARCHFILE_TOTAL || itSearchMap->second->m_tCreated + SEARCHFILE_LIFETIME - SEC(20) < tNow)
 						itSearchMap->second->PrepareToStop();
@@ -377,6 +381,7 @@ void CSearchManager::JumpStart()
 							theApp.emuledlg->searchwnd->CancelKadSearch(itSearchMap->second->GetSearchID());
 						delete itSearchMap->second;
 						itSearchMap = m_mapSearches.erase(itSearchMap);
+						continue;
 					}
 					else if (itSearchMap->second->GetAnswers() >= SEARCHKEYWORD_TOTAL || itSearchMap->second->m_tCreated + SEARCHKEYWORD_LIFETIME - SEC(20) < tNow)
 						itSearchMap->second->PrepareToStop();
@@ -390,6 +395,7 @@ void CSearchManager::JumpStart()
 					{
 						delete itSearchMap->second;
 						itSearchMap = m_mapSearches.erase(itSearchMap);
+						continue;
 					}
 					else if (itSearchMap->second->GetAnswers() >= SEARCHNOTES_TOTAL || itSearchMap->second->m_tCreated + SEARCHNOTES_LIFETIME - SEC(20) < tNow)
 						itSearchMap->second->PrepareToStop();
@@ -403,6 +409,7 @@ void CSearchManager::JumpStart()
 					{
 						delete itSearchMap->second;
 						itSearchMap = m_mapSearches.erase(itSearchMap);
+						continue;
 					}
 					else if (itSearchMap->second->GetAnswers() >= SEARCHFINDBUDDY_TOTAL || itSearchMap->second->m_tCreated + SEARCHFINDBUDDY_LIFETIME - SEC(20) < tNow)
 						itSearchMap->second->PrepareToStop();
@@ -416,6 +423,7 @@ void CSearchManager::JumpStart()
 					{
 						delete itSearchMap->second;
 						itSearchMap = m_mapSearches.erase(itSearchMap);
+						continue;
 					}
 					else if (itSearchMap->second->GetAnswers() >= SEARCHFINDSOURCE_TOTAL || itSearchMap->second->m_tCreated + SEARCHFINDSOURCE_LIFETIME - SEC(20) < tNow)
 						itSearchMap->second->PrepareToStop();
@@ -429,6 +437,7 @@ void CSearchManager::JumpStart()
 					{
 						delete itSearchMap->second;
 						itSearchMap = m_mapSearches.erase(itSearchMap);
+						continue;
 					}
 					else
 						itSearchMap->second->JumpStart();
@@ -442,6 +451,7 @@ void CSearchManager::JumpStart()
 						CKademlia::GetPrefs()->SetPublish(true);
 						delete itSearchMap->second;
 						itSearchMap = m_mapSearches.erase(itSearchMap);
+						continue;
 					}
 					else if ((itSearchMap->second->m_tCreated + SEARCHNODECOMP_LIFETIME < tNow) && (itSearchMap->second->GetAnswers() >= SEARCHNODECOMP_TOTAL))
 					{
@@ -449,6 +459,7 @@ void CSearchManager::JumpStart()
 						CKademlia::GetPrefs()->SetPublish(true);
 						delete itSearchMap->second;
 						itSearchMap = m_mapSearches.erase(itSearchMap);
+						continue;
 					}
 					else
 						itSearchMap->second->JumpStart();
@@ -460,6 +471,7 @@ void CSearchManager::JumpStart()
 					{
 						delete itSearchMap->second;
 						itSearchMap = m_mapSearches.erase(itSearchMap);
+						continue;
 					}
 					else if (itSearchMap->second->GetAnswers() >= SEARCHSTOREFILE_TOTAL || itSearchMap->second->m_tCreated + SEARCHSTOREFILE_LIFETIME - SEC(20) < tNow)
 						itSearchMap->second->PrepareToStop();
@@ -473,6 +485,7 @@ void CSearchManager::JumpStart()
 					{
 						delete itSearchMap->second;
 						itSearchMap = m_mapSearches.erase(itSearchMap);
+						continue;
 					}
 					else if (itSearchMap->second->GetAnswers() >= SEARCHSTOREKEYWORD_TOTAL || itSearchMap->second->m_tCreated + SEARCHSTOREKEYWORD_LIFETIME - SEC(20)< tNow)
 						itSearchMap->second->PrepareToStop();
@@ -486,6 +499,7 @@ void CSearchManager::JumpStart()
 					{
 						delete itSearchMap->second;
 						itSearchMap = m_mapSearches.erase(itSearchMap);
+						continue;
 					}
 					else if (itSearchMap->second->GetAnswers() >= SEARCHSTORENOTES_TOTAL || itSearchMap->second->m_tCreated + SEARCHSTORENOTES_LIFETIME - SEC(20)< tNow)
 						itSearchMap->second->PrepareToStop();
@@ -499,12 +513,14 @@ void CSearchManager::JumpStart()
 					{
 						delete itSearchMap->second;
 						itSearchMap = m_mapSearches.erase(itSearchMap);
+						continue;
 					}
 					else
 						itSearchMap->second->JumpStart();
 					break;
 				}
 		}
+		++itSearchMap;
 	}
 }
 

@@ -337,7 +337,10 @@ void CPartFile::Init(){
 
 	//Xman
 	m_PartsHashing = 0;		// SLUGFILLER: SafeHash
-	m_bIsFlushThread = false; // SiRoB: Flush Thread
+	// SiRoB: Flush Thread
+	m_bIsFlushThread = false; 
+	m_bNeedToFlush = false; 
+	//Xman end
 
 	// ==> Global Source Limit [Max/Stulle] - Stulle
 	InitHL();
@@ -1751,18 +1754,18 @@ bool CPartFile::SavePartFile()
 	// after successfully writing the temporary part.met file...
 	if (_tremove(m_fullname) != 0 && errno != ENOENT){
 		if (thePrefs.GetVerbose())
-			DebugLogError(_T("Failed to remove \"%s\" - %s"), m_fullname, strerror(errno));
+			DebugLogError(_T("Failed to remove \"%s\" - %s"), m_fullname, _tcserror(errno));
 	}
 
 	if (_trename(strTmpFile, m_fullname) != 0){
 		int iErrno = errno;
 		if (thePrefs.GetVerbose())
-			DebugLogError(_T("Failed to move temporary part.met file \"%s\" to \"%s\" - %s"), strTmpFile, m_fullname, strerror(iErrno));
+			DebugLogError(_T("Failed to move temporary part.met file \"%s\" to \"%s\" - %s"), strTmpFile, m_fullname, _tcserror(iErrno));
 
 		CString strError;
 		strError.Format(GetResString(IDS_ERR_SAVEMET), m_partmetfilename, GetFileName());
 		strError += _T(" - ");
-		strError += strerror(iErrno);
+		strError += _tcserror(iErrno);
 		LogError(_T("%s"), strError);
 		return false;
 	}
@@ -2121,7 +2124,7 @@ bool CPartFile::GetNextEmptyBlockInPart(uint16 partNumber, Requested_Block_Struc
 
 			bool shrinkSucceeded = ShrinkToAvoidAlreadyRequested(tempStart, tempEnd);
 			if(shrinkSucceeded) {
-				AddDebugLogLine(false, _T("Shrunk interval to prevent collision with already requested block: Old interval %i-%i. New interval: %i-%i. File %s."), start, end, tempStart, tempEnd, GetFileName());
+				//AddDebugLogLine(false, _T("Shrunk interval to prevent collision with already requested block: Old interval %i-%i. New interval: %i-%i. File %s."), start, end, tempStart, tempEnd, GetFileName());
 
 				// Was this block to be returned
 				if (result != NULL)
@@ -2631,7 +2634,7 @@ uint32 CPartFile::Process(uint32 maxammount, bool isLimited, bool fullProcess)
 					if (cur_src->socket) // WebCache [WC team/MorphXT] - Stulle/Max
 						cur_src->socket->DisableDownloadLimit();
 					// In case of an exception, the instance of the client might have been deleted
-					if (cur_src->IsDownloadingFromPeerCache() && m_sourceListChange == false && cur_src->m_pPCDownSocket && cur_src->m_pPCDownSocket->IsConnected())
+					if (m_sourceListChange == false && cur_src->IsDownloadingFromPeerCache() && cur_src->m_pPCDownSocket && cur_src->m_pPCDownSocket->IsConnected())
 						cur_src->m_pPCDownSocket->DisableDownloadLimit();
 					// ==> WebCache [WC team/MorphXT] - Stulle/Max
 					if (cur_src->IsDownloadingFromWebCache() && cur_src->m_pWCDownSocket && cur_src->m_pWCDownSocket->IsConnected()) // yonatan http
@@ -2667,7 +2670,7 @@ uint32 CPartFile::Process(uint32 maxammount, bool isLimited, bool fullProcess)
 					if (cur_src->socket) // WebCache [WC team/MorphXT] - Stulle/Max
 						cur_src->socket->SetDownloadLimit(tempmaxamount); // Trig OnReceive() (go-n-stop mode)							
 					// In case of an exception, the instance of the client might have been deleted
-					if (cur_src->IsDownloadingFromPeerCache() && m_sourceListChange == false && cur_src->m_pPCDownSocket && cur_src->m_pPCDownSocket->IsConnected())
+					if (m_sourceListChange == false && cur_src->IsDownloadingFromPeerCache() && cur_src->m_pPCDownSocket && cur_src->m_pPCDownSocket->IsConnected())
 						cur_src->m_pPCDownSocket->SetDownloadLimit(tempmaxamount);
 					// ==> WebCache [WC team/MorphXT] - Stulle/Max
 					if (cur_src->IsProxy() && cur_src->IsDownloadingFromWebCache() && cur_src->m_pWCDownSocket->IsConnected()) // yonatan http
@@ -3079,9 +3082,11 @@ uint32 CPartFile::Process(uint32 maxammount, bool isLimited, bool fullProcess)
 							cur_src->socket->IsConnected() == true && 
 							//nächste TCP ist in weniger als 10 minuten
 							(cur_src->GetNextTCPAskedTime() - (10*60000) < dwCurTick ||
+							//Xman falls socket, dann darf der TCP-request immer stattfinden, wenn nächster request in 2 Minuten wäre
+							(cur_src->IsUdpPending()==false && (cur_src->GetLastAskedTime() + cur_src->GetJitteredFileReaskTime() - MIN2MS(2) < dwCurTick)) ||
 							//client antwortet nicht auf UDP also schau nicht auf NextTCPAskedTime
 							//sondern wann muß das nächste mal abgefragt werden - 10 Minuten
-							//Xman x4 better using of existing connections
+							//Xman better using of existing connections
 							((cur_src->HasTooManyFailedUDP() || cur_src->HasLowID()) && (cur_src->GetLastAskedTime() + cur_src->GetJitteredFileReaskTime() - (10*60000) < dwCurTick))) && 
 							//letzte mal tcp-ask nach diesem file war vor 10 minuten:
 							cur_src->GetLastFileAskedTime(this) + MIN_REQUESTTIME + 60000 < dwCurTick) || 
@@ -3267,7 +3272,7 @@ void CPartFile::AddSources(CSafeMemFile* sources, uint32 serverip, uint16 server
 			if (theApp.ipfilter->IsFiltered(userid))
 			{
 				if (thePrefs.GetLogFilteredIPs())
-					AddDebugLogLine(false, _T("Ignored source (IP=%s) received from server - IP filter (%s)"), ipstr(userid), theApp.ipfilter->GetLastHit());
+					AddDebugLogLine(false, _T("Ignored source (IP=%s) received from server - IP filter (%s) for file: %s"), ipstr(userid), theApp.ipfilter->GetLastHit(), GetFileName()); //Xman show filename
 				continue;
 			}
 			if (theApp.clientlist->IsBannedClient(userid)){
@@ -3846,7 +3851,7 @@ BOOL CPartFile::PerformFileComplete()
 
 	// remove part.met file
 	if (_tremove(m_fullname))
-		theApp.QueueLogLine(true,GetResString(IDS_ERR_DELETEFAILED) + _T(" - ") + CString(strerror(errno)),m_fullname);
+		theApp.QueueLogLine(true,GetResString(IDS_ERR_DELETEFAILED) + _T(" - ") + CString(_tcserror(errno)),m_fullname);
 
 	// ==> Global Source Limit [Max/Stulle] - Stulle
 	if(thePrefs.IsUseGlobalHL() && theApp.downloadqueue->GetPassiveMode())
@@ -4020,10 +4025,10 @@ void CPartFile::DeleteFile(){
 		m_hpartfile.Close();
 
 	if (_tremove(m_fullname))
-		LogError(LOG_STATUSBAR, GetResString(IDS_ERR_DELETE) + _T(" - ") + CString(strerror(errno)), m_fullname);
+		LogError(LOG_STATUSBAR, GetResString(IDS_ERR_DELETE) + _T(" - ") + CString(_tcserror(errno)), m_fullname);
 	CString partfilename(RemoveFileExtension(m_fullname));
 	if (_tremove(partfilename))
-		LogError(LOG_STATUSBAR, GetResString(IDS_ERR_DELETE) + _T(" - ") + CString(strerror(errno)), partfilename);
+		LogError(LOG_STATUSBAR, GetResString(IDS_ERR_DELETE) + _T(" - ") + CString(_tcserror(errno)), partfilename);
 
 	CString BAKName(m_fullname);
 	BAKName.Append(PARTMET_BAK_EXT);
@@ -4337,7 +4342,7 @@ void CPartFile::ResumeFile(bool resort)
 		return;
 	if (status==PS_ERROR && m_bCompletionError){
 		ASSERT( gaplist.IsEmpty() );
-		if (gaplist.IsEmpty()){
+		if (gaplist.IsEmpty() && !m_nTotalBufferData) { //Xman - MORPH - Changed by SiRoB, Flush Thread
 			// rehashing the file could probably be avoided, but better be in the safe side..
 			m_bCompletionError = false;
 			CompleteFile(false);
@@ -5035,7 +5040,7 @@ void CPartFile::AddClientSources(CSafeMemFile* sources, uint8 sourceexchangevers
 				if (theApp.ipfilter->IsFiltered(dwID))
 				{
 					if (thePrefs.GetLogFilteredIPs())
-						AddDebugLogLine(false, _T("Ignored source (IP=%s) received via source exchange - IP filter (%s)"), ipstr(dwID), theApp.ipfilter->GetLastHit());
+						AddDebugLogLine(false, _T("Ignored source (IP=%s) received via source exchange - IP filter (%s) for file: %s"), ipstr(dwID), theApp.ipfilter->GetLastHit(), GetFileName()); //Xman show filename
 					continue;
 				}
 				if (theApp.clientlist->IsBannedClient(dwID)){
@@ -5244,6 +5249,8 @@ void CPartFile::FlushBuffer(bool forcewait, bool bForceICH, bool /*bNoAICH*/)
 {
 	//MORPH START - Added by SiRoB, Flush Thread
 	if (m_bIsFlushThread) {
+		if (forcewait)
+			m_bNeedToFlush = true;
 		return;	
 	}
 	//MORPH END   - Added by SiRoB, Flush Thread
@@ -5383,6 +5390,7 @@ void CPartFile::FlushBuffer(bool forcewait, bool bForceICH, bool /*bNoAICH*/)
 		CPartFileFlushThread* m_FlushThread = (CPartFileFlushThread*) AfxBeginThread(RUNTIME_CLASS(CPartFileFlushThread), THREAD_PRIORITY_BELOW_NORMAL,0, CREATE_SUSPENDED);
 		if (m_FlushThread) {
 			m_bIsFlushThread = true;
+			m_bNeedToFlush = false;
 			FlushDone_Struct* FlushSetting = new FlushDone_Struct;
 			FlushSetting->bIncreasedFile = bIncreasedFile;
 			FlushSetting->bForceICH = bForceICH;
@@ -5497,6 +5505,8 @@ void CPartFile::FlushDone(FlushDone_Struct* FlushSetting)
 	delete[] FlushSetting->changedPart;
 	delete	FlushSetting;
 	SetFlushThread(NULL);
+	if (m_bNeedToFlush)
+		FlushBuffer(true);
 }
 
 IMPLEMENT_DYNCREATE(CPartFileFlushThread, CWinThread)
@@ -5520,6 +5530,7 @@ int CPartFileFlushThread::Run()
 	//theApp.QueueDebugLogLine(false,_T("FLUSH:Start (%s)"),m_partfile->GetFileName()/*, CastItoXBytes(myfile->m_iAllocinfo, false, false)*/ );
 
 	try{
+		CSingleLock sLock1(&(theApp.hashing_mut), TRUE); //SafeHash - wait a current hashing process end before read the chunk
 		// Flush to disk
 		m_partfile->m_hpartfile.Flush();
 	}
@@ -5796,16 +5807,19 @@ void CPartFile::UpdateDisplayedInfo(bool force)
 }
 
 void CPartFile::UpdateAutoDownPriority(){
-	if( !IsAutoDownPriority() || status != PS_READY || paused || insufficient || stopped ) //Xman Code Improvement
+	//Xman Code Improvement
+	UINT sourcecount= GetSourceCount();
+	if( !IsAutoDownPriority() || sourcecount==0 ) 
 		return;
-	if ( GetSourceCount() > 100 ){
+	if ( sourcecount > 100 ){
 		SetDownPriority( PR_LOW );
 		return;
 	}
-	if ( GetSourceCount() > 20 ){
+	if ( sourcecount > 20 ){
 		SetDownPriority( PR_NORMAL );
 		return;
 	}
+	//Xman end
 	SetDownPriority( PR_HIGH );
 }
 
@@ -6666,7 +6680,7 @@ void CPartFile::AICHRecoveryDataAvailable(uint16 nPart)
 		// ==> WebCache [WC team/MorphXT] - Stulle/Max
 		if(thePrefs.GetLogICHEvents()) //JP log ICH events
 		// <== WebCache [WC team/MorphXT] - Stulle/Max
-			AddDebugLogLine(DLP_DEFAULT, false, _T("Processing AICH Recovery data: The part (%u) is already complete, canceling"));
+		AddDebugLogLine(DLP_DEFAULT, false, _T("Processing AICH Recovery data: The part (%u) is already complete, canceling"),nPart);
 		return;
 	}
 
@@ -6677,7 +6691,7 @@ void CPartFile::AICHRecoveryDataAvailable(uint16 nPart)
 		// ==> WebCache [WC team/MorphXT] - Stulle/Max
 		if(thePrefs.GetLogICHEvents()) //JP log ICH events
 		// <== WebCache [WC team/MorphXT] - Stulle/Max
-			AddDebugLogLine(DLP_DEFAULT, false, _T("Processing AICH Recovery data: Unable to get verified hash from hashset (should never happen)"));
+		AddDebugLogLine(DLP_DEFAULT, false, _T("Processing AICH Recovery data: Unable to get verified hash from hashset (should never happen)"));
 		ASSERT( false );
 		return;
 	}
@@ -7005,7 +7019,7 @@ void CPartFile::ProcessSourceCache()
 				sourcesadded++;
 		}
 		if(sourcesadded>0 && thePrefs.GetDebugSourceExchange())
-			AddDebugLogLine(false,_T("-->%u sources added via sourcecache. file: %s"),sourcesadded,GetFileName()); 
+			AddDebugLogLine(false,_T("-->%u sources added via sourcache. file: %s"),sourcesadded,GetFileName()); 
 	}
 }
 //Xman end
@@ -7165,7 +7179,7 @@ void CPartFile::PartHashFinished(UINT partnumber, bool corrupt)
 		if (theApp.emuledlg->IsRunning())	// may be called during shutdown!
 		{
 			// Is this file finished?
-			if (!m_PartsHashing && gaplist.IsEmpty())
+			if (!m_PartsHashing && gaplist.IsEmpty() && !m_nTotalBufferData) //Xman - MORPH - Changed by SiRoB, Flush Thread
 				CompleteFile(false);	// Recheck all hashes, because loaded data is trusted based on file-date
 		}
 	}
@@ -7221,7 +7235,7 @@ void CPartFile::PartHashFinishedAICHRecover(UINT partnumber, bool corrupt)
 
 		if (theApp.emuledlg->IsRunning()){
 			// Is this file finished?
-			if (!m_PartsHashing && gaplist.IsEmpty())
+			if (!m_PartsHashing && gaplist.IsEmpty() && !m_nTotalBufferData) //Xman - MORPH - Changed by SiRoB, Flush Thread
 				CompleteFile(false);	// Recheck all hashes, because loaded data is trusted based on file-date
 		}
 	}
@@ -7292,7 +7306,7 @@ void CPartFile::ParseICHResult()
 
 	if (theApp.emuledlg->IsRunning()){ // may be called during shutdown!
 		// Is this file finished?
-		if (!m_PartsHashing && gaplist.IsEmpty())
+		if (!m_PartsHashing && gaplist.IsEmpty() && !m_nTotalBufferData) //Xman - MORPH - Changed by SiRoB, Flush Thread
 			CompleteFile(false);	// Recheck all hashes, because loaded data is trusted based on file-date
 	}
 }

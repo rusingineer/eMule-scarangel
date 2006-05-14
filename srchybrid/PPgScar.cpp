@@ -12,6 +12,7 @@
 #include "ClientCredits.h" // CreditSystems [EastShare/ MorphXT] - Stulle
 #include "log.h"
 #include "DownloadQueue.h" // Global Source Limit [Max/Stulle] - Stulle
+#include "TransferWnd.h" // CPU/MEM usage [$ick$/Stulle] - Max
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -93,6 +94,11 @@ CPPgScar::CPPgScar()
 	// <== CreditSystems [EastShare/ MorphXT] - Stulle
 
 	m_htiDisplay = NULL;
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max
+	m_htiSysInfoGroup = NULL;
+	m_htiSysInfo = NULL;
+	m_htiSysInfoGlobal = NULL;
+	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	m_htiShowSrcOnTitle = NULL; // Show sources on title - Stulle
 //	m_htiPsFilesRed = NULL; // draw PS files red - Stulle
 	m_htiFriendsBlue = NULL; // draw friends blue - Stulle
@@ -101,6 +107,7 @@ CPPgScar::CPPgScar()
 	m_htiShowInMSN7 = NULL; // Show in MSN7 [TPT] - Stulle
 	m_htiQueueProgressBar = NULL; // Client queue progress bar [Commander] - Stulle
 //	m_htiTrayComplete = NULL; // Completed in Tray - Stulle
+	m_htiShowClientPercentage = NULL; // Show Client Percentage [Commander/MorphXT] - Mondgott
 
 	// ==> file settings - Stulle
 	m_htiFileDefaults = NULL;
@@ -161,6 +168,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		int iImgQuickstart = 8;
 		int iImgCS = 8; // CreditSystems [EastShare/ MorphXT] - Stulle
 		int iImgDisplay = 8;
+		int iImgSysInfo = 8;
 		int iImgDropDefaults = 8;
 //		int iImgMinimule = 8;
 		int iImgMisc = 8;
@@ -174,6 +182,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 			iImgQuickstart = piml->Add(CTempIconLoader(_T("QUICKSTART"))); // Thx to the eF-Mod team for the icon
 			iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS"))); // CreditSystems [EastShare/ MorphXT] - Stulle
 			iImgDisplay = piml->Add(CTempIconLoader(_T("DISPLAY")));
+			iImgSysInfo = piml->Add(CTempIconLoader(_T("SYSINFO")));
 			iImgDropDefaults = piml->Add(CTempIconLoader(_T("DROPDEFAULTS")));
 //			iImgMinimule = piml->Add(CTempIconLoader(_T("MINIMULE")));
 			iImgMisc = piml->Add(CTempIconLoader(_T("SRCUNKNOWN")));
@@ -248,6 +257,11 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		// <== CreditSystems [EastShare/ MorphXT] - Stulle
 
 		m_htiDisplay = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_PW_DISPLAY), iImgDisplay, TVI_ROOT);
+		// ==> CPU/MEM usage [$ick$/Stulle] - Max
+		m_htiSysInfoGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_SYS_INFO_GROUP), iImgSysInfo, m_htiDisplay);
+		m_htiSysInfo = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ENABLE), m_htiSysInfoGroup, m_bSysInfo);
+		m_htiSysInfoGlobal = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SYS_INFO_GLOBAL), m_htiSysInfoGroup, m_bSysInfoGlobal);
+		// <== CPU/MEM usage [$ick$/Stulle] - Max
 		m_htiShowSrcOnTitle = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOWSRCONTITLE), m_htiDisplay, showSrcInTitle); // Show sources on title - Stulle
 //		m_htiPsFilesRed = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PS_FILES_RED), m_htiDisplay, m_bPsFilesRed); // draw PS files red - Stulle
 		m_htiFriendsBlue = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_FRIENDS_BLUE), m_htiDisplay, m_bFriendsBlue); // draw friends blue - Stulle
@@ -256,6 +270,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiShowInMSN7 = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOWINMSN7), m_htiDisplay, m_bShowInMSN7); // Show in MSN7 [TPT] - Stulle
 		m_htiQueueProgressBar = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CLIENTQUEUEPROGRESSBAR), m_htiDisplay, m_bQueueProgressBar); // Client queue progress bar [Commander] - Stulle
 //		m_htiTrayComplete = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_TRAY_COMPLETE), m_htiDisplay, m_bTrayComplete); // Completed in Tray - Stulle
+		m_htiShowClientPercentage = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CLIENTPERCENTAGE), m_htiDisplay, m_bShowClientPercentage); // Show Client Percentage [Commander/MorphXT] - Mondgott
 
 		// ==> file settings - Stulle
 		m_htiFileDefaults = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_FILE_DEFAULTS), iImgDropDefaults, TVI_ROOT);
@@ -358,9 +373,12 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiAntiUploaderBanLimit, (int &)m_iAntiUploaderBanCase);
 	// <== Anti Uploader Ban - Stulle
 */
-
 	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiCreditSystem, (int &)m_iCreditSystem); // CreditSystems [EastShare/ MorphXT] - Stulle
 
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSysInfo, m_bSysInfo);
+	if(m_htiSysInfoGlobal) DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSysInfoGlobal, m_bSysInfoGlobal);
+	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowSrcOnTitle, showSrcInTitle); // Show sources on title - Stulle
 //	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiPsFilesRed, m_bPsFilesRed); // draw PS files red - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiFriendsBlue, m_bFriendsBlue); // draw friends blue - Stulle
@@ -369,6 +387,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowInMSN7, m_bShowInMSN7); // Show in MSN7 [TPT] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiQueueProgressBar, m_bQueueProgressBar); // Client queue progress bar [Commander] - Stulle
 //	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiTrayComplete, m_bTrayComplete); // Completed in Tray - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowClientPercentage, m_bShowClientPercentage); // Show Client Percentage [Commander/MorphXT] - Mondgott
 
 	// ==> file settings - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiAutoNNS, m_bEnableAutoDropNNSDefault);
@@ -425,6 +444,9 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	// ==> Quick start [TPT] - Max
 	if (m_htiQuickStartAfterIPChange)	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiQuickStartAfterIPChange, m_bQuickStart);
 	// <== Quick start [TPT] - Max
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max
+	if (m_htiSysInfoGlobal)	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiSysInfoGlobal, m_bSysInfo);
+	// <== CPU/MEM usage [$ick$/Stulle] - Max
 }
 
 
@@ -460,6 +482,10 @@ BOOL CPPgScar::OnInitDialog()
 	m_iAntiUploaderBanCase = thePrefs.GetAntiUploaderBanCase();
 	// <== Anti Uploader Ban - Stulle
 */
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max
+	m_bSysInfo = thePrefs.GetSysInfo();
+	m_bSysInfoGlobal = thePrefs.GetSysInfoGlobal();
+	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	showSrcInTitle = thePrefs.ShowSrcOnTitle(); // Show sources on title - Stulle
 //	m_bPsFilesRed = thePrefs.GetPsFilesRed(); // draw PS files red - Stulle
 	m_bFriendsBlue = thePrefs.GetFriendsBlue(); // draw friends blue - Stulle
@@ -468,6 +494,7 @@ BOOL CPPgScar::OnInitDialog()
 	m_bShowInMSN7 = thePrefs.GetShowMSN7(); // Show in MSN7 [TPT] - Stulle
 	m_bQueueProgressBar = thePrefs.ShowClientQueueProgressBar(); // Client queue progress bar [Commander] - Stulle
 //	m_bTrayComplete = thePrefs.GetTrayComplete(); // Completed in Tray - Stulle
+	m_bShowClientPercentage = thePrefs.GetShowClientPercentage(); // Show Client Percentage [Commander/MorphXT] - Mondgott
 
 	// ==> file settings - Stulle
 	m_bEnableAutoDropNNSDefault = thePrefs.m_EnableAutoDropNNSDefault;
@@ -585,6 +612,14 @@ BOOL CPPgScar::OnApply()
 	}
 	// <== CreditSystems [EastShare/ MorphXT] - Stulle
 
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max
+	if(thePrefs.m_bSysInfo != m_bSysInfo)
+	{
+		thePrefs.m_bSysInfo = m_bSysInfo;
+		theApp.emuledlg->transferwnd->EnableSysInfo(m_bSysInfo);
+	}
+	thePrefs.m_bSysInfoGlobal = m_bSysInfoGlobal;
+	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	thePrefs.showSrcInTitle = showSrcInTitle; // Show sources on title - Stulle
 //	thePrefs.PsFilesRed = m_bPsFilesRed; // draw PS files red - Stulle
 	thePrefs.FriendsBlue = m_bFriendsBlue; // draw friends blue - Stulle
@@ -593,6 +628,7 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_bShowInMSN7 = m_bShowInMSN7; // Show in MSN7 [TPT] - Stulle
 	thePrefs.m_bClientQueueProgressBar = m_bQueueProgressBar; // Client queue progress bar [Commander] - Stulle
 //	thePrefs.m_bTrayComplete = m_bTrayComplete; // Completed in Tray - Stulle
+	thePrefs.m_bShowClientPercentage = m_bShowClientPercentage; // Show Client Percentage [Commander/MorphXT] - Mondgott
 
 	// ==> file settings - Stulle
 	thePrefs.m_EnableAutoDropNNSDefault = m_bEnableAutoDropNNSDefault;
@@ -694,6 +730,10 @@ void CPPgScar::Localize(void)
 		if (m_htiAntiUploaderBanLimit) m_ctrlTreeOptions.SetEditLabel(m_htiAntiUploaderBanLimit, GetResString(IDS_UNBAN_UPLOADER));
 		// <== Anti Uploader Ban - Stulle
 */
+		// ==> CPU/MEM usage [$ick$/Stulle] - Max
+		if (m_htiSysInfo) m_ctrlTreeOptions.SetItemText(m_htiSysInfo, GetResString(IDS_ENABLED));
+		if (m_htiSysInfoGlobal) m_ctrlTreeOptions.SetItemText(m_htiSysInfoGlobal, GetResString(IDS_SYS_INFO_GLOBAL));
+		// <== CPU/MEM usage [$ick$/Stulle] - Max
 		if (m_htiShowSrcOnTitle) m_ctrlTreeOptions.SetItemText(m_htiShowSrcOnTitle, GetResString(IDS_SHOWSRCONTITLE)); // Show sources on title - Stulle
 //		if (m_htiPsFilesRed) m_ctrlTreeOptions.SetItemText(m_htiPsFilesRed, GetResString(IDS_PS_FILES_RED)); // draw PS files red - Stulle
 		if (m_htiFriendsBlue) m_ctrlTreeOptions.SetItemText(m_htiFriendsBlue, GetResString(IDS_FRIENDS_BLUE)); // draw friends blue - Stulle
@@ -702,6 +742,7 @@ void CPPgScar::Localize(void)
 		if (m_htiShowInMSN7) m_ctrlTreeOptions.SetItemText(m_htiShowInMSN7, GetResString(IDS_SHOWINMSN7)); // Show in MSN7 [TPT] - Stulle
 		if (m_htiQueueProgressBar) m_ctrlTreeOptions.SetItemText(m_htiQueueProgressBar, GetResString(IDS_CLIENTQUEUEPROGRESSBAR)); // Client queue progress bar [Commander] - Stulle
 //		if (m_htiTrayComplete) m_ctrlTreeOptions.SetItemText(m_htiTrayComplete, GetResString(IDS_TRAY_COMPLETE)); // Completed in Tray - Stulle
+		if (m_htiShowClientPercentage) m_ctrlTreeOptions.SetItemText(m_htiShowClientPercentage, GetResString(IDS_CLIENTPERCENTAGE)); // Show Client Percentage [Commander/MorphXT] - Mondgott
 
 		// ==> file settings - Stulle
 		if (m_htiAutoNNS) m_ctrlTreeOptions.SetItemText(m_htiAutoNNS, GetResString(IDS_AUTO_NNS));
@@ -799,6 +840,11 @@ void CPPgScar::OnDestroy()
 	// <== CreditSystems [EastShare/ MorphXT] - Stulle
 
 	m_htiDisplay = NULL;
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max
+	m_htiSysInfoGroup = NULL;
+	m_htiSysInfo = NULL;
+	m_htiSysInfoGlobal = NULL;
+	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	m_htiShowSrcOnTitle = NULL; // Show sources on title - Stulle
 //	m_htiPsFilesRed = NULL; // draw PS files red - Stulle
 	m_htiFriendsBlue = NULL; // draw friends blue - Stulle
@@ -807,6 +853,7 @@ void CPPgScar::OnDestroy()
 	m_htiShowInMSN7 = NULL; // Show in MSN7 [TPT] - Stulle
 	m_htiQueueProgressBar = NULL;
 //	m_htiTrayComplete = NULL; // Completed in Tray - Stulle
+	m_htiShowClientPercentage = NULL; // Show Client Percentage [Commander/MorphXT] - Mondgott
 
 	// ==> file settings - Stulle
 	m_htiFileDefaults = NULL;
@@ -879,6 +926,16 @@ LRESULT CPPgScar::OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam)
 			}
 		}
 		// <== Quick start [TPT] - Max
+
+		// ==> CPU/MEM usage [$ick$/Stulle] - Max
+		if (m_htiSysInfo && pton->hItem == m_htiSysInfo)
+		{
+			if (m_ctrlTreeOptions.GetCheckBox(m_htiSysInfo, bCheck))
+			{
+				if (m_htiSysInfoGlobal)	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiSysInfoGlobal, bCheck);
+			}
+		}
+		// <== CPU/MEM usage [$ick$/Stulle] - Max
 
 		SetModified();
 	}

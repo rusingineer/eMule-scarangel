@@ -122,7 +122,6 @@ m_downHistory_list(3)
 
 void CUpDownClient::Init()
 {
-
 	//Xman Full Chunk
 	upendsoon=false;
 	
@@ -241,7 +240,7 @@ void CUpDownClient::Init()
     m_nCurQueueSessionPayloadUp = 0; // PENDING: Is this necessary? ResetSessionUp()...
     m_lastRefreshedULDisplay = ::GetTickCount();
 	m_bGPLEvildoer = false;
-	m_bHelloAnswerPending = false;
+	m_byHelloPacketState = HP_NONE;  //m_bHelloAnswerPending = false; //Xman Fix Connection Collision (Sirob)
 	m_fNoViewSharedFiles = 0;
 	m_bMultiPacket = 0;
 	md4clr(requpfileid);
@@ -451,13 +450,13 @@ CUpDownClient::~CUpDownClient(){
 	if(Credits())
 	{
 		Credits()->SetLastSeen(); //ensure we keep the credits at least 6 hours in memory, without this line our LastSeen can be outdated if we did only UDP
-		// ==> m000h
+		// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 		/*
 		if(Credits()->GetDownloadedTotal()==0 && Credits()->GetUploadedTotal()==0) //just to save some CPU-cycles, a second test is done at credits
 		*/
 		if(theApp.clientcredits->IsSaveUploadQueueWaitTime() == false &&
 			Credits()->GetDownloadedTotal()==0 && Credits()->GetUploadedTotal()==0)
-		// <== m000h
+		// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 			Credits()->MarkToDelete();
 	}
 	//Xman end
@@ -700,7 +699,8 @@ bool CUpDownClient::ProcessHelloPacket(const uchar* pachPacket, uint32 nSize)
 	//Xman end
 	// reset all client properties; a client may not send a particular emule tag any longer
 	ClearHelloProperties();
-	return ProcessHelloTypePacket(&data);
+	m_byHelloPacketState = HP_HELLO; //Xman Fix Connection Collision (Sirob)
+	return ProcessHelloTypePacket(&data,true); //Xman Anti-Leecher
 }
 
 bool CUpDownClient::ProcessHelloAnswer(const uchar* pachPacket, uint32 nSize)
@@ -709,12 +709,12 @@ bool CUpDownClient::ProcessHelloAnswer(const uchar* pachPacket, uint32 nSize)
 	uhashsize=16;
 	//Xman end
 	CSafeMemFile data(pachPacket, nSize);
-	bool bIsMule = ProcessHelloTypePacket(&data);
-	m_bHelloAnswerPending = false;
+	bool bIsMule = ProcessHelloTypePacket(&data, false); //Xman Anti-Leecher
+	m_byHelloPacketState |= HP_HELLOANSWER; //m_bHelloAnswerPending = false; //Xman Fix Connection Collision (Sirob)
 	return bIsMule;
 }
 
-bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
+bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacket) //Xman Anti-Leecher
 {
 	bool bDbgInfo = thePrefs.GetUseDebugDevice();
 	m_strHelloInfo.Empty();
@@ -1067,13 +1067,13 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 	else if (credits != pFoundCredits){
 		//Xman Extened credit- table-arragement
 		credits->SetLastSeen(); //ensure to keep it at least 5 hours
-		// ==> m000h
+		// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 		/*
-		if(Credits()->GetDownloadedTotal()==0 && Credits()->GetUploadedTotal()==0) //just to save some CPU-cycles, a second test is done at credits
+		if(credits->GetUploadedTotal()==0 && credits->GetDownloadedTotal()==0)
 		*/
 		if(theApp.clientcredits->IsSaveUploadQueueWaitTime() == false &&
-			Credits()->GetDownloadedTotal()==0 && Credits()->GetUploadedTotal()==0)
-		// <== m000h
+			Credits()->GetUploadedTotal()==0 && Credits()->GetDownloadedTotal()==0)
+		// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 			credits->MarkToDelete(); //check also if the old hash is used by an other client
 		//Xman end
 		// userhash change ok, however two hours "waittime" before it can be used
@@ -1164,7 +1164,7 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 			old_m_pszUsername.Empty();
 		}
 
-		if(IsLeecher()==14 && !m_bHelloAnswerPending) //check if it is a Hello-Packet
+		if(IsLeecher()==14 && isHelloPacket) //check if it is a Hello-Packet
 		{
 			m_bLeecher=0; //it's a good mod now
 			m_strBanMessage.Format(_T("unban - Client %s"),DbgGetClientInfo());
@@ -1249,7 +1249,7 @@ bool CUpDownClient::SendHelloPacket(){
 	theStats.AddUpDataOverheadOther(packet->size);
 	socket->SendPacket(packet,true);
 
-	m_bHelloAnswerPending = true;
+	m_byHelloPacketState = HP_HELLO; //m_bHelloAnswerPending = true; //Xman Fix Connection Collision (Sirob)
 	return true;
 }
 
@@ -1591,6 +1591,7 @@ void CUpDownClient::SendHelloAnswer(){
 		DebugSend("OP__HelloAnswer", this);
 	theStats.AddUpDataOverheadOther(packet->size);
 	socket->SendPacket(packet,true);
+	m_byHelloPacketState |= HP_HELLOANSWER; //Xman Fix Connection Collision (Sirob)
 }
 
 void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
@@ -2005,6 +2006,10 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket, UpStopReas
 	}
 
 	if (GetChatState() != MS_NONE){
+		//Xman Code Improvement
+		if(bDelete==true)
+			theApp.downloadqueue->RemoveSource(this);
+		//Xman end
 		bDelete = false;
 		theApp.emuledlg->chatwnd->chatselector.ConnectingResult(this,false);
 	}
@@ -2039,7 +2044,7 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket, UpStopReas
 			Debug(_T("--- Disconnected client       %s; Reason=%s\n"), DbgGetClientInfo(true), pszReason);
 		m_fHashsetRequesting = 0;
 		SetSentCancelTransfer(0);
-		m_bHelloAnswerPending = false;
+		m_byHelloPacketState = HP_NONE; //m_bHelloAnswerPending = false; //Xman Fix Connection Collision (Sirob)
 		m_fQueueRankPending = 0;
 		m_fFailedFileIdReqs = 0;
 		m_fUnaskQueueRankRecv = 0;
@@ -2080,7 +2085,12 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket, UpStopReas
 //true means the client was not deleted!
 bool CUpDownClient::TryToConnect(bool bIgnoreMaxCon, CRuntimeClass* pClassSocket)
 {
-	if (theApp.listensocket->TooManySockets() && !bIgnoreMaxCon && !(socket && socket->IsConnected()))
+	//Xman Fix Connection Collision (Sirob)
+	bool socketnotinitiated = (socket == NULL || socket->GetConState() == ES_DISCONNECTED);
+	if (socketnotinitiated) 
+	{
+	//Xman end Fix Connection Collision (Sirob)
+		if (theApp.listensocket->TooManySockets() && !bIgnoreMaxCon /*&& !(socket && socket->IsConnected())*/ ) //Xman Fix Connection Collision (Sirob)
 	{
 		if(Disconnected(_T("Too many connections")))
 		{
@@ -2172,8 +2182,13 @@ bool CUpDownClient::TryToConnect(bool bIgnoreMaxCon, CRuntimeClass* pClassSocket
 		}
 	}
 
+		//Xman Fix Connection Collision (Sirob)
+		//Useless with socketnotinitiated
+		/*
 	if (!socket || !socket->IsConnected())
 	{
+		*/
+		//Xman end
 		if (socket)
 			socket->Safe_Delete();
 		if (pClassSocket == NULL)
@@ -2185,13 +2200,17 @@ bool CUpDownClient::TryToConnect(bool bIgnoreMaxCon, CRuntimeClass* pClassSocket
 			socket->Safe_Delete();
 			return true;
 		}
+		//Xman Fix Connection Collision (Sirob)
+		//Useless with socketnotinitiated
+		/*
 	}
 	else
 	{
-		if (CheckHandshakeFinished()) //Xman fix by eklmn
-			ConnectionEstablished();
+		ConnectionEstablished();
 		return true;
 	}
+		*/
+		//Xman end
 	// MOD Note: Do not change this part - Merkur
 	if (HasLowID())
 	{
@@ -2297,6 +2316,33 @@ bool CUpDownClient::TryToConnect(bool bIgnoreMaxCon, CRuntimeClass* pClassSocket
 		if (!Connect())
 			return false; // client was deleted!
 	}
+	//Xman Fix Connection Collision (Sirob)
+	}
+	else if(IsBanned()) //call this only with my fix inside!
+	{
+		//Xman first check for banned clients. Could occur during our communication
+		//if (thePrefs.GetLogBannedClients()) 
+			AddDebugLogLine(false, _T("Refused to connect to banned client %s"), DbgGetClientInfo());
+		m_cFailed=5; //force deletion //Xman 
+		if (Disconnected(_T("Banned IP")))
+		{
+			delete this;
+			return false;
+		}
+	}
+	else if (CheckHandshakeFinished()) {
+		ConnectionEstablished();
+		return true;
+	}
+	else if (m_byHelloPacketState == HP_NONE) {
+		if (!SendHelloPacket())
+			return false; // client was deleted!
+		DebugLog(LOG_SUCCESS, _T("[FIX CONNECTION COLLISION] Already initiated socket, OP_HELLO have been sent to client: %s"), DbgGetClientInfo());
+	} /*else
+		DebugLog(LOG_SUCCESS, _T("[FIX CONNECTION COLLISION] Already initiated socket, OP_HELLO already sent and waiting an OP_HELLOANSWER from client: %s"), DbgGetClientInfo());
+		*/
+	//Xman end Fix Connection Collision (Sirob)
+
 	return true;
 }
 
@@ -3290,7 +3336,7 @@ CString CUpDownClient::DbgGetClientInfo(bool bFormatIP) const
 
 bool CUpDownClient::CheckHandshakeFinished() const
 {
-	if (m_bHelloAnswerPending)
+	if (m_byHelloPacketState != HP_BOTH /*m_bHelloAnswerPending == true*/) //Xman Fix Connection Collision (Sirob)
 	{
 		// 24-Nov-2004 [bc]: The reason for this is that 2 clients are connecting to each other at the same..
 		//if (thePrefs.GetVerbose())
@@ -3533,7 +3579,7 @@ void CUpDownClient::CheckFailedFileIdReqs(const uchar* aucFileHash)
 				theApp.clientlist->TrackBadRequest(this, -2); // reset so the client will not be rebanned right after the ban is lifted
 				//Ban(_T("FileReq flood")); //Xman we filter not ban!
 			}
-			throw CString(thePrefs.GetLogBannedClients() ? _T("FileReq flood") : _T(""));
+			throw CString(/*thePrefs.GetLogBannedClients() ?*/ _T("FileReq flood") /*: _T("")*/); //Xman
 		}
 	}
 }

@@ -5,6 +5,7 @@
 //////////////////////////////////////////////////////////////////////
 #pragma once
 
+
 typedef struct tagMENUINFO
 {
     DWORD   cbSize;
@@ -15,6 +16,7 @@ typedef struct tagMENUINFO
     DWORD   dwContextHelpID;
     ULONG_PTR dwMenuData;
 }   MENUINFO, FAR *LPMENUINFO;
+
 typedef MENUINFO CONST FAR *LPCMENUINFO;
 
 typedef BOOL (WINAPI* TSetMenuInfo)(

@@ -2474,7 +2474,7 @@ void CUpDownClient::CheckQueueRankFlood()
 					theApp.clientlist->TrackBadRequest(this, -2); // reset so the client will not be rebanned right after the ban is lifted
 					//Ban(_T("QR flood")); //Xman we filter!
 				}
-				throw CString(thePrefs.GetLogBannedClients() ? _T("QR flood") : _T(""));
+				throw CString(/*thePrefs.GetLogBannedClients() ?*/ _T("QR flood") /*: _T("")*/); //Xman
 			}
 		}
 	}

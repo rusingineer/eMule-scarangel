@@ -13,7 +13,7 @@ class ThrottledControlSocket
 public:
     virtual SocketSentBytes SendControlData(uint32 maxNumberOfBytesToSend, uint32 minFragSize) = 0;
 	//Xman 
-	virtual bool IsSocketUploading() = false;
+	virtual bool IsSocketUploading() const = false;
 };
 
 class ThrottledFileSocket : public ThrottledControlSocket
@@ -29,7 +29,7 @@ public:
 
     
 //Xman Xtreme Upload
-	bool IsSocketUploading() {return slotstate!=0 && isready==true;} //Xman 
+	bool IsSocketUploading() const {return slotstate!=0 && isready==true;} //Xman 
 
 	//virtual uint32	GetNeededBytes() = 0;
 

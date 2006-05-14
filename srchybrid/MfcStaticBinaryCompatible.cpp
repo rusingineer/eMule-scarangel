@@ -85,7 +85,8 @@
 	}
 }*/
 
-#ifdef _DEBUG
+//Xman clean up temporary handle maps
+//#ifdef _DEBUG
 
 #pragma pack(4)
 class _CHandleMap
@@ -129,9 +130,11 @@ public:
 };
 #pragma pack()
 
-#endif
+//Xman clean up temporary handle maps
+//#endif
 
-#ifdef _DEBUG
+//Xman clean up temporary handle maps
+//#ifdef _DEBUG
 void Mfc_IdleFreeTempMaps()
 {
 #if defined(_DEBUG) && !defined(_AFX_NO_DEBUG_CRT)
@@ -223,8 +226,9 @@ void Mfc_IdleFreeTempMaps()
 #endif
 
 		// free temp maps, OLE DLLs, etc.
-		//AfxLockTempMaps();
-		//AfxUnlockTempMaps();
+		//Xman clean up temporary handle maps
+		AfxLockTempMaps();
+		AfxUnlockTempMaps();
 
 #ifdef _DEBUG
 #define CMP_MAP_STATE(map, member) \
@@ -255,4 +259,5 @@ void Mfc_IdleFreeTempMaps()
 		ASSERT(AfxCheckMemory());
 #endif
 }
-#endif
+//Xman clean up temporary handle maps
+//#endif

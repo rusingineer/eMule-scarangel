@@ -190,6 +190,15 @@ enum EInfoPacketState{
 	IP_BOTH				= 3,
 };
 
+//Xman Fix Connection Collision (Sirob)
+enum EHelloPacketState{
+	HP_NONE    = 0,
+	HP_HELLO  = 1,
+	HP_HELLOANSWER  = 2,
+	HP_BOTH    = 3,
+};
+//Xman end
+
 enum ESourceFrom{
 	SF_SERVER			= 0,
 	SF_KADEMLIA			= 1,
@@ -730,6 +739,7 @@ public:
 	uint32 GetLastFileAskedTime(CPartFile* pFile) {return m_partStatusMap[pFile].dwStartUploadReqTime;}
 	uint32 GetJitteredFileReaskTime() const {return m_jitteredFileReaskTime;} // range 25.5..29.5 min 
 	void   CalculateJitteredFileReaskTime(bool longer); //Xman 5.1 
+	bool   IsUdpPending() {return m_bUDPPending;} //Xman to make sure we don't reask with an existing socket, when a client connect during UDP-pending
 	//Xman own method
 	bool   HasTooManyFailedUDP() const {return m_nTotalUDPPackets > 3 && ((float)(m_nFailedUDPPackets/m_nTotalUDPPackets) > .3);} 
 	//Maella end
@@ -824,6 +834,7 @@ public:
 
 	static uint32 GetDownStopCount(bool failed, DownStopReason reason) {return m_downStopReason[failed?0:1][reason];}
 
+
 private:
 	static void   AddDownStopCount(bool failed, DownStopReason reason) {++m_downStopReason[failed?0:1][reason];}
 
@@ -881,7 +892,7 @@ protected:
 protected:
 	// base
 	void	Init();
-	bool	ProcessHelloTypePacket(CSafeMemFile* data);
+	bool	ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacket); //Xman Anti-Leecher: decide if Hello or Hello-Answer ->now independent from any other variables
 	void	SendHelloTypePacket(CSafeMemFile* data);
 	void	CreateStandartPackets(byte* data, UINT togo, Requested_Block_Struct* currentblock, bool bFromPF = true);
 	void	CreatePackedPackets(byte* data, UINT togo, Requested_Block_Struct* currentblock, bool bFromPF = true);
@@ -915,7 +926,7 @@ protected:
 	bool	m_bIsML;
 	//--group to aligned int32
 	bool	m_bGPLEvildoer;
-	bool	m_bHelloAnswerPending;
+	uint8	m_byHelloPacketState; //bool m_bHelloAnswerPending; //Xman Fix Connection Collision (Sirob)
 	uint8	m_byInfopacketsReceived;	// have we received the edonkeyprot and emuleprot packet already (see InfoPacketsReceived() )
 	uint8	m_bySupportSecIdent;
 	//--group to aligned int32

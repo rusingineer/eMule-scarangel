@@ -3367,7 +3367,61 @@ void CemuleDlg::DestroySplash()
 }
 */
 
-LRESULT CemuleDlg::OnKickIdle(UINT /*nWhy*/, long /*lIdleCount*/)
+//LRESULT CemuleDlg::OnKickIdle(UINT /*nWhy*/, long /*lIdleCount*/)
+//{
+//	LRESULT lResult = 0;
+//
+//	//Xman new slpash-screen arrangement
+//	if (theApp.IsSplash() && theApp.spashscreenfinished)
+//	{
+//		if (::GetCurrentTime() - theApp.m_dwSplashTime > 3500) 
+//		{
+//			// timeout expired, destroy the splash window
+//			theApp.DestroySplash();
+//			UpdateWindow();
+//		}
+//		else
+//		{
+//			// check again later...
+//			lResult = 1;
+//		}
+//	}
+//	//Xman end
+//
+//	if (m_bStartMinimized)
+//		PostStartupMinimized();
+//
+//	if (searchwnd && searchwnd->m_hWnd)
+//	{
+//		if (theApp.m_app_state != APP_STATE_SHUTINGDOWN)
+//		{
+//			//extern void Mfc_IdleUpdateCmdUiTopLevelFrameList(CWnd* pMainFrame);
+//			//Mfc_IdleUpdateCmdUiTopLevelFrameList(this);
+//			theApp.OnIdle(0/*lIdleCount*/);	// NOTE: DO **NOT** CALL THIS WITH 'lIdleCount>0'
+//
+//#ifdef _DEBUG
+//			// We really should call this to free up the temporary object maps from MFC.
+//			// It may/will show bugs (wrong usage of temp. MFC data) on couple of (hidden) places,
+//			// therefore it's right now too dangerous to put this in 'Release' builds..
+//			// ---
+//			// The Microsoft Foundation Class (MFC) Libraries create temporary objects that are 
+//			// used inside of message handler functions. In MFC applications, these temporary 
+//			// objects are automatically cleaned up in the CWinApp::OnIdle() function that is 
+//			// called in between processing messages.
+//
+//			// To slow to be called on each KickIdle. Need a timer
+//			//extern void Mfc_IdleFreeTempMaps();
+//			//if (lIdleCount >= 0)
+//			//	Mfc_IdleFreeTempMaps();
+//#endif
+//		}
+//	}
+//
+//	return lResult;
+//}
+
+//Xman clean up temporary handle maps
+LRESULT CemuleDlg::OnKickIdle(UINT /*nWhy*/, long lIdleCount)
 {
 	LRESULT lResult = 0;
 
@@ -3395,30 +3449,25 @@ LRESULT CemuleDlg::OnKickIdle(UINT /*nWhy*/, long /*lIdleCount*/)
 	{
 		if (theApp.m_app_state != APP_STATE_SHUTINGDOWN)
 		{
-			//extern void Mfc_IdleUpdateCmdUiTopLevelFrameList(CWnd* pMainFrame);
-			//Mfc_IdleUpdateCmdUiTopLevelFrameList(this);
-			theApp.OnIdle(0/*lIdleCount*/);	// NOTE: DO **NOT** CALL THIS WITH 'lIdleCount>0'
+			static uint32 lastprocess;
+			if(lIdleCount>0)
+			{
+				extern void Mfc_IdleFreeTempMaps();
+				Mfc_IdleFreeTempMaps();
+				lastprocess=::GetTickCount();
+				return 0;
+			}
+			if(theApp.OnIdle(0 /*lIdleCount*/) && ::GetTickCount() - lastprocess > MIN2MS(3))
+				lResult=1;
+			else
+				lResult=0;
 
-#ifdef _DEBUG
-			// We really should call this to free up the temporary object maps from MFC.
-			// It may/will show bugs (wrong usage of temp. MFC data) on couple of (hidden) places,
-			// therefore it's right now too dangerous to put this in 'Release' builds..
-			// ---
-			// The Microsoft Foundation Class (MFC) Libraries create temporary objects that are 
-			// used inside of message handler functions. In MFC applications, these temporary 
-			// objects are automatically cleaned up in the CWinApp::OnIdle() function that is 
-			// called in between processing messages.
-
-			// To slow to be called on each KickIdle. Need a timer
-			//extern void Mfc_IdleFreeTempMaps();
-			//if (lIdleCount >= 0)
-			//	Mfc_IdleFreeTempMaps();
-#endif
 		}
 	}
 
 	return lResult;
 }
+//Xman end
 
 int CemuleDlg::MapWindowToToolbarButton(CWnd* pWnd) const
 {

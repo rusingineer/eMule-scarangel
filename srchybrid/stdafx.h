@@ -9,6 +9,7 @@
 #define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
 #endif
 
+
 #ifndef WINVER
 #define WINVER 0x0400			// 0x0400 == Windows 98 and Windows NT 4.0 (because of '_WIN32_WINDOWS=0x0410')
 #endif
@@ -20,6 +21,7 @@
 #ifndef _WIN32_WINDOWS
 #define _WIN32_WINDOWS 0x0410   // 0x0410 == Windows 98
 #endif
+
 
 #ifndef _WIN32_IE
 //#define _WIN32_IE 0x0400		// 0x0400 == Internet Explorer 4.0 -> Comctl32.dll v4.71
@@ -63,7 +65,6 @@
 #include <afxcoll.h>
 #include <afxtempl.h>
 #include <math.h>
-
 
 #ifndef EWX_FORCEIFHUNG
 #define EWX_FORCEIFHUNG			0x00000010

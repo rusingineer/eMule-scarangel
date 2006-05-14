@@ -19,8 +19,8 @@
 
 //START - This part should not be changed in anyway
 #define MOD_VERSION_MJR		1
-#define MOD_VERSION_MIN		1
+#define MOD_VERSION_MIN		2
 #define MOD_VERSION_BUILD   0
-#define	MOD_VERSION			_T("ScarAngel ")
-#define	MOD_VERSION_LONG	_T("ScarAngel v")
+#define	MOD_VERSION			_T("ScarAngel a1 ")
+#define	MOD_VERSION_LONG	_T("ScarAngel a1 v")
 //END - This part should not be changed in anyway

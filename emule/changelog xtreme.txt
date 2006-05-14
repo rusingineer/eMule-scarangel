@@ -1,4 +1,4 @@
-Xtreme 5.0.1
+Xtreme 5.1.1
 ----------------
 
 Main Features:
@@ -20,6 +20,67 @@ libpng 1.2.7
 zlib 1.2.3
 crypto 52.1
 CxImage version 5.99c
+
+
+changelog Xtreme 5.1.1
+- added proper cleaning of temporary handle-maps 
+ + because official emule doesn't delete this maps emule eats more and more CPU after longer runingtime
+- added variable compression. (idea netfinity)
+ + If your upload is > 80 kb/s emule switch to lower compression = less CPU for high-speed uploaders 
+- added: show filename to IPFiltered-messages if possible
+- added new Kad-Patch by unknown1
+- added: filter outgoing server connections (bluesonicboy)
+
+- fixed a small bug in Auto-Downlaodpriority
+- Fix Connection Collision (Sirob)
+- fixed unicode problem around some error messages
+- fixed: objects in oscopecontrol are safed and restored via handle = proper GUI-coding
+- few fixes to statistic-graph (bluesonicBoy)
+
+- improved socket queuing
+- improved: taking a connected socket on filereask
+- updated flushthread (Sirob)
+
+
+changelog Xtreme 5.1
+This version includes really many patches and improvements for less CPU load and memory consumption.
+because most changes are internal, they aren't listed here.
+By the way, this is the first chinese translated official mod ;-)
+
+- added: Extened credit- table-arragement (less memory)
+- added: Anti-Nick-Changer, bans permamently nick-changers (e.g. Ketamine)
+- added: new slpash-screen arrangement (inspired by KTS)
+- added: don't overwrite bak files if last sessions crashed (idea blomy)
+- added: show complete up/down in queuelist
+- added: slugfiller safehash modified by Sirob
+- added: ReadBlockFromFileThread by Sirob + Improvements for Xtreme-Full-Chunk
+- added: Flush Thread (Sirob)
+- added: readded patch(slightly modified) from previous version for redownloading already downloaded files. 
+- added: chinese translation (welldl)
+
+- changed: grant credits only > 1.65 MB uploaded
+- changed: failed tcp-connection (statistik) now also count the cennected but not responding clients
+- changed: increased reasktime for non UDP-clients to give them a chance to first connect
+- changed: increased the time until a socket will be deleted (maybe this helps against some crashes)*
+* you will see more open sockets at statistic 
+- changed: don't add passive sources with wrong filesize
+- changed: show IP of denied reqeusted share files
+- changed some message strings
+
+- improved: few Improvements to IP to country 
+- improved: Init-Hashtable optimization
+- improved: some code-optimaztions at Xtreme-Creditsystem (less memory)
+- Some Code Improvements by Sirob, eklmn, avi-3k and Wizard
+- and many more imrovements
+
+- fixed: in sharefilelist the AddsearchtoCancelled-Menu didn't appear
+- fixed file rating string Aenarion[ITA]
+- fixed a small bug, that peercachesockets could stop upload to early
+- fixed a problem that good sourcen could be filtered, if a file is finished sooner than the sources can answer
+- fixed wrong displaying of files-count in sharefilelistctrl in some cases
+- fixed: summary not updated after deleting shared file (raccoonI)
+- fixed: eMule steals focus when message from new client is received (raccoonI)
+- minor fixes to progressbar by Sirob
 
 
 changelog 5.0.1 

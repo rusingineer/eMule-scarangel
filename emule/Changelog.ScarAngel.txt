@@ -1,12 +1,37 @@
 CHANGELOG FOR EMULE ScarAngel MOD
 
-eMule v0.47a ScarAngel v1.1:
+eMule v0.47a ScarAngel v1.2:
 ------------------------
 - XX.XX.2005 -
 -------------------------------------------------------------------------------
-based on eMule 0.47a Xtreme 5.0.1 compiled with vs2003 and Netfinity's fix
+based on eMule 0.47a Xtreme 5.1.1 compiled with vs2003 and Netfinity's fix
+
+Added: Show Client Percentage [Commander/MorphXT] - Mondgott
+
+Changed: Enable/ Disable Sysinfo (complete and global) [Stulle/iONiX] - Stulle
+
+Updated: Webcache [SiRoB]
+
+Fixed: Xman Credit System [Stulle] - Stulle
+Fixed: About dialog [Stulle] - Stulle
+
+
+eMule v0.47a ScarAngel v1.1:
+------------------------
+- 21.04.2005 -
+-------------------------------------------------------------------------------
+based on eMule 0.47a Xtreme 5.1 compiled with vs2003 and Netfinity's fix
+
+Note: We need new alpha/ beta tester. If you are interested please contact me
+	Requirements: speaking English/ German; good eMule knowledge; time!
+
+Added: Quickstart [TPT] - Max
+
+Updated: WebCache [SiRoB] - Stulle
 
 Changed: Trayicon (red/yellow/green square indicating connection) [Stulle] - Stulle
+Changed: last reask and next reask updated to match latest xtreme code [Max] - Max
+Changed: #emule-deutschland default irc help channel [Max] - Max
 
 Fixed: (minor) Forgot to count Xtreme's manual drops for the dropped src column [Stulle] - Stulle
 Fixed: (minor) Forgot to add UpdateDisplayedInfo(true) after new manual drops [Stulle] - Stulle

@@ -55,7 +55,7 @@ public:
     SocketSentBytes SendControlData(uint32 maxNumberOfBytesToSend, uint32 minFragSize); // ZZ:UploadBandWithThrottler (UDP)
 	void	SendPacket(Packet* packet,CServer* host);
 	void	DnsLookupDone(WPARAM wp, LPARAM lp);
-	bool	IsSocketUploading(){return false;} //Xman 
+	bool	IsSocketUploading() const {return false;} //Xman Xtreme Upload
 
 protected:
 	void	AsyncResolveDNS(LPCSTR lpszHostAddress, UINT nHostPort);

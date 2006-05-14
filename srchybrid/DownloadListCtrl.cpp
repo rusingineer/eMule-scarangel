@@ -164,6 +164,10 @@ void CDownloadListCtrl::Init()
 		pFont->GetLogFont(&lfFont);
 		lfFont.lfWeight = FW_BOLD;
 		m_fontBold.CreateFontIndirect(&lfFont);
+	// ==> Show Client Percentage [Commander/MorphXT] - Mondgott
+	lfFont.lfHeight = 11;
+	m_fontBoldSmaller.CreateFontIndirect(&lfFont);
+	// <== Show Client Percentage [Commander/MorphXT] - Mondgott
 	}
 	//Xman end
 
@@ -994,6 +998,37 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 					rec_status.bottom = iHeight; 
 					rec_status.right = iWidth; 
 					lpUpDownClient->DrawStatusBar(&cdcStatus,  &rec_status,(lpCtrlItem->type == UNAVAILABLE_SOURCE), thePrefs.UseFlatBar()); 
+
+					// ==> Show Client Percentage [Commander/MorphXT] - Mondgott
+					if (thePrefs.GetShowClientPercentage() && lpUpDownClient->GetPartStatus() && lpCtrlItem->type == AVAILABLE_SOURCE)
+					{
+						float percent = (float)lpUpDownClient->GetAvailablePartCount() / (float)lpUpDownClient->GetPartCount()* 100.0f;
+						if (percent > 0.05f)
+						{
+							//Commander - Added: Draw Client Percentage xored, caching before draw - Start
+							COLORREF oldclr = cdcStatus.SetTextColor(RGB(0,0,0));
+							int iOMode = cdcStatus.SetBkMode(TRANSPARENT);
+							buffer.Format(_T("%.1f%%"), percent);
+							CFont *pOldFont = cdcStatus.SelectObject(&m_fontBoldSmaller);
+#define	DrawClientPercentText		cdcStatus.DrawText(buffer, buffer.GetLength(),&rec_status, ((DLC_DT_TEXT | DT_RIGHT) & ~DT_LEFT) | DT_CENTER)
+							rec_status.top-=1;rec_status.bottom-=1;
+							DrawClientPercentText;rec_status.left+=1;rec_status.right+=1;
+							DrawClientPercentText;rec_status.left+=1;rec_status.right+=1;
+							DrawClientPercentText;rec_status.top+=1;rec_status.bottom+=1;
+							DrawClientPercentText;rec_status.top+=1;rec_status.bottom+=1;
+							DrawClientPercentText;rec_status.left-=1;rec_status.right-=1;
+							DrawClientPercentText;rec_status.left-=1;rec_status.right-=1;
+							DrawClientPercentText;rec_status.top-=1;rec_status.bottom-=1;
+							DrawClientPercentText;rec_status.left++;rec_status.right++;
+							cdcStatus.SetTextColor(RGB(255,255,255));
+							DrawClientPercentText;
+							cdcStatus.SelectObject(pOldFont);
+							cdcStatus.SetBkMode(iOMode);
+							cdcStatus.SetTextColor(oldclr);
+							//Commander - Added: Draw Client Percentage xored, caching before draw - End	
+						}
+					}
+					// <== Show Client Percentage [Commander/MorphXT] - Mondgott
 
 					lpCtrlItem->dwUpdated = dwTicks + (rand() % 128); 
 				} else 
@@ -2409,6 +2444,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 			CPartFile* file = (CPartFile*)content->owner; // added by sivka
 
 			switch (wParam){
+
 				//Xman Xtreme Downloadmanager
 				case MP_STOP_CLIENT: 
 					StopSingleClient(client);

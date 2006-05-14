@@ -396,14 +396,10 @@ uint32 CUpDownClient::GetScore(bool sysvalue, bool isdownloading, bool onlybasev
 
 	if( (IsEmuleClient() || this->GetClientSoft() < 10) && m_byEmuleVersion <= 0x19 )
 		fBaseValue *= 0.5f;
-	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
-	/*
 	//Xman Xtreme Mod : 80% score for non SI clients
 	else if(credits->GetCurrentIdentState(GetIP()) != IS_IDENTIFIED)
 		fBaseValue *= 0.8f;
 	//Xman end
-	*/
-	// <== CreditSystems [EastShare/ MorphXT] - Stulle
 
 	// ==> push small files [sivka] - Stulle
 	if(GetSmallFilePush())
@@ -508,6 +504,7 @@ void CUpDownClient::CreateNextBlockPackage(){
 					CReadBlockFromFileThread* readblockthread = (CReadBlockFromFileThread*) AfxBeginThread(RUNTIME_CLASS(CReadBlockFromFileThread), THREAD_PRIORITY_NORMAL,0, CREATE_SUSPENDED);
 					readblockthread->SetReadBlockFromFile(srcfile, currentblock->StartOffset, togo, this);
 					readblockthread->ResumeThread();
+					SetUploadFileID(srcfile); //Xman - Moved by SiRoB, Fix Filtered Block Request
 					filedata = (byte*)-2;
 					return;
 				} else if (filedata == (byte*)-1) {
@@ -519,7 +516,10 @@ void CUpDownClient::CreateNextBlockPackage(){
 				if (!srcfile->IsPartFile())
 					bFromPF = false; // This is not a part file...
 
+				//Xman - Removed by SiRoB, Fix Filtered Block Request
+				/*
 				SetUploadFileID(srcfile);
+				*/
 
 				// ==> WebCache [WC team/MorphXT] - Stulle/Max
 				if (IsUploadingToWebCache()) // Superlexx - encryption: encrypt here
@@ -887,7 +887,18 @@ void CUpDownClient::CreateStandartPackets(byte* data,uint32 togo, Requested_Bloc
 void CUpDownClient::CreatePackedPackets(byte* data, uint32 togo, Requested_Block_Struct* currentblock, bool bFromPF){
 	BYTE* output = new BYTE[togo+300];
 	uLongf newsize = togo+300;
-	UINT result = compress2(output, &newsize, data, togo, 9);
+	//Xman used different values!
+	// BEGIN netfinity: Variable compression - Reduce CPU usage for high bandwidth connections
+	//  Preferably this should take CPU speed into account
+	int	compressLevel = 9;
+	if (thePrefs.GetMaxUpload() > 500.0f)
+		compressLevel = 1;
+	else if (thePrefs.GetMaxUpload() > 200.0f)
+		compressLevel = 3;
+	else if (thePrefs.GetMaxUpload() > 80.0f)
+		compressLevel = 6;
+	UINT result = compress2(output, &newsize, data, togo, compressLevel);
+	// END netfinity: Variable compression
 	if (result != Z_OK || togo <= newsize){
 		delete[] output;
 		CreateStandartPackets(data,togo,currentblock,bFromPF);
@@ -972,7 +983,10 @@ void CUpDownClient::SetUploadFileID(CKnownFile* newreqfile)
 		md4clr(requpfileid);
 
 	if (oldreqfile)
+	{
 		oldreqfile->RemoveUploadingClient(this);
+		ClearUploadBlockRequests(); //Xman - Added by SiRoB, Fix Filtered Block Request
+	}
 	
 }
 
@@ -1264,7 +1278,7 @@ void CUpDownClient::Ban(LPCTSTR pszReason)
 	// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 
 	if (!IsBanned()){
-		if (thePrefs.GetLogBannedClients())
+		//if (thePrefs.GetLogBannedClients())
 			AddLeecherLogLine(false,_T("Banned: %s; %s"), pszReason==NULL ? _T("Aggressive behaviour") : pszReason, DbgGetClientInfo());
 	}
 #ifdef _DEBUG

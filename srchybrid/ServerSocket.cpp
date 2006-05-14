@@ -602,6 +602,16 @@ void CServerSocket::ConnectToServer(CServer* server){
 		cur_server = NULL;
 	}
 
+	//Xman filter outgoing server connections
+	if(thePrefs.FilterServerByIP()&& theApp.ipfilter->IsFiltered(server->GetIP()))
+	{
+		AddLogLine(true,_T("you can't connect to filtered server: %s, %s"),ipstr(server->GetIP()), server->GetDescription() );
+		theApp.emuledlg->serverwnd->serverlistctrl.RemoveServer(server);
+		cur_server = NULL;
+		return;
+	}
+	//Xman end
+
 	cur_server = new CServer(server);
 	Log(GetResString(IDS_CONNECTINGTO), cur_server->GetListName(), cur_server->GetFullIP(), cur_server->GetPort());
 

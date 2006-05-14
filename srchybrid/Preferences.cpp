@@ -566,6 +566,11 @@ bool	CPreferences::ShowGlobalHL; // show global HL - Stulle
 bool	CPreferences::ShowFileHLconst; // show HL per file constantaniously - Stulle
 bool	CPreferences::m_bShowInMSN7; //Show in MSN7 [TPT] - Stulle
 bool CPreferences::m_bClientQueueProgressBar; // Client queue progress bar [Commander] - Stulle
+bool	CPreferences::m_bShowClientPercentage; // Show Client Percentage [Commander/MorphXT] - Mondgott
+// ==> CPU/MEM usage [$ick$/Stulle] - Max
+bool	CPreferences::m_bSysInfo;
+bool	CPreferences::m_bSysInfoGlobal;
+// <== CPU/MEM usage [$ick$/Stulle] - Max
 
 uint8	CPreferences::creditSystemMode; // CreditSystems [EastShare/ MorphXT] - Stulle
 
@@ -2268,6 +2273,11 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("ShowFileHLconst"),ShowFileHLconst); // show HL per file constantaniously - Stulle
 	ini.WriteBool(_T("ShowInMSN7"), m_bShowInMSN7); //Show in MSN7 [TPT] - Stulle
 	ini.WriteBool(_T("ClientQueueProgressBar"),m_bClientQueueProgressBar); // Client queue progress bar [Commander] - Stulle
+	ini.WriteBool(_T("ShowClientPercentage"),m_bShowClientPercentage); // Show Client Percentage [Commander/MorphXT] - Mondgott
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max
+	ini.WriteBool(_T("SysInfo"),m_bSysInfo);
+	ini.WriteBool(_T("SysInfoGlobal"),m_bSysInfoGlobal);
+	// <== CPU/MEM usage [$ick$/Stulle] - Max
 
 	ini.WriteInt(_T("CreditSystemMode"), creditSystemMode); // CreditSystems [EastShare/ MorphXT] - Stulle
 
@@ -3173,6 +3183,11 @@ void CPreferences::LoadPreferences()
 	ShowFileHLconst = ini.GetBool(_T("ShowFileHLconst"),true); // show HL per file constantaniously - Stulle
 	m_bShowInMSN7 = ini.GetBool(_T("ShowInMSN7"), false); //Show in MSN7 [TPT] - Stulle
 	m_bClientQueueProgressBar=ini.GetBool(_T("ClientQueueProgressBar"),true); // Client queue progress bar [Commander] - Stulle
+	m_bShowClientPercentage=ini.GetBool(_T("ShowClientPercentage"),false); // Show Client Percentage [Commander/MorphXT] - Mondgott
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max
+	m_bSysInfo = ini.GetBool(_T("SysInfo"),true);
+	m_bSysInfoGlobal = ini.GetBool(_T("SysInfoGlobal"),false);
+	// <== CPU/MEM usage [$ick$/Stulle] - Max
 
 	creditSystemMode = (uint8)ini.GetInt(_T("CreditSystemMode"), 1/*lovelace*/); // CreditSystems [EastShare/ MorphXT] - Stulle
 

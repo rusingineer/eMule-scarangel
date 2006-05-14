@@ -36,7 +36,7 @@ public:
 	CClientUDPSocket();
 	virtual ~CClientUDPSocket();
 
-	bool	IsSocketUploading() {return false;} //Xman 
+	bool	IsSocketUploading() const {return false;} //Xman Xtreme Upload
 
 	bool	Create();
 	bool	Rebind();

@@ -588,6 +588,11 @@ public:
 	static bool ShowFileHLconst; // show HL per file constantaniously - Stulle
 	static bool m_bShowInMSN7; //Show in MSN7 [TPT] - Stulle
     static bool m_bClientQueueProgressBar; // Client queue progress bar [Commander] - Stulle
+	static bool m_bShowClientPercentage; // Show Client Percentage [Commander/MorphXT] - Mondgott
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max
+	static bool m_bSysInfo;
+	static bool m_bSysInfoGlobal;
+	// <== CPU/MEM usage [$ick$/Stulle] - Max
 
 	static uint8 creditSystemMode; // CreditSystems [EastShare/ MorphXT] - Stulle
 
@@ -1638,6 +1643,11 @@ public:
 	static	bool	GetShowFileHLconst()	{ return ShowFileHLconst; } // show HL per file constantaniously - Stulle
 	static	bool	GetShowMSN7()			{ return m_bShowInMSN7;} // Show in MSN7 [TPT] - Stulle
 	static	bool	ShowClientQueueProgressBar()	{ return m_bClientQueueProgressBar;} // Client queue progress bar [Commander] - Stulle
+	static	bool	GetShowClientPercentage()	{ return m_bShowClientPercentage;}  // Show Client Percentage - Mondgott
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max
+	static	bool	GetSysInfo()			{ return m_bSysInfo; }
+	static	bool	GetSysInfoGlobal()		{ return m_bSysInfoGlobal; }
+	// <== CPU/MEM usage [$ick$/Stulle] - Max
 
 	static	uint8	GetCreditSystem()		{return creditSystemMode;} // CreditSystems [EastShare/ MorphXT] - Stulle
 

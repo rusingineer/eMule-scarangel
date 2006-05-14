@@ -263,6 +263,17 @@ BOOL CStatisticsDlg::OnInitDialog()
 
 	m_wndSplitterstat_HR.MoveWindow(rcSpl);
 
+	//Xman statistic fix bluesonicboy
+	//Init. Pos. fix - Set Download Scope relative to this splitter, right and left are set
+	//                 top will always be 0. Also set Upload Scope top position bottom will be set later.
+	if(rcSpl.top) 
+		rcDown.bottom = rcSpl.top - 1;
+	else            
+		rcDown.bottom = 0;
+	m_DownloadOMeter.MoveWindow(rcDown);
+	rcUp.top = rcSpl.bottom + 1;
+	//Xman end
+
 	//HL splitter
 	rcSpl.left=rcUp.left;
 	rcSpl.right=rcUp.right;
@@ -283,24 +294,29 @@ BOOL CStatisticsDlg::OnInitDialog()
 
 	m_wndSplitterstat_HL.MoveWindow(rcSpl);
 
+	//Xman statistic fix bluesonicboy
+	//  Init. Pos. fix - Set Upload Scope bottom relative to this splitter, right and left are set.
+	//                                      Also set Connection Scope Top relative to this splitter; bottom, right and left are set.
+	if(rcSpl.top) 
+		rcUp.bottom = rcSpl.top - 1;
+	else
+		rcUp.bottom = 0;
+	if(rcUp.top > rcUp.bottom)
+		rcUp.top = rcUp.bottom;
+	m_UploadOMeter.MoveWindow(rcUp);
+	rcStat.top = rcSpl.bottom + 1;
+	if(rcStat.top > rcStat.bottom)
+		rcStat.top = rcStat.bottom;
+	m_Statistics.MoveWindow(rcStat);
+
 	DoResize_V(PosStatVnewX - PosStatVinitX);
+	/* statistic fix 
 	DoResize_HL(PosStatVnewY - PosStatVinitY);
 	DoResize_HR(PosStatVnewZ - PosStatVinitZ);
+	*/ 
+	//Xman end
 
 	Localize();
-
-	//Xman
-	/*
-	// Maella -Code fix- => to check, doc of this class is unclear
-	double emptyPlot[4];
-	for(int i=0; i<4; i++){
-		emptyPlot[i] = 0.0;
-	}
-	m_Statistics.AppendEmptyPoints(emptyPlot);
-	m_UploadOMeter.AppendEmptyPoints(emptyPlot);
-	m_DownloadOMeter.AppendEmptyPoints(emptyPlot);
-	// Maella end
-	*/
 
 	ShowStatistics(true);
 	
@@ -842,10 +858,6 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		uint32	statGoodSessions =				0;
 		uint32	statBadSessions =				0;
 		double	percentSessions =				0;
-		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		uint32  failedWCSessions =				thePrefs.ses_WEBCACHEREQUESTS - thePrefs.ses_successfull_WCDOWNLOADS;
-//		double  percentWCSessions =				0;
-		// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 		// Transfer Ratios
 		if ( bEmuleIn>0 && bEmuleOut>0 ) 
@@ -914,6 +926,10 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 			uint64	DownOHTotalPackets = 0;
 			CDownloadQueue::SDownloadStats myStats;
 			theApp.downloadqueue->GetDownloadStats(myStats);
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		uint32  failedWCSessions =				thePrefs.ses_WEBCACHEREQUESTS - thePrefs.ses_successfull_WCDOWNLOADS;
+//		double  percentWCSessions =				0;
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
 			// TRANSFER -> DOWNLOADS -> SESSION SECTION
 			if (forceUpdate || stattree.IsExpanded(h_down_session)) 
 			{
@@ -1141,7 +1157,9 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 				statBadSessions =	thePrefs.GetDownS_FailedSessions();
 				*/
 				statGoodSessions =	(thePrefs.GetDownS_SuccessfulSessions() + myStats.a[1]) - thePrefs.ses_successfull_WCDOWNLOADS; // Add Active Downloads
-				statBadSessions =	thePrefs.GetDownS_FailedSessions() - failedWCSessions;
+				statBadSessions =	thePrefs.GetDownS_FailedSessions();
+				if (statBadSessions > failedWCSessions)
+					statBadSessions -=	failedWCSessions;
 				// <== WebCache [WC team/MorphXT] - Stulle/Max
 				cbuffer.Format( _T("%s: %u") , GetResString(IDS_STATS_DLSES) , statGoodSessions + statBadSessions );
 				stattree.SetItemText( down_S[4] , cbuffer );
@@ -3465,7 +3483,7 @@ void CStatisticsDlg::ShowInterval()
 		m_Statistics.m_nXGrids = m_DownloadOMeter.m_nXGrids = m_UploadOMeter.m_nXGrids = shownSecs / 3600;
 		
 		shownSecs /= thePrefs.GetZoomFactor();
-		if(shownSecs == 0)
+		if(shownSecs <= 0) //Xman show correct x-axis by bleusonicboy
 		{
 			m_DownloadOMeter.Reset();
 			m_DownloadOMeter.SetXUnits(GetResString(IDS_STOPPED)); 

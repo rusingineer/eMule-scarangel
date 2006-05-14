@@ -332,10 +332,10 @@ bool UploadBandwidthThrottler::RemoveFromStandardListNoLock(ThrottledFileSocket*
 			}
 			//Xman end
 			m_StandardOrder_list.RemoveAt(slotCounter);
-			//Xman x4 re queue the socket for sending control packets (if it exists, if not the socket will be removed automatically)
+			//Xman improved socket queuing: re queue the socket for sending control packets 
 			socket->SetNoUploading();
 			QueueForSendingControlPacket(socket,true);
-			//Xman x4 end
+			//Xman end
 			foundSocket = true;
 		} else {
 			slotCounter++;

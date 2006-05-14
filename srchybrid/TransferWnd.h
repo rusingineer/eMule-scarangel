@@ -57,8 +57,6 @@ public:
 	void UpdateListCount(EWnd2 listindex, int iCount = -1);
 	void UpdateFilesCount(UINT iCount, UINT countsources, UINT countreadyfiles); //Xman see all sources
 
-	void ShowRessources(); // CPU/MEM usage [$ick$/Stulle] - Max
-
 	void Localize();
 	void UpdateCatTabTitles(bool force = true);
 	void VerifyCatTabSize();
@@ -67,6 +65,12 @@ public:
 	void ResetTransToolbar(bool bShowToolbar, bool bResetLists = true);
 	void ResetTransToolbar2(bool bShowToolbar, bool bResetLists = true); //Xman uploadtoolbar
 	void SetToolTipsDelay(DWORD dwDelay);
+
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max
+	void ShowRessources();
+	void EnableSysInfo(bool bEnable);
+	void QueueListResize(uint8 value);
+	// <== CPU/MEM usage [$ick$/Stulle] - Max
 
 	// Dialog Data
 	enum { IDD = IDD_TRANSFER };

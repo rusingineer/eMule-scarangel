@@ -257,7 +257,6 @@ public:
 	// BEGIN SiRoB: Flush Thread
 	void	FlushDone(FlushDone_Struct* FlushSetting);
 	void	SetFlushThread(bool state) { m_bIsFlushThread = state; };
-	bool	IsFlushThread() { return m_bIsFlushThread; };
 	// END SiRoB: Flush Thread
 	// Barry - This will invert the gap list, up to caller to delete gaps when done
 	// 'Gaps' returned are really the filled areas, and guaranteed to be in order
@@ -512,7 +511,10 @@ private:
 	//Xman end
 
 	//Xman
-	bool	m_bIsFlushThread; //MORPH Added by SiRoB, Flush Thread
+	//MORPH Added by SiRoB, Flush Thread
+	bool	m_bIsFlushThread; 
+	bool	m_bNeedToFlush;
+	//Xman end
 
 	// ==> Global Source Limit [Max/Stulle] - Stulle
 private: 

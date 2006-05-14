@@ -1564,6 +1564,7 @@ void CSearchListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				dc.LineTo(treeCenter,middle+2);
 			}
 			dc.SelectObject(pOldPen2);
+			penBlack.DeleteObject(); //Xman Code Improvement
 			//draw the line to the child node
 			if (hasNext)
 			{
