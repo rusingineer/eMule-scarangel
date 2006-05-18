@@ -1968,11 +1968,15 @@ BEGIN
 END
 
 // ==> ScarAngel Preferences window - Stulle
-IDD_PPG_SCAR DIALOGEX 0, 0, 230, 245
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
+IDD_PPG_SCAR DIALOGEX 0, 0, 230, 259
+//STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
 CAPTION "ScarAngel"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
+// ==> Tabbed Preferences [TPT] - Stulle
+/*
     LTEXT           "Static",IDC_WARNING,7,7,213,39
     CONTROL         "",IDC_SCAR_OPTS,"SysTreeView32",TVS_HASBUTTONS | 
                     TVS_HASLINES | TVS_LINESATROOT | TVS_DISABLEDRAGDROP | 
@@ -1982,6 +1986,13 @@ BEGIN
     CONTROL         "",IDC_PUSHSMALL_SLIDER,"msctls_trackbar32",
                     TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,7,227,216,11,
                     WS_EX_STATICEDGE
+*/
+    CONTROL         "",IDC_SCAR_OPTS,"SysTreeView32",TVS_HASBUTTONS | 
+                    TVS_HASLINES | TVS_LINESATROOT | TVS_DISABLEDRAGDROP | 
+                    WS_BORDER | WS_TABSTOP,7,46,216,158
+    CONTROL         "",IDC_PPG_SCAR_TAB,"SysTabControl32",TCS_HOTTRACK,6,
+                    5,218,249
+// <== Tabbed Preferences [TPT] - Stulle
 END
 // <== ScarAngel Preferences window - Stulle
 
@@ -2035,50 +2046,6 @@ BEGIN
     DEFPUSHBUTTON   "Close",IDOK,162,161/*206*/,56,12,BS_FLAT
 END
 // <== file settings - Stulle
-
-// ==> WebCache [WC team/MorphXT] - Stulle/Max
-IDD_PPG_WEBCACHESETTINGS DIALOGEX 0, 0, 230, 244
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
-CAPTION "WEBCACHE"
-FONT 8, "MS Shell Dlg", 0, 0, 0x0
-BEGIN
-    GROUPBOX        "ISP Proxyserver Settings",IDC_Webcache,7,41,216,161
-    EDITTEXT        IDC_webcacheName,55,52,159,12,ES_AUTOHSCROLL
-    EDITTEXT        IDC_webcachePort,55,67,38,12,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "Port",IDC_STATIC_PORT,14,70,38,9
-    LTEXT           "Address",IDC_STATIC_ADDRESS,14,55,38,9
-    GROUPBOX        "Webcache Controls",IDC_STATIC_CONTROLS,7,7,216,30
-    CONTROL         "Enable Webcached Downloads",
-                    IDC_Activatewebcachedownloads,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,14,17,118,12
-    CTEXT           "You are using a TCP port that is usually not cached by ISP proxy-servers. Please change your TCP port to  21, 70, 80, 210, 443 563  or 1025-65535 to be able to activate the webcache download!",
-                    IDC_WrongPortWarning,21,203,194,34,NOT WS_VISIBLE
-    PUSHBUTTON      "Autodetect Webcache",IDC_DETECTWEBCACHE,14,175,201,12,
-                    BS_FLAT
-    LTEXT           "Number of blocks to download before reconnecting to the proxy (may help to solve disconnects in some cases)",
-                    IDC_STATIC_NRBLOCKS,14,97,124,28
-    RTEXT           "180k-Blocks",IDC_STATIC_BLOCKS,174,113,41,8
-    EDITTEXT        IDC_BLOCKS,141,108,30,13,ES_AUTOHSCROLL
-    CONTROL         "Extra long timeout for webcache connections",
-                    IDC_EXTRATIMEOUT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    14,124,168,13
-    CONTROL         "This webcache does NOT cache traffic within the same ISP",
-                    IDC_LOCALTRAFFIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    14,136,201,14
-    CONTROL         "",IDC_WEBCACHELINK2,"Static",SS_BLACKFRAME | NOT 
-                    WS_VISIBLE,14,190,201,10
-    CONTROL         "Persistent connections for proxy downloads",
-                    IDC_PERSISTENT_PROXY_CONNS,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,14,149,201,14
-    PUSHBUTTON      "show advanced controls",IDC_ADVANCEDCONTROLS,133,16,82,
-                    17
-    PUSHBUTTON      "Test webcache configuration. Might take up to 30 Seconds",
-                    IDC_TestProxy,14,82,201,15
-    CONTROL         "Update webcachesettings automatically",
-                    IDC_UPDATE_WCSETTINGS,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,14,161,201,14
-END
-// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 /////////////////////////////////////////////////////////////////////////////
 //

@@ -34,7 +34,8 @@
 #include "Log.h"
 #include "DownloadQueue.h" // Global Source Limit [Max/Stulle] - Stulle
 // ==> WebCache [WC team/MorphXT] - Stulle/Max
-#include "WebCache\PPgWebcachesettings.h" //jp
+//#include "WebCache\PPgWebcachesettings.h" //jp
+#include "PPgScar.h"
 #include "PreferencesDlg.h" //jp
 // <== WebCache [WC team/MorphXT] - Stulle/Max
 
@@ -374,15 +375,15 @@ BOOL CPPgConnection::OnApply()
 			// this part crashes if Webcachesettings has not been active page at least once see PreferencesDlg.cpp (103)
 			if	(((!thePrefs.UsesCachedTCPPort())	// not a good port for webcace
 			&& thePrefs.IsWebCacheDownloadEnabled()		// webcache enabled
-			&& theApp.emuledlg->preferenceswnd->m_wndWebcachesettings.IsDlgButtonChecked(IDC_Activatewebcachedownloads))  //if webcache was disabled but the change was not saved yet, no need for the message because it will be saved now
+			&& theApp.emuledlg->preferenceswnd->m_wndScar.GetWcDlCheckBox()) //webcache enabled but not yet saved to thePrefs. would be saved now but shouldn't
 			|| (!thePrefs.UsesCachedTCPPort()		// not a good port for webcache
-				&& theApp.emuledlg->preferenceswnd->m_wndWebcachesettings.IsDlgButtonChecked(IDC_Activatewebcachedownloads))) //webcache enabled but not yet saved to thePrefs. would be saved now but shouldn't
+				&& theApp.emuledlg->preferenceswnd->m_wndScar.GetWcDlCheckBox())) //webcache enabled but not yet saved to thePrefs. would be saved now but shouldn't
 			{
 				AfxMessageBox(GetResString(IDS_WrongPortforWebcache),MB_OK | MB_ICONINFORMATION,0);
 				thePrefs.webcacheEnabled=false;			// disable webcache
 			}
 			
-			theApp.emuledlg->preferenceswnd->m_wndWebcachesettings.LoadSettings();
+			theApp.emuledlg->preferenceswnd->m_wndScar.UpdateEnableWC();
 			// <== WebCache [WC team/MorphXT] - Stulle/Max
 		}
 	}

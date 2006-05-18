@@ -16,7 +16,6 @@
 #include "PPgXtreme.h" //Xman Xtreme Mod
 #include "PPgXtreme2.h" //Xman Xtreme Mod
 #include "PPgScar.h" // ScarAngel Preferences window - Stulle
-#include "WebCache\PPgWebcachesettings.h" // WebCache [WC team/MorphXT] - Stulle/Max
 #include "KCSideBannerWnd.h" // Preferences Banner [TPT/ MorphXT] - Stulle
 
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
@@ -50,7 +49,6 @@ public:
 	CPPgXtreme		m_wndXtreme; //Xman Xtreme Mod
 	CPPgXtreme2		m_wndXtreme2; //Xman Xtreme Mod
 	CPPgScar		m_wndScar; // ScarAngel Preferences window - Stulle
-	CPPgWebcachesettings	m_wndWebcachesettings; // WebCache [WC team/MorphXT] - Stulle/Max
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	CPPgDebug		m_wndDebug;
 #endif

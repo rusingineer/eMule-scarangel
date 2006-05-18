@@ -233,6 +233,65 @@ protected:
 	virtual BOOL OnKillActive();
 	afx_msg void OnSettingsChange()			{ SetModified(); }
 	afx_msg void OnEnChangeModified() { SetModified();}
+	afx_msg void OnTabSelectionChange(NMHDR *pNMHDR, LRESULT *pResult); // Tabbed Preferences [TPT] - Stulle
 public:
 	void Localize(void);	
+
+	// ==> Tabbed Preferences [TPT] - Stulle
+private:
+	enum eTab{
+	NONE,
+	SCAR,
+	WEBCACHE};
+	void SetTab(eTab tab);
+
+	void InitTab();
+	void InitControl();	
+
+
+	// Tab	
+	CTabCtrl   m_tabCtr;
+	eTab       m_currentTab;
+	CImageList m_imageList;
+
+	// ScarAngel
+	CStatic		m_strWarning;
+	CStatic		m_strPushSmall, m_iPushSmallLabel;
+	CSliderCtrl m_iPushSmall;
+
+	// WebCache
+	CButton		m_WcCtrlBox;
+	CButton		m_bWcDl;
+	CButton		m_hideControls;
+	CButton		m_WcProxyBox;
+	CStatic		m_webcacheAddressStatic;
+	CEdit		m_webcacheAddressEdit;
+	CStatic		m_webcachePortStatic;
+	CEdit		m_webcachePortEdit;
+	CButton		m_webcacheTest;
+	CStatic		m_blockText;
+	CEdit		m_blockEdit;
+	CStatic		m_blockLabel;
+	CButton		m_TimeOut;
+	CButton		m_CacheISP;
+	CButton		m_WcDlPersistent;
+	CButton		m_Update;
+	CButton		m_autoDetect;
+	CStatic		m_WrongPort;
+	// <== Tabbed Preferences [TPT] - Stulle
+
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+protected:
+	bool guardian;
+	bool showadvanced;
+	void ShowLimitValues();
+	bool bCreated, bCreated2;
+	afx_msg void OnEnChangeActivatewebcachedownloads();
+	afx_msg void OnBnClickedDetectWebCache();
+	afx_msg void OnBnClickedAdvancedcontrols();
+	afx_msg void OnBnClickedTestProxy(); //JP Proxy Configuration Test
+public:
+	virtual void UpdateEnableWC()	{ OnEnChangeActivatewebcachedownloads(); }
+	virtual bool GetWcDlCheckBox()	{ return m_bWcDl.GetCheck() == BST_CHECKED; }
+	// <== WebCache [WC team/MorphXT] - Stulle/Max
 };

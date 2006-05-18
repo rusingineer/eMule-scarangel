@@ -2593,7 +2593,7 @@
 #define IDS_WC_REACTIVATED              60391
 #define IDS_WC_NEWPROXYIP               60392
 #define IDS_WrongPortforWebcache        60393
-#define IDD_PPG_WEBCACHESETTINGS        60394
+//#define IDD_PPG_WEBCACHESETTINGS        60394
 #define IDC_Webcache                    60395
 #define IDC_webcacheName                60396
 #define IDC_webcachePort                60397
@@ -2685,6 +2685,9 @@
 #define IDS_SYS_INFO_GROUP              60564
 #define IDS_SYS_INFO_GLOBAL             60565
 // <== CPU/MEM usage [$ick$/Stulle] - Max
+// ==> Tabbed Preferences [TPT] - Stulle
+#define IDC_PPG_SCAR_TAB                60570
+// <== Tabbed Preferences [TPT] - Stulle
 
 // Next default values for new objects
 // 

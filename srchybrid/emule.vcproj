@@ -2895,12 +2895,6 @@
 			Name="WebCache"
 			Filter="">
 			<File
-				RelativePath=".\WebCache\PPgWebcachesettings.cpp">
-			</File>
-			<File
-				RelativePath=".\WebCache\PPgWebcachesettings.h">
-			</File>
-			<File
 				RelativePath=".\WebCache\ThrottledChunkList.cpp">
 			</File>
 			<File
