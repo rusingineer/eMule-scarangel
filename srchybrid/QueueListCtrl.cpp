@@ -104,6 +104,15 @@ void CQueueListCtrl::Init()
 	SetAllIcons();
 	Localize();
 	LoadSettings();
+
+	// ==> Show Client Percentage [Commander/MorphXT] - Mondgott
+	CFont* pFont = GetFont();
+	LOGFONT lfFont = {0};
+	pFont->GetLogFont(&lfFont);
+	lfFont.lfHeight = 11;
+	m_fontBoldSmaller.CreateFontIndirect(&lfFont);
+	// <== Show Client Percentage [Commander/MorphXT] - Mondgott
+
 	// Barry - Use preferred sort order from preferences
 	SetSortArrow();
 	SortItems(SortProc, GetSortItem() + (GetSortAscending() ? 0:100));
@@ -568,6 +577,39 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						cur_rec.bottom--;
 						cur_rec.top++;
 						client->DrawUpStatusBar(dc,&cur_rec,false,thePrefs.UseFlatBar());
+						// ==> Show Client Percentage [Commander/MorphXT] - Mondgott
+						CString buffer;
+						if (thePrefs.GetShowClientPercentage() && client->GetPartStatus())
+						{
+							float percent = (float)client->GetAvailablePartCount() / (float)client->GetPartCount()* 100.0f;
+							buffer.Format(_T("%.1f%%"), percent);
+
+							if (percent > 0.05f)
+							{
+								//Commander - Added: Draw Client Percentage xored, caching before draw - Start
+								COLORREF oldclr = dc.SetTextColor(RGB(0,0,0));
+								int iOMode = dc.SetBkMode(TRANSPARENT);
+								buffer.Format(_T("%.1f%%"), percent);
+								CFont *pOldFont = dc.SelectObject(&theApp.emuledlg->transferwnd->queuelistctrl.m_fontBoldSmaller);
+#define	DrawClientPercentText	dc.DrawText(buffer, buffer.GetLength(),&cur_rec, ((DLC_DT_TEXT | DT_RIGHT) & ~DT_LEFT) | DT_CENTER)
+								cur_rec.top-=1;cur_rec.bottom-=1;
+								DrawClientPercentText;cur_rec.left+=1;cur_rec.right+=1;
+								DrawClientPercentText;cur_rec.left+=1;cur_rec.right+=1;
+								DrawClientPercentText;cur_rec.top+=1;cur_rec.bottom+=1;
+								DrawClientPercentText;cur_rec.top+=1;cur_rec.bottom+=1;
+								DrawClientPercentText;cur_rec.left-=1;cur_rec.right-=1;
+								DrawClientPercentText;cur_rec.left-=1;cur_rec.right-=1;
+								DrawClientPercentText;cur_rec.top-=1;cur_rec.bottom-=1;
+								DrawClientPercentText;cur_rec.left++;cur_rec.right++;
+								dc.SetTextColor(RGB(255,255,255));
+								DrawClientPercentText;
+								dc.SelectObject(pOldFont);
+								dc.SetBkMode(iOMode);
+								dc.SetTextColor(oldclr);
+								//Commander - Added: Draw Client Percentage xored, caching before draw - End	
+							}
+						}
+						// <== Show Client Percentage [Commander/MorphXT] - Mondgott
 						cur_rec.bottom++;
 						cur_rec.top--;
 					}

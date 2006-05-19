@@ -44,6 +44,7 @@ public:
 protected:
 	void SetAllIcons();
 	static int CALLBACK SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
+	CFont		m_fontBoldSmaller; // Show Client Percentage [Commander/MorphXT] - Mondgott
 
 	virtual BOOL OnCommand(WPARAM wParam,LPARAM lParam );
 	virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct);
