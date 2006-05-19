@@ -698,14 +698,19 @@ public:
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	// ==> Quick start [TPT] - Max
-	static bool	m_bQuickStart;
-	static uint16  m_iQuickStartMaxTime;
-	static UINT    m_iQuickStartMaxConn;
-	static uint16  m_iQuickStartMaxConnPerFive;
-	static UINT    m_iQuickStartMaxConnBack;
-	static uint16  m_iQuickStartMaxConnPerFiveBack;
-	static bool	m_bQuickStartAfterIPChange;
+	static	bool	m_bQuickStart;
+	static	uint16  m_iQuickStartMaxTime;
+	static	UINT    m_iQuickStartMaxConn;
+	static	uint16  m_iQuickStartMaxConnPerFive;
+	static	UINT    m_iQuickStartMaxConnBack;
+	static	uint16  m_iQuickStartMaxConnPerFiveBack;
+	static	bool	m_bQuickStartAfterIPChange;
 	// <== Quick start [TPT] - Max
+
+	// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+	static	bool	m_bAutoBackup;
+	static	bool	m_bAutoBackup2;
+	// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 
 	enum Table
 	{
@@ -1731,16 +1736,21 @@ public:
 	// <== ScarAngel Version Check - Stulle
 
 	// ==> Quick start [TPT] - Max
-	static bool		GetQuickStart()						{return m_bQuickStart;}
-	static void		SetMaxCon(int in)					{maxconnections=in;} 
-	static UINT		GetMaxCon()							{ return maxconnections;}
-	static uint16	GetQuickStartMaxTime()				{ return m_iQuickStartMaxTime; }
-	static UINT		GetQuickStartMaxConn()				{ return m_iQuickStartMaxConn; }
-	static uint16	GetQuickStartMaxConnPerFive()		{ return m_iQuickStartMaxConnPerFive; }
-	static UINT		GetQuickStartMaxConnBack()			{ return m_iQuickStartMaxConnBack; }
-	static uint16	GetQuickStartMaxConnPerFiveBack()	{ return m_iQuickStartMaxConnPerFiveBack; }
-	static bool		GetQuickStartAfterIPChange()		{ return m_bQuickStartAfterIPChange;}
+	static	bool	GetQuickStart()						{return m_bQuickStart;}
+	static	void	SetMaxCon(int in)					{maxconnections=in;} 
+	static	UINT	GetMaxCon()							{ return maxconnections;}
+	static	uint16	GetQuickStartMaxTime()				{ return m_iQuickStartMaxTime; }
+	static	UINT	GetQuickStartMaxConn()				{ return m_iQuickStartMaxConn; }
+	static	uint16	GetQuickStartMaxConnPerFive()		{ return m_iQuickStartMaxConnPerFive; }
+	static	UINT	GetQuickStartMaxConnBack()			{ return m_iQuickStartMaxConnBack; }
+	static	uint16	GetQuickStartMaxConnPerFiveBack()	{ return m_iQuickStartMaxConnPerFiveBack; }
+	static	bool	GetQuickStartAfterIPChange()		{ return m_bQuickStartAfterIPChange;}
 	// <== Quick start [TPT] - Max
+
+	// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+	static	bool	GetAutoBackup()				{ return m_bAutoBackup; }
+	static	bool	GetAutoBackup2()			{ return m_bAutoBackup2; }
+	// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 
 protected:
 	static	CString appdir;

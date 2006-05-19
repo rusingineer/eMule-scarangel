@@ -688,6 +688,11 @@ uint16  CPreferences::m_iQuickStartMaxConnPerFiveBack;
 bool	CPreferences::m_bQuickStartAfterIPChange;
 // <== Quick start [TPT] - Max
 
+// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+bool	CPreferences::m_bAutoBackup;
+bool	CPreferences::m_bAutoBackup2;
+// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+
 CPreferences::CPreferences()
 {
 #ifdef _DEBUG
@@ -2339,6 +2344,11 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("QuickStartMaxConnPerFiveBack"), m_iQuickStartMaxConnPerFiveBack);
 	ini.WriteBool(_T("QuickStartAfterIPChange"), m_bQuickStartAfterIPChange);
 	// <== Quick start [TPT] - Max
+
+	// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+	ini.WriteBool(_T("AutoBackup"),m_bAutoBackup);
+	ini.WriteBool(_T("AutoBackupDouble"),m_bAutoBackup2);
+	// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 }
 
 void CPreferences::ResetStatsColor(int index)
@@ -3259,6 +3269,11 @@ void CPreferences::LoadPreferences()
 	m_iQuickStartMaxConnPerFiveBack=(uint16)ini.GetInt(_T("QuickStartMaxConnPerFiveBack"), 30);
 	m_bQuickStartAfterIPChange=ini.GetBool(_T("QuickStartAfterIPChange"),false);
 	// <== Quick start [TPT] - Max
+
+	// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+	m_bAutoBackup = ini.GetBool(_T("AutoBackup"),true);
+	m_bAutoBackup2 = ini.GetBool(_T("AutoBackupDouble"),false);
+	// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 }
 
 //Xman Xtreme Upload

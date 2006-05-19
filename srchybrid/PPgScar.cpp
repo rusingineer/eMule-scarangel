@@ -13,9 +13,8 @@
 #include "log.h"
 #include "DownloadQueue.h" // Global Source Limit [Max/Stulle] - Stulle
 #include "TransferWnd.h" // CPU/MEM usage [$ick$/Stulle] - Max
-// ==> WebCache [WC team/MorphXT] - Stulle/Max
-#include "WebCache/webcache.h"
-// <== WebCache [WC team/MorphXT] - Stulle/Max
+#include "WebCache/webcache.h" // WebCache [WC team/MorphXT] - Stulle/Max
+#include "XMessageBox.h" // TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -47,6 +46,17 @@ BEGIN_MESSAGE_MAP(CPPgScar, CPropertyPage)
 	ON_BN_CLICKED(IDC_ADVANCEDCONTROLS, OnBnClickedAdvancedcontrols)
 	ON_BN_CLICKED(IDC_TestProxy, OnBnClickedTestProxy)//JP TMP
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
+	// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+	ON_BN_CLICKED(IDC_BACKUPNOW, OnBnClickedBackupnow)
+	ON_BN_CLICKED(IDC_DAT, OnBnClickedDat)
+	ON_BN_CLICKED(IDC_MET, OnBnClickedMet)
+	ON_BN_CLICKED(IDC_INI, OnBnClickedIni)
+	ON_BN_CLICKED(IDC_PART, OnBnClickedPart)
+	ON_BN_CLICKED(IDC_PARTMET, OnBnClickedPartMet)
+	ON_BN_CLICKED(IDC_SELECTALL, OnBnClickedSelectall)
+	ON_BN_CLICKED(IDC_AUTOBACKUP, OnBnClickedAutobackup)
+	ON_BN_CLICKED(IDC_AUTOBACKUP2, OnBnClickedAutobackup2)
+	// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 	ON_WM_HELPINFO()
 END_MESSAGE_MAP()
 
@@ -62,6 +72,7 @@ CPPgScar::CPPgScar()
 	m_imageList.SetBkColor(CLR_NONE);
 	m_imageList.Add(CTempIconLoader(_T("AAAEMULEAPP")));
 	m_imageList.Add(CTempIconLoader(_T("PREF_WEBCACHE")));
+	m_imageList.Add(CTempIconLoader(_T("BACKUP")));
 	// <== Tabbed Preferences [TPT] - Stulle
 
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
@@ -636,6 +647,12 @@ void CPPgScar::LoadSettings(void)
 		m_Update.EnableWindow(bTemp);
 		m_Update.SetCheck(thePrefs.WCAutoupdate);
 		// <== WebCache [WC team/MorphXT] - Stulle/Max
+
+		// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+		m_AutoBackup.SetCheck(thePrefs.GetAutoBackup());
+		m_AutoBackup2.EnableWindow(thePrefs.GetAutoBackup());
+		m_AutoBackup2.SetCheck(thePrefs.GetAutoBackup2());
+		// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 	}
 }
 
@@ -827,6 +844,11 @@ BOOL CPPgScar::OnApply()
 	}
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
+	// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+	thePrefs.m_bAutoBackup = m_AutoBackup.GetCheck() == BST_CHECKED;
+	thePrefs.m_bAutoBackup2 = m_AutoBackup2.GetCheck() == BST_CHECKED;
+	// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+
 	LoadSettings();
 
 	// ==> Show sources on title - Stulle
@@ -961,6 +983,17 @@ void CPPgScar::Localize(void)
 		m_Update.SetWindowText( GetResString(IDS_WC_UPDATESETTING) );
 		m_WrongPort.SetWindowText( GetResString(IDS_WC_WRONGPORT) );
 		// <== WebCache [WC team/MorphXT] - Stulle/Max
+
+		// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+		m_BackupBox.SetWindowText( GetResString(IDS_BACKUP_FILEFRAME) );
+		m_SelectAll.SetWindowText( GetResString(IDS_BACKUP_SELECTALL) );
+		m_BackupNow.SetWindowText( GetResString(IDS_BACKUP_BACKUPNOW) );
+		m_AutoBackupBox.SetWindowText( GetResString(IDS_BACKUP_AUTOFRAME) );
+		m_AutoBackup.SetWindowText( GetResString(IDS_BACKUP_AUTOBACKUP));
+		m_AutoBackup2.SetWindowText( GetResString(IDS_BACKUP_AUTOBACKUP2));
+		m_Note.SetWindowText( GetResString(IDS_BACKUP_NOTE));
+		m_NoteText.SetWindowText( GetResString(IDS_BACKUP_MESSAGE) );
+		// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 	}
 
 }
@@ -1183,6 +1216,7 @@ void CPPgScar::InitTab()
 	m_tabCtr.SetImageList(&m_imageList);
 	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, SCAR, _T("ScarAngel"), 0, (LPARAM)SCAR);
 	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, WEBCACHE, _T("WebCache"), 1, (LPARAM)WEBCACHE);
+	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, BACKUP, _T("Backup"), 2, (LPARAM)BACKUP);
 }
 
 
@@ -1332,6 +1366,83 @@ void CPPgScar::InitControl()
 						WS_CHILD /*| WS_VISIBLE*/, 
 						CRect(left+7, top+277, right-7, bottom-5), this, IDC_WrongPortWarning);
 	m_WrongPort.SetFont(GetFont());
+
+	// Backup
+	m_BackupBox.CreateEx(0, _T("BUTTON"), _T("Select File Types to Backup"), 
+						   WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
+						   BS_GROUPBOX,
+						   CRect(left, top, right, top+120), this, IDC_BACKUP_FILEFRAME);
+	m_BackupBox.SetFont(GetFont());
+
+	m_Dat.CreateEx(0, _T("BUTTON"), _T("*.dat"), 
+									WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
+									BS_AUTOCHECKBOX, 
+									CRect(left+12, top+15, right-90, top+30), this, IDC_DAT);
+	m_Dat.SetFont(GetFont());
+
+	m_Met.CreateEx(0, _T("BUTTON"), _T("*.met"), 
+									WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
+									BS_AUTOCHECKBOX, 
+									CRect(left+12, top+35, right-90, top+50), this, IDC_MET);
+	m_Met.SetFont(GetFont());
+
+	m_Ini.CreateEx(0, _T("BUTTON"), _T("*.ini"), 
+									WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
+									BS_AUTOCHECKBOX, 
+									CRect(left+12, top+55, right-90, top+70), this, IDC_INI);
+	m_Ini.SetFont(GetFont());
+
+	m_Part.CreateEx(0, _T("BUTTON"), _T("*.part"), 
+									WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
+									BS_AUTOCHECKBOX, 
+									CRect(left+12, top+75, right-90, top+90), this, IDC_PART);
+	m_Part.SetFont(GetFont());
+
+	m_PartMet.CreateEx(0, _T("BUTTON"), _T("*.part.met"), 
+									WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
+									BS_AUTOCHECKBOX, 
+									CRect(left+12, top+95, right-90, top+110), this, IDC_PARTMET);
+	m_PartMet.SetFont(GetFont());
+
+	m_SelectAll.CreateEx(0, _T("BUTTON"), _T("Select All"), 
+									WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
+									BS_FLAT | BS_DEFPUSHBUTTON,
+									CRect(right-87, top+55, right-12, top+80), this, IDC_SELECTALL);
+	m_SelectAll.SetFont(GetFont());
+
+	m_BackupNow.CreateEx(0, _T("BUTTON"), _T("Backup Now"), 
+									WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
+									BS_FLAT,
+									CRect(right-87, top+85, right-12, top+110), this, IDC_BACKUPNOW);
+	m_BackupNow.SetFont(GetFont());
+
+	m_AutoBackupBox.CreateEx(0, _T("BUTTON"), _T("Auto Backup"), 
+						   WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
+						   BS_GROUPBOX,
+						   CRect(left, top+130, left+170, top+190), this, IDC_BACKUP_AUTO);
+	m_AutoBackupBox.SetFont(GetFont());
+
+	m_AutoBackup.CreateEx(0, _T("BUTTON"), _T("Auto Backup on Exit"), 
+									WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
+									BS_AUTOCHECKBOX, 
+									CRect(left+12, top+147, left+158, top+162), this, IDC_AUTOBACKUP);
+	m_AutoBackup.SetFont(GetFont());
+
+	m_AutoBackup2.CreateEx(0, _T("BUTTON"), _T("Double Backup"), 
+									WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
+									BS_AUTOCHECKBOX, 
+									CRect(left+22, top+165, left+158, top+180), this, IDC_AUTOBACKUP2);
+	m_AutoBackup2.SetFont(GetFont());
+
+	m_Note.CreateEx(0, _T("STATIC"), _T("Note:"),
+						WS_CHILD /*| WS_VISIBLE*/, 
+						CRect(left+10, top+200, right-10, top+215), this, IDC_BACKUP_NOTE);
+	m_Note.SetFont(GetFont());
+
+	m_NoteText.CreateEx(0, _T("STATIC"), _T(""), 
+						WS_CHILD /*| WS_VISIBLE*/,
+						CRect(left+10, top+220, right-10, bottom), this, IDC_BACKUP_MESSAGE);
+	m_NoteText.SetFont(GetFont());
 }
 
 void CPPgScar::OnTabSelectionChange(NMHDR* /*pNMHDR*/, LRESULT *pResult)
@@ -1400,6 +1511,34 @@ void CPPgScar::SetTab(eTab tab){
 				m_WrongPort.ShowWindow(SW_HIDE);
 				m_WrongPort.EnableWindow(FALSE);
 				break;
+			case BACKUP:
+				m_BackupBox.ShowWindow(SW_HIDE);
+				m_BackupBox.EnableWindow(FALSE);
+				m_Dat.ShowWindow(SW_HIDE);
+				m_Dat.EnableWindow(FALSE);
+				m_Met.ShowWindow(SW_HIDE);
+				m_Met.EnableWindow(FALSE);
+				m_Ini.ShowWindow(SW_HIDE);
+				m_Ini.EnableWindow(FALSE);
+				m_Part.ShowWindow(SW_HIDE);
+				m_Part.EnableWindow(FALSE);
+				m_PartMet.ShowWindow(SW_HIDE);
+				m_PartMet.EnableWindow(FALSE);
+				m_SelectAll.ShowWindow(SW_HIDE);
+				m_SelectAll.EnableWindow(FALSE);
+				m_BackupNow.ShowWindow(SW_HIDE);
+				m_BackupNow.EnableWindow(FALSE);
+				m_AutoBackupBox.ShowWindow(SW_HIDE);
+				m_AutoBackupBox.EnableWindow(FALSE);
+				m_AutoBackup.ShowWindow(SW_HIDE);
+				m_AutoBackup.EnableWindow(FALSE);
+				m_AutoBackup2.ShowWindow(SW_HIDE);
+				m_AutoBackup2.EnableWindow(FALSE);
+				m_Note.ShowWindow(SW_HIDE);
+				m_Note.EnableWindow(FALSE);
+				m_NoteText.ShowWindow(SW_HIDE);
+				m_NoteText.ShowWindow(SW_HIDE);
+				break;
 		}
 
 		// Show new controls
@@ -1453,6 +1592,34 @@ void CPPgScar::SetTab(eTab tab){
 				}
 				OnEnChangeActivatewebcachedownloads();
 				break;
+			case BACKUP:
+				m_BackupBox.ShowWindow(SW_SHOW);
+				m_BackupBox.EnableWindow(TRUE);
+				m_Dat.ShowWindow(SW_SHOW);
+				m_Dat.EnableWindow(TRUE);
+				m_Met.ShowWindow(SW_SHOW);
+				m_Met.EnableWindow(TRUE);
+				m_Ini.ShowWindow(SW_SHOW);
+				m_Ini.EnableWindow(TRUE);
+				m_Part.ShowWindow(SW_SHOW);
+				m_Part.EnableWindow(TRUE);
+				m_PartMet.ShowWindow(SW_SHOW);
+				m_PartMet.EnableWindow(TRUE);
+				m_SelectAll.ShowWindow(SW_SHOW);
+				m_SelectAll.EnableWindow(TRUE);
+				m_BackupNow.ShowWindow(SW_SHOW);
+				BackupNowEnable();
+				m_AutoBackupBox.ShowWindow(SW_SHOW);
+				m_AutoBackupBox.EnableWindow(TRUE);
+				m_AutoBackup.ShowWindow(SW_SHOW);
+				m_AutoBackup.EnableWindow(TRUE);
+				m_AutoBackup2.ShowWindow(SW_SHOW);
+				m_AutoBackup2.EnableWindow(m_AutoBackup.GetCheck() == BST_CHECKED);
+				m_Note.ShowWindow(SW_SHOW);
+				m_Note.EnableWindow(TRUE);
+				m_NoteText.ShowWindow(SW_SHOW);
+				m_NoteText.ShowWindow(TRUE);
+				break;
 		}
 	}
 }
@@ -1473,8 +1640,11 @@ void CPPgScar::OnEnChangeActivatewebcachedownloads(){
 			m_bWcDl.SetCheck(false);
 			thePrefs.webcacheEnabled=false;
 			m_webcacheTest.EnableWindow(FALSE);
-			m_WrongPort.ShowWindow(SW_SHOW);
-			m_WrongPort.EnableWindow(TRUE);
+			if(m_currentTab == WEBCACHE)
+			{
+				m_WrongPort.ShowWindow(SW_SHOW);
+				m_WrongPort.EnableWindow(TRUE);
+			}
 			bTemp = false;
 		}
 		else
@@ -1614,3 +1784,380 @@ void CPPgScar::OnBnClickedTestProxy()
 		AfxMessageBox(GetResString(IDC_MSG_WEBCACHE_TESTREQ));// leuk_he to rc
 }
 // <== WebCache [WC team/MorphXT] - Stulle/Max
+
+// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+void CPPgScar::BackupNowEnable()
+{
+	bool bTemp = (	m_Dat.GetCheck() == BST_CHECKED ||
+					m_Met.GetCheck() == BST_CHECKED ||
+					m_Ini.GetCheck() == BST_CHECKED ||
+					m_Part.GetCheck() == BST_CHECKED ||
+					m_PartMet.GetCheck() == BST_CHECKED
+				 );
+	m_BackupNow.EnableWindow(bTemp);
+}
+
+void CPPgScar::OnBnClickedDat()
+{
+	if (m_Dat.GetCheck() == BST_CHECKED) {
+		m_BackupNow.EnableWindow(true);
+	} else {
+		if (m_Met.GetCheck() != BST_CHECKED && m_Ini.GetCheck() != BST_CHECKED && m_Part.GetCheck() != BST_CHECKED && m_PartMet.GetCheck() != BST_CHECKED)
+			m_BackupNow.EnableWindow(false);
+	}
+
+}
+
+void CPPgScar::OnBnClickedMet()
+{
+	if (m_Met.GetCheck() == BST_CHECKED) {
+		m_BackupNow.EnableWindow(true);
+	} else {
+		if (m_Dat.GetCheck() != BST_CHECKED && m_Ini.GetCheck() != BST_CHECKED && m_Part.GetCheck() != BST_CHECKED && m_PartMet.GetCheck() != BST_CHECKED)
+			m_BackupNow.EnableWindow(false);
+	}
+
+}
+
+void CPPgScar::OnBnClickedIni()
+{
+	if (m_Ini.GetCheck() == BST_CHECKED) {
+		m_BackupNow.EnableWindow(true);
+	} else {
+		if (m_Dat.GetCheck() != BST_CHECKED && m_Met.GetCheck() != BST_CHECKED && m_Part.GetCheck() != BST_CHECKED && m_PartMet.GetCheck() != BST_CHECKED)
+			m_BackupNow.EnableWindow(false);
+	}
+
+}
+
+void CPPgScar::OnBnClickedPart()
+{
+	if (m_Part.GetCheck() == BST_CHECKED) {
+		m_BackupNow.EnableWindow(true);
+	} else {
+		if (m_Dat.GetCheck() != BST_CHECKED && m_Met.GetCheck() != BST_CHECKED && m_Ini.GetCheck() != BST_CHECKED && m_PartMet.GetCheck() != BST_CHECKED)
+			m_BackupNow.EnableWindow(false);
+	}
+
+}
+
+void CPPgScar::OnBnClickedPartMet()
+{
+	if (m_PartMet.GetCheck() == BST_CHECKED) {
+		m_BackupNow.EnableWindow(true);
+	} else {
+		if (m_Dat.GetCheck() != BST_CHECKED && m_Met.GetCheck() != BST_CHECKED && m_Ini.GetCheck() != BST_CHECKED && m_Part.GetCheck() != BST_CHECKED)
+			m_BackupNow.EnableWindow(false);
+	}
+}
+
+
+void CPPgScar::OnBnClickedBackupnow()
+{
+	TCHAR buffer[200];
+	y2All = FALSE;
+	if (m_Dat.GetCheck() == BST_CHECKED)
+	{
+		Backup(_T("*.dat"), true);
+		m_Dat.SetCheck(false);
+	}
+
+	if (m_Met.GetCheck() == BST_CHECKED)
+	{
+		Backup(_T("*.met"), true);
+		m_Met.SetCheck(false);
+	}
+
+	if (m_Ini.GetCheck() == BST_CHECKED)
+	{
+		// Mighty Knife: Save current settings before backup
+		theApp.emuledlg->SaveSettings (false);
+		// [end] Mighty Knife
+		Backup(_T("*.ini"), true);
+		m_Ini.SetCheck(false);
+	}
+
+	if (m_PartMet.GetCheck() == BST_CHECKED)
+	{
+		Backup2(_T("*.part.met"));
+		m_PartMet.SetCheck(false);
+	}
+
+	if (m_Part.GetCheck() == BST_CHECKED)
+	{
+		_stprintf(buffer,_T("Because of their size, backing up *.part files may take a few minutes.\nAre you sure you want to do this?"));
+		if(MessageBox(buffer,_T("Are you sure?"),MB_ICONQUESTION|MB_YESNO)== IDYES)
+			Backup2(_T("*.part"));
+		m_Part.SetCheck(false);
+
+	}
+
+	BackupNowEnable();
+
+	MessageBox(_T("File(s) Copied Successfully."), _T("BackUp complete."), MB_OK);
+	y2All = FALSE;
+}
+
+
+
+void CPPgScar::Backup(LPCTSTR extensionToBack, BOOL conFirm)  
+{
+	WIN32_FIND_DATA FileData; 
+	HANDLE hSearch; 
+	TCHAR buffer[200];
+	//CString szDirPath = CString(thePrefs.GetAppDir());
+	CString szDirPath = CString(thePrefs.GetConfigDir());
+	TCHAR szNewPath[MAX_PATH]; 
+
+	SetCurrentDirectory(szDirPath);
+	BOOL error = FALSE;
+	BOOL OverWrite = TRUE;
+	szDirPath +="Backup\\";
+
+	BOOL fFinished = FALSE; 
+
+	// Create a new directory if one does not exist
+	if(!PathFileExists(szDirPath))
+		CreateDirectory(szDirPath, NULL);
+
+	// Start searching for files in the current directory. 
+
+	hSearch = FindFirstFile(extensionToBack, &FileData); 
+	if (hSearch == INVALID_HANDLE_VALUE) 
+	{ 
+		error = TRUE;
+	} 
+
+	// Copy each file to the new directory 
+	CString str;
+	while (!fFinished && !error) 
+	{ 
+		lstrcpy(szNewPath, szDirPath); 
+		lstrcat(szNewPath, FileData.cFileName); 
+
+		if(PathFileExists(szNewPath))
+		{
+			if (conFirm)
+			{
+				if (y2All == FALSE)
+				{
+					_stprintf(buffer, _T("File %s Already Exists. OverWrite It?"), FileData.cFileName);
+					int rc = ::XMessageBox(m_hWnd,buffer,_T("OverWrite?"),MB_YESNO|MB_YESTOALL|MB_ICONQUESTION);
+					if (rc == IDYES)
+						OverWrite = TRUE;
+					else if (rc == IDYESTOALL)
+					{
+						OverWrite = TRUE;
+						y2All = TRUE;
+					}
+					else 
+						OverWrite = FALSE;
+				} else
+					OverWrite = TRUE;
+			} 
+			else
+				OverWrite = TRUE;
+		}	
+		if(OverWrite)
+			CopyFile(FileData.cFileName, szNewPath, FALSE);
+
+		if (!FindNextFile(hSearch, &FileData)) 
+		{
+			if (GetLastError() == ERROR_NO_MORE_FILES) 
+			{ 
+				//MessageBox("File Copied Successfully.", "BackUp complete", MB_OK); 
+				fFinished = TRUE; 
+
+			} 
+			else 
+			{ 
+				error = TRUE;
+			} 
+		}
+
+	} 
+
+
+	// Close the search handle. 
+	if (!FindClose(hSearch)) 
+	{ 
+		error = TRUE;
+	} 
+	if (error)
+		MessageBox(_T("Error encountered during backup"),_T("Error"),MB_OK);
+}
+
+
+void CPPgScar::Backup2(LPCTSTR extensionToBack)  
+{
+	WIN32_FIND_DATA FileData;   
+	HANDLE hSearch;   
+	TCHAR buffer[200];  
+
+
+	//CString szDirPath = CString(thePrefs.GetAppDir());  
+	CString szDirPath = CString(thePrefs.GetConfigDir());
+	CString szTempPath = CString(thePrefs.GetTempDir());  
+	TCHAR szNewPath[MAX_PATH]; 
+
+	BOOL fFinished = FALSE;     
+	BOOL error = FALSE;  
+	BOOL OverWrite = TRUE;  
+	szDirPath +="Backup\\";
+
+	if(!PathFileExists(szDirPath))  
+		CreateDirectory(szDirPath, NULL);  
+
+	szDirPath+="Temp\\";  
+
+	if(!PathFileExists(szDirPath))  
+		CreateDirectory(szDirPath, NULL);  
+
+
+	// Start searching for files in the current directory.   
+	SetCurrentDirectory(szTempPath);  
+
+	hSearch = FindFirstFile(extensionToBack, &FileData);   
+
+	if (hSearch == INVALID_HANDLE_VALUE)   
+	{   
+		error = TRUE;
+	}   
+
+	// Copy each file to the new directory   
+	while (!fFinished && !error)   
+	{   
+		lstrcpy(szNewPath, szDirPath);   
+		lstrcat(szNewPath, FileData.cFileName);   
+
+		//MessageBox(szNewPath,"New Path",MB_OK);  
+		if(PathFileExists(szNewPath))  
+		{  
+				if (y2All == FALSE)
+				{
+					_stprintf(buffer, _T("File %s Already Exists. OverWrite It?"), FileData.cFileName);
+					int rc = ::XMessageBox(m_hWnd,buffer,_T("OverWrite?"),MB_YESNO|MB_YESTOALL|MB_ICONQUESTION);
+					if (rc == IDYES)
+						OverWrite = TRUE;
+					else if (rc == IDYESTOALL)
+					{
+						OverWrite = TRUE;
+						y2All = TRUE;
+					}
+					else 
+						OverWrite = FALSE;
+				} else
+					OverWrite = TRUE;  
+		}  
+
+		if(OverWrite)  
+			CopyFile(FileData.cFileName, szNewPath, FALSE);  
+
+		if (!FindNextFile(hSearch, &FileData))   
+		{  
+			if (GetLastError() == ERROR_NO_MORE_FILES)   
+			{   
+
+				fFinished = TRUE;   
+			}   
+			else   
+			{   
+				error = TRUE;  
+			}   
+		}  
+
+	}   
+
+	// Close the search handle.   
+	if (!FindClose(hSearch))   
+	{   
+		error = TRUE;  
+	}   
+	SetCurrentDirectory(CString(thePrefs.GetConfigDir()));  
+
+	if (error)  
+		MessageBox(_T("Error encountered during backup"),_T("Error"),MB_OK);  
+
+} 
+
+void CPPgScar::OnBnClickedSelectall()
+{
+	m_Dat.SetCheck(true);
+	m_Met.SetCheck(true);
+	m_Ini.SetCheck(true);
+	m_Part.SetCheck(true);
+	m_PartMet.SetCheck(true);
+	m_BackupNow.EnableWindow(true);
+}
+
+void CPPgScar::OnBnClickedAutobackup()
+{
+	m_AutoBackup2.EnableWindow(m_AutoBackup.GetCheck() == BST_CHECKED);
+	SetModified();
+}
+
+void CPPgScar::OnBnClickedAutobackup2()
+{
+	SetModified();
+}
+
+void CPPgScar::Backup3()
+{
+	WIN32_FIND_DATA FileData; 
+	HANDLE hSearch; 
+	CString szDirPath = CString(thePrefs.GetConfigDir())+_T("Backup\\");
+	if(!PathFileExists(szDirPath)) return;
+	TCHAR szNewPath[MAX_PATH]; 
+
+	SetCurrentDirectory(szDirPath);
+	BOOL error = FALSE;
+	szDirPath = CString(thePrefs.GetConfigDir())+_T("Backup2\\");
+
+	BOOL fFinished = FALSE; 
+
+	// Create a new directory if one does not exist
+	if(!PathFileExists(szDirPath))
+		CreateDirectory(szDirPath, NULL);
+
+	// Start searching for files in the current directory. 
+
+	hSearch = FindFirstFile(_T("*.*"), &FileData); 
+	if (hSearch == INVALID_HANDLE_VALUE) 
+	{ 
+		error = TRUE;
+	} 
+
+	// Copy each file to the new directory 
+	while (!fFinished && !error) 
+	{ 
+		lstrcpy(szNewPath, szDirPath); 
+		lstrcat(szNewPath, FileData.cFileName); 
+
+		CopyFile(FileData.cFileName, szNewPath, FALSE);
+
+		if (!FindNextFile(hSearch, &FileData)) 
+		{
+			if (GetLastError() == ERROR_NO_MORE_FILES) 
+			{ 
+				//MessageBox("File Copied Successfully.", "BackUp complete", MB_OK); 
+				fFinished = TRUE; 
+
+			} 
+			else 
+			{ 
+				error = TRUE;
+			} 
+		}
+
+	} 
+
+
+	// Close the search handle. 
+	if (!FindClose(hSearch)) 
+	{ 
+		error = TRUE;
+	} 
+	if (error)
+		MessageBox(_T("Error encountered during backup"),_T("Error"),MB_OK);
+}
+// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle

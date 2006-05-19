@@ -1906,6 +1906,16 @@ LRESULT CemuleDlg::OnFlushDone(WPARAM wParam,LPARAM lParam)
 
 LRESULT CemuleDlg::OnFileAllocExc(WPARAM wParam,LPARAM lParam)
 {
+	//Xman
+	//MORPH START - Added by SiRoB, Fix crash at shutdown
+	CFileException* error = (CFileException*)lParam;
+	if (theApp.m_app_state == APP_STATE_SHUTINGDOWN || theApp.downloadqueue->IsPartFile((CPartFile*)wParam)) { //MORPH - Changed by SiRoB, Flush Thread
+		if (error != NULL)
+			error->Delete();
+		return FALSE;
+	}
+	//MORPH END   - Added by SiRoB, Fix crash at shutdown
+
 	if (lParam == 0)
 		((CPartFile*)wParam)->FlushBuffersExceptionHandler();
 	else
@@ -2040,6 +2050,8 @@ void CemuleDlg::OnClose()
 
 	theApp.UpdateSplash(_T("saving settings ...")); //Xman new slpash-screen arrangement
 
+	// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+	/*
 	// saving data & stuff
 	theApp.emuledlg->preferenceswnd->m_wndSecurity.DeleteDDB();
 
@@ -2069,6 +2081,18 @@ void CemuleDlg::OnClose()
 	thePrefs.Save();
 	//Xman end
 	thePerfLog.Shutdown();
+	*/
+	SaveSettings(true);
+
+	if (thePrefs.GetAutoBackup2())
+		theApp.emuledlg->preferenceswnd->m_wndScar.Backup3();
+	if (thePrefs.GetAutoBackup())
+	{
+		theApp.emuledlg->preferenceswnd->m_wndScar.Backup(_T("*.ini"), false);
+		theApp.emuledlg->preferenceswnd->m_wndScar.Backup(_T("*.dat"), false);
+		theApp.emuledlg->preferenceswnd->m_wndScar.Backup(_T("*.met"), false);
+	}
+	// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 
 	theApp.UpdateSplash(_T("clearing displayed items ...")); //Xman new slpash-screen arrangement
 
@@ -4053,3 +4077,46 @@ LRESULT CemuleDlg::OnSVersionCheckResponse(WPARAM /*wParam*/, LPARAM lParam)
 	return 0;
 }
 // <== ScarAngel Version Check - Stulle
+
+// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+void CemuleDlg::SaveSettings (bool _shutdown) {
+	if (_shutdown) {
+		theApp.emuledlg->preferenceswnd->m_wndSecurity.DeleteDDB();
+	}
+
+	theApp.knownfiles->Save();
+	//transferwnd->downloadlistctrl.SaveSettings();
+	//transferwnd->downloadclientsctrl.SaveSettings();
+	//transferwnd->uploadlistctrl.SaveSettings();
+	//transferwnd->queuelistctrl.SaveSettings();
+	//transferwnd->clientlistctrl.SaveSettings();
+	//sharedfileswnd->sharedfilesctrl.SaveSettings();
+	//chatwnd->m_FriendListCtrl.SaveSettings();
+	searchwnd->SaveAllSettings();
+	serverwnd->SaveAllSettings();
+	kademliawnd->SaveAllSettings();
+	//sharedfileswnd->historylistctrl.SaveSettings(CPreferences::tableHistory); //Xman [MoNKi: -Downloaded History-]
+
+	//Xman new adapter selection
+	if(_shutdown && theApp.pBandWidthControl->GetwasNAFCLastActive()==true)
+		thePrefs.SetNAFCFullControl(true);
+	//Xman end
+
+	//Xman don't overwrite bak files if last sessions crashed
+	//remark: it would be better to set the flag after all deletions, but this isn't possible, because the prefs need access to the objects when saving
+	if (_shutdown) {
+		thePrefs.m_this_session_aborted_in_an_unnormal_way=false;
+	}
+	//Xman end
+
+	theApp.m_pPeerCache->Save();
+	if (_shutdown) {
+		theApp.scheduler->RestoreOriginals();
+	}
+	thePrefs.Save();
+	if (_shutdown) {
+		thePerfLog.Shutdown();
+	}
+	theApp.scheduler->SaveToFile();
+}
+// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle

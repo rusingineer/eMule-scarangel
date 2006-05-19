@@ -3318,7 +3318,9 @@ void CListenSocket::KillAllSockets()
 		if (cur_socket->client)
 			delete cur_socket->client;
 		else
+		{
 			delete cur_socket;
+		}
 	}
 }
 //Xman end

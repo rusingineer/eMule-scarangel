@@ -2933,6 +2933,7 @@ NEO                     ICON                    "res\\Client-Neo.ico"
 FUNNYNICK               ICON                    "res\\FunnyNick.ico"
 QUICKSTART              ICON                    "res\\quickstart.ico"
 SYSINFO                 ICON                    "res\\SysInfo.ico"
+BACKUP                  ICON                    "res\\Backup.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -5303,6 +5304,32 @@ BEGIN
     IDS_SYS_INFO_GROUP      "System information"
     IDS_SYS_INFO_GLOBAL     "Enable global information"
     // <== CPU/MEM usage [$ick$/Stulle] - Stulle
+    // ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+    IDS_BACKUP_FILEFRAME    "Select File Types to Backup"
+    IDS_BACKUP_SELECTALL    "Select All"
+    IDS_BACKUP_AUTOFRAME    "Auto Backup"
+    IDS_BACKUP_AUTOBACKUP   "Auto Backup on Exit"
+    IDS_BACKUP_NOTE         "Note:"
+    IDS_BACKUP_BACKUPNOW    "Backup Now"
+    IDS_BACKUP_MESSAGE      "A Directory named ""Backup"" will be created  under your eMule Application directory to store Backups"
+    IDS_BACKUP_AUTOBACKUP2  "Double Backup"
+    IDS_ABORT               "Abort?"
+    IDS_CONTINUE            "&Continue"
+    IDS_DONOTASKAGAIN       "Don't ask me again"
+    IDS_DONOTSHOWAGAIN      "Don't show again"
+    IDS_DONOTTELLAGAIN      "Don't tell me again"
+    IDS_HELP                "&Help"
+    IDS_IGNORE              "&Ignore"
+    IDS_IGNOREALL           "I&gnore All"
+    IDS_NOTOALL             "N&o to All"
+    IDS_OK                  "OK"
+    IDS_REPORT              "Re&port"
+    IDS_RETRY               "&Retry"
+    IDS_SKIP                "&Skip"
+    IDS_SKIPALL             "S&kip All"
+    IDS_TRYAGAIN            "&Try Again"
+    IDS_YESTOALL            "Y&es to All"
+    // <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 END
 
 #endif    // Englisch (USA) resources

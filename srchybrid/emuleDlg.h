@@ -310,6 +310,11 @@ protected:
 	DWORD m_dwMSNtime;
 	uint8 m_uMSNup2Date;
 // <== Show in MSN7 [TPT] - Stulle
+
+	// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+public:
+	void SaveSettings (bool _shutdown=false);
+	// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 };
 
 

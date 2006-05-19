@@ -2688,6 +2688,45 @@
 // ==> Tabbed Preferences [TPT] - Stulle
 #define IDC_PPG_SCAR_TAB                60570
 // <== Tabbed Preferences [TPT] - Stulle
+// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+#define IDC_BACKUP_FILEFRAME            60580
+#define IDC_DAT                         60581
+#define IDC_MET                         60582
+#define IDC_INI                         60583
+#define IDC_PART                        60584
+#define IDC_PARTMET                     60585
+#define IDC_SELECTALL                   60586
+#define IDC_BACKUPNOW                   60587
+#define IDC_BACKUP_AUTO                 60588
+#define IDC_AUTOBACKUP                  60589
+#define IDC_AUTOBACKUP2                 60590
+#define IDC_BACKUP_NOTE                 60591
+#define IDC_BACKUP_MESSAGE              60592
+#define IDS_BACKUP_FILEFRAME            60593
+#define IDS_BACKUP_SELECTALL            60594
+#define IDS_BACKUP_AUTOFRAME            60595
+#define IDS_BACKUP_AUTOBACKUP           60596
+#define IDS_BACKUP_NOTE                 60597
+#define IDS_BACKUP_BACKUPNOW            60598
+#define IDS_BACKUP_MESSAGE              60599
+#define IDS_BACKUP_AUTOBACKUP2          60600
+#define IDS_ABORT                       60601
+#define IDS_CONTINUE                    60602
+#define IDS_DONOTASKAGAIN               60603
+#define IDS_DONOTSHOWAGAIN              60604
+#define IDS_DONOTTELLAGAIN              60605
+#define IDS_HELP                        60606
+#define IDS_IGNORE                      60607
+#define IDS_IGNOREALL                   60608
+#define IDS_NOTOALL                     60609
+#define IDS_OK                          60610
+#define IDS_REPORT                      60611
+#define IDS_RETRY                       60612
+#define IDS_SKIP                        60613
+#define IDS_SKIPALL                     60614
+#define IDS_TRYAGAIN                    60615
+#define IDS_YESTOALL                    60616
+// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 
 // Next default values for new objects
 // 

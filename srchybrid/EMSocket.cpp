@@ -1053,10 +1053,6 @@ SocketSentBytes CEMSocket::Send(uint32 maxNumberOfBytesToSend, uint32 minFragSiz
         }
     }
 
-    //Xman improved socket queuing
-	//this shouldn't be necessary anymore, because each send force an OnSend() 
-	//and there we do the re queuing
-	/*
 	if(onlyAllowedToSendControlPacket && (!controlpacket_queue.IsEmpty() || sendbuffer != NULL && m_currentPacket_is_controlpacket)) {
         // enter control packet send queue
         // we might enter control packet queue several times for the same package,
@@ -1064,8 +1060,6 @@ SocketSentBytes CEMSocket::Send(uint32 maxNumberOfBytesToSend, uint32 minFragSiz
         // that we only enter the queue once.
 		theApp.uploadBandwidthThrottler->QueueForSendingControlPacket(this, HasSent());
     }
-	*/
-	//Xman end
 
     //CleanSendLatencyList();
 

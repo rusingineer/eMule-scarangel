@@ -771,6 +771,7 @@ void CSharedFileList::Reload()
 	m_keywords->PurgeUnreferencedKeywords();
 	// SLUGFILLER: SafeHash remove - check moved up
 		output->ReloadFileList();
+	m_lastPublishED2KFlag = true; //Xman CodeFix: we need to check if this files were published to server
 }
 
 void CSharedFileList::SetOutputCtrl(CSharedFilesCtrl* in_ctrl)

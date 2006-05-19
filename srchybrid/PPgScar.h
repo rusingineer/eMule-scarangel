@@ -242,7 +242,8 @@ private:
 	enum eTab{
 	NONE,
 	SCAR,
-	WEBCACHE};
+	WEBCACHE,
+	BACKUP};
 	void SetTab(eTab tab);
 
 	void InitTab();
@@ -278,6 +279,21 @@ private:
 	CButton		m_Update;
 	CButton		m_autoDetect;
 	CStatic		m_WrongPort;
+
+	// Backup
+	CButton		m_BackupBox;
+	CButton		m_Dat;
+	CButton		m_Met;
+	CButton		m_Ini;
+	CButton		m_Part;
+	CButton		m_PartMet;
+	CButton		m_SelectAll;
+	CButton		m_BackupNow;
+	CButton		m_AutoBackupBox;
+	CButton		m_AutoBackup;
+	CButton		m_AutoBackup2;
+	CButton		m_Note;
+	CButton		m_NoteText;
 	// <== Tabbed Preferences [TPT] - Stulle
 
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
@@ -294,4 +310,22 @@ public:
 	virtual void UpdateEnableWC()	{ OnEnChangeActivatewebcachedownloads(); }
 	virtual bool GetWcDlCheckBox()	{ return m_bWcDl.GetCheck() == BST_CHECKED; }
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
+
+	// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+	void Backup(LPCTSTR extensionToBack, BOOL conFirm);
+	void Backup3();
+	afx_msg void OnBnClickedBackupnow();
+	afx_msg void OnBnClickedDat();
+	afx_msg void OnBnClickedMet();
+	afx_msg void OnBnClickedIni();
+	afx_msg void OnBnClickedPart();
+	afx_msg void OnBnClickedPartMet();
+	afx_msg void OnBnClickedSelectall();
+	afx_msg void OnBnClickedAutobackup();
+	afx_msg void OnBnClickedAutobackup2();
+private:
+	void Backup2(LPCTSTR extensionToBack);
+	void BackupNowEnable();
+	BOOL y2All;
+	// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 };

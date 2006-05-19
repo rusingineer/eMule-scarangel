@@ -1497,6 +1497,9 @@
 			<File
 				RelativePath="Wizard.cpp">
 			</File>
+			<File
+				RelativePath=".\XMessageBox.cpp">
+			</File>
 			<Filter
 				Name="Lists"
 				Filter="">
@@ -1923,6 +1926,9 @@
 			</File>
 			<File
 				RelativePath="Wizard.h">
+			</File>
+			<File
+				RelativePath=".\XMessageBox.h">
 			</File>
 			<Filter
 				Name="Lists"
