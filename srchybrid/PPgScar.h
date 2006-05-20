@@ -243,7 +243,9 @@ private:
 	NONE,
 	SCAR,
 	WEBCACHE,
-	BACKUP};
+	BACKUP,
+	UPDATE,
+	COLOR};
 	void SetTab(eTab tab);
 
 	void InitTab();

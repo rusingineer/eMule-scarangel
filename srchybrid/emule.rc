@@ -2934,6 +2934,7 @@ FUNNYNICK               ICON                    "res\\FunnyNick.ico"
 QUICKSTART              ICON                    "res\\quickstart.ico"
 SYSINFO                 ICON                    "res\\SysInfo.ico"
 BACKUP                  ICON                    "res\\Backup.ico"
+UPDATE                  ICON                    "res\\Update.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //

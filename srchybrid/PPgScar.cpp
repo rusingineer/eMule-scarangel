@@ -73,6 +73,8 @@ CPPgScar::CPPgScar()
 	m_imageList.Add(CTempIconLoader(_T("AAAEMULEAPP")));
 	m_imageList.Add(CTempIconLoader(_T("PREF_WEBCACHE")));
 	m_imageList.Add(CTempIconLoader(_T("BACKUP")));
+	m_imageList.Add(CTempIconLoader(_T("UPDATE")));
+	m_imageList.Add(CTempIconLoader(_T("SEARCHFILETYPE_PICTURE")));
 	// <== Tabbed Preferences [TPT] - Stulle
 
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
@@ -1217,6 +1219,8 @@ void CPPgScar::InitTab()
 	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, SCAR, _T("ScarAngel"), 0, (LPARAM)SCAR);
 	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, WEBCACHE, _T("WebCache"), 1, (LPARAM)WEBCACHE);
 	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, BACKUP, _T("Backup"), 2, (LPARAM)BACKUP);
+	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, UPDATE, _T("Update"), 3, (LPARAM)UPDATE);
+	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, COLOR, _T("Color Settings"), 4, (LPARAM)COLOR);
 }
 
 
@@ -1539,6 +1543,12 @@ void CPPgScar::SetTab(eTab tab){
 				m_NoteText.ShowWindow(SW_HIDE);
 				m_NoteText.ShowWindow(SW_HIDE);
 				break;
+			case UPDATE:
+				break;
+			case COLOR:
+				break;
+			default:
+				break;
 		}
 
 		// Show new controls
@@ -1619,6 +1629,12 @@ void CPPgScar::SetTab(eTab tab){
 				m_Note.EnableWindow(TRUE);
 				m_NoteText.ShowWindow(SW_SHOW);
 				m_NoteText.ShowWindow(TRUE);
+				break;
+			case UPDATE:
+				break;
+			case COLOR:
+				break;
+			default:
 				break;
 		}
 	}
