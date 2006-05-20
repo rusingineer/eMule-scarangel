@@ -1178,7 +1178,9 @@ public:
 
 	bool HasWebCacheState() {return m_eWebCacheUpState == WCUS_UPLOADING;} 
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
-	
+
+	uint16			GetAvailableUpPartCount() const; // m000h
+
 	// ==> FunnyNick [SiRoB/Stulle] - Stulle
 	void	UpdateFunnyNick();
 protected:

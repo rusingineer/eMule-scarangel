@@ -1748,3 +1748,15 @@ float CUpDownClient::GetRareFilePushRatio() const {
 	return (ratio < 1.0f ? 1.0f :((ratio>100.0f)?100.0f: ratio)) ;	
 }
 // <== push rare file - Stulle
+
+// ==> m000h
+uint16 CUpDownClient::GetAvailableUpPartCount() const
+{
+	UINT result = 0;
+	for (UINT i = 0; i < m_nUpPartCount; i++){
+		if (IsUpPartAvailable(i))
+			result++;
+	}
+	return (uint16)result;
+}
+// <== m000h

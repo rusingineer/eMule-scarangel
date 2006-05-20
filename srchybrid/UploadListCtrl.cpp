@@ -513,12 +513,14 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					client->DrawUpStatusBar(dc, &cur_rec, false, thePrefs.UseFlatBar());
 						// ==> Show Client Percentage [Commander/MorphXT] - Mondgott
 						CString buffer;
-						if (thePrefs.GetShowClientPercentage() && client->GetPartStatus())
+						if (thePrefs.GetShowClientPercentage())
 						{
-							float percent = (float)client->GetAvailablePartCount() / (float)client->GetPartCount()* 100.0f;
-							buffer.Format(_T("%.1f%%"), percent);
+							float percent = 0;
 
-							if (percent > 0.05f)
+							if(client->GetUpPartStatus())
+								percent = (float)client->GetAvailableUpPartCount() / (float)client->GetUpPartCount()* 100.0f;
+
+//							if (percent > 0.05f) // we always display
 							{
 								//Commander - Added: Draw Client Percentage xored, caching before draw - Start
 								COLORREF oldclr = dc.SetTextColor(RGB(0,0,0));

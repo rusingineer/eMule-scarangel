@@ -1000,10 +1000,13 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 					lpUpDownClient->DrawStatusBar(&cdcStatus,  &rec_status,(lpCtrlItem->type == UNAVAILABLE_SOURCE), thePrefs.UseFlatBar()); 
 
 					// ==> Show Client Percentage [Commander/MorphXT] - Mondgott
-					if (thePrefs.GetShowClientPercentage() && lpUpDownClient->GetPartStatus() && lpCtrlItem->type == AVAILABLE_SOURCE)
+					if (thePrefs.GetShowClientPercentage() && lpCtrlItem->type == AVAILABLE_SOURCE)
 					{
-						float percent = (float)lpUpDownClient->GetAvailablePartCount() / (float)lpUpDownClient->GetPartCount()* 100.0f;
-						if (percent > 0.05f)
+						float percent = 0;
+
+						if(lpUpDownClient->GetPartStatus())
+							percent = (float)lpUpDownClient->GetAvailablePartCount() / (float)lpUpDownClient->GetPartCount()* 100.0f;
+//						if (percent > 0.05f) // we always display
 						{
 							//Commander - Added: Draw Client Percentage xored, caching before draw - Start
 							COLORREF oldclr = cdcStatus.SetTextColor(RGB(0,0,0));
