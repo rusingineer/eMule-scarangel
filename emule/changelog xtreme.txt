@@ -1,4 +1,4 @@
-Xtreme 5.1.1
+Xtreme 5.1.2
 ----------------
 
 Main Features:
@@ -20,6 +20,13 @@ libpng 1.2.7
 zlib 1.2.3
 crypto 52.1
 CxImage version 5.99c
+
+
+changelog xtreme 5.1.2
+- fixed a bug in socket-queuing (my stupidy)
+- fixed crash when we canceled a file and Flush thread runing (SiRoB)
+- fix: possible crashfix on close when sockets are killed (official bug)
+- fix: emule fortget to publish known files to server (official bug)
 
 
 changelog Xtreme 5.1.1

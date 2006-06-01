@@ -2687,6 +2687,7 @@
 // <== CPU/MEM usage [$ick$/Stulle] - Max
 // ==> Tabbed Preferences [TPT] - Stulle
 #define IDC_PPG_SCAR_TAB                60570
+#define IDC_TEST                        60571
 // <== Tabbed Preferences [TPT] - Stulle
 // ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 #define IDC_BACKUP_FILEFRAME            60580

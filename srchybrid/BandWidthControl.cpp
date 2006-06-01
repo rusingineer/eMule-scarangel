@@ -650,6 +650,7 @@ void CBandWidthControl::AddeMuleSYNACK()
 	/**/ m_statistic.eMuleOutOverallOctets += 40; // IP + TCP
 	m_statisticLocker.Unlock();
 }
+
 #ifdef PRINT_STATISTIC
 void CBandWidthControl::PrintStatistic()
 {

@@ -4,9 +4,11 @@ eMule v0.47a ScarAngel v1.2:
 ------------------------
 - XX.XX.2005 -
 -------------------------------------------------------------------------------
-based on eMule 0.47a Xtreme 5.1.1 compiled with vs2003 and Netfinity's fix
+based on eMule 0.47a Xtreme 5.1.2 compiled with vs2003 and Netfinity's fix
 
 Added: Show Client Percentage [Commander/MorphXT] - Mondgott
+Added: Tabbed Preferences [TPT] - Stulle
+Added: TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 
 Changed: Enable/ Disable Sysinfo (complete and global) [Stulle/iONiX] - Stulle
 

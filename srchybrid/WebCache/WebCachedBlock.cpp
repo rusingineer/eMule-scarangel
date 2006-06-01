@@ -15,7 +15,6 @@
 #include "ThrottledChunkList.h" // jp Don't request chunks for which we are currently receiving proxy sources
 #include "KnownFileList.h"
 #include "Log.h"
-#include "ipfilter.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -220,11 +219,6 @@ bool CWebCachedBlock::IsValid() const
 		if (thePrefs.GetLogWebCacheEvents())
 		AddDebugLogLine( false, _T("Dropping webcached block received from an untrusted client: %s"), client->DbgGetClientInfo() );
 	}
-	else if (theApp.ipfilter->IsFiltered(m_uProxyIp)) {
-		if (thePrefs.GetLogWebCacheEvents())
-		AddDebugLogLine( false, _T("Dropping webcached block received from a client with filtered proxy-ip: %s, %s"), client->DbgGetClientInfo(), ipstr(m_uProxyIp));
-	}
-	
 
 	return( file
 		&& block->StartOffset <= block->EndOffset
