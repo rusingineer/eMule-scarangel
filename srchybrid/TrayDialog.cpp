@@ -20,6 +20,7 @@
 #include "emuledlg.h"
 #include "MenuCmds.h"
 #include "UserMsgs.h"
+#include "Preferences.h" // TBH: minimule - Max
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -135,6 +136,24 @@ BOOL CTrayDialog::TrayShow()
 		bSuccess = Shell_NotifyIcon(NIM_ADD, &m_nidIconData);
 		if (bSuccess)
 			m_bTrayIconVisible = TRUE;
+
+		// ==> TBH: minimule - Max
+		if (thePrefs.IsMiniMuleEnabled() &&	thePrefs.GetMMOpen())
+		{
+			if (thePrefs.GetMiniMuleLives())
+				theApp.minimule->RunMiniMule();
+			else
+				theApp.minimule->RunMiniMule(true);
+			theApp.minimule->ShowWindow(SW_SHOW);
+		}
+		// <== TBH: minimule - Max
+		// ==> TBH: minimule (open on tray) - Stulle
+		else if (thePrefs.GetEnableMiniMule() && thePrefs.GetMMOpen())
+		{
+			theApp.emuledlg->RunMiniMule();
+		}
+		// <== TBH: minimule (open on tray) - Stulle
+
 	}
 	return bSuccess;
 }
@@ -147,6 +166,12 @@ BOOL CTrayDialog::TrayHide()
 		bSuccess = Shell_NotifyIcon(NIM_DELETE, &m_nidIconData);
 		if (bSuccess)
 			m_bTrayIconVisible = FALSE;
+
+		// ==> TBH: minimule - Max
+		if (theApp.minimule->IsWindowVisible())
+			theApp.minimule->ShowWindow(SW_HIDE);
+		// <== TBH: minimule - Max
+
 	}
 	return bSuccess;
 }

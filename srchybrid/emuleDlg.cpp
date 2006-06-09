@@ -429,6 +429,14 @@ BOOL CemuleDlg::OnInitDialog()
 	m_wndTaskbarNotifier->Create(this);
 	LoadNotifier(thePrefs.GetNotifierConfiguration());
 
+	// ==> TBH: minimule - Max
+	if (theApp.minimule != NULL)
+	{
+		theApp.minimule->Create(IDD_MINI_MULE,this);
+		theApp.minimule->ShowWindow(SW_HIDE);
+	}
+	// <== TBH: minimule - Max
+
 	// set statusbar
 	// the statusbar control is created as a custom control in the dialog resource,
 	// this solves font and sizing problems when using large system fonts
@@ -2167,6 +2175,12 @@ void CemuleDlg::OnClose()
 
 	delete theApp.dlp; theApp.dlp=NULL; //Xman DLP
 
+	// ==> TBH: minimule - Max
+	theApp.UpdateSplash(_T("destroy TBH: MiniMule ..."));
+	theApp.minimule->DestroyWindow();
+	delete theApp.minimule;			theApp.minimule = NULL;
+	// <== TBH: minimule - Max
+
 	theApp.UpdateSplash(_T("Shutdown done")); //Xman new slpash-screen arrangement
 
 	thePrefs.Uninit();
@@ -2198,6 +2212,25 @@ LRESULT CemuleDlg::OnCloseMiniMule(WPARAM wParam, LPARAM /*lParam*/)
 	return 0;
 }
 
+// ==> TBH: minimule (open on tray) - Stulle
+void CemuleDlg::RunMiniMule()
+{
+	try
+	{
+		m_pMiniMule = new CMiniMule(this);
+		m_pMiniMule->Create(CMiniMule::IDD, this);
+		//m_pMiniMule->ShowWindow(SW_SHOW);	// do not explicitly show the window, it will do that for itself when it's ready..
+		m_pMiniMule->SetForegroundWindow();
+		m_pMiniMule->BringWindowToTop();
+	}
+	catch(...)
+	{
+		ASSERT(0);
+		m_pMiniMule = NULL;
+	}
+}
+// <== TBH: minimule (open on tray) - Stulle
+
 void CemuleDlg::OnTrayLButtonUp(CPoint /*pt*/)
 {
 	if(!IsRunning())
@@ -2218,6 +2251,8 @@ void CemuleDlg::OnTrayLButtonUp(CPoint /*pt*/)
 		return;
 	}
 
+	// ==> TBH: minimule - Max
+	/*
 	if (thePrefs.GetEnableMiniMule())
 	{
 		try
@@ -2234,6 +2269,19 @@ void CemuleDlg::OnTrayLButtonUp(CPoint /*pt*/)
 			m_pMiniMule = NULL;
 		}
 	}
+	*/
+	if (thePrefs.GetEnableMiniMule() && !thePrefs.IsMiniMuleEnabled())
+		RunMiniMule(); // TBH: minimule (open on tray) - Stulle
+	else if (thePrefs.IsMiniMuleEnabled())
+	{
+		if (thePrefs.GetMiniMuleLives())
+			theApp.minimule->RunMiniMule();
+		else
+			theApp.minimule->RunMiniMule(true);
+
+		theApp.minimule->ShowWindow(SW_SHOW);
+	}
+	// <== TBH: minimule - Max
 }
 
 void CemuleDlg::OnTrayRButtonUp(CPoint pt)

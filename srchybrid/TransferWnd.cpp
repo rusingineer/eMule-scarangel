@@ -34,7 +34,7 @@
 #include "SharedFilesWnd.h"
 #include "UploadBandwidthThrottler.h" //Xman Xtreme upload
 
-#include ".\SysInfo\SystemInfo.h" // CPU/MEM usage [$ick$/Stulle] - Max
+#include ".\MiniMule\SystemInfo.h" // CPU/MEM usage [$ick$/Stulle] - Max
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

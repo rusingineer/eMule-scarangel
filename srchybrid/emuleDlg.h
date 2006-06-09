@@ -56,6 +56,7 @@ class CMiniMule;
 
 class CemuleDlg : public CTrayDialog
 {
+	friend class CTBHMM; // TBH: minimule - Max
 	friend class CMuleToolbarCtrl;
 	friend class CMiniMule;
 
@@ -110,6 +111,8 @@ public:
 	int ShowPreferences(UINT uStartPageID = (UINT)-1);
 	bool IsPreferencesDlgOpen() const;
 	bool IsTrayIconToFlash()	{ return m_iMsgIcon!=0; }
+
+	void RunMiniMule(); // TBH: minimule (open on tray) - Stulle
 
 	virtual void TrayMinimizeToTrayChange();
 	virtual void RestoreWindow();

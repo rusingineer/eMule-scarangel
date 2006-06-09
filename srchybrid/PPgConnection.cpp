@@ -490,6 +490,21 @@ BOOL CPPgConnection::OnApply()
 	thePrefs.maxconnections = tempcon;
 	theApp.scheduler->SaveOriginals();
 
+	// ==> TBH: minimule - Max
+	int iMaxRange = (int)thePrefs.GetMaxGraphDownloadRate();
+	if(thePrefs.GetMaxGraphUploadRate() > iMaxRange)
+		iMaxRange = (int)thePrefs.GetMaxGraphUploadRate();
+	UINT nLastMaxRange, nLastMinRange;
+	nLastMaxRange = thePrefs.GetSpeedMeterMax();
+	nLastMinRange = thePrefs.GetSpeedMeterMin();
+	if((int)nLastMaxRange != iMaxRange)
+	{
+		thePrefs.SetSpeedMeterMax(iMaxRange);
+		if (thePrefs.IsMiniMuleEnabled() && theApp.minimule->IsWindowVisible())
+			theApp.minimule->SetSpeedMeterRange(iMaxRange, nLastMinRange);
+	}
+	// <== TBH: minimule - Max
+
 	SetModified(FALSE);
 	LoadSettings();
 

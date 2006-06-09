@@ -693,6 +693,18 @@ bool	CPreferences::m_bAutoBackup;
 bool	CPreferences::m_bAutoBackup2;
 // <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 
+// ==> TBH: minimule - Max
+int	    CPreferences::speedmetermin;
+int	    CPreferences::speedmetermax;
+bool    CPreferences::m_bMiniMule;
+uint32  CPreferences::m_iMiniMuleUpdate;
+bool    CPreferences::m_bMiniMuleLives;
+uint8   CPreferences::m_iMiniMuleTransparency;
+bool	CPreferences::m_bShowSpeedMeter;
+bool	CPreferences::m_bMMCompl;
+bool	CPreferences::m_bMMOpen;
+// <== TBH: minimule - Max
+
 CPreferences::CPreferences()
 {
 #ifdef _DEBUG
@@ -2349,6 +2361,18 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("AutoBackup"),m_bAutoBackup);
 	ini.WriteBool(_T("AutoBackupDouble"),m_bAutoBackup2);
 	// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+
+	// ==> TBH: minimule - Max
+	ini.WriteInt(_T("SpeedMeterMin"), speedmetermin);
+	ini.WriteInt(_T("SpeedMeterMax"), speedmetermax);	
+	ini.WriteBool(_T("ShowMiniMule"),m_bMiniMule);
+	ini.WriteInt(_T("MiniMuleUpdate"),m_iMiniMuleUpdate);
+	ini.WriteBool(_T("MiniMuleLives"),m_bMiniMuleLives);
+	ini.WriteInt(_T("MiniMuleTransparency"),m_iMiniMuleTransparency);
+	ini.WriteBool(_T("ShowSpeedMeter"),m_bShowSpeedMeter);
+	ini.WriteBool(_T("MiniMuleCompl"),m_bMMCompl);
+	ini.WriteBool(_T("MiniMuleOpen"),m_bMMOpen);
+	// <== TBH: minimule - Max
 }
 
 void CPreferences::ResetStatsColor(int index)
@@ -3274,6 +3298,18 @@ void CPreferences::LoadPreferences()
 	m_bAutoBackup = ini.GetBool(_T("AutoBackup"),true);
 	m_bAutoBackup2 = ini.GetBool(_T("AutoBackupDouble"),false);
 	// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+
+	// ==> TBH: minimule - Max
+	speedmetermin = ini.GetInt(_T("SpeedMeterMin"),0);
+	speedmetermax = ini.GetInt(_T("SpeedMeterMax"),GetMaxGraphDownloadRate());	
+	m_bMiniMule = ini.GetBool(_T("ShowMiniMule"), false);
+	m_iMiniMuleUpdate = ini.GetInt(_T("MiniMuleUpdate"), 2);
+	m_bMiniMuleLives = ini.GetBool(_T("MiniMuleLives"), true);
+	m_iMiniMuleTransparency = (uint8)ini.GetInt(_T("MiniMuleTransparency"), 255);
+	m_bShowSpeedMeter=ini.GetBool(_T("ShowSpeedMeter"),false);
+	m_bMMCompl = ini.GetBool(_T("MiniMuleCompl"),false);
+	m_bMMOpen = ini.GetBool(_T("MiniMuleOpen"),true);
+	// <== TBH: minimule - Max
 }
 
 //Xman Xtreme Upload

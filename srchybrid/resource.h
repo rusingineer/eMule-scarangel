@@ -2728,6 +2728,32 @@
 #define IDS_TRYAGAIN                    60615
 #define IDS_YESTOALL                    60616
 // <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+// ==> TBH: minimule - Max
+#define IDD_MINI_MULE                   60620
+#define IDC_SM_PLACEHOLDER              60621
+#define IDC_MM_ULDL                     60622
+#define IDC_MM_SERVER                   60623
+#define IDC_MM_ID                       60624
+#define IDC_MM_CONNSTATE                60625
+#define IDC_MM_DLCOUNT                  60626
+#define IDC_MM_ULCOUNT                  60627
+#define IDC_MM_ULDLTRANS                60628
+#define IDC_MM_MENU                     60629
+#define IDC_MM_COMPLCOUNT               60630
+#define IDC_MM_RATIO                    60631
+#define IDC_MM_INCOMING                 60632
+#define IDC_MM_RESTORE                  60633
+#define IDS_MM_SHOW                     60634
+#define IDS_MM_LIVES                    60635
+#define IDS_MM_UPDATE_TIME              60636
+#define IDS_MM_TRANS                    60637
+#define IDS_MM_DATA                     60638
+#define IDS_MM_ACTDL                    60639
+#define IDS_MM_UPDOWN                   60640
+#define IDS_MM_COMPL                    60641
+#define IDS_MM_RATIO                    60642
+#define IDS_MM_OPEN                     60643
+// <== TBH: minimule - Max
 
 // Next default values for new objects
 // 

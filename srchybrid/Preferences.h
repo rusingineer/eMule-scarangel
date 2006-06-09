@@ -712,6 +712,18 @@ public:
 	static	bool	m_bAutoBackup2;
 	// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 
+	// ==> TBH: minimule - Max
+	static  int		speedmetermin;
+	static  int		speedmetermax;
+	static  bool	m_bMiniMule;
+	static  uint32	m_iMiniMuleUpdate;
+	static  bool	m_bMiniMuleLives;
+	static  uint8	m_iMiniMuleTransparency;
+	static	bool	m_bShowSpeedMeter;
+	static	bool	m_bMMCompl;
+	static	bool	m_bMMOpen;
+	// <== TBH: minimule - Max
+
 	enum Table
 	{
 		tableDownload, 
@@ -1751,6 +1763,24 @@ public:
 	static	bool	GetAutoBackup()				{ return m_bAutoBackup; }
 	static	bool	GetAutoBackup2()			{ return m_bAutoBackup2; }
 	// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+
+	// ==> TBH: minimule - Max
+	static	int		GetSpeedMeterMin()		{return speedmetermin;}
+	static	int		GetSpeedMeterMax()		{return speedmetermax;}
+	static	void	SetSpeedMeterMin(int in)	{speedmetermin = in;}
+	static	void	SetSpeedMeterMax(int in)    {speedmetermax = in;}
+	static	bool	IsMiniMuleEnabled() {return m_bMiniMule;}
+	static	void	SetMiniMuleEnabled(bool in) {m_bMiniMule = in;}
+	static	uint32	GetMiniMuleUpdate()	{return m_iMiniMuleUpdate;}
+	static	void	SetMiniMuleUpdate(uint32 in)  {m_iMiniMuleUpdate = in;}
+	static	void	SetMiniMuleLives(bool in) {m_bMiniMuleLives = in;}
+	static	bool	GetMiniMuleLives()	{return m_bMiniMuleLives;}
+	static	void	SetMiniMuleTransparency(uint8 in) {m_iMiniMuleTransparency = in;}
+	static	uint8	GetMiniMuleTransparency() {return m_iMiniMuleTransparency;}
+	static	bool	GetShowSpeedMeter()		  {return m_bShowSpeedMeter;}
+	static	bool	GetMMCompl()			{ return m_bMMCompl; }
+	static	bool	GetMMOpen()				{ return m_bMMOpen; }
+	// <== TBH: minimule - Max
 
 protected:
 	static	CString appdir;

@@ -23,7 +23,8 @@
 #include "ReadWriteLock.h"	// SLUGFILLER: SafeHash
 #include "Version.h"		// netfinity: Mod version
 
-#include ".\SysInfo\SystemInfo.h" // CPU/MEM usage [$ick$/Stulle] - Max 
+#include ".\MiniMule\SystemInfo.h" // CPU/MEM usage [$ick$/Stulle] - Max 
+#include ".\MiniMule\TBHMM.h" // TBH: minimule - Max
 
 #define	DEFAULT_NICK		_T("ScarAngel @ http://scarangel.sourceforge.net")
 #define	DEFAULT_TCP_PORT	4662
@@ -72,6 +73,9 @@ enum AppState{
 
 class CemuleApp : public CWinApp
 {
+
+	friend class CTBHMM; // TBH: minimule - Max
+
 public:
 	CemuleApp(LPCTSTR lpszAppName = NULL);
 
@@ -112,6 +116,10 @@ public:
 	CIP2Country*		ip2country; //EastShare - added by AndCycle, IP to Country
 
 	CDLP*				dlp;
+
+	// ==> TBH: minimule - Max/ leuk_he
+	CTBHMM*				minimule;
+	// <== TBH: minimule - Max/ leuk_he
 
 	CSystemInfo*		sysinfo; // CPU/MEM usage [$ick$/Stulle] - Max 
 

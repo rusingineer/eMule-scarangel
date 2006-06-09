@@ -8,7 +8,7 @@
 #include "UserMsgs.h"
 #include "opcodes.h"
 #include "otherfunctions.h"
-//#include "MuleToolbarCtrl.h" // TBH: minimule - Stulle
+#include "MuleToolbarCtrl.h" // TBH: minimule - Max
 #include "ClientCredits.h" // CreditSystems [EastShare/ MorphXT] - Stulle
 #include "log.h"
 #include "DownloadQueue.h" // Global Source Limit [Max/Stulle] - Stulle
@@ -172,8 +172,8 @@ CPPgScar::CPPgScar()
 	m_htiHQRSivka = NULL;
 	m_iHQRXmanDefault = (thePrefs.GetHQRXmanDefault()) ? 1 : 0;
 	// <== file settings - Stulle
-/*
-	// ==> TBH: minimule - Stulle
+
+	// ==> TBH: minimule - Max
 	m_htiMMGroup = NULL;
 	m_htiShowMM = NULL;
 	m_htiMMLives = NULL;
@@ -181,8 +181,8 @@ CPPgScar::CPPgScar()
 	m_htiMMTrans = NULL;
 	m_htiMMCompl = NULL;
 	m_htiMMOpen = NULL;
-	// <== TBH: minimule - Stulle
-*/
+	// <== TBH: minimule - Max
+
 	m_htiMisc = NULL;
 	m_htiSUQWT = NULL; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*	// ==> Spread Credits Slot - Stulle
@@ -217,7 +217,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		int iImgDisplay = 8;
 		int iImgSysInfo = 8;
 		int iImgDropDefaults = 8;
-//		int iImgMinimule = 8;
+		int iImgMinimule = 8;
 		int iImgMisc = 8;
 		int iImgGlobal = 8;
 
@@ -231,7 +231,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 			iImgDisplay = piml->Add(CTempIconLoader(_T("DISPLAY")));
 			iImgSysInfo = piml->Add(CTempIconLoader(_T("SYSINFO")));
 			iImgDropDefaults = piml->Add(CTempIconLoader(_T("DROPDEFAULTS")));
-//			iImgMinimule = piml->Add(CTempIconLoader(_T("MINIMULE")));
+			iImgMinimule = piml->Add(CTempIconLoader(_T("MINIMULE")));
 			iImgMisc = piml->Add(CTempIconLoader(_T("SRCUNKNOWN")));
 			iImgGlobal = piml->Add(CTempIconLoader(_T("SEARCHMETHOD_GLOBAL")));
 		}
@@ -347,8 +347,8 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.Expand(m_htiAutoQRSWay, TVE_EXPAND);
 		m_ctrlTreeOptions.Expand(m_htiAutoQRS, TVE_EXPAND);
 		// <== file settings - Stulle
-/*
-		// ==> TBH: minimule - Stulle
+
+		// ==> TBH: minimule - Max
 		m_htiMMGroup = m_ctrlTreeOptions.InsertGroup(_T("TBH Mini-Mule"), iImgMinimule, TVI_ROOT);
 		m_htiShowMM = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_MM_SHOW), m_htiMMGroup, m_bShowMM);
 		m_htiMMLives = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_MM_LIVES), m_htiMMGroup, m_bMMLives);
@@ -358,8 +358,8 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.AddEditBox(m_htiMMTrans, RUNTIME_CLASS(CNumTreeOptionsEdit));
 		m_htiMMCompl = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_MM_COMPL), m_htiMMGroup, m_bMMCompl);
 		m_htiMMOpen = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_MM_OPEN), m_htiMMGroup, m_bMMOpen);
-		// <== TBH: minimule - Stulle
-*/
+		// <== TBH: minimule - Max
+
 		m_htiMisc = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_MISC), iImgMisc, TVI_ROOT);
 		m_htiSUQWT = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SUQWT), m_htiMisc, m_bSUQWT); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*		// ==> Spread Credits Slot - Stulle
@@ -456,8 +456,8 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxInt(pDX, m_iMaxRemoveQRSLimitDefault, 50, 100);
 	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiAutoQRSWay, (int &)m_iHQRXmanDefault);
 	// <== file settings - Stulle
-/*
-	// ==> TBH: minimule - Stulle
+
+	// ==> TBH: minimule - Max
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowMM, m_bShowMM);
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiMMLives, m_bMMLives);
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiMMUpdateTime, m_iMMUpdateTime);
@@ -466,8 +466,8 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxInt(pDX, m_iMMTrans, 1, 255);
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiMMCompl, m_bMMCompl);
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiMMOpen, m_bMMOpen);
-	// <== TBH: minimule - Stulle
-*/
+	// <== TBH: minimule - Max
+
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSUQWT, m_bSUQWT); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*	// ==> Spread Credits Slot - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSpreadCreditsSlot, m_bSpreadCreditsSlot);
@@ -555,16 +555,16 @@ BOOL CPPgScar::OnInitDialog()
 	m_iMaxRemoveQRSDefault = thePrefs.m_MaxRemoveQRSDefault;
 	m_iMaxRemoveQRSLimitDefault = thePrefs.m_MaxRemoveQRSLimitDefault;
 	// <== file settings - Stulle
-/*
-	// ==> TBH: minimule - Stulle
+
+	// ==> TBH: minimule - Max
 	m_bShowMM = thePrefs.IsMiniMuleEnabled();
 	m_bMMLives = thePrefs.GetMiniMuleLives();
 	m_iMMUpdateTime = thePrefs.GetMiniMuleUpdate();
 	m_iMMTrans = thePrefs.GetMiniMuleTransparency();
 	m_bMMCompl = thePrefs.m_bMMCompl;
 	m_bMMOpen = thePrefs.m_bMMOpen;
-	// <== TBH: minimule - Stulle
-*/
+	// <== TBH: minimule - Max
+
 	m_bSUQWT = thePrefs.SaveUploadQueueWaitTime(); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*	// ==> Spread Credits Slot - Stulle
 	m_bSpreadCreditsSlot = thePrefs.SpreadCreditsSlot;
@@ -750,16 +750,16 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_MaxRemoveQRSLimitDefault = (uint16)m_iMaxRemoveQRSLimitDefault;
 	thePrefs.m_bHQRXmanDefault = m_iHQRXmanDefault == 1;
 	// <== file settings - Stulle
-/*
-	// ==> TBH: minimule - Stulle
+
+	// ==> TBH: minimule - Max
 	thePrefs.m_bMiniMule = m_bShowMM;
 	thePrefs.SetMiniMuleLives(m_bMMLives);
 	thePrefs.m_iMiniMuleUpdate = m_iMMUpdateTime;
 	thePrefs.SetMiniMuleTransparency(m_iMMTrans);
 	thePrefs.m_bMMCompl = m_bMMCompl;
 	thePrefs.m_bMMOpen = m_bMMOpen;
-	// <== TBH: minimule - Stulle
-*/
+	// <== TBH: minimule - Max
+
 	thePrefs.m_bSaveUploadQueueWaitTime = m_bSUQWT; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*	// ==> Spread Credits Slot - Stulle
 	thePrefs.SpreadCreditsSlot = m_bSpreadCreditsSlot;
@@ -945,8 +945,8 @@ void CPPgScar::Localize(void)
 		if (m_htiHQRSivka) m_ctrlTreeOptions.SetItemText(m_htiHQRSivka, GetResString(IDS_SIVKA_DROPPING));
 		if (m_htiAutoQRSLimit) m_ctrlTreeOptions.SetEditLabel(m_htiAutoQRSLimit, GetResString(IDS_REMOVEQRSLIMITLABEL));
 		// <== file settings - Stulle
-/*
-		// ==> TBH: minimule - Stulle
+
+		// ==> TBH: minimule - Max
 		if (m_htiMMGroup) m_ctrlTreeOptions.SetItemText(m_htiMMGroup, _T("TBH Mini-Mule"));
 		if (m_htiShowMM) m_ctrlTreeOptions.SetItemText(m_htiShowMM, GetResString(IDS_MM_SHOW));
 		if (m_htiMMLives) m_ctrlTreeOptions.SetItemText(m_htiMMLives, GetResString(IDS_MM_LIVES));
@@ -954,8 +954,8 @@ void CPPgScar::Localize(void)
 		if (m_htiMMTrans) m_ctrlTreeOptions.SetEditLabel(m_htiMMTrans, GetResString(IDS_MM_TRANS));
 		if (m_htiMMCompl) m_ctrlTreeOptions.SetItemText(m_htiMMCompl, GetResString(IDS_MM_COMPL));
 		if (m_htiMMOpen) m_ctrlTreeOptions.SetItemText(m_htiMMOpen, GetResString(IDS_MM_OPEN));
-		// <== TBH: minimule - Stulle
-*/
+		// <== TBH: minimule - Max
+
 		if (m_htiSUQWT) m_ctrlTreeOptions.SetItemText(m_htiSUQWT, GetResString(IDS_SUQWT)); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*		// ==> Spread Credits Slot - Stulle
 		if (m_htiSpreadCreditsSlot) m_ctrlTreeOptions.SetItemText(m_htiSpreadCreditsSlot, GetResString(IDS_SPREAD_CREDITS_SLOT));
@@ -1088,8 +1088,8 @@ void CPPgScar::OnDestroy()
 	m_htiHQRXman = NULL;
 	m_htiHQRSivka = NULL;
 	// <== file settings - Stulle
-/*
-	// ==> TBH: minimule - Stulle
+
+	// ==> TBH: minimule - Max
 	m_htiMMGroup = NULL;
 	m_htiShowMM = NULL;
 	m_htiMMLives = NULL;
@@ -1097,8 +1097,8 @@ void CPPgScar::OnDestroy()
 	m_htiMMTrans = NULL;
 	m_htiMMCompl = NULL;
 	m_htiMMOpen = NULL;
-	// <== TBH: minimule - Stulle
-*/
+	// <== TBH: minimule - Max
+
 	m_htiMisc = NULL;
 	m_htiSUQWT = NULL; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*	// ==> Spread Credits Slot - Stulle

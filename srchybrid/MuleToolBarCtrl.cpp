@@ -283,6 +283,8 @@ void CMuleToolbarCtrl::Localize(void)
 	}
 }
 
+// ==> TBH: minimule - Max
+/*
 void CMuleToolbarCtrl::OnSize(UINT nType, int cx, int cy)
 {
 	CToolBarCtrl::OnSize(nType, cx, cy);
@@ -290,6 +292,45 @@ void CMuleToolbarCtrl::OnSize(UINT nType, int cx, int cy)
 	SetAllButtonsWidth();
 	AutoSize();
 }
+*/
+
+void CMuleToolbarCtrl::OnSize(UINT nType, int cx, int cy)
+{
+	CToolBarCtrl::OnSize(nType, cx, cy);
+
+	if (m_ctrlSpeedMeter.m_hWnd && m_bUseSpeedMeter)
+	{
+		CRect		rClient;
+
+		GetClientRect(&rClient);
+		rClient.DeflateRect(7,7);
+
+		int		iHeight = rClient.Height();
+		int		iLeft  = rClient.right - iHeight;
+
+		CSize	csMaxSize;
+
+		GetMaxSize(&csMaxSize);
+		if (rClient.left + csMaxSize.cx + 7 > iLeft)
+		{	
+			m_ctrlSpeedMeter.ShowWindow(SW_HIDE);
+			return;
+		}
+
+		iLeft -= iHeight;
+		if (iLeft <= rClient.left + csMaxSize.cx + 7)
+			iLeft = rClient.left + csMaxSize.cx + 7;
+		rClient.left = iLeft;
+
+		m_ctrlSpeedMeter.SetWindowPos( NULL, rClient.left, rClient.top,
+			rClient.Width(), rClient.Height(),
+			SWP_NOZORDER | SWP_SHOWWINDOW );
+	}
+
+	SetAllButtonsWidth();
+	AutoSize();
+}
+// <== TBH: minimule - Max
 
 void CMuleToolbarCtrl::SetAllButtonsWidth()
 {

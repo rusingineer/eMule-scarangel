@@ -667,6 +667,10 @@ BOOL CemuleApp::InitInstance()
 	scheduler = new CScheduler();
 	m_pPeerCache = new CPeerCacheFinder();
 	
+	// ==> TBH: minimule - Max
+	minimule = new CTBHMM(); 
+	// <== TBH: minimule - Max
+	
 	thePerfLog.Startup();
 
 	//Xman don't overwrite bak files if last sessions crashed

@@ -78,7 +78,7 @@ protected:
 	bool m_bGlobalHlDefault;
 	// <== file settings - Stulle
 
-/*	// ==> TBH: minimule - Stulle
+	// ==> TBH: minimule - Max
 	bool m_bShowMM;
 	bool m_bMMLives;
 	int m_iMMUpdateTime;
@@ -86,8 +86,8 @@ protected:
 	bool m_bMMBanner;
 	bool m_bMMCompl;
 	bool m_bMMOpen;
-	// <== TBH: minimule - Stulle
-*/
+	// <== TBH: minimule - Max
+
 	bool m_bSUQWT; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*	// ==> Spread Credits Slot - Stulle
 	bool m_bSpreadCreditsSlot;
@@ -187,8 +187,8 @@ protected:
 	HTREEITEM m_htiHQRSivka;
 	HTREEITEM m_htiGlobalHlDefault;
 	// <== file settings - Stulle
-/*
-	// ==> TBH: minimule - Stulle
+
+	// ==> TBH: minimule - Max
 	HTREEITEM m_htiMMGroup;
 	HTREEITEM m_htiShowMM;
 	HTREEITEM m_htiMMLives;
@@ -197,8 +197,8 @@ protected:
 	HTREEITEM m_htiMMBanner;
 	HTREEITEM m_htiMMCompl;
 	HTREEITEM m_htiMMOpen;
-	// <== TBH: minimule - Stulle
-*/
+	// <== TBH: minimule - Max
+
 	HTREEITEM m_htiMisc;
 	HTREEITEM m_htiSUQWT; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*	// ==> Spread Credits Slot - Stulle

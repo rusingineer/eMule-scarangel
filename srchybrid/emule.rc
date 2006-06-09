@@ -2047,6 +2047,36 @@ BEGIN
 END
 // <== file settings - Stulle
 
+// ==> TBH: minimule - Max
+IDD_MINI_MULE DIALOGEX 0, 0, 264, 64
+STYLE DS_SETFONT | DS_SETFOREGROUND | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | 
+    WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOPMOST | WS_EX_TOOLWINDOW
+CAPTION "Mini Mule"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    CTEXT           "UL/DL",IDC_MM_ULDL,21,42,152,10
+    CTEXT           "Server",IDC_MM_SERVER,2,0,171,10
+    CTEXT           "ID",IDC_MM_ID,2,10,171,10
+    ICON            "",IDC_MM_CONNSTATE,0,23,21,20
+    CONTROL         "Download Count",IDC_MM_DLCOUNT,"Static",
+                    SS_LEFTNOWORDWRAP | WS_GROUP,98,32,75,10
+    CONTROL         "Upload Count",IDC_MM_ULCOUNT,"Static",SS_LEFTNOWORDWRAP |
+                    WS_GROUP,23,32,73,10
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,1,21,173,1
+    LTEXT           "Speed Meter",IDC_SM_PLACEHOLDER,176,2,86,60,NOT 
+                    WS_VISIBLE
+    CTEXT           "UL/DL Trans",IDC_MM_ULDLTRANS,21,52,152,10
+    PUSHBUTTON      "v",IDC_MM_MENU,2,53,9,9,BS_FLAT
+    CONTROL         "Ratio",IDC_MM_RATIO,"Static",
+                    SS_LEFTNOWORDWRAP | WS_GROUP,98,22,75,10
+    CONTROL         "Completed Downloads",IDC_MM_COMPLCOUNT,"Static",SS_LEFTNOWORDWRAP |
+                    WS_GROUP,23,22,73,10
+    PUSHBUTTON      "",IDC_MM_INCOMING,12,52,13,10
+    PUSHBUTTON      "",IDC_MM_RESTORE,25,52,12,10
+END
+// <== TBH: minimule - Max
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // DESIGNINFO
@@ -2935,6 +2965,16 @@ QUICKSTART              ICON                    "res\\quickstart.ico"
 SYSINFO                 ICON                    "res\\SysInfo.ico"
 BACKUP                  ICON                    "res\\Backup.ico"
 UPDATE                  ICON                    "res\\Update.ico"
+MM_CONCON               ICON                    "res\\MM_ConCon.ico"
+MM_CONLOW               ICON                    "res\\MM_ConLow.ico"
+MM_CONDIS               ICON                    "res\\MM_ConDis.ico"
+MM_LOWCON               ICON                    "res\\MM_LowCon.ico"
+MM_LOWLOW               ICON                    "res\\MM_LowLow.ico"
+MM_LOWDIS               ICON                    "res\\MM_LowDis.ico"
+MM_DISCON               ICON                    "res\\MM_DisCon.ico"
+MM_DISLOW               ICON                    "res\\MM_DisLow.ico"
+MM_DISDIS               ICON                    "res\\MM_DisDis.ico"
+MINIMULE                ICON                    "res\\MiniMule.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -5331,6 +5371,18 @@ BEGIN
     IDS_TRYAGAIN            "&Try Again"
     IDS_YESTOALL            "Y&es to All"
     // <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+    // ==> TBH: minimule - Max
+    IDS_MM_SHOW             "Use TBH Mini-Mule instead"
+    IDS_MM_LIVES            "Keep Mini-Mule updated"
+    IDS_MM_UPDATE_TIME      "Mini-Mule update Time (in sec)"
+    IDS_MM_TRANS            "Mini-Mule Transparency (1-255)"
+    IDS_MM_ACTDL            "Active Downloads: %i"
+    IDS_MM_DATA             "Up: %s | Down: %s"
+    IDS_MM_UPDOWN           "Up: %s(%.1f) | Down: %s(%.1f)"
+    IDS_MM_COMPL            "Show completed files in session"
+    IDS_MM_RATIO            "UL:DL :"
+    IDS_MM_OPEN             "Open Mini-Mule on minimize to tray"
+    // <== TBH: minimule - Max
 END
 
 #endif    // Englisch (USA) resources

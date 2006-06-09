@@ -2867,34 +2867,64 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="SysInfo"
+			Name="MiniMule"
 			Filter="">
 			<File
-				RelativePath=".\SysInfo\CPUUsageReader.cpp">
+				RelativePath=".\MiniMule\CDialogSK.cpp">
 			</File>
 			<File
-				RelativePath=".\SysInfo\CPUUsageReader.h">
+				RelativePath=".\MiniMule\CDialogSK.h">
 			</File>
 			<File
-				RelativePath=".\SysInfo\GetCpuUsage.cpp">
+				RelativePath=".\MiniMule\CPUUsageReader.cpp">
 			</File>
 			<File
-				RelativePath=".\SysInfo\GetCpuUsage.h">
+				RelativePath=".\MiniMule\CPUUsageReader.h">
 			</File>
 			<File
-				RelativePath=".\SysInfo\PerfCounters.h">
+				RelativePath=".\MiniMule\DblScope.cpp">
 			</File>
 			<File
-				RelativePath=".\SysInfo\SysInfo.cpp">
+				RelativePath=".\MiniMule\DblScope.h">
 			</File>
 			<File
-				RelativePath=".\SysInfo\SysInfo.h">
+				RelativePath=".\MiniMule\GetCpuUsage.cpp">
 			</File>
 			<File
-				RelativePath=".\SysInfo\SystemInfo.cpp">
+				RelativePath=".\MiniMule\GetCpuUsage.h">
 			</File>
 			<File
-				RelativePath=".\SysInfo\SystemInfo.h">
+				RelativePath=".\MiniMule\MibAccess.cpp">
+			</File>
+			<File
+				RelativePath=".\MiniMule\MibAccess.h">
+			</File>
+			<File
+				RelativePath=".\MiniMule\PerfCounters.h">
+			</File>
+			<File
+				RelativePath=".\MiniMule\SnapDialog.cpp">
+			</File>
+			<File
+				RelativePath=".\MiniMule\SnapDialog.h">
+			</File>
+			<File
+				RelativePath=".\MiniMule\SysInfo.cpp">
+			</File>
+			<File
+				RelativePath=".\MiniMule\SysInfo.h">
+			</File>
+			<File
+				RelativePath=".\MiniMule\SystemInfo.cpp">
+			</File>
+			<File
+				RelativePath=".\MiniMule\SystemInfo.h">
+			</File>
+			<File
+				RelativePath=".\MiniMule\tbhmm.cpp">
+			</File>
+			<File
+				RelativePath=".\MiniMule\tbhmm.h">
 			</File>
 		</Filter>
 		<Filter
