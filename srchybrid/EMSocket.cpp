@@ -417,6 +417,7 @@ void CEMSocket::ProcessReceiveData()
 			WCSocket = new CWebCacheUpSocket(); // Create a new WebCache socket
 			WCSocket->Attach( s, FD_WRITE|FD_READ|FD_CLOSE );
 			if( WCSocket->ProcessFirstHttpGet( GlobalReadBuffer, ret ) ) {
+				WCSocket->SetConnected(); //MORPH - WebCache Fix, set socket connected
 				delete this;
 				return;
 			}

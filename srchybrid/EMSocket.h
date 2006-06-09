@@ -51,6 +51,8 @@ public:
 
 	virtual void 	SendPacket(Packet* packet, bool delpacket = true, bool controlpacket = true, uint32 actualPayloadSize = 0);
     bool	IsConnected() const {return byConnected == ES_CONNECTED;}
+	void	SetConnected() { byConnected = ES_CONNECTED;} // WebCache [WC team/MorphXT] - Stulle/Max
+	
 	uint8	GetConState() const {return byConnected;}
 	virtual bool IsRawDataMode() const { return false; }
 	void	SetDownloadLimit(uint32 limit);
