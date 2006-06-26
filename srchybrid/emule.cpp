@@ -218,6 +218,7 @@ CemuleApp::CemuleApp(LPCTSTR lpszAppName)
 
 	srand(time(NULL));
 	m_dwPublicIP = 0;
+	m_bneedpublicIP = false; //Xman -Reask sources after IP change- v3 (main part by Maella) 
 	m_bAutoStart = false;
 
 	m_ullComCtrlVer = MAKEDLLVERULL(4,0,0,0);
@@ -1358,6 +1359,9 @@ void CemuleApp::SetPublicIP(const uint32 dwIP){
 				AddDebugLogLine(DLP_DEFAULT, false,  _T("Public IP Address reported from Kademlia (%s) differs from new found (%s), restart Kad"),ipstr(ntohl(Kademlia::CKademlia::GetIPAddress())),ipstr(dwIP));
 				Kademlia::CKademlia::Stop();
 				Kademlia::CKademlia::Start();
+				//Kad loaded the old IP, we must reset
+				if(Kademlia::CKademlia::IsRunning())
+					Kademlia::CKademlia::GetPrefs()->SetIPAddress(htonl(dwIP));
 				//Xman end
 			}
 		m_pPeerCache->FoundMyPublicIPAddress(dwIP);	
@@ -1858,6 +1862,35 @@ bool CemuleApp::IsEd2kServerLinkInClipboard()
 	static const CHAR _szEd2kServerLink[] = "ed2k://|server|"; // Use the ANSI string
 	return IsEd2kLinkInClipboard(_szEd2kServerLink, ARRSIZE(_szEd2kServerLink)-1);
 }
+
+//Xman
+//upnp_start
+BOOL CemuleApp::AddUPnPNatPort(MyUPnP::UPNPNAT_MAPPING *mapping, bool tryRandom){
+	CString args;
+
+	if(m_UPnPNat.AddNATPortMapping(mapping, tryRandom) == MyUPnP::UNAT_OK ){
+		if(theApp.emuledlg->IsRunning()){
+			AddLogLine(false, _T("Added UPnP NAT Support: (%s) NAT ROUTER/FIREWALL:%i -> %s:%i"),
+				mapping->description, mapping->externalPort, m_UPnPNat.GetLocalIPStr(), mapping->internalPort);
+		}
+		return true;
+	}
+	else{
+		if(theApp.emuledlg->IsRunning()){
+			AddLogLine(false, _T("Error adding UPnP NAT Support: (%s) NAT ROUTER/FIREWALL:%i -> %s:%i (%s)"),
+				mapping->description, mapping->externalPort, m_UPnPNat.GetLocalIPStr(), mapping->internalPort, m_UPnPNat.GetLastError());
+		}
+		return false;
+	}
+}
+
+BOOL CemuleApp::RemoveUPnPNatPort(MyUPnP::UPNPNAT_MAPPING *mapping){
+	if(m_UPnPNat.RemoveNATPortMapping(*mapping) == MyUPnP::UNAT_OK )
+		return true;
+	else
+		return false;
+}
+//upnp_end
 
 // Elandal:ThreadSafeLogging -->
 void CemuleApp::QueueDebugLogLine(bool bAddToStatusbar, LPCTSTR line, ...)

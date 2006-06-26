@@ -926,10 +926,10 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 			uint64	DownOHTotalPackets = 0;
 			CDownloadQueue::SDownloadStats myStats;
 			theApp.downloadqueue->GetDownloadStats(myStats);
-		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		uint32  failedWCSessions =				thePrefs.ses_WEBCACHEREQUESTS - thePrefs.ses_successfull_WCDOWNLOADS;
-//		double  percentWCSessions =				0;
-		// <== WebCache [WC team/MorphXT] - Stulle/Max
+			// ==> WebCache [WC team/MorphXT] - Stulle/Max
+			uint32  failedWCSessions =				thePrefs.ses_WEBCACHEREQUESTS - thePrefs.ses_successfull_WCDOWNLOADS;
+//			double  percentWCSessions =				0;
+			// <== WebCache [WC team/MorphXT] - Stulle/Max
 			// TRANSFER -> DOWNLOADS -> SESSION SECTION
 			if (forceUpdate || stattree.IsExpanded(h_down_session)) 
 			{
@@ -1713,19 +1713,21 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 					// Maella -Upload Stop Reason-
 					if(thePrefs.GetVerbose() == true){
                         CString details;
-						details.Format(_T(" (active: %u, socket: %u, completed: %u, cancelled/ended: %u, different file: %u, exception: %u, others: %u)"),
+						details.Format(_T(" (active: %u, socket: %u, completed: %u, cancelled/ended: %u, different file: %u, exception: %u,blocking: %u, others: %u)"),
 									   theApp.uploadqueue->GetUploadQueueLength(),
 									   CUpDownClient::GetUpStopCount(false, CUpDownClient::USR_SOCKET),
 									   CUpDownClient::GetUpStopCount(false, CUpDownClient::USR_COMPLETEDRANSFER),
 									   CUpDownClient::GetUpStopCount(false, CUpDownClient::USR_CANCELLED),
 									   CUpDownClient::GetUpStopCount(false, CUpDownClient::USR_DIFFERENT_FILE),
 									   CUpDownClient::GetUpStopCount(false, CUpDownClient::USR_EXCEPTION),
+									   CUpDownClient::GetUpStopCount(false, CUpDownClient::USR_BLOCKING),
 									   theApp.uploadqueue->GetSuccessfullUpCount() - 
 									   CUpDownClient::GetUpStopCount(false, CUpDownClient::USR_SOCKET) -
 									   CUpDownClient::GetUpStopCount(false, CUpDownClient::USR_COMPLETEDRANSFER) -
 									   CUpDownClient::GetUpStopCount(false, CUpDownClient::USR_CANCELLED) -
 									   CUpDownClient::GetUpStopCount(false, CUpDownClient::USR_DIFFERENT_FILE) -
-									   CUpDownClient::GetUpStopCount(false, CUpDownClient::USR_EXCEPTION));
+									   CUpDownClient::GetUpStopCount(false, CUpDownClient::USR_EXCEPTION) -
+									   CUpDownClient::GetUpStopCount(false, CUpDownClient::USR_BLOCKING));
                         cbuffer += details;
 					}
 					// Maella end
@@ -1741,18 +1743,20 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 					// Maella -Upload Stop Reason-
 					if(thePrefs.GetVerbose() == true){
 						CString details;
-						details.Format(_T(" (socket: %u, completed: %u, cancelled/ended: %u, different file: %u, exception: %u, others: %u)"),
+						details.Format(_T(" (socket: %u, completed: %u, cancelled/ended: %u, different file: %u, exception: %u,blocking: %u, others: %u)"),
 							CUpDownClient::GetUpStopCount(true, CUpDownClient::USR_SOCKET),
 							CUpDownClient::GetUpStopCount(true, CUpDownClient::USR_COMPLETEDRANSFER),
 							CUpDownClient::GetUpStopCount(true, CUpDownClient::USR_CANCELLED),
 							CUpDownClient::GetUpStopCount(true, CUpDownClient::USR_DIFFERENT_FILE),
 							CUpDownClient::GetUpStopCount(true, CUpDownClient::USR_EXCEPTION),
+							CUpDownClient::GetUpStopCount(true, CUpDownClient::USR_BLOCKING),
 							statBadSessions - 
 							CUpDownClient::GetUpStopCount(true, CUpDownClient::USR_SOCKET) -
 							CUpDownClient::GetUpStopCount(true, CUpDownClient::USR_COMPLETEDRANSFER) -
 							CUpDownClient::GetUpStopCount(true, CUpDownClient::USR_CANCELLED) -
 							CUpDownClient::GetUpStopCount(true, CUpDownClient::USR_DIFFERENT_FILE) -
-							CUpDownClient::GetUpStopCount(true, CUpDownClient::USR_EXCEPTION));
+							CUpDownClient::GetUpStopCount(true, CUpDownClient::USR_EXCEPTION) -
+							CUpDownClient::GetUpStopCount(true, CUpDownClient::USR_BLOCKING));
 						cbuffer += details;
 					}
 					// Maella end

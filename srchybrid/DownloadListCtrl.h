@@ -136,6 +136,9 @@ protected:
 	typedef std::multimap<void*, CtrlItem_Struct*> ListItems;
     ListItems	m_ListItems;
 	CFont		m_fontBold;
+	//Xman narrow font at transferwindow
+	CFont		m_fontNarrowBold;
+	//Xman end
 	CFont		m_fontBoldSmaller; // Show Client Percentage [Commander/MorphXT] - Mondgott
 	CToolTipCtrlX* m_tooltip;
 

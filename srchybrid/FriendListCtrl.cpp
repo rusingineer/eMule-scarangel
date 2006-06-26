@@ -82,6 +82,12 @@ void CFriendListCtrl::SetAllIcons()
 	iml.Add(CTempIconLoader(_T("FriendNoClient")));
 	iml.Add(CTempIconLoader(_T("FriendWithClient")));
 	iml.Add(CTempIconLoader(_T("FriendConnected")));
+	//Xman friend visualization
+	iml.Add(CTempIconLoader(_T("FriendNoClientSlot")));
+	iml.Add(CTempIconLoader(_T("FriendWithClientSlot")));
+	iml.Add(CTempIconLoader(_T("FriendConnectedSlot")));
+	//Xman end
+
 	ASSERT( (GetStyle() & LVS_SHAREIMAGELISTS) == 0 );
 	HIMAGELIST himlOld = ApplyImageList(iml.Detach());
 	if (himlOld)
@@ -120,6 +126,11 @@ void CFriendListCtrl::UpdateFriend(int iItem, const CFriend* pFriend)
 		iImage = 2;
 	else
 		iImage = 1;
+
+	//Xman friend visualization
+	if (pFriend->GetFriendSlot()) iImage += 3;
+	//Xman end
+
 	SetItem(iItem,0,LVIF_IMAGE,0,iImage,0,0,0,0);
 }
 
@@ -267,7 +278,12 @@ BOOL CFriendListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
                 IsAlready = cur_friend->GetFriendSlot();
 				theApp.friendlist->RemoveAllFriendSlots();
 				if( !IsAlready )
+				{
                     cur_friend->SetFriendSlot(true);
+					//Xman friend visualization
+					UpdateFriend(iSel,cur_friend);
+					//Xman end
+				}
 			}
 			break;
 		}

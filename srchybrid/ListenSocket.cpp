@@ -264,7 +264,7 @@ void CClientReqSocket::Disconnect(LPCTSTR pszReason, CUpDownClient::UpStopReason
 	AsyncSelect(0);
 	//Xman 4.8.2
 	//Threadsafe Statechange
-	CEMSocket::SetConState(ES_DISCONNECTED);
+	SetConnectedState(ES_DISCONNECTED);
 	//byConnected = ES_DISCONNECTED;
 	//Xman end
 
@@ -307,7 +307,7 @@ void CClientReqSocket::Safe_Delete()
 	client = NULL;
 	//Xman 4.8.2
 	//Threadsafe Statechange
-	CEMSocket::SetConState(ES_DISCONNECTED);
+	SetConnectedState(ES_DISCONNECTED);
 	//byConnected = ES_DISCONNECTED;
 	//Xman end
 	deletethis = true;
@@ -342,6 +342,11 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 					//	- we have received eMule-OP_HELLOANSWER (new eMule)
 					if (client->GetInfoPacketsReceived() == IP_BOTH)
 						client->InfoPacketsReceived();
+
+					//Xman don't continue sending after banning
+					if(client && client->GetUploadState()==US_BANNED)
+						break;
+					//Xman end
 
 					if (client)
 					{
@@ -418,6 +423,11 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 					}
 					theApp.emuledlg->transferwnd->clientlistctrl.RefreshClient(client);
 
+					//Xman don't continue sending after banning
+					if(client && client->GetUploadState()==US_BANNED)
+						break;
+					//Xman end
+
 					// send a response packet with standart informations
 					if (client->GetHashType() == SO_EMULE && !bIsMuleHello)
 						client->SendMuleInfoPacket(false);
@@ -488,6 +498,7 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 							md4cpy(replypacket->pBuffer, reqfile->GetFileHash());
 							theStats.AddUpDataOverheadFileRequest(replypacket->size);
 							SendPacket(replypacket, true);
+							if(thePrefs.GetLogPartmismatch()) //Xman Log part/size-mismatch
 							DebugLogWarning(_T("PartcountMismatch on requested file, sending FNF; %s, File=\"%s\""), client->DbgGetClientInfo(), reqfile->GetFileName());
 							break;
 						}
@@ -669,6 +680,14 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 						else
 							client->CheckFailedFileIdReqs(packet);
 					}
+					else
+						//Xman Anti-Leecher
+						if(thePrefs.GetAntiLeecher())
+						{
+							client->BanLeecher(_T("wrong OPSTARTUPLOADREQ"),16); 
+							client->ProcessBanMessage();
+						}
+						//Xman end
 					break;
 				}
 				case OP_QUEUERANK:
@@ -1445,7 +1464,9 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 						md4cpy(replypacket->pBuffer, packet);
 						theStats.AddUpDataOverheadFileRequest(replypacket->size);
 						SendPacket(replypacket, true);
-						DebugLogWarning(_T("Size Mismatch on requested file, sending FNF; %s, File=\"%s\""), client->DbgGetClientInfo(), reqfile->GetFileName());
+						//Xman Log part/size-mismatch
+						if(thePrefs.GetLogPartmismatch())
+							DebugLogWarning(_T("Size Mismatch on requested file, sending FNF; %s, File=\"%s\""), client->DbgGetClientInfo(), reqfile->GetFileName());
 						break;
 					}
 
@@ -1494,7 +1515,9 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 									md4cpy(replypacket->pBuffer, reqfile->GetFileHash());
 									theStats.AddUpDataOverheadFileRequest(replypacket->size);
 									SendPacket(replypacket, true);
-									DebugLogWarning(_T("Partcount Mismatch on requested file, sending FNF; %s, File=\"%s\""), client->DbgGetClientInfo(), reqfile->GetFileName());
+									//Xman Log part/size-mismatch
+									if(thePrefs.GetLogPartmismatch())
+										DebugLogWarning(_T("Partcount Mismatch on requested file, sending FNF; %s, File=\"%s\""), client->DbgGetClientInfo(), reqfile->GetFileName());
 									bAnswerFNF = true;
 									break;
 								}
@@ -1705,21 +1728,22 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 					}
 					if (client->GetRequestFile()==NULL)
 					{
+							throw GetResString(IDS_ERR_WRONGFILEID) + _T(" (OP_MULTIPACKETANSWER; client->GetRequestFile()==NULL)");
+					}
+					if (reqfile != client->GetRequestFile())
+					{
 						//Xman Code Fix
-						CKnownFile* reqfiletocheck = theApp.sharedfiles->GetFileByID(client->GetRequestFile()->GetFileHash());
+						client->CheckFailedFileIdReqs(reqfilehash);
+						CKnownFile* reqfiletocheck = theApp.sharedfiles->GetFileByID(reqfilehash);
 						if(reqfiletocheck!=NULL)
 						{
-
-							AddDebugLogLine(false, _T("client has NULL reqfile: %s"), client->DbgGetClientInfo());
+							AddDebugLogLine(false, _T("reqfile!=client->GetRequestFile(): %s"), client->DbgGetClientInfo());
 							break;
 						}
 						else
-							throw GetResString(IDS_ERR_WRONGFILEID) + _T(" (OP_MULTIPACKETANSWER; client->GetRequestFile()==NULL)");
+							throw GetResString(IDS_ERR_WRONGFILEID) + _T(" (OP_MULTIPACKETANSWER; reqfile!=client->GetRequestFile())");
 						//Xman end
-						
 					}
-					if (reqfile != client->GetRequestFile())
-						throw GetResString(IDS_ERR_WRONGFILEID) + _T(" (OP_MULTIPACKETANSWER; reqfile!=client->GetRequestFile())");
 					uint8 opcode_in;
 					while(data_in.GetLength()-data_in.GetPosition())
 					{
@@ -2978,63 +3002,90 @@ bool CListenSocket::Rebind()
 	return StartListening();
 }
 
-bool CListenSocket::StartListening()
-{
-	bListening = true;
+//Xman
+//upnp_start
+bool CListenSocket::StartListening(){
+	bool ret=Create(thePrefs.GetPort(), SOCK_STREAM, FD_ACCEPT, thePrefs.GetBindAddrA(), FALSE/*bReuseAddr*/) && Listen();
 
-	// Creating the socket with SO_REUSEADDR may solve LowID issues if emule was restarted
-	// quickly or started after a crash, but(!) it will also create another problem. If the
-	// socket is already used by some other application (e.g. a 2nd emule), we though bind
-	// to that socket leading to the situation that 2 applications are listening at the same
-	// port!
-	if (!Create(thePrefs.GetPort(), SOCK_STREAM, FD_ACCEPT, thePrefs.GetBindAddrA(), FALSE/*bReuseAddr*/))
-		return false;
+	if(ret){
+		if(thePrefs.GetUPnPNat()){
+			MyUPnP::UPNPNAT_MAPPING mapping;
 
-	// Rejecting a connection with conditional WSAAccept and not using SO_CONDITIONAL_ACCEPT
-	// -------------------------------------------------------------------------------------
-	// recv: SYN
-	// send: SYN ACK (!)
-	// recv: ACK
-	// send: ACK RST
-	// recv: PSH ACK + OP_HELLO packet
-	// send: RST
-	// --- 455 total bytes (depending on OP_HELLO packet)
-	// In case SO_CONDITIONAL_ACCEPT is not used, the TCP/IP stack establishes the connection
-	// before WSAAccept has a chance to reject it. That's why the remote peer starts to send
-	// it's first data packet.
-	// ---
-	// Not using SO_CONDITIONAL_ACCEPT gives us 6 TCP packets and the OP_HELLO data. We
-	// have to lookup the IP only 1 time. This is still way less traffic than rejecting the
-	// connection by closing it after the 'Accept'.
+			mapping.internalPort = mapping.externalPort = thePrefs.GetPort();
+			mapping.protocol = MyUPnP::UNAT_TCP;
+			mapping.description = "TCP Port";
+			if(theApp.AddUPnPNatPort(&mapping, thePrefs.GetUPnPNatTryRandom()))
+				thePrefs.SetUPnPTCPExternal(mapping.externalPort);
+		}
+		else{
+			thePrefs.SetUPnPTCPExternal(thePrefs.GetPort());
+		}
+	}
 
-	// Rejecting a connection with conditional WSAAccept and using SO_CONDITIONAL_ACCEPT
-	// ---------------------------------------------------------------------------------
-	// recv: SYN
-	// send: ACK RST
-	// recv: SYN
-	// send: ACK RST
-	// recv: SYN
-	// send: ACK RST
-	// --- 348 total bytes
-	// The TCP/IP stack tries to establish the connection 3 times until it gives up. 
-	// Furthermore the remote peer experiences a total timeout of ~ 1 minute which is
-	// supposed to be the default TCP/IP connection timeout (as noted in MSDN).
-	// ---
-	// Although we get a total of 6 TCP packets in case of using SO_CONDITIONAL_ACCEPT,
-	// it's still less than not using SO_CONDITIONAL_ACCEPT. But, we have to lookup
-	// the IP 3 times instead of 1 time.
+	if (ret)
+		m_port=thePrefs.GetPort();
 
-	//if (thePrefs.GetConditionalTCPAccept() && !thePrefs.GetProxySettings().UseProxy) {
-	//	int iOptVal = 1;
-	//	VERIFY( SetSockOpt(SO_CONDITIONAL_ACCEPT, &iOptVal, sizeof iOptVal) );
-	//}
-
-	if (!Listen())
-		return false;
-
-	m_port = thePrefs.GetPort();
-	return true;
+	return ret;
 }
+
+//bool CListenSocket::StartListening()
+//{
+//	bListening = true;
+//
+//	// Creating the socket with SO_REUSEADDR may solve LowID issues if emule was restarted
+//	// quickly or started after a crash, but(!) it will also create another problem. If the
+//	// socket is already used by some other application (e.g. a 2nd emule), we though bind
+//	// to that socket leading to the situation that 2 applications are listening at the same
+//	// port!
+//	if (!Create(thePrefs.GetPort(), SOCK_STREAM, FD_ACCEPT, thePrefs.GetBindAddrA(), FALSE/*bReuseAddr*/))
+//		return false;
+//
+//	// Rejecting a connection with conditional WSAAccept and not using SO_CONDITIONAL_ACCEPT
+//	// -------------------------------------------------------------------------------------
+//	// recv: SYN
+//	// send: SYN ACK (!)
+//	// recv: ACK
+//	// send: ACK RST
+//	// recv: PSH ACK + OP_HELLO packet
+//	// send: RST
+//	// --- 455 total bytes (depending on OP_HELLO packet)
+//	// In case SO_CONDITIONAL_ACCEPT is not used, the TCP/IP stack establishes the connection
+//	// before WSAAccept has a chance to reject it. That's why the remote peer starts to send
+//	// it's first data packet.
+//	// ---
+//	// Not using SO_CONDITIONAL_ACCEPT gives us 6 TCP packets and the OP_HELLO data. We
+//	// have to lookup the IP only 1 time. This is still way less traffic than rejecting the
+//	// connection by closing it after the 'Accept'.
+//
+//	// Rejecting a connection with conditional WSAAccept and using SO_CONDITIONAL_ACCEPT
+//	// ---------------------------------------------------------------------------------
+//	// recv: SYN
+//	// send: ACK RST
+//	// recv: SYN
+//	// send: ACK RST
+//	// recv: SYN
+//	// send: ACK RST
+//	// --- 348 total bytes
+//	// The TCP/IP stack tries to establish the connection 3 times until it gives up. 
+//	// Furthermore the remote peer experiences a total timeout of ~ 1 minute which is
+//	// supposed to be the default TCP/IP connection timeout (as noted in MSDN).
+//	// ---
+//	// Although we get a total of 6 TCP packets in case of using SO_CONDITIONAL_ACCEPT,
+//	// it's still less than not using SO_CONDITIONAL_ACCEPT. But, we have to lookup
+//	// the IP 3 times instead of 1 time.
+//
+//	//if (thePrefs.GetConditionalTCPAccept() && !thePrefs.GetProxySettings().UseProxy) {
+//	//	int iOptVal = 1;
+//	//	VERIFY( SetSockOpt(SO_CONDITIONAL_ACCEPT, &iOptVal, sizeof iOptVal) );
+//	//}
+//
+//	if (!Listen())
+//		return false;
+//
+//	m_port = thePrefs.GetPort();
+//	return true;
+//}
+//upnp_end
 
 void CListenSocket::ReStartListening()
 {
@@ -3319,6 +3370,10 @@ void CListenSocket::KillAllSockets()
 			delete cur_socket->client;
 		else
 		{
+			//Xman  Codefix
+			//Threadsafe Statechange
+			cur_socket->SetConnectedState(ES_DISCONNECTED);
+			//Xman end
 			delete cur_socket;
 		}
 	}

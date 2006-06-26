@@ -30,6 +30,7 @@ protected:
 	bool m_bLogFileSaving;
     bool m_bLogA4AF;
 	bool m_bLogDrop; //Xman Xtreme Downloadmanager
+	bool m_bLogpartmismatch; //Xman Log part/size-mismatch
 	bool m_bLogUlDlEvents;
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
 	bool m_bLogWebCacheEvents;//JP log webcache events
@@ -88,6 +89,7 @@ protected:
 	HTREEITEM m_htiLogFileSaving;
     HTREEITEM m_htiLogA4AF;
 	HTREEITEM m_htiLogDrop; //Xman Xtreme Downloadmanager
+	HTREEITEM m_htiLogpartmismtach; //Xman Log part/size-mismatch
 	HTREEITEM m_htiLogUlDlEvents;
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
 	HTREEITEM m_htiLogWebCacheEvents; //jp log webcache events
@@ -133,6 +135,15 @@ protected:
 	HTREEITEM m_htiA4AFSaveCpu;
 	// ZZ:DownloadManager <--
 	*/
+
+	//Xman
+	//upnp_start
+	HTREEITEM m_htiUPnPNat;
+	HTREEITEM m_htiUPnPTryRandom;
+	bool m_iUPnPNat;
+	bool m_iUPnPTryRandom;
+	//upnp_end
+
 	HTREEITEM m_htiExtractMetaData;
 	HTREEITEM m_htiExtractMetaDataNever;
 	HTREEITEM m_htiExtractMetaDataID3Lib;

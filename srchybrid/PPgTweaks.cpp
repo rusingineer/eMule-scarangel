@@ -71,6 +71,7 @@ CPPgTweaks::CPPgTweaks()
 	m_bLogFileSaving = false;
 	m_bLogA4AF = false;
 	m_bLogDrop = 0; //Xman Xtreme Downloadmanager
+	m_bLogpartmismatch = 0; //Xman Log part/size-mismatch
 	m_bLogUlDlEvents = false;
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
 	m_bLogWebCacheEvents = false; //JP log webcache events
@@ -167,6 +168,7 @@ CPPgTweaks::CPPgTweaks()
 	*/
 	m_htiLogA4AF = NULL;
 	m_htiLogDrop = NULL; //Xman Xtreme Downloadmanager
+	m_htiLogpartmismtach = NULL; //Xman Log part/size-mismatch
 	m_htiExtractMetaData = NULL;
 }
 
@@ -267,6 +269,7 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 			m_htiLogFileSaving = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOG_FILE_SAVING), m_htiVerboseGroup, m_bLogFileSaving);
 			m_htiLogA4AF = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOG_A4AF), m_htiVerboseGroup, m_bLogA4AF); // ZZ:DownloadManager
 			m_htiLogDrop = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOGDROP), m_htiVerboseGroup, m_bLogDrop); //Xman Xtreme Downloadmanager
+			m_htiLogpartmismtach = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOGPARTMISMATCH), m_htiVerboseGroup, m_bLogpartmismatch); //Xman Log part/size-mismatch
 			m_htiLogUlDlEvents = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOG_ULDL_EVENTS), m_htiVerboseGroup, m_bLogUlDlEvents);
 			// ==> WebCache [WC team/MorphXT] - Stulle/Max
 			m_htiLogWebCacheEvents = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOG_WCEVENTS), m_htiVerboseGroup, m_bLogWebCacheEvents); //JP log webcache events
@@ -303,6 +306,13 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	    m_ctrlTreeOptions.Expand(m_htiTCPGroup, TVE_EXPAND);
         if (m_htiVerboseGroup)
 		    m_ctrlTreeOptions.Expand(m_htiVerboseGroup, TVE_EXPAND);
+
+		//Xman
+		//upnp_start
+		m_htiUPnPNat = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CN_UPNPNAT), TVI_ROOT, m_iUPnPNat);
+		m_htiUPnPTryRandom = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CN_UPNPTRYRANDOM), TVI_ROOT, m_iUPnPTryRandom);
+		//upnp_end
+
 		m_ctrlTreeOptions.Expand(m_htiCommit, TVE_EXPAND);
 		m_ctrlTreeOptions.Expand(m_htiCheckDiskspace, TVE_EXPAND);
 		// ZZ:UploadSpeedSense -->
@@ -380,6 +390,8 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	if (m_htiLogA4AF)               m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogA4AF, m_bVerbose);
 	if (m_htiLogDrop)			    DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiLogDrop, m_bLogDrop); //Xman Xtreme Downloadmanager
 	if (m_htiLogDrop)               m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogDrop, m_bVerbose); //Xman Xtreme Downloadmanager
+	if (m_htiLogpartmismtach)		DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiLogpartmismtach, m_bLogpartmismatch); //Xman Log part/size-mismatch
+	if (m_htiLogpartmismtach)		m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogpartmismtach, m_bVerbose); //Xman Log part/size-mismatch
 	if (m_htiLogUlDlEvents)			DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiLogUlDlEvents, m_bLogUlDlEvents);
 	if (m_htiLogUlDlEvents)         m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogUlDlEvents, m_bVerbose);
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
@@ -410,6 +422,13 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxInt(pDX, m_iDynUpNumberOfPings, 1, INT_MAX);
 	// ZZ:UploadSpeedSense <--
 	*/
+
+	//Xman
+	//upnp_start
+	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiUPnPNat, m_iUPnPNat);
+	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiUPnPTryRandom, m_iUPnPTryRandom);
+	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiUPnPTryRandom, m_iUPnPNat);
+	//upnp_end
 }
 
 BOOL CPPgTweaks::OnInitDialog()
@@ -430,6 +449,7 @@ BOOL CPPgTweaks::OnInitDialog()
 		m_bLogFileSaving = thePrefs.m_bLogFileSaving;					// do *not* use the according 'Get...' function here!
         m_bLogA4AF = thePrefs.m_bLogA4AF;                   		    // do *not* use the according 'Get...' function here! // ZZ:DownloadManager
 		m_bLogDrop = thePrefs.m_bLogDrop; //Xman Xtreme Downloadmanager
+		m_bLogpartmismatch = thePrefs.m_bLogpartmismatch; //Xman Log part/size-mismatch
 		m_bLogUlDlEvents = thePrefs.m_bLogUlDlEvents;
 		// ==> WebCache [WC team/MorphXT] - Stulle/Max
 		m_bLogWebCacheEvents = thePrefs.m_bLogWebCacheEvents;//JP log webcache events
@@ -468,6 +488,12 @@ BOOL CPPgTweaks::OnInitDialog()
     m_iDynUpNumberOfPings = thePrefs.GetDynUpNumberOfPings();
 	*/
     //m_bA4AFSaveCpu = thePrefs.GetA4AFSaveCpu(); // ZZ:DownloadManager
+
+	//Xman
+	//upnp_start
+	m_iUPnPNat = thePrefs.GetUPnPNat();
+	m_iUPnPTryRandom = thePrefs.GetUPnPNatTryRandom();
+	//upnp_end
 
 	m_ctrlTreeOptions.SetImageListColorFlags(theApp.m_iDfltImageListColorFlags);
     CPropertyPage::OnInitDialog();
@@ -549,6 +575,7 @@ BOOL CPPgTweaks::OnApply()
 		thePrefs.m_bLogFileSaving = m_bLogFileSaving;
         thePrefs.m_bLogA4AF = m_bLogA4AF;
 		thePrefs.m_bLogDrop = m_bLogDrop; //Xman Xtreme Downloadmanager
+		thePrefs.m_bLogpartmismatch = m_bLogpartmismatch; //Xman Log part/size-mismatch
 		thePrefs.m_bLogUlDlEvents = m_bLogUlDlEvents;
 		// ==> WebCache [WC team/MorphXT] - Stulle/Max
 		thePrefs.m_bLogWebCacheEvents = m_bLogWebCacheEvents;//JP log webcache events
@@ -600,6 +627,14 @@ BOOL CPPgTweaks::OnApply()
 	// ZZ:UploadSpeedSense <--
 	*/
     //thePrefs.m_bA4AFSaveCpu = m_bA4AFSaveCpu; // ZZ:DownloadManager
+
+	//Xman
+	//upnp_start
+	if(thePrefs.GetUPnPNat()!=m_iUPnPNat || thePrefs.GetUPnPNatTryRandom() != m_iUPnPTryRandom)
+		AfxMessageBox(_T("You must restart emule to apply this changes"));
+	thePrefs.SetUPnPNat( m_iUPnPNat );
+	thePrefs.SetUPnPNatTryRandom( m_iUPnPTryRandom );
+	//upnp_end
 
 	if (thePrefs.GetEnableVerboseOptions())
 	{
@@ -662,6 +697,7 @@ void CPPgTweaks::Localize(void)
 		if (m_htiLogLevel) m_ctrlTreeOptions.SetEditLabel(m_htiLogLevel, GetResString(IDS_LOG_LEVEL));
 		if (m_htiLogA4AF) m_ctrlTreeOptions.SetItemText(m_htiLogA4AF, GetResString(IDS_LOG_A4AF));
 		if (m_htiLogDrop) m_ctrlTreeOptions.SetItemText(m_htiLogDrop, GetResString(IDS_LOGDROP)); //Xman Xtreme Downloadmanager
+		if (m_htiLogpartmismtach) m_ctrlTreeOptions.SetItemText(m_htiLogpartmismtach, GetResString(IDS_LOGPARTMISMATCH)); //Xman Log part/size-mismatch
 		if (m_htiLogUlDlEvents) m_ctrlTreeOptions.SetItemText(m_htiLogUlDlEvents, GetResString(IDS_LOG_ULDL_EVENTS));
 		// ==> WebCache [WC team/MorphXT] - Stulle/Max
 		if (m_htiLogWebCacheEvents) m_ctrlTreeOptions.SetItemText(m_htiLogWebCacheEvents, GetResString(IDS_LOG_WCEVENTS));//jp log webcache events
@@ -696,6 +732,12 @@ void CPPgTweaks::Localize(void)
 		// ZZ:UploadSpeedSense <--
 		*/
 		
+		//Xman
+		//upnp_start
+		if (m_htiUPnPNat) m_ctrlTreeOptions.SetItemText(m_htiUPnPNat, GetResString(IDS_CN_UPNPNAT));
+		if (m_htiUPnPTryRandom) m_ctrlTreeOptions.SetItemText(m_htiUPnPTryRandom, GetResString(IDS_CN_UPNPTRYRANDOM));
+		//upnp_end
+
 		//if (m_htiA4AFSaveCpu) m_ctrlTreeOptions.SetItemText(m_htiA4AFSaveCpu, GetResString(IDS_A4AF_SAVE_CPU)); // ZZ:DownloadManager
 		if (m_htiFullAlloc) m_ctrlTreeOptions.SetItemText(m_htiFullAlloc, GetResString(IDS_FULLALLOC));
 
@@ -727,6 +769,7 @@ void CPPgTweaks::OnDestroy()
 	m_htiLogFileSaving = NULL;
     m_htiLogA4AF = NULL;
 	m_htiLogDrop = NULL; //Xman Xtreme Downloadmanager
+	m_htiLogpartmismtach = NULL; //Xman Log part/size-mismatch
 	m_htiLogLevel = NULL;
 	m_htiLogUlDlEvents = NULL;
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
@@ -778,6 +821,14 @@ void CPPgTweaks::OnDestroy()
 	m_htiExtractMetaDataID3Lib = NULL;
 	//m_htiExtractMetaDataMediaDet = NULL;
     
+	//Xman
+	//upnp_start
+	m_htiUPnPNat = NULL;
+	m_htiUPnPTryRandom = NULL;
+	m_iUPnPNat = 0;
+	m_iUPnPTryRandom = 0;
+	//upnp_end
+
     CPropertyPage::OnDestroy();
 }
 
@@ -800,6 +851,7 @@ LRESULT CPPgTweaks::OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam)
 				if (m_htiLogFileSaving)			m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogFileSaving, bCheck);
                 if (m_htiLogA4AF)			    m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogA4AF, bCheck);
 				if (m_htiLogDrop)			    m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogDrop, bCheck); //Xman Xtreme Downloadmanager
+				if (m_htiLogpartmismtach)		m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogpartmismtach, bCheck); //Xman Log part/size-mismatch
 				if (m_htiLogUlDlEvents)			m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogUlDlEvents, bCheck);
 				// ==> WebCache [WC team/MorphXT] - Stulle/Max
 				if (m_htiLogWebCacheEvents)		m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogWebCacheEvents, bCheck);//jp log webcache events
@@ -807,6 +859,18 @@ LRESULT CPPgTweaks::OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam)
 				// <== WebCache [WC team/MorphXT] - Stulle/Max
 			}
 		}
+		//Xman
+		//upnp_start
+		if (m_htiUPnPNat && pton->hItem == m_htiUPnPNat)
+		{
+			BOOL bCheck;
+			if (m_ctrlTreeOptions.GetCheckBox(m_htiUPnPNat, bCheck))
+			{
+				if (m_htiUPnPTryRandom)	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiUPnPTryRandom, bCheck);
+			}
+		}
+		//upnp_end
+
 		SetModified();
 	}
 	return 0;

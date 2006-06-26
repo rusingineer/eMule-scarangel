@@ -210,6 +210,7 @@ CHttpDownloadDlg::CHttpDownloadDlg(CWnd* pParent /*=NULL*/)
 	m_bAbort = FALSE;
 	m_bSafeToClose = FALSE;
 	m_pThread = NULL;
+	m_pLastModifiedTime = NULL; //Xman auto update IPFilter
 }
 
 void CHttpDownloadDlg::DoDataExchange(CDataExchange* pDX)
@@ -585,6 +586,27 @@ resend:
 		if(!_tcsicmp(szContentEncoding, _T("gzip")) || !_tcsicmp(szContentEncoding, _T("x-gzip")))
 			bEncodedWithGZIP = TRUE;
 	}
+
+	//Xman auto update IPFilter
+	//this part is taken from morph. It checks the date of the file and only download if newer version is found
+	if (m_pLastModifiedTime) {
+		SYSTEMTIME SysTime;
+		dwInfoSize = sizeof(SYSTEMTIME);
+		if (::HttpQueryInfo(m_hHttpFile, HTTP_QUERY_FLAG_SYSTEMTIME | HTTP_QUERY_LAST_MODIFIED, &SysTime, &dwInfoSize, NULL))
+		{
+			if (memcmp(m_pLastModifiedTime, &SysTime, dwInfoSize)==0) {
+				m_pLastModifiedTime = NULL;
+				//Delete the file being downloaded to if it is present
+				m_FileToWrite.Close();
+				::DeleteFile(m_sFileToDownloadInto);
+				PostMessage(WM_HTTPDOWNLOAD_THREAD_FINISHED);
+				return;
+			}
+			memcpy(m_pLastModifiedTime, &SysTime, dwInfoSize);
+		}
+	}
+	//Xman end
+
 
 	//Update the status control to reflect that we are getting the file information
 	SetStatus(GetResString(IDS_HTTPDOWNLOAD_GETTING_FILE_INFORMATION));

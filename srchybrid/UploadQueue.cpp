@@ -95,7 +95,8 @@ CUploadQueue::CUploadQueue()
 	waituntilnextlook=0;
 	dataratestocheck=10;
 	currentuploadlistsize=0; //Xman x4
-	internetmaybedown=false; //Xman x4
+	internetmaybedown=true; //Xman x4
+	last_ip_change=0; //Xman -Reask sources after IP change- v3 (main part by Maella)
 	checkforuploadblock=true; //Xman 4.4 enable the feature the check for too many too slow clients.
 	m_dwnextallowedscoreremove=0;
 
@@ -118,7 +119,6 @@ CUpDownClient* CUploadQueue::FindBestClientInQueue()
 	POSITION toadd = 0;
 	uint32	bestscore = 0;
 	uint32  bestlowscore = 0;
-    CUpDownClient* newclient = NULL;
     CUpDownClient* lowclient = NULL;
 	uint32 thisTick = ::GetTickCount(); //cache the value
 
@@ -154,7 +154,6 @@ CUpDownClient* CUploadQueue::FindBestClientInQueue()
 					{
 					bestscore = cur_score;
 			        toadd = pos2;
-                    newclient = waitinglist.GetAt(toadd);
 					}
                 } 
 				else if(!cur_client->m_bAddNextConnect) 
@@ -404,13 +403,14 @@ bool CUploadQueue::AcceptNewClient(bool addOnNextConnect)
 	//uint16 MinSlots=(uint16)ceil((thePrefs.GetMaxUpload()-0.5f)/thePrefs.m_slotspeed +1 );
 	uint16 MinSlots=(uint16)ceil(thePrefs.GetMaxUpload()/thePrefs.m_slotspeed  );
 	if(MinSlots<3) MinSlots=3; 
-	uint16 MaxSlots=max((uint16)ceil(MinSlots*1.33),(uint16)ceil(thePrefs.m_slotspeed) + MinSlots);
+	uint16 MaxSlots=0;
 	
 	if(thePrefs.m_slotspeed>6)
 		MaxSlots=max(MaxSlots,(uint16)ceil(thePrefs.GetMaxUpload()/4));
 	else 	if(thePrefs.m_slotspeed>4)
 		MaxSlots=max(MaxSlots,(uint16)ceil(thePrefs.GetMaxUpload()/3));
-
+	else
+		MaxSlots=max((uint16)ceil(MinSlots*1.33),(uint16)ceil(thePrefs.m_slotspeed) + MinSlots);
 
 
 	uint16 curUpSlots = (uint16)uploadinglist.GetCount();
@@ -421,6 +421,7 @@ bool CUploadQueue::AcceptNewClient(bool addOnNextConnect)
 		return false;
 
 	//Xman count the blocksend to remove such clients if needed
+	//Xman count block/success send
 	if(curUpSlots>=MaxSlots)
 	{
 		//there are many clients out there, which can't take a high slotspeed (often less than 1kbs)
@@ -436,23 +437,23 @@ bool CUploadQueue::AcceptNewClient(bool addOnNextConnect)
 			for(POSITION pos=uploadinglist.GetHeadPosition();pos!=NULL;)
 			{
 				CUpDownClient* cur_client=uploadinglist.GetNext(pos);
-				if(cur_client->socket->IsFull()==false)
+				if(cur_client->GetFileUploadSocket()->IsFull()==false)
 				{
 					allfull=false;
 					break;
 				}
 				else
 				{
-					if(cur_client->GetFileUploadSocket()->blockedsendcount > maxblock)
+					if(cur_client->GetFileUploadSocket()->blockedsendcount_overall > maxblock)
 					{
-						maxblock=cur_client->GetFileUploadSocket()->blockedsendcount;
+						maxblock=cur_client->GetFileUploadSocket()->blockedsendcount_overall;
 						blockclient=cur_client;
 					}
 				}
 			}
 			if(allfull && blockclient!=NULL && blockclient->GetUpStartTimeDelay()>MIN2MS(15))
 			{
-				RemoveFromUploadQueue(blockclient,_T("client is blocking too often")); //remark: uploadstopreason: other
+				RemoveFromUploadQueue(blockclient,_T("client is blocking too often and max slots are reached")); //remark: uploadstopreason: other
 				m_blockstoplist.AddHead(::GetTickCount()); //Xman 4.4 remember when this happend.
 				//Xman 4.4
 				//because there are some users out, which set a too high uploadlimit, this code isn't useable
@@ -474,6 +475,30 @@ bool CUploadQueue::AcceptNewClient(bool addOnNextConnect)
 		//remark: we always return false here... also on removing blockclient
 		//next loop a new client will be accepted
 		return false;
+	}
+	else
+	{
+		static uint32 lastblockingcheck;
+		if(thePrefs.DropBlockingSockets() && curUpSlots > MinSlots +2 && lastblockingcheck + 1000 < ::GetTickCount() && theApp.uploadBandwidthThrottler->GetAvgHealth() >= 100)
+		{
+			lastblockingcheck=::GetTickCount();
+			//search a socket we should remove
+			for(POSITION pos=uploadinglist.GetHeadPosition();pos!=NULL;)
+			{
+				CUpDownClient* cur_client=uploadinglist.GetNext(pos);
+				if(cur_client->GetUpStartTimeDelay()>MIN2MS(3) //this client is already 5 minutes uploading. 
+					&& cur_client->GetFileUploadSocket()->GetBlockRatio_overall() >= 95 //95% of all send were blocked
+					&& cur_client->GetFileUploadSocket()->GetBlockRatio() >= 96 //96% the last 20 seconds
+					)
+				{
+					CString buffer;
+					buffer.Format(_T("client is blocking too often: avg20: %0.0f%%, all: %0.0f%%, avg-speed: %0.0f B/s"),cur_client->GetFileUploadSocket()->GetBlockRatio(),cur_client->GetFileUploadSocket()->GetBlockRatio_overall(),(float)cur_client->GetSessionUp()/cur_client->GetUpStartTimeDelay()*1000.0f );
+					RemoveFromUploadQueue(cur_client,buffer,CUpDownClient::USR_BLOCKING); // Maella -Upload Stop Reason-
+					break; //only one socket 
+				}
+			}
+		}
+
 	}
 	//Xman end
 
@@ -546,8 +571,9 @@ bool CUploadQueue::ForceNewClient(bool allowEmptyWaitingQueue) {
 	uint32 eMuleIn;	uint32 eMuleInOverall;
 	uint32 eMuleOut; uint32 eMuleOutOverall;
 	uint32 networkIn; uint32 networkOut;
-	if (theApp.serverconnect->IsConnected()==false)
-	{
+
+	//if (theApp.serverconnect->IsConnected()==false)
+	//{
 		theApp.pBandWidthControl->GetDatarates(1, // 1 seconds
 			eMuleIn, eMuleInOverall,
 			eMuleOut, eMuleOutOverall,
@@ -565,9 +591,9 @@ bool CUploadQueue::ForceNewClient(bool allowEmptyWaitingQueue) {
 				return false;
 		}
 
-	}
-	else
-		internetmaybedown=false;
+	//}
+	//else
+	//	internetmaybedown=false;
 
 
 	return AcceptNewClient();
@@ -841,11 +867,12 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 	}
 
 	// emule collection will bypass the queue
-	if (reqfile != NULL && CCollection::HasCollectionExtention(reqfile->GetFileName()) && reqfile->GetFileSize() < (uint64)MAXPRIORITYCOLL_SIZE
+	if (reqfile != NULL && reqfile->HasCollectionExtenesion_Xtreme() /*CCollection::HasCollectionExtention(reqfile->GetFileName())*/ && reqfile->GetFileSize() < (uint64)MAXPRIORITYCOLL_SIZE //Xman Code Improvement for HasCollectionExtention
 		&& !client->IsDownloading() && client->socket != NULL && client->socket->IsConnected())
 	{
 		client->SetCollectionUploadSlot(true);
 		RemoveFromWaitingQueue(client, true);
+		client->SetOldUploadFileID(); //Xman Close Backdoor v2
 		AddUpNextClient(_T("Collection Priority Slot"), client);
 		return;
 	}
@@ -1006,7 +1033,8 @@ bool CUploadQueue::RemoveFromWaitingQueue(CUpDownClient* client, bool updatewind
 		RemoveFromWaitingQueue(pos,updatewindow);
 		if (updatewindow)
 			theApp.emuledlg->transferwnd->ShowQueueCount(waitinglist.GetCount());
-		client->m_bAddNextConnect = false;
+		//Xman Code Fix: wrong place, because some removing is done with position
+		//client->m_bAddNextConnect = false;
 		return true;
 	}
 	else
@@ -1033,6 +1061,8 @@ void CUploadQueue::RemoveFromWaitingQueue(POSITION pos, bool updatewindow){
 		//ASSERT(false); //we aborted this file
 	//Xman end
 
+	//Xman Code Fix
+	todelete->m_bAddNextConnect = false; //right place
 
 	waitinglist.RemoveAt(pos);
 	if (updatewindow)
@@ -1071,7 +1101,7 @@ bool CUploadQueue::CheckForTimeOver(CUpDownClient* client){
 		CKnownFile* pDownloadingFile = theApp.sharedfiles->GetFileByID(client->requpfileid);
 		if(pDownloadingFile == NULL)
 			return true;
-		if (CCollection::HasCollectionExtention(pDownloadingFile->GetFileName()) && pDownloadingFile->GetFileSize() < (uint64)MAXPRIORITYCOLL_SIZE)
+		if (pDownloadingFile->HasCollectionExtenesion_Xtreme() /*CCollection::HasCollectionExtention(pDownloadingFile->GetFileName())*/ && pDownloadingFile->GetFileSize() < (uint64)MAXPRIORITYCOLL_SIZE) //Xman Code Improvement for HasCollectionExtention
 			return false;
 		else{
 			if (thePrefs.GetLogUlDlEvents())
@@ -1215,11 +1245,13 @@ VOID CALLBACK CUploadQueue::UploadTimer(HWND /*hwnd*/, UINT /*uMsg*/, UINT_PTR /
 		else
 			lastprocesstime=::GetTickCount();
 
+		static uint16 counter;
+
 		//Xman final version
 		//Xman todo: only a warning... no return! there is any problem here I first have to find out
 		if(inprocess==true)
 		{
-			AddDebugLogLine(false, _T("-->timer was called a second time"));
+			AddDebugLogLine(false, _T("-->unknown error in Uploadqueue::Uploadtimer. Counter is: %u"), counter);
 			//return;
 		}
 		inprocess=true;
@@ -1236,7 +1268,7 @@ VOID CALLBACK CUploadQueue::UploadTimer(HWND /*hwnd*/, UINT /*uMsg*/, UINT_PTR /
 		// ZZ:UploadSpeedSense <--
 
 		//Xman final version: 100ms are enough
-		static uint16 counter; counter++;
+		counter++;
 		if(counter%(100/TIMER_PERIOD)==0)
 		{
 			theApp.uploadqueue->Process();
@@ -1454,10 +1486,6 @@ void CUploadQueue::ReSortUploadSlots(bool force) {
 			if(cur_client->HasPeerCacheState())
 				cur_client->GetFileUploadSocket(true);
 #endif
-			//Xman Xtreme Upload
-			//after reinserting set ready
-			//cur_client->GetFileUploadSocket(true)->isready=true;
-			//cur_client->socket->isready=true;
 
         }
 		theApp.uploadBandwidthThrottler->RecalculateOnNextLoop(); //Xman x4 

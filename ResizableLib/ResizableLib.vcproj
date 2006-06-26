@@ -238,7 +238,7 @@
 				TreatWChar_tAsBuiltInType="TRUE"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="stdafx.h"
-				PrecompiledHeaderFile=".\DebugUnicode/ResizableLib.pch"
+				PrecompiledHeaderFile="$(ConfigurationName)/ResizableLib.pch"
 				AssemblerListingLocation="$(IntDir)/"
 				ObjectFile="$(IntDir)/"
 				ProgramDataBaseFileName="$(IntDir)/"

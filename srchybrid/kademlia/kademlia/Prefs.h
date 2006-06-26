@@ -50,8 +50,6 @@ namespace Kademlia
 			uint32 GetIPAddress() const;
 			void SetIPAddress(uint32 uVal);
 
-			//Xman -Reask sources after IP change- v2
-			uint32	newIPtimestamp;
 
 			bool GetRecheckIP() const;
 			void SetRecheckIP();

@@ -116,6 +116,28 @@ bool CServerList::Init()
 		AutoUpdate();
 	}
 	
+	//Xman auto update IPFilter
+	if(thePrefs.AutoUpdateIPFilter())
+	{
+		bool update=false;
+		if (thePrefs.m_last_ipfilter_check!=0) {
+			CTime last(thePrefs.m_last_ipfilter_check);
+			time_t tLast=safe_mktime(last.GetLocalTm());
+			time_t tNow=safe_mktime(CTime::GetCurrentTime().GetLocalTm());
+			if ( (difftime(tNow,tLast) / 86400)>=thePrefs.GetUpdateDays() )
+			{
+				update=true;
+			}
+		}
+		else
+			update=true;
+		if(update)
+		{
+			if(theApp.IsSplash()) theApp.DestroySplash(); //Xman new slpash-screen arrangement
+			theApp.ipfilter->UpdateIPFilterURL();
+		}
+	}
+	
 	// Load Metfile
 	CString strPath;
 	strPath.Format(_T("%s") SERVER_MET_FILENAME, thePrefs.GetConfigDir());

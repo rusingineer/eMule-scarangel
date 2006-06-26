@@ -139,7 +139,7 @@ public:
 	void CleanUp(CPartFile* pDeletedFile);
 	// Maella end
 
-	//Xman -Reask sources after IP change- v2 (main part by Maella)
+	//Xman -Reask sources after IP change- v3 (main part by Maella)
 	void TrigReaskForDownload(bool immediate);
 
 #ifdef PRINT_STATISTIC

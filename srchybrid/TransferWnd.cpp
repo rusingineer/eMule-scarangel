@@ -548,7 +548,14 @@ void CTransferWnd::UpdateListCount(EWnd2 listindex, int iCount /*=-1*/)
 					uint32 itemCount = iCount == -1 ? uploadlistctrl.GetItemCount() : iCount;
 					//Xman Xtreme Upload
 					uint32 activeCount = theApp.uploadBandwidthThrottler->GetNumberOfFullyActivatedSlots();
-					strBuffer.Format(_T(" (%i/%i)"), activeCount, itemCount);
+					//Xman upload health
+					//Xman count block/success send
+					float health = theApp.uploadBandwidthThrottler->GetAvgHealth();
+					float avgblocks = theApp.uploadBandwidthThrottler->GetAvgBlockRatio();
+					if(thePrefs.ShowBlockRatio())
+						strBuffer.Format(_T(" (%i/%i) %0.0f%% %0.0f%%"), activeCount, itemCount, health, avgblocks);
+					else
+						strBuffer.Format(_T(" (%i/%i) %0.0f%%"), activeCount, itemCount, health);
 					//Xman end
 					m_btnWnd2->SetWindowText(GetResString(IDS_UPLOADING) + strBuffer);
 					break;
@@ -581,7 +588,14 @@ void CTransferWnd::UpdateListCount(EWnd2 listindex, int iCount /*=-1*/)
 				uint32 itemCount = iCount == -1 ? uploadlistctrl.GetItemCount() : iCount;
 				//Xman Xtreme Upload
 				uint32 activeCount = theApp.uploadBandwidthThrottler->GetNumberOfFullyActivatedSlots();
-				strBuffer.Format(_T(" (%i/%i)"), activeCount, itemCount);
+				//Xman upload health
+				//Xman count block/success send
+				float health = theApp.uploadBandwidthThrottler->GetAvgHealth();
+				float avgblocks = theApp.uploadBandwidthThrottler->GetAvgBlockRatio();
+				if(thePrefs.ShowBlockRatio())
+					strBuffer.Format(_T(" (%i/%i) %0.0f%% %0.0f%%"), activeCount, itemCount, health, avgblocks);
+				else
+					strBuffer.Format(_T(" (%i/%i) %0.0f%%"), activeCount, itemCount, health);
 				//Xman end
 				m_btnWnd1->SetWindowText(GetResString(IDS_UPLOADING) + strBuffer);
 			}

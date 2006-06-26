@@ -199,6 +199,12 @@ int CAICHSyncThread::Run()
 					// unused hashset skip the rest of this hashset
 					file.Seek(nHashCount*CAICHHash::GetHashSize(), CFile::current);
 					nPurgeCount++;
+					//Xman remove unused AICH-hashes
+					POSITION posk2h=liKnown2Hashs.Find(aichHash);
+					if(posk2h)
+						liKnown2Hashs.RemoveAt(posk2h);
+					//Xman end
+
 				}
 				else if(nPurgeCount == 0){
 					// used Hashset, but it does not need to be moved as nothing changed yet
@@ -240,6 +246,34 @@ int CAICHSyncThread::Run()
 			return false;
 		}
 	}
+
+	//Xman remove unused AICH-hashes
+	//Xman set all known files without an existing AICH hash to error 
+	CKnownFile* cur_file=NULL;
+	POSITION posk = theApp.knownfiles->GetKnownFiles().GetStartPosition();					
+	while(posk){
+		CCKey key;
+		theApp.knownfiles->GetKnownFiles().GetNextAssoc( posk, key, cur_file );
+
+		if (cur_file->GetAICHHashset()->GetStatus() == AICH_HASHSETCOMPLETE)
+		{
+			bool bFound = false;
+			for (POSITION pos = liKnown2Hashs.GetHeadPosition();pos != 0;)
+			{
+				CAICHHash current_hash = liKnown2Hashs.GetNext(pos);
+				if (current_hash == cur_file->GetAICHHashset()->GetMasterHash())
+				{
+					bFound=true;
+					break;
+				}
+			}
+			if(!bFound)
+				cur_file->GetAICHHashset()->SetStatus(AICH_EMPTY);
+		}
+	}
+	//Xman end
+
+
 	lockKnown2Met.Unlock();
 	// warn the user if he just upgraded
 	if (thePrefs.IsFirstStart() && !m_liToHash.IsEmpty() && !bJustCreated){
@@ -277,6 +311,7 @@ int CAICHSyncThread::Run()
 			theApp.emuledlg->sharedfileswnd->sharedfilesctrl.ShowFilesCount();
 		sLock1.Unlock();
 	}
+
 
 	theApp.QueueDebugLogLine(false, _T("AICHSyncThread finished"));
 	return 0;

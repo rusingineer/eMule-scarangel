@@ -1751,7 +1751,7 @@ void CUpDownClient::CompDownloadRate(){
 		TransferredData& oldestSample = m_downHistory_list.GetAt(pos);
 		uint32 deltaTime = newItem.timeStamp - oldestSample.timeStamp;
 		uint32 deltaByte = newItem.dataLength - oldestSample.dataLength;
-		m_nDownDatarate = (deltaTime > 0) ? (1000 * deltaByte / deltaTime) : 0;   // [bytes/s]
+		m_nDownDatarate = (deltaTime > 0) ? (UINT)(1000.0 * deltaByte / deltaTime) : 0;   // [bytes/s]
 	}
 
 	//Xman 0.46b for faster endgame
@@ -1764,7 +1764,7 @@ void CUpDownClient::CompDownloadRate(){
 		TransferredData& oldestSample = m_downHistory_list.GetAt(pos);
 		uint32 deltaTime = newItem.timeStamp - oldestSample.timeStamp;
 		uint32 deltaByte = newItem.dataLength - oldestSample.dataLength;
-		m_nDownDatarate10 = (deltaTime > 0) ? (1000 * deltaByte / deltaTime) : 0;   // [bytes/s]
+		m_nDownDatarate10 = (deltaTime > 0) ? (UINT)(1000.0 * deltaByte / deltaTime) : 0;   // [bytes/s]
 	}
 
 

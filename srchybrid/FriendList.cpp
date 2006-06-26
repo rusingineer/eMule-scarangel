@@ -240,7 +240,13 @@ void CFriendList::RemoveFriend(CFriend* todel){
 void CFriendList::RemoveAllFriendSlots(){
 	for (POSITION pos = m_listFriends.GetHeadPosition();pos != 0;){
 		CFriend* cur_friend = m_listFriends.GetNext(pos);
-        cur_friend->SetFriendSlot(false);
+		//Xman friend visualization
+		if(cur_friend->GetFriendSlot()==true)
+		{
+			cur_friend->SetFriendSlot(false);
+			RefreshFriend(cur_friend);
+		}
+		//Xman end
 	}
 }
 

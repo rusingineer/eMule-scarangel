@@ -106,6 +106,8 @@ public:
 
 	//Xman Code Improvement for choosing to use compression
 	bool IsCompressible() const {return compressible;}
+	//Xman Code Improvement for HasCollectionExtention
+	bool HasCollectionExtenesion_Xtreme() const {return m_bhasCollectionExtention;}
 
 
 #ifdef _DEBUG
@@ -128,4 +130,7 @@ protected:
 	CKadEntryPtrList m_kadNotes;
 	//Xman Code Improvement for choosing to use compression
 	bool compressible;
+	//Xman Code Improvement for HasCollectionExtention
+	bool m_bhasCollectionExtention;
+
 };

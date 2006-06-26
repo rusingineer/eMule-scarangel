@@ -157,17 +157,25 @@ void CDownloadListCtrl::Init()
 	curTab=0;
 
 	//Xman Show active downloads bold
-	//if (thePrefs.GetShowActiveDownloadsBold())
 	{
 		CFont* pFont = GetFont();
 		LOGFONT lfFont = {0};
 		pFont->GetLogFont(&lfFont);
 		lfFont.lfWeight = FW_BOLD;
 		m_fontBold.CreateFontIndirect(&lfFont);
-	// ==> Show Client Percentage [Commander/MorphXT] - Mondgott
-	lfFont.lfHeight = 11;
-	m_fontBoldSmaller.CreateFontIndirect(&lfFont);
-	// <== Show Client Percentage [Commander/MorphXT] - Mondgott
+		// ==> Show Client Percentage [Commander/MorphXT] - Mondgott
+		lfFont.lfHeight = 11;
+		m_fontBoldSmaller.CreateFontIndirect(&lfFont);
+		// <== Show Client Percentage [Commander/MorphXT] - Mondgott
+	}
+	//Xman narrow font at transferwindow
+	{
+		CFont* pFont = GetFont();
+		LOGFONT lfFont = {0};
+		pFont->GetLogFont(&lfFont);
+		_tcscpy(lfFont.lfFaceName, _T("Arial Narrow"));
+		lfFont.lfWeight = FW_BOLD;
+		m_fontNarrowBold.CreateFontIndirect(&lfFont);
 	}
 	//Xman end
 
@@ -232,18 +240,22 @@ void CDownloadListCtrl::SetAllIcons()
 	m_ImageList.Add(CTempIconLoader(_T("ClientAMulePlus")));		//29
 	m_ImageList.Add(CTempIconLoader(_T("ClientLPhant")));			//30
 	m_ImageList.Add(CTempIconLoader(_T("ClientLPhantPlus")));		//31
-	m_ImageList.Add(CTempIconLoader(_T("PREF_WEBCACHE"))); //32 // WebCache [WC team/MorphXT] - Stulle/Max
+	//Xman friend visualization
+	m_ImageList.Add(CTempIconLoader(_T("ClientFriendSlotOvl"))); //32
+	//Xman end
+
+	m_ImageList.Add(CTempIconLoader(_T("PREF_WEBCACHE"))); //33 // WebCache [WC team/MorphXT] - Stulle/Max
 	// ==> Mod Icons - Stulle
-	m_ImageList.Add(CTempIconLoader(_T("AAAEMULEAPP"))); //33
-	m_ImageList.Add(CTempIconLoader(_T("STULLE"))); //34
-	m_ImageList.Add(CTempIconLoader(_T("MAXMOD"))); //35
-	m_ImageList.Add(CTempIconLoader(_T("XTREME"))); //36
-	m_ImageList.Add(CTempIconLoader(_T("MORPH"))); //37
-	m_ImageList.Add(CTempIconLoader(_T("EASTSHARE"))); //38
-	m_ImageList.Add(CTempIconLoader(_T("IONIX"))); //39
-	m_ImageList.Add(CTempIconLoader(_T("CYREX"))); //40
-	m_ImageList.Add(CTempIconLoader(_T("NEXTEMF"))); //41
-	m_ImageList.Add(CTempIconLoader(_T("NEO"))); //42
+	m_ImageList.Add(CTempIconLoader(_T("AAAEMULEAPP"))); //34
+	m_ImageList.Add(CTempIconLoader(_T("STULLE"))); //35
+	m_ImageList.Add(CTempIconLoader(_T("MAXMOD"))); //36
+	m_ImageList.Add(CTempIconLoader(_T("XTREME"))); //37
+	m_ImageList.Add(CTempIconLoader(_T("MORPH"))); //38
+	m_ImageList.Add(CTempIconLoader(_T("EASTSHARE"))); //39
+	m_ImageList.Add(CTempIconLoader(_T("IONIX"))); //40
+	m_ImageList.Add(CTempIconLoader(_T("CYREX"))); //41
+	m_ImageList.Add(CTempIconLoader(_T("NEXTEMF"))); //42
+	m_ImageList.Add(CTempIconLoader(_T("NEO"))); //43
 	// <== Mod Icons - Stulle
 	
 	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
@@ -860,7 +872,7 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 				}
 				// ==> WebCache [WC team/MorphXT] - Stulle/Max
 				else if (lpUpDownClient->GetClientSoft() == SO_WEBCACHE)
-					image = 32;
+					image = 33;
 				// <== WebCache [WC team/MorphXT] - Stulle/Max
 				else if (lpUpDownClient->ExtProtocolAvailable()){
 					// ==> Mod Icons - Stulle
@@ -870,7 +882,7 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 					if(lpUpDownClient->GetModClient() == MOD_NONE)
 						image = 18;
 					else
-						image = (uint8)(lpUpDownClient->GetModClient() + 32);
+						image = (uint8)(lpUpDownClient->GetModClient() + 33);
 					// <== Mod Icons - Stulle
 				}
 				else{
@@ -902,6 +914,12 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 				// <== Mod Icons - Stulle
 					m_ImageList.Draw(dc, image, point2, ILD_NORMAL | uOvlImg);
 //Xman end
+				//Xman friend visualization
+				if (lpUpDownClient->IsFriend() && lpUpDownClient->GetFriendSlot())
+					m_ImageList.Draw(dc,32, point2, ILD_NORMAL);
+				//Xman end
+
+
 				cur_rec.left += 20;
 
 				//EastShare Start - added by AndCycle, IP to Country 
@@ -1309,27 +1327,30 @@ void CDownloadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
 	CFont* pOldFont;
 	//Xman Show active downloads bold
-	//if (m_fontBold.m_hObject){
+	//Xman narrow font at transferwindow
+	CFont* pFontToUse = thePrefs.UseNarrowFont() ? &m_fontNarrow : GetFont();
 	if(thePrefs.GetShowActiveDownloadsBold())
 	{
-	//Xman end
 		if (content->type == FILE_TYPE){
 			if (((const CPartFile*)content->value)->GetTransferringSrcCount())
-				pOldFont = dc.SelectObject(&m_fontBold);
+				pOldFont = dc.SelectObject(thePrefs.UseNarrowFont() ? &m_fontNarrowBold : &m_fontBold); //Xman narrow font at transferwindow
 			else
-				pOldFont = dc.SelectObject(GetFont());
+				pOldFont = dc.SelectObject(pFontToUse);
 		}
 		else if (content->type == UNAVAILABLE_SOURCE || content->type == AVAILABLE_SOURCE){
 			if (((const CUpDownClient*)content->value)->GetDownloadState() == DS_DOWNLOADING)
-				pOldFont = dc.SelectObject(&m_fontBold);
+				pOldFont = dc.SelectObject(thePrefs.UseNarrowFont() ? &m_fontNarrowBold : &m_fontBold); //Xman narrow font at transferwindow
 			else
-				pOldFont = dc.SelectObject(GetFont());
+				pOldFont = dc.SelectObject(pFontToUse);
 		}
 		else
-			pOldFont = dc.SelectObject(GetFont());
+			pOldFont = dc.SelectObject(pFontToUse);
 	}
 	else
-		pOldFont = dc.SelectObject(GetFont());
+		pOldFont = dc.SelectObject(pFontToUse);
+	//Xman end Show active downloads bold
+	//Xman end narrow font at transferwindow
+
 	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
 
@@ -2447,7 +2468,6 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 			CPartFile* file = (CPartFile*)content->owner; // added by sivka
 
 			switch (wParam){
-
 				//Xman Xtreme Downloadmanager
 				case MP_STOP_CLIENT: 
 					StopSingleClient(client);
@@ -2904,7 +2924,7 @@ int CDownloadListCtrl::Compare(const CUpDownClient *client1, const CUpDownClient
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
 	case 14:
 		if (client1->SupportsWebCache() && client2->SupportsWebCache() )
-		return CompareLocaleStringNoCase(client1->GetWebCacheName(),client2->GetWebCacheName());
+			return CompareLocaleStringNoCase(client1->GetWebCacheName(),client2->GetWebCacheName());
 		else
 			return client1->SupportsWebCache() - client2->SupportsWebCache();
 	// <== WebCache [WC team/MorphXT] - Stulle/Max

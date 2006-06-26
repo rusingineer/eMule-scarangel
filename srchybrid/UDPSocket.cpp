@@ -101,6 +101,20 @@ bool CUDPSocket::Create()
 			LogError(LOG_STATUSBAR, _T("Error: Server UDP socket: Failed to create server UDP socket - %s"), GetErrorMessage(GetLastError()));
 			return false;
 		}
+		//Xman
+		//upnp_start
+		if(thePrefs.GetUPnPNat()){
+			CString client;
+			UINT port;
+			MyUPnP::UPNPNAT_MAPPING mapping;
+
+			GetSockName(client, port);
+			mapping.internalPort = mapping.externalPort = (WORD)port;
+			mapping.protocol = MyUPnP::UNAT_UDP;
+			mapping.description = "Server UDP Port";
+			theApp.AddUPnPNatPort(&mapping, thePrefs.GetUPnPNatTryRandom());
+		}
+		//upnp_end
 		return true;
 	}
 	return false;

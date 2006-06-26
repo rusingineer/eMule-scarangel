@@ -806,6 +806,7 @@ void CALLBACK CemuleDlg::StartupTimer(HWND /*hwnd*/, UINT /*uiMsg*/, UINT /*idEv
 			case 6:
 				theApp.emuledlg->status++;
 				theApp.sharedfiles->SetOutputCtrl(&theApp.emuledlg->sharedfileswnd->sharedfilesctrl);
+				theApp.emuledlg->sharedfileswnd->historylistctrl.Init(); //Xman [MoNKi: -Downloaded History-]
 
 				// BEGIN SiRoB: SafeHash fix originaly in OnInitDialog (delay load shared files)
 				// start aichsyncthread
@@ -2166,6 +2167,11 @@ void CemuleDlg::OnClose()
 	// Maella [patch] -Bandwidth: overall bandwidth measure-	
 	delete theApp.pBandWidthControl;theApp.pBandWidthControl = NULL;
 	// Maella end
+
+	//Xman
+	//upnp_start
+	theApp.m_UPnPNat.clearNATPortMapping();
+	//upnp_end
 
 	theApp.UpdateSplash(_T("unload IP to Country ..."));  //Xman new slpash-screen arrangement
 

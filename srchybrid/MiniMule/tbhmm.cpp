@@ -176,25 +176,6 @@ void CTBHMM::MMUpdate()
 		uint32 upratekb = theApp.uploadqueue->GetDatarate();
 		uint32 downratekb = theApp.downloadqueue->GetDatarate();
 */
-
-		//Xman
-		// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
-		// Retrieve the current datarates
-		uint32 eMuleIn;	uint32 eMuleInOverall;
-		uint32 eMuleOut; uint32 eMuleOutOverall;
-		uint32 notUsed;
-		theApp.pBandWidthControl->GetDatarates(thePrefs.GetDatarateSamples(),
-			eMuleIn, eMuleInOverall,
-			eMuleOut, eMuleOutOverall,
-			notUsed, notUsed);
-
-
-		uint32 downratekb = eMuleIn;
-		uint32 upratekb = eMuleOut;
-		int lastuprateoverheadkb=eMuleOutOverall-eMuleOut;
-		int lastdownrateoverheadkb=eMuleInOverall-eMuleIn;
-		//Xman end
-
 		CDownloadQueue::SDownloadStats myStats;
 		theApp.downloadqueue->GetDownloadStats(myStats);
 
@@ -257,23 +238,40 @@ void CTBHMM::MMUpdate()
 			}
 		}
 */
-	// ==> added - Stulle
+		// ==> added - Stulle
 		int iTotal;
-	
-		if ( theStats.sessionReceivedBytes>0 && theStats.sessionSentBytes>0 ) 
+		//Xman
+		// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+		// Retrieve the current datarates
+		uint32 downratekb;	uint32 eMuleInOverall;
+		uint32 upratekb; uint32 eMuleOutOverall;
+		uint32 notUsed;
+		theApp.pBandWidthControl->GetDatarates(thePrefs.GetDatarateSamples(),
+			downratekb, eMuleInOverall,
+			upratekb, eMuleOutOverall,
+			notUsed, notUsed);
+
+		uint32 lastuprateoverheadkb=eMuleOutOverall-upratekb;
+		uint32 lastdownrateoverheadkb=eMuleInOverall-downratekb;
+		uint64 bEmuleIn= theApp.pBandWidthControl->GeteMuleIn();
+		uint64 bEmuleOut= theApp.pBandWidthControl->GeteMuleOut();
+		//Xman end
+
+		if ( bEmuleIn>0 && bEmuleOut>0 ) 
 		{
-			if (theStats.sessionReceivedBytes<theStats.sessionSentBytes) 
+			// Session
+			if (bEmuleIn<bEmuleOut) 
 			{
-				buffer.Format(_T("%s %.2f : 1"),GetResString(IDS_MM_RATIO),(float)theStats.sessionSentBytes/theStats.sessionReceivedBytes);
+				buffer.Format(_T("%s %.2f : 1"),GetResString(IDS_STATS_SRATIO),(float)bEmuleOut/bEmuleIn);
 			} 
 			else 
 			{
-				buffer.Format(_T("%s 1 : %.2f"),GetResString(IDS_MM_RATIO),(float)theStats.sessionReceivedBytes/theStats.sessionSentBytes);
+				buffer.Format(_T("%s 1 : %.2f"),GetResString(IDS_STATS_SRATIO),(float)bEmuleIn/bEmuleOut);
 			}
 		}
 		else 
 		{
-			buffer.Format(_T("%s %s"), GetResString(IDS_MM_RATIO), GetResString(IDS_FSTAT_WAITING)); // Localize
+			buffer.Format(_T("%s %s"), GetResString(IDS_STATS_SRATIO), GetResString(IDS_FSTAT_WAITING)); // Localize
 		}
 		GetDlgItem(IDC_MM_RATIO)->SetWindowText(buffer);
 
@@ -293,7 +291,7 @@ void CTBHMM::MMUpdate()
 		GetDlgItem(IDC_MM_DLCOUNT)->SetWindowText(buffer);
 		buffer.Format(GetResString(IDS_STATS_ACTUL),theApp.uploadqueue->GetUploadQueueLength());
 		GetDlgItem(IDC_MM_ULCOUNT)->SetWindowText(buffer);
-		buffer.Format(GetResString(IDS_MM_DATA),CastItoXBytes(theStats.sessionSentBytes),CastItoXBytes( theStats.sessionReceivedBytes ));
+		buffer.Format(GetResString(IDS_MM_DATA),CastItoXBytes(bEmuleOut),CastItoXBytes( bEmuleIn ));
 
 		GetDlgItem(IDC_MM_ULDLTRANS)->SetWindowText(buffer);
 		// ==> changed - Stulle

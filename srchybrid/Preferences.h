@@ -386,6 +386,7 @@ public:
 	static	bool	m_bLogFileSaving;
     static  bool    m_bLogA4AF; // ZZ:DownloadManager
 	static	bool	m_bLogDrop; //Xman Xtreme Downloadmanager
+	static	bool	m_bLogpartmismatch; //Xman Log part/size-mismatch
 	static	bool	m_bLogUlDlEvents;
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
 	static	bool	m_bLogWebCacheEvents;//JP log webcache events
@@ -647,7 +648,6 @@ public:
 	// <== Source Graph - Stulle
 
 	// ==> FunnyNick [SiRoB/Stulle] - Stulle
-	static bool		m_bFunnyNick;
 	static uint8	FnTagMode;
 	static TCHAR	m_sFnCustomTag [256];
 	static bool		m_bFnTagAtEnd;
@@ -791,8 +791,11 @@ public:
 
 	static	LPCSTR	GetBindAddrA()						{return m_pszBindAddrA; }
 	static	LPCWSTR	GetBindAddrW()						{return m_pszBindAddrW; }
-	static	uint16	GetPort()							{return port;}
-	static	uint16	GetUDPPort()						{return udpport;}
+	//Xman
+	//upnp_start
+	static	uint16	GetPort();//							{return port;}
+	static	uint16	GetUDPPort();//						{return udpport;}
+	//upnp_end
 	static	uint16	GetServerUDPPort()					{return nServerUDPPort;}
 	static	uchar*	GetUserHash()						{return userhash;}
 	// ZZ:UploadSpeedSense -->
@@ -821,6 +824,20 @@ public:
 
 	//--------------------------------------------------------------------------------------
 	//Xman Xtreme Mod:
+
+	//upnp_start
+	static	bool m_bUPnPNat; // UPnP On/Off
+	static	bool m_bUPnPTryRandom; // Try to use random external port if already in use On/Off
+	static	uint16 m_iUPnPTCPExternal; // TCP External Port
+	static	uint16 m_iUPnPUDPExternal; // UDP External Port*/
+	static	bool GetUPnPNat()    { return m_bUPnPNat; }
+	static	void SetUPnPNat(bool on)    { m_bUPnPNat = on; }
+	static	void SetUPnPTCPExternal(uint16 port) { m_iUPnPTCPExternal = port; }
+	static	void SetUPnPUDPExternal(uint16 port) { m_iUPnPUDPExternal = port; }
+	static	bool GetUPnPNatTryRandom()  { return m_bUPnPTryRandom; }
+	static	void SetUPnPNatTryRandom(bool on) { m_bUPnPTryRandom = on; }
+	//upnp_end
+
 
 	//Xman Xtreme Upload
 	static float	m_slotspeed;
@@ -881,10 +898,43 @@ public:
 	static void SetAntiLeecherThief_Action(bool in) {m_antileecherthief_action=in;}
 	//Xman end
 
+	//Xman narrow font at transferwindow
+	static bool m_bUseNarrowFont;
+	static bool UseNarrowFont() {return m_bUseNarrowFont;}
+	static SetNarrowFont(bool in) {m_bUseNarrowFont=in;}
+	//Xman end
+
 	//Xman 1:3 Ratio
 	static bool m_13ratio;
 	static bool Is13Ratio() {return m_13ratio;}
 	static Set13Ratio(bool in) {m_13ratio=in;}
+	//Xman end
+
+	//Xman auto update IPFilter
+	static bool	m_bautoupdateipfilter;
+	static bool AutoUpdateIPFilter() {return m_bautoupdateipfilter;}
+	static SetAutoUpdateIPFilter(bool in) {m_bautoupdateipfilter=in;}
+	static CString m_strautoupdateipfilter_url;
+	static CString GetAutoUpdateIPFilter_URL() {return m_strautoupdateipfilter_url;}
+	static SetAutoUpdateIPFilter_URL(CString in) {m_strautoupdateipfilter_url=in;}
+	static SYSTEMTIME		m_IPfilterVersion;
+	static uint32 m_last_ipfilter_check;
+	//Xman end
+
+	//Xman count block/success send
+	static bool m_showblockratio;
+	static bool ShowBlockRatio() {return m_showblockratio;}
+	static SetShowBlockRatio(bool in) {m_showblockratio=in;}
+
+	static bool m_dropblockingsockets;
+	static bool DropBlockingSockets() {return m_dropblockingsockets;}
+	static SetDropBlockingSockets(bool in) {m_dropblockingsockets=in;}
+	//Xman end
+
+	//Xman Funny-Nick (Stulle/Morph)
+	static bool	m_bFunnyNick;
+	static bool DisplayFunnyNick() 	{return m_bFunnyNick;}
+	static SetDisplayFunnyNick(bool in) {m_bFunnyNick=in;}
 	//Xman end
 
 	//Xman remove unused AICH-hashes
@@ -1598,6 +1648,7 @@ public:
 	static	bool	GetLogFileSaving()					{return m_bVerbose && m_bLogFileSaving;}
     static	bool	GetLogA4AF()    					{return m_bVerbose && m_bLogA4AF;} // ZZ:DownloadManager
 	static	bool	GetLogDrop()						{return m_bVerbose && m_bLogDrop;} //Xman Xtreme Downloadmanager
+	static	bool	GetLogPartmismatch()				{return m_bVerbose && m_bLogpartmismatch;} //Xman Log part/size-mismatch
 	static	bool	GetLogUlDlEvents()					{return m_bVerbose && m_bLogUlDlEvents;}
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
 	static	bool	GetLogWebCacheEvents()				{return m_bVerbose && m_bLogWebCacheEvents;}//JP log webcache events
@@ -1734,7 +1785,6 @@ public:
 	// <== Source Graph - Stulle
 
 	// ==> FunnyNick [SiRoB/Stulle] - Stulle
-	static	bool	DisplayFunnyNick()	{return m_bFunnyNick;}
 	static	uint8	GetFnTag()			{return FnTagMode;}
 	static	CString GetFnCustomTag ()	{ return m_sFnCustomTag; }
 	static	bool	GetFnTagAtEnd()		{return m_bFnTagAtEnd;}

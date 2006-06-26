@@ -19,7 +19,7 @@
 class CTag;
 class CFileDataIO;
 
-struct IPRange_Struct2; //EastShare - added by AndCycle, IP to Country
+struct Country_Struct; //EastShare - added by AndCycle, IP to Country
 
 #pragma pack(1)
 struct ServerMet_Struct {
@@ -172,6 +172,6 @@ public:
 	void	ResetIP2Country();
 
 private:
-	struct	IPRange_Struct2* m_structServerCountry;
+	/*struct*/	Country_Struct* m_structServerCountry;
 	//EastShare End - added by AndCycle, IP to Country
 };

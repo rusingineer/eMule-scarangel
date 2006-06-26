@@ -257,8 +257,11 @@ void CStatistics::UpdateConnectionStats(void)
 		}
 
 		// Cumulative Max Average rates
-		cumDownavg = (sessionDownloadRate + thePrefs.GetConnAvgDownRate()) / 2;
-		cumUpavg = (sessionUploadRate + thePrefs.GetConnAvgUpRate()) / 2;
+		//official doesn't use this anymore
+		//cumDownavg = (sessionDownloadRate + thePrefs.GetConnAvgDownRate()) / 2;
+		//cumUpavg = (sessionUploadRate + thePrefs.GetConnAvgUpRate()) / 2;
+		cumDownavg = sessionDownloadRate;
+		cumUpavg = sessionUploadRate;
 		if(maxcumDownavg < cumDownavg) 
 		{
 			maxcumDownavg = cumDownavg;

@@ -617,6 +617,24 @@ bool CClientUDPSocket::Create()
 			m_port = thePrefs.GetUDPPort();
 	}
 
+	//Xman
+	//upnp_start
+	if (ret){
+		if (thePrefs.GetUPnPNat()){
+			MyUPnP::UPNPNAT_MAPPING mapping;
+
+			mapping.internalPort = mapping.externalPort = thePrefs.GetUDPPort();
+			mapping.protocol = MyUPnP::UNAT_UDP;
+			mapping.description = "UDP Port";
+			if (theApp.AddUPnPNatPort(&mapping, thePrefs.GetUPnPNatTryRandom()))
+				thePrefs.SetUPnPUDPExternal(mapping.externalPort);
+		}
+		else{
+			thePrefs.SetUPnPUDPExternal(thePrefs.GetUDPPort());
+		}
+	}
+	//upnp_end
+
 	if (ret)
 		m_port = thePrefs.GetUDPPort();
 

@@ -963,7 +963,10 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 						}
 						
 						if (file->IsKindOf(RUNTIME_CLASS(CPartFile)))
+						{
 							file->SetFileName(newname);
+							((CPartFile*)file)->SetFullName(newpath); //Xman //MORPH - Official Fix Unable To Open Completed File After Rename
+						}
 						else
 						{
 							theApp.sharedfiles->RemoveKeywords(file);
@@ -1126,6 +1129,7 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					}
 					// <== WebCache [WC team/MorphXT] - Stulle/Max
 
+					SetRedraw(FALSE); //Xman Code Improvement
 					POSITION pos = selectedList.GetHeadPosition();
 					while (pos != NULL)
 					{
@@ -1180,6 +1184,8 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 							// <== WebCache [WC team/MorphXT] - Stulle/Max
 						}
 					}
+					SetRedraw(TRUE); //Xman Code Improvement
+
 					break;
 				}
 			// Xman: IcEcRacKer Copy UL-feedback

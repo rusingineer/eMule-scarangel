@@ -70,6 +70,7 @@ public:
 	bool IsFiltered(uint32 IP, UINT level) /*const*/;
 	CString GetLastHit() const;
 	const CIPFilterArray& GetIPFilter() const;
+	void    UpdateIPFilterURL(); //Xman auto update IPFilter
 
 private:
 	const SIPFilter* m_pLastHit;

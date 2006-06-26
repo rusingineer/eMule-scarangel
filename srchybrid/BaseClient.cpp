@@ -60,6 +60,7 @@
 #include "shahashset.h"
 #include "Log.h"
 #include "DLP.h" //Xman DLP
+#include "BandWidthControl.h"
 #include "WebCache/WebCacheSocket.h" // WebCache [WC team/MorphXT] - Stulle/Max
 
 
@@ -214,8 +215,13 @@ void CUpDownClient::Init()
 	else{
 		SetIP(0);
 	}
+	//Xman
+	//remark: in most cases we use the defaultstrcut (ip=0)
+	//we could use the right IP from begining by moving this method to the constructor
+	//disadvantage: we create and immediately delete many clients, always searching the
+	//country costs too much time
 	//EastShare Start - added by AndCycle, IP to Country
-	m_structUserCountry = theApp.ip2country->GetCountryFromIP(GetConnectIP()); //Xman
+	m_structUserCountry = theApp.ip2country->GetCountryFromIP(m_dwUserIP); 
 	//EastShare End - added by AndCycle, IP to Country
 
 	m_fHashsetRequesting = 0;
@@ -273,7 +279,7 @@ void CUpDownClient::Init()
 	m_fSupportsLargeFiles = 0;
 	m_fExtMultiPacket = 0;
 
-	//Xman
+	//Xman -----------------
 	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 	m_displayUpDatarateCounter = 0;
 	m_displayDownDatarateCounter = 0;
@@ -308,6 +314,7 @@ void CUpDownClient::Init()
 	m_bLeecher = 0;
 	old_m_pszUsername.Empty();
 	m_strBanMessage.Empty();
+	strBanReason_permament.Empty(); 
 	uhashsize=16;
 	//Xman Anti-Nick-Changer
 	m_uNickchanges=0;
@@ -321,7 +328,11 @@ void CUpDownClient::Init()
 
 	filedata = NULL; // SiRoB: ReadBlockFromFileThread
 
+	//Xman Funny-Nick (Stulle/Morph)
+	m_pszFunnyNick=NULL;
 	//Xman end
+
+	//Xman end --------------
 
 	m_uModClient = MOD_NONE; // Mod Icons - Stulle
 
@@ -355,8 +366,6 @@ void CUpDownClient::Init()
     lastMultiOHCBPacketSent = 0; // Superlexx - Multi-OHCB
 	m_bWebCacheSupportsMultiOHCBs = false;
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
-
-	m_pszFunnyNick = 0; // FunnyNick [SiRoB/Stulle] - Stulle
 }
 
 CUpDownClient::~CUpDownClient(){
@@ -396,13 +405,6 @@ CUpDownClient::~CUpDownClient(){
 
 	free(m_pszUsername);
 
-	// ==> FunnyNick [SiRoB/Stulle] - Stulle
-	if (m_pszFunnyNick) {
-		delete[] m_pszFunnyNick;
-		m_pszFunnyNick = NULL;
-	}
-	// <== FunnyNick [SiRoB/Stulle] - Stulle
-
 	delete[] m_abyPartStatus;
 	m_abyPartStatus = NULL;
 
@@ -437,7 +439,7 @@ CUpDownClient::~CUpDownClient(){
 
 	delete m_pReqFileAICHHash;
 
-	//Xman
+	//Xman --------------------
 	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 	m_upHistory_list.RemoveAll();
 	m_downHistory_list.RemoveAll();
@@ -460,6 +462,16 @@ CUpDownClient::~CUpDownClient(){
 			Credits()->MarkToDelete();
 	}
 	//Xman end
+
+	//Xman Funny-Nick (Stulle/Morph)
+	if (m_pszFunnyNick) {
+		delete[] m_pszFunnyNick;
+		m_pszFunnyNick = NULL;
+	}
+	//Xman end
+
+
+	//Xman end -----------------
 }
 //Xman Anti-Leecher
 //Xman DLP (no more extra tags inside this function)
@@ -740,6 +752,7 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 	bool nonofficialopcodes = false; //Xman Anti-Leecher
 	bool wronghello = false; //Xman Anti-Leecher
 	uint32 hellotagorder = 1; //Xman Anti-Leecher
+	bool foundmd4string = false; //Xman Anti-Leecher
 
 	DWORD dwEmuleTags = 0;
 	bool bPrTag = false;
@@ -979,7 +992,8 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 			default:
 				//Xman Anti-Leecher
 				if(thePrefs.GetAntiLeecherSnafu())
-					ProcessUnknownHelloTag(&temptag, strBanReason);
+					if(ProcessUnknownHelloTag(&temptag, strBanReason))
+						foundmd4string=true;
 				//Xman end
 				// Since eDonkeyHybrid 1.3 is no longer sending the additional Int32 at the end of the Hello packet,
 				// we use the "pr=1" tag to determine them.
@@ -1030,13 +1044,20 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 			m_strHelloInfo.AppendFormat(_T("\n  ***AddData: %u bytes"), uAddHelloDataSize);
 	}
 
+	//Xman IP to Country
+	uint32 oldIP=m_dwUserIP;
+	//Xman end
+
 	SOCKADDR_IN sockAddr = {0};
 	int nSockAddrLen = sizeof(sockAddr);
 	socket->GetPeerName((SOCKADDR*)&sockAddr, &nSockAddrLen);
 	SetIP(sockAddr.sin_addr.S_un.S_addr);
 
+	//Xman IP to Country
+	//only search if changed, it's cheaper
 	//EastShare Start - added by AndCycle, IP to Country
-	m_structUserCountry = theApp.ip2country->GetCountryFromIP(GetIP());
+	if(oldIP!=m_dwUserIP)
+		m_structUserCountry = theApp.ip2country->GetCountryFromIP(m_dwUserIP);
 	//EastShare End - added by AndCycle, IP to Country
 
 	if (thePrefs.GetAddServersFromClients() && m_dwServerIP && m_nServerPort){
@@ -1083,6 +1104,22 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 		Ban();
 	}
 
+	//Xman - MORPH START  always call setLinked_client 
+    CFriend*        new_friend ; 
+    if ((new_friend = theApp.friendlist->SearchFriend(m_achUserHash, m_dwUserIP, m_nUserPort)) != NULL)
+	{ 
+		// Link the friend to that client 
+		m_Friend=new_friend; 
+		m_Friend->SetLinkedClient(this); 
+	} 
+	else
+	{ 
+		// avoid that an unwanted client instance keeps a friend slot 
+		SetFriendSlot(false); 
+		if (m_Friend) m_Friend->SetLinkedClient(NULL); // morph, does this help agianst chrashing due to friend slots? 
+		m_Friend=NULL;//is newfriend 
+	} 
+	/*  original official code:always call setLinke_client
 	if ((m_Friend = theApp.friendlist->SearchFriend(m_achUserHash, m_dwUserIP, m_nUserPort)) != NULL){
 		// Link the friend to that client
         m_Friend->SetLinkedClient(this);
@@ -1091,6 +1128,8 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 		// avoid that an unwanted client instance keeps a friend slot
 		SetFriendSlot(false);
 	}
+	*/
+	//Xman - MORPH END  always call setLinke_client
 
 	// check for known major gpl breaker
 	CString strBuffer = m_pszUsername;
@@ -1133,6 +1172,12 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 			BanLeecher(strBanReason,2); //snafu = old leecher = hard ban
 			return bIsMule;
 		}
+		if(foundmd4string && thePrefs.GetAntiLeecherSnafu())
+		{
+			strBanReason = _T("md4-string in opcode");
+			BanLeecher(strBanReason, 15);
+			return bIsMule;
+		}
 		if(thePrefs.GetAntiLeecherBadHello() && (m_clientSoft==SO_EMULE || (m_clientSoft==SO_XMULE && m_byCompatibleClient!=SO_XMULE)))
 		{
 			if(wronghello)
@@ -1156,7 +1201,7 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 		}
 
 		//if it is now a good mod, remove the reducing of score but do a second test
-		if(IsLeecher()==1) //category 2 is snafu and always a hard ban, need only to check 1
+		if(IsLeecher()==1 || IsLeecher()==15) //category 2 is snafu and always a hard ban, need only to check 1
 		{
 			m_bLeecher=0; //it's a good mod now
 			m_strBanMessage.Format(_T("unban - Client %s"),DbgGetClientInfo());
@@ -1227,7 +1272,7 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 	}
 	//Xman end
 
-	UpdateFunnyNick(); // FunnyNick [SiRoB/Stulle] - Stulle
+	UpdateFunnyNick(); //Xman Funny-Nick (Stulle/Morph)
 
 	return bIsMule;
 }
@@ -2374,8 +2419,38 @@ void CUpDownClient::ConnectionEstablished()
 	m_bUDPPending = false;
 
 
+	//Xman -Reask sources after IP change- v3 (main part by Maella)
 	//Xman at this point we know, we have a internet-connection -> enable upload
+
+	static uint32 lastaskedforip;
+	if(theApp.uploadqueue->internetmaybedown==true)
+	{
+		if(Kademlia::CKademlia::IsConnected() /*&& !Kademlia::CKademlia::IsFirewalled()*/
+			&& theApp.serverconnect->IsConnecting()==false
+			&& theApp.serverconnect->IsConnected()==false //we have a Kad only Connection
+			&& (theApp.uploadqueue->waitinglist.GetSize()>5 //check if we have clients queued, otherwise inetmaybedown gives a wrong value
+			|| theApp.uploadqueue->last_ip_change==0) //we just started the client //Xman new adapter selection 
+			&& theApp.uploadqueue->last_ip_change  < ::GetTickCount() - MIN2MS(3) //only once in 3 minutes
+			) 
+			theApp.m_bneedpublicIP=true;
+		if(theApp.IsConnected()) //only free the upload if we are connected. important! otherwise we would have problems with nafc-adapter on a hotstart
+		{
 	theApp.uploadqueue->internetmaybedown=false;
+			theApp.pBandWidthControl->AddeMuleOut(1); //this reopens the upload (internetmaybedown checks for upload==0
+		}
+	}
+
+	if(theApp.m_bneedpublicIP==true
+		&& m_fPeerCache 
+		&& lastaskedforip + SEC2MS(3) < ::GetTickCount() //give the client some time, we shouln't ask more than 2-3 clients after reconnect
+		) 
+	{
+		SendPublicIPRequest();
+		lastaskedforip=::GetTickCount();
+		AddDebugLogLine(false, _T("inet maybe down ask client for ip: %s"), DbgGetClientInfo()); 
+	}
+
+	//Xman end
 
 	// ok we have a connection, lets see if we want anything from this client
 	
@@ -2676,7 +2751,7 @@ void CUpDownClient::SetUserName(LPCTSTR pszNewName)
 	else
 		m_pszUsername = NULL;
 
-	UpdateFunnyNick(); // FunnyNick [SiRoB/Stulle] - Stulle
+	UpdateFunnyNick(); //Xman Funny-Nick (Stulle/Morph)
 }
 
 void CUpDownClient::RequestSharedFileList()
@@ -3558,8 +3633,53 @@ void CUpDownClient::ProcessPublicIPAnswer(const BYTE* pbyData, UINT uSize){
 	uint32 dwIP = PeekUInt32(pbyData);
 	if (m_fNeedOurPublicIP == 1){ // did we?
 		m_fNeedOurPublicIP = 0;
+
+		//Xman -Reask sources after IP change- v3 (main part by Maella)
+		if(theApp.m_bneedpublicIP && !::IsLowID(dwIP)) //this is the case we have kad-only but no upload->inet down ?
+		{
+			//Xman new adapter selection 
+			if(theApp.m_bneedpublicIP)
+			{
+				uint32 test=dwIP;
+				CString tmp;
+				tmp.Format(_T("received an IP: %u.%u.%u.%u, NAFC-Adapter will be checked"), (uint8)test, (uint8)(test>>8), (uint8)(test>>16), (uint8)(test>>24));
+				AddLogLine(false,tmp);
+				theApp.pBandWidthControl->checkAdapterIndex(dwIP);
+			}
+			//Xman end
+
+			theApp.m_bneedpublicIP=false;
+			theApp.uploadqueue->last_ip_change=::GetTickCount();
+
+			if(theApp.GetPublicIP()!=0 && theApp.GetPublicIP()!=dwIP
+				//meanwhile user could establish a serverconnection
+				//check if we still have a Kad only Connection
+				&& theApp.serverconnect->IsConnecting()==false
+				&& theApp.serverconnect->IsConnected()==false 
+				//&& Kademlia::CKademlia::IsConnected() //not needed, GetIP is from Kad
+				)
+			{
+				//ip changed, let's trigger
+				//remark: I let it trigger with false = with minimum filereask-time
+				//because this public IP answer could be delayed and we already asked some sources =>avoid a ban
+				theApp.clientlist->TrigReaskForDownload(false);
+				SetNextTCPAskedTime(::GetTickCount() + FILEREASKTIME); //not for this source
+				AddLogLine(false, _T("Kad only Connection, changed IP from %s to %s, all sources will be reasked within the next 10 minutes"), ipstr(theApp.GetPublicIP()), ipstr(dwIP));
+				// Xman reconnect Kad on IP-change
+				AddDebugLogLine(DLP_DEFAULT, false,  _T("Public IP Address reported from Kademlia (%s) differs from new found (%s), restart Kad"),ipstr(ntohl(Kademlia::CKademlia::GetIPAddress())),ipstr(dwIP));
+				Kademlia::CKademlia::Stop();
+				Kademlia::CKademlia::Start();
+				//Kad loaded the old IP, we must reset
+				if(Kademlia::CKademlia::IsRunning())
+					Kademlia::CKademlia::GetPrefs()->SetIPAddress(htonl(dwIP));
+				//Xman end
+
+			}
+		}
+		else if(theApp.serverconnect->IsConnected())//remark: this is the case we have a lowid-server-connect
 		if (theApp.GetPublicIP() == 0 && !::IsLowID(dwIP) )
 			theApp.SetPublicIP(dwIP); 
+		//Xman end
 	}	
 }
 
@@ -3621,30 +3741,39 @@ void CUpDownClient::ResetIP2Country(uint32 m_dwIP){
 
 
 //Xman Anti-Leecher
-void CUpDownClient::ProcessUnknownHelloTag(CTag *tag, CString &pszReason)
+bool CUpDownClient::ProcessUnknownHelloTag(CTag *tag, CString &pszReason)
 {
 #ifndef LOGTAG
 	//Xman DLP
 	if(pszReason.IsEmpty()==false)
-		return;
+		return false;
 	//Xman end
 #endif
 
 	//Xman DLP
 	if(theApp.dlp->IsDLPavailable()==false)
-		return;
+		return false;
+
+	bool foundmd4=false;
+
 	LPCTSTR strSnafuTag=theApp.dlp->DLPCheckHelloTag(tag->GetNameID());
 	if (strSnafuTag!=NULL)
 	{
 		pszReason.Format(_T("Suspect Hello-Tag: %s"),strSnafuTag);
 	}
 	//Xman end
+
+	if (strSnafuTag==NULL && tag->IsStr() && tag->GetStr().GetLength() >= 32)
+		foundmd4=true;
+
 #ifdef LOGTAG
 		if(m_byCompatibleClient==0 && GetHashType() == SO_EMULE )
 		{
 			AddDebugLogLine(false,_T("Unknown HelloTag: 0x%x, %s, client:%s"), tag->GetNameID(), tag->GetFullInfo(), DbgGetClientInfo());
 		}
 #endif
+
+	return foundmd4;
 }
 void CUpDownClient::ProcessUnknownInfoTag(CTag *tag, CString &pszReason)
 {
@@ -3761,8 +3890,7 @@ void CUpDownClient::CalculateJitteredFileReaskTime(bool longer)
 }
 //Xman end
 
-// ==> FunnyNick [SiRoB/Stulle] - Stulle
-//most of the code from xrmb FunnyNick
+//Xman Funny-Nick (Stulle/Morph)
 void CUpDownClient::UpdateFunnyNick()
 {
 	if(m_pszUsername == NULL || 
@@ -3771,6 +3899,10 @@ void CUpDownClient::UpdateFunnyNick()
 		_tcsnicmp(m_pszUsername, _T("0."),2) != 0 &&
 		_tcsicmp(m_pszUsername, _T("")) != 0)
 		return;
+
+	if(m_pszFunnyNick!=NULL)
+		return; //why generate a new one ? userhash can't change without getting banned
+
 	// preffix table
 const static LPCTSTR apszPreFix[] =
 	{
@@ -3944,6 +4076,11 @@ const static LPCTSTR apszSuffix[] =
 		m_pszFunnyNick = NULL;
 	}
 
+	// ==> FunnyNick Tags - Stulle
+	/*
+	CString tag = _T("[FN]");;
+	uint8 uTagLength = 4+2; //one space + /0
+	*/
 	CString tag = _T("");
 	uint8 uTagLength = 0;
 	switch (thePrefs.GetFnTag())	{	
@@ -3965,21 +4102,25 @@ const static LPCTSTR apszSuffix[] =
 			uTagLength = (uint8)(tag.GetLength()+2);
 			break;
 	}
+	// <== FunnyNick Tags - Stulle
 
 	m_pszFunnyNick = new TCHAR[uTagLength+MAX_PREFIXSIZE+MAX_SUFFIXSIZE];
 	// pick random suffix and prefix
+	// ==> FunnyNick Tags - Stulle
 	if(uTagLength==0)
 	{
 		_tcscpy(m_pszFunnyNick, apszPreFix[rand()%NB_PREFIX]);
 		_tcscat(m_pszFunnyNick, apszSuffix[rand()%NB_SUFFIX]);
 	}
 	else if (!thePrefs.GetFnTagAtEnd())
+	// <== FunnyNick Tags - Stulle
 	{
 		_tcscpy(m_pszFunnyNick, tag);
 		_tcscat(m_pszFunnyNick, _T(" "));
 		_tcscat(m_pszFunnyNick, apszPreFix[rand()%NB_PREFIX]);
 		_tcscat(m_pszFunnyNick, apszSuffix[rand()%NB_SUFFIX]);
 	}
+	// ==> FunnyNick Tags - Stulle
 	else
 	{
 		_tcscpy(m_pszFunnyNick, apszPreFix[rand()%NB_PREFIX]);
@@ -3987,9 +4128,10 @@ const static LPCTSTR apszSuffix[] =
 		_tcscat(m_pszFunnyNick, _T(" "));
 		_tcscat(m_pszFunnyNick, tag);
 	}
+	// <== FunnyNick Tags - Stulle
 
 	//--- make the rand random again ---
 	if(m_achUserHash)
 		srand((unsigned)time(NULL));
 }
-// <== FunnyNick [SiRoB/Stulle] - Stulle
+//Xman end

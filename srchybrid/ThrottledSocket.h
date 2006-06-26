@@ -8,6 +8,10 @@ struct SocketSentBytes {
 	uint32	sentBytesControlPackets;
 };
 
+//Xman count block/success send/ upload health
+#define HISTORY_SIZE 20
+//Xman end
+
 class ThrottledControlSocket
 {
 public:
@@ -27,6 +31,11 @@ public:
 	//Xman Full chunk:
 	virtual bool StandardPacketQueueIsEmpty() const = false ;
 
+	//Xman count block/success send
+	virtual float GetBlockRatio() const =0;
+	virtual float GetBlockRatio_overall() const =0;
+	virtual float GetandStepBlockRatio() =0;
+	//virtual void  ResetBlockRatio() = 0;
     
 //Xman Xtreme Upload
 	bool IsSocketUploading() const {return slotstate!=0 && isready==true;} //Xman 

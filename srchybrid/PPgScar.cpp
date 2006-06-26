@@ -755,7 +755,7 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_bMiniMule = m_bShowMM;
 	thePrefs.SetMiniMuleLives(m_bMMLives);
 	thePrefs.m_iMiniMuleUpdate = m_iMMUpdateTime;
-	thePrefs.SetMiniMuleTransparency(m_iMMTrans);
+	thePrefs.SetMiniMuleTransparency((uint8)m_iMMTrans);
 	thePrefs.m_bMMCompl = m_bMMCompl;
 	thePrefs.m_bMMOpen = m_bMMOpen;
 	// <== TBH: minimule - Max

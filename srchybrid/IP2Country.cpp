@@ -42,7 +42,7 @@ static char THIS_FILE[] = __FILE__;
 #define NO_FLAG 0
 
 CImageList CIP2Country::CountryFlagImageList;
-IPRange_Struct2 CIP2Country::defaultIP2Country;
+Country_Struct CIP2Country::defaultCountry;
 
 void FirstCharCap(CString *pstrTarget)
 {
@@ -64,14 +64,11 @@ CIP2Country::CIP2Country(){
 
 	m_bRunning = false;
 
-	defaultIP2Country.IPstart = 0;
-	defaultIP2Country.IPend = 0;
+	//defaultCountry.ShortCountryName = GetResString(IDS_IP2COUNTRY_NASHORT);
+	//defaultCountry.MidCountryName = GetResString(IDS_IP2COUNTRY_NASHORT);
+	defaultCountry.LongCountryName = GetResString(IDS_IP2COUNTRY_NALONG);
 
-	//defaultIP2Country.ShortCountryName = GetResString(IDS_IP2COUNTRY_NASHORT);
-	//defaultIP2Country.MidCountryName = GetResString(IDS_IP2COUNTRY_NASHORT);
-	defaultIP2Country.LongCountryName = GetResString(IDS_IP2COUNTRY_NALONG);
-
-	defaultIP2Country.FlagIndex = NO_FLAG;
+	defaultCountry.FlagIndex = NO_FLAG;
 
 	EnableIP2Country = false;
 	EnableCountryFlag = false;
@@ -212,7 +209,7 @@ bool CIP2Country::LoadFromFile(){
 					IPRange_Struct2* pCur = m_iplist[i];
 					if (   pCur->IPstart >= pPrv->IPstart && pCur->IPstart <= pPrv->IPend	 // overlapping
 						//Xman: Xtreme only uses the long names... use it here too
-						|| pCur->IPstart == pPrv->IPend+1 && pCur->LongCountryName == pPrv->LongCountryName) // adjacent
+						|| pCur->IPstart == pPrv->IPend+1 && pCur->country->LongCountryName == pPrv->country->LongCountryName) // adjacent
 					{
 						if (pCur->IPstart != pPrv->IPstart || pCur->IPend != pPrv->IPend) // don't merge identical entries
 						{
@@ -416,6 +413,18 @@ bool CIP2Country::LoadCountryFlagLib(){
 
 void CIP2Country::RemoveAllIPs(){
 
+	//first remove all country structs
+	CString key;
+	Country_Struct* value;
+	POSITION pos = countryList.GetHeadPosition();
+	while(pos)
+	{
+		countryList.GetNextAssoc(pos, key, value);
+		delete value;
+	}
+	countryList.RemoveAll();
+
+	//now the ip structs
 	for (int i = 0; i < m_iplist.GetCount(); i++)
 		delete m_iplist[i];
 	m_iplist.RemoveAll();
@@ -438,26 +447,35 @@ void CIP2Country::AddIPRange(uint32 IPfrom,uint32 IPto, TCHAR* shortCountryName,
 	IPRange_Struct2* newRange = new IPRange_Struct2();
 	newRange->IPstart = IPfrom;
 	newRange->IPend = IPto;
-	//newRange->ShortCountryName = shortCountryName;
-	//newRange->MidCountryName = midCountryName;
-	newRange->LongCountryName = longCountryName;
 
-	if(EnableCountryFlag){
+	const CRBMap<CString, Country_Struct*>::CPair* pair;
+	pair = countryList.Lookup(longCountryName);
+	if (pair == NULL) {
+		//AddCountry
+		Country_Struct* newCountry = new Country_Struct();
+		newCountry->LongCountryName = longCountryName;
+		//newCountry->MidCountryName = midCountryName;
+		//newCountry->LongCountryName = longCountryName;
+		countryList.SetAt(longCountryName, newCountry);
 
-		const CRBMap<CString, uint16>::CPair* pair;
-		pair = CountryIDtoFlagIndex.Lookup(shortCountryName);
+		//Add Flag
+		if(EnableCountryFlag){
 
-		if(pair != NULL){
-			newRange->FlagIndex = pair->m_value;
+			const CRBMap<CString, uint16>::CPair* pair2;
+			pair2 = CountryIDtoFlagIndex.Lookup(shortCountryName);
+
+			if(pair2 != NULL){
+				newCountry->FlagIndex = pair2->m_value;
+			}
+			else{
+				newCountry->FlagIndex = NO_FLAG;
+			}
 		}
-		else{
-			newRange->FlagIndex = NO_FLAG;
-		}
+
+		pair = countryList.Lookup(longCountryName);
 	}
-	else{
-		//this valuse is useless if the country flag havn't been load up, should be safe I think ...
-		//newRange->FlagIndex = 0;
-	}
+	ASSERT(pair!=NULL);
+	newRange->country = pair->m_value;
 	
 	m_iplist.Add(newRange);
 }
@@ -474,26 +492,27 @@ static int __cdecl CmpIP2CountryByAddr(const void* pvKey, const void* pvElement)
 	return 0;
 }
 
-struct IPRange_Struct2* CIP2Country::GetCountryFromIP(uint32 ClientIP) const
+//struct 
+Country_Struct* CIP2Country::GetCountryFromIP(uint32 ClientIP) const
 {
 
 	if(EnableIP2Country == false || ClientIP == 0){
-		return &defaultIP2Country;
+		return &defaultCountry;
 	}
 	if(m_iplist.GetCount() == 0){
 		AddDebugLogLine(false, _T("CIP2Country::GetCountryFromIP iplist doesn't exist"));
-		return &defaultIP2Country;
+		return &defaultCountry;
 	}
 	ClientIP = htonl(ClientIP);
 	IPRange_Struct2** ppFound = (IPRange_Struct2**)bsearch(&ClientIP, m_iplist.GetData(), m_iplist.GetCount(), sizeof(m_iplist[0]), CmpIP2CountryByAddr);
 	if (ppFound)
 	{
-		return *ppFound;
+		return (*ppFound)->country;
 	}
 
-	return &defaultIP2Country;
+	return &defaultCountry;
 }
-CString CIP2Country::GetCountryNameFromRef(IPRange_Struct2* m_structCountry, bool longName){
+CString CIP2Country::GetCountryNameFromRef(Country_Struct* m_structCountry, bool longName){
 	if(EnableIP2Country)
 	{
 		if(longName)

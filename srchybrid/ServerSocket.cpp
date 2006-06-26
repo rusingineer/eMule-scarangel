@@ -36,7 +36,7 @@
 #include "SearchDlg.h"
 #include "IPFilter.h"
 #include "Log.h"
-//Xman -Reask sources after IP change- v2
+//Xman -Reask sources after IP change- v3
 #include "Kademlia/Kademlia/Kademlia.h"
 #include "Kademlia/Kademlia/Prefs.h"
 
@@ -276,18 +276,27 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 					SetConnectionState(CS_CONNECTED);
 					theApp.OnlineSig();       // Added By Bouc7 
 				}
+
+				//Xman -Reask sources after IP change- v3 (main part by Maella)
+				uint32 oldkadIP=0;
+				if(Kademlia::CKademlia::IsConnected() && Kademlia::CKademlia::GetPrefs()->GetIPAddress())
+					oldkadIP=ntohl(Kademlia::CKademlia::GetIPAddress());
+				//Xman -Reask sources after IP change- v3 (main part by Maella)
+
 				serverconnect->SetClientID(la->clientid);
 				AddLogLine(false, GetResString(IDS_NEWCLIENTID), la->clientid);
 
-				//Xman -Reask sources after IP change- v2 (main part by Maella)
+				//Xman -Reask sources after IP change- v3 (main part by Maella)
 				static uint32 s_lastValidId;
 				static uint32 s_lastChangeId;
 				if(s_lastValidId != 0 && serverconnect->GetClientID() != 0 && s_lastValidId != serverconnect->GetClientID()){
 					//Xman: don't trigger if we are connected to kad with this IP for a longer time (5minutes)
-					if (Kademlia::CKademlia::IsConnected() && Kademlia::CKademlia::GetPrefs()->GetIPAddress()
+					if (/*Kademlia::CKademlia::IsConnected() && Kademlia::CKademlia::GetPrefs()->GetIPAddress()
 						&& ntohl(Kademlia::CKademlia::GetIPAddress())== serverconnect->GetClientID()
-						&& Kademlia::CKademlia::GetPrefs()->newIPtimestamp + MIN2MS(5) < ::GetTickCount())
-						AddLogLine(false,_T("IP changed, but sources won't be reasked because of Kad-Connection"));
+						 && Kademlia::CKademlia::GetPrefs()->newIPtimestamp + MIN2MS(5) < ::GetTickCount()*/
+						 oldkadIP!= 0 && oldkadIP==serverconnect->GetClientID()
+						 )
+						AddLogLine(false,_T("reported IP from server changed, but sources won't be reasked because of Kad-Connection"));
 					else
 					{
 						// Public IP has been changed, it's necessary to inform all sources about it
@@ -301,17 +310,7 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 								(s_lastValidId < 16777216) ? _T("low") : _T("high"),
 								serverconnect->GetClientID(),
 								(serverconnect->GetClientID() < 16777216)  ? _T("low") : _T("high"),
-								(s_lastValidId < 16777216 && serverconnect->GetClientID() < 16777216) ? 
-								_T("") : _T(", all sources will be reasked immediately"));
-
-							// ==> Quick start [TPT] - Max
-							if(thePrefs.GetQuickStart() && thePrefs.GetQuickStartAfterIPChange())
-							{
-								theApp.downloadqueue->quickflag = 0;
-								theApp.downloadqueue->quickflags = 0;
-							}
-							// <== Quick start [TPT] - Max
-
+								 _T(", all sources will be reasked immediately"));
 						}
 						else {
 							theApp.clientlist->TrigReaskForDownload(false);
@@ -321,8 +320,7 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 								(s_lastValidId < 16777216) ? _T("low") : _T("high"),
 								serverconnect->GetClientID(),
 								(serverconnect->GetClientID() < 16777216)  ? _T("low") : _T("high"),
-								(s_lastValidId < 16777216 && serverconnect->GetClientID() < 16777216) ? 
-								_T("") : _T(", all sources will be reasked within the next 10 minutes"));
+								_T(", all sources will be reasked within the next 10 minutes"));
 						}
 					}
 				}
@@ -601,16 +599,6 @@ void CServerSocket::ConnectToServer(CServer* server){
 		delete cur_server;
 		cur_server = NULL;
 	}
-
-	//Xman filter outgoing server connections
-	if(thePrefs.FilterServerByIP()&& theApp.ipfilter->IsFiltered(server->GetIP()))
-	{
-		AddLogLine(true,_T("you can't connect to filtered server: %s, %s"),ipstr(server->GetIP()), server->GetDescription() );
-		theApp.emuledlg->serverwnd->serverlistctrl.RemoveServer(server);
-		cur_server = NULL;
-		return;
-	}
-	//Xman end
 
 	cur_server = new CServer(server);
 	Log(GetResString(IDS_CONNECTINGTO), cur_server->GetListName(), cur_server->GetFullIP(), cur_server->GetPort());

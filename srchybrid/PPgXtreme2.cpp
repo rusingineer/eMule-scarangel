@@ -53,6 +53,12 @@ BEGIN_MESSAGE_MAP(CPPgXtreme2, CPropertyPage)
 	ON_BN_CLICKED(IDC_DLPRELOAD, OnBnClickedDlpreload) //Xman dlp
 	ON_BN_CLICKED(IDC_ACTIVEDOWNLOADSBOLD, OnSettingsChange) //Xman Show active downloads bold
 	ON_BN_CLICKED(IDC_SHOWADDITIONALGRAPH, OnSettingsChange) //Xman show additional graph lines
+	ON_BN_CLICKED(IDC_USENARROWFONT, OnSettingsChange) //Xman narrow font at transferwindow
+	// ==> removed - Stulle
+	/*
+	ON_BN_CLICKED(IDC_FUNNYNICK, OnSettingsChange) //Xman Funny-Nick (Stulle/Morph)
+	*/
+	// <== removed - Stulle
 END_MESSAGE_MAP()
 
 // CPPgXtreme message handlers
@@ -138,9 +144,16 @@ void CPPgXtreme2::LoadSettings(void)
 		}
 		//Xman end
 
+		// ==> removed - Stulle
+		/*
+		CheckDlgButton(IDC_FUNNYNICK, thePrefs.DisplayFunnyNick()); //Xman Funny-Nick (Stulle/Morph)
+		*/
+		// <== removed - Stulle
 
 		CheckDlgButton(IDC_ACTIVEDOWNLOADSBOLD, thePrefs.GetShowActiveDownloadsBold()); //Xman Show active downloads bold
 
+		//Xman narrow font at transferwindow
+		CheckDlgButton(IDC_USENARROWFONT, thePrefs.UseNarrowFont());
 }
 
 BOOL CPPgXtreme2::OnApply()
@@ -166,10 +179,20 @@ BOOL CPPgXtreme2::OnApply()
 
 	thePrefs.m_bShowActiveDownloadsBold=(IsDlgButtonChecked(IDC_ACTIVEDOWNLOADSBOLD)!=0); //Xman Show active downloads bold
 
+	//Xman narrow font at transferwindow
+	thePrefs.SetNarrowFont(IsDlgButtonChecked(IDC_USENARROWFONT)!=0);
+
 	//Xman show additional graph lines
 	thePrefs.m_bShowAdditionalGraph=(IsDlgButtonChecked(IDC_SHOWADDITIONALGRAPH)!=0);
 	//Xman end
 
+	// ==> removed - Stulle
+	/*
+	//Xman Funny-Nick (Stulle/Morph)
+	thePrefs.SetDisplayFunnyNick(IsDlgButtonChecked(IDC_FUNNYNICK)!=0);
+	//Xman end
+	*/
+	// <== removed - Stulle
 
 	LoadSettings();
 	SetModified(FALSE);
@@ -221,6 +244,17 @@ void CPPgXtreme2::Localize(void)
 
 		//Xman show additional graph lines
 		GetDlgItem(IDC_SHOWADDITIONALGRAPH)->SetWindowText(GetResString(IDS_SHOWADDITIONALGRAPH));
+
+		//Xman narrow font at transferwindow
+		GetDlgItem(IDC_USENARROWFONT)->SetWindowText(GetResString(IDS_USENARROWFONT));
+
+		// ==> removed - Stulle
+		/*
+		//Xman Funny-Nick (Stulle/Morph)
+		GetDlgItem(IDC_FUNNYNICK)->SetWindowText(GetResString(IDS_FUNNYNICK));
+		//Xman end
+		*/
+		// <== removed - Stulle
 	}
 }
 

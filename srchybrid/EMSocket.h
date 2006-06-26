@@ -100,8 +100,41 @@ public:
 	//Xman include ACK
 	void ProcessReceiveData();
 
-	//Xman count the blocksend to remove such clients if needed
+	//Xman count block/success send
+	typedef CList<float> BlockHistory;
+	BlockHistory m_blockhistory;
+	float avg_block_ratio; //the average block of last 20 seconds
+	float sum_blockhistory; //the sum of all stored ratio samples
+
 	uint32 blockedsendcount;
+	uint32 sendcount;
+	uint32 blockedsendcount_overall;
+	uint32 sendcount_overall;
+
+	float GetBlockRatio_overall() const {return sendcount_overall>0 ? 100.0f*blockedsendcount_overall/sendcount_overall : 0.0f;}
+
+	float GetBlockRatio() const {return avg_block_ratio;}
+	float GetandStepBlockRatio() {
+			float newsample  = sendcount>0 ? 100.0f*blockedsendcount/sendcount : 0.0f;
+			m_blockhistory.AddHead(newsample);
+			sum_blockhistory += newsample;
+			if(m_blockhistory.GetSize()>HISTORY_SIZE) // ~ 20 seconds
+			{
+				const float& substract = m_blockhistory.RemoveTail(); //susbtract the old element
+				sum_blockhistory -= substract;
+				if(sum_blockhistory<0)
+					sum_blockhistory=0; //fix possible rounding error
+			}
+			blockedsendcount=0;
+			sendcount=0;
+			avg_block_ratio = sum_blockhistory / m_blockhistory.GetSize();
+			return avg_block_ratio;
+	}
+	//Xman end count block/success send
+
+	//Xman 
+	//Threadsafe Statechange
+	void			SetConnectedState(const uint8 state);
 
 #ifdef _DEBUG
 	// Diagnostic Support
@@ -121,10 +154,6 @@ protected:
 	//Xman
 	virtual void	OnConnect(int nErrorCode); // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 	//Xman end
-
-	//Xman 4.8.2
-	//Threadsafe Statechange
-	void			SetConState(const uint8 state);
 
 	uint8	byConnected;
 	UINT	m_uTimeOut;

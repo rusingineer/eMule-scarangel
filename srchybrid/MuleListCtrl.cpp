@@ -387,6 +387,18 @@ void CMuleListCtrl::LoadSettings()
 	delete[] piColWidths;
 	delete[] piColHidden;
 	//delete[] piSortHist; // SLUGFILLER: multiSort remove - unused
+
+	//Xman narrow font at transferwindow
+	{
+		CFont* pFont = GetFont();
+		LOGFONT lfFont = {0};
+		pFont->GetLogFont(&lfFont);
+		_tcscpy(lfFont.lfFaceName, _T("Arial Narrow"));
+		if(m_fontNarrow.m_hObject==NULL)
+			m_fontNarrow.CreateFontIndirect(&lfFont);
+	}
+	//Xman end
+
 }
 
 void CMuleListCtrl::SetColors(LPCTSTR pszLvKey) {

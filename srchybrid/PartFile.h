@@ -140,6 +140,8 @@ class CPartFile : public CKnownFile
 	//Xman
 	friend class CPartHashThread;	// SLUGFILLER: SafeHash
 
+	friend class CPartFileFlushThread; //Xman fix for flush-thread
+
 public:
 	CPartFile(UINT cat = 0);
 	CPartFile(CSearchFile* searchresult, UINT cat = 0);
@@ -514,6 +516,7 @@ private:
 	//MORPH Added by SiRoB, Flush Thread
 	bool	m_bIsFlushThread; 
 	bool	m_bNeedToFlush;
+	CPartFileFlushThread* m_FlushThread; //Xman fix for flush-thread
 	//Xman end
 
 	// ==> Global Source Limit [Max/Stulle] - Stulle

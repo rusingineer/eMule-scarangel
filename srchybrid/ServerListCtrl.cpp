@@ -1050,6 +1050,7 @@ void CServerListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 		GetFont()->GetLogFont(&lfFont);
 		lfFont.lfWeight = FW_BOLD;
 		fontCustom.CreateFontIndirect(&lfFont);
+
 		dc.SelectObject(&fontCustom);
 		dc->SetTextColor(RGB(0,0,192));
 	}

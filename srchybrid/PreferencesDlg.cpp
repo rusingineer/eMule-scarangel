@@ -142,22 +142,21 @@ BOOL CPreferencesDlg::OnInitDialog()
 		}
 	}
 
-	Localize();	
-
-	// ==> Preferences Banner [TPT/ MorphXT] - Stulle
+	//Xman Preferences Banner
 	CBitmap bmp;
 	VERIFY( bmp.Attach(theApp.LoadImage(_T("BANNER"), _T("JPG"))) );
 	if (bmp.GetSafeHandle())
 	{
 		m_banner.SetTexture((HBITMAP)bmp.Detach());	
 		m_banner.SetFillFlag(KCSB_FILL_TEXTURE);
-		m_banner.SetSize(/*thePrefs.sidebanner?75:0*/75);
+		m_banner.SetSize(75);
 		m_banner.SetTitle(_T(""));
 		m_banner.SetCaption(_T(""));
 		m_banner.Attach(this, KCSB_ATTACH_RIGHT);
 	}
-	// <== Preferences Banner [TPT/ MorphXT] - Stulle
+	//Xman end
 
+	Localize();	
 	return bResult;
 }
 
@@ -210,13 +209,10 @@ void CPreferencesDlg::Localize()
 	#endif
 	}
 
-	// ==> Preferences Banner [TPT/ MorphXT] - Stulle
+	//Xman Preferences Banner
 	m_banner.UpdateSize();
-	// Testing here
-	CRect rectTab,rectClient;
-	pTree->GetWindowRect(rectTab);
-	GetClientRect(rectClient);
-	// <== Preferences Banner [TPT/ MorphXT] - Stulle
+	//Xman end
+
 	UpdateCaption();
 }
 

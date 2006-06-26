@@ -25,14 +25,14 @@ public:
     UploadBandwidthThrottler(void);
     ~UploadBandwidthThrottler(void);
 
-    uint64 GetNumberOfSentBytesSinceLastCallAndReset();
-    uint64 GetNumberOfSentBytesOverheadSinceLastCallAndReset();
-    //Xman Xtreme Upload
+    //Xman Xtreme Upload unused
+	//uint64 GetNumberOfSentBytesSinceLastCallAndReset();
+    //uint64 GetNumberOfSentBytesOverheadSinceLastCallAndReset();
 	//uint32 GetHighestNumberOfFullyActivatedSlotsSinceLastCallAndReset();
 
     uint32 GetStandardListSize() { return m_StandardOrder_list.GetSize(); };
 
-	void ReplaceSocket(ThrottledFileSocket* oldsocket, ThrottledFileSocket* newsocket); //Xman Xtreme Upload: Peercache-part
+	//void ReplaceSocket(ThrottledFileSocket* oldsocket, ThrottledFileSocket* newsocket); //Xman Xtreme Upload: Peercache-part
 	bool ReplaceSocket(ThrottledFileSocket* normalsocket, ThrottledFileSocket* pcsocket, ThrottledFileSocket* newsocket); //Xman Xtreme Upload: Peercache-part
 	void AddToStandardList(bool first, ThrottledFileSocket* socket); //Xman bugfix: sometimes a socket was placed on wrong position
     bool RemoveFromStandardList(ThrottledFileSocket* socket);
@@ -52,6 +52,11 @@ public:
 	void	SetNextTrickleToFull();
 	void	RecalculateOnNextLoop();
 	bool	needslot;
+
+	//Xman count block/success send
+	float	GetAvgBlockRatio() const				{return avgBlockRatio;}
+	//Xman upload health
+	float	GetAvgHealth() const					{return avg_health;}
 
 #ifdef PRINT_STATISTIC
 	void	PrintStatistic();
@@ -79,8 +84,9 @@ private:
     CEvent* threadEndedEvent;
     CEvent* pauseEvent;
 
-    uint64 m_SentBytesSinceLastCall;
-    uint64 m_SentBytesSinceLastCallOverhead;
+	//Xman Xtreme Upload unused
+    //uint64 m_SentBytesSinceLastCall;
+    //uint64 m_SentBytesSinceLastCallOverhead;
     uint16 m_highestNumberOfFullyActivatedSlots; //used inside
     uint16 m_highestNumberOfFullyActivatedSlots_out; //used outside
 	bool doRun;
@@ -88,4 +94,21 @@ private:
 	//Xman Xtreme Upload
 	bool	recalculate;
 	bool	nexttrickletofull;
+
+	//Xman count block/success send
+	float	avgBlockRatio;
+	//Xman upload health
+
+	struct ratio_struct{
+		float ratio; // % successful upload loops
+		uint32 timestamp; // time in 1024 ms units
+	};
+	//Xman end
+
+	typedef CList<ratio_struct> HealthHistory;
+	HealthHistory m_healthhistory;
+	float avg_health; //the average health of last 10 seconds
+	float sum_healthhistory; //the sum of all stored ratio samples
+	uint16 m_countsend; //count the sends during ~one second
+	uint16 m_countsendsuccessful; // " successful
 };

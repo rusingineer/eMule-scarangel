@@ -1458,7 +1458,7 @@ void CKnownFile::UpdateAutoUpPriority(){
 		}
 		return;
 	}
-	if( GetOnUploadqueue() != PR_HIGH){
+	if( GetUpPriority() != PR_HIGH){
 		SetUpPriority( PR_HIGH );
 		theApp.emuledlg->sharedfileswnd->sharedfilesctrl.UpdateFile(this);
 	}
@@ -2176,41 +2176,41 @@ uint32 CKnownFile::GetNumberOfClientsRequestingThisFileUsingThisWebcache(CString
 {
 	if (maxCount == 0)
 		maxCount = 0xFFFFFFFF; //be careful with using 0 (unlimited) when calling this function cause it is O(n^2) and gets called for every webcache enabled client
-uint32 returncounter = 0;
-CList<uint32,uint32&> IP_List; //JP only count unique IPs
-POSITION pos = m_ClientUploadList.GetHeadPosition();
-while (pos != NULL)
-{
-	CUpDownClient* cur_client = m_ClientUploadList.GetNext(pos);
-	if (cur_client->GetWebCacheName() == webcachename && !cur_client->HasLowID() && cur_client->GetUploadState() != US_BANNED) //MORPH - Changed by SiRoB, Code Optimization
+	uint32 returncounter = 0;
+	CList<uint32,uint32&> IP_List; //JP only count unique IPs
+	POSITION pos = m_ClientUploadList.GetHeadPosition();
+	while (pos != NULL)
 	{
-		//search for IP in IP_List
-		bool found = false;
-		POSITION pos2 = IP_List.GetHeadPosition();
-			uint32 cur_IP;
-		while (pos2 != NULL)
+		CUpDownClient* cur_client = m_ClientUploadList.GetNext(pos);
+		if (cur_client->GetWebCacheName() == webcachename && !cur_client->HasLowID() && cur_client->GetUploadState() != US_BANNED) //MORPH - Changed by SiRoB, Code Optimization
 		{
-			cur_IP = IP_List.GetNext(pos2);
-			if (cur_IP == cur_client->GetIP())
+			//search for IP in IP_List
+			bool found = false;
+			POSITION pos2 = IP_List.GetHeadPosition();
+				uint32 cur_IP;
+			while (pos2 != NULL)
 			{
-				found = true;
+				cur_IP = IP_List.GetNext(pos2);
+				if (cur_IP == cur_client->GetIP())
+				{
+					found = true;
+				}
+				//leave while look if IP was found
+				if (found) break;
 			}
-			//leave while look if IP was found
-			if (found) break;
-		}
 
-		//if not found add IP to list
-		if (!found)
-		{
-			uint32 user_IP = cur_client->GetIP();
-			IP_List.AddTail(user_IP);
-				returncounter++;
+			//if not found add IP to list
+			if (!found)
+			{
+				uint32 user_IP = cur_client->GetIP();
+				IP_List.AddTail(user_IP);
+					returncounter++;
+			}
 		}
+		//Don't let this list get longer than 10 so we don't waste CPU-cycles
+		if (returncounter >= maxCount) break; 
 	}
-	//Don't let this list get longer than 10 so we don't waste CPU-cycles
-	if (returncounter >= maxCount) break; 
-}
-IP_List.RemoveAll();
-return returncounter;
+	IP_List.RemoveAll();
+	return returncounter;
 }
 // <== WebCache [WC team/MorphXT] - Stulle/Max

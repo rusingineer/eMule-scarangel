@@ -605,7 +605,7 @@ bool CKnownFileList::CheckAlreadyDownloadedFileQuestion(const uchar* hash, CStri
 			CString sData;
 
 			msg+=cur_file->GetFileName() + _T("\n");
-			sData.Format(GetResString(IDS_DL_SIZE) + _T(": %u, ") + GetResString(IDS_FILEID) + _T(": %s"), cur_file->GetFileSize(), EncodeBase16(cur_file->GetFileHash(),16));
+			sData.Format(GetResString(IDS_DL_SIZE) + _T(": %I64u, ") + GetResString(IDS_FILEID) + _T(": %s"), (uint64)cur_file->GetFileSize(), md4str(cur_file->GetFileHash()));
 			msg+=sData;
 			if(!cur_file->GetFileComment().IsEmpty()) //Add comment
 				msg+=_T("\n") + GetResString(IDS_COMMENT) + _T(": \"") + cur_file->GetFileComment() + _T("\"");

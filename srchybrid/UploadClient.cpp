@@ -137,9 +137,10 @@ void CUpDownClient::SetUploadState(EUploadState eNewState)
 
 				if(socket != NULL)
 				{
+				   socket->SetSockOpt(SO_SNDBUF, &newValue, sizeof(newValue), SOL_SOCKET);
 				   //socket->GetSockOpt(SO_SNDBUF, &oldValue, &size, SOL_SOCKET);
 				   //AddDebugLogLine(false,_T("socketbuffer: %u"), oldValue);
-					socket->SetSockOpt(SO_SNDBUF, &newValue, sizeof(newValue), SOL_SOCKET);
+					
 				   //Xman
 				   // Pawcio: BC
 				   BOOL noDelay=true;
@@ -572,7 +573,6 @@ void CUpDownClient::CreateNextBlockPackage(){
 				if(GetFileUploadSocket() && GetFileUploadSocket()->isready==false)
 				{
 					GetFileUploadSocket()->isready=true;
-					//socket->isready=true;
 					theApp.uploadBandwidthThrottler->SetNoNeedSlot();
 				}
 
@@ -635,7 +635,10 @@ bool CUpDownClient::ProcessExtendedInfo(CSafeMemFile* data, CKnownFile* tempreqf
 
 	//Xman better passive source finding
 	bool bPartsNeeded=false;
-	bool shouldbechecked=isUDP && tempreqfile->IsPartFile() && !(GetDownloadState()==DS_ONQUEUE && reqfile==tempreqfile) && (droptime + HR2MS(3)<::GetTickCount());
+	bool shouldbechecked=isUDP && tempreqfile->IsPartFile() 
+		&& (((CPartFile*)tempreqfile)->GetStatus()==PS_EMPTY || ((CPartFile*)tempreqfile)->GetStatus()==PS_READY) 
+		&& !(GetDownloadState()==DS_ONQUEUE && reqfile==tempreqfile) 
+		&& (droptime + HR2MS(3)<::GetTickCount());
 	//Xman end
 
 	uint16 nED2KUpPartCount = data->ReadUInt16();
@@ -985,7 +988,7 @@ void CUpDownClient::SetUploadFileID(CKnownFile* newreqfile)
 	if (oldreqfile)
 	{
 		oldreqfile->RemoveUploadingClient(this);
-		ClearUploadBlockRequests(); //Xman - Added by SiRoB, Fix Filtered Block Request
+		ClearUploadBlockRequests(false); //Xman - Added by SiRoB, Fix Filtered Block Request
 	}
 	
 }
@@ -1011,7 +1014,8 @@ void CUpDownClient::AddReqBlock(Requested_Block_Struct* reqblock)
 	if(HasCollectionUploadSlot()){
 		CKnownFile* pDownloadingFile = theApp.sharedfiles->GetFileByID(reqblock->FileID);
 		if(pDownloadingFile != NULL){
-			if ( !(CCollection::HasCollectionExtention(pDownloadingFile->GetFileName()) && pDownloadingFile->GetFileSize() < (uint64)MAXPRIORITYCOLL_SIZE) ){
+			if ( !(pDownloadingFile->HasCollectionExtenesion_Xtreme() /*CCollection::HasCollectionExtention(pDownloadingFile->GetFileName())*/ && pDownloadingFile->GetFileSize() < (uint64)MAXPRIORITYCOLL_SIZE) ) //Xman Code Improvement for HasCollectionExtention
+			{
 				AddDebugLogLine(DLP_HIGH, false, _T("UploadClient: Client tried to add req block for non collection while having a collection slot! Prevented req blocks from being added. %s"), DbgGetClientInfo());
 				delete reqblock;
 				return;
@@ -1136,8 +1140,13 @@ void CUpDownClient::SendOutOfPartReqsAndAddToWaitingQueue()
  * See description for CEMSocket::TruncateQueues().
  */
 void CUpDownClient::FlushSendBlocks(){ // call this when you stop upload, or the socket might be not able to send
+    //Xman Code Fix
     if (socket)      //socket may be NULL...
         socket->TruncateQueues();
+
+	if(m_pPCUpSocket)
+		m_pPCUpSocket->TruncateQueues();
+	//Xman end
 }
 
 void CUpDownClient::SendHashsetPacket(const uchar* forfileid)
@@ -1162,9 +1171,12 @@ void CUpDownClient::SendHashsetPacket(const uchar* forfileid)
 	socket->SendPacket(packet,true,true);
 }
 
-void CUpDownClient::ClearUploadBlockRequests()
+void CUpDownClient::ClearUploadBlockRequests(bool truncatequeues) //Xman - Fix Filtered Block Request
 {
-	FlushSendBlocks();
+	//Xman - Fix Filtered Block Request
+	if(truncatequeues)
+		FlushSendBlocks();
+	//Xman end
 
 	for (POSITION pos = m_BlockRequests_queue.GetHeadPosition();pos != 0;)
 		delete m_BlockRequests_queue.GetNext(pos);
@@ -1441,27 +1453,7 @@ bool CUpDownClient::IsDifferentPartBlock()
 
 	return different; 
 }
-// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
-//unused
-/*
-uint32 CUpDownClient::GetUploadDatarate(uint32 samples) const {
-	UINT nUpDatarate = 0;
-    if(m_upHistory_list.GetSize() > 1 && samples >= 1){		
-		// Retieve the location of the n previous sample
-		POSITION pos = m_upHistory_list.FindIndex(samples);
-		if(pos == NULL){
-			pos = m_upHistory_list.GetTailPosition();
-		}
 
-        const TransferredData& latestSample = m_upHistory_list.GetHead();
-        const TransferredData& oldestSample = m_upHistory_list.GetAt(pos);
-		const uint32 deltaTime = latestSample.timeStamp - oldestSample.timeStamp;
-		const UINT deltaByte = latestSample.dataLength - oldestSample.dataLength;
-		nUpDatarate = (deltaTime > 0) ? (1000 * deltaByte / deltaTime) : 0;   // [bytes/s]
-    }
-    return nUpDatarate;
-}
-*/
 
 void CUpDownClient::CompUploadRate(){
 	// Add new sample
@@ -1484,7 +1476,7 @@ void CUpDownClient::CompUploadRate(){
 		TransferredData& oldestSample = m_upHistory_list.GetAt(pos);
 		uint32 deltaTime = newSample.timeStamp - oldestSample.timeStamp;
 		UINT deltaByte = newSample.dataLength - oldestSample.dataLength;
-		m_nUpDatarate = (deltaTime > 0) ? (1000 * deltaByte / deltaTime) : 0;   // [bytes/s]
+		m_nUpDatarate = (deltaTime > 0) ? (UINT)(1000.0 * deltaByte / deltaTime) : 0;   // [bytes/s]
 	}
 
 	// Check and then refresh GUI
@@ -1516,7 +1508,7 @@ bool CUpDownClient::CheckDatarate(uint8 dataratestocheck)
 		TransferredData& newSample = m_upHistory_list.GetHead();
 		uint32 deltaTime = newSample.timeStamp - oldestSample.timeStamp;
 		UINT deltaByte = newSample.dataLength - oldestSample.dataLength;
-		uint32 proofUpDatarate = (deltaTime > 0) ? (1000 * deltaByte / deltaTime) : 0;   // [bytes/s]
+		uint32 proofUpDatarate = (deltaTime > 0) ? (UINT)(1000.0 * deltaByte / deltaTime) : 0;   // [bytes/s]
 		//
 		uint32 toleranceValue; 
 		if(theApp.uploadqueue->currentuploadlistsize > (uint16)ceil(thePrefs.GetMaxUpload()/thePrefs.m_slotspeed) + 1 ) //we are 2 slots over MinSlots
@@ -1566,6 +1558,8 @@ void CUpDownClient::BanLeecher(LPCTSTR pszReason, uint8 leechercategory){
 	//12 = emcrypt
 	//13 = bad hello + ban
 	//14 = wrong HashSize + reduce score (=new united)
+	//15 = snafu = m4 string
+	//16 = wrong Startuploadrequest (bionic community)
 
 	m_strBanMessage.Empty();
 	bool reducescore=false;
@@ -1575,6 +1569,7 @@ void CUpDownClient::BanLeecher(LPCTSTR pszReason, uint8 leechercategory){
 	case 4:
 	case 10:
 	case 14:
+	case 15:
 		reducescore=thePrefs.GetAntiLeecherCommunity_Action();
 		break;
 	case 12: //emcrypt
@@ -1593,6 +1588,7 @@ void CUpDownClient::BanLeecher(LPCTSTR pszReason, uint8 leechercategory){
 	if (m_bLeecher!=leechercategory){
 		theStats.leecherclients++;
 		m_bLeecher = leechercategory;
+		strBanReason_permament=pszReason;
 
 		if(reducescore)
 		{

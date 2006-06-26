@@ -40,6 +40,7 @@
 #include "ClientList.h"
 #include "Log.h"
 #include "Collection.h"
+#include "SHAHashSet.h" //Xman remove unused AICH-hashes
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -537,9 +538,26 @@ void CSharedFileList::AddFilesFromDirectory(const CString& rstrDirectory)
 			}
 			else
 			{
-				toadd->SetPath(rstrDirectory);
-				toadd->SetFilePath(ff.GetFilePath());
-				AddFile(toadd);
+				//Xman remove unused AICH-hashes
+				//we must rehash the files without masterhash
+				if(toadd->GetAICHHashset()->GetStatus()==AICH_EMPTY)
+				{
+					if (!IsHashing(rstrDirectory, ff.GetFileName()) && !theApp.downloadqueue->IsTempFile(rstrDirectory, ff.GetFileName()) && !thePrefs.IsConfigFile(rstrDirectory, ff.GetFileName())){
+						UnknownFile_Struct* tohash = new UnknownFile_Struct;
+						tohash->strDirectory = rstrDirectory;
+						tohash->strName = ff.GetFileName();
+						waitingforhash_list.AddTail(tohash);
+					}
+					else
+						TRACE(_T("%hs: Did not share file \"%s\" - already hashing or temp. file\n"), __FUNCTION__, ff.GetFilePath());
+				}
+				else
+				{
+				//Xman end
+					toadd->SetPath(rstrDirectory);
+					toadd->SetFilePath(ff.GetFilePath());
+					AddFile(toadd);
+				}
 			}
 		}
 		else
@@ -650,7 +668,7 @@ bool CSharedFileList::AddFile(CKnownFile* pFile)
 
 	bool bKeywordsNeedUpdated = true;
 
-	if(!pFile->IsPartFile() && !pFile->m_pCollection && CCollection::HasCollectionExtention(pFile->GetFileName()))
+	if(!pFile->IsPartFile() && !pFile->m_pCollection && pFile->HasCollectionExtenesion_Xtreme() /*CCollection::HasCollectionExtention(pFile->GetFileName())*/) //Xman Code Improvement for HasCollectionExtention
 	{
 		pFile->m_pCollection = new CCollection();
 		if(!pFile->m_pCollection->InitCollectionFromFile(pFile->GetFilePath(), pFile->GetFileName()))

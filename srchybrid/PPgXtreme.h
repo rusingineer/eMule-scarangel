@@ -35,6 +35,7 @@ protected:
 	uint32 processprio; //Xman process prio
 	
 public:
+	afx_msg void OnOpenMoreSlots();
 	afx_msg void OnBnClickedNafcfullcontrol();
 	afx_msg void OnBnClickedrioRadio(); //Xman process prio
 	//afx_msg void OnBnClickedHplink(); //Xman Xtreme Links

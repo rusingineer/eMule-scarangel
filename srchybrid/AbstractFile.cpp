@@ -45,6 +45,8 @@ CAbstractFile::CAbstractFile()
 	m_bHasComment = false;
 	//Xman Code Improvement for choosing to use compression
 	compressible=false;
+	//Xman Code Improvement for HasCollectionExtention
+	m_bhasCollectionExtention=false;
 }
 
 CAbstractFile::CAbstractFile(const CAbstractFile* pAbstractFile)
@@ -61,6 +63,8 @@ CAbstractFile::CAbstractFile(const CAbstractFile* pAbstractFile)
 
 	//Xman Code Improvement for choosing to use compression
 	compressible=pAbstractFile->IsCompressible();
+	//Xman Code Improvement for HasCollectionExtention
+	m_bhasCollectionExtention=pAbstractFile->HasCollectionExtenesion_Xtreme();
 
 
 	const CTypedPtrList<CPtrList, Kademlia::CEntry*>& list = pAbstractFile->getNotes();
@@ -204,6 +208,14 @@ void CAbstractFile::SetFileName(LPCTSTR pszFileName, bool bReplaceInvalidFileSys
 		else if(ext == _T(".zip") || ext == _T(".rar") || ext == _T(".ace") || ext == _T(".ogm") || ext == _T(".cbz") || ext == _T(".cbr"))
 			compressible = false;
 	}
+	//Xman end
+
+	//Xman Code Improvement for HasCollectionExtention
+	#define COLLECTION_FILEEXTENSION	_T(".emulecollection")
+	if(m_strFileName.Find(COLLECTION_FILEEXTENSION) == -1)
+		m_bhasCollectionExtention=false;
+	else
+		m_bhasCollectionExtention=true;
 	//Xman end
 } 
       

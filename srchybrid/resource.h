@@ -2360,6 +2360,14 @@
 #define IDS_ANTILEECHEREMCRYPT_CHECK    3171
 #define IDS_UPLOADMANAGEMENT_FRAME      3172
 #define IDS_UPLOADSLOTSPEED_LABEL       3173
+#define IDS_USENARROWFONT               3174
+#define IDS_SHOWBLOCKINGRATIO           3175
+#define IDS_FUNNYNICK                   3176
+#define IDS_AUTOUPDATEIPFILTER          3177
+#define IDS_DROPBLOCKINGSOCKETS         3178
+#define IDS_LOGPARTMISMATCH             3179
+#define IDS_CN_UPNPTRYRANDOM            3180
+#define IDS_CN_UPNPNAT                  3181
 #define IDD_PPG_Xtreme                  4000
 #define IDC_13RATIO                     4001
 #define IDC_UPREDUCTION                 4002
@@ -2436,6 +2444,13 @@
 #define IDC_SHOWADDITIONALGRAPH         4073
 #define IDC_CHECK4UPDATEMOD             4074
 #define IDC_ANTILEECHEREMCRYPT_CHECK    4075
+#define IDC_FUNNYNICK                   4076
+#define IDC_DROPBLOCKINGSOCKETS         4077
+#define IDC_SHOWBLOCKINGRATIO           4078
+#define IDC_LEECHERINFO                 4079
+#define IDC_AUTOUPDATEIPFILTER          4080
+#define IDC_USENARROWFONT               4081
+
 #define IDA_ENTER                       32771
 // ==> ScarAngel Preferences window - Stulle
 #define IDD_PPG_SCAR                    60000
@@ -2644,7 +2659,6 @@
 #define IDC_MSG_WEBCACHE_TESTREQ        60442
 // <== WebCache [WC team/MorphXT] - Stulle/Max
 // ==> FunnyNick [SiRoB/Stulle] - Stulle
-#define IDS_FUNNYNICK                   60500
 #define IDS_FN_TAG                      60501
 #define IDS_NO_TAG                      60502
 #define IDS_SHORT_TAG                   60503
@@ -2759,7 +2773,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        1552
+#define _APS_NEXT_RESOURCE_VALUE        1559
 #define _APS_NEXT_COMMAND_VALUE         32773
 #define _APS_NEXT_CONTROL_VALUE         2954
 #define _APS_NEXT_SYMED_VALUE           1517

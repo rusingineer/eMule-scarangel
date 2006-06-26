@@ -156,7 +156,7 @@
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include;..\crypto.v52.1"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;SUPPORT_LARGE_FILES"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;SUPPORT_LARGE_FILES;ONLY_INTERN"
 				StringPooling="TRUE"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
@@ -1315,9 +1315,6 @@
 				RelativePath="KademliaWnd.cpp">
 			</File>
 			<File
-				RelativePath=".\KCSideBannerWnd.cpp">
-			</File>
-			<File
 				RelativePath="LayeredWindowHelperST.cpp">
 			</File>
 			<File
@@ -1722,9 +1719,6 @@
 			</File>
 			<File
 				RelativePath="KademliaWnd.h">
-			</File>
-			<File
-				RelativePath=".\KCSideBannerWnd.h">
 			</File>
 			<File
 				RelativePath="LayeredWindowHelperST.h">
@@ -2382,13 +2376,25 @@
 				RelativePath="res\Friends1.ico">
 			</File>
 			<File
+				RelativePath=".\res\friends1slot.ICO">
+			</File>
+			<File
 				RelativePath="res\Friends2.ico">
+			</File>
+			<File
+				RelativePath=".\res\friends2slot.ICO">
 			</File>
 			<File
 				RelativePath="res\Friends3.ico">
 			</File>
 			<File
+				RelativePath=".\res\friends3slot.ICO">
+			</File>
+			<File
 				RelativePath="res\FriendSlot.ico">
+			</File>
+			<File
+				RelativePath=".\res\FriendSlotOvl.ico">
 			</File>
 			<File
 				RelativePath="res\Global.ico">
@@ -2629,6 +2635,9 @@
 				RelativePath="res\SharedFilesList.ico">
 			</File>
 			<File
+				RelativePath=".\res\sidebanner.jpg">
+			</File>
+			<File
 				RelativePath="res\Speed.ico">
 			</File>
 			<File
@@ -2824,6 +2833,12 @@
 				RelativePath=".\IP2Country.h">
 			</File>
 			<File
+				RelativePath=".\KCSideBannerWnd.cpp">
+			</File>
+			<File
+				RelativePath=".\KCSideBannerWnd.h">
+			</File>
+			<File
 				RelativePath=".\NumEdit.cpp">
 			</File>
 			<File
@@ -2864,6 +2879,15 @@
 			</File>
 			<File
 				RelativePath=".\SplashScreenEx.h">
+			</File>
+			<File
+				RelativePath=".\UPnP.cpp">
+			</File>
+			<File
+				RelativePath=".\UPnP.h">
+			</File>
+			<File
+				RelativePath=".\WndUtil.h">
 			</File>
 		</Filter>
 		<Filter

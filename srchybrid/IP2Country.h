@@ -4,27 +4,22 @@
 #pragma once
 #include <atlcoll.h>
 
-//Xman Xtreme only uses the long names
-struct IPRange_Struct2{
-	uint32          IPstart;
-	uint32          IPend;
+//Code Improvements by Xman
+struct Country_Struct {
 	//CString			ShortCountryName;
 	//CString			MidCountryName;
 	CString			LongCountryName;
 	WORD			FlagIndex;
 };
+//Xman Xtreme only uses the long names
 
-//EastShare Start - added by AndCycle, IP to Country
-/*
-enum IP2CountryNameSelection{
-
-	IP2CountryName_DISABLE = 0,
-	IP2CountryName_SHORT,
-	IP2CountryName_MID,
-	IP2CountryName_LONG
+struct IPRange_Struct2{
+	uint32          IPstart;
+	uint32          IPend;
+	Country_Struct*	country;
+	IPRange_Struct2() {  }
 };
-*/
-//EastShare End - added by AndCycle, IP to Country
+
 
 #define DFLT_IP2COUNTRY_FILENAME  _T("ip-to-country.csv")//Commander - Added: IP2Country auto-updating
 
@@ -48,7 +43,7 @@ class CIP2Country
 		bool	IsIP2Country()			{return EnableIP2Country;}
 		bool	ShowCountryFlag() const;
 
-		IPRange_Struct2*	GetDefaultIP2Country() {return &defaultIP2Country;}
+		Country_Struct*	GetDefaultIP2Country() {return &defaultCountry;}
 
 		bool	LoadFromFile();
 		bool	LoadCountryFlagLib();
@@ -57,8 +52,8 @@ class CIP2Country
 
 		void	AddIPRange(uint32 IPfrom,uint32 IPto, TCHAR* shortCountryName, TCHAR* midCountryName, TCHAR* longCountryName);
 
-		IPRange_Struct2*	GetCountryFromIP(uint32 IP) const;
-		CString	GetCountryNameFromRef(IPRange_Struct2* m_structServerCountry, bool longname=false);
+		Country_Struct*	GetCountryFromIP(uint32 IP) const;
+		CString	GetCountryNameFromRef(Country_Struct* m_structServerCountry, bool longname=false);
 		//WORD	GetFlagResIDfromCountryCode(CString shortCountryName);
 
 		CImageList* GetFlagImageList() const {return &CountryFlagImageList;}
@@ -74,10 +69,10 @@ class CIP2Country
 
 		bool	EnableIP2Country;
 		bool	EnableCountryFlag;
-		static struct	IPRange_Struct2 defaultIP2Country;
+		static 	Country_Struct defaultCountry;
 
 		CIP2CountryArray m_iplist;
+		CRBMap<CString, Country_Struct*> countryList;
 		CRBMap<CString, uint16>	CountryIDtoFlagIndex;
 };
 
-//EastShare End - added by AndCycle, IP to Country

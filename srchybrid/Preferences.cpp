@@ -51,6 +51,13 @@ CPreferences thePrefs;
 //-------------------------------------------------------------------------------
 //Xman Xtreme Mod:
 
+//upnp_start
+bool	CPreferences::m_bUPnPNat; // UPnP On/Off
+bool	CPreferences::m_bUPnPTryRandom; // Try to use random external port if already in use On/Off
+uint16	CPreferences::m_iUPnPTCPExternal = 0; // TCP External Port
+uint16	CPreferences::m_iUPnPUDPExternal = 0; // UDP External Port
+//upnp_end
+
 //Xman Xtreme Upload
 float	CPreferences::m_slotspeed;
 bool	CPreferences::m_openmoreslots;
@@ -76,9 +83,28 @@ bool CPreferences::m_antileecherghost_action;
 bool CPreferences::m_antileecherthief_action;
 //Xman end
 
+//Xman narrow font at transferwindow
+bool CPreferences::m_bUseNarrowFont;
+//Xman end
+
 //Xman 1:3 Ratio
 bool CPreferences::m_13ratio;
 //Xman end
+
+//Xman auto update IPFilter
+bool CPreferences::m_bautoupdateipfilter;
+CString CPreferences::m_strautoupdateipfilter_url;
+SYSTEMTIME CPreferences::m_IPfilterVersion;
+uint32 CPreferences::m_last_ipfilter_check;
+//Xman end
+
+//Xman Funny-Nick (Stulle/Morph)
+bool CPreferences::m_bFunnyNick;
+//Xman end
+
+//Xman count block/success send
+bool CPreferences::m_showblockratio;
+bool CPreferences::m_dropblockingsockets;
 
 //Xman remove unused AICH-hashes
 bool CPreferences::m_rememberAICH;
@@ -383,6 +409,7 @@ bool	CPreferences::m_bLogFilteredIPs;
 bool	CPreferences::m_bLogFileSaving;
 bool	CPreferences::m_bLogA4AF; // ZZ:DownloadManager
 bool	CPreferences::m_bLogDrop; //Xman Xtreme Downloadmanager
+bool	CPreferences::m_bLogpartmismatch; //Xman Log part/size-mismatch
 bool	CPreferences::m_bLogUlDlEvents;
 // ==> WebCache [WC team/MorphXT] - Stulle/Max
 bool	CPreferences::m_bLogWebCacheEvents;//JP log webcache events
@@ -625,7 +652,6 @@ uint16  CPreferences::m_iStatsHLDif;
 // <== Source Graph - Stulle
 
 // ==> FunnyNick [SiRoB/Stulle] - Stulle
-bool	CPreferences::m_bFunnyNick;
 uint8	CPreferences::FnTagMode;
 TCHAR	CPreferences::m_sFnCustomTag [256];
 bool	CPreferences::m_bFnTagAtEnd;
@@ -1610,9 +1636,11 @@ bool CPreferences::LoadStats(int loadBackUp)
 
 	// Load stats for cumulative connection data
 	cumConnAvgDownRate				= ini.GetFloat(L"ConnAvgDownRate");
+	if(cumConnAvgDownRate<0) cumConnAvgDownRate=0; //Xman prevent floating point underun
 	cumConnMaxAvgDownRate			= ini.GetFloat(L"ConnMaxAvgDownRate");
 	cumConnMaxDownRate				= ini.GetFloat(L"ConnMaxDownRate");
 	cumConnAvgUpRate				= ini.GetFloat(L"ConnAvgUpRate");
+	if(cumConnAvgUpRate<0) cumConnAvgUpRate=0; //Xman prevent floating point underun
 	cumConnMaxAvgUpRate				= ini.GetFloat(L"ConnMaxAvgUpRate");
 	cumConnMaxUpRate				= ini.GetFloat(L"ConnMaxUpRate");
 	cumConnRunTime					= ini.GetInt(L"ConnRunTime");
@@ -2010,6 +2038,7 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(L"LogFileSaving", m_bLogFileSaving);				// do *not* use the according 'Get...' function here!
     ini.WriteBool(L"LogA4AF", m_bLogA4AF);                           // do *not* use the according 'Get...' function here!
 	ini.WriteBool(L"LogDrop", m_bLogDrop); //Xman Xtreme Downloadmanager
+	ini.WriteBool(L"Logpartmismatch", m_bLogpartmismatch); //Xman Log part/size-mismatch
 	ini.WriteBool(L"LogUlDlEvents", m_bLogUlDlEvents);
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
 	ini.WriteBool(L"LogWebCacheEvents", m_bLogWebCacheEvents);//JP log webcache events
@@ -2180,6 +2209,13 @@ void CPreferences::SavePreferences()
 
 	//Xman Xtreme Mod:
 	//--------------------------------------------------------------------------
+
+	//upnp_start
+	ini.WriteBool(L"UPnPNAT", m_bUPnPNat, L"UPnP");
+	ini.WriteBool(L"UPnPNAT_TryRandom", m_bUPnPTryRandom, L"UPnP");
+	//upnp_end
+
+
 	//Xman Xtreme Upload
 	ini.WriteFloat(L"uploadslotspeed",m_slotspeed,L"Xtreme");
 	ini.WriteBool(L"openmoreslots",m_openmoreslots);
@@ -2213,8 +2249,27 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(L"AntiLeecherThief_Action", m_antileecherthief_action);
 	//Xman end
 
+	//Xman narrow font at transferwindow
+	ini.WriteBool(L"UseNarrowFont", m_bUseNarrowFont);
+	//Xman end
+	
 	//Xman 1:3 Ratio
 	ini.WriteBool(L"amountbasedratio",m_13ratio);
+	//Xman end
+
+	//Xman auto update IPFilter
+	ini.WriteString(L"AutoUpdateIPFilter_URL", m_strautoupdateipfilter_url);
+	ini.WriteBool(L"AutoUpdateIPFilter", m_bautoupdateipfilter);
+	ini.WriteBinary(_T("IPfilterVersion"), (LPBYTE)&m_IPfilterVersion, sizeof(m_IPfilterVersion)); 
+	ini.WriteInt(_T("lastipfiltercheck"),m_last_ipfilter_check);
+	//Xman end
+
+	//Xman count block/success send
+	ini.WriteBool(L"ShowSocketBlockRatio", m_showblockratio);
+	ini.WriteBool(L"DropBlockingSockets", m_dropblockingsockets);
+
+	//Xman Funny-Nick (Stulle/Morph)
+	ini.WriteBool(_T("DisplayFunnyNick"), m_bFunnyNick);
 	//Xman end
 
 	//Xman remove unused AICH-hashes
@@ -2321,7 +2376,6 @@ void CPreferences::SavePreferences()
 	// <== Source Graph - Stulle
 
 	// ==> FunnyNick [SiRoB/Stulle] - Stulle
-	ini.WriteBool(_T("DisplayFunnyNick"), m_bFunnyNick);
 	ini.WriteInt(_T("FnTagMode"), FnTagMode);
 	ini.WriteString(_T("FnCustomTag"), m_sFnCustomTag);
 	ini.WriteBool(_T("FnTagAtEnd"), m_bFnTagAtEnd);
@@ -2783,7 +2837,8 @@ void CPreferences::LoadPreferences()
 		m_bLogFilteredIPs=ini.GetBool(L"LogFilteredIPs",false); //Xman
 		m_bLogFileSaving=ini.GetBool(L"LogFileSaving",false);
         m_bLogA4AF=ini.GetBool(L"LogA4AF",false); // ZZ:DownloadManager
-		m_bLogDrop=ini.GetBool(_T("LogDrop"),false); //Xman Xtreme Downloadmanager
+		m_bLogDrop=ini.GetBool(L"LogDrop",false); //Xman Xtreme Downloadmanager
+		m_bLogpartmismatch=ini.GetBool(L"Logpartmismatch", true); //Xman Log part/size-mismatch
 		m_bLogUlDlEvents=ini.GetBool(L"LogUlDlEvents",true);
 		// ==> WebCache [WC team/MorphXT] - Stulle/Max
 		m_bLogWebCacheEvents=ini.GetBool(_T("LogWebCacheEvents"),true);//JP log webcache events
@@ -3054,8 +3109,13 @@ void CPreferences::LoadPreferences()
 	//--------------------------------------------------------------------------
 	//Xman Xtreme Mod:
 
+	//upnp_start
+	m_bUPnPNat = ini.GetBool(L"UPnPNAT", false, L"UPnP");
+	m_bUPnPTryRandom = ini.GetBool(L"UPnPNAT_TryRandom", false, L"UPnP");
+	//upnp_end
+
 	//Xman Xtreme Upload
-	m_slotspeed=ini.GetFloat(L"uploadslotspeed",3.0f, L"Xtreme");
+	m_slotspeed=ini.GetFloat(L"uploadslotspeed",3.2f, L"Xtreme");
 	CheckSlotSpeed();
 	m_openmoreslots=ini.GetBool(L"openmoreslots",true);
 	m_bandwidthnotreachedslots=ini.GetBool(L"bandwidthnotreachedslots",false);
@@ -3069,7 +3129,6 @@ void CPreferences::LoadPreferences()
 	default:
 		m_sendbuffersize=8192;
 	}
-	//Xman end
 
 	retryconnectionattempts=ini.GetBool(L"retryconnectionattempts",true);
 
@@ -3158,13 +3217,37 @@ void CPreferences::LoadPreferences()
 
 	//Xman end
 
+	//Xman narrow font at transferwindow
+	m_bUseNarrowFont=ini.GetBool(L"UseNarrowFont",false);
+	//Xman end
+
 	//Xman 1:3 Ratio
 	m_13ratio=ini.GetBool(L"amountbasedratio",false);
 	//Xman end
 
+	//Xman auto update IPFilter
+	m_strautoupdateipfilter_url= ini.GetString(L"AutoUpdateIPFilter_URL", _T("http://emulepawcio.sourceforge.net/nieuwe_site/Ipfilter_fakes/ipfilter.zip"));
+	m_bautoupdateipfilter= ini.GetBool(L"AutoUpdateIPFilter", false);
+	LPBYTE pst = NULL;
+	UINT usize = sizeof m_IPfilterVersion;
+	if (ini.GetBinary(L"IPfilterVersion", &pst, &usize) && usize == sizeof m_IPfilterVersion)
+		memcpy(&m_IPfilterVersion, pst, sizeof m_IPfilterVersion);
+	else
+		memset(&m_IPfilterVersion, 0, sizeof m_IPfilterVersion);
+	delete[] pst;
+	m_last_ipfilter_check= ini.GetInt(L"lastipfiltercheck", 0);
+	//Xman end
+
+	//Xman count block/success send
+	m_showblockratio=ini.GetBool(L"ShowSocketBlockRatio", false);
+	m_dropblockingsockets=ini.GetBool(L"DropBlockingSockets", false);
+
+	//Xman Funny-Nick (Stulle/Morph)
+	m_bFunnyNick = ini.GetBool(_T("DisplayFunnyNick"), false);
+	//Xman end
+
 	//Xman remove unused AICH-hashes
-	m_rememberAICH=ini.GetBool(L"rememberAICH",true); //default true, otherwise Xtreme is responsible for unwanted deleting
-	//PS: no further check needed, see AICH-Thread
+	m_rememberAICH=ini.GetBool(L"rememberAICH",false); 
 	//Xman end
 
 	//Xman smooth-accurate-graph
@@ -3256,7 +3339,6 @@ void CPreferences::LoadPreferences()
 	// <== Source Graph - Stulle
 
 	// ==> FunnyNick [SiRoB/Stulle] - Stulle
-	m_bFunnyNick = ini.GetBool(_T("DisplayFunnyNick"), true);
 	FnTagMode = (uint8)ini.GetInt(_T("FnTagMode"), 2);
 	_stprintf (m_sFnCustomTag,_T("%s"),ini.GetString (_T("FnCustomTag")));
 	m_bFnTagAtEnd = ini.GetBool(_T("FnTagAtEnd"), false);
@@ -3301,7 +3383,7 @@ void CPreferences::LoadPreferences()
 
 	// ==> TBH: minimule - Max
 	speedmetermin = ini.GetInt(_T("SpeedMeterMin"),0);
-	speedmetermax = ini.GetInt(_T("SpeedMeterMax"),GetMaxGraphDownloadRate());	
+	speedmetermax = ini.GetInt(_T("SpeedMeterMax"),(int)GetMaxGraphDownloadRate());	
 	m_bMiniMule = ini.GetBool(_T("ShowMiniMule"), false);
 	m_iMiniMuleUpdate = ini.GetInt(_T("MiniMuleUpdate"), 2);
 	m_bMiniMuleLives = ini.GetBool(_T("MiniMuleLives"), true);
@@ -3697,6 +3779,26 @@ bool CPreferences::CanFSHandleLargeFiles()	{
 	}
 	return bResult && !IsFileOnFATVolume(GetIncomingDir());
 }
+
+//Xman
+//upnp_start
+uint16 CPreferences::GetPort(){
+	if (m_iUPnPTCPExternal != 0)
+		return m_iUPnPTCPExternal;
+
+	return port;
+}
+
+uint16 CPreferences::GetUDPPort(){
+	if (udpport == 0)
+		return 0;
+
+	if(m_iUPnPUDPExternal != 0)
+		return m_iUPnPUDPExternal;
+
+	return udpport;
+}
+//upnp_end
 
 // ==> ScarAngel Version Check - Stulle
 void CPreferences::UpdateLastSVC()

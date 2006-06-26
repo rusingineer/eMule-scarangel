@@ -20,8 +20,8 @@
 #include "otherfunctions.h"
 #include <map>
 #include "IP2Country.h" //EastShare - added by AndCycle, IP to Country
+#include "Preferences.h" //Xman Funny-Nick (Stulle/Morph)
 // ==> WebCache [WC team/MorphXT] - Stulle/Max
-#include "Preferences.h"
 #include "WebCache/WebCache.h"
 #include "WebCache/WebCacheCryptography.h"
 #include "WebCache/WebCacheMFRList.h"
@@ -278,7 +278,7 @@ public:
 
 
 	// Maella -Upload Stop Reason-
-	enum UpStopReason {USR_NONE, USR_SOCKET, USR_COMPLETEDRANSFER, USR_CANCELLED, USR_DIFFERENT_FILE, USR_EXCEPTION};
+	enum UpStopReason {USR_NONE, USR_SOCKET, USR_COMPLETEDRANSFER, USR_CANCELLED, USR_DIFFERENT_FILE, USR_BLOCKING, USR_EXCEPTION };
 	// Maella -Download Stop Reason-
 	enum DownStopReason {DSR_NONE, DSR_PAUSED, DSR_NONEEDEDPARTS, DSR_CORRUPTEDBLOCK, DSR_TIMEOUT, DSR_SOCKET, DSR_OUTOFPART, DSR_EXCEPTION};
 
@@ -296,12 +296,13 @@ public:
 	void			CheckFailedFileIdReqs(const uchar* aucFileHash);
 	uint32			GetUserIDHybrid() const							{ return m_nUserIDHybrid; }
 	void			SetUserIDHybrid(uint32 val)						{ m_nUserIDHybrid = val; }
-	// ==> FunnyNick [SiRoB/Stulle] - Stulle
+	//Xman Funny-Nick (Stulle/Morph)
 	/*
 	LPCTSTR			GetUserName() const								{ return m_pszUsername; }
 	*/
 	LPCTSTR			GetUserName() const								{ return (thePrefs.DisplayFunnyNick() && m_pszFunnyNick)?m_pszFunnyNick:m_pszUsername; }
-	// <== FunnyNick [SiRoB/Stulle] - Stulle
+	//Xman end
+
 	void			SetUserName(LPCTSTR pszNewName);
 	uint32			GetIP() const									{ return m_dwUserIP; }
 	void			SetIP( uint32 val ) //Only use this when you know the real IP or when your clearing it.
@@ -439,7 +440,7 @@ public:
 	const uchar*	GetUploadFileID() const							{ return requpfileid; }
 	void			SetUploadFileID(CKnownFile* newreqfile);
 	UINT			SendBlockData();
-	void			ClearUploadBlockRequests();
+	void			ClearUploadBlockRequests(bool truncatequeues=true); //Xman - Fix Filtered Block Request
 	void			SendRankingInfo();
 	void			SendCommentInfo(/*const*/ CKnownFile *file);
 	void			AddRequestCount(const uchar* fileid);
@@ -716,9 +717,11 @@ public:
 	void			TestLeecher();
 	void			BanLeecher(LPCTSTR pszReason , uint8 leechercategory); 
 	uint8			IsLeecher()	const		{return m_bLeecher;}
-	void			ProcessUnknownHelloTag(CTag *tag, CString &pszReason);
+	bool			ProcessUnknownHelloTag(CTag *tag, CString &pszReason);
 	void			ProcessUnknownInfoTag(CTag *tag, CString &pszReason);
 	void			ProcessBanMessage();
+	CString			GetBanMessageString() const {return strBanReason_permament;}
+
 
 	//>>> Anti-XS-Exploit (Xman)
 	void IncXSAnswer()  {m_uiXSAnswer++;}
@@ -757,6 +760,10 @@ public:
 	void CleanUp(CPartFile* pDeletedFile);
 	DWORD m_lastCleanUpCheck;
 	// Maella end
+
+	//Xman Funny-Nick (Stulle/Morph)
+	void	UpdateFunnyNick();
+	//Xman end
 
 #ifdef PRINT_STATISTIC
 	uint32 GetPartStatusMapCount()	{return m_partStatusMap.size();}
@@ -846,7 +853,8 @@ private:
 	uint8	m_bLeecher; 
 	CString	old_m_strClientSoftwareFULL;
 	CString	old_m_pszUsername;
-	CString m_strBanMessage;
+	CString m_strBanMessage; //hold the message temporary
+	CString strBanReason_permament; //keeps the message in short version
 	uint8 uhashsize;
 	uint8 m_uNickchanges; //Xman Anti-Nick-Changer
 	uint32 m_ulastNickChage; //Xman Anti-Nick-Changer
@@ -873,9 +881,11 @@ private:
 
 		return nick;
 	}
-
 	//Xman end
 
+	//Xman Funny-Nick (Stulle/Morph)
+	TCHAR*	m_pszFunnyNick;
+	//Xman end
 
 //Xman end
 //--------------------------------------------------------------------------------------
@@ -1067,7 +1077,7 @@ public:
 	void			ResetIP2Country(uint32 dwIP = 0);
 
 private:
-	struct	IPRange_Struct2* m_structUserCountry; //EastShare - added by AndCycle, IP to Country
+	/*struct*/	Country_Struct* m_structUserCountry; //EastShare - added by AndCycle, IP to Country
 //EastShare End - added by AndCycle, IP to Country
 
 public:
@@ -1180,12 +1190,6 @@ public:
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	uint16			GetAvailableUpPartCount() const; // m000h
-
-	// ==> FunnyNick [SiRoB/Stulle] - Stulle
-	void	UpdateFunnyNick();
-protected:
-	TCHAR*	m_pszFunnyNick;
-	// <== FunnyNick [SiRoB/Stulle] - Stulle
 };
 //#pragma pack()
 

@@ -340,6 +340,7 @@ void CPartFile::Init(){
 	// SiRoB: Flush Thread
 	m_bIsFlushThread = false; 
 	m_bNeedToFlush = false; 
+	m_FlushThread = NULL; //Xman fix for flush-thread
 	//Xman end
 
 	// ==> Global Source Limit [Max/Stulle] - Stulle
@@ -400,7 +401,18 @@ CPartFile::~CPartFile()
 		}
 
 		if (m_hpartfile.m_hFile != INVALID_HANDLE_VALUE)
+		{
 			FlushBuffer(true);
+			//Xman fix for flush-thread
+			if(m_bIsFlushThread)
+			{
+				HANDLE hThread = m_FlushThread->m_hThread;
+				// 2 minutes to let the thread finish
+				if (WaitForSingleObject(hThread, 120000) == WAIT_TIMEOUT)
+					TerminateThread(hThread, 100);
+			}
+			//Xman end
+		}
 	}
 	catch(CFileException* e){
 		e->Delete();
@@ -2823,7 +2835,7 @@ uint32 CPartFile::Process(uint32 maxammount, bool isLimited, bool fullProcess)
 
 					// doubled reasktime for no needed parts - save connections and traffic
 					// Maella -Spread Request- (idea SlugFiller)
-					if(!((cur_src->GetNextTCPAskedTime() == 0) //Xman -Reask sources after IP change- v2 (main part by Maella)
+					if(!((cur_src->GetNextTCPAskedTime() == 0) //Xman -Reask sources after IP change- v3 (main part by Maella)
 						|| (dwCurTick - cur_src->GetLastAskedTime()) > 2 * cur_src->GetJitteredFileReaskTime()))
 						break; 
 					// Maella end
@@ -2855,7 +2867,7 @@ uint32 CPartFile::Process(uint32 maxammount, bool isLimited, bool fullProcess)
 
 					// doubled reasktime for no needed parts - save connections and traffic
 					// Maella -Spread Request- (idea SlugFiller)
-					if(!((cur_src->GetNextTCPAskedTime() == 0) //Xman -Reask sources after IP change- v2 (main part by Maella)
+					if(!((cur_src->GetNextTCPAskedTime() == 0) //Xman -Reask sources after IP change- v3 (main part by Maella)
 						|| (dwCurTick - cur_src->GetLastAskedTime()) > 2 * cur_src->GetJitteredFileReaskTime()))
 						break; 
 					// Maella end
@@ -3944,7 +3956,7 @@ void CPartFile::PerformFileCompleteEnd(DWORD dwResult)
 			strFilePath.ReleaseBuffer();
 			Log(LOG_STATUSBAR, GetResString(IDS_DOWNLOADRENAMED), strFilePath);
 		}
-		if(!m_pCollection && CCollection::HasCollectionExtention(GetFileName()))
+		if(!m_pCollection && HasCollectionExtenesion_Xtreme() /*CCollection::HasCollectionExtention(GetFileName())*/) //Xman Code Improvement for HasCollectionExtention
 		{
 			m_pCollection = new CCollection();
 			if(!m_pCollection->InitCollectionFromFile(GetFilePath(), GetFileName()))
@@ -5387,7 +5399,8 @@ void CPartFile::FlushBuffer(bool forcewait, bool bForceICH, bool /*bNoAICH*/)
 
 		//Creating the Thread to flush to disk
 
-		CPartFileFlushThread* m_FlushThread = (CPartFileFlushThread*) AfxBeginThread(RUNTIME_CLASS(CPartFileFlushThread), THREAD_PRIORITY_BELOW_NORMAL,0, CREATE_SUSPENDED);
+		//Xman fix for flush-thread
+		/*CPartFileFlushThread**/ m_FlushThread = (CPartFileFlushThread*) AfxBeginThread(RUNTIME_CLASS(CPartFileFlushThread), THREAD_PRIORITY_BELOW_NORMAL,0, CREATE_SUSPENDED);
 		if (m_FlushThread) {
 			m_bIsFlushThread = true;
 			m_bNeedToFlush = false;
@@ -6767,7 +6780,7 @@ UINT CPartFile::GetMaxSources() const
 {
 	//Xman Xtreme Mod
 	//hardlimit of 5 for emule collections
-	if(GetFileSize()< (uint64)MAXPRIORITYCOLL_SIZE && CCollection::HasCollectionExtention(GetFileName()))
+	if(GetFileSize()< (uint64)MAXPRIORITYCOLL_SIZE && HasCollectionExtenesion_Xtreme() /*CCollection::HasCollectionExtention(GetFileName())*//*) //Xman Code Improvement for HasCollectionExtention
 		return 5;
 	//Xman end
 
@@ -7727,15 +7740,15 @@ return WebcacheSourcesNotOurProxy;
 void CPartFile::CountWebcacheSources() const
 {
 const_cast< CPartFile * >( this )->LastWebcacheSourceCountTime = ::GetTickCount();
-UINT counter = 0;
-UINT counterOur = 0;
-UINT counterNotOur = 0;
+	uint16 counter = 0;
+	uint16 counterOur = 0;
+	uint16 counterNotOur = 0;
 
 for (POSITION pos = srclist.GetHeadPosition(); pos != NULL;)
 {
 		CUpDownClient* cur_client = srclist.GetNext(pos);
 		if (cur_client->SupportsWebCache() || cur_client->IsProxy() )
-			counter++;
+			++counter;
 	if (cur_client->SupportsWebCache())
 	{
 		if (cur_client->IsBehindOurWebCache())
@@ -7749,7 +7762,7 @@ for (POSITION pos = srclist.GetHeadPosition(); pos != NULL;)
 	{
 		CUpDownClient* cur_client = A4AFsrclist.GetNext(pos);
 		if (cur_client->SupportsWebCache() || cur_client->IsProxy() )
-			counter++;
+			++counter;
 		if (cur_client->SupportsWebCache())
 		{
 			if (cur_client->IsBehindOurWebCache())

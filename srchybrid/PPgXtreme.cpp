@@ -45,12 +45,14 @@ void CPPgXtreme::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CPPgXtreme, CPropertyPage)
 	ON_BN_CLICKED(IDC_13RATIO, OnSettingsChange)	//Xman 1:3 Ratio
+	ON_BN_CLICKED(IDC_SHOWBLOCKINGRATIO, OnSettingsChange) //Xman count block/success send
+	ON_BN_CLICKED(IDC_DROPBLOCKINGSOCKETS, OnSettingsChange) //Xman count block/success send
 	ON_BN_CLICKED(IDC_NAFCFULLCONTROL, OnBnClickedNafcfullcontrol)
 	ON_BN_CLICKED(IDC_RETRYCONNECTIONATTEMPTS, OnSettingsChange)	//Xman 
 	ON_EN_CHANGE(IDC_MTU_EDIT, OnSettingsChange)
 	ON_BN_CLICKED(IDC_USEDOUBLESENDSIZE, OnSettingsChange)
 	ON_BN_CLICKED(IDC_MULTIQUEUE, OnSettingsChange) // Maella -One-queue-per-file- (idea bloodymad)
-	ON_BN_CLICKED(IDC_OPENMORESLOTS, OnSettingsChange)
+	ON_BN_CLICKED(IDC_OPENMORESLOTS, OnOpenMoreSlots)
 	ON_WM_HSCROLL()
 	ON_BN_CLICKED(IDC_HIGHPRIO_RADIO, OnBnClickedrioRadio)
 	ON_BN_CLICKED(IDC_ABOVENORMALPRIO_RADIO, OnBnClickedrioRadio)
@@ -61,6 +63,7 @@ BEGIN_MESSAGE_MAP(CPPgXtreme, CPropertyPage)
 	ON_BN_CLICKED(IDC_SENDBUFFER1, OnSettingsChange)
 	ON_BN_CLICKED(IDC_SENDBUFFER2, OnSettingsChange)
 	ON_BN_CLICKED(IDC_SENDBUFFER3, OnSettingsChange)
+	ON_BN_CLICKED(IDC_AUTOUPDATEIPFILTER, OnSettingsChange) //Xman auto update IPFilter
 END_MESSAGE_MAP()
 
 // CPPgXtreme message handlers
@@ -86,6 +89,14 @@ void CPPgXtreme::LoadSettings(void)
 		//Xman 1:3 Ratio
 		CheckDlgButton(IDC_13RATIO, thePrefs.Is13Ratio());
 		//Xman end
+
+		//Xman auto update IPFilter
+		CheckDlgButton(IDC_AUTOUPDATEIPFILTER, thePrefs.AutoUpdateIPFilter());
+		//Xman end
+
+		//Xman count block/success send
+		CheckDlgButton(IDC_SHOWBLOCKINGRATIO, thePrefs.ShowBlockRatio());
+		CheckDlgButton(IDC_DROPBLOCKINGSOCKETS, thePrefs.DropBlockingSockets());
 
 		CheckDlgButton(IDC_NAFCFULLCONTROL, thePrefs.GetNAFCFullControl());
 
@@ -170,6 +181,14 @@ BOOL CPPgXtreme::OnApply()
 	thePrefs.Set13Ratio(IsDlgButtonChecked(IDC_13RATIO)!=0);
 	//Xman end
 
+	//Xman auto update IPFilter
+	thePrefs.SetAutoUpdateIPFilter(IsDlgButtonChecked(IDC_AUTOUPDATEIPFILTER)!=0);
+	//Xman end
+
+	//Xman count block/success send
+	thePrefs.SetShowBlockRatio(IsDlgButtonChecked(IDC_SHOWBLOCKINGRATIO)!=0);
+	thePrefs.SetDropBlockingSockets(IsDlgButtonChecked(IDC_DROPBLOCKINGSOCKETS)!=0);
+
 	thePrefs.retryconnectionattempts=IsDlgButtonChecked(IDC_RETRYCONNECTIONATTEMPTS)!=0; //Xman 
 
 	// Maella -One-queue-per-file- (idea bloodymad)
@@ -208,8 +227,16 @@ void CPPgXtreme::Localize(void)
 
 		GetDlgItem(IDC_UPLOADMANAGEMENT)->SetWindowText(GetResString(IDS_UPLOADMANAGEMENT_FRAME));
 
-		//Xman amount base ratio:
+		//Xman 1:3 Ratio
 		GetDlgItem(IDC_13RATIO)->SetWindowText(GetResString(IDS_13RATIO));
+
+		//Xman count block/success send
+		GetDlgItem(IDC_SHOWBLOCKINGRATIO)->SetWindowText(GetResString(IDS_SHOWBLOCKINGRATIO));
+		GetDlgItem(IDC_DROPBLOCKINGSOCKETS)->SetWindowText(GetResString(IDS_DROPBLOCKINGSOCKETS));
+
+		//Xman auto update IPFilter
+		GetDlgItem(IDC_AUTOUPDATEIPFILTER)->SetWindowText(GetResString(IDS_AUTOUPDATEIPFILTER));
+
 
 		GetDlgItem(IDC_RETRYCONNECTIONATTEMPTS)->SetWindowText(GetResString(IDS_RETRYCONNECTIONATTEMPTS)); //Xman 
 
@@ -278,6 +305,20 @@ void CPPgXtreme::OnBnClickedForumlink()
 {
 	ShellExecute(NULL, NULL, MOD_FORUMLINK, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
 }
+*/
+void CPPgXtreme::OnOpenMoreSlots()
+{
+	if(!IsDlgButtonChecked(IDC_OPENMORESLOTS))
+	{
+		CheckDlgButton(IDC_DROPBLOCKINGSOCKETS, FALSE);
+		GetDlgItem(IDC_DROPBLOCKINGSOCKETS)->EnableWindow(FALSE);
+	}
+	else
+		GetDlgItem(IDC_DROPBLOCKINGSOCKETS)->EnableWindow(TRUE);
+
+	OnSettingsChange();
+}
+/*
 
 void CPPgXtreme::OnBnClickedVotelink()
 {

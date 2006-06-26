@@ -50,6 +50,7 @@ there client on the eMule forum..
 #include "../../listensocket.h"
 #include "../../Log.h"
 #include "../../opcodes.h"
+#include "../../ipfilter.h" //Xman - MORPH ipfilter kad
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -61,6 +62,19 @@ extern LPCSTR _aszInvKadKeywordCharsA;
 extern LPCWSTR _awszInvKadKeywordChars;
 
 using namespace Kademlia;
+
+//Xman - MORPH START leuk_he ipfilter kad 
+int iskadfiltered(uint32 ip,LPCSTR from ){ 
+	if ( ::theApp.ipfilter->IsFiltered(ntohl(ip))){ 
+		if (::thePrefs.GetLogFilteredIPs()) { 
+			AddDebugLogLine(false, _T("Ignored kad contact(IP=%s) %hs- IP filter (%s)") , ipstr(ntohl(ip)),from,theApp.ipfilter->GetLastHit()); 
+			} 
+		return 1; // return 
+	} 
+	return 0; 
+} 
+//MORPH END leuk_he ipfilter kad
+
 
 // Used by Kad1.0 and Kad 2.0
 void CKademliaUDPListener::Bootstrap(LPCTSTR szHost, uint16 uUDPPort)
@@ -795,8 +809,13 @@ void CKademliaUDPListener::Process_KADEMLIA_RES (const byte *pbyPacketData, uint
 			fileIO.ReadUInt8();
 			if(::IsGoodIPPort(ntohl(uIPResult),uUDPPortResult))
 			{
+				//Xman - MORPH START leuk_he ipfilter kad
+				if (!iskadfiltered(uIPResult,__FUNCTION__) )
+				{
 				pRoutingZone->Add(uIDResult, uIPResult, uUDPPortResult, uTCPPortResult, 0);
 				pResults->push_back(new CContact(uIDResult, uIPResult, uUDPPortResult, uTCPPortResult, uTarget, 0));
+			}
+				//Xman - MORPH END leuk_he ipfilter kad
 			}
 		}
 	}
@@ -849,8 +868,13 @@ void CKademliaUDPListener::Process_KADEMLIA2_RES (const byte *pbyPacketData, uin
 			uint8 uVersion = fileIO.ReadUInt8();
 			if(::IsGoodIPPort(ntohl(uIPResult),uUDPPortResult))
 			{
+				//Xman - MORPH START leuk_he ipfilter kad
+				if (!iskadfiltered(uIPResult ,__FUNCTION__))
+				{
 				pRoutingZone->Add(uIDResult, uIPResult, uUDPPortResult, uTCPPortResult, uVersion);
 				pResults->push_back(new CContact(uIDResult, uIPResult, uUDPPortResult, uTCPPortResult, uTarget, uVersion));
+			}
+				//Xman - MORPH END leuk_he ipfilter kad
 			}
 		}
 	}

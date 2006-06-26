@@ -23,6 +23,11 @@
 #include "ReadWriteLock.h"	// SLUGFILLER: SafeHash
 #include "Version.h"		// netfinity: Mod version
 
+//Xman
+//upnp_start
+#include "UPnP.h"
+//upnp_end
+
 #include ".\MiniMule\SystemInfo.h" // CPU/MEM usage [$ick$/Stulle] - Max 
 #include ".\MiniMule\TBHMM.h" // TBH: minimule - Max
 
@@ -260,8 +265,20 @@ protected:
 
 private:
 	UINT     m_wTimerRes;
-
+//Xman -Reask sources after IP change- v3 (main part by Maella)
 public:
+	bool m_bneedpublicIP; 
+//Xman end
+
+	//Xman
+	//upnp_start
+public:
+	MyUPnP m_UPnPNat;
+	BOOL  AddUPnPNatPort(MyUPnP::UPNPNAT_MAPPING *mapping, bool tryRandom = false);
+	BOOL  RemoveUPnPNatPort(MyUPnP::UPNPNAT_MAPPING *mapping);
+	//upnp_end
+
+
 	// ==> ModID [itsonlyme/SiRoB] - Stulle
 	static const UINT	m_nMVersionMjr;
 	static const UINT	m_nMVersionMin;

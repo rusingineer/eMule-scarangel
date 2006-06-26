@@ -35,6 +35,7 @@
 #include "ServerWnd.h"
 #include "TaskbarNotifier.h"
 #include "Log.h"
+#include "IPFilter.h" //Xman filter ipfiltered servers 
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -130,6 +131,21 @@ void CServerConnect::ConnectToServer(CServer* server, bool multiconnect)
 		StopConnectionTry();
 		Disconnect();
 	}
+
+	//Xman filter outgoing server connections
+	//it makes no sence to allow to connect to any ipfiltered server, because you'll only get lowID
+	if(theApp.ipfilter->IsFiltered(server->GetIP()))
+	{
+		AddLogLine(true,_T("you can't connect to filtered server: %s, %s"),ipstr(server->GetIP()), server->GetDescription() );
+		if(thePrefs.FilterServerByIP())
+		{
+			theApp.emuledlg->serverwnd->serverlistctrl.RemoveServer(server);
+		}
+		return;
+	}
+	//Xman end
+
+
 	connecting = true;
 	singleconnecting = !multiconnect;
 	theApp.emuledlg->ShowConnectionState();

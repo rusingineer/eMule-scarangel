@@ -15,8 +15,8 @@
 #include "PPgProxy.h"
 #include "PPgXtreme.h" //Xman Xtreme Mod
 #include "PPgXtreme2.h" //Xman Xtreme Mod
+#include "KCSideBannerWnd.h" //Xman Preferences Banner 
 #include "PPgScar.h" // ScarAngel Preferences window - Stulle
-#include "KCSideBannerWnd.h" // Preferences Banner [TPT/ MorphXT] - Stulle
 
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 #include "PPgDebug.h"
@@ -48,6 +48,7 @@ public:
 	CPPgProxy		m_wndProxy;
 	CPPgXtreme		m_wndXtreme; //Xman Xtreme Mod
 	CPPgXtreme2		m_wndXtreme2; //Xman Xtreme Mod
+	CKCSideBannerWnd m_banner; //Xman Preferences Banner
 	CPPgScar		m_wndScar; // ScarAngel Preferences window - Stulle
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	CPPgDebug		m_wndDebug;
@@ -67,7 +68,4 @@ protected:
 	afx_msg void OnDestroy();
 	afx_msg void OnHelp();
 	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
-
-public:
-	CKCSideBannerWnd m_banner; // Preferences Banner [TPT/ MorphXT] - Stulle
 };

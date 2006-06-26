@@ -39,8 +39,9 @@ static char THIS_FILE[] = __FILE__;
  * The constructor starts the thread.
  */
 UploadBandwidthThrottler::UploadBandwidthThrottler(void) {
-	m_SentBytesSinceLastCall = 0;
-	m_SentBytesSinceLastCallOverhead = 0;
+	//Xman Xtreme Upload unused
+	//m_SentBytesSinceLastCall = 0;
+	//m_SentBytesSinceLastCallOverhead = 0;
     m_highestNumberOfFullyActivatedSlots = 0;
 	m_highestNumberOfFullyActivatedSlots_out =0;
 	//Xman Xtreme Upload
@@ -48,6 +49,16 @@ UploadBandwidthThrottler::UploadBandwidthThrottler(void) {
 	recalculate=true;
 	nexttrickletofull=true;
 	//Xman end
+
+	//Xman count block/success send
+	avgBlockRatio=0;
+	//Xman upload health
+	avg_health=100;
+	sum_healthhistory=0;
+	m_countsend=0;
+	m_countsendsuccessful=0;
+	//Xman end
+
 	threadEndedEvent = new CEvent(0, 1);
 	pauseEvent = new CEvent(TRUE, TRUE);
 
@@ -70,6 +81,8 @@ UploadBandwidthThrottler::~UploadBandwidthThrottler(void) {
  *
  * @return the number of bytes that has been put on the sockets since the last call
  */
+//Xman Xtreme Upload unused
+/*
 uint64 UploadBandwidthThrottler::GetNumberOfSentBytesSinceLastCallAndReset() {
 	sendLocker.Lock();
 
@@ -80,13 +93,14 @@ uint64 UploadBandwidthThrottler::GetNumberOfSentBytesSinceLastCallAndReset() {
 
 	return numberOfSentBytesSinceLastCall;
 }
-
+*/
 /**
  * Find out how many bytes that has been put on the sockets since the last call to this
  * method. Excludes overhead of control packets.
  *
  * @return the number of bytes that has been put on the sockets since the last call
  */
+/*
 uint64 UploadBandwidthThrottler::GetNumberOfSentBytesOverheadSinceLastCallAndReset() {
 	sendLocker.Lock();
 
@@ -97,63 +111,65 @@ uint64 UploadBandwidthThrottler::GetNumberOfSentBytesOverheadSinceLastCallAndRes
 
 	return numberOfSentBytesSinceLastCall;
 }
-
+*/
 
 //Xman Xtreme Upload //method is currently not used
-void UploadBandwidthThrottler::ReplaceSocket(ThrottledFileSocket* oldsocket, ThrottledFileSocket* newsocket)
-{
-	sendLocker.Lock();
-	int slotnumber=-1;
-	bool isfull=false;
-	//bool isready=false;
+//void UploadBandwidthThrottler::ReplaceSocket(ThrottledFileSocket* oldsocket, ThrottledFileSocket* newsocket)
+//{
+//	sendLocker.Lock();
+//	int slotnumber=-1;
+//	bool isfull=false;
+//	//bool isready=false;
+//
+//	if(oldsocket==NULL)theApp.QueueLogLine(false,_T("oldsocket NULL"));
+//	if(newsocket==NULL) theApp.QueueLogLine(false,_T("newsocket NULL"));
+//
+//	if(oldsocket != NULL && newsocket != NULL)
+//	{
+//		for(slotnumber=0;slotnumber<m_StandardOrder_list.GetSize();slotnumber++)
+//			if(m_StandardOrder_list.GetAt(slotnumber) == oldsocket)
+//			{
+//				//remember the values
+//				isfull=oldsocket->IsFull();
+//				//isready=oldsocket->isready;
+//				RemoveFromStandardListNoLock(oldsocket);
+//				break;
+//			}
+//	}
+//	if(slotnumber>=0 && slotnumber<m_StandardOrder_list.GetSize()) //found
+//	{
+//		m_StandardOrder_list.InsertAt(slotnumber, newsocket);
+//		if(isfull)
+//		{
+//			newsocket->SetFull();
+//			m_StandardOrder_list_full.AddTail(newsocket);
+//			m_highestNumberOfFullyActivatedSlots++;
+//			SetNumberOfFullyActivatedSlots();
+//		}
+//		else
+//			newsocket->SetTrickle();
+//		if(newsocket->StandardPacketQueueIsEmpty()==false)
+//			newsocket->isready=true;
+//		else
+//			newsocket->isready=false;
+//		theApp.QueueLogLine(false,_T("->replaced socket on pos: %u isfull: %u "),slotnumber, isfull);
+//	}
+//	else
+//	{
+//		/*
+//		m_StandardOrder_list.InsertAt(m_StandardOrder_list.GetSize(),newsocket);
+//		newsocket->SetTrickle();
+//		newsocket->isready=false;
+//		recalculate=true;
+//		*/
+//		theApp.QueueLogLine(false,_T("-->tried to replace a not existing socket"));
+//	}
+//
+//	sendLocker.Unlock();
+//}
 
-	if(oldsocket==NULL)theApp.QueueLogLine(false,_T("oldsocket NULL"));
-	if(newsocket==NULL) theApp.QueueLogLine(false,_T("newsocket NULL"));
-
-	if(oldsocket != NULL && newsocket != NULL)
-	{
-		for(slotnumber=0;slotnumber<m_StandardOrder_list.GetSize();slotnumber++)
-			if(m_StandardOrder_list.GetAt(slotnumber) == oldsocket)
-			{
-				//remember the values
-				isfull=oldsocket->IsFull();
-				//isready=oldsocket->isready;
-				RemoveFromStandardListNoLock(oldsocket);
-				break;
-			}
-	}
-	if(slotnumber>=0 && slotnumber<m_StandardOrder_list.GetSize()) //found
-	{
-		m_StandardOrder_list.InsertAt(slotnumber, newsocket);
-		if(isfull)
-		{
-			newsocket->SetFull();
-			m_StandardOrder_list_full.AddTail(newsocket);
-			m_highestNumberOfFullyActivatedSlots++;
-			SetNumberOfFullyActivatedSlots();
-		}
-		else
-			newsocket->SetTrickle();
-		if(newsocket->StandardPacketQueueIsEmpty()==false)
-			newsocket->isready=true;
-		else
-			newsocket->isready=false;
-		theApp.QueueLogLine(false,_T("->replaced socket on pos: %u isfull: %u "),slotnumber, isfull);
-	}
-	else
-	{
-		/*
-		m_StandardOrder_list.InsertAt(m_StandardOrder_list.GetSize(),newsocket);
-		newsocket->SetTrickle();
-		newsocket->isready=false;
-		recalculate=true;
-		*/
-		theApp.QueueLogLine(false,_T("-->tried to replace a not existing socket"));
-	}
-
-	sendLocker.Unlock();
-}
 //Xman Xtreme Upload: Peercache-part
+//threadsafe for Main-thread (only caller) and upbloadbandwidthThrottler (sendLocker)
 bool UploadBandwidthThrottler::ReplaceSocket(ThrottledFileSocket* normalsocket, ThrottledFileSocket* pcsocket, ThrottledFileSocket* newsocket)
 {
 	sendLocker.Lock();
@@ -236,6 +252,7 @@ bool UploadBandwidthThrottler::ReplaceSocket(ThrottledFileSocket* normalsocket, 
 }
 
 //Xman Xtreme Upload
+//threadsafe for Main-thread (only caller) and upbloadbandwidthThrottler (sendLocker)
 void UploadBandwidthThrottler::AddToStandardList(bool first, ThrottledFileSocket* socket) {
 	if(socket != NULL) {
 		sendLocker.Lock();
@@ -610,14 +627,17 @@ UINT UploadBandwidthThrottler::RunInternal() {
 
 	DWORD lastTickReachedBandwidth = timeGetTime();
 
+	uint16 minslots=0;
+	//Xman count block/success send
+	uint32 last_block_process = timeGetTime() >> 10;
+
 	while(doRun) 
 	{
         pauseEvent->Lock();
 
 		DWORD timeSinceLastLoop = timeGetTime() - lastLoopTick;
 
-
-#define TIME_BETWEEN_UPLOAD_LOOPS_MIN 8 //Xman 6 are enough -> using higher prio for this thread
+#define TIME_BETWEEN_UPLOAD_LOOPS_MIN 4 //Xman 4(was 8) are enough -> using higher prio for this thread
 #define TIME_BETWEEN_UPLOAD_LOOPS_MAX 50 //25
         uint32 sleeptime=TIME_BETWEEN_UPLOAD_LOOPS_MIN;
 		///*
@@ -655,8 +675,11 @@ UINT UploadBandwidthThrottler::RunInternal() {
 		uint32 old_value;
 		old_value=allowedDataRate;
 		allowedDataRate = (uint32)(theApp.pBandWidthControl->GetMaxUpload()*1024); 
-		if((allowedDataRate<old_value) && (old_value -  allowedDataRate  >=1024)) 
-			recalculate=true; 
+		if(allowedDataRate<old_value)
+		{
+			if(old_value -  allowedDataRate  >=1024)
+				recalculate=true; //readjust socket: trickle or full
+		}
 		old_value=slotspeed;
 		slotspeed= (uint32)(thePrefs.m_slotspeed*1024);
 		if(slotspeed==0)
@@ -691,8 +714,10 @@ UINT UploadBandwidthThrottler::RunInternal() {
 		uSlopehelp_minUpload -= (uint32)(m_currentOverallSentBytes - m_lastOverallSentBytes); //Xman 4.4 Code-Improvement: reserve 1/3 of your uploadlimit for emule
 
 		//don't go over limit during the start-phase
-		if(uSlopehelp>0 && allowedDataRate/slotspeed/2 > (uint32)m_StandardOrder_list.GetSize())
+		minslots=(uint16)(allowedDataRate/slotspeed/2);
+		if(uSlopehelp>0 && minslots > (uint16)m_StandardOrder_list.GetSize())
 			uSlopehelp=0;
+
 		const uint32 toadd=(uint32)(allowedDataRate*(float)timeSinceLastLoop/1000);
 		uSlopehelp +=toadd;
 		uSlopehelp_minUpload += (uint32)(toadd*0.33f); //Xman 4.4 Code-Improvement: reserve 1/3 of your uploadlimit for emule
@@ -703,16 +728,16 @@ UINT UploadBandwidthThrottler::RunInternal() {
         m_lastNetworkOut = m_currentNetworkOut;
 
 		//compensate:
-		if(uSlopehelp > allowedDataRate*MAXSLOPEBUFFERTIME*0.33f) //max 0.3 x sec //Xman 
-			uSlopehelp=(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.33f); 
-		else if(uSlopehelp < -(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.5f)) //max 0,2 sec
-			uSlopehelp=-((sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.5f));
+		if(uSlopehelp > allowedDataRate*MAXSLOPEBUFFERTIME*0.25f) //max 250ms //Xman 
+			uSlopehelp=(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.25f); 
+		else if(uSlopehelp < -(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.25f)) //max 250ms
+			uSlopehelp=-((sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.25f));
 
 		//Xman 4.4 Code-Improvement: reserve 1/3 of your uploadlimit for emule
-		if(uSlopehelp_minUpload > allowedDataRate*MAXSLOPEBUFFERTIME*0.33f) //max 0.3 x sec //Xman 
-			uSlopehelp_minUpload=(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.33f); 
-		else if(uSlopehelp_minUpload < -(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.5f)) //max 0,2 sec
-			uSlopehelp_minUpload=-((sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.5f));
+		if(uSlopehelp_minUpload > allowedDataRate*MAXSLOPEBUFFERTIME*0.25f) 
+			uSlopehelp_minUpload=(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.25f); 
+		else if(uSlopehelp_minUpload < -(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.25f)) 
+			uSlopehelp_minUpload=-((sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.25f));
 
 		
 		if(thePrefs.GetNAFCFullControl()==true && uSlopehelp_minUpload>uSlopehelp)
@@ -928,14 +953,21 @@ UINT UploadBandwidthThrottler::RunInternal() {
 		}
 		*/
 
-		//send data to Full  clients:
+
+		//Xman Full upload new version
 		if(uSlope>0)
 		{
+			uint16 k=0;
 			POSITION pos=m_StandardOrder_list_full.GetHeadPosition();
-			for(uint16 i=0;i<m_StandardOrder_list_full.GetCount();i++)
+			POSITION cur_pos = pos;
+			ThrottledFileSocket* socket=NULL;
+			while(uSlope>0 && k < m_StandardOrder_list_full.GetCount())
 			{
-				POSITION cur_pos = pos;
-				ThrottledFileSocket* socket = m_StandardOrder_list_full.GetNext(pos);
+				if(pos!=NULL)//it's the last socket
+				{
+					cur_pos = pos;
+					socket = m_StandardOrder_list_full.GetNext(pos);
+				}
 				if(socket!=NULL  && socket->isready==true) 
 				{
 					if(socket->IsFull()==false)
@@ -943,31 +975,78 @@ UINT UploadBandwidthThrottler::RunInternal() {
 						theApp.QueueDebugLogLine(false, _T("Warning full on wrong possition"));
 						recalculate=true;
 					}
-
-					
-					if(uSlope>0)
+					SocketSentBytes socketSentBytes = socket->SendFileAndControlData(doubleSendSize,doubleSendSize); 
+					uint32 lastSpentBytes = socketSentBytes.sentBytesControlPackets + socketSentBytes.sentBytesStandardPackets;
+					spentBytes += lastSpentBytes;
+					spentOverhead += socketSentBytes.sentBytesControlPackets;
+					uSlope-=lastSpentBytes;
+					if(socketSentBytes.sentBytesStandardPackets>450 /*|| socketSentBytes.sentBytesControlPackets >0*/)
 					{
-						SocketSentBytes socketSentBytes = socket->SendFileAndControlData(doubleSendSize,doubleSendSize); //Xman4.5  //Xman only one package  
-						uint32 lastSpentBytes = socketSentBytes.sentBytesControlPackets + socketSentBytes.sentBytesStandardPackets;
-						spentBytes += lastSpentBytes;
-						spentOverhead += socketSentBytes.sentBytesControlPackets;
-						uSlope-=lastSpentBytes;
-						if(socketSentBytes.sentBytesStandardPackets>450)
+						if(pos!=NULL) //it's the last socket
 						{
 							m_StandardOrder_list_full.RemoveAt(cur_pos);
 							m_StandardOrder_list_full.AddTail(socket);
-						}	
-					}
+						}
+					}	
 					else
-						break;
+						k++;
 				}
+				else
+					k++;
 			}
 		}
-		
+
+		//Xman count block/success send
+		if(thisLoopTick >> 10 > last_block_process)
+		{
+			last_block_process = thisLoopTick >> 10;
+			float tmpavgblockratio=0;
+			for(int i=0; i < m_StandardOrder_list.GetSize(); i++)
+			{
+				ThrottledFileSocket* socket = m_StandardOrder_list.GetAt(i);
+				if(socket!=NULL ) 
+				{
+					if(socket->IsFull())
+						tmpavgblockratio +=socket->GetandStepBlockRatio();
+					else
+						socket->GetandStepBlockRatio();
+				}
+			}
+			avgBlockRatio = m_StandardOrder_list_full.GetCount() > 0 ? tmpavgblockratio/m_StandardOrder_list_full.GetCount() : 0;
+		}
+
+		//Xman upload health
+		if(minslots <= (uint16)m_StandardOrder_list.GetSize())
+		{
+			m_countsend++;
+			if(uSlope <= 0)
+				m_countsendsuccessful++;
+			if(m_healthhistory.GetSize()==0 || thisLoopTick >> 10 > m_healthhistory.GetHead().timestamp)
+			{
+				ratio_struct newsample;
+				newsample.ratio = 100.0f*m_countsendsuccessful/m_countsend; //m_countsend is always greater 0
+				newsample.timestamp = thisLoopTick >> 10; // 1024 ms
+				m_healthhistory.AddHead(newsample);
+				sum_healthhistory += newsample.ratio;
+				if(m_healthhistory.GetSize()>HISTORY_SIZE) // ~ 20 seconds
+				{
+					const ratio_struct& substract = m_healthhistory.RemoveTail(); //susbtract the old element
+					sum_healthhistory -= substract.ratio;
+					if(sum_healthhistory<0) //fix rounding errors
+						sum_healthhistory=0;
+				}
+				avg_health = sum_healthhistory / m_healthhistory.GetSize();
+				m_countsend=0;
+				m_countsendsuccessful=0;
+			}
+		}
+		//Xman end
+
 		uint16 countTrickles=(uint16)m_StandardOrder_list.GetSize()-m_highestNumberOfFullyActivatedSlots;
 
 		//any data left ? this data is given to the trickles
-		if(uSlope>allowedDataRate*MAXSLOPEBUFFERTIME/6 && countTrickles>0) 
+		//if(uSlope>allowedDataRate*MAXSLOPEBUFFERTIME/6 && countTrickles>0) 
+		if(uSlope>0 && countTrickles>0) 
 		{
 			uint16 i=0;
 			for(i=m_highestNumberOfFullyActivatedSlots;i<m_StandardOrder_list.GetSize();i++)
@@ -981,7 +1060,7 @@ UINT UploadBandwidthThrottler::RunInternal() {
 				{
 					if(uSlope>0)
 					{
-							SocketSentBytes socketSentBytes = socket->SendFileAndControlData(minFragSize, minFragSize); //Xman final changed back to minfragsize
+							SocketSentBytes socketSentBytes = socket->SendFileAndControlData(minFragSize, minFragSize); 
 						    uint32 lastSpentBytes = socketSentBytes.sentBytesControlPackets + socketSentBytes.sentBytesStandardPackets;
 						    spentBytes += lastSpentBytes;
 						    spentOverhead += socketSentBytes.sentBytesControlPackets;
@@ -999,25 +1078,7 @@ UINT UploadBandwidthThrottler::RunInternal() {
 			}
 		}
 	
-		//is any data left ? then go over the wanted speed
-		if(uSlope>allowedDataRate*MAXSLOPEBUFFERTIME/6) 
-		{
-			for(uint16 i=0;i<m_StandardOrder_list.GetSize() && uSlope>TRICKLESPEED;i++)
-			{
-				ThrottledFileSocket* socket = m_StandardOrder_list.GetAt(i);
-				if(socket!=NULL  && socket->isready==true ) 
-				{
-					SocketSentBytes socketSentBytes = socket->SendFileAndControlData((uint32)uSlope, doubleSendSize);
-				    uint32 lastSpentBytes = socketSentBytes.sentBytesControlPackets + socketSentBytes.sentBytesStandardPackets;
-				    spentBytes += lastSpentBytes;
-				    spentOverhead += socketSentBytes.sentBytesControlPackets;
-					uSlope-=lastSpentBytes;
-				}
-			}
-		}
-	    m_SentBytesSinceLastCall += spentBytes;
-	   // m_SentBytesSinceLastCallOverhead += spentOverhead; //not used
-   
+  
 		//Xman x4 
 		if(uSlope<TRICKLESPEED)
 			lastTickReachedBandwidth=thisLoopTick;
@@ -1028,9 +1089,39 @@ UINT UploadBandwidthThrottler::RunInternal() {
 				lastTickReachedBandwidth=thisLoopTick;
 			}
 
+		//Xman upload health
+		//remark: we do this calculation above if we have enough sockets
+		//if we have less sockets we do it here
+		if(minslots > (uint16)m_StandardOrder_list.GetSize())
+		{
+			m_countsend++;
+			if(uSlope <= 0)
+				m_countsendsuccessful++;
+			if(m_healthhistory.GetSize()==0 || thisLoopTick >> 10 > m_healthhistory.GetHead().timestamp)
+			{
+				ratio_struct newsample;
+				newsample.ratio = 100.0f*m_countsendsuccessful/m_countsend; //m_countsend is always greater 0
+				newsample.timestamp = thisLoopTick >> 10; // 1024 ms
+				m_healthhistory.AddHead(newsample);
+				sum_healthhistory += newsample.ratio;
+				if(m_healthhistory.GetSize()>HISTORY_SIZE) // ~ 20 seconds
+				{
+					const ratio_struct& substract = m_healthhistory.RemoveTail(); //susbtract the old element
+					sum_healthhistory -= substract.ratio;
+				}
+				avg_health = sum_healthhistory / m_healthhistory.GetSize();
+				m_countsend=0;
+				m_countsendsuccessful=0;
+			}
+		}
+		//Xman end
+
+
+
 		// - Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 		theApp.pBandWidthControl->AddeMuleOutOverallNoHeader(spentBytes);
 		theApp.pBandWidthControl->AddeMuleOut(spentBytes-spentOverhead);
+
 
         sendLocker.Unlock();
 

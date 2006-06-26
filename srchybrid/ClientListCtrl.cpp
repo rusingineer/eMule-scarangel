@@ -127,18 +127,24 @@ void CClientListCtrl::SetAllIcons()
 	imagelist.Add(CTempIconLoader(_T("ClientLPhant")));			//16
 	imagelist.Add(CTempIconLoader(_T("ClientLPhantPlus")));		//17
 	imagelist.Add(CTempIconLoader(_T("LEECHER")));				//18 //Xman Anti-Leecher
+
+	//Xman friend visualization
+	imagelist.Add(CTempIconLoader(_T("ClientFriendSlotOvl"))); //19
 	//Xman end
+
+	//Xman end
+
 	// ==> Mod Icons - Stulle
-	imagelist.Add(CTempIconLoader(_T("AAAEMULEAPP"))); //19
-	imagelist.Add(CTempIconLoader(_T("STULLE"))); //20
-	imagelist.Add(CTempIconLoader(_T("MAXMOD"))); //21
-	imagelist.Add(CTempIconLoader(_T("XTREME"))); //22
-	imagelist.Add(CTempIconLoader(_T("MORPH"))); //23
-	imagelist.Add(CTempIconLoader(_T("EASTSHARE"))); //24
-	imagelist.Add(CTempIconLoader(_T("IONIX"))); //25
-	imagelist.Add(CTempIconLoader(_T("CYREX"))); //26
-	imagelist.Add(CTempIconLoader(_T("NEXTEMF"))); //27
-	imagelist.Add(CTempIconLoader(_T("NEO"))); //28
+	imagelist.Add(CTempIconLoader(_T("AAAEMULEAPP"))); //20
+	imagelist.Add(CTempIconLoader(_T("STULLE"))); //21
+	imagelist.Add(CTempIconLoader(_T("MAXMOD"))); //22
+	imagelist.Add(CTempIconLoader(_T("XTREME"))); //23
+	imagelist.Add(CTempIconLoader(_T("MORPH"))); //24
+	imagelist.Add(CTempIconLoader(_T("EASTSHARE"))); //25
+	imagelist.Add(CTempIconLoader(_T("IONIX"))); //26
+	imagelist.Add(CTempIconLoader(_T("CYREX"))); //27
+	imagelist.Add(CTempIconLoader(_T("NEXTEMF"))); //28
+	imagelist.Add(CTempIconLoader(_T("NEO"))); //29
 	// <== Mod Icons - Stulle
 	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
 }
@@ -315,7 +321,7 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	COLORREF crOldBackColor = odc->GetBkColor(); //Xman show LowIDs
 	// <== draw friends blue - Stulle
 	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
-	CFont* pOldFont = dc.SelectObject(GetFont());
+	CFont* pOldFont = dc.SelectObject(thePrefs.UseNarrowFont() ? &m_fontNarrow : GetFont()); //Xman narrow font at transferwindow
 	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
 
@@ -372,7 +378,7 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					if(client->GetModClient() == MOD_NONE)
 						image = 4;
 					else
-						image = (uint8)(client->GetModClient() + 18);
+						image = (uint8)(client->GetModClient() + 19);
 					// <== Mod Icons - Stulle
 				}
 				else{
@@ -382,6 +388,10 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 					POINT point = {cur_rec.left, cur_rec.top+1};
 					imagelist.Draw(dc,image, point, ILD_NORMAL | ((client->Credits() && client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED) ? INDEXTOOVERLAYMASK(1) : 0));
+					//Xman friend visualization
+					if (client->IsFriend() && client->GetFriendSlot())
+						imagelist.Draw(dc,19, point, ILD_NORMAL);
+					//Xman end
 					if (client->GetUserName()==NULL)
 						Sbuffer.Format(_T("(%s)"), GetResString(IDS_UNKNOWN));
 					else

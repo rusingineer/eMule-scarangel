@@ -33,15 +33,15 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "Use amount based 1:3 Ratio if upload < 10",IDC_13RATIO,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,45,197,12
-    GROUPBOX        "Upload Management",IDC_UPLOADMANAGEMENT,7,2,212,96
+    GROUPBOX        "Upload Management",IDC_UPLOADMANAGEMENT,7,2,212,109
     CONTROL         "Open more slots if needed (recommend)",
                     IDC_OPENMORESLOTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
                     14,23,197,11
     CONTROL         "NAFC full control",IDC_NAFCFULLCONTROL,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,14,34,197,11
-    GROUPBOX        "Average Datarate",IDC_AVG_DATARATE_TIME,7,99,212,29
+    GROUPBOX        "Average Datarate",IDC_AVG_DATARATE_TIME,7,114,212,29
     CONTROL         "",IDC_SAMPLERATESLIDER,"msctls_trackbar32",
-                    TBS_AUTOTICKS | WS_TABSTOP,14,113,197,13,
+                    TBS_AUTOTICKS | WS_TABSTOP,14,124,197,13,
                     WS_EX_STATICEDGE
     EDITTEXT        IDC_MTU_EDIT,14,71,35,12,ES_AUTOHSCROLL
     LTEXT           "MTU",IDC_STATIC_MTU,54,72,157,11
@@ -65,6 +65,13 @@ BEGIN
     CONTROL         "12000",IDC_SENDBUFFER3,"Button",BS_AUTORADIOBUTTON,155,
                     57,36,10
     LTEXT           "Sendbuffer:",IDC_SENDBUFFER_STATIC,14,57,59,10
+    CONTROL         "show socket blocking ratio",IDC_SHOWBLOCKINGRATIO,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,169,179,11
+    CONTROL         "Auto-update IPFilter.dat",IDC_AUTOUPDATEIPFILTER,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,14,156,179,11
+    CONTROL         "drop too oftenly blocking sockets",
+                    IDC_DROPBLOCKINGSOCKETS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,14,94,197,12
 END
 
 IDD_PPG_Xtreme2 DIALOGEX 0, 0, 224, 243
@@ -117,9 +124,13 @@ BEGIN
     CONTROL         "Show active downloads bold",IDC_ACTIVEDOWNLOADSBOLD,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,185,197,10
     CONTROL         "Show additional graph-lines",IDC_SHOWADDITIONALGRAPH,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,196,197,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,207,197,10
     CONTROL         "Detect emcrypt",IDC_ANTILEECHEREMCRYPT_CHECK,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,23,137,188,12
+    CONTROL         "Use narrow font in transfer window",IDC_USENARROWFONT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,196,197,10
+    CONTROL         "Display FunnyNick",IDC_FUNNYNICK,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,14,218,197,10
 END
 
 IDD_HTTPDOWNLOAD DIALOGEX 0, 0, 231, 145
@@ -1537,6 +1548,8 @@ BEGIN
                     SS_NOPREFIX | WS_GROUP,110,147,53,8
     CONTROL         "Static",IDC_UPLOADQUEURANK,"Static",SS_LEFTNOWORDWRAP | 
                     SS_NOPREFIX | WS_GROUP,256,147,50,8
+    CONTROL         "Static",IDC_LEECHERINFO,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,215,193,91,16
 // ==> WebCache [WC team/MorphXT] - Stulle/Max
     GROUPBOX        "WebCache",IDC_STATIC57,7,222,308,51
     LTEXT           "WebCache:",IDC_STATIC56,19,234,64,10
@@ -2947,6 +2960,10 @@ CLIENTMLDONKEYPLUS1     ICON                    "res\\clientml.ico"
 FILEREQUESTED           ICON                    "res\\FileRequested.ico"
 DROPICON                ICON                    "res\\DROPICON.ICO"
 LEECHER                 ICON                    "res\\leecher.ICO"
+FRIENDNOCLIENTSLOT      ICON                    "res\\friends1slot.ICO"
+FRIENDWITHCLIENTSLOT    ICON                    "res\\friends2slot.ICO"
+FRIENDCONNECTEDSLOT     ICON                    "res\\friends3slot.ICO"
+CLIENTFRIENDSLOTOVL     ICON                    "res\\FriendSlotOvl.ico"
 PREF_WEBCACHE           ICON                    "res\\Prefs_Webcache.ico"
 XTREME                  ICON                    "res\\Mule.ico"
 DROPDEFAULTS            ICON                    "res\\DropDefaults.ico"
@@ -3003,13 +3020,6 @@ IDR_MANIFEST            RT_MANIFEST             "res\\emule.manifest"
 //
 
 IDR_HTTPDOWNLOAD_ANI    AVI                     "res\\inetdownload.avi"
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// JPG
-//
-BANNER                  JPG                     "res\\banner_quer.jpg"
-ABOUT                   JPG                     "res\\logo.jpg"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -3117,6 +3127,14 @@ BEGIN
     VK_RETURN,      IDA_ENTER,              VIRTKEY, NOINVERT
 END
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// JPG
+//
+
+BANNER                  JPG                     "res\\banner_quer.jpg"
+ABOUT                   JPG                     "res\\logo.jpg"
 #endif    // Neutral resources
 /////////////////////////////////////////////////////////////////////////////
 
@@ -5175,6 +5193,14 @@ BEGIN
     IDS_ANTILEECHEREMCRYPT_CHECK "Detect emcrypt"
     IDS_UPLOADMANAGEMENT_FRAME "Upload Management"
     IDS_UPLOADSLOTSPEED_LABEL "Upload Slot Speed"
+    IDS_USENARROWFONT       "Use narrow font in transfer window"
+    IDS_SHOWBLOCKINGRATIO   "Show socket blocking ratio"
+    IDS_FUNNYNICK           "Display Funny Nick"
+    IDS_AUTOUPDATEIPFILTER  "Auto-update IPFilter.dat"
+    IDS_DROPBLOCKINGSOCKETS "drop too oftenly blocking sockets"
+    IDS_LOGPARTMISMATCH     "Log size-mismatch of requested files"
+    IDS_CN_UPNPTRYRANDOM    "Try to use random port on UPnP gateway"
+    IDS_CN_UPNPNAT          "Enable UPnP support"
 END
 
 STRINGTABLE 
@@ -5312,7 +5338,6 @@ BEGIN
                             "No Test Performed. Not all requirements met.\n Requirements:\n1. You have to be connected to a server\n2. You need to have a valid public IP\n3. You need to have a high ID\n4. Test does not work if you have too many open connections"
     // <== WebCache [WC team/MorphXT] - Stulle/Max
     // ==> FunnyNick [SiRoB/Stulle] - Stulle
-    IDS_FUNNYNICK           "FunnyNick"
     IDS_FN_TAG              "FunnyNick Tag"
     IDS_NO_TAG              "No Tag"
     IDS_SHORT_TAG           "[FN]"

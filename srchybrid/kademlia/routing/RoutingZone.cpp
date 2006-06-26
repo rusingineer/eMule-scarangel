@@ -61,6 +61,7 @@ there client on the eMule forum..
 #include "../../kademliawnd.h"
 #include "../../SafeFile.h"
 #include "../../Log.h"
+#include "../../ipfilter.h" //Xman - MORPH ipfilter kad
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -203,9 +204,21 @@ void CRoutingZone::ReadFile()
 					// IP Appears valid
 					if( byType < 4)
 					{
+						//Xman - MORPH START leuk_he ipfilter kad
+						if ( ::theApp.ipfilter->IsFiltered(ntohl(uIP))) 
+			            { 
+                            if (::thePrefs.GetLogFilteredIPs()) 
+								AddDebugLogLine(false, _T("Ignored kad contact(IP=%s)--read known.dat -- - IP filter (%s)") , ipstr(ntohl(uIP)), ::theApp.ipfilter->GetLastHit()); 
+						} 
+						 else 
+						{ 
+						
+
 						// This was not a dead contact, Inc counter if add was successful
 						if( Add(uID, uIP, uUDPPort, uTCPPort, uContactVersion) )
 							uValidContacts++;
+					}
+						//MORPH END leuk_he ipfilter kad 
 					}
 					uNumContacts--;
 				}

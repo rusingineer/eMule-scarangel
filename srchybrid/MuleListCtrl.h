@@ -166,6 +166,9 @@ protected:
 	void OnFindNext();
 	void OnFindPrev();
 
+	//Xman narrow font at transferwindow
+	CFont		m_fontNarrow;
+
 private:
 	static int	IndexToOrder(CHeaderCtrl* pHeader, int iIndex);
 

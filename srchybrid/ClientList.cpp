@@ -1054,7 +1054,7 @@ CDeletedClient::CDeletedClient(const CUpDownClient* pClient)
 	m_ItemsList.Add(porthash);
 }
 
-//Xman -Reask sources after IP change- v2 (main part by Maella)
+//Xman -Reask sources after IP change- v3 (main part by Maella)
 void CClientList::TrigReaskForDownload(bool immediate){
 	for(POSITION pos = list.GetHeadPosition(); pos != NULL;){				
 		CUpDownClient* cur_client =	list.GetNext(pos);

@@ -134,7 +134,7 @@ BOOL CSharedFilesWnd::OnInitDialog()
 	ScreenToClient(tmpRect);
 	historylistctrl.MoveWindow(tmpRect,true);
 	historylistctrl.ShowWindow(false);
-	historylistctrl.Init();
+	//historylistctrl.Init(); //Xman SLUGFILLER: SafeHash - moved
 	AddAnchor(IDC_DOWNHISTORYLIST,TOP_LEFT,BOTTOM_RIGHT);
 	}
 	//Xman end

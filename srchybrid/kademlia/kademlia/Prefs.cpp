@@ -79,9 +79,6 @@ void CPrefs::Init(LPCTSTR szFilename)
 	m_uClientHash.SetValue((uchar*)thePrefs.GetUserHash());
 	m_uIP = 0;
 	m_uIPLast = 0;
-	//Xman -Reask sources after IP change- v2
-	newIPtimestamp	= 0;
-	//Xman end
 	m_bFindBuddy = false;
 	m_uKademliaUsers = 0;
 	m_uKademliaFiles = 0;
@@ -149,9 +146,6 @@ void CPrefs::SetIPAddress(uint32 uVal)
 	if( uVal == m_uIPLast )
 	{
 		m_uIP = uVal;
-		//Xman -Reask sources after IP change- v2
-		newIPtimestamp=::GetTickCount();
-		//Xman end
 	}
 	else
 		m_uIPLast = uVal;

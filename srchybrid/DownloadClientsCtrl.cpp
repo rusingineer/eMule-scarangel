@@ -125,19 +125,23 @@ void CDownloadClientsCtrl::SetAllIcons()
 	m_ImageList.Add(CTempIconLoader(_T("ClientLPhant")));			//16
 	m_ImageList.Add(CTempIconLoader(_T("ClientLPhantPlus")));		//17
 	m_ImageList.Add(CTempIconLoader(_T("LEECHER")));				//18 //Xman Anti-Leecher
+	//Xman friend visualization
+	m_ImageList.Add(CTempIconLoader(_T("ClientFriendSlotOvl"))); //19
 	//Xman end
-	m_ImageList.Add(CTempIconLoader(_T("PREF_WEBCACHE"))); // 19 // WebCache [WC team/MorphXT] - Stulle/Max
+	
+	//Xman end
+	m_ImageList.Add(CTempIconLoader(_T("PREF_WEBCACHE"))); // 20 // WebCache [WC team/MorphXT] - Stulle/Max
 	// ==> Mod Icons - Stulle
-	m_ImageList.Add(CTempIconLoader(_T("AAAEMULEAPP"))); //20
-	m_ImageList.Add(CTempIconLoader(_T("STULLE"))); //21
-	m_ImageList.Add(CTempIconLoader(_T("MAXMOD"))); //22
-	m_ImageList.Add(CTempIconLoader(_T("XTREME"))); //23
-	m_ImageList.Add(CTempIconLoader(_T("MORPH"))); //24
-	m_ImageList.Add(CTempIconLoader(_T("EASTSHARE"))); //25
-	m_ImageList.Add(CTempIconLoader(_T("IONIX"))); //26
-	m_ImageList.Add(CTempIconLoader(_T("CYREX"))); //27
-	m_ImageList.Add(CTempIconLoader(_T("NEXTEMF"))); //28
-	m_ImageList.Add(CTempIconLoader(_T("NEO"))); //29
+	m_ImageList.Add(CTempIconLoader(_T("AAAEMULEAPP"))); //21
+	m_ImageList.Add(CTempIconLoader(_T("STULLE"))); //22
+	m_ImageList.Add(CTempIconLoader(_T("MAXMOD"))); //23
+	m_ImageList.Add(CTempIconLoader(_T("XTREME"))); //24
+	m_ImageList.Add(CTempIconLoader(_T("MORPH"))); //25
+	m_ImageList.Add(CTempIconLoader(_T("EASTSHARE"))); //26
+	m_ImageList.Add(CTempIconLoader(_T("IONIX"))); //27
+	m_ImageList.Add(CTempIconLoader(_T("CYREX"))); //28
+	m_ImageList.Add(CTempIconLoader(_T("NEXTEMF"))); //29
+	m_ImageList.Add(CTempIconLoader(_T("NEO"))); //30
 	// <== Mod Icons - Stulle
 	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
 	// ==> Mod Icons - Stulle
@@ -272,7 +276,7 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	COLORREF crOldBackColor = odc->GetBkColor();  //Xman show LowIDs
 	// <== draw friends blue - Stulle
 	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
-	CFont* pOldFont = dc.SelectObject(GetFont());
+	CFont* pOldFont = dc.SelectObject(thePrefs.UseNarrowFont() ? &m_fontNarrow : GetFont()); //Xman narrow font at transferwindow
 	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
 	/* Xman what is this doing at downloadclients ?
@@ -323,7 +327,7 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					}
 					// ==> WebCache [WC team/MorphXT] - Stulle/Max
 					else if (client->GetClientSoft() == SO_WEBCACHE) {
-						image = 19;
+						image = 20;
 					}
 					// <== WebCache [WC team/MorphXT] - Stulle/Max
 					else if (client->ExtProtocolAvailable()){
@@ -334,7 +338,7 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						if(client->GetModClient() == MOD_NONE)
 							image = 4;
 						else
-							image = (uint8)(client->GetModClient() + 19);
+							image = (uint8)(client->GetModClient() + 20);
 						// <== Mod Icons - Stulle
 					}
 					else{
@@ -375,6 +379,12 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					if(client->GetModClient() == MOD_NONE || client->IsLeecher()>0) // Mod Icons - Stulle
 						m_ImageList.Draw(dc,image, point, ILD_NORMAL | ((client->Credits() && client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED) ? INDEXTOOVERLAYMASK(1) : 0));
 					Sbuffer = client->GetUserName();
+
+					//Xman friend visualization
+					if (client->IsFriend() && client->GetFriendSlot())
+						m_ImageList.Draw(dc,19, point, ILD_NORMAL);
+					//Xman end
+
 
 					//EastShare Start - added by AndCycle, IP to Country, modified by Commander
 					if(theApp.ip2country->ShowCountryFlag() ){
@@ -449,7 +459,8 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					// <== Show Client Percentage [Commander/MorphXT] - Mondgott
 					cur_rec.bottom++;
 					cur_rec.top--;
-				}break;	
+				}
+				break;	
 				case 5:
 					if(client->Credits() && client->GetSessionDown() < client->credits->GetDownloadedTotal())
 						Sbuffer.Format(_T("%s (%s)"), CastItoXBytes(client->GetSessionDown()), CastItoXBytes(client->credits->GetDownloadedTotal()));

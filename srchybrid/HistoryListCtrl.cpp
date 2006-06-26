@@ -235,12 +235,13 @@ void CHistoryListCtrl::Init(void)
 	InsertColumn(5,GetResString(IDS_DOWNHISTORY_SHARED),LVCFMT_LEFT, 65);
 	InsertColumn(6,GetResString(IDS_COMMENT),LVCFMT_LEFT, 260);
 
+	LoadSettings();
+	
 	Reload();
 
-	LoadSettings();
 
 	SetSortArrow();
-	SortItems(SortProc, GetSortItem()+ (GetSortAscending()? 0:100));
+	SortItems(SortProc, GetSortItem() + (GetSortAscending() ? 0:20));
 }
 
 void CHistoryListCtrl::AddFile(CKnownFile* toadd){
@@ -495,7 +496,7 @@ void CHistoryListCtrl::OnColumnClick( NMHDR* pNMHDR, LRESULT* pResult){
 	bool sortAscending = (GetSortItem()!= pNMListView->iSubItem) ? true : !GetSortAscending();
 
 	// Sort table
-	UpdateSortHistory(pNMListView->iSubItem + (sortAscending ? 0:100), 100);
+	UpdateSortHistory(pNMListView->iSubItem + (sortAscending ? 0:20), 20);
 	SetSortArrow(pNMListView->iSubItem, sortAscending);
 	SortItems(SortProc, pNMListView->iSubItem + (sortAscending ? 0:20));
 
