@@ -50,14 +50,26 @@ void CStatisticFile::AddRequest(){
 	requested++;
 	alltimerequested++;
 	theApp.knownfiles->requested++;
-	theApp.sharedfiles->UpdateFile(fileParent);
+	//Xman Code Improvement -> don't update to often
+	//if(m_uFileupdatetime + 1000 < ::GetTickCount()) //once per second
+	{
+		m_uFileupdatetime=::GetTickCount();
+		theApp.sharedfiles->UpdateFile(fileParent);
+	}
+	//Xman end
 }
 	
 void CStatisticFile::AddAccepted(){
 	accepted++;
 	alltimeaccepted++;
 	theApp.knownfiles->accepted++;
-	theApp.sharedfiles->UpdateFile(fileParent);
+	//Xman Code Improvement -> don't update to often
+	//if(m_uFileupdatetime + 1000 < ::GetTickCount()) //once per second
+	{
+		m_uFileupdatetime=::GetTickCount();
+		theApp.sharedfiles->UpdateFile(fileParent);
+	}
+	//Xman end
 }
 	
 void CStatisticFile::AddTransferred(uint64 start, uint32 bytes){ //Xman PowerRelease
@@ -68,7 +80,13 @@ void CStatisticFile::AddTransferred(uint64 start, uint32 bytes){ //Xman PowerRel
 	if(!fileParent->IsPartFile() && fileParent->GetED2KPartCount()>3)
 		AddBlockTransferred(start, start+bytes/*+1*/, 1); //Xman David
 	//Xman end
-	theApp.sharedfiles->UpdateFile(fileParent);
+	//Xman Code Improvement -> don't update to often
+	if(m_uFileupdatetime + 1000 < ::GetTickCount()) //once per second
+	{
+		m_uFileupdatetime=::GetTickCount();
+		theApp.sharedfiles->UpdateFile(fileParent);
+	}
+	//Xman end
 }
 //Xman PowerRelease
 // SLUGFILLER: Spreadbars (old version)

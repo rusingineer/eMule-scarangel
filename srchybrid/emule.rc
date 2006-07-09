@@ -129,8 +129,6 @@ BEGIN
                     BS_AUTOCHECKBOX | WS_TABSTOP,23,137,188,12
     CONTROL         "Use narrow font in transfer window",IDC_USENARROWFONT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,196,197,10
-    CONTROL         "Display FunnyNick",IDC_FUNNYNICK,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,14,218,197,10
 END
 
 IDD_HTTPDOWNLOAD DIALOGEX 0, 0, 231, 145
@@ -2090,6 +2088,86 @@ BEGIN
 END
 // <== TBH: minimule - Max
 
+// ==> MassRename [Dragon] - Stulle
+IDD_MASSRENAME DIALOGEX 0, 0, 377, 257
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Mass-Rename"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    PUSHBUTTON      "OK",IDOK,265,235,50,14,BS_FLAT
+    PUSHBUTTON      "Cancel",IDCANCEL,319,235,50,14,BS_FLAT
+    LTEXT           "Filename mask (changes here will be done to all filenames below):",
+                    IDC_MR_STATIC1,4,4,210,8
+    EDITTEXT        IDC_FILENAMEMASKEDITTEMPLATE,4,16,310,14,ES_AUTOHSCROLL
+    CONTROL         "Original filenames:",IDC_MR_STATIC2,"Static",
+                    SS_LEFTNOWORDWRAP | WS_GROUP,196,45,60,8
+    LTEXT           "New filenames:",IDC_MR_STATIC3,4,45,50,8
+    CONTROL         "Filenames left-justified",IDC_FILENAMELEFT,"Button",
+                    BS_AUTORADIOBUTTON | BS_FLAT,4,32,87,10
+    CONTROL         "Filenames right-justified",IDC_FILENAMERIGHT,"Button",
+                    BS_AUTORADIOBUTTON | BS_FLAT,100,32,96,10
+    PUSHBUTTON      "&Reset",IDC_RESETBUTTON,319,16,50,14
+    CONTROL         "",IDC_NEWFILENAMESEDITLEFT,"RichEdit20A",ES_MULTILINE | 
+                    ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | 
+                    WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,4,53,
+                    180,178
+    CONTROL         "",IDC_NEWFILENAMESEDITRIGHT,"RichEdit20A",ES_MULTILINE | 
+                    ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | 
+                    WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,4,53,
+                    180,178,WS_EX_RIGHT
+    CONTROL         "",IDC_OLDFILENAMESEDIT,"RichEdit20A",ES_MULTILINE | 
+                    ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | 
+                    ES_WANTRETURN | WS_BORDER | WS_VSCROLL | WS_HSCROLL | 
+                    WS_TABSTOP,196,53,173,178
+    PUSHBUTTON      "&Cleanup",IDC_BUTTONSTRIP,4,235,58,14,BS_FLAT
+    PUSHBUTTON      "&Simple Cleanup",IDC_SIMPLECLEANUP,64,235,59,14,BS_FLAT
+    PUSHBUTTON      "Insert text column from clipboard",IDC_INSERTTEXTCOLUMN,
+                    126,235,131,14,BS_FLAT
+END
+
+IDD_SIMPLECLEANUP DIALOGEX 0, 0, 246, 228
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Simple Cleanup"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,133,207,50,14
+    PUSHBUTTON      "Abbrechen",IDCANCEL,189,207,50,14
+    CONTROL         "Convert ""."" to "" """,IDC_CHECKDOTTOSPACE,"Button",
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,7,7,70,10
+    CONTROL         "Convert ""_"" to "" """,IDC_CHECKUNDERLINETOSPACE,
+                    "Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,7,17,71,
+                    10
+    CONTROL         "Convert hexadecimal numbers ""%xx"" back to characters",
+                    IDC_CHECKCONVERTHEX,"Button",BS_AUTOCHECKBOX | BS_FLAT | 
+                    WS_TABSTOP,7,37,197,10
+    CONTROL         "Convert wrong apostrophes ""’"", ""`"" to standard apostrophes "" ' """,
+                    IDC_CHECKCONVERTAPOSTROPHES,"Button",BS_AUTOCHECKBOX | 
+                    BS_FLAT | WS_TABSTOP,7,27,232,10
+    CONTROL         "Search and Replace:",IDC_CHECKSEARCHANDREPLACE,"Button",
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,7,47,90,10
+    LTEXT           "Search for:",IDC_SC_STATIC1,19,61,37,8
+    LTEXT           "Replace by:",IDC_SC_STATIC2,19,76,39,8
+    EDITTEXT        IDC_EDITSEARCH,60,58,179,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDITREPLACEBY,60,75,179,14,ES_AUTOHSCROLL
+    CONTROL         "Replace characters:",IDC_CHECKCHARACTERREPLACE,"Button",
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,7,105,80,10
+    CONTROL         "Case sensitive search",IDC_CHECKCASESENSITIVE,"Button",
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,19,92,85,10
+    PUSHBUTTON      "&Add",IDC_NEWCHARACTER,189,119,50,14
+    PUSHBUTTON      "&Delete",IDC_DELETECHARACTER,189,157,50,14
+    PUSHBUTTON      "&Change",IDC_BUTTONCHANGE,189,138,50,14
+    EDITTEXT        IDC_CHARSOURCE,49,120,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_CHARDEST,107,120,40,14,ES_AUTOHSCROLL
+    LTEXT           "Replace",IDC_SC_STATIC3,19,121,26,8
+    LTEXT           "by",IDC_SC_STATIC4,95,122,9,8
+    CONTROL         "",IDC_REPLACECHARSLIST,"SysListView32",LVS_REPORT | 
+                    LVS_SORTASCENDING | LVS_ALIGNLEFT | WS_BORDER | 
+                    WS_TABSTOP,19,137,164,64
+END
+// <== MassRename [Dragon] - Stulle
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // DESIGNINFO
@@ -2747,6 +2825,32 @@ BEGIN
         BOTTOMMARGIN, 265
         HORZGUIDE, 17
     END
+
+    // ==> MassRename [Dragon] - Stulle
+    IDD_MASSRENAME, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 369
+        VERTGUIDE, 100
+        VERTGUIDE, 184
+        VERTGUIDE, 196
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 249
+        HORZGUIDE, 32
+        HORZGUIDE, 53
+        HORZGUIDE, 231
+    END
+
+    IDD_SIMPLECLEANUP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 239
+        VERTGUIDE, 19
+        VERTGUIDE, 60
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 221
+    END
+    // <== MassRename [Dragon] - Stulle
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -2992,6 +3096,7 @@ MM_DISCON               ICON                    "res\\MM_DisCon.ico"
 MM_DISLOW               ICON                    "res\\MM_DisLow.ico"
 MM_DISDIS               ICON                    "res\\MM_DisDis.ico"
 MINIMULE                ICON                    "res\\MiniMule.ico"
+FILEMASSRENAME          ICON                    "res\\FileMassRename.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -5408,6 +5513,53 @@ BEGIN
     IDS_MM_RATIO            "UL:DL :"
     IDS_MM_OPEN             "Open Mini-Mule on minimize to tray"
     // <== TBH: minimule - Max
+    // ==> Copy feedback feature [MorphXT] - Stulle
+    IDS_COPYFEEDBACK        "Copy feedback to clipboard"
+    IDS_COPYFEEDBACK_US     "Copy feedback to clipboard (US)"
+    IDS_FEEDBACK_TRANSFERRED "Transferred: %s (%s)"
+    IDS_FEEDBACK_REQUESTED  "Requested: %i (%i)"
+    IDS_FEEDBACK_ACCEPTED   "Accepted Requests: %i (%i)"
+    IDS_FEEDBACK_FROM       "Feedback from %s on [%s]"
+    IDS_FEEDBACK_FILENAME   "File name: %s"
+    IDS_FEEDBACK_FILETYPE   "File type: %s"
+    IDS_FEEDBACK_FILESIZE   "Size: %s"
+    IDS_FEEDBACK_DOWNLOADED "Downloaded: %s"
+    IDS_FEEDBACK_TOTAL      "Total sources: %i"
+    IDS_FEEDBACK_AVAILABLE  "Available sources : %i"
+    IDS_FEEDBACK_NONEEDPART "No Needed Part sources: %i"
+    IDS_FEEDBACK_COMPLETE   "Complete sources: %i"
+    // <== Copy feedback feature [MorphXT] - Stulle
+    // ==> MassRename [Dragon] - Stulle
+    IDS_MASSRENAME1         "Filename mask (changes here will be done to all filenames below):"
+    IDS_FILENAMELEFT        "Filenames left-justified"
+    IDS_FILENAMERIGHT       "Filenames right-justified"
+    IDS_RESETFILENAMES      "&Reset"
+    IDS_SIMPLECLEANUP       "&Simple cleanup"
+    IDS_INSERTTEXTCOLUMN    "&Insert text column from clipboard"
+    IDS_MASSRENAME2         "Original filenames:"
+    IDS_MASSRENAME3         "New filenames:"
+    IDS_NOTENOUGHFILENAMES  "Not enough filenames in the list of new filenames. Rename not possible."
+    IDS_IDENTICALFILENAMES  "Two or more equal filenames within the same directory are not allowed (Line %d). Rename not possible."
+    IDS_MR                  "Mass Rename..."
+    IDS_CHECKDOTTOSPACE     "Convert ""."" to "" """
+    IDS_CHECKUNDERLINETOSPACE "Convert ""_"" to "" """
+    IDS_CHECKCONVERTAPOSTROPHES 
+                            "Convert wrong apostrophes ""´"", ""`"" to standard apostrophes "" ' """
+    IDS_CHECKCONVERTHEX     "Convert hexadecimal numbers ""%xx"" back to characters"
+    IDS_CHECKSEARCHANDREPLACE "Search and Replace:"
+    IDS_SC_SEARCHFOR        "Search for:"
+    IDS_SC_REPLACEBY        "Replace by:"
+    IDS_CHECKCASESENSITIVE  "Case sensitive search"
+    IDS_CHECKCHARACTERREPLACE "Replace characters:"
+    IDS_REPLACECHAR         "Replace"
+    IDS_REPLACECHARBY       "by"
+    IDS_SC_ADD              "&Add"
+    IDS_SC_EDIT             "&Edit"
+    IDS_SC_DELETE           "&Delete"
+    IDS_SEARCHFORCHAR       "Search for"
+    IDS_REPLACEBYCHAR       "Replace by"
+    IDS_SC_HEADLINE         "Simple cleanup"
+    // <== MassRename [Dragon] - Stulle
 END
 
 #endif    // Englisch (USA) resources

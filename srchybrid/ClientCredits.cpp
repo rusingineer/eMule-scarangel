@@ -348,6 +348,7 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 			// bad guy - no credits for you
 			//return 1.0f;
 			result = 0.8f; //Xman 80% for non SUI-clients.. (and also bad guys)
+				break;
 		}
 
 		// Cache value

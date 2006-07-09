@@ -288,7 +288,6 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 
 				//Xman -Reask sources after IP change- v3 (main part by Maella)
 				static uint32 s_lastValidId;
-				static uint32 s_lastChangeId;
 				if(s_lastValidId != 0 && serverconnect->GetClientID() != 0 && s_lastValidId != serverconnect->GetClientID()){
 					//Xman: don't trigger if we are connected to kad with this IP for a longer time (5minutes)
 					if (/*Kademlia::CKademlia::IsConnected() && Kademlia::CKademlia::GetPrefs()->GetIPAddress()
@@ -302,9 +301,16 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 						// Public IP has been changed, it's necessary to inform all sources about it
 						// All sources would be informed during their next session refresh (with TCP)
 						// about the new IP.
-						if(s_lastChangeId == 0 || GetTickCount() - s_lastChangeId > FILEREASKTIME + 60000){
+						// ==> Quick start [TPT] - Max
+						if(thePrefs.GetQuickStart() && thePrefs.GetQuickStartAfterIPChange())
+						{
+							downloadqueue->quickflag = 0;
+							downloadqueue->quickflags = 0;
+						}
+						// <== Quick start [TPT] - Max
+						if(GetTickCount() - theApp.last_ip_change > FILEREASKTIME + 60000){
 							theApp.clientlist->TrigReaskForDownload(true);
-
+							theApp.last_ip_change=::GetTickCount();
 							AddLogLine(false, _T("Change from %u (%s ID) to %u (%s ID) detected%s"), 
 								s_lastValidId,
 								(s_lastValidId < 16777216) ? _T("low") : _T("high"),
@@ -314,7 +320,7 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 						}
 						else {
 							theApp.clientlist->TrigReaskForDownload(false);
-
+							theApp.last_ip_change=::GetTickCount();
 							AddLogLine(false, _T("Change from %u (%s ID) to %u (%s ID) detected%s"), 
 								s_lastValidId,
 								(s_lastValidId < 16777216) ? _T("low") : _T("high"),
@@ -324,10 +330,11 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 						}
 					}
 				}
+				if(serverconnect->GetClientID() != 0 && theApp.last_ip_change==0)
+					theApp.last_ip_change=::GetTickCount();
 				if(serverconnect->GetClientID() != 0 && serverconnect->GetClientID() != s_lastValidId){
 					// Keep track of a change of the global IP
 					s_lastValidId = serverconnect->GetClientID();
-					s_lastChangeId = GetTickCount();
 				}
 				// Xman end
 

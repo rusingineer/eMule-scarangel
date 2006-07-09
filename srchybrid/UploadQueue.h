@@ -79,7 +79,6 @@ public:
 	//Xman Xtreme Upload
 	uint16	currentuploadlistsize;
 	bool	internetmaybedown;
-	uint32	last_ip_change; //Xman -Reask sources after IP change- v3 (main part by Maella)
 	bool		AcceptNewClient(bool addOnNextConnect = false); //Xman 4.8.2 must be punlic because of access in ClientUDPSocket
 
 protected:

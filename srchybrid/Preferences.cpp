@@ -731,6 +731,14 @@ bool	CPreferences::m_bMMCompl;
 bool	CPreferences::m_bMMOpen;
 // <== TBH: minimule - Max
 
+// ==> MassRename [Dragon] - Stulle
+int      CPreferences::m_SimpleCleanupOptions;
+CString  CPreferences::m_SimpleCleanupSearch;
+CString  CPreferences::m_SimpleCleanupReplace;
+CString  CPreferences::m_SimpleCleanupSearchChars;
+CString  CPreferences::m_SimpleCleanupReplaceChars;
+// <== MassRename [Dragon] - Stulle
+
 CPreferences::CPreferences()
 {
 #ifdef _DEBUG
@@ -2427,6 +2435,16 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("MiniMuleCompl"),m_bMMCompl);
 	ini.WriteBool(_T("MiniMuleOpen"),m_bMMOpen);
 	// <== TBH: minimule - Max
+
+	// ==> MassRename [Dragon] - Stulle
+	ini.WriteInt (_T("SimpleCleanupOptions"),m_SimpleCleanupOptions);
+	// Enclose the strings with '"' before writing them to the file.
+	// These will be filtered if the string is read again
+	ini.WriteString (_T("SimpleCleanupSearch"),CString ('\"')+m_SimpleCleanupSearch+'\"');
+	ini.WriteString (_T("SimpleCleanupReplace"),CString ('\"')+m_SimpleCleanupReplace+'\"');
+	ini.WriteString (_T("SimpleCleanupSearchChars"),CString ('\"')+m_SimpleCleanupSearchChars+'\"');
+	ini.WriteString (_T("SimpleCleanupReplaceChars"),CString ('\"')+m_SimpleCleanupReplaceChars+'\"');
+	// <== MassRename [Dragon] - Stulle
 }
 
 void CPreferences::ResetStatsColor(int index)
@@ -3392,6 +3410,20 @@ void CPreferences::LoadPreferences()
 	m_bMMCompl = ini.GetBool(_T("MiniMuleCompl"),false);
 	m_bMMOpen = ini.GetBool(_T("MiniMuleOpen"),true);
 	// <== TBH: minimule - Max
+
+	// ==> MassRename [Dragon] - Stulle
+	SetSimpleCleanupOptions (ini.GetInt (_T("SimpleCleanupOptions"),3));
+	SetSimpleCleanupSearch (ini.GetString (_T("SimpleCleanupSearch")));
+	SetSimpleCleanupReplace (ini.GetString (_T("SimpleCleanupReplace")));
+	// Format of the preferences string for character replacement:
+	//      "str";"str";"str";...;"str"
+	// Every "str" in SimpleCleanupSearchChars corresponds to a "str"
+	// in SimpleCleanupReplaceChars at the same position.
+	SetSimpleCleanupSearchChars (ini.GetString (_T("SimpleCleanupSearchChars"),
+								 _T("\"\xE4\";\"\xF6\";\"\xFC\";\"\xC4\";\"\xD6\";\"\xDC\";\"\xDF\"")));/*ISO 8859-4*/
+	SetSimpleCleanupReplaceChars (ini.GetString (_T("SimpleCleanupReplaceChars"),
+								 _T("\"ae\";\"oe\";\"ue\";\"Ae\";\"Oe\";\"Ue\";\"ss\"")));
+	// <== MassRename [Dragon] - Stulle
 }
 
 //Xman Xtreme Upload

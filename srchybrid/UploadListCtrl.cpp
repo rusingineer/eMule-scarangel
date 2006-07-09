@@ -491,9 +491,8 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				case 2:
 					//Sbuffer = CastItoXBytes(client->GetUploadDatarate(), false, true); //Xman // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 					//Xman count block/success send
-					//Xman test
 					if(thePrefs.ShowBlockRatio())
-						Sbuffer.Format(_T("%s, %0.0f%% %0.0f%%"),CastItoXBytes(client->GetUploadDatarate(), false, true), client->GetFileUploadSocket()->GetBlockRatio(), client->GetFileUploadSocket()->GetBlockRatio_overall());
+						Sbuffer.Format(_T("%s, %0.0f%%"),CastItoXBytes(client->GetUploadDatarate(), false, true), client->GetFileUploadSocket()->GetBlockRatio());
 					else
 						Sbuffer = CastItoXBytes(client->GetUploadDatarate(), false, true);
 					break;

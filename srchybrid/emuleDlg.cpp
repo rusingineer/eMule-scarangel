@@ -1899,15 +1899,11 @@ LRESULT CemuleDlg::OnReadBlockFromFileDone(WPARAM wParam,LPARAM lParam)
 }
 // END SiRoB: ReadBlockFromFileThread
 // BEGIN SiRoB: Flush Thread
-LRESULT CemuleDlg::OnFlushDone(WPARAM wParam,LPARAM lParam)
+LRESULT CemuleDlg::OnFlushDone(WPARAM /*wParam*/,LPARAM lParam)
 {
 	CPartFile* partfile = (CPartFile*) lParam;
 	if (theApp.m_app_state != APP_STATE_SHUTINGDOWN && theApp.downloadqueue->IsPartFile(partfile))	// could have been canceled
-		partfile->FlushDone((FlushDone_Struct*)wParam);
-	else {
-		delete[] ((FlushDone_Struct*)wParam)->changedPart;
-		delete	(FlushDone_Struct*)wParam;
-	}
+		partfile->FlushDone();
 	return 0;
 }
 // END SiRoB: Flush Thread
@@ -2000,6 +1996,9 @@ void CemuleDlg::OnClose()
 		}
 	theApp.UpdateSplash(_T("Shutting down ..."));
 	//Xman end
+
+	//Xman queued disc-access for read/flushing-threads
+	theApp.ForeAllDiscAccessThreadsToFinish();
 
 	Log(_T("Closing eMule"));
 	CloseTTS();

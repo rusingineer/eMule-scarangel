@@ -250,7 +250,7 @@ BOOL CStatisticsDlg::OnInitDialog()
 	rcSpl.bottom=rcSpl.top+4; 
 	m_wndSplitterstat_HR.Create(WS_CHILD | WS_VISIBLE, rcSpl, this, IDC_SPLITTER_STAT_HR);
 
-	int PosStatVinitZ = rcSpl.top;
+	//int PosStatVinitZ = rcSpl.top;
 	int PosStatVnewZ = thePrefs.GetSplitterbarPositionStat_HR()*rcW.Height()/100;
 	int maxZ = rcW.bottom-14;
 	int minZ = 0;
@@ -281,7 +281,7 @@ BOOL CStatisticsDlg::OnInitDialog()
 	rcSpl.bottom=rcSpl.top+4;
 	m_wndSplitterstat_HL.Create(WS_CHILD | WS_VISIBLE, rcSpl, this, IDC_SPLITTER_STAT_HL);
 
-	int PosStatVinitY = rcSpl.top;
+	//int PosStatVinitY = rcSpl.top;
 	int PosStatVnewY = thePrefs.GetSplitterbarPositionStat_HL()*rcW.Height()/100;
 	int maxY = rcW.bottom-9;
 	int minY = 10;
@@ -310,7 +310,8 @@ BOOL CStatisticsDlg::OnInitDialog()
 	m_Statistics.MoveWindow(rcStat);
 
 	DoResize_V(PosStatVnewX - PosStatVinitX);
-	/* statistic fix 
+	/*
+	// statistic fix 
 	DoResize_HL(PosStatVnewY - PosStatVinitY);
 	DoResize_HR(PosStatVnewZ - PosStatVinitZ);
 	*/ 
@@ -858,7 +859,6 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		uint32	statGoodSessions =				0;
 		uint32	statBadSessions =				0;
 		double	percentSessions =				0;
-
 		// Transfer Ratios
 		if ( bEmuleIn>0 && bEmuleOut>0 ) 
 		{

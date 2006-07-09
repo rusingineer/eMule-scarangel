@@ -2768,6 +2768,87 @@
 #define IDS_MM_RATIO                    60642
 #define IDS_MM_OPEN                     60643
 // <== TBH: minimule - Max
+// ==> Copy feedback feature [MorphXT] - Stulle
+#define IDS_COPYFEEDBACK                60650
+#define IDS_COPYFEEDBACK_US             60651
+#define IDS_FEEDBACK_TRANSFERRED        60652
+#define IDS_FEEDBACK_REQUESTED          60653
+#define IDS_FEEDBACK_ACCEPTED           60654
+#define IDS_FEEDBACK_FROM               60655
+#define IDS_FEEDBACK_FILENAME           60656
+#define IDS_FEEDBACK_FILETYPE           60657
+#define IDS_FEEDBACK_FILESIZE           60658
+#define IDS_FEEDBACK_DOWNLOADED         60659
+#define IDS_FEEDBACK_TOTAL              60660
+#define IDS_FEEDBACK_AVAILABLE          60661
+#define IDS_FEEDBACK_NONEEDPART         60662
+#define IDS_FEEDBACK_COMPLETE           60663
+// <== Copy feedback feature [MorphXT] - Stulle
+// ==> MassRename [Dragon] - Stulle
+#define IDS_MASSRENAME1                 60670
+#define IDS_FILENAMELEFT                60671
+#define IDS_FILENAMERIGHT               60672
+#define IDS_RESETFILENAMES              60673
+#define IDS_SIMPLECLEANUP               60674
+#define IDS_INSERTTEXTCOLUMN            60675
+#define IDS_MASSRENAME2                 60676
+#define IDS_MASSRENAME3                 60677
+#define IDS_NOTENOUGHFILENAMES          60678
+#define IDS_IDENTICALFILENAMES          60679
+#define IDS_MR                          60680
+#define IDS_CHECKDOTTOSPACE             60681
+#define IDS_CHECKUNDERLINETOSPACE       60682
+#define IDS_CHECKCONVERTAPOSTROPHES     60683
+#define IDS_CHECKCONVERTHEX             60684
+#define IDS_CHECKSEARCHANDREPLACE       60685
+#define IDS_SC_SEARCHFOR                60686
+#define IDS_SC_REPLACEBY                60687
+#define IDS_CHECKCASESENSITIVE          60688
+#define IDS_CHECKCHARACTERREPLACE       60689
+#define IDS_REPLACECHAR                 60690
+#define IDS_REPLACECHARBY               60691
+#define IDS_SC_ADD                      60692
+#define IDS_SC_EDIT                     60693
+#define IDS_SC_DELETE                   60694
+#define IDS_SEARCHFORCHAR               60695
+#define IDS_REPLACEBYCHAR               60696
+#define IDS_SC_HEADLINE                 60697
+#define IDD_SIMPLECLEANUP               60698
+#define IDC_NEWCHARACTER                60699
+#define IDC_DELETECHARACTER             60700
+#define IDC_REPLACECHARSLIST            60701
+#define IDC_BUTTONEDIT                  60702
+#define IDS_MASSRENAME_TITLE            60703
+#define IDC_SC_STATIC1                  60704
+#define IDC_SC_STATIC2                  60705
+#define IDC_SC_STATIC3                  60706
+#define IDC_SC_STATIC4                  60707
+#define IDC_CHECKDOTTOSPACE             60708
+#define IDC_CHECKUNDERLINETOSPACE       60709
+#define IDC_CHECKCONVERTAPOSTROPHES     60710
+#define IDC_CHECKCONVERTHEX             60711
+#define IDC_CHECKSEARCHANDREPLACE       60712
+#define IDC_CHECKCASESENSITIVE          60713
+#define IDC_CHECKCHARACTERREPLACE       60714
+#define IDC_CHARSOURCE                  60715
+#define IDC_CHARDEST                    60716
+#define IDD_MASSRENAME                  60717
+#define IDC_OLDFILENAMESEDIT            60718
+#define IDC_NEWFILENAMESEDITLEFT        60719
+#define IDC_NEWFILENAMESEDITRIGHT       60720
+#define IDC_FILENAMELEFT                60721
+#define IDC_FILENAMERIGHT               60722
+#define IDC_RESETBUTTON                 60723
+#define IDC_SIMPLECLEANUP               60724
+#define IDC_INSERTTEXTCOLUMN            60725
+#define IDC_MR_STATIC1                  60726
+#define IDC_MR_STATIC2                  60727
+#define IDC_MR_STATIC3                  60728
+#define IDC_BUTTONCHANGE                60729
+#define IDC_EDITREPLACEBY               60730
+#define IDC_EDITSEARCH                  60731
+#define IDC_FILENAMEMASKEDITTEMPLATE    60732
+// <== MassRename [Dragon] - Stulle
 
 // Next default values for new objects
 // 

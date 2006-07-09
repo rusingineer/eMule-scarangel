@@ -1333,6 +1333,9 @@
 				RelativePath="ListViewWalkerPropertySheet.cpp">
 			</File>
 			<File
+				RelativePath=".\MassRename.cpp">
+			</File>
+			<File
 				RelativePath="MetaDataDlg.cpp">
 			</File>
 			<File
@@ -1433,6 +1436,9 @@
 			</File>
 			<File
 				RelativePath="SharedFilesWnd.cpp">
+			</File>
+			<File
+				RelativePath=".\SimpleCleanup.cpp">
 			</File>
 			<File
 				RelativePath=".\SivkaFileSettings.cpp">
@@ -1742,6 +1748,9 @@
 				RelativePath="ListViewWalkerPropertySheet.h">
 			</File>
 			<File
+				RelativePath=".\MassRename.h">
+			</File>
+			<File
 				RelativePath="MemDC.h">
 			</File>
 			<File
@@ -1857,6 +1866,9 @@
 			</File>
 			<File
 				RelativePath="SharedFilesWnd.h">
+			</File>
+			<File
+				RelativePath=".\SimpleCleanup.h">
 			</File>
 			<File
 				RelativePath=".\SivkaFileSettings.h">

@@ -153,6 +153,7 @@ public:
 	CString*			pstrPendingLink;
 	COPYDATASTRUCT		sendstruct;
 
+
 // Implementierung
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
@@ -268,6 +269,7 @@ private:
 //Xman -Reask sources after IP change- v3 (main part by Maella)
 public:
 	bool m_bneedpublicIP; 
+	uint32 last_ip_change;
 //Xman end
 
 	//Xman
@@ -278,8 +280,18 @@ public:
 	BOOL  RemoveUPnPNatPort(MyUPnP::UPNPNAT_MAPPING *mapping);
 	//upnp_end
 
+	//Xman queued disc-access for read/flushing-threads
+	void AddNewDiscAccessThread(CWinThread* threadtoadd);
+	void ResumeNextDiscAccessThread();
+	void ForeAllDiscAccessThreadsToFinish();
+private:
+	CTypedPtrList<CPtrList, CWinThread*> threadqueue;
+	CCriticalSection					 threadqueuelock;
+	uint16								 m_uRunningNonBlockedDiscAccessThreads;
+	//Xman end
 
 	// ==> ModID [itsonlyme/SiRoB] - Stulle
+public:
 	static const UINT	m_nMVersionMjr;
 	static const UINT	m_nMVersionMin;
 	static const UINT	m_nMVersionBld;

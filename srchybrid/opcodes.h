@@ -20,7 +20,7 @@
 /*
 //Xman
 //ModID
-#define MOD_VERSION		_T("Xtreme 5.1.2") 
+#define MOD_VERSION		_T("Xtreme 5.2b5") 
 */
 //Xman versions check
 #define MOD_MAIN_VER	5

@@ -37,6 +37,7 @@ public:
 		alltimerequested = 0;
 		alltimetransferred = 0;
 		alltimeaccepted = 0;
+		m_uFileupdatetime = 0; //Xman Code Improvement -> don't update to often
 	}
 
 	void	MergeFileStats( CStatisticFile* toMerge );
@@ -68,4 +69,5 @@ private:
 	uint32 alltimerequested;
 	uint64 alltimetransferred;
 	uint32 alltimeaccepted;
+	uint32 m_uFileupdatetime; //Xman Code Improvement -> don't update to often
 };

@@ -3005,7 +3005,21 @@ bool CListenSocket::Rebind()
 //Xman
 //upnp_start
 bool CListenSocket::StartListening(){
+	//Xman Info about binding
+	if(thePrefs.GetBindAddrW()!=NULL)
+	{
+		AddLogLine(false,_T("you specified an ip-adress to bind. Try to bind to: %s"), thePrefs.GetBindAddrW());
+	}
+	//Xman Info about binding
+
 	bool ret=Create(thePrefs.GetPort(), SOCK_STREAM, FD_ACCEPT, thePrefs.GetBindAddrA(), FALSE/*bReuseAddr*/) && Listen();
+
+	//Xman Info about binding
+	if(thePrefs.GetBindAddrW()!=NULL && ret)
+	{
+		AddLogLine(false,_T("binding successful"));
+	}
+	//Xman Info about binding
 
 	if(ret){
 		if(thePrefs.GetUPnPNat()){

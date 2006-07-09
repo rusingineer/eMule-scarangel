@@ -218,7 +218,10 @@ CemuleApp::CemuleApp(LPCTSTR lpszAppName)
 
 	srand(time(NULL));
 	m_dwPublicIP = 0;
-	m_bneedpublicIP = false; //Xman -Reask sources after IP change- v3 (main part by Maella) 
+	//Xman -Reask sources after IP change- v3 (main part by Maella) 
+	m_bneedpublicIP = false; 
+	last_ip_change = 0;
+	//Xman end
 	m_bAutoStart = false;
 
 	m_ullComCtrlVer = MAKEDLLVERULL(4,0,0,0);
@@ -231,6 +234,9 @@ CemuleApp::CemuleApp(LPCTSTR lpszAppName)
 
 	//Xman dynamic IP-Filters
 	ipdlgisopen=false;
+
+	//Xman queued disc-access for read/flushing-threads
+	m_uRunningNonBlockedDiscAccessThreads=0;
 
 // MOD Note: Do not change this part - Merkur
 
@@ -608,7 +614,7 @@ BOOL CemuleApp::InitInstance()
 
 	// Highres scheduling gives better resolution for Sleep(...) calls, and timeGetTime() calls
 	m_wTimerRes = 0;
-	/*if(thePrefs.GetHighresTimer())*/ //Xman always enabled
+	if(thePrefs.GetHighresTimer()) //Xman always enabled
 	{
 		TIMECAPS tc;
 		if (timeGetDevCaps(&tc, sizeof(TIMECAPS)) == TIMERR_NOERROR) 
@@ -2177,3 +2183,63 @@ void CemuleApp::UpdateSplash(LPCTSTR Text){
 		m_pSplashWnd->SetText2(Text);
 }
 //Xman end
+//Xman queued disc-access for read/flushing-threads
+#define allowed_Threads 1
+//threading-info: synchronized with main-thread which is the only caller
+void CemuleApp::AddNewDiscAccessThread(CWinThread* threadtoadd)
+{
+	if(emuledlg->IsRunning()==false)
+	{
+		//when shuting down, let all flush thread run... in partfile we wait for it
+		if(threadtoadd->IsKindOf(RUNTIME_CLASS(CReadBlockFromFileThread)))
+			threadtoadd->Delete();
+		else
+			threadtoadd->ResumeThread();
+		return;
+	}
+
+
+	threadqueuelock.Lock();
+	if(m_uRunningNonBlockedDiscAccessThreads<=allowed_Threads-1 /*|| thePrefs.dontusediscaccessqueue==true*/) 
+	{
+		m_uRunningNonBlockedDiscAccessThreads++;
+		threadtoadd->ResumeThread();
+	}
+	else
+	{
+		threadqueue.AddTail(threadtoadd);
+	}
+	threadqueuelock.Unlock();
+}
+
+//threading-info: called by different threads
+void CemuleApp::ResumeNextDiscAccessThread()
+{
+	threadqueuelock.Lock();
+	if(threadqueue.IsEmpty()==false && (m_uRunningNonBlockedDiscAccessThreads<=allowed_Threads /*|| thePrefs.dontusediscaccessqueue==true*/))
+	{
+		CWinThread* threadtorun=threadqueue.RemoveHead();
+		threadtorun->ResumeThread();
+	}
+	else if(m_uRunningNonBlockedDiscAccessThreads > 0)
+		m_uRunningNonBlockedDiscAccessThreads--;
+
+	threadqueuelock.Unlock();
+}
+
+//doing this when shutting down
+//threading-info: synchronized with mainthread which is the only caller
+void CemuleApp::ForeAllDiscAccessThreadsToFinish()
+{
+	threadqueuelock.Lock();
+	while(threadqueue.IsEmpty()==false)
+	{
+		CWinThread* threadtorun=threadqueue.RemoveHead();
+		if(threadtorun->IsKindOf(RUNTIME_CLASS(CReadBlockFromFileThread)))
+			threadtorun->Delete();
+		else
+			threadtorun->ResumeThread();
+	}
+
+	threadqueuelock.Unlock();
+}

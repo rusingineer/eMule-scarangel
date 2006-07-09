@@ -222,3 +222,8 @@
 // <== advanced manual dropping - Stulle
 
 #define MP_PRIOWCRELEASE		20010 // WebCache [WC team/MorphXT] - Stulle/Max
+// ==> Copy feedback feature [MorphXT] - Stulle
+#define	MP_COPYFEEDBACK			20020
+#define MP_COPYFEEDBACK_US		20021
+// <== Copy feedback feature [MorphXT] - Stulle
+#define MP_MASSRENAME    		20030 // MassRename [Dragon] - Stulle

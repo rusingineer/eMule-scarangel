@@ -49,6 +49,7 @@
 #include "Log.h"
 //#include "ClientList.h"
 #include "SivkaFileSettings.h" // file settings - Stulle
+#include "MassRename.h" // MassRename [Dragon] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -1784,6 +1785,7 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			else
 				m_FileMenu.SetDefaultItem((UINT)-1);
 			m_FileMenu.EnableMenuItem(MP_VIEWFILECOMMENTS, (iSelectedItems >= 1 /*&& iFilesNotDone == 1*/) ? MF_ENABLED : MF_GRAYED);
+            m_FileMenu.EnableMenuItem(MP_MASSRENAME, iSelectedItems > 0? MF_ENABLED : MF_GRAYED); // MassRename [Dragon] - Stulle
 
 			int total;
 			m_FileMenu.EnableMenuItem(MP_CLEARCOMPLETED, GetCompleteDownloads(curTab, total) > 0 ? MF_ENABLED : MF_GRAYED);
@@ -1805,6 +1807,11 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 //				m_FileMenu.EnableMenuItem((UINT_PTR)m_DropMenu.m_hMenu, (iSelectedItems > 0 && iFilesToStop > 0) ? MF_ENABLED : MF_GRAYED);
 			}
 			// <== file settings - Stulle
+
+			// ==> Copy feedback feature [MorphXT] - Stulle
+			m_FileMenu.EnableMenuItem(MP_COPYFEEDBACK, iSelectedItems > 0? MF_ENABLED : MF_GRAYED);
+			m_FileMenu.EnableMenuItem(MP_COPYFEEDBACK_US, iSelectedItems > 0? MF_ENABLED : MF_GRAYED);
+			// <== Copy feedback feature [MorphXT] - Stulle
 
 			m_FileMenu.EnableMenuItem(thePrefs.GetShowCopyEd2kLinkCmd() ? MP_GETED2KLINK : MP_SHOWED2KLINK, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
 			m_FileMenu.EnableMenuItem(MP_PASTE, theApp.IsEd2kFileLinkInClipboard() ? MF_ENABLED : MF_GRAYED);
@@ -1922,6 +1929,7 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 		m_FileMenu.EnableMenuItem(MP_PREVIEW, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_METINFO, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_VIEWFILECOMMENTS, MF_GRAYED);
+		m_FileMenu.EnableMenuItem(MP_MASSRENAME,MF_GRAYED); // MassRename [Dragon] - Stulle
 		m_FileMenu.EnableMenuItem(MP_CLEARCOMPLETED, GetCompleteDownloads(curTab,total) > 0 ? MF_ENABLED : MF_GRAYED);
 		// ==> file settings - Stulle
 		if (thePrefs.IsExtControlsEnabled()) {
@@ -1934,6 +1942,10 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 		m_FileMenu.SetDefaultItem((UINT)-1);
 		if (m_SourcesMenu)
 			m_FileMenu.EnableMenuItem((UINT_PTR)m_SourcesMenu.m_hMenu, MF_GRAYED);
+		// ==> Copy feedback feature [MorphXT] - Stulle
+		m_FileMenu.EnableMenuItem(MP_COPYFEEDBACK, MF_GRAYED);
+		m_FileMenu.EnableMenuItem(MP_COPYFEEDBACK_US, MF_GRAYED);
+		// <== Copy feedback feature [MorphXT] - Stulle
 		m_FileMenu.EnableMenuItem(MP_SEARCHRELATED, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_FIND, GetItemCount() > 0 ? MF_ENABLED : MF_GRAYED);
 
@@ -2203,6 +2215,95 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					SetRedraw(true);
 					break;
 				// <== advanced manual dropping - Stulle
+				// ==> Copy feedback feature [MorphXT] - Stulle
+ 				case MP_COPYFEEDBACK:
+				{
+					CString feed;
+					feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM), thePrefs.GetUserNick(), theApp.m_strModLongVersion);
+					feed.Append(_T(" \r\n"));
+					POSITION pos = selectedList.GetHeadPosition();
+					while (pos != NULL)
+					{			
+						CKnownFile* file = selectedList.GetNext(pos);
+						feed.Append(file->GetFeedback());
+						feed.Append(_T("\r\n"));
+					}
+					//Todo: copy all the comments too
+					theApp.CopyTextToClipboard(feed);
+					break;
+				}
+				case MP_COPYFEEDBACK_US:
+				{
+					CString feed;
+					feed.AppendFormat(_T("Feedback from %s on [%s]\r\n"),thePrefs.GetUserNick(),theApp.m_strModLongVersion);
+					POSITION pos = selectedList.GetHeadPosition();
+					while (pos != NULL)
+					{
+						CKnownFile* file = selectedList.GetNext(pos);
+						feed.Append(file->GetFeedback(true));
+						feed.Append(_T("\r\n"));
+					}
+					//Todo: copy all the comments too
+					theApp.CopyTextToClipboard(feed);
+					break;
+				}
+				// <== Copy feedback feature [MorphXT] - Stulle
+				// ==> MassRename [Dragon] - Stulle
+			case MP_MASSRENAME: {
+				CMassRenameDialog MRDialog;
+				// Add the files to the dialog
+				POSITION pos = selectedList.GetHeadPosition();
+				while (pos != NULL) {
+					CPartFile*  file = selectedList.GetAt (pos);
+					MRDialog.m_FileList.AddTail (file);
+					selectedList.GetNext (pos);
+				}
+				int result = MRDialog.DoModal ();
+				if (result == IDOK) {
+					// The user has successfully entered new filenames. Now we have
+					// to rename all the files...
+					POSITION pos = selectedList.GetHeadPosition();
+					int i=0;
+					while (pos != NULL) {
+						CString newname = MRDialog.m_NewFilenames.at (i);
+						CString newpath = MRDialog.m_NewFilePaths.at (i);
+						CPartFile* file = selectedList.GetAt (pos);
+						// .part files could be renamed by simply changing the filename
+						// in the CKnownFile object.
+						if ((!file->IsPartFile()) && (_trename(file->GetFilePath(), newpath) != 0)){
+							// Use the "Format"-Syntax of AddLogLine here instead of
+							// CString.Format+AddLogLine, because if "%"-characters are
+							// in the string they would be misinterpreted as control sequences!
+							AddLogLine(false,_T("Failed to rename '%s' to '%s', Error: %hs"), file->GetFilePath(), newpath, _tcserror(errno));
+						} else {
+							CString strres;
+							if (!file->IsPartFile()) {
+								// Use the "Format"-Syntax of AddLogLine here instead of
+								// CString.Format+AddLogLine, because if "%"-characters are
+								// in the string they would be misinterpreted as control sequences!
+								AddLogLine(false,_T("Successfully renamed '%s' to '%s'"), file->GetFilePath(), newpath);
+								file->SetFileName(newname);
+								file->SetFilePath(newpath);
+								file->SetFullName(newpath);
+							} else {
+								// Use the "Format"-Syntax of AddLogLine here instead of
+								// CString.Format+AddLogLine, because if "%"-characters are
+								// in the string they would be misinterpreted as control sequences!
+								AddLogLine(false,_T("Successfully renamed .part file '%s' to '%s'"), file->GetFileName(), newname);
+								file->SetFileName(newname, true); 
+								file->SetFilePath(newpath);
+								file->SavePartFile(); 
+							}
+						}
+
+						// Next item
+						selectedList.GetNext (pos);
+						i++;
+					}
+				}
+								}
+								break;
+				// <== MassRename [Dragon] - Stulle
 				case MP_PAUSE:
 					SetRedraw(false);
 					while (!selectedList.IsEmpty()){
@@ -3043,6 +3144,10 @@ void CDownloadListCtrl::CreateMenues()
 	m_FileMenu.AppendMenu(MF_STRING, MP_PREVIEW, GetResString(IDS_DL_PREVIEW), _T("PREVIEW"));
 	m_FileMenu.AppendMenu(MF_STRING, MP_METINFO, GetResString(IDS_DL_INFO), _T("FILEINFO"));
 	m_FileMenu.AppendMenu(MF_STRING, MP_VIEWFILECOMMENTS, GetResString(IDS_CMT_SHOWALL), _T("FILECOMMENTS"));
+	// ==> MassRename [Dragon] - Stulle
+	if (thePrefs.IsExtControlsEnabled())
+		m_FileMenu.AppendMenu(MF_STRING,MP_MASSRENAME, GetResString(IDS_MR), _T("FILEMASSRENAME"));
+	// <== MassRename [Dragon] - Stulle
 	m_FileMenu.AppendMenu(MF_SEPARATOR);
 	m_FileMenu.AppendMenu(MF_STRING, MP_CLEARCOMPLETED, GetResString(IDS_DL_CLEAR), _T("CLEARCOMPLETE"));
 
@@ -3082,6 +3187,12 @@ void CDownloadListCtrl::CreateMenues()
 		m_FileMenu.AppendMenu(MF_STRING, MP_SHOWED2KLINK, GetResString(IDS_DL_SHOWED2KLINK), _T("ED2KLINK"));
 	m_FileMenu.AppendMenu(MF_STRING, MP_PASTE, GetResString(IDS_SW_DIRECTDOWNLOAD), _T("PASTELINK"));
 	m_FileMenu.AppendMenu(MF_SEPARATOR);
+
+	// ==> Copy feedback feature [MorphXT] - Stulle
+	m_FileMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK, GetResString(IDS_COPYFEEDBACK), _T("COPY"));
+	m_FileMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK_US, GetResString(IDS_COPYFEEDBACK_US), _T("COPY"));
+	m_FileMenu.AppendMenu(MF_SEPARATOR);
+	// <== Copy feedback feature [MorphXT] - Stulle
 
 	// Search commands
 	//

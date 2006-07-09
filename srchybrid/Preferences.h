@@ -724,6 +724,14 @@ public:
 	static	bool	m_bMMOpen;
 	// <== TBH: minimule - Max
 
+	// ==> MassRename [Dragon] - Stulle
+	static int      m_SimpleCleanupOptions;
+	static CString  m_SimpleCleanupSearch;
+	static CString  m_SimpleCleanupReplace;
+	static CString  m_SimpleCleanupSearchChars;
+	static CString  m_SimpleCleanupReplaceChars;
+	// <== MassRename [Dragon] - Stulle
+
 	enum Table
 	{
 		tableDownload, 
@@ -1831,6 +1839,19 @@ public:
 	static	bool	GetMMCompl()			{ return m_bMMCompl; }
 	static	bool	GetMMOpen()				{ return m_bMMOpen; }
 	// <== TBH: minimule - Max
+
+	// ==> MassRename [Dragon] - Stulle
+	static	void	SetSimpleCleanupOptions (int _i)	      { m_SimpleCleanupOptions = _i; }
+	static	int 	GetSimpleCleanupOptions ()			      { return m_SimpleCleanupOptions; }
+	static	void	SetSimpleCleanupSearch (CString _s)	      { m_SimpleCleanupSearch = _s; }
+	static	CString	GetSimpleCleanupSearch ()			      { return m_SimpleCleanupSearch; }
+	static	void	SetSimpleCleanupReplace (CString _s)	  { m_SimpleCleanupReplace = _s; }
+	static	CString	GetSimpleCleanupReplace ()				  { return m_SimpleCleanupReplace; }
+	static	void	SetSimpleCleanupSearchChars (CString _s)  { m_SimpleCleanupSearchChars = _s; }
+	static	CString	GetSimpleCleanupSearchChars ()			  { return m_SimpleCleanupSearchChars; }
+	static	void	SetSimpleCleanupReplaceChars (CString _s) { m_SimpleCleanupReplaceChars = _s; }
+	static	CString	GetSimpleCleanupReplaceChars ()			  { return m_SimpleCleanupReplaceChars; }
+	// <== MassRename [Dragon] - Stulle
 
 protected:
 	static	CString appdir;

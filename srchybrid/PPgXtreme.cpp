@@ -94,9 +94,21 @@ void CPPgXtreme::LoadSettings(void)
 		CheckDlgButton(IDC_AUTOUPDATEIPFILTER, thePrefs.AutoUpdateIPFilter());
 		//Xman end
 
+		CheckDlgButton(IDC_OPENMORESLOTS, thePrefs.m_openmoreslots);
+
 		//Xman count block/success send
 		CheckDlgButton(IDC_SHOWBLOCKINGRATIO, thePrefs.ShowBlockRatio());
+		if(!IsDlgButtonChecked(IDC_OPENMORESLOTS))
+		{
+			CheckDlgButton(IDC_DROPBLOCKINGSOCKETS, FALSE);
+			GetDlgItem(IDC_DROPBLOCKINGSOCKETS)->EnableWindow(FALSE);
+		}
+		else
+		{
+			GetDlgItem(IDC_DROPBLOCKINGSOCKETS)->EnableWindow(TRUE);
 		CheckDlgButton(IDC_DROPBLOCKINGSOCKETS, thePrefs.DropBlockingSockets());
+		}
+		//Xman end
 
 		CheckDlgButton(IDC_NAFCFULLCONTROL, thePrefs.GetNAFCFullControl());
 
@@ -143,9 +155,6 @@ void CPPgXtreme::LoadSettings(void)
 		}
 		//Xman end
 
-
-
-		CheckDlgButton(IDC_OPENMORESLOTS, thePrefs.m_openmoreslots);
 
 		buffer.Format(_T("%u"), thePrefs.GetMTU());
 		GetDlgItem(IDC_MTU_EDIT)->SetWindowText(buffer);

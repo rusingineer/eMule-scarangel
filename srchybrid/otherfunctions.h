@@ -46,6 +46,8 @@ bool IsHexDigit(TCHAR c);
 ///////////////////////////////////////////////////////////////////////////////
 // String conversion
 //
+// ==> added flag to return US Text [SiRoB] - Stulle
+/*
 //Xman Xtreme Mod
 //default is 99, this means, we use the old method (from 0.30)
 CString CastItoXBytes(uint16 count, bool isK = false, bool isPerSec = false, uint32 decimal = 99);
@@ -57,6 +59,16 @@ CString CastItoXBytes(double count, bool isK = false, bool isPerSec = false, uin
 CString CastItoXBytes(EMFileSize count, bool isK = false, bool isPerSec = false, uint32 decimal = 99);
 #endif
 //Xman end
+*/
+CString CastItoXBytes(uint16 count, bool isK = false, bool isPerSec = false, uint32 decimal = 99, bool isUS = false);
+CString CastItoXBytes(uint32 count, bool isK = false, bool isPerSec = false, uint32 decimal = 99, bool isUS = false);
+CString CastItoXBytes(uint64 count, bool isK = false, bool isPerSec = false, uint32 decimal = 99, bool isUS = false);
+CString CastItoXBytes(float count, bool isK = false, bool isPerSec = false, uint32 decimal = 99, bool isUS = false);
+CString CastItoXBytes(double count, bool isK = false, bool isPerSec = false, uint32 decimal = 99, bool isUS = false);
+#ifdef _DEBUG
+CString CastItoXBytes(EMFileSize count, bool isK = false, bool isPerSec = false, uint32 decimal = 99, bool isUS = false);
+#endif
+// <== added flag to return US Text [SiRoB] - Stulle
 CString CastItoIShort(uint16 count, bool isK = false, uint32 decimal = 2);
 CString CastItoIShort(uint32 count, bool isK = false, uint32 decimal = 2);
 CString CastItoIShort(uint64 count, bool isK = false, uint32 decimal = 2);

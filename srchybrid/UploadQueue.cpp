@@ -96,7 +96,6 @@ CUploadQueue::CUploadQueue()
 	dataratestocheck=10;
 	currentuploadlistsize=0; //Xman x4
 	internetmaybedown=true; //Xman x4
-	last_ip_change=0; //Xman -Reask sources after IP change- v3 (main part by Maella)
 	checkforuploadblock=true; //Xman 4.4 enable the feature the check for too many too slow clients.
 	m_dwnextallowedscoreremove=0;
 
@@ -415,7 +414,6 @@ bool CUploadQueue::AcceptNewClient(bool addOnNextConnect)
 
 	uint16 curUpSlots = (uint16)uploadinglist.GetCount();
 
-	//Xman x4
 	//Xman only one slot if maybe no internetconnection
 	if(internetmaybedown && curUpSlots>=1)
 		return false;
@@ -455,7 +453,6 @@ bool CUploadQueue::AcceptNewClient(bool addOnNextConnect)
 			{
 				RemoveFromUploadQueue(blockclient,_T("client is blocking too often and max slots are reached")); //remark: uploadstopreason: other
 				m_blockstoplist.AddHead(::GetTickCount()); //Xman 4.4 remember when this happend.
-				//Xman 4.4
 				//because there are some users out, which set a too high uploadlimit, this code isn't useable
 				//we deactivate it and warn the user
 				if(m_blockstoplist.GetCount()>=6) //5 old + one new element
@@ -482,13 +479,15 @@ bool CUploadQueue::AcceptNewClient(bool addOnNextConnect)
 		if(thePrefs.DropBlockingSockets() && curUpSlots > MinSlots +2 && lastblockingcheck + 1000 < ::GetTickCount() && theApp.uploadBandwidthThrottler->GetAvgHealth() >= 100)
 		{
 			lastblockingcheck=::GetTickCount();
+			float ratioreference=96.0f;
+			if(thePrefs.GetMaxUpload()>=100.0f && thePrefs.m_slotspeed >=10.0f) ratioreference=97.0f;
 			//search a socket we should remove
 			for(POSITION pos=uploadinglist.GetHeadPosition();pos!=NULL;)
 			{
 				CUpDownClient* cur_client=uploadinglist.GetNext(pos);
 				if(cur_client->GetUpStartTimeDelay()>MIN2MS(3) //this client is already 5 minutes uploading. 
-					&& cur_client->GetFileUploadSocket()->GetBlockRatio_overall() >= 95 //95% of all send were blocked
-					&& cur_client->GetFileUploadSocket()->GetBlockRatio() >= 96 //96% the last 20 seconds
+					&& cur_client->GetFileUploadSocket()->GetBlockRatio_overall() >= 95.0f //95% of all send were blocked
+					&& cur_client->GetFileUploadSocket()->GetBlockRatio() >= ratioreference //96% the last 20 seconds
 					)
 				{
 					CString buffer;

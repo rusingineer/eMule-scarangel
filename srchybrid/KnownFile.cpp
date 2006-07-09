@@ -1029,11 +1029,24 @@ bool CKnownFile::WriteToFile(CFileDataIO* file)
 	file->WriteUInt32(m_tUtcLastModified);
 
 	// hashset
+	//Xman SafeHash compatibility fix
+	//with this patch we write the same format as official
+	file->WriteHash16(m_abyFileHash);
+	UINT parts = hashlist.GetCount();
+	if(parts > 1){
+		file->WriteUInt16((uint16)parts);
+		for (UINT i = 0; i < parts; i++)
+		file->WriteHash16(hashlist[i]);
+	}else
+		file->WriteUInt16(0);
+	/*
 	file->WriteHash16(m_abyFileHash);
 	UINT parts = hashlist.GetCount();
 	file->WriteUInt16((uint16)parts);
 	for (UINT i = 0; i < parts; i++)
 		file->WriteHash16(hashlist[i]);
+	*/
+	//Xman end
 
 	uint32 uTagCount = 0;
 	ULONG uTagCountFilePos = (ULONG)file->GetPosition();
@@ -2214,3 +2227,54 @@ uint32 CKnownFile::GetNumberOfClientsRequestingThisFileUsingThisWebcache(CString
 	return returncounter;
 }
 // <== WebCache [WC team/MorphXT] - Stulle/Max
+
+// ==> Copy feedback feature [MorphXT] - Stulle
+CString CKnownFile::GetFeedback(bool isUS)
+{
+	CString feed;
+	if (isUS)
+	{
+		feed.AppendFormat(_T("File name: %s\r\n"),GetFileName());
+		feed.AppendFormat(_T("File type: %s\r\n"),GetFileType());
+		feed.AppendFormat(_T("Size: %s\r\n"), CastItoXBytes(GetFileSize(),false,false,3,true));
+		feed.AppendFormat(_T("Downloaded: %s\r\n"), (IsPartFile()==false)?GetResString(IDS_COMPLETE):CastItoXBytes(((CPartFile*)this)->GetCompletedSize(),false,false,3));
+		feed.AppendFormat(_T("Transferred: %s (%s)\r\n"), CastItoXBytes(statistic.GetTransferred(),false,false,3,true), CastItoXBytes(statistic.GetAllTimeTransferred(),false,false,3,true)); 
+		feed.AppendFormat(_T("Requested: %i (%i)\r\n"), statistic.GetRequests(), statistic.GetAllTimeRequests()); 
+		feed.AppendFormat(_T("Accepted Requests: %i (%i)\r\n"), statistic.GetAccepts(),statistic.GetAllTimeAccepts()); 
+		if(IsPartFile()){
+			feed.AppendFormat(_T("Total sources: %i \r\n"),((CPartFile*)this)->GetSourceCount());
+			feed.AppendFormat(_T("Available sources : %i \r\n"),((CPartFile*)this)->GetAvailableSrcCount());
+			feed.AppendFormat(_T("No Need Part sources: %i \r\n"),((CPartFile*)this)->GetSrcStatisticsValue(DS_NONEEDEDPARTS));
+		}
+		feed.AppendFormat(_T("Complete sources: %i\r\n"),m_nCompleteSourcesCount);
+	}
+	else
+	{
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_FILENAME), GetFileName());
+		feed.Append(_T(" \r\n"));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_FILETYPE), GetFileType());
+		feed.Append(_T(" \r\n"));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_FILESIZE), CastItoXBytes(GetFileSize(),false,false,3));
+		feed.Append(_T(" \r\n"));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_DOWNLOADED), (IsPartFile()==false)?GetResString(IDS_COMPLETE):CastItoXBytes(((CPartFile*)this)->GetCompletedSize(),false,false,3));
+		feed.Append(_T(" \r\n"));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_TRANSFERRED), CastItoXBytes(statistic.GetTransferred(),false,false,3),CastItoXBytes(statistic.GetAllTimeTransferred(),false,false,3));
+		feed.Append(_T(" \r\n"));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_REQUESTED), statistic.GetRequests(), statistic.GetAllTimeRequests());
+		feed.Append(_T(" \r\n"));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_ACCEPTED), statistic.GetAccepts() , statistic.GetAllTimeAccepts());
+		feed.Append(_T(" \r\n"));
+		if(IsPartFile()){
+			feed.AppendFormat(GetResString(IDS_FEEDBACK_TOTAL), ((CPartFile*)this)->GetSourceCount());
+			feed.Append(_T(" \r\n"));
+			feed.AppendFormat(GetResString(IDS_FEEDBACK_AVAILABLE), ((CPartFile*)this)->GetAvailableSrcCount());
+			feed.Append(_T(" \r\n"));
+			feed.AppendFormat(GetResString(IDS_FEEDBACK_NONEEDPART), ((CPartFile*)this)->GetSrcStatisticsValue(DS_NONEEDEDPARTS));
+			feed.Append(_T(" \r\n"));
+		}
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_COMPLETE), m_nCompleteSourcesCount);
+		feed.Append(_T(" \r\n"));
+	}
+	return feed;
+}
+// <== Copy feedback feature [MorphXT] - Stulle

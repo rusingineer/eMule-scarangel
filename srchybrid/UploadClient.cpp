@@ -504,7 +504,10 @@ void CUpDownClient::CreateNextBlockPackage(){
 				if (filedata == NULL) {
 					CReadBlockFromFileThread* readblockthread = (CReadBlockFromFileThread*) AfxBeginThread(RUNTIME_CLASS(CReadBlockFromFileThread), THREAD_PRIORITY_NORMAL,0, CREATE_SUSPENDED);
 					readblockthread->SetReadBlockFromFile(srcfile, currentblock->StartOffset, togo, this);
-					readblockthread->ResumeThread();
+					//Xman queued disc-access for read/flushing-threads
+					//readblockthread->ResumeThread();
+					theApp.AddNewDiscAccessThread(readblockthread);
+					//Xman end
 					SetUploadFileID(srcfile); //Xman - Moved by SiRoB, Fix Filtered Block Request
 					filedata = (byte*)-2;
 					return;
@@ -1638,7 +1641,7 @@ void CReadBlockFromFileThread::SetReadBlockFromFile(CKnownFile* pfile, uint64 st
 int CReadBlockFromFileThread::Run() {
 	DbgSetThreadName("CReadBlockFromFileThread");
 
-	InitThreadLocale();
+	//InitThreadLocale(); //Performance killer
 	// SLUGFILLER: SafeHash
 	CReadWriteLock lock(&theApp.m_threadlock);
 	if (!lock.ReadLock(0))
@@ -1647,10 +1650,23 @@ int CReadBlockFromFileThread::Run() {
 
 	CFile file;
 	byte* filedata = NULL;
+	//Xman queued disc-access for read/flushing-threads
+	bool hastoresumenextthread=true;
+	//Xman end
 	CSyncHelper lockFile;
 	try{
 		CString fullname;
 		if (srcfile->IsPartFile() && ((CPartFile*)srcfile)->GetStatus() != PS_COMPLETE){
+			//Xman queued disc-access for read/flushing-threads
+			CSingleLock lockTest(&((CPartFile*)srcfile)->m_FileCompleteMutex,FALSE);
+			if(lockTest.IsLocked())
+			{
+				//don't wait, resume the next thread
+				theApp.ResumeNextDiscAccessThread();
+				hastoresumenextthread=false;
+			}
+			//Xman end
+
 			((CPartFile*)srcfile)->m_FileCompleteMutex.Lock();
 			lockFile.m_pObject = &((CPartFile*)srcfile)->m_FileCompleteMutex;
 			// If it's a part file which we are uploading the file remains locked until we've read the
@@ -1662,6 +1678,7 @@ int CReadBlockFromFileThread::Run() {
 		else{
 			fullname.Format(_T("%s\\%s"),srcfile->GetPath(),srcfile->GetFileName());
 		}
+
 
 		if (!file.Open(fullname,CFile::modeRead|CFile::osSequentialScan|CFile::shareDenyNone))
 			throw GetResString(IDS_ERR_OPEN);
@@ -1680,6 +1697,14 @@ int CReadBlockFromFileThread::Run() {
 			lockFile.m_pObject = NULL;
 		}
 
+		//Xman queued disc-access for read/flushing-threads
+		if(hastoresumenextthread)
+		{
+			theApp.ResumeNextDiscAccessThread();
+			hastoresumenextthread=false;
+		}
+		//Xman end
+
 		if (theApp.emuledlg && theApp.emuledlg->IsRunning())
 			PostMessage(theApp.emuledlg->m_hWnd,TM_READBLOCKFROMFILEDONE, (WPARAM)filedata,(LPARAM)m_client);
 		else {
@@ -1689,6 +1714,14 @@ int CReadBlockFromFileThread::Run() {
 	}
 	catch(CString error)
 	{
+		//Xman queued disc-access for read/flushing-threads
+		if(hastoresumenextthread)
+		{
+			theApp.ResumeNextDiscAccessThread();
+			hastoresumenextthread=false;
+		}
+		//Xman end
+
 		if (thePrefs.GetVerbose())
 			DebugLogWarning(GetResString(IDS_ERR_CLIENTERRORED), m_client->GetUserName(), error);
 		if (theApp.emuledlg && theApp.emuledlg->IsRunning())
@@ -1699,6 +1732,14 @@ int CReadBlockFromFileThread::Run() {
 	}
 	catch(CFileException* e)
 	{
+		//Xman queued disc-access for read/flushing-threads
+		if(hastoresumenextthread)
+		{
+			theApp.ResumeNextDiscAccessThread();
+			hastoresumenextthread=false;
+		}
+		//Xman end
+
 		TCHAR szError[MAX_CFEXP_ERRORMSG];
 		e->GetErrorMessage(szError, ARRSIZE(szError));
 		if (thePrefs.GetVerbose())
@@ -1712,6 +1753,14 @@ int CReadBlockFromFileThread::Run() {
 	}
 	catch(...)
 	{
+		//Xman queued disc-access for read/flushing-threads
+		if(hastoresumenextthread)
+		{
+			theApp.ResumeNextDiscAccessThread();
+			hastoresumenextthread=false;
+		}
+		//Xman end
+
 		if (theApp.emuledlg && theApp.emuledlg->IsRunning())
 			PostMessage(theApp.emuledlg->m_hWnd,TM_READBLOCKFROMFILEDONE,(WPARAM)-1,(LPARAM)m_client);
 		else if (filedata != (byte*)-1 && filedata != (byte*)-2 && filedata != NULL)
@@ -1745,7 +1794,7 @@ float CUpDownClient::GetRareFilePushRatio() const {
 }
 // <== push rare file - Stulle
 
-// ==> m000h
+// ==> Show Client Percentage [Commander/MorphXT] - Mondgott
 uint16 CUpDownClient::GetAvailableUpPartCount() const
 {
 	UINT result = 0;
@@ -1755,4 +1804,4 @@ uint16 CUpDownClient::GetAvailableUpPartCount() const
 	}
 	return (uint16)result;
 }
-// <== m000h
+// <== Show Client Percentage [Commander/MorphXT] - Mondgott

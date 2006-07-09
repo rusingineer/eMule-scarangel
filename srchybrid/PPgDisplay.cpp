@@ -276,6 +276,7 @@ BOOL CPPgDisplay::OnApply()
 			theApp.emuledlg->SetWindowText(buffer);
 		}
 
+
 		SetModified(FALSE);
 
 	} //show overhead on title - Stulle

@@ -1189,7 +1189,7 @@ public:
 	bool HasWebCacheState() {return m_eWebCacheUpState == WCUS_UPLOADING;} 
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
-	uint16			GetAvailableUpPartCount() const; // m000h
+	uint16			GetAvailableUpPartCount() const; // Show Client Percentage [Commander/MorphXT] - Mondgott
 };
 //#pragma pack()
 

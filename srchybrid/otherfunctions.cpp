@@ -79,6 +79,8 @@ static byte base16Lookup[BASE16_LOOKUP_MAX][2] = {
     { 'F', 0xF }
 };
 
+// ==> added flag to return US Text [SiRoB] - Stulle
+/*
 CString CastItoXBytes(uint16 count, bool isK, bool isPerSec, uint32 decimal){
 	return CastItoXBytes((double)count, isK, isPerSec, decimal);
 }
@@ -179,6 +181,108 @@ CString CastItoXBytes(double count, bool isK, bool isPerSec, uint32 decimal){
 	}
 	return buffer;
 }
+*/
+CString CastItoXBytes(uint16 count, bool isK, bool isPerSec, uint32 decimal, bool isUS){
+	return CastItoXBytes((double)count, isK, isPerSec, decimal, isUS);
+}
+
+CString CastItoXBytes(uint32 count, bool isK, bool isPerSec, uint32 decimal, bool isUS){
+	return CastItoXBytes((double)count, isK, isPerSec, decimal, isUS);
+}
+
+CString CastItoXBytes(uint64 count, bool isK, bool isPerSec, uint32 decimal, bool isUS){
+	return CastItoXBytes((double)count, isK, isPerSec, decimal, isUS);
+}
+
+#ifdef _DEBUG
+CString CastItoXBytes(EMFileSize count, bool isK, bool isPerSec, uint32 decimal, bool isUS){
+	return CastItoXBytes((double)count, isK, isPerSec, decimal, isUS);
+}
+#endif
+
+CString CastItoXBytes(float count, bool isK, bool isPerSec, uint32 decimal, bool isUS){
+	return CastItoXBytes((double)count, isK, isPerSec, decimal, isUS);
+}
+
+CString CastItoXBytes(double count, bool isK, bool isPerSec, uint32 decimal, bool isUS){
+	if( count <= 0.0 )
+	{
+		if(isPerSec)
+			return isUS?_T("0 B/s"):_T("0 ") + GetResString(IDS_BYTESPERSEC);
+		else
+			return isUS?_T("0 Bytes"):_T("0 ") + GetResString(IDS_BYTES);
+	}
+	else if( isK )
+	{
+		if( count >  1.7E+300 )
+			count =  1.7E+300;
+		else
+			count *= 1024.0;
+	}
+	CString buffer;
+	if( isPerSec )
+	{
+		//Xman Xtreme Mod
+		//use other system if decimal=99 (standard)
+		if(decimal==99)
+		{
+			if (count < 1024000.0)
+				buffer.Format(_T("%.1f %s"), count/1024.0, isUS?_T("KB/s"):GetResString(IDS_KBYTESPERSEC));
+			else if (count < 1048576000.0)
+				buffer.Format(_T("%.2f %s"), count/1048576.0, isUS?_T("MB/s"):GetResString(IDS_MBYTESPERSEC));
+			else
+				buffer.Format(_T("%.3f %s"), count/1073741824.0, isUS?_T("GB/s"):GetResString(IDS_GBYTESPERSEC));
+		}
+		else
+		{
+			if (count < 1024.0)
+				buffer.Format(_T("%.0f %s"), count, isUS?_T("B/s"):GetResString(IDS_BYTESPERSEC));
+			else if (count < 1024000.0)
+				buffer.Format(_T("%.*f %s"), decimal, count/1024.0, isUS?_T("KB/s"):GetResString(IDS_KBYTESPERSEC));
+			else if (count < 1048576000.0)
+				buffer.Format(_T("%.*f %s"), decimal, count/1048576.0, isUS?_T("MB/s"):GetResString(IDS_MBYTESPERSEC));
+			else if (count < 1073741824000.0)
+				buffer.Format(_T("%.*f %s"), decimal, count/1073741824.0, isUS?_T("GB/s"):GetResString(IDS_GBYTESPERSEC));
+			else 
+				buffer.Format(_T("%.*f %s"), decimal, count/1099511627776.0, isUS?_T("TB/s"):GetResString(IDS_TBYTESPERSEC));
+			//Xman end
+		}
+	}
+	else
+	{
+		//Xman Xtreme Mod
+		//use other system if decimal=99 (standard)
+		if(decimal==99)
+		{
+			if (count < 1024)
+				buffer.Format(_T("%.0f %s"),count, isUS?_T("Bytes"):GetResString(IDS_BYTES));
+			else if (count < 1048576)
+				buffer.Format(_T("%.0f %s"),count/1024.0f, isUS?_T("KB"):GetResString(IDS_KBYTES));
+			else if (count < 1073741824)
+				buffer.Format(_T("%.2f %s"),count/1048576.0f, isUS?_T("MB"):GetResString(IDS_MBYTES));
+			else if (count < 1099511627776)
+				buffer.Format(_T("%.2f %s"),count/1073741824.0f, isUS?_T("GB"):GetResString(IDS_GBYTES));
+			else 
+				buffer.Format(_T("%.3f %s"),count/1099511627776.0f, isUS?_T("TB"):GetResString(IDS_TBYTES));
+		}
+		else
+		{
+			if (count < 1024.0)
+				buffer.Format(_T("%.0f %s"), count, isUS?_T("Bytes"):GetResString(IDS_BYTES));
+			else if (count < 1024000.0)
+				buffer.Format(_T("%.*f %s"), decimal, count/1024.0, isUS?_T("KB"):GetResString(IDS_KBYTES));
+			else if (count < 1048576000.0)
+				buffer.Format(_T("%.*f %s"), decimal, count/1048576.0, isUS?_T("MB"):GetResString(IDS_MBYTES));
+			else if (count < 1073741824000.0)
+				buffer.Format(_T("%.*f %s"), decimal, count/1073741824.0, isUS?_T("GB"):GetResString(IDS_GBYTES));
+			else 
+				buffer.Format(_T("%.*f %s"), decimal, count/1099511627776.0, isUS?_T("TB"):GetResString(IDS_TBYTES));
+		}
+		//Xman end
+	}
+	return buffer;
+}
+// <== added flag to return US Text [SiRoB] - Stulle
 
 CString CastItoIShort(uint16 count, bool isK, uint32 decimal){
 	return CastItoIShort((double)count, isK, decimal);

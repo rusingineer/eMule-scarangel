@@ -217,4 +217,6 @@ public:
 	uint32 GetNumberOfClientsRequestingThisFileUsingThisWebcache(CString webcachename, uint32 maxCount);
 	void SetReleaseViaWebCache(bool WCRelease) {ReleaseViaWebCache=WCRelease;}
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
+
+	CString GetFeedback(bool isUS = false); // Copy feedback feature [MorphXT] - Stulle
 };

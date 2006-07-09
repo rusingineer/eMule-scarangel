@@ -48,6 +48,10 @@
 #include "SearchParams.h"
 #include "SearchDlg.h"
 #include "SearchResultsWnd.h"
+// ==> MassRename [Dragon] - Stulle
+#include "MassRename.h"
+#include "Log.h"
+// <== MassRename [Dragon] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -829,9 +833,18 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	m_SharedFilesMenu.EnableMenuItem(MP_DETAIL, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
 	m_SharedFilesMenu.EnableMenuItem(thePrefs.GetShowCopyEd2kLinkCmd() ? MP_GETED2KLINK : MP_SHOWED2KLINK, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
 
+	// ==> MassRename [Dragon] - Stulle
+	m_SharedFilesMenu.EnableMenuItem(MP_MASSRENAME, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
+	// <== MassRename [Dragon] - Stulle
+	// ==> Copy feedback feature [MorphXT] - Stulle
+	/*
 	// Xman: IcEcRacKer Copy UL-feedback
 	m_SharedFilesMenu.EnableMenuItem(MP_ULFEEDBACK, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
 	//Xman end
+	*/
+	m_SharedFilesMenu.EnableMenuItem(MP_COPYFEEDBACK, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
+	m_SharedFilesMenu.EnableMenuItem(MP_COPYFEEDBACK_US, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
+	// <== Copy feedback feature [MorphXT] - Stulle
 
 	m_SharedFilesMenu.EnableMenuItem(MP_FIND, GetItemCount() > 0 ? MF_ENABLED : MF_GRAYED);
 
@@ -1188,6 +1201,66 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 
 					break;
 				}
+			// ==> MassRename [Dragon] - Stulle
+			case MP_MASSRENAME: {
+					CMassRenameDialog MRDialog;
+					// Add the files to the dialog
+					POSITION pos = selectedList.GetHeadPosition();
+					while (pos != NULL) {
+						CKnownFile*  file = selectedList.GetAt (pos);
+						MRDialog.m_FileList.AddTail (file);
+						selectedList.GetNext (pos);
+					}
+					int result = MRDialog.DoModal ();
+					if (result == IDOK) {
+						// The user has successfully entered new filenames. Now we have
+						// to rename all the files...
+						POSITION pos = selectedList.GetHeadPosition();
+						int i=0;
+						while (pos != NULL) {
+							CString newname = MRDialog.m_NewFilenames.at (i);
+							CString newpath = MRDialog.m_NewFilePaths.at (i);
+							CKnownFile* file = selectedList.GetAt (pos);
+							// .part files could be renamed by simply changing the filename
+							// in the CKnownFile object.
+							if ((!file->IsPartFile()) && (_trename(file->GetFilePath(), newpath) != 0)){
+								// Use the "Format"-Syntax of AddLogLine here instead of
+								// CString.Format+AddLogLine, because if "%"-characters are
+								// in the string they would be misinterpreted as control sequences!
+								AddLogLine(false,_T("Failed to rename '%s' to '%s', Error: %hs"), file->GetFilePath(), newpath, _tcserror(errno));
+							} else {
+								CString strres;
+								if (!file->IsPartFile()) {
+									// Use the "Format"-Syntax of AddLogLine here instead of
+									// CString.Format+AddLogLine, because if "%"-characters are
+									// in the string they would be misinterpreted as control sequences!
+									AddLogLine(false,_T("Successfully renamed '%s' to '%s'"), file->GetFilePath(), newpath);
+									file->SetFileName(newname);
+									if (file->IsKindOf(RUNTIME_CLASS(CPartFile)))
+										((CPartFile*) file)->SetFullName(newpath);
+								} else {
+									// Use the "Format"-Syntax of AddLogLine here instead of
+									// CString.Format+AddLogLine, because if "%"-characters are
+									// in the string they would be misinterpreted as control sequences!
+									AddLogLine(false,_T("Successfully renamed .part file '%s' to '%s'"), file->GetFileName(), newname);
+									file->SetFileName(newname, true); 
+									((CPartFile*) file)->UpdateDisplayedInfo();
+									((CPartFile*) file)->SavePartFile(); 
+								}
+								file->SetFilePath(newpath);
+									UpdateFile(file);
+								}
+
+							// Next item
+							selectedList.GetNext (pos);
+							i++;
+						}
+					}
+				}
+				break;
+			// <== MassRename [Dragon] - Stulle
+			// ==> Copy feedback feature [MorphXT] - Stulle
+			/*
 			// Xman: IcEcRacKer Copy UL-feedback
 			case MP_ULFEEDBACK: 
 				{ 
@@ -1198,12 +1271,7 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 						CKnownFile* file = selectedList.RemoveHead();
 
 						feed.AppendFormat(_T("%s: %s \r\n"), GetResString(IDS_SF_STATISTICS),thePrefs.GetUserNick()); 
-						// ==> ModID [itsonlyme/SiRoB] - Stulle
-						/*
 						feed.AppendFormat(_T("Mod: %s%s[%s] \r\n"),_T("eMule"), theApp.m_strCurVersionLong, MOD_VERSION);  
-						*/
-						feed.AppendFormat(_T("Mod: %s%s[%s] \r\n"),_T("eMule"), theApp.m_strCurVersionLong, theApp.m_strModVersion);
-						// <== ModID [itsonlyme/SiRoB] - Stulle
 						feed.AppendFormat(_T("%s: %s \r\n"),GetResString(IDS_DL_FILENAME),file->GetFileName()); 
 						feed.AppendFormat(_T("%s: %s \r\n"),GetResString(IDS_TYPE),file->GetFileType()); 
 						feed.AppendFormat(_T("%s: %s\r\n"),GetResString(IDS_DL_SIZE), CastItoXBytes(file->GetFileSize(), false, false)); 
@@ -1222,6 +1290,39 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					break; 
 				} 
 			//Xman end
+			*/
+ 			case MP_COPYFEEDBACK:
+			{
+				CString feed;
+				feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM), thePrefs.GetUserNick(), theApp.m_strModLongVersion);
+				feed.AppendFormat(_T(" \r\n"));
+				POSITION pos = selectedList.GetHeadPosition();
+				while (pos != NULL)
+				{
+					CKnownFile* file = selectedList.GetNext(pos);
+					feed.Append(file->GetFeedback());
+					feed.Append(_T(" \r\n"));
+				}
+				//Todo: copy all the comments too
+				theApp.CopyTextToClipboard(feed);
+				break;
+			}
+			case MP_COPYFEEDBACK_US:
+			{
+				CString feed;
+				feed.AppendFormat(_T("Feedback from %s on [%s]\r\n"),thePrefs.GetUserNick(),theApp.m_strModLongVersion);
+				POSITION pos = selectedList.GetHeadPosition();
+				while (pos != NULL)
+				{
+					CKnownFile* file = selectedList.GetNext(pos);
+					feed.Append(file->GetFeedback(true));
+					feed.Append(_T("\r\n"));
+				}
+				//Todo: copy all the comments too
+				theApp.CopyTextToClipboard(feed);
+				break;
+			}
+			// <== Copy feedback feature [MorphXT] - Stulle
 			default:
 				if (wParam>=MP_WEBURL && wParam<=MP_WEBURL+256){
 					theWebServices.RunURL(file, wParam);
@@ -1518,10 +1619,21 @@ void CSharedFilesCtrl::CreateMenues()
 	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_FIND, GetResString(IDS_FIND), _T("Search"));
 	m_SharedFilesMenu.AppendMenu(MF_STRING|MF_SEPARATOR); 
 
+	// ==> MassRename [Dragon] - Stulle
+	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_MASSRENAME,GetResString(IDS_MR), _T("FILEMASSRENAME"));
+	m_SharedFilesMenu.AppendMenu(MF_STRING|MF_SEPARATOR); 
+	// <== MassRename [Dragon] - Stulle
+	// ==> Copy feedback feature [MorphXT] - Stulle
+	/*
 	// Xman: IcEcRacKer Copy UL-feedback
 	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_ULFEEDBACK, _T("Copy UL-Feedback"), _T("FILECOMMENTS")); 
 	m_SharedFilesMenu.AppendMenu(MF_STRING|MF_SEPARATOR); 
 	//Xman end
+	*/
+	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK, GetResString(IDS_COPYFEEDBACK), _T("COPY"));
+	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK_US, GetResString(IDS_COPYFEEDBACK_US), _T("COPY"));
+	m_SharedFilesMenu.AppendMenu(MF_SEPARATOR);
+	// <== Copy feedback feature [MorphXT] - Stulle
 
 #if defined(_DEBUG)
 	if (thePrefs.IsExtControlsEnabled()){

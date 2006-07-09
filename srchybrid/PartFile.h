@@ -140,7 +140,7 @@ class CPartFile : public CKnownFile
 	//Xman
 	friend class CPartHashThread;	// SLUGFILLER: SafeHash
 
-	friend class CPartFileFlushThread; //Xman fix for flush-thread
+	friend class CPartFileFlushThread; //Xman Flush Thread
 
 public:
 	CPartFile(UINT cat = 0);
@@ -257,8 +257,7 @@ public:
 	void	FlushBuffer(bool forcewait=false, bool bForceICH = false, bool bNoAICH = false);
 	//Xman
 	// BEGIN SiRoB: Flush Thread
-	void	FlushDone(FlushDone_Struct* FlushSetting);
-	void	SetFlushThread(bool state) { m_bIsFlushThread = state; };
+	void	FlushDone();
 	// END SiRoB: Flush Thread
 	// Barry - This will invert the gap list, up to caller to delete gaps when done
 	// 'Gaps' returned are really the filled areas, and guaranteed to be in order
@@ -514,9 +513,8 @@ private:
 
 	//Xman
 	//MORPH Added by SiRoB, Flush Thread
-	bool	m_bIsFlushThread; 
-	bool	m_bNeedToFlush;
-	CPartFileFlushThread* m_FlushThread; //Xman fix for flush-thread
+	FlushDone_Struct* m_FlushSetting;
+	CPartFileFlushThread* m_FlushThread; 
 	//Xman end
 
 	// ==> Global Source Limit [Max/Stulle] - Stulle
@@ -632,6 +630,12 @@ private:
 public:
 	void	AddRequestedBlock(Requested_Block_Struct* block);
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
+
+	// ==> Source Counts Are Cached derivated from Khaos [SiRoB] - Stulle
+	UINT	GetAvailableSrcCount() const;
+private:
+	UINT	m_anStatesTemp[STATES_COUNT];
+	// <== Source Counts Are Cached derivated from Khaos [SiRoB] - Stulle
 };
 
 //Xman
@@ -666,9 +670,8 @@ protected:
 public:
 	virtual	BOOL	InitInstance() {return true;}
 	virtual int		Run();
-	void	SetPartFile(CPartFile* pOwner, FlushDone_Struct* changedPart);
+	void	SetPartFile(CPartFile* pOwner);
 private:
 	CPartFile*				m_partfile;
-	FlushDone_Struct*			m_FlushSetting;
 };
 // END SiRoB: Flush Thread

@@ -338,9 +338,8 @@ void CPartFile::Init(){
 	//Xman
 	m_PartsHashing = 0;		// SLUGFILLER: SafeHash
 	// SiRoB: Flush Thread
-	m_bIsFlushThread = false; 
-	m_bNeedToFlush = false; 
-	m_FlushThread = NULL; //Xman fix for flush-thread
+	m_FlushThread = NULL; 
+	m_FlushSetting = NULL;
 	//Xman end
 
 	// ==> Global Source Limit [Max/Stulle] - Stulle
@@ -401,18 +400,7 @@ CPartFile::~CPartFile()
 		}
 
 		if (m_hpartfile.m_hFile != INVALID_HANDLE_VALUE)
-		{
 			FlushBuffer(true);
-			//Xman fix for flush-thread
-			if(m_bIsFlushThread)
-			{
-				HANDLE hThread = m_FlushThread->m_hThread;
-				// 2 minutes to let the thread finish
-				if (WaitForSingleObject(hThread, 120000) == WAIT_TIMEOUT)
-					TerminateThread(hThread, 100);
-			}
-			//Xman end
-		}
 	}
 	catch(CFileException* e){
 		e->Delete();
@@ -1495,6 +1483,12 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 
 bool CPartFile::SavePartFile()
 {
+	//Xman
+	//MORPH - Flush Thread, no need to savepartfile now will be done when flushDone complet
+	if (m_FlushSetting)
+		return false;
+	//MORPH - Flush Thread, no need to savepartfile now will be done when flushDone complet
+
 	switch (status){
 		case PS_WAITINGFORHASH:
 		case PS_HASHING:
@@ -1566,11 +1560,24 @@ bool CPartFile::SavePartFile()
 		file.WriteUInt32(m_tUtcLastModified);
 
 		//hash
+		//Xman SafeHash compatibility fix
+		//with this patch we write the same format as official
+		file.WriteHash16(m_abyFileHash);
+		UINT parts = hashlist.GetCount();
+		if(parts > 1){
+			file.WriteUInt16((uint16)parts);
+			for (UINT x = 0; x < parts; x++)
+				file.WriteHash16(hashlist[x]);
+		}else
+			file.WriteUInt16(0);
+		/*
 		file.WriteHash16(m_abyFileHash);
 		UINT parts = hashlist.GetCount();
 		file.WriteUInt16((uint16)parts);
 		for (UINT x = 0; x < parts; x++)
 			file.WriteHash16(hashlist[x]);
+		*/
+		//Xman end
 
 		UINT uTagCount = 0;
 		ULONG uTagCountFilePos = (ULONG)file.GetPosition();
@@ -2248,7 +2255,12 @@ void CPartFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, boo
 		const COLORREF crMissing = RGB(255, 0, 0);
 		const COLORREF crNooneAsked = (bFlat) ? RGB(0, 0, 0) : RGB(104, 104, 104);
 		for (UINT i = 0; i < GetPartCount(); i++){
+			//Xman
+			//MORPH - Changed by SiRoB, SafeHash
+			/*
 			if(IsComplete((uint64)i*PARTSIZE,((uint64)(i+1)*PARTSIZE)-1, true)) {
+			*/
+			if(IsPartShareable(i)) {
 				if(GetStatus() != PS_PAUSED || m_ClientUploadList.GetSize() > 0 || m_nCompleteSourcesCountHi > 0) {
 					uint32 frequency;
 					if(GetStatus() != PS_PAUSED && !m_SrcpartFrequency.IsEmpty()) {
@@ -2525,6 +2537,8 @@ void CPartFile::WriteCompleteSourcesCount(CSafeMemFile* file) const
 	file->WriteUInt16(m_nCompleteSourcesCount);
 }
 
+// ==> Source Counts Are Cached derivated from Khaos [SiRoB] - Stulle
+/*
 int CPartFile::GetValidSourcesCount() const
 {
 	int counter = 0;
@@ -2546,6 +2560,20 @@ UINT CPartFile::GetNotCurrentSourcesCount() const
 	}
 	return counter;
 }
+*/
+int CPartFile::GetValidSourcesCount() const
+{
+	return m_anStates[DS_ONQUEUE]+m_anStates[DS_DOWNLOADING]+m_anStates[DS_CONNECTED]+m_anStates[DS_REMOTEQUEUEFULL];
+}
+UINT CPartFile::GetNotCurrentSourcesCount() const
+{
+	return srclist.GetCount() - m_anStates[DS_DOWNLOADING] - m_anStates[DS_ONQUEUE];
+}
+UINT CPartFile::GetAvailableSrcCount() const
+{
+	return m_anStates[DS_ONQUEUE]+m_anStates[DS_DOWNLOADING];
+}
+// <== Source Counts Are Cached derivated from Khaos [SiRoB] - Stulle
 
 uint64 CPartFile::GetNeededSpace() const
 {
@@ -2732,7 +2760,12 @@ uint32 CPartFile::Process(uint32 maxammount, bool isLimited, bool fullProcess)
 		// Xman end
 		bool downloadingbefore=m_anStates[DS_DOWNLOADING]>0;
 		// -khaos--+++> Moved this here, otherwise we were setting our permanent variables to 0 every tenth of a second...
+		// ==> Source Counts Are Cached derivated from Khaos [SiRoB] - Stulle
+		/*
 		memset(m_anStates,0,sizeof(m_anStates));
+		*/
+		memset(m_anStatesTemp,0,sizeof(m_anStatesTemp));
+		// <== Source Counts Are Cached derivated from Khaos [SiRoB] - Stulle
 		memset(src_stats,0,sizeof(src_stats));
 		memset(net_stats,0,sizeof(net_stats));
 		UINT nCountForState;
@@ -2770,8 +2803,14 @@ uint32 CPartFile::Process(uint32 maxammount, bool isLimited, bool fullProcess)
 			if (cur_src->GetKadPort())
 				net_stats[1]++;
 
+			// ==> Source Counts Are Cached derivated from Khaos [SiRoB] - Stulle
+			/*
 			ASSERT( nCountForState < sizeof(m_anStates)/sizeof(m_anStates[0]) );
 			m_anStates[nCountForState]++;
+			*/
+			ASSERT( nCountForState < sizeof(m_anStatesTemp)/sizeof(m_anStatesTemp[0]) );
+			m_anStatesTemp[nCountForState]++;
+			// <== Source Counts Are Cached derivated from Khaos [SiRoB] - Stulle
 
 			switch (cur_src->GetDownloadState())
 			{
@@ -3147,6 +3186,8 @@ uint32 CPartFile::Process(uint32 maxammount, bool isLimited, bool fullProcess)
 		if (downloadingbefore!=(m_anStates[DS_DOWNLOADING]>0))
 			NotifyStatusChange();
  
+		memcpy(m_anStates,m_anStatesTemp,sizeof(m_anStates)); // Source Counts Are Cached derivated from Khaos [SiRoB] - Stulle
+
 		if( GetMaxSourcePerFileUDP() > GetSourceCount() && IsSourceSearchAllowed()) //Xman GlobalMaxHarlimit for fairness
 		{
 			if (theApp.downloadqueue->DoKademliaFileRequest() && (Kademlia::CKademlia::GetTotalFile() < KADEMLIATOTALFILE) && (dwCurTick > m_LastSearchTimeKad) &&  Kademlia::CKademlia::IsConnected() && theApp.IsConnected() && !stopped){ //Once we can handle lowID users in Kad, we remove the second IsConnected
@@ -4354,7 +4395,7 @@ void CPartFile::ResumeFile(bool resort)
 		return;
 	if (status==PS_ERROR && m_bCompletionError){
 		ASSERT( gaplist.IsEmpty() );
-		if (gaplist.IsEmpty() && !m_nTotalBufferData && !m_bIsFlushThread) { //Xman - MORPH - Changed by SiRoB, Flush Thread
+		if (gaplist.IsEmpty() && !m_nTotalBufferData && !m_FlushThread) { //Xman - MORPH - Changed by SiRoB, Flush Thread
 			// rehashing the file could probably be avoided, but better be in the safe side..
 			m_bCompletionError = false;
 			CompleteFile(false);
@@ -5260,12 +5301,29 @@ uint32 CPartFile::WriteToBuffer(uint64 transize, const BYTE *data, uint64 start,
 void CPartFile::FlushBuffer(bool forcewait, bool bForceICH, bool /*bNoAICH*/)
 {
 	//MORPH START - Added by SiRoB, Flush Thread
-	if (m_bIsFlushThread) {
-		if (forcewait)
-			m_bNeedToFlush = true;
+	if (forcewait) { //We need to wait for flush thread to terminate
+		CWinThread* pThread = m_FlushThread;
+		if (pThread != NULL) { //We are flushing something to disk
+			HANDLE hThread = pThread->m_hThread;
+			//Xman queued disc-access for read/flushing-threads
+			if (WaitForSingleObject(hThread,  INFINITE) == WAIT_FAILED) {
+				TerminateThread(hThread, 100); // Should never happen
+				theApp.ResumeNextDiscAccessThread();
+				AddDebugLogLine(false,_T("Strange error in flushing thread->FlushBuffer()"));
+			}
+			//Xman end
+		}
+		if (m_FlushSetting != NULL) //We noramly flushed something to disk
+			FlushDone();
+	} else if (m_FlushSetting != NULL) { //Some thing is going to be flushed or allready flushed wait the window call back to call FlushDone()
 		return;	
 	}
 	//MORPH END   - Added by SiRoB, Flush Thread
+	
+	//Xman Flush Thread improvement
+	bool forcedbecauseincreasing=false;
+	//Xman end
+
 	bool bIncreasedFile=false;
 
 	m_nLastBufferFlushTime = GetTickCount();
@@ -5335,7 +5393,13 @@ void CPartFile::FlushBuffer(bool forcewait, bool bForceICH, bool /*bNoAICH*/)
 			}
 
 			if (!IsNormalFile() || uIncrease<2097152) 
+			{
+				//Xman Flush Thread improvement
+				if(forcewait==false)
+					forcedbecauseincreasing=true;
+				//Xman end
 				forcewait=true;	// <2MB -> alloc it at once
+			}
 
 			// Allocate filesize
 			if (!forcewait) {
@@ -5399,33 +5463,47 @@ void CPartFile::FlushBuffer(bool forcewait, bool bForceICH, bool /*bNoAICH*/)
 
 		//Creating the Thread to flush to disk
 
-		//Xman fix for flush-thread
-		/*CPartFileFlushThread**/ m_FlushThread = (CPartFileFlushThread*) AfxBeginThread(RUNTIME_CLASS(CPartFileFlushThread), THREAD_PRIORITY_BELOW_NORMAL,0, CREATE_SUSPENDED);
-		if (m_FlushThread) {
-			m_bIsFlushThread = true;
-			m_bNeedToFlush = false;
-			FlushDone_Struct* FlushSetting = new FlushDone_Struct;
-			FlushSetting->bIncreasedFile = bIncreasedFile;
-			FlushSetting->bForceICH = bForceICH;
-			FlushSetting->changedPart = changedPart;
-			m_FlushThread->SetPartFile(this, FlushSetting);
-			m_FlushThread->ResumeThread();
+		m_FlushSetting = new FlushDone_Struct;
+		m_FlushSetting->bIncreasedFile = bIncreasedFile;
+		m_FlushSetting->bForceICH = bForceICH;
+		m_FlushSetting->changedPart = changedPart;
+		if (forcewait == false || forcedbecauseincreasing==true) //Xman Flush Thread improvement
+		{
+			m_FlushThread = (CPartFileFlushThread*) AfxBeginThread(RUNTIME_CLASS(CPartFileFlushThread), THREAD_PRIORITY_BELOW_NORMAL,0, CREATE_SUSPENDED);
+			if (m_FlushThread) {
+				m_FlushThread->SetPartFile(this);
+				//Xman queued disc-access for read/flushing-threads
+				//m_FlushThread->ResumeThread();
+				theApp.AddNewDiscAccessThread(m_FlushThread);
+				//Xman end
+				return;
+			} else {
+				m_hpartfile.Flush();
+			}
 		}
+		FlushDone();
 	}
 	catch (CFileException* error)
 	{
 		FlushBuffersExceptionHandler(error);	
 		delete[] changedPart;
+		if (m_FlushSetting)
+			delete m_FlushSetting;
 	}
 	catch(...)
 	{
 		FlushBuffersExceptionHandler();
 		delete[] changedPart;
+		if (m_FlushSetting)
+			delete m_FlushSetting;
 	}
 }
 
-void CPartFile::FlushDone(FlushDone_Struct* FlushSetting)
+void CPartFile::FlushDone()
 {
+	if (m_FlushSetting == NULL) //Already do in normal process
+		return;
+
 	// Check each part of the file
 	// Only if hashlist is available
 	if (hashlist.GetCount() == GetED2KPartCount()){
@@ -5433,7 +5511,7 @@ void CPartFile::FlushDone(FlushDone_Struct* FlushSetting)
 		// Check each part of the file
 		for (int partNumber = partCount-1; partNumber >= 0; partNumber--)
 		{
-			if (!FlushSetting->changedPart[partNumber])
+			if (!m_FlushSetting->changedPart[partNumber])
 				continue;
 			// Any parts other than last must be full size
 			if (!GetPartHash(partNumber)) {
@@ -5456,7 +5534,7 @@ void CPartFile::FlushDone(FlushDone_Struct* FlushSetting)
 				parthashthread->SetSinglePartHash(this, (uint16)partNumber);
 				parthashthread->ResumeThread();
 			}
-			else if (IsCorruptedPart(partNumber) && (thePrefs.IsICHEnabled() || FlushSetting->bForceICH))
+			else if (IsCorruptedPart(partNumber) && (thePrefs.IsICHEnabled() || m_FlushSetting->bForceICH))
 			{
 				CPartHashThread* parthashthread = (CPartHashThread*) AfxBeginThread(RUNTIME_CLASS(CPartHashThread), THREAD_PRIORITY_BELOW_NORMAL,0, CREATE_SUSPENDED);
 				parthashthread->SetSinglePartHash(this, (uint16)partNumber, true);	// Special case, doesn't increment hashing parts, since part isn't really complete
@@ -5472,7 +5550,7 @@ void CPartFile::FlushDone(FlushDone_Struct* FlushSetting)
 	// SLUGFILLER: SafeHash
 
 		// Update met file
-		SavePartFile();
+	//SavePartFile(); //Xman MORPH - Flush Thread Moved Down
 
 		if (theApp.emuledlg->IsRunning()) // may be called during shutdown!
 		{
@@ -5488,7 +5566,7 @@ void CPartFile::FlushDone(FlushDone_Struct* FlushSetting)
 			// If useing a compressed or sparse file, we always have to check the space 
 			// regardless whether the file was increased in size or not.
 		bool bCheckDiskspace = thePrefs.IsCheckDiskspaceEnabled() && thePrefs.GetMinFreeDiskSpace() > 0;
-		if (bCheckDiskspace && ((IsNormalFile() && FlushSetting->bIncreasedFile) || !IsNormalFile()))
+		if (bCheckDiskspace && ((IsNormalFile() && m_FlushSetting->bIncreasedFile) || !IsNormalFile()))
 			{
 				switch(GetStatus())
 				{
@@ -5515,24 +5593,23 @@ void CPartFile::FlushDone(FlushDone_Struct* FlushSetting)
 				}
 			}
 		}
-	delete[] FlushSetting->changedPart;
-	delete	FlushSetting;
-	SetFlushThread(NULL);
-	if (m_bNeedToFlush)
-		FlushBuffer(true);
+	delete[] m_FlushSetting->changedPart;
+	delete	m_FlushSetting;
+	m_FlushSetting = NULL;
+	// Update met file
+	SavePartFile();
 }
 
 IMPLEMENT_DYNCREATE(CPartFileFlushThread, CWinThread)
-void CPartFileFlushThread::SetPartFile(CPartFile* partfile, FlushDone_Struct *changedPart)
+void CPartFileFlushThread::SetPartFile(CPartFile* partfile)
 {
 	m_partfile = partfile;
-	m_FlushSetting = changedPart;
 }	
 
 int CPartFileFlushThread::Run()
 {
 	DbgSetThreadName("Partfile-Flushing");
-	InitThreadLocale();
+	//InitThreadLocale(); //Performance killer
 
 	// SLUGFILLER: SafeHash
 	CReadWriteLock lock(&theApp.m_threadlock);
@@ -5542,29 +5619,71 @@ int CPartFileFlushThread::Run()
 
 	//theApp.QueueDebugLogLine(false,_T("FLUSH:Start (%s)"),m_partfile->GetFileName()/*, CastItoXBytes(myfile->m_iAllocinfo, false, false)*/ );
 
+	//Xman queued disc-access for read/flushing-threads
+	bool hastoresumenextthread=true;
+	//Xman end
+
 	try{
-		CSingleLock sLock1(&(theApp.hashing_mut), TRUE); //SafeHash - wait a current hashing process end before read the chunk
+		//Xman queued disc-access for read/flushing-threads
+		CSingleLock sLock1(&(theApp.hashing_mut), FALSE); //SafeHash - wait a current hashing process end before read the chunk
+		if(sLock1.IsLocked())
+		{
+			//don't wait, resume the next thread
+			theApp.ResumeNextDiscAccessThread();
+			hastoresumenextthread=false;
+		}
+		sLock1.Lock();
+		//Xman end
+
 		// Flush to disk
 		m_partfile->m_hpartfile.Flush();
+
+		//Xman queued disc-access for read/flushing-threads
+		if(hastoresumenextthread)
+		{
+			theApp.ResumeNextDiscAccessThread();
+			hastoresumenextthread=false;
+		}
+		//Xman end
+
 	}
 	catch (CFileException* error)
 	{
+		//Xman queued disc-access for read/flushing-threads
+		if(hastoresumenextthread)
+		{
+			theApp.ResumeNextDiscAccessThread();
+			hastoresumenextthread=false;
+		}
+		//Xman end
+
 		VERIFY( PostMessage(theApp.emuledlg->m_hWnd,TM_FILEALLOCEXC,(WPARAM)m_partfile,(LPARAM)error) );
-		m_partfile->SetFlushThread(NULL);
-		delete[] m_FlushSetting->changedPart;
-		delete m_FlushSetting;
+		delete[] m_partfile->m_FlushSetting->changedPart;
+		delete m_partfile->m_FlushSetting;
+		m_partfile->m_FlushSetting = NULL;
+		m_partfile->m_FlushThread = NULL;
 		return 1;
 	}
 	catch(...)
 	{
+		//Xman queued disc-access for read/flushing-threads
+		if(hastoresumenextthread)
+		{
+			theApp.ResumeNextDiscAccessThread();
+			hastoresumenextthread=false;
+		}
+		//Xman end
+
 		VERIFY( PostMessage(theApp.emuledlg->m_hWnd,TM_FILEALLOCEXC,(WPARAM)m_partfile,0) );
-		delete[] m_FlushSetting->changedPart;
-		delete m_FlushSetting;
-		m_partfile->SetFlushThread(NULL);
+		delete[] m_partfile->m_FlushSetting->changedPart;
+		delete m_partfile->m_FlushSetting;
+		m_partfile->m_FlushSetting = NULL;
+		m_partfile->m_FlushThread = NULL;
 		return 2;
 	}
 
-	VERIFY( PostMessage(theApp.emuledlg->m_hWnd,TM_FLUSHDONE,(WPARAM)m_FlushSetting,(LPARAM)m_partfile) );
+	m_partfile->m_FlushThread = NULL;
+	VERIFY( PostMessage(theApp.emuledlg->m_hWnd,TM_FLUSHDONE,0,(LPARAM)m_partfile) );
 	//theApp.QueueDebugLogLine(false,_T("FLUSH:End (%s)"),m_partfile->GetFileName());
 	return 0;
 }
@@ -7041,8 +7160,8 @@ void CPartFile::ProcessSourceCache()
 bool CPartFile::IsGlobalSourceAddAllowed()
 {
 	// ==> Global Source Limit [Max/Stulle] - Stulle
-	// Well well, we activated Global HL  global and for this very file so we are free to 
-	// add sources here. Since Global HL will take full control of the max src we don't
+	// Well, well, we activated Global HL  global and for this very file so we are free to 
+	// add sources here. Since Global HL will take full control of the max src we doesn't
 	// care about the settings of GlobalMaxHarlimit for fairness, it's used anyhow
 	if(thePrefs.IsUseGlobalHL() && (thePrefs.GetGlobalHlAll() || m_bGlobalHL) && theApp.downloadqueue->GetGlobalHLSrcReqAllowed())
 		return true;
@@ -7192,7 +7311,7 @@ void CPartFile::PartHashFinished(UINT partnumber, bool corrupt)
 		if (theApp.emuledlg->IsRunning())	// may be called during shutdown!
 		{
 			// Is this file finished?
-			if (!m_PartsHashing && gaplist.IsEmpty() && !m_nTotalBufferData && !m_bIsFlushThread) //Xman - MORPH - Changed by SiRoB, Flush Thread
+			if (!m_PartsHashing && gaplist.IsEmpty() && !m_nTotalBufferData && !m_FlushThread) //Xman - MORPH - Changed by SiRoB, Flush Thread
 				CompleteFile(false);	// Recheck all hashes, because loaded data is trusted based on file-date
 		}
 	}
@@ -7248,7 +7367,7 @@ void CPartFile::PartHashFinishedAICHRecover(UINT partnumber, bool corrupt)
 
 		if (theApp.emuledlg->IsRunning()){
 			// Is this file finished?
-			if (!m_PartsHashing && gaplist.IsEmpty() && !m_nTotalBufferData && !m_bIsFlushThread) //Xman - MORPH - Changed by SiRoB, Flush Thread
+			if (!m_PartsHashing && gaplist.IsEmpty() && !m_nTotalBufferData  && !m_FlushThread) //Xman - MORPH - Changed by SiRoB, Flush Thread
 				CompleteFile(false);	// Recheck all hashes, because loaded data is trusted based on file-date
 		}
 	}
@@ -7319,7 +7438,7 @@ void CPartFile::ParseICHResult()
 
 	if (theApp.emuledlg->IsRunning()){ // may be called during shutdown!
 		// Is this file finished?
-		if (!m_PartsHashing && gaplist.IsEmpty() && !m_nTotalBufferData && !m_bIsFlushThread) //Xman - MORPH - Changed by SiRoB, Flush Thread
+		if (!m_PartsHashing && gaplist.IsEmpty() && !m_nTotalBufferData && !m_FlushThread) //Xman - MORPH - Changed by SiRoB, Flush Thread
 			CompleteFile(false);	// Recheck all hashes, because loaded data is trusted based on file-date
 	}
 }
@@ -7381,7 +7500,7 @@ void CPartHashThread::SetSinglePartHash(CPartFile* pOwner, uint16 part, bool ICH
 
 int CPartHashThread::Run()
 {
-	InitThreadLocale();
+	//InitThreadLocale(); //Performance killer
 
 	// SLUGFILLER: SafeHash
 	CReadWriteLock lock(&theApp.m_threadlock);
