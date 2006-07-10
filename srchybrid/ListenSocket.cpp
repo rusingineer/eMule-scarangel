@@ -3008,7 +3008,7 @@ bool CListenSocket::StartListening(){
 	//Xman Info about binding
 	if(thePrefs.GetBindAddrW()!=NULL)
 	{
-		AddLogLine(false,_T("you specified an ip-adress to bind. Try to bind to: %s"), thePrefs.GetBindAddrW());
+		AddLogLine(false,_T("You specified an ip-address to bind. Try to bind to: %s"), thePrefs.GetBindAddrW());
 	}
 	//Xman Info about binding
 

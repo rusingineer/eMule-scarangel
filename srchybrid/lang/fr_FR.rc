@@ -2064,23 +2064,25 @@ BEGIN
     IDS_SWAP_A4AF_TO_THIS   "Passer la source à ce fichier maintenant"
     IDS_SWAP_A4AF_TO_OTHER  "Passer la source à l'un des autres fichiers maintenant"
     IDS_ALL_A4AF_AUTO       "Passer automatiquement toutes les sources (A4AF) à ce fichier"
+    IDS_LEECHER_ACTION_BAN  "Ban"
+    IDS_LEECHER_ACTION_REDUCE "Diminution du score"
+    IDS_ANTILEECHERBADHELLO_CHECK "Detection des Hello-Tag suspect"
+    IDS_ANTILEECHERSNAFU_CHECK "Detection des mauvais Tags"
 END
 
 STRINGTABLE 
 BEGIN
-    	IDS_LEECHER_ACTION_BAN  "Ban"
-	IDS_LEECHER_ACTION_REDUCE "Diminution du score"
-	IDS_ANTILEECHERBADHELLO_CHECK "Detection des Hello-Tag suspect"
-	IDS_ANTILEECHERSNAFU_CHECK "Detection des mauvais Tags"
 	IDS_ANTILEECHERMOD_CHECK "Détection des leechers par le nom de Mod"
-	IDS_ANTILEECHERTHIEF_CHECK "Détection des voleurs de nom (Mod et utilisateurs)"
+    IDS_ANTILEECHERTHIEF_CHECK 
+                            "Détection des voleurs de nom (Mod et utilisateurs)"
 	IDS_ANTILEECHERSPAMMER_CHECK "Détections des spammeurs"
 	IDS_ANTILEECHERXSEXPLOITER_CHECK "Détection des XS-Exploiter"
 	IDS_STATIC_LEECHERCOMMUNITY "Mods communautaires"
 	IDS_STATIC_LEECHERGHOST "Mod fantôme"
 	IDS_STATIC_LEECHERTHIEF "Voleurs de noms/Nom de Mod"
     IDS_NEWXTREMEVERSION    "Une nouvelle version de la Xtrem est disponible"
-	IDS_NEWXTREMEVERSIONDOWNLOAD "Une nouvelle version de la Xtrem est disponible \n Voulez vous mettre à jour ?"
+    IDS_NEWXTREMEVERSIONDOWNLOAD 
+                            "Une nouvelle version de la Xtrem est disponible \n Voulez vous mettre à jour ?"
     IDS_NEWDLP              "Un nouveau fichier antiLeech.dll (DLP) est diponible"
 	IDS_NEWDLPDOWNLOAD "Un nouveau fichier antiLeech.dll (DLP) est diponible \n Voulez vous mettre à jour ?"
     IDS_DROPLEECHER         "Élimine leecher"
@@ -2088,10 +2090,22 @@ BEGIN
 	IDS_UPDOWNUPLOADLIST    "Up / Down"
 	IDS_MAXGLOBALSOURCES    "Limite globale de sources:"
 	IDS_ACCEPTSOURCES      "Accepter limite globale de sources"
+END
+
+STRINGTABLE 
+BEGIN
 	IDS_ACCEPTRATIO        "Accepter le ratio de session 1:3 si sources trouvées > limite de sources"
 	IDS_SHOWADDITIONALGRAPH "Montrer lignes de graphique additionnelles"
     	IDS_CHECK4UPDATEMOD     "Vérifier si nouvelle Xtreme version tous les"
     	IDS_ANTILEECHEREMCRYPT_CHECK "Détection des emcrypt"
+    IDS_USENARROWFONT       "Utilisation de police condensé dans la fenètre transfert"
+    IDS_SHOWBLOCKINGRATIO   "Affiche le ratio des sockets bloquants"
+    IDS_FUNNYNICK           "Affichage des surnoms"
+    IDS_AUTOUPDATEIPFILTER  "Mise à jour automatique de l'IPFilter.dat"
+    IDS_DROPBLOCKINGSOCKETS "Abandon des sockets bloquant trop souvent"
+    IDS_LOGPARTMISMATCH     "Journaliser les erreurs de taille sur les fichiers demandés"
+    IDS_CN_UPNPTRYRANDOM    "Tester des ports aléatoire sur les passerelles UPnP"
+    IDS_CN_UPNPNAT          "Activer le support de l'UPnP"
 END
 
 #endif    // Französisch (Frankreich) resources

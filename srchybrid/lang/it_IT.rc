@@ -2075,10 +2075,6 @@ BEGIN
     IDS_SWAP_A4AF_TO_THIS   "Usa le fonti selezionate per questo File"
     IDS_SWAP_A4AF_TO_OTHER  "Usa le fonti selezionate per un altro File"
     IDS_ALL_A4AF_AUTO       "Usa automaticamente gli A4AF per questo File"
-END
-
-STRINGTABLE 
-BEGIN
     IDS_LEECHER_ACTION_BAN  "Ban"
     IDS_LEECHER_ACTION_REDUCE "ridurre il punteggio"
     IDS_ANTILEECHERBADHELLO_CHECK "trovato un errato tag-Hello"
@@ -2104,10 +2100,22 @@ BEGIN
 	IDS_UPDOWNUPLOADLIST    "Up / Down"
 	IDS_MAXGLOBALSOURCES "Limite fonti globale:"
 	IDS_ACCEPTSOURCES "Accetta il limite fonti globale"
+END
+
+STRINGTABLE 
+BEGIN
 	IDS_ACCEPTRATIO "Accetta un rapporto di 1:3 per sessione se fonti trovate > limite fonti"
 	IDS_SHOWADDITIONALGRAPH "Mostra grafici addizionali"
     IDS_CHECK4UPDATEMOD     "Controlla Aggiornamenti Xtreme"
     IDS_ANTILEECHEREMCRYPT_CHECK "trovati emcrypt"
+    IDS_USENARROWFONT       "Usa caratteri stretti nella finestra trasferimenti"
+    IDS_SHOWBLOCKINGRATIO   "Mostra socket blocking ratio"
+    IDS_FUNNYNICK           "Mostra Funny Nick"
+    IDS_AUTOUPDATEIPFILTER  "Aggiornamento automatico IPFilter.dat"
+    IDS_DROPBLOCKINGSOCKETS "Elimina i sockets bloccati troppo spesso"
+    IDS_LOGPARTMISMATCH     "Riporta il formato errato dei file richiesti"
+    IDS_CN_UPNPTRYRANDOM    "Prova ad usare porte casuali sul dispositivo UPnP"
+    IDS_CN_UPNPNAT          "Abilita il supporto UPnP"
 END
 
 STRINGTABLE 
@@ -2226,7 +2234,6 @@ BEGIN
     IDS_STATS_WEBCACHE_3    "Data 3:"
     // <== WebCache [WC team/MorphXT] - Stulle/Max
     // ==> FunnyNick [SiRoB/Stulle] - Stulle
-    IDS_FUNNYNICK           "FunnyNick"
     IDS_FN_TAG              "FunnyNick Tag"
     IDS_NO_TAG              "Senza Tag"
     IDS_SHORT_TAG           "[FN]"

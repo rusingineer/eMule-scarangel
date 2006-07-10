@@ -2068,14 +2068,14 @@ BEGIN
     IDS_SWAP_A4AF_TO_THIS   "Intercambiar fuente (A4AF) a este archivo"
     IDS_SWAP_A4AF_TO_OTHER  "Intercambiar fuente (A4AF) a OTRO archivo"
     IDS_ALL_A4AF_AUTO       "Intercambiar automáticamente todas las fuentes (A4AF) a este archivo"
+    IDS_LEECHER_ACTION_BAN  "Ban"
+    IDS_LEECHER_ACTION_REDUCE "Reducir score"
+    IDS_ANTILEECHERBADHELLO_CHECK "Detectar Hello-tag erróneo"
+    IDS_ANTILEECHERSNAFU_CHECK "Detectar Tags incorrectos"
 END
 
 STRINGTABLE 
 BEGIN
-	IDS_LEECHER_ACTION_BAN  "Ban"
-	IDS_LEECHER_ACTION_REDUCE "Reducir score"
-	IDS_ANTILEECHERBADHELLO_CHECK "Detectar Hello-tag erróneo"
-	IDS_ANTILEECHERSNAFU_CHECK "Detectar Tags incorrectos"
 	IDS_ANTILEECHERMOD_CHECK "Detectar Leecher por Modstring "
 	IDS_ANTILEECHERTHIEF_CHECK "Detectar Nick- / Modthiefs "
 	IDS_ANTILEECHERSPAMMER_CHECK "Detectar Spammers"
@@ -2084,7 +2084,8 @@ BEGIN
 	IDS_STATIC_LEECHERGHOST "Ghost-Mods"
 	IDS_STATIC_LEECHERTHIEF "Nick- / Modthiefs"
 	IDS_NEWXTREMEVERSION    "Nueva versión de Xtreme disponible"
-	IDS_NEWXTREMEVERSIONDOWNLOAD "Nueva versión de Xtreme disponible \n Quieres bajartela ?"
+    IDS_NEWXTREMEVERSIONDOWNLOAD 
+                            "Nueva versión de Xtreme disponible \n Quieres bajartela ?"
 	IDS_NEWDLP              "Nuevo antiLeech.dll (DLP) disponible"
 	IDS_NEWDLPDOWNLOAD "Nuevo antiLeech.dll (DLP) disponible \n Quieres bajartelo ?"
     IDS_DROPLEECHER         "Eliminar Leecher"
@@ -2092,10 +2093,22 @@ BEGIN
     IDS_UPDOWNUPLOADLIST    "Up / Down"
    IDS_MAXGLOBALSOURCES    "Límite Global de fuentes:"
    IDS_ACCEPTSOURCES      "Aceptar límite Global de fuentes"
+END
+
+STRINGTABLE 
+BEGIN
    IDS_ACCEPTRATIO        "Aceptar límite de sesión 1:3 si fuentes encontradas > límite fuentes"
    IDS_SHOWADDITIONALGRAPH "Mostrar líneas de gráfico adicionales"
     IDS_CHECK4UPDATEMOD     "Comprobar si hay una nueva Xtreme versión"
     IDS_ANTILEECHEREMCRYPT_CHECK "Detectar emcrypt"
+    IDS_USENARROWFONT       "Caracteres estrechos en ventana de tráfico"
+    IDS_SHOWBLOCKINGRATIO   "Mostrar ratio de conexiones bloquedas"
+    IDS_FUNNYNICK           "Activar nicks graciosos"
+    IDS_AUTOUPDATEIPFILTER  "Auto-actualizar IPFilter.dat"
+    IDS_DROPBLOCKINGSOCKETS "eliminar conexiones muy bloqueadas"
+    IDS_LOGPARTMISMATCH     "Logear solicitados con tamaños incorrectos"
+    IDS_CN_UPNPTRYRANDOM    "Intentar puertos aleatorios en UPnP"
+    IDS_CN_UPNPNAT          "Activar soporte UPnP "
 END
 
 #endif    // Spanisch (Kastilisch) resources

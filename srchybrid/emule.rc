@@ -5302,7 +5302,7 @@ BEGIN
     IDS_SHOWBLOCKINGRATIO   "Show socket blocking ratio"
     IDS_FUNNYNICK           "Display Funny Nick"
     IDS_AUTOUPDATEIPFILTER  "Auto-update IPFilter.dat"
-    IDS_DROPBLOCKINGSOCKETS "drop too oftenly blocking sockets"
+    IDS_DROPBLOCKINGSOCKETS "Drop too frequently blocking sockets"
     IDS_LOGPARTMISMATCH     "Log size-mismatch of requested files"
     IDS_CN_UPNPTRYRANDOM    "Try to use random port on UPnP gateway"
     IDS_CN_UPNPNAT          "Enable UPnP support"

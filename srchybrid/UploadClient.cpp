@@ -570,7 +570,7 @@ void CUpDownClient::CreateNextBlockPackage(){
 					CreatePackedPackets(filedata,togo,currentblock,bFromPF);
 				else
 					CreateStandartPackets(filedata,togo,currentblock,bFromPF);
-				//Xman end
+				//Xman end Code Improvement for choosing to use compression
 
 				//Xman Xtreme Upload 
 				if(GetFileUploadSocket() && GetFileUploadSocket()->isready==false)
@@ -1658,9 +1658,11 @@ int CReadBlockFromFileThread::Run() {
 		CString fullname;
 		if (srcfile->IsPartFile() && ((CPartFile*)srcfile)->GetStatus() != PS_COMPLETE){
 			//Xman queued disc-access for read/flushing-threads
-			CSingleLock lockTest(&((CPartFile*)srcfile)->m_FileCompleteMutex,FALSE);
-			if(lockTest.IsLocked())
+			HANDLE mutexhandle=((CPartFile*)srcfile)->m_FileCompleteMutex.m_hObject;
+			DWORD dwRet = ::WaitForSingleObject(mutexhandle, 0);
+			if (dwRet != WAIT_OBJECT_0 && dwRet != WAIT_ABANDONED)
 			{
+				//we didn't get the mutex
 				//don't wait, resume the next thread
 				theApp.ResumeNextDiscAccessThread();
 				hastoresumenextthread=false;
@@ -1672,6 +1674,12 @@ int CReadBlockFromFileThread::Run() {
 			// If it's a part file which we are uploading the file remains locked until we've read the
 			// current block. This way the file completion thread can not (try to) "move" the file into
 			// the incoming directory.
+
+			//Xman queued disc-access for read/flushing-threads
+			//if we already got the mutex, we lock it now two times ->must release one time
+			if(hastoresumenextthread)
+				::ReleaseMutex(mutexhandle);
+			//Xman end
 
 			fullname = RemoveFileExtension(((CPartFile*)srcfile)->GetFullName());
 		}

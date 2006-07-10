@@ -4302,6 +4302,7 @@ bool CPartFile::CanPauseFile() const
 
 void CPartFile::PauseFile(bool bInsufficient, bool resort)
 {
+
 	// if file is already in 'insufficient' state, don't set it again to insufficient. this may happen if a disk full
 	// condition is thrown before the automatically and periodically check free diskspace was done.
 	if (bInsufficient && insufficient)
@@ -5625,18 +5626,31 @@ int CPartFileFlushThread::Run()
 
 	try{
 		//Xman queued disc-access for read/flushing-threads
-		CSingleLock sLock1(&(theApp.hashing_mut), FALSE); //SafeHash - wait a current hashing process end before read the chunk
-		if(sLock1.IsLocked())
+		//this is done for SafeHash to check the hashing-Mut
+		HANDLE mutexhandle=theApp.hashing_mut.m_hObject;
+		DWORD dwRet = ::WaitForSingleObject(mutexhandle, 0);
+		if (dwRet != WAIT_OBJECT_0 && dwRet != WAIT_ABANDONED)
 		{
+			//we didn't get the mutex
 			//don't wait, resume the next thread
 			theApp.ResumeNextDiscAccessThread();
 			hastoresumenextthread=false;
 		}
-		sLock1.Lock();
 		//Xman end
+
+		CSingleLock sLock1(&(theApp.hashing_mut), TRUE); //SafeHash - wait a current hashing process end before read the chunk
+
+		//Xman queued disc-access for read/flushing-threads
+		//if we already got the mutex, we lock it now two times ->must release one time
+		if(hastoresumenextthread)
+			::ReleaseMutex(mutexhandle);
+		//Xman end
+
 
 		// Flush to disk
 		m_partfile->m_hpartfile.Flush();
+
+		sLock1.Unlock(); //Xman SafeHash - Unlock the mutex as fast as possible
 
 		//Xman queued disc-access for read/flushing-threads
 		if(hastoresumenextthread)

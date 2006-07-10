@@ -295,7 +295,7 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 						 && Kademlia::CKademlia::GetPrefs()->newIPtimestamp + MIN2MS(5) < ::GetTickCount()*/
 						 oldkadIP!= 0 && oldkadIP==serverconnect->GetClientID()
 						 )
-						AddLogLine(false,_T("reported IP from server changed, but sources won't be reasked because of Kad-Connection"));
+						AddDebugLogLine(false,_T("reported IP from server changed, but sources won't be reasked because of Kad-Connection"));
 					else
 					{
 						// Public IP has been changed, it's necessary to inform all sources about it
@@ -304,8 +304,8 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 						// ==> Quick start [TPT] - Max
 						if(thePrefs.GetQuickStart() && thePrefs.GetQuickStartAfterIPChange())
 						{
-							downloadqueue->quickflag = 0;
-							downloadqueue->quickflags = 0;
+							theApp.downloadqueue->quickflag = 0;
+							theApp.downloadqueue->quickflags = 0;
 						}
 						// <== Quick start [TPT] - Max
 						if(GetTickCount() - theApp.last_ip_change > FILEREASKTIME + 60000){

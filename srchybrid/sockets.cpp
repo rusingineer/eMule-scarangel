@@ -137,10 +137,14 @@ void CServerConnect::ConnectToServer(CServer* server, bool multiconnect)
 	if(theApp.ipfilter->IsFiltered(server->GetIP()))
 	{
 		AddLogLine(true,_T("you can't connect to filtered server: %s, %s"),ipstr(server->GetIP()), server->GetDescription() );
+		server->AddFailedCount();
+		
+		/* Xman fix me: had problems & crash in listensocket->process(). It seems there was a NULL-client there
 		if(thePrefs.FilterServerByIP())
 		{
 			theApp.emuledlg->serverwnd->serverlistctrl.RemoveServer(server);
 		}
+		*/
 		return;
 	}
 	//Xman end

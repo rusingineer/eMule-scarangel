@@ -3662,8 +3662,8 @@ void CUpDownClient::ProcessPublicIPAnswer(const BYTE* pbyData, UINT uSize){
 				// ==> Quick start [TPT] - Max
 				if(thePrefs.GetQuickStart() && thePrefs.GetQuickStartAfterIPChange())
 				{
-					downloadqueue->quickflag = 0;
-					downloadqueue->quickflags = 0;
+					theApp.downloadqueue->quickflag = 0;
+					theApp.downloadqueue->quickflags = 0;
 				}
 				// <== Quick start [TPT] - Max
 				SetNextTCPAskedTime(::GetTickCount() + FILEREASKTIME); //not for this source

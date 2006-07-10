@@ -2067,14 +2067,14 @@ BEGIN
     IDS_SWAP_A4AF_TO_THIS   "Quelle zu dieser Datei"
     IDS_SWAP_A4AF_TO_OTHER  "Quelle zu anderer Datei"
     IDS_ALL_A4AF_AUTO       "Automatisches Zuweisen von Quellen zu dieser Datei"
-END
-
-STRINGTABLE 
-BEGIN
     IDS_LEECHER_ACTION_BAN  "Ban"
     IDS_LEECHER_ACTION_REDUCE "Reduziere Score"
     IDS_ANTILEECHERBADHELLO_CHECK "Erkenne falsches Hello-Tag"
     IDS_ANTILEECHERSNAFU_CHECK "Erkenne bad Tags"
+END
+
+STRINGTABLE 
+BEGIN
     IDS_ANTILEECHERMOD_CHECK "Erkenne Leecher am Modstring"
     IDS_ANTILEECHERTHIEF_CHECK "Erkenne Nick- / Moddiebe"
     IDS_ANTILEECHERSPAMMER_CHECK "Erkenne Spammers"
@@ -2088,7 +2088,6 @@ BEGIN
     IDS_NEWDLP              "Neue antiLeech.dll (DLP) verfügbar"
     IDS_NEWDLPDOWNLOAD      "Neue antiLeech.dll (DLP) verfügbar \n Möchtest Du sie jetzt herunterladen ?"
     IDS_DROPLEECHER         "Entferne Leecher"
-
     IDS_ACTIVEDOWNLOADSBOLD "Zeige aktive Downloads in Fettschrift"
     IDS_UPDOWNUPLOADLIST    "Up / Down"
     IDS_MAXGLOBALSOURCES    "Globales Quellenlimit:"
@@ -2101,8 +2100,15 @@ BEGIN
     IDS_SHOWADDITIONALGRAPH "Zeige zusätzliche Graphlinien"
     IDS_CHECK4UPDATEMOD     "Auf neuere Xtreme-Version prüfen"
     IDS_ANTILEECHEREMCRYPT_CHECK "Erkenne emcrypt"
-    IDS_UPLOADMANAGEMENT_FRAME "Upload Verwaltung"
     IDS_UPLOADSLOTSPEED_LABEL "Upload Slot Geschwindigkeit"
+    IDS_USENARROWFONT       "Benutze enge Schrift im Transfer-Fenster"
+    IDS_SHOWBLOCKINGRATIO   "Zeige Socket Blockier-Verhältnis"
+    IDS_FUNNYNICK           "Zeige Funny Nicks"
+    IDS_AUTOUPDATEIPFILTER  "Auto-update IPFilter.dat"
+    IDS_DROPBLOCKINGSOCKETS "Entferne zu häufig blockierende Sockets"
+    IDS_LOGPARTMISMATCH     "Logge Größendifferenz der angeforderten Dateien"
+    IDS_CN_UPNPTRYRANDOM    "Versuche einen zufälligen Port am UPNP Gateway zu verwenden falls der eingestellte Port schon belegt"
+    IDS_CN_UPNPNAT          "Aktiviere UPnP support"
 END
 
 STRINGTABLE 
@@ -2221,7 +2227,6 @@ BEGIN
     IDS_STATS_WEBCACHE_3    "Data 3:"
     // <== WebCache [WC team/MorphXT] - Stulle/Max
     // ==> FunnyNick [SiRoB/Stulle] - Stulle
-    IDS_FUNNYNICK           "FunnyNick"
     IDS_FN_TAG              "FunnyNick Tag"
     IDS_NO_TAG              "Kein Tag"
     IDS_SHORT_TAG           "[FN]"
