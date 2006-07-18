@@ -2217,7 +2217,7 @@ LRESULT CemuleDlg::OnCloseMiniMule(WPARAM wParam, LPARAM /*lParam*/)
 	return 0;
 }
 
-// ==> TBH: minimule (open on tray) - Stulle
+// ==> TBH: minimule (open on tray) - Max
 void CemuleDlg::RunMiniMule()
 {
 	try
@@ -2234,7 +2234,7 @@ void CemuleDlg::RunMiniMule()
 		m_pMiniMule = NULL;
 	}
 }
-// <== TBH: minimule (open on tray) - Stulle
+// <== TBH: minimule (open on tray) - Max
 
 void CemuleDlg::OnTrayLButtonUp(CPoint /*pt*/)
 {

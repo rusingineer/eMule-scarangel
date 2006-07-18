@@ -1313,6 +1313,11 @@ VOID CALLBACK CUploadQueue::UploadTimer(HWND /*hwnd*/, UINT /*uMsg*/, UINT_PTR /
 			theApp.clientlist->Process();
 			if (theApp.emuledlg->IsTrayIconToFlash())
 				theApp.emuledlg->ShowTransferRate(true);
+
+			// ==> TBH: minimule - Max
+			if (thePrefs.IsMiniMuleEnabled() && theApp.minimule != NULL && (theApp.minimule->IsWindowVisible() || thePrefs.GetMiniMuleLives())) theApp.minimule->RunMiniMule();
+			// <== TBH: minimule - Max
+
 			static showRate; showRate++;
 			if(showRate >= DISPLAY_REFRESH){
 				showRate = 0;

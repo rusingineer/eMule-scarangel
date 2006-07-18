@@ -147,12 +147,12 @@ BOOL CTrayDialog::TrayShow()
 			theApp.minimule->ShowWindow(SW_SHOW);
 		}
 		// <== TBH: minimule - Max
-		// ==> TBH: minimule (open on tray) - Stulle
+		// ==> TBH: minimule (open on tray) - Max
 		else if (thePrefs.GetEnableMiniMule() && thePrefs.GetMMOpen())
 		{
 			theApp.emuledlg->RunMiniMule();
 		}
-		// <== TBH: minimule (open on tray) - Stulle
+		// <== TBH: minimule (open on tray) - Max
 
 	}
 	return bSuccess;
