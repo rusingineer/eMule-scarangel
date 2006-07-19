@@ -2025,7 +2025,7 @@ BEGIN
    IDS_IP2COUNTRY_FLAGUNLD "Ülke bayraklari kaldirildi"
    IDS_IP2COUNTRY_NALONG   "N/A"
    IDS_IP2COUNTRY_NASHORT  "N/A"
-   IDS_IP2COUNTRY_LOADED2  "IP2Country  %ums icindeki ""%s"" dan yüklendi"
+   IDS_IP2COUNTRY_LOADED2  "IP2Country  ""%s"" icindeki %ums dan yüklendi"
    IDS_ACCURATEGRAPH       "Dogruluk"
 END
 
@@ -2040,7 +2040,7 @@ BEGIN
    IDS_DOWNHISTORY_CHECK1  "eMule \n id'li dosyayý daha önce indirdiginizi belirledi"
    IDS_DOWNHISTORY_CHECK2  "eMule %i tane ayni isimle indirilmis dosya buldu (%s):\n"
    IDS_DOWNHISTORY_CHECK3  "Bunlara ragmen indirmek istiomusunuz?"
-   IDS_DOWNHISTORY_CHECK4  "eMule \n id'li dosyayi daha önce iptal ettiginizi tespit etti"
+   IDS_DOWNHISTORY_CHECK4  "eMule  id'li dosyayi daha önce iptal ettiginizi tespit etti \n"
    IDS_DOWNHISTORY         "Download gecmisi"
    IDS_DOWNHISTORY_REMOVE  "Gecmis den kaldir"
    IDS_DOWNHISTORY_REMOVE_QUESTION """%s""'i download gecmisinden kaldirmak istediginizden eminmisiniz?"

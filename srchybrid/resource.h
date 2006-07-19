@@ -2701,7 +2701,7 @@
 // <== CPU/MEM usage [$ick$/Stulle] - Max
 // ==> Tabbed Preferences [TPT] - Stulle
 #define IDC_PPG_SCAR_TAB                60570
-#define IDC_TEST                        60571
+//#define IDC_TEST                        60571
 // <== Tabbed Preferences [TPT] - Stulle
 // ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 #define IDC_BACKUP_FILEFRAME            60580
@@ -2849,6 +2849,10 @@
 #define IDC_EDITSEARCH                  60731
 #define IDC_FILENAMEMASKEDITTEMPLATE    60732
 // <== MassRename [Dragon] - Stulle
+// ==> Startupsound [Commander] - mav744
+#define IDS_STARTUPSOUND                60740
+#define IDS_MISSING_STARTUPSOUND        60741
+// <== Startupsound [Commander] - mav744
 
 // Next default values for new objects
 // 

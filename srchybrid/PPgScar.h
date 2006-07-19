@@ -98,6 +98,7 @@ protected:
 	int m_iGlobalHL;
 	bool m_bGlobalHlAll;
 	// <== Global Source Limit [Max/Stulle] - Stulle
+	bool m_bStartupSound; // Startupsound [Commander] - mav744
 
 	CTreeOptionsCtrlEx m_ctrlTreeOptions;
 	bool m_bInitializedTreeOpts;
@@ -212,6 +213,7 @@ protected:
 	HTREEITEM m_htiGlobalHlAll;
 	HTREEITEM m_htiGlobalHlAggro;
 	// <== Global Source Limit [Max/Stulle] - Stulle
+	HTREEITEM m_htiStartupSound; // Startupsound [Commander] - mav744
 
 	// ==> push small files [sivka] - Stulle
 	uint32 m_iPushSmallFiles;
@@ -243,9 +245,9 @@ private:
 	NONE,
 	SCAR,
 	WEBCACHE,
-	BACKUP,
+	BACKUP/*,
 	UPDATE,
-	COLOR};
+	COLOR*/};
 	void SetTab(eTab tab);
 
 	void InitTab();

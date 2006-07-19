@@ -63,6 +63,7 @@ float	CPreferences::m_slotspeed;
 bool	CPreferences::m_openmoreslots;
 bool	CPreferences::m_bandwidthnotreachedslots;
 int		CPreferences::m_sendbuffersize;
+int		CPreferences::m_internetdownreactiontime;
 
 //Xman process prio
 uint32	CPreferences::m_MainProcessPriority; // [TPT] - Select process priority 
@@ -738,6 +739,8 @@ CString  CPreferences::m_SimpleCleanupReplace;
 CString  CPreferences::m_SimpleCleanupSearchChars;
 CString  CPreferences::m_SimpleCleanupReplaceChars;
 // <== MassRename [Dragon] - Stulle
+
+bool	CPreferences::startupsound; // Startupsound [Commander] - mav744
 
 CPreferences::CPreferences()
 {
@@ -2445,6 +2448,8 @@ void CPreferences::SavePreferences()
 	ini.WriteString (_T("SimpleCleanupSearchChars"),CString ('\"')+m_SimpleCleanupSearchChars+'\"');
 	ini.WriteString (_T("SimpleCleanupReplaceChars"),CString ('\"')+m_SimpleCleanupReplaceChars+'\"');
 	// <== MassRename [Dragon] - Stulle
+
+	ini.WriteBool(L"Startupsound",startupsound); // Startupsound [Commander] - mav744
 }
 
 void CPreferences::ResetStatsColor(int index)
@@ -2694,6 +2699,13 @@ void CPreferences::LoadPreferences()
 	if (maxupload>maxGraphUploadRate && maxupload!=UNLIMITED) maxupload=maxGraphUploadRate*.8f;
 	maxdownload=ini.GetFloat(L"MaxDownload",UNLIMITED); // Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 	if (maxdownload>maxGraphDownloadRate && maxdownload!=UNLIMITED) maxdownload=maxGraphDownloadRate*.8f;
+	
+	m_internetdownreactiontime=ini.GetInt(L"internetdownreactiontime",2);
+	if(m_internetdownreactiontime <1)
+		m_internetdownreactiontime=1;
+	if(m_internetdownreactiontime>10)
+		m_internetdownreactiontime=10;
+
 	//Xman end
 	//-------------------------------------------------------------------	
 
@@ -3424,6 +3436,7 @@ void CPreferences::LoadPreferences()
 	SetSimpleCleanupReplaceChars (ini.GetString (_T("SimpleCleanupReplaceChars"),
 								 _T("\"ae\";\"oe\";\"ue\";\"Ae\";\"Oe\";\"Ue\";\"ss\"")));
 	// <== MassRename [Dragon] - Stulle
+	startupsound=ini.GetBool(L"Startupsound",true); // Startupsound [Commander] - mav744
 }
 
 //Xman Xtreme Upload

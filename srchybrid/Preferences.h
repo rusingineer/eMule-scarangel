@@ -732,6 +732,8 @@ public:
 	static CString  m_SimpleCleanupReplaceChars;
 	// <== MassRename [Dragon] - Stulle
 
+	static	bool	startupsound; // Startupsound [Commander] - mav744
+
 	enum Table
 	{
 		tableDownload, 
@@ -855,6 +857,7 @@ public:
 	static int		m_sendbuffersize;
 	static int		GetSendbuffersize()	{return m_sendbuffersize;}
 	static void		SetSendbuffersize(int in) {m_sendbuffersize=in;}
+	static int		m_internetdownreactiontime;
 
 	//Xman process prio
 	// [TPT] - Select process priority 
@@ -1852,6 +1855,8 @@ public:
 	static	void	SetSimpleCleanupReplaceChars (CString _s) { m_SimpleCleanupReplaceChars = _s; }
 	static	CString	GetSimpleCleanupReplaceChars ()			  { return m_SimpleCleanupReplaceChars; }
 	// <== MassRename [Dragon] - Stulle
+
+	static  bool	UseStartupSound()			{return startupsound;} // Startupsound [Commander] - mav744
 
 protected:
 	static	CString appdir;

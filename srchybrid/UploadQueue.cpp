@@ -573,7 +573,7 @@ bool CUploadQueue::ForceNewClient(bool allowEmptyWaitingQueue) {
 
 	//if (theApp.serverconnect->IsConnected()==false)
 	//{
-		theApp.pBandWidthControl->GetDatarates(1, // 1 seconds
+		theApp.pBandWidthControl->GetDatarates(thePrefs.m_internetdownreactiontime, // 2 seconds
 			eMuleIn, eMuleInOverall,
 			eMuleOut, eMuleOutOverall,
 			networkIn, networkOut);

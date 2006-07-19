@@ -262,16 +262,16 @@ void CTBHMM::MMUpdate()
 			// Session
 			if (bEmuleIn<bEmuleOut) 
 			{
-				buffer.Format(_T("%s %.2f : 1"),GetResString(IDS_STATS_SRATIO),(float)bEmuleOut/bEmuleIn);
+				buffer.Format(_T("%s %.2f : 1"),GetResString(IDS_MM_RATIO),(float)bEmuleOut/bEmuleIn);
 			} 
 			else 
 			{
-				buffer.Format(_T("%s 1 : %.2f"),GetResString(IDS_STATS_SRATIO),(float)bEmuleIn/bEmuleOut);
+				buffer.Format(_T("%s 1 : %.2f"),GetResString(IDS_MM_RATIO),(float)bEmuleIn/bEmuleOut);
 			}
 		}
 		else 
 		{
-			buffer.Format(_T("%s %s"), GetResString(IDS_STATS_SRATIO), GetResString(IDS_FSTAT_WAITING)); // Localize
+			buffer.Format(_T("%s %s"), GetResString(IDS_MM_RATIO), GetResString(IDS_FSTAT_WAITING)); // Localize
 		}
 		GetDlgItem(IDC_MM_RATIO)->SetWindowText(buffer);
 

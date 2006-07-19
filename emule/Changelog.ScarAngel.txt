@@ -2,20 +2,28 @@ CHANGELOG FOR EMULE ScarAngel MOD
 
 eMule v0.47a ScarAngel v1.2:
 ------------------------
-- XX.XX.2005 -
+- 19.07.2005 -
 -------------------------------------------------------------------------------
-based on eMule 0.47a Xtreme 5.1.2 compiled with vs2003 and Netfinity's fix
+based on eMule 0.47a Xtreme 5.2.1 compiled with vs2003 and Netfinity's fix
 
 Added: Show Client Percentage [Commander/MorphXT] - Mondgott
 Added: Tabbed Preferences [TPT] - Stulle
 Added: TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+Added: TBH: MiniMule [TBH/Stulle] - Max
+Added: Copy feedback feature [MorphXT] - Stulle
+Added: Source Counts Are Cached derivated from Khaos [SiRoB] - Stulle
+Added: MassRename [Dragon] - Stulle
+Added: Startupsound [Commander] - Mav744
 
 Changed: Enable/ Disable Sysinfo (complete and global) [Stulle/iONiX] - Stulle
+Changed: added flag to return US Text for CastToXBytes [SiRoB] - Stulle
 
-Updated: Webcache [SiRoB]
+Updated: Webcache [SiRoB] - Stulle
 
 Fixed: Xman Credit System [Stulle] - Stulle
 Fixed: About dialog [Stulle] - Stulle
+
+Removed: Copy UL-Feedback feature [IcEcRacKer] - Stulle
 
 
 eMule v0.47a ScarAngel v1.1:

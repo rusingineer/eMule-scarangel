@@ -20,12 +20,12 @@
 /*
 //Xman
 //ModID
-#define MOD_VERSION		_T("Xtreme 5.2") 
+#define MOD_VERSION		_T("Xtreme 5.2.1") 
 */
 //Xman versions check
 #define MOD_MAIN_VER	5
 #define MOD_MIN_VER		2
-#define	MOD_BUILD_VER	1 //1=Xtreme x.x 2=Xtreme x.x.1
+#define	MOD_BUILD_VER	2 //1=Xtreme x.x 2=Xtreme x.x.1
 /*
 //Xman Anti-Leecher: simple Anti-Thief
 #define MOD_MAJOR_VERSION _T("eMule v0.47a") 

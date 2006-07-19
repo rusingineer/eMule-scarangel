@@ -73,8 +73,8 @@ CPPgScar::CPPgScar()
 	m_imageList.Add(CTempIconLoader(_T("AAAEMULEAPP")));
 	m_imageList.Add(CTempIconLoader(_T("PREF_WEBCACHE")));
 	m_imageList.Add(CTempIconLoader(_T("BACKUP")));
-	m_imageList.Add(CTempIconLoader(_T("UPDATE")));
-	m_imageList.Add(CTempIconLoader(_T("SEARCHFILETYPE_PICTURE")));
+//	m_imageList.Add(CTempIconLoader(_T("UPDATE")));
+//	m_imageList.Add(CTempIconLoader(_T("SEARCHFILETYPE_PICTURE")));
 	// <== Tabbed Preferences [TPT] - Stulle
 
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
@@ -196,6 +196,7 @@ CPPgScar::CPPgScar()
 	m_htiGlobalHlAll = NULL;
 	m_htiGlobalHlDefault = NULL;
 	// <== Global Source Limit [Max/Stulle] - Stulle
+	m_htiStartupSound = NULL; // Startupsound [Commander] - mav744
 }
 
 CPPgScar::~CPPgScar()
@@ -376,6 +377,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiGlobalHlDefault = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_GLOBAL_HL_DEFAULT), m_htiGlobalHlGroup, m_bGlobalHlDefault);
 		m_ctrlTreeOptions.Expand(m_htiGlobalHlGroup, TVE_EXPAND);
 		// <== Global Source Limit [Max/Stulle] - Stulle
+		m_htiStartupSound = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_STARTUPSOUND), m_htiMisc, m_bStartupSound); // Startupsound [Commander] - mav744
 
 		m_ctrlTreeOptions.SendMessage(WM_VSCROLL, SB_TOP);
 		m_bInitializedTreeOpts = true;
@@ -481,6 +483,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiGlobalHlAll, m_bGlobalHlAll);
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiGlobalHlDefault, m_bGlobalHlDefault);
 	// <== Global Source Limit [Max/Stulle] - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiStartupSound, m_bStartupSound); // Startupsound [Commander] - mav744
 
 	// ==> FunnyNick [SiRoB/Stulle] - Stulle
 	if(m_htiFnTagMode)	m_ctrlTreeOptions.SetGroupEnable(m_htiFnTagMode, m_bFnActive);
@@ -576,6 +579,7 @@ BOOL CPPgScar::OnInitDialog()
 	m_bGlobalHlAll = thePrefs.GetGlobalHlAll();
 	m_bGlobalHlDefault = thePrefs.GetGlobalHlDefault();
 	// <== Global Source Limit [Max/Stulle] - Stulle
+	m_bStartupSound = thePrefs.UseStartupSound(); // Startupsound [Commander] - mav744
 
 	CPropertyPage::OnInitDialog();
 
@@ -782,6 +786,7 @@ BOOL CPPgScar::OnApply()
 	}
 	thePrefs.m_bGlobalHlDefault = m_bGlobalHlDefault;
 	// <== Global Source Limit [Max/Stulle] - Stulle
+	thePrefs.startupsound = m_bStartupSound; // Startupsound [Commander] - mav744
 
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
 	bool bRestartApp = false;
@@ -967,6 +972,7 @@ void CPPgScar::Localize(void)
 		if (m_htiGlobalHlAll) m_ctrlTreeOptions.SetItemText(m_htiGlobalHlAll, GetResString(IDS_GLOBAL_HL_ALL));
 		if (m_htiGlobalHlDefault) m_ctrlTreeOptions.SetItemText(m_htiGlobalHlDefault, GetResString(IDS_GLOBAL_HL_DEFAULT));
 		// <== Global Source Limit [Max/Stulle] - Stulle
+		if (m_htiStartupSound) m_ctrlTreeOptions.SetItemText(m_htiStartupSound, GetResString(IDS_STARTUPSOUND)); // Startupsound [Commander] - mav744
 
 		// ==> WebCache [WC team/MorphXT] - Stulle/Max
 		m_WcProxyBox.SetWindowText( GetResString(IDS_WEBCACHE_ISP) );
@@ -1112,6 +1118,7 @@ void CPPgScar::OnDestroy()
 	m_htiGlobalHlAll = NULL;
 	m_htiGlobalHlDefault = NULL;
 	// <== Global Source Limit [Max/Stulle] - Stulle
+	m_htiStartupSound = NULL; // Startupsound [Commander] - mav744
 
 	CPropertyPage::OnDestroy();
 }
@@ -1219,8 +1226,8 @@ void CPPgScar::InitTab()
 	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, SCAR, _T("ScarAngel"), 0, (LPARAM)SCAR);
 	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, WEBCACHE, _T("WebCache"), 1, (LPARAM)WEBCACHE);
 	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, BACKUP, _T("Backup"), 2, (LPARAM)BACKUP);
-	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, UPDATE, _T("Update"), 3, (LPARAM)UPDATE);
-	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, COLOR, _T("Color Settings"), 4, (LPARAM)COLOR);
+//	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, UPDATE, _T("Update"), 3, (LPARAM)UPDATE);
+//	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, COLOR, _T("Color Settings"), 4, (LPARAM)COLOR);
 }
 
 
@@ -1543,10 +1550,10 @@ void CPPgScar::SetTab(eTab tab){
 				m_NoteText.ShowWindow(SW_HIDE);
 				m_NoteText.ShowWindow(SW_HIDE);
 				break;
-			case UPDATE:
+/*			case UPDATE:
 				break;
 			case COLOR:
-				break;
+				break; */
 			default:
 				break;
 		}
@@ -1630,11 +1637,11 @@ void CPPgScar::SetTab(eTab tab){
 				m_NoteText.ShowWindow(SW_SHOW);
 				m_NoteText.ShowWindow(TRUE);
 				break;
-			case UPDATE:
+/*			case UPDATE:
 				break;
 			case COLOR:
 				break;
-			default:
+*/			default:
 				break;
 		}
 	}

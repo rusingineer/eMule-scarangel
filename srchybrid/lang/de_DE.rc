@@ -2120,11 +2120,11 @@ BEGIN
     // ==> Global Source Limit [Max/Stulle] - Stulle
     IDS_GLOBAL_HL           "Globales Quellenlimit (GQL)"
     IDS_GLOBAL_HL_LIMIT     "Globales Quellenlimit"
-    IDS_GLOBAL_HL_DEFAULT   "GQL als Standard für Dateien"
     IDS_GLOBAL_HL_ALL       "GQL für alle Dateien nutzen"
+    IDS_GLOBAL_HL_DEFAULT   "GQL als Standard für Dateien"
     IDS_ENABLE              "Aktivieren"
     // <== Global Source Limit [Max/Stulle] - Stulle
-    IDS_PUSH                "Push settings" // push files - Stulle
+    IDS_PUSH                "Push Einstellungen"
     // ==> push small files [sivka] - Stulle
     IDS_PUSH_SMALL          "Pushe kleine Dateien"
     IDS_SMALL               "Klein"
@@ -2153,9 +2153,9 @@ BEGIN
     // <== CreditSystems [EastShare/ MorphXT] - Stulle
     // ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
     IDS_SUQWT_LOAD          "Lade %s"
-    IDS_SUQWT               "Speichern der Wartezeit in der Warteliste (SUQWT)"
+    IDS_SUQWT               "Warteschlangenpositionen speichern (SUQWT)"
     // <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-    IDS_SHOW_FILE_HL_CONST  "Zeige HL pro Datei kontinuierlich" // show HL per file constantaniously - Stulle
+    IDS_SHOW_FILE_HL_CONST   "Zeige HL pro Datei kontinuierlich" // show HL per file constantaniously - Stulle
     IDS_PS_FILES_RED        "Hinterlege PS Dateien rot" // draw PS files red - Stulle
     IDS_FRIENDS_BLUE        "Hinterlege Freunde blau" // draw friends blue - Stulle
     IDS_SHOW_GLOBAL_HL      "Zeige globales Hardlimit" // show global HL - Stulle
@@ -2173,9 +2173,9 @@ BEGIN
     IDS_SIVKAFILESETTINGS   "Sivka - Datei(en) Einstellungen"
     IDS_HARDLIMIT_LABEL     "Hard Limit (0=Nutze standard)"
     IDS_FILE_DEFAULTS       "Standard Dateieinstellung"
-    IDS_XMAN_DROPPING       "Nutze Xmans Quellen entfernen"
-    IDS_SIVKA_DROPPING      "Nutze Sivka Quellen entfernen"
-    IDS_HQR_WAY             "Drop System"
+    IDS_XMAN_DROPPING       "Xman Drop-System nutzen"
+    IDS_SIVKA_DROPPING      "Sivka Drop-system nutzen"
+    IDS_HQR_WAY             "Drop-System"
     // <== file settings - Stulle
     IDS_SHOW_DROPPED_SRC    "Quellen entfernt" // show # of dropped sources - Stulle
     // ==> Source Graph - Stulle
@@ -2220,11 +2220,30 @@ BEGIN
     IDS_WC_REQ_SUCC         "WC Erf./Angef.:"
     IDS_WC_DOWNLOADED       "WC-Download:"
     IDS_WC_REACTIVATED      "Webcache wurde reaktiviert."
-    IDS_WC_NEWPROXYIP       "Neue Proxi IP: %s."
+    IDS_WC_NEWPROXYIP       "Eine neue Proxy IP wurde festgestellt: %s."
     IDS_STATS_WEBCACHE      "Webcache"
     IDS_STATS_WEBCACHE_1    "Data 1:"
     IDS_STATS_WEBCACHE_2    "Data 2:"
     IDS_STATS_WEBCACHE_3    "Data 3:"
+    IDC_MSG_WEBCACHEFAIL    "Your proxy-server does not seem to be caching data. There was no successful Webcache-Requests out of more than 100 that were sent. Please review your proxy-configuration. WebCache downloads have been disabled until a new proxy is tested!"
+    IDC_MSG_WEBCACHE_NOAUTODEC 
+                            "Sorry, your ISP is not in the database,\nyour ISP identifier is %s\nTo enable autodetection, please find out and submit your ISPs proxy."
+    IDC_MSG_WEBCACHE_NOIP   "No public IP, please connect to an ed2k-server or Kad.\nYour TCP port must be reachable (highID) if you are connected to a server,\nbut it's not necessary when connected to Kad"
+    IDC_MSG_WEBCACHE_CONFIGALT 
+                            "Webcache autodetection detected a change in the Webcache-configuration, webcache has been deactivated until a new proxy is tested.\n You can deactivate automatic webcache configuration in the Advanced Webcachesettings."
+    IDC_MSG_WEBCACHE_NOACTIVE 
+                            "Webcache Autodetection has detected that your ISP-proxy does not cache data. Webcache disabled."
+    IDC_MSG_WEBCACHE_ERRRESOLVE 
+                            "WebCache Error - Failed to resolve HTTP proxy address:\n%s\nPlease review your webcache settings"
+    IDC_MSG_WEBCACHE_TRANSPAR 
+                            "Proxy Test can not test Transparent proxies. Test Canceled!"
+    IDC_MSG_WEBCACHE_TESTRUNNING 
+                            "Performing Proxy Test! Please check the log in the serverwindow for the results!"
+    IDC_MSG_WEBCACHE_TESTERR "Proxy Test Error!"
+    IDC_MSG_WEBCACHE_ALREADYRUNNING 
+                            "No New Test Started. There is already a Test in progress"
+    IDC_MSG_WEBCACHE_TESTREQ 
+                            "No Test Performed. Not all requirements met.\n Requirements:\n1. You have to be connected to a server\n2. You need to have a valid public IP\n3. You need to have a high ID\n4. Test does not work if you have too many open connections"
     // <== WebCache [WC team/MorphXT] - Stulle/Max
     // ==> FunnyNick [SiRoB/Stulle] - Stulle
     IDS_FN_TAG              "FunnyNick Tag"
@@ -2235,8 +2254,9 @@ BEGIN
     IDS_SET_CUSTOM_TAG      "Setze eigenen Tag"
     IDS_FN_TAG_AT_END       "Zeige Tag am Ende"
     // <== FunnyNick [SiRoB/Stulle] - Stulle
-    IDS_CLIENTQUEUEPROGRESSBAR "Zeige Fortschritt der Warteschlange" // Client queue progress bar [Commander] - Stulle
-    IDS_ACC                 "Aktive Verbindungskontrolle einschalten" // ACC [Max/WiZaRd] - Max
+    IDS_CLIENTQUEUEPROGRESSBAR 
+                            "Zeige Fortschrittsbalken der Client-Warteliste an"
+    IDS_ACC                 "Verbindungskontrolle aktivieren" // ACC [Max/WiZaRd] - Max
     // ==> ScarAngel Version Check - Stulle
     IDS_VISITSVERSIONCHECK  "\n\nMöchtest du die ScarAngel Webseite besuchen?"
     IDS_SVERSIONCHECK       "&Versioncheck (ScarAngel)"
@@ -2244,16 +2264,106 @@ BEGIN
     IDS_NEWSVERSIONAVL      "Eine neue ScarAngel Version ist verfügbar! Besuche die Projekt-Homepage um mehr Informationen zu erhalten."
     IDS_NEWSVERSIONAVLPOPUP "Eine neuere Version von ScarAngel ist verfügbar. Klicke hier um mehr über die neue Version zu erfahren!"
     // <== ScarAngel Version Check - Stulle
-// ==> Quick start [TPT] - Max
+    // ==> Quick start [TPT] - Max
     IDS_QUICK_START_GROUP   "Schnellstart"
     IDS_QUICK_START         "Schalte Schnellstart ein"
     IDS_QUICK_START_MAX_TIME "Zeit für Schnellstart [8-18 Min.]"
     IDS_QUICK_START_MAX_CONN_PER_FIVE "Max. Verb./5sec"
     IDS_QUICK_START_MAX_CONN "Max. Verb."
     IDS_QUICK_START_AFTER_IP_CHANGE "Schalte Schnellstart nach IP-Wechsel ein"
-	IDS_QUICK_START_MAX_CONN_PER_FIVE_BACK "Zurück zu Max. Verb./5sec"
+    IDS_QUICK_START_MAX_CONN_PER_FIVE_BACK "Zurück zu Max. Verb./5sec"
     IDS_QUICK_START_MAX_CONN_BACK "Zurück zu Max. Verb."
-// <== Quick start [TPT] - Max
+    // <== Quick start [TPT] - Max
+    IDS_CLIENTPERCENTAGE    "Zeige Fortschritt (in Prozent) der Gegenseite an"
+    // ==> CPU/MEM usage [$ick$/Stulle] - Stulle
+    IDS_SYS_INFO_GROUP      "System Informationen"
+    IDS_SYS_INFO_GLOBAL     "Globale Informationen aktivieren"
+    // <== CPU/MEM usage [$ick$/Stulle] - Stulle
+    // ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+    IDS_BACKUP_FILEFRAME    "Dateiarten für Backup"
+    IDS_BACKUP_SELECTALL    "Alle"
+    IDS_BACKUP_AUTOFRAME    "Auto Backup"
+    IDS_BACKUP_AUTOBACKUP   "Backup beim Beenden"
+    IDS_BACKUP_NOTE         "   "
+    IDS_BACKUP_BACKUPNOW    "Sofortbackup"
+    IDS_BACKUP_MESSAGE      "Hinweis: Im Emule-Programmverzeichnis wird ein Ordner ""Backup"" zum Speichern einer Sicherheitskopie angelegt."
+    IDS_BACKUP_AUTOBACKUP2  "Doppel-Backup"
+    IDS_ABORT               "Abbruch?"
+    IDS_CONTINUE            "&Continue"
+    IDS_DONOTASKAGAIN       "Don't ask me again"
+    IDS_DONOTSHOWAGAIN      "Don't show again"
+    IDS_DONOTTELLAGAIN      "Don't tell me again"
+    IDS_HELP                "&Help"
+    IDS_IGNORE              "&Ignore"
+    IDS_IGNOREALL           "I&gnore All"
+    IDS_NOTOALL             "N&o to All"
+    IDS_OK                  "OK"
+    IDS_REPORT              "Re&port"
+    IDS_RETRY               "&Retry"
+    IDS_SKIP                "&Skip"
+    IDS_SKIPALL             "S&kip All"
+    IDS_TRYAGAIN            "&Try Again"
+    IDS_YESTOALL            "Y&es to All"
+    // <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+    // ==> TBH: minimule - Max
+    IDS_MM_SHOW             "Nutze TBH Mini-Mule stattdessen"
+    IDS_MM_LIVES            "Halte Mini-Mule aktuell"
+    IDS_MM_UPDATE_TIME      "Mini-Mule Update Interval (in Sek.)"
+    IDS_MM_TRANS            "Mini-Mule Transparenz (1-255)"
+    IDS_MM_ACTDL            "Aktive Downloads: %i"
+    IDS_MM_DATA             "Up: %s | Down: %s"
+    IDS_MM_UPDOWN           "Up: %s(%.1f) | Down: %s(%.1f)"
+    IDS_MM_COMPL            "Zeige Dateien die in der Laufzeit beendet wurden"
+    IDS_MM_RATIO            "UL:DL :"
+    IDS_MM_OPEN             "Öffne Mini-Mule wenn eMule in den Tray minimiert wird"
+    // <== TBH: minimule - Max
+    // ==> Copy feedback feature [MorphXT] - Stulle
+    IDS_COPYFEEDBACK        "Kopiere Rückmeldung in Zwischenablage (de)"
+    IDS_COPYFEEDBACK_US     "Kopiere Rückmeldung in Zwischenablage (en)"
+    IDS_FEEDBACK_TRANSFERRED "Übertragen: %s (%s)"
+    IDS_FEEDBACK_REQUESTED  "Angefragt: %i (%i)"
+    IDS_FEEDBACK_ACCEPTED   "Akzeptierte Anfragen: %i (%i)"
+    IDS_FEEDBACK_FROM       "Feedback von %s zu [%s]"
+    IDS_FEEDBACK_FILENAME   "Dateiename: %s"
+    IDS_FEEDBACK_FILETYPE   "Datei Typ: %s"
+    IDS_FEEDBACK_FILESIZE   "Größe: %i MB"
+    IDS_FEEDBACK_DOWNLOADED "Downloaded: %i MB"
+    IDS_FEEDBACK_TOTAL      "Alle Quellen: %i"
+    IDS_FEEDBACK_AVAILABLE  "Verfügbare Quellen: %i"
+    IDS_FEEDBACK_NONEEDPART "Quellen ohne benötigte Teile: %i"
+    IDS_FEEDBACK_COMPLETE   "Vollständige Quellen: %i"
+    // <== Copy feedback feature [MorphXT] - Stulle
+    // ==> MassRename [Dragon] - Stulle
+    IDS_MASSRENAME1         "Dateienamen Maske (Änderungen werden bei allen Dateienamen übernommen):"
+    IDS_FILENAMELEFT        "Dateienamen links"
+    IDS_FILENAMERIGHT       "Dateienamen rechts"
+    IDS_RESETFILENAMES      "&Reset"
+    IDS_SIMPLECLEANUP       "&Assistent"
+    IDS_INSERTTEXTCOLUMN    "&Text aus Zwischenablage einfügen:"
+    IDS_MASSRENAME2         "Original Dateienamen:"
+    IDS_MASSRENAME3         "Neue Dateienamen:"
+    IDS_NOTENOUGHFILENAMES  "Nicht genügend Dateienamen in der Liste neuer Dateienamen. Umbenennen nicht möglich."
+    IDS_IDENTICALFILENAMES  "Zwei oder mehr Dateienamen im selben Verzeichnis sind nicht erlaubt (Line %d).Umbenennen nicht möglich."
+    IDS_MR                  "Mehrfach-Umbenennung"
+    IDS_CHECKDOTTOSPACE     "Konvertiere ""."" zu "" """
+    IDS_CHECKUNDERLINETOSPACE "Konvertiere ""_"" zu "" """
+    IDS_CHECKCONVERTAPOSTROPHES 
+                            "Konvertiere falsches Apostroph ""´"", ""`""zu Standard Apostroph "" ' """
+    IDS_CHECKCONVERTHEX     "Konvertiere Hex-Zahlen ""%xx"" zu Buchstaben"
+    IDS_CHECKSEARCHANDREPLACE "Suchen und ersetzen:"
+    IDS_SC_SEARCHFOR        "Suche nach:"
+    IDS_SC_REPLACEBY        "Ersetze durch:"
+    IDS_CHECKCASESENSITIVE  "Groß/klein beachten"
+    IDS_CHECKCHARACTERREPLACE "Ersetze Buchstaben:"
+    IDS_REPLACECHAR         "Ersetze"
+    IDS_REPLACECHARBY       "mit"
+    IDS_SC_ADD              "&Hinzufügen"
+    IDS_SC_EDIT             "&Edit"
+    IDS_SC_DELETE           "&Löschen"
+    IDS_SEARCHFORCHAR       "Suche nach"
+    IDS_REPLACEBYCHAR         "Ersetze durch"
+    IDS_SC_HEADLINE         "Dateienamen bereinigen"
+    // <== MassRename [Dragon] - StulleEND
 END
 
 #endif    // Deutsch (Deutschland) resources

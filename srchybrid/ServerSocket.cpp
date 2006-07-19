@@ -279,7 +279,7 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 
 				//Xman -Reask sources after IP change- v3 (main part by Maella)
 				uint32 oldkadIP=0;
-				if(Kademlia::CKademlia::IsConnected() && Kademlia::CKademlia::GetPrefs()->GetIPAddress())
+				if(Kademlia::CKademlia::IsRunning() && Kademlia::CKademlia::GetPrefs()->GetIPAddress())
 					oldkadIP=ntohl(Kademlia::CKademlia::GetIPAddress());
 				//Xman -Reask sources after IP change- v3 (main part by Maella)
 
@@ -311,6 +311,7 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 						if(GetTickCount() - theApp.last_ip_change > FILEREASKTIME + 60000){
 							theApp.clientlist->TrigReaskForDownload(true);
 							theApp.last_ip_change=::GetTickCount();
+							theApp.m_bneedpublicIP=false;
 							AddLogLine(false, _T("Change from %u (%s ID) to %u (%s ID) detected%s"), 
 								s_lastValidId,
 								(s_lastValidId < 16777216) ? _T("low") : _T("high"),
@@ -321,6 +322,7 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 						else {
 							theApp.clientlist->TrigReaskForDownload(false);
 							theApp.last_ip_change=::GetTickCount();
+							theApp.m_bneedpublicIP=false;
 							AddLogLine(false, _T("Change from %u (%s ID) to %u (%s ID) detected%s"), 
 								s_lastValidId,
 								(s_lastValidId < 16777216) ? _T("low") : _T("high"),

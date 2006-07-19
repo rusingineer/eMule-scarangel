@@ -1666,22 +1666,36 @@ int CReadBlockFromFileThread::Run() {
 				//don't wait, resume the next thread
 				theApp.ResumeNextDiscAccessThread();
 				hastoresumenextthread=false;
+				((CPartFile*)srcfile)->m_FileCompleteMutex.Lock();
 			}
 			//Xman end
 
-			((CPartFile*)srcfile)->m_FileCompleteMutex.Lock();
 			lockFile.m_pObject = &((CPartFile*)srcfile)->m_FileCompleteMutex;
 			// If it's a part file which we are uploading the file remains locked until we've read the
 			// current block. This way the file completion thread can not (try to) "move" the file into
 			// the incoming directory.
 
-			//Xman queued disc-access for read/flushing-threads
-			//if we already got the mutex, we lock it now two times ->must release one time
-			if(hastoresumenextthread)
-				::ReleaseMutex(mutexhandle);
+			//Xman queued disc-access for read/flushing-threads + fix for ReadBlockFromFileThread
+			if(hastoresumenextthread==true) //we got the mutex at once
+			{
+				fullname = RemoveFileExtension(((CPartFile*)srcfile)->GetFullName());
+			}
+			else
+			{
+				//we waited for the mutex which means we maybe completed this file
+				if(((CPartFile*)srcfile)->GetStatus() == PS_COMPLETE)
+				{
+					//everything was fine with completing
+					fullname.Format(_T("%s\\%s"),srcfile->GetPath(),srcfile->GetFileName());
+				}
+				else
+				{
+					//an error occurred or the mutex was from other thread !?
+					fullname = RemoveFileExtension(((CPartFile*)srcfile)->GetFullName());
+				}
+			}
 			//Xman end
 
-			fullname = RemoveFileExtension(((CPartFile*)srcfile)->GetFullName());
 		}
 		else{
 			fullname.Format(_T("%s\\%s"),srcfile->GetPath(),srcfile->GetFileName());

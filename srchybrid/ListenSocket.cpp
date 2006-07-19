@@ -3388,7 +3388,15 @@ void CListenSocket::KillAllSockets()
 			//Threadsafe Statechange
 			cur_socket->SetConnectedState(ES_DISCONNECTED);
 			//Xman end
-			delete cur_socket;
+			//Xman at some system there is a crash in ASyncsocketEx when closing this socket
+			//this error occur after the socket is removed from socket-list. a try catch should avoid this crash
+			try{
+				delete cur_socket;
+			}
+			catch (...) {
+				//nothing todo
+			}
+			//Xman end
 		}
 	}
 }

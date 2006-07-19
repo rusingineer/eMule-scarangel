@@ -5560,6 +5560,11 @@ BEGIN
     IDS_REPLACEBYCHAR       "Replace by"
     IDS_SC_HEADLINE         "Simple cleanup"
     // <== MassRename [Dragon] - Stulle
+    // ==> Startupsound [Commander] - mav744
+    IDS_STARTUPSOUND        "Play startupsound"
+    IDS_MISSING_STARTUPSOUND 
+                            "Missing startupsound.wav! Note: The file 'startup.wav' has to be placed in your config dir"
+    // <== Startupsound [Commander] - mav744
 END
 
 #endif    // Englisch (USA) resources

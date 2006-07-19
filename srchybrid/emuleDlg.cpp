@@ -354,6 +354,14 @@ BOOL CemuleDlg::OnInitDialog()
 		}
 	}
 	*/
+	// ==> Startupsound [Commander] - mav744
+	if (thePrefs.UseStartupSound()){
+		if(PathFileExists(thePrefs.GetConfigDir() + _T("startup.wav"))) 
+			PlaySound(thePrefs.GetConfigDir() + _T("startup.wav"), NULL, SND_FILENAME | SND_NOSTOP | SND_NOWAIT | SND_ASYNC);
+		else
+			AddLogLine(false,GetResString(IDS_MISSING_STARTUPSOUND));
+		}
+	// <== Startupsound [Commander] - mav744
 
 	// Create global GUI objects
 	theApp.CreateAllFonts();
