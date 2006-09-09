@@ -6801,6 +6801,10 @@ bool CPartFile::RightFileHasHigherPrio(const CPartFile* left, const CPartFile* r
     }
 
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	if(!left) {
+		return true;
+	}
+
 	UINT right_dlMode = thePrefs.GetDlMode();
 	if (right_dlMode && thePrefs.GetCategory(right->GetCategory())->m_iDlMode)
 		right_dlMode = thePrefs.GetCategory(right->GetCategory())->m_iDlMode;
