@@ -38,6 +38,7 @@ IMPLEMENT_DYNAMIC(CDirectDownloadDlg, CDialog)
 BEGIN_MESSAGE_MAP(CDirectDownloadDlg, CResizableDialog)
 	ON_EN_KILLFOCUS(IDC_ELINK, OnEnKillfocusElink)
 	ON_EN_UPDATE(IDC_ELINK, OnEnUpdateElink)
+	ON_NOTIFY(NM_CLICK, IDC_CATS, OnNMClickCats) // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 END_MESSAGE_MAP()
 
 CDirectDownloadDlg::CDirectDownloadDlg(CWnd* pParent /*=NULL*/)
@@ -98,6 +99,8 @@ void CDirectDownloadDlg::OnOK()
 			{
 				if (pLink->GetKind() == CED2KLink::kFile)
 				{
+					// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+					/*
 					//Xman [MoNKi: -Check already downloaded files-]
 					if(theApp.knownfiles->CheckAlreadyDownloadedFileQuestion(pLink->GetFileLink()->GetHashKey(),pLink->GetFileLink()->GetName()))
 					{
@@ -105,6 +108,14 @@ void CDirectDownloadDlg::OnOK()
 							(thePrefs.GetCatCount()==0)?0 : m_cattabs.GetCurSel() );
 					}
 					//Xman end
+					*/
+					CED2KFileLink* pFileLink = (CED2KFileLink*)CED2KLink::CreateLinkFromUrl(strTok.Trim());
+					if(theApp.knownfiles->CheckAlreadyDownloadedFileQuestion(pLink->GetFileLink()->GetHashKey(),pLink->GetFileLink()->GetName()))
+					{
+						theApp.downloadqueue->AddFileLinkToDownload(pFileLink,
+							(thePrefs.GetCatCount()==0)?-1 : m_cattabs.GetCurSel(), true);
+					}
+					// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 				}
 				else
 				{
@@ -178,12 +189,46 @@ void CDirectDownloadDlg::UpdateCatTabs() {
 	int oldsel=m_cattabs.GetCurSel();
 	m_cattabs.DeleteAllItems();
 	for (int ix=0;ix<thePrefs.GetCatCount();ix++) {
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 		CString label=(ix==0)?GetResString(IDS_ALL):thePrefs.GetCategory(ix)->title;
 		label.Replace(_T("&"),_T("&&"));
 		m_cattabs.InsertItem(ix,label);
 	}
 	if (oldsel>=m_cattabs.GetItemCount() || oldsel==-1)
 		oldsel=0;
+	*/
+		CString label=thePrefs.GetCategory(ix)->title;
+		label.Replace(_T("&"),_T("&&"));
+		m_cattabs.InsertItem(ix,label);
+	}
+	if (oldsel>=m_cattabs.GetItemCount())
+		oldsel=-1; 
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	m_cattabs.SetCurSel(oldsel);
 }
+
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+void CDirectDownloadDlg::OnNMClickCats(NMHDR* /*pNMHDR*/, LRESULT *pResult)
+{
+	POINT point;
+	::GetCursorPos(&point);
+
+	CPoint pt(point);
+	TCHITTESTINFO hitinfo;
+	CRect rect;
+	m_cattabs.GetWindowRect(&rect);
+	pt.Offset(0-rect.left,0-rect.top);
+	hitinfo.pt = pt;
+
+	// Find the destination tab...
+	int nTab = m_cattabs.HitTest( &hitinfo );
+	if( hitinfo.flags != TCHT_NOWHERE )
+		if(nTab==m_cattabs.GetCurSel())
+		{
+			m_cattabs.DeselectAll(false);
+		}
+	*pResult = 0;
+}
+// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle

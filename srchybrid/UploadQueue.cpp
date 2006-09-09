@@ -1218,14 +1218,19 @@ UINT CUploadQueue::GetWaitingPosition(CUpDownClient* client){
 // Maella end
 
 
-//Xman rework:
+//Xman rework: + //Xman process timer code via messages (Xanatos)
 VOID CALLBACK CUploadQueue::UploadTimer(HWND /*hwnd*/, UINT /*uMsg*/, UINT_PTR /*idEvent*/, DWORD /*dwTime*/)
 {
-
-	static bool inprocess;
 	// NOTE: Always handle all type of MFC exceptions in TimerProcs - otherwise we'll get mem leaks
 	try
 	{
+		theApp.emuledlg->PostMessage(TM_DOTIMER, NULL, NULL); //Xman process timer code via messages (Xanatos)
+	}
+    CATCH_DFLT_EXCEPTIONS(_T("CUploadQueue::UploadTimer"))
+}
+
+void CUploadQueue::UploadTimer() 
+{
 		// Barry - Don't do anything if the app is shutting down - can cause unhandled exceptions
 		if (!theApp.emuledlg->IsRunning())
 			return;
@@ -1246,14 +1251,6 @@ VOID CALLBACK CUploadQueue::UploadTimer(HWND /*hwnd*/, UINT /*uMsg*/, UINT_PTR /
 
 		static uint16 counter;
 
-		//Xman final version
-		//Xman todo: only a warning... no return! there is any problem here I first have to find out
-		if(inprocess==true)
-		{
-			AddDebugLogLine(false, _T("-->unknown error in Uploadqueue::Uploadtimer. Counter is: %u"), counter);
-			//return;
-		}
-		inprocess=true;
 
         // Elandal:ThreadSafeLogging -->
         // other threads may have queued up log lines. This prints them.
@@ -1409,12 +1406,6 @@ VOID CALLBACK CUploadQueue::UploadTimer(HWND /*hwnd*/, UINT /*uMsg*/, UINT_PTR /
 			}
 
 		}
-
-	}
-	CATCH_DFLT_EXCEPTIONS(_T("CUploadQueue::UploadTimer"))
-
-	//Xman final version:
-	inprocess=false;
 }
 
 CUpDownClient* CUploadQueue::GetNextClient(const CUpDownClient* lastclient){

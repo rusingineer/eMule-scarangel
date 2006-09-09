@@ -102,6 +102,7 @@ private:
    // Adapter access
    DWORD getAdapterIndex();
    DWORD m_currentAdapterIndex;
+   DWORD m_lastAdapterIndex;
 
 	//Xman new adapter selection
    bool wasNAFCLastActive;
@@ -145,11 +146,6 @@ private:
     // Keep last result to detect an overflow
    DWORD m_networkOutOctets;
    DWORD m_networkInOctets;
-
-   //Xman show complete internettraffic
-   uint64 initialnetworkOutOctets;
-   uint64 initialnetworkInOctets;
-   //Xman end
 
    bool m_errorTraced;
 

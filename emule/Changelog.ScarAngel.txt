@@ -1,8 +1,24 @@
 CHANGELOG FOR EMULE ScarAngel MOD
 
+eMule v0.47a ScarAngel v1.3:
+------------------------
+- 09.09.2006 -
+-------------------------------------------------------------------------------
+based on eMule 0.47a Xtreme 5.2.2 compiled with vs2003 and Netfinity's fix
+
+Added: Adjust compress level [Stulle] - Stulle
+	+ You may reduce the compression default value or switch off with this
+Added: Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+Fixed: Rare ratio column [Stulle] - Stulle
+Fixed: SysInfo Memleak [WiZaRd] - Stulle
+Fixed: SysInfo wasn't destroyed (pointed out by JvA) [Stulle] - Stulle
+Fixed: Changelog dates! =D - Stulle
+
+
 eMule v0.47a ScarAngel v1.2:
 ------------------------
-- 19.07.2005 -
+- 19.07.2006 -
 -------------------------------------------------------------------------------
 based on eMule 0.47a Xtreme 5.2.1 compiled with vs2003 and Netfinity's fix
 
@@ -28,7 +44,7 @@ Removed: Copy UL-Feedback feature [IcEcRacKer] - Stulle
 
 eMule v0.47a ScarAngel v1.1:
 ------------------------
-- 21.04.2005 -
+- 21.04.2006 -
 -------------------------------------------------------------------------------
 based on eMule 0.47a Xtreme 5.1 compiled with vs2003 and Netfinity's fix
 
@@ -49,7 +65,7 @@ Fixed: (minor) Forgot to add UpdateDisplayedInfo(true) after new manual drops [S
 
 eMule v0.47a ScarAngel v1.0:
 ------------------------
-- 02.04.2005 -
+- 02.04.2006 -
 -------------------------------------------------------------------------------
 based on eMule 0.47a Xtreme 5.0.1 compiled with vs2003 and Netfinity's fix
 

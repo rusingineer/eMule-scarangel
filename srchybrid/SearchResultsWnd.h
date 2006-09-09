@@ -125,4 +125,5 @@ protected:
 	afx_msg LRESULT OnIdleUpdateCmdUI(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnBnClickedOpenParamsWnd();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
+	afx_msg void OnNMClickCattab2(NMHDR *pNMHDR, LRESULT *pResult); // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 };

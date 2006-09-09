@@ -545,6 +545,11 @@ void CUpDownClient::CreateNextBlockPackage(){
 				bool compFlag = (m_byDataCompVer == 1) && (IsUploadingToPeerCache() == false) && (IsUploadingToWebCache() == false);
 				// <== WebCache [WC team/MorphXT] - Stulle/Max
 
+				//Xman disable compression
+				if(thePrefs.m_bUseCompression==false)
+					compFlag=false;
+				//Xman end
+
 				if(compFlag == true)
 				{
 					/* moved to abstractfile
@@ -893,6 +898,8 @@ void CUpDownClient::CreateStandartPackets(byte* data,uint32 togo, Requested_Bloc
 void CUpDownClient::CreatePackedPackets(byte* data, uint32 togo, Requested_Block_Struct* currentblock, bool bFromPF){
 	BYTE* output = new BYTE[togo+300];
 	uLongf newsize = togo+300;
+	// ==> Adjust Compress Level [Stulle] - Stulle
+	/*
 	//Xman used different values!
 	// BEGIN netfinity: Variable compression - Reduce CPU usage for high bandwidth connections
 	//  Preferably this should take CPU speed into account
@@ -910,6 +917,34 @@ void CUpDownClient::CreatePackedPackets(byte* data, uint32 togo, Requested_Block
 		CreateStandartPackets(data,togo,currentblock,bFromPF);
 		return;
 	}
+	*/
+	int compressLevel = thePrefs.GetCompressLevel();
+	if(compressLevel != 0)
+	{
+		int compressLevelTemp = 9;
+		if (thePrefs.GetMaxUpload() > 500.0f)
+			compressLevelTemp = 1;
+		else if (thePrefs.GetMaxUpload() > 200.0f)
+			compressLevelTemp = 3;
+		else if (thePrefs.GetMaxUpload() > 80.0f)
+			compressLevelTemp = 6;
+
+		if(compressLevelTemp < compressLevel)
+			compressLevel = compressLevelTemp;
+
+		UINT result = compress2(output, &newsize, data, togo, compressLevel);
+		if (result != Z_OK || togo <= newsize){
+			delete[] output;
+			CreateStandartPackets(data,togo,currentblock,bFromPF);
+			return;
+		}
+	}
+	else{
+		delete[] output;
+		CreateStandartPackets(data,togo,currentblock,bFromPF);
+		return;
+	}
+	// <== Adjust Compress Level [Stulle] - Stulle
 	CMemFile memfile(output,newsize);
 	uint32 oldSize = togo;
 	togo = newsize;
@@ -1811,8 +1846,11 @@ float CUpDownClient::GetRareFilePushRatio() const {
 		return 4.0f;
 	
 	// keep the FileRatio
+	/*
 	float ratio = 0+srcfile->GetFileRatio() ;
 	return (ratio < 1.0f ? 1.0f :((ratio>100.0f)?100.0f: ratio)) ;	
+	*/
+	return srcfile->GetFileRatio();
 }
 // <== push rare file - Stulle
 

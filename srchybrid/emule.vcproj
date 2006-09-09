@@ -1429,6 +1429,9 @@
 				RelativePath="SearchResultsWnd.cpp">
 			</File>
 			<File
+				RelativePath=".\SelCategoryDlg.cpp">
+			</File>
+			<File
 				RelativePath="ServerWnd.cpp">
 			</File>
 			<File
@@ -1857,6 +1860,9 @@
 			</File>
 			<File
 				RelativePath="SearchResultsWnd.h">
+			</File>
+			<File
+				RelativePath=".\SelCategoryDlg.h">
 			</File>
 			<File
 				RelativePath="ServerWnd.h">

@@ -149,8 +149,12 @@ void CDownloadListCtrl::Init()
 	InsertColumn(12, GetResString(IDS_CAT) ,LVCFMT_LEFT, 100);
 	InsertColumn(13,GetResString(IDS_AVGQR),LVCFMT_LEFT, 70); //Xman Xtreme-Downloadmanager AVG-QR
 	
-	InsertColumn(14, GetResString(IDS_WC_SOURCES) ,LVCFMT_LEFT, 100); // WebCache [WC team/MorphXT] - Stulle/Max
-	InsertColumn(15, GetResString(IDS_SHOW_DROPPED_SRC) ,LVCFMT_LEFT, 80); // show # of dropped sources - Stulle
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	InsertColumn(14, GetResString(IDS_CAT_COLCATEGORY),LVCFMT_LEFT,60);
+	InsertColumn(15, GetResString(IDS_CAT_COLORDER),LVCFMT_LEFT,60);
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	InsertColumn(16, GetResString(IDS_WC_SOURCES) ,LVCFMT_LEFT, 100); // WebCache [WC team/MorphXT] - Stulle/Max
+	InsertColumn(17, GetResString(IDS_SHOW_DROPPED_SRC) ,LVCFMT_LEFT, 80); // show # of dropped sources - Stulle
 
 	SetAllIcons();
 	Localize();
@@ -337,16 +341,26 @@ void CDownloadListCtrl::Localize()
 	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 	pHeaderCtrl->SetItem(13, &hdi);
 
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	strRes = GetResString(IDS_CAT_COLCATEGORY);
+	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
+	pHeaderCtrl->SetItem(14, &hdi);
+
+	strRes = GetResString(IDS_CAT_COLORDER);
+	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
+	pHeaderCtrl->SetItem(15, &hdi);
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
 	strRes = GetResString(IDS_WC_SOURCES);
 	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
-	pHeaderCtrl->SetItem(14, &hdi);
+	pHeaderCtrl->SetItem(16, &hdi);
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	// ==> show # of dropped sources - Stulle
 	strRes = GetResString(IDS_SHOW_DROPPED_SRC);
 	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
-	pHeaderCtrl->SetItem(15, &hdi);
+	pHeaderCtrl->SetItem(17, &hdi);
 	// <== show # of dropped sources - Stulle
 
 	CreateMenues();
@@ -749,8 +763,61 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 			break;
 		}
 
+		// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+		case 14: // Category
+			{
+				if (!thePrefs.ShowCatNameInDownList())
+					buffer.Format(_T("%u"), lpPartFile->GetCategory());
+				else
+					buffer.Format(_T("%s"), thePrefs.GetCategory(lpPartFile->GetCategory())->title);
+				dc->DrawText(buffer, buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
+				break;
+			}
+		case 15: // Resume Mod
+			{
+				buffer = _T("");
+				Category_Struct* ActiveCat=thePrefs.GetCategory(theApp.emuledlg->transferwnd->GetActiveCategory());
+				Category_Struct* curCat=thePrefs.GetCategory(lpPartFile->GetCategory());
+				if (curCat && ActiveCat && ActiveCat->viewfilters.nFromCats == 0) {
+					switch (curCat->prio) {
+						case PR_LOW:
+							buffer.AppendFormat(_T("%s"), GetResString(IDS_PRIOLOW));
+							break;
+						case PR_NORMAL:
+							buffer.AppendFormat(_T("%s"), GetResString(IDS_PRIONORMAL));
+							break;
+						case PR_HIGH:
+							buffer.AppendFormat(_T("%s"), GetResString(IDS_PRIOHIGH));
+							break;
+					}
+					if (buffer.IsEmpty() == false) buffer.Append(_T(", "));
+					UINT dlMode = thePrefs.GetDlMode();
+					if (dlMode && curCat->m_iDlMode)
+						dlMode = curCat->m_iDlMode;
+					else
+						buffer.Append(((CString)GetResString(IDS_DEFAULT)).Left(1) + _T(". "));
+					switch (dlMode) {
+						case 0:
+//							buffer.AppendFormat(_T("%s"), GetResString(IDS_A4AF_DISABLED));
+							break;
+						case 1:
+							buffer.AppendFormat(_T("%s"), GetResString(IDS_DOWNLOAD_ALPHABETICAL));
+							break;
+						case 2:
+							buffer.AppendFormat(_T("%s=%u"), GetResString(IDS_CAT_COLORDER), lpPartFile->GetCatResumeOrder());
+							break;
+					}
+				} else {
+					if (buffer.IsEmpty() == false) buffer.Append(_T(", "));
+					buffer.AppendFormat(_T("%s=%u"), GetResString(IDS_CAT_COLORDER), lpPartFile->GetCatResumeOrder());
+				}
+				dc->DrawText(buffer, buffer.GetLength(), const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
+				break;
+			}
+		// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
 		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		case 14:
+		case 16:
 			{
 				UINT wcsc = lpPartFile->GetWebcacheSourceCount();
 				UINT wcsc_our = 0;
@@ -781,7 +848,7 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 		// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 		// ==> show # of dropped sources - Stulle
-		case 15:
+		case 17:
 			{
 				buffer.Format(_T("%i"),lpPartFile->GetShowDroppedSrc());
 				dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
@@ -1263,7 +1330,7 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 			break;
 
 		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		case 14: {
+		case 16: {
 			if (lpUpDownClient->SupportsWebCache())
 			{
 				buffer = lpUpDownClient->GetWebCacheName();
@@ -1818,6 +1885,15 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			m_FileMenu.EnableMenuItem(MP_FIND, GetItemCount() > 0 ? MF_ENABLED : MF_GRAYED);
 			m_FileMenu.EnableMenuItem(MP_SEARCHRELATED, iSelectedItems == 1 && theApp.emuledlg->searchwnd->CanSearchRelatedFiles() ? MF_ENABLED : MF_GRAYED);
 
+			//Xman manual file allocation (Xanatos)
+			bool ispreallomenu=false;
+			if( thePrefs.IsExtControlsEnabled())
+			{
+				m_FileMenu.AppendMenu(MF_STRING | (iFilesNotDone > 0 && file1->IncompleteAllocateSpace()) ? MF_ENABLED : MF_GRAYED, MP_PREALOCATE, _T("Preallocate discspace")); 
+				ispreallomenu=true;
+			}
+			//Xman end
+
 			CTitleMenu WebMenu;
 			WebMenu.CreateMenu();
 			WebMenu.AddMenuTitle(NULL, true);
@@ -1832,26 +1908,63 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			CString label;
 			if (thePrefs.GetCatCount()>1) {
 				for (int i = 0; i < thePrefs.GetCatCount(); i++){
+					// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+					/*
 					if (i>0) {
 						label=thePrefs.GetCategory(i)->title;
 						label.Replace(_T("&"), _T("&&") );
 					}
 					CatsMenu.AppendMenu(MF_STRING,MP_ASSIGNCAT+i, (i==0)?GetResString(IDS_CAT_UNASSIGN):label);
+					*/
+					label=thePrefs.GetCategory(i)->title;
+					label.Replace(_T("&"), _T("&&") );
+					CatsMenu.AppendMenu(MF_STRING,MP_ASSIGNCAT+i,label);
+					// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 				}
+				// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+				// stullemon
+				/*
 				//Xman checkmark to catogory at contextmenu of downloadlist
 				if(iSelectedItems == 1)
 					CatsMenu.CheckMenuItem(MP_ASSIGNCAT+file1->GetConstCategory(),MF_CHECKED);
 				//Xman end
+				*/
+				if(iSelectedItems == 1)
+					CatsMenu.CheckMenuItem(MP_ASSIGNCAT+file1->GetCategory(),MF_CHECKED);
+				// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 			}
 
 			m_FileMenu.AppendMenu(MF_POPUP | flag, (UINT_PTR)CatsMenu.m_hMenu, GetResString(IDS_TOCAT), _T("CATEGORY"));
+
+			// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+			CTitleMenu mnuOrder;
+			if (this->GetSelectedCount() > 1) {
+				mnuOrder.CreatePopupMenu();
+				mnuOrder.AddMenuTitle(GetResString(IDS_CAT_SETORDER));
+				mnuOrder.AppendMenu(MF_STRING, MP_CAT_ORDERAUTOINC, GetResString(IDS_CAT_MNUAUTOINC));
+				mnuOrder.AppendMenu(MF_STRING, MP_CAT_ORDERSTEPTHRU, GetResString(IDS_CAT_MNUSTEPTHRU));
+				mnuOrder.AppendMenu(MF_STRING, MP_CAT_ORDERALLSAME, GetResString(IDS_CAT_MNUALLSAME));
+				m_FileMenu.AppendMenu(MF_STRING | MF_POPUP, (UINT_PTR)mnuOrder.m_hMenu, GetResString(IDS_CAT_SETORDER), _T("FILELINEARPRIO"));
+			}
+			else {
+				m_FileMenu.AppendMenu(MF_STRING, MP_CAT_SETRESUMEORDER, GetResString(IDS_CAT_SETORDER), _T("FILELINEARPRIO"));
+			}
+			// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 			GetPopupMenuPos(*this, point);
 			m_FileMenu.TrackPopupMenu(TPM_LEFTALIGN |TPM_RIGHTBUTTON, point.x, point.y, this);
 			VERIFY( m_FileMenu.RemoveMenu(m_FileMenu.GetMenuItemCount() - 1, MF_BYPOSITION) );
 			VERIFY( m_FileMenu.RemoveMenu(m_FileMenu.GetMenuItemCount() - 1, MF_BYPOSITION) );
+			//Xman manual file allocation (Xanatos)
+			if(ispreallomenu)
+				VERIFY( m_FileMenu.RemoveMenu(m_FileMenu.GetMenuItemCount() - 1, MF_BYPOSITION) );
+			//Xman end
 			if (iPreviewMenuEntries)
 				VERIFY( m_FileMenu.RemoveMenu((UINT)PreviewMenu.m_hMenu, MF_BYCOMMAND) );
+			// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+			m_FileMenu.RemoveMenu(m_FileMenu.GetMenuItemCount()-1,MF_BYPOSITION);
+			if (mnuOrder) VERIFY( mnuOrder.DestroyMenu() );
+			// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 			VERIFY( WebMenu.DestroyMenu() );
 			VERIFY( CatsMenu.DestroyMenu() );
 			VERIFY( PreviewMenu.DestroyMenu() );
@@ -2346,6 +2459,17 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					ClearCompleted();
 					SetRedraw(true);
 					break;
+
+				//Xman manual file allocation (Xanatos)
+				case MP_PREALOCATE:
+					while (!selectedList.IsEmpty()){
+						if(selectedList.GetHead()->IncompleteAllocateSpace())
+							selectedList.GetHead()->AllocateNeededSpace();
+						selectedList.RemoveHead();
+					}
+					break;
+				//Xman end
+
 				//Xman Xtreme Downloadmanager
 				case MP_ALL_A4AF_TO_THIS:
 					{
@@ -2541,6 +2665,109 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					as.DoModal();
 					break;
 				}
+				// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+				// This is only called when there is a single selection, so we'll handle it thusly.
+				case MP_CAT_SETRESUMEORDER: {
+					InputBox	inputOrder;
+					CString		currOrder;
+
+					currOrder.Format(_T("%u"), file->GetCatResumeOrder());
+					inputOrder.SetLabels(GetResString(IDS_CAT_SETORDER), GetResString(IDS_CAT_ORDER), currOrder);
+					inputOrder.SetNumber(true);
+					if (inputOrder.DoModal() == IDOK)
+					{
+					int newOrder = inputOrder.GetInputInt();
+						if  (newOrder < 0 || newOrder == (int)file->GetCatResumeOrder()) break;
+
+					file->SetCatResumeOrder(newOrder);
+					Invalidate(); // Display the new category.
+					}
+					break;
+				}
+				// These next three are only called when there are multiple selections.
+				case MP_CAT_ORDERAUTOINC: {
+					// This option asks the user for a starting point, and then increments each selected item
+					// automatically.  It uses whatever order they appear in the list, from top to bottom.
+					InputBox	inputOrder;
+					if (selectedCount <= 1) break;
+						
+					inputOrder.SetLabels(GetResString(IDS_CAT_SETORDER), GetResString(IDS_CAT_EXPAUTOINC), _T("0"));
+					inputOrder.SetNumber(true);
+                    if (inputOrder.DoModal() == IDOK)
+					{
+					int newOrder = inputOrder.GetInputInt();
+					if  (newOrder < 0) break;
+
+					while (!selectedList.IsEmpty()) {
+						selectedList.GetHead()->SetCatResumeOrder(newOrder);
+						newOrder++;
+						selectedList.RemoveHead();
+					}
+					Invalidate();
+					}
+					break;
+				}
+				case MP_CAT_ORDERSTEPTHRU: {
+					// This option asks the user for a different resume modifier for each file.  It
+					// displays the filename in the inputbox so that they don't get confused about
+					// which one they're setting at any given moment.
+					InputBox	inputOrder;
+					CString		currOrder;
+					CString		currFile;
+					CString		currInstructions;
+					int			newOrder = 0;
+
+					if (selectedCount <= 1) break;
+					inputOrder.SetNumber(true);
+
+					while (!selectedList.IsEmpty()) {
+						currOrder.Format(_T("%u"), selectedList.GetHead()->GetCatResumeOrder());
+						currFile = selectedList.GetHead()->GetFileName();
+                        if (currFile.GetLength() > 50) currFile = currFile.Mid(0,47) + _T("...");
+						currInstructions.Format(_T("%s %s"), GetResString(IDS_CAT_EXPSTEPTHRU), currFile);
+						inputOrder.SetLabels(GetResString(IDS_CAT_SETORDER), currInstructions, currOrder);
+
+						if (inputOrder.DoModal() == IDCANCEL) {
+							if (MessageBox(GetResString(IDS_CAT_ABORTSTEPTHRU), GetResString(IDS_ABORT), MB_YESNO) == IDYES) {
+								break;
+							}
+							else {
+								selectedList.RemoveHead();
+								continue;
+							}
+						}
+
+						newOrder = inputOrder.GetInputInt();
+						selectedList.GetHead()->SetCatResumeOrder(newOrder);
+						selectedList.RemoveHead();
+					}
+					RedrawItems(0, GetItemCount() - 1);
+					break;
+				}
+				case MP_CAT_ORDERALLSAME: {
+					// This option asks the user for a single resume modifier and applies it to
+					// all the selected files.
+					InputBox	inputOrder;
+					CString		currOrder;
+
+					if (selectedCount <= 1) break;
+
+					inputOrder.SetLabels(GetResString(IDS_CAT_SETORDER), GetResString(IDS_CAT_EXPALLSAME), _T("0"));
+					inputOrder.SetNumber(true);
+					if (inputOrder.DoModal() == IDCANCEL)
+						break;
+
+					int newOrder = inputOrder.GetInputInt();
+					if  (newOrder < 0) break;
+
+					while (!selectedList.IsEmpty()) {
+						selectedList.GetHead()->SetCatResumeOrder(newOrder);
+						selectedList.RemoveHead();
+					}
+					RedrawItems(0, GetItemCount() - 1);
+					break;
+				}
+				// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 				default:
 					if (wParam>=MP_WEBURL && wParam<=MP_WEBURL+99){
 						theWebServices.RunURL(file, wParam);
@@ -2922,14 +3149,61 @@ int CDownloadListCtrl::Compare(const CPartFile* file1, const CPartFile* file2, L
 			break;
 		//Xman end
 
+		// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+		case 14: // Cat
+			if (file1->GetCategory() > file2->GetCategory())
+				comp=1;
+			else if (file1->GetCategory() < file2->GetCategory())
+				comp=-1;
+			else
+				comp=0;
+			break;
+		case 15: // Mod
+			/*
+			if (CPartFile::RightFileHasHigherPrio(file2, file1))
+				comp=1;
+			else if (CPartFile::RightFileHasHigherPrio(file1, file2))
+				comp=-1;
+			else
+				comp=0;
+			*/
+			{
+				UINT dlMode1 = thePrefs.GetDlMode();
+				if (dlMode1 && thePrefs.GetCategory(file1->GetCategory())->m_iDlMode)
+					dlMode1 = thePrefs.GetCategory(file1->GetCategory())->m_iDlMode;
+				UINT dlMode2 = thePrefs.GetDlMode();
+				if (dlMode2 && thePrefs.GetCategory(file2->GetCategory())->m_iDlMode)
+					dlMode2 = thePrefs.GetCategory(file2->GetCategory())->m_iDlMode;
+				if(dlMode1 == 2)
+				{
+					if(dlMode2 == 2)
+					{
+						if (file1->GetCatResumeOrder() < file2->GetCatResumeOrder())
+							comp=1;
+						else if (file1->GetCatResumeOrder() > file2->GetCatResumeOrder())
+							comp=-1;
+						else
+							comp=0;
+					}
+					else
+						comp=1;
+				}
+				else if (dlMode2 == 2)
+					comp=-1;
+				else
+					comp=0;
+			}
+			break;
+		// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
 		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		case 14:
+		case 16:
 			comp=file1->GetWebcacheSourceCount() - file2->GetWebcacheSourceCount();
 			break;
 		// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 		// ==> show # of dropped sources - Stulle
-		case 15:
+		case 17:
 		{
 			comp=CompareUnsigned(file1->GetShowDroppedSrc(), file2->GetShowDroppedSrc());
 			break;
@@ -3023,7 +3297,7 @@ int CDownloadListCtrl::Compare(const CUpDownClient *client1, const CUpDownClient
 	//Xman end
 	
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	case 14:
+	case 16:
 		if (client1->SupportsWebCache() && client2->SupportsWebCache() )
 			return CompareLocaleStringNoCase(client1->GetWebCacheName(),client2->GetWebCacheName());
 		else

@@ -109,6 +109,8 @@ void CIrcMain::ProcessLink( CString sED2KLink )
 		{
 			case CED2KLink::kFile:
 				{
+					// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+					/*
 					CED2KFileLink* pFileLink = pLink->GetFileLink();
 					_ASSERT(pFileLink !=0);
 					//Xman [MoNKi: -Check already downloaded files-]
@@ -117,6 +119,13 @@ void CIrcMain::ProcessLink( CString sED2KLink )
 						theApp.downloadqueue->AddFileLinkToDownload(pFileLink);
 					}
 					//Xman end
+					*/
+					CED2KFileLink* pFileLink = (CED2KFileLink*)CED2KLink::CreateLinkFromUrl(sLink);
+					if(theApp.knownfiles->CheckAlreadyDownloadedFileQuestion(pFileLink->GetHashKey(),pFileLink->GetName()))
+					{
+						theApp.downloadqueue->AddFileLinkToDownload(pFileLink, -1, true);
+					}
+					// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 					break;
 				}

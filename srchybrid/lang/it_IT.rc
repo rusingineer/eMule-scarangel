@@ -2232,7 +2232,28 @@ BEGIN
     IDS_STATS_WEBCACHE_1    "Data 1:"
     IDS_STATS_WEBCACHE_2    "Data 2:"
     IDS_STATS_WEBCACHE_3    "Data 3:"
+    IDC_MSG_WEBCACHEFAIL    "Il tuo server proxy non sembra memorizzare i dati. Ci sono più di 100 richieste alla webcache da te effettuate non riuscite. Controllare la configurazione della webcache. 
+Il download da webcache viene disabilitato fino a quando non verrà testato un nuovo proxy."
+    IDC_MSG_WEBCACHE_NOAUTODEC 
+                            "Spiacente, il tuo ISP non è stato trovato nel database,\nl'identificativo del tuo ISP è %s\nPer attivare l'autorilevamento, scopri e invia il proxy del tuo ISP."
+    IDC_MSG_WEBCACHE_NOIP   "Non hai un IP pubblico, connettiti ad un server ed2k o alla Kad.\nLa tua porta TCP deve essere contattabile (IDalto) se sei connesso ad un server, ma non è necessario quando sei connesso alla Kad"
+    IDC_MSG_WEBCACHE_CONFIGALT 
+                            "L'autorilevamento della Webcache ha rilevato un cambiamento delle impostazioni relativo alla webcache, la webcache è stata disattivata fino a quando non verrà testato un nuovo proxy.\n Puoi disattivare la configurazione automatica della webcache nei controlli avanzati webcache."
+    IDC_MSG_WEBCACHE_NOACTIVE 
+                            "L'autorilevamento della webcache ha rilevato che il proxy del tuo ISP non funziona correttamente. Webcache disabilitata."
+    IDC_MSG_WEBCACHE_ERRRESOLVE 
+                            "Errore WebCache - Impossibile risolvere l'indirizzo HTTP del proxy:\n%s\nControlla le impostazioni della webcache."
+    IDC_MSG_WEBCACHE_TRANSPAR 
+                            "Il test proxy non può testare i proxis 'trasparenti'. Test cancellato!"
+    IDC_MSG_WEBCACHE_TESTRUNNING 
+                            "Test Proxy in corso! Controlla i risultati nel log della schermata server!"
+    IDC_MSG_WEBCACHE_TESTERR "Errore del Test Proxy"
+    IDC_MSG_WEBCACHE_ALREADYRUNNING 
+                            "Impossibile far partire un nuovo test del proxy. E' in corso già un altro test"
+    IDC_MSG_WEBCACHE_TESTREQ 
+                            "Test non parito. Non ne hai i requisiti.\nRequisiti:\n1. Devi essere connesso ad un server\n2. Devi avere un IP pubblico valido\n3. Devi avere IDalto\n4. Il test non funziona se hai troppe connessioni aperte"
     // <== WebCache [WC team/MorphXT] - Stulle/Max
+
     // ==> FunnyNick [SiRoB/Stulle] - Stulle
     IDS_FN_TAG              "FunnyNick Tag"
     IDS_NO_TAG              "Senza Tag"
@@ -2261,7 +2282,102 @@ BEGIN
 	IDS_QUICK_START_MAX_CONN_PER_FIVE_BACK "Ritorna a max. con./5sec"
     IDS_QUICK_START_MAX_CONN_BACK "Ritorna a max. con."
 // <== Quick start [TPT] - Max
+IDS_STARTUPSOUND        "Riproduci suono all'avvio" // Startupsound [Commander] - mav744
+IDS_MISSING_STARTUPSOUND 
+                            "startup.wav non trovato! Nota: Il file 'startup.wav' si deve trovare nella tua cartella config"
+IDS_CLIENTPERCENTAGE    "Show Client Percentage" // Show Client Percentage [Commander/MorphXT] - Mondgott
+    // ==> CPU/MEM usage [$ick$/Stulle] - Stulle
+    IDS_SYS_INFO_GROUP      "Informazioni sul sistema"
+    IDS_SYS_INFO_GLOBAL     "Attiva informazioni globali"
+    // <== CPU/MEM usage [$ick$/Stulle] - Stulle
+    // ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+    IDS_BACKUP_FILEFRAME    "Selezionare i tipi di files per il backup di sicurezza"
+    IDS_BACKUP_SELECTALL    "Tutti i tipi"
+    IDS_BACKUP_AUTOFRAME    "Backup Automatico"
+    IDS_BACKUP_AUTOBACKUP   "Backup Automatico all'uscita"
+    IDS_BACKUP_NOTE         "Nota:"
+    IDS_BACKUP_BACKUPNOW    "Backup Ora"
+    IDS_BACKUP_MESSAGE      "Una catella denominata 'Backup' sarà creata nella cartella d'installazione di eMule per memorizzarvi i files in Backup"
+    IDS_BACKUP_AUTOBACKUP2  "doppio Backup"
+    IDS_ABORT               "Informazioni su:"
+    IDS_CONTINUE            "&Continua"
+    IDS_DONOTASKAGAIN       "Non domandarlo ancora"
+    IDS_DONOTSHOWAGAIN      "Non visualizzarlo ancora"
+    IDS_DONOTTELLAGAIN      "Non dirmelo ancora"
+    IDS_HELP                "&Aiuto"
+    IDS_IGNORE              "&Ignora"
+    IDS_IGNOREALL           "I&gnore Tutto"
+    IDS_NOTOALL             "N&o a Tutti"
+    IDS_OK                  "OK"
+    IDS_REPORT              "Ra&pporto"
+    IDS_RETRY               "&Riprova"
+    IDS_SKIP                "&Salta"
+    IDS_SKIPALL             "S&alta Tutti"
+    IDS_TRYAGAIN            "&Riprova"
+    IDS_YESTOALL            "S&i a Tutti"
+    // <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+    // ==> TBH: minimule - Max
+    IDS_MM_SHOW             "Usa TBH Mini-Mule"
+    IDS_MM_LIVES            "Tieni Mini-Mule aggiornato"
+    IDS_MM_UPDATE_TIME      "Aggiorna Mini-Mule ogni (in sec)"
+    IDS_MM_TRANS            "Trasparenza Mini-Mule (1-255)"
+    IDS_MM_ACTDL            "Downloads Attivi: %i"
+    IDS_MM_DATA             "Up: %s | Down: %s"
+    IDS_MM_UPDOWN           "Up: %s(%.1f) | Down: %s(%.1f)"
+    IDS_MM_COMPL            "File completati nella sessione"
+    IDS_MM_RATIO            "UL:DL :"
+    IDS_MM_OPEN             "Apri Mini-Mule quando riduci ad icona"
+    // <== TBH: minimule - Max
+    // ==> Copy feedback feature [MorphXT] - Stulle
+    IDS_COPYFEEDBACK        "Copia feedback negli appunti"
+    IDS_COPYFEEDBACK_US     "Copia feedback negli appunti (US)"
+    IDS_FEEDBACK_TRANSFERRED "Transferiti: %s (%s)"
+    IDS_FEEDBACK_REQUESTED  "Richieste: %i (%i)"
+    IDS_FEEDBACK_ACCEPTED   "Richieste accettate: %i (%i)"
+    IDS_FEEDBACK_FROM       "Feedback da %s su [%s]"
+    IDS_FEEDBACK_FILENAME   "Nome file: %s"
+    IDS_FEEDBACK_FILETYPE   "Tipo file: %s"
+    IDS_FEEDBACK_FILESIZE   "Dimensione: %s"
+    IDS_FEEDBACK_DOWNLOADED "Scaricato: %s"
+    IDS_FEEDBACK_TOTAL      "Fonti Totali: %i"
+    IDS_FEEDBACK_AVAILABLE  "Fonti Utilizzabili : %i"
+    IDS_FEEDBACK_NONEEDPART "Nessuna fonte necessaria per la parte: %i"
+    IDS_FEEDBACK_COMPLETE   "Fonti complete: %i"
+    // <== Copy feedback feature [MorphXT] - Stulle
+    // ==> MassRename [Dragon] - Stulle
+    IDS_MASSRENAME1         "Maschera per il nome del file (I cambiamenti effettuati qui saranno applicati a tutti i file seguenti):"
+    IDS_FILENAMELEFT        "Nome del file giustificato a sinistra"
+    IDS_FILENAMERIGHT       "Nome del file giustificato a destra"
+    IDS_RESETFILENAMES      "&Reimposta"
+    IDS_SIMPLECLEANUP       "&Pulisci"
+    IDS_INSERTTEXTCOLUMN    "&Inserisci testo della colonna dagli appunti"
+    IDS_MASSRENAME2         "Nome originario del file:"
+    IDS_MASSRENAME3         "Nuovo nome del file:"
+    IDS_NOTENOUGHFILENAMES  "Non ci sono abbastanza nomi nella lista dei file nuovi. Impossibile rinominare"
+    IDS_IDENTICALFILENAMES  "Non è consentito avere due o piu'nomi uguali nella stessa cartella (Linea %d). Impossibile rinominare."
+    IDS_MR                  "Mass Rename..."
+    IDS_CHECKDOTTOSPACE     "Converti ""."" in "" """
+    IDS_CHECKUNDERLINETOSPACE "Converti ""_"" in "" """
+    IDS_CHECKCONVERTAPOSTROPHES 
+                            "Converti apostrofi sbagliati ""´"", ""`"" to standard apostrophes "" ' """
+    IDS_CHECKCONVERTHEX     "Converti numeri esadecimali ""%xx"" back to characters"
+    IDS_CHECKSEARCHANDREPLACE "Cerca e Sostituisci:"
+    IDS_SC_SEARCHFOR        "Cerca:"
+    IDS_SC_REPLACEBY        "Sostituisci con:"
+    IDS_CHECKCASESENSITIVE  "Ricerca sensibile al carattere"
+    IDS_CHECKCHARACTERREPLACE "Sostituisci caratteri:"
+    IDS_REPLACECHAR         "Sostituisci"
+    IDS_REPLACECHARBY       "con"
+    IDS_SC_ADD              "&Aggiungi"
+    IDS_SC_EDIT             "&Modifica"
+    IDS_SC_DELETE           "&cancella"
+    IDS_SEARCHFORCHAR       "Search for"
+    IDS_REPLACEBYCHAR       "Sostituisci con"
+    IDS_SC_HEADLINE         "Pulisci"
+    // <== MassRename [Dragon] - Stulle
+
 END
+
 
 #endif    // Italienisch (Italien) resources
 /////////////////////////////////////////////////////////////////////////////

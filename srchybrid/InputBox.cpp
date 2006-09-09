@@ -90,3 +90,13 @@ void InputBox::OnCleanFilename()
 	GetDlgItem(IDC_TEXT)->GetWindowText(filename);
 	GetDlgItem(IDC_TEXT)->SetWindowText(CleanupFilename(filename));
 }
+
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+void InputBox::OnCancel()
+{
+	if (isNumber) m_return = "-1";
+	else m_return = "0";
+	
+	CDialog::OnCancel();
+}
+// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle

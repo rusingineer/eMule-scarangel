@@ -386,6 +386,8 @@ void CPartFile::Init(){
 	SuccessfulWebcacherequests = 0; //JP WC-Filedetails
 	WebCacheDownDataThisFile = 0; //JP WC-Filedetails
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
+
+	m_catResumeOrder=0; // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 }
 
 CPartFile::~CPartFile()
@@ -428,6 +430,7 @@ CPartFile::~CPartFile()
 
 	//Xman sourcecache
 	ClearSourceCache();
+
 }
 
 #ifdef _DEBUG
@@ -966,6 +969,10 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 			LoadHashsetFromFile(&metFile, false);
 		}
 
+		// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+		bool bGotCatResumeOrder = false;
+		bool bGotA4AFFlag = false;
+		// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 		UINT tagcount = metFile.ReadUInt32();
 		for (UINT j = 0; j < tagcount; j++){
 			CTag* newtag = new CTag(&metFile, false);
@@ -1204,6 +1211,17 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 						delete newtag;
 						break;
 									  }
+					// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+					case FT_CATRESUMEORDER:{
+						ASSERT( newtag->IsInt() );
+						if (newtag->IsInt()) {
+							m_catResumeOrder = newtag->GetInt();
+							bGotCatResumeOrder = true;
+						}
+						delete newtag;
+						break;
+					}
+					// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 					default:{
 						if (newtag->GetNameID()==0 && (newtag->GetName()[0]==FT_GAPSTART || newtag->GetName()[0]==FT_GAPEND))
 						{
@@ -1234,6 +1252,13 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 			else
 				delete newtag;
 		}
+
+		// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+		if (bGotCatResumeOrder == false && bGotA4AFFlag == true) {
+			m_catResumeOrder = m_uMaxSources;
+			m_uMaxSources = 0;
+		}
+		// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 		// load the hashsets from the hybridstylepartmet
 		if (isnewstyle && !getsizeonly && (metFile.GetPosition()<metFile.GetLength()) ) {
@@ -1630,7 +1655,12 @@ bool CPartFile::SavePartFile()
 		}
 
 		if (m_category){
+			// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+			/*
 			CTag categorytag(FT_CATEGORY, m_category);
+			*/
+			CTag categorytag(FT_CATEGORY, (m_category+1 > (UINT)thePrefs.GetCatCount())?0:m_category);
+			// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 			categorytag.WriteTagToFile(&file);
 			uTagCount++;
 		}
@@ -1712,6 +1742,13 @@ bool CPartFile::SavePartFile()
 			aichtag.WriteTagToFile(&file);
 			uTagCount++;
 		}
+
+		// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+		CTag catresumetag(FT_CATRESUMEORDER, m_catResumeOrder );
+		catresumetag.WriteTagToFile(&file);
+		uTagCount++;
+		// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
 		for (int j = 0; j < taglist.GetCount(); j++){
 			if (taglist[j]->IsStr() || taglist[j]->IsInt()){
 				taglist[j]->WriteTagToFile(&file);
@@ -3227,8 +3264,16 @@ uint32 CPartFile::Process(uint32 maxammount, bool isLimited, bool fullProcess)
 
 
 		if ( GetSrcStatisticsValue(DS_DOWNLOADING) != nOldTransSourceCount ){
+			// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+			/*
 			if (theApp.emuledlg->transferwnd->downloadlistctrl.curTab == 0)
 				theApp.emuledlg->transferwnd->downloadlistctrl.ChangeCategory(0); 
+			*/
+			int curselcat = theApp.emuledlg->transferwnd->downloadlistctrl.curTab;
+			Category_Struct* cat = thePrefs.GetCategory(curselcat);
+			if (cat && cat->viewfilters.nFromCats == 0)
+				theApp.emuledlg->transferwnd->downloadlistctrl.ChangeCategory(curselcat);
+			// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 			//else
 				//UpdateDisplayedInfo(true);
 			if (thePrefs.ShowCatTabInfos() )
@@ -5327,7 +5372,7 @@ void CPartFile::FlushBuffer(bool forcewait, bool bForceICH, bool /*bNoAICH*/)
 
 	bool bIncreasedFile=false;
 
-	m_nLastBufferFlushTime = GetTickCount();
+	m_nLastBufferFlushTime = GetTickCount() + (rand()%20 * 500); //Xman Code Improvement: spread the flushing => + 0..10 seconds
 	if (m_BufferedData_list.IsEmpty())
 		return;
 
@@ -5481,6 +5526,8 @@ void CPartFile::FlushBuffer(bool forcewait, bool bForceICH, bool /*bNoAICH*/)
 			} else {
 				m_hpartfile.Flush();
 			}
+		} else {
+			m_hpartfile.Flush();
 		}
 		FlushDone();
 	}
@@ -5618,6 +5665,7 @@ int CPartFileFlushThread::Run()
 		return 0;
 	// SLUGFILLER: SafeHash
 
+
 	//theApp.QueueDebugLogLine(false,_T("FLUSH:Start (%s)"),m_partfile->GetFileName()/*, CastItoXBytes(myfile->m_iAllocinfo, false, false)*/ );
 
 	//Xman queued disc-access for read/flushing-threads
@@ -5638,17 +5686,19 @@ int CPartFileFlushThread::Run()
 		}
 		//Xman end
 
+
 		CSingleLock sLock1(&(theApp.hashing_mut), TRUE); //SafeHash - wait a current hashing process end before read the chunk
 
+
+		// Flush to disk
+		m_partfile->m_hpartfile.Flush();
+		
 		//Xman queued disc-access for read/flushing-threads
 		//if we already got the mutex, we lock it now two times ->must release one time
 		if(hastoresumenextthread)
 			::ReleaseMutex(mutexhandle);
 		//Xman end
 
-
-		// Flush to disk
-		m_partfile->m_hpartfile.Flush();
 
 		sLock1.Unlock(); //Xman SafeHash - Unlock the mutex as fast as possible
 
@@ -5699,6 +5749,8 @@ int CPartFileFlushThread::Run()
 	m_partfile->m_FlushThread = NULL;
 	VERIFY( PostMessage(theApp.emuledlg->m_hWnd,TM_FLUSHDONE,0,(LPARAM)m_partfile) );
 	//theApp.QueueDebugLogLine(false,_T("FLUSH:End (%s)"),m_partfile->GetFileName());
+
+
 	return 0;
 }
 // END SiRoB: Flush Thread
@@ -5969,11 +6021,17 @@ void CPartFile::UpdateAutoDownPriority(){
 	SetDownPriority( PR_HIGH );
 }
 
-UINT CPartFile::GetCategory() /*const*/
+// Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+UINT CPartFile::GetCategory() const
 {
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 	if (m_category > (UINT)(thePrefs.GetCatCount() - 1))
 		m_category = 0;
 	return m_category;
+	*/
+	return m_category > (UINT)(thePrefs.GetCatCount() - 1)?0:m_category;
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 }
 
 //Xman checkmark to catogory at contextmenu of downloadlist
@@ -6586,6 +6644,8 @@ AllcatTypes:
 */
 bool CPartFile::CheckShowItemInGivenCat(int inCategory) /*const*/
 {
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 	int myfilter=thePrefs.GetCatFilter(inCategory);
 
 	// common cases
@@ -6623,6 +6683,63 @@ bool CPartFile::CheckShowItemInGivenCat(int inCategory) /*const*/
 	}
 
 	return (thePrefs.GetCatFilterNeg(inCategory))?!ret:ret;
+	*/
+	Category_Struct* curCat = thePrefs.GetCategory(inCategory);
+	if (curCat == NULL)
+		return false;
+	if (curCat->viewfilters.bSuspendFilters && ((int)GetCategory() == inCategory || curCat->viewfilters.nFromCats == 0))
+		return true;
+
+	if (curCat->viewfilters.nFromCats == 2 && (int)GetCategory() != inCategory)
+		return false;
+
+	if (!curCat->viewfilters.bVideo && IsMovie())
+		return false;
+	if (!curCat->viewfilters.bAudio && ED2KFT_AUDIO == GetED2KFileTypeID(GetFileName()))
+		return false;
+	if (!curCat->viewfilters.bArchives && IsArchive())
+		return false;
+	if (!curCat->viewfilters.bImages && ED2KFT_CDIMAGE == GetED2KFileTypeID(GetFileName()))
+		return false;
+	if (!curCat->viewfilters.bWaiting && GetStatus()!=PS_PAUSED && !IsStopped() && ((GetStatus()==PS_READY|| GetStatus()==PS_EMPTY) && GetTransferringSrcCount()==0))
+		return false;
+	if (!curCat->viewfilters.bTransferring && ((GetStatus()==PS_READY|| GetStatus()==PS_EMPTY) && GetTransferringSrcCount()>0))
+		return false;
+	if (!curCat->viewfilters.bComplete && GetStatus() == PS_COMPLETE)
+		return false;
+	if (!curCat->viewfilters.bCompleting && GetStatus() == PS_COMPLETING)
+		return false;
+	if (!curCat->viewfilters.bHashing && GetStatus() == PS_HASHING)
+		return false;
+	if (!curCat->viewfilters.bPaused && GetStatus()==PS_PAUSED && !IsStopped())
+		return false;
+	if (!curCat->viewfilters.bStopped && IsStopped() && IsPartFile())
+		return false;
+	if (!curCat->viewfilters.bErrorUnknown && (GetStatus() == PS_ERROR || GetStatus() == PS_UNKNOWN))
+		return false;
+	if (GetFileSize() < curCat->viewfilters.nFSizeMin || (curCat->viewfilters.nFSizeMax != 0 && GetFileSize() > curCat->viewfilters.nFSizeMax))
+		return false;
+	uint64 nTemp = GetFileSize() - GetCompletedSize();
+	if (nTemp < curCat->viewfilters.nRSizeMin || (curCat->viewfilters.nRSizeMax != 0 && nTemp > curCat->viewfilters.nRSizeMax))
+		return false;
+	if (curCat->viewfilters.nTimeRemainingMin > 0 || curCat->viewfilters.nTimeRemainingMax > 0)
+	{
+		sint32 nTemp2 = getTimeRemaining();
+		if (nTemp2 < (sint32)curCat->viewfilters.nTimeRemainingMin || (curCat->viewfilters.nTimeRemainingMax != 0 && nTemp2 > (sint32)curCat->viewfilters.nTimeRemainingMax))
+			return false;
+	}
+	nTemp = GetSourceCount();
+	if (nTemp < curCat->viewfilters.nSourceCountMin || (curCat->viewfilters.nSourceCountMax != 0 && nTemp > curCat->viewfilters.nSourceCountMax))
+		return false;
+	nTemp = GetAvailableSrcCount();
+	if (nTemp < curCat->viewfilters.nAvailSourceCountMin || (curCat->viewfilters.nAvailSourceCountMax != 0 && nTemp > curCat->viewfilters.nAvailSourceCountMax))
+		return false;
+	if (!curCat->viewfilters.sAdvancedFilterMask.IsEmpty() && !theApp.downloadqueue->ApplyFilterMask(GetFileName(), inCategory))
+		return false;
+	if (!curCat->viewfilters.bSeenComplet && lastseencomplete!=NULL)
+		return false;
+	return true;
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 }
 
 void CPartFile::SetFileName(LPCTSTR pszFileName, bool bReplaceInvalidFileSystemChars)
@@ -6673,10 +6790,24 @@ void CPartFile::SetFileOpProgress(UINT uProgress)
 	m_uFileOpProgress = uProgress;
 }
 
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+/*
 bool CPartFile::RightFileHasHigherPrio(CPartFile* left,CPartFile* right, bool allow_go_over_hardlimit) {
+*/
+bool CPartFile::RightFileHasHigherPrio(const CPartFile* left, const CPartFile* right, bool allow_go_over_hardlimit){
+// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
     if(!right) {
         return false;
     }
+
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	UINT right_dlMode = thePrefs.GetDlMode();
+	if (right_dlMode && thePrefs.GetCategory(right->GetCategory())->m_iDlMode)
+		right_dlMode = thePrefs.GetCategory(right->GetCategory())->m_iDlMode;
+	UINT left_dlMode = thePrefs.GetDlMode();
+	if (left_dlMode && thePrefs.GetCategory(left->GetCategory())->m_iDlMode)
+		left_dlMode = thePrefs.GetCategory(left->GetCategory())->m_iDlMode;
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	//Xman Xtreme Downloadmanager
 	if(allow_go_over_hardlimit==false && right->GetSourceCount() > right->GetMaxSources())
@@ -6692,6 +6823,8 @@ bool CPartFile::RightFileHasHigherPrio(CPartFile* left,CPartFile* right, bool al
           thePrefs.GetCategory(right->GetCategory())->prio > thePrefs.GetCategory(left->GetCategory())->prio ||
           thePrefs.GetCategory(right->GetCategory())->prio == thePrefs.GetCategory(left->GetCategory())->prio &&
           (
+			  // ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+			  /*
               right->GetDownPriority() > left->GetDownPriority() ||
               right->GetDownPriority() == left->GetDownPriority() &&
               (
@@ -6699,7 +6832,25 @@ bool CPartFile::RightFileHasHigherPrio(CPartFile* left,CPartFile* right, bool al
                   (thePrefs.GetCategory(right->GetCategory())->downloadInAlphabeticalOrder && thePrefs.IsExtControlsEnabled()) && 
                   right->GetFileName() && left->GetFileName() &&
                   right->GetFileName().CompareNoCase(left->GetFileName()) < 0
-              )
+				  */
+				right_dlMode == 2 && right->GetCatResumeOrder() < left->GetCatResumeOrder() ||
+				!(left_dlMode == 2 && right->GetCatResumeOrder() > left->GetCatResumeOrder()) &&
+				(				
+					right_dlMode == 2 && right->GetCatResumeOrder() == left->GetCatResumeOrder()
+					||
+					right_dlMode != 2
+				) &&
+				(
+					right->GetDownPriority() > left->GetDownPriority() ||
+					right->GetDownPriority() == left->GetDownPriority() &&
+					(
+						right->GetCategory() == left->GetCategory() && right->GetCategory() != 0 &&
+						(thePrefs.GetCategory(right->GetCategory())->m_iDlMode == 1/* && thePrefs.IsExtControlsEnabled()*/) && 
+						right->GetFileName() && left->GetFileName() &&
+						right->GetFileName().CompareNoCase(left->GetFileName()) < 0
+					)
+			  // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+			  )
           )
 		) //Xman Xtreme Downloadmanager: Auto-A4AF-check
     ) {
@@ -6710,7 +6861,12 @@ bool CPartFile::RightFileHasHigherPrio(CPartFile* left,CPartFile* right, bool al
 			thePrefs.GetCategory(right->GetCategory())->prio == thePrefs.GetCategory(left->GetCategory())->prio
 			&& right->GetDownPriority() == left->GetDownPriority()
 			&& (right->GetCategory() != left->GetCategory()
+				// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+				/*
 				|| right->GetCategory() == left->GetCategory() && (!thePrefs.GetCategory(right->GetCategory())->downloadInAlphabeticalOrder || !thePrefs.IsExtControlsEnabled()))
+				*/
+				|| right->GetCategory() == left->GetCategory() && (!thePrefs.GetCategory(right->GetCategory())->m_iDlMode != 0/* || !thePrefs.IsExtControlsEnabled()*/))
+				// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 			&& right->GetSourceCount() < left->GetSourceCount()
 			)
 			return true;
@@ -6881,6 +7037,10 @@ void CPartFile::AICHRecoveryDataAvailable(uint16 nPart)
 			m_CorruptionBlackBox.CorruptedData(PARTSIZE*(uint64)nPart+pos, PARTSIZE*(uint64)nPart + pos + (nBlockSize-1));
 		}
 	}
+	//Xman
+	m_CorruptionBlackBox.EvaluateData(nPart); // NEO: CBBF - [CorruptionBlackBoxFix] <-- Xanatos --
+	//Xman end
+
 	if (m_uCorruptionLoss >= nRecovered)
 		m_uCorruptionLoss -= nRecovered;
 	if (thePrefs.sesLostFromCorruption >= nRecovered)
@@ -7221,6 +7381,23 @@ bool CPartFile::IsSourceSearchAllowed()
 }
 //Xman end
 
+//Xman manual file allocation (Xanatos)
+void CPartFile::AllocateNeededSpace()
+{
+	if (m_AllocateThread!=NULL)
+		return;
+
+	// Allocate filesize
+	m_AllocateThread = AfxBeginThread(AllocateSpaceThread, this, THREAD_PRIORITY_LOWEST, 0, CREATE_SUSPENDED);
+	if (m_AllocateThread == NULL){
+		TRACE(_T("Failed to create alloc thread! -> allocate blocking\n"));
+	}else{
+		m_iAllocinfo = GetFileSize();
+		m_AllocateThread->ResumeThread();
+	}
+}
+//Xman end
+
 //Xman
 // BEGIN SiRoB, SLUGFILLER: SafeHash
 void CPartFile::PerformFirstHash()
@@ -7514,6 +7691,7 @@ void CPartHashThread::SetSinglePartHash(CPartFile* pOwner, uint16 part, bool ICH
 
 int CPartHashThread::Run()
 {
+	DbgSetThreadName("PartHashThread");
 	//InitThreadLocale(); //Performance killer
 
 	// SLUGFILLER: SafeHash

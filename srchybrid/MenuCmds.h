@@ -210,6 +210,7 @@
 
 #define MP_ULFEEDBACK           14016 // Xman: IcEcRacKer Copy UL-feedback
 #define MP_DROPLEECHER			14017	//Xman Anti-Leecher
+#define	MP_PREALOCATE			14018 //Xman manual file allocation (Xanatos)
 
 #define MP_SIVKA_FILE_SETTINGS	20000 // file settings - Stulle
 
@@ -227,3 +228,17 @@
 #define MP_COPYFEEDBACK_US		20021
 // <== Copy feedback feature [MorphXT] - Stulle
 #define MP_MASSRENAME    		20030 // MassRename [Dragon] - Stulle
+
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+#define MP_CAT_SHOWHIDEPAUSED	20040
+#define MP_CAT_SETRESUMEORDER	20041
+#define	MP_CAT_ORDERAUTOINC		20042
+#define MP_CAT_ORDERSTEPTHRU	20043
+#define MP_CAT_ORDERALLSAME		20044
+//#define MP_CAT_RESUMENEXT		20045 see MP_RESUMENEXT
+#define	MP_CAT_PAUSELAST		20046
+#define MP_CAT_STOPLAST			20047
+#define MP_CAT_MERGE			20048
+#define MP_CAT_DL_MODE          20049
+// reserved till 20051
+// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle

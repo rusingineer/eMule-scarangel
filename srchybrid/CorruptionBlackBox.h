@@ -56,6 +56,9 @@ public:
 	void	TransferredData(uint64 nStartPos, uint64 nEndPos, const CUpDownClient* pSender);
 	void	VerifiedData(uint64 nStartPos, uint64 nEndPos);
 	void	CorruptedData(uint64 nStartPos, uint64 nEndPos);
+	//Xman
+	// NEO: CBBF - [CorruptionBlackBoxFix] -- Xanatos --
+	void	EvaluateData(uint16 nPart);
 
 
 private:

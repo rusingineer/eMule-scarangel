@@ -174,7 +174,12 @@ public:
 
 	void		SearchClipboard();
 	void		IgnoreClipboardLinks(CString strLinks) {m_strLastClipboardContents = strLinks;}
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 	void		PasteClipboard(int cat = 0);
+	*/
+	void		PasteClipboard(int cat = -1);
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	bool		IsEd2kFileLinkInClipboard();
 	bool		IsEd2kServerLinkInClipboard();
 	bool		IsEd2kLinkInClipboard(LPCSTR pszLinkType, int iLinkTypeLen);

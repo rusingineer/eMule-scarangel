@@ -30,6 +30,11 @@ namespace Kademlia
 	class CUInt128;
 };
 
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+#include "SelCategoryDlg.h"
+#include "MenuCmds.h"
+// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
 class CSourceHostnameResolveWnd : public CWnd
 {
 // Construction
@@ -70,9 +75,17 @@ public:
 	// add/remove entries
 	void	AddPartFilesToShare();
 	void	AddDownload(CPartFile* newfile, bool paused);
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 	void	AddSearchToDownload(CSearchFile* toadd, uint8 paused = 2, int cat = 0);
 	void	AddSearchToDownload(CString link, uint8 paused = 2, int cat = 0);
 	void	AddFileLinkToDownload(class CED2KFileLink* pLink, int cat = 0);
+	*/
+	//Modified these three functions by adding and in some cases removing params.
+	void	AddSearchToDownload(CSearchFile* toadd, uint8 paused = 2, int cat = 0, uint16 useOrder = 0);
+	void	AddSearchToDownload(CString link,uint8 paused = 2, int cat = 0, uint16 useOrder = 0);
+	void	AddFileLinkToDownload(class CED2KFileLink* pLink, int cat = 0, bool AllocatedLink = false);
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	void	RemoveFile(CPartFile* toremove);
 	void	DeleteAll();
 
@@ -91,7 +104,11 @@ public:
 	CPartFile* GetFileByKadFileSearchID(uint32 ID) const;
 
     void    StartNextFileIfPrefs(int cat);
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 	void	StartNextFile(int cat=-1,bool force=false);
+	*/
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	// sources
 	CUpDownClient* GetDownloadClientByIP(uint32 dwIP);
@@ -122,12 +139,20 @@ public:
 	//Xman end
 
 	// categories
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 	void	ResetCatParts(UINT cat);
+	*/
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	void	SetCatPrio(UINT cat, uint8 newprio);
     void    RemoveAutoPrioInCat(UINT cat, uint8 newprio); // ZZ:DownloadManager
 	void	SetCatStatus(UINT cat, int newstatus);
 	void	MoveCat(UINT from, UINT to);
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 	void	SetAutoCat(CPartFile* newfile);
+	*/
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	// searching on local server
 	void	SendLocalSrcRequest(CPartFile* sender);
@@ -272,4 +297,24 @@ public:
 	int quickflag;
 	int quickflags;
 	// <== Quick start [TPT] - Max
+
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	bool	StartNextFile(int cat=-1,bool force=false);
+	void	StopPauseLastFile(int Mode = MP_PAUSE, int Category = -1);
+	UINT	GetMaxCatResumeOrder(UINT iCategory = 0);
+	void	GetCategoryFileCounts(UINT iCategory, int cntFiles[]);
+	UINT	GetCategoryFileCount(UINT iCategory);
+	UINT	GetHighestAvailableSourceCount(int nCat = -1);
+	UINT	GetCatActiveFileCount(UINT iCategory);
+	UINT	GetAutoCat(CString sFullName, EMFileSize nFileSize);
+	bool	ApplyFilterMask(CString sFullName, UINT nCat);
+	void	ResetCatParts(UINT cat, UINT useCat = 0);
+
+private:
+	bool		m_bBusyPurgingLinks;
+	bool		PurgeED2KLinkQueue();
+	uint32		m_iLastLinkQueuedTick;
+
+	CTypedPtrList<CPtrList, CED2KFileLink*> m_ED2KLinkQueue;
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 };

@@ -694,7 +694,7 @@ void CreateItemReport(CListCtrl& lv, CString& rstrReport)
 			}
 		}
 
-		delete paiColWidths;
+		delete[] paiColWidths; //Xman MemleakFix (Wizard)
 
 		if (!rstrReport.IsEmpty())
 			rstrReport += _T("\r\n");
@@ -733,7 +733,7 @@ void InitColumnOrders(CListCtrl& lv, int iColumns, const LCX_COLUMN_INIT* pColum
 			}
 		}
 		VERIFY( lv.SetColumnOrderArray(iColumns, piOrders) );
-		delete piOrders;
+		delete[] piOrders; //Xman MemleakFix (Wizard)
 	}
 }
 

@@ -1261,6 +1261,7 @@ void CUpDownClient::SendBlockRequests(bool ed2krequest)
 					ASSERT( false );
 					SendCancelTransfer();
 					SetDownloadState(DS_ERROR);
+					return; //Xman Bugfix - we may not send the blockrequest
 				}
 				break;
 			}
@@ -1452,8 +1453,12 @@ void CUpDownClient::ProcessBlockPacket(const uchar *packet, uint32 size, bool pa
 	thePrefs.Add2SessionTransferData(GetClientSoft(), GetUserPort(), false, false, uTransferredFileDataSize, false);
 	// <-----khaos-
 
-	if (credits)
-		credits->AddDownloaded(uTransferredFileDataSize, GetIP());
+	//Xman moved down
+	//MORPH::Avoid Credits Accumulate Fakers
+	//if (credits)
+	//	credits->AddDownloaded(uTransferredFileDataSize, GetIP());
+	bool bPacketUsefull = false;
+	//Xman end
 
 	// Move end back one, should be inclusive
 	nEndPos--;
@@ -1484,6 +1489,7 @@ void CUpDownClient::ProcessBlockPacket(const uchar *packet, uint32 size, bool pa
 			// Handle differently depending on whether packed or not
 			if (!packed)
 			{
+				bPacketUsefull = true; //Xman MORPH::Avoid Credits Accumulate Fakers
 				// Write to disk (will be buffered in part file class)
 				lenWritten = reqfile->WriteToBuffer(uTransferredFileDataSize, 
 					packet + nHeaderSize,
@@ -1522,6 +1528,7 @@ void CUpDownClient::ProcessBlockPacket(const uchar *packet, uint32 size, bool pa
 							// There is no chance to recover from this error
 						}
 						else{
+							bPacketUsefull = true; //Xman MORPH::Avoid Credits Accumulate Fakers
 							// Write uncompressed data to file
 							lenWritten = reqfile->WriteToBuffer(uTransferredFileDataSize,
 								unzipped,
@@ -1591,6 +1598,15 @@ void CUpDownClient::ProcessBlockPacket(const uchar *packet, uint32 size, bool pa
 						SendBlockRequests();	
 				}
 			}
+
+			//Xman
+			//MORPH::Avoid Credits Accumulate Fakers
+			if(bPacketUsefull)
+			{
+				if (credits)
+					credits->AddDownloaded(uTransferredFileDataSize, GetIP());
+			}
+			//Xman end
 
 			// Stop looping and exit method
 			return;

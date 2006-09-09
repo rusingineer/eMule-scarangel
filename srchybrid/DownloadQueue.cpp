@@ -99,6 +99,11 @@ CDownloadQueue::CDownloadQueue()
 	quickflags = 0;
 	// <== Quick start [TPT] - Max
 
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	m_iLastLinkQueuedTick = 0;
+	m_bBusyPurgingLinks = false;
+	m_ED2KLinkQueue.RemoveAll();
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 }
 
 void CDownloadQueue::AddPartFilesToShare()
@@ -218,7 +223,13 @@ CDownloadQueue::~CDownloadQueue(){
 	m_srcwnd.DestroyWindow(); // just to avoid a MFC warning
 }
 
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+/*
 void CDownloadQueue::AddSearchToDownload(CSearchFile* toadd, uint8 paused, int cat)
+*/
+// New Param: uint16 useOrder (Def: 0)
+void CDownloadQueue::AddSearchToDownload(CSearchFile* toadd, uint8 paused, int cat, uint16 useOrder)
+// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 {
 	if (toadd->GetFileSize()== (uint64)0 || IsFileExisting(toadd->GetFileHash()))
 		return;
@@ -233,6 +244,8 @@ void CDownloadQueue::AddSearchToDownload(CSearchFile* toadd, uint8 paused, int c
 		delete newfile;
 		return;
 	}
+
+	newfile->SetCatResumeOrder(useOrder); // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	if (paused == 2)
 		paused = (uint8)thePrefs.AddNewFilesPaused();
@@ -273,7 +286,13 @@ void CDownloadQueue::AddSearchToDownload(CSearchFile* toadd, uint8 paused, int c
 	}
 }
 
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+/*
 void CDownloadQueue::AddSearchToDownload(CString link, uint8 paused, int cat)
+*/
+// New Param: uint16 useOrder (Def: 0)
+void CDownloadQueue::AddSearchToDownload(CString link,uint8 paused, int cat, uint16 useOrder)
+// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 {
 	CPartFile* newfile = new CPartFile(link, cat);
 	if (newfile->GetStatus() == PS_ERROR){
@@ -281,23 +300,43 @@ void CDownloadQueue::AddSearchToDownload(CString link, uint8 paused, int cat)
 		return;
 	}
 
+	newfile->SetCatResumeOrder(useOrder); // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
 	if (paused == 2)
 		paused = (uint8)thePrefs.AddNewFilesPaused();
 	AddDownload(newfile, (paused==1));
 }
-
 void CDownloadQueue::StartNextFileIfPrefs(int cat) {
     if (thePrefs.StartNextFile())
+		// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+		/*
 		StartNextFile((thePrefs.StartNextFile() > 1?cat:-1), (thePrefs.StartNextFile()!=3));
+		*/
+	{
+		int catTemp = thePrefs.StartNextFile() > 1?cat:-1;
+		Category_Struct* cur_cat = thePrefs.GetCategory(cat);
+		if (cur_cat && cur_cat->bResumeFileOnlyInSameCat)
+			catTemp = cat;
+		
+		StartNextFile(catTemp, (thePrefs.StartNextFile()!=3));
+	}
+		// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 }
 
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+/*
 void CDownloadQueue::StartNextFile(int cat, bool force){
+*/
+bool CDownloadQueue::StartNextFile(int cat, bool force){
+// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	CPartFile*  pfile = NULL;
 	CPartFile* cur_file ;
 	POSITION pos;
 	
 	if (cat != -1) {
+		// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+		/*
         // try to find in specified category
 		for (pos = filelist.GetHeadPosition();pos != 0;){
 			cur_file = filelist.GetNext(pos);
@@ -307,19 +346,40 @@ void CDownloadQueue::StartNextFile(int cat, bool force){
 				 cat==0 && thePrefs.GetCategory(0)->filter==0 && cur_file->GetCategory()>0
                 ) &&
                 CPartFile::RightFileHasHigherPrio(pfile, cur_file)
+		*/
+		Category_Struct* cur_cat = thePrefs.GetCategory(cat);
+		force &= !(cur_cat && cur_cat->bResumeFileOnlyInSameCat);
+		// try to find in specified category
+		for (pos = filelist.GetHeadPosition();pos != 0;){
+			cur_file = filelist.GetNext(pos);
+			if (cur_file->GetStatus()==PS_PAUSED &&
+				cur_file->GetCategory()==(UINT)cat &&
+                CPartFile::RightFileHasHigherPrio(pfile, cur_file)
+		// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 			   ) {
     			pfile = cur_file;
 			}
 		}
 		if (pfile == NULL && !force)
+			// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+			/*
 			return;
+			*/
+			return false;
+			// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	}
 
     if(cat == -1 || pfile == NULL && force) {
 	    for (pos = filelist.GetHeadPosition();pos != 0;){
 		    cur_file = filelist.GetNext(pos);
+		    Category_Struct* cur_cat = thePrefs.GetCategory(cur_file->GetCategory()); // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 		    if (cur_file->GetStatus() == PS_PAUSED &&
+				// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+				/*
                 CPartFile::RightFileHasHigherPrio(pfile, cur_file))
+				*/
+				CPartFile::RightFileHasHigherPrio(pfile, cur_file) && !(cur_cat && cur_cat->bResumeFileOnlyInSameCat))
+				// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 		    {
                 // pick first found matching file, since they are sorted in prio order with most important file first.
 			    pfile = cur_file;
@@ -327,8 +387,11 @@ void CDownloadQueue::StartNextFile(int cat, bool force){
 	    }
     }
 	if (pfile) pfile->ResumeFile();
+	return pfile!=NULL; // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 }
 
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+/*
 void CDownloadQueue::AddFileLinkToDownload(CED2KFileLink* pLink, int cat)
 {
 	CPartFile* newfile = new CPartFile(pLink, cat);
@@ -337,6 +400,77 @@ void CDownloadQueue::AddFileLinkToDownload(CED2KFileLink* pLink, int cat)
 		newfile=NULL;
 	}
 	else {
+		AddDownload(newfile,thePrefs.AddNewFilesPaused());
+	}
+
+	CPartFile* partfile = newfile;
+	if (partfile == NULL)
+		partfile = GetFileByID(pLink->GetHashKey());
+	if (partfile)
+	{
+		if (pLink->HasValidSources())
+			partfile->AddClientSources(pLink->SourcesList,1);
+		if (pLink->HasValidAICHHash() ){
+			if ( !(partfile->GetAICHHashset()->HasValidMasterHash() && partfile->GetAICHHashset()->GetMasterHash() == pLink->GetAICHHash())){
+				partfile->GetAICHHashset()->SetMasterHash(pLink->GetAICHHash(), AICH_VERIFIED);
+				partfile->GetAICHHashset()->FreeHashSet();
+			}
+		}
+	}
+
+	if (pLink->HasHostnameSources())
+	{
+		POSITION pos = pLink->m_HostnameSourcesList.GetHeadPosition();
+		while (pos != NULL)
+		{
+			const SUnresolvedHostname* pUnresHost = pLink->m_HostnameSourcesList.GetNext(pos);
+			m_srcwnd.AddToResolve(pLink->GetHashKey(), pUnresHost->strHostname, pUnresHost->nPort, pUnresHost->strURL);
+		}
+	}
+}
+*/
+// This function has been modified in order
+// to accomodate the category selection.
+// NEW PARAM:  bool AllocatedLink = false by default
+void CDownloadQueue::AddFileLinkToDownload(CED2KFileLink* pLink, int theCat, bool AllocatedLink)
+{
+	if (thePrefs.SelectCatForNewDL() && theCat==-1)
+	{
+		m_ED2KLinkQueue.AddTail(pLink);
+		m_iLastLinkQueuedTick = GetTickCount();
+		return;
+	}
+
+	int useCat = theCat;
+
+	if (useCat == -1){
+		if (thePrefs.UseAutoCat())
+			useCat = theApp.downloadqueue->GetAutoCat(CString(pLink->GetName()), pLink->GetSize());
+		else if (thePrefs.UseActiveCatForLinks())
+			useCat = theApp.emuledlg->transferwnd->GetActiveCategory();
+		else
+			useCat = 0;
+	}
+	// Just in case...
+	if (m_ED2KLinkQueue.GetCount() && !thePrefs.SelectCatForNewDL()) PurgeED2KLinkQueue();
+	m_iLastLinkQueuedTick = 0;
+
+	// Pass useCat instead of cat and autoset resume order.
+	/*
+	CPartFile* newfile = new CPartFile(pLink, cat);
+	*/
+	CPartFile* newfile = new CPartFile(pLink, useCat);
+
+	if (newfile->GetStatus() == PS_ERROR){
+		delete newfile;
+		newfile=NULL;
+	}
+	else {
+		// Pass useCat instead of cat and autoset resume order.
+		if (thePrefs.SmallFileDLPush() && newfile->GetFileSize() < (uint64)154624)
+			newfile->SetCatResumeOrder(0);
+		else if (thePrefs.AutoSetResumeOrder())
+			newfile->SetCatResumeOrder(GetMaxCatResumeOrder(useCat)+1);
 		AddDownload(newfile,thePrefs.AddNewFilesPaused());
 	}
 
@@ -376,7 +510,16 @@ void CDownloadQueue::AddFileLinkToDownload(CED2KFileLink* pLink, int cat)
 			m_srcwnd.AddToResolve(pLink->GetHashKey(), pUnresHost->strHostname, pUnresHost->nPort, pUnresHost->strURL);
 		}
 	}
+
+	// Deallocate memory, because if we've gotten here,
+	// this link wasn't added to the queue and therefore there's no reason to
+	// not delete it.
+	if (AllocatedLink) {
+		delete pLink;
+		pLink = NULL;
+	}
 }
+// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 void CDownloadQueue::AddToResolved( CPartFile* pFile, SUnresolvedHostname* pUH )
 {
@@ -388,8 +531,12 @@ void CDownloadQueue::AddDownload(CPartFile* newfile,bool paused) {
 	// Barry - Add in paused mode if required
 	if (paused)
 		newfile->PauseFile();
-	
+
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 	SetAutoCat(newfile);// HoaX_69 / Slugfiller: AutoCat
+	*/
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	filelist.AddTail(newfile);
 	SortByPriority();
@@ -671,6 +818,17 @@ void CDownloadQueue::Process(){
 		}
 	}
 	//end - Maella -New bandwidth control-
+
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	// Purge ED2K Link Queue
+	if (m_iLastLinkQueuedTick && !m_bBusyPurgingLinks && (GetTickCount() - m_iLastLinkQueuedTick) > 400)
+		PurgeED2KLinkQueue();
+	else if (m_ED2KLinkQueue.GetCount() && !thePrefs.SelectCatForNewDL()) // This should not happen.
+	{
+		PurgeED2KLinkQueue();
+		AddDebugLogLine(false, _T("ERROR: Links in ED2K Link Queue while SelectCatForNewDL was disabled!"));
+	}
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	// ==> CPU/MEM usage [$ick$/Stulle] - Max 
 	if(::GetTickCount() > m_dwResTimer) 
@@ -1542,6 +1700,8 @@ bool CDownloadQueue::IsInList(const CUpDownClient* client) const
 	return false;
 }
 
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+/*
 void CDownloadQueue::ResetCatParts(UINT cat)
 {
 	CPartFile* cur_file;
@@ -1555,6 +1715,27 @@ void CDownloadQueue::ResetCatParts(UINT cat)
 			cur_file->SetCategory(cur_file->GetCategory() - 1);
 	}
 }
+*/
+// We need to reset the resume order, too, so that these files don't
+// screw up the order of 'All' category.  This function is modified.
+void CDownloadQueue::ResetCatParts(UINT cat, UINT useCat)
+{
+	int useOrder = GetMaxCatResumeOrder(useCat);
+	CPartFile* cur_file;
+	for (POSITION pos = filelist.GetHeadPosition(); pos != 0; ){
+		cur_file = filelist.GetNext(pos);
+
+		if (cur_file->GetCategory()==cat)
+		{
+			useOrder++;
+			cur_file->SetCategory(useCat);
+			cur_file->SetCatResumeOrder(useOrder);
+		}
+		else if (cur_file->GetCategory() > cat)
+			cur_file->SetCategory(cur_file->GetCategory() - 1);
+	}
+}
+// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 void CDownloadQueue::SetCatPrio(UINT cat, uint8 newprio)
 {
@@ -1698,6 +1879,8 @@ UINT CDownloadQueue::GetPausedFileCount() const
 	return result;
 }
 
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+/*
 void CDownloadQueue::SetAutoCat(CPartFile* newfile){
 	if(thePrefs.GetCatCount()==1)
 		return;
@@ -1742,6 +1925,8 @@ void CDownloadQueue::SetAutoCat(CPartFile* newfile){
 		}
 	}
 }
+*/
+// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 void CDownloadQueue::ResetLocalServerRequests()
 {
@@ -2524,3 +2709,410 @@ bool CDownloadQueue::ContainsUnstoppedFiles()
 	}
 	return returnval;
 }// <== WebCache [WC team/MorphXT] - Stulle/Max
+
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+// This function is used for the category commands Stop Last and Pause Last.
+// This is a new function.
+void CDownloadQueue::StopPauseLastFile(int Mode, int Category) {
+	CPartFile*  pfile = NULL;
+	for (POSITION pos = filelist.GetHeadPosition();pos != 0;filelist.GetNext(pos)) {
+		CPartFile* cur_file = filelist.GetAt(pos);
+		if ((cur_file->GetStatus() < 4) && ((int)cur_file->GetCategory() == Category || Category == -1)) {
+			if (!pfile)
+				pfile = cur_file;
+			else {
+				if (cur_file->GetCatResumeOrder() > pfile->GetCatResumeOrder())
+					pfile = cur_file;
+				else if (cur_file->GetCatResumeOrder() == pfile->GetCatResumeOrder() && (cur_file->GetDownPriority() < pfile->GetDownPriority()))
+					pfile = cur_file;
+			}
+		}
+	}
+	if (pfile) {
+		Mode == MP_STOP ? pfile->StopFile() : pfile->PauseFile();
+	}
+}
+
+// This function returns the highest resume order in a given category.
+// It can be used to automatically assign a resume order to a partfile
+// when it is added...  Or maybe it will have other uses in the future.
+UINT CDownloadQueue::GetMaxCatResumeOrder(UINT iCategory /* = 0*/)
+{
+	UINT		max   = 0;
+	
+	for (POSITION pos = filelist.GetHeadPosition();pos != 0;filelist.GetNext(pos))
+	{
+		CPartFile* cur_file = filelist.GetAt(pos);
+		if (cur_file->GetCategory() == iCategory && cur_file->GetCatResumeOrder() > max)
+			max = cur_file->GetCatResumeOrder();
+	}
+
+	return max;
+}
+
+// New function, used to add all of the
+// ED2K links on the link queue to the downloads.  This is
+// called when no new links have been added to the download
+// list for half a second, or when there are queued links
+// and the user has disabled the SelectCatForLinks feature.
+bool CDownloadQueue::PurgeED2KLinkQueue()
+{
+	if (m_ED2KLinkQueue.IsEmpty()) return false;
+	
+	m_bBusyPurgingLinks = true;
+
+	int	useCat;
+	int		addedFiles = 0;
+	bool	bCreatedNewCat = false;
+	bool	bCanceled = false;
+	if (thePrefs.SelectCatForNewDL())
+	{
+		CSelCategoryDlg* getCatDlg = new CSelCategoryDlg((CWnd*)theApp.emuledlg);
+		getCatDlg->DoModal();
+		
+		// Returns 0 on 'Cancel', otherwise it returns the selected category
+		// or the index of a newly created category.  Users can opt to add the
+		// links into a new category.
+		useCat = getCatDlg->GetInput();
+		bCreatedNewCat = getCatDlg->CreatedNewCat();
+		bCanceled = getCatDlg->WasCancelled();
+		delete getCatDlg;
+	}
+	else if (thePrefs.UseActiveCatForLinks())
+		useCat = theApp.emuledlg->transferwnd->GetActiveCategory();
+	else
+		useCat = 0;
+
+	for (POSITION pos = m_ED2KLinkQueue.GetHeadPosition(); pos != 0; m_ED2KLinkQueue.GetNext(pos))
+	{
+		CED2KFileLink*	pLink = m_ED2KLinkQueue.GetAt(pos);
+		if (bCanceled) {
+			delete pLink;
+			pLink = NULL;
+			continue;
+		}
+		if (!thePrefs.SelectCatForNewDL() && thePrefs.UseAutoCat())
+		{
+			useCat = GetAutoCat(CString(pLink->GetName()), pLink->GetSize());
+			if (!useCat && thePrefs.UseActiveCatForLinks())
+				useCat = theApp.emuledlg->transferwnd->GetActiveCategory();
+		}
+		CPartFile*		newfile =	new CPartFile(pLink, useCat);
+		
+		if (newfile->GetStatus() == PS_ERROR) 
+		{
+			delete newfile;
+			newfile = NULL;
+		}
+		else
+		{
+			if (thePrefs.SmallFileDLPush() && newfile->GetFileSize() < (uint64)154624)
+				newfile->SetCatResumeOrder(0);
+			else if (thePrefs.AutoSetResumeOrder()) {
+				newfile->SetCatResumeOrder(GetMaxCatResumeOrder(useCat)+1);
+			}
+			AddDownload(newfile,thePrefs.AddNewFilesPaused());
+			addedFiles++;
+		}
+
+		CPartFile* partfile = newfile;
+		if (partfile == NULL)
+			partfile = GetFileByID(pLink->GetHashKey());
+		if (partfile)
+		{
+			if (pLink->HasValidSources())
+				partfile->AddClientSources(pLink->SourcesList,1);
+			if (pLink->HasValidAICHHash() ){
+				if ( !(partfile->GetAICHHashset()->HasValidMasterHash() && partfile->GetAICHHashset()->GetMasterHash() == pLink->GetAICHHash())){
+					partfile->GetAICHHashset()->SetMasterHash(pLink->GetAICHHash(), AICH_VERIFIED);
+					partfile->GetAICHHashset()->FreeHashSet();
+				}
+			}
+		}
+	    // ==> WebCache [WC team/MorphXT] - Stulle/Max
+		if (!theApp.sharedfiles->GetFileByID(pLink->GetHashKey())	// not already in the shared files list
+			&& partfile							// valid pointer
+			&& !partfile->hashsetneeded			// hash set not needed
+			&& thePrefs.IsWebCacheDownloadEnabled()			// webcache downloading on
+			&& partfile->GetStatus() == PS_EMPTY)	// file not stopped or paused
+		{
+				partfile->SetStatus(PS_READY);
+			theApp.sharedfiles->SafeAddKFile(partfile);
+		}
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
+
+		if(pLink->HasHostnameSources())
+		{
+			POSITION pos = pLink->m_HostnameSourcesList.GetHeadPosition();
+			while (pos != NULL)
+			{
+				const SUnresolvedHostname* pUnresHost = pLink->m_HostnameSourcesList.GetNext(pos);
+				m_srcwnd.AddToResolve(pLink->GetHashKey(), pUnresHost->strHostname, pUnresHost->nPort, pUnresHost->strURL);
+			}
+		}
+		// We're done with this link.
+		delete pLink;
+		pLink = NULL;
+	}
+	
+	m_ED2KLinkQueue.RemoveAll();
+
+	// This bit of code will resume the number of files that the user specifies in preferences (Off by default)
+	if (thePrefs.StartDLInEmptyCats() > 0 && bCreatedNewCat && thePrefs.AddNewFilesPaused())
+		for (int i = 0; i < thePrefs.StartDLInEmptyCats(); i++)
+			if (!StartNextFile(useCat)) break;
+
+	m_bBusyPurgingLinks = false;
+	m_iLastLinkQueuedTick = 0;
+	return true;
+}
+
+// Returns statistics about a category's files' states.
+void CDownloadQueue::GetCategoryFileCounts(UINT uCategory, int cntFiles[])
+{
+	// cntFiles Array Indices:
+	// 0 = Total
+	// 1 = Transferring (Transferring Sources > 0)
+	// 2 = Active (READY and EMPTY)
+	// 3 = Unactive (PAUSED)
+	// 4 = Complete (COMPLETE and COMPLETING)
+	// 5 = Error (ERROR)
+	// 6 = Other (Everything else...)
+	for (int i = 0; i < 7; i++) cntFiles[i] = 0;
+
+	for (POSITION pos = filelist.GetHeadPosition(); pos != NULL; filelist.GetNext(pos))
+	{
+		CPartFile* cur_file = filelist.GetAt(pos);
+		if (cur_file->GetCategory() != uCategory) continue;
+
+		cntFiles[0]++;
+		if (cur_file->GetTransferringSrcCount() > 0) cntFiles[1]++;
+
+		switch (cur_file->GetStatus(false))
+		{
+			case	PS_READY:
+			case	PS_EMPTY:
+				cntFiles[2]++;
+				break;
+
+			case	PS_PAUSED:
+			//case	PS_INSUFFICIENT:
+				cntFiles[3]++;
+				break;
+
+			case	PS_COMPLETING:
+			case	PS_COMPLETE:
+				cntFiles[4]++;
+				break;
+
+			case	PS_ERROR:
+				cntFiles[5]++;
+				break;
+			
+			case	PS_WAITINGFORHASH:
+			case	PS_HASHING:
+			case	PS_UNKNOWN:
+				cntFiles[6]++;
+				break;
+		}
+	}
+}
+
+// Returns the number of active files in a category.
+UINT CDownloadQueue::GetCatActiveFileCount(UINT uCategory)
+{
+	UINT uCount = 0;
+
+	for (POSITION pos = filelist.GetHeadPosition(); pos != NULL; filelist.GetNext(pos))
+	{
+		CPartFile* cur_file = filelist.GetAt(pos);
+		if (cur_file->GetCategory() != uCategory) continue;
+
+		switch (cur_file->GetStatus(false))
+		{
+			case	PS_READY:
+			case	PS_EMPTY:
+			case	PS_COMPLETING:
+				uCount++;
+				break;
+			default:
+				break;
+		}
+	}
+
+	return uCount;
+}
+
+// Returns the number of files in a category.
+UINT CDownloadQueue::GetCategoryFileCount(UINT uCategory)
+{
+	UINT uCount = 0;
+
+	for (POSITION pos = filelist.GetHeadPosition(); pos != NULL; filelist.GetNext(pos))
+	{
+		CPartFile* cur_file = filelist.GetAt(pos);
+		if (cur_file->GetCategory() == uCategory) uCount++;
+	}
+
+	return uCount;
+}
+
+// Returns the source count of the file with the highest available source count.
+// nCat is optional and allows you to specify a certain category.
+UINT CDownloadQueue::GetHighestAvailableSourceCount(int nCat)
+{
+	UINT nCount = 0;
+
+	for (POSITION pos = filelist.GetHeadPosition(); pos != NULL; filelist.GetNext(pos))
+	{
+		CPartFile* curFile = filelist.GetAt(pos);
+		if (nCount < curFile->GetAvailableSrcCount() && (nCat == -1 || (int)curFile->GetCategory() == nCat))
+			nCount = curFile->GetAvailableSrcCount();
+	}
+
+	return nCount;
+}
+
+// GetAutoCat returns a category index of a category
+// that passes the filters.
+// Idea by HoaX_69.
+UINT CDownloadQueue::GetAutoCat(CString sFullName, EMFileSize nFileSize)
+{
+	if (sFullName.IsEmpty())
+		return 0;
+
+	if (thePrefs.GetCatCount() <= 1)
+		return 0;
+
+	for (int ix = 1; ix < thePrefs.GetCatCount(); ix++)
+	{ 
+		Category_Struct* curCat = thePrefs.GetCategory(ix);
+		if (!curCat->selectioncriteria.bAdvancedFilterMask && !curCat->selectioncriteria.bFileSize)
+			continue;
+		if (curCat->selectioncriteria.bAdvancedFilterMask && !ApplyFilterMask(sFullName, ix))
+			continue;
+		if (curCat->selectioncriteria.bFileSize && (nFileSize < curCat->viewfilters.nFSizeMin || (curCat->viewfilters.nFSizeMax == 0 || nFileSize > curCat->viewfilters.nFSizeMax)))
+			continue;
+		return ix;
+	}
+
+	return 0;
+}
+
+// Checks a part-file's "pretty filename" against a filter mask and returns
+// true if it passes.  See read-me for details.
+bool CDownloadQueue::ApplyFilterMask(CString sFullName, UINT nCat)
+{
+	CString sFilterMask = thePrefs.GetCategory(nCat)->viewfilters.sAdvancedFilterMask;
+	sFilterMask.Trim();
+
+	if (sFilterMask == "")
+		return false;
+
+		sFullName.MakeLower();
+	sFilterMask.MakeLower();
+
+	if (sFilterMask.Left(1) == "<")
+		{
+			bool bPassedGlobal[3];
+			bPassedGlobal[0] = false;
+			bPassedGlobal[1] = true;
+			bPassedGlobal[2] = false;
+
+			for (int i = 0; i < 3; i++)
+			{
+				int iStart = 0;
+				switch (i)
+				{
+			case 0: iStart = sFilterMask.Find(_T("<all(")); break;
+			case 1: iStart = sFilterMask.Find(_T("<any(")); break;
+			case 2: iStart = sFilterMask.Find(_T("<none(")); break;
+				}
+
+				if (iStart == -1)
+				{
+					bPassedGlobal[i] = true; // We need to do this since not all criteria are needed in order to match the category.
+					continue; // Skip this criteria block.
+				}
+
+				i !=2 ? (iStart += 5) : (iStart += 6);
+
+			int iEnd = sFilterMask.Find(_T(")>"), iStart);
+			int iLT = sFilterMask.Find(_T("<"), iStart);
+			int iGT = sFilterMask.Find(_T(">"), iStart);
+
+				if (iEnd == -1 || (iLT != -1 && iLT < iEnd) || iGT < iEnd)
+				{
+				AddDebugLogLine(false, _T("Category '%s' has invalid Category Mask String."), thePrefs.GetCategory(nCat)->title);
+					break; // Move on to next category.
+				}
+				if (iStart == iEnd)
+				{
+					bPassedGlobal[i] = true; // Just because this criteria block is empty doesn't mean the mask should fail.
+					continue; // Skip this criteria block.
+				}
+
+			CString sSegment = sFilterMask.Mid(iStart, iEnd - iStart);
+
+				int curPosBlock = 0;
+				CString cmpSubBlock = sSegment.Tokenize(_T(":"), curPosBlock);
+
+				while (cmpSubBlock != "")
+				{
+					bool bPassed = (i == 1) ? false : true;
+
+					int curPosToken = 0;
+					CString cmpSubStr = cmpSubBlock.Tokenize(_T("|"), curPosToken);
+
+				while (cmpSubStr != "")
+				{
+					int cmpResult;
+
+					if (cmpSubStr.Find(_T("*")) != -1 || cmpSubStr.Find(_T("?")) != -1)
+						cmpResult = (wildcmp(cmpSubStr.GetBuffer(), sFullName.GetBuffer()) == 0) ? -1 : 1;
+					else
+						cmpResult = sFullName.Find(cmpSubStr);
+
+					switch (i)
+					{
+							case 0:	if (cmpResult == -1) bPassed = false; break;
+							case 1:	if (cmpResult != -1) bPassed = true; break;
+							case 2:	if (cmpResult != -1) bPassed = false; break;
+						}
+						cmpSubStr = cmpSubBlock.Tokenize(_T("|"), curPosToken);
+						}
+					switch (i)
+						{
+						case 0:
+						case 2: if (bPassed) bPassedGlobal[i] = true; break;
+						case 1: if (!bPassed) bPassedGlobal[i] = false; break;
+						}
+					cmpSubBlock = sSegment.Tokenize(_T(":"), curPosBlock);
+					}
+				}
+			for (int i = 0; i < 3; i++)
+			if (!bPassedGlobal[i]) return false;
+		return true;
+		}
+		else
+		{
+			int curPos = 0;
+		CString cmpSubStr = sFilterMask.Tokenize(_T("|"), curPos);
+
+			while (cmpSubStr != "")
+			{
+				int cmpResult;
+
+				if (cmpSubStr.Find(_T("*")) != -1 || cmpSubStr.Find(_T("?")) != -1)
+					cmpResult = (wildcmp(cmpSubStr.GetBuffer(), sFullName.GetBuffer()) == 0) ? -1 : 1;
+				else
+					cmpResult = sFullName.Find(cmpSubStr);
+
+				if(cmpResult != -1)
+				return true;
+			cmpSubStr = sFilterMask.Tokenize(_T("|"), curPos);
+			}
+		}
+	return false;
+}
+// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle

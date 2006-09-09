@@ -421,7 +421,12 @@ void CWebServer::ProcessURL(ThreadData Data)
 				ses.admin=true;
 				ses.startTime = CTime::GetCurrentTime();
 				ses.lSession = lSession = GetRandomUInt32();
+				// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+				/*
 				ses.lastcat= 0- thePrefs.GetCatFilter(0);
+				*/
+				ses.lastcat= 0;
+				// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 				pThis->m_Params.Sessions.Add(ses);
             }
 			

@@ -183,6 +183,21 @@ CPPgScar::CPPgScar()
 	m_htiMMOpen = NULL;
 	// <== TBH: minimule - Max
 
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	m_htiSCC = NULL;
+	m_htiDlMode = NULL;
+	m_htiDlNone = NULL;
+	m_htiDlAlph = NULL;
+	m_htiDlLP = NULL;
+	m_htiShowCatNames = NULL;
+	m_htiSelectCat = NULL;
+	m_htiUseActiveCat = NULL;
+	m_htiAutoSetResOrder = NULL;
+	m_htiSmallFileDLPush = NULL;
+	m_htiResumeFileInNewCat = NULL;
+	m_htiUseAutoCat = NULL;
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
 	m_htiMisc = NULL;
 	m_htiSUQWT = NULL; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*	// ==> Spread Credits Slot - Stulle
@@ -197,6 +212,7 @@ CPPgScar::CPPgScar()
 	m_htiGlobalHlDefault = NULL;
 	// <== Global Source Limit [Max/Stulle] - Stulle
 	m_htiStartupSound = NULL; // Startupsound [Commander] - mav744
+	m_htiCompressLevel = NULL; // Adjust Compress Level [Stulle] - Stulle
 }
 
 CPPgScar::~CPPgScar()
@@ -214,11 +230,13 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		int iImgFunnyNick = 8;
 		int iImgConTweaks = 8;
 		int iImgQuickstart = 8;
-		int iImgCS = 8; // CreditSystems [EastShare/ MorphXT] - Stulle
+		int iImgCS = 8;
 		int iImgDisplay = 8;
 		int iImgSysInfo = 8;
 		int iImgDropDefaults = 8;
 		int iImgMinimule = 8;
+		int iImgSCC = 8;
+		int iImgDlMode = 8;
 		int iImgMisc = 8;
 		int iImgGlobal = 8;
 
@@ -228,11 +246,13 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 			iImgFunnyNick = piml->Add(CTempIconLoader(_T("FUNNYNICK")));
 			iImgConTweaks =  piml->Add(CTempIconLoader(_T("CONNECTION")));
 			iImgQuickstart = piml->Add(CTempIconLoader(_T("QUICKSTART"))); // Thx to the eF-Mod team for the icon
-			iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS"))); // CreditSystems [EastShare/ MorphXT] - Stulle
+			iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS")));
 			iImgDisplay = piml->Add(CTempIconLoader(_T("DISPLAY")));
 			iImgSysInfo = piml->Add(CTempIconLoader(_T("SYSINFO")));
 			iImgDropDefaults = piml->Add(CTempIconLoader(_T("DROPDEFAULTS")));
 			iImgMinimule = piml->Add(CTempIconLoader(_T("MINIMULE")));
+			iImgSCC = piml->Add(CTempIconLoader(_T("CATEGORY")));
+			iImgDlMode = piml->Add(CTempIconLoader(_T("DLMODE")));
 			iImgMisc = piml->Add(CTempIconLoader(_T("SRCUNKNOWN")));
 			iImgGlobal = piml->Add(CTempIconLoader(_T("SEARCHMETHOD_GLOBAL")));
 		}
@@ -361,6 +381,22 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiMMOpen = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_MM_OPEN), m_htiMMGroup, m_bMMOpen);
 		// <== TBH: minimule - Max
 
+		// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+		m_htiSCC = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_SCC), iImgSCC, TVI_ROOT);
+		m_htiDlMode = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_DL_MODE_DEFAULT), iImgDlMode, m_htiSCC);
+		m_htiDlNone = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_DL_NONE), m_htiDlMode, m_iDlMode == 0);
+		m_htiDlAlph = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_DOWNLOAD_ALPHABETICAL), m_htiDlMode, m_iDlMode == 1);
+		m_htiDlLP = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_LP), m_htiDlMode, m_iDlMode == 2);
+		m_htiShowCatNames = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CAT_SHOWCATNAME), m_htiSCC, m_bShowCatNames);
+		m_htiSelectCat = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CAT_SHOWSELCATDLG), m_htiSCC, m_bSelectCat);
+		m_htiUseAutoCat = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CAT_USEAUTOCAT), m_htiSCC, m_bUseAutoCat);
+		m_htiUseActiveCat = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CAT_USEACTIVE), m_htiSCC, m_bUseActiveCat);
+		m_htiAutoSetResOrder = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CAT_AUTORESUMEORD), m_htiSCC, m_bAutoSetResOrder);
+		m_htiSmallFileDLPush = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CAT_SMALLFILEDLPUSH), m_htiSCC, m_bSmallFileDLPush);
+		m_htiResumeFileInNewCat = m_ctrlTreeOptions.InsertItem(GetResString(IDS_CAT_STARTFILESONADD), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiSCC);
+		m_ctrlTreeOptions.AddEditBox(m_htiResumeFileInNewCat, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
 		m_htiMisc = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_MISC), iImgMisc, TVI_ROOT);
 		m_htiSUQWT = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SUQWT), m_htiMisc, m_bSUQWT); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*		// ==> Spread Credits Slot - Stulle
@@ -378,6 +414,10 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.Expand(m_htiGlobalHlGroup, TVE_EXPAND);
 		// <== Global Source Limit [Max/Stulle] - Stulle
 		m_htiStartupSound = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_STARTUPSOUND), m_htiMisc, m_bStartupSound); // Startupsound [Commander] - mav744
+		// ==> Adjust Compress Level [Stulle] - Stulle
+		m_htiCompressLevel = m_ctrlTreeOptions.InsertItem(GetResString(IDS_COMPRESS_LVL), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiMisc);
+		m_ctrlTreeOptions.AddEditBox(m_htiCompressLevel, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		// <== Adjust Compress Level [Stulle] - Stulle
 
 		m_ctrlTreeOptions.SendMessage(WM_VSCROLL, SB_TOP);
 		m_bInitializedTreeOpts = true;
@@ -470,6 +510,17 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiMMOpen, m_bMMOpen);
 	// <== TBH: minimule - Max
 
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiDlMode, (int &)m_iDlMode);
+	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiResumeFileInNewCat, m_iResumeFileInNewCat);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowCatNames, m_bShowCatNames);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSelectCat, m_bSelectCat);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiUseActiveCat, m_bUseActiveCat);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiAutoSetResOrder, m_bAutoSetResOrder);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSmallFileDLPush, m_bSmallFileDLPush);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiUseAutoCat, m_bUseAutoCat);
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSUQWT, m_bSUQWT); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*	// ==> Spread Credits Slot - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSpreadCreditsSlot, m_bSpreadCreditsSlot);
@@ -484,6 +535,10 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiGlobalHlDefault, m_bGlobalHlDefault);
 	// <== Global Source Limit [Max/Stulle] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiStartupSound, m_bStartupSound); // Startupsound [Commander] - mav744
+	// ==> Adjust Compress Level [Stulle] - Stulle
+	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiCompressLevel, m_iCompressLevel);
+	DDV_MinMaxInt(pDX, m_iCompressLevel, 0, 9);
+	// <== Adjust Compress Level [Stulle] - Stulle
 
 	// ==> FunnyNick [SiRoB/Stulle] - Stulle
 	if(m_htiFnTagMode)	m_ctrlTreeOptions.SetGroupEnable(m_htiFnTagMode, m_bFnActive);
@@ -568,6 +623,17 @@ BOOL CPPgScar::OnInitDialog()
 	m_bMMOpen = thePrefs.m_bMMOpen;
 	// <== TBH: minimule - Max
 
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	m_iDlMode = thePrefs.GetDlMode();
+	m_bShowCatNames = thePrefs.ShowCatNameInDownList();
+	m_bSelectCat = thePrefs.SelectCatForNewDL();
+	m_bUseActiveCat = thePrefs.UseActiveCatForLinks();
+	m_bAutoSetResOrder = thePrefs.AutoSetResumeOrder();
+	m_bSmallFileDLPush = thePrefs.SmallFileDLPush();
+	m_iResumeFileInNewCat = thePrefs.StartDLInEmptyCats();
+	m_bUseAutoCat = thePrefs.UseAutoCat();
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
 	m_bSUQWT = thePrefs.SaveUploadQueueWaitTime(); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*	// ==> Spread Credits Slot - Stulle
 	m_bSpreadCreditsSlot = thePrefs.SpreadCreditsSlot;
@@ -580,6 +646,7 @@ BOOL CPPgScar::OnInitDialog()
 	m_bGlobalHlDefault = thePrefs.GetGlobalHlDefault();
 	// <== Global Source Limit [Max/Stulle] - Stulle
 	m_bStartupSound = thePrefs.UseStartupSound(); // Startupsound [Commander] - mav744
+	m_iCompressLevel = thePrefs.GetCompressLevel(); // Adjust Compress Level [Stulle] - Stulle
 
 	CPropertyPage::OnInitDialog();
 
@@ -764,6 +831,17 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_bMMOpen = m_bMMOpen;
 	// <== TBH: minimule - Max
 
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	thePrefs.dlMode = (uint8)m_iDlMode;
+	thePrefs.m_bShowCatNames = m_bShowCatNames;
+	thePrefs.m_bSelCatOnAdd = m_bSelectCat;
+	thePrefs.m_bActiveCatDefault = m_bUseActiveCat;
+	thePrefs.m_bAutoSetResumeOrder = m_bAutoSetResOrder;
+	thePrefs.m_bSmallFileDLPush = m_bSmallFileDLPush;
+	thePrefs.m_iStartDLInEmptyCats = (uint8)m_iResumeFileInNewCat;
+	thePrefs.m_bUseAutoCat = m_bUseAutoCat;
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
 	thePrefs.m_bSaveUploadQueueWaitTime = m_bSUQWT; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*	// ==> Spread Credits Slot - Stulle
 	thePrefs.SpreadCreditsSlot = m_bSpreadCreditsSlot;
@@ -787,6 +865,11 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_bGlobalHlDefault = m_bGlobalHlDefault;
 	// <== Global Source Limit [Max/Stulle] - Stulle
 	thePrefs.startupsound = m_bStartupSound; // Startupsound [Commander] - mav744
+	// ==> Adjust Compress Level [Stulle] - Stulle
+	thePrefs.m_uCompressLevel = (uint8)m_iCompressLevel;
+	if(m_iCompressLevel == 0)
+		thePrefs.m_bUseCompression = false;
+	// <=== Adjust Compress Level [Stulle] - Stulle
 
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
 	bool bRestartApp = false;
@@ -961,6 +1044,16 @@ void CPPgScar::Localize(void)
 		if (m_htiMMOpen) m_ctrlTreeOptions.SetItemText(m_htiMMOpen, GetResString(IDS_MM_OPEN));
 		// <== TBH: minimule - Max
 
+		// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+		if (m_htiShowCatNames) m_ctrlTreeOptions.SetItemText(m_htiShowCatNames, GetResString(IDS_CAT_SHOWCATNAME));
+		if (m_htiSelectCat) m_ctrlTreeOptions.SetItemText(m_htiSelectCat, GetResString(IDS_CAT_SHOWSELCATDLG));
+		if (m_htiUseAutoCat) m_ctrlTreeOptions.SetItemText(m_htiUseAutoCat, GetResString(IDS_CAT_USEAUTOCAT));
+        if (m_htiUseActiveCat) m_ctrlTreeOptions.SetItemText(m_htiUseActiveCat, GetResString(IDS_CAT_USEACTIVE));
+		if (m_htiAutoSetResOrder) m_ctrlTreeOptions.SetItemText(m_htiAutoSetResOrder, GetResString(IDS_CAT_AUTORESUMEORD));
+		if (m_htiSmallFileDLPush) m_ctrlTreeOptions.SetItemText(m_htiSmallFileDLPush, GetResString(IDS_CAT_SMALLFILEDLPUSH));
+		if (m_htiResumeFileInNewCat) m_ctrlTreeOptions.SetEditLabel(m_htiResumeFileInNewCat, GetResString(IDS_CAT_STARTFILESONADD));
+		// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
 		if (m_htiSUQWT) m_ctrlTreeOptions.SetItemText(m_htiSUQWT, GetResString(IDS_SUQWT)); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*		// ==> Spread Credits Slot - Stulle
 		if (m_htiSpreadCreditsSlot) m_ctrlTreeOptions.SetItemText(m_htiSpreadCreditsSlot, GetResString(IDS_SPREAD_CREDITS_SLOT));
@@ -973,6 +1066,7 @@ void CPPgScar::Localize(void)
 		if (m_htiGlobalHlDefault) m_ctrlTreeOptions.SetItemText(m_htiGlobalHlDefault, GetResString(IDS_GLOBAL_HL_DEFAULT));
 		// <== Global Source Limit [Max/Stulle] - Stulle
 		if (m_htiStartupSound) m_ctrlTreeOptions.SetItemText(m_htiStartupSound, GetResString(IDS_STARTUPSOUND)); // Startupsound [Commander] - mav744
+		if (m_htiCompressLevel) m_ctrlTreeOptions.SetEditLabel(m_htiCompressLevel, GetResString(IDS_COMPRESS_LVL)); // Adjust Compress Level [Stulle] - Stulle
 
 		// ==> WebCache [WC team/MorphXT] - Stulle/Max
 		m_WcProxyBox.SetWindowText( GetResString(IDS_WEBCACHE_ISP) );
@@ -1105,6 +1199,21 @@ void CPPgScar::OnDestroy()
 	m_htiMMOpen = NULL;
 	// <== TBH: minimule - Max
 
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	m_htiSCC = NULL;
+	m_htiDlMode = NULL;
+	m_htiDlNone = NULL;
+	m_htiDlAlph = NULL;
+	m_htiDlLP = NULL;
+	m_htiShowCatNames = NULL;
+	m_htiSelectCat = NULL;
+	m_htiUseActiveCat = NULL;
+	m_htiAutoSetResOrder = NULL;
+	m_htiSmallFileDLPush = NULL;
+	m_htiResumeFileInNewCat = NULL;
+	m_htiUseAutoCat = NULL;
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
 	m_htiMisc = NULL;
 	m_htiSUQWT = NULL; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*	// ==> Spread Credits Slot - Stulle
@@ -1119,6 +1228,7 @@ void CPPgScar::OnDestroy()
 	m_htiGlobalHlDefault = NULL;
 	// <== Global Source Limit [Max/Stulle] - Stulle
 	m_htiStartupSound = NULL; // Startupsound [Commander] - mav744
+	m_htiCompressLevel = NULL; // Adjust Compress Level [Stulle] - Stulle
 
 	CPropertyPage::OnDestroy();
 }

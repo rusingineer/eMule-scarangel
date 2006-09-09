@@ -380,3 +380,12 @@ void	UpdateMSN(float upRate, float upOvRate, float downRate, float downOvRate, b
 void	UpdateMSN1(uint64 Receiver, uint64 Sent, uint64 Src);
 void	UpdateMSN2(CString Connection);
 // <== Show in MSN7 [TPT] - Stulle
+
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+// Takes a string and returns bytes...
+ULONG	CastXBytesToI(const CString& strExpr);
+// Takes bytes and returns a string with only integers...
+CString CastItoUIXBytes(uint64 count);
+// Wildcard support for Category Selection Mask
+int wildcmp(TCHAR *wild, TCHAR *string);
+// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle

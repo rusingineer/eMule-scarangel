@@ -59,6 +59,8 @@ struct ProxySettings{
 	bool		UseProxy;
 };
 
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+/*
 #pragma pack(1)
 struct Category_Struct{
 	TCHAR	incomingpath[MAX_PATH];
@@ -77,6 +79,69 @@ struct Category_Struct{
 	CString	regexp;
 };
 #pragma pack()
+*/
+// View Filter Struct
+#pragma pack(1)
+struct CategoryViewFilter_Struct{
+	//		General View Filters
+	UINT	nFromCats;  // 0 == All; 1 == Unassigned; 2 == This Cat Only
+	bool	bSuspendFilters;
+	//		File Type View Filters
+	bool	bVideo;
+	bool	bAudio;
+	bool	bArchives;
+	bool	bImages;
+	//		File State View Filters
+	bool	bWaiting;
+	bool	bTransferring;
+	bool	bPaused;
+	bool	bStopped;
+	bool	bComplete;
+	bool	bHashing;
+	bool	bErrorUnknown;
+	bool	bCompleting;
+	bool	bSeenComplet;
+	//		File Size View Filters
+	uint64	nFSizeMin;
+	uint64	nFSizeMax;
+	uint64	nRSizeMin;
+	uint64	nRSizeMax;
+	//		Time Remaining Filters
+	uint32	nTimeRemainingMin;
+	uint32	nTimeRemainingMax;
+	//		Source Count Filters
+	UINT	nSourceCountMin;
+	UINT	nSourceCountMax;
+	UINT	nAvailSourceCountMin;
+	UINT	nAvailSourceCountMax;
+	//		Advanced Filter Mask
+	CString	sAdvancedFilterMask;
+};
+#pragma pack()
+
+// Criteria Selection Struct
+#pragma pack(1)
+struct CategorySelectionCriteria_Struct{
+	bool	bFileSize;
+	bool	bAdvancedFilterMask;
+};
+#pragma pack()
+
+#pragma pack(1)
+struct Category_Struct{
+	TCHAR	incomingpath[MAX_PATH];
+	TCHAR	title[64];
+	TCHAR	comment[255];
+	DWORD	color;
+	UINT	prio;
+	bool	bResumeFileOnlyInSameCat;
+	// View Filter Struct
+	CategoryViewFilter_Struct viewfilters;
+	CategorySelectionCriteria_Struct selectioncriteria;
+	UINT	m_iDlMode; // 0 = NONE, 1 = alphabetical, 2 = LP
+};
+#pragma pack()
+// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 class CPreferences
 {
@@ -734,6 +799,21 @@ public:
 
 	static	bool	startupsound; // Startupsound [Commander] - mav744
 
+	static uint8	m_uCompressLevel; // Adjust Compress Level [Stulle] - Stulle
+
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	static bool		m_bValidSrcsOnly;
+	static bool		m_bShowCatNames;
+	static bool		m_bActiveCatDefault;
+	static bool		m_bSelCatOnAdd;
+	static bool		m_bAutoSetResumeOrder;
+	static bool		m_bSmallFileDLPush;
+	static uint8	m_iStartDLInEmptyCats;
+	static bool		m_bRespectMaxSources;
+	static bool		m_bUseAutoCat;
+	static uint8	dlMode;
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
 	enum Table
 	{
 		tableDownload, 
@@ -920,6 +1000,10 @@ public:
 	static bool Is13Ratio() {return m_13ratio;}
 	static Set13Ratio(bool in) {m_13ratio=in;}
 	//Xman end
+
+	//Xman disable compression
+	static bool m_bUseCompression;
+
 
 	//Xman auto update IPFilter
 	static bool	m_bautoupdateipfilter;
@@ -1502,10 +1586,14 @@ public:
 	static	bool	MoveCat(UINT from, UINT to);
 	static	void	RemoveCat(int index);
 	static	int		GetCatCount()						{return catMap.GetCount();}
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 	static  bool	SetCatFilter(int index, int filter);
 	static  int		GetCatFilter(int index);
 	static	bool	GetCatFilterNeg(int index);
 	static	void	SetCatFilterNeg(int index, bool val);
+	*/
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	static	Category_Struct* GetCategory(int index)		{if (index>=0 && index<catMap.GetCount()) return catMap.GetAt(index); else return NULL;}
 	static	TCHAR*	GetCatPath(int index)				{return catMap.GetAt(index)->incomingpath;}
 	static	DWORD	GetCatColor(int index)				{if (index>=0 && index<catMap.GetCount()) return catMap.GetAt(index)->color; else return 0;}
@@ -1857,6 +1945,20 @@ public:
 	// <== MassRename [Dragon] - Stulle
 
 	static  bool	UseStartupSound()			{return startupsound;} // Startupsound [Commander] - mav744
+
+	static	uint8	GetCompressLevel()			{return m_uCompressLevel;} // Adjust Compress Level [Stulle] - Stulle
+
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	static	bool	ShowValidSrcsOnly()		{ return m_bValidSrcsOnly; }
+	static	bool	ShowCatNameInDownList()	{ return m_bShowCatNames; }
+	static	bool	SelectCatForNewDL()		{ return m_bSelCatOnAdd; }
+	static	bool	UseActiveCatForLinks()	{ return m_bActiveCatDefault; }
+	static	bool	AutoSetResumeOrder()	{ return m_bAutoSetResumeOrder; }
+	static	bool	SmallFileDLPush()		{ return m_bSmallFileDLPush; }
+	static	uint8	StartDLInEmptyCats()	{ return m_iStartDLInEmptyCats; } // 0 = disabled, otherwise num to resume
+	static	bool	UseAutoCat()			{ return m_bUseAutoCat; }
+	static	uint8	GetDlMode()				{ return dlMode;}
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 protected:
 	static	CString appdir;

@@ -59,7 +59,12 @@ public:
 
 	void Localize();
 	void UpdateCatTabTitles(bool force = true);
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 	void VerifyCatTabSize();
+	*/
+	void VerifyCatTabSize(bool _forceverify=false);
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	int	 AddCategory(CString newtitle,CString newincoming,CString newcomment,CString newautocat,bool addTab=true);
 	void SwitchUploadList();
 	void ResetTransToolbar(bool bShowToolbar, bool bResetLists = true);
@@ -117,7 +122,11 @@ protected:
 	CString	GetTabStatistic(int tab);
 	int		GetTabUnderMouse(CPoint* point);
 	int		GetItemUnderMouse(CListCtrl* ctrl);
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 	CString	GetCatTitle(int catid);
+	*/
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	void	EditCatTabLabel(int index,CString newlabel);
 	void	EditCatTabLabel(int index);
 	void	ShowList(uint32 dwListIDC);
@@ -150,4 +159,14 @@ protected:
 	afx_msg void OnWnd2BtnDropDown(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnSplitterMoved(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnWindowPosChanged(WINDOWPOS* lpwndpos);
+
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	void		CreateCategoryMenus();
+	CTitleMenu	m_mnuCategory;
+	CTitleMenu	m_mnuCatPriority;
+	CTitleMenu	m_mnuCatViewFilter;
+	CTitleMenu	m_mnuCatDlMode;
+public:
+	int		GetActiveCategory()			{ return m_dlTab.GetCurSel(); }
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 };

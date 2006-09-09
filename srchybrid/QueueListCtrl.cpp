@@ -92,11 +92,11 @@ void CQueueListCtrl::Init()
 	InsertColumn(11, GetResString(IDS_UPDOWNUPLOADLIST), LVCFMT_LEFT, 90, 11); //Xman show complete up/down in queuelist
 
 	// ==> push small files [sivka] - Stulle
-	InsertColumn(12,GetResString(IDS_SMALL),LVCFMT_LEFT,40,15);
+	InsertColumn(12,GetResString(IDS_SMALL),LVCFMT_LEFT,40,12);
 	// <== push small files [sivka] - Stulle
 
 	// ==> push rare file - Stulle
-	InsertColumn(13,GetResString(IDS_RARE),LVCFMT_LEFT,40,16);
+	InsertColumn(13,GetResString(IDS_RARE),LVCFMT_LEFT,40,13);
 	// <== push rare file - Stulle
 
 	InsertColumn(14, GetResString(IDS_WC_SOURCES) ,LVCFMT_LEFT, 100,14); // WebCache [WC team/MorphXT] - Stulle/Max
@@ -656,8 +656,10 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 				// ==> push rare file - Stulle
 				case 13:
-					Sbuffer.Format(_T("%.1f"), client->GetRareFilePushRatio()) ;
-					break;
+					{
+						Sbuffer.Format(_T("%.1f"), client->GetRareFilePushRatio()) ;
+						break;
+					}
 				// <== push rare file - Stulle
 
 				// ==> WebCache [WC team/MorphXT] - Stulle/Max
@@ -684,7 +686,7 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			/*
 			if( iColumn != 9 && iColumn != 0)
 			*/
-			if( iColumn != 9 && iColumn != 0 && iColumn != 13)
+			if( iColumn != 9 && iColumn != 0 && iColumn != 14)
 			// <== WebCache [WC team/MorphXT] - Stulle/Max
 				dc.DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
 			dc.SetBkColor(crOldBackColor); //Xman PowerRelease //Xman show LowIDs

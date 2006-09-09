@@ -75,11 +75,12 @@ public:
 	CUpDownClientPtrList waitinglist;
 	CUpDownClientPtrList uploadinglist;
 
-	//Xman x4
 	//Xman Xtreme Upload
 	uint16	currentuploadlistsize;
 	bool	internetmaybedown;
 	bool		AcceptNewClient(bool addOnNextConnect = false); //Xman 4.8.2 must be punlic because of access in ClientUDPSocket
+
+	void	UploadTimer(); //Xman process timer code via messages (Xanatos)
 
 protected:
 	void	RemoveFromWaitingQueue(POSITION pos, bool updatewindow);

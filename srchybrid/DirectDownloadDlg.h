@@ -45,4 +45,5 @@ protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnEnKillfocusElink();
 	afx_msg void OnEnUpdateElink();
+	afx_msg void OnNMClickCats(NMHDR *pNMHDR, LRESULT *pResult); // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 };

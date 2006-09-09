@@ -49,13 +49,9 @@ CBandWidthControl::CBandWidthControl()
 	m_networkOutOctets = 0;
 	m_networkInOctets = 0;
 
-	//Xman show complete internettraffic
-	initialnetworkOutOctets=0;
-	initialnetworkInOctets=0;
-	//Xman end
-
    // Cache index value
    m_currentAdapterIndex = 0;
+   m_lastAdapterIndex = 0;
 
    // Dynamic load library iphlpapi.dll => user of win95
    m_hIphlpapi = ::LoadLibrary(_T("iphlpapi.dll"));
@@ -274,23 +270,17 @@ void CBandWidthControl::Process()
 		/**/ 		s_Log = 0;
 		/**/ 
 		/**/		//Xman prevent overflow on adapterchange:
-		/**/		if(ifRow.dwOutOctets >= m_networkOutOctets && ifRow.dwInOctets >= m_networkInOctets)
+		/**/		if(m_currentAdapterIndex==m_lastAdapterIndex && ifRow.dwOutOctets >= m_networkOutOctets && ifRow.dwInOctets >= m_networkInOctets)
 		/**/		{
 		/**/			// Add the delta, since the last measure (convert 32 to 64 bits)
 		/**/			m_statistic.networkInOctets += (DWORD)(ifRow.dwInOctets - m_networkInOctets);
 		/**/			m_statistic.networkOutOctets += (DWORD)(ifRow.dwOutOctets - m_networkOutOctets);
 		/**/		}
-		/**/		//Xman show complete internettraffic
-		/**/		if(initialnetworkOutOctets==0)
-		/**/		{
-		/**/			initialnetworkOutOctets=m_statistic.networkOutOctets;
-		/**/			initialnetworkInOctets=m_statistic.networkInOctets;
-		/**/		}
-		/**/		//Xman end
 		/**/
 		/**/		// Keep last measure
 		/**/		m_networkOutOctets = ifRow.dwOutOctets; 
 		/**/		m_networkInOctets = ifRow.dwInOctets;
+		/**/		m_lastAdapterIndex = m_currentAdapterIndex;
 		/**/ 	}
 		/**/ 	else {
 		/**/ 		if(s_Log == 0){
@@ -404,7 +394,7 @@ void CBandWidthControl::Process()
 				// Add the delta, since the last measure (convert 32 to 64 bits)
 				m_statisticLocker.Lock();  
 				/**/	//Xman prevent overflow on adapterchange:
-				/**/	if(ifRow.dwOutOctets >= m_networkOutOctets && ifRow.dwInOctets >= m_networkInOctets)
+				/**/	if(m_currentAdapterIndex==m_lastAdapterIndex && ifRow.dwOutOctets >= m_networkOutOctets && ifRow.dwInOctets >= m_networkInOctets)
 				/**/	{
 				/**/		m_statistic.networkInOctets += (DWORD)(ifRow.dwInOctets - m_networkInOctets);
 				/**/		m_statistic.networkOutOctets += (DWORD)(ifRow.dwOutOctets - m_networkOutOctets);
@@ -414,6 +404,7 @@ void CBandWidthControl::Process()
 				// Keep last measure
 				m_networkOutOctets = ifRow.dwOutOctets;
 				m_networkInOctets = ifRow.dwInOctets;
+				m_lastAdapterIndex = m_currentAdapterIndex;
 			}
 		}
 	}
@@ -568,7 +559,7 @@ uint64 CBandWidthControl::GetSessionNetworkIn() const
 	m_statisticLocker.Lock();
 	/**/ value = m_statistic.networkInOctets;
 	m_statisticLocker.Unlock();
-	return value - initialnetworkInOctets;
+	return value ;
 
 }
 
@@ -578,7 +569,7 @@ uint64 CBandWidthControl::GetSessionNetworkOut() const
 	m_statisticLocker.Lock();
 	/**/ value = m_statistic.networkOutOctets;
 	m_statisticLocker.Unlock();
-	return value - initialnetworkOutOctets;
+	return value ;
 
 }
 //Xman end

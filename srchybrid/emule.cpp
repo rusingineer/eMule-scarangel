@@ -1770,14 +1770,19 @@ void CemuleApp::AddEd2kLinksToDownload(CString strlink, int cat, bool askIfAlrea
 			{
 				if (pLink->GetKind() == CED2KLink::kFile)
 				{
+					// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+					// pFileLink IS NOT A LEAK, DO NOT DELETE.
+					CED2KFileLink* pFileLink = (CED2KFileLink*)CED2KLink::CreateLinkFromUrl(resToken.Trim());
+					// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
 					//Xman [MoNKi: -Check already downloaded files-]
 					if ( askIfAlreadyDownloaded )
 					{
 						if ( knownfiles->CheckAlreadyDownloadedFileQuestion(pLink->GetFileLink()->GetHashKey(), pLink->GetFileLink()->GetName()) )
-							downloadqueue->AddFileLinkToDownload(pLink->GetFileLink(),cat);
+							downloadqueue->AddFileLinkToDownload(pFileLink,cat, true);
 					}
 					else
-						theApp.downloadqueue->AddFileLinkToDownload(pLink->GetFileLink(),cat);
+						theApp.downloadqueue->AddFileLinkToDownload(pFileLink,cat, true);
 					//Xman end
 				}
 				else
@@ -1814,7 +1819,12 @@ void CemuleApp::SearchClipboard()
 	{
 		m_bGuardClipboardPrompt = true;
 		if (AfxMessageBox(GetResString(IDS_ED2KLINKFIX) + _T("\r\n\r\n") + GetResString(IDS_ADDDOWNLOADSFROMCB)+_T("\r\n") + strLinks, MB_YESNO | MB_TOPMOST) == IDYES)
+			// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+			/*
 			AddEd2kLinksToDownload(strLinks, 0, true); //Xman [MoNKi: -Check already downloaded files-]
+			*/
+			AddEd2kLinksToDownload(strLinks, -1, true);
+			// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	}
 	m_strLastClipboardContents = strLinks;
 	m_bGuardClipboardPrompt = false;
@@ -2200,6 +2210,8 @@ void CemuleApp::AddNewDiscAccessThread(CWinThread* threadtoadd)
 
 
 	threadqueuelock.Lock();
+
+
 	if(m_uRunningNonBlockedDiscAccessThreads<=allowed_Threads-1 /*|| thePrefs.dontusediscaccessqueue==true*/) 
 	{
 		m_uRunningNonBlockedDiscAccessThreads++;

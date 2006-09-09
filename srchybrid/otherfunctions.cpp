@@ -3481,3 +3481,91 @@ void UpdateMSN2(CString Connection)
 	MSNStr.ReleaseBuffer();
 }
 // <== Show in MSN7 [TPT] - Stulle
+
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+// Compares strings using wildcards * and ?.
+// Credited To: Jack Handy
+int wildcmp(TCHAR *wild, TCHAR *string)
+{
+	TCHAR *cp = NULL, *mp = NULL;
+
+	while ((*string) && (*wild != '*'))
+	{
+		if ((*wild != *string) && (*wild != '?'))
+			return 0;
+		wild++;
+		string++;
+	}
+
+	while (*string)
+	{
+		if (*wild == '*')
+		{
+			if (!*++wild)
+				return 1;
+			mp = wild;
+			cp = string+1;
+		}
+		else if ((*wild == *string) || (*wild == '?'))
+		{
+			wild++;
+			string++;
+		}
+		else
+		{
+			wild = mp;
+			string = cp++;
+		}
+	}
+
+	while (*wild == '*')
+		wild++;
+	return !*wild;
+}
+
+ULONG CastXBytesToI(const CString& strExpr)
+{
+	ULONG ulNum;
+	TCHAR szUnit[40];
+	int iArgs = _stscanf(strExpr, _T("%u%s"), &ulNum, szUnit);
+	if (iArgs <= 0)
+		return 0;
+	if (iArgs == 2){
+		CString strUnits(szUnit);
+		strUnits.Trim();
+		if (!strUnits.IsEmpty()){
+			//MORPH START - Fixed by SiRoB, Now Right For multilanguage
+			CString strBytes = GetResString(IDS_BYTES);
+			if (strUnits.CompareNoCase(strBytes.Left(1)) == 0 || strUnits.CompareNoCase(strBytes) == 0)
+				return ulNum * 1U; // Bytes
+			else if (strUnits.CompareNoCase(_T("k")) == 0 || strUnits.CompareNoCase(GetResString(IDS_KBYTES)) == 0 || strUnits.CompareNoCase(_T("k")+strBytes) == 0)
+				return ulNum * 1024U; // KBytes
+			else if (strUnits.CompareNoCase(_T("m")) == 0 || strUnits.CompareNoCase(GetResString(IDS_MBYTES)) == 0 || strUnits.CompareNoCase(_T("m")+strBytes) == 0)
+				return ulNum * 1024U*1024; // MBytes
+			else if (strUnits.CompareNoCase(_T("g")) == 0 || strUnits.CompareNoCase(GetResString(IDS_GBYTES)) == 0 || strUnits.CompareNoCase(_T("g")+strBytes) == 0)
+				return ulNum * 1024U*1024U*1024U; // GBytes
+			else{
+				AfxMessageBox(GetResString(IDS_SEARCH_EXPRERROR) + _T("\n\n") + GetResString(IDS_SEARCH_INVALIDMINMAX));
+				return 0;
+			}
+			//MORPH END - Fixed by SiRoB, Now Right For multilanguage
+		}
+	}
+
+	return ulNum * 1024U*1024U; // Default = MBytes
+}
+
+CString CastItoUIXBytes(uint64 count)
+{
+	CString buffer;
+	if (count < 1024)
+		buffer.Format(_T("%I64u%s"), count, GetResString(IDS_BYTES));
+	else if (count < 1048576)
+		buffer.Format(_T("%I64u%s"), (uint64)(count/1024), GetResString(IDS_KBYTES));
+	else if (count < 1073741824)
+		buffer.Format(_T("%I64u%s"), (uint64)(count/1048576), GetResString(IDS_MBYTES));
+	else
+		buffer.Format(_T("%I64u%s"), (uint64)(count/1073741824), GetResString(IDS_GBYTES));
+	return buffer;
+}
+// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle

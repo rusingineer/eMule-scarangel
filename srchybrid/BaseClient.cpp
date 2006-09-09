@@ -748,8 +748,9 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 	if (bDbgInfo)
 		m_strHelloInfo.AppendFormat(_T("  Port=%u"), nUserPort);
 	
-	CString strBanReason = NULL; //Xman Anti-Leecher
+	CString strBanReason; //Xman Anti-Leecher
 	bool nonofficialopcodes = false; //Xman Anti-Leecher
+	CString unknownopcode; //Xman Anti-Leecher
 	bool wronghello = false; //Xman Anti-Leecher
 	uint32 hellotagorder = 1; //Xman Anti-Leecher
 	bool foundmd4string = false; //Xman Anti-Leecher
@@ -994,6 +995,8 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 				if(thePrefs.GetAntiLeecherSnafu())
 					if(ProcessUnknownHelloTag(&temptag, strBanReason))
 						foundmd4string=true;
+				
+				unknownopcode.AppendFormat(_T(",%s"),temptag.GetFullInfo());
 				//Xman end
 				// Since eDonkeyHybrid 1.3 is no longer sending the additional Int32 at the end of the Hello packet,
 				// we use the "pr=1" tag to determine them.
@@ -1244,11 +1247,16 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 
 		if(thePrefs.GetAntiGhost() )
 		{
-			if(nonofficialopcodes==true && m_strModVersion.IsEmpty() &&  GetClientSoft()!=SO_LPHANT)
+			if(m_strModVersion.IsEmpty() &&
+				((nonofficialopcodes==true	&&	GetClientSoft()!=SO_LPHANT)
+				|| (unknownopcode.IsEmpty()==false && m_clientSoft == SO_EMULE && m_nClientVersion <= MAKE_CLIENT_VERSION(CemuleApp::m_nVersionMjr, CemuleApp::m_nVersionMin, CemuleApp::m_nVersionUpd)))
+				)
 			{
 				if(IsLeecher()==0)
 				{
 					strBanReason = _T("GhostMod");
+					if(unknownopcode.IsEmpty()==false)
+						strBanReason += _T(" ") + unknownopcode;
 					BanLeecher(strBanReason,3); // ghost mod = webcache tag without modstring
 				}
 			}

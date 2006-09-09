@@ -314,7 +314,8 @@ public:
 //	int		GetCommonFilePenalty() const;
 	void	UpdateDisplayedInfo(bool force = false);
 
-	UINT	GetCategory() /*const*/;
+	// Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	UINT	GetCategory() const;
 	UINT	GetConstCategory() const;  //Xman checkmark to catogory at contextmenu of downloadlist
 	void	SetCategory(UINT cat);
 	bool	CheckShowItemInGivenCat(int inCategory) /*const*/;
@@ -369,7 +370,12 @@ public:
     bool    GetPreviewPrio() const { return m_bpreviewprio; }
 	void    SetPreviewPrio(bool in) { m_bpreviewprio=in; }
 
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 	static bool RightFileHasHigherPrio(CPartFile* left, CPartFile* right, bool allow_go_over_hardlimit=false); //Xman Xtreme Downloadmanager
+	*/
+    static bool RightFileHasHigherPrio(const CPartFile* left, const CPartFile* right, bool allow_go_over_hardlimit=false);
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	CDeadSourceList	m_DeadSourceList;
 
@@ -397,6 +403,11 @@ public:
 	//Xman GlobalMaxHarlimit for fairness
 	bool	IsGlobalSourceAddAllowed();
 	bool	IsSourceSearchAllowed();
+	//Xman end
+
+	//Xman manual file allocation (Xanatos)
+	void	AllocateNeededSpace();
+	const bool	IncompleteAllocateSpace() const	{ return ((m_hpartfile.m_hFile != INVALID_HANDLE_VALUE) && m_hpartfile.GetLength() < GetFileSize()); } 
 	//Xman end
 
 #ifdef PRINT_STATISTIC
@@ -636,6 +647,13 @@ public:
 private:
 	UINT	m_anStatesTemp[STATES_COUNT];
 	// <== Source Counts Are Cached derivated from Khaos [SiRoB] - Stulle
+
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	UINT	m_catResumeOrder;
+public:
+	void	SetCatResumeOrder(UINT order)	{ m_catResumeOrder = order; SavePartFile(); }
+	UINT	GetCatResumeOrder() const				{ return m_catResumeOrder; }
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 };
 
 //Xman

@@ -299,6 +299,8 @@ protected:
 	afx_msg LRESULT OnDLPVersionCheckResponse(WPARAM wParam, LPARAM lParam); //Xman DLP
 	//Xman end
 
+	afx_msg LRESULT DoTimer(WPARAM wParam, LPARAM lParam); //Xman process timer code via messages (Xanatos)
+
 	// ScarAngel Version Check - Stulle
 	afx_msg	LRESULT	OnSVersionCheckResponse(WPARAM wParam, LPARAM lParam);
 
@@ -335,6 +337,7 @@ enum EEMuleAppMsgs
 	// END SLUGFILLER: SafeHash
 	TM_READBLOCKFROMFILEDONE, // SiRoB: ReadBlockFromFileThread
 	TM_FLUSHDONE, // SiRoB: Flush Thread
+	TM_DOTIMER, //Xman process timer code via messages (Xanatos)
 	TM_FRAMEGRABFINISHED,
 	TM_FILEALLOCEXC,
 	TM_FILECOMPLETED,

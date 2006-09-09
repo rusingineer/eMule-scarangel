@@ -46,6 +46,7 @@
 #include "UserMsgs.h"
 #include "Log.h"
 #include "KnownFileList.h" //Xman [MoNKi: -Check already downloaded files-]
+#include "TransferWnd.h" // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -95,6 +96,7 @@ BEGIN_MESSAGE_MAP(CSearchResultsWnd, CResizableFormView)
 	ON_MESSAGE(WM_IDLEUPDATECMDUI, OnIdleUpdateCmdUI)
 	ON_BN_CLICKED(IDC_OPEN_PARAMS_WND, OnBnClickedOpenParamsWnd)
 	ON_WM_SYSCOMMAND()
+	ON_NOTIFY(NM_CLICK, IDC_CATTAB2, OnNMClickCattab2) // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 END_MESSAGE_MAP()
 
 CSearchResultsWnd::CSearchResultsWnd(CWnd* /*pParent*/)
@@ -520,6 +522,30 @@ void CSearchResultsWnd::DownloadSelected(bool bPaused)
 {
 	CWaitCursor curWait;
 	POSITION pos = searchlistctrl.GetFirstSelectedItemPosition();
+
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	// Category selection stuff...
+	if (!pos) return; // No point in asking for a category if there are no selected files to download.
+
+	int useCat = m_cattabs.GetCurSel();
+	bool	bCreatedNewCat = false;
+	if (useCat==-1 && thePrefs.SelectCatForNewDL())
+	{
+		CSelCategoryDlg* getCatDlg = new CSelCategoryDlg((CWnd*)theApp.emuledlg);
+		getCatDlg->DoModal();
+
+		// Returns 0 on 'Cancel', otherwise it returns the selected category
+		// or the index of a newly created category.  Users can opt to add the
+		// links into a new category.
+		useCat = getCatDlg->GetInput();
+		bCreatedNewCat = getCatDlg->CreatedNewCat();
+		bool	bCanceled = getCatDlg->WasCancelled(); //MORPH - Added by SiRoB, WasCanceled
+		delete getCatDlg;
+		if (bCanceled)
+			return;
+	}
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
 	while (pos != NULL)
 	{
 		int iIndex = searchlistctrl.GetNextSelectedItem(pos);
@@ -549,12 +575,38 @@ void CSearchResultsWnd::DownloadSelected(bool bPaused)
 			CSearchFile tempFile(parent);
 			tempFile.SetFileName(sel_file->GetFileName());
 			tempFile.SetStrTagValue(FT_FILENAME, sel_file->GetFileName());
+			// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+			/*
 			//Xman [MoNKi: -Check already downloaded files-]
 			if ( theApp.knownfiles->CheckAlreadyDownloadedFileQuestion(tempFile.GetFileHash(), tempFile.GetFileName()) )
 			{
 				theApp.downloadqueue->AddSearchToDownload(&tempFile, bPaused, m_cattabs.GetCurSel());
 			}
 			//Xman end
+			*/
+			// m_cattabs is obsolete.
+			UINT fileCat = 0;
+			if (useCat==-1)
+			{
+				if (thePrefs.UseAutoCat())
+					fileCat = theApp.downloadqueue->GetAutoCat(CString(parent->GetFileName()), parent->GetFileSize());
+				if (!fileCat && thePrefs.UseActiveCatForLinks())
+					fileCat = theApp.emuledlg->transferwnd->GetActiveCategory();
+			}
+			else 
+			{
+                  fileCat = useCat;
+            }
+			if ( theApp.knownfiles->CheckAlreadyDownloadedFileQuestion(tempFile.GetFileHash(), tempFile.GetFileName()) )
+			{
+				if (thePrefs.SmallFileDLPush() && parent->GetFileSize() < (uint64)154624)
+					theApp.downloadqueue->AddSearchToDownload(&tempFile, bPaused, fileCat, 0);
+				else if (thePrefs.AutoSetResumeOrder())
+					theApp.downloadqueue->AddSearchToDownload(&tempFile, bPaused, fileCat, (uint16)(theApp.downloadqueue->GetMaxCatResumeOrder(fileCat)+1));
+				else
+					theApp.downloadqueue->AddSearchToDownload(&tempFile, bPaused, fileCat, (uint16)(theApp.downloadqueue->GetMaxCatResumeOrder(fileCat)));
+			}
+			// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 			// update parent and all childs
 			searchlistctrl.UpdateSources(parent);
@@ -1303,7 +1355,7 @@ bool CSearchResultsWnd::DoNewKadSearch(SSearchParams* pParams)
 	try
 	{
 		pSearch = Kademlia::CSearchManager::PrepareFindKeywords(pParams->bUnicode, pParams->strKeyword, uSearchTermsSize, pSearchTermsData);
-		delete pSearchTermsData;
+		delete[] pSearchTermsData; //Xman MemleakFix (Wizard)
 		if (!pSearch){
 			ASSERT(0);
 			return false;
@@ -1311,7 +1363,7 @@ bool CSearchResultsWnd::DoNewKadSearch(SSearchParams* pParams)
 	}
 	catch (CString strException)
 	{
-		delete pSearchTermsData;
+		delete[] pSearchTermsData; //Xman MemleakFix (Wizard)
 		throw new CMsgBoxException(strException, MB_ICONWARNING | MB_HELP, eMule_FAQ_Search - HID_BASE_PROMPT);
 	}
 	pParams->dwSearchID = pSearch->GetSearchID();
@@ -1521,12 +1573,22 @@ void CSearchResultsWnd::UpdateCatTabs()
 	int oldsel=m_cattabs.GetCurSel();
 	m_cattabs.DeleteAllItems();
 	for (int ix=0;ix<thePrefs.GetCatCount();ix++) {
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 		CString label=(ix==0)?GetResString(IDS_ALL):thePrefs.GetCategory(ix)->title;
 		label.Replace(_T("&"),_T("&&"));
 		m_cattabs.InsertItem(ix,label);
 	}
 	if (oldsel>=m_cattabs.GetItemCount() || oldsel==-1)
 		oldsel=0;
+	*/
+		CString label=thePrefs.GetCategory(ix)->title;
+		label.Replace(_T("&"),_T("&&"));
+		m_cattabs.InsertItem(ix,label);
+	}
+	if (oldsel>=m_cattabs.GetItemCount())
+		oldsel=-1;
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	m_cattabs.SetCurSel(oldsel);
 	int flag;
@@ -1626,3 +1688,27 @@ void CSearchResultsWnd::SearchRelatedFiles(const CAbstractFile* file)
 		pParams->strSpecialTitle = pParams->strSpecialTitle.Left(50) + _T("...");
 	StartSearch(pParams);
 }
+
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+void CSearchResultsWnd::OnNMClickCattab2(NMHDR* /*pNMHDR*/, LRESULT *pResult)
+{
+	POINT point;
+	::GetCursorPos(&point);
+
+	CPoint pt(point);
+	TCHITTESTINFO hitinfo;
+	CRect rect;
+	m_cattabs.GetWindowRect(&rect);
+	pt.Offset(0-rect.left,0-rect.top);
+	hitinfo.pt = pt;
+
+	// Find the destination tab...
+	int nTab = m_cattabs.HitTest( &hitinfo );
+	if( hitinfo.flags != TCHT_NOWHERE )
+		if(nTab==m_cattabs.GetCurSel())
+		{
+			m_cattabs.DeselectAll(false);
+		}
+	*pResult = 0;
+}
+// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle

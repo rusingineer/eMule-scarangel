@@ -151,8 +151,13 @@ int CMuleListCtrl::IndexToOrder(CHeaderCtrl* pHeader, int iIndex) {
 void CMuleListCtrl::HideColumn(int iColumn) {
 	CHeaderCtrl* pHeaderCtrl = GetHeaderCtrl();
 	int iCount = pHeaderCtrl->GetItemCount();
-	if(iColumn < 1 || iColumn >= iCount || m_aColumns[iColumn].bHidden)
+	//Xman
+	//>>> WiZaRd::FiX
+	//needs a rework, sometimes more columns are loaded than inserted (older/corrupt prefs)
+	//if(iColumn < 1 || iColumn >= iCount || m_aColumns[iColumn].bHidden)
+	if(iColumn < 1 || iColumn >= iCount || iColumn >= m_iColumnsTracked || m_aColumns[iColumn].bHidden)
 		return;
+	//<<< WiZaRd::FiX 
 
 	//stop it from redrawing
 	SetRedraw(FALSE);
@@ -191,21 +196,40 @@ void CMuleListCtrl::HideColumn(int iColumn) {
 void CMuleListCtrl::ShowColumn(int iColumn) {
 	CHeaderCtrl* pHeaderCtrl = GetHeaderCtrl();
 	int iCount = pHeaderCtrl->GetItemCount();
-	if(iColumn < 1 || iColumn >= iCount || !m_aColumns[iColumn].bHidden)
+	//Xman
+	//>>> WiZaRd::FiX
+	//needs a rework, sometimes more columns are loaded than inserted (older/corrupt prefs)
+	//if(iColumn < 1 || iColumn >= iCount || !m_aColumns[iColumn].bHidden) 
+	if(iColumn < 1 || iColumn >= iCount || iColumn >= m_iColumnsTracked || !m_aColumns[iColumn].bHidden)
 		return;
+	//<<< WiZaRd::FiX 
 
 	//stop it from redrawing
 	SetRedraw(FALSE);
 
 	//restore position in list
+	//Xman
+	//>>> WiZaRd::FiX - just to be sure!
+	//INT *piArray = new INT[m_iColumnsTracked];
+	//pHeaderCtrl->GetOrderArray(piArray, m_iColumnsTracked);
+	//int iCurrent = IndexToOrder(pHeaderCtrl, iColumn);
+	int iCurrent = IndexToOrder(pHeaderCtrl, iColumn);
+	if(iCurrent == -1)
+		return;
 	INT *piArray = new INT[m_iColumnsTracked];
 	pHeaderCtrl->GetOrderArray(piArray, m_iColumnsTracked);
-	int iCurrent = IndexToOrder(pHeaderCtrl, iColumn);
+	//<<< WiZaRd::FiX - just to be sure!
 
 	for(; iCurrent < IndexToOrder(pHeaderCtrl, 0) && iCurrent < m_iColumnsTracked - 1; iCurrent++ )
 		piArray[iCurrent] = piArray[iCurrent + 1];
-	for(; m_aColumns[iColumn].iLocation > m_aColumns[pHeaderCtrl->OrderToIndex(iCurrent + 1)].iLocation &&
-	      iCurrent < m_iColumnsTracked - 1; iCurrent++)
+	//Xman
+	//>>> WiZaRd::FiX
+	//first, test the validity of iCurrent before accessing an element!
+	//for(; m_aColumns[iColumn].iLocation > m_aColumns[pHeaderCtrl->OrderToIndex(iCurrent + 1)].iLocation &&
+	// iCurrent < m_iColumnsTracked - 1; iCurrent++)
+	for(; iCurrent < m_iColumnsTracked - 1 && 
+		m_aColumns[iColumn].iLocation > m_aColumns[pHeaderCtrl->OrderToIndex(iCurrent + 1)].iLocation; iCurrent++)
+	//<<< WiZaRd::FiX
 		piArray[iCurrent] = piArray[iCurrent + 1];
 	piArray[iCurrent] = iColumn;
 	pHeaderCtrl->SetOrderArray(m_iColumnsTracked, piArray);

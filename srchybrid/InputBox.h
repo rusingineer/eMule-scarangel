@@ -46,4 +46,13 @@ protected:
 	afx_msg void OnOK();
 	afx_msg void OnCleanFilename();
 	DECLARE_MESSAGE_MAP()
+
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	bool	isNumber;
+
+	afx_msg void OnCancel();
+public:
+	void	SetNumber(bool isNum = false) { isNumber = isNum; }
+	const int	GetInputInt() const { return _tstoi(m_return); };
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 };

@@ -208,6 +208,7 @@ BEGIN_MESSAGE_MAP(CemuleDlg, CTrayDialog)
 	// END SLUGFILLER: SafeHash
 	ON_MESSAGE(TM_READBLOCKFROMFILEDONE, OnReadBlockFromFileDone) // SiRoB: ReadBlockFromFileThread
 	ON_MESSAGE(TM_FLUSHDONE, OnFlushDone) // SiRoB: Flush Thread
+	ON_MESSAGE(TM_DOTIMER, DoTimer) //Xman process timer code via messages (Xanatos)
 	//Xman end
 	ON_MESSAGE(TM_FRAMEGRABFINISHED, OnFrameGrabFinished)
 	ON_MESSAGE(TM_FILEALLOCEXC, OnFileAllocExc)
@@ -1613,6 +1614,8 @@ void CemuleDlg::ProcessED2KLink(LPCTSTR pszData)
 		switch (pLink->GetKind()) {
 		case CED2KLink::kFile:
 			{
+				// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+				/*
 				CED2KFileLink* pFileLink = pLink->GetFileLink();
 				_ASSERT(pFileLink !=0);
 				//Xman [MoNKi: -Check already downloaded files-]
@@ -1621,6 +1624,14 @@ void CemuleDlg::ProcessED2KLink(LPCTSTR pszData)
 					theApp.downloadqueue->AddFileLinkToDownload(pFileLink,searchwnd->GetSelectedCat());
 				}
 				//Xman end
+				*/
+				CED2KFileLink* pFileLink = (CED2KFileLink*)CED2KLink::CreateLinkFromUrl(link.Trim());
+				_ASSERT(pFileLink !=0);
+				if(theApp.knownfiles->CheckAlreadyDownloadedFileQuestion(pFileLink->GetHashKey(),pFileLink->GetName()))
+				{
+					theApp.downloadqueue->AddFileLinkToDownload(pFileLink, -1, true);
+				}
+				// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 			}
 			break;
 		case CED2KLink::kServerList:
@@ -1896,7 +1907,7 @@ LRESULT CemuleDlg::OnPartHashedCorruptAICHRecover(WPARAM wParam,LPARAM lParam)
 LRESULT CemuleDlg::OnReadBlockFromFileDone(WPARAM wParam,LPARAM lParam)
 {
 	CUpDownClient* client = (CUpDownClient*) lParam;
-	if (theApp.m_app_state != APP_STATE_SHUTINGDOWN && theApp.uploadqueue->IsDownloading(client))	// could have been canceled
+	if (theApp.m_app_state == APP_STATE_RUNNING && theApp.uploadqueue->IsDownloading(client))	// could have been canceled
 	{
 		client->SetReadBlockFromFileBuffer((byte*)wParam);
 		client->CreateNextBlockPackage(); //complete the process
@@ -1909,8 +1920,10 @@ LRESULT CemuleDlg::OnReadBlockFromFileDone(WPARAM wParam,LPARAM lParam)
 // BEGIN SiRoB: Flush Thread
 LRESULT CemuleDlg::OnFlushDone(WPARAM /*wParam*/,LPARAM lParam)
 {
+	ASSERT(!(theApp.m_app_state == APP_STATE_RUNNING && theApp.downloadqueue==NULL)); //Xman fix me
+
 	CPartFile* partfile = (CPartFile*) lParam;
-	if (theApp.m_app_state != APP_STATE_SHUTINGDOWN && theApp.downloadqueue->IsPartFile(partfile))	// could have been canceled
+	if (theApp.m_app_state == APP_STATE_RUNNING && theApp.downloadqueue!=NULL && theApp.downloadqueue->IsPartFile(partfile))	// could have been canceled
 		partfile->FlushDone();
 	return 0;
 }
@@ -1921,8 +1934,11 @@ LRESULT CemuleDlg::OnFileAllocExc(WPARAM wParam,LPARAM lParam)
 {
 	//Xman
 	//MORPH START - Added by SiRoB, Fix crash at shutdown
+	
+	ASSERT(!(theApp.m_app_state == APP_STATE_RUNNING && theApp.downloadqueue==NULL)); //Xman fix me
+
 	CFileException* error = (CFileException*)lParam;
-	if (theApp.m_app_state == APP_STATE_SHUTINGDOWN || theApp.downloadqueue->IsPartFile((CPartFile*)wParam)) { //MORPH - Changed by SiRoB, Flush Thread
+	if (theApp.m_app_state != APP_STATE_RUNNING || theApp.downloadqueue==NULL || !theApp.downloadqueue->IsPartFile((CPartFile*)wParam)) { //MORPH - Changed by SiRoB, Flush Thread
 		if (error != NULL)
 			error->Delete();
 		return FALSE;
@@ -2005,9 +2021,6 @@ void CemuleDlg::OnClose()
 	theApp.UpdateSplash(_T("Shutting down ..."));
 	//Xman end
 
-	//Xman queued disc-access for read/flushing-threads
-	theApp.ForeAllDiscAccessThreadsToFinish();
-
 	Log(_T("Closing eMule"));
 	CloseTTS();
 	m_pDropTarget->Revoke();
@@ -2019,6 +2032,10 @@ void CemuleDlg::OnClose()
 	// <== Show in MSN7 [TPT] - Stulle
 
 	theApp.m_app_state = APP_STATE_SHUTINGDOWN;
+
+	//Xman queued disc-access for read/flushing-threads
+	theApp.ForeAllDiscAccessThreadsToFinish();
+
 	theApp.serverconnect->Disconnect();
 	theApp.OnlineSig(); // Added By Bouc7 
 
@@ -2063,6 +2080,14 @@ void CemuleDlg::OnClose()
 	// try to wait untill the hashing thread notices that we are shutting down
 	CSingleLock sLock1(&theApp.hashing_mut); // only one filehash at a time
 	sLock1.Lock(2000);
+
+	//Xman queued disc-access for read/flushing-threads
+	//if we don't unlock we can cause a deadlock here:
+	//resuming the disc-access-thread with th above ForeAllDiscAccessThreadsToFinish
+	//doesn't mean the thread start at once... they start later and the main app has the mutex
+	//so the threads wait for ever.. and also the main app for the threads.
+	sLock1.Unlock(); 
+	//Xman end
 
 	theApp.UpdateSplash(_T("saving settings ...")); //Xman new slpash-screen arrangement
 
@@ -2193,6 +2218,11 @@ void CemuleDlg::OnClose()
 	theApp.minimule->DestroyWindow();
 	delete theApp.minimule;			theApp.minimule = NULL;
 	// <== TBH: minimule - Max
+
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max 
+	theApp.UpdateSplash(_T("destroy SysInfo ..."));
+	delete theApp.sysinfo;			theApp.sysinfo = NULL;
+	// <== CPU/MEM usage [$ick$/Stulle] - Max 
 
 	theApp.UpdateSplash(_T("Shutdown done")); //Xman new slpash-screen arrangement
 
@@ -4088,6 +4118,24 @@ void CemuleDlg::TrayMinimizeToTrayChange()
 		}
 	}
 	CTrayDialog::TrayMinimizeToTrayChange();
+}
+
+//Xman process timer code via messages (Xanatos)
+// Note: the timers does not crash on a exception so I use the messags to call the functions so when an error aprears it will be detected
+afx_msg LRESULT CemuleDlg::DoTimer(WPARAM wParam, LPARAM /*lParam*/)
+{
+	if (!theApp.emuledlg->IsRunning())
+		return 0;
+
+	if(wParam == NULL)
+		theApp.uploadqueue->UploadTimer();
+	/* only used for uploadtimer
+	else if(wParam == -1)
+		theApp.emuledlg->StartupTimer();
+	*/
+	else
+		ASSERT(0);
+	return 0;
 }
 
 // ==> ScarAngel Version Check - Stulle

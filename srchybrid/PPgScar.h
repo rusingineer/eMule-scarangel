@@ -88,6 +88,17 @@ protected:
 	bool m_bMMOpen;
 	// <== TBH: minimule - Max
 
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	int m_iDlMode;
+	bool m_bShowCatNames;
+	bool m_bSelectCat;
+	bool m_bUseActiveCat;
+	bool m_bAutoSetResOrder;
+	bool m_bSmallFileDLPush;
+	int m_iResumeFileInNewCat;
+	bool m_bUseAutoCat;
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
 	bool m_bSUQWT; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*	// ==> Spread Credits Slot - Stulle
 	bool m_bSpreadCreditsSlot;
@@ -99,6 +110,7 @@ protected:
 	bool m_bGlobalHlAll;
 	// <== Global Source Limit [Max/Stulle] - Stulle
 	bool m_bStartupSound; // Startupsound [Commander] - mav744
+	int m_iCompressLevel; // Adjust Compress Level [Stulle] - Stulle
 
 	CTreeOptionsCtrlEx m_ctrlTreeOptions;
 	bool m_bInitializedTreeOpts;
@@ -200,6 +212,21 @@ protected:
 	HTREEITEM m_htiMMOpen;
 	// <== TBH: minimule - Max
 
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	HTREEITEM m_htiSCC;
+	HTREEITEM m_htiDlMode;
+	HTREEITEM m_htiDlNone;
+	HTREEITEM m_htiDlAlph;
+	HTREEITEM m_htiDlLP;
+	HTREEITEM m_htiShowCatNames;
+	HTREEITEM m_htiSelectCat;
+	HTREEITEM m_htiUseActiveCat;
+	HTREEITEM m_htiAutoSetResOrder;
+	HTREEITEM m_htiSmallFileDLPush;
+	HTREEITEM m_htiResumeFileInNewCat;
+	HTREEITEM m_htiUseAutoCat;
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
 	HTREEITEM m_htiMisc;
 	HTREEITEM m_htiSUQWT; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*	// ==> Spread Credits Slot - Stulle
@@ -214,6 +241,7 @@ protected:
 	HTREEITEM m_htiGlobalHlAggro;
 	// <== Global Source Limit [Max/Stulle] - Stulle
 	HTREEITEM m_htiStartupSound; // Startupsound [Commander] - mav744
+	HTREEITEM m_htiCompressLevel; // Adjust Compress Level [Stulle] - Stulle
 
 	// ==> push small files [sivka] - Stulle
 	uint32 m_iPushSmallFiles;

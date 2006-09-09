@@ -92,6 +92,9 @@ bool CPreferences::m_bUseNarrowFont;
 bool CPreferences::m_13ratio;
 //Xman end
 
+//Xman disable compression
+bool CPreferences::m_bUseCompression;
+
 //Xman auto update IPFilter
 bool CPreferences::m_bautoupdateipfilter;
 CString CPreferences::m_strautoupdateipfilter_url;
@@ -741,6 +744,21 @@ CString  CPreferences::m_SimpleCleanupReplaceChars;
 // <== MassRename [Dragon] - Stulle
 
 bool	CPreferences::startupsound; // Startupsound [Commander] - mav744
+
+uint8	CPreferences::m_uCompressLevel; // Adjust Compress Level [Stulle] - Stulle
+
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+bool	CPreferences::m_bValidSrcsOnly;
+bool	CPreferences::m_bShowCatNames;
+bool	CPreferences::m_bActiveCatDefault;
+bool	CPreferences::m_bSelCatOnAdd;
+bool	CPreferences::m_bAutoSetResumeOrder;
+bool	CPreferences::m_bSmallFileDLPush;
+uint8	CPreferences::m_iStartDLInEmptyCats;
+bool	CPreferences::m_bRespectMaxSources;
+bool	CPreferences::m_bUseAutoCat;
+uint8	CPreferences::dlMode;
+// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 CPreferences::CPreferences()
 {
@@ -1825,6 +1843,7 @@ bool CPreferences::Save(){
 
 	SavePreferences();
 	SaveStats();
+	SaveCats(); // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	fullpath = new TCHAR[_tcslen(configdir) + 14];
 	_stprintf(fullpath, L"%sshareddir.dat", configdir);
@@ -1949,8 +1968,8 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(L"SplitterbarPosition",splitterbarPosition+2);
 	ini.WriteInt(L"SplitterbarPositionServer",splitterbarPositionSvr);
 	ini.WriteInt(L"SplitterbarPositionStat",splitterbarPositionStat+1);
-	ini.WriteInt(L"SplitterbarPositionStat_HL",splitterbarPositionStat_HL+1);
-	ini.WriteInt(L"SplitterbarPositionStat_HR",splitterbarPositionStat_HR+1);
+	ini.WriteInt(L"SplitterbarPositionStat_HL",splitterbarPositionStat_HL); //Xman BlueSonicBoy-Stats-Fix
+	ini.WriteInt(L"SplitterbarPositionStat_HR",splitterbarPositionStat_HR); //Xman BlueSonicBoy-Stats-Fix
 	ini.WriteInt(L"SplitterbarPositionFriend",splitterbarPositionFriend);
 	ini.WriteInt(L"SplitterbarPositionIRC",splitterbarPositionIRC+2);
 	ini.WriteInt(L"SplitterbarPositionShared",splitterbarPositionShared);
@@ -2450,6 +2469,20 @@ void CPreferences::SavePreferences()
 	// <== MassRename [Dragon] - Stulle
 
 	ini.WriteBool(L"Startupsound",startupsound); // Startupsound [Commander] - mav744
+
+	ini.WriteInt(L"CompressLevel",m_uCompressLevel); // Adjust Compress Level [Stulle] - Stulle
+
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	ini.WriteBool(_T("ValidSrcsOnly"), m_bValidSrcsOnly);
+	ini.WriteBool(_T("ShowCatName"), m_bShowCatNames);
+	ini.WriteBool(_T("ActiveCatDefault"), m_bActiveCatDefault);
+	ini.WriteBool(_T("SelCatOnAdd"), m_bSelCatOnAdd);
+	ini.WriteBool(_T("AutoSetResumeOrder"), m_bAutoSetResumeOrder);
+	ini.WriteBool(_T("SmallFileDLPush"), m_bSmallFileDLPush);
+	ini.WriteInt(_T("StartDLInEmptyCats"), m_iStartDLInEmptyCats);
+	ini.WriteBool(_T("UseAutoCat"), m_bUseAutoCat);
+	ini.WriteInt(_T("dlMode"),dlMode);
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 }
 
 void CPreferences::ResetStatsColor(int index)
@@ -2675,7 +2708,6 @@ void CPreferences::LoadPreferences()
 	if (maxGraphUploadRate==0) maxGraphUploadRate=16;
 	minupload=(uint16)ini.GetInt(L"MinUpload", 1); //Xman not used!
 	maxupload=ini.GetFloat(L"MaxUpload",12); // Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
-
 
 	if(maxupload<= 0.0f || maxupload >= UNLIMITED)
 	{
@@ -3255,6 +3287,9 @@ void CPreferences::LoadPreferences()
 	m_13ratio=ini.GetBool(L"amountbasedratio",false);
 	//Xman end
 
+	//Xman disable compression
+	m_bUseCompression=ini.GetBool(L"UseCompression",true);
+
 	//Xman auto update IPFilter
 	m_strautoupdateipfilter_url= ini.GetString(L"AutoUpdateIPFilter_URL", _T("http://emulepawcio.sourceforge.net/nieuwe_site/Ipfilter_fakes/ipfilter.zip"));
 	m_bautoupdateipfilter= ini.GetBool(L"AutoUpdateIPFilter", false);
@@ -3437,6 +3472,24 @@ void CPreferences::LoadPreferences()
 								 _T("\"ae\";\"oe\";\"ue\";\"Ae\";\"Oe\";\"Ue\";\"ss\"")));
 	// <== MassRename [Dragon] - Stulle
 	startupsound=ini.GetBool(L"Startupsound",true); // Startupsound [Commander] - mav744
+
+	// ==> Adjust Compress Level [Stulle] - Stulle
+	m_uCompressLevel = (uint8)ini.GetInt(L"CompressLevel",9);
+	if(m_uCompressLevel == 0)
+		m_bUseCompression = false;
+	// <== Adjust Compress Level [Stulle] - Stulle
+
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	m_bShowCatNames=ini.GetBool(_T("ShowCatName"),true);
+	m_bValidSrcsOnly=ini.GetBool(_T("ValidSrcsOnly"), false);
+	m_bActiveCatDefault=ini.GetBool(_T("ActiveCatDefault"), true);
+	m_bSelCatOnAdd=ini.GetBool(_T("SelCatOnAdd"), true);
+	m_bAutoSetResumeOrder=ini.GetBool(_T("AutoSetResumeOrder"), true);
+	m_bSmallFileDLPush=ini.GetBool(_T("SmallFileDLPush"), true);
+	m_iStartDLInEmptyCats=(uint8)ini.GetInt(_T("StartDLInEmptyCats"), 0);
+	m_bUseAutoCat=ini.GetBool(_T("UseAutoCat"), true);
+	dlMode = (uint8)ini.GetInt(_T("dlMode"),0);
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 }
 
 //Xman Xtreme Upload
@@ -3495,6 +3548,8 @@ void CPreferences::SaveCats(){
 	catinif.Format(L"%sCategory.ini",configdir);
 	_tremove(catinif);
 
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 	CIni catini( catinif, L"Category" );
 	catini.WriteInt(L"Count",catMap.GetCount()-1,L"General");
 	for (int ix=0;ix<catMap.GetCount();ix++){
@@ -3513,8 +3568,57 @@ void CPreferences::SaveCats(){
         catini.WriteBool(L"downloadInAlphabeticalOrder", catMap.GetAt(ix)->downloadInAlphabeticalOrder!=FALSE, ixStr);
 		catini.WriteBool(L"Care4All",catMap.GetAt(ix)->care4all,ixStr);
 	}
+	*/
+	CIni catini( catinif, L"Category" );
+	catini.WriteInt(L"Count",catMap.GetCount()-1,L"General");
+	catini.WriteInt(_T("CategoryVersion"), 2, _T("General")); // khaos::categorymod+
+	for (int ix=0;ix<catMap.GetCount();ix++){
+		ixStr.Format(L"Cat#%i",ix);
+		catini.WriteString(L"Title",catMap.GetAt(ix)->title,ixStr);
+		catini.WriteString(L"Incoming",catMap.GetAt(ix)->incomingpath,ixStr);
+		catini.WriteString(L"Comment",catMap.GetAt(ix)->comment,ixStr);
+		buffer.Format(_T("%lu"),catMap.GetAt(ix)->color,ixStr);
+		catini.WriteString(_T("Color"),buffer,ixStr);
+		catini.WriteInt(_T("a4afPriority"),catMap.GetAt(ix)->prio,ixStr);
+		catini.WriteInt(_T("ResumeMode"), catMap.GetAt(ix)->m_iDlMode, ixStr);
+//      catini.WriteBool(_T("downloadInAlphabeticalOrder"), catMap.GetAt(ix)->downloadInAlphabeticalOrder!=FALSE, ixStr);
+
+		// Save View Filters
+		catini.WriteInt(_T("vfFromCats"), catMap.GetAt(ix)->viewfilters.nFromCats, ixStr);
+		catini.WriteBool(_T("vfVideo"), catMap.GetAt(ix)->viewfilters.bVideo!=FALSE, ixStr);
+		catini.WriteBool(_T("vfAudio"), catMap.GetAt(ix)->viewfilters.bAudio!=FALSE, ixStr);
+		catini.WriteBool(_T("vfArchives"), catMap.GetAt(ix)->viewfilters.bArchives!=FALSE, ixStr);
+		catini.WriteBool(_T("vfImages"), catMap.GetAt(ix)->viewfilters.bImages!=FALSE, ixStr);
+		catini.WriteBool(_T("vfWaiting"), catMap.GetAt(ix)->viewfilters.bWaiting!=FALSE, ixStr);
+		catini.WriteBool(_T("vfTransferring"), catMap.GetAt(ix)->viewfilters.bTransferring!=FALSE, ixStr);
+		catini.WriteBool(_T("vfPaused"), catMap.GetAt(ix)->viewfilters.bPaused!=FALSE, ixStr);
+		catini.WriteBool(_T("vfStopped"), catMap.GetAt(ix)->viewfilters.bStopped!=FALSE, ixStr);
+		catini.WriteBool(_T("vfComplete"), catMap.GetAt(ix)->viewfilters.bComplete!=FALSE, ixStr);
+		catini.WriteBool(_T("vfHashing"), catMap.GetAt(ix)->viewfilters.bHashing!=FALSE, ixStr);
+		catini.WriteBool(_T("vfErrorUnknown"), catMap.GetAt(ix)->viewfilters.bErrorUnknown!=FALSE, ixStr);
+		catini.WriteBool(_T("vfCompleting"), catMap.GetAt(ix)->viewfilters.bCompleting!=FALSE, ixStr);
+		catini.WriteBool(_T("vfSeenComplet"), catMap.GetAt(ix)->viewfilters.bSeenComplet!=FALSE, ixStr); //MORPH - Added by SiRoB, Seen Complet filter
+		catini.WriteUInt64(_T("vfFSizeMin"), catMap.GetAt(ix)->viewfilters.nFSizeMin, ixStr);
+		catini.WriteUInt64(_T("vfFSizeMax"), catMap.GetAt(ix)->viewfilters.nFSizeMax, ixStr);
+		catini.WriteUInt64(_T("vfRSizeMin"), catMap.GetAt(ix)->viewfilters.nRSizeMin, ixStr);
+		catini.WriteUInt64(_T("vfRSizeMax"), catMap.GetAt(ix)->viewfilters.nRSizeMax, ixStr);
+		catini.WriteInt(_T("vfTimeRemainingMin"), catMap.GetAt(ix)->viewfilters.nTimeRemainingMin, ixStr);
+		catini.WriteInt(_T("vfTimeRemainingMax"), catMap.GetAt(ix)->viewfilters.nTimeRemainingMax, ixStr);
+		catini.WriteInt(_T("vfSourceCountMin"), catMap.GetAt(ix)->viewfilters.nSourceCountMin, ixStr);
+		catini.WriteInt(_T("vfSourceCountMax"), catMap.GetAt(ix)->viewfilters.nSourceCountMax, ixStr);
+		catini.WriteInt(_T("vfAvailSourceCountMin"), catMap.GetAt(ix)->viewfilters.nAvailSourceCountMin, ixStr);
+		catini.WriteInt(_T("vfAvailSourceCountMax"), catMap.GetAt(ix)->viewfilters.nAvailSourceCountMax, ixStr);
+		catini.WriteString(_T("vfAdvancedFilterMask"), catMap.GetAt(ix)->viewfilters.sAdvancedFilterMask, ixStr);
+		// Save Selection Criteria
+		catini.WriteBool(_T("scFileSize"), catMap.GetAt(ix)->selectioncriteria.bFileSize!=FALSE, ixStr);
+		catini.WriteBool(_T("scAdvancedFilterMask"), catMap.GetAt(ix)->selectioncriteria.bAdvancedFilterMask!=FALSE, ixStr);
+		catini.WriteBool(_T("ResumeFileOnlyInSameCat"), catMap.GetAt(ix)->bResumeFileOnlyInSameCat!=FALSE, ixStr); //MORPH - Added by SiRoB, Resume file only in the same category
+	}
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 }
 
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+/*
 void CPreferences::LoadCats() {
 	CString ixStr,catinif,cat_a,cat_b,cat_c;
 	TCHAR buffer[100];
@@ -3555,6 +3659,138 @@ void CPreferences::LoadCats() {
 			::CreateDirectory(newcat->incomingpath,0);
 	}
 }
+*/
+void CPreferences::LoadCats() {
+	CString ixStr,catinif;//,cat_a,cat_b,cat_c;
+	TCHAR buffer[100];
+
+	catinif.Format(_T("%sCategory.ini"),configdir);
+	CIni catini;
+	
+	bool bCreateDefault = false;
+	bool bSkipLoad = false;
+	if (!PathFileExists(catinif))
+	{
+		bCreateDefault = true;
+		bSkipLoad = true;
+	}
+	else
+	{
+		catini.SetFileName(catinif);
+		catini.SetSection(_T("General"));
+		if (catini.GetInt(_T("CategoryVersion")) == 0)
+			bCreateDefault = true;
+	}
+
+	if (bCreateDefault)
+	{
+		Category_Struct* defcat=new Category_Struct;
+
+		_stprintf(defcat->title,_T("Default"));
+    	defcat->prio=PR_NORMAL; // ZZ:DownloadManager
+		defcat->m_iDlMode = 0;
+		_stprintf(defcat->incomingpath, incomingdir);
+		_stprintf(defcat->comment, _T("The default category.  It can't be merged or deleted."));
+		defcat->color = 0;
+		defcat->viewfilters.bArchives = true;
+		defcat->viewfilters.bAudio = true;
+		defcat->viewfilters.bComplete = true;
+		defcat->viewfilters.bCompleting = true;
+		defcat->viewfilters.bSeenComplet = true; //MORPH - Added by SiRoB, Seen Complet filter
+		defcat->viewfilters.bErrorUnknown = true;
+		defcat->viewfilters.bHashing = true;
+		defcat->viewfilters.bImages = true;
+		defcat->viewfilters.bPaused = true;
+		defcat->viewfilters.bStopped = true;
+		defcat->viewfilters.bSuspendFilters = false;
+		defcat->viewfilters.bTransferring = true;
+		defcat->viewfilters.bVideo = true;
+		defcat->viewfilters.bWaiting = true;
+		defcat->viewfilters.nAvailSourceCountMax = 0;
+		defcat->viewfilters.nAvailSourceCountMin = 0;
+		defcat->viewfilters.nFromCats = 2;
+		defcat->viewfilters.nFSizeMax = 0;
+		defcat->viewfilters.nFSizeMin = 0;
+		defcat->viewfilters.nRSizeMax = 0;
+		defcat->viewfilters.nRSizeMin = 0;
+		defcat->viewfilters.nSourceCountMax = 0;
+		defcat->viewfilters.nSourceCountMin = 0;
+		defcat->viewfilters.nTimeRemainingMax = 0;
+		defcat->viewfilters.nTimeRemainingMin = 0;
+		defcat->viewfilters.sAdvancedFilterMask = "";
+		defcat->selectioncriteria.bAdvancedFilterMask = true;
+		defcat->selectioncriteria.bFileSize = true;
+		defcat->bResumeFileOnlyInSameCat = false; //MORPH - Added by SiRoB, Resume file only in the same category
+		AddCat(defcat);
+		if (bSkipLoad)
+		{
+			SaveCats();
+			return;
+		}
+	}
+
+	int max=catini.GetInt(_T("Count"),0,_T("General"));
+
+	for (int ix = bCreateDefault ? 1 : 0; ix <= max; ix++)
+	{
+		ixStr.Format(_T("Cat#%i"),ix);
+        catini.SetSection(ixStr);
+
+		Category_Struct* newcat = new Category_Struct;
+		_stprintf(newcat->title,_T("%s"),catini.GetString(_T("Title"),_T(""),ixStr));
+		_stprintf(newcat->incomingpath,_T("%s"),catini.GetString(_T("Incoming"),_T(""),ixStr));
+		MakeFoldername(newcat->incomingpath);
+		// SLUGFILLER: SafeHash remove - removed installation dir unsharing
+		_stprintf(newcat->comment,_T("%s"),catini.GetString(_T("Comment"),_T(""),ixStr));
+		newcat->prio =catini.GetInt(_T("a4afPriority"),PR_NORMAL,ixStr); // ZZ:DownloadManager
+		_stprintf(buffer,_T("%s"),catini.GetString(_T("Color"),_T("0"),ixStr));
+		newcat->color=(DWORD)_tstoi64(buffer);
+		/*
+		newcat->autocat=catini.GetString(_T("Autocat"),_T(""),ixStr);
+		*/
+//      newcat->downloadInAlphabeticalOrder = catini.GetBool(_T("downloadInAlphabeticalOrder"), FALSE, ixStr); // ZZ:DownloadManager
+
+		newcat->m_iDlMode = catini.GetInt(_T("ResumeMode"), 0);
+		//newcat->autocat = catini.GetString(_T("AutoCatString"),_T(""),ixStr);
+		// Load View Filters
+		newcat->viewfilters.nFromCats = catini.GetInt(_T("vfFromCats"), ix==0?0:2);
+		newcat->viewfilters.bSuspendFilters = false;
+		newcat->viewfilters.bVideo = catini.GetBool(_T("vfVideo"), true);
+		newcat->viewfilters.bAudio = catini.GetBool(_T("vfAudio"), true);
+		newcat->viewfilters.bArchives = catini.GetBool(_T("vfArchives"), true);
+		newcat->viewfilters.bImages = catini.GetBool(_T("vfImages"), true);
+		newcat->viewfilters.bWaiting = catini.GetBool(_T("vfWaiting"), true);
+		newcat->viewfilters.bTransferring = catini.GetBool(_T("vfTransferring"), true);
+		newcat->viewfilters.bPaused = catini.GetBool(_T("vfPaused"), true);
+		newcat->viewfilters.bStopped = catini.GetBool(_T("vfStopped"), true);
+		newcat->viewfilters.bComplete = catini.GetBool(_T("vfComplete"), true);
+		newcat->viewfilters.bHashing = catini.GetBool(_T("vfHashing"), true);
+		newcat->viewfilters.bErrorUnknown = catini.GetBool(_T("vfErrorUnknown"), true);
+		newcat->viewfilters.bCompleting = catini.GetBool(_T("vfCompleting"), true);
+		newcat->viewfilters.bSeenComplet = catini.GetBool(_T("vfSeenComplet"), true); //MORPH - Added by SiRoB, Seen Complet filter
+		newcat->viewfilters.nFSizeMin = catini.GetInt(_T("vfFSizeMin"), 0);
+		newcat->viewfilters.nFSizeMax = catini.GetInt(_T("vfFSizeMax"), 0);
+		newcat->viewfilters.nRSizeMin = catini.GetInt(_T("vfRSizeMin"), 0);
+		newcat->viewfilters.nRSizeMax = catini.GetInt(_T("vfRSizeMax"), 0);
+		newcat->viewfilters.nTimeRemainingMin = catini.GetInt(_T("vfTimeRemainingMin"), 0);
+		newcat->viewfilters.nTimeRemainingMax = catini.GetInt(_T("vfTimeRemainingMax"), 0);
+		newcat->viewfilters.nSourceCountMin = catini.GetInt(_T("vfSourceCountMin"), 0);
+		newcat->viewfilters.nSourceCountMax = catini.GetInt(_T("vfSourceCountMax"), 0);
+		newcat->viewfilters.nAvailSourceCountMin = catini.GetInt(_T("vfAvailSourceCountMin"), 0);
+		newcat->viewfilters.nAvailSourceCountMax = catini.GetInt(_T("vfAvailSourceCountMax"), 0);
+		newcat->viewfilters.sAdvancedFilterMask = catini.GetString(_T("vfAdvancedFilterMask"), _T(""));
+		// Load Selection Criteria
+		newcat->selectioncriteria.bFileSize = catini.GetBool(_T("scFileSize"), true);
+		newcat->selectioncriteria.bAdvancedFilterMask = catini.GetBool(_T("scAdvancedFilterMask"), true);
+		newcat->bResumeFileOnlyInSameCat = catini.GetBool(_T("ResumeFileOnlyInSameCat"), false); //MORPH - Added by SiRoB, Resume file only in the same category
+
+		AddCat(newcat);
+		if (!PathFileExists(newcat->incomingpath))
+			::CreateDirectory(newcat->incomingpath, 0);
+	}
+}
+// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
 void CPreferences::RemoveCat(int index)	{
 	if (index>=0 && index<catMap.GetCount()) { 
 		Category_Struct* delcat;
@@ -3564,6 +3800,8 @@ void CPreferences::RemoveCat(int index)	{
 	}
 }
 
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+/*
 bool CPreferences::SetCatFilter(int index, int filter){
 	if (index>=0 && index<catMap.GetCount()) { 
 		Category_Struct* cat;
@@ -3596,6 +3834,8 @@ void CPreferences::SetCatFilterNeg(int index, bool val) {
 		catMap.GetAt(index)->filterNeg=val;
 	}
 }
+*/
+// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 
 bool CPreferences::MoveCat(UINT from, UINT to){

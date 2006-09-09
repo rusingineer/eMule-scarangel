@@ -1037,6 +1037,8 @@ BEGIN
     LTEXT           "Static",IDC_CMSTATUS,4,117,236,9
 END
 
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+/*
 IDD_CAT DIALOGEX 0, 0, 230, 221
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
@@ -1066,6 +1068,85 @@ BEGIN
     LTEXT           "Regular expression for view filter:",IDC_STATIC_REGEXP,
                     7,176,216,8
 END
+*/
+IDD_CAT DIALOGEX 0, 0, 309, 306
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Categories"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    EDITTEXT        IDC_TITLE,21,16,196,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_COMMENT,21,41,260,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_INCOMING,21,66,260,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_BROWSE,286,66,16,12,BS_FLAT
+    COMBOBOX        IDC_PRIOCOMBO,21,90,115,48,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    PUSHBUTTON      "",IDC_CATCOLOR,248,14,34,16,BS_FLAT
+    DEFPUSHBUTTON   "OK",IDOK,189,288,47,12,BS_FLAT
+    PUSHBUTTON      "&Cancel",IDCANCEL,252,288,50,12,BS_FLAT
+    LTEXT           "Title",IDC_STATIC_TITLE,7,6,209,8
+    LTEXT           "Comment",IDC_STATIC_COMMENT,7,31,295,8
+    LTEXT           "Color",IDC_STATIC_COLOR,232,5,50,8
+    LTEXT           "Priority For Added Files",IDC_STATIC_PRIO,7,80,131,8
+    LTEXT           "Incoming Files",IDC_STATIC_INCOMING,7,56,295,8
+    COMBOBOX        IDC_COMBO_DL,166,90,115,48,CBS_DROPDOWNLIST | 
+                    WS_TABSTOP
+    LTEXT           "Resume Mode",IDC_STATIC_DL,150,80,131,8
+    EDITTEXT        IDC_AUTOCATEXT,40,266,241,12,ES_AUTOHSCROLL
+    GROUPBOX        "Category Filters",IDC_FILTERGROUP,7,118,295,167
+    GROUPBOX        "     File Size (MB)",IDC_STATIC_FSIZE,21,128,115,37
+    LTEXT           "Minimum",IDC_STATIC_MIN,28,138,34,8
+    LTEXT           "Maximum",IDC_STATIC_MAX,83,138,34,8
+    EDITTEXT        IDC_FS_MIN,40,147,35,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_FS_MAX,95,147,35,12,ES_AUTOHSCROLL
+    GROUPBOX        "Remaining Size (MB)",IDC_STATIC_RSIZE,166,128,115,37
+    LTEXT           "Minimum",IDC_STATIC_MIN2,173,139,34,8
+    LTEXT           "Maximum",IDC_STATIC_MAX2,228,137,34,8
+    EDITTEXT        IDC_RS_MIN,185,147,35,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_RS_MAX,240,147,35,12,ES_AUTOHSCROLL
+    GROUPBOX        "Source Count",IDC_STATIC_SCOUNT,21,169,115,37
+    LTEXT           "Minimum",IDC_STATIC_MIN3,28,179,34,8
+    LTEXT           "Maximum",IDC_STATIC_MAX3,83,179,34,8
+    EDITTEXT        IDC_SC_MIN,40,188,35,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_SC_MAX,95,188,35,12,ES_AUTOHSCROLL | ES_NUMBER
+    GROUPBOX        "Remaining Time (M)",IDC_STATIC_RTIME,166,169,115,37
+    LTEXT           "Minimum",IDC_STATIC_MIN4,173,180,34,8
+    LTEXT           "Maximum",IDC_STATIC_MAX4,228,178,34,8
+    EDITTEXT        IDC_RT_MIN,185,188,35,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_RT_MAX,240,188,35,12,ES_AUTOHSCROLL | ES_NUMBER
+    GROUPBOX        "Available Source Count",IDC_STATIC_ASCOUNT,21,211,115,
+                    37
+    LTEXT           "Minimum",IDC_STATIC_MIN5,28,221,34,8
+    LTEXT           "Maximum",IDC_STATIC_MAX5,83,221,34,8
+    EDITTEXT        IDC_ASC_MIN,40,229,35,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_ASC_MAX,95,229,35,12,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "",IDC_CHECK_FS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,
+                    128,9,8
+    LTEXT           "The check boxes indicate whether the criteria should be used when selecting a category for new files.",
+                    IDC_STATIC_EXP,166,213,115,35
+    CONTROL         "Advanced Filter Mask (Separator: | )",IDC_CHECK_MASK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,255,256,8
+    CONTROL         "Don't resume paused file",
+                    IDC_CHECK_RESUMEFILEONLYINSAMECAT,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,22,107,256,8
+END
+
+IDD_SELCATEGORY DIALOGEX 0, 0, 186, 76
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Select Category"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,70,55,50,14,BS_FLAT
+    PUSHBUTTON      "Cancel",IDCANCEL,130,55,50,14,BS_FLAT
+    COMBOBOX        IDC_CATCOMBO,7,23,172,42,CBS_DROPDOWN | CBS_AUTOHSCROLL | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Select a category or type in a title for a new category for this link.",
+                    IDC_STATIC_INS,6,3,174,16
+    CONTROL         "Do not ask me again",IDC_DONTASKMEAGAINCB,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,11,41,111,10
+END
+// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 // ==> Show overhead on title - Stulle
 /*
@@ -3097,6 +3178,15 @@ MM_DISLOW               ICON                    "res\\MM_DisLow.ico"
 MM_DISDIS               ICON                    "res\\MM_DisDis.ico"
 MINIMULE                ICON                    "res\\MiniMule.ico"
 FILEMASSRENAME          ICON                    "res\\FileMassRename.ico"
+CATSTOPLAST             ICON                    "res\\catStopLast.ico"
+CATPAUSELAST            ICON                    "res\\catPauseLast.ico"
+CATRESUMENEXT           ICON                    "res\\catResumeNext.ico"
+CATADD                  ICON                    "res\\catadd.ico"
+CATEDIT                 ICON                    "res\\catedit.ico"
+CATREMOVE               ICON                    "res\\catremove.ico"
+CATMERGE                ICON                    "res\\catmerge.ico"
+DLMODE                  ICON                    "res\\DlMode.ico"
+FILELINEARPRIO          ICON                    "res\\FileLinearPrio.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -5565,6 +5655,61 @@ BEGIN
     IDS_MISSING_STARTUPSOUND 
                             "Missing startupsound.wav! Note: The file 'startup.wav' has to be placed in your config dir"
     // <== Startupsound [Commander] - mav744
+    IDS_COMPRESS_LVL        "Compress level (0 = disabled)" // Adjust Compress Level [Stulle] - Stulle
+    // ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+    IDS_CAT_MINIMUM         "Minimum"
+    IDS_CAT_MAXIMUM         "Maximum"
+    IDS_CAT_DLGHELP         "The check boxes indicate whether the criteria should be used when selecting a category for new files."
+    IDS_CAT_FILTERS         "Category filters"
+    IDS_CAT_RS              "Remaining size (MB)"
+    IDS_CAT_FS              "     File size (MB)"
+    IDS_CAT_RT              "Remaining time (M)"
+    IDS_CAT_SC              "Source count"
+    IDS_CAT_ASC             "Available source count"
+    IDS_CAT_THISCAT         "This category"
+    IDS_CAT_SUSPENDFILTERS  "Suspend view filters"
+    IDS_CAT_FROMCATSINFO    "You assign all of the files in this category to other categories before you can set this category to view All or All Unassigned!"
+    IDS_CAT_FROMCATSCAP     "Unassign files"
+    IDS_CAT_FILTERSACTIVE   "Filters active"
+    IDS_CAT_FILTERSSUSP     "Filters suspended"
+    IDS_CAT_SETORDER        "Set linear priority"
+    IDS_CAT_ORDER           "Enter an integer greater than zero, or zero.  Lower values resume first."
+    IDS_CAT_PAUSEDSHOWN     " | Paused shown"
+    IDS_CAT_PAUSEDHIDDEN    " | Paused hidden"
+    IDS_CAT_COLCATEGORY     "Cat"
+    IDS_CAT_COLORDER        "LP"
+    IDS_CAT_MNUAUTOINC      "Auto-increment selected"
+    IDS_CAT_MNUSTEPTHRU     "Step through each selected"
+    IDS_CAT_MNUALLSAME      "Set all to one value"
+    IDS_CAT_EXPAUTOINC      "Enter a non-negative starting number:"
+    IDS_CAT_EXPSTEPTHRU     "Enter a non-negative number, lower values resume first.\nFile:"
+    IDS_CAT_EXPALLSAME      "Enter a non-negative number, which will be applied to all selected files:"
+    IDS_CAT_ABORTSTEPTHRU   "Do you wish to abort the linear priority step through?"
+    IDS_CAT_SHOWPAUSED      "Show paused"
+    IDS_CAT_HIDEPAUSED      "Hide paused"
+    IDS_CAT_SELDLGTXT       "Select a category from the list or enter a title for a new category:"
+    IDS_CAT_SELDLGCAP       "Select category"
+    IDS_CAT_SHOWCATNAME     "Show full category name in 'Cat' column"
+    IDS_CAT_SHOWSELCATDLG   "Show the 'Select category' dialog"
+    IDS_CAT_USEACTIVE       "Default to the active category for new downloads"
+    IDS_CAT_AUTORESUMEORD   "Automatically increment and assign linear priority"
+    IDS_CAT_SMALLFILEDLPUSH "Download small files first (< 150KB)"
+    IDS_CAT_AUTOCAT         "Advanced filter mask (separator: | )"
+    IDS_CAT_USEAUTOCAT      "Add new downloads to categories using view filters"
+    IDS_CAT_MERGE           "Merge category"
+    IDS_CAT_GROUP           "Group"
+    IDS_CAT_RESUMEFILEONLYINSAMECAT 
+                            "Resume paused file only in the same category"
+    IDS_CAT_RESUMENEXT      "Resume next"
+    IDS_CAT_PAUSELAST       "Pause last"
+    IDS_CAT_STOPLAST        "Stop last"
+    IDS_SCC                 "Smart Category Control (SCC)"
+    IDS_DL_MODE             "Resume Mode"
+    IDS_LP                  "Linear Priority"
+    IDS_CAT_STARTFILESONADD "Start # files when added to a new category"
+    IDS_DL_MODE_DEFAULT     "Default Resume Mode"
+    IDS_DL_NONE             "None"
+    // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 END
 
 #endif    // Englisch (USA) resources
@@ -5588,4 +5733,3 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-
