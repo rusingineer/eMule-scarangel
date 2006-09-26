@@ -147,6 +147,8 @@ void CClientListCtrl::SetAllIcons()
 	imagelist.Add(CTempIconLoader(_T("NEO"))); //29
 	// <== Mod Icons - Stulle
 	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
+	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("OverlayObfu"))), 2);
+	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("OverlaySecureObfu"))), 3);
 }
 
 void CClientListCtrl::Localize()
@@ -386,8 +388,16 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				}
 				//Xman end
 
+				uint32 nOverlayImage = 0;
+				if ((client->Credits() && client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED))
+					nOverlayImage |= 1;
+				//Xman changed: display the obfuscation icon for all clients which enabled it
+				if (client->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (client->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()) 
+					&& (client->IsObfuscatedConnectionEstablished() || !(client->socket != NULL && client->socket->IsConnected())))
+					nOverlayImage |= 2;
+
 					POINT point = {cur_rec.left, cur_rec.top+1};
-					imagelist.Draw(dc,image, point, ILD_NORMAL | ((client->Credits() && client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED) ? INDEXTOOVERLAYMASK(1) : 0));
+					imagelist.Draw(dc,image, point, ILD_NORMAL | INDEXTOOVERLAYMASK(nOverlayImage));
 					//Xman friend visualization
 					if (client->IsFriend() && client->GetFriendSlot())
 						imagelist.Draw(dc,19, point, ILD_NORMAL);
@@ -593,7 +603,7 @@ BOOL CClientListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
  			}
 			case MP_BOOT:
 				if (client->GetKadPort())
-					Kademlia::CKademlia::Bootstrap(ntohl(client->GetIP()), client->GetKadPort());
+					Kademlia::CKademlia::Bootstrap(ntohl(client->GetIP()), client->GetKadPort(), (client->GetKadVersion() > 1));
 				break;
 				// - show requested files (sivka/Xman)
 			case MP_LIST_REQUESTED_FILES: 

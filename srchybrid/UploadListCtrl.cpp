@@ -37,7 +37,7 @@
 #include "ThrottledSocket.h" //Xman Xtreme Upload
 #include "UploadBandwidthThrottler.h" //Xman Xtreme Upload
 //#include "EMsocket.h"
-#include "ListenSocket.h"
+#include "ListenSocket.h" //Xman changed: display the obfuscation icon for all clients which enabled it
 #include "PartFile.h" //Xman PowerRelease
 
 #ifdef _DEBUG
@@ -171,9 +171,14 @@ void CUploadListCtrl::SetAllIcons()
 	imagelist.Add(CTempIconLoader(_T("NEO"))); //29
 	// <== Mod Icons - Stulle
 	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
+	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("OverlayObfu"))), 2);
+	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("OverlaySecureObfu"))), 3);
 	// ==> Mod Icons - Stulle
-	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientCreditOvl"))), 2);
-	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientCreditSecureOvl"))), 3);
+	m_overlayimages.DeleteImageList ();
+	m_overlayimages.Create(16,16,theApp.m_iDfltImageListColorFlags|ILC_MASK,0,1);
+	m_overlayimages.SetBkColor(CLR_NONE);
+	m_overlayimages.Add(CTempIconLoader(_T("ClientCreditOvl")));
+	m_overlayimages.Add(CTempIconLoader(_T("ClientCreditSecureOvl")));
 	// <== Mod Icons - Stulle
 }
 
@@ -414,9 +419,6 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				else{
 					image = 0;
 				}
-
-				POINT point = {cur_rec.left, cur_rec.top+1}; // moved up
-
 				//Xman Anti-Leecher
 				if(client->IsLeecher()>0)
 					image=18;
@@ -428,27 +430,35 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				if (((client->credits)?client->credits->GetScoreRatio(client):0) > 1)
 					image++;
 				*/
-				{
-					if (client->GetModClient() == MOD_NONE){
-					// <== CreditSystems [EastShare/ MorphXT] - Stulle
-						if(client->credits && client->credits->GetHasScore(client))
-							image++;
-					}
-					else
-					{
-						UINT uOvlImg = INDEXTOOVERLAYMASK(((client->Credits() && client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED) ? 1 : 0) | ((client->credits->GetHasScore(client)) ? 2 : 0));
-						imagelist.DrawIndirect(dc,image, point, CSize(16,16), CPoint(0,0), ILD_NORMAL | uOvlImg, 0, odc->GetBkColor());
-					}
+				if (client->GetModClient() == MOD_NONE){
+					if(client->credits && client->credits->GetHasScore(client))
+						image++;
 				}
+				// <== CreditSystems [EastShare/ MorphXT] - Stulle
 				// <== Mod Icons - Stulle
 				//Xman end
 
-					// ==> moved up
-					/*
+				uint32 nOverlayImage = 0;
+				if ((client->Credits() && client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED))
+					nOverlayImage |= 1;
+				//Xman changed: display the obfuscation icon for all clients which enabled it
+				if (client->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (client->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()) 
+					&& (client->IsObfuscatedConnectionEstablished() || !(client->socket != NULL && client->socket->IsConnected())))
+					nOverlayImage |= 2;
+
 					POINT point = {cur_rec.left, cur_rec.top+1};
-					*/
-					if(client->GetModClient() == MOD_NONE || client->IsLeecher()>0) // Mod Icons - Stulle
-						imagelist.Draw(dc,image, point, ILD_NORMAL | ((client->Credits() && client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED) ? INDEXTOOVERLAYMASK(1) : 0));
+					imagelist.Draw(dc,image, point, ILD_NORMAL | INDEXTOOVERLAYMASK(nOverlayImage));
+
+					// ==> Mod Icons - Stulle
+					if(client->Credits() && client->credits->GetHasScore(client))
+					{
+						if(client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED)
+							m_overlayimages.Draw(dc,1, point, ILD_TRANSPARENT);
+						else
+							m_overlayimages.Draw(dc,0, point, ILD_TRANSPARENT);
+					}
+					// <== Mod Icons - Stulle
+
 					Sbuffer = client->GetUserName();
 
 					//Xman friend visualization
@@ -502,7 +512,7 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						//if(client->GetFileUploadSocket())
 						//	Sbuffer.Format(_T("%s, ready:%u b:%u %u"),CastItoXBytes(client->GetSessionUp(), false, false), client->GetFileUploadSocket()->isready, !client->GetFileUploadSocket()->StandardPacketQueueIsEmpty(),client->GetFileUploadSocket()->blockedsendcount);
 						//else
-						Sbuffer = CastItoXBytes(client->GetSessionUp(), false, false);
+						Sbuffer = CastItoXBytes(client->GetSessionUp(), false, false); 
 
 
 						//this is something which does not make sense in the context it's shown, but may be useful for debugging..
@@ -707,7 +717,7 @@ BOOL CUploadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 
 			case MP_BOOT:
 				if (client->GetKadPort())
-					Kademlia::CKademlia::Bootstrap(ntohl(client->GetIP()), client->GetKadPort());
+					Kademlia::CKademlia::Bootstrap(ntohl(client->GetIP()), client->GetKadPort(), (client->GetKadVersion() > 1));
 				break;
 
 			// - show requested files (sivka/Xman)

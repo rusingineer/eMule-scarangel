@@ -51,6 +51,13 @@ public:
    /**/ void AddeMuleOut(uint32 octets);
    /**/ void AddeMuleIn(uint32 octets);
    /**/ void AddeMuleSYNACK();
+   //calculating obfuscation
+   /**/ void AddeMuleOutObfuscationTCP(uint32 octets);
+   /**/ void AddeMuleOutObfuscation(uint32 octets);
+   /**/ void AddeMuleOutObfuscationUDP(uint32 octets);
+   void AddeMuleInObfuscation(uint32 octets); //only main-thread!!
+   /**/ uint64 GeteMuleOutObfuscation() const;
+   uint64 GeteMuleInObfuscation() const; //only main-thread!!
 
    // Accessors, used for the control of the bandwidth (=> slope)
    /**/ uint64 GeteMuleOut() const;
@@ -146,6 +153,10 @@ private:
     // Keep last result to detect an overflow
    DWORD m_networkOutOctets;
    DWORD m_networkInOctets;
+
+	//calculating obfuscation
+   uint64 m_obfuscation_InOctets;
+   uint64 m_obfuscation_OutOctets;
 
    bool m_errorTraced;
 

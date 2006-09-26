@@ -45,6 +45,7 @@
 #include "CollectionViewDialog.h"
 #include "SearchDlg.h"
 #include "SharedFileList.h"
+#include "ListenSocket.h" //Xman changed: display the obfuscation icon for all clients which enabled it
 //Xman
 #include "Log.h"
 //#include "ClientList.h"
@@ -224,8 +225,8 @@ void CDownloadListCtrl::SetAllIcons()
 	m_ImageList.Add(CTempIconLoader(_T("Rating_Fair")));		//8
 	m_ImageList.Add(CTempIconLoader(_T("Rating_Good")));		//9
 	m_ImageList.Add(CTempIconLoader(_T("Rating_Excellent")));	//10
-	m_ImageList.Add(CTempIconLoader(_T("LEECHER")));			//11 //Xman Anti-Leecher
-	m_ImageList.Add(CTempIconLoader(_T("ClientDefault")));
+	m_ImageList.Add(CTempIconLoader(_T("Collection_Search")));	//11 // rating for comments are searched on kad
+	m_ImageList.Add(CTempIconLoader(_T("LEECHER")));			//12 //Xman Anti-Leecher
 	m_ImageList.Add(CTempIconLoader(_T("Server")));
 	m_ImageList.Add(CTempIconLoader(_T("ClientDefault")));		//14
 	m_ImageList.Add(CTempIconLoader(_T("ClientDefaultPlus")));	//15
@@ -262,11 +263,16 @@ void CDownloadListCtrl::SetAllIcons()
 	m_ImageList.Add(CTempIconLoader(_T("NEXTEMF"))); //42
 	m_ImageList.Add(CTempIconLoader(_T("NEO"))); //43
 	// <== Mod Icons - Stulle
-	
+
 	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
+	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("OverlayObfu"))), 2);
+	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("OverlaySecureObfu"))), 3);
 	// ==> Mod Icons - Stulle
-	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("ClientCreditOvl"))), 2);
-	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("ClientCreditSecureOvl"))), 3);
+	m_overlayimages.DeleteImageList ();
+	m_overlayimages.Create(16,16,theApp.m_iDfltImageListColorFlags|ILC_MASK,0,1);
+	m_overlayimages.SetBkColor(CLR_NONE);
+	m_overlayimages.Add(CTempIconLoader(_T("ClientCreditOvl")));
+	m_overlayimages.Add(CTempIconLoader(_T("ClientCreditSecureOvl")));
 	// <== Mod Icons - Stulle
 }
 //Xman end
@@ -551,8 +557,8 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 				::ImageList_Draw(theApp.GetSystemImageList(), iImage, dc->GetSafeHdc(), rcDraw.left, rcDraw.top, ILD_NORMAL|ILD_TRANSPARENT);
 			rcDraw.left += theApp.GetSmallSytemIconSize().cx;
 
-			if (thePrefs.ShowRatingIndicator() && (lpPartFile->HasComment() || lpPartFile->HasRating())){
-				m_ImageList.Draw(dc, lpPartFile->UserRating()+5, rcDraw.TopLeft(), ILD_NORMAL); //Xman Show correct Icons
+			if (thePrefs.ShowRatingIndicator() && (lpPartFile->HasComment() || lpPartFile->HasRating() || lpPartFile->IsKadCommentSearchRunning())){
+				m_ImageList.Draw(dc, lpPartFile->UserRating(true)+5, rcDraw.TopLeft(), ILD_NORMAL); //Xman Show correct Icons
 				rcDraw.left += RATING_ICON_WIDTH;
 			}
 
@@ -913,7 +919,14 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 					m_ImageList.Draw(dc, 3, point, ILD_NORMAL);
 				}
 				cur_rec.left += 20;
-				UINT uOvlImg = ((lpUpDownClient->Credits() && lpUpDownClient->Credits()->GetCurrentIdentState(lpUpDownClient->GetIP()) == IS_IDENTIFIED) ? INDEXTOOVERLAYMASK(1) : 0);
+				UINT uOvlImg = 0;
+				if ((lpUpDownClient->Credits() && lpUpDownClient->Credits()->GetCurrentIdentState(lpUpDownClient->GetIP()) == IS_IDENTIFIED))
+					uOvlImg |= 1;
+				//Xman changed: display the obfuscation icon for all clients which enabled it
+				if (lpUpDownClient->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (lpUpDownClient->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()) 
+					&& (lpUpDownClient->IsObfuscatedConnectionEstablished() || !(lpUpDownClient->socket != NULL && lpUpDownClient->socket->IsConnected())))
+					uOvlImg |= 2;
+
 				POINT point2= {cur_rec.left,cur_rec.top+1};
 				
 ////Xman Show correct Icons
@@ -948,7 +961,7 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 					image = 18;
 					*/
 					if(lpUpDownClient->GetModClient() == MOD_NONE)
-						image = 18;
+					image = 18;
 					else
 						image = (uint8)(lpUpDownClient->GetModClient() + 33);
 					// <== Mod Icons - Stulle
@@ -958,7 +971,7 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 				}
 				//Xman Anti-Leecher
 				if(lpUpDownClient->IsLeecher()>0)
-					image=11;
+					image=12;
 				else
 				//Xman end
 				// ==> Mod Icons - Stulle
@@ -966,27 +979,26 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 				if (((lpUpDownClient->credits)?lpUpDownClient->credits->GetMyScoreRatio(lpUpDownClient->GetIP()):0) > 1)
 					image++;
 				*/
-				{
-					if (lpUpDownClient->GetModClient() == MOD_NONE){
-						if(((lpUpDownClient->credits)?lpUpDownClient->credits->GetMyScoreRatio(lpUpDownClient->GetIP()):0) > 1)
-							image++;
-					}
-					else
-					{
-						UINT uOvlImg2 = INDEXTOOVERLAYMASK(((lpUpDownClient->Credits() && lpUpDownClient->Credits()->GetCurrentIdentState(lpUpDownClient->GetIP()) == IS_IDENTIFIED) ? 1 : 0) | ((((lpUpDownClient->credits)?lpUpDownClient->credits->GetMyScoreRatio(lpUpDownClient->GetIP()):0) > 1) ? 2 : 0));
-						m_ImageList.DrawIndirect(dc,image, point2, CSize(16,16), CPoint(0,0), ILD_NORMAL | uOvlImg2, 0);
-					}
-				}
-
-				if(lpUpDownClient->GetModClient() == MOD_NONE || lpUpDownClient->IsLeecher()>0)
+				if (lpUpDownClient->GetModClient() == MOD_NONE && ((lpUpDownClient->credits)?lpUpDownClient->credits->GetMyScoreRatio(lpUpDownClient->GetIP()):0) > 1)
+						image++;
 				// <== Mod Icons - Stulle
-					m_ImageList.Draw(dc, image, point2, ILD_NORMAL | uOvlImg);
+
+				m_ImageList.Draw(dc, image, point2, ILD_NORMAL | INDEXTOOVERLAYMASK(uOvlImg));
 //Xman end
 				//Xman friend visualization
 				if (lpUpDownClient->IsFriend() && lpUpDownClient->GetFriendSlot())
 					m_ImageList.Draw(dc,32, point2, ILD_NORMAL);
 				//Xman end
 
+				// ==> Mod Icons - Stulle
+				if(lpUpDownClient->Credits() && lpUpDownClient->Credits()->GetMyScoreRatio(lpUpDownClient->GetIP()) > 1)
+				{
+					if(lpUpDownClient->Credits()->GetCurrentIdentState(lpUpDownClient->GetIP()) == IS_IDENTIFIED)
+						m_overlayimages.Draw(dc,1, point, ILD_TRANSPARENT);
+					else
+						m_overlayimages.Draw(dc,0, point, ILD_TRANSPARENT);
+				}
+				// <== Mod Icons - Stulle
 
 				cur_rec.left += 20;
 
@@ -1852,7 +1864,7 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			else
 				m_FileMenu.SetDefaultItem((UINT)-1);
 			m_FileMenu.EnableMenuItem(MP_VIEWFILECOMMENTS, (iSelectedItems >= 1 /*&& iFilesNotDone == 1*/) ? MF_ENABLED : MF_GRAYED);
-            m_FileMenu.EnableMenuItem(MP_MASSRENAME, iSelectedItems > 0? MF_ENABLED : MF_GRAYED); // MassRename [Dragon] - Stulle
+			m_FileMenu.EnableMenuItem(MP_MASSRENAME, iSelectedItems > 0? MF_ENABLED : MF_GRAYED); // MassRename [Dragon] - Stulle
 
 			int total;
 			m_FileMenu.EnableMenuItem(MP_CLEARCOMPLETED, GetCompleteDownloads(curTab, total) > 0 ? MF_ENABLED : MF_GRAYED);
@@ -2120,8 +2132,8 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 			CPartFile* file = (CPartFile*)content->value;
 			switch (wParam)
 			{
-				case MPG_DELETE: // keyboard del will continue to remove completed files from the screen while cancel will now also be available for complete files
 				case MP_CANCEL:
+				case MPG_DELETE: // keyboard del will continue to remove completed files from the screen while cancel will now also be available for complete files
 				{
 					if (selectedCount > 0)
 					{
@@ -2132,7 +2144,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 						for (pos = selectedList.GetHeadPosition(); pos != 0; )
 						{
 							CPartFile* cur_file = selectedList.GetNext(pos);
-							if (cur_file->GetStatus() != PS_COMPLETING && (cur_file->GetStatus() != PS_COMPLETE || wParam == MP_CANCEL) ){
+							if (cur_file->GetStatus() != PS_COMPLETING && (cur_file->GetStatus() != PS_COMPLETE || wParam == MP_CANCEL)){
 								validdelete = true;
 								if (selectedCount < 50)
 									fileList.Append(_T("\n") + CString(cur_file->GetFileName()));
@@ -2793,7 +2805,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 		}
 		else{
 			CUpDownClient* client = (CUpDownClient*)content->value;
-			CPartFile* file = (CPartFile*)content->owner; // added by sivka
+			CPartFile* file = (CPartFile*)content->owner; //Xman Xtreme Downloadmanager
 
 			switch (wParam){
 				//Xman Xtreme Downloadmanager
@@ -2853,7 +2865,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					break;
 				case MP_BOOT:
 					if (client->GetKadPort())
-						Kademlia::CKademlia::Bootstrap(ntohl(client->GetIP()), client->GetKadPort());
+						Kademlia::CKademlia::Bootstrap(ntohl(client->GetIP()), client->GetKadPort(), (client->GetKadVersion() > 1));
 					break;
 				// - show requested files (sivka/Xman)
 				case MP_LIST_REQUESTED_FILES: { 
@@ -3295,7 +3307,7 @@ int CDownloadListCtrl::Compare(const CUpDownClient *client1, const CUpDownClient
 			return -1;
 		return client1->GetDiffQR() - client2->GetDiffQR();
 	//Xman end
-	
+
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
 	case 16:
 		if (client1->SupportsWebCache() && client2->SupportsWebCache() )
@@ -3334,7 +3346,7 @@ void CDownloadListCtrl::OnNMDblclkDownloadlist(NMHDR* /*pNMHDR*/, LRESULT* pResu
 						{
 							CPartFile* file = (CPartFile*)content->value;
 							if (thePrefs.ShowRatingIndicator() 
-								&& (file->HasComment() || file->HasRating()) 
+								&& (file->HasComment() || file->HasRating() || file->IsKadCommentSearchRunning()) 
 								&& pt.x >= FILE_ITEM_MARGIN_X+theApp.GetSmallSytemIconSize().cx 
 								&& pt.x <= FILE_ITEM_MARGIN_X+theApp.GetSmallSytemIconSize().cx+RATING_ICON_WIDTH)
 								ShowFileDialog(IDD_COMMENTLST);
@@ -3572,7 +3584,7 @@ void CDownloadListCtrl::ShowSelectedFileDetails()
 	{
 		CPartFile* file = (CPartFile*)content->value;
 		if (thePrefs.ShowRatingIndicator() 
-			&& (file->HasComment() || file->HasRating()) 
+			&& (file->HasComment() || file->HasRating() || file->IsKadCommentSearchRunning()) 
 			&& pt.x >= FILE_ITEM_MARGIN_X+theApp.GetSmallSytemIconSize().cx 
 			&& pt.x <= FILE_ITEM_MARGIN_X+theApp.GetSmallSytemIconSize().cx+RATING_ICON_WIDTH)
 			ShowFileDialog(IDD_COMMENTLST);

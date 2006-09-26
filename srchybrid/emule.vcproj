@@ -33,6 +33,7 @@
 				StructMemberAlignment="4"
 				BufferSecurityCheck="TRUE"
 				TreatWChar_tAsBuiltInType="TRUE"
+				ForceConformanceInForLoopScope="TRUE"
 				UsePrecompiledHeader="3"
 				WarningLevel="4"
 				DebugInformationFormat="3"/>
@@ -93,6 +94,7 @@
 				BufferSecurityCheck="TRUE"
 				EnableFunctionLevelLinking="TRUE"
 				TreatWChar_tAsBuiltInType="TRUE"
+				ForceConformanceInForLoopScope="TRUE"
 				UsePrecompiledHeader="3"
 				WarningLevel="4"
 				DebugInformationFormat="3"/>
@@ -165,6 +167,7 @@
 				BufferSecurityCheck="TRUE"
 				EnableFunctionLevelLinking="TRUE"
 				TreatWChar_tAsBuiltInType="TRUE"
+				ForceConformanceInForLoopScope="TRUE"
 				UsePrecompiledHeader="3"
 				WarningLevel="3"
 				DebugInformationFormat="3"/>
@@ -238,6 +241,7 @@
 				BufferSecurityCheck="TRUE"
 				EnableFunctionLevelLinking="TRUE"
 				TreatWChar_tAsBuiltInType="TRUE"
+				ForceConformanceInForLoopScope="TRUE"
 				UsePrecompiledHeader="3"
 				WarningLevel="3"
 				DebugInformationFormat="3"/>
@@ -328,9 +332,6 @@
 				RelativePath="CollectionFile.cpp">
 			</File>
 			<File
-				RelativePath="CommentListCtrl.cpp">
-			</File>
-			<File
 				RelativePath="CorruptionBlackBox.cpp">
 			</File>
 			<File
@@ -350,6 +351,12 @@
 			</File>
 			<File
 				RelativePath="Emule.cpp">
+			</File>
+			<File
+				RelativePath="EncryptedDatagramSocket.cpp">
+			</File>
+			<File
+				RelativePath="EncryptedStreamSocket.cpp">
 			</File>
 			<File
 				RelativePath="FirewallOpener.cpp">
@@ -859,9 +866,6 @@
 				RelativePath="CollectionFile.h">
 			</File>
 			<File
-				RelativePath="CommentListCtrl.h">
-			</File>
-			<File
 				RelativePath="CorruptionBlackBox.h">
 			</File>
 			<File
@@ -886,7 +890,16 @@
 				RelativePath="Emule.h">
 			</File>
 			<File
+				RelativePath="EncryptedDatagramSocket.h">
+			</File>
+			<File
+				RelativePath="EncryptedStreamSocket.h">
+			</File>
+			<File
 				RelativePath="Exceptions.h">
+			</File>
+			<File
+				RelativePath="fileformat.h">
 			</File>
 			<File
 				RelativePath="FirewallOpener.h">
@@ -1189,6 +1202,9 @@
 				RelativePath="AddSourceDlg.cpp">
 			</File>
 			<File
+				RelativePath="ArchivePreviewDlg.cpp">
+			</File>
+			<File
 				RelativePath="BarShader.cpp">
 			</File>
 			<File
@@ -1234,6 +1250,9 @@
 				RelativePath="CommentDialogLst.cpp">
 			</File>
 			<File
+				RelativePath="CommentListCtrl.cpp">
+			</File>
+			<File
 				RelativePath="CreditsDlg.cpp">
 			</File>
 			<File
@@ -1259,6 +1278,9 @@
 			</File>
 			<File
 				RelativePath="ED2kLinkDlg.cpp">
+			</File>
+			<File
+				RelativePath="EditDelayed.cpp">
 			</File>
 			<File
 				RelativePath="EditX.cpp">
@@ -1378,6 +1400,9 @@
 				RelativePath="PPgIRC.cpp">
 			</File>
 			<File
+				RelativePath="PPgMessages.cpp">
+			</File>
+			<File
 				RelativePath="PPgNotify.cpp">
 			</File>
 			<File
@@ -1418,6 +1443,9 @@
 			</File>
 			<File
 				RelativePath="RichEditCtrlX.cpp">
+			</File>
+			<File
+				RelativePath="RichEditStream.cpp">
 			</File>
 			<File
 				RelativePath="SearchDlg.cpp">
@@ -1598,6 +1626,9 @@
 				RelativePath="AfxBeginMsgMapTemplate.h">
 			</File>
 			<File
+				RelativePath="ArchivePreviewDlg.h">
+			</File>
+			<File
 				RelativePath="BarShader.h">
 			</File>
 			<File
@@ -1643,6 +1674,9 @@
 				RelativePath="CommentDialogLst.h">
 			</File>
 			<File
+				RelativePath="CommentListCtrl.h">
+			</File>
+			<File
 				RelativePath="CreditsDlg.h">
 			</File>
 			<File
@@ -1671,6 +1705,9 @@
 			</File>
 			<File
 				RelativePath="ED2kLinkDlg.h">
+			</File>
+			<File
+				RelativePath="EditDelayed.h">
 			</File>
 			<File
 				RelativePath="EditX.h">
@@ -1805,6 +1842,9 @@
 				RelativePath="PPgIRC.h">
 			</File>
 			<File
+				RelativePath="PPgMessages.h">
+			</File>
+			<File
 				RelativePath="PPgNotify.h">
 			</File>
 			<File
@@ -1842,6 +1882,9 @@
 			</File>
 			<File
 				RelativePath="RichEditCtrlX.h">
+			</File>
+			<File
+				RelativePath="RichEditStream.h">
 			</File>
 			<File
 				RelativePath="Scanner.h">
@@ -2025,6 +2068,12 @@
 				RelativePath="res\all.ico">
 			</File>
 			<File
+				RelativePath="res\ArchivePreview.ico">
+			</File>
+			<File
+				RelativePath="res\bold.ico">
+			</File>
+			<File
 				RelativePath="res\Cancel.ico">
 			</File>
 			<File
@@ -2032,6 +2081,12 @@
 			</File>
 			<File
 				RelativePath="res\Chat.ico">
+			</File>
+			<File
+				RelativePath="res\clear1.ico">
+			</File>
+			<File
+				RelativePath="res\clear2.ico">
 			</File>
 			<File
 				RelativePath="res\Client0.ico">
@@ -2100,7 +2155,13 @@
 				RelativePath="res\ClientMLDonkeyPlus.ico">
 			</File>
 			<File
+				RelativePath="res\Clientobfuovl.ICO">
+			</File>
+			<File
 				RelativePath="res\ClientSecureHashOvl.ico">
+			</File>
+			<File
+				RelativePath="res\Clientsecurehasobfuhovl.ICO">
 			</File>
 			<File
 				RelativePath="res\ClientShareaza.ico">
@@ -2119,6 +2180,9 @@
 			</File>
 			<File
 				RelativePath="res\Collapse.ico">
+			</File>
+			<File
+				RelativePath="res\colour.ico">
 			</File>
 			<File
 				RelativePath="res\Comments.ico">
@@ -2505,6 +2569,9 @@
 				RelativePath="res\Log.ico">
 			</File>
 			<File
+				RelativePath=".\res\Logo.jpg">
+			</File>
+			<File
 				RelativePath="res\MediaInfo.ico">
 			</File>
 			<File
@@ -2593,6 +2660,9 @@
 				RelativePath="res\Rename.ico">
 			</File>
 			<File
+				RelativePath="res\resetformat.ico">
+			</File>
+			<File
 				RelativePath="res\Restore.ico">
 			</File>
 			<File
@@ -2606,6 +2676,9 @@
 			</File>
 			<File
 				RelativePath="res\Search.ico">
+			</File>
+			<File
+				RelativePath="res\SearchEdit.ico">
 			</File>
 			<File
 				RelativePath="res\SearchGlobalActive.ico">
@@ -2735,6 +2808,9 @@
 			</File>
 			<File
 				RelativePath="res\Tweak.ico">
+			</File>
+			<File
+				RelativePath="res\underline.ico">
 			</File>
 			<File
 				RelativePath="res\Up0down0.ico">
@@ -2918,22 +2994,16 @@
 				RelativePath=".\MiniMule\CDialogSK.h">
 			</File>
 			<File
-				RelativePath=".\MiniMule\CPUUsageReader.cpp">
+				RelativePath=".\MiniMule\CPU.cpp">
 			</File>
 			<File
-				RelativePath=".\MiniMule\CPUUsageReader.h">
+				RelativePath=".\MiniMule\CPU.h">
 			</File>
 			<File
 				RelativePath=".\MiniMule\DblScope.cpp">
 			</File>
 			<File
 				RelativePath=".\MiniMule\DblScope.h">
-			</File>
-			<File
-				RelativePath=".\MiniMule\GetCpuUsage.cpp">
-			</File>
-			<File
-				RelativePath=".\MiniMule\GetCpuUsage.h">
 			</File>
 			<File
 				RelativePath=".\MiniMule\MibAccess.cpp">
@@ -2943,6 +3013,9 @@
 			</File>
 			<File
 				RelativePath=".\MiniMule\PerfCounters.h">
+			</File>
+			<File
+				RelativePath=".\MiniMule\SmartLock.h">
 			</File>
 			<File
 				RelativePath=".\MiniMule\SnapDialog.cpp">
@@ -2967,6 +3040,12 @@
 			</File>
 			<File
 				RelativePath=".\MiniMule\tbhmm.h">
+			</File>
+			<File
+				RelativePath=".\MiniMule\TKTime.h">
+			</File>
+			<File
+				RelativePath=".\MiniMule\TKTypes.h">
 			</File>
 		</Filter>
 		<Filter

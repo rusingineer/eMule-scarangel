@@ -70,7 +70,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_HTTPDOWNLOAD_GETTING_FILE_INFORMATION "√Œ– „⁄·Ê„«  ⁄‰ «·„·›"
-    IDS_HTTPDOWNLOAD_FAIL_PARSE_ERROR "Œÿ√ ›Ì «·⁄‰Ê«‰: %s"
     IDS_HTTPDOWNLOAD_GENERIC_ERROR 
                             "Œÿ√ ⁄‰œ „Õ«Ê·…  Õ„Ì· «·„·›, Error:%s"
     IDS_HTTPDOWNLOAD_FAIL_CONNECT_SERVER 
@@ -118,7 +117,6 @@ STRINGTABLE
 BEGIN
     IDS_MAIN_SOCKETERROR    "Œÿ√ „„Ì : „‰ €Ì— «·„„ﬂ‰ ⁄„· ” Êﬂ ⁄·Ï «·»—Ê  %i"
     IDS_MAIN_BTN_DISCONNECT "ﬁÿ⁄ «·« ’«·"
-    IDS_MAIN_BTN_DISCONNECT_TOOLTIP "ﬁÿ⁄ «·« ’«· „⁄ «·Œ«œ„ «·Õ«·Ì"
     IDS_ERR_WRONGFILEID     "ÂÊÌ… «·„·› «—”·  Œÿ√"
     IDS_ERR_BADHASHSET      "«” ·«„ Œÿ√ ›Ì «·Â«‘ ”Ì "
     IDS_ERR_BADDATABLOCK    "«” ·«„ Œÿ√ ›Ì «·œ« «»·Êﬂ"
@@ -127,17 +125,14 @@ BEGIN
     IDS_ERR_NOSLLINK        "«·Œ«œ„ ·Ì” ’«·Õ"
     IDS_ERR_WRONGPACKAGESIZE "€Ì— ’«·Õ OP_REQUESTFILENAME ÕÃ„ «·»«ﬂÌ "
     IDS_ERR_WRONGHPACKAGESIZE "€Ì— ’«·Õ OP_HASHSETREQUEST ÕÃ„ «·»«ﬂÌ "
-    IDS_ERR_BADCLIENTACTION "«·⁄„Ì· ”»» Œÿ√ «Ê «ÕœÀ ÷——: %s. ﬁÿ⁄ «·« ’«· „⁄ «·⁄„Ì·"
     IDS_ERR_UNKNOWNCLIENTACTION 
                             "⁄„Ì· €Ì— „⁄—Ê› Ì—”·  »— ÊﬂÊ  »«ﬂÌ  ÿÊÌ·… "
     IDS_ERR_OPENMET         "Œÿ√ : €Ì— ﬁ«œ— ⁄·Ï › Õ «·„·› (%s => %s)"
     IDS_ERR_BADMETVERSION   "Œÿ√ : «’œ«— «·„·› €Ì— ’«·Õ (%s => %s)"
-    IDS_ERR_BADGAP          "Ã«»  «» €Ì— ’«·Õ"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_EMPTYADRESSESDAT_TITLE "€Ì— ﬁ«œ— ⁄·Ï «” ⁄«œ… ﬁ«∆„… «·Œ«œ„"
     IDS_ERR_BADSERVERMETVERSION "Œ«œ„ €Ì— ’«·Õ (0x%X)!"
     IDS_SERVERSFOUND        "%i ⁄œœ «·Œœ«„ Õ«·Ì«"
     IDS_SERVERSADDED        "%d «ŸÌ› «·Œ«œ„, %d ·„ ÌŸ› ‹ „ÊÃÊœ „”»ﬁ« ‹"
@@ -146,7 +141,6 @@ BEGIN
                             "Œÿ√ €Ì— „ Êﬁ⁄  Œ·«· ﬁ—√¡… „·› «·Œ«œ„  %s, €Ì— ﬁ«œ— ⁄·Ï  Õ„Ì· ﬁ«∆„… «·Œ«œ„"
     IDS_ERR_SAVESERVERMET   "›‘· ›Ì Õ›Ÿ «·”Ì—›—"
     IDS_PASSIVE             "”·»Ì"
-    IDS_MAIN_CONNECTEDTO    "«·« ’«·  „ ›Ì "
     IDS_MAIN_BTN_CANCEL     "&«·€«¡"
     IDS_AVAIL               "«Ã“«¡ %u, „ Ê›—… %u (%.1f%%)\n\n"
     IDS_TYPE                "‰Ê⁄"
@@ -165,8 +159,6 @@ BEGIN
     IDS_PREFERENCE          "«Ê·ÊÌ… "
     IDS_PRIONOPREF          "·« »—Ì›"
     IDS_CONNECTTHIS         "« ’« »‹ «·Œ«œ„ «·„Œ «—"
-    IDS_CHAT_WELCOME        "—”«·… ›Ê—Ì…\n  \n«÷€ÿ »Ì„Ì‰ «·„«ÊÌ ⁄·Ï «Ì ⁄„Ì· Ê «Œ — «—”· —”«·…  ·»œ√ «·„Õ«œÀ…"
-    IDS_MAIN_BTN_CANCEL_TOOLTIP "«Êﬁ›  „Õ«Ê·«  «·« ’«· «·Õ«·Ì…"
     IDS_MAIN_BTN_CONNECT    "&« ’·"
     IDS_ERR_SAVESERVERMET2  "›‘· ›Ì Õ›Ÿ «·Œ«œ„  server.met! ÌÃ» Õ–› server.met Ê ”„Ì server.met.old «·Ï server.met!"
     IDS_NOTCONNECTED        "€Ì— „ ’·"
@@ -203,7 +195,6 @@ STRINGTABLE
 BEGIN
     IDS_LINKNOTADDED        "·„ Ì„ﬂ‰ «Ÿ«›… «·Ê’·…"
     IDS_MAIN_EXIT           "Â· «‰  „ √ﬂœ »√‰ﬂ  —Ìœ «·Œ—ÊÃ „‰ «·»—‰«„Ã «„Ê·ø"
-    IDS_MAIN_EXITTITLE      " ’œÌﬁ «·Œ—ÊÃ"
     IDS_MAIN_POPUP_RESTORE  "«” ⁄«œ…"
     IDS_CONNECTTOANYSERVER  "« ’· »«Ì ”Ì—›—"
     IDS_EXIT                "Œ—ÊÃ"
@@ -211,7 +202,6 @@ BEGIN
     IDS_FAILED              "›‘·"
     IDS_ERR_BADSERVERREPLY  "œŒÊ· €Ì— ’«·Õ  «·Ï «·Õ«œ„"
     IDS_NEWCLIENTID         "⁄„Ì· ÃœÌœ is %u"
-    IDS_NOSHAREDFOLDERS     "·« „Ã·œ«  „‘ —ﬂ…"
     IDS_SHAREDFOLDERS       "„Ã·œ«  „‘ —ﬂ…"
     IDS_VIEW1               "«ŸÂ— "
     IDS_VIEW2               " (€Ì— „‘ —ﬂ)"
@@ -250,10 +240,6 @@ BEGIN
     IDS_ASKED4ANOTHERFILE   "”√· ⁄·Ï „·› «Œ—"
     IDS_Q_CANCELDL          "Â· «‰  „ √ﬂœ »√‰ﬂ  —Ìœ „”Õ Â«– «·„·›ø\n"
     IDS_Q_CANCELDL2         "Â· «‰  „ √ﬂœ »√‰ﬂ  —Ìœ Êﬁ› „”Õ Â–« «·„·›ø\n"
-    IDS_COPIED2CB           "‰”Œ  · ﬂ·Ì» »Ê—œ \n"
-    IDS_PROCDONE            "% ﬂ„·"
-    IDS_SELECTINCOMINGDIR   "«Œ — „Ã·œ« ··„·›«  «·ﬁ«œ„…"
-    IDS_SELECTTEMPDIR       "«Œ — „Ã·œ« ··„·›«  «·„Ê∆ﬁ …"
     IDS_DL_FILENAME         "«”„ «·„·›"
     IDS_DL_SIZE             "«·ÕÃ„"
     IDS_DL_TRANSF           " „ ‰ﬁ·Â"
@@ -271,7 +257,6 @@ BEGIN
     IDS_QL_USERNAME         "«”„ «·„” Œœ„"
     IDS_LOADURL             "Õ„·"
     IDS_DELETEAFTERALLOC    "„·› '%s' Õ«·Ì« ⁄Ì‰ ›Ì „”«Õ… «·œÌ”ﬂ Ê ”Ê› ÌÕ–› ·«Õﬁ«"
-    IDS_ERR_PACKAGEHANDLING "Œÿ√ €Ì— „⁄ „œ ⁄‰œ „Õ«Ê·… «·« ’«· »«·Œ«œ„ (%s)"
     IDS_QL_RATING           " ﬁÌÌ„"
     IDS_CONNECTINGTO        "Ì ’· »‹‹ %s (%s:%i)..."
     IDS_CLIENTS             "⁄„·«¡"
@@ -294,7 +279,6 @@ BEGIN
     IDS_SRV_ADDR            "—Ã«¡« «œŒ· ⁄‰Ê« «·”Ì—›—"
     IDS_SRV_PORT            "»Ê—  «·Œ«œ„ €Ì— ﬂ«„·, —Ã«¡« «œŒ· »Ê—  ﬂ«„·t"
     IDS_SRV_NOTADDED        "«·Œ«œ„ ·„ ÌŸ›"
-    IDS_SRV_READD           "«·Œ«œ„ ⁄Ì‰ ﬂ €Ì— ‰«›⁄ Ê ﬁœ «÷Ì› „—… «Œ—Ï"
     IDS_SRV_NOURLAV         "·« Ê’·… „ Ê›—…"
     IDS_INVALIDURL          "Ê’·… €Ì— ’«·Õ…"
 END
@@ -307,23 +291,16 @@ BEGIN
     IDS_PRIOVERYLOW         "„‰Œ›Ÿ Ãœ«"
     IDS_PRIORELEASE         "Õ——"
     IDS_TRAYDLG_SPEED       "”—⁄… «„Ê·"
-    IDS_FSTATUS_LOCKED      "ﬂﬁ›·"
-    IDS_KADALPHA            "ﬂ«œ„Ì·« ›Ì „—Õ·… «· ÿÊÌ—, ‰‰’Õ » ⁄ÌÌ‰Â ›ﬁÿ ·€—÷ «· Ã—»…"
     IDS_FSTATUS_FRIENDSONLY "«’œﬁ«¡ ›ﬁÿ"
     IDS_VIAPASSIVE          "Œ·«· «·”∆"
-    IDS_FSTATUS_PUBLIC      "‘⁄»Ì"
-    IDS_ERR_RENAMESF        "Œÿ« ›Ì «⁄«œ…  ”„Ì… \r\n    ""%s""\r\n«·Ï\r\n    ""%s""\r\n\r\n%hs"
-    IDS_PRIOHIGHEST         "«·«⁄·Ï"
+    IDS_ERR_RENAMESF        "Œÿ« ›Ì «⁄«œ…  ”„Ì… \r\n    ""%s""\r\n«·Ï\r\n    ""%s""\r\n\r\n%s"
     IDS_AVAILABLE           "„ Ê›—"
-    IDS_ERR_NOPRIMCHANGE    "·«  ” ÿÌ⁄  €ÌÌ— «·’·«ÕÌ… Œ·«·  Õ„Ì· «·„·›"
-    IDS_HIDDEN              "„Œ›Ì"
 END
 
 STRINGTABLE 
 BEGIN
     IDS_FSTAT_TRANSFER      " ÕÊÌ·"
     IDS_FSTAT_CONNECTION    "« ’«·"
-    IDS_FSTAT_CLIENTS       "⁄„·«¡"
     IDS_FSTAT_SERVERS       "Œœ«„"
     IDS_FSTAT_WAITING       "«‰ Ÿ«—..."
     IDS_TIME                "Êﬁ "
@@ -336,24 +313,15 @@ BEGIN
     IDS_STATS_ACTUL         "—›⁄ ‘€«·: %i"
     IDS_STATS_WAITINGUSERS  "«‰ Ÿ«— «·—›⁄ %i"
     IDS_STATS_RECONNECTS    "«⁄«œ… « ’«·: %i"
-    IDS_STATS_WAITTRANSF    "«·«‰ Ÿ«— · «·‰ﬁ·"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_STATS_WAITCONN      "«·«‰ Ÿ«— · «·« ’«·"
-    IDS_STATS_CONNECTEDSINCE "„ ’· »«·Œ«œ„ „‰– %s"
-    IDS_STATS_RATIO         "‰”»… UL:DL  (Session (Total)):"
     IDS_STATS_UNKNOWNCLIENT "€Ì— „⁄—Ê›: %i"
     IDS_STATS_TOTAL         "ﬂ·Ì: %i"
-    IDS_STATS_WORKING       "‘€«·: %i"
-    IDS_STATS_DEAD          "€Ì— ‰«›⁄ ‹ „Õ–Ê›: %i"
     IDS_DISABLED            "Êﬁ›"
     IDS_STOPPED             "Êﬁ›"
     IDS_STATS_UPDATELABEL   "ÕœÀ «· √ŒÌ—: %i ÀÊ«‰Ì"
-    IDS_QUEUECOUNT          "%u (%u banned)"
-    IDS_NICKNAME            "«”„ «·„” Œœ„:"
-    IDS_CLIENTSFILENAME     "\n«”„ „·› «·⁄„Ì· "
     IDS_ASKEDFAF            "\n”«· ⁄‰ „·› «Œ—"
     IDS_WAITED              "«‰ Ÿ"
     IDS_ERR_LOADCREDITFILE  "›‘· ›Ì  Õ„Ì· ÂÊÌ… «·„·›, „·› ÃœÌœ ”Ê› Ì‰‘√"
@@ -413,8 +381,6 @@ BEGIN
     IDS_COLOR               "«Ê‰"
     IDS_DEFAULT             "«·«› —«÷Ì"
     IDS_PW_DISPLAY          "⁄—÷"
-    IDS_CAT_INVADD          "«ŸÂ— «·ﬂ· «·€Ì— „”Ã·Ì‰"
-    IDS_CAT_REINVADD        "«ŸÂ— «·ﬂ·"
     IDS_INDICATERATINGS     "⁄Ì‰ «· Õ„Ì· »«· ’ÊÌ  »«ÌﬁÊ‰…"
     IDS_ALLOTHERS           "€Ì— „ÃœÊ·"
     IDS_TOCAT               "Œ’’ «·Ï «·ﬁ«∆„…"
@@ -423,14 +389,10 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_UDPEXT          "Œÿ« Œ·«· ⁄„·Ì… «” ﬁ»«· «·»—Ê ÊﬂÊ·  »«ﬂÌ "
     IDS_ERR_INCOMPLETEBLOCK "”√· ⁄‰ »·Êﬂ €Ì— ﬂ«„· "
     IDS_ERR_OPEN            "›‘· ›Ì › Õ «·„·› «·„ÿ·Ê»"
     IDS_ERR_CLIENTERRORED   "⁄„Ì· '%s' ”»» Œÿ√ «À‰«¡ «‰‘«¡ «·»«ﬂ«ÌÃ (%s) - ﬁÿ⁄ «·« ’«· „⁄ «·⁄„Ì·"
     IDS_ERR_REQ_FNF         "«·„·› «·„ÿ·Ê» €Ì— „ÊÃÊœ"
-    IDS_CLIENTBLOCKED       "⁄„Ì· '%s' ⁄„Ì· ⁄‰Ì› ·–«·ﬂ  „ ÿ—œÂ"
-    IDS_LUSERS              "«·„” Œœ„Ì‰"
-    IDS_LFILES              "«·„·›« "
     IDS_DESC                "‰»–…: %s"
     IDS_PORT                "»Ê— "
     IDS_ERR_NOVALIDSERVERSFOUND 
@@ -451,7 +413,6 @@ BEGIN
     IDS_ERR_REHASH          " Õ–Ì— %s Ì„ﬂ‰ «‰ ÌﬂÊ‰ „⁄ÿ»"
     IDS_SKIN_PROF           "„⁄·Ê„«  ⁄‰ «·‘ﬂ· «·Œ«—ÃÌ"
     IDS_ERR_PART_FNF        "Ã“¡ «·„·› ·„ ÌÊÃœ"
-    IDS_ERR_OPENMETFILE     "›‘· ›Ì › Õ part.met"
     IDS_KADOPEN             "«ﬁ Õ"
     IDS_ERR_SAVEMET         "Œÿ√ «À‰«¡ Õ›Ÿ Ã“¡ «·„·› %s (%s)"
     IDS_ERR_FOUNDCORRUPTION "Ã“¡ „⁄ÿ» (%i) ›Ì %s"
@@ -464,18 +425,15 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_NOSERVERSC      "·« Œ«œ„ ’«·Õ ›Ì ﬁ«∆„… «·Œœ«„"
     IDS_CONNECTEDTO         "«·« ’«· »œ√ ›Ì: %s"
     IDS_DL_PREVIEW          "«⁄—÷"
     IDS_VIEWQUEUE           "«ÿÂ— «·œÊ—"
-    IDS_VIEWUPLOADS         "«ŸÂ— «· Õ„Ì·« "
     IDS_TW_UPLOADS          "«·„—›Ê⁄« "
     IDS_TW_DOWNLOADS        "«· Õ„Ì·« "
     IDS_TW_QUEUE            "«·⁄„Ì· ›Ì «·œÊ—:"
     IDS_SW_SEARCHBOX        "«»’À"
     IDS_SW_NAME             "«”„"
     IDS_SW_GLOBAL           "«»ÕÀ ⁄«·„Ì«"
-    IDS_SW_TYPE             "‰Ê⁄"
     IDS_SW_DIRECTDOWNLOAD   "«·’ﬁ Ê’·…  eD2K"
     IDS_SW_LINK             "eD2K Ê’·« "
     IDS_SW_START            "«»œ√"
@@ -504,8 +462,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_PRIORITY_UP         "“œ «·’·«ÕÌ…"
-    IDS_PRIORITY_DOWN       "ﬁ·· «·’·«ÕÌ…"
     IDS_SPEED_LIMITS        "ÕœÊœ «·”—⁄…"
     IDS_CAPACITY_LIMITS     "ÕœÊœ «·Ì«‰œÊœÀ"
     IDS_ADMIN               "«·«œ«—…"
@@ -514,10 +470,6 @@ BEGIN
     IDS_WEB_ERR_CANTLOAD    "€Ì— ﬁ«œ— ⁄·Ï › Õ „·›  %s"
     IDS_GLOBALSEARCH        "⁄«·„Ì  (Server)"
     IDS_METHOD              "ÿ—Ìﬁ…"
-    IDS_SW_WEBBASED         "»ÕÀ „Êﬁ⁄Ì"
-    IDS_NOTHING             "·« ‘∆"
-    IDS_SETUPSPEED          "Õœœ Õœ «·—›⁄"
-    IDS_SETDOWNSPEED        "Õœœ Õœ «· Õ„Ì·"
     IDS_UNDO                " —«Ã⁄"
     IDS_DAYLY               "ÌÊ„Ì"
 END
@@ -554,7 +506,6 @@ BEGIN
     IDS_ST_SESSION          "«·„ Ê”ÿ"
     IDS_ST_ACTIVED          "«· Õ„Ì·«  «·‘€«·…"
     IDS_ST_ACTIVEU          "«·„—›Ê⁄«  «·‘€«·…"
-    IDS_ST_WAITINGU         "«‰ Ÿ«— «·„—›Ê⁄« "
     IDS_CW_MESSAGES         "—”«∆·"
     IDS_CW_FRIENDS          "«’œﬁ«¡"
     IDS_CW_SEND             "«—”·"
@@ -571,9 +522,7 @@ BEGIN
     IDS_PW_BROWSE           " ’›Õ..."
     IDS_PW_SHARED           "«·„”«—«  «·„‘ —ﬂ…"
     IDS_PW_CONNECTION       "« ’«·"
-    IDS_PW_DOWNC            "«„ﬂ«‰Ì… «· Õ„Ì·"
     IDS_PW_DOWNL            "ÕœÊœ «· Õ„Ì·"
-    IDS_PW_UPC              "«„ﬂ«‰Ì… «·—›⁄"
     IDS_PW_UPL              "Õœ «·—›⁄"
     IDS_PW_MAXC             "«·Õœ «·«⁄·Ï ··« ’«·« "
     IDS_PW_CLIENTPORT       "»Ê—  «·⁄„Ì·"
@@ -605,7 +554,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_PW_FILES            "„·›« "
-    IDS_PW_ICH              "& ⁄«„· –ﬂÌ"
     IDS_PW_SHARE            "«‰Ÿ— „·›« Ì «·„‘ —ﬂ… files/directories"
     IDS_PW_EVER             "··Ã„Ì⁄"
     IDS_PW_FRIENDS          "«’œﬁ«¡"
@@ -625,17 +573,13 @@ END
 STRINGTABLE 
 BEGIN
     IDS_FD_GENERAL          "⁄«„"
-    IDS_FD_NAME             "«·«”„ «·ﬂ«„·:"
     IDS_FD_MET              "part.met „·›:"
     IDS_FD_HASH             "Â«‘:"
     IDS_FD_SIZE             "ÕÃ„:"
-    IDS_FD_STATUS           "Õ«·… «·„·›:"
     IDS_FD_TRANSFER         " ÕÊÌ·"
-    IDS_FD_SOURCES          "„’«œ— „ÊÃÊœ…:"
     IDS_FD_PARTS            "«Ã“«¡"
     IDS_FD_TRANS            "ÕÊ· :"
     IDS_FD_DATARATE         "Datarate:"
-    IDS_FD_TRANSI           "Ã«—Ì «· ÕÊÌ·:"
     IDS_FD_COMPSIZE         "ﬂ„·:"
     IDS_FD_CLOSE            "«€·ﬁ"
     IDS_FD_TITLE            " ›«’Ì· «·„·›"
@@ -650,7 +594,6 @@ BEGIN
     IDS_CD_UIP              "⁄‰Ê«‰ «Ì »Ì:"
     IDS_CD_SIP              "«Ì »Ì «·Œ«œ„:"
     IDS_CD_VERSION          "«’œ«— «·⁄„Ì·:"
-    IDS_CD_UID              "«·ÂÊÌ…:"
     IDS_CD_SNAME            "«”„ «·Œ«œ„:"
     IDS_CD_CDOWN            "«· Õ„Ì· Õ«·Ì«:"
     IDS_CD_DOWN             "Õ„· (this session):"
@@ -675,7 +618,6 @@ BEGIN
     IDS_PW_MAXSOURCES       "Õœ «ﬁ’Ï sources/file"
     IDS_SHAREDFILESCOUNT    "⁄œœ «·„·›«  «·„‘ —ﬂ…: %i"
     IDS_SF_SIZE             "ÕÃ„ «·„·›«  «·„‘ —ﬂ…: %s"
-    IDS_ERR_WRONGPARTNUMBER "Œÿ« ›Ì —ﬁ„ «·»«— "
     IDS_ERR_BADPORT         "—ﬁ„ »Ê—  ”∆"
     IDS_ERR_NOHELLO         "Ì”√· ⁄‰ ‘∆ œÊ‰ ﬁÊ· Â·Ê"
     IDS_ERR_INVALIDPACKAGE  "ﬁœ  „ «” ·«„ »«ﬂÌ  €Ì— ’«·Õ…"
@@ -685,17 +627,14 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ERR_BADSIZE         "ÕÃ„ €Ì— ’«·Õ (OP_QUEUERANKING)"
-    IDS_ERR_BADCLIENT2      "⁄„Ì· '%s' (IP:%s) ”»» Œÿ√: %u. ›’· «·Œ«œ„!"
     IDS_ERR_NOTAFILELINK    "·Ì” „·› –Ê Ê’·…"
     IDS_ERR_CREATEPARTFILE  "ERROR: ›‘· ›Ì »‰«¡ „·› «·»«— )"
-    IDS_ERR_UDP_MISCONF     "Œÿ√ «À‰«¡ «” ﬁ»«· «· ÌÊ œÌ »Ì »«ﬂÌ  (€«·»« »”»» «·Œ«œ„)"
     IDS_CHAT_START          "*** «·œ—œ‘…  »œ√ : "
     IDS_FILEPRIO            "«€·»Ì… «·„·›"
     IDS_SCORE               "‰ﬁÿ"
     IDS_ASKED               "”√·"
     IDS_LASTSEEN            "«Œ— “Ì«—…"
     IDS_BANNED              "„›’Ê·"
-    IDS_PRIOVERYHIGH        "⁄«·Ì Ãœ«"
     IDS_UUSERS              "„” Œœ„Ì‰"
     IDS_UFAILED             "›‘·"
     IDS_OPENFILE            "&«› Õ „·›"
@@ -715,7 +654,6 @@ BEGIN
     IDS_FILESTATS_SESSION   "Õ«·… «·„·›: ﬁ»· %d „‰ %d ÿ·»« , %s ÕÊ· \n"
     IDS_FILESTATS_TOTAL     "Õ«·… «·„·›  ··Ã„Ì⁄: ﬁ»· %d „‰ %d ÿ·»« , %s ÕÊ· "
     IDS_REQ_UNKNOWNFILE     "ÿ·» „·› €Ì— „⁄—›"
-    IDS_TRANSFERTIME        "Êﬁ  „‰– «Œ—  ÕÊÌ·: %s"
     IDS_SF_AVERAGESIZE      "„ Ê”ÿ ÕÃ„ «·„·›: %s"
     IDS_SF_REQUESTS         "ÿ·»« "
     IDS_SF_ACCEPTS          "ﬁ»Ê· «·ÿ·»« "
@@ -747,7 +685,6 @@ BEGIN
     IDS_ADDED2SSF           "«÷Ì› «·Ï «Õ’«∆«  ﬁ«∆„… «·Õœ«„"
     IDS_STATICSERVER        "«Õ’«∆Ì…"
     IDS_ERROR_SSF           "FŒÿ√ ›Ì › Õ staticservers.dat"
-    IDS_ERR_PACKAGEERROR    "Œÿ√ ŒÿÌ— ⁄‰œ ⁄„·ÌÂ œ« « »«ﬂÌ  ·  %s (ÕÃ„ Œ«ÿ∆) - «·œ« « —„Ì "
     IDS_SF_ACTIVECON        "« ’«·«  ›⁄«·… (estimate)"
     IDS_SF_MAXCONLIMITREACHED "«·Õœ «·«ﬁ’Ï ··« ’«· ﬁœ Ê’· ÕœÂ"
     IDS_SF_AVGCON           "„ Ê”ÿ «·« ’«·«  (estimate)"
@@ -793,7 +730,6 @@ BEGIN
     IDS_PW_CON_UPLBL        "«—›⁄"
     IDS_PW_AUTOCONNECTSTATICONLY "« ’«· «Ê Ê„« ÌﬂÌ «·Ï «·Œœ«„ »«·ﬁ«∆„… ›ﬁÿ"
     IDS_PW_CON_LIMITFRM     "ÕœÊœ"
-    IDS_PW_FILE_ICH         "I.C.H ›⁄«·"
     IDS_STATS_AVGLABEL      "„ Ê”ÿ «·Êﬁ  : %i œﬁ«∆ﬁ"
     IDS_GRAPHS              "Graphs"
     IDS_STREE               "‘Ã—… «·«Õ’«∆Ì« "
@@ -846,11 +782,9 @@ STRINGTABLE
 BEGIN
     IDS_HARDLIMIT           "Õœ ’⁄»"
     IDS_COL_MORECOLORS      " ﬂÀ—..."
-    IDS_KBYTESEC            "kB/s"
     IDS_TOOMANYCONNS        "« ’«·«  ﬂÀÌ—…"
     IDS_DOWNLOADRENAMED     "„·› «Œ— »‰›” «·«”„ „ÊÃÊœ „”»ﬁ«, ﬁœ  „ Õ›Ÿ «·„·› ﬂ %s"
     IDS_TBN_DOWNLOADDONE    "Õ„·:"
-    IDS_TBN_DOWNLOADADDED   "«÷Ì› «·Ï «· Õ„Ì·« :"
     IDS_PW_TBN_USESOUND     "«” Œœ„ ’Ê "
     IDS_PW_TBN_ONLOG        "«·œŒÊ· «÷Ì›"
     IDS_PW_TBN_ONCHAT       "«·œ—œ‘… »œ√ "
@@ -865,16 +799,12 @@ END
 STRINGTABLE 
 BEGIN
     IDS_PW_CON_CAPFRM       "ﬁ«»·Ì…"
-    IDS_IRC_STATUSLOG       "«·Õ«·…"
-    IDS_IRC_STATUS          "Õ«·…"
     IDS_IRC_PRIVATECHANSTART "* œ—œ‘… Œ«’… ﬁœ »œ√ "
     IDS_IRC_SLAPMSG         "* %s  »» %s ÕÊ· „⁄ ”„ﬂ… ﬂ»Ì—…!"
     IDS_IRC_PRIVMESSAGE     "œ—œ‘… Œ«’…"
     IDS_WEB_REMOTE_LINK_ADDED "«·Ê’·… «÷Ì› : "
     IDS_WEB_REMOTE_LINK_NOT_ADDED "«·Ê’·… ·„  ÷«›, ﬂ·„… ”— Œ«ÿ∆…."
-    IDS_SOURCEEXCHANGESWAP  "„Êﬁ «  €Ì— «·„’œ—"
     IDS_DL_TRY_TO_GET_PREVIEW_PARTS "„·›«  «·»«—   Õ «Ã «·Ï «ŸÂ«— «Ê·«"
-    IDS_PR_SHORT_LOW        "[Ê«ÿÌ]"
     IDS_IRC_KICK            "«ÿ—œ"
     IDS_IRC_SLAP            " »»"
     IDS_IRC_JOIN            "«· Õﬁ"
@@ -897,7 +827,6 @@ BEGIN
     IDS_SOURCESWAPBLOCKED   "«· »«œ·  ÕÃ“"
     IDS_TRICKLING           "«·ÊﬁÊ› œÊ‰ ÕœÀ"
     IDS_A4AF_CHECK_THIS_NOW "›Õ’ «·„’œ— «·«‰ (debug)"
-    IDS_PR_SHORT_HIGH       "[⁄«·Ì]"
     IDS_STATS_FRATIO        "Session UL:DL Ratio (Friends UL excluded):"
     IDS_STATS_UDATA_FRIENDS "«·œ« « «·„—›Ê⁄… ·’œÌﬁ (Session): %s"
 END
@@ -908,7 +837,6 @@ BEGIN
     IDS_IRC_HASJOINED       "* %s «· Õﬁ %s"
     IDS_IRC_HASPARTED       "* %s Ã“¡ %s (%s)"
     IDS_IRC_WASKICKEDBY     "* %s ÿ—œ »Ê«”ÿ… %s (%s)"
-    IDS_IRC_NICKUSED        "«”„ „” Œœ„ «’·« ›Ì ”Ì—›— «· «Ì «— ”Ì. «·—œ«¡ «” Œœ«„ «”„ À«‰Ì."
     IDS_DOWNLOAD_ALPHABETICAL "Õ„· » ”·· «·«»ÃœÌ"
     IDS_IRC_HASQUIT         "* %s Œ—Ã (%s)"
     IDS_IRC_NOWKNOWNAS      "* %s «·«‰ „⁄—Ê› »‹‹ %s"
@@ -959,12 +887,10 @@ BEGIN
     IDS_SP_ACTCON           "« ’«·«  ›⁄«·…"
     IDS_SP_ACTDL            " Õ„Ì·«  ›⁄«·…"
     IDS_SP_ACTUL            "—›⁄ ›⁄«·"
-    IDS_PW_TIT_UP           "Õœœ ﬁÌ„… «·—›⁄"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_PW_TIT_DOWN         "Õœœ ﬁÌ„… «· Õ„Ì·"
     IDS_PW_UNLIMITED        "€Ì— „Õœœ"
     IDS_PW_MINREC           "«·Õœ «·«œ‰Ï Ì‰’Õ \t%i "
     IDS_PW_UA               "Õœœ ﬂ«„· —›⁄\ Õ„Ì· «·”—⁄…"
@@ -972,11 +898,7 @@ BEGIN
     IDS_IRC_IGNOREINFOMESSAGE " Ã«Â· —”«¡· «·„⁄·Ê„« "
     IDS_CONNECTIONLOST      "›ﬁœ «·« ’«·"
     IDS_WIZ_OS_FRAME        "‰ÿ«„ «· ‘€Ì·"
-    IDS_WIZ_CONCURENTDOWN_FRAME 
-                            "ﬂ„  Õ„Ì· ⁄‰œﬂ ›Ì Êﬁ  Ê«Õœ €«·»«ø"
     IDS_HASHINGFILE         " Õ‘Ì‘ «·„·›:"
-    IDS_WIZ_CUSTOM_FRAME    "«–« ›Õ’  ”—⁄… « ’«·ﬂ ÷⁄Â« Â‰«"
-    IDS_WIZ_HOTBUTTON_FRAME "“— «·«⁄«œ…"
     IDS_WIZ_TRUEUPLOAD_TEXT "”⁄… «·—›⁄ «·ÕﬁÌﬁÌ…"
     IDS_WIZ_TRUEDOWNLOAD_TEXT "”⁄… «· Õ„Ì· «·ÕﬁÌﬁÌ…"
     IDS_FRIENDLIST          "«’œﬁ«¡"
@@ -988,7 +910,6 @@ BEGIN
     IDS_WIZARD              "«·”«Õ—..."
     IDS_ADDFRIEND           "&«÷› «·Ï «·«’œﬁ«¡"
     IDS_REMOVEFRIEND        "«Õ–› ’œÌﬁ"
-    IDS_REMOVEFROMSTOK      "«·«“«·… „‰ ﬁ«∆„… «·Œ«œ„"
     IDS_REMOVEFROMSTATIC    "«·«“«·… „‰ ﬁ«∆„… «·Œ«œ„"
     IDS_LENGTH              "ÿÊ·"
     IDS_VIDEO               "›ÌœÌÊ"
@@ -1000,7 +921,6 @@ BEGIN
     IDS_FPS                 "ÊŸÌ›… »«·À«‰Ì…"
     IDS_CHANNELS            "ﬁ‰Ê« "
     IDS_SAMPLERATE          "«· ’ÊÌ "
-    IDS_ROUNDBITRATE        "«· ’ÊÌ "
 END
 
 STRINGTABLE 
@@ -1011,16 +931,12 @@ BEGIN
     IDS_VIEWFILES           "&«ŸÂ— «·„·›«  «·„‘ —ﬂ…"
     IDS_FRIENDSLOT          "»œ√ «ŒœÊœ «·’œÌﬁ"
     IDS_FRIENDDETAIL        "(Friend Slot)"
-    IDS_ASCWOP_PROXYSUPPORT "« ’«· ÷« Ì œÊ‰ »—Êﬂ”Ì"
     IDS_UDPDISABLED         "Õ—„"
-    IDS_CTINFO              "«Œ «— ‰Ê⁄Ì… « ’«·ﬂ Â‰«:"
     IDS_WIZ_CTFRAME         "‰Ê⁄ «·« ’«·"
     IDS_CONCURDWL           " Õ„Ì· „ ⁄«Ê‰"
-    IDS_UNIT                "ÊÕœ…:"
     IDS_WIZARD_CUSTOM       "“»‰"
     IDS_WIZARD_ENTERBELOW   "(enter below!)"
     IDS_STATS_MAXAVGDL      "„ Ê”ÿ «· Õ„Ì·: %s"
-    IDS_USS_MIN             "«‰ Ÿ«—: USS ·« Ìœ⁄„ «·—›⁄ · «ﬁ· „‰ 10 ﬂ ». «–«  ⁄—› «‰Â « ’«·ﬂ ·« Ì”„Õ ·ﬂ »–«·ﬂ ﬁ„ »⁄œ„  ›⁄Ì· «· ÌÊ «” «”."
 END
 
 STRINGTABLE 
@@ -1030,13 +946,11 @@ BEGIN
                             " Ã«Â· —”«∆· «Ì„Ê· ⁄‰œ «÷«›… ’œÌﬁ"
     IDS_PW_FASTSRVCON       "« ’«· ”«·„"
     IDS_SOURCELINKFAILED    " Õ «Ã «· Œ«’Ì… ⁄«·Ì… ·»‰«¡ „’œ— Ê’·… ›⁄«·"
-    IDS_CREATESOURCELINK    "«‰”Œ eD2K Ê’·«  «·Ï «·ﬂ·Ì» »Ê—œ (&Source)"
     IDS_ERR_LOADSERVERMET   "›‘· ›Ì  Õ„Ì· server.met!"
     IDS_ERR_CORRUPTCOMPRPKG "»«ﬂÌ  €Ì— ’«·Õ… ·  %s «” ·„  (error %i)"
     IDS_ERR_EMFRIENDSINVALID "«·„·› emfriends.met „⁄ÿ» «Ê €Ì— ’«·Õ!"
     IDS_ERR_READEMFRIENDS   "Œÿ« €Ì— „⁄—Ê› ⁄‰œ ﬁ—«¡… emfriends.met: %s"
     IDS_ERR_KNOWNSERVERINFOREC "„⁄·Ê„«  €Ì— „⁄—Ê›… «” ·„ !"
-    IDS_ERR_TIMERCREATEFAILED "Œÿ« ﬂ»Ì—: ›‘·  ÕœÌœ «·Êﬁ "
     IDS_WIZ_DOWN            " Õ„Ì· (kbit/s)"
     IDS_WIZ_UP              "—›⁄ (kbit/s)"
     IDS_SELECT_INCOMINGDIR  "«Œ — „Ã·œ ··„·›«  «·ﬁ«œ„…"
@@ -1051,7 +965,6 @@ BEGIN
     IDS_PRIOAUTORELEASE     "«Ê Ê [Ê«ÿÌ]"
     IDS_PRIOAUTOLOW         "«Ê Ê [Ê«ÿÌ]"
     IDS_ERR_CONTIMEOUT      "„Õ«Ê·… « ’«· «·Ï ""%s"" (%s:%i ) ‰›«– «·Êﬁ "
-    IDS_ERR_CONFAILED       "« ’«· » ""%s"" (%s:%i ) ›‘·."
     IDS_OUTOFSERVERS        "›‘· ›Ì «·« ’«· »Õ„Ì⁄ «·Œœ«„ «·„œ—Ã…"
     IDS_PW_CONLIMITS        "ÕœÊœ «·« ’«·"
     IDS_MAXCON5SECLABEL     "«·Õœ «·«ﬁ’Ï ··« ’«·«  «·ÃœÌœ… / 5 secs."
@@ -1071,15 +984,11 @@ BEGIN
     IDS_RECOVERED_PARTMET   "«” ⁄Ìœ part.met · : %s"
     IDS_CMT_QUEST           "«÷›  ⁄·Ìﬁ ·Â–« «·„·›! (This text will be shown to all users.)"
     IDS_CMT_AIDE            "··›·„  ” ÿÌ⁄ Ê’⁄ ÿÊ·Â, ﬁ’ Â, ·€ Â... «Ê «–« ﬂ«‰ Œœ⁄… Ì„ﬂ‰ﬂ «⁄·«„ „” Œœ„Ì‰ «Ì„Ê·..."
-    IDS_CMT_TITLE           "„·› «· ⁄·Ìﬁ«  ·  %s"
     IDS_CMT_ADD             "&⁄œ· „·› «· ⁄·Ìﬁ« ..."
     IDS_CMT_NONE            "·«  ⁄·Ìﬁ« "
     IDS_CMT_READ            " ⁄·ﬁ «·„·›:"
-    IDS_CMT_NOTCONNECTED    "·”  „ ’· »⁄œ..."
     IDS_CMT_SHOWALL         "«ŸÂ— «· ⁄·Ìﬁ« ..."
-    IDS_CMT_REFRESH         "&—Ì›—‘"
     IDS_CMT_READALL         " ⁄·Ìﬁ« "
-    IDS_CMT_NOCOMMENT       "·«  ⁄·Ìﬁ«  «œŒ· ..."
     IDS_CMT_RATEQUEST       "‰ﬁ«Ê… «·„·›"
     IDS_CMT_RATEHELP        "«” Œœ„  ’ÊÌ  «·„·› «Ê ‰’Õ «·„” Œœ„Ì‰ »«‰ «·„·› „⁄ÿÊ» «Ê €Ì— ’«·Õ!"
 END
@@ -1106,7 +1015,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_FD_STATS            "›ﬁœ  «·Õ«·…: %s       Õ’·  »⁄œ «·÷€ÿ: %s\n«·»«ﬂÌÃ ﬁ›ÿ »Ê«”ÿ… I.C.H.: %i"
     IDS_ERR_NOHELP          "«·—Ã«¡ “Ì«—… „Êﬁ⁄‰« · Õ„Ì· ‰”Œ… ÃœÌœ… „‰ „·› «·„”«⁄œ…!\n\nÂ·  —Ìœ  ’›Õ „·› «·„”«⁄œ… «·«‰ø"
     IDS_SHOWOVERHEAD        "«ŸÂ— «·Õœ «·„”„ÊÕ"
     IDS_UPDOWNSMALL         " Õ„Ì·: %.1f | —›⁄: %.1f"
@@ -1133,7 +1041,6 @@ BEGIN
     IDS_VISITVERSIONCHECK   "\n\nÂ·  —Ìœ “Ì«—… ’›Õ… «·„⁄·Ê„«  «·«‰ø"
     IDS_PW_VIDEOPLAYER      "›ÌœÌÊ »·Ì—"
     IDS_VIDEOBACKUP         "«⁄„· »«ﬂ «» ··«ŸÂ«—"
-    IDS_STATIC_EMPTY        "(Empty = default)"
     IDS_MYINFO              "„⁄·Ê„· Ì"
     IDS_ID                  "ÂÊÌ…"
     IDS_IDLOW               "«Ì œÌ Ê«ÿÌ"
@@ -1148,14 +1055,13 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ADDDOWNLOADSFROMCB  "«÷›  eD2K-file-links ·· Õ„Ì·?\n"
-    IDS_ADDDOWNLOADSFROMCBTITLE "eD2K-file-link ··ﬂ·Ì» »Ê—œ"
     IDS_PF_WATCHCB          "·«ÕŸ ··ﬂ·Ì» »Ê—œ ·  eD2K file links"
     IDS_SECURITY            "«„‰"
     IDS_IPFILTERLOADED      "%i ›· — «·«Ì »Ì Õ„·"
     IDS_IPFILTER            "›· — «·«Ì »Ì"
     IDS_EDIT                " ⁄œÌ·..."
     IDS_FILTERLEVEL         "„” ÊÏ «·›· —"
-    IDS_FILTERSERVERBYIPFILTER "›· — «·Œ«œ„ «Ì÷« (rejects dynIP-servers)"
+    IDS_FILTERSERVERBYIPFILTER "›· — «·Œ«œ„ «Ì÷«"
     IDS_FILTERCOMMENTSLABEL " Ã«Â· «· ⁄·Ìﬁ«  «· Ì  Õ ÊÌ: (Separator | )"
     IDS_CLIENTLIST          "⁄„Ì· „⁄—Ê›"
     IDS_FOLDER              "„Ã·œ"
@@ -1177,10 +1083,8 @@ BEGIN
     IDS_USECREDITSYSTEM     "«” ⁄„· ‰Ÿ«„ «· ”·Ì›"
     IDS_FIRSTAUTODOWN       "›⁄· Â–« «·ŒÌ«— «–«  —Ìœ «Ì„Ê· «‰  Ì⁄«·Ã «›÷·Ì… «· Õ„Ì·.\n\n ›Ì⁄ Â–« «·ŒÌ«— Ì”„Õ · «Ì„Ê· ·⁄„·  Õ„Ì· ÷«„‰ „⁄ «·ﬂÀÌ—  «·„’«œ— ·« Ì ÷«—» „⁄  Õ„Ì· »„’«œ— ﬁ·Ì·….\n\nÂ–« «·ŒÌ«— ÌƒÀ— ⁄·Ï «· Õ„Ì· ›ﬁÿ. (Default: Enabled)"
     IDS_FIRSTAUTOUP         "›⁄· Â–« «·ŒÌ«— «–« «—œ  «Ì„Ê· «‰  Ì⁄«·Ã Œ’«∆’ «·—›⁄.\n\n ›⁄Ì· Â–« «·ŒÌ«— Ì”„Õ · «Ì„Ê· » œ›⁄ «·„·›«  «·‰«œ—… Ê «·„‘ÂÊ—…  ·ﬂÌ ·«  ﬂÊ‰ ’⁄»… «·„‰«·.  ›⁄Ì· «·ŒÌ«— ”Ì”„Õ ··«Œ—Ì‰ »«·Õ’Ê· ⁄·Ï «·„·›«  «·„‘ÂÊ—… «ﬂÀ— „‰ «·„·›«  «·‰«œ—….\n\nÂ–« «·ŒÌ«— ÌƒÀ— ⁄·Ï «·—›⁄ ›ﬁÿ. (Default: Enabled)"
-    IDS_FIRSTCREDITSYSTEM   "Â·  —Ìœ „ﬂ«›… «·«‘Œ«’ «·–Ì‰ Ì—›⁄Ê‰ «·„·›«  ·ﬂø?\n\nÂ–« ‰Ÿ«„ ‘«∆⁄.  ›⁄Ì· Â–« «·ŒÌ«— Ì”«⁄œﬂ ›Ì „Õ«—»… «·ÂÃÊ„« . «–« ﬂ‰  —Ì·Ì”— Œ«’ «–«  —Ìœ ⁄œ„  ›⁄Ì· Â–« «·ŒÌ«—. (Default: Enabled)"
     IDS_FIRSTFULLCHUNK      " ›⁄Ì· Â–« «·ŒÌ«—  «–« „‰   —Ìœ «·—›⁄ »ﬂ· «·ÿ«ﬁ….\n\n«” ⁄„«· ﬂ· «·ÿ«ﬁ«  Ì⁄ÿÌ «·›—’… »«· ﬂ„·… ”—Ì⁄«.  ›⁄Ì· Â–« «·ŒÌ«— ”Ê› Ì”„Õ »«‰Â«¡ «·ﬂ«»Ê— «”—€. «–« ﬂ‰  —Ì·Ì”— Œ«’ «–«  —Ìœ ⁄œ„  ›⁄Ì· Â–« «·ŒÌ«—. (Default: Enabled)"
     IDS_FIRSTSAFECON        "›⁄· Â–« «·ŒÌ«— «–« «—œ  · «Ì„Ê· »«” Œœ«„ « ’«· «„‰.\n\n ›⁄Ì· Â–« «·ŒÌ«— Ì”„Õ · «Ì„Ê· »«·« ’«· »«·Œ«œ„ «—”⁄ ·ﬂ‰ ﬁœ Ì”»» »«Œœ ÂÊÌ«  ﬂ«–»… –Ê ‰ﬁ· »ÿ∆. (Default: Disabled)"
-    IDS_FIRSTRUNASSIST      "Â·  —Ìœ  ‘€Ì· «·”«Õ— ›Ì «Ê· „—…ø"
     IDS_FIRSTAUTOCON        "›⁄· Â–« «·ŒÌ«— «–« «—œ  · «Ì„Ê· «‰   ’· ⁄‰œ »œ« «·ÃÂ«“. (Default Disabled)"
     IDS_FIRSTCOMPLETE       "«·«‰ «‰  ﬂ„·   ‘€Ì· «·”«Õ— ·«Ê· „—….\n\nﬂ· Â–Â «·ŒÌ«—«  Ì„ﬂ‰  €ÌÌ—Â« ⁄‰œ «·÷€ÿ ⁄·Ï «·«›÷·Ì« . · «· Ê÷ÌÕ Ê «·œ⁄„ ƒ«Ã⁄ „·›«  «·„”«⁄œ… »«·÷€Ÿ ⁄·Ï „› «Õ F1"
 END
@@ -1212,18 +1116,14 @@ END
 STRINGTABLE 
 BEGIN
     IDS_WEB_SHOW_UPLOAD_QUEUE "«ŸÂ— «·œÊ—"
-    IDS_WEB_HIDE_UPLOAD_QUEUE "«Œ›Ì «·ÿ«»Ê—"
     IDS_WEB_GZIP_COMPRESSION "÷€Ÿ ÃÌ“Ì»"
     IDS_WEB_GZIP_COMMENT    "«Œ“‰ «·‰ﬁ· Ê Œ«’… »«· ’ÊÌ—."
-    IDS_WEB_UPLOAD_QUEUE_COMMENT 
-                            "ﬁ⁄· «Ê ·«  ﬁ⁄· «·’Ê—… ›Ì ﬁ«∆„… «·«‰ Ÿ«—."
     IDS_WEB_REFRESH_TIME    "ÕœÀ Êﬁ  «·’›Õ…"
     IDS_WEB_REFRESH_COMMENT "Êﬁ  ›Ì «·ÀÊ«‰Ì (zero=disabled):"
     IDS_SV_URL              "Ê’·…"
     IDS_WS_RELOAD_TMPL      "ﬁ«·»"
     IDS_SV_DEBUGLOG         "„⁄«·Ã «··ÊÃ"
     IDS_WS_PASS             "ﬂ·„… «·”—"
-    IDS_WEB_FILESETTINGS    "Õ«·… «·„·›"
     IDS_WS_ERR_LOADTEMPLATE "Œÿ√ ›Ì  Õ„Ì· «· Ì„»·«Ì : »œ· «·„·› %s »«·«’œ«— «·«ÕœÀ!"
     IDS_WEB_CONLIMITS       "Õœ «·« ’«·"
     IDS_INFLST_USER_TOTALDOWNLOAD "«Ã„«·Ì «· Õ„Ì·"
@@ -1233,7 +1133,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_WEB_BADLOGINATTEMPT "ÊÃÂ «·„Êﬁ⁄: ›‘· ›Ì „Õ«Ê· «·œŒÊ·"
-    IDS_ERR_TOOLARGEFILE    "«·„·› «ﬂ»— „‰ «·ÕÃ„ «·„’„ÊÕ »Â  (>=4GB)"
+    IDS_ERR_TOOLARGEFILE    "«·„·› «ﬂ»— „‰ «·ÕÃ„ «·„’„ÊÕ »Â  (>=256GB)"
     IDS_MSGONLYFRIENDS      "«ﬁ»· „‰ «·«’œﬁ«¡ ›ﬁÿ"
     IDS_MSGONLYSEC          "«ﬁ»· „‰ «·⁄„·«¡ «·›⁄«·Ì‰ ›ﬁÿ"
     IDS_DAY_MO_SA           "«À‰Ì‰ ‹ «Õœ"
@@ -1257,7 +1157,6 @@ BEGIN
     IDS_WEBSRV              "Web Interface"
     IDS_SW_REFETCHRES       "ÊÃÂ «·„Êﬁ⁄"
     IDS_FILEHASH            "„·› «·Â«‘"
-    IDS_GLOBALSEARCH2       "»ÕÀ ⁄«·„Ì"
     IDS_PW_PROXY            "»—Êﬂ”Ì"
     IDS_PROXY_ENABLE        "›⁄· «·»—Êﬂ”Ì"
     IDS_PROXY_TYPE          "‰Ê⁄ «·»—Êﬂ”Ì:"
@@ -1284,7 +1183,6 @@ BEGIN
     IDS_WIZ1_END_BTN_HINT   "·€·ﬁ «·”«Õ— «÷€ÿ ⁄·Ï «‰ ÂÏ."
     IDS_WIZ1_UPLOAD_SUBTITLE "‰ﬁ· ﬂ«„· ··ﬁÿ⁄"
     IDS_DL_RESUMENEXT       "«” „— «·„Êﬁ› «· «·Ì"
-    IDS_DONTCHANGE          "·«  €ÌÌ—"
     IDS_STARTPRIO           "«›÷·Ì… ·Â–Â «·ﬁ«∆„…"
     IDS_PREF_STARTNEXTFILECAT "›÷· ‰›” «·ﬁ«∆„…"
     IDS_REPAINTGRAPHS       "·«  ’‰⁄ «·Ã—«›Ìﬂ ⁄‰œ «· ’€Ì— «Ê «· ﬂ»Ì— "
@@ -1324,7 +1222,6 @@ BEGIN
     IDS_STATS_CUMULATIVE    " ’«⁄œÌ"
     IDS_STATS_OVRHD         "ÂÊ«∆Ì"
     IDS_STATS_RECORDS       " ”ÃÌ·« "
-    IDS_STATS_OVRHD2        "ÂÊ«∆Ì: %s (%s Packets)"
     IDS_STATS_COMPDL        " Õ„Ì·«  ﬂ«„·…"
     IDS_STATS_SVRECWORKING  "«ﬂÀ— Õœ«„ ⁄«„·Ì‰ "
     IDS_STATS_SVRECUSERS    "«ﬂÀ— „” Œœ„Ì‰ ›Ì Êﬁ  Ê«Õœ"
@@ -1338,7 +1235,6 @@ BEGIN
     IDS_SEARCH_COLUMN       "»ÕÀ ›Ì «·ÿ«»Ê—"
     IDS_STATS_SHRECSIZE     "«ﬂ»— ÕÃ„ „‘ —ﬂ"
     IDS_STATS_SHRECASIZE    "«ﬂ»— „ Ê”ÿ „·›"
-    IDS_STATS_MYRUNTIME     "Êﬁ  «· ‘€Ì· : %s"
     IDS_STATS_SESSION       "”·”·…"
     IDS_STATS_SRATIO        "”·”·… «· Õ„Ì· Ê «·—›⁄"
     IDS_STATS_CRATIO        "„ —«ﬂ„ «· Õ„Ì· Ê «·—›⁄:"
@@ -1360,15 +1256,12 @@ BEGIN
     IDS_STATS_AVGDATAULSES  "„⁄œ· «·—›⁄ »«·Õ·ﬁ… «·Ê«Õœ…"
     IDS_STATS_ICHSAVED      "«·»«— ”  „ Œ“‰Â »”»»  I.C.H: %u"
     IDS_STATS_MBRESET_TXT   "Â· «‰  „ √ﬂœ »«‰ﬂ  —Ìœ «⁄«œ…  ⁄ÌÌ‰  «·«Õ’«∆Ì«  «·„ —«ﬂ„…\n\n«–« €Ì—  —√Ìﬂ Ì„ﬂ‰ﬂ «⁄«œ… «·«Õ’«∆Ì«  ›Ì Êﬁ  ·«Õﬁ »«·÷€… ⁄·Ï «⁄«œ…  ⁄ÌÌ‰ ."
-    IDS_STATS_MBRESET_CAP   "›⁄· «⁄«œ… «· ⁄ÌÌ‰ "
     IDS_STATS_MBRESTORE_TXT "Â· «‰  „ √ﬂœ »«‰ﬂ  —Ìœ «⁄«œ…  ⁄ÌÌ‰  «·«Õ’«∆Ì«  «·„ —«ﬂ„… „‰ „·› «·»«ﬂ «»ø\n\nClicking »«·÷€ÿ Â‰« ”Ê› Ì „ «” —Ã«⁄ «Õ’«∆Ì« ﬂ."
-    IDS_STATS_MBRESTORE_CAP "›⁄· «⁄«œ… «· ⁄ÌÌ‰ "
     IDS_ERR_NOSTATBKUP      "ERROR: „·› «·»«ﬂ «» ·„ Ì „ «·⁄ÀÊ— ⁄·ÌÂ..."
     IDS_STATS_NFOLOADEDBKUP " „  Õ„Ì· „⁄·Ê„«  «·»«ﬂ «»..."
     IDS_STATS_NFORESET      "«·«Õ’«∆Ì«  ﬁœ  „ «⁄«œ…  ⁄ÌÌ‰Â«!"
     IDS_STATS_BNRESET       "«⁄œ  ⁄ÌÌ‰ «·«Õ’«∆Ì« "
     IDS_STATS_BNRESTORE     "«⁄œ  ⁄ÌÌ‰ «·«Õ’«∆Ì« "
-    IDS_CONNECTIONSTATISTICS "«Õ’«∆Ì«  «·« ’«·"
     IDS_PPGSTATS_YSCALE     "«Õ’«∆Ì«  «·« ’«· Y-axis ”ﬂ«Ì·:"
 END
 
@@ -1393,7 +1286,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_STATS_OLDCLIENTS    "ﬁœÌ„"
     IDS_STATS_PRTDEF        "«› —«÷Ì"
     IDS_STATS_PRTOTHER      "«Œ—"
     IDS_STATS_MNUTREETITLE  "‘Ã—… «·«Œ’«∆Ì« "
@@ -1455,12 +1347,8 @@ BEGIN
     IDS_SEARCH_MISSINGNOTRIGHT "‰«ﬁ’ ÃÂ… «·Ì„Ì‰ · ·Ì” «·„‘€·"
     IDS_SEARCH_MISSINGEXPRPARANT "‰«ﬁ’ «· ⁄»Ì— ·  '(' ')'"
     IDS_SEARCH_MISSINGCLOSINGPARANT "‰«ﬁ’ «·€·ﬁ ')'"
-    IDS_SEARCH_MISSINGANDLEFT "‰«ﬁ’ ÃÂ… «·Ì”«— „‰ Ê «·„‘€·"
-    IDS_SEARCH_MISSINGORLEFT "‰«ﬁ’ ÃÂ… «·Ì”«— „‰ «Ê «·„‘€·"
-    IDS_SEARCH_MISSINGNOTLEFT "‰«ﬁ’ ÃÂ… «·Ì”«— „‰ ·Ì” «·„‘€·"
     IDS_SEARCH_EXPRERROR    "›‘· ›Ì  ⁄—Ì»  ⁄»Ì— «·»ÕÀ"
     IDS_SEARCH_TOOCOMPLEX   "«· ⁄»ÌÌ— „⁄ﬁœ Ãœ«"
-    IDS_SEARCH_INVALIDMINMAX "ÊÕœ«  €Ì— ’«·Õ… ·  Min/Max ÕÃ„ «·„·› «·„Œ «—"
 END
 
 STRINGTABLE 
@@ -1482,7 +1370,6 @@ STRINGTABLE
 BEGIN
     IDS_SELECT_FONT         "«Œ — «·Œÿ"
     IDS_SERVER_LIMITS       "Œ›Ì›- / ﬁÊÌ-Õœ «·„·›"
-    IDS_SERVERINFO          "„⁄·Ê„«  «·Œ«œ„"
     IDS_KBITSSEC            "kBits/sec"
     IDS_KBYTESSEC           "kBytes/sec"
     IDS_ERR_CREATE_DIR      "›‘· ›Ì »‰«¡ %s ÊÃÂ… ""%s"" - %s"
@@ -1507,14 +1394,13 @@ BEGIN
                             "· «·⁄„· »«·ŒÌ«—«  «·„ €Ì—… «·—Ã«¡ «⁄«œ…  ‘€Ì· «Ì„Ê·!"
     IDS_CREDITSEXPIRED      ", %i ⁄„·«¡ Õ–›Ê« (·„ Ì Ê«ÃœÊ« Œ·«· 5 «‘Â—)"
     IDS_SOURCESINFO         "%i  (Useful: %i, NNP: %i);  A4AF: %i"
-    IDS_SHOW_META_DATA      "«ŸÂ— &„⁄·Ê„«  „Ì «..."
     IDS_META_DATA           "Meta „⁄·Ê„« "
     IDS_TIMEBEFORE          "(%s „÷Ï)"
     IDS_FD_TIMEDATE         " Ê«—ÌŒ"
     IDS_FILEINFORMATION     "„⁄·Ê„«  «·„·›"
     IDS_STATS_FREESPACE     "„”«Õ… „› ÊÕ…"
     IDS_IRC_HELPCHANNEL     "« ’· »ﬁ‰«… «·„”«⁄œ…"
-    IDS_IRC_HELPCHANNELPERFORM "/join #emule | /join #emule-english"
+    IDS_IRC_HELPCHANNELPERFORM "/join #emule-arabic"
     IDS_IRC_ACCEPTLINKSFRIENDS "„‰ «·«’œﬁ«¡ ›ﬁÿ"
     IDS_COMPLSOURCES        "«ﬂ„· «·„’«œ—"
     IDS_CHECKNOENDTIME      "·« Êﬁ  ‰Â«Ì…"
@@ -1523,7 +1409,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_MATCH_KEYWORDS      "ﬂ·„«  „ ÿ«»ﬁ…"
     IDS_FAILEDREOPEN        "Fatal Error: ›‘· ›Ì «⁄«œ·« › Õ „·› »«—  '%s' (%s)!"
     IDS_ERR_PREVIEWALREADY  "Â‰«·ﬂ «’·« ﬂ·» «ŸÂ«— Ê ÂÊ  Õ  «·«‰ Ÿ«— ·Â–« «·⁄„Ì·"
     IDS_ERR_PREVIEWFAILED   "«ŸÂ«— „‰ «·„” Œœ„ '%s' ›‘·"
@@ -1543,7 +1428,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_CREATEHOSTNAMESRCLINK "«‰”Œ eD2K «·Ê’·… «·Ï «·ﬂ·Ì» »Ê—œ (Hostname)"
     IDS_HASHINGFILESCOUNT   " (%u Â«‘Ì‰Ã)"
     IDS_CHECKDISKSPACE      "›Õ’ „”«Õ… «·œÌ”ﬂ"
     IDS_YOURHOSTNAME        "«”„ «·Œ«œ„  · Ê’·«  eD2K"
@@ -1652,7 +1536,6 @@ BEGIN
     IDS_MINBITRATE          "Min.  ’ÊÌ  «·»«Ì  [kBit/s]"
     IDS_KAD_RECHECKFW       "«⁄«œ… ›Õ’ «·Ãœ«— «·‰«—Ì"
     IDS_SHAREDTITLE         "„‘ —ﬂ eD2K|Kad"
-    IDS_WARNINGNOBS         "«·»Ê  ” —«» €Ì— „›⁄· «·«‰ (Kad „ ’· «’·«)."
     IDS_FIREWALLED          "„Õ„Ì »Ãœ«— ‰«—Ì"
     IDS_KADEMLIA            "Kad"
     IDS_KADCONTACTLAB       "« ’«·« "
@@ -1668,7 +1551,6 @@ BEGIN
     IDS_LOG_SECURE_IDENT    "œŒÊ· »ÂÊÌ… „Õ„Ì…"
     IDS_LOG_FILTERED_IPS    "”Ã· «·›· —… Ê «·«Ì »Ì «·„ Ã«Â·…"
     IDS_LOG_FILE_SAVING     "„·› ”Ã· «·«Õœ«À «·„Œ“‰…"
-    IDS_IPFILTERFILES       "ﬂ· «·«Ì »Ì«   ›· — „·›«  «·  (*ipfilter.dat;*ip.prefix;*.p2b;*.p2p;*.p2p.txt;*.zip;*.gz)|*ipfilter.dat;*ip.prefix;*.p2b;*.p2p;*.p2p.txt;*.zip;*.gz|eMule IP Filter Files (*ipfilter.dat;*ip.prefix)|*ipfilter.dat;*ip.prefix|Peer Guardian Files (*.p2b;*.p2p;*.p2p.txt)|*.p2b;*.p2p;*.p2p.txt|Text Files (*.txt)|*.txt|ZIP Files (*.zip;*.gz)|*.zip;*.gz|All Files (*.*)|*.*||"
     IDS_DELETEIPFILTERS     "Â·  —Ìœ Õ–› ›·« — «·«Ì»Ì«  «·„⁄Ì‰…ø"
     IDS_TOTAL_IPFILTER_LABEL "«Ã„«·… ›·« — «·«Ì»Ì:"
     IDS_TOTAL_IPS_LABEL     "«Ã„«·Ì «·«Ì»Ì« :"
@@ -1733,7 +1615,6 @@ BEGIN
     IDS_CHAT_DOWNLOADED     "Õ„·:"
     IDS_CHAT_UPLOADED       "—›⁄:"
     IDS_CHAT_IDENT          "ﬂ‘› «·ÂÊÌ…:"
-    IDS_CHAT_CLIENT         "⁄„Ì·:"
     IDS_MAXHALFOPENCONS     "«·Õœ «·«ﬁ’Ï: ‰’› «·« ’«·«  «·„› ÊÕ…"
     IDS_WIZ_STARTWITHWINDOWS 
                             "›⁄· Â–« «·«Œ Ì«— ·»œ√ «Ì„Ê· ⁄‰œ »œ√ «·ÊÌ‰œÊ“. [Default disabled]"
@@ -1780,7 +1661,6 @@ BEGIN
     IDS_META_SRCTYPE        "‰Ê⁄ „’œ—"
     IDS_SEARCH_UNICODE      "«»ÕÀ „⁄ ÌÊ‰ÌﬂÊœ"
     IDS_PF_ADVANCEDCALC     "«” ⁄„· Õ”«»«  „ﬁœ„… ·«·Êﬁ  «·„ »ﬁÌ"
-    IDS_PERSEC              "/s"
     IDS_LD_ED2KLINK         "Ê’·… ED2K"
     IDS_LD_COPYCLIPBOARD    "«‰”Œ · «·ﬂ·Ì» »Ê—œ"
     IDS_LD_HOSTNAME         "«” Œœ„ «”„ «·Œ«œ„ („‰ «·«›÷·) »œ· «·«Ì »Ì ⁄‰œ ⁄„· „’œ— «·Ê’·…"
@@ -1917,39 +1797,107 @@ BEGIN
     IDS_USS_STATE_PREPARING "ÿ—Ê «· ’·ÌÕ..."
     IDS_USS_STATE_WAITING   "ÿÊ— «·«‰ Ÿ«—..."
     IDS_USS_STATE_ERROR     "Œÿ√!"
-    IDS_SHAREWARNING        "(Folder will be shared!)"
-    IDS_REMOVEALLSERVERS    "Do you really want to remove all servers?"
-    IDS_SEARCH_UNKATTR      "Unknown search attribute '%s'"
-    IDS_SEARCH_ATTRERR      "Syntax error in '%s' search attribute"
-    IDS_SEARCH_MISSINGANDRIGHT "Missing right side for AND operator"
-    IDS_SEARCH_OPRERR       "Syntax error in comparison operator '%s'"
+    IDS_SHAREWARNING        "(”Ì „ «·«‘ —«ﬂ »«·„Ã·œ)"
+    IDS_REMOVEALLSERVERS    "Â· «‰  „ √ﬂœ «‰ﬂ  —Ìœ «“«·… ﬂ· «·”Ì—›—« ø"
+    IDS_SEARCH_UNKATTR      "’›… »ÕÀ €Ì— „⁄—Ê›… '%s'"
+    IDS_SEARCH_ATTRERR      "Ã„·… Œ«ÿ∆… ›Ì '%s' ’›… «·»ÕÀ"
+    IDS_SEARCH_MISSINGANDRIGHT "Ì› ﬁœ «·Ï «·ÃÂÊ «·Ì„‰Ï „‰ «· AND operator"
+    IDS_SEARCH_OPRERR       "Œÿ√ ›Ì „ﬁ«—‰… «·⁄«„· '%s'"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_DOWNLOAD_LANGFILE   "Downloading language file"
-    IDS_DOWNLOADING_SERVERMET_FROM "Downloading server.met from %s"
-    IDS_DOWNLOADING_SERVERMET "Downloading server.met..."
-    IDS_FULLALLOC           "Allocate full filesize for non-sparse part files"
-    IDS_X_SHAREAZA_IMPORT_NO_HASH "Hash not found."
-    IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "Gap list corrupt."
-    IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST "Gap list not found."
-    IDS_X_SHAREAZA_IMPORT_HASH_SET_CORRUPT "Hash set corrupt."
-    IDS_X_SHAREAZA_IMPORT_NO_HASH_SET "Hash set not found."
-    IDS_CONVERTINGKNOWN2MET "Converting %s to %s to support large files..."
+    IDS_DOWNLOAD_LANGFILE   "„·› «··€… ﬁÌœ «· Õ„Ì·"
+    IDS_DOWNLOADING_SERVERMET_FROM " Õ„Ì· server.met „‰ %s"
+    IDS_DOWNLOADING_SERVERMET "ﬁÌœ «· Õ„Ì· server.met..."
+    IDS_FULLALLOC           " ÕœÌœ ÕÃ„ «·„·› «·ﬂ·Ì ··„·›«  «·’€Ì—… «·€Ì— „ﬁ”„…"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH "«·Â«‘ €Ì— „ Ê›—."
+    IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "«·ﬁ«∆„… „⁄ÿÊ»…"
+    IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST "«·ﬁ«∆„… €Ì— „ÊÃÊœ…"
+    IDS_X_SHAREAZA_IMPORT_HASH_SET_CORRUPT "«·Â«‘ „⁄ÿÊ»"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH_SET "«·Â«‘ €Ì— „ÊÃÊœ"
+    IDS_CONVERTINGKNOWN2MET " ÕÊÌ· %s «·Ï %s ·œ⁄„ «·„·›«  «·ﬂ»Ì—…"
     IDS_CONVERTINGKNOWN2FAILED 
-                            "...failed to convert known2.met, ignoring old records"
-    IDS_CONVERTINGKNOWN2DONE "... done, finished converting"
-    IDS_ERR_MET_BAD         "Error: the file %s is corrupted, unable to load known files"
-    IDS_SRV_LARGEFILES      "Support for large files"
+                            "...›‘· ›Ì  ÕÊÌ· known2.met,  Ã«Â· «· ”ÃÌ·«  «·ﬁœÌ„…"
+    IDS_CONVERTINGKNOWN2DONE "... «ﬂ„·, «· Õ„Ì· ﬁœ  „"
+    IDS_ERR_MET_BAD         "Error: «·„·› %s „⁄ÿ», ›‘· ›Ì  Õ„Ì· «·„·›«  «·„⁄—Ê›…"
+    IDS_SRV_LARGEFILES      "œ⁄„ ··„·›«  «·ﬂ»Ì—…"
 END
 
 
 STRINGTABLE 
 BEGIN
     IDS_ERR_FSCANTHANDLEFILE 
-                            "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
-    IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
+                            "·«  ” ÿÌ⁄  Õ„Ì· Â–« «·„·› ·«‰ ‰Ÿ«„ «·„·›«  ⁄‰œﬂ ·« Ìœ⁄„ «·„·›«  «· Ì ÂÌ «ﬂ»— „‰ 4 ÃÌÃ«, ›ﬂ— ›Ì  ÕÊÌ·Â «·Ï NTFS"
+    IDS_NEWVERSIONAVLBETA   "Â–Â «·‰”Œ… «· Ã—Ì»… ÂÌ ‰«›–… «·„›⁄Ê·. »”»» ÿ»Ì⁄… «·‰”Œ… «· Ã—Ì»Ì…, «· Ì »’Ê—… ⁄«„…  Õ ÊÌ ⁄·Ï «Œÿ«¡, «‰Â „Â„ Ãœ« «‰  ÕœÀ «·‰”Œ… «·Ï «’œ«— «ﬂÀ— À»« « ›Ì ⁄„·Â »«·”—⁄… «·„„ﬂ‰…!"
+    IDS_KADSEARCHACTIVE     "(»ÕÀ «·ﬂ«œ ﬁÌœ «·⁄„·...)"
+    IDS_BOLD                " ⁄ÌÌ‰ «·Œÿ «·⁄—Ì÷"
+    IDS_UNDERLINE           " ⁄ÌÌ‰ «·Œÿ «·„”ÿ—"
+    IDS_COLOUR              "«Œ Ì«— ·Ê‰ «·Œÿ «·«„«„Ì (optional background colour)"
+    IDS_RESETFORMAT         "«” ⁄«œ… ﬂ· «· ⁄Ì‰«  «·”«»ﬁ… (sends a reset tag)"
+    IDS_RESTORESEARCHPARAMS "«” ⁄«œ… «·⁄Ê«„· «·„ €Ì—… ··»ÕÀ"
+    IDS_COMMAND             "«„—"
+    IDS_ARGUMENTS           "«·»—«ÂÌ‰"
+    IDS_AP_CREATEPREVCOPY   "Create preview file"
+    IDS_ARCHIVEDETAILS      "„⁄·Ê„«  «·«—‘Ì›"
+    IDS_ARCHTYPE            "‰Ê⁄ «·«—‘Ì›"
+    IDS_ATTRIBUTES          "«·’Ì€"
+    IDS_LASTMODIFIED        "«Œ—  Õ—Ì—"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_RARFULLENCR         "«·ÂÌœ—“ „⁄ÿ» - „‰ €Ì— «·„” ÿ«⁄ ﬁ—«∆… «·«—‘Ì›."
+    IDS_ARCPARSED           " „ ›Õ’ «·«—‘Ì›"
+    IDS_ARCPREV_LISTMAYBEINCOMPL "ﬁ«∆„… «·„·› ﬁœ  ﬂÊ‰ €Ì— „ﬂ „·…"
+    IDS_ARCPREV_DIRNOTFOUND "·„Ì „ «·⁄ÀÊ— ⁄·Ï «·›Â—” "
+    IDS_ARCPREV_INSUFFDATA  "‰ﬁ’ ›Ì «·œ« «"
+    IDS_PASSWPROT           "Õ„«Ì… ﬂ·„… «·„—Ê—"
+    IDS_ARCPREV_DIRSUCCREAD " „ ﬁ—«¡… «·›Â—”  »‰Ã«Õ"
+    IDS_ARCPREV_UNKNOWNFORMAT "(€Ì— „⁄—Ê›/€Ì— „œ⁄Ê„)"
+    IDS_ARCPREV_PLEASEWAIT  "›Õ’ «·«—‘Ì› ﬁÌœ «·⁄„·"
+    IDS_OBFUSCATION         " ⁄ﬁÌœ"
+    IDS_SUPPORTED           "„œ⁄Ê„"
+    IDS_ESTIMATED           "„ »ﬁÏ"
+    IDS_MEDIAINFO_DLLMISSING 
+                            "·« ÌÊÃœ „ﬂ »… „ÌœÌ« „‰’»…. «–« «—œ  «·Õ’Ê· ⁄·Ï „⁄·Ê„«  «ﬂÀ— ⁄‰ «·«ÊœÌÊ Ê«·›ÌœÌÊ,\r\nÕ„· „ﬂ »… «·„ÌœÌ« „‰ http://sourceforge.net/projects/mediainfo/ Ê «‰”Œ „·› «· MediaInfo.dll «·Ï\r\n„Ã·œ «·«Ì„Ê· ""%s"".\r\n"
+    IDS_WARNING_WRONGFILEEXTENTION 
+                            " Õ–Ì—: «„ œ«œ «·„·› „‰ ""%s"" ·« Ì ÿ«»ﬁ „⁄ «„ œ«œ «·„·›\r\n«·„” Œœ„ ⁄«„ « ·Â–« «·‰Ê⁄ „‰ «·„·›« . ﬁœ  —Ìœ «⁄«œ…  ”„Ì… «·„·›«·Ï\r\n«” Õœ„ Ê«Õœ „‰ «·«„ œ«œ«  «· «·Ì… ""%s""\r\n·«ŸÂ«— Ê «” Œœ«„ «·„·› »’Ê—… ’ÕÌÕ….\r\n"
+    IDS_MEDIAINFO_DRMWARNING 
+                            " Õ–Ì—: «·„·› ""%s"" „Õ„Ì » «· Digital Rights Management.\r\n·‰  ” ÿÌ⁄ «” ⁄„«· «·„·› »œÊ‰  ’—ÌÕ „‰ „’‰⁄ «·„·›.\r\n"
+    IDS_LOADFILTER_EMTOOLBAR "„·›«  ‘—Ìÿ «·«œÊ« "
+    IDS_LOADFILTER_EMSKINFILES "„·›«  «·” «Ì·"
+    IDS_SPLIT_WINDOW        "«ﬁ”„ «·‰«›–…"
+    IDS_OPTIONS             "ŒÌ«—« "
+    IDS_ERR_FAILEDTOLOAD    "›‘· ›Ì  Õ„Ì· %s: %s "
+    IDS_RUNNINGRESTRICTED   "«Ì„Ê· Ì‘ €· » —«ŒÌ’ „Õœœ…"
+    IDS_ARCHPREV_ATTRIBINFO "’Ì€ «·„·› „„ﬂ‰  Õ ÊÌ ⁄·Ï:\r\n\r\nP\t„·› »ﬂ·„… „—Ê— „Õ„Ì…\r\nD\t„Ã·œ\r\nC\tComment\r\nLx\t„ﬁ«—‰… «·„” ÊÌ« l x\r\nM\tœ« « „÷€Êÿ… €Ì— „ﬂ„·… «· Õ„Ì· «·Ï «·«‰\r\n<\t«·„·› «ﬂ„· „‰ ‰”Œ… ﬁœÌ„…\r\n>\t«·„·› Ìﬂ„· Ìﬂ„· ›Ì ‰”Œ… ﬁ«œ„…\r\n"
+    IDS_CONTENT_INFO        "Content"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_MESSAGESCOMMENTS    "ƒ”«∆· Ê  ⁄·Ìﬁ« "
+    IDS_DISABLEOBFUSCATION  "«·€Ì œ⁄„ «·« ’«·«  «·„⁄ﬁœ…"
+    IDS_ONLYOBFUSCATED      "›⁄· «·« ’«·«  «·„⁄ﬁœ… (€Ì— „‰’ÊÕ »Â)"
+    IDS_ENABLEOBFUSCATION   "›⁄·  ⁄ﬁÌœ «·»—Ê ÊﬂÊ·"
+    IDS_PROTOCOLOBFUSCATION " ⁄ﬁÌœ «·»—Ê ÊﬂÊ·"
+    IDS_CONNECTINGTOOBFUSCATED 
+                            "« ’«· » %s (%s:%i - «” ⁄„«· «·»—Ê ÊﬂÊ  «·„⁄ﬁœ) ..."
+    IDS_CONNECTEDTOOBFUSCATED "«·« ’«· «·„⁄ﬁœ «‘√ ›Ì: %s"
+    IDS_VERIFIED            "„›⁄·"
+    IDS_OBFUSCATED          " ⁄ﬁÌœ"
+    IDS_UNVERIFIED          "€Ì— „›⁄·"
+    IDS_INVALIDFILEEXT      "«„ œ«œ „·› €Ì— „ﬁ»Ê·"
+    IDS_UNKNOWNFILEEXT      "«„ œ«œ „·› €Ì— „⁄—Ê›"
+    IDS_ENABLEMINIMULE      "Enable MiniMule"
+    IDS_DISABLE_AUTOARCHPREV 
+                            "Disable automatic archive preview start in file details"
+    IDS_US_STALLEDW4BR      "Stalled! Waiting for block request."
+    IDS_US_STALLEDREADINGFDISK "Stalled! Reading from disk."
+    IDS_SERVERFEATURE_INTTYPETAGS "Integer type tags"
 END
 
 #endif    // Arabic (UAE) resources

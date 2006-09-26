@@ -48,7 +48,7 @@ CED2kLinkDlg::CED2kLinkDlg()
 { 
 	m_paFiles = NULL;
 	m_bDataChanged = false;
-	m_strCaption = GetResString(IDS_FILELINK);
+	m_strCaption = GetResString(IDS_SW_LINK);
 	m_psp.pszTitle = m_strCaption;
 	m_psp.dwFlags |= PSP_USETITLE;
 } 
@@ -159,7 +159,7 @@ void CED2kLinkDlg::Localize(void)
 	GetDlgItem(IDC_LD_HTMLCHE)->SetWindowText(GetResString(IDS_LD_ADDHTML)); 
 	GetDlgItem(IDC_LD_HASHSETCHE)->SetWindowText(GetResString(IDS_LD_ADDHASHSET)); 
 	//GetDlgItem(IDC_LD_KADLOWIDCHE)->SetWindowText(GetResString(IDS_LD_PREFERKAD)); 
-	GetDlgItem(IDC_LD_LINKGROUP)->SetWindowText(GetResString(IDS_LD_ED2KLINK)); 
+	GetDlgItem(IDC_LD_LINKGROUP)->SetWindowText(GetResString(IDS_SW_LINK)); 
 	GetDlgItem(IDC_LD_CLIPBOARDBUT)->SetWindowText(GetResString(IDS_LD_COPYCLIPBOARD));
 	GetDlgItem(IDC_LD_HOSTNAMECHE)->SetWindowText(GetResString(IDS_LD_HOSTNAME)); 
 }
@@ -184,7 +184,7 @@ void CED2kLinkDlg::UpdateLink()
 		
 		const CKnownFile* file = STATIC_DOWNCAST(CKnownFile, (*m_paFiles)[i]);
 		strLinks += CreateED2kLink(file, false);
-		
+
 		//Xman
 		if (bHashset && file->GetHashCount() > 0 && file->GetHashCount() == file->GetED2KPartCount()){	// SLUGFILLER: SafeHash - use GetED2KPartCount
 			strLinks += _T("p=");

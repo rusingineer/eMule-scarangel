@@ -20,6 +20,7 @@
 #include "CxImage/xImage.h"
 #include "OtherFunctions.h"
 #include "quantize.h"
+#if _MSC_VER<1400
 // DirectShow MediaDet
 #include <strmif.h>
 //#include <uuids.h>
@@ -50,7 +51,7 @@ typedef struct tagVIDEOINFOHEADER {
     REFERENCE_TIME  AvgTimePerFrame;   // Average time per frame (100ns units)
     BITMAPINFOHEADER bmiHeader;
 } VIDEOINFOHEADER;
-
+#endif
 #include "emuledlg.h"
 
 #ifdef _DEBUG
@@ -78,6 +79,7 @@ BOOL CFrameGrabThread::InitInstance()
 }
 
 BOOL CFrameGrabThread::Run(){
+
 	//Xman
 	// BEGIN SLUGFILLER: SafeHash
 	CReadWriteLock lock(&theApp.m_threadlock);
@@ -98,6 +100,7 @@ UINT CFrameGrabThread::GrabFrames(){
 	#define TIMEBETWEENFRAMES	50.0 // could be a param later, if needed
 	for (int i = 0; i!= nFramesToGrab; i++)
 		imgResults[i] = NULL;
+#if _MSC_VER<1400
 	try{
 		HRESULT hr;
 		CComPtr<IMediaDet> pDet;
@@ -234,6 +237,9 @@ UINT CFrameGrabThread::GrabFrames(){
 		ASSERT(0);
 		return 0;
 	}
+#else
+	return 0;
+#endif
 }
 
 void CFrameGrabThread::SetValues(const CKnownFile* in_pOwner, CString in_strFileName,uint8 in_nFramesToGrab, double in_dStartTime, bool in_bReduceColor, uint16 in_nMaxWidth, void* in_pSender){

@@ -67,7 +67,6 @@ static UINT _uSaveStatistics = 0;
 static uint32 igraph, istats, iupdateconnstats;
 // <-----khaos-
 */
-//TODO rewrite the whole networkcode, use overlapped sockets.. sure....
 
 CUploadQueue::CUploadQueue()
 {
@@ -461,7 +460,7 @@ bool CUploadQueue::AcceptNewClient(bool addOnNextConnect)
 					if(::GetTickCount() - oldestblocktime<HR2MS(1))
 					{
 						//5 block-drops during 1 hour is too much->warn the user and disable the feature
-						LogWarning(_T("Warning: your upload settings seems to be too high. Please review your settings! \n look at the uploadgraph, the white or the yellow(with NAFC) line should be straight \n this message is only generated once"));
+						LogWarning(GetResString(IDS_UPLOADINSTABLE));
 						checkforuploadblock=false;
 					}
 					m_blockstoplist.RemoveTail();
@@ -604,13 +603,25 @@ CUploadQueue::~CUploadQueue(){
 		KillTimer(0,h_timer);
 }
 
-CUpDownClient* CUploadQueue::GetWaitingClientByIP_UDP(uint32 dwIP, uint16 nUDPPort){
+CUpDownClient* CUploadQueue::GetWaitingClientByIP_UDP(uint32 dwIP, uint16 nUDPPort, bool bIgnorePortOnUniqueIP, bool* pbMultipleIPs){
+	CUpDownClient* pMatchingIPClient = NULL;
+	uint32 cMatches = 0;
 	for (POSITION pos = waitinglist.GetHeadPosition();pos != 0;){
 		CUpDownClient* cur_client = waitinglist.GetNext(pos);
 		if (dwIP == cur_client->GetIP() && nUDPPort == cur_client->GetUDPPort())
 			return cur_client;
+		else if (dwIP == cur_client->GetIP() && bIgnorePortOnUniqueIP){
+			pMatchingIPClient = cur_client;
+			cMatches++;
+		}
 	}
-	return 0;
+	if (pbMultipleIPs != NULL)
+		*pbMultipleIPs = cMatches > 1;
+
+	if (pMatchingIPClient != NULL && cMatches == 1)
+		return pMatchingIPClient;
+	else
+		return NULL;
 }
 
 CUpDownClient* CUploadQueue::GetWaitingClientByIP(uint32 dwIP){
@@ -951,7 +962,7 @@ bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReaso
 				theApp.emuledlg->transferwnd->uploadlistctrl.RemoveClient(client);
 
 			if (thePrefs.GetLogUlDlEvents())
-                AddDebugLogLine(DLP_VERYLOW, true,_T("Removing client from upload list: %s Client: %s Transferred: %s SessionUp: %s QueueSessionPayload: %s"), pszReason==NULL ? _T("") : pszReason, client->DbgGetClientInfo(), CastSecondsToHM( client->GetUpStartTimeDelay()/1000), CastItoXBytes(client->GetSessionUp(), false, false), CastItoXBytes(client->GetQueueSessionPayloadUp(), false, false));
+                AddDebugLogLine(DLP_DEFAULT, true,_T("Removing client from upload list: %s Client: %s Transferred: %s SessionUp: %s QueueSessionPayload: %s In buffer: %s Req blocks: %i File: %s"), pszReason==NULL ? _T("") : pszReason, client->DbgGetClientInfo(), CastSecondsToHM( client->GetUpStartTimeDelay()/1000), CastItoXBytes(client->GetSessionUp(), false, false), CastItoXBytes(client->GetQueueSessionPayloadUp(), false, false), CastItoXBytes(client->GetPayloadInBuffer()), client->GetNumberOfRequestedBlocksInQueue(), (theApp.sharedfiles->GetFileByID(client->GetUploadFileID())?theApp.sharedfiles->GetFileByID(client->GetUploadFileID())->GetFileName():_T("")));
             client->m_bAddNextConnect = false;
 			uploadinglist.RemoveAt(pos);
 			
@@ -1110,7 +1121,7 @@ bool CUploadQueue::CheckForTimeOver(CUpDownClient* client){
 	}
 
 
-bool returnvalue=false;
+	bool returnvalue=false;
 
     if( client->GetUpStartTimeDelay() > SESSIONMAXTIME){ // Try to keep the clients from downloading for ever
 	    if (thePrefs.GetLogUlDlEvents())
@@ -1260,7 +1271,19 @@ void CUploadQueue::UploadTimer()
 
 		//Xman
 		// ZZ:UploadSpeedSense -->
-		//theApp.lastCommonRouteFinder->SetPrefs(thePrefs.IsDynUpEnabled(), theApp.uploadqueue->GetDatarate(), thePrefs.GetMinUpload()*1024, (thePrefs.GetMaxUpload() != 0)?thePrefs.GetMaxUpload()*1024:thePrefs.GetMaxGraphUploadRate()*1024, thePrefs.IsDynUpUseMillisecondPingTolerance(), (thePrefs.GetDynUpPingTolerance() > 100)?((thePrefs.GetDynUpPingTolerance()-100)/100.0f):0, thePrefs.GetDynUpPingToleranceMilliseconds(), thePrefs.GetDynUpGoingUpDivider(), thePrefs.GetDynUpGoingDownDivider(), thePrefs.GetDynUpNumberOfPings(), 20); // PENDING: Hard coded min pLowestPingAllowed
+		/*
+		theApp.lastCommonRouteFinder->SetPrefs(thePrefs.IsDynUpEnabled(), 
+			theApp.uploadqueue->GetDatarate(), 
+			thePrefs.GetMinUpload()*1024, 
+			(thePrefs.GetMaxUpload() != 0) ? thePrefs.GetMaxUpload() * 1024 : thePrefs.GetMaxGraphUploadRate(false) * 1024, 
+			thePrefs.IsDynUpUseMillisecondPingTolerance(), 
+			(thePrefs.GetDynUpPingTolerance() > 100) ? ((thePrefs.GetDynUpPingTolerance() - 100) / 100.0f) : 0, 
+			thePrefs.GetDynUpPingToleranceMilliseconds(), 
+			thePrefs.GetDynUpGoingUpDivider(), 
+			thePrefs.GetDynUpGoingDownDivider(), 
+			thePrefs.GetDynUpNumberOfPings(), 
+			20); // PENDING: Hard coded min pLowestPingAllowed
+		*/
 		// ZZ:UploadSpeedSense <--
 
 		//Xman final version: 100ms are enough
@@ -1295,7 +1318,7 @@ void CUploadQueue::UploadTimer()
 				}
 			}
 			if( theApp.serverconnect->IsConnecting() && !theApp.serverconnect->IsSingleConnect() )
-				theApp.serverconnect->TryAnotherConnectionrequest();
+				theApp.serverconnect->TryAnotherConnectionRequest();
 
 			theApp.listensocket->UpdateConnectionsStatus();
 			if (thePrefs.WatchClipboard4ED2KLinks())
@@ -1542,9 +1565,7 @@ void CUploadQueue::ChangeSendBufferSize(int newValue)
 			//AddDebugLogLine(false,_T("new socketbuffer: %u "), setValue);
 		}
 	}
-}
-// ==> WebCache [WC team/MorphXT] - Stulle/Max
-// MORPH START - Added by Commander, WebCache 1.2e
+}// ==> WebCache [WC team/MorphXT] - Stulle/Max
 CUpDownClient*	CUploadQueue::FindClientByWebCacheUploadId(const uint32 id) // Superlexx - webcache - can be made more efficient
 {
 	for (POSITION pos = uploadinglist.GetHeadPosition(); pos != NULL;)
@@ -1555,5 +1576,4 @@ CUpDownClient*	CUploadQueue::FindClientByWebCacheUploadId(const uint32 id) // Su
 	}
 	return 0;
 }
-// MORPH END - Added by Commander, WebCache 1.2e
 // <== WebCache [WC team/MorphXT] - Stulle/Max

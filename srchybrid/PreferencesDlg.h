@@ -13,6 +13,7 @@
 #include "PPgWebServer.h"
 #include "PPgScheduler.h"
 #include "PPgProxy.h"
+#include "PPgMessages.h"
 #include "PPgXtreme.h" //Xman Xtreme Mod
 #include "PPgXtreme2.h" //Xman Xtreme Mod
 #include "KCSideBannerWnd.h" //Xman Preferences Banner 
@@ -46,6 +47,7 @@ public:
 	CPPgWebServer	m_wndWebServer;
 	CPPgScheduler	m_wndScheduler;
 	CPPgProxy		m_wndProxy;
+	CPPgMessages	m_wndMessages;
 	CPPgXtreme		m_wndXtreme; //Xman Xtreme Mod
 	CPPgXtreme2		m_wndXtreme2; //Xman Xtreme Mod
 	CKCSideBannerWnd m_banner; //Xman Preferences Banner

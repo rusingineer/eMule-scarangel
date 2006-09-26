@@ -30,6 +30,7 @@ class CCollection;
 class CSafeMemFile;		//Xman PowerRelease
 
 typedef CTypedPtrList<CPtrList, CUpDownClient*> CUpDownClientPtrList;
+enum EFileType;
 
 class CKnownFile : public CAbstractFile
 {
@@ -51,6 +52,9 @@ public:
 	bool	LoadFromFile(CFileDataIO* file);	//load date, hashset and tags from a .met file
 	bool	WriteToFile(CFileDataIO* file);
 	bool	CreateAICHHashSetOnly();
+
+	EFileType GetVerifiedFileType() { return m_verifiedFileType; }
+	void	  SetVerifiedFileType(EFileType in) { m_verifiedFileType=in; }
 
 	// last file modification time in (DST corrected, if NTFS) real UTC format
 	// NOTE: this value can *not* be compared with NT's version of the UTC time
@@ -171,7 +175,7 @@ protected:
 	void	CreateHash(CFile* pFile, uint64 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL, bool slowdown=false) const; //Xman Nice Hash
 	bool	CreateHash(FILE* fp, uint64 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL, bool slowdown=false) const; //Xman Nice Hash
 	bool	CreateHash(const uchar* pucData, uint32 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL, bool slowdown=false) const; //Xman Nice Hash
-	virtual void	UpdateFileRatingCommentAvail();
+	virtual void	UpdateFileRatingCommentAvail(bool bForceUpdate = false);
 
 	uint32	*CalcPartSpread();	//Xman PowerRelease
 
@@ -206,6 +210,7 @@ private:
 	uint32	m_lastBuddyIP;
 	Kademlia::WordList wordlist;
 	UINT	m_uMetaDataVer;
+	EFileType m_verifiedFileType;
 
 public:
 	float	GetFileRatio(void) ; // push rare file - Stulle

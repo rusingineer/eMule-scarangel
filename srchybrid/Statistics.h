@@ -58,6 +58,9 @@ public:
 															  m_nDownDataOverheadOtherPackets++;}
 	void	AddDownDataOverheadKad(uint32 data)				{ m_nDownDataOverheadKad += data;
 															  m_nDownDataOverheadKadPackets++;}
+	
+	//Xman not used
+	//void	AddDownDataOverheadCrypt(uint32 /*data*/)			{;}
 
 	uint64	GetDownDataOverheadSourceExchange()			{return m_nDownDataOverheadSourceExchange;}
 	uint64	GetDownDataOverheadFileRequest()			{return m_nDownDataOverheadFileRequest;}
@@ -84,6 +87,9 @@ public:
 															  m_nUpDataOverheadKadPackets++;}
 	void	AddUpDataOverheadOther(uint32 data)				{ m_nUpDataOverheadOther += data;
 															  m_nUpDataOverheadOtherPackets++;}
+
+	//Xman not used
+	//void	AddUpDataOverheadCrypt(uint32 /*data*/)				{ ;}
 
 	uint64	GetUpDataOverheadSourceExchange()			{return m_nUpDataOverheadSourceExchange;}
 	uint64	GetUpDataOverheadFileRequest()				{return m_nUpDataOverheadFileRequest;}

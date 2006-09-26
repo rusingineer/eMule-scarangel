@@ -46,7 +46,7 @@ public:
 	bool	SafeAddKFileWithOutRemoveHasing(CKnownFile* toadd, bool bOnlyAdd = false); //Xman official bugfix for redownloading already downloaded file
 	void	RepublishFile(CKnownFile* pFile);
 	void	SetOutputCtrl(CSharedFilesCtrl* in_ctrl);
-	void	RemoveFile(CKnownFile* toremove);
+	bool	RemoveFile(CKnownFile* toremove);
 	CKnownFile* GetFileByID(const uchar* filehash) const;
 	CKnownFile*	GetFileByIndex(int index);
 	bool	IsFilePtrInList(const CKnownFile* file) const;

@@ -1,9 +1,10 @@
+// modified by Stulle
 #pragma once
 
 #include "SysInfo.h"
-#include "CPUUsageReader.h"
+#include "CPU.h"
 
-class CSystemInfo : public CSysInfo, public CPUUsageReader
+class CSystemInfo : public CSysInfo
 {
 public:
 	CSystemInfo();
@@ -11,6 +12,11 @@ public:
 
 	int		GetCpuUsage();
 	uint32	GetMemoryUsage();
-	int		GetGlobalCpuUsage(); // added - Stulle
+	int		GetGlobalCpuUsage();
 	uint32	GetGlobalMemoryUsage();
+
+private:
+	CPU cpu;
+    int sys;
+    TKTime upTime;
 };

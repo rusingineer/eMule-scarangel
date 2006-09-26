@@ -376,7 +376,8 @@ bool CAICHHashTree::LoadLowestLevelHashs(CFileDataIO* fileInput){
 bool CAICHHashTree::SetHash(CFileDataIO* fileInput, uint32 wHashIdent, sint8 nLevel, bool bAllowOverwrite){
 	if (nLevel == (-1)){
 		// first call, check how many level we need to go
-		for (uint8 i = 0; i != 32 && (wHashIdent & 0x80000000) == 0; i++){
+		uint8 i;
+		for (i = 0; i != 32 && (wHashIdent & 0x80000000) == 0; i++){
 			wHashIdent <<= 1;
 		}
 		if (i > 31){
@@ -802,10 +803,10 @@ bool CAICHHashSet::LoadHashSet(){
 			// skip the rest of this hashset
 			file.Seek(nHashCount*HASHSIZE, CFile::current);
 		}
-			// ==> WebCache [WC team/MorphXT] - Stulle/Max
-			if(thePrefs.GetLogICHEvents()) //JP log ICH events
-			// <== WebCache [WC team/MorphXT] - Stulle/Max
-				theApp.QueueDebugLogLine(true, _T("Failed to load HashSet: HashSet not found!"));
+		// ==> WebCache [WC team/MorphXT] - Stulle/Max
+		if(thePrefs.GetLogICHEvents()) //JP log ICH events
+		// <== WebCache [WC team/MorphXT] - Stulle/Max
+			theApp.QueueDebugLogLine(true, _T("Failed to load HashSet: HashSet not found!"));
 	}
 	catch(CFileException* error){
 		if (error->m_cause == CFileException::endOfFile)
@@ -1013,7 +1014,8 @@ void CAICHHashSet::DbgTest(){
 	TestHashSet.SetFileSize(m_pOwner->GetFileSize());
 	TestHashSet.SetMasterHash(GetMasterHash(), AICH_VERIFIED);
 	CSafeMemFile file;
-	for (uint64 i = 0; i+9728000 < TESTSIZE; i += 9728000){
+	uint64 i;
+	for (i = 0; i+9728000 < TESTSIZE; i += 9728000){
 		VERIFY( CreatePartRecoveryData(i, &file) );
 		
 		/*uint32 nRandomCorruption = (rand() * rand()) % (file.GetLength()-4);
@@ -1024,7 +1026,8 @@ void CAICHHashSet::DbgTest(){
 		VERIFY( TestHashSet.ReadRecoveryData(i, &file) );
 		file.SeekToBegin();
 		TestHashSet.FreeHashSet();
-		for (uint32 j = 0; j+EMBLOCKSIZE < 9728000; j += EMBLOCKSIZE){
+		uint32 j;
+		for (j = 0; j+EMBLOCKSIZE < 9728000; j += EMBLOCKSIZE){
 			VERIFY( m_pHashTree.FindHash(i+j, EMBLOCKSIZE, &curLevel) );
 			//TRACE(_T("%u - %s\r\n"), cHash, m_pHashTree.FindHash(i+j, EMBLOCKSIZE, &curLevel)->m_Hash.GetString());
 			maxLevel = max(curLevel, maxLevel);
@@ -1043,7 +1046,8 @@ void CAICHHashSet::DbgTest(){
 	VERIFY( TestHashSet.ReadRecoveryData(i, &file) );
 	file.SeekToBegin();
 	TestHashSet.FreeHashSet();
-	for (uint64 j = 0; j+EMBLOCKSIZE < TESTSIZE-i; j += EMBLOCKSIZE){
+	uint64 j;
+	for (j = 0; j+EMBLOCKSIZE < TESTSIZE-i; j += EMBLOCKSIZE){
 		VERIFY( m_pHashTree.FindHash(i+j, EMBLOCKSIZE, &curLevel) );
 		//TRACE(_T("%u - %s\r\n"), cHash,m_pHashTree.FindHash(i+j, EMBLOCKSIZE, &curLevel)->m_Hash.GetString());
 		maxLevel = max(curLevel, maxLevel);

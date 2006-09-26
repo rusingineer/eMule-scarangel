@@ -1,5 +1,26 @@
 CHANGELOG FOR EMULE ScarAngel MOD
 
+
+eMule v0.47c ScarAngel v1.5:
+------------------------
+- 09.09.2006 -
+-------------------------------------------------------------------------------
+based on eMule 0.47c Xtreme 5.3b1 compiled with vs2003 SP1
+
+Changed: Replaced CPU usage reader code [ejor] - Stulle
+Changed: System Info settings resetted to default [Stulle] - Stulle
+Changed: System Info updated every second instead of 2.5 seconds [Stulle] - Stulle
+
+
+eMule v0.47a ScarAngel v1.4:
+------------------------
+- 09.09.2006 -
+-------------------------------------------------------------------------------
+based on eMule 0.47a Xtreme 5.2.2 compiled with vs2003 and Netfinity's fix
+
+Fixed: Null-pointer crash in SCC (removed check due to some reason... wtf!) [Stulle] - Stulle
+
+
 eMule v0.47a ScarAngel v1.3:
 ------------------------
 - 09.09.2006 -

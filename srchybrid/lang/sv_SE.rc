@@ -70,8 +70,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_HTTPDOWNLOAD_GETTING_FILE_INFORMATION "Hämtar filinformation"
-    IDS_HTTPDOWNLOAD_FAIL_PARSE_ERROR 
-                            "Ett fel inträffade när länken analyserades: %s"
     IDS_HTTPDOWNLOAD_GENERIC_ERROR 
                             "Ett fel inträffade när filen försöktes laddas hem, fel:%s"
     IDS_HTTPDOWNLOAD_FAIL_CONNECT_SERVER 
@@ -109,7 +107,6 @@ STRINGTABLE
 BEGIN
     IDS_MAIN_SOCKETERROR    "Katastrofalt fel: kunde inte skapa socket på port %i"
     IDS_MAIN_BTN_DISCONNECT "Koppla &ner"
-    IDS_MAIN_BTN_DISCONNECT_TOOLTIP "Koppla ner från nuvarande server"
     IDS_ERR_WRONGFILEID     "felaktig fil-ID skickad"
     IDS_ERR_BADHASHSET      "korrupt eller felaktigt hash mottaget"
     IDS_ERR_BADDATABLOCK    "korrupt eller felaktigt DataBlock mottaget"
@@ -118,16 +115,13 @@ BEGIN
     IDS_ERR_NOSLLINK        "Ingen ED2K-server eller fillänk"
     IDS_ERR_WRONGPACKAGESIZE "felaktig OP_FILEREQUEST paket storlek"
     IDS_ERR_WRONGHPACKAGESIZE "felaktig OP_HASHSETREQUEST paket storlek"
-    IDS_ERR_BADCLIENTACTION "En klient orsakade ett fel eller gjorde något felaktigt: %s. Kopplar ner klienten!"
     IDS_ERR_UNKNOWNCLIENTACTION "Okänd klient sänder utökat protokoll paket"
     IDS_ERR_OPENMET         "Fel: misslyckades att öppna part.met filen! (%s => %s)"
     IDS_ERR_BADMETVERSION   "Fel: felaktig part.met filversion! (%s => %s)"
-    IDS_ERR_BADGAP          "Felaktig Gap-Tag i part.met filen"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_EMPTYADRESSESDAT_TITLE "Kan inte hämta serverlistan"
     IDS_ERR_BADSERVERMETVERSION 
                             "felaktig versionsmärkning i server.met (0x%X)!"
     IDS_SERVERSFOUND        "%i servrar i server.met funna"
@@ -137,7 +131,6 @@ BEGIN
                             "Oväntat filfel vid läsning av server.met: %s, misslyckades att ladda serverlistan "
     IDS_ERR_SAVESERVERMET   "Misslyckades att spara server.met!"
     IDS_PASSIVE             "Passive"
-    IDS_MAIN_CONNECTEDTO    "Anslutning etablerad till: "
     IDS_MAIN_BTN_CANCEL     "&Avbryt"
     IDS_AVAIL               "Delar: %d , tillgängliga: %d (%.1f%%)\n\n"
     IDS_TYPE                "Typ"
@@ -156,8 +149,6 @@ BEGIN
     IDS_PREFERENCE          "Prioritet"
     IDS_PRIONOPREF          "Inga inst."
     IDS_CONNECTTHIS         "Anslut till markerad server"
-    IDS_CHAT_WELCOME        "Direktmeddelanden\n  \nHögerklicka på en klient och klicka på 'Skicka meddelande' för att starta en chatsession"
-    IDS_MAIN_BTN_CANCEL_TOOLTIP "Avbryter nuvarande anslutningsförsök"
     IDS_MAIN_BTN_CONNECT    "&Anslut"
     IDS_ERR_SAVESERVERMET2  "Misslyckades att spara server.met! Du kanske behöver radera server.met och byta namn på server.met.old till server.met!"
     IDS_NOTCONNECTED        "Inte ansluten"
@@ -194,7 +185,6 @@ STRINGTABLE
 BEGIN
     IDS_LINKNOTADDED        "Kunde inte lägga till länk"
     IDS_MAIN_EXIT           "Är du säker på att du vill avsluta eMule?"
-    IDS_MAIN_EXITTITLE      "Avslutningsbekräftelse"
     IDS_MAIN_POPUP_RESTORE  "Återställ"
     IDS_CONNECTTOANYSERVER  "Anslut till en server"
     IDS_EXIT                "Avsluta"
@@ -202,7 +192,6 @@ BEGIN
     IDS_FAILED              "misslyckades"
     IDS_ERR_BADSERVERREPLY  "Korrupt eller felaktigt inloggningssvar från mottagen server"
     IDS_NEWCLIENTID         "Nytt klient-ID är %u"
-    IDS_NOSHAREDFOLDERS     "Inga utdelade mappar"
     IDS_SHAREDFOLDERS       "Utdelade mappar"
     IDS_VIEW1               "visa "
     IDS_VIEW2               " (inte utdelad)"
@@ -241,10 +230,6 @@ BEGIN
     IDS_ASKED4ANOTHERFILE   "Har redan begärt en annan fil från användaren"
     IDS_Q_CANCELDL          "Är du säker att du vill avsluta och ta bort dessa filer?\n"
     IDS_Q_CANCELDL2         "Är du säker att du vill avsluta och ta bort denna fil?\n"
-    IDS_COPIED2CB           "Kopierad till urklipp: \n"
-    IDS_PROCDONE            "% slutförd"
-    IDS_SELECTINCOMINGDIR   "Välj en mapp för inkommande filer"
-    IDS_SELECTTEMPDIR       "Välj en mapp för temp. filer"
     IDS_DL_FILENAME         "Filnamn"
     IDS_DL_SIZE             "Storlek"
     IDS_DL_TRANSF           "Överfört"
@@ -260,7 +245,6 @@ BEGIN
     IDS_DL_REMAINS          "Återstående"
     IDS_UPDATEFROM          "Updatera från URL: (filter.dat- eller PeerGuardianformat)"
     IDS_QL_USERNAME         "Användarnamn"
-    IDS_ERR_PACKAGEHANDLING "Fel vid bearbetning av paket från server (%s)"
     IDS_QL_RATING           "Värdering"
     IDS_CONNECTINGTO        "Ansluten till %s (%s:%i)..."
     IDS_CLIENTS             "Klienter"
@@ -283,7 +267,6 @@ BEGIN
     IDS_SRV_ADDR            "Skriv in en serveradress"
     IDS_SRV_PORT            "Ofullständig serverport: skriv in en serverport"
     IDS_SRV_NOTADDED        "Servern har inte lagts till!"
-    IDS_SRV_READD           "Servern markerades som död, den har lagt tills igen!"
     IDS_SRV_NOURLAV         "Ingen URL tillgänglig."
     IDS_INVALIDURL          "Felaktig URL"
 END
@@ -296,22 +279,15 @@ BEGIN
     IDS_SHAREDFILES         "Utdelade filer"
     IDS_PRIOVERYLOW         "Lägsta"
     IDS_PRIORELEASE         "Release"
-    IDS_FSTATUS_LOCKED      "Låst"
-    IDS_KADALPHA            "Kademlia är fortfarande i tidigt utvecklingsstadie. Vi rekommenderar att du endast använder det om du är intresserad av att testa det"
     IDS_FSTATUS_FRIENDSONLY "Bara kompisar"
-    IDS_FSTATUS_PUBLIC      "Publik"
-    IDS_ERR_RENAMESF        "Misslyckades att ändra namn\r\n    ""%s""\r\nto\r\n    ""%s""\r\n\r\n%hs"
-    IDS_PRIOHIGHEST         "Högsta"
+    IDS_ERR_RENAMESF        "Misslyckades att ändra namn\r\n    ""%s""\r\nto\r\n    ""%s""\r\n\r\n%s"
     IDS_AVAILABLE           "tillgänglig"
-    IDS_ERR_NOPRIMCHANGE    "Du kan inte ändra attribut medan filen fortfarande laddas hem!"
-    IDS_HIDDEN              "Gömd"
 END
 
 STRINGTABLE 
 BEGIN
     IDS_FSTAT_TRANSFER      "Överföringar"
     IDS_FSTAT_CONNECTION    "Anslutning"
-    IDS_FSTAT_CLIENTS       "Klienter"
     IDS_FSTAT_SERVERS       "Servrar"
     IDS_FSTAT_WAITING       "Väntar..."
     IDS_TIME                "Tid"
@@ -324,24 +300,15 @@ BEGIN
     IDS_STATS_ACTUL         "Aktiva uppladdningar: %i"
     IDS_STATS_WAITINGUSERS  "Väntande uppladdningar: %i"
     IDS_STATS_RECONNECTS    "Antal återanslutningar: %i"
-    IDS_STATS_WAITTRANSF    "väntar på överföring..."
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_STATS_WAITCONN      "väntar på anslutningen..."
-    IDS_STATS_CONNECTEDSINCE "Ansluten till server sen: %s"
-    IDS_STATS_RATIO         "UL:DL förhållande: (session (totalt))"
     IDS_STATS_UNKNOWNCLIENT "Okänd: %i"
     IDS_STATS_TOTAL         "Total: %i"
-    IDS_STATS_WORKING       "Fungerande: %i"
-    IDS_STATS_DEAD          "Död/borttagen: %i"
     IDS_DISABLED            "avaktiverad"
     IDS_STOPPED             "Stoppad"
     IDS_STATS_UPDATELABEL   "Uppdateringsfördröjning: %i sek."
-    IDS_QUEUECOUNT          "%u (%u bannade)"
-    IDS_NICKNAME            "Användarnamn: "
-    IDS_CLIENTSFILENAME     "\nKlientens filnamn: "
     IDS_ASKEDFAF            "\nFrågad efter en annan fil"
     IDS_WAITED              "Väntat"
     IDS_ERR_LOADCREDITFILE  "Misslyckades att ladda kreditfilen, en ny fil kommer att skapas"
@@ -370,14 +337,10 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_UDPEXT          "Fel vid behandling av inkommande utökat protokoll UDP-paket"
     IDS_ERR_INCOMPLETEBLOCK "frågade efter ofullständigt block "
     IDS_ERR_OPEN            "misslyckades att öppna efterfrågad fil"
     IDS_ERR_CLIENTERRORED   "Klient '%s' orsakade fel vid skapande av paket (%s) - kopplar ner klienten!"
     IDS_ERR_REQ_FNF         "efterfrågad fil hittades inte"
-    IDS_CLIENTBLOCKED       "Klient '%s' verkar vara aggressiv och är utestängd från uppladdningskön"
-    IDS_LUSERS              "användare"
-    IDS_LFILES              "filer"
     IDS_DESC                "Beskrivning: %s"
     IDS_PORT                "Port"
     IDS_ERR_NOVALIDSERVERSFOUND "inga giltiga servrar hittades i serverlistan"
@@ -397,7 +360,6 @@ BEGIN
     IDS_ERR_REHASH          "Varning: %s kan vara korrupt, omhashning av slutförda delar utförs"
     IDS_SKIN_PROF           "Skalprofiler"
     IDS_ERR_PART_FNF        ".part fil hittades inte"
-    IDS_ERR_OPENMETFILE     "Misslyckades att öppna part.met filen"
     IDS_KADOPEN             "Öppen"
     IDS_ERR_SAVEMET         "Fel när delfilen sparades: %s (%s)"
     IDS_ERR_FOUNDCORRUPTION "Fann korrupta delar (%i) in %s"
@@ -410,18 +372,15 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_NOSERVERSC      "Hittade inga giltiga servrar att ansluta till i serverlistan"
     IDS_CONNECTEDTO         "Anslutning etablerad till: %s"
     IDS_DL_PREVIEW          "Förhandsvisa"
     IDS_VIEWQUEUE           "Visa kö"
-    IDS_VIEWUPLOADS         "Visa uppladdningar"
     IDS_TW_UPLOADS          "Uppladdningar"
     IDS_TW_DOWNLOADS        "Nedladdningar"
     IDS_TW_QUEUE            "Klienter på kö:"
     IDS_SW_SEARCHBOX        "Sök"
     IDS_SW_NAME             "Namn"
     IDS_SW_GLOBAL           "Sök globalt"
-    IDS_SW_TYPE             "Typ"
     IDS_SW_DIRECTDOWNLOAD   "Direkt nedladdning"
     IDS_SW_LINK             "ED2K-länk"
     IDS_SW_START            "Starta"
@@ -450,8 +409,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_PRIORITY_UP         "Öka prioritet"
-    IDS_PRIORITY_DOWN       "Minska prioritet"
     IDS_SPEED_LIMITS        "Hastighetsgränser"
     IDS_CAPACITY_LIMITS     "Bandbreddgränser"
     IDS_ADMIN               "Administratör"
@@ -460,10 +417,6 @@ BEGIN
     IDS_WEB_ERR_CANTLOAD    "Kan inte ladda mallar: Kan inte öppna filen %s"
     IDS_GLOBALSEARCH        "Globalt (server)"
     IDS_METHOD              "Metod"
-    IDS_SW_WEBBASED         "Webbaserad sökning"
-    IDS_NOTHING             "inget"
-    IDS_SETUPSPEED          "sätt uppladdningsgräns"
-    IDS_SETDOWNSPEED        "sätt nedladdningsgräns"
     IDS_UNDO                "Ångra"
     IDS_DAYLY               "Dagligen"
 END
@@ -500,7 +453,6 @@ BEGIN
     IDS_ST_SESSION          "Session medel"
     IDS_ST_ACTIVED          "Aktiva nedladdningar"
     IDS_ST_ACTIVEU          "Aktiva uppladdningar"
-    IDS_ST_WAITINGU         "Väntande uppladdningar"
     IDS_CW_MESSAGES         "Meddelanden"
     IDS_CW_FRIENDS          "Kompisar"
     IDS_CW_SEND             "Skicka"
@@ -517,9 +469,7 @@ BEGIN
     IDS_PW_BROWSE           "Utforska"
     IDS_PW_SHARED           "Utdelade kataloger (Ctrl+Klick för att inkludera underkataloger)"
     IDS_PW_CONNECTION       "Anslutning"
-    IDS_PW_DOWNC            "Nedl. kapacitet"
     IDS_PW_DOWNL            "Nedladdningsgräns"
-    IDS_PW_UPC              "Uppl. kapacitet"
     IDS_PW_UPL              "Uppladdningsgräns"
     IDS_PW_MAXC             "Max. anslutningar"
     IDS_PW_CLIENTPORT       "Klientport"
@@ -551,7 +501,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_PW_FILES            "Filer"
-    IDS_PW_ICH              "&Intelligent korruptionshantering"
     IDS_PW_SHARE            "Se mina utdelningar"
     IDS_PW_EVER             "Alla"
     IDS_PW_FRIENDS          "Kompisar"
@@ -571,17 +520,13 @@ END
 STRINGTABLE 
 BEGIN
     IDS_FD_GENERAL          "Allmänt"
-    IDS_FD_NAME             "Helt namn:"
     IDS_FD_MET              "MET-fil:"
     IDS_FD_HASH             "Hash:"
     IDS_FD_SIZE             "Filstorlek:"
-    IDS_FD_STATUS           "Delfilsstatus:"
     IDS_FD_TRANSFER         "Överför"
-    IDS_FD_SOURCES          "Hittade källor:"
     IDS_FD_PARTS            "Delar:"
     IDS_FD_TRANS            "Överfört:"
     IDS_FD_DATARATE         "Datahastighet:"
-    IDS_FD_TRANSI           "Överför:"
     IDS_FD_COMPSIZE         "Hittills nedl.:"
     IDS_FD_CLOSE            "Stäng"
     IDS_FD_TITLE            "Fildetaljer"
@@ -596,7 +541,6 @@ BEGIN
     IDS_CD_UIP              "IP-address:"
     IDS_CD_SIP              "Server-IP:"
     IDS_CD_VERSION          "Klientversion:"
-    IDS_CD_UID              "ID:"
     IDS_CD_SNAME            "Servernamn:"
     IDS_CD_CDOWN            "Nuvarande nedladdningar:"
     IDS_CD_DOWN             "Nedladdat:"
@@ -621,7 +565,6 @@ BEGIN
     IDS_PW_MAXSOURCES       "Max. källor per fil"
     IDS_SHAREDFILESCOUNT    "Antal utdelade filer: %i"
     IDS_SF_SIZE             "Total storlek av utdelade filer: %s"
-    IDS_ERR_WRONGPARTNUMBER "fel delnummer"
     IDS_ERR_BADPORT         "felaktigt portnummer"
     IDS_ERR_NOHELLO         "Fråga efter något utan att säga hej"
     IDS_ERR_INVALIDPACKAGE  "Felaktigt eller korrupt paket mottaget"
@@ -631,17 +574,14 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ERR_BADSIZE         "felaktig storlek (OP_QUEUERANKING)"
-    IDS_ERR_BADCLIENT2      "Klient '%s' (IP:%s) orsakade ett fel: %u. Kopplar ner klienten!"
     IDS_ERR_NOTAFILELINK    "Ingen fillänk"
     IDS_ERR_CREATEPARTFILE  "Fel: misslyckades att skapa delfil)"
-    IDS_ERR_UDP_MISCONF     "Fel vid bearbetning av inkommande UDP-paket (förmodligen en misskonfigurerad server)"
     IDS_CHAT_START          "*** Chatsession start : "
     IDS_FILEPRIO            "Filprioritet"
     IDS_SCORE               "Poäng"
     IDS_ASKED               "Frågad"
     IDS_LASTSEEN            "Sågs senast"
     IDS_BANNED              "Bannad"
-    IDS_PRIOVERYHIGH        "Högsta"
     IDS_UUSERS              "Användare"
     IDS_UFAILED             "Misslyckades"
     IDS_OPENFILE            "Öppna fil"
@@ -661,7 +601,6 @@ BEGIN
     IDS_FILESTATS_SESSION   "Filstatus för denna session: accepterade %d av %d förfrågningar, %s överfört\n"
     IDS_FILESTATS_TOTAL     "Filstatus för alla sessions: accepterade %d av %d förfrågningar, %s överfört"
     IDS_REQ_UNKNOWNFILE     "Förfrågade okänd fil"
-    IDS_TRANSFERTIME        "Tid sedan första överföringen: %s"
     IDS_SF_AVERAGESIZE      "Genomsnittlig storlek på utdelade filer: %s"
     IDS_SF_REQUESTS         "Förfrågningar"
     IDS_SF_ACCEPTS          "Godkända förfrågningar"
@@ -693,7 +632,6 @@ BEGIN
     IDS_ADDED2SSF           "tillagd i statisk serverlista"
     IDS_STATICSERVER        "Statisk"
     IDS_ERROR_SSF           "Misslyckades att öppna staticservers.dat"
-    IDS_ERR_PACKAGEERROR    "Kritiskt fel vid bearbetning av datapaket för %s (fel storlek) - tappade datablock"
     IDS_SF_ACTIVECON        "Antalet aktiva anslutningar (beräknad)"
     IDS_SF_MAXCONLIMITREACHED "Gånger det maximala antalet anslutningar nåts"
     IDS_SF_AVGCON           "Genomsnittligt antal anslutningar (beräknad)"
@@ -740,7 +678,6 @@ BEGIN
     IDS_PW_AUTOCONNECTSTATICONLY 
                             "Anslut automatisk enbart till statiska servrar"
     IDS_PW_CON_LIMITFRM     "Gränser"
-    IDS_PW_FILE_ICH         "Aktivera I.C.H"
     IDS_STATS_AVGLABEL      "Tid för genomsnittlig kurva: %i min"
     IDS_GRAPHS              "Diagram"
     IDS_STREE               "Statistikträd"
@@ -774,11 +711,9 @@ STRINGTABLE
 BEGIN
     IDS_HARDLIMIT           "Hård gräns"
     IDS_COL_MORECOLORS      "mer..."
-    IDS_KBYTESEC            "kB/s"
     IDS_TOOMANYCONNS        "För många anslutningar"
     IDS_DOWNLOADRENAMED     "En fil med det namnet finns redan, filen har sparats som %s"
     IDS_TBN_DOWNLOADDONE    "Nedladdat:"
-    IDS_TBN_DOWNLOADADDED   "Tillagd till nedladdningar:"
     IDS_PW_TBN_USESOUND     "Använd ljud"
     IDS_PW_TBN_ONLOG        "Ny post i logg"
     IDS_PW_TBN_ONCHAT       "Start av en ny chat-session"
@@ -793,8 +728,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_PW_CON_CAPFRM       "Kapacitet"
-    IDS_IRC_STATUSLOG       "Status logg"
-    IDS_IRC_STATUS          "Status"
     IDS_IRC_PRIVATECHANSTART "* Privatchat startad"
     IDS_IRC_SLAPMSG         "* %s slaps %s around with a large Babelfish!"
     IDS_IRC_PRIVMESSAGE     "Privatmeddelande"
@@ -811,7 +744,6 @@ BEGIN
     IDS_IRC_HASJOINED       "* %s har anslöt sig till %s"
     IDS_IRC_HASPARTED       "* %s har lämnat %s (%s)"
     IDS_IRC_WASKICKEDBY     "* %s sparkades ut av %s (%s)"
-    IDS_IRC_NICKUSED        "Ditt användarnamn används redan på IRC servern. Välj ett annat användarnamn under IRC fliken i inställningar."
     IDS_IRC_HASQUIT         "* %s har brytit förbindelsen (%s)"
     IDS_IRC_NOWKNOWNAS      "* %s bytade användarnamn till %s"
     IDS_IRC_SETSMODE        "* %s gav: %s %s"
@@ -861,12 +793,10 @@ BEGIN
     IDS_SP_ACTCON           "Aktiva anslutningar"
     IDS_SP_ACTDL            "Aktiva nedladdningar"
     IDS_SP_ACTUL            "Aktiva uppladdningar"
-    IDS_PW_TIT_UP           "Sätt uppladdninggräns"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_PW_TIT_DOWN         "Sätt nedladdningsgräns"
     IDS_PW_UNLIMITED        "Obegränsad"
     IDS_PW_MINREC           "Minimum rekommenderat\t%i "
     IDS_PW_UA               "Sätt full upp/ned-hastighet"
@@ -874,11 +804,7 @@ BEGIN
     IDS_IRC_IGNOREINFOMESSAGE "Ignorera informationsmeddelanden."
     IDS_CONNECTIONLOST      "Tappade anslutningen"
     IDS_WIZ_OS_FRAME        "Operativsystem"
-    IDS_WIZ_CONCURENTDOWN_FRAME 
-                            "Hur många nedladdningar brukar du ha i gång samtidigt?"
     IDS_HASHINGFILE         "Hashar fil:"
-    IDS_WIZ_CUSTOM_FRAME    "Om du testat din anslutningshastighet, skriv dina resultat här."
-    IDS_WIZ_HOTBUTTON_FRAME "Förinställda knappar"
     IDS_WIZ_TRUEUPLOAD_TEXT "Uppladdnings bandbredd"
     IDS_WIZ_TRUEDOWNLOAD_TEXT "Nedladdnings bandbredd"
     IDS_FRIENDLIST          "Vänner"
@@ -890,7 +816,6 @@ BEGIN
     IDS_WIZARD              "Wizard"
     IDS_ADDFRIEND           "Lägg till i kompislistan"
     IDS_REMOVEFRIEND        "Ta bort kompis"
-    IDS_REMOVEFROMSTOK      "borttagen från statisk serverlista"
     IDS_REMOVEFROMSTATIC    "ta bort från statisk serverlista"
     IDS_LENGTH              "Längd"
     IDS_VIDEO               "Video"
@@ -902,7 +827,6 @@ BEGIN
     IDS_FPS                 "Fps"
     IDS_CHANNELS            "Kanaler"
     IDS_SAMPLERATE          "Samplerate"
-    IDS_ROUNDBITRATE        "Avrundad bitrate"
 END
 
 STRINGTABLE 
@@ -913,16 +837,12 @@ BEGIN
     IDS_VIEWFILES           "Se filer"
     IDS_FRIENDSLOT          "Ge kompisen en slot"
     IDS_FRIENDDETAIL        "(kompis-slot)"
-    IDS_ASCWOP_PROXYSUPPORT "Anslut automatiskt till server utan proxy"
     IDS_UDPDISABLED         "avaktivera"
-    IDS_CTINFO              "Välj din anslutningstyp här:"
     IDS_WIZ_CTFRAME         "Anslutningstyp"
     IDS_CONCURDWL           "Samtidiga nedladdningar"
-    IDS_UNIT                "Enhet:"
     IDS_WIZARD_CUSTOM       "Egen"
     IDS_WIZARD_ENTERBELOW   "(skriv in nedan!)"
     IDS_STATS_MAXAVGDL      "Max nedladdningshastighet, genomsnittlig: %s"
-    IDS_USS_MIN             "Varning: USS stöder inte lägre uppladdningshastigheter än 10K. Om din anslutning inte klarar detta stäng av USS."
 END
 
 STRINGTABLE 
@@ -932,13 +852,11 @@ BEGIN
                             "Ignorera eMule lägg till kompis protokollmeddelanden"
     IDS_PW_FASTSRVCON       "Snabb anslutning till servrar"
     IDS_SOURCELINKFAILED    "Du behöver ett högt ID för att länka till källan"
-    IDS_CREATESOURCELINK    "Kopiera ED2k-länk till urklipp (källa)"
     IDS_ERR_LOADSERVERMET   "Misslyckades att ladda server.met!"
     IDS_ERR_CORRUPTCOMPRPKG "Korrupt komprimerat paket för %s mottaget (fel %i)"
     IDS_ERR_EMFRIENDSINVALID "Filen emfriends.met är felaktig eller korrupt!"
     IDS_ERR_READEMFRIENDS   "Okänt fel vid läsning av emfriends.met: %s"
     IDS_ERR_KNOWNSERVERINFOREC "Okänt serverinfo mottaget!"
-    IDS_ERR_TIMERCREATEFAILED "Kritiskt fel: Misslyckades att skapa timer"
     IDS_WIZ_DOWN            "Ned (kbit/s)"
     IDS_WIZ_UP              "Upp (kbit/s)"
     IDS_SELECT_INCOMINGDIR  "Välj en mapp för inkommande filer"
@@ -953,7 +871,6 @@ BEGIN
     IDS_PRIOAUTORELEASE     "Auto [Re]"
     IDS_PRIOAUTOLOW         "Auto [Lå]"
     IDS_ERR_CONTIMEOUT      "Anslutningsförsök till ""%s"" (%s:%i ) gjorde time-out"
-    IDS_ERR_CONFAILED       "Anslutning till ""%s"" (%s:%i ) misslyckades."
     IDS_OUTOFSERVERS        "Det finns inga mer servrar som går att ansluta till."
     IDS_PW_CONLIMITS        "Anslutningsgränser"
     IDS_MAXCON5SECLABEL     "Max. nya anslutningar / 5sek"
@@ -974,15 +891,11 @@ BEGIN
     IDS_RECOVERED_PARTMET   "Återställde part.met filen för: %s"
     IDS_CMT_QUEST           "Kommentera denna fil! (denna text kommer att visas för alla användare)"
     IDS_CMT_AIDE            "Om det är en film kan du kan skriva in dess längd, handling, språk o.s.v... Om filen är en fejk kan du informerade detta till andra användare... "
-    IDS_CMT_TITLE           "%s filkommentar"
     IDS_CMT_ADD             "Ändra filens kommentar..."
     IDS_CMT_NONE            "Inga kommentarer"
     IDS_CMT_READ            "Filkommentar:"
-    IDS_CMT_NOTCONNECTED    "Inte ansluten ännu..."
     IDS_CMT_SHOWALL         "Visa kommentarer"
-    IDS_CMT_REFRESH         "Uppdatera"
     IDS_CMT_READALL         "Kommentarer"
-    IDS_CMT_NOCOMMENT       "Inga kommentarer inskrivna..."
     IDS_CMT_RATEQUEST       "Filkvalité"
     IDS_CMT_RATEHELP        "Välj filvärdering eller ge råd till andra användare om den stämmer"
 END
@@ -1009,7 +922,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_FD_STATS            "Förlorat p.g.a. korruption: %s   Vunnit p.g.a. komprimering: %s\nPaket räddade av I.C.H.: %i"
     IDS_ERR_NOHELP          "Besök våran hemsidas nedladdningssida för att få tag på den senaste versionen av hjäpfilen!\n\nVill du besöka online-hjälpen istället?"
     IDS_SHOWOVERHEAD        "Visa overheadbandbredd"
     IDS_UPDOWNSMALL         "Upp: %.1f | Ner: %.1f"
@@ -1036,7 +948,6 @@ BEGIN
     IDS_VISITVERSIONCHECK   "\n\nVill du besöka informationssidan nu?"
     IDS_PW_VIDEOPLAYER      "Videospelare"
     IDS_VIDEOBACKUP         "Skapa backup till granskning"
-    IDS_STATIC_EMPTY        "(tom=standard)"
     IDS_MYINFO              "Min info"
     IDS_ID                  "ID"
     IDS_IDLOW               "Lågt ID"
@@ -1080,8 +991,6 @@ BEGIN
     IDS_COLOR               "Färg"
     IDS_DEFAULT             "Standard"
     IDS_PW_DISPLAY          "Utseende"
-    IDS_CAT_INVADD          "Visa alla otilldelade"
-    IDS_CAT_REINVADD        "Visa alla"
     IDS_INDICATERATINGS     "Nedladdningar med kommentarer/värdering får ikon"
     IDS_ALLOTHERS           "alla övriga"
     IDS_TOCAT               "Tilldela kategori"
@@ -1091,7 +1000,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ADDDOWNLOADSFROMCB  "Ladda hem dessa ED2k-fillänkar\n"
-    IDS_ADDDOWNLOADSFROMCBTITLE "ED2k-fillänk i urklipp"
     IDS_PF_WATCHCB          "Kolla urklipp efter ED2k-fillänkar"
     IDS_SECURITY            "Säkerhet"
     IDS_IPFILTERLOADED      "%i IP-filter laddade"
@@ -1099,7 +1007,7 @@ BEGIN
     IDS_EDIT                "Ändra"
     IDS_FILTERLEVEL         "Filtergrad"
     IDS_FILTERSERVERBYIPFILTER 
-                            "Filtrera servrar också (gäller dynIP-servrar med)"
+                            "Filtrera servrar också"
     IDS_FILTERCOMMENTSLABEL "Ignorera kommentarer som innehåller: (skiljs med | )"
     IDS_CLIENTLIST          "Kända klienter"
     IDS_FOLDER              "Mapp"
@@ -1121,10 +1029,8 @@ BEGIN
     IDS_USECREDITSYSTEM     "Använd kreditsystem (gynna uppladdare)"
     IDS_FIRSTAUTODOWN       "Aktivera denna inställning om du vill att eMule skall ta hand om dina nedladdningsprioriteringar.\n\nAktiverar du denna inställning kommer eMule att säkerhetsställa att nedladdningar med många källor inte stryper dom med få källor. Denna inställning kommer bara att påverka kommande nedladdningar (Standard: Aktiverad)"
     IDS_FIRSTAUTOUP         "Aktivera denna inställning om du vill att eMule skall ta hand om dina uppladdningsprioriteringar.\n\nAktiverar du denna inställning kommer eMule att försöka öka uppladdningshastigheten på sällsynta filer och minska hastigheten på populära filer. Stänger du av denna inställning kommer eMule att prioritera populära filer vilket betyder att sällsynta filer kommer bli svårare att få tag på. Denna inställning kommer bara påverka kommande utdelade filer. (Standard: Aktiverad)"
-    IDS_FIRSTCREDITSYSTEM   "Vill du gynna personer som laddar upp till dig?\n\nDenna inställnin är känd som Kreditsystemet. Aktiverar du denna inställning kommer du att straffa leechers. Om du laddar upp releaser borde du stänga av denna inställning. (Standard: Aktiverad)"
     IDS_FIRSTFULLCHUNK      "Aktivera denna inställning om du vill ladda upp hela delar.\n\nAnvänder du hela delar har klienten en bättre chans att få hem en hel del. Stänger du av denna inställning kommer kön att gå fortare. Om du laddar upp releaser borde du stänga av denna inställning. (Standard: Aktiverad)"
     IDS_FIRSTSAFECON        "Aktivera denna inställning om du vill att eMule skall ansluta med ""Safe Connect"".\n\nStänger du av denna inställning kommer eMule att ansluta till servrar snabbare men orsaka mer falska lågID-anslutningar. (Standard: Avaktiverad)"
-    IDS_FIRSTRUNASSIST      "Vill du köra en förstagången inställnings-wizard?"
     IDS_FIRSTAUTOCON        "Aktivera denna inställning om du vill att eMule skall ansluta vid start."
     IDS_FIRSTCOMPLETE       "Dessa funktioner och många fler kan ändras i inställningar.\r\rGå gärna in i inställningar där det finns fler val.\r\rInställningarfönstret kommer att öppnas med allmäntfliken där du kan välja användarnamn.\r\rEfter du valt ett användarnamn klicka på anslutningfliken och kör wizarden."
 END
@@ -1156,18 +1062,14 @@ END
 STRINGTABLE 
 BEGIN
     IDS_WEB_SHOW_UPLOAD_QUEUE "Visa kö"
-    IDS_WEB_HIDE_UPLOAD_QUEUE "Göm kö"
     IDS_WEB_GZIP_COMPRESSION "Gzip komprimering"
     IDS_WEB_GZIP_COMMENT    "Sparar trafik, speciellt på diagramen."
-    IDS_WEB_UPLOAD_QUEUE_COMMENT 
-                            "Aktivera eller avaktivera visningen av kön på sidan överföringar."
     IDS_WEB_REFRESH_TIME    "Uppdateringstid av sidor"
     IDS_WEB_REFRESH_COMMENT "Tid i sekunder (noll=avaktiverad):"
     IDS_SV_URL              "URL"
     IDS_WS_RELOAD_TMPL      "Mall"
     IDS_SV_DEBUGLOG         "Debug logg"
     IDS_WS_PASS             "Lösenord"
-    IDS_WEB_FILESETTINGS    "Filinställningar"
     IDS_WS_ERR_LOADTEMPLATE "Kan inte ladda mallarna: byt ut filen %s med en nyare version!"
     IDS_WEB_CONLIMITS       "Anslutningsgräns"
     IDS_INFLST_USER_TOTALDOWNLOAD "Nedladdat totalt"
@@ -1177,7 +1079,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_WEB_BADLOGINATTEMPT "Webserver: misslyckades att logga in"
-    IDS_ERR_TOOLARGEFILE    "Filen är större än vad eMule protokollet stödjer (>=4GB)"
+    IDS_ERR_TOOLARGEFILE    "Filen är större än vad eMule protokollet stödjer (>=256GB)"
     IDS_MSGONLYFRIENDS      "Acceptera bara från kompisar"
     IDS_MSGONLYSEC          "Acceptera bara från giltiga klienter"
     IDS_DAY_MO_SA           "Mån-Lör"
@@ -1201,7 +1103,6 @@ BEGIN
     IDS_WEBSRV              "Webbgränssnitt."
     IDS_SW_REFETCHRES       "Uppdatera resultat"
     IDS_FILEHASH            "Fil-hash"
-    IDS_GLOBALSEARCH2       "Sök globalt"
     IDS_PW_PROXY            "Proxy"
     IDS_PROXY_ENABLE        "Aktivera proxy"
     IDS_PROXY_TYPE          "Proxytyp:"
@@ -1228,7 +1129,6 @@ BEGIN
     IDS_WIZ1_END_BTN_HINT   "För att stänga denna wizard, klicka på slutför."
     IDS_WIZ1_UPLOAD_SUBTITLE "Hela delar Transfer"
     IDS_DL_RESUMENEXT       "Forsätt nästa pausade"
-    IDS_DONTCHANGE          "Ändra inte"
     IDS_STARTPRIO           "Priority for this category"
     IDS_PREF_STARTNEXTFILECAT "föredra samma kategori"
     IDS_REPAINTGRAPHS       "Gör inte om statistikgraferna vid ändring av fönster"
@@ -1267,7 +1167,6 @@ BEGIN
     IDS_STATS_CUMULATIVE    "Växande"
     IDS_STATS_OVRHD         "Overhead"
     IDS_STATS_RECORDS       "Rekord"
-    IDS_STATS_OVRHD2        "Overhead: %s (%s paket)"
     IDS_STATS_COMPDL        "Slutförda nedladdningar"
     IDS_STATS_SVRECWORKING  "Max. fungerande servrar"
     IDS_STATS_SVRECUSERS    "Max. användare online"
@@ -1281,7 +1180,6 @@ BEGIN
     IDS_SEARCH_COLUMN       "Sök i kolumn"
     IDS_STATS_SHRECSIZE     "Största utdelningsstorleken"
     IDS_STATS_SHRECASIZE    "Största genomsnittliga filstorlek"
-    IDS_STATS_MYRUNTIME     "Total körtid: %s"
     IDS_STATS_SESSION       "Session"
     IDS_STATS_SRATIO        "Session UL:DL förhållande:"
     IDS_STATS_CRATIO        "Växande UL:DL förhållande:"
@@ -1303,15 +1201,12 @@ BEGIN
     IDS_STATS_AVGDATAULSES  "Genomsnittligt antal uppladdningar per session"
     IDS_STATS_ICHSAVED      "Delar räddade p.g.a. I.C.H: %u"
     IDS_STATS_MBRESET_TXT   "Är du säker att du vill ställa om din växande statistik?\n\nOm du ändrar dig kan du klicka på 'Återställ statistik' knappen."
-    IDS_STATS_MBRESET_CAP   "Bekräfta omställning"
     IDS_STATS_MBRESTORE_TXT "Är du säker att du vill ställa om din växande statistik från backupfilen?\n\nKlickar du på 'Återställ statistik' igen laddas din nuvarande statistik om."
-    IDS_STATS_MBRESTORE_CAP "Bekräfta återställning"
     IDS_ERR_NOSTATBKUP      "FEL: backupstatistikfilen hittades inte..."
     IDS_STATS_NFOLOADEDBKUP "Laddade backup av statistikinformationen..."
     IDS_STATS_NFORESET      "Statistiken har återställts!"
     IDS_STATS_BNRESET       "Ställ om statistik"
     IDS_STATS_BNRESTORE     "Återställ statistik"
-    IDS_CONNECTIONSTATISTICS "Anslutningsstatistik"
     IDS_PPGSTATS_YSCALE     "Anslutningsstatistik, Y-Axelns skala:"
 END
 
@@ -1337,7 +1232,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_STATS_OLDCLIENTS    "Gammal"
     IDS_STATS_PRTDEF        "Standard"
     IDS_STATS_PRTOTHER      "Annan"
     IDS_STATS_MNUTREETITLE  "Statistikträ"
@@ -1386,12 +1280,8 @@ BEGIN
     IDS_SEARCH_MISSINGNOTRIGHT "Saknar högra sidan av NOT operatören"
     IDS_SEARCH_MISSINGEXPRPARANT "Saknar uttryck för '(' ')'"
     IDS_SEARCH_MISSINGCLOSINGPARANT "Saknar stängning ')'"
-    IDS_SEARCH_MISSINGANDLEFT "Saknar vänstra sidan av AND operatören"
-    IDS_SEARCH_MISSINGORLEFT "Saknar vänstra sidan av OR operatören"
-    IDS_SEARCH_MISSINGNOTLEFT "Saknar vänstra sidan av NOT operatören"
     IDS_SEARCH_EXPRERROR    "Misslyckades att tolka sökuttrycket"
     IDS_SEARCH_TOOCOMPLEX   "Uttryck för komplicerat"
-    IDS_SEARCH_INVALIDMINMAX "Felaktiga värden för min/max filestorlekar"
 END
 
 STRINGTABLE 
@@ -1413,7 +1303,6 @@ STRINGTABLE
 BEGIN
     IDS_SELECT_FONT         "Välj teckensnitt"
     IDS_SERVER_LIMITS       "Mjuk / Hård filgräns"
-    IDS_SERVERINFO          "Serverinformation"
     IDS_KBITSSEC            "kBits/sek"
     IDS_KBYTESSEC           "kBytes/sek"
     IDS_ERR_CREATE_DIR      "Misslyckades att skapa %s mapp ""%s"" - %s"
@@ -1438,14 +1327,13 @@ BEGIN
                             "Du måste starta om eMule för att ändringarna skall börja gälla"
     IDS_CREDITSEXPIRED      ", %i klienter raderade (Har inte påträffats inom 5 månader)"
     IDS_SOURCESINFO         "%i  (användbara: %i, NNP: %i, A4AF: %i)"
-    IDS_SHOW_META_DATA      "Visa &Metadata..."
     IDS_META_DATA           "Metadata"
     IDS_TIMEBEFORE          "(%s sen)"
     IDS_FD_TIMEDATE         "Datum"
     IDS_FILEINFORMATION     "Överföringsinformation"
     IDS_STATS_FREESPACE     "Ledigt utrymme"
     IDS_IRC_HELPCHANNEL     "Anslut till hjälpkanaler."
-    IDS_IRC_HELPCHANNELPERFORM "/join #emule | /join #emule-swedish"
+    IDS_IRC_HELPCHANNELPERFORM "/join #emule-swedish"
     IDS_IRC_ACCEPTLINKSFRIENDS "Bara från kompisar."
     IDS_COMPLSOURCES        "Hela källor"
     IDS_CHECKNOENDTIME      "ingen sluttid"
@@ -1454,7 +1342,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_MATCH_KEYWORDS      "Matcha nyckelord"
     IDS_FAILEDREOPEN        "Fel: Misslyckades att öppna delfil '%s' (%s)!"
     IDS_ERR_PREVIEWALREADY  "Det finns redan en förhandsvisningsefterfrågan igång från denna klient"
     IDS_ERR_PREVIEWFAILED   "Förhandsvisning från användare '%s' misslyckades"
@@ -1475,7 +1362,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_CREATEHOSTNAMESRCLINK "Kopiera eD2K-länk till urklipp (värdnamn)"
     IDS_HASHINGFILESCOUNT   " (%u hashar)"
     IDS_CHECKDISKSPACE      "Kolla diskutrymme"
     IDS_YOURHOSTNAME        "Värdnamn för egna eD2K-länkar"
@@ -1584,7 +1470,6 @@ BEGIN
     IDS_MINBITRATE          "Min. bitrate [kBit/s]"
     IDS_KAD_RECHECKFW       "Kontrollera brandvägg"
     IDS_SHAREDTITLE         "Utdelade ED2K|Kad"
-    IDS_WARNINGNOBS         "Bootstrapping inaktivt nu (Kad avaktiverad eller redan ansluten)."
     IDS_FIREWALLED          "Bakom brandvägg"
     IDS_KADEMLIA            "Kad"
     IDS_KADCONTACTLAB       "Kontakter"
@@ -1600,7 +1485,6 @@ BEGIN
     IDS_LOG_SECURE_IDENT    "Logga säkra ident"
     IDS_LOG_FILTERED_IPS    "Logga filtrerade och/eller ignorerade IPs"
     IDS_LOG_FILE_SAVING     "Logga filsparningar"
-	  IDS_IPFILTERFILES       "Alla filer som innehåller IP-filter (*ipfilter.dat;*ip.prefix;*.p2b;*.p2p;*.p2p.txt;*.zip;*.gz)|*ipfilter.dat;*ip.prefix;*.p2b;*.p2p;*.p2p.txt;*.zip;*.gz| Fil för eMule IP-Filter (*ipfilter.dat;*ip.prefix)|*ipfilter.dat;*ip.prefix|Fil för Peer Guardian IP-filter (*.p2b;*.p2p;*.p2p.txt)|*.p2b;*.p2p;*.p2p.txt|Textfiler (*.txt)|*.txt|ZIP-filer (*.zip;*.gz)|*.zip;*.gz|Alla Filer (*.*)|*.*||"
     IDS_DELETEIPFILTERS     "Vill du verkligen ta bort valda IP-filter?"
     IDS_TOTAL_IPFILTER_LABEL "Totalt antal IP-filter:"
     IDS_TOTAL_IPS_LABEL     "Totalt antal IP:"
@@ -1669,7 +1553,6 @@ BEGIN
     IDS_FO_PREF_SUCCCEEDED  "Lyckades att öppna valda portar i WinXP:s interna brandvägg.\nKom ihåg att inte andra brandväggar eller routers har något med detta att göra!"
     IDS_SOURCESWAPBLOCKED   "Byt blockerade"
     IDS_A4AF_CHECK_THIS_NOW "Kolla denna källa nu (debug)"
-    IDS_SOURCEEXCHANGESWAP  "Temponärt källutbytningsbyte"
     IDS_NEWMSG              "Nytt meddelande från '%s' (IP:%s)"
     IDS_PREF_STARTNEXTFILECATONLY "bara i samma kategori"
     IDS_LOG_ULDL_EVENTS     "Logga uppladdnings-/nedladdningshändelser"
@@ -1706,7 +1589,6 @@ BEGIN
     IDS_CHAT_DOWNLOADED     "Nedladdat:"
     IDS_CHAT_UPLOADED       "Uppladdat:"
     IDS_CHAT_IDENT          "Identifiering:"
-    IDS_CHAT_CLIENT         "Klient:"
 END
 
 STRINGTABLE 
@@ -1752,7 +1634,6 @@ BEGIN
     IDS_META_SRCIP          "Källa, IP"
     IDS_META_SRCTYPE        "Källtyp"
     IDS_SEARCH_UNICODE      "Sök med unicode"
-    IDS_PERSEC              "/s"
 END
 
 STRINGTABLE 
@@ -1808,7 +1689,7 @@ BEGIN
     IDS_THELOAD             "Load"
     IDS_PACKSENT            "Skickade paket"
     IDS_RESPONSES           "Svar"
-    IDS_EXTRACT_META_DATA   "Extrahera meta data"
+    IDS_EXTRACT_META_DATA   "Extrahera metadata"
     IDS_META_DATA_MEDIADET  "DirectShow (för alla övriga ljud-/videofiler)"
     IDS_META_DATA_ID3LIB    "ID3 Biblotek (bara för MPEG-ljudfiler)"
 END
@@ -1948,8 +1829,84 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ERR_FSCANTHANDLEFILE 
-                            "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
-    IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
+                            "Du kan inte ladda hem den här filen för att ditt filsystem inte klarar av filer större än 4GB, överväg att konvertera ditt filsystem till NTFS"
+    IDS_NEWVERSIONAVLBETA   "Denna beta-version är gammal. Eftersom beta-versioner ofta innehåller buggar är det mycket viktigt att du uppdaterar till en ny version snarast!"
+    IDS_KADSEARCHACTIVE     "(Kad-sökning pågår...)"
+    IDS_BOLD                "Fet text"
+    IDS_UNDERLINE           "Understrycken text"
+    IDS_COLOUR              "Välj textfärg,(valbar bakgrundfärg)."
+    IDS_RESETFORMAT         "Återställ föregående formatering,(Sends a Reset Tag)."
+    IDS_RESTORESEARCHPARAMS "Återställ sök-parametrar"
+    IDS_COMMAND             "Kommando"
+    IDS_ARGUMENTS           "Argument"
+    IDS_AP_CREATEPREVCOPY   "Skapa förhandsvisning"
+    IDS_ARCHIVEDETAILS      "Arkivdetaljer"
+    IDS_ARCHTYPE            "Arkivtyp"
+    IDS_ATTRIBUTES          "Attribut"
+    IDS_LASTMODIFIED        "Senast ändrad"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_RARFULLENCR         "Krypterad - kunde inte läsa arkivet"
+    IDS_ARCPARSED           "Arkiv genomsökt."
+    IDS_ARCPREV_LISTMAYBEINCOMPL "Fillistan kan vara inkomplett."
+    IDS_ARCPREV_DIRNOTFOUND "Katalogen hittades inte."
+    IDS_ARCPREV_INSUFFDATA  "Otillräckligt med data."
+    IDS_PASSWPROT           "Lösenordsskydd"
+    IDS_ARCPREV_DIRSUCCREAD "Lyckades att läsa in katalogen."
+    IDS_ARCPREV_UNKNOWNFORMAT "(okänd/stödjer inte)"
+    IDS_ARCPREV_PLEASEWAIT  "Söker igenom arkiv..."
+    IDS_OBFUSCATION         "Kryptering"
+    IDS_SUPPORTED           "Stödjer"
+    IDS_ESTIMATED           "beräknad"
+    IDS_MEDIAINFO_DLLMISSING 
+                            "Det finns inget MediaInfo-biblotek installerat. Om du vill få mer information om ljud/video filer i denna dialogruta,\r\nladda hem MediaInfo-bibloteket från http://sourceforge.net/projects/mediainfo/ och kopiera MediaInfo.dll filen till\r\neMule's installationskatalog ""%s"".\r\n"
+    IDS_WARNING_WRONGFILEEXTENTION 
+                            "Varning: Filnamnstillägget ""%s"" stämmer inte överens med den som\r\nvanligen används för det filformatet. Du borde ändra namnet på filen och\r\n använda en av dessa filnamnstillägg ""%s""\r\nför att filen skall kunna visas i korrekt program.\r\n"
+    IDS_MEDIAINFO_DRMWARNING 
+                            "Varning: filen ""%s"" verkar vara skyddad med Digital Rights Management (DRM).\r\nDu kommer med största sannolikhet inte kunna använda filen utan en licens från upphovsrättsmanen.\r\n"
+    IDS_LOADFILTER_EMTOOLBAR "eMule verktygsfält bitmap-filer"
+    IDS_LOADFILTER_EMSKINFILES "eMule skal-filer"
+    IDS_WIZARD_NETWORK      "Välj vilket/a nätverk du vill använda."
+    IDS_WIZARD_ED2K         "eD2K inställningar"
+    IDS_LOADURL             "Ladda"
+    IDS_DELETEAFTERALLOC    "Fil '%s' allokerar för tillfället diskutrymme och kommer att raderas efteråt"
+    IDS_TRAYDLG_SPEED       "eMule hastighet"
+    IDS_VIAPASSIVE          "via passiv"
+
+    IDS_WEB_REMOTE_LINK_ADDED "Länk tillagd: "
+    IDS_WEB_REMOTE_LINK_NOT_ADDED "Länk ej tillagd. Felaktigt lösenord."
+    IDS_OPTIONS             "Inställningar"
+    IDS_ERR_FAILEDTOLOAD    "Misslyckades att ladda %s: %s "
+    IDS_RUNNINGRESTRICTED   "eMule körs inte med fulla rättigheter"
+    IDS_ARCHPREV_ATTRIBINFO "Filattribut kan bestå av: \r\n\r\nP\tfilen är lösenordsskyddad\r\nD\tär en katalog\r\nC\tkommentar\r\nLx\tkomprimeringsnivå x\r\nM\tkomprimerad data är inte helt nedladdad ännu\r\n<\tfilen kommer från en tidigare volym\r\n>\tfilen fortsätter i nästa volym\r\n"
+    IDS_CONTENT_INFO        "Innehåll"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_MESSAGESCOMMENTS    "Meddelanden och kommentarer"
+    IDS_DISABLEOBFUSCATION  "Avaktivera krypterade anslutningar"
+    IDS_ONLYOBFUSCATED      "Tillåt endast krypterade anslutningar (inte rekommenderat)"
+    IDS_ENABLEOBFUSCATION   "Aktivera krypytering av protokoll"
+    IDS_PROTOCOLOBFUSCATION "Kryptering av protokoll"
+    IDS_CONNECTINGTOOBFUSCATED 
+                            "Ansluter till %s (%s:%i - med krypterat protokoll) ..."
+    IDS_CONNECTEDTOOBFUSCATED "Krypterad anslutning skapad: %s"
+    IDS_VERIFIED            "verifierad"
+    IDS_OBFUSCATED          "Krypterad"
+    IDS_UNVERIFIED          "overifierad"
+    IDS_INVALIDFILEEXT      "Felaktigt filnamnstillägg"
+    IDS_UNKNOWNFILEEXT      "Okänt filnamnstillägg"
+    IDS_ENABLEMINIMULE      "Enable MiniMule"
+    IDS_DISABLE_AUTOARCHPREV 
+                            "Avaktivera automatisk arkivförhandsvisningsstart i fildetaljer"
+    IDS_US_STALLEDW4BR      "Stannade! Väntar på block-efterfrågan."
+    IDS_US_STALLEDREADINGFDISK "Stannade! Läser från hårddisk."
+    IDS_SERVERFEATURE_INTTYPETAGS "Heltals-tag-typ"
 END
 
 #endif    // Swedish resources

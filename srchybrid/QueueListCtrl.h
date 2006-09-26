@@ -61,4 +61,5 @@ private:
 	// Barry - Refresh the queue every 10 seconds
 	UINT_PTR m_hTimer;
 	static void CALLBACK QueueUpdateTimer(HWND hwnd, UINT uiMsg, UINT idEvent, DWORD dwTime);
+	CImageList  m_overlayimages; // Mod Icons - Stulle
 };

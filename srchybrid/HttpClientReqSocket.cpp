@@ -48,6 +48,7 @@ CHttpClientReqSocket::CHttpClientReqSocket(CUpDownClient* client)
 	: CClientReqSocket(client)
 {
 	SetHttpState(HttpStateUnknown);
+	SetConnectionEncryption(false, NULL, false); // just to make sure - disable protocol encryption explicit
 }
 
 CHttpClientReqSocket::~CHttpClientReqSocket()
@@ -68,14 +69,14 @@ void CHttpClientReqSocket::ClearHttpHeaders()
 	m_iHttpHeadersSize = 0;
 }
 
-void CHttpClientReqSocket::SendPacket(Packet* packet, bool delpacket, bool controlpacket, uint32 actualPayloadSize)
+void CHttpClientReqSocket::SendPacket(Packet* packet, bool delpacket, bool controlpacket, uint32 actualPayloadSize, bool bForceImmediateSend)
 {
 	// just for safety -- never send an ed2k/emule packet via HTTP.
 	if (packet->opcode != 0x00 || packet->prot != 0x00){
 		ASSERT(0);
 		return;
 	}
-	CClientReqSocket::SendPacket(packet, delpacket, controlpacket, actualPayloadSize);
+	CClientReqSocket::SendPacket(packet, delpacket, controlpacket, actualPayloadSize, bForceImmediateSend);
 }
 
 void CHttpClientReqSocket::OnConnect(int nErrorCode)
@@ -151,7 +152,7 @@ void CHttpClientReqSocket::DataReceived(const BYTE* pucData, UINT uSize)
 //		if (GetClient())
 //			GetClient()->SetDownloadState(DS_ERROR);
 		if (client)	// NOTE: The usage of 'client' and 'GetClient' makes quite a difference here!
-		{
+		{		
 			client->SetDownloadState(DS_ERROR);
 			theApp.clientlist->m_globDeadSourceList.AddDeadSource(client); //Xman Xtreme Mod  I don't AddDeadsource in disconnected
 		}

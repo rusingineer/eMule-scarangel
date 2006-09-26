@@ -84,6 +84,7 @@ void CSearchList::ShowResults(uint32 nSearchID)
 {
 	ASSERT( outputwnd );
 	outputwnd->SetRedraw(FALSE);
+	CMuleListCtrl::EUpdateMode bCurUpdateMode = outputwnd->SetUpdateMode(CMuleListCtrl::none/*direct*/);
 
 	for (POSITION pos = list.GetHeadPosition(); pos != NULL; )
 	{
@@ -96,6 +97,7 @@ void CSearchList::ShowResults(uint32 nSearchID)
 		}
 	}
 
+	outputwnd->SetUpdateMode(bCurUpdateMode);
 	outputwnd->SetRedraw(TRUE);
 }
 
@@ -358,7 +360,7 @@ bool CSearchList::AddToList(CSearchFile* toadd, bool bClientResponse)
 				sources.WriteUInt32(toadd->GetClientID());
 				sources.WriteUInt16(toadd->GetClientPort());
 				sources.SeekToBegin();
-				file->AddSources(&sources,toadd->GetClientServerIP(),toadd->GetClientServerPort());
+				file->AddSources(&sources,toadd->GetClientServerIP(),toadd->GetClientServerPort(),false);
 			}
 		}
 	}
@@ -600,6 +602,17 @@ bool CSearchList::AddNotes(Kademlia::CEntry* entry, const uchar *hash)
 		}
 	}
 	return flag;
+}
+
+void CSearchList::SetNotesSearchStatus(const uchar* pFileHash, bool bSearchRunning){
+	for (POSITION pos = list.GetHeadPosition(); pos != 0; )
+	{
+		CSearchFile* sf = list.GetNext(pos);
+		if (!md4cmp(pFileHash, sf->GetFileHash()))
+		{
+			sf->SetKadCommentSearchRunning(bSearchRunning);
+		}
+	}
 }
 
 void CSearchList::AddResultCount(uint32 nSearchID, const uchar* hash, UINT nCount)

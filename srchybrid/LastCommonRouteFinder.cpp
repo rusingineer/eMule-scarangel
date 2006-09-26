@@ -951,7 +951,7 @@ uint32 LastCommonRouteFinder::Median(UInt32Clist& list) {
         else
             returnVal = (arr[size/2-1] + arr[size/2])/2;
 
-        delete arr;
+        delete[] arr;
 
         return (UINT)returnVal;
     } else {

@@ -68,6 +68,7 @@ protected:
 	// ZZ:UploadSpeedSense <--
     bool m_bA4AFSaveCpu; // ZZ:DownloadManager
 	*/
+	bool m_bAutoArchDisable;
 	int m_iExtractMetaData;
 
 	CSliderCtrl m_ctlFileBuffSize;
@@ -147,6 +148,7 @@ protected:
 	HTREEITEM m_htiExtractMetaData;
 	HTREEITEM m_htiExtractMetaDataNever;
 	HTREEITEM m_htiExtractMetaDataID3Lib;
+	HTREEITEM m_htiAutoArch;
 	//HTREEITEM m_htiExtractMetaDataMediaDet;
 
 	virtual void DoDataExchange(CDataExchange* pDX);

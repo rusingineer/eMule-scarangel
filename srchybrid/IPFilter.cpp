@@ -30,6 +30,7 @@
 #include "ZipFile.h"
 #include "GZipFile.h"
 #include "RarFile.h"
+#include "ServerWnd.h"
 //Xman end
 
 #ifdef _DEBUG
@@ -357,7 +358,7 @@ void CIPFilter::SaveToDefaultFile()
 			if (fprintf(fp, "%-15s - %-15s , %3u , %s\n", szStart, szEnd, flt->level, flt->desc) == 0 || ferror(fp))
 			{
 				CString strError;
-				strError.Format(_T("Failed to save IP filter to file \"%s\" - %hs"), strFilePath, strerror(errno));
+				strError.Format(_T("Failed to save IP filter to file \"%s\" - %s"), strFilePath, _tcserror(errno));
 				throw strError;
 			}
 		}
@@ -367,7 +368,7 @@ void CIPFilter::SaveToDefaultFile()
 	else
 	{
 		CString strError;
-		strError.Format(_T("Failed to save IP filter to file \"%s\" - %hs"), strFilePath, strerror(errno));
+		strError.Format(_T("Failed to save IP filter to file \"%s\" - %s"), strFilePath, _tcserror(errno));
 		throw strError;
 	}
 }
@@ -771,11 +772,15 @@ void CIPFilter::UpdateIPFilterURL()
 		return;
 	}
 
-
-	thePrefs.m_last_ipfilter_check = safe_mktime(CTime::GetCurrentTime().GetLocalTm());
+	struct tm tmTemp;
+	thePrefs.m_last_ipfilter_check = safe_mktime(CTime::GetCurrentTime().GetLocalTm(&tmTemp));
 
 	if (bHaveNewFilterFile)
+	{
 		LoadFromDefaultFile();
+		if (thePrefs.GetFilterServerByIP())
+			theApp.emuledlg->serverwnd->serverlistctrl.RemoveAllFilteredServers();
+	}
 
 	// In case we received an invalid IP-filter file (e.g. an 404 HTML page with HTTP status "OK"),
 	// warn the user that there are no IP-filters available any longer.

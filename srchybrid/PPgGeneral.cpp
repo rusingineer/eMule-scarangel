@@ -59,6 +59,7 @@ BEGIN_MESSAGE_MAP(CPPgGeneral, CPropertyPage)
 	ON_BN_CLICKED(IDC_ONLINESIG, OnSettingsChange)
 	ON_BN_CLICKED(IDC_CHECK4UPDATE, OnBnClickedCheck4Update)
 	ON_BN_CLICKED(IDC_CHECK4UPDATEMOD, OnSettingsChange) //Xman versions check
+	ON_BN_CLICKED(IDC_MINIMULE, OnSettingsChange)
 	ON_WM_HSCROLL()
 	ON_WM_HELPINFO()
 END_MESSAGE_MAP()
@@ -125,6 +126,11 @@ void CPPgGeneral::LoadSettings(void)
 		CheckDlgButton(IDC_CHECK4UPDATE,1);
 	else
 		CheckDlgButton(IDC_CHECK4UPDATE,0);
+
+	if(thePrefs.m_bEnableMiniMule)
+		CheckDlgButton(IDC_MINIMULE,1);
+	else
+		CheckDlgButton(IDC_MINIMULE,0);
 
 	CString strBuffer;
 	strBuffer.Format(_T("%i %s"),thePrefs.versioncheckdays,GetResString(IDS_DAYS2));
@@ -266,6 +272,7 @@ BOOL CPPgGeneral::OnApply()
 	//Xman end
 	thePrefs.onlineSig = IsDlgButtonChecked(IDC_ONLINESIG)!=0;
 	thePrefs.versioncheckdays = ((CSliderCtrl*)GetDlgItem(IDC_CHECKDAYS))->GetPos();
+	thePrefs.m_bEnableMiniMule = IsDlgButtonChecked(IDC_MINIMULE) != 0;
 
 	theApp.emuledlg->transferwnd->downloadlistctrl.SetStyle();
 	LoadSettings();
@@ -310,6 +317,7 @@ void CPPgGeneral::Localize(void)
 		GetDlgItem(IDC_CHECK4UPDATE)->SetWindowText(GetResString(IDS_CHECK4UPDATE));
 		GetDlgItem(IDC_STARTUP)->SetWindowText(GetResString(IDS_STARTUP));
 		GetDlgItem(IDC_STARTWIN)->SetWindowText(GetResString(IDS_STARTWITHWINDOWS));
+		GetDlgItem(IDC_MINIMULE)->SetWindowText(GetResString(IDS_ENABLEMINIMULE));
 		//Xman versions check
 		GetDlgItem(IDC_CHECK4UPDATEMOD)->SetWindowText(GetResString(IDS_CHECK4UPDATEMOD));
 	}

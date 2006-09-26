@@ -31,6 +31,7 @@
 #pragma warning(disable:4516) // access-declarations are deprecated; member using-declarations provide a better alternative
 #pragma warning(disable:4244) // conversion from 'type1' to 'type2', possible loss of data
 #pragma warning(disable:4100) // unreferenced formal parameter
+#pragma warning(disable:4702) // unreachable code
 //Xman
 #include <crypto.v52.1/rsa.h>
 #include <crypto.v52.1/base64.h>
@@ -38,6 +39,7 @@
 #include <crypto.v52.1/files.h>
 #include <crypto.v52.1/sha.h>
 //Xman end
+#pragma warning(default:4702) // unreachable code
 #pragma warning(default:4100) // unreferenced formal parameter
 #pragma warning(default:4244) // conversion from 'type1' to 'type2', possible loss of data
 #pragma warning(default:4516) // access-declarations are deprecated; member using-declarations provide a better alternative
@@ -77,12 +79,26 @@ CCollectionCreateDialog::CCollectionCreateDialog(CWnd* pParent /*=NULL*/)
 	, m_pCollection(NULL)
 	, m_bSharedFiles(false)
 {
+	m_icoWnd = NULL;
+	m_icoForward = NULL;
+	m_icoBack = NULL;
+	m_icoColl = NULL;
+	m_icoFiles = NULL;
+	m_bCreatemode = false;
 }
 
 CCollectionCreateDialog::~CCollectionCreateDialog()
 {
 	if (m_icoWnd)
 		VERIFY( DestroyIcon(m_icoWnd) );
+	if (m_icoForward)
+		VERIFY( DestroyIcon(m_icoForward) );
+	if (m_icoBack)
+		VERIFY( DestroyIcon(m_icoBack) );
+	if (m_icoColl)
+		VERIFY( DestroyIcon(m_icoColl) );
+	if (m_icoFiles)
+		VERIFY( DestroyIcon(m_icoFiles) );
 }
 
 void CCollectionCreateDialog::DoDataExchange(CDataExchange* pDX)
@@ -133,10 +149,11 @@ BOOL CCollectionCreateDialog::OnInitDialog(void)
 	m_CollectionListCtrl.Init(_T("CollectionCreateR"));
 	m_CollectionAvailListCtrl.Init(_T("CollectionCreateL"));
 
-	m_AddCollectionButton.SetIcon(theApp.LoadIcon(_T("FORWARD")));
-	m_RemoveCollectionButton.SetIcon(theApp.LoadIcon(_T("BACK")));
-	m_CollectionListIcon.SetIcon(theApp.LoadIcon(_T("COLLECTION")));
-	m_CollectionSourceListIcon.SetIcon(theApp.LoadIcon(_T("SharedFilesList")));
+	m_AddCollectionButton.SetIcon(m_icoForward = theApp.LoadIcon(_T("FORWARD")));
+	m_RemoveCollectionButton.SetIcon(m_icoBack = theApp.LoadIcon(_T("BACK")));
+	m_CollectionListIcon.SetIcon(m_icoColl = theApp.LoadIcon(_T("COLLECTION")));
+	m_CollectionSourceListIcon.SetIcon(m_icoFiles = theApp.LoadIcon(_T("SharedFilesList")));
+
 	m_CollectionListLabel.SetWindowText(GetResString(IDS_COLLECTIONLIST));
 	m_SaveButton.SetWindowText(GetResString(IDS_SAVE));
 	m_CancelButton.SetWindowText(GetResString(IDS_CANCEL));

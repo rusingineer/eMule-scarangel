@@ -42,6 +42,8 @@
 #include "UserMsgs.h"
 #include "SharedFilesWnd.h"
 #include "HighColorTab.hpp"
+#include "PartFile.h"
+#include "TransferWnd.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -238,7 +240,7 @@ void CHistoryListCtrl::Init(void)
 	LoadSettings();
 	
 	Reload();
-
+	
 
 	SetSortArrow();
 	SortItems(SortProc, GetSortItem() + (GetSortAscending() ? 0:20));
@@ -766,8 +768,6 @@ BOOL CHistoryListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 								nItem = GetNextItem(nItem, LVNI_SELECTED);
 								ASSERT(nItem != -1);
 								CKnownFile *item_File = (CKnownFile *)GetItemData(nItem);
-								//if(item_File && !theApp.sharedfiles->IsFilePtrInList(item_File)){
-								//Xman 4.2 crashfix
 								if(item_File && theApp.sharedfiles->GetFileByID(item_File->GetFileHash())==NULL ){
 									RemoveFile(item_File);
 									nItem--;
@@ -822,6 +822,9 @@ void CHistoryListCtrl::OpenFile(CKnownFile* file){
 void CHistoryListCtrl::RemoveFile(CKnownFile *toRemove) {
 	if(theApp.sharedfiles->IsFilePtrInList(toRemove))
 		return;
+
+	if (toRemove->IsKindOf(RUNTIME_CLASS(CPartFile)))
+		theApp.emuledlg->transferwnd->downloadlistctrl.ClearCompleted(static_cast<CPartFile*>(toRemove));
 
 	if(theApp.knownfiles->RemoveKnownFile(toRemove)){
 		LVFINDINFO info;

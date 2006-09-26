@@ -60,15 +60,15 @@ namespace Kademlia
 			uint32 Consolidate();
 			bool OnBigTimer();
 			void OnSmallTimer();
-			bool Add(const CUInt128 &uID, uint32 uIP, uint16 uUDPPort, uint16 uTCPPort, uint8 uVersion);
-			bool Add(CContact* pContact);
-			void SetAlive(uint32 uIP, uint16 uUDPPort);
+			bool Add(const CUInt128 &uID, uint32 uIP, uint16 uUDPPort, uint16 uTCPPort, uint8 uVersion, bool bUpdate);
+			bool AddUnfiltered(const CUInt128 &uID, uint32 uIP, uint16 uUDPPort, uint16 uTCPPort, uint8 uVersion, bool bUpdate);
+			bool Add(CContact* pContact, bool bUpdate);
 			CContact *GetContact(const CUInt128 &uID) const;
 			UINT GetNumContacts() const;
 			// Returns a list of all contacts in all leafs of this zone.
 			void GetAllEntries(ContactList *plistResult, bool bEmptyFirst = true);
 			// Returns the *maxRequired* tokens that are closest to the target within this zone's subtree.
-			void GetClosestTo(uint32 uMaxType, const CUInt128 &uTarget, const CUInt128 &uDistance, uint32 uMaxRequired, ContactMap *pmapResult, bool bEmptyFirst = true, bool bInUse = false) const; //Xman official patch
+			void GetClosestTo(uint32 uMaxType, const CUInt128 &uTarget, const CUInt128 &uDistance, uint32 uMaxRequired, ContactMap *plistResult, bool bEmptyFirst = true, bool bSetInUse = false) const;
 			// Ideally: Returns all contacts that are in buckets of common range between us and the asker.
 			// In practice: returns the contacts from the top (2^{logBase+1}) buckets.
 			UINT GetBootstrapContacts(ContactList *plistResult, UINT uMaxRequired);

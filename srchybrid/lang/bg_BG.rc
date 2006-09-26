@@ -57,8 +57,8 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_SOCKETS_INIT_FAILED "Грешка при откриването на сокета.."
-    IDS_ABOUTBOX            "Относно eMule..."
+    IDS_SOCKETS_INIT_FAILED "Грешка при инициализиране на сокета.."
+    IDS_ABOUTBOX            "За eMule..."
     IDS_HTTPDOWNLOAD_FILESTATUS "%s за %s"
     IDS_HTTPDOWNLOAD_CONNECTED "Свързване със %s"
     IDS_HTTPDOWNLOAD_RESOLVING_NAME "Определяне на името: %s"
@@ -71,8 +71,6 @@ STRINGTABLE
 BEGIN
     IDS_HTTPDOWNLOAD_GETTING_FILE_INFORMATION 
                             "Получаване на информация за файла"
-    IDS_HTTPDOWNLOAD_FAIL_PARSE_ERROR 
-                            "Възникна грешка при анализа на URL: %s"
     IDS_HTTPDOWNLOAD_GENERIC_ERROR 
                             "Възникна грешка при опита за сваляне на файла, Грешка:%s"
     IDS_HTTPDOWNLOAD_FAIL_CONNECT_SERVER 
@@ -85,7 +83,7 @@ BEGIN
                             "Възникна грешка при сваляне на файла, Грешка:%s"
     IDS_HTTPDOWNLOAD_PERCENTAGE 
                             "Сваляне: %s%% от %s завършени"
-    IDS_HTTPDOWNLOAD_RETREIVEING_FILE "Поправяне на файл"
+    IDS_HTTPDOWNLOAD_RETREIVEING_FILE "Сваляне на файл"
     IDS_HTTPDOWNLOAD_OF     "%s от %s"
     IDS_CANCEL              "Отказ"
 END
@@ -94,7 +92,7 @@ STRINGTABLE
 BEGIN
     IDS_HTTP_CAPTION        "Обновяване на списъка със сървъри"
     IDS_HTTPDOWNLOAD_TIMELEFT "%s (%s копирани)"
-    IDS_HSAV                "Проверка на кода"
+    IDS_HSAV                "Проверка на хеша"
     IDS_FD_CORR             "Повредени"
     IDS_HTTPDOWNLOAD_OK_TO_OVERWRITE 
                             "Файлът '%s' вече съществува.\nИскате ли да го замените?"
@@ -111,37 +109,32 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_MAIN_SOCKETERROR    "Фатална Грешка: Не мога да се създам сокет на порт %i"
+    IDS_MAIN_SOCKETERROR    "Фатална Грешка: Не може да се създаде сокет на порт %i"
     IDS_MAIN_BTN_DISCONNECT "Разкачване"
-    IDS_MAIN_BTN_DISCONNECT_TOOLTIP "Разкачване от текущия сървър"
     IDS_ERR_WRONGFILEID     "Грешка при изпращане ID на файла"
-    IDS_ERR_BADHASHSET      "Приета е повредена или невалидна проверка на кода"
+    IDS_ERR_BADHASHSET      "Приети са повредени или невалидни данни от проверката на хеша"
     IDS_ERR_BADDATABLOCK    "Приет е повреден или невалиден блок от данни"
-    IDS_ERR_ILLFORMEDHASH   "Лошо оформен код"
+    IDS_ERR_ILLFORMEDHASH   "Лошо оформен хеш"
     IDS_ERR_BADED2KLINK     "Не добре оформен ЕD2K линк"
     IDS_ERR_NOSLLINK        "Няма ED2K сървър или линк към файла"
     IDS_ERR_WRONGPACKAGESIZE "Невалиден OP_FILEREQUEST размер на пакета"
-    IDS_ERR_WRONGHPACKAGESIZE "Невалиден OP_HASHSETREQUEST размер на пактите"
-    IDS_ERR_BADCLIENTACTION "Клиентът причинява грешка или прави нещо неправилно: %s. Връзката прекъсната!"
+    IDS_ERR_WRONGHPACKAGESIZE "Невалиден OP_HASHSETREQUEST размер на пакетите"
     IDS_ERR_UNKNOWNCLIENTACTION 
-                            "Неизвестни15:05 29.8.2005 г. клиенти изпращат разширен протоколен пакет"
-    IDS_ERR_OPENMET         "Грешка: Не мога да отворя файла part.met! (%s => %s)"
+                            "Неизвестен клиент изпраща пакет за разширен трансфер по протокол"
+    IDS_ERR_OPENMET         "Грешка: Не може да се отвори файла part.met! (%s => %s)"
     IDS_ERR_BADMETVERSION   "Грешка: Невалидна версия на файла part.met! (%s => %s)"
-    IDS_ERR_BADGAP          "Невалидна празнина във файла part.met"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_EMPTYADRESSESDAT_TITLE "Не мога да получа списък със сървъри"
     IDS_ERR_BADSERVERMETVERSION "Невалидна версия в server.met (0x%X)!"
     IDS_SERVERSFOUND        "%i сървъра намерени в server.met"
-    IDS_SERVERSADDED        "прибавените сървъри, %d не са добавени (вече са в списъка/или са невалидни)"
-    IDS_ERR_BADSERVERLIST   "Грешка: файлът server.met е повреден, не мога да заредя списъка със сървъри"
+    IDS_SERVERSADDED        "сървъра прибавени, %d не са добавени (вече са в списъка/или са невалидни)"
+    IDS_ERR_BADSERVERLIST   "Грешка: файлът server.met е повреден, не може да се зареди списъка със сървъри"
     IDS_ERR_FILEERROR_SERVERMET 
-                            "Неочаквана грешка при четенето на файла server.met: %s, не мога да заредя списъка със сървъри"
-    IDS_ERR_SAVESERVERMET   "Не мога да запиша server.met!"
+                            "Неочаквана грешка при четене на файла server.met: %s, не може да се зареди списъка със сървъри"
+    IDS_ERR_SAVESERVERMET   "Не може да се запише server.met!"
     IDS_PASSIVE             "Пасивен"
-    IDS_MAIN_CONNECTEDTO    "Връзката е установена с:"
     IDS_MAIN_BTN_CANCEL     "Отказ"
     IDS_AVAIL               "Части: %d , налични: %d (%.1f%%)\n\n"
     IDS_TYPE                "Тип"
@@ -159,11 +152,9 @@ BEGIN
     IDS_FILES               "Файлове"
     IDS_PREFERENCE          "Настройки"
     IDS_PRIONOPREF          "Без настройки"
-    IDS_CONNECTTHIS         "Свързване с избрания сървър(и)"
-    IDS_CHAT_WELCOME        "Чат\n  \nКликнете с десен бутон върху някой клиент и изберете 'Изпрати съобщение' за започване на чат сесия"
-    IDS_MAIN_BTN_CANCEL_TOOLTIP "Спиране на текущите опити за свързване"
+    IDS_CONNECTTHIS         "Свързване с..."
     IDS_MAIN_BTN_CONNECT    "Свързване"
-    IDS_ERR_SAVESERVERMET2  "Не мога да запиша server.met! Вие можете да изтриете server.met и да преименувате server.met.old на server.met!"
+    IDS_ERR_SAVESERVERMET2  "Не може да се запише server.met! Трябва да изтриете server.met и да преименувате server.met.old на server.met!"
     IDS_NOTCONNECTED        "Не е свързан"
     IDS_DISCONNECTED        "Разкачен"
     IDS_USERS               "Потребител: %i"
@@ -176,37 +167,35 @@ BEGIN
     IDS_ERR_WRITEERROR      "Неочаквана грешка при записване на %s : %s"
     IDS_ERR_COMPLETIONFAILED 
                             "Неочаквана грешка при завършване на %s. Свалянето е прекратено, рестартирайте eMule за започване на друг опит за завършване"
-    IDS_ERR_DELETEFAILED    "Не мога изтрия %s, трябва да направите това ръчно"
+    IDS_ERR_DELETEFAILED    "Не може да се изтрие %s, трябва да направите това ръчно"
     IDS_DOWNLOADDONE        "Завърши свалянето на %s :-)"
-    IDS_ERR_DELETE          "Не мога да изтрия %s"
+    IDS_ERR_DELETE          "Не може да се изтрие %s"
     IDS_ERR_HASHERRORWARNING 
-                            "Внимание: Не мога да направя проверка на кода за свалената част - проверката не е завършена (%s)"
-    IDS_ERR_INCOMPLETEHASH  "Грешка: Не мога да направя проверка на кода за свалената част - проверкате не е завършена (%s). Това не трябва да се повтаря"
+                            "Внимание: Не може да се направи проверка на хеша за свалената част - проверката не е завършена (%s)"
+    IDS_ERR_INCOMPLETEHASH  "Грешка: Не може да се направи проверка на хеша за свалената част - проверкате не е завършена (%s). Това не трябва да се повтаря"
     IDS_DOWNLOADING         "Сваляне"
     IDS_WAITING             "Изчакване"
-    IDS_HASHING             "Проверка на кода"
+    IDS_HASHING             "Хеширане"
     IDS_COMPLETING          "Завършване"
     IDS_COMPLETE            "Готово"
     IDS_PAUSED              "Пауза"
     IDS_ERRORLIKE           "Грешен"
-    IDS_ASSIGNED2K          "eMule не е настроен да прехваща eD2K линкове. Искате ли да определите eMule да прехваща eD2K линкове сега (препоръчително)?"
+    IDS_ASSIGNED2K          "eMule не е настроен да прихваща eD2K линкове. Искате ли да определите eMule да прихваща eD2K линкове сега (препоръчително)?"
     IDS_ERR_EMPTYADRESSESDAT 
                             "Във файла 'adresses.dat' не е намерен адрес за сървър. За да може списъка със сървъри автоматично да се обновява, моля поставете валиден адрес в този файл"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_LINKNOTADDED        "Не мога да добавя линк"
+    IDS_LINKNOTADDED        "Не може да се добави линка"
     IDS_MAIN_EXIT           "Наистина ли искате да затворите eMule?"
-    IDS_MAIN_EXITTITLE      "Потвърждение за изход"
     IDS_MAIN_POPUP_RESTORE  "Възстанови"
     IDS_CONNECTTOANYSERVER  "Свържи се с някой сървър"
     IDS_EXIT                "Изход"
     IDS_CONNECTING          "Свързване"
-    IDS_FAILED              "Не успях"
+    IDS_FAILED              "неуспешно"
     IDS_ERR_BADSERVERREPLY  "Приет е невалиден или повреден отговор за влизане от сървъра"
-    IDS_NEWCLIENTID         "Новото ID на Клиента е %u"
-    IDS_NOSHAREDFOLDERS     "Няма споделени папки"
+    IDS_NEWCLIENTID         "Новото ID на клиента е %u"
     IDS_SHAREDFOLDERS       "Споделени папки"
     IDS_VIEW1               "Преглед"
     IDS_VIEW2               " (Не се споделя)"
@@ -217,12 +206,12 @@ END
 STRINGTABLE 
 BEGIN
     IDS_PRIOHIGH            "Висок"
-    IDS_DOWNLOADMENUTITLE   "Сваляния"
+    IDS_DOWNLOADMENUTITLE   "Задачи"
     IDS_PRIORITY            "Приоритет"
     IDS_NEWSERVERS          "Получени %d нови сървъра"
     IDS_DL_STOP             "Спри"
     IDS_DL_PAUSE            "Пауза"
-    IDS_DL_RESUME           "Възобнови"
+    IDS_DL_RESUME           "Продължи"
     IDS_DL_OPEN             "Отвори Файла"
     IDS_DL_INFO             "Покажи детайли за файла"
     IDS_DL_CLEAR            "Изчисти завършените"
@@ -230,7 +219,7 @@ BEGIN
     IDS_DL_LINK2            "Копирай ED2K линка в буфера (HTML)"
     IDS_SHOWDETAILS         "Покажи детайли"
     IDS_SEND_MSG            "Изпрати съобщение"
-    IDS_ASKING              "Запитвани"
+    IDS_ASKING              "Запитани"
     IDS_CONNVIASERVER       "Свързан чрез сървър"
 END
 
@@ -238,17 +227,13 @@ STRINGTABLE
 BEGIN
     IDS_ONQUEUE             "На опашката"
     IDS_TRANSFERRING        "Трансфер"
-    IDS_RECHASHSET          "Получаване на код"
+    IDS_RECHASHSET          "Получаване на хеш"
     IDS_NONEEDEDPARTS       "Няма нужните чати"
     IDS_NOCONNECTLOW2LOW    "Не може да се свържат две LowID"
     IDS_UNKNOWN             "Неизвестен"
     IDS_ASKED4ANOTHERFILE   "Запитване за още един файл"
-    IDS_Q_CANCELDL          "Сигурни ли сте че искате да се откажете и да изтриете тези файлове?\n"
-    IDS_Q_CANCELDL2         "Сигурни ли сте че искате да се откажете и да изтриете този файл?\n"
-    IDS_COPIED2CB           "Копирани в буфера: \n"
-    IDS_PROCDONE            "% завършени"
-    IDS_SELECTINCOMINGDIR   "Изберете папка за сваляните файлове"
-    IDS_SELECTTEMPDIR       "Изберете папка за временните файлове"
+    IDS_Q_CANCELDL          "Сигурни ли сте, че искате да се откажете и да изтриете тези файлове?\n"
+    IDS_Q_CANCELDL2         "Сигурни ли сте, че искате да се откажете и да изтриете този файл?\n"
     IDS_DL_FILENAME         "Име на файла"
     IDS_DL_SIZE             "Размер"
     IDS_DL_TRANSF           "Трансферирани"
@@ -259,12 +244,11 @@ BEGIN
     IDS_DL_SPEED            "Скорост"
     IDS_DL_PROGRESS         "Напредък"
     IDS_DL_SOURCES          "Източници"
-    IDS_ERR_BADSERVERLISTRECEIVED "Получен е невалиден пакет списък със сървъри"
+    IDS_ERR_BADSERVERLISTRECEIVED "Получен е невалиден пакет за списъка със сървъри"
     IDS_STATUS              "Състояние"
     IDS_DL_REMAINS          "Остава"
     IDS_UPDATEFROM          "Обнови от URL: (формат filter.dat или PeerGuardian)"
     IDS_QL_USERNAME         "Потребителско име"
-    IDS_ERR_PACKAGEHANDLING "Необработена грешка при получаване на пакет от сървъра (%s)"
     IDS_QL_RATING           "Категория"
     IDS_CONNECTINGTO        "Свързване с %s (%s:%i)..."
     IDS_CLIENTS             "Клиенти"
@@ -287,34 +271,26 @@ BEGIN
     IDS_SRV_ADDR            "Моля въведете адрес на сървър"
     IDS_SRV_PORT            "Непълен порт на сървъра: Моля въведете порт за сървъра"
     IDS_SRV_NOTADDED        "Сървъра не е добавен!"
-    IDS_SRV_READD           "Сървъра е маркиран като неработещ, добавили сте го отново!"
     IDS_SRV_NOURLAV         "Няма наличен URL."
     IDS_INVALIDURL          "Невалиден URL"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_FAILEDDOWNLOADMET "Не можах да сваля списък със сървъри от %s"
+    IDS_ERR_FAILEDDOWNLOADMET "Неуспешно сваляне на списък със сървъри от %s"
     IDS_PERMISSION          "Права за достъп"
     IDS_SHAREDFILES         "Споделени"
     IDS_PRIOVERYLOW         "Много нисък"
-    IDS_PRIORELEASE         "Пуск"
-    IDS_FSTATUS_LOCKED      "eMule Скорост"
-    IDS_KADALPHA            "Мрежата Kademlia все още е в ранен етап на разработка. Препоръчваме Ви да я включите само ако искате да я изпробвате."
+    IDS_PRIORELEASE         "Издание"
     IDS_FSTATUS_FRIENDSONLY "Само приятели"
-    IDS_FSTATUS_PUBLIC      "Общодостъпен"
     IDS_ERR_RENAMESF        "Грешка при преименуване на\r\n    ""%s""\r\nв\r\n    ""%s""\r\n\r\n%hs"
-    IDS_PRIOHIGHEST         "Най-висок"
     IDS_AVAILABLE           "Налични"
-    IDS_ERR_NOPRIMCHANGE    "Не можете да променяте правата за достър докато файлът все още се сваля!"
-    IDS_HIDDEN              "Скрит"
 END
 
 STRINGTABLE 
 BEGIN
     IDS_FSTAT_TRANSFER      "Трансфер"
     IDS_FSTAT_CONNECTION    "Връзка"
-    IDS_FSTAT_CLIENTS       "Клиенти"
     IDS_FSTAT_SERVERS       "Сървъри"
     IDS_FSTAT_WAITING       "Изчакване..."
     IDS_TIME                "Време"
@@ -323,31 +299,22 @@ BEGIN
     IDS_STATS_AVGDL         "Средна скорост на сваляне: %s"
     IDS_STATS_AVGUL         "Средна скорост на качване: %s"
     IDS_STATS_FOUNDSRC      "Намерени източници: %i"
-    IDS_STATS_ACTDL         "Активни сваляния (части): %i"
+    IDS_STATS_ACTDL         "Активни задачи (части): %i"
     IDS_STATS_ACTUL         "Активни качвания: %i"
     IDS_STATS_WAITINGUSERS  "Чакащи за качване: %i"
     IDS_STATS_RECONNECTS    "Повторни свързвания: %i"
-    IDS_STATS_WAITTRANSF    "изчакване за трансфер..."
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_STATS_WAITCONN      "изчакване за свързване..."
-    IDS_STATS_CONNECTEDSINCE "Свързан към сървъра от: %s"
-    IDS_STATS_RATIO         "Съотношение КЧ:СВ (сесия (общо)):"
     IDS_STATS_UNKNOWNCLIENT "Неизвестни: %i"
     IDS_STATS_TOTAL         "Общо: %i"
-    IDS_STATS_WORKING       "Работещи: %i"
-    IDS_STATS_DEAD          "Неработещи/Изтрити: %i"
     IDS_DISABLED            "Забранен"
     IDS_STOPPED             "Спрян"
     IDS_STATS_UPDATELABEL   "Забавяне за обновяване: %i сек."
-    IDS_QUEUECOUNT          "%u (%u забранени)"
-    IDS_NICKNAME            "Прякор: "
-    IDS_CLIENTSFILENAME     "\nИме на файла на клиента: "
     IDS_ASKEDFAF            "\nЗапитване за още един файл"
     IDS_WAITED              "Изчакванe"
-    IDS_ERR_LOADCREDITFILE  "Неуспешно зареждане на файла с кредити, ще бъде създаен нов файл!"
+    IDS_ERR_LOADCREDITFILE  "Неуспешно зареждане на файла с кредити, ще бъде създаден нов файл!"
 END
 
 STRINGTABLE 
@@ -356,31 +323,26 @@ BEGIN
     IDS_CREDITFILELOADED    "Файлът с кредити е зареден, %u клиента са известни"
     IDS_CREDITFILECORRUPT   "Грешка: файлът с кредити е повреден и ще бъде заменен!"
     IDS_ERR_CREDITFILEREAD  "Внезапна грешка при четене на файла с кредити: %s"
-    IDS_ERR_FAILED_CREDITSAVE "Не мога да запиша файла с кредити"
+    IDS_ERR_FAILED_CREDITSAVE "Не може да се запише файла с кредити"
     IDS_NOPARTSFOUND        "Не са намерени частични файлове"
     IDS_FOUNDPARTS          "Намерен(и) %i частичен(ни) файл(а)"
     IDS_NEWDOWNLOAD         "Сваляне на %s"
     IDS_ERR_ALREADY_DOWNLOADING "Вие вече сваляте файла %s"
     IDS_ERR_ALREADY_DOWNLOADED "Вие вече имате файла %s"
-    IDS_ERR_SERVERMET_BAD   "Грешка: файлът known.met е повреден, не мога да заредя разпознатите файлове"
-    IDS_ERR_SERVERMET_UNKNOWN 
-                            "Внезапна грешка при четене на known.met: %s, не мога да заредя разпознатите файлове"
+    IDS_ERR_SERVERMET_BAD   "Грешка: файлът known.met е повреден, не може да се заредят известните файлове"
+    IDS_ERR_SERVERMET_UNKNOWN "Внезапна грешка при четене на known.met: %s, не може да се заредят известните файлове"
     IDS_ERR_CONNECTIONERROR "Грешка при свързване с %s (%s:%i): %s"
     IDS_ERR_SOCKET          "Грешка при зареждане на списъка със сървъри на сокета: %s (%s:%i): %s"
     IDS_SHAREDFOUND         "Намерен(и) %i споделен(и) файл(а)"
-    IDS_SHAREDFOUNDHASHING  "Намерен(и) %i споделен(и) файл(а), проверка на кода на %i нов(и) файл(а)"
+    IDS_SHAREDFOUNDHASHING  "Намерен(и) %i споделен(и) файл(а), проверка на хеша на %i нов(и) файл(а)"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_UDPEXT          "Грешка при обработката на входящия разширен протокол UDP"
     IDS_ERR_INCOMPLETEBLOCK "Запитване за незавършен блок"
-    IDS_ERR_OPEN            "Не мога да отворя заявеният файл"
+    IDS_ERR_OPEN            "Не може да се отвори заявеният файл"
     IDS_ERR_CLIENTERRORED   "Клиентът '%s' причинява грешка при създаването на пакета (%s) - връзката прекъсната"
     IDS_ERR_REQ_FNF         "Заявеният файл не е намерен"
-    IDS_CLIENTBLOCKED       "Клиентът '%s' изглежда агресивен и ще бъде забранен"
-    IDS_LUSERS              "Потребители"
-    IDS_LFILES              "Файлове"
     IDS_DESC                "Описание: %s"
     IDS_PORT                "Порт"
     IDS_ERR_NOVALIDSERVERSFOUND 
@@ -396,36 +358,32 @@ STRINGTABLE
 BEGIN
     IDS_ERR_METCORRUPT      "Грешка: %s (%s) е повреден и не може да бъде зареден"
     IDS_ERR_FILEERROR       "Внезапна грешка при четене на %s (%s): %s"
-    IDS_ERR_FILEOPEN        "Не мога да отворя %s (%s)"
+    IDS_ERR_FILEOPEN        "Не може да се отвори %s (%s)"
     IDS_SEL_SKINDIR         "Изберете папка с облик..."
-    IDS_ERR_REHASH          "Внимание: %s може да е повреден, изпълнява се проверка на кода на завършените части"
+    IDS_ERR_REHASH          "Внимание: %s може да е повреден, изпълнява се проверка на хеша на завършените части"
     IDS_SKIN_PROF           "Облик"
     IDS_ERR_PART_FNF        "Не е намерен частичен файл"
-    IDS_ERR_OPENMETFILE     "Не мога да отворя частичния файл"
     IDS_KADOPEN             "Отвори"
     IDS_ERR_SAVEMET         "Грешка при записване на частичен файл: %s (%s)"
     IDS_ERR_FOUNDCORRUPTION "Намерена е повредена част (%i) в %s"
-    IDS_HASHINGDONE         "Приключи повторната проверка на кода за %s, файлът е ОК"
+    IDS_HASHINGDONE         "Приключи повторната проверка на хеша за %s, файлът е ОК"
     IDS_ERR_PARTCORRUPT     "Свалената част %i е повредена:(  (%s)"
     IDS_ICHWORKED           "I.C.H.: Възстановена е повредената част %i (%s), Записана: %s"
     IDS_ERR_OUTOFSPACE      "Вие нямате достатъчно място на диска за да сваляте %s!"
-    IDS_SE                  "Обмяна"
+    IDS_SE                  "Обмен"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_NOSERVERSC      "В списъка със сървъри няма годни за свързване"
     IDS_CONNECTEDTO         "Връзката установена с: %s"
     IDS_DL_PREVIEW          "Преглед"
     IDS_VIEWQUEUE           "Покажи опашката"
-    IDS_VIEWUPLOADS         "Покажи качваните"
     IDS_TW_UPLOADS          "За качване"
     IDS_TW_DOWNLOADS        "За сваляне"
     IDS_TW_QUEUE            "Клиенти на опашката:"
     IDS_SW_SEARCHBOX        "Търсене"
     IDS_SW_NAME             "Име"
     IDS_SW_GLOBAL           "Глобално търсене"
-    IDS_SW_TYPE             "Тип"
     IDS_SW_DIRECTDOWNLOAD   "Директно сваляне"
     IDS_SW_LINK             "ED2K Линк"
     IDS_SW_START            "Старт"
@@ -454,20 +412,14 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_PRIORITY_UP         "Покачи приоритета"
-    IDS_PRIORITY_DOWN       "Понижи приоритета"
     IDS_SPEED_LIMITS        "Огр. на скоростта"
     IDS_CAPACITY_LIMITS     "Огр. на каналите"
     IDS_ADMIN               "Администратор"
     IDS_ACCESSDENIED        "Достъпът отказан!"
     IDS_WEB_LOWUSER         "Гост"
-    IDS_WEB_ERR_CANTLOAD    "Не мога да заредя шаблоните: Не мога да отворя файла %s"
+    IDS_WEB_ERR_CANTLOAD    "Неуспешно зареждане на шаблоните: Не може да се отвори файла %s"
     IDS_GLOBALSEARCH        "Глобално (Сървър)"
     IDS_METHOD              "Метод"
-    IDS_SW_WEBBASED         "Web-базирано търсене"
-    IDS_NOTHING             "нищо"
-    IDS_SETUPSPEED          "Сложи огр. за качване"
-    IDS_SETDOWNSPEED        "Сложи огр. за сваляне"
     IDS_UNDO                "Върни"
     IDS_DAYLY               "Ежедневно"
 END
@@ -489,7 +441,7 @@ BEGIN
     IDS_DETAILS             "Детайли"
     IDS_ACTION              "Действие"
     IDS_REMOVE              "Премахни"
-    IDS_NEW                 "Ново"
+    IDS_NEW                 "Нов"
 END
 
 STRINGTABLE 
@@ -497,14 +449,13 @@ BEGIN
     IDS_SF_TOTAL            "Общо"
     IDS_SF_TRANS            "Трансферирани:"
     IDS_SF_ACCEPTED         "Приети за качване:"
-    IDS_SF_REQUESTED        "Заявени:"
+    IDS_SF_REQUESTED        "Запитани:"
     IDS_ST_DOWNLOAD         "Скорост на сваляне"
     IDS_ST_UPLOAD           "Скорост на качване"
     IDS_ST_CURRENT          "Текуща"
     IDS_ST_SESSION          "Средно за сесията"
-    IDS_ST_ACTIVED          "Активни сваляния"
+    IDS_ST_ACTIVED          "Активни задачи"
     IDS_ST_ACTIVEU          "Активни качвания"
-    IDS_ST_WAITINGU         "Чакащи за качване"
     IDS_CW_MESSAGES         "Съобщения"
     IDS_CW_FRIENDS          "Приятели"
     IDS_CW_SEND             "Изпрати"
@@ -521,9 +472,7 @@ BEGIN
     IDS_PW_BROWSE           "Преглед..."
     IDS_PW_SHARED           "Споделени папки (Натиснете Ctrl за да включите подпапките)"
     IDS_PW_CONNECTION       "Връзка"
-    IDS_PW_DOWNC            "Капацитет за сваляне"
     IDS_PW_DOWNL            "Ограничи"
-    IDS_PW_UPC              "Капацитет за качване"
     IDS_PW_UPL              "Ограничи"
     IDS_PW_MAXC             "Брой връзки"
     IDS_PW_CLIENTPORT       "Порт"
@@ -546,16 +495,15 @@ BEGIN
     IDS_PW_BEEP             "Звуков сигнал при грешка"
     IDS_PW_PROMPT           "Потвърждение при изход"
     IDS_PW_SPLASH           "Покажи начален екран"
-    IDS_PW_DBLCLICK         "Разгъни списъка със сваляните при двойно кликване"
+    IDS_PW_DBLCLICK         "Разгъни списъка със сваляните при двойно щракване"
     IDS_PW_TOOL             "Покажи подсказки [секунди]"
-    IDS_PW_FRONT            "Покажи при кликване върху линк"
+    IDS_PW_FRONT            "Покажи при щракване върху линк"
     IDS_PW_LANG             "Език"
 END
 
 STRINGTABLE 
 BEGIN
     IDS_PW_FILES            "Файлове"
-    IDS_PW_ICH              "Интелигентна обработка на повредените части"
     IDS_PW_SHARE            "Моите споделени файлове/папки"
     IDS_PW_EVER             "Всички"
     IDS_PW_FRIENDS          "Приятели"
@@ -575,17 +523,13 @@ END
 STRINGTABLE 
 BEGIN
     IDS_FD_GENERAL          "Основни"
-    IDS_FD_NAME             "Пълно име:"
     IDS_FD_MET              "Име на част:"
-    IDS_FD_HASH             "Код:"
+    IDS_FD_HASH             "Хеш:"
     IDS_FD_SIZE             "Размер:"
-    IDS_FD_STATUS           "Състояние на частите:"
     IDS_FD_TRANSFER         "Трансфер"
-    IDS_FD_SOURCES          "Намерени източници:"
     IDS_FD_PARTS            "Части:"
     IDS_FD_TRANS            "Трансферирани:"
     IDS_FD_DATARATE         "Скорост:"
-    IDS_FD_TRANSI           "Трансфериращи се:"
     IDS_FD_COMPSIZE         "Завършени:"
     IDS_FD_CLOSE            "Затвори"
     IDS_FD_TITLE            "Детайли"
@@ -595,12 +539,11 @@ END
 STRINGTABLE 
 BEGIN
     IDS_CD_UNAME            "Потребител:"
-    IDS_CD_UHASH            "Код:"
+    IDS_CD_UHASH            "Хеш:"
     IDS_CD_CSOFT            "Клиент"
     IDS_CD_UIP              "IP адрес:"
     IDS_CD_SIP              "IP на сървъра:"
     IDS_CD_VERSION          "Версия:"
-    IDS_CD_UID              "ID:"
     IDS_CD_SNAME            "Име на сървъра:"
     IDS_CD_CDOWN            "Свалящи се:"
     IDS_CD_DOWN             "Свалени (тази сесия):"
@@ -619,13 +562,12 @@ BEGIN
     IDS_CD_RATING           "Оценки (общо):"
     IDS_CD_USCORE           "Коефициент на качване:"
     IDS_CD_TITLE            "Подробности за клиента"
-    IDS_EMULEW              "Кликнете"
+    IDS_EMULEW              "Щракнете"
     IDS_EMULEW2             "за да проверите за нова версия"
     IDS_EMULEW3             "тук"
     IDS_PW_MAXSOURCES       "Брой източници/файл"
     IDS_SHAREDFILESCOUNT    "Брой споделени файлове: %i"
     IDS_SF_SIZE             "Общ размер на споделените файлове: %s"
-    IDS_ERR_WRONGPARTNUMBER "грешен номер на част"
     IDS_ERR_BADPORT         "грешен номер на порт"
     IDS_ERR_NOHELLO         "Запитване за нещо без казване на Здравей."
     IDS_ERR_INVALIDPACKAGE  "Получен е невалиден или повреден пакет"
@@ -635,17 +577,14 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ERR_BADSIZE         "Невалиден размер (OP_QUEUERANKING)"
-    IDS_ERR_BADCLIENT2      "Клиента '%s' (IP:%s) причинява грешка: %u. Връзката прекъсната!"
     IDS_ERR_NOTAFILELINK    "Неправилен линк"
-    IDS_ERR_CREATEPARTFILE  "Грешка: Не мога да създам частичен файл"
-    IDS_ERR_UDP_MISCONF     "Грешка при обработка на входящите UDP пакети (Най-вероятно неконфигуриран сървър)"
+    IDS_ERR_CREATEPARTFILE  "Грешка: Не може да се създаде частичен файл"
     IDS_CHAT_START          "*** Начало на чат сесията: "
     IDS_FILEPRIO            "Приоритет на файла"
     IDS_SCORE               "Точки"
     IDS_ASKED               "Запитан"
     IDS_LASTSEEN            "Последно видян"
     IDS_BANNED              "Забранени"
-    IDS_PRIOVERYHIGH        "Много висок"
     IDS_UUSERS              "Потребители"
     IDS_UFAILED             "Повредени"
     IDS_OPENFILE            "Отвори файла"
@@ -662,10 +601,9 @@ BEGIN
     IDS_SOURCEINFO          "Запитан: %d пъти; Налични части: %d"
     IDS_CLIENTSOURCENAME    "\nИме на файла на клиента: "
     IDS_USERINFO            "Прякор: %s\n"
-    IDS_FILESTATS_SESSION   "Статистика за тази сесия: Приети %d от %d запитвания, %s трансферирани\n"
-    IDS_FILESTATS_TOTAL     "Статистика за всички сесии: Приети %d от %d запитвания, %s трансферирани"
+    IDS_FILESTATS_SESSION   "Статистика за тази сесия: Приети %d от %d заявки, %s трансферирани\n"
+    IDS_FILESTATS_TOTAL     "Статистика за всички сесии: Приети %d от %d заявки, %s трансферирани"
     IDS_REQ_UNKNOWNFILE     "Запитване за непознат файл"
-    IDS_TRANSFERTIME        "Време от първия трансфер: %s"
     IDS_SF_AVERAGESIZE      "Среден размер на файла: %s"
     IDS_SF_REQUESTS         "Запитвания"
     IDS_SF_ACCEPTS          "Приети запитвания"
@@ -696,8 +634,7 @@ STRINGTABLE
 BEGIN
     IDS_ADDED2SSF           "Добавен към Статичния списък със сървъри"
     IDS_STATICSERVER        "Статичен"
-    IDS_ERROR_SSF           "Не мога да отворя staticservers.dat"
-    IDS_ERR_PACKAGEERROR    "Критична грешка при обработка на пакета с данни за %s (грешен размер)"
+    IDS_ERROR_SSF           "Не може да се отвори staticservers.dat"
     IDS_SF_ACTIVECON        "Активни връзки (приблизително)"
     IDS_SF_MAXCONLIMITREACHED "Достигнат макс. брой връзки"
     IDS_SF_AVGCON           "Среден брой връзки (приблизително)"
@@ -737,13 +674,12 @@ BEGIN
     IDS_PREF_ONLINESIG      "Използвай онлайн подпис"
     IDS_ERROR_SAVEFILE      "Записването неуспешно"
     IDS_REQ_SHAREDFILES     "Потребител %s (%u) запитва за Вашите споделени файлове -> %s"
-    IDS_ACCEPTED            "приеми"
-    IDS_DENIED              "откажи"
+    IDS_ACCEPTED            "разрешено"
+    IDS_DENIED              "забранено"
     IDS_PW_CON_DOWNLBL      "Сваляне"
     IDS_PW_CON_UPLBL        "Качване"
     IDS_PW_AUTOCONNECTSTATICONLY "Автом. свързване само със статичните сървъри"
     IDS_PW_CON_LIMITFRM     "Ограничения"
-    IDS_PW_FILE_ICH         "I.C.H. активирана"
     IDS_STATS_AVGLABEL      "Средно време за графика: %i мин."
     IDS_GRAPHS              "Графика"
     IDS_STREE               "Дърво на статистиката"
@@ -767,20 +703,18 @@ BEGIN
     IDS_VERBOSE             "Подробности (допълнителна информация)"
     IDS_FLAT                "плоска"
     IDS_ROUND               "заоблена"
-    IDS_SAMEUSERHASH        "Клиента '%s' и '%s' имат еднакъв код или IP - премахване на '%s'"
+    IDS_SAMEUSERHASH        "Клиента '%s' и '%s' имат еднакъв хеш или IP - премахване на '%s'"
     IDS_SEARCHEXTENTION     "Разширение"
-    IDS_SEARCHAVAIL         "Наличност"
+    IDS_SEARCHAVAIL         "Пълни източници"
 END
 
 STRINGTABLE 
 BEGIN
     IDS_HARDLIMIT           "Ограничение"
     IDS_COL_MORECOLORS      "още..."
-    IDS_KBYTESEC            "КБ/с."
     IDS_TOOMANYCONNS        "Твърде много връзки"
     IDS_DOWNLOADRENAMED     "Файл с такова име вече съществува, файлът ще бъде записан като %s"
     IDS_TBN_DOWNLOADDONE    "Свалени:"
-    IDS_TBN_DOWNLOADADDED   "Добавени за сваляне:"
     IDS_PW_TBN_USESOUND     "Използвай звук"
     IDS_PW_TBN_ONLOG        "Нов запис в отчета"
     IDS_PW_TBN_ONCHAT       "Стартирана е чат сесия"
@@ -795,8 +729,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_PW_CON_CAPFRM       "Капацитет"
-    IDS_IRC_STATUSLOG       "Състояние на Отчета"
-    IDS_IRC_STATUS          "Състояние"
     IDS_IRC_PRIVATECHANSTART "* Стартиране на лична чат сесия"
     IDS_IRC_SLAPMSG         "* %s шамар(а) %s навсякъде е голяма лудница!"
     IDS_IRC_PRIVMESSAGE     "Лично съобщение"
@@ -813,7 +745,6 @@ BEGIN
     IDS_IRC_HASJOINED       "* %s е влязъл %s"
     IDS_IRC_HASPARTED       "* %s е част от %s (%s)"
     IDS_IRC_WASKICKEDBY     "* %s е изритан от %s (%s)"
-    IDS_IRC_NICKUSED        "Вашият прякор вече се използва на IRC сървъра. Моля изберете друг прякор в секцията 'IRC' в 'Опции'."
     IDS_IRC_HASQUIT         "* %s е излязъл (%s)"
     IDS_IRC_NOWKNOWNAS      "* %s е вече %s"
     IDS_IRC_SETSMODE        "* %s слага: %s %s"
@@ -861,14 +792,12 @@ BEGIN
     IDS_SP_UL2              "Средно време за качване"
     IDS_SP_UL3              "Средно качени (сесия)"
     IDS_SP_ACTCON           "Активни връзки"
-    IDS_SP_ACTDL            "Активни сваляния"
+    IDS_SP_ACTDL            "Активни задачи"
     IDS_SP_ACTUL            "Активни качвания"
-    IDS_PW_TIT_UP           "Сложи огр. на скоростта за качване"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_PW_TIT_DOWN         "Сложи огр. на скоростта за сваляне"
     IDS_PW_UNLIMITED        "Без ограничение"
     IDS_PW_MINREC           "Мин. препоръчителна\t%i "
     IDS_PW_UA               "Пълна скорост на качване/сваляне"
@@ -876,11 +805,7 @@ BEGIN
     IDS_IRC_IGNOREINFOMESSAGE "Игнорирай информационни съобщения"
     IDS_CONNECTIONLOST      "Връзката загубена"
     IDS_WIZ_OS_FRAME        "Операционна система"
-    IDS_WIZ_CONCURENTDOWN_FRAME 
-                            "Колко задачи за сваляне обикновено сваляте наведнъж?"
-    IDS_HASHINGFILE         "Кодиране на файл:"
-    IDS_WIZ_CUSTOM_FRAME    "Ако сте изпробвали скоростта на връзката си, напишете я тук"
-    IDS_WIZ_HOTBUTTON_FRAME "Бутони за настройка"
+    IDS_HASHINGFILE         "Хеширане на файл:"
     IDS_WIZ_TRUEUPLOAD_TEXT "Действителни канали за качване"
     IDS_WIZ_TRUEDOWNLOAD_TEXT "Действителни канали за сваляне"
     IDS_FRIENDLIST          "Приятели"
@@ -889,42 +814,36 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_WIZARD              "Помощник"
+    IDS_WIZARD              "Съветник"
     IDS_ADDFRIEND           "Добави към приятели"
     IDS_REMOVEFRIEND        "Премахни приятел"
-    IDS_REMOVEFROMSTOK      "премахнат от списъка със Статични сървъри"
-    IDS_REMOVEFROMSTATIC    "Премахни от списъка със Статични сървъри"
+    IDS_REMOVEFROMSTATIC    "Премахни от списъка със статични сървъри"
     IDS_LENGTH              "Времетраене"
     IDS_VIDEO               "Видео"
     IDS_AUDIO               "Аудио"
     IDS_FILEINFO            "Информация"
     IDS_CODEC               "Кодек"
-    IDS_BITRATE             "Bitrate"
+    IDS_BITRATE             "Битова честота"
     IDS_WIDTH               "Ширина"
-    IDS_FPS                 "Fps"
+    IDS_FPS                 "Кадри"
     IDS_CHANNELS            "Канали"
     IDS_SAMPLERATE          "Samplerate"
-    IDS_ROUNDBITRATE        "Среден Bitrate"
 END
 
 STRINGTABLE 
 BEGIN
     IDS_HEIGHT              "Височина"
-    IDS_SHAREDFILES_FAILED  "Не мога да получа споделените файлове на '%s'"
+    IDS_SHAREDFILES_FAILED  "Споделените файлове на '%s' не могат да бъдат получени"
     IDS_SHAREDFILES_REQUEST "Запитване за споделените файлове на '%s'"
     IDS_VIEWFILES           "Прегледай файловете"
     IDS_FRIENDSLOT          "Установен е приятелски слот"
     IDS_FRIENDDETAIL        "(Приятелски слот)"
-    IDS_ASCWOP_PROXYSUPPORT "Автоматично свързване без прокси"
     IDS_UDPDISABLED         "забрани"
-    IDS_CTINFO              "Изберете Вашият тип връзка:"
     IDS_WIZ_CTFRAME         "Тип връзка"
     IDS_CONCURDWL           "Едновременно сваляни задачи"
-    IDS_UNIT                "Единици:"
     IDS_WIZARD_CUSTOM       "Други"
     IDS_WIZARD_ENTERBELOW   "(въведете по-долу!)"
     IDS_STATS_MAXAVGDL      "Макс. средна скорост на сваляне: %s"
-    IDS_USS_MIN             "Внимание: USS не поддържа скорости по-малки от 10 КБ/с. Ако Вашата връзка е такава, моля изключете USS."
 END
 
 STRINGTABLE 
@@ -934,13 +853,11 @@ BEGIN
                             "Игнорирай съобщения за добавяне на приятели"
     IDS_PW_FASTSRVCON       "Безопасна връзка"
     IDS_SOURCELINKFAILED    "Нуждаете се от HighID за да създадете валиден линк с източник"
-    IDS_CREATESOURCELINK    "Копирай ED2K линка в буфера (източник)"
-    IDS_ERR_LOADSERVERMET   "Не мога да заредя server.met!"
+    IDS_ERR_LOADSERVERMET   "Не може да се зареди server.met!"
     IDS_ERR_CORRUPTCOMPRPKG "Получен е повреден компресиран пакет за %s (грешка %i)"
     IDS_ERR_EMFRIENDSINVALID "Файлът emfriends.met е невалиден или повреден!"
     IDS_ERR_READEMFRIENDS   "Неизвестна грешка при четене на emfriends.met: %s"
     IDS_ERR_KNOWNSERVERINFOREC "Получена е некоректна информация от сървъра!"
-    IDS_ERR_TIMERCREATEFAILED "Фатална грешка: Не мога да създам Таймер"
     IDS_WIZ_DOWN            "Сваляне (КБ/с.)"
     IDS_WIZ_UP              "Качване (КБ/с.)"
     IDS_SELECT_INCOMINGDIR  "Изберете папка за сваляните файлове"
@@ -952,10 +869,9 @@ STRINGTABLE
 BEGIN
     IDS_PRIOAUTONORMAL      "Автоматичен [Нор]"
     IDS_PRIOAUTOHIGH        "Автоматичен [Вис]"
-    IDS_PRIOAUTORELEASE     "Автоматичен [Пус]"
+    IDS_PRIOAUTORELEASE     "Автоматичен [Изд]"
     IDS_PRIOAUTOLOW         "Автоматичен [Нис]"
     IDS_ERR_CONTIMEOUT      "Прекъсване между опитите за свързване  ""%s"" (%s:%i ) timed out"
-    IDS_ERR_CONFAILED       "Неуспешно свързване с ""%s"" (%s:%i )"
     IDS_OUTOFSERVERS        "Не можах да се свържа с нито един сървър от списъка. Да направя ли още един опит?"
     IDS_PW_CONLIMITS        "Огр. на връзката"
     IDS_MAXCON5SECLABEL     "Макс. брой нови връзки / 5 сек."
@@ -975,15 +891,11 @@ BEGIN
     IDS_RECOVERED_PARTMET   "Възстановен частичен файл за: %s"
     IDS_CMT_QUEST           "Коментирайте този файл! (този текст ще се вижда от всички потребители)"
     IDS_CMT_AIDE            "За филми, можете да кажете неговата продължителност, качество, език... Ако е измама, кажете на другите потребители..."
-    IDS_CMT_TITLE           "%s коментара за файла"
     IDS_CMT_ADD             "Промени коментара за файла..."
     IDS_CMT_NONE            "Няма коментар"
     IDS_CMT_READ            "Коментар за файла:"
-    IDS_CMT_NOTCONNECTED    "Все още не сте свързани..."
     IDS_CMT_SHOWALL         "Покажи всички коментари"
-    IDS_CMT_REFRESH         "Обнови"
     IDS_CMT_READALL         "Всички коментари"
-    IDS_CMT_NOCOMMENT       "Не са въведени коментари..."
     IDS_CMT_RATEQUEST       "Качество на файла"
     IDS_CMT_RATEHELP        "Изберете оценка за файла за да предупредите другите потребители, ако той е невалиден"
 END
@@ -1010,7 +922,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_FD_STATS            "Загубени от повреждане: %s       Получени чрез компресия: %s\nПакети записани чрез I.C.H.: %i"
     IDS_ERR_NOHELP          "Моля посетете раздела за сваляне на eMule на нашата страница за да вземете най-новата версия на помощния файл!\n\nИскате ли вместо това да разгледате Онлайн помощ?"
     IDS_SHOWOVERHEAD        "Показвай превишение на канала"
     IDS_UPDOWNSMALL         "Качване: %.1f | Сваляне: %.1f"
@@ -1025,19 +936,18 @@ BEGIN
     IDS_CHECK4UPDATE        "Проверка за нова версия"
     IDS_STARTUP             "Стартиране"
     IDS_NEWVERSIONAVL       "Налична е нова версия на eMule! За повече информация посетете домашната страница на eMule."
-    IDS_NEWVERSIONAVLPOPUP  "Налична е нова версия на eMule. Кликнете тук за да прочетете повече за нея!"
-    IDS_NEWVERSIONFAILED    "Не можах да проверя за наличие на нова версия."
+    IDS_NEWVERSIONAVLPOPUP  "Налична е нова версия на eMule. Щракнете тук за да прочетете повече за нея!"
+    IDS_NEWVERSIONFAILED    "Неуспешна проверка за наличие на нова версия."
 END
 
 STRINGTABLE 
 BEGIN
     IDS_CB_TBN_ONNEWVERSION "Открита е нова версия на eMule"
     IDS_NONEWERVERSION      "Няма нови версии на eMule"
-    IDS_VERSIONCHECK        "Проврка на версия"
+    IDS_VERSIONCHECK        "Проверка на версия"
     IDS_VISITVERSIONCHECK   "\n\nИскате ли да посетите нашата Информационна страница сега?"
     IDS_PW_VIDEOPLAYER      "Видео плейър"
     IDS_VIDEOBACKUP         "Създай резервно копие за преглед"
-    IDS_STATIC_EMPTY        "(празно=по подразбиране)"
     IDS_MYINFO              "Моя информация"
     IDS_ID                  "ID"
     IDS_IDLOW               "Low ID"
@@ -1072,7 +982,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_STATS_RUNTIME       "Включен от"
-    IDS_ALL                 "всичко"
+    IDS_ALL                 "общо"
     IDS_CAT_ADD             "Добави категория"
     IDS_CAT_EDIT            "Редактирай категория"
     IDS_CAT_REMOVE          "Премахни категория"
@@ -1081,9 +991,7 @@ BEGIN
     IDS_COLOR               "Цвят"
     IDS_DEFAULT             "По подразбиране"
     IDS_PW_DISPLAY          "Дисплей"
-    IDS_CAT_INVADD          "Покажи всички неопределени"
-    IDS_CAT_REINVADD        "Покажи всички"
-    IDS_INDICATERATINGS     "Индикирай сваляния с коментари/оценки чрез икона"
+    IDS_INDICATERATINGS     "Индикирай задачите с коментари/оценки чрез икона"
     IDS_ALLOTHERS           "некаталогизирани"
     IDS_TOCAT               "Добави към категория"
     IDS_CAT_UNASSIGN        "(неопределени)"
@@ -1091,8 +999,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ADDDOWNLOADSFROMCB  "Да добавя ли тези ED2КK линкове за сваляне?\n"
-    IDS_ADDDOWNLOADSFROMCBTITLE "ED2K линк в буфера"
+    IDS_ADDDOWNLOADSFROMCB  "Да добавя ли тези ED2К линкове за сваляне?\n"
     IDS_PF_WATCHCB          "Следи буфера за ED2K линкове"
     IDS_SECURITY            "Защита"
     IDS_IPFILTERLOADED      "Заредени %i IP филтъра"
@@ -1100,7 +1007,7 @@ BEGIN
     IDS_EDIT                "Редактирай"
     IDS_FILTERLEVEL         "Ниво на филтр."
     IDS_FILTERSERVERBYIPFILTER 
-                            "Филтрирай сървърите (махни тези с динамичен IP)"
+                            "Филтрирай сървърите"
     IDS_FILTERCOMMENTSLABEL "Игнорирай коментари съдържащи: (разделител  | )"
     IDS_CLIENTLIST          "Известни клиенти"
     IDS_FOLDER              "Папка"
@@ -1116,31 +1023,26 @@ BEGIN
     IDS_CL_LOW2LOW          "Low към Low ID"
     IDS_ERROR               "Грешка"
     IDS_OPENINC             "Отвори папката 'Свалени'"
-    IDS_HOTMENU             "Горещо меню"
+    IDS_HOTMENU             "Бързо меню"
     IDS_DISABLEKNOWNLIST    "Не показвай известните клиенти"
     IDS_DISABLEQUEUELIST    "Не показвай списък в опашката"
     IDS_USECREDITSYSTEM     "Използвай кредитна система (награда за тези които качват)"
-    IDS_FIRSTAUTODOWN       "Включете тази опция, ако искате eMule да управлява приоритета на сваляните задачи.\n\nВключването на тази опция ще позволи на eMule да сваля файлове които имат много източници, без да да влиза в конфликт с тези които имат малко източници. Ефектът от тази опция ще важи само за бъдещи сваляния (По подразбиране: Вкл.)."
-    IDS_FIRSTAUTOUP         "Включете тази опция, ако искате eMule да управлява приоритета на качваните задачи.\n\nВключването на тази опция ще позволи на eMule да повиши приоритета на рядко срещани файлове за сметка на по-популярните файлове. Включването на тази опция ще позволи на eMule да качва по-популярните файлове по-бързо, а рядко срещаните ще бъдат труднодостъпни за други потребители. Ефектът от тази опция ще важи само за бъдещи споделяния (По подразбиране: Вкл.)."
-    IDS_FIRSTCREDITSYSTEM   "Искате ли да поощрите хората които са качвали към Вас?\n\nТази система е известна като Кредитна. Включването на тази опция ще помогне да се прборим с тези потребители, които само свалят. Ако Вие сте потребител, който постоянно прави Пускове, трябва да изключите тази опция (По подразбиране: Вкл.)."
-    IDS_FIRSTFULLCHUNK      "Включете тази опция, ако искате да качвате пълни части.\n\nТова ще даде на клиента по-добър шанс за сваляне на някоя част. Изключването на тази опция ще Ви помогне по-бързо да се превъртате на опашката. Ако Вие сте потребител, който постоянно прави 'Пускове', трябва да изключите тази опция (По подразбиране: Вкл.)."
+    IDS_FIRSTAUTODOWN       "Включете тази опция, ако искате eMule да управлява приоритета на сваляните задачи.\n\nВключването на тази опция ще позволи на eMule да сваля файлове, които имат много източници, без да да влиза в конфликт с тези, които имат малко източници. Ефектът от тази опция ще важи само за бъдещи задачи (По подразбиране: Вкл.)."
+    IDS_FIRSTAUTOUP         "Включете тази опция, ако искате eMule да управлява приоритета на качваните задачи.\n\nВключването на тази опция ще позволи на eMule да повиши приоритета на рядко срещани файлове за сметка на по-популярните файлове и ще позволи на eMule да качва по-популярните файлове по-бързо, а рядко срещаните ще бъдат труднодостъпни за други потребители. Ефектът от тази опция ще важи само за бъдещи задачи (По подразбиране: Вкл.)."
+    IDS_FIRSTFULLCHUNK      "Включете тази опция, ако искате да качвате цели части.\n\nТова ще даде на клиента по-добър шанс за сваляне на някоя част. Изключването на тази опция ще Ви помогне по-бързо да се превъртате на опашката. Ако Вие сте потребител, който постоянно прави ""Издания"", трябва да изключите тази опция (По подразбиране: Вкл.)."
     IDS_FIRSTSAFECON        "Включете тази опция, ако искате eMule да се свързва посредством безопасна връзка.\n\nИзключването й ще позволи на eMule да се свързва с малко по-бързи сървъри, но може да стане причина да получите LowID при свързване."
-    IDS_FIRSTRUNASSIST      "Искате ли да стартирате 'Помощника при стартиране за първи път'?"
     IDS_FIRSTAUTOCON        "Включете тази опция, ако искате eMule да се свързва при стартиране."
-    IDS_FIRSTCOMPLETE       "Вече завършихте настройките с 'Помощника'. Всички тези настройки и други могат да бъдат променени като кликнете върху иконата 'Настройки'. За разяснения и поддръжка вземете съвет за помощ като натиснете F1 в eMule!"
+    IDS_FIRSTCOMPLETE       "Вече завършихте настройките със 'Съветника'. Всички тези настройки и други могат да бъдат променени като щракнете върху иконата 'Настройки'. За разяснения и поддръжка или съвет за помощ натиснете F1 в eMule!"
 END
 
 STRINGTABLE 
 BEGIN
     IDS_ENTERUSERNAME       "Моля въведете Вашето потребителско име:"
     IDS_STATIC_CPUMEM       "Икономично използване на Процесор и Памет"
-    IDS_KAD_SEARCH_KEYWORD_TOO_SHORT 
-                            "Ключовата фраза е много къса.\n\nФразовият(те) израз(и) използвани за търсене в Kad мрежата трябва да са с дължина минимум 3 символа."
+    IDS_KAD_SEARCH_KEYWORD_TOO_SHORT "Ключовата фраза е много къса.\n\nФразовият(те) израз(и) използвани за търсене в Kad мрежата трябва да са с дължина минимум 3 символа."
     IDS_LOG2DISK            "Записвай отчет на диска"
-    IDS_KAD_SEARCH_KEYWORD_ALREADY_SEARCHING 
-                            "Вече е стартирано търсене в Kad мрежата за фразата ""%s"".\n\nЗа до търсите отново по тази фраза, трябва или да изчакате търсенето да приключи или да затворите панела с резултатите от това търсене."
-    IDS_KAD_SEARCH_KEYWORD_INVALID 
-                            "Невалидна фраза.\n\nИзразът за търсене в Kad мрежата трябва да има слдният формат:\n\n\t<kad-keyword> [ <ed2k-search-expression> ]\n\n<kad-keyword> не трябва да съдържа нито един от следните символи:\n\n\t%s"
+    IDS_KAD_SEARCH_KEYWORD_ALREADY_SEARCHING "Вече е стартирано търсене в Kad мрежата за фразата ""%s"".\n\nЗа до търсите отново по тази фраза, трябва или да изчакате търсенето да приключи или да затворите панела с резултатите от това търсене."
+    IDS_KAD_SEARCH_KEYWORD_INVALID "Невалидна фраза.\n\nИзразът за търсене в Kad мрежата трябва да има слдният формат:\n\n\t<kad-keyword> [ <ed2k-search-expression> ]\n\n<kad-keyword> не трябва да съдържа нито един от следните символи:\n\n\t%s"
     IDS_EDITCAT             "Редактирай настройките на категории"
     IDS_PW_WS               "Web Сървър"
     IDS_ENABLED             "Използвай"
@@ -1157,19 +1059,15 @@ END
 STRINGTABLE 
 BEGIN
     IDS_WEB_SHOW_UPLOAD_QUEUE "Покажи опашката"
-    IDS_WEB_HIDE_UPLOAD_QUEUE "Скрий опашката"
     IDS_WEB_GZIP_COMPRESSION "Gzip  компресия"
     IDS_WEB_GZIP_COMMENT    "Намали трафика, особено за графиките"
-    IDS_WEB_UPLOAD_QUEUE_COMMENT 
-                            "Включва/Изключва показването на чакащите на опашката на секцията 'Трансфер'"
     IDS_WEB_REFRESH_TIME    "Време за обновяване на страниците"
     IDS_WEB_REFRESH_COMMENT "Време в секунди (нула=забранено):"
     IDS_SV_URL              "URL"
     IDS_WS_RELOAD_TMPL      "Шаблон"
-    IDS_SV_DEBUGLOG         "Отчет при Debug"
+    IDS_SV_DEBUGLOG         "Отчет при грешка в работата"
     IDS_WS_PASS             "Парола"
-    IDS_WEB_FILESETTINGS    "Файлови настройки"
-    IDS_WS_ERR_LOADTEMPLATE "Не мога да заредя шаблон: заменете файла %s с по-нова версия!"
+    IDS_WS_ERR_LOADTEMPLATE "Не може да се зареди шаблон: заменете файла %s с по-нова версия!"
     IDS_WEB_CONLIMITS       "Ограничения на връзката"
     IDS_INFLST_USER_TOTALDOWNLOAD "Общо свалени"
     IDS_INFLST_USER_TOTALUPLOAD "Общо качени"
@@ -1185,7 +1083,7 @@ BEGIN
     IDS_LIMITSOURCES        "Огр. за източниците"
     IDS_LIMITCONS5SEC       "Огр. за връзките/5 сек."
     IDS_SCHED_CATSTOP       "Кат:Спри свалянето"
-    IDS_SCHED_CATRESUME     "Кат:Възобнови свалянето"
+    IDS_SCHED_CATRESUME     "Кат:Поднови свалянето"
     IDS_S_DAYS              "Дни"
     IDS_STARTTIME           "Начало от"
     IDS_VALUE               "Стойност"
@@ -1201,8 +1099,7 @@ BEGIN
     IDS_ACTSESSIONS         "активна(и) сесия(и)"
     IDS_WEBSRV              "Web сървър"
     IDS_SW_REFETCHRES       "Резултати от повт. търсене"
-    IDS_FILEHASH            "Файлов код"
-    IDS_GLOBALSEARCH2       "Глобално търсене"
+    IDS_FILEHASH            "Хеш на файла"
     IDS_PW_PROXY            "Прокси"
     IDS_PROXY_ENABLE        "Използвай прокси"
     IDS_PROXY_TYPE          "Тип прокси:"
@@ -1212,7 +1109,7 @@ BEGIN
     IDS_AUTH                "Идентификация"
     IDS_SHOWCATINFO         "Покажи информация за свалянето в секцията 'Категория'"
     IDS_SW_SEARCHINGINFO    "Търсенето е в ход. Изчакайте малко за резултатите!"
-    IDS_LOGENTRY            "Запис в отчета"
+    IDS_LOGENTRY            "Отчет"
 END
 
 STRINGTABLE 
@@ -1221,15 +1118,13 @@ BEGIN
     IDS_SELECTALL           "Избери всичко"
     IDS_AUTOSCROLL          "Автом. позициониране"
     IDS_WIZ1_WELCOME_TITLE  "Добре дошли в eMule"
-    IDS_WIZ1_WELCOME_ACTIONS 
-                            "Този 'Помощник' ще Ви помогне да направите стъпки в конфигурирането на eMule."
+    IDS_WIZ1_WELCOME_ACTIONS "Този 'Съветник' ще Ви помогне да направите  първите стъпки в конфигурирането на eMule."
     IDS_WIZ1_WELCOME_BTN_HINT "За да продължите, натиснете 'Напред'."
-    IDS_WIZ1_END_TITLE      "Приключване на 'Помощника'"
-    IDS_WIZ1                "eMule Помощник при стартиране за първи път"
-    IDS_WIZ1_END_BTN_HINT   "За да затворите 'Помощника', натиснете 'Край'."
+    IDS_WIZ1_END_TITLE      "Приключване на 'Съветника'"
+    IDS_WIZ1                "Съветник на eMule при стартиране за първи път"
+    IDS_WIZ1_END_BTN_HINT   "За да затворите 'Съветникаа', натиснете 'Край'."
     IDS_WIZ1_UPLOAD_SUBTITLE "Трансфер на цели части"
     IDS_DL_RESUMENEXT       "Възобнови следващият прекъснат"
-    IDS_DONTCHANGE          "Не променяй"
     IDS_STARTPRIO           "Приоритет за тази категория"
     IDS_PREF_STARTNEXTFILECAT "предпочитам в същата категория"
     IDS_REPAINTGRAPHS       "Не обновявай графиките при преоразм. на прозореца"
@@ -1268,8 +1163,7 @@ BEGIN
     IDS_STATS_CUMULATIVE    "Общо"
     IDS_STATS_OVRHD         "Превишени"
     IDS_STATS_RECORDS       "Записи"
-    IDS_STATS_OVRHD2        "Превишение: %s (%s пакета)"
-    IDS_STATS_COMPDL        "Завършени сваляния"
+    IDS_STATS_COMPDL        "Завършени задачи"
     IDS_STATS_SVRECWORKING  "Макс. брой работещи сървъри"
     IDS_STATS_SVRECUSERS    "Макс. брой онлайн потребители"
     IDS_SEARCH_TEXT         "Търси за"
@@ -1282,7 +1176,6 @@ BEGIN
     IDS_SEARCH_COLUMN       "Търси в колоната"
     IDS_STATS_SHRECSIZE     "Най-голям размер споделени файлове"
     IDS_STATS_SHRECASIZE    "Най-голям среден размер споделени файлове"
-    IDS_STATS_MYRUNTIME     "Общо време на работа: %s"
     IDS_STATS_SESSION       "Сесия"
     IDS_STATS_SRATIO        "Съотношение за сесията КЧ:СВ:"
     IDS_STATS_CRATIO        "Общо съотношение КЧ:СВ:"
@@ -1303,16 +1196,13 @@ BEGIN
     IDS_STATS_LOSTCORRUPT   "Загубени от повреждане: %s"
     IDS_STATS_AVGDATAULSES  "Средно качени за сесия"
     IDS_STATS_ICHSAVED      "Части записани с I.C.H.: %u"
-    IDS_STATS_MBRESET_TXT   "Сигурни ли сте че искате да нулирате общата статистика?\n\nАко промените мнението си можете да върнете това действие като кликнете върху бутона 'Възстанови статистика'."
-    IDS_STATS_MBRESET_CAP   "Потвърждение за нулиране"
-    IDS_STATS_MBRESTORE_TXT "Сигурни ли сте че искате да възстановите общата статистика от резервното копие?\n\nКликвайки още веднъж върху 'Възстанови статистика' ще зареди Вашата текуща статистика."
-    IDS_STATS_MBRESTORE_CAP "Потвърждение за възстановяване"
+    IDS_STATS_MBRESET_TXT   "Сигурни ли сте че искате да нулирате общата статистика?\n\nАко промените мнението си можете да върнете това действие като щракнете върху бутона 'Възстанови статистика'."
+    IDS_STATS_MBRESTORE_TXT "Сигурни ли сте че искате да възстановите общата статистика от резервното копие?\n\nЩраквайки още веднъж върху 'Възстанови статистика' ще заредите Вашата текуща статистика."
     IDS_ERR_NOSTATBKUP      "Грешка: Не е намерено резервно копие на файла със статистиката..."
     IDS_STATS_NFOLOADEDBKUP "Зареждане на рез. копие на данните със статистиката..."
     IDS_STATS_NFORESET      "Статистиката нулирана!"
     IDS_STATS_BNRESET       "Нулирай статистиката"
     IDS_STATS_BNRESTORE     "Възстанови статистиката"
-    IDS_CONNECTIONSTATISTICS "Статистика на връзката"
     IDS_PPGSTATS_YSCALE     "Статистика на връзката по ос Y в мащаб:"
 END
 
@@ -1338,7 +1228,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_STATS_OLDCLIENTS    "Стар"
     IDS_STATS_PRTDEF        "По подразбиране"
     IDS_STATS_PRTOTHER      "Друг"
     IDS_STATS_MNUTREETITLE  "Дърво на статистиката"
@@ -1366,11 +1255,11 @@ BEGIN
     IDS_IDENTFAILED         "Неуспешна"
     IDS_IDENTNOSUPPORT      "Не се поддържа или е изкл."
     IDS_COMMITFILES         "Безопасно записване на .met/.dat файла"
-    IDS_ERR_BADUNC          "Грешно UNC име"
+    IDS_ERR_BADUNC          "Грешно мрежово име"
     IDS_NEVER               "Никога"
     IDS_ALWAYS              "Винаги"
     IDS_ONSHUTDOWN          "При изгасяне"
-    IDS_UNCFOLDERS          "UNC папки"
+    IDS_UNCFOLDERS          "Мрежови папки"
     IDS_USESECIDENT         "Използвай защитена идентификация"
     IDS_ADVSPAMFILTER       "Допълнителен филтър за СПАМ"
 END
@@ -1387,12 +1276,8 @@ BEGIN
     IDS_SEARCH_MISSINGNOTRIGHT "Липсва дясната страна за опрератора NOT"
     IDS_SEARCH_MISSINGEXPRPARANT "Липсва израз за '(' ')'"
     IDS_SEARCH_MISSINGCLOSINGPARANT "Липсва затваряне ')'"
-    IDS_SEARCH_MISSINGANDLEFT "Липсва лявата страна от опрератора AND"
-    IDS_SEARCH_MISSINGORLEFT "Липсва лявата страна от опрератора OR"
-    IDS_SEARCH_MISSINGNOTLEFT "Липсва лявата страна от опрератора NOT"
     IDS_SEARCH_EXPRERROR    "Морфологична грешка в търсения израз"
     IDS_SEARCH_TOOCOMPLEX   "Твърде сложен израз"
-    IDS_SEARCH_INVALIDMINMAX "Невалидни стойности за мин./макс. размер на файла"
 END
 
 STRINGTABLE 
@@ -1414,16 +1299,13 @@ STRINGTABLE
 BEGIN
     IDS_SELECT_FONT         "Избор на шрифт"
     IDS_SERVER_LIMITS       "Софт./Хард. файлови ограничения"
-    IDS_SERVERINFO          "Информация за сървъра"
     IDS_KBITSSEC            "КБита/сек."
     IDS_KBYTESSEC           "КБайта/сек."
-    IDS_ERR_CREATE_DIR      "Не мога да създам папката ""%s"" - %s"
-    IDS_WRN_INCFILE_RESERVED 
-                            "Папката за сваляните файлове не трябва да е в инстатационната папка на eMule."
-    IDS_WRN_TEMPFILES_RESERVED 
-                            "Папката за временните файлове не трябва да е в инстатационната папка на eMule."
+    IDS_ERR_CREATE_DIR      "Не може да се създаде папката ""%s"" - %s"
+    IDS_WRN_INCFILE_RESERVED "Папката за сваляните файлове не трябва да е в инстатационната папка на eMule."
+    IDS_WRN_TEMPFILES_RESERVED "Папката за временните файлове не трябва да е в инстатационната папка на eMule."
     IDS_WRN_INCTEMP_SAME    "Папките за свалени и временни файлове не трябва да съвпадат."
-    IDS_MMFAILED            "Не мога да създам MobileMule сокет!"
+    IDS_MMFAILED            "Не може да се създаде MobileMule сокет!"
     IDS_MMSTARTED           "MobileMule е стартиран на порт %i. Версия на протокола: %s"
     IDS_SHOWDWLPERCENTAGE   "Покажи проценти в лентата с напредъка"
     IDS_TBN_ONNEWDOWNLOAD   "Задачата е добавена"
@@ -1434,29 +1316,26 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_CD_UPLOADREQ        "Запитвания за качване:"
-    IDS_SETTINGCHANGED_RESTART 
-                            "За да влязат в сила променените настройки, моля рестартирайте eMule!"
+    IDS_CD_UPLOADREQ        "Заявки за качване:"
+    IDS_SETTINGCHANGED_RESTART "За да влязат в сила променените настройки, моля рестартирайте eMule!"
     IDS_CREDITSEXPIRED      ", %i клиента изтрити (няма да ги видите в рамките на 5 месеца)"
     IDS_SOURCESINFO         "%i  (Полезни: %i, NNP: %i, A4AF: %i)"
-    IDS_SHOW_META_DATA      "Покажи мета данни..."
     IDS_META_DATA           "Мета данни"
     IDS_TIMEBEFORE          "(преди %s)"
     IDS_FD_TIMEDATE         "Дати"
     IDS_FILEINFORMATION     "Информация за файла"
     IDS_STATS_FREESPACE     "Своб. пространство"
     IDS_IRC_HELPCHANNEL     "Свържи се с канали за помощ"
-    IDS_IRC_HELPCHANNELPERFORM "/join #emule | /join #emule-bulgarian"
+    IDS_IRC_HELPCHANNELPERFORM "/join #emule-bulgarian"
     IDS_IRC_ACCEPTLINKSFRIENDS "Само от приятели"
-    IDS_COMPLSOURCES        "Пълни източници"
+    IDS_COMPLSOURCES        "Наличност"
     IDS_CHECKNOENDTIME      "без край"
     IDS_FD_DOWNLOADSTARTED  "Добавен за сваляне на:"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_MATCH_KEYWORDS      "Точна фраза"
-    IDS_FAILEDREOPEN        "Фатална грешка: Не мога да отворя частичен файл '%s' (%s)!"
+    IDS_FAILEDREOPEN        "Фатална грешка: Не може да се отвори частичния файл '%s' (%s)!"
     IDS_ERR_PREVIEWALREADY  "Вече има запитване за преглед от този клиент"
     IDS_ERR_PREVIEWFAILED   "Прегледа на потребител '%s' е неуспешен"
     IDS_DWTOT               "Размер на диска"
@@ -1475,8 +1354,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_CREATEHOSTNAMESRCLINK "Копирай ЕD2K линка в буфера (име на хост)"
-    IDS_HASHINGFILESCOUNT   " (%u кодирани)"
+    IDS_HASHINGFILESCOUNT   " (%u хеширани)"
     IDS_CHECKDISKSPACE      "Провери дисковото пространство"
     IDS_YOURHOSTNAME        "Име на хост за собствените ЕD2K линкове"
     IDS_INSUFFICIENT        "Недостатъчно пространство на диска"
@@ -1495,7 +1373,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_IMP_FETCHSTATUS     "Проверка на състоянието..."
+    IDS_IMP_FETCHSTATUS     "Проверка на статуса..."
     IDS_IMP_INPROGR         "се изпъляват"
     IDS_IMP_ERR_DISKSP      "Грешка: Недостатъчно място на диска"
     IDS_IMP_ERR_PARTMETIO   "Грешка: Не е намерен частичен файл"
@@ -1503,7 +1381,7 @@ BEGIN
     IDS_IMP_ERR_FAILED      "Грешка: Неуспешно!"
     IDS_IMP_STATUSQUEUED    "На опашката"
     IDS_IMP_ALRDWL          "Вече се сваля"
-    IDS_IMP_ADDBTN          "Добави импорт"
+    IDS_IMP_ADDBTN          "Импортиране"
     IDS_IMP_RETRYBTN        "Повтори избраните"
     IDS_IMP_REMOVEBTN       "Премахни избраните"
     IDS_IMP_SELFOLDER       "Моля изберете една папка с частични файлове или Вашата стара папка с временни частични файлове със всички подпапки!"
@@ -1522,7 +1400,7 @@ BEGIN
     IDS_DYNUP_MINUPLOAD     "Мин. разрешена скорост за качване"
     IDS_ESTTIMELEFT         "Оставащо време:"
     IDS_TRANSFER_RATE_LABEL "Скорост:"
-    IDS_SAVELOG             "Запиши отчет"
+    IDS_SAVELOG             "Запиши отчета"
     IDS_CMT_COPYCLIPBOARD   "Копирай коментара в буфера"
     IDS_ASKDOWNLOADLANG     "Избраният от Вас език не е инсталиран на компютъра Ви. Искате ли eMule да го свали от emule-project.net?"
     IDS_ASKDOWNLOADLANGCAP  "Свали езикови файлове"
@@ -1581,10 +1459,9 @@ BEGIN
     IDS_TEXTLABELS          "Текст"
     IDS_ENABLETEXTLABELS    "под иконата"
     IDS_CUSTOMIZETOOLBAR    "Персонализиране на лентата"
-    IDS_MINBITRATE          "Мин. bitrate [КБ/с.]"
+    IDS_MINBITRATE          "Мин. битова честота [КБ/с.]"
     IDS_KAD_RECHECKFW       "Провери защ. стена"
     IDS_SHAREDTITLE         "Споделени в ED2K|Kad"
-    IDS_WARNINGNOBS         "Самостоятелното свързване е изключено (Kad е забранен или вече е свързан)."
     IDS_FIREWALLED          "Зад защитна стена"
     IDS_KADEMLIA            "Kad"
     IDS_KADCONTACTLAB       "Контакти"
@@ -1600,7 +1477,6 @@ BEGIN
     IDS_LOG_SECURE_IDENT    "Отчет за защитена идентификация"
     IDS_LOG_FILTERED_IPS    "Отчет за филтрирани и/или игнорирани IP"
     IDS_LOG_FILE_SAVING     "Отчет за действията при запис на файл"
-	  IDS_IPFILTERFILES       "Всички IP филтри (*ipfilter.dat;*ip.prefix;*.p2b;*.p2p;*.p2p.txt;*.zip;*.gz)|*ipfilter.dat;*ip.prefix;*.p2b;*.p2p;*.p2p.txt;*.zip;*.gz|eMule IP филтри (*ipfilter.dat;*ip.prefix)|*ipfilter.dat;*ip.prefix|Peer Guardian (*.p2b;*.p2p;*.p2p.txt)|*.p2b;*.p2p;*.p2p.txt|Текстови файлове (*.txt)|*.txt|ZIP файлове (*.zip;*.gz)|*.zip;*.gz|Всички файлове (*.*)|*.*||"
     IDS_DELETEIPFILTERS     "Наистина ли искате да изтриете избраните IP филтри?"
     IDS_TOTAL_IPFILTER_LABEL "Общо IP филтри:"
     IDS_TOTAL_IPS_LABEL     "Общо IP:"
@@ -1643,10 +1519,8 @@ BEGIN
     IDS_DOWNLOAD_ALPHABETICAL "Сваляй по азбучен ред"
     IDS_INSTALL_SKIN        "Инсталирай облик за eMule"
     IDS_INSTALL_SKIN_NODIR  "Не е избрана папка с облици за eMule или няма достъп до нея!"
-    IDS_INSTALL_SKIN_DIR_ERROR 
-                            "Не мога да създам папката ""%s"" за облици за eMule - %s"
-    IDS_INSTALL_SKIN_FILE_ERROR 
-                            "Не мога да извлека файла ""%s"" с облик за eMule на компютъра  ""%s"" - %s"
+    IDS_INSTALL_SKIN_DIR_ERROR "Не може да се създаде папката ""%s"" за облици за eMule - %s"
+    IDS_INSTALL_SKIN_FILE_ERROR "Не може да се извлече файла ""%s"" с облик за eMule на компютъра  ""%s"" - %s"
     IDS_INSTALL_SKIN_PKG_ERROR "Това не е валиден пакет с облик за eMule."
     IDS_NEXT_REASK          "Следващо запитване на клиента след"
     IDS_A4AF_FILES          "A4AF файлове"
@@ -1657,9 +1531,9 @@ END
 STRINGTABLE 
 BEGIN
     IDS_FO_TEMPTCP_S        "Отворен е порт %u (TCP) на вградената защ. стена на WinXP за тази сесия на eMule"
-    IDS_FO_TEMPTCP_F        "Не мога да отворя порт %u (TCP) на вградената защ. стена на WinXP за тази сесия на eMule"
+    IDS_FO_TEMPTCP_F        "Не може да се отвори порт %u (TCP) на вградената защ. стена на WinXP за тази сесия на eMule"
     IDS_FO_TEMPUDP_S        "Отворен е порт %u (UDP) на вградената защ. стена на WinXP за тази сесия на eMule"
-    IDS_FO_TEMPUDP_F        "Не мога да отворя порт %u (UDP) на вградената защ. стена на WinXP за тази сесия на eMule"
+    IDS_FO_TEMPUDP_F        "Не може да се отвори порт %u (UDP) на вградената защ. стена на WinXP за тази сесия на eMule"
     IDS_FO_PREFBUTTON       "Отвори тези портове на вградената защ. стена на WinXP"
     IDS_FO_PREF_SUCCCEEDED  "Избраните портове на вградената защ. стена на WinXP са успешно отворени.\nЗабележете че това не влияе на други защитни стени или рутери!"
     IDS_FO_PREF_EXISTED     "eMule откри съществуващи настройки за избраните портове, които не могат да бъдат променени. Липсващите настройки бяха добавени успешно.\nЗабележете че това не влияе на други защитни стени или рутери!"
@@ -1669,7 +1543,6 @@ BEGIN
     IDS_DISABLEPEERACHE     "Не сваляй от PeerCache"
     IDS_SOURCESWAPBLOCKED   "Прехвърли блокираните"
     IDS_A4AF_CHECK_THIS_NOW "Провери този източник сега (debug)"
-    IDS_SOURCEEXCHANGESWAP  "Временна обмяна на източници"
     IDS_NEWMSG              "Съобщение от '%s' (IP:%s)"
     IDS_PREF_STARTNEXTFILECATONLY "само в същата категория"
     IDS_LOG_ULDL_EVENTS     "Отчет за качване/сваляне"
@@ -1683,12 +1556,11 @@ BEGIN
     IDS_IMP_ERR_BADFORMAT   "Неизвестен или лош формат на временния файл."
     IDS_SEARCH_INVALIDCHAR  "Търсеният израз съдържа невалидни символи. Възможно е да сте въвели символа '?' или сте въвели символи, които не могат да се изплзват в ЕD2K мрежата."
     IDS_PORTSCON            "Портове и връзка"
-    IDS_PORTINFO            "eMule използва два порта за свързване със сървъри и клиенти. тези портове трябва да са свободни и достъпни за отдалечените клиенти. TCP портът трябва да е достъпен с цел осигуряване на основните функционални възмижности на eMule. UDP портът се използва за Kad (безсъръврна мрежа) и да ограничи използването на мрежата (Превишение).\n\nМожете да промените портовете тук, докато няма стартирани действия в мрежата."
+    IDS_PORTINFO            "eMule използва два порта за свързване със сървъри и клиенти. Тези портове трябва да са свободни и достъпни за отдалечените клиенти. TCP портът трябва да е достъпен с цел осигуряване на основните функционални възмижности на eMule. UDP портът се използва за Kad (безсъръврна мрежа) и да ограничи използването на мрежата (Превишение).\n\nМожете да промените портовете тук, докато няма стартирани действия в мрежата."
     IDS_STARTTEST           "Провери портовете"
     IDS_TESTINFO            "Тук можете да изпробвате Вашите TCP и UDP портове. Успешният резултат от изпробването е задължителен за да можете да се свържете със сървър и други клиенти. TCP портът трябва да е отворен!"
     IDS_CONNECTIONTEST      "Изпробване на връзката"
-    IDS_NOPORTCHANGEPOSSIBLE 
-                            "Промяна на портовете е невъзможна след като сте се свързали с други клиенти или докато се свързвате със сървър/Kad!\n\nМоля рестартирайте eMule при промяна на портовете."
+    IDS_NOPORTCHANGEPOSSIBLE  "Промяна на портовете е невъзможна след като сте се свързали с други клиенти или докато се свързвате със сървър/Kad!\n\nМоля рестартирайте eMule при промяна на портовете."
     IDS_NETWORK_INFO        "Информация за мрежата"
     IDS_SP_TOTALUL          "Общ брой качвания"
     IDS_SP_ULFRIENDS        "Слотове за качване към приятел"
@@ -1706,7 +1578,6 @@ BEGIN
     IDS_CHAT_DOWNLOADED     "Свалени:"
     IDS_CHAT_UPLOADED       "Качени:"
     IDS_CHAT_IDENT          "Идентификация:"
-    IDS_CHAT_CLIENT         "Клиент:"
 END
 
 STRINGTABLE 
@@ -1736,9 +1607,9 @@ END
 STRINGTABLE 
 BEGIN
     IDS_FORMAT              "Формат"
-    IDS_META_COLLECTION     "Връзка"
+    IDS_META_COLLECTION     "Колекция"
     IDS_META_PARTPATH       "Път до част"
-    IDS_META_PARTHASH       "Път до код"
+    IDS_META_PARTHASH       "Път до хеш"
     IDS_META_GAPSTART       "Начало на празнината"
     IDS_META_GAPEND         "Начало на празнината"
     IDS_FAIL                "Грешка"
@@ -1751,8 +1622,7 @@ BEGIN
     IDS_META_SRCTCPPORT     "TCP порт на източника"
     IDS_META_SRCIP          "IP на източника"
     IDS_META_SRCTYPE        "Тип на източника"
-    IDS_SEARCH_UNICODE      "Търсене с Unicode"
-    IDS_PERSEC              "/s"
+    IDS_SEARCH_UNICODE      "Търсене на уникод"
 END
 
 STRINGTABLE 
@@ -1760,8 +1630,8 @@ BEGIN
     IDS_LD_ED2KLINK         "ED2K линк"
     IDS_LD_COPYCLIPBOARD    "Копирай в буфера"
     IDS_LD_HOSTNAME         "Използвай името на хоста (от настройки) вместо IP при създаване на линк с източник"
-    IDS_SAVEACFAILED        "Грешка при записване на AICH кода!"
-    IDS_IACHHASH            "AICH код"
+    IDS_SAVEACFAILED        "Грешка при записване на AICH хеша!"
+    IDS_IACHHASH            "AICH хеш"
     IDS_BYTESPERSEC         "Б/с."
     IDS_KBYTESPERSEC        "КБ/с."
     IDS_MBYTESPERSEC        "МБ/с."
@@ -1774,16 +1644,16 @@ BEGIN
     IDS_STATS_MINORCLIENTS  "По-малка"
     IDS_LD_BASICOPT         "Основни Опции"
     IDS_LD_ADDSOURCE        "Добави себе си като източник"
-    IDS_LD_EMULEHASH        "Добави eMule AICH кодиране за допълнителна обработка при повреждане"
+    IDS_LD_EMULEHASH        "Добави eMule AICH хеширане за допълнителна обработка при повреждане"
     IDS_LD_ADVANCEDOPT      "Допълнителни Опции"
     IDS_LD_ADDHTML          "Добави HTML eтикети"
-    IDS_LD_ADDHASHSET       "Добави пълна проверка на кода"
+    IDS_LD_ADDHASHSET       "Добави пълна проверка на хеша"
     IDS_FILELINK            "Линк към файла"
     IDS_PF_ADVANCEDCALC     "Допълн. метод за пресмятане на оставащото време"
     IDS_DL_SHOWED2KLINK     "Покажи ED2K линка..."
-    IDS_AICH_SYNCTOTAL      "Намерени са %i файла с невалиден AICH код, да ги прекодирам ли сега"
-    IDS_AICH_CALCFILE       "Пресмятане на AICH кода за файла %s"
-    IDS_AICH_WARNUSER       "След версия 0.44a eMule използва допълнителено кодиране за файловете, което намялява вероятността от загуба на данни при възникване на грешка. Понеже Вие правите надстройка от по-стара версия, eMule трябва да прекодира всички Ваши споделени файлове за да пресметне новия код. Това може да отнеме малко време, но се прави само веднъж."
+    IDS_AICH_SYNCTOTAL      "Намерени са %i файла с невалиден AICH хеш, да ги прехеширам ли сега"
+    IDS_AICH_CALCFILE       "Пресмятане на AICH хеша за файла %s"
+    IDS_AICH_WARNUSER       "След версия 0.44a eMule използва допълнителено хеширане за файловете, което намялява вероятността от загуба на данни при възникване на грешка. Понеже Вие правите надстройка от по-стара версия, eMule трябва да прехешира всички ваши споделени файлове за да пресметне новия хеш. Това може да отнеме малко време, но се прави само веднъж."
     IDS_AICH_WORKED         "AICH успешно въстанови %s от %s части %u за %s"
     IDS_TRICKLING           "В готовност"
     IDS_SOURCECLIENT        "Източник"
@@ -1815,8 +1685,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_COMCTRL32_DLL_TOOOLD 
-                            "Бибилиотеката на Windows Common Controls (COMCTL32.DLL) е много стара!\n\neMule е определил версията на ""Библиотеката на Windows Common Controls (COMCTL32.DLL)"" , която е много стара и ще бъде правилно използвана от eMule. За да осигурите пълно и безупречно функциониране на eMule wпрепоръчваме Ви да обновите ""Библиотеката на Windows Common Controls (COMCTL32.DLL)"" поне до версия 5.8.\n\nСвалете и инсталирайте обновяване за ""Библиотеката на Windows Common Controls (COMCTL32.DLL)"" от Цнтъра за Сваляне на Microsoft (R). Искате ли да посетите съответстващия URL?"
+    IDS_COMCTRL32_DLL_TOOOLD "Бибилиотеката на Windows Common Controls (COMCTL32.DLL) е много стара!\n\neMule е определил версията на ""Библиотеката на Windows Common Controls (COMCTL32.DLL)"", която е много стара и ще бъде правилно използвана от eMule. За да осигурите пълно и безупречно функциониране на eMule wпрепоръчваме Ви да обновите ""Библиотеката на Windows Common Controls (COMCTL32.DLL)"" поне до версия 5.8.\n\nСвалете и инсталирайте обновяване за ""Библиотеката на Windows Common Controls (COMCTL32.DLL)"" от Центъра за Сваляне на Microsoft (R). Искате ли да посетите съответстващия URL?"
     IDS_ASREGEXPR           "Като обичен израз"
     IDS_STATIC_REGEXP       "Обичаен израз за преглед на филтъра:"
     IDS_CARE4ALL            "Оцени всички файлове"
@@ -1855,7 +1724,7 @@ BEGIN
     IDS_USESPEECH           "Изговаряй уведомителните съобщения"
     IDS_CONDTCPACCEPT       "Отказ за бърза връзка"
     IDS_TCPIP_CONNS         "TCP/IP връзки"
-    IDS_ERR_DELFILE         "Не мога да изтрия файла ""%s"""
+    IDS_ERR_DELFILE         "Не може да се изтрие файла ""%s"""
     IDS_MANUAL_FILENAMECLEANUP "Искате ли да изчистите имената на избраните файлове?"
 END
 
@@ -1910,46 +1779,115 @@ BEGIN
     IDS_SEARCHAUTHORCOLLECTION "Търси авторски колекции"
     IDS_ERR_DUPL_FILES      "Дублирани споделени файлове: ""%s"" и ""%s"""
     IDS_USS_TRACEROUTEOFTENFAILED 
-                            "Автоматично качване: Проследяването на пътя е неуспешно твърде много пъти. Изключване на автоматичното качване."
-    IDS_USS_STARTING        "Автоматично качване: Направено с подготовката. Стартиране на контрол над скоростта на качване. (Първите 60 секунди ще са в режим 'бързо взаимодействие')"
+                            "'Умно' качване: Проследяването на пътя е неуспешно твърде много пъти. Изключване на 'умното' качване."
+    IDS_USS_STARTING        "'Умно' качване: Направено е с подготовката. Стартиран е контрол над скоростта на качване. (Първите 60 секунди ще са в режим 'бързо взаимодействие')"
     IDS_USS_MANUALUPLOADLIMITDETECTED 
-                            "Автоматично качване: В настройките е открито ограничение на скоростта на качване. Преминаване в режим 'бързо взаимодействие' за 60 секунди."
+                            "'Умно' качване: В настройките е открито ограничение на скоростта на качване. Преминаване в режим 'бързо взаимодействие' за 60 секунди."
     IDS_USS_STATE_PREPARING "Подготовка..."
     IDS_USS_STATE_WAITING   "Изчкаване..."
     IDS_USS_STATE_ERROR     "Грешка!"
-    IDS_SHAREWARNING        "(Folder will be shared!)"
-    IDS_REMOVEALLSERVERS    "Do you really want to remove all servers?"
-    IDS_SEARCH_UNKATTR      "Unknown search attribute '%s'"
-    IDS_SEARCH_ATTRERR      "Syntax error in '%s' search attribute"
-    IDS_SEARCH_MISSINGANDRIGHT "Missing right side for AND operator"
-    IDS_SEARCH_OPRERR       "Syntax error in comparison operator '%s'"
+    IDS_SHAREWARNING        "(Папката ще бъде споделена!)"
+    IDS_REMOVEALLSERVERS    "Наистина ли искате да изтриете всички сървъри?"
+    IDS_SEARCH_UNKATTR      "Неизвестен параметър за трърсене '%s'"
+    IDS_SEARCH_ATTRERR      "Синтактична грешка в параметъра за търсене '%s'"
+    IDS_SEARCH_MISSINGANDRIGHT "Липсва дясната страна от оператора AND"
+    IDS_SEARCH_OPRERR       "Синтактична грешка при сравняване на опрератора '%s'"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_DOWNLOAD_LANGFILE   "Downloading language file"
-    IDS_DOWNLOADING_SERVERMET_FROM "Downloading server.met from %s"
-    IDS_DOWNLOADING_SERVERMET "Downloading server.met..."
-    IDS_FULLALLOC           "Allocate full filesize for non-sparse part files"
-    IDS_X_SHAREAZA_IMPORT_NO_HASH "Hash not found."
-    IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "Gap list corrupt."
-    IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST "Gap list not found."
-    IDS_X_SHAREAZA_IMPORT_HASH_SET_CORRUPT "Hash set corrupt."
-    IDS_X_SHAREAZA_IMPORT_NO_HASH_SET "Hash set not found."
-    IDS_CONVERTINGKNOWN2MET "Converting %s to %s to support large files..."
+    IDS_DOWNLOAD_LANGFILE   "Сваляне на езиков файл"
+    IDS_DOWNLOADING_SERVERMET_FROM "Сваляне на server.met от %s"
+    IDS_DOWNLOADING_SERVERMET "Сваляне на server.met..."
+    IDS_FULLALLOC           "Разпределяне на пълния размер на файла на отделни части"
+    IDS_X_SHAREAZA_IMPORT_NO_HASH "Хеша не е намерен."
+    IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "Списъка с празнини е повреден."
+    IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST "Списъка с празнин и не е намерен."
+    IDS_X_SHAREAZA_IMPORT_HASH_SET_CORRUPT "Хеша е повреден."
+    IDS_X_SHAREAZA_IMPORT_NO_HASH_SET "Хеша не е намерен."
+    IDS_CONVERTINGKNOWN2MET "Конвертиране на %s в %s за да поддържа по-големи файлове..."
     IDS_CONVERTINGKNOWN2FAILED 
-                            "...failed to convert known2.met, ignoring old records"
-    IDS_CONVERTINGKNOWN2DONE "... done, finished converting"
-    IDS_ERR_MET_BAD         "Error: the file %s is corrupted, unable to load known files"
-    IDS_SRV_LARGEFILES      "Support for large files"
+                            "...конвертирането на known2.met неуспешно, игнориране на старите записи"
+    IDS_CONVERTINGKNOWN2DONE "... готово, завършване на конвертирането"
+    IDS_ERR_MET_BAD         "Грешка: файлът %s е повреден, списъкът с известни файлове не може да бъде зареден"
+    IDS_SRV_LARGEFILES      "Поддръжка на по-големи файлове"
 END
 
 
 STRINGTABLE 
 BEGIN
     IDS_ERR_FSCANTHANDLEFILE 
-                            "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
-    IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
+                            "Не можете да свалите този файл, защото фашата файлова система не поддържа файлове, по-големи от 4ГБ, трябва да я конвертирате в NTFS"
+    IDS_NEWVERSIONAVLBETA   "Тази Бета версия е много стара. Обикновенно такива версии имат дефекти и е много важно да я подмените с до финална версия възможно най-скоро!"IDS_KADSEARCHACTIVE     "(Търсене в Kad мрежата...)"
+    IDS_BOLD                "Получер текст"
+    IDS_UNDERLINE           "Подчертан текст"
+    IDS_COLOUR              "Избор на цвят за текст, (цвят за фон (по избор))."
+    IDS_RESETFORMAT         "Изчистване на предишните форматирания, (Изпраща етикет за изчистване)."
+    IDS_RESTORESEARCHPARAMS "Възстановяване на параметрите за търсене"
+    IDS_COMMAND             "Команда"
+    IDS_ARGUMENTS           "Аргументи"
+    IDS_AP_CREATEPREVCOPY   "Предварителен преглед на файла"
+    IDS_ARCHIVEDETAILS      "Детайли за архива"
+    IDS_ARCHTYPE            "Тип на архива:"
+    IDS_ATTRIBUTES          "Атрибути"
+    IDS_LASTMODIFIED        "Последна промяна"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_RARFULLENCR         "Заглавията са кодирани - прочитането невъзможно"
+    IDS_ARCPARSED           "Архива е проверен."
+    IDS_ARCPREV_LISTMAYBEINCOMPL "Списъка с файлове може да непълен."
+    IDS_ARCPREV_DIRNOTFOUND "Директорията не е намерена."
+    IDS_ARCPREV_INSUFFDATA  "Наличните данни са непълни."
+    IDS_PASSWPROT           "Защита с парола"
+    IDS_ARCPREV_DIRSUCCREAD "Директорията прочетена успешно."
+    IDS_ARCPREV_UNKNOWNFORMAT "(неизвестен/неподдържан)"
+    IDS_ARCPREV_PLEASEWAIT  "Проверка на архива..."
+    IDS_OBFUSCATION         "Повреден"
+    IDS_SUPPORTED           "Поддържан"
+    IDS_ESTIMATED           "Определен"
+    IDS_MEDIAINFO_DLLMISSING "Няма инсталирани библиотеки за MediaInfo. Ако искате да научите повече информация за аудио/видео файловете в този прозорец,\r\nсвалете библиотеката за MediaInfo от http://sourceforge.net/projects/mediainfo/ и копирайте файла MediaInfo.dll във\r\nинсталационната папка на eMule ""%s"".\r\n"
+    IDS_WARNING_WRONGFILEEXTENTION "Внимание: Разширението на файла ""%s"" не съвпада със стандартното използвано\r\nразширение за този тип файлове. Можете да преименувате файла използвайки\r\nедно от следните разширения ""%s""\r\nза да можете да използвате или преглеждате този файлов формат.\r\n"
+    IDS_MEDIAINFO_DRMWARNING "Внимание: Файлът ""%s"" изглежда е защитен с Digital Rights Management.\r\nНай-вероятно няма да можете да използвате този файл без лиценз от автора на файла.\r\n"
+    IDS_LOADFILTER_EMTOOLBAR "Картинки за Лентата с инструменти на eMule"
+    IDS_LOADFILTER_EMSKINFILES "Облици за eMule"
+    IDS_LOADURL             "Зареди"
+    IDS_DELETEAFTERALLOC    "В момента файла '%s' се записва на диска и ще бъде изтрит по-късно"
+    IDS_TRAYDLG_SPEED       "eMule Скорост"
+    IDS_VIAPASSIVE          "чрез Пасивен"
+    IDS_WEB_REMOTE_LINK_ADDED "Добавен линк: "
+    IDS_WEB_REMOTE_LINK_NOT_ADDED "Линка не е добавен. Грешна парола."
+    IDS_OPTIONS             "Опции"
+    IDS_ERR_FAILEDTOLOAD    "Неуспешно зареждане на %s: %s"
+    IDS_RUNNINGRESTRICTED   "eMule е стартиран с ограничени права"
+    IDS_ARCHPREV_ATTRIBINFO "Файловите атрибути могат да съдържат:\r\n\r\nP\tфайла е защитен с парола\r\nD\tе папка\r\nC\tКоментар\r\nLx\tНиво на компресия x\r\nM\tкомпресираните данни все още не са свалени\r\n<\tфайла е продължение от предишен том\r\n>\tфайла продължава в следващ том\r\n"
+    IDS_CONTENT_INFO        "Съдържание"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_MESSAGESCOMMENTS    "Съобщения и коментари"
+    IDS_DISABLEOBFUSCATION  "Изключи поддръжката на кодирани връзки"
+    IDS_ONLYOBFUSCATED      "Използвай само кодирани връзки (не се препоръчва)"
+    IDS_ENABLEOBFUSCATION   "Включи кодиране на протокола"
+    IDS_PROTOCOLOBFUSCATION "Кодиране на протокола"
+    IDS_CONNECTINGTOOBFUSCATED 
+                            "Свързване с %s (%s:%i - използвайки кодиране на протокола) ..."
+    IDS_CONNECTEDTOOBFUSCATED "Установена е кодирана връзка с: %s"
+    IDS_VERIFIED            "проверен"
+    IDS_OBFUSCATED          "кодиран"
+    IDS_UNVERIFIED          "непроверен"
+    IDS_INVALIDFILEEXT      "невалидно файлово разширение"
+    IDS_UNKNOWNFILEEXT      "неизвестно файлово разширение"
+    IDS_ENABLEMINIMULE      "Използвай MiniMule"
+    IDS_DISABLE_AUTOARCHPREV 
+                            "Изключи автоматичния преглед на архивите в детайлите за файла"
+    IDS_US_STALLEDW4BR      "Забавяне! Изчакване на заявка за блока."
+    IDS_US_STALLEDREADINGFDISK "Забавяне! Четене от диска."
+    IDS_SERVERFEATURE_INTTYPETAGS "Целочислен тип етикети"
 END
 
 #endif    // Bulgarian resources

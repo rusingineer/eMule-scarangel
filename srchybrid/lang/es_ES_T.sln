@@ -7,6 +7,8 @@ Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Dynamic = Dynamic
 	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{B0DAEE35-FD0F-4FAF-A7C1-3D52103B3E81}.Dynamic.ActiveCfg = Dynamic|Win32
 		{B0DAEE35-FD0F-4FAF-A7C1-3D52103B3E81}.Dynamic.Build.0 = Dynamic|Win32

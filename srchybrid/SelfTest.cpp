@@ -3,12 +3,14 @@
 #include "SHA.h"
 #pragma warning(disable:4244) // conversion from 'type1' to 'type2', possible loss of data
 #pragma warning(disable:4100) // unreferenced formal parameter
+#pragma warning(disable:4702) // unreachable code
 //Xman
 #pragma warning(disable:4516)
 #include <crypto.v52.1/sha.h>
 #include <crypto.v52.1/md4.h>
 #pragma warning(default:4516)
 //Xman end
+#pragma warning(default:4702) // unreachable code
 #pragma warning(default:4100) // unreferenced formal parameter
 #pragma warning(default:4244) // conversion from 'type1' to 'type2', possible loss of data
 

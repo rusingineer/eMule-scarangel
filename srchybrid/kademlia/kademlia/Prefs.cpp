@@ -144,9 +144,7 @@ void CPrefs::SetIPAddress(uint32 uVal)
 	//If the last check does not match, wait for our next incoming IP.
 	//This happens for two reasons.. We just changed our IP, or a client responsed with a bad IP.
 	if( uVal == m_uIPLast )
-	{
 		m_uIP = uVal;
-	}
 	else
 		m_uIPLast = uVal;
 }
@@ -289,7 +287,7 @@ uint32 CPrefs::GetIPAddress() const
 
 bool CPrefs::GetRecheckIP() const
 {
-	return (m_uRecheckip<4);
+	return (m_uRecheckip < KADEMLIAFIREWALLCHECKS);
 }
 
 void CPrefs::SetRecheckIP()

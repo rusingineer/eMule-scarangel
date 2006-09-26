@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include <io.h>
 #include <share.h>
+#include <iphlpapi.h>
 #include "emule.h"
 #include "Preferences.h"
 #include "Opcodes.h"
@@ -91,6 +92,9 @@ bool CPreferences::m_bUseNarrowFont;
 //Xman 1:3 Ratio
 bool CPreferences::m_13ratio;
 //Xman end
+
+//Xman chunk chooser
+uint8 CPreferences::m_chunkchooser;
 
 //Xman disable compression
 bool CPreferences::m_bUseCompression;
@@ -180,6 +184,7 @@ UINT	CPreferences::maxhalfconnections;
 bool	CPreferences::m_bConditionalTCPAccept;
 bool	CPreferences::reconnect;
 bool	CPreferences::m_bUseServerPriorities;
+bool	CPreferences::m_bUseUserSortedServerList;
 TCHAR	CPreferences::incomingdir[MAX_PATH];
 CStringArray CPreferences::tempdir;
 bool	CPreferences::ICH;
@@ -445,8 +450,9 @@ bool	CPreferences::m_bExtControls;
 bool	CPreferences::m_bTransflstRemain;
 UINT	CPreferences::versioncheckdays;
 bool	CPreferences::showRatesInTitle;
-TCHAR	CPreferences::TxtEditor[256];
-TCHAR	CPreferences::VideoPlayer[256];
+TCHAR	CPreferences::TxtEditor[MAX_PATH];
+CString	CPreferences::m_strVideoPlayer;
+CString CPreferences::m_strVideoPlayerArgs;
 bool	CPreferences::moviePreviewBackup;
 int		CPreferences::m_iPreviewSmallBlocks;
 bool	CPreferences::m_bPreviewCopiedArchives;
@@ -529,6 +535,7 @@ CString	CPreferences::m_sToolbarSettings;
 bool	CPreferences::m_bReBarToolbar;
 CSize	CPreferences::m_sizToolbarIconSize;
 bool	CPreferences::m_bPreviewEnabled;
+bool	CPreferences::m_bAutomaticArcPreviewStart;
 bool	CPreferences::m_bDynUpEnabled;
 int		CPreferences::m_iDynUpPingTolerance;
 int		CPreferences::m_iDynUpGoingUpDivider;
@@ -574,6 +581,10 @@ CString	CPreferences::m_strNotifierMailSender;
 CString	CPreferences::m_strNotifierMailReceiver;
 
 bool	CPreferences::m_bWinaTransToolbar;
+
+bool	CPreferences::m_bCryptLayerRequested;
+bool	CPreferences::m_bCryptLayerSupported;
+bool	CPreferences::m_bCryptLayerRequired;
 
 // ==> Global Source Limit [Max/Stulle] - Stulle
 bool    CPreferences::m_bGlobalHlDefault; 
@@ -867,12 +878,15 @@ void CPreferences::Init()
 			CString toadd;
 			while (sdirfile->ReadString(toadd))
 			{
-				toadd.Trim(L"\r\n"); // need to trim '\r' in binary mode
+				toadd.Trim(L" \t\r\n"); // need to trim '\r' in binary mode
+				if (toadd.IsEmpty())
+					continue;
+
 				TCHAR szFullPath[MAX_PATH];
 				if (PathCanonicalize(szFullPath, toadd))
 					toadd = szFullPath;
 
-				if (!IsShareableDirectory(toadd) )
+				if (!IsShareableDirectory(toadd))
 					continue;
 
 				if (_taccess(toadd, 0) == 0) { // only add directories which still exist
@@ -913,7 +927,9 @@ void CPreferences::Init()
 			CString toadd;
 			while (sdirfile->ReadString(toadd))
 			{
-				toadd.Trim(L"\r\n"); // need to trim '\r' in binary mode
+				toadd.Trim(L" \t\r\n"); // need to trim '\r' in binary mode
+				if (toadd.IsEmpty())
+					continue;
 				addresses_list.AddHead(toadd);
 			}
 		}
@@ -2014,6 +2030,7 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(L"AutoTakeED2KLinks", autotakeed2klinks);
     ini.WriteBool(L"AddNewFilesPaused", addnewfilespaused);
     ini.WriteInt (L"3DDepth", depth3D);  
+	ini.WriteBool(L"MiniMule", m_bEnableMiniMule);
 
 	ini.WriteString(L"NotifierConfiguration", notifierConfiguration);
 	ini.WriteBool(L"NotifyOnDownload", notifierOnDownloadFinished);
@@ -2029,7 +2046,8 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(L"ShowActiveDownloadsBold",m_bShowActiveDownloadsBold); //Xman Show active downloads bold
 
 	ini.WriteString(L"TxtEditor",TxtEditor);
-	ini.WriteString(L"VideoPlayer",VideoPlayer);
+	ini.WriteString(L"VideoPlayer",m_strVideoPlayer);
+	ini.WriteString(L"VideoPlayerArgs",m_strVideoPlayerArgs);
 	ini.WriteString(L"MessageFilter",messageFilter);
 	ini.WriteString(L"CommentFilter",commentFilter);
 	ini.WriteString(L"DateTimeFormat",GetDateTimeFormat());
@@ -2137,6 +2155,7 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(L"ShowDwlPercentage",m_bShowDwlPercentage);
 	ini.WriteBool(L"RemoveFilesToBin",m_bRemove2bin);
 	//ini.WriteBool(L"ShowCopyEd2kLinkCmd",m_bShowCopyEd2kLinkCmd);
+	ini.WriteBool(L"AutoArchivePreviewStart", m_bAutomaticArcPreviewStart);
 
 	// Toolbar
 	ini.WriteString(L"ToolbarSetting", m_sToolbarSettings);
@@ -2176,6 +2195,11 @@ void CPreferences::SavePreferences()
 	ini.WriteString(L"NotifierMailRecipient", m_strNotifierMailReceiver);
 
 	ini.WriteBool(L"WinaTransToolbar", m_bWinaTransToolbar);
+
+	ini.WriteBool(L"CryptLayerRequested", m_bCryptLayerRequested);
+	ini.WriteBool(L"CryptLayerRequired", m_bCryptLayerRequired);
+	ini.WriteBool(L"CryptLayerSupported", m_bCryptLayerSupported);
+
 
 	///////////////////////////////////////////////////////////////////////////
 	// Section: "Proxy"
@@ -2287,6 +2311,9 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(L"amountbasedratio",m_13ratio);
 	//Xman end
 
+	//Xman chunk chooser
+	ini.WriteInt(L"chunkchooser", m_chunkchooser);
+
 	//Xman auto update IPFilter
 	ini.WriteString(L"AutoUpdateIPFilter_URL", m_strautoupdateipfilter_url);
 	ini.WriteBool(L"AutoUpdateIPFilter", m_bautoupdateipfilter);
@@ -2377,8 +2404,8 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("ClientQueueProgressBar"),m_bClientQueueProgressBar); // Client queue progress bar [Commander] - Stulle
 	ini.WriteBool(_T("ShowClientPercentage"),m_bShowClientPercentage); // Show Client Percentage [Commander/MorphXT] - Mondgott
 	// ==> CPU/MEM usage [$ick$/Stulle] - Max
-	ini.WriteBool(_T("SysInfo"),m_bSysInfo);
-	ini.WriteBool(_T("SysInfoGlobal"),m_bSysInfoGlobal);
+	ini.WriteBool(_T("SysInfos"),m_bSysInfo);
+	ini.WriteBool(_T("SysInfosGlobal"),m_bSysInfoGlobal);
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
 
 	ini.WriteInt(_T("CreditSystemMode"), creditSystemMode); // CreditSystems [EastShare/ MorphXT] - Stulle
@@ -2760,8 +2787,18 @@ void CPreferences::LoadPreferences()
 	m_pszBindAddrW = m_strBindAddrW.IsEmpty() ? NULL : (LPCWSTR)m_strBindAddrW;
 	m_strBindAddrA = m_strBindAddrW;
 	m_pszBindAddrA = m_strBindAddrA.IsEmpty() ? NULL : (LPCSTR)m_strBindAddrA;
-	port = (uint16)ini.GetInt(L"Port", DEFAULT_TCP_PORT);
-	udpport = (uint16)ini.GetInt(L"UDPPort",port+10);
+	
+	port = (uint16)ini.GetInt(L"Port", 0);
+	if (port == 0)
+		port = thePrefs.GetRandomTCPPort();
+
+	// 0 is a valid value for the UDP port setting, as it is used for disabling it.
+	int iPort = ini.GetInt(L"UDPPort", INT_MAX/*invalid port value*/);
+	if (iPort == INT_MAX)
+		udpport = thePrefs.GetRandomUDPPort();
+	else
+		udpport = (uint16)iPort;
+
 	nServerUDPPort = (uint16)ini.GetInt(L"ServerUDPPort", -1); // 0 = Don't use UDP port for servers, -1 = use a random port (for backward compatibility)
 	maxsourceperfile=ini.GetInt(L"MaxSourcesPerFile",400 );
 	m_iSeeShares=(EViewSharedFilesAccess)ini.GetInt(L"SeeShare",vsfaNobody);
@@ -2802,6 +2839,7 @@ void CPreferences::LoadPreferences()
 
 	reconnect = ini.GetBool(L"Reconnect", true);
 	m_bUseServerPriorities = ini.GetBool(L"Scoresystem", true);
+	m_bUseUserSortedServerList = ini.GetBool(L"UserSortedServerList", false);
 	ICH = ini.GetBool(L"ICH", true);
 	m_bAutoUpdateServerList = ini.GetBool(L"Serverlist", false);
 
@@ -2945,6 +2983,7 @@ void CPreferences::LoadPreferences()
 	m_bPreviewCopiedArchives=ini.GetBool(L"PreviewCopiedArchives", true);
 	m_iInspectAllFileTypes=ini.GetInt(L"InspectAllFileTypes", 0);
 	m_bAllocFull=ini.GetBool(L"AllocateFullFile",0);
+	m_bAutomaticArcPreviewStart=ini.GetBool(L"AutoArchivePreviewStart", true );
 
 	// read file buffer size (with backward compatibility)
 	m_iFileBufferSize=ini.GetInt(L"FileBufferSizePref",0); // old setting
@@ -3004,13 +3043,13 @@ void CPreferences::LoadPreferences()
 	maxmsgsessions=ini.GetInt(L"MaxMessageSessions",50);
 	m_bShowActiveDownloadsBold = ini.GetBool(L"ShowActiveDownloadsBold", false);
 
-	_stprintf(TxtEditor,L"%s",ini.GetString(L"TxtEditor",L"notepad.exe"));
-	_stprintf(VideoPlayer,L"%s",ini.GetString(L"VideoPlayer",L""));
-	
-	_stprintf(m_sTemplateFile,L"%s",ini.GetString(L"WebTemplateFile", GetConfigDir()+L"eMule.tmpl"));
+	_snwprintf(TxtEditor,_countof(TxtEditor),L"%s",ini.GetString(L"TxtEditor",L"notepad.exe"));
+	m_strVideoPlayer = ini.GetString(L"VideoPlayer", L"");
+	m_strVideoPlayerArgs = ini.GetString(L"VideoPlayerArgs",L"");
+	_snwprintf(m_sTemplateFile,_countof(m_sTemplateFile),L"%s",ini.GetString(L"WebTemplateFile", GetConfigDir()+L"eMule.tmpl"));
 
 	messageFilter=ini.GetStringLong(L"MessageFilter",L"Your client has an infinite queue|Your client is connecting too fast|fastest download speed");
-	commentFilter = ini.GetStringLong(L"CommentFilter",L"http://|https://|www.");
+	commentFilter = ini.GetStringLong(L"CommentFilter",L"http://|https://|ftp://|www.|ftp.");
 	commentFilter.MakeLower();
 	filenameCleanups=ini.GetStringLong(L"FilenameCleanups",L"http|www.|.com|.de|.org|.net|shared|powered|sponsored|sharelive|filedonkey|");
 	m_iExtractMetaData = ini.GetInt(L"ExtractMetaData", 1); // 0=disable, 1=mp3, 2=MediaDet
@@ -3090,6 +3129,10 @@ void CPreferences::LoadPreferences()
 	m_strNotifierMailReceiver = ini.GetString(L"NotifierMailRecipient", L"");
 
 	m_bWinaTransToolbar = ini.GetBool(L"WinaTransToolbar", true); //Xman default true
+
+	m_bCryptLayerRequested = ini.GetBool(L"CryptLayerRequested", false);
+	m_bCryptLayerRequired = ini.GetBool(L"CryptLayerRequired", false);
+	m_bCryptLayerSupported = ini.GetBool(L"CryptLayerSupported", true);
 
 	///////////////////////////////////////////////////////////////////////////
 	// Section: "Proxy"
@@ -3287,6 +3330,12 @@ void CPreferences::LoadPreferences()
 	m_13ratio=ini.GetBool(L"amountbasedratio",false);
 	//Xman end
 
+	//Xman chunk chooser
+	m_chunkchooser=(uint8)ini.GetInt(L"chunkchooser",1); //1 = Mealla 2=zz
+	if(m_chunkchooser<1 || m_chunkchooser>2)
+		m_chunkchooser=1;
+	//Xman end
+
 	//Xman disable compression
 	m_bUseCompression=ini.GetBool(L"UseCompression",true);
 
@@ -3367,8 +3416,8 @@ void CPreferences::LoadPreferences()
 	m_bClientQueueProgressBar=ini.GetBool(_T("ClientQueueProgressBar"),true); // Client queue progress bar [Commander] - Stulle
 	m_bShowClientPercentage=ini.GetBool(_T("ShowClientPercentage"),false); // Show Client Percentage [Commander/MorphXT] - Mondgott
 	// ==> CPU/MEM usage [$ick$/Stulle] - Max
-	m_bSysInfo = ini.GetBool(_T("SysInfo"),true);
-	m_bSysInfoGlobal = ini.GetBool(_T("SysInfoGlobal"),false);
+	m_bSysInfo = ini.GetBool(_T("SysInfos"),false);
+	m_bSysInfoGlobal = ini.GetBool(_T("SysInfosGlobal"),false);
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
 
 	creditSystemMode = (uint8)ini.GetInt(_T("CreditSystemMode"), 1/*lovelace*/); // CreditSystems [EastShare/ MorphXT] - Stulle
@@ -3901,13 +3950,15 @@ bool CPreferences::IsShareableDirectory(const CString& rstrDir)
 
 void CPreferences::UpdateLastVC()
 {
-	versioncheckLastAutomatic = safe_mktime(CTime::GetCurrentTime().GetLocalTm());
+	struct tm tmTemp;
+	versioncheckLastAutomatic = safe_mktime(CTime::GetCurrentTime().GetLocalTm(&tmTemp));
 }
 
 //Xman versions check
 void CPreferences::UpdateLastMVC()
 {
-	mversioncheckLastAutomatic = safe_mktime(CTime::GetCurrentTime().GetLocalTm());
+	struct tm tmTemp;
+	mversioncheckLastAutomatic = safe_mktime(CTime::GetCurrentTime().GetLocalTm(&tmTemp));
 }
 //Xman end
 
@@ -4065,6 +4116,128 @@ bool CPreferences::CanFSHandleLargeFiles()	{
 	return bResult && !IsFileOnFATVolume(GetIncomingDir());
 }
 
+uint16 CPreferences::GetRandomTCPPort()
+{
+	// Get table of currently used TCP ports.
+	PMIB_TCPTABLE pTCPTab = NULL;
+	HMODULE hIpHlpDll = LoadLibrary(_T("iphlpapi.dll"));
+	if (hIpHlpDll)
+	{
+		DWORD (WINAPI *pfnGetTcpTable)(PMIB_TCPTABLE, PDWORD, BOOL);
+		(FARPROC&)pfnGetTcpTable = GetProcAddress(hIpHlpDll, "GetTcpTable");
+		if (pfnGetTcpTable)
+		{
+			DWORD dwSize = 0;
+			if ((*pfnGetTcpTable)(NULL, &dwSize, FALSE) == ERROR_INSUFFICIENT_BUFFER)
+			{
+				// The nr. of TCP entries could change (increase) between
+				// the two function calls, allocate some more memory.
+				dwSize += sizeof(pTCPTab->table[0]) * 50;
+				pTCPTab = (PMIB_TCPTABLE)malloc(dwSize);
+				if (pTCPTab)
+				{
+					if ((*pfnGetTcpTable)(pTCPTab, &dwSize, TRUE) != ERROR_SUCCESS)
+					{
+						free(pTCPTab);
+						pTCPTab = NULL;
+					}
+				}
+			}
+		}
+		FreeLibrary(hIpHlpDll);
+	}
+
+	const UINT uValidPortRange = 61000;
+	int iMaxTests = uValidPortRange; // just in case, avoid endless loop
+	uint16 nPort;
+	bool bPortIsFree;
+	do {
+		// Get random port
+		nPort = 4096 + (GetRandomUInt16() % uValidPortRange);
+
+		// The port is by default assumed to be available. If we got a table of currently
+		// used TCP ports, we verify that this port is currently not used in any way.
+		bPortIsFree = true;
+		if (pTCPTab)
+		{
+			uint16 nPortBE = htons(nPort);
+			for (UINT e = 0; e < pTCPTab->dwNumEntries; e++)
+			{
+				// If there is a TCP entry in the table (regardless of its state), the port
+				// is treated as not available.
+				if (pTCPTab->table[e].dwLocalPort == nPortBE)
+				{
+					bPortIsFree = false;
+					break;
+				}
+			}
+		}
+	}
+	while (!bPortIsFree && --iMaxTests > 0);
+	free(pTCPTab);
+	return nPort;
+}
+
+uint16 CPreferences::GetRandomUDPPort()
+{
+	// Get table of currently used UDP ports.
+	PMIB_UDPTABLE pUDPTab = NULL;
+	HMODULE hIpHlpDll = LoadLibrary(_T("iphlpapi.dll"));
+	if (hIpHlpDll)
+	{
+		DWORD (WINAPI *pfnGetUdpTable)(PMIB_UDPTABLE, PDWORD, BOOL);
+		(FARPROC&)pfnGetUdpTable = GetProcAddress(hIpHlpDll, "GetUdpTable");
+		if (pfnGetUdpTable)
+		{
+			DWORD dwSize = 0;
+			if ((*pfnGetUdpTable)(NULL, &dwSize, FALSE) == ERROR_INSUFFICIENT_BUFFER)
+			{
+				// The nr. of UDP entries could change (increase) between
+				// the two function calls, allocate some more memory.
+				dwSize += sizeof(pUDPTab->table[0]) * 50;
+				pUDPTab = (PMIB_UDPTABLE)malloc(dwSize);
+				if (pUDPTab)
+				{
+					if ((*pfnGetUdpTable)(pUDPTab, &dwSize, TRUE) != ERROR_SUCCESS)
+					{
+						free(pUDPTab);
+						pUDPTab = NULL;
+					}
+				}
+			}
+		}
+		FreeLibrary(hIpHlpDll);
+	}
+
+	const UINT uValidPortRange = 61000;
+	int iMaxTests = uValidPortRange; // just in case, avoid endless loop
+	uint16 nPort;
+	bool bPortIsFree;
+	do {
+		// Get random port
+		nPort = 4096 + (GetRandomUInt16() % uValidPortRange);
+
+		// The port is by default assumed to be available. If we got a table of currently
+		// used UDP ports, we verify that this port is currently not used in any way.
+		bPortIsFree = true;
+		if (pUDPTab)
+		{
+			uint16 nPortBE = htons(nPort);
+			for (UINT e = 0; e < pUDPTab->dwNumEntries; e++)
+			{
+				if (pUDPTab->table[e].dwLocalPort == nPortBE)
+				{
+					bPortIsFree = false;
+					break;
+				}
+			}
+		}
+	}
+	while (!bPortIsFree && --iMaxTests > 0);
+	free(pUDPTab);
+	return nPort;
+}
+
 //Xman
 //upnp_start
 uint16 CPreferences::GetPort(){
@@ -4084,7 +4257,6 @@ uint16 CPreferences::GetUDPPort(){
 	return udpport;
 }
 //upnp_end
-
 // ==> ScarAngel Version Check - Stulle
 void CPreferences::UpdateLastSVC()
 {

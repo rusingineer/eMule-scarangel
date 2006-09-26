@@ -48,6 +48,7 @@ CPreferencesDlg::CPreferencesDlg()
 	m_wndSecurity.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndScheduler.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndProxy.m_psp.dwFlags &= ~PSH_HASHELP;
+	m_wndMessages.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndXtreme.m_psp.dwFlags &= ~PSH_HASHELP; //Xman Xtreme Mod
 	m_wndXtreme2.m_psp.dwFlags &= ~PSH_HASHELP; //Xman Xtreme Mod
 	m_wndScar.m_psp.dwFlags &= ~PSH_HASHELP; // ScarAngel Preferences window - Stulle
@@ -69,11 +70,11 @@ CPreferencesDlg::CPreferencesDlg()
 	CTreePropSheet::SetPageIcon(&m_wndScheduler, _T("SCHEDULER"));
 	CTreePropSheet::SetPageIcon(&m_wndWebServer, _T("WEB"));
 	CTreePropSheet::SetPageIcon(&m_wndTweaks, _T("TWEAK"));
+	CTreePropSheet::SetPageIcon(&m_wndMessages, _T("MESSAGES"));
 	// ==> This ain't no Xtreme - Stulle
 	/*
 	CTreePropSheet::SetPageIcon(&m_wndXtreme, _T("AAAEMULEAPP")); //Xman Xtreme Mod
 	CTreePropSheet::SetPageIcon(&m_wndXtreme2, _T("AAAEMULEAPP")); //Xman Xtreme Mod
-	CTreePropSheet::SetPageIcon(&m_wndScar, _T("MAXICON")); // ScarAngel Preferences window - Stulle
 	*/
 	CTreePropSheet::SetPageIcon(&m_wndXtreme, _T("XTREME"));
 	CTreePropSheet::SetPageIcon(&m_wndXtreme2, _T("XTREME"));
@@ -94,6 +95,7 @@ CPreferencesDlg::CPreferencesDlg()
 	AddPage(&m_wndNotify);
 	AddPage(&m_wndStats);
 	AddPage(&m_wndIRC);
+	AddPage(&m_wndMessages);
 	AddPage(&m_wndSecurity);
 	AddPage(&m_wndScheduler);
 	AddPage(&m_wndWebServer);
@@ -178,6 +180,7 @@ void CPreferencesDlg::Localize()
 	m_wndWebServer.Localize();
 	m_wndScheduler.Localize();
 	m_wndProxy.Localize();
+	m_wndMessages.Localize();
 	m_wndXtreme.Localize(); //Xman Xtreme Mod
 	m_wndXtreme2.Localize(); //Xman Xtreme Mod
 	m_wndScar.Localize(); // ScarAngel Preferences window - Stulle
@@ -197,6 +200,7 @@ void CPreferencesDlg::Localize()
 		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_PW_EKDEV_OPTIONS))); 
 		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_STATSSETUPINFO))); 
 		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_IRC)));
+		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_MESSAGESCOMMENTS)));
 		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_SECURITY))); 
 		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_SCHEDULER)));
 		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_PW_WS)));

@@ -77,6 +77,7 @@ BOOL InputBox::OnInitDialog()
 	GetDlgItem(IDC_TEXT)->SetWindowText(m_default);
 	SetWindowText(m_title);
 
+	SetDlgItemText(IDOK, GetResString(IDS_TREEOPTIONS_OK) );
 	GetDlgItem(IDCANCEL)->SetWindowText(GetResString(IDS_CANCEL));
 	SetDlgItemText(IDC_CLEANFILENAME,GetResString(IDS_CLEANUP));
 	GetDlgItem(IDC_CLEANFILENAME)->ShowWindow(m_bFilenameMode ? SW_NORMAL : SW_HIDE);

@@ -51,7 +51,6 @@ BEGIN_MESSAGE_MAP(CPPgDisplay, CPropertyPage)
 	ON_BN_CLICKED(IDC_SHOWRATEONTITLE, OnEnChangeSREnabled)
 	ON_BN_CLICKED(IDC_SHOWOVERHEADONTITLE, OnSettingsChange)
 	// <== show overhead on title - Stulle
-	ON_BN_CLICKED(IDC_INDICATERATINGS , OnSettingsChange)
 	ON_BN_CLICKED(IDC_DISABLEHIST , OnSettingsChange)
 	ON_BN_CLICKED(IDC_DISABLEKNOWNLIST, OnSettingsChange)
 	ON_BN_CLICKED(IDC_DISABLEQUEUELIST, OnSettingsChange)
@@ -92,11 +91,6 @@ void CPPgDisplay::LoadSettings(void)
 		CheckDlgButton(IDC_DBLCLICK,1);
 	else
 		CheckDlgButton(IDC_DBLCLICK,0);
-
-	if(thePrefs.indicateratings)
-		CheckDlgButton(IDC_INDICATERATINGS,1);
-	else
-		CheckDlgButton(IDC_INDICATERATINGS,0);
 
 	if(thePrefs.showRatesInTitle)
 		CheckDlgButton(IDC_SHOWRATEONTITLE,1);
@@ -173,7 +167,6 @@ BOOL CPPgDisplay::OnApply()
 		thePrefs.mintotray = IsDlgButtonChecked(IDC_MINTRAY)!=0;
 		thePrefs.transferDoubleclick = IsDlgButtonChecked(IDC_DBLCLICK)!=0;
 		thePrefs.depth3D = ((CSliderCtrl*)GetDlgItem(IDC_3DDEPTH))->GetPos();
-		thePrefs.indicateratings = IsDlgButtonChecked(IDC_INDICATERATINGS)!=0;
 		thePrefs.dontRecreateGraphs = IsDlgButtonChecked(IDC_REPAINT)!=0;
 		thePrefs.m_bShowDwlPercentage = IsDlgButtonChecked(IDC_SHOWDWLPERCENT)!=0;
 		thePrefs.m_bRemoveFinishedDownloads = IsDlgButtonChecked(IDC_CLEARCOMPL)!=0;
@@ -298,7 +291,6 @@ void CPPgDisplay::Localize(void)
 		GetDlgItem(IDC_UPDATEQUEUE)->SetWindowText(GetResString(IDS_UPDATEQUEUE));
 		GetDlgItem(IDC_SHOWRATEONTITLE)->SetWindowText(GetResString(IDS_SHOWRATEONTITLE));
 		GetDlgItem(IDC_SHOWOVERHEADONTITLE)->SetWindowText(GetResString(IDS_SHOWOVERHEADONTITLE)); // show overhead on title - Stulle
-		GetDlgItem(IDC_INDICATERATINGS)->SetWindowText(GetResString(IDS_INDICATERATINGS));
 		GetDlgItem(IDC_DISABLEKNOWNLIST)->SetWindowText(GetResString(IDS_DISABLEKNOWNLIST));
 		GetDlgItem(IDC_DISABLEQUEUELIST)->SetWindowText(GetResString(IDS_DISABLEQUEUELIST));
 		GetDlgItem(IDC_STATIC_CPUMEM)->SetWindowText(GetResString(IDS_STATIC_CPUMEM));

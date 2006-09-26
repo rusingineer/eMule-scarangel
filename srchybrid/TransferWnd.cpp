@@ -1616,7 +1616,7 @@ void CTransferWnd::UpdateCatTabTitles(bool force)
 	if (!force && GetTabUnderMouse(&pt)!=-1)		// avoid cat tooltip jumping
 		return;
 
-	for (uint8 i=0;i<m_dlTab.GetItemCount();i++)
+	for (int i = 0; i < m_dlTab.GetItemCount(); i++)
 		// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 		//EditCatTabLabel(i,/*(i==0)? GetCatTitle( thePrefs.GetCategory(0)->filter ):*/thePrefs.GetCategory(i)->title);
 		EditCatTabLabel(i, thePrefs.GetCategory(i)->title);
@@ -2464,7 +2464,6 @@ void CTransferWnd::ResetTransToolbar2(bool bShowToolbar, bool bResetLists)
 		ShowWnd2(wnd2Uploading);
 }
 //Xman end
-
 // ==> CPU/MEM usage [$ick$/Stulle] - Max 
 void CTransferWnd::ShowRessources()
 {

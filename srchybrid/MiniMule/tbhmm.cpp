@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "emule.h"
 #include "TBHMM.h"
-#include "GetCpuUsage.h"
 #include "preferences.h"
 #include "downloadqueue.h"
 #include "uploadqueue.h"
@@ -137,7 +136,7 @@ void CTBHMM::MMUpdate()
  //   CSingleLock sLock2(&theApp.minimulemutex); // wait for the main.
  //   sLock2.Lock(); // mmupdate acces thing that should not be deleted. 
 
-	if (theApp.m_app_state == APP_STATE_SHUTINGDOWN ||
+	if (theApp.m_app_state == APP_STATE_SHUTTINGDOWN ||
 		!theApp.emuledlg->IsRunning()) 
 		return;
 	try

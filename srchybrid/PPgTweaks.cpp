@@ -108,6 +108,7 @@ CPPgTweaks::CPPgTweaks()
 	m_bA4AFSaveCpu = false;
 	*/
 	m_iExtractMetaData = 0;
+	m_bAutoArchDisable=true;
 
 	m_bInitializedTreeOpts = false;
 	m_htiTCPGroup = NULL;
@@ -170,6 +171,7 @@ CPPgTweaks::CPPgTweaks()
 	m_htiLogDrop = NULL; //Xman Xtreme Downloadmanager
 	m_htiLogpartmismtach = NULL; //Xman Log part/size-mismatch
 	m_htiExtractMetaData = NULL;
+	m_htiAutoArch = NULL;
 }
 
 CPPgTweaks::~CPPgTweaks()
@@ -229,6 +231,7 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 		m_htiFilterLANIPs = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PW_FILTER), TVI_ROOT, m_bFilterLANIPs);
 		m_htiExtControls = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOWEXTSETTINGS), TVI_ROOT, m_bExtControls);
         //m_htiA4AFSaveCpu = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_A4AF_SAVE_CPU), TVI_ROOT, m_bA4AFSaveCpu); // ZZ:DownloadManager
+		m_htiAutoArch  = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_DISABLE_AUTOARCHPREV), TVI_ROOT, m_bAutoArchDisable);
 		m_htiYourHostname = m_ctrlTreeOptions.InsertItem(GetResString(IDS_YOURHOSTNAME), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, TVI_ROOT);
 		m_ctrlTreeOptions.AddEditBox(m_htiYourHostname, RUNTIME_CLASS(CTreeOptionsEditEx));
 		m_htiDisablePeerCache = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_DISABLEPEERACHE), TVI_ROOT, m_bDisablePeerCache);
@@ -351,7 +354,8 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
     //DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiA4AFSaveCpu, m_bA4AFSaveCpu); // ZZ:DownloadManager
 	DDX_TreeEdit(pDX, IDC_EXT_OPTS, m_htiYourHostname, m_sYourHostname);
 	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiDisablePeerCache, m_bDisablePeerCache);
-
+	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiAutoArch, m_bAutoArchDisable);
+	
 	/////////////////////////////////////////////////////////////////////////////
 	// File related group
 	//
@@ -475,6 +479,7 @@ BOOL CPPgTweaks::OnInitDialog()
 	m_sYourHostname = thePrefs.GetYourHostname();
 	m_bFirewallStartup = ((thePrefs.GetWindowsVersion() == _WINVER_XP_) ? thePrefs.m_bOpenPortsOnStartUp : 0); 
 	m_bDisablePeerCache = !thePrefs.m_bPeerCacheEnabled;
+	m_bAutoArchDisable = !thePrefs.m_bAutomaticArcPreviewStart;
 
 	/* Xman
 	// ZZ:UploadSpeedSense -->
@@ -626,6 +631,7 @@ BOOL CPPgTweaks::OnApply()
     thePrefs.m_iDynUpNumberOfPings = m_iDynUpNumberOfPings;
 	// ZZ:UploadSpeedSense <--
 	*/
+	thePrefs.m_bAutomaticArcPreviewStart = !m_bAutoArchDisable;
     //thePrefs.m_bA4AFSaveCpu = m_bA4AFSaveCpu; // ZZ:DownloadManager
 
 	//Xman
@@ -740,8 +746,9 @@ void CPPgTweaks::Localize(void)
 
 		//if (m_htiA4AFSaveCpu) m_ctrlTreeOptions.SetItemText(m_htiA4AFSaveCpu, GetResString(IDS_A4AF_SAVE_CPU)); // ZZ:DownloadManager
 		if (m_htiFullAlloc) m_ctrlTreeOptions.SetItemText(m_htiFullAlloc, GetResString(IDS_FULLALLOC));
-
-        CString temp;
+		if (m_htiAutoArch) m_ctrlTreeOptions.SetItemText(m_htiAutoArch, GetResString(IDS_DISABLE_AUTOARCHPREV));
+        
+		CString temp;
 		temp.Format(_T("%s: %s"), GetResString(IDS_FILEBUFFERSIZE), CastItoXBytes(m_iFileBufferSize, false, false));
 		GetDlgItem(IDC_FILEBUFFERSIZE_STATIC)->SetWindowText(temp);
 		temp.Format(_T("%s: %s"), GetResString(IDS_QUEUESIZE), GetFormatedUInt(m_iQueueSize));
@@ -819,6 +826,7 @@ void CPPgTweaks::OnDestroy()
 	m_htiExtractMetaData = NULL;
 	m_htiExtractMetaDataNever = NULL;
 	m_htiExtractMetaDataID3Lib = NULL;
+	m_htiAutoArch = NULL;
 	//m_htiExtractMetaDataMediaDet = NULL;
     
 	//Xman

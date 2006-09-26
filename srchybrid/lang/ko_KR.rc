@@ -70,7 +70,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_HTTPDOWNLOAD_GETTING_FILE_INFORMATION "파일 정보를 가져오는 중"
-    IDS_HTTPDOWNLOAD_FAIL_PARSE_ERROR "URL 분석 오류: %s"
     IDS_HTTPDOWNLOAD_GENERIC_ERROR "파일을 가져오는 중 오류 발생, 오류: %s"
     IDS_HTTPDOWNLOAD_FAIL_CONNECT_SERVER "서버에 접속 중 오류 발생, 오류: %s"
     IDS_HTTPDOWNLOAD_INVALID_SERVER_RESPONSE 
@@ -107,7 +106,6 @@ STRINGTABLE
 BEGIN
     IDS_MAIN_SOCKETERROR    "치명적 오류: 포트 %i로 소켓을 생성할 수 없음"
     IDS_MAIN_BTN_DISCONNECT "끊기(&C)"
-    IDS_MAIN_BTN_DISCONNECT_TOOLTIP "현재 접속된 서버 끊기"
     IDS_ERR_WRONGFILEID     "잘못된 파일 아이디"
     IDS_ERR_BADHASHSET      "손상되거나 잘못된 해시셋 수신"
     IDS_ERR_BADDATABLOCK    "손상되거나 잘못된 데이터 블럭 수신"
@@ -116,17 +114,14 @@ BEGIN
     IDS_ERR_NOSLLINK        "제대로 된 ED2K 서버나 파일 링크가 아님"
     IDS_ERR_WRONGPACKAGESIZE "OP_FILEREQUEST 패킷 크기가 틀림"
     IDS_ERR_WRONGHPACKAGESIZE "OP_HASHSETREQUEST 패킷 크기가 틀림"
-    IDS_ERR_BADCLIENTACTION "클라이언트가 오류를 유발시켰거나 좋지 않은 행동을 합니다: %s. 클라이언트와의 연결을 끊습니다!"
     IDS_ERR_UNKNOWNCLIENTACTION 
                             "알 수 없는 클라이언트가 확장 프로토콜 패킷을 보냅니다"
     IDS_ERR_OPENMET         "오류: part.met 파일을 열 수 없음! (%s => %s)"
     IDS_ERR_BADMETVERSION   "오류: 잘못된 part.met 파일 버젼! (%s => %s)"
-    IDS_ERR_BADGAP          "part.met 파일의 잘못된 Gap-Tag"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_EMPTYADRESSESDAT_TITLE "서버목록을 가져올 수 없음"
     IDS_ERR_BADSERVERMETVERSION "server.met에 잘못된 버젼 태그(0x%X)!"
     IDS_SERVERSFOUND        "server.met에서 %i개의 서버 발견"
     IDS_SERVERSADDED        "%d개의 서버 추가, %d개 버림"
@@ -135,7 +130,6 @@ BEGIN
                             "server.met을 읽는 중 오류 발생: %s, 서버 목록을 채우지 못함"
     IDS_ERR_SAVESERVERMET   "server.met 저장 실패!"
     IDS_PASSIVE             "수동"
-    IDS_MAIN_CONNECTEDTO    "연결됨: "
     IDS_MAIN_BTN_CANCEL     "취소(&C)"
     IDS_AVAIL               "Parts: %d , 사용가능: %d (%.1f%%)\n\n"
     IDS_TYPE                "유형"
@@ -154,8 +148,6 @@ BEGIN
     IDS_PREFERENCE          "선호도"
     IDS_PRIONOPREF          "No Pref"
     IDS_CONNECTTHIS         "선택된 서버로 접속"
-    IDS_CHAT_WELCOME        "인스턴트 메시지\n  \n채팅을 시작하려면 원하는 클라이언트에서 오른쪽 버튼을 누르고 '메시지 보내기'를 선택하세요"
-    IDS_MAIN_BTN_CANCEL_TOOLTIP "현재 연결 시도 중단"
     IDS_MAIN_BTN_CONNECT    "연결(&C)"
     IDS_ERR_SAVESERVERMET2  "server.met 저장 실패! server.met 파일을 지우고 server.met.old를 server.met로 이름을 바꿔주셔야 합니다!"
     IDS_NOTCONNECTED        "연결 안됨"
@@ -192,7 +184,6 @@ STRINGTABLE
 BEGIN
     IDS_LINKNOTADDED        "링크를 추가할 수 없음"
     IDS_MAIN_EXIT           "정말로 eMule을 끝내시겠습니까?"
-    IDS_MAIN_EXITTITLE      "종료 확인"
     IDS_MAIN_POPUP_RESTORE  "열기"
     IDS_CONNECTTOANYSERVER  "아무 서버에나 연결"
     IDS_EXIT                "종료"
@@ -200,7 +191,6 @@ BEGIN
     IDS_FAILED              "실패"
     IDS_ERR_BADSERVERREPLY  "서버로 부터 잘못된 로그인 응답 수신 됨"
     IDS_NEWCLIENTID         "새로운 클라이언트 ID는 %u입니다"
-    IDS_NOSHAREDFOLDERS     "공유된 폴더 없음"
     IDS_SHAREDFOLDERS       "공유된 폴더"
     IDS_VIEW1               "보기 "
     IDS_VIEW2               " (공유되지 않음)"
@@ -239,10 +229,6 @@ BEGIN
     IDS_ASKED4ANOTHERFILE   "다른 파일 요청"
     IDS_Q_CANCELDL          "정말로 이 파일들을 취소하고 삭제하시겠습니까?\n"
     IDS_Q_CANCELDL2         "정말로 이 파일을 취소하고 삭제하시겠습니까?\n"
-    IDS_COPIED2CB           "복사됨: \n"
-    IDS_PROCDONE            "% 완료"
-    IDS_SELECTINCOMINGDIR   "받은 파일이 저장될 폴더 선택"
-    IDS_SELECTTEMPDIR       "임시 파일이 저장될 폴더 선택"
     IDS_DL_FILENAME         "파일명"
     IDS_DL_SIZE             "크기"
     IDS_DL_TRANSF           "받은 양"
@@ -258,7 +244,6 @@ BEGIN
     IDS_DL_REMAINS          "남은 양"
     IDS_UPDATEFROM          "갱신 URL: (filter.dat- 또는 PeerGuardian-형식)"
     IDS_QL_USERNAME         "사용자명"
-    IDS_ERR_PACKAGEHANDLING "서버 (%s)에서 수신한 패킷을 처리하던 중 알 수 없는 오류 발생"
     IDS_QL_RATING           "등급"
     IDS_CONNECTINGTO        "%s로 연결 중 (%s:%i)..."
     IDS_CLIENTS             "클라이언트"
@@ -281,7 +266,6 @@ BEGIN
     IDS_SRV_ADDR            "서버 주소를 입력해 주십시오"
     IDS_SRV_PORT            "잘못된 서버 포트: 서버 포트를 입력 바랍니다"
     IDS_SRV_NOTADDED        "서버를 추가하지 않았습니다!"
-    IDS_SRV_READD           "서버가 죽은것으로 표시되어 있었지만 다시 추가했습니다!"
     IDS_SRV_NOURLAV         "URL이 없습니다."
     IDS_INVALIDURL          "잘못된 URL"
 END
@@ -293,22 +277,15 @@ BEGIN
     IDS_SHAREDFILES         "공유된 파일"
     IDS_PRIOVERYLOW         "아주 낮음"
     IDS_PRIORELEASE         "배포"
-    IDS_FSTATUS_LOCKED      "잠김"
-    IDS_KADALPHA            "Kademlia는 현재 개발 초기 단계입니다. 테스트할 의항이 있을 경우에만 활성화 시켜 주십시요"
     IDS_FSTATUS_FRIENDSONLY "친구한테만"
-    IDS_FSTATUS_PUBLIC      "공개"
-    IDS_ERR_RENAMESF        "이름을 바꿀수 없습니다\r\n    ""%s""\r\n를\r\n    ""%s""로\r\n\r\n%hs"
-    IDS_PRIOHIGHEST         "가장 높음"
+    IDS_ERR_RENAMESF        "이름을 바꿀수 없습니다\r\n    ""%s""\r\n를\r\n    ""%s""로\r\n\r\n%s"
     IDS_AVAILABLE           "available"
-    IDS_ERR_NOPRIMCHANGE    "파일 다운로드 중에는 권한을 변경할 수 없습니다!"
-    IDS_HIDDEN              "숨김"
 END
 
 STRINGTABLE 
 BEGIN
     IDS_FSTAT_TRANSFER      "전송"
     IDS_FSTAT_CONNECTION    "연결"
-    IDS_FSTAT_CLIENTS       "클라이언트"
     IDS_FSTAT_SERVERS       "서버"
     IDS_FSTAT_WAITING       "대기 중..."
     IDS_TIME                "시간"
@@ -321,24 +298,15 @@ BEGIN
     IDS_STATS_ACTUL         "진행중인 업로드: %i"
     IDS_STATS_WAITINGUSERS  "대기중인 업로드: %i"
     IDS_STATS_RECONNECTS    "재접속: %i"
-    IDS_STATS_WAITTRANSF    "송신 대기..."
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_STATS_WAITCONN      "연결 대기..."
-    IDS_STATS_CONNECTEDSINCE "서버 접속 시간: %s"
-    IDS_STATS_RATIO         "세션 업:다운 비율:"
     IDS_STATS_UNKNOWNCLIENT "모름: %i"
     IDS_STATS_TOTAL         "합계: %i"
-    IDS_STATS_WORKING       "정상: %i"
-    IDS_STATS_DEAD          "죽음/삭제됨: %i"
     IDS_DISABLED            "닫힘"
     IDS_STOPPED             "정지됨"
     IDS_STATS_UPDATELABEL   "갱신 주기: %i 초"
-    IDS_QUEUECOUNT          "%u (%u 금지됨)"
-    IDS_NICKNAME            "별명: "
-    IDS_CLIENTSFILENAME     "\n클라이언트의 파일명: "
     IDS_ASKEDFAF            "\n다른 파일 요청함"
     IDS_WAITED              "대기시간"
     IDS_ERR_LOADCREDITFILE  "Creditfile을 열 수 없으므로 새 파일을 생성합니다"
@@ -367,14 +335,10 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_UDPEXT          "확장 프로토콜 UDP 패킷을 처리하는 중 오류 발생"
     IDS_ERR_INCOMPLETEBLOCK "불완전 블럭을 요청함 "
     IDS_ERR_OPEN            "요청된 파일을 여는데 실패함"
     IDS_ERR_CLIENTERRORED   "클라이언트 '%s'가 패키지 (%s) 생성 중 오류를 냈습니다 - 클라이언트와의 연결을 끊습니다"
     IDS_ERR_REQ_FNF         "요청된 파일을 찾을 수 없음"
-    IDS_CLIENTBLOCKED       "클라이언트 '%s'가 지나치게 공격적이므로 업로드 큐에서 추방했습니다"
-    IDS_LUSERS              "사용자"
-    IDS_LFILES              "파일"
     IDS_DESC                "설명: %s"
     IDS_PORT                "포트"
     IDS_ERR_NOVALIDSERVERSFOUND "서버목록에서 접속할만한 서버를 찾을 수 없음"
@@ -394,7 +358,6 @@ BEGIN
     IDS_ERR_REHASH          "경고: %s가 깨진것 같으므로 받은 부분에 대한 재 해시를 시도합니다"
     IDS_SKIN_PROF           "스킨 프로파일"
     IDS_ERR_PART_FNF        ".part 파일을 찾을 수 없음"
-    IDS_ERR_OPENMETFILE     "part.met 파일을 열 수 없음"
     IDS_KADOPEN             "열림"
     IDS_ERR_SAVEMET         "part 파일 저장 중 오류: %s (%s)"
     IDS_ERR_FOUNDCORRUPTION "깨진 part 발견 (%i) in %s"
@@ -407,18 +370,15 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_NOSERVERSC      "서버목록에서 접속할만한 서버를 찾을 수 없음"
     IDS_CONNECTEDTO         "접속됨: %s"
     IDS_DL_PREVIEW          "미리 보기"
     IDS_VIEWQUEUE           "업로드 큐 보기"
-    IDS_VIEWUPLOADS         "업로드 목록 보기"
     IDS_TW_UPLOADS          "업로드"
     IDS_TW_DOWNLOADS        "다운로드"
     IDS_TW_QUEUE            "대기 중인 클라이언트:"
     IDS_SW_SEARCHBOX        "검색"
     IDS_SW_NAME             "이름"
     IDS_SW_GLOBAL           "모든 서버 검색"
-    IDS_SW_TYPE             "종류"
     IDS_SW_DIRECTDOWNLOAD   "직접 다운로드"
     IDS_SW_LINK             "ED2K 링크"
     IDS_SW_START            "시작"
@@ -447,8 +407,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_PRIORITY_UP         "우선순위 올림"
-    IDS_PRIORITY_DOWN       "우선순위 낮춤"
     IDS_SPEED_LIMITS        "속도 제한"
     IDS_CAPACITY_LIMITS     "대역폭 제한"
     IDS_ADMIN               "관리자"
@@ -457,10 +415,6 @@ BEGIN
     IDS_WEB_ERR_CANTLOAD    "템플릿을 읽을 수 없습니다: %s 파일을 열 수 없음"
     IDS_GLOBALSEARCH        "전체 (서버)"
     IDS_METHOD              "방식"
-    IDS_SW_WEBBASED         "웹 검색"
-    IDS_NOTHING             "없음"
-    IDS_SETUPSPEED          "업로드 제한 설정"
-    IDS_SETDOWNSPEED        "다운로드 제한 설정"
     IDS_UNDO                "실행 취소"
     IDS_DAYLY               "매일"
 END
@@ -497,7 +451,6 @@ BEGIN
     IDS_ST_SESSION          "세션 평균"
     IDS_ST_ACTIVED          "활성 다운로드"
     IDS_ST_ACTIVEU          "활성 업로드"
-    IDS_ST_WAITINGU         "업로드 대기"
     IDS_CW_MESSAGES         "메시지"
     IDS_CW_FRIENDS          "친구"
     IDS_CW_SEND             "보내기"
@@ -514,9 +467,7 @@ BEGIN
     IDS_PW_BROWSE           "찾기"
     IDS_PW_SHARED           "공유된 디렉토리"
     IDS_PW_CONNECTION       "연결"
-    IDS_PW_DOWNC            "다운로드 용량"
     IDS_PW_DOWNL            "다운로드 제한"
-    IDS_PW_UPC              "업로드 용량"
     IDS_PW_UPL              "업로드 제한"
     IDS_PW_MAXC             "최대 연결 개수"
     IDS_PW_CLIENTPORT       "클라이언트 포트"
@@ -548,7 +499,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_PW_FILES            "파일"
-    IDS_PW_ICH              "지능적 깨진 파일 처리(&I)"
     IDS_PW_SHARE            "내 공유 보여주기"
     IDS_PW_EVER             "전체"
     IDS_PW_FRIENDS          "친구"
@@ -568,17 +518,13 @@ END
 STRINGTABLE 
 BEGIN
     IDS_FD_GENERAL          "일반"
-    IDS_FD_NAME             "파일명:"
     IDS_FD_MET              "met-파일:"
     IDS_FD_HASH             "해시:"
     IDS_FD_SIZE             "파일크기:"
-    IDS_FD_STATUS           "파일상태:"
     IDS_FD_TRANSFER         "전송"
-    IDS_FD_SOURCES          "발견된 소스:"
     IDS_FD_PARTS            "Parts:"
     IDS_FD_TRANS            "전송량:"
     IDS_FD_DATARATE         "전송속도:"
-    IDS_FD_TRANSI           "전송개수:"
     IDS_FD_COMPSIZE         "완료된 양:"
     IDS_FD_CLOSE            "닫기"
     IDS_FD_TITLE            "파일 상세정보"
@@ -593,7 +539,6 @@ BEGIN
     IDS_CD_UIP              "IP 주소:"
     IDS_CD_SIP              "서버 IP:"
     IDS_CD_VERSION          "버젼:"
-    IDS_CD_UID              "ID:"
     IDS_CD_SNAME            "서버명:"
     IDS_CD_CDOWN            "현재 다운로드:"
     IDS_CD_DOWN             "다운로드 (현재 세션):"
@@ -618,7 +563,6 @@ BEGIN
     IDS_PW_MAXSOURCES       "파일당 최대 소스"
     IDS_SHAREDFILESCOUNT    "공유된 파일 개수: %i"
     IDS_SF_SIZE             "공유된 파일 용량: %s"
-    IDS_ERR_WRONGPARTNUMBER "틀린 part 번호"
     IDS_ERR_BADPORT         "잘못된 포트 번호"
     IDS_ERR_NOHELLO         "인사도 안하고 뭔가를 요청"
     IDS_ERR_INVALIDPACKAGE  "잘못되거나 깨진 패킷이 수신됨"
@@ -628,17 +572,14 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ERR_BADSIZE         "잘못된 크기 (OP_QUEUERANKING)"
-    IDS_ERR_BADCLIENT2      "클라이언트 '%s' (IP:%s)가 오류를 냄: %u. 클라이언트와 연결을 끊습니다!"
     IDS_ERR_NOTAFILELINK    "파일 링크가 아님"
     IDS_ERR_CREATEPARTFILE  "오류: part 파일 생성 실패)"
-    IDS_ERR_UDP_MISCONF     "UDP 패킷 수신중 오류 발생 (잘못 구성된 서버일 가능성이 큼)"
     IDS_CHAT_START          "*** 채팅 세션 시작 : "
     IDS_FILEPRIO            "파일 우선순위"
     IDS_SCORE               "점수"
     IDS_ASKED               "요청"
     IDS_LASTSEEN            "대기 시작 시간"
     IDS_BANNED              "추방"
-    IDS_PRIOVERYHIGH        "아주 높음"
     IDS_UUSERS              "사용자"
     IDS_UFAILED             "실패"
     IDS_OPENFILE            "파일 열기"
@@ -658,7 +599,6 @@ BEGIN
     IDS_FILESTATS_SESSION   "현재 세션에서의 파일 교환 통계: 수락 %d, 요청 %d, %s 전송\n"
     IDS_FILESTATS_TOTAL     "전체 셔션에서의 파일 교환 통계: 수락 %d, 요청 %d, %s 전송"
     IDS_REQ_UNKNOWNFILE     "알 수 없는 파일을 요청함"
-    IDS_TRANSFERTIME        "첫 전송 후 경과시간: %s"
     IDS_SF_AVERAGESIZE      "평균 파일 크기: %s"
     IDS_SF_REQUESTS         "요청"
     IDS_SF_ACCEPTS          "수락된 요청"
@@ -690,7 +630,6 @@ BEGIN
     IDS_ADDED2SSF           "정적 서버 목록에 추가됨"
     IDS_STATICSERVER        "정적"
     IDS_ERROR_SSF           "staticservers.dat 파일을 열 수 없음"
-    IDS_ERR_PACKAGEERROR    "%s의 데이터 패킷을 처리하던 중 심각한 오류 발생 (잘못된 크기) - 데이터 블럭 버림"
     IDS_SF_ACTIVECON        "활성 연결 (근사치)"
     IDS_SF_MAXCONLIMITREACHED "최대 연결 제한에 도달함"
     IDS_SF_AVGCON           "평균 연결 (근사치)"
@@ -736,7 +675,6 @@ BEGIN
     IDS_PW_CON_UPLBL        "업로드"
     IDS_PW_AUTOCONNECTSTATICONLY "정적 서버로만 자동 접속"
     IDS_PW_CON_LIMITFRM     "제한"
-    IDS_PW_FILE_ICH         "I.C.H 사용"
     IDS_STATS_AVGLABEL      "평균 그래프 산출 기간: %i 분"
     IDS_GRAPHS              "그래프"
     IDS_STREE               "통계 트리"
@@ -769,11 +707,9 @@ STRINGTABLE
 BEGIN
     IDS_HARDLIMIT           "Hard Limit"
     IDS_COL_MORECOLORS      "기타..."
-    IDS_KBYTESEC            "kB/s"
     IDS_TOOMANYCONNS        "연결이 너무 많음"
     IDS_DOWNLOADRENAMED     "같은 이름의 파일이 이미 존재합니다. 파일은 %s로 저장되었습니다"
     IDS_TBN_DOWNLOADDONE    "다운로드 완료:"
-    IDS_TBN_DOWNLOADADDED   "다운로드에 추가됨:"
     IDS_PW_TBN_USESOUND     "사운드 사용"
     IDS_PW_TBN_ONLOG        "새로운 로그 엔트리"
     IDS_PW_TBN_ONCHAT       "새로운 채팅 세션 시작"
@@ -788,8 +724,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_PW_CON_CAPFRM       "용량"
-    IDS_IRC_STATUSLOG       "상태 로그"
-    IDS_IRC_STATUS          "상태"
     IDS_IRC_PRIVATECHANSTART "* 비공개 채팅 세션이 시작되었습니다"
     IDS_IRC_SLAPMSG         "* %s slaps %s around with a large Babelfish!"
     IDS_IRC_PRIVMESSAGE     "비공개 메시지"
@@ -806,7 +740,6 @@ BEGIN
     IDS_IRC_HASJOINED       "* %s님이 %s에 입장했습니다"
     IDS_IRC_HASPARTED       "* %s님이 %s (%s)에서 나갔습니다"
     IDS_IRC_WASKICKEDBY     "* %s님을 %s님이 추방했습니다(%s)"
-    IDS_IRC_NICKUSED        "별명이 이미 IRC 서버에서 사용 중입니다. 설정의 IRC 탭에서 다른 멸명으로 바꾸어 주십시오."
     IDS_IRC_HASQUIT         "* %s님이 끝냈습니다 (%s)"
     IDS_IRC_NOWKNOWNAS      "* %s님이 별명을 %s로 바꿨습니다"
     IDS_IRC_SETSMODE        "* %s님이 모드를 켬: %s %s"
@@ -856,12 +789,10 @@ BEGIN
     IDS_SP_ACTCON           "활성 연결"
     IDS_SP_ACTDL            "활성 다운로드"
     IDS_SP_ACTUL            "활성 업로드"
-    IDS_PW_TIT_UP           "업로드 속도 제한 설정"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_PW_TIT_DOWN         "다운로드 속도 제한 설정"
     IDS_PW_UNLIMITED        "무제한"
     IDS_PW_MINREC           "최소 권장치\t%i "
     IDS_PW_UA               "최대 업/다운 속도로 설정"
@@ -869,10 +800,7 @@ BEGIN
     IDS_IRC_IGNOREINFOMESSAGE "정보 메시지 무시"
     IDS_CONNECTIONLOST      "연결 끊김"
     IDS_WIZ_OS_FRAME        "운영 체제"
-    IDS_WIZ_CONCURENTDOWN_FRAME "평소에 동시에 다운로드하는 파일의 개수는?"
     IDS_HASHINGFILE         "Hashing file:"
-    IDS_WIZ_CUSTOM_FRAME    "연결 속도를 시험해 봤다면 결과를 여기에 적으세요."
-    IDS_WIZ_HOTBUTTON_FRAME "Preset Buttons"
     IDS_WIZ_TRUEUPLOAD_TEXT "실제 업로드 대역폭"
     IDS_WIZ_TRUEDOWNLOAD_TEXT "실제 다운로드 대역폭"
     IDS_FRIENDLIST          "친구"
@@ -884,7 +812,6 @@ BEGIN
     IDS_WIZARD              "마법사"
     IDS_ADDFRIEND           "친구로 추가"
     IDS_REMOVEFRIEND        "친구에서 제거"
-    IDS_REMOVEFROMSTOK      "정적 서버 목록에서 제거됨"
     IDS_REMOVEFROMSTATIC    "정적 서버 목록에서 제거"
     IDS_LENGTH              "길이"
     IDS_VIDEO               "비디오"
@@ -896,7 +823,6 @@ BEGIN
     IDS_FPS                 "Fps"
     IDS_CHANNELS            "Channels"
     IDS_SAMPLERATE          "Samplerate"
-    IDS_ROUNDBITRATE        "Round Bitrate"
 END
 
 STRINGTABLE 
@@ -907,16 +833,12 @@ BEGIN
     IDS_VIEWFILES           "파일 목록 보기"
     IDS_FRIENDSLOT          "친구 슬롯 형성"
     IDS_FRIENDDETAIL        "(친구 슬롯)"
-    IDS_ASCWOP_PROXYSUPPORT "프록시 없이 자동으로 서버 접속"
     IDS_UDPDISABLED         "사용 안함"
-    IDS_CTINFO              "연결 형태 선택:"
     IDS_WIZ_CTFRAME         "연결 형태"
     IDS_CONCURDWL           "동시 다운로드"
-    IDS_UNIT                "단위:"
     IDS_WIZARD_CUSTOM       "Custom"
     IDS_WIZARD_ENTERBELOW   "(아래에 입력!)"
     IDS_STATS_MAXAVGDL      "최대 다운로드 속도 평균 (세션): %s"
-    IDS_USS_MIN             "경고: 현재 USS는 10K 이하의 업로드 속도를 지원하지 않습니다. 만약 현재 연결로서 감당하기 힘들다면 USS 기능을 꺼 주십시요."
 END
 
 STRINGTABLE 
@@ -925,13 +847,11 @@ BEGIN
     IDS_IRC_EMULEPROTO_IGNOREADDFRIEND "eMule 친구 추가 프로토콜 메시지 무시"
     IDS_PW_FASTSRVCON       "빠른 서버 접속"
     IDS_SOURCELINKFAILED    "유효한 소스 링크를 생성하려면 HighID여야 합니다"
-    IDS_CREATESOURCELINK    "ED2K 링크 복사 (소스)"
     IDS_ERR_LOADSERVERMET   "server.met 로드 실패!"
     IDS_ERR_CORRUPTCOMPRPKG "%s 에서 깨진 압축 패킷 수신 (오류 %i)"
     IDS_ERR_EMFRIENDSINVALID "emfriends.met 파일이 잘못되었거나 깨졌습니다!"
     IDS_ERR_READEMFRIENDS   "emfriends.met 파일을 읽는 중 알 수 없는 오류: %s"
     IDS_ERR_KNOWNSERVERINFOREC "알 수 없는 서버 정보가 수신됨!"
-    IDS_ERR_TIMERCREATEFAILED "치명적 오류: 타이머 생성 실패"
     IDS_WIZ_DOWN            "다운 (kbit/s)"
     IDS_WIZ_UP              "업 (kbit/s)"
     IDS_SELECT_INCOMINGDIR  "받은 파일 폴더 선택"
@@ -946,7 +866,6 @@ BEGIN
     IDS_PRIOAUTORELEASE     "자동 [배포]"
     IDS_PRIOAUTOLOW         "자동 [낮음]"
     IDS_ERR_CONTIMEOUT      """%s"" (%s:%i )로 연결 시도 시간 초과"
-    IDS_ERR_CONFAILED       """%s"" (%s:%i )로 연결 실패"
     IDS_OUTOFSERVERS        "연결할 서버가 더이상 없습니다."
     IDS_PW_CONLIMITS        "연결 제한"
     IDS_MAXCON5SECLABEL     "최대 신규 연결 / 5초"
@@ -966,15 +885,11 @@ BEGIN
     IDS_RECOVERED_PARTMET   "part.met 파일 복구: %s"
     IDS_CMT_QUEST           "이 파일에 대한 주석을 다세요! (여기 써진 글은 다른 사용자에게 보여집니다)"
     IDS_CMT_AIDE            "영화라면 상영시간, 줄거리 같은 걸 기재하고, 만약 가짜 파일이라면 다른 사용자를 위해 정보를 제공해 주는 것도 좋겠죠 :-)"
-    IDS_CMT_TITLE           "%s 파일 주석"
     IDS_CMT_ADD             "파일 주석 변경..."
     IDS_CMT_NONE            "주석 없음"
     IDS_CMT_READ            "파일 주석:"
-    IDS_CMT_NOTCONNECTED    "아직 연결되지 않음..."
     IDS_CMT_SHOWALL         "모든 주석 보기"
-    IDS_CMT_REFRESH         "새로 고침"
     IDS_CMT_READALL         "모든 주석"
-    IDS_CMT_NOCOMMENT       "주석 입력 안됨..."
     IDS_CMT_RATEQUEST       "파일의 질"
     IDS_CMT_RATEHELP        "이 파일에 대한 순위를 메기거나, 문제가 있는 파일이면 다른 사용자에게 알려주세요"
 END
@@ -1001,7 +916,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_FD_STATS            "깨짐으로 인한 손실: %s       압축으로 인한 이득: %s\nI.C.H.로 구한 패키지 수: %i"
     IDS_ERR_NOHELP          "새로운 도움말 파일을 저희 홈페이지의 다운로드 영역에서 받으십시요!\n\n온라인 도움말을 대신 보겠습니까?"
     IDS_SHOWOVERHEAD        "오버헤드 대역폭 보기"
     IDS_UPDOWNSMALL         "업: %.1f | 다운: %.1f"
@@ -1027,7 +941,6 @@ BEGIN
     IDS_VISITVERSIONCHECK   "\n\n지금 정보 페이지를 방문하시겠습니까?"
     IDS_PW_VIDEOPLAYER      "비디오 재생기"
     IDS_VIDEOBACKUP         "미리보기를 위한 백업 생성"
-    IDS_STATIC_EMPTY        "(공란=기본값)"
     IDS_MYINFO              "내 정보"
     IDS_ID                  "ID"
     IDS_IDLOW               "Low ID"
@@ -1071,8 +984,6 @@ BEGIN
     IDS_COLOR               "컬러"
     IDS_DEFAULT             "기본"
     IDS_PW_DISPLAY          "디스플레이"
-    IDS_CAT_INVADD          "모두 보기 (미분류)"
-    IDS_CAT_REINVADD        "모두 보기"
     IDS_INDICATERATINGS     "다운로드 항목에 주석/등급을 아이콘으로 표시"
     IDS_ALLOTHERS           "나머지 모두"
     IDS_TOCAT               "분류 지정"
@@ -1082,14 +993,13 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ADDDOWNLOADSFROMCB  "아래 ED2K 파일 링크를 모두 다운로드에 추가하겠습니까?\n"
-    IDS_ADDDOWNLOADSFROMCBTITLE "클립보드에 있는 ED2K 파일 링크"
     IDS_PF_WATCHCB          "클립보드에 ED2K 파일 링크 감시"
     IDS_SECURITY            "보안"
     IDS_IPFILTERLOADED      "%i개의 IP 필터가 로드되었습니다"
     IDS_IPFILTER            "IP 필터"
     IDS_EDIT                "편집"
     IDS_FILTERLEVEL         "필터 레벨"
-    IDS_FILTERSERVERBYIPFILTER "서버도 필터 (유동 IP 서버도 거부)"
+    IDS_FILTERSERVERBYIPFILTER "서버도 필터"
     IDS_FILTERCOMMENTSLABEL "다음이 포함된 메시지 표시 안함: (구분자 | )"
     IDS_CLIENTLIST          "알려진 클라이언트"
     IDS_FOLDER              "폴더"
@@ -1111,10 +1021,8 @@ BEGIN
     IDS_USECREDITSYSTEM     "신용 시스템 사용 (업로드시 우대)"
     IDS_FIRSTAUTODOWN       "Enable this option if you want eMule to manage your download priorities.\n\nTurning this on will allow eMule to make sure downloads with a lot of sources do not interfere with downloads that have few sources. This option will only affect future downloads."
     IDS_FIRSTAUTOUP         "Enable this option if you want eMule to manage your upload priorities.\n\nTurning this on will allow eMule to boost rare files meaning popular files will be harder for other people to get. Turning this off will allow eMule to upload popular files more often meaning rare files will be harder for other people to get. This option will only affect future shared files."
-    IDS_FIRSTCREDITSYSTEM   "Do you want to reward people that upload to you?\n\nThis is commonly known as the Credit System. Turning this on will help fight against leachers. If you are a dedicated releaser, you will want to turn this off."
     IDS_FIRSTFULLCHUNK      "Enable this option if you want to upload full chunks.\n\nUsing full chunk gives the client a better chance to complete a chunk. Turning this off will help rotate your queue faster. If you are a dedicated releaser, you will want to turn this on."
     IDS_FIRSTSAFECON        "Enable this option if you want eMule to connect using Safe Connect.\n\nTurning this feature off allows eMule to connect to servers a little faster, but can cause you to get more false LowID connects."
-    IDS_FIRSTRUNASSIST      "처음 사용자를 위한 설정 마법사를 실행하겠습니까?"
     IDS_FIRSTAUTOCON        "Enable this option if you want eMule to connect at startup."
     IDS_FIRSTCOMPLETE       "마법사를 통한 설정을 끝냈습니다.\r\r설정 아이콘을 클릭하면 더 많은 옵션을 볼 수 있습니다. 자세한 설명이나 지원이 필요하면 F1을 눌러 도움말을 참조하십시요!"
 END
@@ -1145,18 +1053,14 @@ END
 STRINGTABLE 
 BEGIN
     IDS_WEB_SHOW_UPLOAD_QUEUE "업로드 큐 보기"
-    IDS_WEB_HIDE_UPLOAD_QUEUE "업로드 큐 감추기"
     IDS_WEB_GZIP_COMPRESSION "Gzip 압축"
     IDS_WEB_GZIP_COMMENT    "압축을 통해 트래픽을 줄임 (그래프 등에 유용)"
-    IDS_WEB_UPLOAD_QUEUE_COMMENT 
-                            "전송 페이지에서 업로드 큐를 보여주거나 감추기"
     IDS_WEB_REFRESH_TIME    "페이지 갱신 시간"
     IDS_WEB_REFRESH_COMMENT "초 단위 (0=금지):"
     IDS_SV_URL              "URL"
     IDS_WS_RELOAD_TMPL      "템플릿"
     IDS_SV_DEBUGLOG         "디버그 로그"
     IDS_WS_PASS             "비밀번호"
-    IDS_WEB_FILESETTINGS    "파일 설정"
     IDS_WS_ERR_LOADTEMPLATE "템플릿을 읽을 수 없습니다: %s 파일을 새로운 버전으로 교체하십시요!"
     IDS_WEB_CONLIMITS       "연결 제한"
     IDS_INFLST_USER_TOTALDOWNLOAD "총 다운로드 용량"
@@ -1166,7 +1070,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_WEB_BADLOGINATTEMPT "웹 서버: 로그인 시도 실패"
-    IDS_ERR_TOOLARGEFILE    "파일이 edonkey 프로토콜이 지원하는 크기보다 큼 (>=4GB)"
+    IDS_ERR_TOOLARGEFILE    "파일이 edonkey 프로토콜이 지원하는 크기보다 큼 (>=256GB)"
     IDS_MSGONLYFRIENDS      "친구에게만 허용"
     IDS_MSGONLYSEC          "유효한 클라이언트만 허용"
     IDS_DAY_MO_SA           "월-토"
@@ -1190,7 +1094,6 @@ BEGIN
     IDS_WEBSRV              "웹서버"
     IDS_SW_REFETCHRES       "검색 결과 갱신"
     IDS_FILEHASH            "파일 해시"
-    IDS_GLOBALSEARCH2       "전역 검색"
     IDS_PW_PROXY            "프록시"
     IDS_PROXY_ENABLE        "프록시 사용"
     IDS_PROXY_TYPE          "프록시 종류:"
@@ -1217,7 +1120,6 @@ BEGIN
     IDS_WIZ1_END_BTN_HINT   "마법사를 종료하려면 완료를 클릭하세요."
     IDS_WIZ1_UPLOAD_SUBTITLE "덩어리 단위 전송"
     IDS_DL_RESUMENEXT       "다음 일시 중지 파일 시작"
-    IDS_DONTCHANGE          "변경 안함"
     IDS_STARTPRIO           "이 분류의 우선 순위"
     IDS_PREF_STARTNEXTFILECAT "동일 분류 선호"
     IDS_REPAINTGRAPHS       "크기 조정할 때 통계 그래프 새로 만들지 않음"
@@ -1256,7 +1158,6 @@ BEGIN
     IDS_STATS_CUMULATIVE    "누적"
     IDS_STATS_OVRHD         "오버헤드"
     IDS_STATS_RECORDS       "레코드"
-    IDS_STATS_OVRHD2        "오버헤드: %s (%s 패킷)"
     IDS_STATS_COMPDL        "완료된 다운로드"
     IDS_STATS_SVRECWORKING  "최대 동작 서버 수"
     IDS_STATS_SVRECUSERS    "최대 온라인 사용자 수"
@@ -1270,7 +1171,6 @@ BEGIN
     IDS_SEARCH_COLUMN       "검색 대상 열"
     IDS_STATS_SHRECSIZE     "제일 큰 공유 크기"
     IDS_STATS_SHRECASIZE    "제일 큰 평균 파일 크기"
-    IDS_STATS_MYRUNTIME     "총 실행 시간: %s"
     IDS_STATS_SESSION       "세션"
     IDS_STATS_SRATIO        "세션 업:다운 비율:"
     IDS_STATS_CRATIO        "누적 업:다운 비율:"
@@ -1292,15 +1192,12 @@ BEGIN
     IDS_STATS_AVGDATAULSES  "세션 당 평균 업로드"
     IDS_STATS_ICHSAVED      "I.C.H로 구한 Part: %u"
     IDS_STATS_MBRESET_TXT   "정말로 누적된 통계를 초기화 하겠습니까?\n\n마음이 바뀌면 '통계 복구' 버튼을 눌러 원래대로 되돌려 놓을 수 있습니다."
-    IDS_STATS_MBRESET_CAP   "초기화 확인"
     IDS_STATS_MBRESTORE_TXT "정말로 누적된 통계치를 백업된 파일에 있는 값으로 되돌려 놓겠습니까?\n\n'통계 복구'를 다시 누르면 현재 통계치가 다시 사용됩니다."
-    IDS_STATS_MBRESTORE_CAP "복구 확인"
     IDS_ERR_NOSTATBKUP      "오류: 백업된 통계 파일을 찾을 수 없습니다..."
     IDS_STATS_NFOLOADEDBKUP "백업된 통계 데이터를 읽음..."
     IDS_STATS_NFORESET      "통계가 초기화 됨!"
     IDS_STATS_BNRESET       "통계 초기화"
     IDS_STATS_BNRESTORE     "통계 복구"
-    IDS_CONNECTIONSTATISTICS "연결 통계"
     IDS_PPGSTATS_YSCALE     "연결 통계 Y축 척도:"
 END
 
@@ -1326,7 +1223,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_STATS_OLDCLIENTS    "구형"
     IDS_STATS_PRTDEF        "기본값"
     IDS_STATS_PRTOTHER      "기타"
     IDS_STATS_MNUTREETITLE  "통계 트리"
@@ -1375,12 +1271,8 @@ BEGIN
     IDS_SEARCH_MISSINGNOTRIGHT "NOT 연산자의 우측 항이 없음"
     IDS_SEARCH_MISSINGEXPRPARANT "'(' ')' 안에 식이 없음"
     IDS_SEARCH_MISSINGCLOSINGPARANT "닫는 ')' 없음"
-    IDS_SEARCH_MISSINGANDLEFT "AND 연산자의 좌측 항 없음"
-    IDS_SEARCH_MISSINGORLEFT "OR 연산자의 좌측 항 없음"
-    IDS_SEARCH_MISSINGNOTLEFT "NOT 연산자에 좌측 항 없음"
     IDS_SEARCH_EXPRERROR    "검색 식 분석 실패"
     IDS_SEARCH_TOOCOMPLEX   "식이 너무 복잡 함"
-    IDS_SEARCH_INVALIDMINMAX "최소/최대 파일 크기 단위가 올바르지 못함"
 END
 
 STRINGTABLE 
@@ -1402,7 +1294,6 @@ STRINGTABLE
 BEGIN
     IDS_SELECT_FONT         "폰트 선택"
     IDS_SERVER_LIMITS       "Soft/Hard 파일 제한"
-    IDS_SERVERINFO          "서버 정보"
     IDS_KBITSSEC            "kBits/sec"
     IDS_KBYTESSEC           "kBytes/sec"
     IDS_ERR_CREATE_DIR      "%s 디렉토리 생성 실패 ""%s"" - %s"
@@ -1427,14 +1318,13 @@ BEGIN
                             "변경한 설정을 적용하려면 eMule을 재시작 하세요!"
     IDS_CREDITSEXPIRED      ", %i명의 (최근 5개월 간 보이지 않은) 클라이언트가 삭제됨"
     IDS_SOURCESINFO         "%i  (유용: %i, NNP: %i, A4AF: %i)"
-    IDS_SHOW_META_DATA      "메타 데이터 보기 (&M)..."
     IDS_META_DATA           "메타 데이터"
     IDS_TIMEBEFORE          "(%s일 전)"
     IDS_FD_TIMEDATE         "날짜"
     IDS_FILEINFORMATION     "파일 정보"
     IDS_STATS_FREESPACE     "Free Space"
     IDS_IRC_HELPCHANNEL     "도움 채널로 연결."
-    IDS_IRC_HELPCHANNELPERFORM "/join #emule"
+    IDS_IRC_HELPCHANNELPERFORM "/join #emule-korean"
     IDS_IRC_ACCEPTLINKSFRIENDS "친구에게만."
     IDS_COMPLSOURCES        "완전한 소스"
     IDS_CHECKNOENDTIME      "종료 시간 없음"
@@ -1443,7 +1333,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_MATCH_KEYWORDS      "키워드 일치"
     IDS_FAILEDREOPEN        "치명적 오류: Part 파일 '%s' 다시 열기 실패 (%s)!"
     IDS_ERR_PREVIEWALREADY  "이 클라이언트에게서 이미 미리 보기 요청을 받았습니다"
     IDS_ERR_PREVIEWFAILED   "사용자 '%s'로 부터의 미리 보기 실패"
@@ -1463,7 +1352,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_CREATEHOSTNAMESRCLINK "eD2K 링크를 클립보드에 복사 (호스트명)"
     IDS_HASHINGFILESCOUNT   " (%u 해시 중)"
     IDS_CHECKDISKSPACE      "디스크 공간 확인"
     IDS_YOURHOSTNAME        "개인 eD2K 링크에 사용할 호스트 명"
@@ -1552,7 +1440,6 @@ BEGIN
     IDS_MINBITRATE          "최소 비트레이트 [kBit/s]"
     IDS_KAD_RECHECKFW       "방화벽 다시 검사"
     IDS_SHAREDTITLE         "공유 ED2K|Kademlia"
-    IDS_WARNINGNOBS         "현재 부트스트랩 중이 아님 (Kademlia를 사용 안하거나 이미 접속 됨)."
     IDS_FIREWALLED          "방화벽 뒤"
     IDS_KADEMLIA            "Kademlia"
     IDS_KADCONTACTLAB       "접속"
@@ -1588,7 +1475,6 @@ BEGIN
     IDS_LOG_SECURE_IDENT    "보안 ID 기록"
     IDS_LOG_FILTERED_IPS    "걸러지거나 무시된 IP 기록"
     IDS_LOG_FILE_SAVING     "파일 저장 행위 기록"
-	  IDS_IPFILTERFILES       "All IP Filter Files (*ipfilter.dat;*ip.prefix;*.p2b;*.p2p;*.p2p.txt;*.zip;*.gz)|*ipfilter.dat;*ip.prefix;*.p2b;*.p2p;*.p2p.txt;*.zip;*.gz|eMule IP Filter Files (*ipfilter.dat;*ip.prefix)|*ipfilter.dat;*ip.prefix|Peer Guardian Files (*.p2b;*.p2p;*.p2p.txt)|*.p2b;*.p2p;*.p2p.txt|Text Files (*.txt)|*.txt|ZIP Files (*.zip;*.gz)|*.zip;*.gz|All Files (*.*)|*.*||"
     IDS_DELETEIPFILTERS     "정말로 선택된 IP 필터를 삭제하겠습니까?"
     IDS_TOTAL_IPFILTER_LABEL "총 IP 필터 개수:"
     IDS_TOTAL_IPS_LABEL     "총 IP 개수:"
@@ -1657,7 +1543,6 @@ BEGIN
     IDS_FO_PREF_SUCCCEEDED  "WinXP 내부 방화벽에서 선택된 포트를 성공적으로 열었습니다.\n다른 데스크탑 방화벽이나 라우터는 영향을 받지 않음을 유의하십시요!"
     IDS_SOURCESWAPBLOCKED   "스왑 막힘"
     IDS_A4AF_CHECK_THIS_NOW "소스 확인 (디버그)"
-    IDS_SOURCEEXCHANGESWAP  "임시 소스 교환 스왑"
     IDS_NEWMSG              "'%s'의 새로운 메시지 (IP:%s)"
     IDS_PREF_STARTNEXTFILECATONLY "같은 분류에서만"
     IDS_LOG_ULDL_EVENTS     "업/다운 이벤트 로그"
@@ -1694,7 +1579,6 @@ BEGIN
     IDS_CHAT_DOWNLOADED     "다운로드 양:"
     IDS_CHAT_UPLOADED       "업로드 양:"
     IDS_CHAT_IDENT          "아이디:"
-    IDS_CHAT_CLIENT         "클라이언트:"
 END
 
 STRINGTABLE 
@@ -1740,7 +1624,6 @@ BEGIN
     IDS_META_SRCIP          "소스 IP"
     IDS_META_SRCTYPE        "소스 유형"
     IDS_SEARCH_UNICODE      "Unicode로 검색"
-    IDS_PERSEC              "/s"
 END
 
 STRINGTABLE 
@@ -1938,6 +1821,79 @@ BEGIN
     IDS_ERR_FSCANTHANDLEFILE 
                             "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
     IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
+    IDS_KADSEARCHACTIVE     "(Kad search in progress...)"
+    IDS_BOLD                "Toggles bold text"
+    IDS_UNDERLINE           "Toggles underlined text"
+    IDS_COLOUR              "Selects foreground text colour (optional background colour)"
+    IDS_RESETFORMAT         "Resets all previous formatting (sends a reset tag)"
+    IDS_RESTORESEARCHPARAMS "Restore Search Parameters"
+    IDS_COMMAND             "Command"
+    IDS_ARGUMENTS           "Arguments"
+    IDS_AP_CREATEPREVCOPY   "Create preview file"
+    IDS_ARCHIVEDETAILS      "Archive-Details"
+    IDS_ARCHTYPE            "Archive type"
+    IDS_ATTRIBUTES          "Attributes"
+    IDS_LASTMODIFIED        "Last Modified"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_RARFULLENCR         "Headers encrypted - unable to read archive."
+    IDS_ARCPARSED           "Archive scanned."
+    IDS_ARCPREV_LISTMAYBEINCOMPL "File list may be incomplete."
+    IDS_ARCPREV_DIRNOTFOUND "Table of contents not found."
+    IDS_ARCPREV_INSUFFDATA  "Insufficent data available."
+    IDS_PASSWPROT           "Password protection"
+    IDS_ARCPREV_DIRSUCCREAD "Table of contents successfully read."
+    IDS_ARCPREV_UNKNOWNFORMAT "(unknown/unsupported)"
+    IDS_ARCPREV_PLEASEWAIT  "Scanning archive..."
+    IDS_OBFUSCATION         "Obfuscation"
+    IDS_SUPPORTED           "Supported"
+    IDS_ESTIMATED           "estimated"
+    IDS_MEDIAINFO_DLLMISSING 
+                            "There is no MediaInfo library installed. If you want to get more information about audio/video files in this dialog,\r\ndownload the MediaInfo library from http://sourceforge.net/projects/mediainfo/ and copy the MediaInfo.dll file into\r\neMule's installation folder ""%s"".\r\n"
+    IDS_WARNING_WRONGFILEEXTENTION 
+                            "Warning: The file extension of ""%s"" does not match the file extension\r\ntypically used for that file format. You may want to rename the file to\r\nuse one of those file extensions ""%s""\r\nfor properly using or viewing that file format.\r\n"
+    IDS_MEDIAINFO_DRMWARNING 
+                            "Warning: The file ""%s"" seems to be protected with Digital Rights Management.\r\nYou will most likely not be able to use that file without a license from the originator of that file.\r\n"
+    IDS_LOADFILTER_EMTOOLBAR "eMule Toolbar Bitmap Files"
+    IDS_LOADFILTER_EMSKINFILES "eMule Skin Files"
+    IDS_LOADURL             "Load"
+    IDS_DELETEAFTERALLOC    "File '%s' is currently allocating disk space and will be deleted afterwards"
+    IDS_TRAYDLG_SPEED       "eMule Speed"
+    IDS_VIAPASSIVE          "via Passive"
+    IDS_WEB_REMOTE_LINK_ADDED "Link added: "
+    IDS_WEB_REMOTE_LINK_NOT_ADDED "Link not added. Wrong password."
+    IDS_OPTIONS             "Options"
+    IDS_ERR_FAILEDTOLOAD    "Failed to load %s: %s "
+    IDS_RUNNINGRESTRICTED   "eMule is running with reduced privileges"
+    IDS_ARCHPREV_ATTRIBINFO "File attributes can contain:\r\n\r\nP\tfile is password protected\r\nD\tis a directory\r\nC\tComment\r\nLx\tCompression level x\r\nM\tcompressed data not completely downloaded yet\r\n<\tfile continued from previous volume\r\n>\tfile continues in next volume\r\n"
+    IDS_CONTENT_INFO        "Content"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_MESSAGESCOMMENTS    "Messages and Comments"
+    IDS_DISABLEOBFUSCATION  "Disable support for obfuscated connections"
+    IDS_ONLYOBFUSCATED      "Allow obfuscated connections only (not recommended)"
+    IDS_ENABLEOBFUSCATION   "Enable Protocol Obfuscation"
+    IDS_PROTOCOLOBFUSCATION "Protocol Obfuscation"
+    IDS_CONNECTINGTOOBFUSCATED 
+                            "Connecting to %s (%s:%i - using Protocol Obfuscation) ..."
+    IDS_CONNECTEDTOOBFUSCATED "Obfuscated connection established on: %s"
+    IDS_VERIFIED            "Verified"
+    IDS_OBFUSCATED          "Obfuscated"
+    IDS_UNVERIFIED          "Unverified"
+    IDS_INVALIDFILEEXT      "Invalid file extension"
+    IDS_UNKNOWNFILEEXT      "unknown file extension"
+    IDS_ENABLEMINIMULE      "Enable MiniMule"
+    IDS_DISABLE_AUTOARCHPREV 
+                            "Disable automatic archive preview start in file details"
+    IDS_US_STALLEDW4BR      "Stalled! Waiting for block request."
+    IDS_US_STALLEDREADINGFDISK "Stalled! Reading from disk."
+    IDS_SERVERFEATURE_INTTYPETAGS "Integer type tags"
 END
 
 #endif    // Korean resources

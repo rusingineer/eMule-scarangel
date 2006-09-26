@@ -33,14 +33,14 @@ static char THIS_FILE[] = __FILE__;
 IMPLEMENT_DYNAMIC(CHTRichEditCtrl, CRichEditCtrl)
 
 BEGIN_MESSAGE_MAP(CHTRichEditCtrl, CRichEditCtrl)
-	ON_WM_CONTEXTMENU()
-	ON_WM_KEYDOWN()
-	ON_CONTROL_REFLECT(EN_ERRSPACE, OnEnErrspace)
-	ON_CONTROL_REFLECT(EN_MAXTEXT, OnEnMaxtext)
-	ON_NOTIFY_REFLECT_EX(EN_LINK, OnEnLink)
-	ON_WM_CREATE()
-	ON_WM_SYSCOLORCHANGE()
-	ON_WM_SETCURSOR()
+ON_WM_CONTEXTMENU()
+ON_WM_KEYDOWN()
+ON_CONTROL_REFLECT(EN_ERRSPACE, OnEnErrspace)
+ON_CONTROL_REFLECT(EN_MAXTEXT, OnEnMaxtext)
+ON_NOTIFY_REFLECT_EX(EN_LINK, OnEnLink)
+ON_WM_CREATE()
+ON_WM_SYSCOLORCHANGE()
+ON_WM_SETCURSOR()
 END_MESSAGE_MAP()
 
 CHTRichEditCtrl::CHTRichEditCtrl()
@@ -186,14 +186,14 @@ void CHTRichEditCtrl::AddTyped(LPCTSTR pszMsg, int iLen, UINT eMsgType)
 	}
 }
 
-void CHTRichEditCtrl::AddLine(LPCTSTR pszMsg, int iLen, bool bLink, COLORREF cr)
+void CHTRichEditCtrl::AddLine(LPCTSTR pszMsg, int iLen, bool bLink, COLORREF cr, COLORREF bk, DWORD mask)
 {
 	int iMsgLen = (iLen == -1) ? _tcslen(pszMsg) : iLen;
 	if (iMsgLen == 0)
 		return;
 #ifdef _DEBUG
-//	if (pszMsg[iMsgLen - 1] == _T('\n'))
-//		ASSERT( iMsgLen >= 2 && pszMsg[iMsgLen - 2] == _T('\r') );
+	//	if (pszMsg[iMsgLen - 1] == _T('\n'))
+	//		ASSERT( iMsgLen >= 2 && pszMsg[iMsgLen - 2] == _T('\r') );
 #endif
 
 	// Get Edit contents dimensions and cursor position
@@ -210,7 +210,7 @@ void CHTRichEditCtrl::AddLine(LPCTSTR pszMsg, int iLen, bool bLink, COLORREF cr)
 		if (m_bAutoScroll && GetScrollInfo(SB_VERT, &si) && si.nPos >= (int)(si.nMax - si.nPage + 1))
 		{
 			// Not scrolled away
-			SafeAddLine(iSize, pszMsg, iLen, lStartChar, lEndChar, bLink, cr);
+			SafeAddLine(iSize, pszMsg, iLen, lStartChar, lEndChar, bLink, cr, bk, mask);
 			if (m_bAutoScroll && !IsWindowVisible())
 				ScrollToLastLine();
 		}
@@ -224,10 +224,10 @@ void CHTRichEditCtrl::AddLine(LPCTSTR pszMsg, int iLen, bool bLink, COLORREF cr)
 
 			// Remember where we are
 			int iFirstLine = !m_bAutoScroll ? GetFirstVisibleLine() : 0;
-		
+
 			// Select at the end of text and replace the selection
 			// This is a very fast way to add text to an edit control
-			SafeAddLine(iSize, pszMsg, iLen, lStartChar, lEndChar, bLink, cr);
+			SafeAddLine(iSize, pszMsg, iLen, lStartChar, lEndChar, bLink, cr, bk, mask);
 			//if (m_bAutoScroll && lStartChar == lEndChar)
 			//	lStartChar = lEndChar = -1;
 			SetSel(lStartChar, lEndChar); // Restore our previous selection
@@ -266,35 +266,35 @@ void CHTRichEditCtrl::AddLine(LPCTSTR pszMsg, int iLen, bool bLink, COLORREF cr)
 		/*POINT ptScrollPos;
 		if (!m_bAutoScroll)
 			SendMessage(EM_GETSCROLLPOS, 0, (LPARAM)&ptScrollPos);*/
-	
+
 		if (lStartChar != lEndChar)
 		{
 			// If we are currently selecting some text, we have to find out
 			// if the caret is near the beginning of this block or near the end.
 			// Note that this does not always work. Because of the EM_CHARFROMPOS
-			// message returning only 16 bits this will fail if the user has selected 
+			// message returning only 16 bits this will fail if the user has selected
 			// a block with a length dividable by 64k.
 
 			// NOTE: This may cause a lot of terrible CRASHES within the RichEdit control when used for a RichEdit control!?
 			// To reproduce the crash: click in the RE control while it's drawing a line and start a selection!
 			if (!m_bRichEdit){
-			    CPoint pt;
-			    ::GetCaretPos(&pt);
-			    int iCaretPos = CharFromPos(pt);
-			    if (abs((lStartChar % 0xffff - iCaretPos)) < abs((lEndChar % 0xffff - iCaretPos)))
-			    {
-				    iCaretPos = lStartChar;
-				    lStartChar = lEndChar;
-				    lEndChar = iCaretPos;
-			    }
-		    }
+				CPoint pt;
+				::GetCaretPos(&pt);
+				int iCaretPos = CharFromPos(pt);
+				if (abs((lStartChar % 0xffff - iCaretPos)) < abs((lEndChar % 0xffff - iCaretPos)))
+				{
+					iCaretPos = lStartChar;
+					lStartChar = lEndChar;
+					lEndChar = iCaretPos;
+				}
+			}
 		}
 
 		// Note: This will flicker, if someone has a good idea how to prevent this - let me know
-		
+
 		// Select at the end of text and replace the selection
 		// This is a very fast way to add text to an edit control
-		SafeAddLine(iSize, pszMsg, iLen, lStartChar, lEndChar, bLink, cr/*, &ptScrollPos*/);
+		SafeAddLine(iSize, pszMsg, iLen, lStartChar, lEndChar, bLink, cr, bk, mask);
 		//if (m_bAutoScroll && lStartChar == lEndChar)
 		//	lStartChar = lEndChar = -1;
 		SetSel(lStartChar, lEndChar); // Restore our previous selection
@@ -345,7 +345,7 @@ void CHTRichEditCtrl::ScrollToLastLine(bool bForceLastLineAtBottom)
 	}
 }
 
-void CHTRichEditCtrl::AddString(int nPos, LPCTSTR pszString, bool bLink, COLORREF cr)
+void CHTRichEditCtrl::AddString(int nPos, LPCTSTR pszString, bool bLink, COLORREF cr,COLORREF bk, DWORD mask)
 {
 	bool bRestoreFormat = false;
 	m_bEnErrSpace = false;
@@ -359,13 +359,36 @@ void CHTRichEditCtrl::AddString(int nPos, LPCTSTR pszString, bool bLink, COLORRE
 		cf.dwEffects |= CFE_LINK;
 		SetSelectionCharFormat(cf);
 	}
-	else if (cr != CLR_DEFAULT)
+	else if (cr != CLR_DEFAULT || bk != CLR_DEFAULT)
 	{
-		CHARFORMAT cf;
+		CHARFORMAT2 cf;
+		memset(&cf, 0, sizeof(cf));
 		GetSelectionCharFormat(cf);
-		cf.dwMask |= CFM_COLOR;
-		cf.dwEffects &= ~CFE_AUTOCOLOR;
-		cf.crTextColor = cr;
+		if(cr != CLR_DEFAULT)
+		{
+			cf.dwMask |= CFM_COLOR;
+			cf.dwEffects &= ~CFE_AUTOCOLOR;
+			cf.crTextColor = cr;
+		}
+		if(bk != CLR_DEFAULT)
+		{
+			cf.dwMask |= CFM_BACKCOLOR;
+			cf.dwEffects &= ~CFE_AUTOBACKCOLOR;
+			cf.crBackColor = bk;
+		}
+		cf.dwMask |= mask;
+		if(mask & CFM_BOLD)
+			cf.dwEffects |= CFE_BOLD; //Checks if bold is set in the mask and then sets it in effects if it is
+		else if(cf.dwEffects & CFE_BOLD)
+			cf.dwEffects ^= CFE_BOLD; //Unset bold
+		if(mask & CFM_ITALIC)
+			cf.dwEffects |= CFE_ITALIC; //Checks if italic is set in the mask and then sets it in effects if it is
+		else if(cf.dwEffects & CFE_ITALIC)
+			cf.dwEffects ^= CFE_ITALIC; //Unset bold
+		if(mask & CFM_UNDERLINE)
+			cf.dwEffects |= CFE_UNDERLINE; //Checks if underlined is set in the mask and then sets it in effects if it is
+		else if(cf.dwEffects & CFE_UNDERLINE)
+			cf.dwEffects ^= CFE_UNDERLINE; //Unset italic
 		SetSelectionCharFormat(cf);
 		bRestoreFormat = true;
 	}
@@ -377,7 +400,7 @@ void CHTRichEditCtrl::AddString(int nPos, LPCTSTR pszString, bool bLink, COLORRE
 	m_bRestoreFormat = bRestoreFormat;
 }
 
-void CHTRichEditCtrl::SafeAddLine(int nPos, LPCTSTR pszLine, int iLen, long& lStartChar, long& lEndChar, bool bLink, COLORREF cr)
+void CHTRichEditCtrl::SafeAddLine(int nPos, LPCTSTR pszLine, int iLen, long& lStartChar, long& lEndChar, bool bLink, COLORREF cr, COLORREF bk, DWORD mask)
 {
 	// EN_ERRSPACE and EN_MAXTEXT are not working for rich edit control (at least not same as for standard control),
 	// need to explicitly check the log buffer limit..
@@ -416,7 +439,7 @@ void CHTRichEditCtrl::SafeAddLine(int nPos, LPCTSTR pszLine, int iLen, long& lSt
 		}
 	}
 
-	AddString(nPos, pszLine, bLink, cr);
+	AddString(nPos, pszLine, bLink, cr, bk, mask);
 
 	if (m_bEnErrSpace)
 	{
@@ -449,10 +472,10 @@ void CHTRichEditCtrl::SafeAddLine(int nPos, LPCTSTR pszLine, int iLen, long& lSt
 
 			// add the new line again
 			nPos = GetWindowTextLength();
-			AddString(nPos, pszLine, bLink, cr);
+			AddString(nPos, pszLine, bLink, cr, bk, mask);
 
 			if (m_bEnErrSpace && nPos == 0){
-				// should never happen: if we tried to add the line another time in the 1st line, there 
+				// should never happen: if we tried to add the line another time in the 1st line, there
 				// will be no chance to add the line at all -> avoid endless loop!
 				break;
 			}
@@ -511,8 +534,8 @@ void CHTRichEditCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 		ClientToScreen(&point);
 	}
 
-	// Cheap workaround for the "Text cursor is showing while context menu is open" glitch. It could be solved properly 
-	// with the RE's COM interface, but because the according messages are not routed with a unique control ID, it's not 
+	// Cheap workaround for the "Text cursor is showing while context menu is open" glitch. It could be solved properly
+	// with the RE's COM interface, but because the according messages are not routed with a unique control ID, it's not
 	// really useable (e.g. if there are more RE controls in one window). Would to envelope each RE window to get a unique ID..
 	m_bForceArrowCursor = true;
 	menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
@@ -525,21 +548,21 @@ BOOL CHTRichEditCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 {
 	switch (wParam)
 	{
-	case MP_COPYSELECTED:
-		CopySelectedItems();
-		break;
-	case MP_SELECTALL:
-		SelectAllItems();
-		break;
-	case MP_REMOVEALL:
-		Reset();
-		break;
-	case MP_SAVELOG:
-		SaveLog();
-		break;
-	case MP_AUTOSCROLL:
-		m_bAutoScroll = !m_bAutoScroll;
-		break;
+		case MP_COPYSELECTED:
+			CopySelectedItems();
+			break;
+		case MP_SELECTALL:
+			SelectAllItems();
+			break;
+		case MP_REMOVEALL:
+			Reset();
+			break;
+		case MP_SAVELOG:
+			SaveLog();
+			break;
+		case MP_AUTOSCROLL:
+			m_bAutoScroll = !m_bAutoScroll;
+			break;
 	}
 	return TRUE;
 }
@@ -561,7 +584,7 @@ bool CHTRichEditCtrl::SaveLog(LPCTSTR pszDefName)
 			fwrite(strText, sizeof(TCHAR), strText.GetLength(), fp);
 			if (ferror(fp)){
 				CString strError;
-				strError.Format(_T("Failed to write log file \"%s\" - %hs"), dlg.GetPathName(), strerror(errno));
+				strError.Format(_T("Failed to write log file \"%s\" - %s"), dlg.GetPathName(), _tcserror(errno));
 				AfxMessageBox(strError, MB_ICONERROR);
 			}
 			else
@@ -570,7 +593,7 @@ bool CHTRichEditCtrl::SaveLog(LPCTSTR pszDefName)
 		}
 		else{
 			CString strError;
-			strError.Format(_T("Failed to create log file \"%s\" - %hs"), dlg.GetPathName(), strerror(errno));
+			strError.Format(_T("Failed to create log file \"%s\" - %s"), dlg.GetPathName(), _tcserror(errno));
 			AfxMessageBox(strError, MB_ICONERROR);
 		}
 	}
@@ -633,16 +656,16 @@ static const struct
 {
 	LPCTSTR pszScheme;
 	int iLen;
-} _apszSchemes[] = 
-{
-	{ _T("ed2k://"),  7 },
-	{ _T("http://"),  7 },
-	{ _T("https://"), 8 },
-	{ _T("ftp://"),   6 },
-	{ _T("www."),     4 },
-	{ _T("ftp."),     4 },
-	{ _T("mailto:"),  7 }
-};
+} _apszSchemes[] =
+    {
+        { _T("ed2k://"),  7 },
+        { _T("http://"),  7 },
+        { _T("https://"), 8 },
+        { _T("ftp://"),   6 },
+        { _T("www."),     4 },
+        { _T("ftp."),     4 },
+        { _T("mailto:"),  7 }
+    };
 
 void CHTRichEditCtrl::AppendText(const CString& sText)
 {
@@ -696,9 +719,9 @@ void CHTRichEditCtrl::AppendHyperLink(const CString& sText, const CString& sTitl
 	AddLine(sCommand, sCommand.GetLength(), true);
 }
 
-void CHTRichEditCtrl::AppendColoredText(LPCTSTR pszText, COLORREF cr)
+void CHTRichEditCtrl::AppendColoredText(LPCTSTR pszText, COLORREF cr, COLORREF bk, DWORD mask)
 {
-	AddLine(pszText, -1, false, cr);
+	AddLine(pszText, -1, false, cr, bk, mask);
 }
 
 void CHTRichEditCtrl::AppendKeyWord(const CString& str, COLORREF cr)
@@ -736,7 +759,7 @@ CString CHTRichEditCtrl::GetText() const
 	GetWindowText(strText);
 	return strText;
 }
- 
+
 void CHTRichEditCtrl::SetFont(CFont* pFont, BOOL bRedraw)
 {
 	LOGFONT lf = {0};
@@ -770,8 +793,8 @@ void CHTRichEditCtrl::SetFont(CFont* pFont, BOOL bRedraw)
 
 	// although this should work correctly (according SDK) it may give false results (e.g. the "click here..." text
 	// which is shown in the server info window may not be entirely used as a hyperlink???)
-//	cf.dwMask |= CFM_CHARSET;
-//	cf.bCharSet = lf.lfCharSet;
+	//	cf.dwMask |= CFM_CHARSET;
+	//	cf.bCharSet = lf.lfCharSet;
 
 	cf.yOffset = 0;
 	VERIFY( SetDefaultCharFormat(cf) );
@@ -813,8 +836,8 @@ void CHTRichEditCtrl::ApplySkin()
 
 BOOL CHTRichEditCtrl::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 {
-	// Cheap workaround for the "Text cursor is showing while context menu is open" glitch. It could be solved properly 
-	// with the RE's COM interface, but because the according messages are not routed with a unique control ID, it's not 
+	// Cheap workaround for the "Text cursor is showing while context menu is open" glitch. It could be solved properly
+	// with the RE's COM interface, but because the according messages are not routed with a unique control ID, it's not
 	// really useable (e.g. if there are more RE controls in one window). Would to envelope each RE window to get a unique ID..
 	if (m_bForceArrowCursor && m_hArrowCursor)
 	{

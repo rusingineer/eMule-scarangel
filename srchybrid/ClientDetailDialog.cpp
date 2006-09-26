@@ -26,9 +26,10 @@
 #include "SharedFileList.h"
 #include "HighColorTab.hpp"
 #include "UserMsgs.h"
+#include "ListenSocket.h"
+#include "preferences.h"
 #include "IP2Country.h" //EastShare - added by AndCycle, IP to Country
 #include "UploadQueue.h" //Xman Queuerank at clientdetail
-#include ".\clientdetaildialog.h"
 #include "Preferences.h" // CreditSystems [EastShare/ MorphXT] - Stulle
 
 #ifdef _DEBUG
@@ -48,10 +49,13 @@ BEGIN_MESSAGE_MAP(CClientDetailPage, CResizablePage)
 END_MESSAGE_MAP()
 
 CClientDetailPage::CClientDetailPage()
-	: CResizablePage(CClientDetailPage::IDD,0)
+	: CResizablePage(CClientDetailPage::IDD, 0 )
 {
 	m_paClients = NULL;
 	m_bDataChanged = false;
+	m_strCaption	= GetResString(IDS_CD_TITLE);
+	m_psp.pszTitle	= m_strCaption;
+	m_psp.dwFlags  |= PSP_USETITLE;
 }
 
 CClientDetailPage::~CClientDetailPage()
@@ -73,6 +77,7 @@ BOOL CClientDetailPage::OnInitDialog()
 	AddAnchor(IDC_STATIC50, TOP_LEFT, TOP_RIGHT);
 	AddAnchor(IDC_DDOWNLOADING, TOP_LEFT, TOP_RIGHT);
 	AddAnchor(IDC_UPLOADING, TOP_LEFT, TOP_RIGHT);
+	AddAnchor(IDC_OBFUSCATION_STAT, TOP_LEFT, TOP_RIGHT);
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
 	AddAnchor(IDC_STATIC57, TOP_LEFT, TOP_RIGHT);
 	AddAnchor(IDC_WCSTATISTICS, TOP_LEFT, TOP_RIGHT);
@@ -117,14 +122,28 @@ BOOL CClientDetailPage::OnSetActive()
 		
 		GetDlgItem(IDC_DSOFT)->SetWindowText(client->DbgGetFullClientSoftVer()); //Xman ModId
 
+		if (client->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (client->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()) 
+			&& (client->IsObfuscatedConnectionEstablished() || !(client->socket != NULL && client->socket->IsConnected())))
+		{
+			buffer = GetResString(IDS_ENABLED);
+		}
+		else if (client->SupportsCryptLayer())
+			buffer = GetResString(IDS_SUPPORTED);
+		else
+			buffer = GetResString(IDS_IDENTNOSUPPORT);
+#if defined(_DEBUG) || defined(_BETA)
+		if (client->IsObfuscatedConnectionEstablished())
+			buffer += _T("(In Use)");
+#endif
+		GetDlgItem(IDC_OBFUSCATION_STAT)->SetWindowText(buffer);
+
 		buffer.Format(_T("%s"),(client->HasLowID() ? GetResString(IDS_IDLOW):GetResString(IDS_IDHIGH)));
 		GetDlgItem(IDC_DID)->SetWindowText(buffer);
 		
 		if (client->GetServerIP()){
-			CString strServerIP = ipstr(client->GetServerIP());
-			GetDlgItem(IDC_DSIP)->SetWindowText(strServerIP);
+			GetDlgItem(IDC_DSIP)->SetWindowText(ipstr(client->GetServerIP()));
 			
-			CServer* cserver = theApp.serverlist->GetServerByAddress(strServerIP, client->GetServerPort()); 
+			CServer* cserver = theApp.serverlist->GetServerByIPTCP(client->GetServerIP(), client->GetServerPort());
 			if (cserver)
 				GetDlgItem(IDC_DSNAME)->SetWindowText(cserver->GetListName());
 			else
@@ -162,7 +181,7 @@ BOOL CClientDetailPage::OnSetActive()
 
 		CKnownFile* file = theApp.sharedfiles->GetFileByID(client->GetUploadFileID());
 		if (file)
-			GetDlgItem(IDC_DDOWNLOADING)->SetWindowText(file->GetFileName() );
+			GetDlgItem(IDC_DDOWNLOADING)->SetWindowText(file->GetFileName());
 		else
 			GetDlgItem(IDC_DDOWNLOADING)->SetWindowText(_T("-"));
 
@@ -283,6 +302,7 @@ void CClientDetailPage::Localize()
 	GetDlgItem(IDC_STATIC33)->SetWindowText(GetResString(IDS_CD_CSOFT) + _T(':'));
 	GetDlgItem(IDC_STATIC35)->SetWindowText(GetResString(IDS_CD_SIP));
 	GetDlgItem(IDC_STATIC38)->SetWindowText(GetResString(IDS_CD_SNAME));
+	GetDlgItem(IDC_STATIC_OBF_LABEL)->SetWindowText(GetResString(IDS_OBFUSCATION) + _T(':'));
 
 	GetDlgItem(IDC_STATIC40)->SetWindowText(GetResString(IDS_CD_TRANS));
 	GetDlgItem(IDC_STATIC41)->SetWindowText(GetResString(IDS_CD_CDOWN));

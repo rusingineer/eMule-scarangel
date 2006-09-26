@@ -92,16 +92,12 @@ public:
 
 	int	GetSortType(ArrowType at);
 	ArrowType	GetArrowType(int iat);
-	// Places a sort arrow in a column
-	void SetSortArrow(int iColumn, ArrowType atType);
-	void SetSortArrow()		{SetSortArrow(m_iCurrentSortItem, m_atSortArrow); }
-
-	// Places a sort arrow in a column
-	void SetSortArrow(int iColumn, bool bAscending) {
-		SetSortArrow(iColumn, bAscending ? arrowUp : arrowDown);
-	}
 	int GetSortItem() const { return m_iCurrentSortItem; }
 	bool GetSortAscending() const { return m_atSortArrow == arrowUp || m_atSortArrow == arrowDoubleUp; }
+	// Places a sort arrow in a column
+	void SetSortArrow(int iColumn, ArrowType atType);
+	void SetSortArrow() { SetSortArrow(m_iCurrentSortItem, m_atSortArrow); }
+	void SetSortArrow(int iColumn, bool bAscending) { SetSortArrow(iColumn, bAscending ? arrowUp : arrowDown); }
 
 	HIMAGELIST ApplyImageList(HIMAGELIST himl);
 
@@ -113,6 +109,13 @@ public:
 	void	AutoSelectItem();
 	int		GetNextSortOrder(int dwCurrentSortOrder) const;
 	void	UpdateSortHistory(int dwNewOrder, int dwInverseValue = 100);
+
+	enum EUpdateMode {
+		lazy,
+		direct,
+		none
+	};
+	enum EUpdateMode SetUpdateMode(enum EUpdateMode eMode);
 
 protected:
 	virtual void PreSubclassWindow();
@@ -154,6 +157,7 @@ protected:
 	CList<int, int>	m_liSortHistory;
 	UINT			m_uIDAccel;
 	HACCEL			m_hAccel;
+	enum EUpdateMode m_eUpdateMode;
 
 	// General purpose listview find dialog+functions (optional)
 	bool m_bGeneralPurposeFind;

@@ -71,7 +71,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_HTTPDOWNLOAD_GETTING_FILE_INFORMATION "Iegûst datnes informâciju"
-    IDS_HTTPDOWNLOAD_FAIL_PARSE_ERROR "Kïûda analizçjot saiti: %s"
     IDS_HTTPDOWNLOAD_GENERIC_ERROR 
                             "Kïûda mçìinot lejupielâdet datni, kïûda:%s"
     IDS_HTTPDOWNLOAD_FAIL_CONNECT_SERVER 
@@ -119,7 +118,6 @@ STRINGTABLE
 BEGIN
     IDS_MAIN_SOCKETERROR    "Fatâla kïûda: Neiespçjams izveidot ligzdu portâ %i"
     IDS_MAIN_BTN_DISCONNECT "Dis&connect"
-    IDS_MAIN_BTN_DISCONNECT_TOOLTIP "Atslçgties no paðreizçjâ servera"
     IDS_ERR_WRONGFILEID     "Nepareizs datnes ID nosûtîts"
     IDS_ERR_BADHASHSET      "Bojâts vai nepareizs hashset saòemts"
     IDS_ERR_BADDATABLOCK    "Bojâts vai nepareizs DataBlock saòemts"
@@ -128,17 +126,14 @@ BEGIN
     IDS_ERR_NOSLLINK        "Nav eD2K serveris vai saite"
     IDS_ERR_WRONGPACKAGESIZE "Nepareizs OP_REQUESTFILENAME pakotnes izmçrs"
     IDS_ERR_WRONGHPACKAGESIZE "Nepareizs OP_HASHSETREQUEST pakotnes izmçrs"
-    IDS_ERR_BADCLIENTACTION "Klients izsauca kïûdu vai arî izdarîja kautko ne tâ: %s. Atvienojam klientu!"
     IDS_ERR_UNKNOWNCLIENTACTION 
                             "Neatpazîstami klienti sûta paplaðinâtas protokola pakotnes"
     IDS_ERR_OPENMET         "Kïûda: Neizdevâs atvçrt part.met datni! (%s => %s)"
     IDS_ERR_BADMETVERSION   "Kïûda: Nepareiza part.met datnes versija! (%s => %s)"
-    IDS_ERR_BADGAP          "Nepareiza Gap-Tag part.met datnç"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_EMPTYADRESSESDAT_TITLE "Nav iespçjams iegût serveru sarakstu"
     IDS_ERR_BADSERVERMETVERSION "Nepareiza versijas birka server.met datnç (0x%X)!"
     IDS_SERVERSFOUND        "%i serveri datnç server.met atrasti"
     IDS_SERVERSADDED        "%d serveri pievienoti, %d nav pievienoti (jau pievienoti/nepareizi)"
@@ -147,7 +142,6 @@ BEGIN
                             "Neparedzçta kïûda lasot datni server.met: %s, nav iespçjams ielâdçt serveru sarakstu"
     IDS_ERR_SAVESERVERMET   "Neizdevâs saglabât server.met!"
     IDS_PASSIVE             "Pasîvs"
-    IDS_MAIN_CONNECTEDTO    "Savienojums nodibinâts ar:"
     IDS_MAIN_BTN_CANCEL     "&Atcelt"
     IDS_AVAIL               "Daïas: %u, Pieejamas: %u (%.1f%%)\n\n"
     IDS_TYPE                "Tips"
@@ -166,8 +160,6 @@ BEGIN
     IDS_PREFERENCE          "Izvçle"
     IDS_PRIONOPREF          "Nav izvçles"
     IDS_CONNECTTHIS         "Pieslçgties pie"
-    IDS_CHAT_WELCOME        "Tûlîtçja ziòoðana\n  \nLabâ peles poga uz jebkura klienta un izvçlne 'sûtît ziòojumu' lai sâktu tçrzçðanu"
-    IDS_MAIN_BTN_CANCEL_TOOLTIP "Aptur paðreizçjos pieslçgðanâs mçìinâjumus"
     IDS_MAIN_BTN_CONNECT    "&Pieslçgties"
     IDS_ERR_SAVESERVERMET2  "Neizdevâs saglabât server.met! Varbût vajag izdzçst server.met un pârsaukt server.met.old uz server.met!"
     IDS_NOTCONNECTED        "Nav pieslçgts"
@@ -204,7 +196,6 @@ STRINGTABLE
 BEGIN
     IDS_LINKNOTADDED        "Nevar pievienot saiti"
     IDS_MAIN_EXIT           "Vai tieðâm vçlies iziet no eMule?"
-    IDS_MAIN_EXITTITLE      "Izieðanas apliecinâjums"
     IDS_MAIN_POPUP_RESTORE  "Atjaunot"
     IDS_CONNECTTOANYSERVER  "Pievienoties jebkuram serverim"
     IDS_EXIT                "Iziet"
@@ -212,7 +203,6 @@ BEGIN
     IDS_FAILED              "Neizdevâs"
     IDS_ERR_BADSERVERREPLY  "No servera saòemta bojâta vai nepareiza login atbilde"
     IDS_NEWCLIENTID         "Jaunais klienta ID ir %u"
-    IDS_NOSHAREDFOLDERS     "Nav ðârçtâs mapes"
     IDS_SHAREDFOLDERS       "ðârçtâs mapes"
     IDS_VIEW1               "Râdît "
     IDS_VIEW2               " (Nav ðârçts)"
@@ -251,10 +241,6 @@ BEGIN
     IDS_ASKED4ANOTHERFILE   "Jautâja pçc citas datnes"
     IDS_Q_CANCELDL          "Vai Tu esi droðs, ka gribi atcelt un izdzçst ðîs datnes?\n"
     IDS_Q_CANCELDL2         "Vai Tu esi droðs, ka gribi atcelt un izdzçst ðo datni?\n"
-    IDS_COPIED2CB           "Pârkopçts uz clipboard: \n"
-    IDS_PROCDONE            "% pabeigts"
-    IDS_SELECTINCOMINGDIR   "Izvçlies mapi inâkoðajâm datnçm"
-    IDS_SELECTTEMPDIR       "Izvçlies mapi pagaidu datnçm"
     IDS_DL_FILENAME         "Datnes nosaukums"
     IDS_DL_SIZE             "Izmçrs"
     IDS_DL_TRANSF           "Pârsûtîts"
@@ -272,7 +258,6 @@ BEGIN
     IDS_QL_USERNAME         "Lietotâja vârds"
     IDS_LOADURL             "Lâdçt"
     IDS_DELETEAFTERALLOC    "Datne '%s' pagaidâm pieðíir diska vietuun bûs izdzçsta pçc tam, kad tas bûs izdarîts"
-    IDS_ERR_PACKAGEHANDLING "Unhandled error while processing packet from server (%s)"
     IDS_QL_RATING           "Reitings"
     IDS_CONNECTINGTO        "Pieslçdzas pie %s (%s:%i)..."
     IDS_CLIENTS             "Klienti"
@@ -295,7 +280,6 @@ BEGIN
     IDS_SRV_ADDR            "Lûdzu pievieno servera adresi"
     IDS_SRV_PORT            "Nepabeigts servera ports: Lûdzu ievadi servera portu"
     IDS_SRV_NOTADDED        "Serveris nav pievienots!"
-    IDS_SRV_READD           "Serveris bija atzîmçts kâ miris, tagad tas ir pievienots par jaunu!"
     IDS_SRV_NOURLAV         "Nav pieejama neviena URL."
     IDS_INVALIDURL          "Nepareiza URL"
 END
@@ -308,23 +292,16 @@ BEGIN
     IDS_PRIOVERYLOW         "Ïoti zems"
     IDS_PRIORELEASE         "Izlaist"
     IDS_TRAYDLG_SPEED       "eMule âtrums"
-    IDS_FSTATUS_LOCKED      "Slçgts"
-    IDS_KADALPHA            "Kademlia joprojâm ir agrâ testa versijâ. Mçs iesakâm to lietot tikai ja esi ieinteresçts to testçt."
     IDS_FSTATUS_FRIENDSONLY "Tikai draugi"
     IDS_VIAPASSIVE          "Caur pasîvu"
-    IDS_FSTATUS_PUBLIC      "Publisks"
-    IDS_ERR_RENAMESF        "Neizdevâs pârsaukt\r\n    ""%s""\r\nto\r\n    ""%s""\r\n\r\n%hs"
-    IDS_PRIOHIGHEST         "Augstâkais"
+    IDS_ERR_RENAMESF        "Neizdevâs pârsaukt\r\n    ""%s""\r\nto\r\n    ""%s""\r\n\r\n%s"
     IDS_AVAILABLE           "pieejams"
-    IDS_ERR_NOPRIMCHANGE    "Tu nevari nomainît atïaujas, kamçr datne tiek lejupielâdçta!"
-    IDS_HIDDEN              "Slçpts"
 END
 
 STRINGTABLE 
 BEGIN
     IDS_FSTAT_TRANSFER      "Pârsûtîjums"
     IDS_FSTAT_CONNECTION    "Savienojums"
-    IDS_FSTAT_CLIENTS       "Klienti"
     IDS_FSTAT_SERVERS       "Serveri"
     IDS_FSTAT_WAITING       "Gaida..."
     IDS_TIME                "Laiks"
@@ -337,24 +314,15 @@ BEGIN
     IDS_STATS_ACTUL         "Aktîvâs augðupielâdes: %i"
     IDS_STATS_WAITINGUSERS  "Gaidoðâs lejupielâdes: %i"
     IDS_STATS_RECONNECTS    "Savienoðanâs par jaunu: %i"
-    IDS_STATS_WAITTRANSF    "Gaida uz pârsûtîjumu..."
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_STATS_WAITCONN      "Gaida uz saslçgumu..."
-    IDS_STATS_CONNECTEDSINCE "Pieslçdzies pie servera kopð: %s"
-    IDS_STATS_RATIO         "Sesija UL:DL Proporcijas (Session (Total)):"
     IDS_STATS_UNKNOWNCLIENT "Nezinâmi: %i"
     IDS_STATS_TOTAL         "Pavisam: %i"
-    IDS_STATS_WORKING       "Darbojoðies: %i"
-    IDS_STATS_DEAD          "Miruði/izdzçsti: %i"
     IDS_DISABLED            "atslçgti"
     IDS_STOPPED             "Apstâdinâti"
     IDS_STATS_UPDATELABEL   "Atjauninâjumu aizture: %i sec"
-    IDS_QUEUECOUNT          "%u (%u aizliegti)"
-    IDS_NICKNAME            "Iesauka:"
-    IDS_CLIENTSFILENAME     "\nKlienta datnes nosaukums: "
     IDS_ASKEDFAF            "\nJautâja pçc citas datnes"
     IDS_WAITED              "Gaidîja"
     IDS_ERR_LOADCREDITFILE  "Neizdevâs sâknçt kredîtu datni – jauna datne bûs uztaisîta"
@@ -414,8 +382,6 @@ BEGIN
     IDS_COLOR               "Krâsa"
     IDS_DEFAULT             "Noklusçtais"
     IDS_PW_DISPLAY          "Displejs"
-    IDS_CAT_INVADD          "Râdît visus neasignçtos"
-    IDS_CAT_REINVADD        "Râdît visu"
     IDS_INDICATERATINGS     "Apzîmçt lejupielâdes ar komentâri/reitings ikonu"
     IDS_ALLOTHERS           "Nav kategorizçts"
     IDS_TOCAT               "Piesaistît kategorijai"
@@ -424,14 +390,10 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_UDPEXT          "Kïûda apstrâdâjot ienâkoðo paplaðinâto UDP protokola pakotni"
     IDS_ERR_INCOMPLETEBLOCK "Prasîja nepabeigtu bloku"
     IDS_ERR_OPEN            "Neizdevâs atvçrt pieprasîto datni"
     IDS_ERR_CLIENTERRORED   "Klients '%s' izsauca kïûdu taisot pakotni (%s) – Atvienojam klientu"
     IDS_ERR_REQ_FNF         "Pieprasîtâ datne netika atrasta"
-    IDS_CLIENTBLOCKED       "Klients '%s' izskatâs agresîvs un tiek nobanots no augðupielâdes rindas"
-    IDS_LUSERS              "Lietotâji"
-    IDS_LFILES              "Datnes"
     IDS_DESC                "Apraksts: %s"
     IDS_PORT                "Ligzda"
     IDS_ERR_NOVALIDSERVERSFOUND 
@@ -452,7 +414,6 @@ BEGIN
     IDS_ERR_REHASH          "Uzmanîbu: %s var bût bojâts, veicu rehash pabeigtajâm daïâm"
     IDS_SKIN_PROF           "Âdu profili"
     IDS_ERR_PART_FNF        "Datnes daïa nav atrasta"
-    IDS_ERR_OPENMETFILE     "Neizdevâs atvçrt part.met datni"
     IDS_KADOPEN             "Atvçrt"
     IDS_ERR_SAVEMET         "KÏÛDA saglabâjot daïas datni: %s (%s)"
     IDS_ERR_FOUNDCORRUPTION "Atrasta bojâta daïa (%i) in %s"
@@ -465,18 +426,15 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_NOSERVERSC      "Nav neviena atbilstoða servera serveru sarakstâ, kam pievienoties"
     IDS_CONNECTEDTO         "Savienojums nodibinâts ar: %s"
     IDS_DL_PREVIEW          "Caurskatît"
     IDS_VIEWQUEUE           "Râdît rindu"
-    IDS_VIEWUPLOADS         "Râdît augðupelâdi"
     IDS_TW_UPLOADS          "Augðupielâdes"
     IDS_TW_DOWNLOADS        "Lejupielâdes"
     IDS_TW_QUEUE            "Klienti rindâ:"
     IDS_SW_SEARCHBOX        "Meklçt"
     IDS_SW_NAME             "Vârds"
     IDS_SW_GLOBAL           "Meklçt globâli"
-    IDS_SW_TYPE             "Tips"
     IDS_SW_DIRECTDOWNLOAD   "ievietot eD2K Saites"
     IDS_SW_LINK             "eD2K Saites"
     IDS_SW_START            "Sâkt"
@@ -505,8 +463,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_PRIORITY_UP         "Paaugstinât prioritâti"
-    IDS_PRIORITY_DOWN       "Samazinât prioritâti"
     IDS_SPEED_LIMITS        "Âtruma ierobeþojumi"
     IDS_CAPACITY_LIMITS     "Joslas platuma ierobeþojumi"
     IDS_ADMIN               "Adminstrators"
@@ -515,10 +471,6 @@ BEGIN
     IDS_WEB_ERR_CANTLOAD    "Nevar ielâdçt ðablonus: Nevar atvçrt datni %s"
     IDS_GLOBALSEARCH        "Globâlie (Serveri)"
     IDS_METHOD              "Metode"
-    IDS_SW_WEBBASED         "Web-based Meklçðana"
-    IDS_NOTHING             "Nekas"
-    IDS_SETUPSPEED          "Uzstâdît augðupielâdes limitu"
-    IDS_SETDOWNSPEED        "Uzstâdît lejupielâdes limitu"
     IDS_UNDO                "Atsaukt"
     IDS_DAYLY               "Ikdiena"
 END
@@ -555,7 +507,6 @@ BEGIN
     IDS_ST_SESSION          "Sesijas vidçjais"
     IDS_ST_ACTIVED          "Aktîvâs lejupielâdes"
     IDS_ST_ACTIVEU          "Aktîvâs augðupielâdes"
-    IDS_ST_WAITINGU         "Gaidoðâs augðupielâdes"
     IDS_CW_MESSAGES         "Ziòojumi"
     IDS_CW_FRIENDS          "Draugi"
     IDS_CW_SEND             "Sûtît"
@@ -572,9 +523,7 @@ BEGIN
     IDS_PW_BROWSE           "Pârlûkot..."
     IDS_PW_SHARED           "Ðârçtâs mapes (Ctrl-klikðíis iekïauj apakðmapes"
     IDS_PW_CONNECTION       "Savienojums"
-    IDS_PW_DOWNC            "Lejupielâdes kapacitâte"
     IDS_PW_DOWNL            "Lejupielâdes limits"
-    IDS_PW_UPC              "Augðupielâdes kapacitâte"
     IDS_PW_UPL              "Augðupielâdes limits"
     IDS_PW_MAXC             "Maks. savienojumi"
     IDS_PW_CLIENTPORT       "Klienta ligzda"
@@ -606,7 +555,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_PW_FILES            "Datnes"
-    IDS_PW_ICH              "&Inteliìenta bojâjumu apstrâde"
     IDS_PW_SHARE            "Apskatît manas ðârçtâs datnes/mapes"
     IDS_PW_EVER             "Visi"
     IDS_PW_FRIENDS          "Draugi"
@@ -626,17 +574,13 @@ END
 STRINGTABLE 
 BEGIN
     IDS_FD_GENERAL          "Vispârîgi"
-    IDS_FD_NAME             "Pilns vârds:"
     IDS_FD_MET              "part.met datne:"
     IDS_FD_HASH             "Hash:"
     IDS_FD_SIZE             "Izmçrs:"
-    IDS_FD_STATUS           "Daïas datnes statuss:"
     IDS_FD_TRANSFER         "Pârsûtîjums"
-    IDS_FD_SOURCES          "Atrastie avoti:"
     IDS_FD_PARTS            "Daïas"
     IDS_FD_TRANS            "Pârsûtîts:"
     IDS_FD_DATARATE         "Datarate:"
-    IDS_FD_TRANSI           "Pârsûta:"
     IDS_FD_COMPSIZE         "Pabeigts:"
     IDS_FD_CLOSE            "Aizvçrt"
     IDS_FD_TITLE            "Datnes detaïas"
@@ -651,7 +595,6 @@ BEGIN
     IDS_CD_UIP              "IP Adrese:"
     IDS_CD_SIP              "Servera IP:"
     IDS_CD_VERSION          "Klienta versija:"
-    IDS_CD_UID              "ID:"
     IDS_CD_SNAME            "Servera nosaukums:"
     IDS_CD_CDOWN            "Ðobrîd lejupielâdç:"
     IDS_CD_DOWN             "Lejupielâdçts (ðajâ sesijâ):"
@@ -676,7 +619,6 @@ BEGIN
     IDS_PW_MAXSOURCES       "Maks. avoti/datne"
     IDS_SHAREDFILESCOUNT    "Ðârçto datòu skaits: %i"
     IDS_SF_SIZE             "Ðârçto datòu kopçjais skaits: %s"
-    IDS_ERR_WRONGPARTNUMBER "nepareizs daïas numurs"
     IDS_ERR_BADPORT         "slikts ligzdas numurs"
     IDS_ERR_NOHELLO         "Kautko pieprasa, nepasakot sveiki"
     IDS_ERR_INVALIDPACKAGE  "Nepareiza vai bojâta pakotne saòemta"
@@ -686,17 +628,14 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ERR_BADSIZE         "nepareizs izmçrs (OP_QUEUERANKING)"
-    IDS_ERR_BADCLIENT2      "Klients '%s' (IP:%s) izraisîja kïûdu: %u. Atvienojam klientu!"
     IDS_ERR_NOTAFILELINK    "Nav datnes saite"
     IDS_ERR_CREATEPARTFILE  "KÏÛDA: Neizdevâs uztaisît daïas datni"
-    IDS_ERR_UDP_MISCONF     "Kïûda apstrâdâjot ienâkoðu UDP pakotni (Visticamâk, ka nepareizi uzstâdîts serveris)"
     IDS_CHAT_START          "*** Chat Sesijas sâkums : "
     IDS_FILEPRIO            "Datnes prioritâte"
     IDS_SCORE               "Rezultâts"
     IDS_ASKED               "Jautâja"
     IDS_LASTSEEN            "Pçdçjo reizi redzçts"
     IDS_BANNED              "Nobanots"
-    IDS_PRIOVERYHIGH        "Ïoti augsta"
     IDS_UUSERS              "Lietotâji"
     IDS_UFAILED             "Neizdevâs"
     IDS_OPENFILE            "&Atvçrt datni"
@@ -716,7 +655,6 @@ BEGIN
     IDS_FILESTATS_SESSION   "Datòu statistikas ðai sesijai: Pieòemti %d no %d pieprasîjumiem, %s pârsûtîti\n"
     IDS_FILESTATS_TOTAL     "Datòu statistikas visâm sesijâm: Pieòemti %d no %d pieprasîjumiem, %s pârsûtîts"
     IDS_REQ_UNKNOWNFILE     "Pieprasîta nepazîstama datne"
-    IDS_TRANSFERTIME        "Laiks kopð pirmâ pârsûtîjuma: %s"
     IDS_SF_AVERAGESIZE      "Vidçjais datnes izmçrs: %s"
     IDS_SF_REQUESTS         "Pieprasîjumi"
     IDS_SF_ACCEPTS          "Pieòemtie pieprasîjumi"
@@ -748,7 +686,6 @@ BEGIN
     IDS_ADDED2SSF           "Pievienots statiskajam sarakstam"
     IDS_STATICSERVER        "Statisks"
     IDS_ERROR_SSF           "Neizdevâs atvçrt 'staticservers.dat' datni"
-    IDS_ERR_PACKAGEERROR    " Kritiska kïûda apstrâdâjot datu pakotni priekð %s (nepareizs izmçrs) – datu bloks atmests"
     IDS_SF_ACTIVECON        "Aktîvi pieslçgumi (estimate)"
     IDS_SF_MAXCONLIMITREACHED "Maks. Pieslçgumu skaits sasniegts"
     IDS_SF_AVGCON           "Vidçjais pieslçgumu skaits (estimate)"
@@ -794,7 +731,6 @@ BEGIN
     IDS_PW_CON_UPLBL        "Upload"
     IDS_PW_AUTOCONNECTSTATICONLY "Autoconnect to servers in static list only"
     IDS_PW_CON_LIMITFRM     "Limits"
-    IDS_PW_FILE_ICH         "I.C.H active"
     IDS_STATS_AVGLABEL      "Time for average graph: %i mins"
     IDS_GRAPHS              "Graphs"
     IDS_STREE               "Statistics tree"
@@ -847,11 +783,9 @@ STRINGTABLE
 BEGIN
     IDS_HARDLIMIT           "Hard limit"
     IDS_COL_MORECOLORS      "more..."
-    IDS_KBYTESEC            "kB/s"
     IDS_TOOMANYCONNS        "Too many connections"
     IDS_DOWNLOADRENAMED     "A file with that name already exists, the file has been saved as %s"
     IDS_TBN_DOWNLOADDONE    "Downloaded:"
-    IDS_TBN_DOWNLOADADDED   "Added to downloads:"
     IDS_PW_TBN_USESOUND     "Play sound"
     IDS_PW_TBN_ONLOG        "Log entry added"
     IDS_PW_TBN_ONCHAT       "Chat session started"
@@ -866,16 +800,12 @@ END
 STRINGTABLE 
 BEGIN
     IDS_PW_CON_CAPFRM       "Capacities"
-    IDS_IRC_STATUSLOG       "Status Log"
-    IDS_IRC_STATUS          "Status"
     IDS_IRC_PRIVATECHANSTART "* Private chat session started"
     IDS_IRC_SLAPMSG         "* %s slaps %s around with a large Babelfish!"
     IDS_IRC_PRIVMESSAGE     "Private Message"
     IDS_WEB_REMOTE_LINK_ADDED "Link added: "
     IDS_WEB_REMOTE_LINK_NOT_ADDED "Link not added. Wrong password."
-    IDS_SOURCEEXCHANGESWAP  "Temporary Source Exchange Swap"
     IDS_DL_TRY_TO_GET_PREVIEW_PARTS "Download parts needed for preview first"
-    IDS_PR_SHORT_LOW        "[Lo]"
     IDS_IRC_KICK            "Kick"
     IDS_IRC_SLAP            "Slap"
     IDS_IRC_JOIN            "Join"
@@ -898,7 +828,6 @@ BEGIN
     IDS_SOURCESWAPBLOCKED   "Swap blocked"
     IDS_TRICKLING           "Standby"
     IDS_A4AF_CHECK_THIS_NOW "Check this source now (debug)"
-    IDS_PR_SHORT_HIGH       "[Hi]"
     IDS_STATS_FRATIO        "Session UL:DL Ratio (Friends UL excluded):"
     IDS_STATS_UDATA_FRIENDS "Uploaded Data to Friend Slots (Session): %s"
 END
@@ -909,7 +838,6 @@ BEGIN
     IDS_IRC_HASJOINED       "* %s has joined %s"
     IDS_IRC_HASPARTED       "* %s has parted %s (%s)"
     IDS_IRC_WASKICKEDBY     "* %s was kicked by %s (%s)"
-    IDS_IRC_NICKUSED        "Your nick is already being used in the IRC server. Please choose a different nick in the IRC tab in Preferences."
     IDS_DOWNLOAD_ALPHABETICAL "Download In Alphabetical Order"
     IDS_IRC_HASQUIT         "* %s has quit (%s)"
     IDS_IRC_NOWKNOWNAS      "* %s is now known as %s"
@@ -960,12 +888,10 @@ BEGIN
     IDS_SP_ACTCON           "Active connections"
     IDS_SP_ACTDL            "Active downloads"
     IDS_SP_ACTUL            "Active uploads"
-    IDS_PW_TIT_UP           "Set Upload-Speedlimit"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_PW_TIT_DOWN         "Set Download-Speedlimit"
     IDS_PW_UNLIMITED        "Unlimited"
     IDS_PW_MINREC           "Minimum Recommended\t%i "
     IDS_PW_UA               "Set Full Up/Down-Speed"
@@ -973,11 +899,7 @@ BEGIN
     IDS_IRC_IGNOREINFOMESSAGE "Ignore info messages"
     IDS_CONNECTIONLOST      "Connection lost"
     IDS_WIZ_OS_FRAME        "Operating System"
-    IDS_WIZ_CONCURENTDOWN_FRAME 
-                            "How many downloads do you usually have going at once?"
     IDS_HASHINGFILE         "Hashing file:"
-    IDS_WIZ_CUSTOM_FRAME    "If you tested your connection speed, put results here"
-    IDS_WIZ_HOTBUTTON_FRAME "Preset Buttons"
     IDS_WIZ_TRUEUPLOAD_TEXT "True Upload Bandwidth"
     IDS_WIZ_TRUEDOWNLOAD_TEXT "True Download Bandwidth"
     IDS_FRIENDLIST          "Friends"
@@ -989,7 +911,6 @@ BEGIN
     IDS_WIZARD              "Wizard..."
     IDS_ADDFRIEND           "&Add To Friends"
     IDS_REMOVEFRIEND        "Remove"
-    IDS_REMOVEFROMSTOK      "Removed from static list"
     IDS_REMOVEFROMSTATIC    "Remove From Static List"
     IDS_LENGTH              "Length"
     IDS_VIDEO               "Video"
@@ -1001,7 +922,6 @@ BEGIN
     IDS_FPS                 "Frames/s"
     IDS_CHANNELS            "Channels"
     IDS_SAMPLERATE          "Samplerate"
-    IDS_ROUNDBITRATE        "Round bitrate"
 END
 
 STRINGTABLE 
@@ -1012,16 +932,12 @@ BEGIN
     IDS_VIEWFILES           "&View Shared Files"
     IDS_FRIENDSLOT          "Establish Friend Slot"
     IDS_FRIENDDETAIL        "(Friend Slot)"
-    IDS_ASCWOP_PROXYSUPPORT "Automatic server connect without proxy"
     IDS_UDPDISABLED         "Disable"
-    IDS_CTINFO              "Select your connection type here:"
     IDS_WIZ_CTFRAME         "Connection Type"
     IDS_CONCURDWL           "Concurrent Downloads"
-    IDS_UNIT                "Unit:"
     IDS_WIZARD_CUSTOM       "Custom"
     IDS_WIZARD_ENTERBELOW   "(enter below)"
     IDS_STATS_MAXAVGDL      "Max Downloadrate Average: %s"
-    IDS_USS_MIN             "Warning: USS currently does not support upload speeds less then 10K. If you know your connection is not able to handle this, please disable USS."
 END
 
 STRINGTABLE 
@@ -1031,14 +947,12 @@ BEGIN
                             "Ignore eMule add friend protocol messages"
     IDS_PW_FASTSRVCON       "Safe Connect"
     IDS_SOURCELINKFAILED    "You need a HighID to create a valid sourcelink"
-    IDS_CREATESOURCELINK    "Copy eD2K Links (&Source)"
     IDS_ERR_LOADSERVERMET   "Failed to load server.met!"
     IDS_ERR_CORRUPTCOMPRPKG "Corrupted compressed packet for %s received (error %i)"
     IDS_ERR_EMFRIENDSINVALID 
                             "The file 'emfriends.met' is invalid or corrupted!"
     IDS_ERR_READEMFRIENDS   "Unknown error while reading emfriends.met: %s"
     IDS_ERR_KNOWNSERVERINFOREC "Unknown server info received!"
-    IDS_ERR_TIMERCREATEFAILED "Fatal Error: Failed to create Timer"
     IDS_WIZ_DOWN            "Down (kBit/s)"
     IDS_WIZ_UP              "Up (kBit/s)"
     IDS_SELECT_INCOMINGDIR  "Choose a folder for incoming files"
@@ -1053,7 +967,6 @@ BEGIN
     IDS_PRIOAUTORELEASE     "Auto [Re]"
     IDS_PRIOAUTOLOW         "Auto [Lo]"
     IDS_ERR_CONTIMEOUT      "Connection attempt to ""%s"" (%s:%i ) timed out"
-    IDS_ERR_CONFAILED       "Connecting to ""%s"" (%s:%i ) failed."
     IDS_OUTOFSERVERS        "Failed to connect to all servers listed. Making another pass."
     IDS_PW_CONLIMITS        "Connection limits"
     IDS_MAXCON5SECLABEL     "Max. new connections / 5 secs."
@@ -1073,15 +986,11 @@ BEGIN
     IDS_RECOVERED_PARTMET   "Recovered part.met file for: %s"
     IDS_CMT_QUEST           "Comment this file! (This text will be shown to all users.)"
     IDS_CMT_AIDE            "For a film, you can say its length, its story, the language... And if it is a fake, you can inform other eMule users..."
-    IDS_CMT_TITLE           "File Comments for %s"
     IDS_CMT_ADD             "Comm&ents..."
     IDS_CMT_NONE            "No comments"
     IDS_CMT_READ            "File comment:"
-    IDS_CMT_NOTCONNECTED    "Not connected yet..."
     IDS_CMT_SHOWALL         "Comme&nts..."
-    IDS_CMT_REFRESH         "&Refresh"
     IDS_CMT_READALL         "Comments"
-    IDS_CMT_NOCOMMENT       "No comments entered..."
     IDS_CMT_RATEQUEST       "File quality"
     IDS_CMT_RATEHELP        "Choose the file rating or advice users if the file is invalid!"
 END
@@ -1108,7 +1017,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_FD_STATS            "Lost to corruption: %s       Gained by compression: %s\nPackages saved by I.C.H.: %i"
     IDS_ERR_NOHELP          "Please visit our homepage's download section to get a copy of the newest help file!\n\nDo you want to browse the online help now instead?"
     IDS_SHOWOVERHEAD        "Show overhead bandwidth"
     IDS_UPDOWNSMALL         "Up: %.1f | Down: %.1f"
@@ -1135,7 +1043,6 @@ BEGIN
     IDS_VISITVERSIONCHECK   "\n\nDo you want do visit the Informationpage now?"
     IDS_PW_VIDEOPLAYER      "Video player"
     IDS_VIDEOBACKUP         "Create backup to preview"
-    IDS_STATIC_EMPTY        "(Empty = default)"
     IDS_MYINFO              "My Info"
     IDS_ID                  "ID"
     IDS_IDLOW               "Low ID"
@@ -1150,14 +1057,13 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ADDDOWNLOADSFROMCB  "Add these eD2K file links to download?\n"
-    IDS_ADDDOWNLOADSFROMCBTITLE "eD2K file link on clipboard"
     IDS_PF_WATCHCB          "Watch clipboard for eD2K file links"
     IDS_SECURITY            "Security"
     IDS_IPFILTERLOADED      "%i IP filters loaded"
     IDS_IPFILTER            "IP Filter"
     IDS_EDIT                "Edit..."
     IDS_FILTERLEVEL         "Filterlevel"
-    IDS_FILTERSERVERBYIPFILTER "Filter servers too (rejects dynIP-servers)"
+    IDS_FILTERSERVERBYIPFILTER "Filter servers too"
     IDS_FILTERCOMMENTSLABEL "Ignore comments containing: (Separator | )"
     IDS_CLIENTLIST          "Known Clients"
     IDS_FOLDER              "Folder"
@@ -1179,10 +1085,8 @@ BEGIN
     IDS_USECREDITSYSTEM     "Use credit system (reward uploaders)"
     IDS_FIRSTAUTODOWN       "Enable this option if you want eMule to manage your download priorities.\n\nTurning this on will allow eMule to make sure downloads with a lot of sources do not interfere with downloads that have few sources. This option will only affect future downloads."
     IDS_FIRSTAUTOUP         "Enable this option if you want eMule to manage your upload priorities.\n\nTurning this on will allow eMule to boost rare files meaning popular files will be harder for other people to get. Turning this off will allow eMule to upload popular files more often meaning rare files will be harder for other people to get. This option will only affect future shared files."
-    IDS_FIRSTCREDITSYSTEM   "Do you want to reward people that upload to you?\n\nThis is commonly known as the Credit System. Turning this on will help fight against leachers. If you are a dedicated releaser, you will want to turn this off."
     IDS_FIRSTFULLCHUNK      "Enable this option if you want to upload full chunks.\n\nUsing full chunk gives the client a better chance to complete a chunk. Turning this off will help rotate your queue faster. If you are a dedicated releaser, you will want to turn this on."
     IDS_FIRSTSAFECON        "Enable this option if you want eMule to connect using Safe Connect.\n\nTurning this feature off allows eMule to connect to servers a little faster, but can cause you to get more false LowID connects."
-    IDS_FIRSTRUNASSIST      "Do you want to run a first runtime wizard?"
     IDS_FIRSTAUTOCON        "Enable this option if you want eMule to connect at startup."
     IDS_FIRSTCOMPLETE       "You have now completed the first runtime wizard.\n\nAll these settings and more can be changed by clicking the preferences icon. For explanations and support check out the help by pressing F1 in eMule!"
 END
@@ -1214,18 +1118,14 @@ END
 STRINGTABLE 
 BEGIN
     IDS_WEB_SHOW_UPLOAD_QUEUE "Show Queue"
-    IDS_WEB_HIDE_UPLOAD_QUEUE "Hide Queue"
     IDS_WEB_GZIP_COMPRESSION "Gzip compression"
     IDS_WEB_GZIP_COMMENT    "Save traffic, especially in graphs."
-    IDS_WEB_UPLOAD_QUEUE_COMMENT 
-                            "Enable or disable the display of waiting queue in transfer page."
     IDS_WEB_REFRESH_TIME    "Refresh-Time of Pages"
     IDS_WEB_REFRESH_COMMENT "Time in seconds (zero=disabled):"
     IDS_SV_URL              "URL"
     IDS_WS_RELOAD_TMPL      "Template"
     IDS_SV_DEBUGLOG         "Debug Log"
     IDS_WS_PASS             "Password"
-    IDS_WEB_FILESETTINGS    "File Settings"
     IDS_WS_ERR_LOADTEMPLATE "Can't load templates: replace file %s with a newer version!"
     IDS_WEB_CONLIMITS       "Connection limits"
     IDS_INFLST_USER_TOTALDOWNLOAD "Downloaded total"
@@ -1235,7 +1135,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_WEB_BADLOGINATTEMPT "Web interface: Failed login attempt"
-    IDS_ERR_TOOLARGEFILE    "File larger than the supported size of the edonkey protocol (>=4GB)"
+    IDS_ERR_TOOLARGEFILE    "File larger than the supported size of the edonkey protocol (>=256GB)"
     IDS_MSGONLYFRIENDS      "Accept from friends only"
     IDS_MSGONLYSEC          "Accept from valid clients only"
     IDS_DAY_MO_SA           "Mon-Sat"
@@ -1259,7 +1159,6 @@ BEGIN
     IDS_WEBSRV              "Web Interface"
     IDS_SW_REFETCHRES       "Refetch Results"
     IDS_FILEHASH            "File Hash"
-    IDS_GLOBALSEARCH2       "Global Search"
     IDS_PW_PROXY            "Proxy"
     IDS_PROXY_ENABLE        "Enable proxy"
     IDS_PROXY_TYPE          "Proxy type:"
@@ -1286,7 +1185,6 @@ BEGIN
     IDS_WIZ1_END_BTN_HINT   "To close this wizard, click Finish."
     IDS_WIZ1_UPLOAD_SUBTITLE "Full Chunk Transfer"
     IDS_DL_RESUMENEXT       "Resume Next Paused"
-    IDS_DONTCHANGE          "Don't change"
     IDS_STARTPRIO           "Priority for this category"
     IDS_PREF_STARTNEXTFILECAT "Prefer same category"
     IDS_REPAINTGRAPHS       "Don't recreate statistic graphs on resize"
@@ -1326,7 +1224,6 @@ BEGIN
     IDS_STATS_CUMULATIVE    "Cumulative"
     IDS_STATS_OVRHD         "Overhead"
     IDS_STATS_RECORDS       "Records"
-    IDS_STATS_OVRHD2        "Overhead: %s (%s Packets)"
     IDS_STATS_COMPDL        "Completed Downloads"
     IDS_STATS_SVRECWORKING  "Max. Working Servers"
     IDS_STATS_SVRECUSERS    "Max. Users Online"
@@ -1340,7 +1237,6 @@ BEGIN
     IDS_SEARCH_COLUMN       "Search in column"
     IDS_STATS_SHRECSIZE     "Largest Share Size"
     IDS_STATS_SHRECASIZE    "Largest Average File Size"
-    IDS_STATS_MYRUNTIME     "Overall Run Time: %s"
     IDS_STATS_SESSION       "Session"
     IDS_STATS_SRATIO        "Session UL:DL Ratio:"
     IDS_STATS_CRATIO        "Cumulative UL:DL Ratio:"
@@ -1362,15 +1258,12 @@ BEGIN
     IDS_STATS_AVGDATAULSES  "Average Uploaded Per Session"
     IDS_STATS_ICHSAVED      "Parts Saved Due To I.C.H: %u"
     IDS_STATS_MBRESET_TXT   "Are you sure you wish to reset your cumulative statistics?\n\nIf you change your mind, you can reverse this action by clicking the 'Restore Stats' button."
-    IDS_STATS_MBRESET_CAP   "Confirm Reset"
     IDS_STATS_MBRESTORE_TXT "Are you sure you wish to restore your cumulative statistics from the backup file?\n\nClicking 'Restore Stats' again will reload your current statistics."
-    IDS_STATS_MBRESTORE_CAP "Confirm Restore"
     IDS_ERR_NOSTATBKUP      "ERROR: The backup statistics file was not found..."
     IDS_STATS_NFOLOADEDBKUP "Loaded backed up statistical data..."
     IDS_STATS_NFORESET      "Statistics have been reset!"
     IDS_STATS_BNRESET       "Reset Statistics"
     IDS_STATS_BNRESTORE     "Restore Statistics"
-    IDS_CONNECTIONSTATISTICS "Connection Statistics"
     IDS_PPGSTATS_YSCALE     "Connections statistics Y-axis scale:"
 END
 
@@ -1396,7 +1289,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_STATS_OLDCLIENTS    "Old"
     IDS_STATS_PRTDEF        "Default"
     IDS_STATS_PRTOTHER      "Other"
     IDS_STATS_MNUTREETITLE  "Statistics Tree"
@@ -1469,12 +1361,8 @@ BEGIN
     IDS_SEARCH_MISSINGNOTRIGHT "Missing right side for NOT operator"
     IDS_SEARCH_MISSINGEXPRPARANT "Missing expression for '(' ')'"
     IDS_SEARCH_MISSINGCLOSINGPARANT "Missing closing ')'"
-    IDS_SEARCH_MISSINGANDLEFT "Missing left side of AND operator"
-    IDS_SEARCH_MISSINGORLEFT "Missing left side of OR operator"
-    IDS_SEARCH_MISSINGNOTLEFT "Missing left side of NOT operator"
     IDS_SEARCH_EXPRERROR    "Failed to parse search expression"
     IDS_SEARCH_TOOCOMPLEX   "Expression too complex"
-    IDS_SEARCH_INVALIDMINMAX "Invalid units for Min/Max file size specified"
 END
 
 STRINGTABLE 
@@ -1496,7 +1384,6 @@ STRINGTABLE
 BEGIN
     IDS_SELECT_FONT         "Select Font"
     IDS_SERVER_LIMITS       "Soft- / Hard-File Limit"
-    IDS_SERVERINFO          "Server Information"
     IDS_KBITSSEC            "kBit/s"
     IDS_KBYTESSEC           "kByte/s"
     IDS_ERR_CREATE_DIR      "Failed to create %s directory ""%s"" - %s"
@@ -1521,14 +1408,13 @@ BEGIN
                             "For the changed settings to take effect, please restart eMule!"
     IDS_CREDITSEXPIRED      ", %i clients deleted (not seen within 5 month)"
     IDS_SOURCESINFO         "%i  (Useful: %i, NNP: %i);  A4AF: %i"
-    IDS_SHOW_META_DATA      "&Meta Data..."
     IDS_META_DATA           "Meta Data"
     IDS_TIMEBEFORE          "(%s ago)"
     IDS_FD_TIMEDATE         "Dates"
     IDS_FILEINFORMATION     "File Information"
     IDS_STATS_FREESPACE     "Free Space"
     IDS_IRC_HELPCHANNEL     "Connect to help channel"
-    IDS_IRC_HELPCHANNELPERFORM "/join #emule | /join #emule-english"
+    IDS_IRC_HELPCHANNELPERFORM "/join #emule-latvian"
     IDS_IRC_ACCEPTLINKSFRIENDS "From friends only"
     IDS_COMPLSOURCES        "Complete Sources"
     IDS_CHECKNOENDTIME      "No end time"
@@ -1537,7 +1423,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_MATCH_KEYWORDS      "Match keywords"
     IDS_FAILEDREOPEN        "Fatal Error: Failed to reopen part file '%s' (%s)!"
     IDS_ERR_PREVIEWALREADY  "There is already a preview request pending from this client"
     IDS_ERR_PREVIEWFAILED   "Preview from User '%s' failed"
@@ -1557,7 +1442,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_CREATEHOSTNAMESRCLINK "Copy eD2K Links (Host Name)"
     IDS_HASHINGFILESCOUNT   " (%u hashing)"
     IDS_CHECKDISKSPACE      "Check diskspace"
     IDS_YOURHOSTNAME        "Host name for own eD2K links"
@@ -1666,7 +1550,6 @@ BEGIN
     IDS_MINBITRATE          "Min. Bitrate [kBit/s]"
     IDS_KAD_RECHECKFW       "Recheck Firewall"
     IDS_SHAREDTITLE         "Shared eD2K|Kad"
-    IDS_WARNINGNOBS         "Bootstrapping inactive now (Kad already connected)."
     IDS_FIREWALLED          "Firewalled"
     IDS_KADEMLIA            "Kad"
     IDS_KADCONTACTLAB       "Contacts"
@@ -1682,7 +1565,6 @@ BEGIN
     IDS_LOG_SECURE_IDENT    "Log secure ident"
     IDS_LOG_FILTERED_IPS    "Log filtered and/or ignored IPs"
     IDS_LOG_FILE_SAVING     "Log file save actions"
-    IDS_IPFILTERFILES       "All IP Filter Files (*ipfilter.dat;*ip.prefix;*.p2b;*.p2p;*.p2p.txt;*.zip;*.gz)|*ipfilter.dat;*ip.prefix;*.p2b;*.p2p;*.p2p.txt;*.zip;*.gz|eMule IP Filter Files (*ipfilter.dat;*ip.prefix)|*ipfilter.dat;*ip.prefix|Peer Guardian Files (*.p2b;*.p2p;*.p2p.txt)|*.p2b;*.p2p;*.p2p.txt|Text Files (*.txt)|*.txt|ZIP Files (*.zip;*.gz)|*.zip;*.gz|All Files (*.*)|*.*||"
     IDS_DELETEIPFILTERS     "Do you really want to delete the selected IP filters?"
     IDS_TOTAL_IPFILTER_LABEL "Total IP filters:"
     IDS_TOTAL_IPS_LABEL     "Total IPs:"
@@ -1747,7 +1629,6 @@ BEGIN
     IDS_CHAT_DOWNLOADED     "Downloaded:"
     IDS_CHAT_UPLOADED       "Uploaded:"
     IDS_CHAT_IDENT          "Identification:"
-    IDS_CHAT_CLIENT         "Client:"
     IDS_MAXHALFOPENCONS     "Max. half open connections"
     IDS_WIZ_STARTWITHWINDOWS 
                             "Enable this so that eMule will run when you start windows."
@@ -1794,7 +1675,6 @@ BEGIN
     IDS_META_SRCTYPE        "Source type"
     IDS_SEARCH_UNICODE      "Search with Unicode"
     IDS_PF_ADVANCEDCALC     "Use advanced calculation method for remaining time"
-    IDS_PERSEC              "/s"
     IDS_LD_ED2KLINK         "ED2K Link"
     IDS_LD_COPYCLIPBOARD    "Copy"
     IDS_LD_HOSTNAME         "Use host name (from preferences) instead of IP when creating a sourcelink"
@@ -1957,6 +1837,71 @@ BEGIN
     IDS_ERR_FSCANTHANDLEFILE 
                             "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
     IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
+    IDS_KADSEARCHACTIVE     "(Kad search in progress...)"
+    IDS_BOLD                "Toggles bold text"
+    IDS_UNDERLINE           "Toggles underlined text"
+    IDS_COLOUR              "Selects foreground text colour (optional background colour)"
+    IDS_RESETFORMAT         "Resets all previous formatting (sends a reset tag)"
+    IDS_RESTORESEARCHPARAMS "Restore Search Parameters"
+    IDS_COMMAND             "Command"
+    IDS_ARGUMENTS           "Arguments"
+    IDS_AP_CREATEPREVCOPY   "Create preview file"
+    IDS_ARCHIVEDETAILS      "Archive-Details"
+    IDS_ARCHTYPE            "Archive type"
+    IDS_ATTRIBUTES          "Attributes"
+    IDS_LASTMODIFIED        "Last Modified"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_RARFULLENCR         "Headers encrypted - unable to read archive."
+    IDS_ARCPARSED           "Archive scanned."
+    IDS_ARCPREV_LISTMAYBEINCOMPL "File list may be incomplete."
+    IDS_ARCPREV_DIRNOTFOUND "Table of contents not found."
+    IDS_ARCPREV_INSUFFDATA  "Insufficent data available."
+    IDS_PASSWPROT           "Password protection"
+    IDS_ARCPREV_DIRSUCCREAD "Table of contents successfully read."
+    IDS_ARCPREV_UNKNOWNFORMAT "(unknown/unsupported)"
+    IDS_ARCPREV_PLEASEWAIT  "Scanning archive..."
+    IDS_OBFUSCATION         "Obfuscation"
+    IDS_SUPPORTED           "Supported"
+    IDS_ESTIMATED           "estimated"
+    IDS_MEDIAINFO_DLLMISSING 
+                            "There is no MediaInfo library installed. If you want to get more information about audio/video files in this dialog,\r\ndownload the MediaInfo library from http://sourceforge.net/projects/mediainfo/ and copy the MediaInfo.dll file into\r\neMule's installation folder ""%s"".\r\n"
+    IDS_WARNING_WRONGFILEEXTENTION 
+                            "Warning: The file extension of ""%s"" does not match the file extension\r\ntypically used for that file format. You may want to rename the file to\r\nuse one of those file extensions ""%s""\r\nfor properly using or viewing that file format.\r\n"
+    IDS_MEDIAINFO_DRMWARNING 
+                            "Warning: The file ""%s"" seems to be protected with Digital Rights Management.\r\nYou will most likely not be able to use that file without a license from the originator of that file.\r\n"
+    IDS_LOADFILTER_EMTOOLBAR "eMule Toolbar Bitmap Files"
+    IDS_LOADFILTER_EMSKINFILES "eMule Skin Files"
+    IDS_OPTIONS             "Options"
+    IDS_ARCHPREV_ATTRIBINFO "File attributes can contain:\r\n\r\nP\tfile is password protected\r\nD\tis a directory\r\nC\tComment\r\nLx\tCompression level x\r\nM\tcompressed data not completely downloaded yet\r\n<\tfile continued from previous volume\r\n>\tfile continues in next volume\r\n"
+    IDS_CONTENT_INFO        "Content"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_MESSAGESCOMMENTS    "Messages and Comments"
+    IDS_DISABLEOBFUSCATION  "Disable support for obfuscated connections"
+    IDS_ONLYOBFUSCATED      "Allow obfuscated connections only (not recommended)"
+    IDS_ENABLEOBFUSCATION   "Enable Protocol Obfuscation"
+    IDS_PROTOCOLOBFUSCATION "Protocol Obfuscation"
+    IDS_CONNECTINGTOOBFUSCATED 
+                            "Connecting to %s (%s:%i - using Protocol Obfuscation) ..."
+    IDS_CONNECTEDTOOBFUSCATED "Obfuscated connection established on: %s"
+    IDS_VERIFIED            "Verified"
+    IDS_OBFUSCATED          "Obfuscated"
+    IDS_UNVERIFIED          "Unverified"
+    IDS_INVALIDFILEEXT      "Invalid file extension"
+    IDS_UNKNOWNFILEEXT      "unknown file extension"
+    IDS_ENABLEMINIMULE      "Enable MiniMule"
+    IDS_DISABLE_AUTOARCHPREV 
+                            "Disable automatic archive preview start in file details"
+    IDS_US_STALLEDW4BR      "Stalled! Waiting for block request."
+    IDS_US_STALLEDREADINGFDISK "Stalled! Reading from disk."
+    IDS_SERVERFEATURE_INTTYPETAGS "Integer type tags"
 END
 
 #endif    // Latvian resources

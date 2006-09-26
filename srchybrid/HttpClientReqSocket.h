@@ -38,7 +38,7 @@ class CHttpClientReqSocket : public CClientReqSocket
 public:
 	virtual CUpDownClient* GetClient() const { return client; }
 
-	virtual void SendPacket(Packet* packet, bool delpacket = true, bool controlpacket = true, uint32 actualPayloadSize = 0);
+	virtual void SendPacket(Packet* packet, bool delpacket = true, bool controlpacket = true, uint32 actualPayloadSize = 0, bool bForceImmediateSend = false);
 	virtual bool IsRawDataMode() const { return true; }
 
 	EHttpSocketState GetHttpState() const { return m_eHttpState; }

@@ -58,7 +58,7 @@ public:
 	void	CorruptedData(uint64 nStartPos, uint64 nEndPos);
 	//Xman
 	// NEO: CBBF - [CorruptionBlackBoxFix] -- Xanatos --
-	void	EvaluateData(uint16 nPart);
+	void	EvaluateData(UINT nPart);
 
 
 private:

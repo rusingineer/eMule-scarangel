@@ -30,11 +30,12 @@
 #include "TransferWnd.h"
 #include "ChatWnd.h"
 #include "UpDownClient.h"
-#include "UploadQueue.h"
+//#include "UploadQueue.h" not needed
 #include "ClientCredits.h"
 #include "PartFile.h"
 #include "Kademlia/Kademlia/Kademlia.h"
 #include "SharedFileList.h"
+#include "ListenSocket.h" //Xman changed: display the obfuscation icon for all clients which enabled it
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -144,9 +145,14 @@ void CDownloadClientsCtrl::SetAllIcons()
 	m_ImageList.Add(CTempIconLoader(_T("NEO"))); //30
 	// <== Mod Icons - Stulle
 	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
+	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("OverlayObfu"))), 2);
+	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("OverlaySecureObfu"))), 3);
 	// ==> Mod Icons - Stulle
-	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("ClientCreditOvl"))), 2);
-	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("ClientCreditSecureOvl"))), 3);
+	m_overlayimages.DeleteImageList ();
+	m_overlayimages.Create(16,16,theApp.m_iDfltImageListColorFlags|ILC_MASK,0,1);
+	m_overlayimages.SetBkColor(CLR_NONE);
+	m_overlayimages.Add(CTempIconLoader(_T("ClientCreditOvl")));
+	m_overlayimages.Add(CTempIconLoader(_T("ClientCreditSecureOvl")));
 	// <== Mod Icons - Stulle
 }
 
@@ -345,8 +351,6 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						image = 0;
 					}
 
-					POINT point = {cur_rec.left, cur_rec.top+1}; // moved up
-
 					//Xman Anti-Leecher
 					if(client->IsLeecher()>0)
 						image=18;
@@ -357,27 +361,33 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					if (((client->credits)?client->credits->GetMyScoreRatio(client->GetIP()):0) > 1)
 						image++;
 					*/
-					{
-						if (client->GetModClient() == MOD_NONE){
-						// <== CreditSystems [EastShare/ MorphXT] - Stulle
-							if(((client->credits)?client->credits->GetMyScoreRatio(client->GetIP()):0) > 1)
-								image++;
-						}
-						else
-						{
-							UINT uOvlImg = INDEXTOOVERLAYMASK(((client->Credits() && client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED) ? 1 : 0) | ((client->Credits() && client->Credits()->GetMyScoreRatio(client->GetIP()) > 1) ? 2 : 0));
-							m_ImageList.DrawIndirect(dc,image, point, CSize(16,16), CPoint(0,0), ILD_NORMAL | uOvlImg, 0, odc->GetBkColor());
-						}
+					if (client->GetModClient() == MOD_NONE){
+						if(((client->credits)?client->credits->GetMyScoreRatio(client->GetIP()):0) > 1)
+							image++;
 					}
 					// <== Mod Icons - Stulle
 					//Xman end
 
-					// ==> moved up
-					/*
+					uint32 nOverlayImage = 0;
+					if ((client->Credits() && client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED))
+						nOverlayImage |= 1;
+					//Xman changed: display the obfuscation icon for all clients which enabled it
+					if (client->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (client->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()) 
+						&& (client->IsObfuscatedConnectionEstablished() || !(client->socket != NULL && client->socket->IsConnected())))
+						nOverlayImage |= 2;
 					POINT point = {cur_rec.left, cur_rec.top+1};
-					*/
-					if(client->GetModClient() == MOD_NONE || client->IsLeecher()>0) // Mod Icons - Stulle
-						m_ImageList.Draw(dc,image, point, ILD_NORMAL | ((client->Credits() && client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED) ? INDEXTOOVERLAYMASK(1) : 0));
+					m_ImageList.Draw(dc,image, point, ILD_NORMAL | INDEXTOOVERLAYMASK(nOverlayImage));
+
+					// ==> Mod Icons - Stulle
+					if(client->Credits() && client->Credits()->GetMyScoreRatio(client->GetIP()) > 1)
+					{
+						if(client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED)
+							m_overlayimages.Draw(dc,1, point, ILD_TRANSPARENT);
+						else
+							m_overlayimages.Draw(dc,0, point, ILD_TRANSPARENT);
+					}
+					// <== Mod Icons - Stulle
+
 					Sbuffer = client->GetUserName();
 
 					//Xman friend visualization
@@ -611,7 +621,7 @@ BOOL CDownloadClientsCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 			}
 			case MP_BOOT:
 				if (client->GetKadPort())
-					Kademlia::CKademlia::Bootstrap(ntohl(client->GetIP()), client->GetKadPort());
+					Kademlia::CKademlia::Bootstrap(ntohl(client->GetIP()), client->GetKadPort(), (client->GetKadVersion() > 1));
 				break;
 			// - show requested files (sivka/Xman)
 			case MP_LIST_REQUESTED_FILES: { 

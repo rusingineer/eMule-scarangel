@@ -1,7 +1,7 @@
+// modified by Stulle
 #include "stdafx.h"
 
 #include "SystemInfo.h"
-#include "GetCpuUsage.h" // added - Stulle
 
 CSystemInfo::CSystemInfo(){
 	CSysInfo::Init();
@@ -12,16 +12,15 @@ CSystemInfo::~CSystemInfo(){
 }
 
 int CSystemInfo::GetCpuUsage(){
-	return CPUUsageReader::ReadCPUUsage();
+	return cpu.GetUsage( &sys, &upTime );
 }
 
 uint32 CSystemInfo::GetMemoryUsage(){
 	return CSysInfo::GetProcessMemoryUsageInt();
 }
 
-// added - Stulle
 int CSystemInfo::GetGlobalCpuUsage(){
-	return ReadGlobalCpuUsage();
+	return sys;
 }
 
 uint32 CSystemInfo::GetGlobalMemoryUsage(){

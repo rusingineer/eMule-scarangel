@@ -22,6 +22,7 @@
 #include "FileInfoDialog.h"
 #include "MetaDataDlg.h"
 #include "ED2kLinkDlg.h"
+#include "ArchivePreviewDlg.h"
 #include "CommentDialog.h"
 #include "HighColorTab.hpp"
 #include "ListViewWalkerPropertySheet.h"
@@ -59,6 +60,11 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+bool NeedArchiveInfoPage(const CSimpleArray<CObject*>* paItems);
+void UpdateFileDetailsPages(CListViewWalkerPropertySheet *pSheet,
+							CResizablePage *pArchiveInfo, CResizablePage *pMediaInfo);
+
+
 //////////////////////////////////////////////////////////////////////////////
 // CSharedFileDetailsSheet
 
@@ -75,6 +81,7 @@ protected:
 	CMetaDataDlg		m_wndMetaData;
 	CED2kLinkDlg		m_wndFileLink;
 	CCommentDialog		m_wndFileComments;
+	CArchivePreviewDlg	m_wndArchiveInfo;
 
 	UINT m_uPshInvokePage;
 	static LPCTSTR m_pPshStartPage;
@@ -107,11 +114,25 @@ CSharedFileDetailsSheet::CSharedFileDetailsSheet(CTypedPtrList<CPtrList, CKnownF
 		m_aItems.Add(aFiles.GetNext(pos));
 	m_psh.dwFlags &= ~PSH_HASHELP;
 
+	m_wndFileComments.m_psp.dwFlags &= ~PSP_HASHELP;
+	m_wndFileComments.m_psp.dwFlags |= PSP_USEICONID;
+	m_wndFileComments.m_psp.pszIcon = _T("FileComments");
+	m_wndFileComments.SetFiles(&m_aItems);
+	AddPage(&m_wndFileComments);
+
+	m_wndArchiveInfo.m_psp.dwFlags &= ~PSP_HASHELP;
+	m_wndArchiveInfo.m_psp.dwFlags |= PSP_USEICONID;
+	m_wndArchiveInfo.m_psp.pszIcon = _T("ARCHIVE_PREVIEW");
+	m_wndArchiveInfo.SetFiles(&m_aItems);
+
 	m_wndMediaInfo.m_psp.dwFlags &= ~PSP_HASHELP;
 	m_wndMediaInfo.m_psp.dwFlags |= PSP_USEICONID;
 	m_wndMediaInfo.m_psp.pszIcon = _T("MEDIAINFO");
 	m_wndMediaInfo.SetFiles(&m_aItems);
-	AddPage(&m_wndMediaInfo);
+	if (NeedArchiveInfoPage(&m_aItems))
+		AddPage(&m_wndArchiveInfo);
+	else
+		AddPage(&m_wndMediaInfo);
 
 	m_wndMetaData.m_psp.dwFlags &= ~PSP_HASHELP;
 	m_wndMetaData.m_psp.dwFlags |= PSP_USEICONID;
@@ -126,12 +147,6 @@ CSharedFileDetailsSheet::CSharedFileDetailsSheet(CTypedPtrList<CPtrList, CKnownF
 	m_wndFileLink.m_psp.pszIcon = _T("ED2KLINK");
 	m_wndFileLink.SetFiles(&m_aItems);
 	AddPage(&m_wndFileLink);
-
-	m_wndFileComments.m_psp.dwFlags &= ~PSP_HASHELP;
-	m_wndFileComments.m_psp.dwFlags |= PSP_USEICONID;
-	m_wndFileComments.m_psp.pszIcon = _T("FileComments");
-	m_wndFileComments.SetFiles(&m_aItems);
-	AddPage(&m_wndFileComments);
 
 	LPCTSTR pPshStartPage = m_pPshStartPage;
 	if (m_uPshInvokePage != 0)
@@ -172,6 +187,7 @@ BOOL CSharedFileDetailsSheet::OnInitDialog()
 LRESULT CSharedFileDetailsSheet::OnDataChanged(WPARAM, LPARAM)
 {
 	UpdateTitle();
+	UpdateFileDetailsPages(this, &m_wndArchiveInfo, &m_wndMediaInfo);
 	return 1;
 }
 
@@ -283,6 +299,7 @@ void CSharedFilesCtrl::SetAllIcons()
 	m_ImageList.Add(CTempIconLoader(_T("Rating_Fair")));
 	m_ImageList.Add(CTempIconLoader(_T("Rating_Good")));
 	m_ImageList.Add(CTempIconLoader(_T("Rating_Excellent")));
+	m_ImageList.Add(CTempIconLoader(_T("Collection_Search"))); // rating for comments are searched on kad
 	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("FileCommentsOvl"))), 1);
 }
 
@@ -567,9 +584,9 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						m_ImageList.Draw(dc, 0, CPoint(cur_rec.left, cur_rec.top), ILD_NORMAL | ILD_TRANSPARENT | INDEXTOOVERLAYMASK(1));
 					cur_rec.left += (iIconDrawWidth - 3);
 
-					if (thePrefs.ShowRatingIndicator() && (file->HasComment() || file->HasRating()))
+					if (thePrefs.ShowRatingIndicator() && (file->HasComment() || file->HasRating() || file->IsKadCommentSearchRunning()))
 					{
-						m_ImageList.Draw(dc, file->UserRating()+3, CPoint(cur_rec.left, cur_rec.top), ILD_NORMAL);
+						m_ImageList.Draw(dc, file->UserRating(true)+3, CPoint(cur_rec.left, cur_rec.top), ILD_NORMAL);
 						cur_rec.left += 16;
 						iIconDrawWidth += 16;
 					}
@@ -970,7 +987,7 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 						newpath.ReleaseBuffer();
 						if (_trename(file->GetFilePath(), newpath) != 0){
 							CString strError;
-							strError.Format(GetResString(IDS_ERR_RENAMESF), file->GetFilePath(), newpath, strerror(errno));
+							strError.Format(GetResString(IDS_ERR_RENAMESF), file->GetFilePath(), newpath, _tcserror(errno));
 							AfxMessageBox(strError);
 							break;
 						}
@@ -978,7 +995,7 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 						if (file->IsKindOf(RUNTIME_CLASS(CPartFile)))
 						{
 							file->SetFileName(newname);
-							((CPartFile*)file)->SetFullName(newpath); //Xman //MORPH - Official Fix Unable To Open Completed File After Rename
+							STATIC_DOWNCAST(CPartFile, file)->SetFullName(newpath); 
 						}
 						else
 						{
@@ -1045,10 +1062,10 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 				if (bRemovedItems)
 				{
 					AutoSelectItem();
-					//Xman
-					// raccoonI: summary not updated after deleting shared file -->
+					// Depending on <no-idea> this does not always cause a
+					// LVN_ITEMACTIVATE message sent. So, explicitly redraw
+					// the item.
 					theApp.emuledlg->sharedfileswnd->ShowSelectedFilesSummary();
-					// raccoonI: summary not updated after deleting shared file <--
 				}
 				break; 
 			}
@@ -1279,7 +1296,7 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 						if(pfile && pfile->IsPartFile()) 
 							feed.AppendFormat(_T("%s %.1f%%\r\n"), GetResString(IDS_FD_COMPSIZE), pfile->GetPercentCompleted()); 
 						else 
-							feed.AppendFormat(_T("%s 100%%\r\n"), GetResString(IDS_FD_COMPSIZE), pfile->GetPercentCompleted()); 
+							feed.AppendFormat(_T("%s 100%%\r\n"), GetResString(IDS_FD_COMPSIZE)); 
 						feed.AppendFormat(_T("%s: %s (%s) \r\n"),GetResString(IDS_SF_TRANSFERRED), CastItoXBytes(file->statistic.GetTransferred(), false, false), CastItoXBytes(file->statistic.GetAllTimeTransferred(), false, false));   
 						feed.AppendFormat(_T("%s: %u \r\n"),GetResString(IDS_COMPLSOURCES),file->m_nCompleteSourcesCountLo); 
 						feed.AppendFormat(_T("%s: %u \r\n"),GetResString(IDS_ONQUEUE),(file->GetOnUploadqueue()));  //Xman see OnUploadqueue

@@ -245,7 +245,7 @@ bool CUrlClient::Disconnected(LPCTSTR pszReason, bool bFromSocket)
 	//Xman 
 	//if (s && (s->GetHttpState() == HttpStateRecvExpected || s->GetHttpState() == HttpStateRecvBody))
 	//    m_fileReaskTimes.RemoveKey(reqfile); // ZZ:DownloadManager (one resk timestamp for each file)
-	return CUpDownClient::Disconnected(pszReason, bFromSocket);
+	return CUpDownClient::Disconnected(CString(_T("CUrlClient::Disconnected")) + pszReason, bFromSocket);
 }
 
 bool CUrlClient::ProcessHttpDownResponse(const CStringAArray& astrHeaders)
@@ -456,6 +456,7 @@ void CUpDownClient::ProcessHttpBlockPacket(const BYTE* pucData, UINT uSize)
 			if (lenWritten > 0)
 			{
 				m_nTransferredDown += uSize;
+				m_nCurSessionPayloadDown += lenWritten;
 				SetTransferredDownMini();
 
 				if (nEndPos >= cur_block->block->EndOffset)

@@ -46,8 +46,8 @@ namespace Kademlia
 			~CRoutingBin();
 		private:
 			CRoutingBin();
-			bool AddContact(CContact *pContact);
-			void SetAlive(uint32 uIP, uint16 uUDPPort);
+			bool AddContact(CContact* pContact);
+			void SetAlive(CContact* pContact);
 			void SetTCPPort(uint32 uIP, uint16 uUDPPort, uint16 uTCPPort);
 			void RemoveContact(CContact *pContact);
 			CContact *GetContact(const CUInt128 &uID);
@@ -55,7 +55,7 @@ namespace Kademlia
 			UINT GetSize() const;
 			UINT GetRemaining() const;
 			void GetEntries(ContactList *plistResult, bool bEmptyFirst = true);
-			void GetClosestTo(uint32 uMaxType, const CUInt128 &uTarget, uint32 uMaxRequired, ContactMap *pmapResult, bool bEmptyFirst = true, bool bInUse = false); //Xman official patch
+			void GetClosestTo(uint32 uMaxType, const CUInt128 &uTarget, uint32 uMaxRequired, ContactMap *pmapResult, bool bEmptyFirst = true, bool bSetInUse = false);
 			bool m_bDontDeleteContacts;
 			ContactList m_listEntries;
 	};

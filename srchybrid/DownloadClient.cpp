@@ -89,7 +89,7 @@ void CUpDownClient::DrawStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool
 
 				if(reqfile->IsComplete(uStart, uEnd, false) == true) 
 					statusBar.FillRange(uStart, uEnd, crBoth);
-				else if(m_nDownloadState == DS_DOWNLOADING && m_nLastBlockOffset < uEnd &&
+				else if(GetSessionDown() > 0 && m_nDownloadState == DS_DOWNLOADING && m_nLastBlockOffset < uEnd &&
 					m_nLastBlockOffset >= uStart)
 					statusBar.FillRange(uStart, uEnd, crPending); 
 				else if(gettingParts[i] == true)
@@ -433,7 +433,8 @@ void CUpDownClient::SendFileRequest()
 
 	if (SupportMultiPacket())
 	{
-		if (SupportExtMultiPacket()){
+		bool bUseExtMultiPacket = SupportExtMultiPacket();
+		if (bUseExtMultiPacket){
 			dataFileReq.WriteUInt64(reqfile->GetFileSize());
 			if (thePrefs.GetDebugClientTCPLevel() > 0)
 				DebugSend("OP__MultiPacket_Ext", this, reqfile->GetFileHash());
@@ -520,7 +521,7 @@ void CUpDownClient::SendFileRequest()
 		// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 		Packet* packet = new Packet(&dataFileReq, OP_EMULEPROT);
-		packet->opcode = SupportExtMultiPacket() ? OP_MULTIPACKET_EXT : OP_MULTIPACKET;
+		packet->opcode = bUseExtMultiPacket ? OP_MULTIPACKET_EXT : OP_MULTIPACKET;
 		theStats.AddUpDataOverheadFileRequest(packet->size);
 		socket->SendPacket(packet, true);
 	}
@@ -702,11 +703,13 @@ void CUpDownClient::ProcessFileInfo(CSafeMemFile* data, CPartFile* file)
 		if (thePrefs.GetDebugClientTCPLevel() > 0)
 		{
 			int iNeeded = 0;
-			for (UINT i = 0; i < m_nPartCount; i++)
+			UINT i;
+			for (i = 0; i < m_nPartCount; i++) {
 				if (!reqfile->IsComplete((uint64)i*PARTSIZE, ((uint64)(i+1)*PARTSIZE)-1, false))
 					iNeeded++;
+			}
 			char* psz = new char[m_nPartCount + 1];
-			for (UINT i = 0; i < m_nPartCount; i++)
+			for (i = 0; i < m_nPartCount; i++)
 				psz[i] = m_abyPartStatus[i] ? '#' : '.';
 			psz[i] = '\0';
 			Debug(_T("  Parts=%u  %hs  Needed=%u\n"), m_nPartCount, psz, iNeeded);
@@ -809,7 +812,8 @@ void CUpDownClient::ProcessFileStatus(bool bUdpPacket, CSafeMemFile* data, CPart
 	if (bUdpPacket ? (thePrefs.GetDebugClientUDPLevel() > 0) : (thePrefs.GetDebugClientTCPLevel() > 0))
 	{
 		TCHAR* psz = new TCHAR[m_nPartCount + 1];
-		for (UINT i = 0; i < m_nPartCount; i++)
+		UINT i;
+		for (i = 0; i < m_nPartCount; i++)
 			psz[i] = m_abyPartStatus[i] ? _T('#') : _T('.');
 		psz[i] = _T('\0');
 		Debug(_T("  Parts=%u  %s  Needed=%u\n"), m_nPartCount, psz, iNeeded);
@@ -948,7 +952,7 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState, LPCTSTR pszReason
 
         if(nNewState == DS_DOWNLOADING && socket){
 		    socket->SetTimeOut(CONNECTION_TIMEOUT*4);
-
+			
 			m_bWebcacheFailedTry = false; // WebCache [WC team/MorphXT] - Stulle/Max
 			
 			//Xman Xtreme Mod: improved socket-options
@@ -983,7 +987,7 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState, LPCTSTR pszReason
 						pszReason = _T("NNP. You don't need any parts from this client.");
 				}
 
-				AddDebugLogLine(DLP_VERYLOW, false, _T("Download session ended: %s User: %s in SetDownloadState(). New State: %i, Length: %s, Transferred: %s."), pszReason, DbgGetClientInfo(), nNewState, CastSecondsToHM(GetDownTimeDifference(false)/1000), CastItoXBytes(GetSessionDown(), false, false));
+				AddDebugLogLine(DLP_VERYLOW, false, _T("Download session ended: %s User: %s in SetDownloadState(). New State: %i, Length: %s, Payload: %s, Transferred: %s, Req blocks not yet completed: %i."), pszReason, DbgGetClientInfo(), nNewState, CastSecondsToHM(GetDownTimeDifference(false)/1000), CastItoXBytes(GetSessionPayloadDown(), false, false), CastItoXBytes(GetSessionDown(), false, false), m_PendingBlocks_list.GetCount());
 			}
 
 
@@ -1104,7 +1108,10 @@ void CUpDownClient::CreateBlockRequests(int iMaxBlocks)
 		 
 		
 			Requested_Block_Struct** toadd = new Requested_Block_Struct*[count];
-			if (reqfile->GetNextRequestedBlock(this,toadd,&count)){
+			//Xman chunk chooser
+			bool result = thePrefs.GetChunkChooseMethod()==1 ? reqfile->GetNextRequestedBlock_Maella(this,toadd,&count) : reqfile->GetNextRequestedBlock_zz(this,toadd,&count);
+			if (result){
+			//Xman end chunk chooser
 				for (UINT i = 0; i < count; i++)
 					m_DownloadBlocks_list.AddTail(toadd[i]);
 			}
@@ -1201,13 +1208,14 @@ void CUpDownClient::SendBlockRequests(bool ed2krequest)
 		// if there's less than two chunks left, request fewer blocks for
 		// slow downloads, so they don't lock blocks from faster clients.
 		// Only trust eMule clients to be able to handle less blocks than three
-		if(m_nDownDatarate10 < 600) { //Xman Xtreme Mod
+		if(m_nDownDatarate10 < 600 || GetSessionPayloadDown() < 40*1024) { //Xman Xtreme Mod
 			blockCount = 1;
 		} else if(m_nDownDatarate10 < 2400) { //Xman Xtreme Mod, Xman 5.1 raised from 1200
 			blockCount = 2;
 		}
 	}
 	CreateBlockRequests(blockCount);
+	
 	if (m_PendingBlocks_list.IsEmpty()){
 		/*
 		//Xman 0.46b
@@ -1255,7 +1263,7 @@ void CUpDownClient::SendBlockRequests(bool ed2krequest)
 		if (pos){
 			Pending_Block_Struct* pending = m_PendingBlocks_list.GetNext(pos);
 			ASSERT( pending->block->StartOffset <= pending->block->EndOffset );
-			if (pending->block->StartOffset > 0xFFFFFFFF || pending->block->EndOffset > 0xFFFFFFFF){
+			if (pending->block->StartOffset > 0xFFFFFFFF || pending->block->EndOffset >= 0xFFFFFFFF){
 				bI64Offsets = true;
 				if (!SupportsLargeFiles()){
 					ASSERT( false );
@@ -1379,14 +1387,15 @@ void CUpDownClient::SendBlockRequests(bool ed2krequest)
 */
 void CUpDownClient::ProcessBlockPacket(const uchar *packet, uint32 size, bool packed, bool bI64Offsets)
 {
-	/* TODO rewrite debugoutput
-	uint32 nDbgStartPos = *((uint32*)(packet+16));
-	if (thePrefs.GetDebugClientTCPLevel() > 1){
-	if (packed)
-	Debug(_T("  Start=%u  BlockSize=%u  Size=%u  %s\n"), nDbgStartPos, *((uint32*)(packet + 16+4)), size-24, DbgGetFileInfo(packet));
-	else
-	Debug(_T("  Start=%u  End=%u  Size=%u  %s\n"), nDbgStartPos, *((uint32*)(packet + 16+4)), *((uint32*)(packet + 16+4)) - nDbgStartPos, DbgGetFileInfo(packet));
-	}*/
+	if (!bI64Offsets) {
+		uint32 nDbgStartPos = *((uint32*)(packet+16));
+		if (thePrefs.GetDebugClientTCPLevel() > 1){
+			if (packed)
+				Debug(_T("  Start=%u  BlockSize=%u  Size=%u  %s\n"), nDbgStartPos, *((uint32*)(packet + 16+4)), size-24, DbgGetFileInfo(packet));
+			else
+				Debug(_T("  Start=%u  End=%u  Size=%u  %s\n"), nDbgStartPos, *((uint32*)(packet + 16+4)), *((uint32*)(packet + 16+4)) - nDbgStartPos, DbgGetFileInfo(packet));
+		}
+	}
 
 	// Ignore if no data required
 	if (!(GetDownloadState() == DS_DOWNLOADING || GetDownloadState() == DS_NONEEDEDPARTS)){
@@ -1575,6 +1584,7 @@ void CUpDownClient::ProcessBlockPacket(const uchar *packet, uint32 size, bool pa
 			if (lenWritten > 0)
 			{
 				m_nTransferredDown += uTransferredFileDataSize;
+				m_nCurSessionPayloadDown += lenWritten;
 				SetTransferredDownMini();
 
 				// If finished reserved block
@@ -1997,7 +2007,7 @@ void CUpDownClient::UDPReaskForDownload()
 				response->opcode = OP_MULTI_FILE_REASK;
 				theStats.AddUpDataOverheadFileRequest(response->size);
 				theApp.downloadqueue->AddUDPFileReasks();
-				theApp.clientudp->SendPacket(response,GetIP(),GetUDPPort());
+				theApp.clientudp->SendPacket(response,GetIP(),GetUDPPort(), ShouldReceiveCryptUDPPackets(), GetUserHash());
 			}
 			else
 			{
@@ -2013,7 +2023,7 @@ void CUpDownClient::UDPReaskForDownload()
 					m_nTotalUDPPackets++;
 				}
 				m_bUDPPending = true;
-				theApp.clientudp->SendPacket(response,GetIP(),GetUDPPort());
+				theApp.clientudp->SendPacket(response,GetIP(),GetUDPPort(), ShouldReceiveCryptUDPPackets(), GetUserHash());
 				//Xman make more per UDP at  clients with new UDP protocol, but let them the possibility to passive find you
 				if(GetUDPVersion()>3 && m_OtherNoNeeded_list.IsEmpty() && m_OtherRequests_list.IsEmpty() && (GetNextTCPAskedTime()  < MIN2MS(45) + ::GetTickCount())
 					&& (m_bCompleteSource || GetUploadState()==US_ONUPLOADQUEUE))
@@ -2045,7 +2055,7 @@ void CUpDownClient::UDPReaskForDownload()
 				m_nTotalUDPPackets++;
 			}
 			m_bUDPPending = true;
-			theApp.clientudp->SendPacket(response, GetBuddyIP(), GetBuddyPort() );
+			theApp.clientudp->SendPacket(response, GetBuddyIP(), GetBuddyPort(), false, NULL);  // kad doesnt supports obfuscation yet
 			//Xman make more per UDP at  clients with new UDP protocol, but let them the possibility to passive find you
 			if(GetUDPVersion()>3 && m_OtherNoNeeded_list.IsEmpty() && m_OtherRequests_list.IsEmpty() && (GetNextTCPAskedTime()  < MIN2MS(45) + ::GetTickCount())
 				&& (m_bCompleteSource || GetUploadState()==US_ONUPLOADQUEUE))

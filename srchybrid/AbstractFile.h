@@ -83,13 +83,15 @@ public:
 	CTag* GetTag(LPCSTR tagname) const;
 	const CArray<CTag*, CTag*>& GetTags() const { return taglist; }
 	void AddTagUnique(CTag* pTag);
+	void DeleteTag(uint8 tagname);
+	void DeleteTag(CTag* pTag);
 	void ClearTags();
 	void CopyTags(const CArray<CTag*, CTag*>& tags);
 	virtual bool IsPartFile() const { return false; }
 
 	bool	HasComment() const { return m_bHasComment; }
 	void	SetHasComment(bool in) { m_bHasComment = in; }
-	UINT	UserRating() const { return m_uUserRating; }
+	UINT	UserRating(bool bKadSearchIndicator = false) const { return (bKadSearchIndicator && m_bKadCommentSearchRunning)  ? 6 : m_uUserRating; }
 	bool	HasRating()	const { return m_uUserRating > 0; }
 	//Xman Code Improvement by Avi-3k
 	//bool	HasBadRating()	const { return ( HasRating() && (m_uUserRating < 2)); }
@@ -99,10 +101,13 @@ public:
 	const CString& GetFileComment() /*const*/;
 	UINT	GetFileRating() /*const*/;
 	void	LoadComment();
-	virtual void	UpdateFileRatingCommentAvail() = 0;
+	virtual void	UpdateFileRatingCommentAvail(bool bForceUpdate = false) = 0;
 
 	bool AddNote(Kademlia::CEntry* pEntry);
 	const CKadEntryPtrList& getNotes() const { return m_kadNotes; }
+
+	bool			IsKadCommentSearchRunning() const						{ return m_bKadCommentSearchRunning; }
+	void			SetKadCommentSearchRunning(bool bVal);
 
 	//Xman Code Improvement for choosing to use compression
 	bool IsCompressible() const {return compressible;}
@@ -125,6 +130,7 @@ protected:
 	bool	m_bCommentLoaded;
 	UINT	m_uUserRating;
 	bool	m_bHasComment;
+	bool	m_bKadCommentSearchRunning;
 	CString m_strFileType;
 	CArray<CTag*, CTag*> taglist;
 	CKadEntryPtrList m_kadNotes;

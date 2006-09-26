@@ -45,6 +45,8 @@
 #include "StringConversion.h"
 #include "UserMsgs.h"
 #include "Log.h"
+#include "MenuCmds.h"
+#include "DropDownButton.h"
 #include "KnownFileList.h" //Xman [MoNKi: -Check already downloaded files-]
 #include "TransferWnd.h" // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
@@ -76,6 +78,10 @@ enum ESearchResultImage
 	sriKad
 };
 
+#define	SEARCH_LIST_MENU_BUTTON_XOFF	8
+#define	SEARCH_LIST_MENU_BUTTON_WIDTH	170
+#define	SEARCH_LIST_MENU_BUTTON_HEIGHT	22	// don't set the height do something different than 22 unless you know exactly what you are doing!
+
 // CSearchResultsWnd dialog
 
 IMPLEMENT_DYNCREATE(CSearchResultsWnd, CResizableFormView)
@@ -96,6 +102,8 @@ BEGIN_MESSAGE_MAP(CSearchResultsWnd, CResizableFormView)
 	ON_MESSAGE(WM_IDLEUPDATECMDUI, OnIdleUpdateCmdUI)
 	ON_BN_CLICKED(IDC_OPEN_PARAMS_WND, OnBnClickedOpenParamsWnd)
 	ON_WM_SYSCOMMAND()
+	ON_MESSAGE(UM_DELAYED_EVALUATE, OnChangeFilter)
+	ON_NOTIFY(TBN_DROPDOWN, IDC_SEARCHLST_ICO, OnSearchListMenuBtnDropDown)
 	ON_NOTIFY(NM_CLICK, IDC_CATTAB2, OnNMClickCattab2) // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 END_MESSAGE_MAP()
 
@@ -109,18 +117,18 @@ CSearchResultsWnd::CSearchResultsWnd(CWnd* /*pParent*/)
 	canceld = false;
 	servercount = 0;
 	globsearch = false;
-	icon_search = NULL;
 	m_uTimerLocalServer = 0;
 	m_iSentMoreReq = 0;
 	searchselect.m_bCloseable = true;
+	m_btnSearchListMenu = new CDropDownButton;
+	m_nFilterColumn = 0;
 }
 
 CSearchResultsWnd::~CSearchResultsWnd()
 {
+	delete m_btnSearchListMenu;
 	if (globsearch)
 		delete searchpacket;
-	if (icon_search)
-		VERIFY( DestroyIcon(icon_search) );
 	if (m_uTimerLocalServer)
 		VERIFY( KillTimer(m_uTimerLocalServer) );
 }
@@ -133,22 +141,39 @@ void CSearchResultsWnd::OnInitialUpdate()
 	searchlistctrl.Init(theApp.searchlist);
 	searchlistctrl.SetName(_T("SearchListCtrl"));
 
+	CRect rc;
+	rc.top = 2;
+	rc.left = SEARCH_LIST_MENU_BUTTON_XOFF;
+	rc.right = rc.left + SEARCH_LIST_MENU_BUTTON_WIDTH;
+	rc.bottom = rc.top + SEARCH_LIST_MENU_BUTTON_HEIGHT;
+	m_btnSearchListMenu->Init(true, true);
+	m_btnSearchListMenu->MoveWindow(&rc);
+	m_btnSearchListMenu->AddBtnStyle(IDC_SEARCHLST_ICO, TBSTYLE_AUTOSIZE);
+	m_btnSearchListMenu->ModifyStyle(TBSTYLE_TOOLTIPS, 0);
+	m_btnSearchListMenu->SetExtendedStyle(m_btnSearchListMenu->GetExtendedStyle() & ~TBSTYLE_EX_MIXEDBUTTONS);
+	m_btnSearchListMenu->RecalcLayout(true);
+
+	//Xman proper EditDelayed
+	//m_ctlFilter.OnInit(searchlistctrl.GetHeaderCtrl());
+	m_ctlFilter.OnInit(&searchlistctrl);
+	//Xman end
+
 	SetAllIcons();
 	Localize();
 	searchprogress.SetStep(1);
 	global_search_timer = 0;
 	globsearch = false;
 
-	AddAnchor(IDC_SEARCHLST_ICO, TOP_LEFT);
-	AddAnchor(IDC_RESULTS_LBL, TOP_LEFT);
-	AddAnchor(IDC_SDOWNLOAD,BOTTOM_LEFT);
-	AddAnchor(IDC_SEARCHLIST,TOP_LEFT,BOTTOM_RIGHT);
-	AddAnchor(IDC_PROGRESS1,BOTTOM_LEFT,BOTTOM_RIGHT);
-	AddAnchor(IDC_CLEARALL, TOP_RIGHT);
+	AddAnchor(*m_btnSearchListMenu, TOP_LEFT);
+	AddAnchor(IDC_FILTER, TOP_RIGHT);
+	AddAnchor(IDC_SDOWNLOAD, BOTTOM_LEFT);
+	AddAnchor(IDC_SEARCHLIST, TOP_LEFT, BOTTOM_RIGHT);
+	AddAnchor(IDC_PROGRESS1, BOTTOM_LEFT, BOTTOM_RIGHT);
+	AddAnchor(IDC_CLEARALL, BOTTOM_RIGHT);
 	AddAnchor(IDC_OPEN_PARAMS_WND, TOP_RIGHT);
-	AddAnchor(searchselect.m_hWnd,TOP_LEFT,TOP_RIGHT);
-	AddAnchor(IDC_STATIC_DLTOof,BOTTOM_LEFT);
-	AddAnchor(IDC_CATTAB2,BOTTOM_LEFT,BOTTOM_RIGHT);
+	AddAnchor(searchselect.m_hWnd, TOP_LEFT, TOP_RIGHT);
+	AddAnchor(IDC_STATIC_DLTOof, BOTTOM_LEFT);
+	AddAnchor(IDC_CATTAB2, BOTTOM_LEFT, BOTTOM_RIGHT);
 
 	ShowSearchSelector(false);
 
@@ -165,6 +190,9 @@ void CSearchResultsWnd::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_PROGRESS1, searchprogress);
 	DDX_Control(pDX, IDC_TAB1, searchselect);
 	DDX_Control(pDX, IDC_CATTAB2, m_cattabs);
+	DDX_Control(pDX, IDC_FILTER, m_ctlFilter);
+	DDX_Control(pDX, IDC_OPEN_PARAMS_WND, m_ctlOpenParamsWnd);
+	DDX_Control(pDX, IDC_SEARCHLST_ICO, *m_btnSearchListMenu);
 }
 
 void CSearchResultsWnd::StartSearch(SSearchParams* pParams)
@@ -623,10 +651,7 @@ void CSearchResultsWnd::OnSysColorChange()
 
 void CSearchResultsWnd::SetAllIcons()
 {
-	if (icon_search)
-		VERIFY( DestroyIcon(icon_search) );
-	icon_search = theApp.LoadIcon(_T("SearchResults"), 16, 16);
-	((CStatic*)GetDlgItem(IDC_SEARCHLST_ICO))->SetIcon(icon_search);
+	m_btnSearchListMenu->SetIcon(_T("SearchResults"));
 
 	CImageList iml;
 	iml.Create(16,16,theApp.m_iDfltImageListColorFlags|ILC_MASK,0,1);
@@ -650,9 +675,9 @@ void CSearchResultsWnd::Localize()
 	UpdateCatTabs();
 
     GetDlgItem(IDC_CLEARALL)->SetWindowText(GetResString(IDS_REMOVEALLSEARCH));
-    GetDlgItem(IDC_RESULTS_LBL)->SetWindowText(GetResString(IDS_SW_RESULT));
+	m_btnSearchListMenu->SetWindowText(GetResString(IDS_SW_RESULT));
     GetDlgItem(IDC_SDOWNLOAD)->SetWindowText(GetResString(IDS_SW_DOWNLOAD));
-	GetDlgItem(IDC_OPEN_PARAMS_WND)->SetWindowText(GetResString(IDS_SEARCHPARAMS)+_T("..."));
+	m_ctlOpenParamsWnd.SetWindowText(GetResString(IDS_SEARCHPARAMS)+_T("..."));
 }
 
 void CSearchResultsWnd::OnBnClickedClearAll()
@@ -1177,17 +1202,17 @@ bool CSearchResultsWnd::StartNewSearch(SSearchParams* pParams)
 
 	if (eSearchType == SearchTypeEd2kServer || eSearchType == SearchTypeEd2kGlobal)
 	{
-		if (!theApp.serverconnect->IsConnected())
-		{
+		if (!theApp.serverconnect->IsConnected()) {
 			AfxMessageBox(GetResString(IDS_ERR_NOTCONNECTED), MB_ICONWARNING);
 			delete pParams;
+			//if (!theApp.serverconnect->IsConnecting() && !theApp.serverconnect->IsConnected())
+			//	theApp.serverconnect->ConnectToAnyServer();
 			return false;
 		}
 
 		try
 		{
-			if (!DoNewEd2kSearch(pParams))
-			{
+			if (!DoNewEd2kSearch(pParams)) {
 				delete pParams;
 				return false;
 			}
@@ -1206,17 +1231,17 @@ bool CSearchResultsWnd::StartNewSearch(SSearchParams* pParams)
 
 	if (eSearchType == SearchTypeKademlia)
 	{
-		if (!Kademlia::CKademlia::IsRunning() || !Kademlia::CKademlia::IsConnected())
-		{
+		if (!Kademlia::CKademlia::IsRunning() || !Kademlia::CKademlia::IsConnected()) {
 			AfxMessageBox(GetResString(IDS_ERR_NOTCONNECTEDKAD), MB_ICONWARNING);
 			delete pParams;
+			//if (!Kademlia::CKademlia::IsRunning())
+			//	Kademlia::CKademlia::Start();
 			return false;
 		}
 
 		try
 		{
-			if (!DoNewKadSearch(pParams))
-			{
+			if (!DoNewKadSearch(pParams)) {
 				delete pParams;
 				return false;
 			}
@@ -1355,7 +1380,7 @@ bool CSearchResultsWnd::DoNewKadSearch(SSearchParams* pParams)
 	try
 	{
 		pSearch = Kademlia::CSearchManager::PrepareFindKeywords(pParams->bUnicode, pParams->strKeyword, uSearchTermsSize, pSearchTermsData);
-		delete[] pSearchTermsData; //Xman MemleakFix (Wizard)
+		delete[] pSearchTermsData;
 		if (!pSearch){
 			ASSERT(0);
 			return false;
@@ -1363,7 +1388,7 @@ bool CSearchResultsWnd::DoNewKadSearch(SSearchParams* pParams)
 	}
 	catch (CString strException)
 	{
-		delete[] pSearchTermsData; //Xman MemleakFix (Wizard)
+		delete[] pSearchTermsData;
 		throw new CMsgBoxException(strException, MB_ICONWARNING | MB_HELP, eMule_FAQ_Search - HID_BASE_PROMPT);
 	}
 	pParams->dwSearchID = pSearch->GetSearchID();
@@ -1392,8 +1417,8 @@ bool CSearchResultsWnd::CreateNewTab(SSearchParams* pParams)
 		pParams->strExpression = _T("-");
 	newitem.mask = TCIF_PARAM | TCIF_TEXT | TCIF_IMAGE;
 	newitem.lParam = (LPARAM)pParams;
-	CString label = (pParams->strSpecialTitle.IsEmpty() ? pParams->strExpression : pParams->strSpecialTitle)  + _T(" (0)");
-	newitem.pszText = const_cast<LPTSTR>((LPCTSTR)label);
+	pParams->strSearchTitle = (pParams->strSpecialTitle.IsEmpty() ? pParams->strExpression : pParams->strSpecialTitle);
+	newitem.pszText = const_cast<LPTSTR>((LPCTSTR)pParams->strSearchTitle);
 	newitem.cchTextMax = 0;
 	if (pParams->bClientSharedFiles)
 		newitem.iImage = sriClient;
@@ -1425,7 +1450,8 @@ void CSearchResultsWnd::DeleteSearch(uint32 nSearchID)
 	TCITEM item;
 	item.mask = TCIF_PARAM;
 	item.lParam = -1;
-	for (int i = 0; i < searchselect.GetItemCount(); i++) {
+	int i;
+	for (i = 0; i < searchselect.GetItemCount(); i++) {
 		if (searchselect.GetItem(i, &item) && item.lParam != -1 && item.lParam != NULL && ((const SSearchParams*)item.lParam)->dwSearchID == nSearchID)
 			break;
 	}
@@ -1613,6 +1639,8 @@ void CSearchResultsWnd::ShowSearchSelector(bool visible)
 	searchlistctrl.SetWindowPlacement(&wpSearchWinPos);
 	AddAnchor(searchlistctrl, TOP_LEFT, BOTTOM_RIGHT);
 	GetDlgItem(IDC_CLEARALL)->ShowWindow(visible ? SW_SHOW : SW_HIDE);
+	m_ctlFilter.ShowWindow(visible ? SW_SHOW : SW_HIDE);
+
 }
 
 void CSearchResultsWnd::OnDestroy()
@@ -1650,7 +1678,13 @@ BOOL CSearchResultsWnd::OnHelpInfo(HELPINFO* /*pHelpInfo*/)
 
 LRESULT CSearchResultsWnd::OnIdleUpdateCmdUI(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
-	GetDlgItem(IDC_OPEN_PARAMS_WND)->ShowWindow( theApp.emuledlg->searchwnd->IsSearchParamsWndVisible() ? SW_HIDE : SW_SHOW );
+	BOOL bSearchParamsWndVisible = theApp.emuledlg->searchwnd->IsSearchParamsWndVisible();
+	if (!bSearchParamsWndVisible) {
+		m_ctlOpenParamsWnd.ShowWindow(SW_SHOW);
+	}
+	else {
+		m_ctlOpenParamsWnd.ShowWindow(SW_HIDE);
+	}
 	return 0;
 }
 
@@ -1687,6 +1721,124 @@ void CSearchResultsWnd::SearchRelatedFiles(const CAbstractFile* file)
 	if (pParams->strSpecialTitle.GetLength() > 50)
 		pParams->strSpecialTitle = pParams->strSpecialTitle.Left(50) + _T("...");
 	StartSearch(pParams);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// CSearchResultsSelector
+
+BEGIN_MESSAGE_MAP(CSearchResultsSelector, CClosableTabCtrl)
+	ON_WM_CONTEXTMENU()
+END_MESSAGE_MAP()
+
+BOOL CSearchResultsSelector::OnCommand(WPARAM wParam, LPARAM lParam)
+{
+	switch (wParam)
+	{
+	case MP_RESTORESEARCHPARAMS:{
+		int iTab = GetTabUnderContextMenu();
+		if (iTab != -1) {
+			GetParent()->SendMessage(UM_DBLCLICKTAB, (WPARAM)iTab);
+			return TRUE;
+		}
+		break;
+	  }
+	}
+	return CClosableTabCtrl::OnCommand(wParam, lParam);
+}
+
+void CSearchResultsSelector::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
+{
+	CTitleMenu menu;
+	menu.CreatePopupMenu();
+	menu.AddMenuTitle(GetResString(IDS_SW_RESULT));
+	menu.AppendMenu(MF_STRING, MP_RESTORESEARCHPARAMS, GetResString(IDS_RESTORESEARCHPARAMS));
+	menu.AppendMenu(MF_STRING, MP_REMOVE, GetResString(IDS_FD_CLOSE));
+	menu.SetDefaultItem(MP_RESTORESEARCHPARAMS);
+	m_ptCtxMenu = point;
+	ScreenToClient(&m_ptCtxMenu);
+	menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
+}
+
+LRESULT CSearchResultsWnd::OnChangeFilter(WPARAM wParam, LPARAM lParam)
+{
+	CWaitCursor curWait; // this may take a while
+
+	m_nFilterColumn = (uint32)wParam;
+
+	CStringArray astrFilter;
+	CString strFullFilterExpr = (LPCTSTR)lParam;
+	int iPos = 0;
+	CString strFilter(strFullFilterExpr.Tokenize(_T(" "), iPos));
+	while (!strFilter.IsEmpty()) {
+		if (strFilter != _T("-"))
+			astrFilter.Add(strFilter);
+		strFilter = strFullFilterExpr.Tokenize(_T(" "), iPos);
+	}
+
+	bool bFilterDiff = (astrFilter.GetSize() != m_astrFilter.GetSize());
+	if (!bFilterDiff) {
+		for (int i = 0; i < astrFilter.GetSize(); i++) {
+			if (astrFilter[i] != m_astrFilter[i]) {
+				bFilterDiff = true;
+				break;
+			}
+		}
+	}
+
+	if (!bFilterDiff)
+		return 0;
+	m_astrFilter.RemoveAll();
+	m_astrFilter.Append(astrFilter);
+
+	int iCurSel = searchselect.GetCurSel();
+	if (iCurSel == -1)
+		return 0;
+	TCITEM item;
+	item.mask = TCIF_PARAM;
+	if (searchselect.GetItem(iCurSel, &item) && item.lParam != NULL)
+		ShowResults((const SSearchParams*)item.lParam);
+	return 0;
+}
+
+void CSearchResultsWnd::OnSearchListMenuBtnDropDown(NMHDR* /*pNMHDR*/, LRESULT* /*pResult*/)
+{
+	CTitleMenu menu;
+	menu.CreatePopupMenu();
+
+	menu.AppendMenu(MF_STRING | (searchselect.GetItemCount() > 0 ? MF_ENABLED : MF_GRAYED), MP_REMOVEALL, GetResString(IDS_REMOVEALLSEARCH));
+	menu.AppendMenu(MF_SEPARATOR);
+	CMenu menuFileSizeFormat;
+	menuFileSizeFormat.CreateMenu();
+	menuFileSizeFormat.AppendMenu(MF_STRING, MP_SHOW_FILESIZE_DFLT, GetResString(IDS_DEFAULT));
+	menuFileSizeFormat.AppendMenu(MF_STRING, MP_SHOW_FILESIZE_KBYTE, GetResString(IDS_KBYTES));
+	menuFileSizeFormat.AppendMenu(MF_STRING, MP_SHOW_FILESIZE_MBYTE, GetResString(IDS_MBYTES));
+	menuFileSizeFormat.CheckMenuRadioItem(MP_SHOW_FILESIZE_DFLT, MP_SHOW_FILESIZE_MBYTE, MP_SHOW_FILESIZE_DFLT + searchlistctrl.GetFileSizeFormat(), 0);
+	menu.AppendMenu(MF_POPUP, (UINT_PTR)menuFileSizeFormat.m_hMenu, GetResString(IDS_DL_SIZE));
+
+	CRect rc;
+	m_btnSearchListMenu->GetWindowRect(&rc);
+	menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, rc.left, rc.bottom, this);
+}
+
+BOOL CSearchResultsWnd::OnCommand(WPARAM wParam, LPARAM lParam)
+{
+	switch (wParam)
+	{
+	case MP_REMOVEALL:
+		DeleteAllSearches();
+		return TRUE;
+	case MP_SHOW_FILESIZE_DFLT:
+		searchlistctrl.SetFileSizeFormat(fsizeDefault);
+		return TRUE;
+	case MP_SHOW_FILESIZE_KBYTE:
+		searchlistctrl.SetFileSizeFormat(fsizeKByte);
+		return TRUE;
+	case MP_SHOW_FILESIZE_MBYTE:
+		searchlistctrl.SetFileSizeFormat(fsizeMByte);
+		return TRUE;
+	}
+	return CResizableFormView::OnCommand(wParam, lParam);
 }
 
 // ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle

@@ -200,6 +200,7 @@ void CUpDownClient::Init()
 	m_cMessagesSent = 0;
 	m_nCurSessionUp = 0;
 	m_nCurSessionDown = 0;
+	m_nCurSessionPayloadDown = 0;
 	m_clientSoft=SO_UNKNOWN;
 	m_bRemoteQueueFull = false;
 	md4clr(m_achUserHash);
@@ -230,7 +231,7 @@ void CUpDownClient::Init()
 	m_nClientVersion = 0;
 	m_lastRefreshedDLDisplay = 0;
 	m_dwDownStartTime = 0;
-	m_nLastBlockOffset = (uint64)-1; //Displayfix by Sirob
+	m_nLastBlockOffset = (uint64)-1;
 	m_bUnicodeSupport = false;
 	m_SecureIdentState = IS_UNAVAILABLE;
 	m_dwLastSignatureIP = 0;
@@ -278,6 +279,9 @@ void CUpDownClient::Init()
 	m_bCollectionUploadSlot = false;
 	m_fSupportsLargeFiles = 0;
 	m_fExtMultiPacket = 0;
+	m_fRequestsCryptLayer = 0;
+	m_fSupportsCryptLayer = 0;
+	m_fRequiresCryptLayer = 0;
 
 	//Xman -----------------
 	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
@@ -447,7 +451,7 @@ CUpDownClient::~CUpDownClient(){
 	// Maella -Unnecessary Protocol Overload-
 	m_partStatusMap.clear();
 	//Xman end
-	
+
 	//Xman Extened credit- table-arragement
 	if(Credits())
 	{
@@ -699,6 +703,9 @@ void CUpDownClient::ClearHelloProperties()
 	m_byKadVersion = 0;
 	m_fSupportsLargeFiles = 0;
 	m_fExtMultiPacket = 0;
+	m_fRequestsCryptLayer = 0;
+	m_fSupportsCryptLayer = 0;
+	m_fRequiresCryptLayer = 0;
 	m_strModVersion.Empty(); //Maella -Support for tag ET_MOD_VERSION 0x55
 }
 
@@ -944,17 +951,27 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 				break;
 
 			case CT_EMULE_MISCOPTIONS2:
-				//	26 Reserved
+				//	22 Reserved
+				//	 1 Requires CryptLayer
+				//	 1 Requests CryptLayer
+				//	 1 Supports CryptLayer
+				//	 1 Reserved (ModBit)
 				//   1 Ext Multipacket (Hash+Size instead of Hash)
 				//   1 Large Files (includes support for 64bit tags)
 				//   4 Kad Version
 				if (temptag.IsInt()) {
+					m_fRequiresCryptLayer	= (temptag.GetInt() >>  9) & 0x01;
+					m_fRequestsCryptLayer	= (temptag.GetInt() >>  8) & 0x01;
+					m_fSupportsCryptLayer	= (temptag.GetInt() >>  7) & 0x01;
+					// reserved 1
 					m_fExtMultiPacket		= (temptag.GetInt() >>  5) & 0x01;
 					m_fSupportsLargeFiles   = (temptag.GetInt() >>  4) & 0x01;
 					m_byKadVersion			= (uint8)((temptag.GetInt() >>  0) & 0x0f);
 					dwEmuleTags |= 8;
 					if (bDbgInfo)
-						m_strHelloInfo.AppendFormat(_T("\n  KadVersion=%u, m_fSupportsLargeFiles=%u m_fExtMultiPacket=%u"), m_byKadVersion, m_fSupportsLargeFiles, m_fExtMultiPacket);
+						m_strHelloInfo.AppendFormat(_T("\n  KadVersion=%u, LargeFiles=%u ExtMultiPacket=%u CryptLayerSupport=%u CryptLayerRequest=%u CryptLayerRequires=%u"), m_byKadVersion, m_fSupportsLargeFiles, m_fExtMultiPacket, m_fSupportsCryptLayer, m_fRequestsCryptLayer, m_fRequiresCryptLayer);
+					m_fRequestsCryptLayer &= m_fSupportsCryptLayer;
+					m_fRequiresCryptLayer &= m_fRequestsCryptLayer;
 				}
 				else if (bDbgInfo)
 					m_strHelloInfo.AppendFormat(_T("\n  ***UnkType=%s"), temptag.GetFullInfo());
@@ -1066,6 +1083,7 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 	if (thePrefs.GetAddServersFromClients() && m_dwServerIP && m_nServerPort){
 		CServer* addsrv = new CServer(m_nServerPort, ipstr(m_dwServerIP));
 		addsrv->SetListName(addsrv->GetAddress());
+		addsrv->SetPreference(SRV_PR_LOW);
 		if (!theApp.emuledlg->serverwnd->serverlistctrl.AddServer(addsrv, true))
 			delete addsrv;
 	}
@@ -1643,7 +1661,11 @@ void CUpDownClient::SendHelloAnswer(){
 	if (thePrefs.GetDebugClientTCPLevel() > 0)
 		DebugSend("OP__HelloAnswer", this);
 	theStats.AddUpDataOverheadOther(packet->size);
-	socket->SendPacket(packet,true);
+	
+	// Servers send a FIN right in the data packet on check connection, so we need to force the response immediate
+	bool bForceSend = theApp.serverconnect->AwaitingTestFromIP(GetConnectIP());
+	socket->SendPacket(packet, true, true, 0, bForceSend);
+	
 	m_byHelloPacketState |= HP_HELLOANSWER; //Xman Fix Connection Collision (Sirob)
 }
 
@@ -1737,7 +1759,7 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 	const UINT uUdpVer				= 4;
 	const UINT uDataCompVer			= 1;
 	const UINT uSupportSecIdent		= theApp.clientcredits->CryptoAvailable() ? 3 : 0;
-	const UINT uSourceExchangeVer	= 3;
+	const UINT uSourceExchangeVer	= 4;
 	const UINT uExtendedRequestsVer	= 2;
 	const UINT uAcceptCommentVer	= 1;
 	const UINT uNoViewSharedFiles	= (thePrefs.CanSeeShares() == vsfaNobody) ? 1 : 0; // for backward compatibility this has to be a 'negative' flag
@@ -1764,11 +1786,19 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 
 	// eMule Misc. Options #2
 	const UINT uKadVersion			= KADEMLIA_VERSION;
-	const UINT uSupportLargeFiles	= (OLD_MAX_EMULE_FILE_SIZE < MAX_EMULE_FILE_SIZE) ? 1 : 0;
+	const UINT uSupportLargeFiles	= 1;
 	const UINT uExtMultiPacket		= 1;
+	const UINT uReserved			= 0; // mod bit
+	const UINT uSupportsCryptLayer	= thePrefs.IsClientCryptLayerSupported() ? 1 : 0;
+	const UINT uRequestsCryptLayer	= thePrefs.IsClientCryptLayerRequested() ? 1 : 0;
+	const UINT uRequiresCryptLayer	= thePrefs.IsClientCryptLayerRequired() ? 1 : 0;
 
 	CTag tagMisOptions2(CT_EMULE_MISCOPTIONS2, 
 //		(RESERVED				     )
+		(uRequiresCryptLayer	<<  9) |
+		(uRequestsCryptLayer	<<  8) |
+		(uSupportsCryptLayer	<<  7) |
+		(uReserved				<<  6) |
 		(uExtMultiPacket		<<  5) |
 		(uSupportLargeFiles		<<  4) |
 		(uKadVersion			<<  0) 
@@ -1892,9 +1922,9 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket, UpStopReas
 
     if (GetUploadState() == US_UPLOADING || GetUploadState()==US_ERROR) //Xman Xtreme Mod
 	{
-		if (thePrefs.GetLogUlDlEvents() && GetUploadState()==US_UPLOADING && m_fSentOutOfPartReqs==0 && !theApp.uploadqueue->IsOnUploadQueue(this))
-			DebugLog(_T("Disconnected client removed from upload queue and waiting list: %s"), DbgGetClientInfo());
-		theApp.uploadqueue->RemoveFromUploadQueue(this, pszReason , reason); // Maella -Upload Stop Reason-
+		//if (thePrefs.GetLogUlDlEvents() && GetUploadState()==US_UPLOADING && m_fSentOutOfPartReqs==0 && !theApp.uploadqueue->IsOnUploadQueue(this))
+		//	DebugLog(_T("Disconnected client removed from upload queue and waiting list: %s"), DbgGetClientInfo());
+		theApp.uploadqueue->RemoveFromUploadQueue(this, CString(_T("CUpDownClient::Disconnected: ")) + pszReason , reason); // Maella -Upload Stop Reason-
 	}
 
 	// 28-Jun-2004 [bc]: re-applied this patch which was in 0.30b-0.30e. it does not seem to solve the bug but
@@ -2138,35 +2168,29 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket, UpStopReas
 //true means the client was not deleted!
 bool CUpDownClient::TryToConnect(bool bIgnoreMaxCon, CRuntimeClass* pClassSocket)
 {
+
+	// do not try to connect to source which are incompatible with our encryption setting (one requires it, and the other one doesn't supports it)
+	if ( (RequiresCryptLayer() && !thePrefs.IsClientCryptLayerSupported()) || (thePrefs.IsClientCryptLayerRequired() && !SupportsCryptLayer()) ){
+#if defined(_DEBUG) || defined(_BETA)
+		// TODO: Remove after testing
+		AddDebugLogLine(DLP_DEFAULT, false, _T("Rejected outgoing connection because CryptLayer-Setting (Obfuscation) was incompatible %s"), DbgGetClientInfo() );
+#endif
+		if(Disconnected(_T("CryptLayer-Settings (Obfuscation) incompatible"))){
+			delete this;
+			return false;
+		}
+		else
+			return true;
+	}
+
 	//Xman Fix Connection Collision (Sirob)
 	bool socketnotinitiated = (socket == NULL || socket->GetConState() == ES_DISCONNECTED);
 	if (socketnotinitiated) 
 	{
 	//Xman end Fix Connection Collision (Sirob)
 		if (theApp.listensocket->TooManySockets() && !bIgnoreMaxCon /*&& !(socket && socket->IsConnected())*/ ) //Xman Fix Connection Collision (Sirob)
-	{
-		if(Disconnected(_T("Too many connections")))
 		{
-			delete this;
-			return false;
-		}
-		return true;
-	}
-
-	uint32 uClientIP = GetIP();
-	if (uClientIP == 0 && !HasLowID())
-		uClientIP = ntohl(m_nUserIDHybrid);
-	if (uClientIP)
-	{
-		// although we filter all received IPs (server sources, source exchange) and all incomming connection attempts,
-		// we do have to filter outgoing connection attempts here too, because we may have updated the ip filter list
-		if (theApp.ipfilter->IsFiltered(uClientIP))
-		{
-			theStats.filteredclients++;
-			if (thePrefs.GetLogFilteredIPs())
-				AddDebugLogLine(true, GetResString(IDS_IPFILTERED), ipstr(uClientIP), theApp.ipfilter->GetLastHit());
-			m_cFailed=5; //force deletion //Xman 
-			if (Disconnected(_T("IPFilter")))
+			if(Disconnected(_T("Too many connections")))
 			{
 				delete this;
 				return false;
@@ -2174,201 +2198,222 @@ bool CUpDownClient::TryToConnect(bool bIgnoreMaxCon, CRuntimeClass* pClassSocket
 			return true;
 		}
 
-		// for safety: check again whether that IP is banned
-		if (theApp.clientlist->IsBannedClient(uClientIP))
+		uint32 uClientIP = GetIP();
+		if (uClientIP == 0 && !HasLowID())
+			uClientIP = ntohl(m_nUserIDHybrid);
+		if (uClientIP)
 		{
-			if (thePrefs.GetLogBannedClients())
-				AddDebugLogLine(false, _T("Refused to connect to banned client %s"), DbgGetClientInfo());
-			m_cFailed=5; //force deletion //Xman 
-			if (Disconnected(_T("Banned IP")))
+			// although we filter all received IPs (server sources, source exchange) and all incomming connection attempts,
+			// we do have to filter outgoing connection attempts here too, because we may have updated the ip filter list
+			if (theApp.ipfilter->IsFiltered(uClientIP))
 			{
-				delete this;
-				return false;
-			}
-			return true;
-		}
-	}
-
-	if( GetKadState() == KS_QUEUED_FWCHECK )
-		SetKadState(KS_CONNECTING_FWCHECK);
-
-	if ( HasLowID() )
-	{
-		if(!theApp.DoCallback(this))
-		{
-			//We cannot do a callback!
-			if (GetDownloadState() == DS_CONNECTING)
-				SetDownloadState(DS_LOWTOLOWIP);
-			else if (GetDownloadState() == DS_REQHASHSET)
-			{
-				SetDownloadState(DS_ONQUEUE);
-				reqfile->hashsetneeded = true;
-			}
-			if (GetUploadState() == US_CONNECTING)
-			{
-				if(Disconnected(_T("LowID->LowID and US_CONNECTING")))
+				theStats.filteredclients++;
+				if (thePrefs.GetLogFilteredIPs())
+					AddDebugLogLine(true, GetResString(IDS_IPFILTERED), ipstr(uClientIP), theApp.ipfilter->GetLastHit());
+				m_cFailed=5; //force deletion //Xman 
+				if (Disconnected(_T("IPFilter")))
 				{
 					delete this;
 					return false;
 				}
+				return true;
 			}
-			return true;
-		}
 
-		//We already know we are not firewalled here as the above condition already detected LowID->LowID and returned.
-		//If ANYTHING changes with the "if(!theApp.DoCallback(this))" above that will let you fall through 
-		//with the condition that the source is firewalled and we are firewalled, we must
-		//recheck it before the this check..
-		if( HasValidBuddyID() && !GetBuddyIP() && !GetBuddyPort() && !theApp.serverconnect->IsLocalServer(GetServerIP(), GetServerPort()))
-		{
-			//This is a Kad firewalled source that we want to do a special callback because it has no buddyIP or buddyPort.
-			if( Kademlia::CKademlia::IsConnected() )
+			// for safety: check again whether that IP is banned
+			if (theApp.clientlist->IsBannedClient(uClientIP))
 			{
-				//We are connect to Kad
-				if( Kademlia::CKademlia::GetPrefs()->GetTotalSource() > 0 || Kademlia::CSearchManager::AlreadySearchingFor(Kademlia::CUInt128(GetBuddyID())))
+				if (thePrefs.GetLogBannedClients())
+					AddDebugLogLine(false, _T("Refused to connect to banned client %s"), DbgGetClientInfo());
+				m_cFailed=5; //force deletion //Xman 
+				if (Disconnected(_T("Banned IP")))
 				{
-					//There are too many source lookups already or we are already searching this key.
-					SetDownloadState(DS_TOOMANYCONNSKAD);
-					return true;
+					delete this;
+					return false;
 				}
+				return true;
 			}
 		}
-	}
 
-		//Xman Fix Connection Collision (Sirob)
-		//Useless with socketnotinitiated
-		/*
-	if (!socket || !socket->IsConnected())
-	{
-		*/
-		//Xman end
-		if (socket)
-			socket->Safe_Delete();
-		if (pClassSocket == NULL)
-			pClassSocket = RUNTIME_CLASS(CClientReqSocket);
-		socket = static_cast<CClientReqSocket*>(pClassSocket->CreateObject());
-		socket->SetClient(this);
-		if (!socket->Create())
-		{
-			socket->Safe_Delete();
-			return true;
-		}
-		//Xman Fix Connection Collision (Sirob)
-		//Useless with socketnotinitiated
-		/*
-	}
-	else
-	{
-		ConnectionEstablished();
-		return true;
-	}
-		*/
-		//Xman end
-	// MOD Note: Do not change this part - Merkur
-	if (HasLowID())
-	{
-		if (GetDownloadState() == DS_CONNECTING)
-			SetDownloadState(DS_WAITCALLBACK);
-		if (GetUploadState() == US_CONNECTING)
-		{
-			if(Disconnected(_T("LowID and US_CONNECTING")))
-			{
-				delete this;
-				return false;
-			}
-			return true;
-		}
+		if( GetKadState() == KS_QUEUED_FWCHECK )
+			SetKadState(KS_CONNECTING_FWCHECK);
 
-		if (theApp.serverconnect->IsLocalServer(m_dwServerIP,m_nServerPort))
+		if ( HasLowID() )
 		{
-			Packet* packet = new Packet(OP_CALLBACKREQUEST,4);
-			PokeUInt32(packet->pBuffer, m_nUserIDHybrid);
-			if (thePrefs.GetDebugServerTCPLevel() > 0 || thePrefs.GetDebugClientTCPLevel() > 0)
-				DebugSend("OP__CallbackRequest", this);
-			theStats.AddUpDataOverheadServer(packet->size);
-			theApp.serverconnect->SendPacket(packet);
-			SetDownloadState(DS_WAITCALLBACK);
-		}
-		else
-		{
-			if ( GetUploadState() == US_NONE && (!GetRemoteQueueRank() || m_bReaskPending) )
+			if(!theApp.DoCallback(this))
 			{
-				if( !HasValidBuddyID() )
+				//We cannot do a callback!
+				if (GetDownloadState() == DS_CONNECTING)
+					SetDownloadState(DS_LOWTOLOWIP);
+				else if (GetDownloadState() == DS_REQHASHSET)
 				{
-					theApp.downloadqueue->RemoveSource(this);
-					if(Disconnected(_T("LowID and US_NONE and QR=0")))
+					SetDownloadState(DS_ONQUEUE);
+					reqfile->hashsetneeded = true;
+				}
+				if (GetUploadState() == US_CONNECTING)
+				{
+					if(Disconnected(_T("LowID->LowID and US_CONNECTING")))
 					{
 						delete this;
 						return false;
 					}
-					return true;
 				}
-				
-				if( !Kademlia::CKademlia::IsConnected() )
+				return true;
+			}
+
+			//We already know we are not firewalled here as the above condition already detected LowID->LowID and returned.
+			//If ANYTHING changes with the "if(!theApp.DoCallback(this))" above that will let you fall through 
+			//with the condition that the source is firewalled and we are firewalled, we must
+			//recheck it before the this check..
+			if( HasValidBuddyID() && !GetBuddyIP() && !GetBuddyPort() && !theApp.serverconnect->IsLocalServer(GetServerIP(), GetServerPort()))
+			{
+				//This is a Kad firewalled source that we want to do a special callback because it has no buddyIP or buddyPort.
+				if( Kademlia::CKademlia::IsConnected() )
 				{
-					//We are not connected to Kad and this is a Kad Firewalled source..
-					theApp.downloadqueue->RemoveSource(this);
+					//We are connect to Kad
+					if( Kademlia::CKademlia::GetPrefs()->GetTotalSource() > 0 || Kademlia::CSearchManager::AlreadySearchingFor(Kademlia::CUInt128(GetBuddyID())))
 					{
-						if(Disconnected(_T("Kad Firewalled source but not connected to Kad.")))
+						//There are too many source lookups already or we are already searching this key.
+						SetDownloadState(DS_TOOMANYCONNSKAD);
+						return true;
+					}
+				}
+			}
+		}
+
+		//Xman Fix Connection Collision (Sirob)
+		//Useless with socketnotinitiated
+		/*
+		if (!socket || !socket->IsConnected())
+		{
+		*/
+		//Xman end
+			if (socket)
+				socket->Safe_Delete();
+			if (pClassSocket == NULL)
+				pClassSocket = RUNTIME_CLASS(CClientReqSocket);
+			socket = static_cast<CClientReqSocket*>(pClassSocket->CreateObject());
+			socket->SetClient(this);
+			if (!socket->Create())
+			{
+				socket->Safe_Delete();
+				return true;
+			}
+		//Xman Fix Connection Collision (Sirob)
+		//Useless with socketnotinitiated
+		/*
+		}
+		else
+		{
+			ConnectionEstablished();
+			return true;
+		}
+		*/
+		//Xman end
+		// MOD Note: Do not change this part - Merkur
+		if (HasLowID())
+		{
+			if (GetDownloadState() == DS_CONNECTING)
+				SetDownloadState(DS_WAITCALLBACK);
+			if (GetUploadState() == US_CONNECTING)
+			{
+				if(Disconnected(_T("LowID and US_CONNECTING")))
+				{
+					delete this;
+					return false;
+				}
+				return true;
+			}
+
+			if (theApp.serverconnect->IsLocalServer(m_dwServerIP,m_nServerPort))
+			{
+				Packet* packet = new Packet(OP_CALLBACKREQUEST,4);
+				PokeUInt32(packet->pBuffer, m_nUserIDHybrid);
+				if (thePrefs.GetDebugServerTCPLevel() > 0 || thePrefs.GetDebugClientTCPLevel() > 0)
+					DebugSend("OP__CallbackRequest", this);
+				theStats.AddUpDataOverheadServer(packet->size);
+				theApp.serverconnect->SendPacket(packet);
+				SetDownloadState(DS_WAITCALLBACK);
+			}
+			else
+			{
+				if ( GetUploadState() == US_NONE && (!GetRemoteQueueRank() || m_bReaskPending) )
+				{
+					if( !HasValidBuddyID() )
+					{
+						theApp.downloadqueue->RemoveSource(this);
+						if(Disconnected(_T("LowID and US_NONE and QR=0")))
 						{
 							delete this;
 							return false;
 						}
 						return true;
 					}
-				}
-                if( GetDownloadState() == DS_WAITCALLBACK )
-				{
-					if( GetBuddyIP() && GetBuddyPort())
+					
+					if( !Kademlia::CKademlia::IsConnected() )
 					{
-						CSafeMemFile bio(34);
-						bio.WriteUInt128(&Kademlia::CUInt128(GetBuddyID()));
-						bio.WriteUInt128(&Kademlia::CUInt128(reqfile->GetFileHash()));
-						bio.WriteUInt16(thePrefs.GetPort());
-						if (thePrefs.GetDebugClientKadUDPLevel() > 0 || thePrefs.GetDebugClientUDPLevel() > 0)
-							DebugSend("KadCallbackReq", this);
-						Packet* packet = new Packet(&bio, OP_KADEMLIAHEADER);
-						packet->opcode = KADEMLIA_CALLBACK_REQ;
-						theStats.AddUpDataOverheadKad(packet->size);
-						theApp.clientudp->SendPacket(packet, GetBuddyIP(), GetBuddyPort());
-						SetDownloadState(DS_WAITCALLBACKKAD);
-					}
-					else
-					{
-						//Create search to find buddy.
-						Kademlia::CSearch *findSource = new Kademlia::CSearch;
-						findSource->SetSearchTypes(Kademlia::CSearch::FINDSOURCE);
-						findSource->SetTargetID(Kademlia::CUInt128(GetBuddyID()));
-						findSource->AddFileID(Kademlia::CUInt128(reqfile->GetFileHash()));
-						if(Kademlia::CSearchManager::StartSearch(findSource))
+						//We are not connected to Kad and this is a Kad Firewalled source..
+						theApp.downloadqueue->RemoveSource(this);
 						{
-							//Started lookup..
+							if(Disconnected(_T("Kad Firewalled source but not connected to Kad.")))
+							{
+								delete this;
+								return false;
+							}
+							return true;
+						}
+					}
+					if( GetDownloadState() == DS_WAITCALLBACK )
+					{
+						if( GetBuddyIP() && GetBuddyPort())
+						{
+							CSafeMemFile bio(34);
+							bio.WriteUInt128(&Kademlia::CUInt128(GetBuddyID()));
+							bio.WriteUInt128(&Kademlia::CUInt128(reqfile->GetFileHash()));
+							bio.WriteUInt16(thePrefs.GetPort());
+							if (thePrefs.GetDebugClientKadUDPLevel() > 0 || thePrefs.GetDebugClientUDPLevel() > 0)
+								DebugSend("KadCallbackReq", this);
+							Packet* packet = new Packet(&bio, OP_KADEMLIAHEADER);
+							packet->opcode = KADEMLIA_CALLBACK_REQ;
+							theStats.AddUpDataOverheadKad(packet->size);
+							theApp.clientudp->SendPacket(packet, GetBuddyIP(), GetBuddyPort(), false, NULL);  // kad doesnt supports obfuscation yet
 							SetDownloadState(DS_WAITCALLBACKKAD);
 						}
 						else
 						{
-							//This should never happen..
-							ASSERT(0);
+							//Create search to find buddy.
+							Kademlia::CSearch *findSource = new Kademlia::CSearch;
+							findSource->SetSearchTypes(Kademlia::CSearch::FINDSOURCE);
+							findSource->SetTargetID(Kademlia::CUInt128(GetBuddyID()));
+							findSource->AddFileID(Kademlia::CUInt128(reqfile->GetFileHash()));
+							if(Kademlia::CSearchManager::StartSearch(findSource))
+							{
+								//Started lookup..
+								SetDownloadState(DS_WAITCALLBACKKAD);
+							}
+							else
+							{
+								//This should never happen..
+								ASSERT(0);
+							}
 						}
 					}
 				}
-			}
-			else
-			{
-				if (GetDownloadState() == DS_WAITCALLBACK)
+				else
 				{
-					m_bReaskPending = true;
-					SetDownloadState(DS_ONQUEUE);
+					if (GetDownloadState() == DS_WAITCALLBACK)
+					{
+						m_bReaskPending = true;
+						SetDownloadState(DS_ONQUEUE);
+					}
 				}
 			}
 		}
-	}
-	// MOD Note - end
-	else
-	{
-		if (!Connect())
-			return false; // client was deleted!
-	}
+		// MOD Note - end
+		else
+		{
+			if (!Connect())
+				return false; // client was deleted!
+		}
 	//Xman Fix Connection Collision (Sirob)
 	}
 	else if(IsBanned()) //call this only with my fix inside!
@@ -2401,6 +2446,14 @@ bool CUpDownClient::TryToConnect(bool bIgnoreMaxCon, CRuntimeClass* pClassSocket
 
 bool CUpDownClient::Connect()
 {
+	// enable or disable crypting based on our and the remote clients preference
+	if (HasValidHash() && SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested())){
+		//DebugLog(_T("Enabling CryptLayer on outgoing connection to client %s"), DbgGetClientInfo()); // to be removed later
+		socket->SetConnectionEncryption(true, GetUserHash(), false);
+	}
+	else
+		socket->SetConnectionEncryption(false, NULL, false);
+
 	//Try to always tell the socket to WaitForOnConnect before you call Connect.
 	socket->WaitForOnConnect();
 	SOCKADDR_IN sockAddr = {0};
@@ -2442,7 +2495,7 @@ void CUpDownClient::ConnectionEstablished()
 			theApp.m_bneedpublicIP=true;
 		if(theApp.IsConnected()) //only free the upload if we are connected. important! otherwise we would have problems with nafc-adapter on a hotstart
 		{
-	theApp.uploadqueue->internetmaybedown=false;
+			theApp.uploadqueue->internetmaybedown=false;
 			theApp.pBandWidthControl->AddeMuleOut(1); //this reopens the upload (internetmaybedown checks for upload==0
 		}
 	}
@@ -2457,13 +2510,13 @@ void CUpDownClient::ConnectionEstablished()
 		AddDebugLogLine(false, _T("inet maybe down ask client for ip: %s"), DbgGetClientInfo()); 
 	}
 
-	//Xman end
-
 	// ok we have a connection, lets see if we want anything from this client
 	
 	// check if we should use this client to retrieve our public IP
 	if (theApp.GetPublicIP() == 0 && theApp.serverconnect->IsConnected() && m_fPeerCache)
 		SendPublicIPRequest();
+
+	//Xman end
 
 	switch(GetKadState())
 	{
@@ -3273,6 +3326,7 @@ void CUpDownClient::AssertValid() const
 	(void)m_abyPartStatus;
 	(void)m_strClientFilename;
 	(void)m_nTransferredDown;
+	(void)m_nCurSessionPayloadDown;
 	(void)m_dwDownStartTime;
 	(void)m_nLastBlockOffset;
 	(void)m_nDownDatarate;
@@ -3585,13 +3639,13 @@ CString CUpDownClient::GetUploadStateDisplayString() const
 			break;
 		case US_UPLOADING:
             //Xman Xtreme Upload
-			//if(GetSlotNumber() <= theApp.uploadqueue->GetActiveUploadsCount()) {
+			if(GetPayloadInBuffer() == 0 && GetNumberOfRequestedBlocksInQueue() == 0 && thePrefs.IsExtControlsEnabled()) 
+				strState = GetResString(IDS_US_STALLEDW4BR);
+			else  if(GetPayloadInBuffer() == 0 && thePrefs.IsExtControlsEnabled()) 
+				strState = GetResString(IDS_US_STALLEDREADINGFDISK);
+			else
 				strState = GetResString(IDS_TRANSFERRING);
-            //} else {
-            //    strState = GetResString(IDS_TRICKLING);
-            //}
-            //CString strStateTemp = strState;
-            //strState.Format(_T("%i: %s"), GetSlotNumber(), strStateTemp);
+			//Xman end
 			break;
 	}
 
@@ -3694,8 +3748,8 @@ void CUpDownClient::ProcessPublicIPAnswer(const BYTE* pbyData, UINT uSize){
 
 		}
 		else if(theApp.serverconnect->IsConnected())//remark: this is the case we have a lowid-server-connect
-		if (theApp.GetPublicIP() == 0 && !::IsLowID(dwIP) )
-			theApp.SetPublicIP(dwIP); 
+			if (theApp.GetPublicIP() == 0 && !::IsLowID(dwIP) )
+				theApp.SetPublicIP(dwIP); 
 		//Xman end
 	}	
 }
@@ -3739,6 +3793,19 @@ void CUpDownClient::SetSpammer(bool bVal){
 void  CUpDownClient::SetMessageFiltered(bool bVal)	{
 	m_fMessageFiltered = bVal ? 1 : 0;
 }
+
+bool  CUpDownClient::IsObfuscatedConnectionEstablished() const {
+	if (socket != NULL && socket->IsConnected())
+		return socket->IsObfusicating();
+	else
+		return false;
+}
+
+bool CUpDownClient::ShouldReceiveCryptUDPPackets() const {
+	return (thePrefs.IsClientCryptLayerSupported() && SupportsCryptLayer() && theApp.GetPublicIP() != 0
+		&& HasValidHash() && (thePrefs.IsClientCryptLayerRequested() || RequestsCryptLayer()) );
+}
+
 
 //EastShare Start - added by AndCycle, IP to Country
 // Superlexx - client's location
@@ -3912,8 +3979,7 @@ void CUpDownClient::UpdateFunnyNick()
 {
 	if(m_pszUsername == NULL || 
 		!IsEd2kClient() || //MORPH - Changed by Stulle, no FunnyNick for http DL
-		_tcsnicmp(m_pszUsername, _T("http://"),7) != 0 &&
-		_tcsnicmp(m_pszUsername, _T("0."),2) != 0 &&
+		_tcsnicmp(m_pszUsername, _T("http://emule"),12) != 0 &&
 		_tcsicmp(m_pszUsername, _T("")) != 0)
 		return;
 
@@ -3921,157 +3987,157 @@ void CUpDownClient::UpdateFunnyNick()
 		return; //why generate a new one ? userhash can't change without getting banned
 
 	// preffix table
-const static LPCTSTR apszPreFix[] =
+	const static LPCTSTR apszPreFix[] =
 	{
-	_T("ATX-"),			//0
-	_T("Gameboy "),
-	_T("PS/2-"),
-	_T("USB-"),
-	_T("Angry "),
-	_T("Atrocious "),
-	_T("Attractive "),
-	_T("Bad "),
-	_T("Barbarious "),
-	_T("Beautiful "),
-	_T("Black "),		//10
-	_T("Blond "),
-	_T("Blue "),
-	_T("Bright "),
-	_T("Brown "),
-	_T("Cool "),
-	_T("Cruel "),
-	_T("Cubic "),
-	_T("Cute "),
-	_T("Dance "),
-	_T("Dark "),		//20
-	_T("Dinky "),
-	_T("Drunk "),
-	_T("Dumb "),
-	_T("E"),
-	_T("Electro "),
-	_T("Elite "),
-	_T("Fast "),
-	_T("Flying "),
-	_T("Fourios "),
-	_T("Frustraded "),	//30
-	_T("Funny "),
-	_T("Furious "),
-	_T("Giant "),
-	_T("Giga "),
-	_T("Green "),
-	_T("Handsome "),
-	_T("Hard "),
-	_T("Harsh "),
-	_T("Hiphop "),
-	_T("Holy "),		//40
-	_T("Horny "),
-	_T("Hot "),
-	_T("House "),
-	_T("I"),
-	_T("Lame "),
-	_T("Leaking "),
-	_T("Lone "),
-	_T("Lovely "),
-	_T("Lucky "),
-	_T("Micro "),		//50
-	_T("Mighty "),
-	_T("Mini "),
-	_T("Nice "),
-	_T("Orange "),
-	_T("Pretty "),
-	_T("Red "),
-	_T("Sexy "),
-	_T("Slow "),
-	_T("Smooth "),
-	_T("Stinky "),		//60
-	_T("Strong "),
-	_T("Super "),
-	_T("Unholy "),
-	_T("White "),
-	_T("Wild "),
-	_T("X"),
-	_T("XBox "),
-	_T("Yellow "),
-	_T("Kentucky Fried "),
-	_T("Mc"),			//70
-	_T("Alien "),
-	_T("Bavarian "),
-	_T("Crazy "),
-	_T("Death "),
-	_T("Drunken "),
-	_T("Fat "),
-	_T("Hazardous "),
-	_T("Holy "),
-	_T("Infested "),
-	_T("Insane "),		//80
-	_T("Mutated "),
-	_T("Nasty "),
-	_T("Purple "),
-	_T("Radioactive "),
-	_T("Ugly "),
-	_T("Green "),		//86
+		_T("ATX-"),			//0
+			_T("Gameboy "),
+			_T("PS/2-"),
+			_T("USB-"),
+			_T("Angry "),
+			_T("Atrocious "),
+			_T("Attractive "),
+			_T("Bad "),
+			_T("Barbarious "),
+			_T("Beautiful "),
+			_T("Black "),		//10
+			_T("Blond "),
+			_T("Blue "),
+			_T("Bright "),
+			_T("Brown "),
+			_T("Cool "),
+			_T("Cruel "),
+			_T("Cubic "),
+			_T("Cute "),
+			_T("Dance "),
+			_T("Dark "),		//20
+			_T("Dinky "),
+			_T("Drunk "),
+			_T("Dumb "),
+			_T("E"),
+			_T("Electro "),
+			_T("Elite "),
+			_T("Fast "),
+			_T("Flying "),
+			_T("Fourios "),
+			_T("Frustraded "),	//30
+			_T("Funny "),
+			_T("Furious "),
+			_T("Giant "),
+			_T("Giga "),
+			_T("Green "),
+			_T("Handsome "),
+			_T("Hard "),
+			_T("Harsh "),
+			_T("Hiphop "),
+			_T("Holy "),		//40
+			_T("Horny "),
+			_T("Hot "),
+			_T("House "),
+			_T("I"),
+			_T("Lame "),
+			_T("Leaking "),
+			_T("Lone "),
+			_T("Lovely "),
+			_T("Lucky "),
+			_T("Micro "),		//50
+			_T("Mighty "),
+			_T("Mini "),
+			_T("Nice "),
+			_T("Orange "),
+			_T("Pretty "),
+			_T("Red "),
+			_T("Sexy "),
+			_T("Slow "),
+			_T("Smooth "),
+			_T("Stinky "),		//60
+			_T("Strong "),
+			_T("Super "),
+			_T("Unholy "),
+			_T("White "),
+			_T("Wild "),
+			_T("X"),
+			_T("XBox "),
+			_T("Yellow "),
+			_T("Kentucky Fried "),
+			_T("Mc"),			//70
+			_T("Alien "),
+			_T("Bavarian "),
+			_T("Crazy "),
+			_T("Death "),
+			_T("Drunken "),
+			_T("Fat "),
+			_T("Hazardous "),
+			_T("Holy "),
+			_T("Infested "),
+			_T("Insane "),		//80
+			_T("Mutated "),
+			_T("Nasty "),
+			_T("Purple "),
+			_T("Radioactive "),
+			_T("Ugly "),
+			_T("Green "),		//86
 	};
 #define NB_PREFIX 87 
 #define MAX_PREFIXSIZE 15
 
-// suffix table
-const static LPCTSTR apszSuffix[] =
+	// suffix table
+	const static LPCTSTR apszSuffix[] =
 	{
-	_T("16"),		//0
-	_T("3"),
-	_T("6"),
-	_T("7"),
-	_T("Abe"),
-	_T("Bee"),
-	_T("Bird"),
-	_T("Boy"),
-	_T("Cat"),
-	_T("Cow"),
-	_T("Crow"),		//10
-	_T("DJ"),
-	_T("Dad"),
-	_T("Deer"),
-	_T("Dog"),
-	_T("Donkey"),
-	_T("Duck"),
-	_T("Eagle"),
-	_T("Elephant"),
-	_T("Fly"),
-	_T("Fox"),		//20
-	_T("Frog"),
-	_T("Girl"),
-	_T("Girlie"),
-	_T("Guinea Pig"),
-	_T("Hasi"),
-	_T("Hawk"),
-	_T("Jackal"),
-	_T("Lizard"),
-	_T("MC"),
-	_T("Men"),		//30
-	_T("Mom"),
-	_T("Mouse"),
-	_T("Mule"),
-	_T("Pig"),
-	_T("Rabbit"),
-	_T("Rat"),
-	_T("Rhino"),
-	_T("Smurf"),
-	_T("Snail"),
-	_T("Snake"),	//40
-	_T("Star"),
-	_T("Tiger"),
-	_T("Wolf"),
-	_T("Butterfly"),
-	_T("Elk"),
-	_T("Godzilla"),
-	_T("Horse"),
-	_T("Penguin"),
-	_T("Pony"), 
-	_T("Reindeer"),	//50
-	_T("Sheep"),
-	_T("Sock Puppet"),
-	_T("Worm"),
-	_T("Bermuda")	//54
+		_T("16"),		//0
+			_T("3"),
+			_T("6"),
+			_T("7"),
+			_T("Abe"),
+			_T("Bee"),
+			_T("Bird"),
+			_T("Boy"),
+			_T("Cat"),
+			_T("Cow"),
+			_T("Crow"),		//10
+			_T("DJ"),
+			_T("Dad"),
+			_T("Deer"),
+			_T("Dog"),
+			_T("Donkey"),
+			_T("Duck"),
+			_T("Eagle"),
+			_T("Elephant"),
+			_T("Fly"),
+			_T("Fox"),		//20
+			_T("Frog"),
+			_T("Girl"),
+			_T("Girlie"),
+			_T("Guinea Pig"),
+			_T("Hasi"),
+			_T("Hawk"),
+			_T("Jackal"),
+			_T("Lizard"),
+			_T("MC"),
+			_T("Men"),		//30
+			_T("Mom"),
+			_T("Mouse"),
+			_T("Mule"),
+			_T("Pig"),
+			_T("Rabbit"),
+			_T("Rat"),
+			_T("Rhino"),
+			_T("Smurf"),
+			_T("Snail"),
+			_T("Snake"),	//40
+			_T("Star"),
+			_T("Tiger"),
+			_T("Wolf"),
+			_T("Butterfly"),
+			_T("Elk"),
+			_T("Godzilla"),
+			_T("Horse"),
+			_T("Penguin"),
+			_T("Pony"), 
+			_T("Reindeer"),	//50
+			_T("Sheep"),
+			_T("Sock Puppet"),
+			_T("Worm"),
+			_T("Bermuda")	//54
 	};
 #define NB_SUFFIX 55 
 #define MAX_SUFFIXSIZE 11
@@ -4120,7 +4186,7 @@ const static LPCTSTR apszSuffix[] =
 			break;
 	}
 	// <== FunnyNick Tags - Stulle
-
+	
 	m_pszFunnyNick = new TCHAR[uTagLength+MAX_PREFIXSIZE+MAX_SUFFIXSIZE];
 	// pick random suffix and prefix
 	// ==> FunnyNick Tags - Stulle

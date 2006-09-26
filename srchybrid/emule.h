@@ -32,8 +32,8 @@
 #include ".\MiniMule\TBHMM.h" // TBH: minimule - Max
 
 #define	DEFAULT_NICK		_T("ScarAngel @ http://scarangel.sourceforge.net")
-#define	DEFAULT_TCP_PORT	4662
-#define	DEFAULT_UDP_PORT	(DEFAULT_TCP_PORT+10)
+#define	DEFAULT_TCP_PORT_OLD	4662
+#define	DEFAULT_UDP_PORT_OLD	(DEFAULT_TCP_PORT_OLD+10)
 
 #define PORTTESTURL			_T("http://porttest.emule-project.net/connectiontest.php?tcpport=%i&udpport=%i&lang=%i")
 
@@ -71,8 +71,8 @@ class CSplashScreenEx; //Xman new slpash-screen arrangement
 class CSystemInfo;  // CPU/MEM usage [$ick$/Stulle] - Max 
 
 enum AppState{
-	APP_STATE_RUNNING=0,
-   	APP_STATE_SHUTINGDOWN,
+	APP_STATE_RUNNING = 0,
+   	APP_STATE_SHUTTINGDOWN,
 	APP_STATE_DONE
 };
 
@@ -206,7 +206,7 @@ public:
 	bool		IsFirewalled();
 	bool		DoCallback( CUpDownClient *client );
 	uint32		GetID();
-	uint32		GetPublicIP() const;	// return current (valid) public IP or 0 if unknown
+	uint32		GetPublicIP(bool bIgnoreKadIP = false) const;	// return current (valid) public IP or 0 if unknown
 	void		SetPublicIP(const uint32 dwIP);
 
 	// because nearly all icons we are loading are 16x16, the default size is specified as 16 and not as 32 nor LR_DEFAULTSIZE

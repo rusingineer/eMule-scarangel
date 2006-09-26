@@ -101,7 +101,7 @@ void CUpDownClient::DrawUpStatusBar(CDC* dc, RECT* rect, bool onlygreyrect, bool
 		    }
 	    }
 	    if (!m_DoneBlocks_list.IsEmpty()){
-		    block = m_DoneBlocks_list.GetHead(); //Xman fix by Sirob
+		    block = m_DoneBlocks_list.GetHead(); 
 		    if(block){
 			    uint32 start = (uint32)(block->StartOffset/PARTSIZE);
 			    statusBar.FillRange((uint64)start*PARTSIZE, (uint64)(start+1)*PARTSIZE, crNextSending);
@@ -448,17 +448,17 @@ void CUpDownClient::CreateNextBlockPackage(){
 		return;
 	//Xman end
 
-    // See if we can do an early return. There may be no new blocks to load from disk and add to buffer, or buffer may be large enough allready.
-    if(m_BlockRequests_queue.IsEmpty() || // There are no new blocks requested
-       m_addedPayloadQueueSession > GetQueueSessionPayloadUp() && m_addedPayloadQueueSession-GetQueueSessionPayloadUp() > 160*1024) { // the buffered data is large enough allready //Xman changed
-        return;
-    }
+	// See if we can do an early return. There may be no new blocks to load from disk and add to buffer, or buffer may be large enough allready.
+	if(m_BlockRequests_queue.IsEmpty() || // There are no new blocks requested
+		m_addedPayloadQueueSession > GetQueueSessionPayloadUp() && m_addedPayloadQueueSession-GetQueueSessionPayloadUp() > 160*1024) { // the buffered data is large enough allready //Xman changed
+			return;
+	}
 
-    CFile file;
+	CFile file;
 
 	CString fullname;
 	bool bFromPF = true; // Statistic to breakdown uploaded data by complete file vs. partfile.
-	
+
 	try{
 		// Buffer new data if current buffer is less than 180 KBytes
 		while (!m_BlockRequests_queue.IsEmpty() && /*filedata != (byte*)-2 &&*/
@@ -474,31 +474,31 @@ void CUpDownClient::CreateNextBlockPackage(){
 					upendsoon=theApp.uploadqueue->CheckForTimeOver(this);
 				if(upendsoon==true)
 					break;
-			//Xman end
+				//Xman end
 
-			Requested_Block_Struct* currentblock = m_BlockRequests_queue.GetHead();
-			CKnownFile* srcfile = theApp.sharedfiles->GetFileByID(currentblock->FileID);
-			if (!srcfile)
-				throw GetResString(IDS_ERR_REQ_FNF);
+				Requested_Block_Struct* currentblock = m_BlockRequests_queue.GetHead();
+				CKnownFile* srcfile = theApp.sharedfiles->GetFileByID(currentblock->FileID);
+				if (!srcfile)
+					throw GetResString(IDS_ERR_REQ_FNF);
 
-			uint64 i64uTogo;
-			if (currentblock->StartOffset > currentblock->EndOffset){
-				i64uTogo = currentblock->EndOffset + (srcfile->GetFileSize() - currentblock->StartOffset);
-			}
-			else{
-				i64uTogo = currentblock->EndOffset - currentblock->StartOffset;
+				uint64 i64uTogo;
+				if (currentblock->StartOffset > currentblock->EndOffset){
+					i64uTogo = currentblock->EndOffset + (srcfile->GetFileSize() - currentblock->StartOffset);
+				}
+				else{
+					i64uTogo = currentblock->EndOffset - currentblock->StartOffset;
 					// BEGIN SiRoB, SLUGFILLER: SafeHash
 					/*
-				if (srcfile->IsPartFile() && !((CPartFile*)srcfile)->IsComplete(currentblock->StartOffset,currentblock->EndOffset-1, true))
+					if (srcfile->IsPartFile() && !((CPartFile*)srcfile)->IsComplete(currentblock->StartOffset,currentblock->EndOffset-1, true))
 					*/
 					if (srcfile->IsPartFile() && !((CPartFile*)srcfile)->IsRangeShareable(currentblock->StartOffset,currentblock->EndOffset-1))	// SLUGFILLER: SafeHash - final safety precaution
 					// END SiRoB, SLUGFILLER: SafeHash
-					throw GetResString(IDS_ERR_INCOMPLETEBLOCK);
-			}
+						throw GetResString(IDS_ERR_INCOMPLETEBLOCK);
+				}
 
 				if( i64uTogo > EMBLOCKSIZE*3 )
-				throw GetResString(IDS_ERR_LARGEREQBLOCK);
-			uint32 togo = (uint32)i64uTogo;
+					throw GetResString(IDS_ERR_LARGEREQBLOCK);
+				uint32 togo = (uint32)i64uTogo;
 
 
 				if (filedata == NULL) {
@@ -516,7 +516,7 @@ void CUpDownClient::CreateNextBlockPackage(){
 					theApp.sharedfiles->Reload();
 					throw GetResString(IDS_ERR_OPEN);
 				}
-				
+
 				if (!srcfile->IsPartFile())
 					bFromPF = false; // This is not a part file...
 
@@ -557,14 +557,14 @@ void CUpDownClient::CreateNextBlockPackage(){
 					int pos = srcfile->GetFileName().ReverseFind(_T('.'));
 					if(pos != -1)
 					{
-						CString ext = srcfile->GetFileName().Mid(pos);
-						ext.MakeLower();
+					CString ext = srcfile->GetFileName().Mid(pos);
+					ext.MakeLower();
 
-						// Skip compressed file
-						if(thePrefs.GetDontCompressAvi() && ext == _T(".avi"))
-							compFlag = false;
-						else if(ext == _T(".zip") || ext == _T(".rar") || ext == _T(".ace") || ext == _T(".ogm") || ext == _T(".cbz") || ext == _T(".cbr"))
-							compFlag = false;
+					// Skip compressed file
+					if(thePrefs.GetDontCompressAvi() && ext == _T(".avi"))
+					compFlag = false;
+					else if(ext == _T(".zip") || ext == _T(".rar") || ext == _T(".ace") || ext == _T(".ogm") || ext == _T(".cbz") || ext == _T(".cbr"))
+					compFlag = false;
 					}
 					*/
 					if(srcfile->IsCompressible()==false)
@@ -1179,7 +1179,7 @@ void CUpDownClient::SendOutOfPartReqsAndAddToWaitingQueue()
  */
 void CUpDownClient::FlushSendBlocks(){ // call this when you stop upload, or the socket might be not able to send
     //Xman Code Fix
-    if (socket)      //socket may be NULL...
+	if (socket)      //socket may be NULL...
         socket->TruncateQueues();
 
 	if(m_pPCUpSocket)
@@ -1465,7 +1465,7 @@ bool CUpDownClient::IsDifferentPartBlock()
              
 			// Test is we are asking same file and same part
 			//
-			if ( lastDone != currRequested && GetSessionUp() >= 2621440 )  //Xman-Full-Chunk: Client is allowed to get min 2,5 MB
+			if ( lastDone != currRequested && GetSessionUp() >= 2936012 )  //Xman-Full-Chunk: Client is allowed to get min 2,8 MB
 			{ 
 				different = true;
 				

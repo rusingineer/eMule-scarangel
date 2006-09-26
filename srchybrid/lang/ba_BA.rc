@@ -71,8 +71,6 @@ STRINGTABLE
 BEGIN
     IDS_HTTPDOWNLOAD_GETTING_FILE_INFORMATION 
                             "Fitxategi informazioa eskuratzen"
-    IDS_HTTPDOWNLOAD_FAIL_PARSE_ERROR 
-                            "Errorea URL-a aztertzen: %s"
     IDS_HTTPDOWNLOAD_GENERIC_ERROR 
                             "Errorea fitxategia jaisten saiatzerakoan: %s"
     IDS_HTTPDOWNLOAD_FAIL_CONNECT_SERVER 
@@ -103,7 +101,7 @@ BEGIN
                             "Errorea jaitsitako fitxategia irekitzerakoan: %s"
     IDS_HTTPDOWNLOAD_ABORTING_TRANSFER "Transferentzia ezeztatzen"
     IDS_FD_COMPR            "Konpresioa"
-    IDS_WIZARD_NETWORK      "Choose which network(s) you want to use."
+    IDS_WIZARD_NETWORK      "Hautatu erabili nahi d(it)uzun sarea(k)."
     IDS_MAIN_READY          "eMule %s Bertsioa prest"
     IDS_WIZARD_ED2K         "ED2k konfigurazioa"
     IDS_SEL_SKIN            "Itxura aukeratu..."
@@ -113,7 +111,6 @@ STRINGTABLE
 BEGIN
     IDS_MAIN_SOCKETERROR    "Errore larria: ezin izan da socket-a %i portuan ireki."
     IDS_MAIN_BTN_DISCONNECT "Des&konektatu"
-    IDS_MAIN_BTN_DISCONNECT_TOOLTIP "Deskonektatu oraingo zerbitzaritik."
     IDS_ERR_WRONGFILEID     "Fileid okerra bidali da"
     IDS_ERR_BADHASHSET      "Hashset akatsduna edo baliogabekoa jaso da"
     IDS_ERR_BADDATABLOCK    "Datu-bloke akatsduna edo baliogabekoa jaso da"
@@ -122,17 +119,14 @@ BEGIN
     IDS_ERR_NOSLLINK        "Lotura ez da ez fitxategia, ezta eD2K zerbitzaria ere"
     IDS_ERR_WRONGPACKAGESIZE "Baliogabeko OP_FILEREQUEST pakete tamaina"
     IDS_ERR_WRONGHPACKAGESIZE "OP_HASHSETREQUEST pakete tamaina baliogabekoa"
-    IDS_ERR_BADCLIENTACTION "Bezero batek errore bat edo zerbait gaizki egin du: %s. Bezeroa deskonektatzen!"
     IDS_ERR_UNKNOWNCLIENTACTION 
                             "Bezero ezezagun bat protokolo hedatuko paketeak bidaltzen ari da"
     IDS_ERR_OPENMET         "Errorea part.met fitxategia irekitzen! (%s => %s)"
     IDS_ERR_BADMETVERSION   "part.met fitxategiaren baliogabeko bertsioa! (%s => %s)"
-    IDS_ERR_BADGAP          "Baliogabeko kokapen marka part.met fitxategian"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_EMPTYADRESSESDAT_TITLE "Ezin izan da zerbitzari zerrenda eskuratu"
     IDS_ERR_BADSERVERMETVERSION "Baliogabeko bertsio marka server.met-en (0x%X)!"
     IDS_SERVERSFOUND        "%i zerbitzari aurkitu dira server.met-en"
     IDS_SERVERSADDED        "%d zerbitzari gehitu dira eta %d kendu"
@@ -141,7 +135,6 @@ BEGIN
                             "Errorea server.met irakurtzerakoan: %s, ezin izan da zerbitzari zerrenda kargatu"
     IDS_ERR_SAVESERVERMET   "Errorea server.met gordetzerakoan!"
     IDS_PASSIVE             "Pasiboa"
-    IDS_MAIN_CONNECTEDTO    "Konexioa burutu da zerbitzari honetan:"
     IDS_MAIN_BTN_CANCEL     "&Utzi"
     IDS_AVAIL               "Zatiak: %d , eskuragarri: %d (%%%.1f)\n\n"
     IDS_TYPE                "Mota"
@@ -160,8 +153,6 @@ BEGIN
     IDS_PREFERENCE          "Lehentasuna"
     IDS_PRIONOPREF          "Lehentasunik ez"
     IDS_CONNECTTHIS         "Hautatutako zerbitzarira konektatu"
-    IDS_CHAT_WELCOME        "Berehalako mezugintza\n  \nEgin klik eskuineko botoiarekin edozein bezerotan eta 'Mezua bidali' aukeratu txat sesio bat hasteko."
-    IDS_MAIN_BTN_CANCEL_TOOLTIP "Oraingo konexio saiakuntzak gelditzen ditu."
     IDS_MAIN_BTN_CONNECT    "&Konektatu"
     IDS_ERR_SAVESERVERMET2  "Errorea server.met gordetzerakoan! Komenigarria litzaizuke server.met ezabatu eta server.met.old fitxategiari server.met izena ezartzea!"
     IDS_NOTCONNECTED        "Konektatu gabe"
@@ -198,7 +189,6 @@ STRINGTABLE
 BEGIN
     IDS_LINKNOTADDED        "Ezin izan da lotura gehitu"
     IDS_MAIN_EXIT           "Ziur zaude eMule itxi nahi duzuna?"
-    IDS_MAIN_EXITTITLE      "Ixteko konfirmazioa"
     IDS_MAIN_POPUP_RESTORE  "Leheneratu"
     IDS_CONNECTTOANYSERVER  "Edozein zerbitzaritara konektatu"
     IDS_EXIT                "Irten"
@@ -206,7 +196,6 @@ BEGIN
     IDS_FAILED              "Errorea"
     IDS_ERR_BADSERVERREPLY  "Erantzun akatsduna edo baliogabekoa iritsi da zerbitzaritik"
     IDS_NEWCLIENTID         "Bezero identifikatzaile berria %u da"
-    IDS_NOSHAREDFOLDERS     "Ez dago karpetarik konpartituta"
     IDS_SHAREDFOLDERS       "Karpeta konpartituak"
     IDS_VIEW1               "Ikusi"
     IDS_VIEW2               " (konpartitu gabe)"
@@ -245,10 +234,6 @@ BEGIN
     IDS_ASKED4ANOTHERFILE   "(A4AF) Beste fitxategi bat eskatu zaio"
     IDS_Q_CANCELDL          "Ziur zaude fitxategi hauek ezeztatu eta ezabatu nahi dituzuna?\n"
     IDS_Q_CANCELDL2         "Ziur zaude fitxategi hau ezeztatu eta ezabatu nahi duzuna?\n"
-    IDS_COPIED2CB           "Kopiatu egin da: \n"
-    IDS_PROCDONE            "Osatutako %"
-    IDS_SELECTINCOMINGDIR   "Karpeta bat aukeratu jaitsitako fitxategientzako"
-    IDS_SELECTTEMPDIR       "Karpeta bat aukeratu fitxategi tenporalentzako"
     IDS_DL_FILENAME         "Fitxategi izena"
     IDS_DL_SIZE             "Tamaina"
     IDS_DL_TRANSF           "Transferituta"
@@ -267,7 +252,6 @@ BEGIN
     IDS_QL_USERNAME         "Erabiltzaile izena"
     IDS_LOADURL             "Kargatu"
     IDS_DELETEAFTERALLOC    "'%s' fitxategiari leku bat esleitu zaio disko gogorrean eta beranduago ezabatuko da"
-    IDS_ERR_PACKAGEHANDLING "Kontrolatu gabeko errorea zerbitzaritik pakete bat prozesatzean (%s)"
     IDS_QL_RATING           "Balorazioa"
     IDS_CONNECTINGTO        "%s(e)ra konektatzen (%s:%i)..."
     IDS_CLIENTS             "Bezeroak"
@@ -290,7 +274,6 @@ BEGIN
     IDS_SRV_ADDR            "Idatzi zerbitzari baten helbidea"
     IDS_SRV_PORT            "Zerbitzariaren portua osagabea: zerbitzariaren portua idatzi"
     IDS_SRV_NOTADDED        "Zerbitzaria ez da gehitu!"
-    IDS_SRV_READD           "Zerbitzaria eroritzat eman zen eta berriz gehitu da!"
     IDS_SRV_NOURLAV         "URL-a ez dago eskuragarri"
     IDS_INVALIDURL          "Baliogabeko URL-a"
 END
@@ -304,23 +287,16 @@ BEGIN
     IDS_PRIOVERYLOW         "Oso baxua"
     IDS_PRIORELEASE         "Konpartitu-berria"
     IDS_TRAYDLG_SPEED       "eMule-ren abiadura"
-    IDS_FSTATUS_LOCKED      "Blokeatuta"
-    IDS_KADALPHA            "Kademlia oraindik garapen prozesuan dago. Ebaluatzeko asmoa izanez gero soilik gomendatzen dizugu aktibatzea."
     IDS_FSTATUS_FRIENDSONLY "Lagunek soilik"
     IDS_VIAPASSIVE          "Pasiboa erabiliz"
-    IDS_FSTATUS_PUBLIC      "Publikoa"
-    IDS_ERR_RENAMESF        "Errorea fitxategi honi:\r\n    ""%s""\r\nbeste izen hau jartzen saiatzean:\r\n    ""%s""\r\n\r\n%hs"
-    IDS_PRIOHIGHEST         "Altuena"
+    IDS_ERR_RENAMESF        "Errorea fitxategi honi:\r\n    ""%s""\r\nbeste izen hau jartzen saiatzean:\r\n    ""%s""\r\n\r\n%s"
     IDS_AVAILABLE           "eskuragarri"
-    IDS_ERR_NOPRIMCHANGE    "Ezin dituzu baimenak aldatu fitxategia jaisten ari den bitartean!"
-    IDS_HIDDEN              "Ezkutatuta"
 END
 
 STRINGTABLE 
 BEGIN
     IDS_FSTAT_TRANSFER      "Transferentzia"
     IDS_FSTAT_CONNECTION    "Konexioak"
-    IDS_FSTAT_CLIENTS       "Bezeroak"
     IDS_FSTAT_SERVERS       "Zerbitzariak"
     IDS_FSTAT_WAITING       "Itxaroten..."
     IDS_TIME                "Denbora"
@@ -333,24 +309,15 @@ BEGIN
     IDS_STATS_ACTUL         "Igoera aktiboak: %i"
     IDS_STATS_WAITINGUSERS  "Igoerak itxaroten: %i"
     IDS_STATS_RECONNECTS    "Birkonexioak: %i"
-    IDS_STATS_WAITTRANSF    "Transferitzeko itxaroten..."
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_STATS_WAITCONN      "Konektatzeko itxaroten..."
-    IDS_STATS_CONNECTEDSINCE "Noiztik konektatuta zerbitzarira: %s"
-    IDS_STATS_RATIO         "IG:JA indikatzailea (Sesioa (Guztira)):"
     IDS_STATS_UNKNOWNCLIENT "Ezezaguna: %i"
     IDS_STATS_TOTAL         "Totala: %i"
-    IDS_STATS_WORKING       "Funtzionatzen: %i"
-    IDS_STATS_DEAD          "Eroritakoak/Ezabatutakoak: %i"
     IDS_DISABLED            "Desaktibatuta"
     IDS_STOPPED             "Geldituta"
     IDS_STATS_UPDATELABEL   "Eguneratzeko denbora-tartea: %i seg."
-    IDS_QUEUECOUNT          "%u (%u blokeatuta)"
-    IDS_NICKNAME            "Ezizena: "
-    IDS_CLIENTSFILENAME     "\nbezeroaren fitxategiaren izena: "
     IDS_ASKEDFAF            "\nBeste fitxategi bat eskatuta"
     IDS_WAITED              "Itxarondakoa"
     IDS_ERR_LOADCREDITFILE  "Errorea kredituen fitxategia kargatzerakoan, berria sortuko da"
@@ -379,14 +346,10 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_UDPEXT          "Errorea protokolo hedatuko UDP paketeak prozesatzen"
     IDS_ERR_INCOMPLETEBLOCK "Errorea: zati osagabea eskatu da"
     IDS_ERR_OPEN            "Errorea fitxategia irekitzerakoan"
     IDS_ERR_CLIENTERRORED   "'%s' bezeroak errore bat gauzatu du paketeratzerakoan (%s) - bezeroa deskonektatzen"
     IDS_ERR_REQ_FNF         "Ezin izan da eskatutako fitxategia aurkitu"
-    IDS_CLIENTBLOCKED       "Badirudi '%s' bezeroa erasokorra dela eta igoera ilaratik kanporatu egin da"
-    IDS_LUSERS              "Erabiltzaileak"
-    IDS_LFILES              "Fitxategiak"
     IDS_DESC                "Deskribapena: %s"
     IDS_PORT                "Portua"
     IDS_ERR_NOVALIDSERVERSFOUND 
@@ -402,12 +365,11 @@ STRINGTABLE
 BEGIN
     IDS_ERR_METCORRUPT      "Errorea: %s (%s) akatsduna, ezin izan da fitxategia kargatu"
     IDS_ERR_FILEERROR       "Errorea irakurtzerakoan: %s (%s): %s"
-    IDS_ERR_FILEOPEN        "Error irekitzerakoan: %s (%s)"
+    IDS_ERR_FILEOPEN        "Errorea irekitzerakoan: %s (%s)"
     IDS_SEL_SKINDIR         "Aukeratu Itxuren karpeta.."
     IDS_ERR_REHASH          "Adi: baliteke %s-k akatsak izatea, zati osoan hash-a birkodetzen"
     IDS_SKIN_PROF           "Itxuren profilak"
     IDS_ERR_PART_FNF        "Ezin izan da .part fitxategia aurkitu"
-    IDS_ERR_OPENMETFILE     "Errorea part.met fitxategia irekitzerakoan"
     IDS_KADOPEN             "Irekita"
     IDS_ERR_SAVEMET         "Errorea .part fitxategia gordetzerakoan: %s (%s)"
     IDS_ERR_FOUNDCORRUPTION "Zati akatsduna (%i) fitxategi honetan: %s"
@@ -420,18 +382,15 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_NOSERVERSC      "Zerrendan ez dago konektatzeko baliozko zerbitzaririk"
     IDS_CONNECTEDTO         "Konexioa burutu da: %s"
     IDS_DL_PREVIEW          "Aurr&ikusi"
     IDS_VIEWQUEUE           "Ilara erakutsi"
-    IDS_VIEWUPLOADS         "Igoerak erakutsi"
     IDS_TW_UPLOADS          "Igoerak"
     IDS_TW_DOWNLOADS        "Jaitsierak"
     IDS_TW_QUEUE            "Bezeroak ilaran:"
     IDS_SW_SEARCHBOX        "Bilaketa"
     IDS_SW_NAME             "Izena"
     IDS_SW_GLOBAL           "Erabateko bilaketa"
-    IDS_SW_TYPE             "Mota"
     IDS_SW_DIRECTDOWNLOAD   "ED2K loturak itsatsi"
     IDS_SW_LINK             "ED2K lotura(k)"
     IDS_SW_START            "Hasi"
@@ -460,8 +419,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_PRIORITY_UP         "Lehentasuna gehiagotu"
-    IDS_PRIORITY_DOWN       "Lehentasuna gutxitu"
     IDS_SPEED_LIMITS        "Abiadura mugak"
     IDS_CAPACITY_LIMITS     "Banda zabalera mugak"
     IDS_ADMIN               "Administratzailea"
@@ -470,10 +427,6 @@ BEGIN
     IDS_WEB_ERR_CANTLOAD    "Ezin dira moldeak kargatu: Ezin da %s fitxategia ireki"
     IDS_GLOBALSEARCH        "Globala (Zerbitzaria)"
     IDS_METHOD              "Metodoa"
-    IDS_SW_WEBBASED         "Web bidezko bilaketa"
-    IDS_NOTHING             "ezer"
-    IDS_SETUPSPEED          "igoera muga definitu"
-    IDS_SETDOWNSPEED        "jaitsiera muga definitu"
     IDS_UNDO                "Desegin"
     IDS_DAYLY               "egunero"
 END
@@ -510,7 +463,6 @@ BEGIN
     IDS_ST_SESSION          "Sesioko batez bestekoa"
     IDS_ST_ACTIVED          "Jaitsiera aktiboak"
     IDS_ST_ACTIVEU          "Igoera aktiboak"
-    IDS_ST_WAITINGU         "Igoerak itxaroten"
     IDS_CW_MESSAGES         "Mezuak"
     IDS_CW_FRIENDS          "Lagunak"
     IDS_CW_SEND             "Bidali"
@@ -527,9 +479,7 @@ BEGIN
     IDS_PW_BROWSE           "Arakatu"
     IDS_PW_SHARED           "Konpartitutako karpetak (Ctrl+Klik -> azpikarpetak barne)"
     IDS_PW_CONNECTION       "Konexioa"
-    IDS_PW_DOWNC            "Jaitsiera gaiasuna"
     IDS_PW_DOWNL            "Jaitsiera muga"
-    IDS_PW_UPC              "Igoera gaitasuna"
     IDS_PW_UPL              "Igoera muga"
     IDS_PW_MAXC             "Gehienezko konexioak"
     IDS_PW_CLIENTPORT       "Portuta"
@@ -561,7 +511,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_PW_FILES            "Fitxategiak"
-    IDS_PW_ICH              "Akatsen kudeaketa (&ICH)"
     IDS_PW_SHARE            "Nik konpartitutako fitxategiak ikusi ditzakete"
     IDS_PW_EVER             "Guztiek"
     IDS_PW_FRIENDS          "Lagunek"
@@ -581,17 +530,13 @@ END
 STRINGTABLE 
 BEGIN
     IDS_FD_GENERAL          "Orokorra"
-    IDS_FD_NAME             "Izen Deiturak:"
     IDS_FD_MET              "met fitxategia:"
     IDS_FD_HASH             "Hash-a:"
     IDS_FD_SIZE             "Tamaina:"
-    IDS_FD_STATUS           "Zatien egoera:"
     IDS_FD_TRANSFER         "Transferentzia"
-    IDS_FD_SOURCES          "Aurkitutako iturriak:"
     IDS_FD_PARTS            "Zatiak"
     IDS_FD_TRANS            "Transferituta:"
     IDS_FD_DATARATE         "Datu fluxua:"
-    IDS_FD_TRANSI           "Transferitzen:"
     IDS_FD_COMPSIZE         "Tamaina osoa:"
     IDS_FD_CLOSE            "Itxi"
     IDS_FD_TITLE            "Fitxategiaren xehetasunak"
@@ -606,13 +551,12 @@ BEGIN
     IDS_CD_UIP              "IP helbidea:"
     IDS_CD_SIP              "Zerbitzariaren IP-a:"
     IDS_CD_VERSION          "Bertsioa:"
-    IDS_CD_UID              "ID:"
     IDS_CD_SNAME            "Zerbitzaria:"
     IDS_CD_CDOWN            "Orain jaisten:"
     IDS_CD_DOWN             "Jaitsitakoa (sesio honetan):"
     IDS_CD_ADOWN            "Jaitsieren batez besteko abiadura:"
     IDS_CD_TDOWN            "Jaitsitako guztia:"
-    IDS_CD_UP               "Subido (esta sesión):"
+    IDS_CD_UP               "Igotakoa (sesio honetan):"
     IDS_CD_AUP              "Igoeren batez besteko abiadura:"
     IDS_CD_TUP              "Igotako guztia:"
     IDS_CD_TRANS            "Transferentzia"
@@ -631,7 +575,6 @@ BEGIN
     IDS_PW_MAXSOURCES       "Iturri max. fitxategiko"
     IDS_SHAREDFILESCOUNT    "Konpartitutako fitxategi kopurua: %i"
     IDS_SF_SIZE             "Konpartitutako fitxategien tamaina: %s"
-    IDS_ERR_WRONGPARTNUMBER "Zati kopuru ezegokia"
     IDS_ERR_BADPORT         "Portu ezegokia"
     IDS_ERR_NOHELLO         "Zerbait eskatu 'kaixo' esan gabe"
     IDS_ERR_INVALIDPACKAGE  "Pakete akatsduna edo baliogabekoa jaso da"
@@ -641,17 +584,14 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ERR_BADSIZE         "Baliogabeko tamaina (OP_QUEUERANKING)"
-    IDS_ERR_BADCLIENT2      "'%s' (IP:%s) bezeroak errore bat gauzatu du: %u. Bezeroa deskonektatzen!"
     IDS_ERR_NOTAFILELINK    "Ez da fitxategi baten lotura"
     IDS_ERR_CREATEPARTFILE  "ERROREA: Ezin izan da zatien fitxategia sortu"
-    IDS_ERR_UDP_MISCONF     "Errorea UDP paketea prozesatzerakoan (Baliteke zerbitzariren bat gaizki konfiguratuta egotea)"
     IDS_CHAT_START          "*** Txat sesio hasiera: "
     IDS_FILEPRIO            "Lehentasuna"
     IDS_SCORE               "Puntuazioa"
     IDS_ASKED               "Eskaera"
     IDS_LASTSEEN            "Azken egiaztapena"
     IDS_BANNED              "blokeatuta"
-    IDS_PRIOVERYHIGH        "Oso altua"
     IDS_UUSERS              "Erabiltzaileak"
     IDS_UFAILED             "Errorea"
     IDS_OPENFILE            "Fitxategia ireki"
@@ -671,7 +611,6 @@ BEGIN
     IDS_FILESTATS_SESSION   "Fitxategiaren estatistikak sesio honetan: %d eskaera onartu dira %d(e)tik, %s transferituz\n"
     IDS_FILESTATS_TOTAL     "Fitxategiaren estatistikak sesio guztietan: %d eskaera onartu dira %d(e)tik, %s transferituz"
     IDS_REQ_UNKNOWNFILE     "Fitxategi ezezaguna eskatu da"
-    IDS_TRANSFERTIME        "Lehen transferentziatik igorotako denbora: %s"
     IDS_SF_AVERAGESIZE      "Fitxategien batez besteko tamaina: %s"
     IDS_SF_REQUESTS         "Eskaerak"
     IDS_SF_ACCEPTS          "Onartutako eskaerak"
@@ -703,7 +642,6 @@ BEGIN
     IDS_ADDED2SSF           "Zerbitzari finkoen zerrendan gehitu da"
     IDS_STATICSERVER        "Zerbitzari finkoa"
     IDS_ERROR_SSF           "Errorea staticservers.dat irekitzerakoan"
-    IDS_ERR_PACKAGEERROR    "Errorea %s(r)en datu paketea prozesatzerakoan (tamaina ezegokia) - datu blokea baztertu da"
     IDS_SF_ACTIVECON        "Konexio aktiboak (ggb)"
     IDS_SF_MAXCONLIMITREACHED "Konexio kopuru maximoa gainditu egin da"
     IDS_SF_AVGCON           "Batez besteko konexioak (ggb)"
@@ -732,7 +670,7 @@ BEGIN
     IDS_IRC_IGNOREJOINMESSAGE "Bateratze informazio mezuak baztertu"
     IDS_STATS_SUCCUPCOUNT   "Igoera arrakastatsuak guztira: %i (%%%.2f)"
     IDS_IRC_IGNOREPARTMESSAGE "Zatien informazio mezuak baztertu"
-    IDS_STATS_FAILUPCOUNT   "Hutsegindako igoerak guztira: %i (%%%.2f)"
+    IDS_STATS_FAILUPCOUNT   "Huts egindako igoerak guztira: %i (%%%.2f)"
     IDS_STATS_AVEUPTIME     "Batez besteko igoera denbora: %s"
     IDS_SEARCHMINSIZE       "Tamaina min. (MB)"
     IDS_SEARCHMAXSIZE       "Tamaina max. (MB)"
@@ -749,7 +687,6 @@ BEGIN
     IDS_PW_CON_UPLBL        "Igoera"
     IDS_PW_AUTOCONNECTSTATICONLY "Zerbitzari finkoetara soilik konektatu"
     IDS_PW_CON_LIMITFRM     "Mugak"
-    IDS_PW_FILE_ICH         "I.C.H aktibatu"
     IDS_STATS_AVGLABEL      "Grafikaren denbora tartea: %i minutu"
     IDS_GRAPHS              "Grafikak"
     IDS_STREE               "Estatistiken zuhaitza"
@@ -783,11 +720,9 @@ STRINGTABLE
 BEGIN
     IDS_HARDLIMIT           "Muga maximoa"
     IDS_COL_MORECOLORS      "gehiago..."
-    IDS_KBYTESEC            "kB/s"
     IDS_TOOMANYCONNS        "Konexio gehiegi"
     IDS_DOWNLOADRENAMED     "Badago fitxategi bat izen horrekin, %s izenarekin gordeko da"
     IDS_TBN_DOWNLOADDONE    "Jaitsita:"
-    IDS_TBN_DOWNLOADADDED   "Jaitsieretan gehitu da:"
     IDS_PW_TBN_USESOUND     "Soinua erabili"
     IDS_PW_TBN_ONLOG        "Erregistroan datu berria jasotzean"
     IDS_PW_TBN_ONCHAT       "Txat sesio berrian hastean"
@@ -802,9 +737,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_PW_CON_CAPFRM       "Gaitasuna"
-    IDS_IRC_STATUSLOG       "Egoera erregistroa"
-    IDS_IRC_STATUS          "Egoera"
-    IDS_IRC_PRIVATECHANSTART "* iniciada sesión privada de chat"
+    IDS_IRC_PRIVATECHANSTART "* txat sesio pribatua hasi da"
     IDS_IRC_SLAPMSG         "* %s -k zaplasteko bat eman dio %s-ri!"
     IDS_IRC_PRIVMESSAGE     "Mezu pribatua"
     IDS_IRC_KICK            "Kaleratu"
@@ -820,7 +753,6 @@ BEGIN
     IDS_IRC_HASJOINED       "* %s %s-n sartu da"
     IDS_IRC_HASPARTED       "* %s %s (%s)-tik irten da"
     IDS_IRC_WASKICKEDBY     "* %s, %s (%s)-k bota du"
-    IDS_IRC_NICKUSED        "Zure ezizena beste norbaitek dauka hartuta. Mesedez, aukera ezazu beste bat 'Hobespenak'-en klik eginez."
     IDS_IRC_HASQUIT         "* %s irten egin da (%s)"
     IDS_IRC_NOWKNOWNAS      "* %s-ren ezizen berria %s da"
     IDS_IRC_SETSMODE        "* %s-ren modu aldaketa: %s %s"
@@ -870,12 +802,10 @@ BEGIN
     IDS_SP_ACTCON           "Konexio aktiboak"
     IDS_SP_ACTDL            "Jaitsiera aktiboak"
     IDS_SP_ACTUL            "Igoera aktiboak"
-    IDS_PW_TIT_UP           "Igoeretako abiadura muga aldatu"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_PW_TIT_DOWN         "Jaitsieretako abiadura muga aldatu"
     IDS_PW_UNLIMITED        "Mugagabea"
     IDS_PW_MINREC           "gomendatutako minimoa\t%i "
     IDS_PW_UA               "Igo/jaitsi abiadura muga ezarri"
@@ -883,11 +813,7 @@ BEGIN
     IDS_IRC_IGNOREINFOMESSAGE "Informazio mezuak baztertu"
     IDS_CONNECTIONLOST      "Konexioa galdu da"
     IDS_WIZ_OS_FRAME        "Sistema eragilea"
-    IDS_WIZ_CONCURENTDOWN_FRAME 
-                            "¿Zenbat jaitsiera izaten dituzu aldi berean?"
     IDS_HASHINGFILE         "Fitxategiaren hash-a kodetzen:"
-    IDS_WIZ_CUSTOM_FRAME    "Zure konexio abiadura testatu baduzu, jar itzazu balioak hemen"
-    IDS_WIZ_HOTBUTTON_FRAME "Botoiak aurrez aukeratu"
     IDS_WIZ_TRUEUPLOAD_TEXT "Igoera gaitasuna"
     IDS_WIZ_TRUEDOWNLOAD_TEXT "Jaitsiera gaitasuna"
     IDS_FRIENDLIST          "Lagunak"
@@ -899,7 +825,6 @@ BEGIN
     IDS_WIZARD              "Laguntzailea"
     IDS_ADDFRIEND           "Lagunen zerrendara gehitu"
     IDS_REMOVEFRIEND        "Laguna ezabatu"
-    IDS_REMOVEFROMSTOK      "Zerbitzari finkoen zerrendatik ezabatu da"
     IDS_REMOVEFROMSTATIC    "Zerbitzari finkoen zerrendatik ezabatu"
     IDS_LENGTH              "Iraupena"
     IDS_VIDEO               "Bideoa"
@@ -911,7 +836,6 @@ BEGIN
     IDS_FPS                 "F/s"
     IDS_CHANNELS            "Kanalak"
     IDS_SAMPLERATE          "'bitrate' froga"
-    IDS_ROUNDBITRATE        "'bitrate' osoa"
 END
 
 STRINGTABLE 
@@ -922,16 +846,12 @@ BEGIN
     IDS_VIEWFILES           "Fitxategiak ikusi"
     IDS_FRIENDSLOT          "Lagun batentzako lekua gorde"
     IDS_FRIENDDETAIL        "(Lagun batentzako lekua)"
-    IDS_ASCWOP_PROXYSUPPORT "Automatikoki konektatu proxy-rik gabe"
     IDS_UDPDISABLED         "desaktibatu"
-    IDS_CTINFO              "Aukeratu zure konexio mota hemen:"
     IDS_WIZ_CTFRAME         "Konexio mota"
     IDS_CONCURDWL           "Aldibereko jaitsierak"
-    IDS_UNIT                "Unitatea:"
     IDS_WIZARD_CUSTOM       "Pertsonalizatu"
     IDS_WIZARD_ENTERBELOW   "(behean idatzi!)"
     IDS_STATS_MAXAVGDL      "Jaitsiera batez besteko max.: %s"
-    IDS_USS_MIN             "Oharra: USS-k ez ditu 10K-tik beherako igoera abiadurak onartzen. Ezin bada aldatu, deskonektatu USS mesedez"
 END
 
 STRINGTABLE 
@@ -941,14 +861,12 @@ BEGIN
                             "Laguna gehitzerakoan, ohar mezua baztertu"
     IDS_PW_FASTSRVCON       "Konexio segurua"
     IDS_SOURCELINKFAILED    "Iturri baten lotura sortzeko ID altua izan behar duzu"
-    IDS_CREATESOURCELINK    "Kopiatu ED2k lotura (iturria)"
     IDS_ERR_LOADSERVERMET   "Errorea server.met kargatzerakoan!"
     IDS_ERR_CORRUPTCOMPRPKG "Pakete akatsduna jaso da %s-rengandik (%i errorea)"
     IDS_ERR_EMFRIENDSINVALID 
                             "emfriends.met fitxategiak akatsak ditu edo ez du balio!"
     IDS_ERR_READEMFRIENDS   "Errore ezezaguna emfriends.met irakurtzerakoan: %s"
     IDS_ERR_KNOWNSERVERINFOREC "Informazio ezezaguna jaso da zerbitzaritik!"
-    IDS_ERR_TIMERCREATEFAILED "Errore larria: Ezin izan da 'timer'-a sortu"
     IDS_WIZ_DOWN            "Jaitsiera (kbit/s)"
     IDS_WIZ_UP              "Igoera (kbit/s)"
     IDS_SELECT_INCOMINGDIR  "Jaitsitako fitxategientzako karpeta aldatu"
@@ -963,7 +881,6 @@ BEGIN
     IDS_PRIOAUTORELEASE     "Auto [Ko]"
     IDS_PRIOAUTOLOW         "Auto [Ba]"
     IDS_ERR_CONTIMEOUT      """%s"" (%s:%i)-ra denboraz kanpoko konexio saiakuntza"
-    IDS_ERR_CONFAILED       "Errorea ""%s"" (%s:%i)-ra konektatzerakoan"
     IDS_OUTOFSERVERS        "Errorea zerrendako zerbitzarietara konektatzerakoan. Berriz hasiko da guztiekin saiatzen."
     IDS_PW_CONLIMITS        "Konexio mugak"
     IDS_MAXCON5SECLABEL     "Konexio maximoa 5 segunduko"
@@ -984,15 +901,11 @@ BEGIN
     IDS_RECOVERED_PARTMET   "%s fitxategiaren part.met fitxategia berreskuratu da"
     IDS_CMT_QUEST           "Fitxategi honi iruzkina gehitu! (Erabiltzaile guztiak ikusiko dute testu hau)"
     IDS_CMT_AIDE            "Pelikula baten kasuan, iraupena, deskribapena, hizkuntza... zehaz ditzakezu, eta faltsuketen (fake) kasuan, besteei ohartarazi diezaiekezu..."
-    IDS_CMT_TITLE           "%s fitxategiaren iruzkina"
     IDS_CMT_ADD             "Fitxategi honen iruzkina aldatu..."
     IDS_CMT_NONE            "Iruzkinik gabe"
     IDS_CMT_READ            "Fitxategiaren iruzkina:"
-    IDS_CMT_NOTCONNECTED    "Oraindik ez zaude konektatuta..."
     IDS_CMT_SHOWALL         "Iruzkinak erakutsi"
-    IDS_CMT_REFRESH         "Eguneratu"
     IDS_CMT_READALL         "Iruzkin guztiak"
-    IDS_CMT_NOCOMMENT       "Ez dago iruzkinik..."
     IDS_CMT_RATEQUEST       "Fitxategiaren kalifikazioa"
     IDS_CMT_RATEHELP        "Fitxategiaren kalifikazioa aldatu edo besteei honen faltsutasunaz jakinarazi"
 END
@@ -1019,7 +932,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_FD_STATS            "Akatsengatik galdutakoa: %s       Konpresioz irabazitakoa: %s\nICH bidez konpondutako paketeak: %i"
     IDS_ERR_NOHELP          "Mesedez, bisita ezazu gure webguneko jaitsieren atala laguntza fitxategiaren azken bertsioa lortzeko!\n\nSarean ikusi nahi al duzu laguntza?"
     IDS_SHOWOVERHEAD        "Banda zabaleraren gainkarga erakutsi"
     IDS_UPDOWNSMALL         "Igoera: %.1f | Jaitsiera: %.1f"
@@ -1046,7 +958,6 @@ BEGIN
     IDS_VISITVERSIONCHECK   "\n\nInformazio orria bisitatu nahi al duzu?"
     IDS_PW_VIDEOPLAYER      "Bideo erreproduktorea"
     IDS_VIDEOBACKUP         "Segurtasun kopia sortu aurrikusteko"
-    IDS_STATIC_EMPTY        "(hutsik=predeterminatua)"
     IDS_MYINFO              "Norbere informazioa"
     IDS_ID                  "ID-a"
     IDS_IDLOW               "ID baxua"
@@ -1090,8 +1001,6 @@ BEGIN
     IDS_COLOR               "Kolorea"
     IDS_DEFAULT             "Predeterminatua"
     IDS_PW_DISPLAY          "Erakutsi"
-    IDS_CAT_INVADD          "Eskuragarri guztiak erakutsi"
-    IDS_CAT_REINVADD        "Guztiak erakutsi"
     IDS_INDICATERATINGS     "Ikono bat erakutsi iruzkinak dituzten jaitsieretan"
     IDS_ALLOTHERS           "Gainontzekoak"
     IDS_TOCAT               "Kategoria bati esleitu"
@@ -1101,7 +1010,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ADDDOWNLOADSFROMCB  "eD2k lotura hauek gehitu nahi dituzu jaisteko?\n"
-    IDS_ADDDOWNLOADSFROMCBTITLE "Kopiatutako eD2k lotura"
     IDS_PF_WATCHCB          "Bilatu kopiatutako eD2k loturak"
     IDS_SECURITY            "Segurtasuna"
     IDS_IPFILTERLOADED      "%i IP helbide iragazita"
@@ -1131,10 +1039,8 @@ BEGIN
     IDS_USECREDITSYSTEM     "Kreditu sistema erabili (Gehien igotzen dutenek dute saria)"
     IDS_FIRSTAUTODOWN       "Aukera hau aktibatu eMulek zure jaitsiera lehentasunak kudea ditzan nahi baduzu.\n\nHoni esker, iturri asko dituzten deskargak ez dira iturri gutxi dituztenentzako oztopo izango. Aukera honek hemendik aurrerako jaitsieretan izango du eragina soilik."
     IDS_FIRSTAUTOUP         "Aukera hau aktibatu eMulek zure igoera lehentasunak kudea ditzan nahi baduzu.\n\nHoni esker, jende gutxik dituen fitxategiak konpartitzea errazagoa izango da. Bestela, jende askok dituen fitxategiak errazago konpartitzen lagunduko duzu. Aukera honek hemendik aurrerako fitxategi konpartituetan izango du eragina soilik."
-    IDS_FIRSTCREDITSYSTEM   "Zuri zatiak bidaltzen dizun jendea saritu nahi duzu?\n\nHau Kreditu Sistema bezala da ezaguna. Hau aktibatuz, ezer konpartitzen ez dutenei egingo diezu kontra. Fitxategi berriak konpartitzera ohituta bazaude, hau desaktibatu beharko zenuke."
     IDS_FIRSTFULLCHUNK      "Aukera hau aktibatu zati osoak igo nahi badituzu.\n\nHoni esker, zatiak osatzea askoz errazagoa bihurtzen da. Bestela, zerrendako bezeroen artean azkarrago egiten da aldaketa. Fitxategi berriak konpartitzera ohituta bazaude, hau aktibatu beharko zenuke."
     IDS_FIRSTSAFECON        "Aukera hau aktibatu eMule konexio segurua erabiliz konektatzea nahi baduzu.\n\nHau kenduz gero, denbora laburragoan konektatuko da eMule zerbitzarietara, baina LowID konexio faltsuak jaso daitezke."
-    IDS_FIRSTRUNASSIST      "Lehenengo aldian konfigurazio laguntzailea hastea nahi al duzu?"
     IDS_FIRSTAUTOCON        "Aukera hau aktibatu eMule hasieran konektatzea nahi baduzu."
     IDS_FIRSTCOMPLETE       "Lehen aldiz laguntzailea erabili duzu.\r\rHauek eta beste hainbat konfigurazio, 'Hobespenak'-en alda daitezke. Informazio gehiago jasotzeko F1 pultsa dezakezu laguntzan sartzeko!"
 END
@@ -1166,18 +1072,14 @@ END
 STRINGTABLE 
 BEGIN
     IDS_WEB_SHOW_UPLOAD_QUEUE "Itxarote ilara erakutsi"
-    IDS_WEB_HIDE_UPLOAD_QUEUE "Itxarote ilara ezkutatu"
     IDS_WEB_GZIP_COMPRESSION "Gzip konpresioa"
     IDS_WEB_GZIP_COMMENT    "Trafikoa aurreztu, batez ere grafiketan."
-    IDS_WEB_UPLOAD_QUEUE_COMMENT 
-                            "Itxarote ilara aktibatu edo desaktibatu trafikoaren orrian."
     IDS_WEB_REFRESH_TIME    "Orrien eguneratzerako denbora-tartea"
     IDS_WEB_REFRESH_COMMENT "Denbora segundutan (zero desaktibatzeko):"
     IDS_SV_URL              "URL"
     IDS_WS_RELOAD_TMPL      "Txantiloia"
     IDS_SV_DEBUGLOG         "Erroreen log fitxategia"
     IDS_WS_PASS             "Pasahitza"
-    IDS_WEB_FILESETTINGS    "Fitxategi konfigurazioa"
     IDS_WS_ERR_LOADTEMPLATE "Ezin dira txantiloiak kargatu: Ordezkatu %s bertsio berri batekin!"
     IDS_WEB_CONLIMITS       "Konexio mugak"
     IDS_INFLST_USER_TOTALDOWNLOAD "Jaitsitakoa guztira"
@@ -1187,7 +1089,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_WEB_BADLOGINATTEMPT "Web zerbitzaria: Errorea sesio irekitzerakoan"
-    IDS_ERR_TOOLARGEFILE    "edonkey protokoloak onartzen duena baino fitxategi handiagoa (>=4GB)"
+    IDS_ERR_TOOLARGEFILE    "edonkey protokoloak onartzen duena baino fitxategi handiagoa (>=256GB)"
     IDS_MSGONLYFRIENDS      "Lagunengandik bakarrik onartu"
     IDS_MSGONLYSEC          "Bezero ezagunengandik bakarrik onartu"
     IDS_DAY_MO_SA           "Astelehena-Larunbata"
@@ -1211,7 +1113,6 @@ BEGIN
     IDS_WEBSRV              "Web zerbitzaria"
     IDS_SW_REFETCHRES       "Emaitzak berrikusi"
     IDS_FILEHASH            "Hash fitxategia"
-    IDS_GLOBALSEARCH2       "Bilaketa orokorra"
     IDS_PW_PROXY            "Proxy-a"
     IDS_PROXY_ENABLE        "Proxy-a aktibatu"
     IDS_PROXY_TYPE          "Proxy mota:"
@@ -1237,7 +1138,6 @@ BEGIN
     IDS_WIZ1_END_BTN_HINT   "Laguntzailea ixteko, 'Amaitu'-n klik egin."
     IDS_WIZ1_UPLOAD_SUBTITLE "Zati osoen transferentzia"
     IDS_DL_RESUMENEXT       "Pausatutako hurrengo fitxategia jarraitu"
-    IDS_DONTCHANGE          "Ez aldatu"
     IDS_STARTPRIO           "Kategoria honentzako lehentasuna"
     IDS_PREF_STARTNEXTFILECAT "kategoria berbera hobetsi"
     IDS_REPAINTGRAPHS       "Estatistiken grafikak berriz ez marraztu tamainuz aldatzean"
@@ -1276,7 +1176,6 @@ BEGIN
     IDS_STATS_CUMULATIVE    "Guztira"
     IDS_STATS_OVRHD         "Gainkarga"
     IDS_STATS_RECORDS       "Errekorrak"
-    IDS_STATS_OVRHD2        "Gainkarga: %s (%s pakete)"
     IDS_STATS_COMPDL        "Jaitsiera osoak"
     IDS_STATS_SVRECWORKING  "Zerbitzari aktibo max."
     IDS_STATS_SVRECUSERS    "Konektatutako erabiltzaile max."
@@ -1290,7 +1189,6 @@ BEGIN
     IDS_SEARCH_COLUMN       "Errenkadaka bilatu"
     IDS_STATS_SHRECSIZE     "Konpartitutako kopuru maximoa"
     IDS_STATS_SHRECASIZE    "Fitxategi handienen batez bestekoa"
-    IDS_STATS_MYRUNTIME     "Exekuzio denbora guztira: %s"
     IDS_STATS_SESSION       "Sesioa"
     IDS_STATS_SRATIO        "IG:JA indizea sesio honetan:"
     IDS_STATS_CRATIO        "IG:JA indizea guztira:"
@@ -1312,15 +1210,12 @@ BEGIN
     IDS_STATS_AVGDATAULSES  "Igotako batez bestekoa sesioko"
     IDS_STATS_ICHSAVED      "I.C.H. bidez konpondutako zatiak: %u"
     IDS_STATS_MBRESET_TXT   "Ziur zaude estatistiketako datuak haseratu nahi dituzuna?\n\nIritziz aldatuz gero, 'Estatistikak berreskuratu'-n klik eginez berreskura ditzakezu."
-    IDS_STATS_MBRESET_CAP   "Haseratzea baieztatu"
     IDS_STATS_MBRESTORE_TXT "Ziur zaude estatistikak berreskuratu nahi dituzuna?\n\n'Estatistikak berreskuratu'-n berriz ere klik eginez, oraingo estatistikak berreskuratuko dituzu."
-    IDS_STATS_MBRESTORE_CAP "Berreskuratzea baieztatu"
     IDS_ERR_NOSTATBKUP      "ERROREA: Ezin izan da estatistiken segurtasun kopia aurkitu..."
     IDS_STATS_NFOLOADEDBKUP "Estatistiken datuak kargatu dira segurtasun kopiatik..."
     IDS_STATS_NFORESET      "Estatistikak haseratu dira!"
     IDS_STATS_BNRESET       "Estatistikak haseratu"
     IDS_STATS_BNRESTORE     "Estatistikak berreskuratu"
-    IDS_CONNECTIONSTATISTICS "Konexio estatistikak"
     IDS_PPGSTATS_YSCALE     "Konexio estatistikentzat Y ardatzaren eskala:"
 END
 
@@ -1346,7 +1241,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_STATS_OLDCLIENTS    "Zaharra"
     IDS_STATS_PRTDEF        "Predeterminatua"
     IDS_STATS_PRTOTHER      "Beste bat"
     IDS_STATS_MNUTREETITLE  "Estatistiken zuhaitza"
@@ -1395,13 +1289,8 @@ BEGIN
     IDS_SEARCH_MISSINGNOTRIGHT "NOT eragile logikoari eskuin aldekoa falta zaio"
     IDS_SEARCH_MISSINGEXPRPARANT "Adierazpena falta da '(' ')'-rentzako"
     IDS_SEARCH_MISSINGCLOSINGPARANT "Amaitzeko ')' falta da"
-    IDS_SEARCH_MISSINGANDLEFT "AND eragile logikoari ezker aldekoa falta zaio"
-    IDS_SEARCH_MISSINGORLEFT "OR eragile logikoari ezker aldekoa falta zaio"
-    IDS_SEARCH_MISSINGNOTLEFT "NOT eragile logikoari ezker aldekoa falta zaio"
     IDS_SEARCH_EXPRERROR    "Gramatika errorea aurkitu da adierazpenean"
     IDS_SEARCH_TOOCOMPLEX   "Adierazpena konplexuegia da"
-    IDS_SEARCH_INVALIDMINMAX 
-                            "Baliogabeko unitateak adierazitako tamainua max/min-entzako"
 END
 
 STRINGTABLE 
@@ -1423,7 +1312,6 @@ STRINGTABLE
 BEGIN
     IDS_SELECT_FONT         "Letra-mota aukeratu"
     IDS_SERVER_LIMITS       "Fitxategi muga altua/baxua"
-    IDS_SERVERINFO          "Zerbitzari informazioa"
     IDS_KBITSSEC            "kBits/seg."
     IDS_KBYTESSEC           "kBytes/seg."
     IDS_ERR_CREATE_DIR      "Errorea karpeta sortzerakoan %s ""%s"" - %s"
@@ -1448,14 +1336,13 @@ BEGIN
                             "Aldaketek eragina izan dezaten, eMule berrabiarazi behar duzu!"
     IDS_CREDITSEXPIRED      ", %i bezero ezabatu dira (5 hilabetetan ikusi ez direnak)"
     IDS_SOURCESINFO         "%i  (Erabilgarriak: %i, NNP: %i, A4AF: %i)"
-    IDS_SHOW_META_DATA      "MetaDatuak erakutsi..."
     IDS_META_DATA           "MetaDatuak"
     IDS_TIMEBEFORE          "(duela %s)"
     IDS_FD_TIMEDATE         "Datak"
     IDS_FILEINFORMATION     "Fitxategi informazioa"
     IDS_STATS_FREESPACE     "Leku librea"
     IDS_IRC_HELPCHANNEL     "Laguntza kanaletara konektatu."
-    IDS_IRC_HELPCHANNELPERFORM "/join #emule | /join #emule-spanish"
+    IDS_IRC_HELPCHANNELPERFORM "/join #emule-spanish"
     IDS_IRC_ACCEPTLINKSFRIENDS "Lagunengandik bakarrik onartu loturak"
     IDS_COMPLSOURCES        "Iturri osoak"
     IDS_CHECKNOENDTIME      "iraungipenik ez"
@@ -1464,7 +1351,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_MATCH_KEYWORDS      "Hitz gakoak"
     IDS_FAILEDREOPEN        "Errore larria '%s' (%s) zatien fitxategia berriz irekitzerakoan!"
     IDS_ERR_PREVIEWALREADY  "Badago aurreikuspen eskaera bat lehendik ere bezero honentzat"
     IDS_ERR_PREVIEWFAILED   "'%s' erabiltzaileak aurreikuspenak huts egin du"
@@ -1485,7 +1371,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_CREATEHOSTNAMESRCLINK "eD2K lotura kopiatu (PC izena)"
     IDS_HASHINGFILESCOUNT   " (%u zatitzen)"
     IDS_CHECKDISKSPACE      "Leku librea aztertzen"
     IDS_YOURHOSTNAME        "Norbere eD2K loturentzako PC izena"
@@ -1534,7 +1419,7 @@ BEGIN
     IDS_TRANSFER_RATE_LABEL "Transferentzia indizea:"
     IDS_SAVELOG             "Log fitxategia gorde"
     IDS_CMT_COPYCLIPBOARD   "Iruzkina kopiatu"
-    IDS_ASKDOWNLOADLANG     "Aukeratutako hizkuntza ez dago instalatuta. ¿eMulek eMule-project.net-etik jaistea nahi al duzu?"
+    IDS_ASKDOWNLOADLANG     "Aukeratutako hizkuntza ez dago instalatuta. eMulek eMule-project.net-etik jaistea nahi al duzu?"
     IDS_ASKDOWNLOADLANGCAP  "Hizkuntza fitxategiak jaitsi dira"
     IDS_DELETESELECTED      "Ezabatu"
     IDS_ERR_FAILEDDOWNLOADLANG 
@@ -1594,7 +1479,6 @@ BEGIN
     IDS_MINBITRATE          "Bitrate min. [kBit/s]"
     IDS_KAD_RECHECKFW       "Suhesia aztertu"
     IDS_SHAREDTITLE         "ED2K|Kad konpartitutakoa"
-    IDS_WARNINGNOBS         "Arrankea ezeztatu (Kad desaktibatuta edo dagoeneko konektatuta)."
     IDS_FIREWALLED          "Suhesia erabiltzen"
     IDS_KADEMLIA            "Kad"
     IDS_KADCONTACTLAB       "Kontaktuak"
@@ -1610,7 +1494,6 @@ BEGIN
     IDS_LOG_SECURE_IDENT    "Identifikazioa segurua log fitxategian gorde"
     IDS_LOG_FILTERED_IPS    "Iragazitako/Baztertutako IP-ak log fitxategian gorde"
     IDS_LOG_FILE_SAVING     "Fitxategia gordetzerakoan log fitxategian erregistratu"
-	  IDS_IPFILTERFILES       "IP iragazki fitxategi guztiak (*ipfilter.dat;*ip.prefix;*.p2b;*.p2p;*.p2p.txt;*.zip;*.gz)|*ipfilter.dat;*ip.prefix;*.p2b;*.p2p;*.p2p.txt;*.zip;*.gz|eMule IP iragazki fitxategiak (*ipfilter.dat;*ip.prefix)|*ipfilter.dat;*ip.prefix|Peer Guardian fitxategiak (*.p2b;*.p2p;*.p2p.txt)|*.p2b;*.p2p;*.p2p.txt|Testu fitxategiak (*.txt)|*.txt|ZIP fitxategiak (*.zip;*.gz)|*.zip;*.gz|Fitxategi guztiak (*.*)|*.*||"
     IDS_DELETEIPFILTERS     "Aukeratutako IP iragazkiak ezabatu nahi dituzu?"
     IDS_TOTAL_IPFILTER_LABEL "Iragazitako IP-ak guztira:"
     IDS_TOTAL_IPS_LABEL     "IP-ak guztira:"
@@ -1679,7 +1562,6 @@ BEGIN
     IDS_DISABLEPEERACHE     "PeerCache-tik jaitsiera desaktibatu"
     IDS_SOURCESWAPBLOCKED   "Iturrien trukea blokeatuta"
     IDS_A4AF_CHECK_THIS_NOW "Iturri hau aztertu orain (debug)"
-    IDS_SOURCEEXCHANGESWAP  "Iturri tenporalen trukea"
     IDS_NEWMSG              "'%s' (IP:%s)-ren mezu berria"
     IDS_PREF_STARTNEXTFILECATONLY "kategoria berdinean soilik"
     IDS_LOG_ULDL_EVENTS     "Igoera/Jaitsiera gertaerak log fitxategian gorde"
@@ -1716,7 +1598,6 @@ BEGIN
     IDS_CHAT_DOWNLOADED     "Jaitsitakoa:"
     IDS_CHAT_UPLOADED       "Igotakoa:"
     IDS_CHAT_IDENT          "Identifikazioa:"
-    IDS_CHAT_CLIENT         "Bezeroa:"
 END
 
 STRINGTABLE 
@@ -1762,7 +1643,6 @@ BEGIN
     IDS_META_SRCIP          "Iturriaren IP-a"
     IDS_META_SRCTYPE        "Iturri mota"
     IDS_SEARCH_UNICODE      "Unicoderekin bilatu"
-    IDS_PERSEC              "/s"
 END
 
 STRINGTABLE 
@@ -1917,10 +1797,10 @@ BEGIN
     IDS_VIEWCOLLECTION      "Kolekzioa ikusi"
     IDS_COLL_TEXTFORMAT     "Kolekzioa testu sinplezko formatuan gorde"
     IDS_SEARCHAUTHORCOLLECTION "Egilearen kolekzioak bilatu"
-    IDS_ERR_DUPL_FILES      "Duplicate shared files: ""%s"" and ""%s"""
+    IDS_ERR_DUPL_FILES      "Konpartitutako fitxategia bikoiztua: ""%s"" eta ""%s"""
     IDS_USS_TRACEROUTEOFTENFAILED 
-                            "UploadSpeedSense: Tracerouting failed too many times. Disabling Upload SpeedSense."
-    IDS_USS_STARTING        "UploadSpeedSense: Done with preparations. Starting control of upload speed. (First 60 seconds will be in fast reaction mode)"
+                            "UploadSpeedSense: Tracerouting-ak behin baino gehiagotan huts egin du."
+    IDS_USS_STARTING        "UploadSpeedSense: Prest. Igoera abiaduraren kontrola hasi da. (Lehen 60 segundoak erreakzio azkarrean izango dira)"
     IDS_USS_MANUALUPLOADLIMITDETECTED 
                             "UploadSpeedSense: Raised upload limit in prefs detected. Going into fast reaction mode for 60 seconds."
     IDS_USS_STATE_PREPARING "Prestatzen..."
@@ -1957,8 +1837,74 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ERR_FSCANTHANDLEFILE 
-                            "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
-    IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
+                            "Ezin duzu fitxategi hau jaitsi zure fitxategi sistemak ez duelako 4 GB-tik gorako fitxategirik onartzen, NTFS sistema erabiltzea komeniko litzaizuke"
+    IDS_NEWVERSIONAVLBETA   "Beta bertsio hau zaharra da. Kontuan izanez beta bertsioak akatsak izan ditzakeela, lehenbailehen bertsio egonkor bat instalatzea gomendatzen dizugu!"
+    IDS_KADSEARCHACTIVE     "(Kad bilaketa egiten...)"
+    IDS_BOLD                "Testu beltza aktibatu/desaktibatu"
+    IDS_UNDERLINE           "Azpimarratutako testua aktibatu/desaktibatu"
+    IDS_COLOUR              "Testuaren kolorea hautatu (atzeko kolorea aukerakoa)"
+    IDS_RESETFORMAT         "Formatua leheneratzen du (leheneratze etiketa bidaltzen du)"
+    IDS_RESTORESEARCHPARAMS "Bilaketa parametroak leheneratu"
+    IDS_COMMAND             "Komandoa"
+    IDS_ARGUMENTS           "Argumentuak"
+    IDS_AP_CREATEPREVCOPY   "Aurreikuspen fitxategia sortu"
+    IDS_ARCHIVEDETAILS      "Fitxategi xehetasunak"
+    IDS_ARCHTYPE            "Fitxategi mota"
+    IDS_ATTRIBUTES          "Atributuak"
+    IDS_LASTMODIFIED        "Azken aldaketa"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_RARFULLENCR         "Kodetutako burualdea - ezin da fitxategia irakurri."
+    IDS_ARCPARSED           "Fitxategia eskaneatu egin da."
+    IDS_ARCPREV_LISTMAYBEINCOMPL "Fitxategi zerrenda osagabe egon liteke."
+    IDS_ARCPREV_DIRNOTFOUND "Ez da eduki-taula aurkitu."
+    IDS_ARCPREV_INSUFFDATA  "Ez dago datu nahikoa."
+    IDS_PASSWPROT           "Pasahitz bidezko babesa"
+    IDS_ARCPREV_DIRSUCCREAD "Eduki-taula ongi irakurri da."
+    IDS_ARCPREV_UNKNOWNFORMAT "(ezezaguna/onartugabea)"
+    IDS_ARCPREV_PLEASEWAIT  "Fitxategia eskaneatzen..."
+    IDS_OBFUSCATION         "Kamuflatzea"
+    IDS_SUPPORTED           "Onartua"
+    IDS_ESTIMATED           "zenbatetsitakoa"
+    IDS_MEDIAINFO_DLLMISSING 
+                            "MediaInfo liburutegia instalatu gabe dago. Audio/Bideo fitxategien inguruko informazio gehigarria eskuratu nahi baduzu,\r\njaitsi MediaInfo liburutegia http://sourceforge.net/projects/mediainfo/ helbidetik eta MediaInfo.dll fitxategia eMuleren\r\n""%s"" instalazio direktorioan kopiatu.\r\n"
+    IDS_WARNING_WRONGFILEEXTENTION 
+                            "Oharra: ""%s"" fitxategiaren luzapenak ez du orokorrean fitxategi mota horrek\r\nizaten duen luzapenarekin bat egiten. Komenigarria izan liteke fitxategiaren izena aldatzea\r\n""%s"" fitxategi luzapen egoki bat\r\nezarriz fitxategia erabili ahal izateko.\r\n"
+    IDS_MEDIAINFO_DRMWARNING 
+                            "Oharra: Badirudi ""%s"" fitxategia DRM (Digital Rights Management) bidez babestuta dagoela.\r\nZiurrenik ezingo duzu fitxategi hori erabili jabearen lizentziarik gabe.\r\n"
+    IDS_LOADFILTER_EMTOOLBAR "eMule Toolbar Bitmap Fitxategiak"
+    IDS_LOADFILTER_EMSKINFILES "eMule Itxura Fitxategiak"
+    IDS_WEB_REMOTE_LINK_ADDED "Lotura gehitu da: "
+    IDS_WEB_REMOTE_LINK_NOT_ADDED "Lotura ez da gehitu. Pasahitz ezegokia."
+    IDS_OPTIONS             "Aukerak"
+    IDS_ERR_FAILEDTOLOAD    "Errorea %s kargatzerakoan: %s "
+    IDS_RUNNINGRESTRICTED   "eMule murriztutako baimenekin exekutatzen ari da"
+    IDS_ARCHPREV_ATTRIBINFO "Fitxategi atributuak honakoak izan daitezke:\r\n\r\nP\tfitxategia pasahitzez babestua dago\r\nD\tdirektorioa da\r\nC\tIruzkina\r\nLx\tKonpresio maila x\r\nM\tkonprimatutako datuak ez dira guztiz jaitsi oraindik\r\n<\taurreko ataletik jarraitutako fitxategia\r\n>\tfitxategiak hurrengo atalean jarraitzen du\r\n"
+    IDS_CONTENT_INFO        "Edukiaren Info."
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_MESSAGESCOMMENTS    "Mezuak eta Iruzkinak"
+    IDS_DISABLEOBFUSCATION  "Kamuflatutako konexioentzako aukera desaktibatu"
+    IDS_ONLYOBFUSCATED      "Kamuflatutako konexioak bakarrik baimendu (ez da gomendagarria)"
+    IDS_ENABLEOBFUSCATION   "Protokolo Kamuflatzea aktibatu"
+    IDS_PROTOCOLOBFUSCATION "Protokoloa Kamuflatzea"
+    IDS_CONNECTINGTOOBFUSCATED 
+                            "%s(e)ra konektatzen (%s:%i - Protokolo Kamuflatzea erabiltzen) ..."
+    IDS_CONNECTEDTOOBFUSCATED "Kamuflatutako konexioa egin da: %s"
+    IDS_VERIFIED            "egiaztatuta"
+    IDS_OBFUSCATED          "Kamuflatuta"
+    IDS_UNVERIFIED          "egiaztatu gabe"
+    IDS_INVALIDFILEEXT      "Baliogabeko fitxategi luzapena"
+    IDS_UNKNOWNFILEEXT      "Fitxategi luzapen ezezaguna"
+    IDS_US_STALLEDW4BR      "Stalled! Waiting for block request."
+    IDS_US_STALLEDREADINGFDISK "Stalled! Reading from disk."
+    IDS_SERVERFEATURE_INTTYPETAGS "Integer type tags"
 END
 
 #endif    // Basque resources

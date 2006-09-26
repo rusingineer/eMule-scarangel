@@ -143,7 +143,7 @@ void CIrcMain::ProcessLink( CString sED2KLink )
 					CString sDefName;
 					CED2KServerLink* pSrvLink = pLink->GetServerLink();
 					_ASSERT( pSrvLink !=0 );
-					CServer* pSrv = new CServer(pSrvLink->GetPort(),ipstr(pSrvLink->GetIP()));
+					CServer* pSrv = new CServer(pSrvLink->GetPort(), pSrvLink->GetAddress());
 					_ASSERT( pSrv !=0 );
 					pSrvLink->GetDefaultName(sDefName);
 					pSrv->SetListName(sDefName);
@@ -329,8 +329,8 @@ void CIrcMain::ParseMessage( CString sRawMessage )
 					SetVerify();
 					uint32 uNewClientID = _tstoi(sRawMessage.Tokenize(_T(":"), iIndex));
 					uint16 uNewClientPort = (uint16)_tstoi(sRawMessage.Tokenize(_T("|"), iIndex));
-					/*uint32 newClientServerIP = _tstoi(*/sRawMessage.Tokenize(_T(":"), iIndex)/*)*/;
-					/*uint16 newClientServerPort = (uint16)_tstoi(*/sRawMessage.Tokenize(_T("|"), iIndex)/*)*/;
+					sRawMessage.Tokenize(_T(":"), iIndex);
+					sRawMessage.Tokenize(_T("|"), iIndex);
 					CString sHash = sRawMessage.Tokenize(_T("|"), iIndex);
 					uchar ucharUserID[16];
 					if (!strmd4(sHash,ucharUserID))
@@ -377,7 +377,7 @@ void CIrcMain::ParseMessage( CString sRawMessage )
 		{
 			//Channel join
 			CString sChannel = sRawMessage.Tokenize(_T(":"), iIndex);
-			//If this was you, just add a message to create a new channel.. 
+			//If this was you, just add a message to create a new channel..
 			//The list of Nicks received from the server will include you, so don't
 			//add yourself here.
 			if( sNickname == m_sNick )
@@ -482,7 +482,7 @@ void CIrcMain::ParseMessage( CString sRawMessage )
 
 				if( sCommand.IsEmpty() )
 					throw CString( _T("SMIRC Error: Received Invalid Mode change.") );
-	
+
 				CString sParams = sRawMessage.Mid(iIndex);
 				m_pwndIRC->ParseChangeMode( sTarget, sNickname, sCommands, sParams );
 				return;
@@ -512,7 +512,7 @@ void CIrcMain::ParseMessage( CString sRawMessage )
 		if( sCommand.GetLength() == 3 )
 		{
 			CString sUser = sRawMessage.Tokenize(_T(" "), iIndex);
-			
+
 			UINT uCommand = _tstoi(sCommand);
 			switch(uCommand)
 			{
@@ -567,7 +567,7 @@ void CIrcMain::ParseMessage( CString sRawMessage )
 								sSettings.Replace( _T("\004"), _T("%") );
 								CString sModes = sSettings.Mid(1, sSettings.Find(')')-1);
 								sSettings = sSettings.Mid(sSettings.Find(')')+1);
-								
+
 								//Set our channel modes actions
 								m_pwndIRC->m_listctrlNickList.m_sUserModeSettings = sModes;
 								//Set our channel modes symbols
@@ -1551,16 +1551,7 @@ void CIrcMain::ParsePerform()
 			// be change to what ever channel by just changing the language.. I will just have to check these strings
 			// before release.
 			// This also allows the help string to do more then join one channel. It could add other features later.
-			// ==> own IRC channel - Max
-			/*
 			CString sJoinHelpChannel = GetResString(IDS_IRC_HELPCHANNELPERFORM);
-			*/
-			//remark: IDS_IRC_HELPCHANNELPERFORM is not needed...because there is no other support channel for MAXmod and ScarAngel @ the moment - Max
-			//        don't link to #emule-german, #emule-english a.s.o. ->this channels only support the original client
-
-			CString sJoinHelpChannel = _T("/join #emule | /join #emule-deutschland");
-			// <== own IRC channel - Max
-
 			sJoinHelpChannel.Trim();
 			if (!sJoinHelpChannel.IsEmpty())
 			{

@@ -99,7 +99,7 @@ void CCorruptionBlackBox::TransferredData(uint64 nStartPos, uint64 nEndPos, cons
 	// we store records seperated for each part, so we don't have to search all entries everytime
 	
 	// convert pos to relative block pos
-	uint16 nPart = (uint16)(nStartPos / PARTSIZE);
+	UINT nPart = (UINT)(nStartPos / PARTSIZE);
 	uint64 nRelStartPos = nStartPos - (uint64)nPart*PARTSIZE;
 	uint64 nRelEndPos = nEndPos - (uint64)nPart*PARTSIZE;
 	if (nRelEndPos >= PARTSIZE){
@@ -178,7 +178,7 @@ void CCorruptionBlackBox::VerifiedData(uint64 nStartPos, uint64 nEndPos){
 		return;
 	}
 	// convert pos to relative block pos
-	uint16 nPart = (uint16)(nStartPos / PARTSIZE);
+	UINT nPart = (UINT)(nStartPos / PARTSIZE);
 	uint64 nRelStartPos = nStartPos - (uint64)nPart*PARTSIZE;
 	uint64 nRelEndPos = nEndPos - (uint64)nPart*PARTSIZE;
 	if (nRelEndPos >= PARTSIZE){
@@ -253,7 +253,7 @@ void CCorruptionBlackBox::CorruptedData(uint64 nStartPos, uint64 nEndPos){
 		return;
 	}
 	// convert pos to relative block pos
-	uint16 nPart = (uint16)(nStartPos / PARTSIZE);
+	UINT nPart = (UINT)(nStartPos / PARTSIZE);
 	uint64 nRelStartPos = nStartPos - (uint64)nPart*PARTSIZE;
 	uint64 nRelEndPos = nEndPos - (uint64)nPart*PARTSIZE;
 	if (nRelEndPos >= PARTSIZE){
@@ -312,8 +312,8 @@ void CCorruptionBlackBox::CorruptedData(uint64 nStartPos, uint64 nEndPos){
 				//Xman CBBF - not needed:
 				//aGuiltyClients.Add(m_aaRecords[nPart][i].m_dwIP);
 			}
-			}
 		}
+	}
 //Xman
 // NEO: CBBF - [CorruptionBlackBoxFix] -- Xanatos -->
 	AddDebugLogLine(DLP_HIGH, false, _T("Found and marked %I64u recorded bytes of %I64u as corrupted in the CorruptionBlackBox records"), nDbgVerifiedBytes, (nEndPos-nStartPos)+1);
@@ -321,7 +321,7 @@ void CCorruptionBlackBox::CorruptedData(uint64 nStartPos, uint64 nEndPos){
 
 // David: to avoide fals epositivs we need to wait with the evaluation untill all blocks have been verifyed, 
 // therefor we have splited this method in two and call the secund when we finished to hash the entier part
-void CCorruptionBlackBox::EvaluateData(uint16 nPart)
+void CCorruptionBlackBox::EvaluateData(UINT nPart)
 {
 	CArray<uint32, uint32> aGuiltyClients;
 	for (int i= 0; i < m_aaRecords[nPart].GetCount(); i++)

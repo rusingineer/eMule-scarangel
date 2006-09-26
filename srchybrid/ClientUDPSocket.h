@@ -16,6 +16,7 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
 #include "UploadBandwidthThrottler.h" // ZZ:UploadBandWithThrottler (UDP)
+#include "EncryptedDatagramSocket.h"
 
 class Packet;
 
@@ -26,11 +27,13 @@ struct UDPPack
 	uint32 dwIP;
 	uint16 nPort;
 	uint32 dwTime;
+	bool	bEncrypt;
+	uchar	achTargetClientHash[16];
 	//uint16 nPriority; We could add a priority system here to force some packets.
 };
 #pragma pack()
 
-class CClientUDPSocket : public CAsyncSocket, public ThrottledControlSocket // ZZ:UploadBandWithThrottler (UDP)
+class CClientUDPSocket : public CAsyncSocket, public CEncryptedDatagramSocket, public ThrottledControlSocket // ZZ:UploadBandWithThrottler (UDP)
 {
 public:
 	CClientUDPSocket();
@@ -41,7 +44,7 @@ public:
 	bool	Create();
 	bool	Rebind();
 	uint16	GetConnectedPort()			{ return m_port; }
-	bool	SendPacket(Packet* packet, uint32 dwIP, uint16 nPort);
+	bool	SendPacket(Packet* packet, uint32 dwIP, uint16 nPort, bool bEncrypt, const uchar* pachTargetClientHash);
     SocketSentBytes  SendControlData(uint32 maxNumberOfBytesToSend, uint32 minFragSize); // ZZ:UploadBandWithThrottler (UDP)
 
 protected:

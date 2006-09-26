@@ -19,6 +19,7 @@
 #pragma warning(disable:4516) // access-declarations are deprecated; member using-declarations provide a better alternative
 #pragma warning(disable:4244) // conversion from 'type1' to 'type2', possible loss of data
 #pragma warning(disable:4100) // unreferenced formal parameter
+#pragma warning(disable:4702) // unreachable code
 //Xman
 #include <crypto.v52.1/rsa.h>
 #include <crypto.v52.1/base64.h>
@@ -26,6 +27,7 @@
 #include <crypto.v52.1/files.h>
 #include <crypto.v52.1/sha.h>
 //Xman end
+#pragma warning(default:4702) // unreachable code
 #pragma warning(default:4100) // unreferenced formal parameter
 #pragma warning(default:4244) // conversion from 'type1' to 'type2', possible loss of data
 #pragma warning(default:4516) // access-declarations are deprecated; member using-declarations provide a better alternative

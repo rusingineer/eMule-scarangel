@@ -157,6 +157,7 @@ BOOL CStatisticsDlg::OnInitDialog()
 	CResizableDialog::OnInitDialog();
 	EnableWindow(FALSE);
 	SetAllIcons();
+	m_bTreepaneHidden=false;
 
 	if (theApp.m_fontSymbol.m_hObject)
 	{
@@ -314,7 +315,7 @@ BOOL CStatisticsDlg::OnInitDialog()
 	// statistic fix 
 	DoResize_HL(PosStatVnewY - PosStatVinitY);
 	DoResize_HR(PosStatVnewZ - PosStatVinitZ);
-	*/ 
+	*/
 	//Xman end
 
 	Localize();
@@ -460,6 +461,18 @@ void CStatisticsDlg::DoResize_V(int delta)
 	GetDlgItem(IDC_STATTREE)->GetWindowRect(rcspl);
 	ScreenToClient(rcspl);
 	thePrefs.SetSplitterbarPositionStat((int)floor((float)(rcspl.right*100.0f)/(float)rcW.Width())); // Xman
+
+	if (rcspl.left==rcspl.right) {
+		GetDlgItem(IDC_STATTREE)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_BNMENU)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC_LASTRESET)->ShowWindow(SW_HIDE);
+		m_bTreepaneHidden=true;
+	} else if (m_bTreepaneHidden) {
+		m_bTreepaneHidden=false;
+		GetDlgItem(IDC_STATTREE)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_BNMENU)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_STATIC_LASTRESET)->ShowWindow(SW_SHOW);
+	}
 
 	initCSize();
 
@@ -1305,6 +1318,11 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 								   CastItoIShort(theStats.GetDownDataOverheadKadPackets()));
 					stattree.SetItemText( down_soh[i] , cbuffer );
 					i++;
+					//Xman bandwidthcontrol:  count obfuscation data
+					cbuffer.Format(_T("Obfuscation: %s"), CastItoXBytes(theApp.pBandWidthControl->GeteMuleInObfuscation(),false,false));
+					stattree.SetItemText(down_soh[i], cbuffer);
+					i++;
+					//Xman end
 				}
 			}
 			// TRANSFER -> DOWNLOADS -> CUMULATIVE SECTION
@@ -1803,6 +1821,11 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 								   CastItoIShort(theStats.GetUpDataOverheadKadPackets()));
 					stattree.SetItemText(up_soh[i], cbuffer);
 					i++;
+					//Xman bandwidthcontrol:  count obfuscation data
+					cbuffer.Format(_T("Obfuscation: %s"), CastItoXBytes(theApp.pBandWidthControl->GeteMuleOutObfuscation(),false,false));
+					stattree.SetItemText(up_soh[i], cbuffer);
+					i++;
+					//Xman end
 				}
 			} // - End Transfer -> Uploads -> Session Section
 			// TRANSFER -> UPLOADS -> CUMULATIVE SECTION
@@ -3487,7 +3510,7 @@ void CStatisticsDlg::ShowInterval()
 		m_Statistics.m_nXGrids = m_DownloadOMeter.m_nXGrids = m_UploadOMeter.m_nXGrids = shownSecs / 3600;
 		
 		shownSecs /= thePrefs.GetZoomFactor();
-		if(shownSecs <= 0) //Xman show correct x-axis by bleusonicboy
+		if(shownSecs <= 0) 
 		{
 			m_DownloadOMeter.Reset();
 			m_DownloadOMeter.SetXUnits(GetResString(IDS_STOPPED)); 

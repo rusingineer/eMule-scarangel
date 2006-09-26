@@ -52,7 +52,8 @@ CP2PThreat::IsMachineInfected()
 	GetWindowsDirectory(windows_dir,MAX_PATH);
 	// Save path
 	GetCurrentDirectory(MAX_PATH, buffer);
-	for (int i = 0; Threats[i].threat_name != NULL; ++i)
+	int i;
+	for (i = 0; Threats[i].threat_name != NULL; ++i)
 	{
 		//fprintf(fout,"%d:\n",i);
 		bInfected = true;

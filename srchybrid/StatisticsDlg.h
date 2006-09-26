@@ -72,7 +72,7 @@ private:
 	HTREEITEM	h_upload, h_up_session, up_S[6], h_up_total, up_T[2]; // Uploads Session and Total Items and Headers
 	HTREEITEM	hup_scb, up_scb[7], hup_spb, up_spb[3], hup_ssb, up_ssb[2]; // Session Uploaded Byte Breakdowns
 	HTREEITEM	hup_tcb, up_tcb[7], hup_tpb, up_tpb[3], hup_tsb, up_tsb[2]; // Total Uploaded Byte Breakdowns
-	HTREEITEM	hup_soh, up_soh[4], hup_toh, up_toh[4]; // Upline Overhead
+	HTREEITEM	hup_soh, up_soh[5 /*Xman +1 count obfuscation data*/], hup_toh, up_toh[4]; // Upline Overhead
 	HTREEITEM	up_ssessions[4], up_tsessions[4]; // Breakdown of Upload Sessions
 	HTREEITEM	h_download, h_down_session, down_S[8], h_down_total, down_T[6]; // Downloads Session and Total Items and Headers
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
@@ -83,9 +83,9 @@ private:
 	HTREEITEM	hdown_scb, down_scb[9], hdown_spb, down_spb[3]; // Session Downloaded Byte Breakdowns
 	HTREEITEM	hdown_tcb, down_tcb[9], hdown_tpb, down_tpb[3]; // Total Downloaded Byte Breakdowns
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
-	HTREEITEM	hdown_soh, down_soh[4], hdown_toh, down_toh[4]; // Downline Overhead
+	HTREEITEM	hdown_soh, down_soh[5 /*Xman +1 count obfuscation data*/], hdown_toh, down_toh[4]; // Downline Overhead
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-//	HTREEITEM	down_ssessions[4], down_tsessions[4], down_sources[23 /*+1 Xman x4 Xtreme Mod: Count failed tcp-connections */]; // Breakdown of Download Sessions and Sources
+	//HTREEITEM	down_ssessions[4], down_tsessions[4], down_sources[23 /*+1 Xman Xtreme Mod: Count failed tcp-connections */]; // Breakdown of Download Sessions and Sources
 	HTREEITEM	down_ssessions[6], down_tsessions[4], down_sources[23 /*+1 Xman x4 Xtreme Mod: Count failed tcp-connections */]; // Breakdown of Download Sessions and Sources
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	HTREEITEM	h_connection, h_conn_session, h_conn_total; // Connection Section Headers
@@ -160,6 +160,7 @@ protected:
 	//MORPH END   - Added by SiRoB, Splitting Bar [O²]
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
+	bool	m_bTreepaneHidden;
 	CToolTipCtrl* m_TimeToolTips;
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnSysColorChange();

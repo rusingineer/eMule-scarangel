@@ -70,7 +70,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_HTTPDOWNLOAD_GETTING_FILE_INFORMATION "Získávání informací o souboru"
-    IDS_HTTPDOWNLOAD_FAIL_PARSE_ERROR "Pøi rozboru url se vyskytla chyba: %s"
     IDS_HTTPDOWNLOAD_GENERIC_ERROR 
                             "Bìhem pokusu o stahování souboru se vyskytla chyba:%s"
     IDS_HTTPDOWNLOAD_FAIL_CONNECT_SERVER 
@@ -95,10 +94,10 @@ BEGIN
     IDS_HSAV                "Hashset povolenı"
     IDS_FD_CORR             "Pokaené"
     IDS_HTTPDOWNLOAD_OK_TO_OVERWRITE 
-                            "Soubor '%s' u existuje.\nChcete ho pøepsat?"
+                            "Soubor '%s' u existuje.\nChcete jej pøepsat?"
     IDS_FD_RECOV            "Opravené"
     IDS_HTTPDOWNLOAD_FAIL_FILE_OPEN 
-                            "Bìhem vytváøení souboru pro stahování se vyskyla chyba:%s"
+                            "Bìhem vytváøení souboru pro stahování se vyskytla chyba:%s"
     IDS_HTTPDOWNLOAD_ABORTING_TRANSFER "Ukonèování pøenosu"
     IDS_FD_COMPR            "Komprimace"
     IDS_WIZARD_NETWORK      "Vyberte, které sítì chcete pouívat."
@@ -111,26 +110,22 @@ STRINGTABLE
 BEGIN
     IDS_MAIN_SOCKETERROR    "Kritická chyba: Nelze vytvoøit soket na portu %i"
     IDS_MAIN_BTN_DISCONNECT "Od&pojit"
-    IDS_MAIN_BTN_DISCONNECT_TOOLTIP "Odpojit od souèasného serveru"
     IDS_ERR_WRONGFILEID     "zasláno špatné ID souboru"
-    IDS_ERR_BADHASHSET      "pøijmuty pokaené nebo neplatné hashsety"
-    IDS_ERR_BADDATABLOCK    "pøijmuty pokaené nebo neplatné DataBlocky"
+    IDS_ERR_BADHASHSET      "pøijaty pokaené nebo neplatné hashsety"
+    IDS_ERR_BADDATABLOCK    "pøijaty pokaené nebo neplatné DataBlocky"
     IDS_ERR_ILLFORMEDHASH   "špatnì utvoøenı hash"
     IDS_ERR_BADED2KLINK     "nesprávnì zadanı eD2K odkaz"
     IDS_ERR_NOSLLINK        "Není ani eD2K server, ani odkaz na soubor"
     IDS_ERR_WRONGPACKAGESIZE "špatné velikost OP_FILEREQUEST paketu"
     IDS_ERR_WRONGHPACKAGESIZE "chybná velikost OP_HASHSETREQUEST paketu"
-    IDS_ERR_BADCLIENTACTION "Klient zpùsobil chybu nebo udìlal nìco špatného: %s. Odpojení klienta!"
     IDS_ERR_UNKNOWNCLIENTACTION 
                             "Neznámí klienti poslali extended protokol paket"
     IDS_ERR_OPENMET         "Chyba: Nepodaøilo se otevøít soubor part.met! (%s => %s)"
     IDS_ERR_BADMETVERSION   "Chyba: Neplatná verze souboru part.met! (%s => %s)"
-    IDS_ERR_BADGAP          "Neplatnı Gap-Tag v souboru part.met"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_EMPTYADRESSESDAT_TITLE "Nepodaøilo se získat seznam serverù"
     IDS_ERR_BADSERVERMETVERSION 
                             "Neplatné oznaèení verze v souboru server.met (0x%X)!"
     IDS_SERVERSFOUND        "Nalezeno %i serverù v souboru server.met"
@@ -140,7 +135,6 @@ BEGIN
                             "Bìhem ètení souboru server.met došlo k neoèekávané chybì: %s, nelze nahrát seznam serverù"
     IDS_ERR_SAVESERVERMET   "Nepodaøilo se uloit server.met!"
     IDS_PASSIVE             "Pasivní"
-    IDS_MAIN_CONNECTEDTO    "Pøipojení zaloeno na:"
     IDS_MAIN_BTN_CANCEL     "&Zrušit"
     IDS_AVAIL               "Dílù: %d , k dispozici: %d (%.1f%%)\n\n"
     IDS_TYPE                "Typ"
@@ -159,10 +153,8 @@ BEGIN
     IDS_PREFERENCE          "Priorita"
     IDS_PRIONOPREF          "Bez pøednosti"
     IDS_CONNECTTHIS         "Pøipojit k vybranım serverùm"
-    IDS_CHAT_WELCOME        "Instant Messaging\n  \nPro poslání zprávy kliknìte pravım tlaèítkem na kteréhokoli klienta a vyberte 'Poslat zprávu'"
-    IDS_MAIN_BTN_CANCEL_TOOLTIP "Zastaví souèasné pokusy o pøipojení"
     IDS_MAIN_BTN_CONNECT    "Pøipojit"
-    IDS_ERR_SAVESERVERMET2  "Nepodaøilo se uloit server.met! Nejspíše bude potøeba smazat server.met a nahradit ho souborem server.met.old!"
+    IDS_ERR_SAVESERVERMET2  "Nepodaøilo se uloit server.met! Nejspíše bude potøeba smazat server.met a nahradit jej souborem server.met.old!"
     IDS_NOTCONNECTED        "Nepøipojen"
     IDS_DISCONNECTED        "Odpojen"
     IDS_USERS               "Uivatel: %i"
@@ -174,7 +166,7 @@ STRINGTABLE
 BEGIN
     IDS_ERR_WRITEERROR      "Neoèekávaná chyba souboru bìhem zapisování %s : %s"
     IDS_ERR_COMPLETIONFAILED 
-                            "Neoèekávaná chyba souboru bìkem dokonèování %s. Soubor pozastaven, restartujte eMule pro novı pokus o dokonèení"
+                            "Neoèekávaná chyba souboru bìhem dokonèování %s. Soubor pozastaven, restartujte eMule pro novı pokus o dokonèení"
     IDS_ERR_DELETEFAILED    "Nepodaøilo se smazat %s, bude potøeba smazat soubor manuálnì"
     IDS_DOWNLOADDONE        "Dokonèeno stahování %s :-)"
     IDS_ERR_DELETE          "Nepodaøilo se smazat %s"
@@ -197,15 +189,13 @@ STRINGTABLE
 BEGIN
     IDS_LINKNOTADDED        "Nelze pøidat odkaz"
     IDS_MAIN_EXIT           "Opravdu chcete ukonèit eMule?"
-    IDS_MAIN_EXITTITLE      "Potvrzení o ukonèení"
     IDS_MAIN_POPUP_RESTORE  "Obnovit"
     IDS_CONNECTTOANYSERVER  "Pøipojit k jakémukoli serveru"
     IDS_EXIT                "&Konec"
     IDS_CONNECTING          "Pøipojování"
     IDS_FAILED              "neúspìšné"
-    IDS_ERR_BADSERVERREPLY  "O serveru byla pøijata poškoená nebo neplatná pøihlašovací odpovìï"
+    IDS_ERR_BADSERVERREPLY  "O serveru byla pøijata poškozená nebo neplatná pøihlašovací odpovìï"
     IDS_NEWCLIENTID         "Nové ID klienta je %u"
-    IDS_NOSHAREDFOLDERS     "ádné sdílené sloky"
     IDS_SHAREDFOLDERS       "Sdílené sloky"
     IDS_VIEW1               "zobrazit "
     IDS_VIEW2               " (nesdílené)"
@@ -223,7 +213,7 @@ BEGIN
     IDS_DL_PAUSE            "&Pauza"
     IDS_DL_RESUME           "Ob&novit"
     IDS_DL_OPEN             "&Otevøít soubor"
-    IDS_DL_INFO             "Zobrazi podrobnosti &souboru..."
+    IDS_DL_INFO             "Zobrazit podrobnosti &souboru..."
     IDS_DL_CLEAR            "V&yèistit dokonèené"
     IDS_DL_LINK1            "Z&kopírovat eD2K odkaz do schránky"
     IDS_DL_LINK2            "Zkopírovat eD2K odkaz (v &HTML formì)"
@@ -244,10 +234,6 @@ BEGIN
     IDS_ASKED4ANOTHERFILE   "Poádán o jinı soubor"
     IDS_Q_CANCELDL          "Opravdu poadujete, aby byly zrušeny a smazány tyto soubory?\n"
     IDS_Q_CANCELDL2         "Opravdu poadujete, aby byl zrušen a smazán tento soubor?\n"
-    IDS_COPIED2CB           "Zkopírováno do schránky: \n"
-    IDS_PROCDONE            "% hotovo"
-    IDS_SELECTINCOMINGDIR   "Vyber sloku pro pøíchozí soubory"
-    IDS_SELECTTEMPDIR       "Vyber sloku pro doèasné soubory"
     IDS_DL_FILENAME         "Název souboru"
     IDS_DL_SIZE             "Velikost"
     IDS_DL_TRANSF           "Pøeneseno"
@@ -263,7 +249,6 @@ BEGIN
     IDS_DL_REMAINS          "Zbıvá"
     IDS_UPDATEFROM          "Update from URL: (filter.dat- or PeerGuardian-format)"
     IDS_QL_USERNAME         "Uivatelské jméno"
-    IDS_ERR_PACKAGEHANDLING "Nezvladatelná chyba bìhem zpracování paketu ze serveru (%s)"
     IDS_QL_RATING           "Rating"
     IDS_CONNECTINGTO        "Pøipojení k %s (%s:%i)..."
     IDS_CLIENTS             "Klienti"
@@ -286,7 +271,6 @@ BEGIN
     IDS_SRV_ADDR            "Prosím vlote adresu serveru"
     IDS_SRV_PORT            "Neúplnı port serveru: Prosím vlote adresu serveru"
     IDS_SRV_NOTADDED        "Server nebyl pøidán!"
-    IDS_SRV_READD           "Server byl oznaèen jako nefunkèní!"
     IDS_SRV_NOURLAV         "ádná URL není k dispozici."
     IDS_INVALIDURL          "Neplatná URL"
 END
@@ -297,23 +281,16 @@ BEGIN
     IDS_PERMISSION          "Povolení"
     IDS_SHAREDFILES         "Sdílené soubory"
     IDS_PRIOVERYLOW         "Velmi nízká"
-    IDS_PRIORELEASE         "Zveøejnìní"
-    IDS_FSTATUS_LOCKED      "Zamknuté"
-    IDS_KADALPHA            "Kademlia je stále v rané vıvojové fázi. Aktivování doporuèujeme poze v pøípadì zájmu o testování."
+    IDS_PRIORELEASE         "Release"
     IDS_FSTATUS_FRIENDSONLY "Pouze pøátelé"
-    IDS_FSTATUS_PUBLIC      "Veøejné"
-    IDS_ERR_RENAMESF        "Nepodaøilo se pøejmenovat\r\n    ""%s""\r\nna\r\n    ""%s""\r\n\r\n%hs"
-    IDS_PRIOHIGHEST         "Nejvyšší"
+    IDS_ERR_RENAMESF        "Nepodaøilo se pøejmenovat\r\n    ""%s""\r\nna\r\n    ""%s""\r\n\r\n%s"
     IDS_AVAILABLE           "k dispozici"
-    IDS_ERR_NOPRIMCHANGE    "Nemùete mìnit povolení dokud se soubor stahuje!"
-    IDS_HIDDEN              "Skryté"
 END
 
 STRINGTABLE 
 BEGIN
     IDS_FSTAT_TRANSFER      "Pøenos"
     IDS_FSTAT_CONNECTION    "Pøipojení"
-    IDS_FSTAT_CLIENTS       "Klienti"
     IDS_FSTAT_SERVERS       "Servery"
     IDS_FSTAT_WAITING       "Èeká..."
     IDS_TIME                "Èas"
@@ -325,25 +302,16 @@ BEGIN
     IDS_STATS_ACTDL         "Aktivní downloady (díly): %i"
     IDS_STATS_ACTUL         "Aktivní uploady: %i"
     IDS_STATS_WAITINGUSERS  "Èekající uploady: %i"
-    IDS_STATS_RECONNECTS    "Znovupøipojení: %i"
-    IDS_STATS_WAITTRANSF    "èeká na pøenos..."
+    IDS_STATS_RECONNECTS    "Znovu-pøipojení: %i"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_STATS_WAITCONN      "èeká na pøipojení..."
-    IDS_STATS_CONNECTEDSINCE "Pøipojeno k serveru od: %s"
-    IDS_STATS_RATIO         "UL:DL koeficient etapy (Etapa (celkem)):"
     IDS_STATS_UNKNOWNCLIENT "Neznámı: %i"
     IDS_STATS_TOTAL         "Celkem: %i"
-    IDS_STATS_WORKING       "Funkèní: %i"
-    IDS_STATS_DEAD          "Nefunkèní/Smazanı: %i"
     IDS_DISABLED            "zakázán"
     IDS_STOPPED             "Zastaven"
     IDS_STATS_UPDATELABEL   "Prodleva aktualizace: %i sec"
-    IDS_QUEUECOUNT          "%u (zakázaní: %u)"
-    IDS_NICKNAME            "Pøezdívka: "
-    IDS_CLIENTSFILENAME     "\nSoubor klienta: "
     IDS_ASKEDFAF            "\nPoádán o jinı soubor"
     IDS_WAITED              "Èekal"
     IDS_ERR_LOADCREDITFILE  "Nepodaøilo se nahrát soubor kreditù. Bude vytvoøen novı"
@@ -356,12 +324,12 @@ BEGIN
     IDS_CREDITFILECORRUPT   "Chyba: soubor kreditù je poškozen a bude nahrazen!"
     IDS_ERR_CREDITFILEREAD  "Neoèekávaná chyba bìhem ètení souboru kreditù: %s"
     IDS_ERR_FAILED_CREDITSAVE "Nepodaøilo se uloit soubor kreditù"
-    IDS_NOPARTSFOUND        "Nenalezeny ádné èásti souboru"
+    IDS_NOPARTSFOUND        "Nenalezeny ádné .part soubory"
     IDS_FOUNDPARTS          "Nalezeno %i .part souborù"
-    IDS_NEWDOWNLOAD         "Stahování %s"
+    IDS_NEWDOWNLOAD         "Pøidán download %s"
     IDS_ERR_ALREADY_DOWNLOADING "Ji jste zkoušeli stáhnout soubor %s"
     IDS_ERR_ALREADY_DOWNLOADED "Ji vlastníte soubor %s"
-    IDS_ERR_SERVERMET_BAD   "Chyba: soubor known.met je pokozen, nelze naèíst známé soubory"
+    IDS_ERR_SERVERMET_BAD   "Chyba: soubor known.met je poškozen, nelze naèíst známé soubory"
     IDS_ERR_SERVERMET_UNKNOWN 
                             "Neoèekávaná chyba souboru bìhem ètení known.met: %s, nelze naèíst známé soubory"
     IDS_ERR_CONNECTIONERROR "Chyba bìhem pøipojování k %s (%s:%i): %s"
@@ -385,7 +353,7 @@ BEGIN
     IDS_STATS_FILTEREDCLIENTS "Filtrované: %i"
     IDS_FILTERLABEL         "Filtrovat zprávy obsahující: (Oddìlovaè | )"
     IDS_ERR_LARGEREQBLOCK   "Klient zaádal o pøíliš velkı blok."
-    IDS_SHOWRATEONTITLE     "Zobrazit pøenosové rychlosti v titlulkovém pruhu"
+    IDS_SHOWRATEONTITLE     "Zobrazit pøenosové rychlosti v titulkovém pruhu"
     IDS_TBN_NOMESSAGEHISTORY "Není ádná historie správ!"
     IDS_PW_DAP              "Zaèít stahovat s automatickou prioritou"
     IDS_FD_LASTCHANGE       "Poslední pøíjem:"
@@ -403,8 +371,6 @@ BEGIN
     IDS_COLOR               "Barva"
     IDS_DEFAULT             "Implicitní"
     IDS_PW_DISPLAY          "Zobrazení"
-    IDS_CAT_INVADD          "Zobrazit všechny nepøiøazené"
-    IDS_CAT_REINVADD        "Zobrazit všechny"
     IDS_INDICATERATINGS     "Downloady s poznámkou/ratingem oznaèit ikonou"
     IDS_ALLOTHERS           "Nezaøazen"
     IDS_TOCAT               "Pøidìlit ke kategorii"
@@ -413,14 +379,10 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_UDPEXT          "Chyba bìhem zpracování pøíchozího extended protokolu UDP paketu"
     IDS_ERR_INCOMPLETEBLOCK "poádán o nekompletní blok "
     IDS_ERR_OPEN            "nepodaøilo se otevøít poadovanı soubor"
     IDS_ERR_CLIENTERRORED   "Klient '%s' zpùsobil chybu bìhem vytváøení balíku (%s) - odpojení klienta"
     IDS_ERR_REQ_FNF         "poadovanı soubor nebyl nalezen"
-    IDS_CLIENTBLOCKED       "Klient '%s' byl vykázán z fronty kvùli prùbojnému chování. "
-    IDS_LUSERS              "uivatelé"
-    IDS_LFILES              "soubory"
     IDS_DESC                "Popis: %s"
     IDS_PORT                "Port"
     IDS_ERR_NOVALIDSERVERSFOUND 
@@ -441,31 +403,27 @@ BEGIN
     IDS_ERR_REHASH          "Varování: %s mùe bıt poškozen - dokonèené díly budou rehashovány"
     IDS_SKIN_PROF           "Profily skinù"
     IDS_ERR_PART_FNF        ".part soubor nebyl nalezen"
-    IDS_ERR_OPENMETFILE     "Nepodaøilo se otevøít soubor part.met"
-    IDS_KADOPEN             "Otevøít"
+    IDS_KADOPEN             "Otevøenı"
     IDS_ERR_SAVEMET         "CHYBA bìhem ukládání .part souboru: %s (%s)"
     IDS_ERR_FOUNDCORRUPTION "Nalezen poškozenı díl (%i) v %s"
     IDS_HASHINGDONE         "Dokonèeno rehashování %s, soubor vypadá ok"
     IDS_ERR_PARTCORRUPT     "Staenı díl %i je poškozen :(  (%s)"
-    IDS_ICHWORKED           "ICH: Obnovena poškozená èást %i  (%s), Saved: %s"
+    IDS_ICHWORKED           "ICH: Obnovena poškozená èást %i  (%s), Zachránìno: %s"
     IDS_ERR_OUTOFSPACE      "Nemáte dostatek místa na disku pro stáhnutí %s!"
     IDS_SE                  "Vımìna zdrojù"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_NOSERVERSC      "Na listu serverù nebyl nalezen ádnı platnı server k pøipojení"
     IDS_CONNECTEDTO         "Pøipojení zaloeno na: %s"
     IDS_DL_PREVIEW          "&Ukázka"
     IDS_VIEWQUEUE           "Zobrazit frontu"
-    IDS_VIEWUPLOADS         "Zobrazit uploady"
     IDS_TW_UPLOADS          "Uploady"
     IDS_TW_DOWNLOADS        "Downloady"
     IDS_TW_QUEUE            "Klienti ve frontì:"
     IDS_SW_SEARCHBOX        "Hledání"
     IDS_SW_NAME             "Jméno"
     IDS_SW_GLOBAL           "&Globální hledání"
-    IDS_SW_TYPE             "Typ"
     IDS_SW_DIRECTDOWNLOAD   "Pøímı download"
     IDS_SW_LINK             "eD2K odkazy"
     IDS_SW_START            "Start"
@@ -494,20 +452,14 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_PRIORITY_UP         "Priorita rùstu"
-    IDS_PRIORITY_DOWN       "Priorita poklesu"
     IDS_SPEED_LIMITS        "Rychlostní limity"
     IDS_CAPACITY_LIMITS     "Limity kapacity"
     IDS_ADMIN               "Administrátor"
     IDS_ACCESSDENIED        "Pøístup zakázán!"
     IDS_WEB_LOWUSER         "Host"
     IDS_WEB_ERR_CANTLOAD    "Nelze naèíst šablony: Nelze otevøít soubor %s"
-    IDS_GLOBALSEARCH        "Global (Server)"
+    IDS_GLOBALSEARCH        "Globální (Server)"
     IDS_METHOD              "Metoda"
-    IDS_SW_WEBBASED         "Hledání pøes Web"
-    IDS_NOTHING             "nic"
-    IDS_SETUPSPEED          "nastavil mez uploadu"
-    IDS_SETDOWNSPEED        "nastavil mez downloadu"
     IDS_UNDO                "Zpìt"
     IDS_DAYLY               "dennì"
 END
@@ -544,7 +496,6 @@ BEGIN
     IDS_ST_SESSION          "Prùmìr etapy"
     IDS_ST_ACTIVED          "aktivní downloady"
     IDS_ST_ACTIVEU          "aktivní uploady"
-    IDS_ST_WAITINGU         "èekající uploady"
     IDS_CW_MESSAGES         "Zprávy"
     IDS_CW_FRIENDS          "Pøátelé"
     IDS_CW_SEND             "Poslat"
@@ -561,10 +512,8 @@ BEGIN
     IDS_PW_BROWSE           "Procházet"
     IDS_PW_SHARED           "Sdílené adresáøe (Ctrl-klik pro zahrnutí podadresáøe)"
     IDS_PW_CONNECTION       "Pøipojení"
-    IDS_PW_DOWNC            "Kapacita downloadu"
-    IDS_PW_DOWNL            "Mez downloadu"
-    IDS_PW_UPC              "Kapacita uploadu"
-    IDS_PW_UPL              "Mez uploadu"
+    IDS_PW_DOWNL            "Limit downloadu"
+    IDS_PW_UPL              "Limit uploadu"
     IDS_PW_MAXC             "Maximálnì spojení"
     IDS_PW_CLIENTPORT       "Port klienta"
     IDS_PW_AUTOCON          "Pøipojit po spuštìní"
@@ -576,17 +525,17 @@ STRINGTABLE
 BEGIN
     IDS_PW_RDEAD            "Smazat nefunkèní servery po"
     IDS_PW_RETRIES          "pokusech"
-    IDS_PW_SCORE            "Pouøívat prioritní systém"
+    IDS_PW_SCORE            "Pouívat prioritní systém"
     IDS_PW_USC              "Aktualizovat seznam serverù po pøipojení k serveru"
     IDS_PW_UCC              "Aktualizovat seznam serverù po pøipojení ke klientovi"
     IDS_PW_FILTER           "Filtrovat LAN IP serverù a klientù"
     IDS_PW_USS              "Aktualizovat seznam serverù po spuštìní"
     IDS_PW_MISC             "Rùzné"
-    IDS_PW_TRAY             "Minimalozovat do SYSTRAY"
-    IDS_PW_BEEP             "Pípnout pøi chybì"
+    IDS_PW_TRAY             "Minimalizovat do oznamovací oblasti"
+    IDS_PW_BEEP             "Zvukovì signalizovat chybu"
     IDS_PW_PROMPT           "Dotázat se pøi ukonèení"
-    IDS_PW_SPLASH           "Zobrazovat uvítací zprávu"
-    IDS_PW_DBLCLICK         "Rozbalit seznam serverù po dvojkliku"
+    IDS_PW_SPLASH           "Zobrazovat splash screen pøi spouštìní"
+    IDS_PW_DBLCLICK         "Rozbalit seznam serverù po dvoj-kliku"
     IDS_PW_TOOL             "Prodleva bublinové nápovìdy (s)"
     IDS_PW_FRONT            "Pøenést do popøedí po kliknutí na odkaz"
     IDS_PW_LANG             "Jazyk"
@@ -595,7 +544,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_PW_FILES            "Soubory"
-    IDS_PW_ICH              "&Inteligentní øízení chyb"
     IDS_PW_SHARE            "Ukazovat sdílené soubory"
     IDS_PW_EVER             "Všem"
     IDS_PW_FRIENDS          "Pøátelùm"
@@ -609,23 +557,19 @@ BEGIN
     IDS_EM_MESSAGES         "&Zprávy"
     IDS_EM_STATISTIC        "S&tatistika"
     IDS_EM_PREFS            "&Monosti"
-    IDS_MB_LANGUAGEINFO     "Byl vybrán implicitní jazyk. Nastavení jazyka mùete kdykoliv mìnit v záloce Monosti."
+    IDS_MB_LANGUAGEINFO     "Byl vybrán implicitní jazyk. Nastavení jazyka mùete kdykoliv mìnit v záloce Monosti."
 END
 
 STRINGTABLE 
 BEGIN
     IDS_FD_GENERAL          "Obecné"
-    IDS_FD_NAME             "Celı název:"
     IDS_FD_MET              "met-soubor:"
     IDS_FD_HASH             "Hash:"
     IDS_FD_SIZE             "Velikost souboru:"
-    IDS_FD_STATUS           "Status part. souboru:"
     IDS_FD_TRANSFER         "Pøenos"
-    IDS_FD_SOURCES          "Nalezeno zdrojù:"
     IDS_FD_PARTS            "Èásti:"
     IDS_FD_TRANS            "Pøeneseno:"
     IDS_FD_DATARATE         "Pøenosová rychlost:"
-    IDS_FD_TRANSI           "Pøenášení:"
     IDS_FD_COMPSIZE         "Dokonèená velikost:"
     IDS_FD_CLOSE            "Zavøít"
     IDS_FD_TITLE            "Podrobnosti souboru"
@@ -640,7 +584,6 @@ BEGIN
     IDS_CD_UIP              "IP adresa:"
     IDS_CD_SIP              "IP serveru:"
     IDS_CD_VERSION          "Verze klienta:"
-    IDS_CD_UID              "ID:"
     IDS_CD_SNAME            "Název serveru:"
     IDS_CD_CDOWN            "Souèasnì stahující:"
     IDS_CD_DOWN             "Staeno (tuto etapu):"
@@ -665,8 +608,7 @@ BEGIN
     IDS_PW_MAXSOURCES       "Maximum zdrojù na soubor"
     IDS_SHAREDFILESCOUNT    "Poèet sdílenıch souborù: %i"
     IDS_SF_SIZE             "Celková velikost sdílenıch souborù: %s"
-    IDS_ERR_WRONGPARTNUMBER "špatné èíslo dílu"
-    IDS_ERR_BADPORT         "èpatné èíslo portu"
+    IDS_ERR_BADPORT         "špatné èíslo portu"
     IDS_ERR_NOHELLO         "Poádat o nìco bez pozdravení"
     IDS_ERR_INVALIDPACKAGE  "Neplatnı nebo poškozenı paket pøijat"
     IDS_ERR_CLIENTERROR     "Klient '%s' (IP:%s) zpùsobil chybu: %s. Odpojení klienta!"
@@ -675,17 +617,14 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ERR_BADSIZE         "neplatná velikost (OP_QUEUERANKING)"
-    IDS_ERR_BADCLIENT2      "Klient '%s' (IP:%s) zpùsobil chybu: %s. Odpojení klienta!"
     IDS_ERR_NOTAFILELINK    "Není odkazem na soubor"
     IDS_ERR_CREATEPARTFILE  "CHYBA: Nelze vytvoøit .part soubor"
-    IDS_ERR_UDP_MISCONF     "Chyba bìhem zpracování pøíchozího UDP paketu (pravdìpodobnì špatnì nastavenı server)"
     IDS_CHAT_START          "*** Chat zaèal : "
     IDS_FILEPRIO            "Priorita souborù"
     IDS_SCORE               "Body"
     IDS_ASKED               "Poadavkù"
-    IDS_LASTSEEN            "Naposledy vidìn"
+    IDS_LASTSEEN            "Spatøen"
     IDS_BANNED              "Zakázán"
-    IDS_PRIOVERYHIGH        "Vysoká"
     IDS_UUSERS              "Uivatelù"
     IDS_UFAILED             "Selhání"
     IDS_OPENFILE            "&Otevøít soubor"
@@ -705,7 +644,6 @@ BEGIN
     IDS_FILESTATS_SESSION   "Statistika souborù této etapy: Pøijato %d z %d poadavkù, %s pøeneseno\n"
     IDS_FILESTATS_TOTAL     "Statistika souborù všech etap: Pøijato %d z %d poadavkù, %s pøeneseno"
     IDS_REQ_UNKNOWNFILE     "Zaádán neznámı soubor"
-    IDS_TRANSFERTIME        "Èas od prvního pøenosu: %s"
     IDS_SF_AVERAGESIZE      "Prùmìrná velikost souboru: %s"
     IDS_SF_REQUESTS         "Poadavky"
     IDS_SF_ACCEPTS          "Pøijaté poadavky"
@@ -737,13 +675,12 @@ BEGIN
     IDS_ADDED2SSF           "pøidán do seznamu stálıch serverù"
     IDS_STATICSERVER        "Stálı"
     IDS_ERROR_SSF           "Nepodaøilo se otevøít staticservers.dat"
-    IDS_ERR_PACKAGEERROR    "Kritická chyba bìhem zpracování data-paketu pro %s (chybná velikost) - blok dat ztracen"
     IDS_SF_ACTIVECON        "Aktivní pøipojení (odhadem)"
     IDS_SF_MAXCONLIMITREACHED "Dosáhnuto limitu max. pøipojení"
     IDS_SF_AVGCON           "Prùmìrné pøipojení (odhadem)"
     IDS_SF_PEAKCON          "Maximum pøipojení (odhadem)"
     IDS_ST_ACTIVEC          "aktivní pøipojení"
-    IDS_NETWORK             "Sí?"
+    IDS_NETWORK             "Sí"
     IDS_SF_DELCOUNT         "Smazané servery"
     IDS_QUEUEFULL           "Plná fronta"
     IDS_AVG                 "Prùmìr"
@@ -763,9 +700,9 @@ BEGIN
     IDS_ED2KLINKFIX         "eD2K odkazy"
     IDS_RECONNECT           "Automatické pøipojení k serveru se bude opakovat za  %d sekund"
     IDS_SERVERADDED         "Server pøidán: %s"
-    IDS_IRC_IGNOREJOINMESSAGE "Ignore Join info messages"
+    IDS_IRC_IGNOREJOINMESSAGE "Ignorovat Join info zprávy"
     IDS_STATS_SUCCUPCOUNT   "Celkem úspìšnıch uploadovıch etap: %i"
-    IDS_IRC_IGNOREPARTMESSAGE "Ignore Part info messages"
+    IDS_IRC_IGNOREPARTMESSAGE "Ignorovat Part info zprávy"
     IDS_STATS_FAILUPCOUNT   "Celkem neúspìšnıch uploadovıch etap: %i"
     IDS_STATS_AVEUPTIME     "Prùmìrnı èas stahování: %s"
     IDS_SEARCHMINSIZE       "min. velikost"
@@ -782,14 +719,13 @@ BEGIN
     IDS_PW_CON_DOWNLBL      "Download"
     IDS_PW_CON_UPLBL        "Upload"
     IDS_PW_AUTOCONNECTSTATICONLY 
-                            "Automaticky pøipojovat k serverùm na seznamu stálıch serverù"
+                            "Automaticky pøipojovat k serverùm ze seznamu stálıch serverù"
     IDS_PW_CON_LIMITFRM     "Limity"
-    IDS_PW_FILE_ICH         "I.C.H aktivní"
     IDS_STATS_AVGLABEL      "Období prùmìrného grafu: %i minut"
     IDS_GRAPHS              "Grafy"
     IDS_STREE               "Statistickı strom"
-    IDS_IRC_IGNOREQUITMESSAGE "Ignore Quit info messages"
-    IDS_STATSSETUPINFO      "Statisktika"
+    IDS_IRC_IGNOREQUITMESSAGE "Ignorovat Quit info zprávy"
+    IDS_STATSSETUPINFO      "Statistika"
     IDS_IRC_SOUNDEVENTS     "Pøehrávat zvukové události"
 END
 
@@ -818,11 +754,9 @@ STRINGTABLE
 BEGIN
     IDS_HARDLIMIT           "Pevnı limit"
     IDS_COL_MORECOLORS      "více..."
-    IDS_KBYTESEC            "kB/s"
     IDS_TOOMANYCONNS        "Pøíliš mnoho pøipojení"
     IDS_DOWNLOADRENAMED     "Soubor stejného jména ji existuje, soubor byl uloen jako %s"
     IDS_TBN_DOWNLOADDONE    "Staeno:"
-    IDS_TBN_DOWNLOADADDED   "Pøidáno ke staení:"
     IDS_PW_TBN_USESOUND     "Pouít zvuky"
     IDS_PW_TBN_ONLOG        "Pøibyla poloka v Log záznamu"
     IDS_PW_TBN_ONCHAT       "zaèal Chat"
@@ -836,14 +770,11 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_PW_CON_CAPFRM       "Kapacity"
-    IDS_IRC_STATUSLOG       "Status Log"
-    IDS_IRC_STATUS          "Status"
+    IDS_PW_CON_CAPFRM       "Kapacita"
     IDS_IRC_PRIVATECHANSTART "* Zaèal soukromı chat"
     IDS_IRC_SLAPMSG         "* %s slaps %s around with a large Babelfish!"
     IDS_IRC_PRIVMESSAGE     "Soukromá zpráva"
-    IDS_SOURCEEXCHANGESWAP  "Doèasná vımìna zdrojù"
-    IDS_DL_TRY_TO_GET_PREVIEW_PARTS "Download parts needed for preview first"
+    IDS_DL_TRY_TO_GET_PREVIEW_PARTS "Stáhnout nejprve èásti potøebné k ukázce"
     IDS_IRC_KICK            "Kopnout"
     IDS_IRC_SLAP            "Plesknout"
     IDS_IRC_JOIN            "Pøipojit"
@@ -857,11 +788,10 @@ BEGIN
     IDS_IRC_HASJOINED       "* %s pøipojil %s"
     IDS_IRC_HASPARTED       "* %s odlouèil %s (%s)"
     IDS_IRC_WASKICKEDBY     "* %s byl kopnut %s (%s)"
-    IDS_IRC_NICKUSED        "Vaše pøezdívka je ji pouívaná na IRC serveru. Zvolte si prosím jinou pøezdívku v záloce IRC v Monostech."
     IDS_DOWNLOAD_ALPHABETICAL "Stáhnout v abecedním poøadí"
     IDS_IRC_HASQUIT         "* %s odešel (%s)"
     IDS_IRC_NOWKNOWNAS      "* %s je známı jako %s"
-    IDS_IRC_SETSMODE        "* %s øeimy setù: %s %s"
+    IDS_IRC_SETSMODE        "* %s reimy setù: %s %s"
     IDS_IRC_NOTSUPPORTED    "** Nìkteré reimy byly nastaveny jako nepodporované. Bude potøeba opustit a znovu vstoupit do kanálu pro obnovu seznamu pøezdívek."
     IDS_IRC_CHANNEL         "Kanál"
     IDS_IRC_NICK            "Pøezdívka"
@@ -873,13 +803,13 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_IRC_USEFILTER       "Popuívat filtr seznamu kanálù"
+    IDS_IRC_USEFILTER       "Pouívat filtr seznamu kanálù"
     IDS_IRC_PERFORM         "Provádìcí øetìzec"
     IDS_IRC_USEPERFORM      "Pouít provádìcí øetìzec po pøipojení"
     IDS_IRC_ADDTOFRIENDLIST "Pøidat pøátele do seznamu"
     IDS_IRC_LOADCHANNELLISTONCON "Naèíst seznam kanálu serveru po pøipojení"
     IDS_IRC_ADDASFRIEND     "Vás pøidal jako pøítele!"
-    IDS_PW_WARNING          "Vámi vybrané èíslo ""%s"" je vìtší ne podporuje Váš OS:  %d\nTo mùe zpùsobit nestabilitu systému.\n\nJste si jistí, e to vyadujete?"
+    IDS_PW_WARNING          "Vámi vybrané èíslo ""%s"" je vìtší ne podporuje Váš OS:  %d\nTo mùe zpùsobit nestabilitu systému.\n\nJste si jisti, e to vyadujete?"
     IDS_TAKEOVER            "Pøevzít"
     IDS_CLEANUP             "Vyèistit"
     IDS_RENAME              "Pøejmenovat"
@@ -887,8 +817,8 @@ BEGIN
     IDS_IRC_SENDLINK        "Poslat odkaz pøíteli: "
     IDS_IRC_RECIEVEDLINK    "%s poslal (%s) pro automatické spuštìní."
     IDS_IRC_ACCEPTLINKS     "Pøijímat eD2K odkaz z IRC (Pouívejte opatrnì!)"
-    IDS_SHARED              "Shared"
-    IDS_DOWNLOADED          "Downloaded"
+    IDS_SHARED              "Sdílené"
+    IDS_DOWNLOADED          "Staené"
 END
 
 STRINGTABLE 
@@ -908,12 +838,10 @@ BEGIN
     IDS_SP_ACTCON           "Aktivní pøipojení"
     IDS_SP_ACTDL            "Aktivní downloady"
     IDS_SP_ACTUL            "Aktivní uploady"
-    IDS_PW_TIT_UP           "Nastavit rychlostní limit uploadù"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_PW_TIT_DOWN         "Nastavit rychlostní limit downloadù"
     IDS_PW_UNLIMITED        "Neomezeno"
     IDS_PW_MINREC           "doporuèené minimum\t%i "
     IDS_PW_UA               "Nastavit plnou up/down-rychlost"
@@ -921,10 +849,7 @@ BEGIN
     IDS_IRC_IGNOREINFOMESSAGE "Ignorovat informaèní zprávy"
     IDS_CONNECTIONLOST      "Pøipojení ztraceno"
     IDS_WIZ_OS_FRAME        "Operaèní systém"
-    IDS_WIZ_CONCURENTDOWN_FRAME "Kolik downloadù má obvykle bìet souèasnì?"
     IDS_HASHINGFILE         "Hashuji soubor:"
-    IDS_WIZ_CUSTOM_FRAME    "Pokud jste testovali Vaší rychlost pøipojení, vlote vısledek zde"
-    IDS_WIZ_HOTBUTTON_FRAME "Pøednastavená tlaèítka"
     IDS_WIZ_TRUEUPLOAD_TEXT "Skuteèná propustnost uploadu"
     IDS_WIZ_TRUEDOWNLOAD_TEXT "Skuteèná propustnost downloadu"
     IDS_FRIENDLIST          "Pøátelé"
@@ -936,7 +861,6 @@ BEGIN
     IDS_WIZARD              "Prùvodce"
     IDS_ADDFRIEND           "&Pøidat k pøátelùm"
     IDS_REMOVEFRIEND        "Smazat pøítele"
-    IDS_REMOVEFROMSTOK      "smazat ze seznamu stálıch serverù"
     IDS_REMOVEFROMSTATIC    "Smazat ze seznamu stálıch serverù"
     IDS_LENGTH              "Délka"
     IDS_VIDEO               "Video"
@@ -948,7 +872,6 @@ BEGIN
     IDS_FPS                 "Fps"
     IDS_CHANNELS            "Kanálù"
     IDS_SAMPLERATE          "Samplerate"
-    IDS_ROUNDBITRATE        "Round Bitrate"
 END
 
 STRINGTABLE 
@@ -959,33 +882,27 @@ BEGIN
     IDS_VIEWFILES           "&Zobrazit soubory"
     IDS_FRIENDSLOT          "Zaloit Friend Slot"
     IDS_FRIENDDETAIL        "(Friend Slot)"
-    IDS_ASCWOP_PROXYSUPPORT "Automatické pøípojení k serveru bez proxy"
     IDS_UDPDISABLED         "zakázat"
-    IDS_CTINFO              "Vyberte typ Vašeho pøipojení:"
     IDS_WIZ_CTFRAME         "Typ pøipojení"
     IDS_CONCURDWL           "Soubìné downloady"
-    IDS_UNIT                "Jednotky:"
     IDS_WIZARD_CUSTOM       "Vlastní"
     IDS_WIZARD_ENTERBELOW   "(vlo níe!)"
     IDS_STATS_MAXAVGDL      "Max. prùmìr rychlosti stahování: %s"
-    IDS_USS_MIN             "Varování: USS v souèasné dobì nepodporuje rychlosti uploadu pod  10K. Pokud si uvìdomujete, e vaše pøipojení tuto rychlost nepøesáhne, deaktivujte prosím USS."
 END
 
 STRINGTABLE 
 BEGIN
     IDS_STATS_MAXDL         "Max. rychlost stahování: %s"
     IDS_IRC_EMULEPROTO_IGNOREADDFRIEND 
-                            "Ignore eMule add friend protocol messages"
+                            "Ignorovat zprávy protokolu eMule o pøidávání pøátel"
     IDS_PW_FASTSRVCON       "Bezpeèné pøipojení"
     IDS_SOURCELINKFAILED    "K vytvoøení spojení se zdrojem potøebujete HighID"
-    IDS_CREATESOURCELINK    "Zkopírovat eD2K odkaz do schránky (zdroj)"
     IDS_ERR_LOADSERVERMET   "Nepodaøilo se naèíst server.met!"
     IDS_ERR_CORRUPTCOMPRPKG "Pøijat poškozenı komprimovanı paket pro %s (chyba %i)"
     IDS_ERR_EMFRIENDSINVALID 
                             "Soubor emfriends.met je neplatnı nebo poškozenı!"
     IDS_ERR_READEMFRIENDS   "Neznámá chyba bìhem ètení emfriends.met: %s"
     IDS_ERR_KNOWNSERVERINFOREC "Pøijato neznámé info ze serveru!"
-    IDS_ERR_TIMERCREATEFAILED "Kritická chyba: Nezle vytvoøit Èasovı spínaè"
     IDS_WIZ_DOWN            "Down (kbit/s)"
     IDS_WIZ_UP              "Up (kbit/s)"
     IDS_SELECT_INCOMINGDIR  "Vyber sloku pro pøíchozí soubory"
@@ -997,17 +914,16 @@ STRINGTABLE
 BEGIN
     IDS_PRIOAUTONORMAL      "Auto [No]"
     IDS_PRIOAUTOHIGH        "Auto [Vy]"
-    IDS_PRIOAUTORELEASE     "Auto [Zv]"
+    IDS_PRIOAUTORELEASE     "Auto [Re]"
     IDS_PRIOAUTOLOW         "Auto [Ní]"
     IDS_ERR_CONTIMEOUT      "Pokus o pøipojení k ""%s"" (%s:%i ) - èas vypršel"
-    IDS_ERR_CONFAILED       "Nepodaøilo se pøipojit k ""%s"" (%s:%i )."
     IDS_OUTOFSERVERS        "Nepodaøilo se pøipojit k ádnému serveru ze seznamu. Dojde k novım pokusùm."
     IDS_PW_CONLIMITS        "Limity pøipojení"
     IDS_MAXCON5SECLABEL     "Max. novıch pøipojení / 5 sec."
     IDS_PW_UAP              "Pøidat novì sdílené soubory s automatickou prioritou"
     IDS_MAXCLIENT           "Max. uivatelù"
     IDS_PW_TWEAK            "Rozšíøené nastavení"
-    IDS_TWEAKS_WARNING      "Varování: Nemìòte tato nastavení, pokud neznáte jejich vıznam. Lehce se mùe zhoršit nebo pokazit fuknènost programu.\neMule bude fungovat dobøe i bez upravení tìchto nastavení."
+    IDS_TWEAKS_WARNING      "Varování: Nemìòte tato nastavení, pokud neznáte jejich vıznam. Lehce se mùe zhoršit nebo pokazit funkènost programu.\neMule bude fungovat dobøe i bez upravení tìchto nastavení."
     IDS_ADDAFRIEND          "Pøidat pøítele..."
     IDS_PAF_REQINFO         "Poadované informace"
     IDS_PAF_MOREINFO        "Další informace"
@@ -1020,15 +936,11 @@ BEGIN
     IDS_RECOVERED_PARTMET   "Obnoven soubor part.met pro: %s"
     IDS_CMT_QUEST           "Pøidat poznámku k tomuto souboru! (Tento text bude ukázán všem uivatelùm)"
     IDS_CMT_AIDE            "U filmu, mùete uvést jeho délku, pøíbìh, jazyk, atd... A pokud se jedná o podvrh, mùete informovat ostatní uivatele..."
-    IDS_CMT_TITLE           "Poznámka k souboru %s"
     IDS_CMT_ADD             "&Upravit poznámky k souboru..."
     IDS_CMT_NONE            "bez poznámky"
     IDS_CMT_READ            "Poznámka k souboru:"
-    IDS_CMT_NOTCONNECTED    "Zatím nepøipojen..."
     IDS_CMT_SHOWALL         "Zobrazit &poznámky..."
-    IDS_CMT_REFRESH         "&Obnovit"
     IDS_CMT_READALL         "Všechny poznámky"
-    IDS_CMT_NOCOMMENT       "ádné poznámky nevloeny..."
     IDS_CMT_RATEQUEST       "Kvalita souboru"
     IDS_CMT_RATEHELP        "Vyberte rating souboru nebo poraïte uivatelùm, je-li soubor zkaenı!"
 END
@@ -1055,18 +967,17 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_FD_STATS            "Ztraceno poškozením: %s       Získáno komprimací: %s\nBloky zachránìné I.C.H.: %i"
-    IDS_ERR_NOHELP          "Please visit our homepage's download section to get a copy of the newest help file!\n\nDo you want to browse the online help now instead?"
+    IDS_ERR_NOHELP          "Prosím, navštivte sekci Downloady na naší homepage, kde získáte nejnovìjší verzi souborù nápovìdy!\n\nMáte nyní zájem o navštívení on-line nápovìdy?"
     IDS_SHOWOVERHEAD        "Zobrazit overhead bandwidth"
     IDS_UPDOWNSMALL         "Up: %.1f | Down: %.1f"
     IDS_EDITLIST            "Seznam"
-    IDS_SP_ICONBAR          "Zobrazení rychlosti v Systray"
+    IDS_SP_ICONBAR          "Zobrazení rychlosti v oznamovací oblasti"
     IDS_RATINGRECV          "Rating pro soubor '%s' pøijat: %i"
     IDS_DESCRIPTIONRECV     "Popis pro soubor '%s' pøijat: %s"
     IDS_WEBSERVICES         "&Webové sluby"
     IDS_WEBSVEDIT           "Upravit webové sluby"
     IDS_IRC_EMULEPROTO_IGNORESENDLINK 
-                            "Ignore eMule send link protocol messages"
+                            "Ignorovat zprávy protokolu o zasílání odkazù eMule"
     IDS_CHECK4UPDATE        "Zjisti novou verzi"
     IDS_STARTUP             "Po spuštìní"
     IDS_NEWVERSIONAVL       "Nová verze eMule je k dispozici! Pro více informací se podívejte na domovskou stránku eMule projektu."
@@ -1082,7 +993,6 @@ BEGIN
     IDS_VISITVERSIONCHECK   "\n\nChcete nyní navštívit informaèní stránku?"
     IDS_PW_VIDEOPLAYER      "Pøehrávaè videa"
     IDS_VIDEOBACKUP         "Vytvoøit zálohu pro ukázku"
-    IDS_STATIC_EMPTY        "(prázdnı=implicitní)"
     IDS_MYINFO              "Moje info"
     IDS_ID                  "ID"
     IDS_IDLOW               "Low ID"
@@ -1097,14 +1007,13 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ADDDOWNLOADSFROMCB  "Pøidat tyto eD2K odkazy ke stahování?\n"
-    IDS_ADDDOWNLOADSFROMCBTITLE "eD2K odkaz ve schránce"
     IDS_PF_WATCHCB          "Pøebírat eD2K odkazy ze schránky"
     IDS_SECURITY            "Zabezpeèení"
     IDS_IPFILTERLOADED      "%i IP-filtry naèteny"
     IDS_IPFILTER            "IP-Filtr"
     IDS_EDIT                "Upravit"
     IDS_FILTERLEVEL         "Úroveò filtru"
-    IDS_FILTERSERVERBYIPFILTER "Filtrovat servery (odmítnout dynIP-servery)"
+    IDS_FILTERSERVERBYIPFILTER "Filtrovat servery"
     IDS_FILTERCOMMENTSLABEL "Ignorovat poznámky obsahující: (oddìlovaè | )"
     IDS_CLIENTLIST          "Známí klienti"
     IDS_FOLDER              "Sloka"
@@ -1124,13 +1033,11 @@ BEGIN
     IDS_DISABLEKNOWNLIST    "Zakázat seznam známıch klientù"
     IDS_DISABLEQUEUELIST    "Zakázat zobrazení fronty"
     IDS_USECREDITSYSTEM     "Pouít kreditní systém (odmìòuje uploadery)"
-    IDS_FIRSTAUTODOWN       "Tuto monost povolte, pokud poadujete, aby eMule øídil priority downloadù.\n\nPOvolení této monosti umoní eMule zajistit, aby downloady s mnoha zdroji nepøekáely downloadùm s málo zdroji.\n\nTato monost ovlivní pouze budoucí downloady. (implicitnì povoleno)"
-    IDS_FIRSTAUTOUP         "Tuto monost povolte, pokud poadujete, aby eMule øídil priority uploadù.\n\nPovolení této moností umoní eMule podpoøit uploadování vzácnıch souborù (rozšíøené soubory budou uploadovány øidèeji). Vypnutí této monosti naopak umoní eMule uploadovat populární soubory èastìji na úkor souborù vzásnıch.\n\nTato monost ovlivní pouze budoucí sdílené soubory. (implicitnì povoleno)"
-    IDS_FIRSTCREDITSYSTEM   "Máte zájem odmìnit lidi, kteøí k vám uploadují?\n\nTOto je obecnì známo jako Kreditní Systém. Povolením této monosti podpoøíte boj proti leacherùm. Pokud však vıhradnì zveøejòujete soubory, bude pro vás lepší tuto monost vypnout. (implicitnì povoleno)"
+    IDS_FIRSTAUTODOWN       "Tuto monost povolte, pokud poadujete, aby eMule øídil priority downloadù.\n\nPovolení této monosti umoní eMule zajistit, aby downloady s mnoha zdroji nepøekáely downloadùm s málo zdroji.\n\nTato monost ovlivní pouze budoucí downloady. (implicitnì povoleno)"
+    IDS_FIRSTAUTOUP         "Tuto monost povolte, pokud poadujete, aby eMule øídil priority uploadù.\n\nPovolení této moností umoní eMule podpoøit uploadování vzácnıch souborù (rozšíøené soubory budou uploadovány øidèeji). Vypnutí této monosti naopak umoní eMule uploadovat populární soubory èastìji na úkor souborù vzácnıch.\n\nTato monost ovlivní pouze budoucí sdílené soubory. (implicitnì povoleno)"
     IDS_FIRSTFULLCHUNK      "Povolte tuto monost, pokud poadujete uploadovat celé díly.\n\nTímto poskytnete klientovy lepší šanci na dokonèení celého dílu. Naopak vypnutím zrychlíte obrat fronty. Pokud vıhradnì zveøejòujete nové soubory, bude se Vám hodit tuto funkci zapnout. (implicitnì povoleno)"
     IDS_FIRSTSAFECON        "Povolte tuto monost, pokud poadujete, aby eMule pouíval Bezpeèné pøipojení.\n\nVypnutím umoníte eMule, aby se pøipojoval k serverùm trochu rychleji, avšak mùe docházet k více falešnım lowID pøipojením. (implicitnì zakázáno)"
     IDS_FIRSTAUTOCON        "Povolte tuto monost, pokud poadujete, aby se eMule pøipojoval po spuštìní. (implicitnì zakázáno)"
-    IDS_FIRSTRUNASSIST      "Poadujete spustit prùvodce pro první pouití?"
     IDS_FIRSTCOMPLETE       "Právì jste dokonèili prùvodce základním nastavením.\n\nNejen všechna tato nastavení, ale i další lze mìnit po kliknutí na ikonu Monosti. Pro vysvìtlení a podporu si proètìte nápovìdu po stisknutí F1 v eMule!"
 END
 
@@ -1142,7 +1049,7 @@ BEGIN
                             "Pøíliš krátkı keyword.\r\n\r\nKeyword pouitı v Kad. vyhledávání musí mít alespoò 3 znaky."
     IDS_LOG2DISK            "Uloit log na disk"
     IDS_KAD_SEARCH_KEYWORD_ALREADY_SEARCHING 
-                            "Ji zde probíhá jedno Kad. vyhledávání pro keyword ""%s"".\r\n\r\nPro nové hledání tohoto keywordu nuï poèkojte a souèasné vyhledávání skonèí nebo zavøete pøíslušı list s vısledky hledání."
+                            "Ji zde probíhá jedno Kad. vyhledávání pro keyword ""%s"".\r\n\r\nPro nové hledání tohoto keywordu buï poèkejte a souèasné vyhledávání skonèí nebo zavøete pøíslušnı list s vısledky hledání."
     IDS_KAD_SEARCH_KEYWORD_INVALID 
                             "Neplatnı Kad. keyword.\r\n\r\nVyhledávací Kad. vıraz má následují formát:\r\n\r\n\t<kad-keyword> [ <ed2k-vyhledávací-vıraz> ]\r\n\r\n<kad-keyword> nesmí obsahovat ádné z následujících znakù:\r\n\r\n\t%s"
     IDS_EDITCAT             "Upravit vlastnosti kategorie"
@@ -1161,18 +1068,14 @@ END
 STRINGTABLE 
 BEGIN
     IDS_WEB_SHOW_UPLOAD_QUEUE "Ukázat frontu"
-    IDS_WEB_HIDE_UPLOAD_QUEUE "Schovat frontu"
     IDS_WEB_GZIP_COMPRESSION "Gzip komprimace"
     IDS_WEB_GZIP_COMMENT    "Šetøit provoz, zejména na grafech."
-    IDS_WEB_UPLOAD_QUEUE_COMMENT 
-                            "Povolit nebo zakázat zobrazení fronty èekajících na stránce pøenosù."
     IDS_WEB_REFRESH_TIME    "Frekvence obnovení stránek"
     IDS_WEB_REFRESH_COMMENT "Èas v sekundách (nula=zakázání):"
     IDS_SV_URL              "URL"
     IDS_WS_RELOAD_TMPL      "Šablona"
     IDS_SV_DEBUGLOG         "Ladící záznam"
     IDS_WS_PASS             "Heslo"
-    IDS_WEB_FILESETTINGS    "Nastavení souborù"
     IDS_WS_ERR_LOADTEMPLATE "Nelze naèíst šablony: nahrazeno souborem %s s novou verzí!"
     IDS_WEB_CONLIMITS       "Limity pøipojení"
     IDS_INFLST_USER_TOTALDOWNLOAD "Celkem staeno"
@@ -1182,7 +1085,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_WEB_BADLOGINATTEMPT "Webové rozhraní: Neplatnı pokus o pøihlášení"
-    IDS_ERR_TOOLARGEFILE    "Soubor vìtší, ne je podporovaná velikost edonkey protokolu (>=4GB)"
+    IDS_ERR_TOOLARGEFILE    "Soubor vìtší, ne je podporovaná velikost edonkey protokolu (>=256GB)"
     IDS_MSGONLYFRIENDS      "Pøijímat pouze od pøátel"
     IDS_MSGONLYSEC          "Pøijímat pouze od platnıch klientù"
     IDS_DAY_MO_SA           "Po-So"
@@ -1206,7 +1109,6 @@ BEGIN
     IDS_WEBSRV              "WebRhr."
     IDS_SW_REFETCHRES       "Znovu získat vısledky"
     IDS_FILEHASH            "Hash souborù"
-    IDS_GLOBALSEARCH2       "Globální hledání"
     IDS_PW_PROXY            "Proxy"
     IDS_PROXY_ENABLE        "Povolit Proxy"
     IDS_PROXY_TYPE          "Typ proxy:"
@@ -1229,12 +1131,11 @@ BEGIN
                             "Tento prùvodce Vás provede základním nastavením."
     IDS_WIZ1_WELCOME_BTN_HINT "Pro pokraèování stisknìte Další."
     IDS_WIZ1_END_TITLE      "Dokonèování prùvodce"
-    IDS_WIZ1                "Prùvodce privním spuštìním eMule"
+    IDS_WIZ1                "Prùvodce prvním spuštìním eMule"
     IDS_WIZ1_END_BTN_HINT   "Pro dokonèení prùvodce stisknìte Dokonèit."
     IDS_WIZ1_UPLOAD_SUBTITLE "Pøenos plnıch dílù"
     IDS_DL_RESUMENEXT       "Obnovit další zastavenı"
-    IDS_DONTCHANGE          "Nemìnit"
-    IDS_STARTPRIO           "Priority for this category"
+    IDS_STARTPRIO           "Priorita této kategorie"
     IDS_PREF_STARTNEXTFILECAT "upøednostòovat stejnou kategorii"
     IDS_REPAINTGRAPHS       "Nepøetváøet statistické grafy pøi zmìnì velikosti"
     IDS_SOFTFILES           "Volnı limit souborù"
@@ -1249,7 +1150,7 @@ BEGIN
     IDS_HM_SCHED_OFF        "Vypnout plánovaè"
     IDS_HM_LINKHP           "Domovská stránka eMule"
     IDS_HM_LINKFAQ          "FAQ eMule"
-    IDS_HM_LINKVC           "Zjištení verze eMule"
+    IDS_HM_LINKVC           "Zjištìní verze eMule"
     IDS_DEBUG_SOURCE_EXCHANGE "Zobrazit zprávy o vımìnì zdrojù"
     IDS_SHAREDREQ1          "Uivatel %s (%u) poádal o Váš seznam sdílenıch adresáøù -> %s"
     IDS_SHAREDREQ2          "Uivatel %s (%u) poádal o Váš seznam sdílenıch souborù z adresáøe '%s' -> %s"
@@ -1265,14 +1166,13 @@ BEGIN
     IDS_SHAREDREQDENIED     "Uivatel %s (%u) zakazuje pøístup k seznamu sdílenıch adresáøù/souborù"
     IDS_AUTOCLEANUPFN       "Vyèistit jméno souboru"
     IDS_ONNEWDOWNLOAD       "Inicializace"
-    IDS_FILTERFILENAMEWORD  "Vloit slova k filtování, oddìlená |"
+    IDS_FILTERFILENAMEWORD  "Vloit slova k filtrování, oddìlená |"
     IDS_FNFILTERTITLE       "Upravit filtr jmen souboru pro vyèištìní jména"
     IDS_CHANGECATVIEW       "Vybrat filtr zobrazení"
     IDS_STATUS_NOTCOMPLETED "Nedokonèenı"
     IDS_STATS_CUMULATIVE    "Kumulativní"
     IDS_STATS_OVRHD         "Overhead"
     IDS_STATS_RECORDS       "Rekordy"
-    IDS_STATS_OVRHD2        "Overhead: %s (%s paketù)"
     IDS_STATS_COMPDL        "Dokonèené downloady"
     IDS_STATS_SVRECWORKING  "Max. fungujících serverù"
     IDS_STATS_SVRECUSERS    "Max. online uivatelù"
@@ -1286,7 +1186,6 @@ BEGIN
     IDS_SEARCH_COLUMN       "Hledat ve sloupci"
     IDS_STATS_SHRECSIZE     "Nejvìtší sdílenı soubor"
     IDS_STATS_SHRECASIZE    "Nejvìtší prùmìr velikosti sdílenıch souborù"
-    IDS_STATS_MYRUNTIME     "Celkovı èas bìhu: %s"
     IDS_STATS_SESSION       "Etapa"
     IDS_STATS_SRATIO        "UL:DL prùmìr etapy :"
     IDS_STATS_CRATIO        "UL:DL kumulativní prùmìr:"
@@ -1308,15 +1207,12 @@ BEGIN
     IDS_STATS_AVGDATAULSES  "Prùmìrnì uploadováno za etapu"
     IDS_STATS_ICHSAVED      "Èásti zachránìné díky I.C.H: %u"
     IDS_STATS_MBRESET_TXT   "Jste si jistí, e poadujete resetovat Vaše kumulativní statistiky?\n\nPokud zmìníte rozhodnutí, mùete akci odvrátit stisknutím tlaèítka 'Obnovit Statistiky'."
-    IDS_STATS_MBRESET_CAP   "Potvrdit reset"
     IDS_STATS_MBRESTORE_TXT "Jste si jistí, e poadujete obnovit Vaše kumulativní statistiky ze záloního souboru?\n\nOpìtovnım stisknutím 'Obnovit Statistiky' naètete Vaše souèasné statistiky."
-    IDS_STATS_MBRESTORE_CAP "Potrvdit obnovení"
-    IDS_ERR_NOSTATBKUP      "CHYBA: Záloní soubor statisktik nenalezen..."
+    IDS_ERR_NOSTATBKUP      "CHYBA: Záloní soubor statistik nenalezen..."
     IDS_STATS_NFOLOADEDBKUP "Naètena zálohovaná statistická data..."
     IDS_STATS_NFORESET      "Statistika byla resetována!"
     IDS_STATS_BNRESET       "Resetovat statistiku"
     IDS_STATS_BNRESTORE     "Obnovit statistiku"
-    IDS_CONNECTIONSTATISTICS "Statistika pøipojení"
     IDS_PPGSTATS_YSCALE     "Mìøítko osy Y statistiky pøipojení:"
 END
 
@@ -1326,7 +1222,7 @@ BEGIN
     IDS_STATS_PROBLEMATIC   "Problematickı"
     IDS_LONGHRS             "Hodin"
     IDS_STATS_LARGESTFILE   "Nejvìtší sdílenı soubor"
-    IDS_SPLIT_WINDOW        "Split Window"
+    IDS_SPLIT_WINDOW        "Rozdìlit okno"
     IDS_STATS_DSPF          "Soubory .part"
     IDS_STATS_DATASOURCE    "Zdroj dat"
     IDS_STATS_DSFILE        "Dokonèené soubory"
@@ -1336,13 +1232,12 @@ BEGIN
     IDS_STATS_UPTIME        "Doba uploadu"
     IDS_STATS_TOTALSRVDUR   "Celkové trvání serveru"
     IDS_STATS_MAXAVGUL      "Max. prùmìrná rychlost uploadování"
-    IDS_STATS_MAXUL         "Max. rychloast uploadování"
+    IDS_STATS_MAXUL         "Max. rychlost uploadování"
     IDS_STATS_AVGDLTIME     "Prùmìrnı èas stahování"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_STATS_OLDCLIENTS    "Starı"
     IDS_STATS_PRTDEF        "Implicitní"
     IDS_STATS_PRTOTHER      "Ostatní"
     IDS_STATS_MNUTREETITLE  "Strom statistiky"
@@ -1391,13 +1286,8 @@ BEGIN
     IDS_SEARCH_MISSINGNOTRIGHT "Chybí pravá strana operátoru NOT"
     IDS_SEARCH_MISSINGEXPRPARANT "Chybí vıraz pro '(' ')'"
     IDS_SEARCH_MISSINGCLOSINGPARANT "Chybí uzavøení ')'"
-    IDS_SEARCH_MISSINGANDLEFT "Chybí levá strana operátoru AND"
-    IDS_SEARCH_MISSINGORLEFT "Chybí levá strana operátoru OR"
-    IDS_SEARCH_MISSINGNOTLEFT "Chybí levá strana operátoru NOT"
     IDS_SEARCH_EXPRERROR    "Nelze rozebrat hledanı vıraz"
     IDS_SEARCH_TOOCOMPLEX   "Vıraz je pøíliš komplikovanı"
-    IDS_SEARCH_INVALIDMINMAX 
-                            "Stanovené neplatné jednotky pro Min/Max velikost souboru"
 END
 
 STRINGTABLE 
@@ -1419,18 +1309,17 @@ STRINGTABLE
 BEGIN
     IDS_SELECT_FONT         "Vybrat font"
     IDS_SERVER_LIMITS       "Volnı- / Pevnı- limit souboru"
-    IDS_SERVERINFO          "Informace serveru"
     IDS_KBITSSEC            "kBits/sec"
     IDS_KBYTESSEC           "kBytes/sec"
     IDS_ERR_CREATE_DIR      "Nepodaøilo se vytvoøit %s adresáø ""%s"" - %s"
     IDS_WRN_INCFILE_RESERVED 
-                            "Pøíchozí adresáø nesmí bıt nastaven do instalaèního sdresáøe eMule."
+                            "Pøíchozí adresáø nesmí bıt nastaven do instalaèního adresáøe eMule."
     IDS_WRN_TEMPFILES_RESERVED 
-                            "Doèasnı adresáø nesmí bıt nastaven do instalaèního sdresáøe eMule."
+                            "Doèasnı adresáø nesmí bıt nastaven do instalaèního adresáøe eMule."
     IDS_WRN_INCTEMP_SAME    "Pøíchozí a doèasnı adresáø nesmí bıt stejnı."
     IDS_MMFAILED            "Nepodaøilo se vytvoøit MobleMule soket!"
     IDS_MMSTARTED           "MobileMule server spuštìn na portu %i. Verze protokolu: %s"
-    IDS_SHOWDWLPERCENTAGE   "Zobrazit procento z dokonèení dowlnoadu v progressbaru"
+    IDS_SHOWDWLPERCENTAGE   "Zobrazit procento z dokonèení downloadu v progressbaru"
     IDS_TBN_ONNEWDOWNLOAD   "Download pøidán"
     IDS_ARTIST              "Autor"
     IDS_ALBUM               "Album"
@@ -1441,16 +1330,15 @@ STRINGTABLE
 BEGIN
     IDS_CD_UPLOADREQ        "Poádáno o upload:"
     IDS_SETTINGCHANGED_RESTART "Pro provedení zmìn prosím restartujte eMule!"
-    IDS_CREDITSEXPIRED      ", %i klientù smazáno (nezpatøeni bìhem 5 mìsícù)"
+    IDS_CREDITSEXPIRED      ", %i klientù smazáno (nespatøeni bìhem 5 mìsícù)"
     IDS_SOURCESINFO         "Zdroje: %i  (Uiteèné: %i, NNP: %i, A4AF: %i)"
-    IDS_SHOW_META_DATA      "Zobrazit &Meta Data..."
     IDS_META_DATA           "Meta Data"
     IDS_TIMEBEFORE          "(pøed %s)"
     IDS_FD_TIMEDATE         "Èasové údaje"
     IDS_FILEINFORMATION     "Informace o souboru"
     IDS_STATS_FREESPACE     "Volné místo"
     IDS_IRC_HELPCHANNEL     "Pøipojit ke kanálu Nápovìdy"
-    IDS_IRC_HELPCHANNELPERFORM "/join #emule | /join #emule-czech"
+    IDS_IRC_HELPCHANNELPERFORM "/join #emule-czech"
     IDS_IRC_ACCEPTLINKSFRIENDS "Pouze od pøátel"
     IDS_COMPLSOURCES        "Kompletní zdroje"
     IDS_CHECKNOENDTIME      "bez ukonèení"
@@ -1459,7 +1347,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_MATCH_KEYWORDS      "Odpovídající keywordy"
     IDS_FAILEDREOPEN        "Kritická chyba: Nepodaøilo se znovu otevøít .part soubor '%s' (%s)!"
     IDS_ERR_PREVIEWALREADY  "Od tohoto klienta ji byl vznesen poadavek na ukázku"
     IDS_ERR_PREVIEWFAILED   "Ukázka od uivatele '%s' selhala"
@@ -1474,19 +1361,18 @@ BEGIN
     IDS_SERVERKEEPALIVETIMEOUT "Interval obnovení pøipojení k serveru [min.]"
     IDS_MORE                "&Více"
     IDS_TOOLS               "&Nástroje"
-    IDS_SEARCHPARAMS        "Search Parameters"
+    IDS_SEARCHPARAMS        "Vyhledávací parametry"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_CREATEHOSTNAMESRCLINK "Zkopírovat eD2K odakz do schránky (Hostname)"
     IDS_HASHINGFILESCOUNT   " (%u hashování)"
     IDS_CHECKDISKSPACE      "Zkontrolovat prostor na disku"
     IDS_YOURHOSTNAME        "Hostname pro vlastní eD2K odkazy"
     IDS_INSUFFICIENT        "Nedostaèující prostor na disku"
     IDS_MINFREEDISKSPACE    "Min. volného prostoru na disku [MB]"
     IDS_WARNING             "Varování"
-    IDS_IMPORTSPLPF         "Iportovat .part soubory (eMule,eDonkey,Overnet)"
+    IDS_IMPORTSPLPF         "Importovat .part soubory (eMule, eDonkey, Overnet)"
     IDS_IMP_STEPREADPF      "Ètení .part sloky"
     IDS_IMP_STEPBASICINF    "Získávání základních informací s .part souboru"
     IDS_IMP_STEPCRDESTFILE  "Vytváøení cílového .part souboru"
@@ -1528,7 +1414,7 @@ BEGIN
     IDS_TRANSFER_RATE_LABEL "Pøenosová rychlost:"
     IDS_SAVELOG             "Uloit log"
     IDS_CMT_COPYCLIPBOARD   "Zkopírovat poznámku do schránky"
-    IDS_ASKDOWNLOADLANG     "Vámi zvoleı jazyk není nainstalován ve Vašem systému. Chcete aby ho e-mule stáhnul z emule-project.net?"
+    IDS_ASKDOWNLOADLANG     "Vámi zvolenı jazyk není nainstalován ve Vašem systému. Chcete aby jej e-mule stáhnul z emule-project.net?"
     IDS_ASKDOWNLOADLANGCAP  "Stáhnout jazykové soubory"
     IDS_DELETESELECTED      "Smazat"
     IDS_ERR_FAILEDDOWNLOADLANG 
@@ -1544,11 +1430,11 @@ BEGIN
     IDS_KAD_STOREFILE       "Uloit soubor"
     IDS_KAD_STOREKW         "Uloit keyword"
     IDS_KAD_UNKNOWN         "Neznámı"
-    IDS_SRV_TCPCOMPR        "TCP koprese"
+    IDS_SRV_TCPCOMPR        "TCP komprese"
     IDS_KADSEARCHLAB        "Souèasná hledání"
     IDS_SRV_UDPSR           "Rozšíøenı UDP protokol pro poadavky zdrojù"
     IDS_SRV_UDPFR           "Rozšíøenı UDP protokol pro poadavky souborù"
-    IDS_MINLENGTH           "Min. length [hh:mm:ss]"
+    IDS_MINLENGTH           "Min. délka [hh:mm:ss]"
     IDS_EM_HELP             "&Nápovìda"
     IDS_WRN_FRIENDDUPLIPPORT 
                             "Pøítel nepøidán.\r\n\r\nJi je zde pøítel se stejnou IP adresou i portem."
@@ -1565,7 +1451,7 @@ BEGIN
     IDS_RADCLIENTS          "od známıch klientù"
     IDS_KADUDPPORTERR       "Kad. UDP port je v konfliktu s eMule Ext UDP portem nebo eMule Server UDP port. Port byl zmìnìn na %u."
     IDS_CONFIRM_FILEDELETE  "Opravdu máte zájem o smazání všech vybranıch souborù z disku?"
-    IDS_OPENFOLDER          "Oteøít sloku"
+    IDS_OPENFOLDER          "Otevøít sloku"
     IDS_RUNASUSER           "Spouštìt eMule jako uivatele bez oprávnìní"
     IDS_DELETE              "Smazat z disku"
     IDS_BOOTSTRAP           "Bootstrap"
@@ -1581,19 +1467,18 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_TEXTLABELSONRIGHT   "v pravo od ikony"
+    IDS_TEXTLABELSONRIGHT   "vpravo od ikony"
     IDS_TEXTLABELS          "Textové popisky"
     IDS_ENABLETEXTLABELS    "pod ikonou"
     IDS_CUSTOMIZETOOLBAR    "Pøizpùsobení panelu nástrojù"
     IDS_MINBITRATE          "Min. bitrate [kBit/s]"
     IDS_KAD_RECHECKFW       "Pøekontrolujte firewall"
     IDS_SHAREDTITLE         "Sdílené ED2K|Kad"
-    IDS_WARNINGNOBS         "Bootstrapping je neaktivní (Kad je zakázán nebo je ji pøipojen)."
     IDS_FIREWALLED          "Za firewallem"
     IDS_KADEMLIA            "Kad"
-    IDS_KADCONTACTLAB       "Kontaty"
+    IDS_KADCONTACTLAB       "Kontakty"
     IDS_KADDISTANCE         "Vzdálenost"
-    IDS_KEY                 "Key"
+    IDS_KEY                 "Klíè"
     IDS_NUMBER              "Èíslo"
     IDS_KAD_SEARCHSRC       "Hledat zdroje"
     IDS_KAD_SEARCHKW        "Hledat keywordy"
@@ -1604,11 +1489,10 @@ BEGIN
     IDS_LOG_SECURE_IDENT    "Logovat bezpeènostní ident"
     IDS_LOG_FILTERED_IPS    "Logovat filtrované nebo ignorované IP"
     IDS_LOG_FILE_SAVING     "Logovat události ukládání souboru"
-	  IDS_IPFILTERFILES       "Všechny soubory IP Filtru (*ipfilter.dat;*ip.prefix;*.p2b;*.p2p;*.p2p.txt;*.zip;*.gz)|*ipfilter.dat;*ip.prefix;*.p2b;*.p2p;*.p2p.txt;*.zip;*.gz|Soubory eMule IP Filtru (*ipfilter.dat;*ip.prefix)|*ipfilter.dat;*ip.prefix|Peer Guardian soubory (*.p2b;*.p2p;*.p2p.txt)|*.p2b;*.p2p;*.p2p.txt|Textové soubory (*.txt)|*.txt|Soubory ZIP (*.zip;*.gz)|*.zip;*.gz|Všechny soubory (*.*)|*.*||"
     IDS_DELETEIPFILTERS     "Máte opravdu zájem o smazání vybranıch IP filtrù?"
     IDS_TOTAL_IPFILTER_LABEL "Celkem IP filtrù:"
     IDS_TOTAL_IPS_LABEL     "Celkem IP:"
-    IDS_RAU_WARNING         "Toto nastavení zvıší bespeènost eMule proti útokùm a zneuití, pøièem vyuití této monosti je doporuèeno.\nNicménì pøed aktivací dùraznì doporuèujeme pøeèíst manuál!\n\nZmìny se projeví a po restartování eMule."
+    IDS_RAU_WARNING         "Toto nastavení zvıší bezpeènost eMule proti útokùm a zneuití, pøièem vyuití této monosti je doporuèeno.\nNicménì pøed aktivací dùraznì doporuèujeme pøeèíst manuál!\n\nZmìny se projeví a po restartování eMule."
     IDS_APPEND              "Pøipojit..."
     IDS_SAVE                "Uloit"
     IDS_IP_START            "Zaèátek"
@@ -1628,8 +1512,8 @@ BEGIN
     IDS_KNOWN               "Známí"
     IDS_RAU_RUNNING         "eMule bìí jako uivatel bez oprávnìní: ""%s"""
     IDS_RAU_FAILED          "Nepodaøilo se spustit eMule jako uivatele bez oprávnìní ""eMule_Secure"". Oprávnìní souèasného uivatele (""%S"") zùstávají zachována."
-    IDS_KADCONTACTSREAD     "Pøeèíst %ld kontaktù ze souboru."
-    IDS_ERR_KADCONTACTS     "ádné kontakty nenalezeny, prosím spus?e bootstrap nebo stáhnìte soubor nodes.dat."
+    IDS_KADCONTACTSREAD     "Naèteno %ld kontaktù ze souboru."
+    IDS_ERR_KADCONTACTS     "ádné kontakty nenalezeny, prosím spuste bootstrap nebo stáhnìte soubor nodes.dat."
     IDS_METATAGS            "Poèet meta tagù:"
     IDS_FILEFORMAT          "Formát souboru"
     IDS_UDPREASKS           "UDP File Reasks"
@@ -1642,7 +1526,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_LOG_A4AF            "Logovat A4AF akce"
-    IDS_A4AF_SAVE_CPU       "Zakázat kontorly A4AF pro odlehèení CPU"
+    IDS_A4AF_SAVE_CPU       "Zakázat kontroly A4AF pro odlehèení CPU"
     IDS_SEARCH_DOC          "Dokument"
     IDS_INSTALL_SKIN        "Instalovat eMule Skin"
     IDS_INSTALL_SKIN_NODIR  "Nebyl vybrán ádnı adresáø s profilem Skinu nebo není pøístupnı!"
@@ -1658,19 +1542,19 @@ BEGIN
     IDS_FO_TEMPUDP_S        "Otevøen port %u (UDP) v interním WinXP firewallu pro tuto etapu bìhu eMule"
     IDS_FO_TEMPUDP_F        "Nepodaøilo se otevøít port %u (UDP) v interním WinXP firewallu pro tuto etapu bìhu eMule"
     IDS_FO_PREFBUTTON       "Otevøít tyto porty v interním WinXP firewallu"
-    IDS_FO_PREF_SUCCCEEDED  "Podaøilo se otevøít vybrané porty v interním WinXP firewallu.\nZkontrolujte prosím, jestli to nemá vliv na fireally tøetích stran nebo routery!"
+    IDS_FO_PREF_SUCCCEEDED  "Podaøilo se otevøít vybrané porty v interním WinXP firewallu.\nZkontrolujte prosím, jestli to nemá vliv na firewally tøetích stran nebo routery!"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_FO_PREF_EXISTED     "eMule detekoval existující pravidla pro vybrané porty, která nebyla pøepsána èi nahrazena. Chybìjící pravidla byla úspìšnì pøidána.\nZkontrolujte prosím, jestli to nemá vliv na fireally tøetích stran nebo routery!"
+    IDS_FO_PREF_EXISTED     "eMule detekoval existující pravidla pro vybrané porty, která nebyla pøepsána èi nahrazena. Chybìjící pravidla byla úspìšnì pøidána.\nZkontrolujte prosím, jestli to nemá vliv na firewally tøetích stran nebo routery!"
     IDS_FO_PREF_FAILED      "Nepodaøilo se nastavit interní WinXP firewall pro vybrané porty!"
     IDS_FO_PREF_STARTUP     "Otevøít/zavøít porty WinXP firewallu bìhem spouštìní/ukonèování eMule"
     IDS_LOG_LEVEL           "Úroveò Logu"
-    IDS_DISABLEPEERACHE     "Zakázat downloadování z PeerCache"
+    IDS_DISABLEPEERACHE     "Zakázat stahování z PeerCache"
     IDS_NEWMSG              "Zpráva od '%s' (IP:%s)"
     IDS_PREF_STARTNEXTFILECATONLY "pouze ve stejné kategorii"
-    IDS_LOG_ULDL_EVENTS     "Logovat udílosti uploadu/downloadu"
+    IDS_LOG_ULDL_EVENTS     "Logovat události uploadu/downloadu"
     IDS_PEERCACHE_ENABLED   "Váš ISP podporuje technologii PeerCache, která umoòuje cashovat downloady!"
     IDS_IRC_EMULEPROTO_ALLOWADDFRIEND "Povolit uivateli, aby si vás pøidal mezi pøítele."
     IDS_SOURCESWAPBLOCKED   "Vımìna zdrojù zablokována"
@@ -1681,15 +1565,15 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_IMP_ERR_BADFORMAT   "Neznámı neba špatnı formát doèasného souboru."
+    IDS_IMP_ERR_BADFORMAT   "Neznámı nebo špatnı formát doèasného souboru."
     IDS_SEARCH_INVALIDCHAR  "Vyhledávací øetìzec obsahuje neplatné znaky. Zadal jste buï znak '?' nebo jinı znak, která nelze pouít v této síti."
     IDS_PORTSCON            "Porty a pøipojení"
     IDS_PORTINFO            "eMule pouívá dva porty pro komunikaci se servery a klienty. Tyto porty musí bıt volné a dostupné pro vzdálené klienty. TCP port musí bıt dostupnı pro zajištìní hlavní funkènosti eMule. UDP port je pouíván pro Kad (bezserverovou sí) a pro sníení pouívání sítì (Overhead).\n\nPorty mùete mìnit zde, dokud nebìí ádné síové aktivity."
     IDS_STARTTEST           "Testovat porty"
-    IDS_TESTINFO            "Zde mùete otestovat, zdali jsou vaše TCP a UDP porty dostupné zvenèí. Pozitivní vısledek testu je zapotøebí k vaší dostupnosti pro ostatní klienty. TCP port by mìl bıt dostupnı v kadém pøipadì.!"
+    IDS_TESTINFO            "Zde mùete otestovat, zdali jsou vaše TCP a UDP porty dostupné zvenèí. Pozitivní vısledek testu je zapotøebí k vaší dostupnosti pro ostatní klienty. TCP port by mìl bıt dostupnı v kadém pøípadì.!"
     IDS_CONNECTIONTEST      "Test pøipojení"
     IDS_NOPORTCHANGEPOSSIBLE 
-                            "Bìhem pøipojení k jinım klientùm nebo serveru není moné mìnit porty!\n\nProsím restartujte eMule se zmìnìnım nastavením portù."
+                            "Bìhem pøipojení k jinım klientùm nebo serveru není moné mìnit porty!\n\nProsím, restartujte eMule se zmìnìnım nastavením portù."
     IDS_NETWORK_INFO        "Informace ze sítì"
     IDS_SP_TOTALUL          "Celkové uploady"
     IDS_SP_ULFRIENDS        "Pøátelské upload sloty"
@@ -1704,17 +1588,16 @@ STRINGTABLE
 BEGIN
     IDS_STATS_ACTUL_ZZ      "Aktivní uploady/potøebné k zaplnìní šíøe pásma: %i"
     IDS_STATS_TOTALUL       "Celkovı poèet uploadù: %i"
-    IDS_CHAT_DOWNLOADED     "Downloadováno:"
+    IDS_CHAT_DOWNLOADED     "Staeno:"
     IDS_CHAT_UPLOADED       "Uploadováno:"
     IDS_CHAT_IDENT          "Identifikace:"
-    IDS_CHAT_CLIENT         "Klient:"
-    IDS_MAXHALFOPENCONS     "Max. polootevøwnıch pøipojení"
+    IDS_MAXHALFOPENCONS     "Max. polootevøenıch pøipojení"
     IDS_WIZ_STARTWITHWINDOWS 
                             "Tuto monost povolte, pokud poadujete, aby se eMule spouštìl startem Windows. (implicitnì zakázáno)"
     IDS_KAD_WAITCBK         "Èekat na zpìtné volání z Kad"
     IDS_KAD_TOOMANDYKADLKPS "Pøíliš mnoho Kad vyhledávání"
     IDS_PCDS_CLIENTWAIT     "Klient Èeká"
-    IDS_PCDS_CACHEWAIT      "Cache Æeká"
+    IDS_PCDS_CACHEWAIT      "Cache Èeká"
     IDS_CACHE               "Cache"
     IDS_INDEXED             "Indexován"
     IDS_KADINFO_SRC         "\tZdroj: %u\r\n"
@@ -1725,8 +1608,8 @@ STRINGTABLE
 BEGIN
     IDS_STARTWITHWINDOWS    "Spouštìt se startem Windows"
     IDS_ADDSRCMANUALLY      "Manuálnì pøidat zdroj"
-    IDS_BUDDY               "Pèítel"
-    IDS_BUDDYNONE           "Nic"
+    IDS_BUDDY               "Pøítel"
+    IDS_BUDDYNONE           "ádnı"
     IDS_INFO                "Info"
     IDS_HALF                "Pùl"
     IDS_CONCOMPL            "Compl"
@@ -1753,14 +1636,13 @@ BEGIN
     IDS_META_SRCIP          "IP zdroje"
     IDS_META_SRCTYPE        "Type zdroje"
     IDS_SEARCH_UNICODE      "Hledat v Unicode"
-    IDS_PERSEC              "/s"
 END
 
 STRINGTABLE 
 BEGIN
     IDS_LD_ED2KLINK         "ED2K odkaz"
     IDS_LD_COPYCLIPBOARD    "Zkopírovat do schránky"
-    IDS_LD_HOSTNAME         "Pøi vytváení odkazu na zdroj pouít hostname (z preferencí) namísto IP."
+    IDS_LD_HOSTNAME         "Pøi vytváøení odkazu na zdroj pouít hostname (z preferencí) namísto IP."
     IDS_SAVEACFAILED        "Nepodaøilo se uloit AICH Hashset!"
     IDS_IACHHASH            "AICH Hash"
     IDS_BYTESPERSEC         "B/s"
@@ -1780,11 +1662,11 @@ BEGIN
     IDS_LD_ADDHTML          "Pøidat HTML-Tagy"
     IDS_LD_ADDHASHSET       "Pøidat kompletní hashset"
     IDS_FILELINK            "Odkaz souboru"
-    IDS_PF_ADVANCEDCALC     "Pouít pokroèilou metodu pro kalkulaci zıvajícího èasu"
+    IDS_PF_ADVANCEDCALC     "Pouít pokroèilou metodu pro kalkulaci zbıvajícího èasu"
     IDS_DL_SHOWED2KLINK     "Zobrazit eD2K odkaz..."
     IDS_AICH_SYNCTOTAL      "Nalezeno %i souborù bez platného AICH Hashsetu, tyto soubory budou nyní rehashovány"
     IDS_AICH_CALCFILE       "Vıpoèet AICH Hashe pro soubor %s"
-    IDS_AICH_WARNUSER       "eMule od verze 0.44a pouívá pokroèilé hashování souborù, které napomáhá k vıraznému sníení ztrátovosti dat pøi zjištìní poškození. Jeliko updatujete eMule z døívìjší verze, bude potøeba rehashovat všechny vaše sdílené soubory pro zjišøìní nového hashe. Mùe to sice chvíly trvat, ale jedná se o jednorázovou akci.  "
+    IDS_AICH_WARNUSER       "eMule od verze 0.44a pouívá pokroèilé hashování souborù, které napomáhá k vıraznému sníení ztrátovosti dat pøi zjištìní poškození. Jeliko updatujete eMule z døívìjší verze, bude potøeba rehashovat všechny vaše sdílené soubory pro zjištìní nového hashe. Mùe to sice chvíli trvat, ale jedná se o jednorázovou akci.  "
     IDS_AICH_WORKED         "AICH úspìšnì obnovilo %s z %s z èásti %u pro %s"
     IDS_TRICKLING           "Standby"
     IDS_SOURCECLIENT        "Zdrojovı klient"
@@ -1807,7 +1689,7 @@ BEGIN
     IDS_SMALLICONS          "Malé ikony"
     IDS_SHORTTAGS           "Krátké tagy"
     IDS_THELOAD             "Load"
-    IDS_PACKSENT            "Posladné pakety"
+    IDS_PACKSENT            "Poslané pakety"
     IDS_RESPONSES           "Odpovìdi"
     IDS_EXTRACT_META_DATA   "Extrahovat meta data"
     IDS_META_DATA_MEDIADET  "DirectShow (pro všechny ostatní audio/video soubory)"
@@ -1817,21 +1699,21 @@ END
 STRINGTABLE 
 BEGIN
     IDS_COMCTRL32_DLL_TOOOLD 
-                            "Knihovna spoleènıch ovládacích prvkù Windows (COMCTL32.DLL) je pøíliš stará!\r\n\r\neMule detekovalo novou verzi ""Windows Common Controls library (COMCTL32.DLL)"", jen je ji pøíliš stará pro pouití v eMule. K zajištìní plné a bezchybné funkènosti eMule dùraznì doporuèujeme updatovat ""Windows Common Controls library (COMCTL32.DLL)"" alespoò na verzi 5.8.\r\n\r\nDownloadujte a nainstalulte update ""Windows Common Controls library (COMCTL32.DLL)"" z Microsoft (R) Download Centra. Máte zájem navštívit pøíslušnou URL?"
+                            "Knihovna spoleènıch ovládacích prvkù Windows (COMCTL32.DLL) je pøíliš stará!\r\n\r\neMule detekovalo novou verzi ""Windows Common Controls library (COMCTL32.DLL)"", jen je ji pøíliš stará pro pouití v eMule. K zajištìní plné a bezchybné funkènosti eMule dùraznì doporuèujeme updatovat ""Windows Common Controls library (COMCTL32.DLL)"" alespoò na verzi 5.8.\r\n\r\nDownloadujte a nainstalujte update ""Windows Common Controls library (COMCTL32.DLL)"" z Microsoft (R) Download Centra. Máte zájem navštívit pøíslušnou URL?"
     IDS_ASREGEXPR           "Jako pravidelnı vıraz"
     IDS_STATIC_REGEXP       "Pravidelnı vıraz pro prohlíecí filtr:"
     IDS_CARE4ALL            "Ohodnotit všechny soubory"
     IDS_REGEXPRESSION       "Pravidelnı vıraz"
     IDS_SEARCHKAD           "Hledat Kad"
     IDS_DWL_IPFILTERFILE    "Stahování souboru IP filtru"
-    IDS_DWLIPFILTERFAILED   "download IP filter selhal"
+    IDS_DWLIPFILTERFAILED   "download IP filtr selhal"
     IDS_FINDBUDDY           "Najít kámoše"
     IDS_ERR_IPFILTERZIPEXTR "Nezdaøilo se rozbalit soubor IP filtru ze staeného ZIP souboru ""%s""."
     IDS_ERR_IPFILTERCONTENTERR 
                             "Staenı soubor IP filtru ""%s"" je ZIP soubor s neoèekávanım obsahem."
     IDS_STORENOTES          "Uloit poznámky"
     IDS_NOTES               "Poznámky"
-    IDS_KADSEARCHALREADY    "Jiné hlednání právì probíhá. Prosím, zkuste to pozdìji!"
+    IDS_KADSEARCHALREADY    "Jiné hledání právì probíhá. Prosím, zkuste to pozdìji!"
 
 END
 
@@ -1883,7 +1765,7 @@ BEGIN
     IDS_SEARCH_UNKATTR      "Neznámı vyhledávací atribut '%s'"
     IDS_SEARCH_ATTRERR      "Chyba syntaxe v '%s' vyhledávacím atributu"
     IDS_SEARCH_MISSINGANDRIGHT "Chybìjící pravá strana pro operátor AND"
-    IDS_SEARCH_OPRERR       "Chyba synaxe v porovnávacím operátoru '%s'"
+    IDS_SEARCH_OPRERR       "Chyba syntaxe v porovnávacím operátoru '%s'"
     IDS_FULLALLOC           "Alokovat plnou velikost souboru pro non-sparse part soubory"
     IDS_X_SHAREAZA_IMPORT_NO_HASH "Hash nebyl nalezen."
     IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "Gap list poškozen."
@@ -1896,14 +1778,26 @@ BEGIN
     IDS_CONVERTINGKNOWN2DONE "... hotovo, konvertování dokonèeno"
     IDS_ERR_MET_BAD         "Chyba: soubor %s je poškozen, nelze naèíst známé soubory"
     IDS_SRV_LARGEFILES      "Podpora velkıch souborù"
+    IDS_KADSEARCHACTIVE     "(Probíhá hledání pøes Kad...)"
+    IDS_BOLD                "Pøepne tuènost textu"
+    IDS_UNDERLINE           "Pøepne podtrení textu"
+    IDS_COLOUR              "Vybere barvu textu,(Volitelnì barvu pozadí)."
+    IDS_RESETFORMAT         "Zresetuje všechno pøedešlé formátování,(Pošel Reset Tag)."
+    IDS_RESTORESEARCHPARAMS "Obnoví vyhledávací parametry"
+    IDS_COMMAND             "Pøíkaz"
+    IDS_ARGUMENTS           "Argumenty"
+    IDS_AP_CREATEPREVCOPY   "Vytvoøí soubor náhledu"
+    IDS_ARCHIVEDETAILS      "Archive-Detaily"
+    IDS_ARCHTYPE            "Typ archivu"
+    IDS_ATTRIBUTES          "Atributy"
+    IDS_LASTMODIFIED        "Naposledy upraven"
 END
-#endif    // Czech resources
 
 STRINGTABLE 
 BEGIN
     IDS_ERR_FSCANTHANDLEFILE 
-                            "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
-    IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
+                            "Tento soubor nemùete stáhnout, nebo Váš systém souborù nepodporuje soubory pøesahující 4GB. Zvate proto jeho konverzi na NTFS."
+    IDS_NEWVERSIONAVLBETA   "Tato betaverze je ji zastaralá. Betaverze jsou svojí podstatou urèené k odlaïování chyb, které obsahují. Dùraznì proto doporuèujeme bezodkladné upgradování na stabilní verzi!"
 END
 
 STRINGTABLE 
@@ -1932,9 +1826,9 @@ END
 STRINGTABLE 
 BEGIN
     IDS_COLLECTIONLIST      "Seznam kolekce"
-    IDS_SEARCH_EMULECOLLECTION "KOlekce"
+    IDS_SEARCH_EMULECOLLECTION "Kolekce"
     IDS_COLL_REPLACEEXISTING "Máte zájem o nahrazení existujících souborù?"
-    IDS_COLL_ERR_DELETING   "VYskytla se neznámá chyba bìhem mazání souboru. Máte zájem skonèit bez uloení?"
+    IDS_COLL_ERR_DELETING   "Vyskytla se neznámá chyba bìhem mazání souboru. Máte zájem skonèit bez uloení?"
     IDS_CREATECOLLECTION    "Vytvoøit kolekci"
     IDS_COLL_SIGN           "Podepsat kolekci se jménem a klíèem"
     IDS_AUTHOR              "Autor"
@@ -1950,11 +1844,69 @@ BEGIN
     IDS_PW_REMEMBERDOWNLOADED "Zapamatovat staené soubory"
     IDS_PW_REMEMBERCANCELLED "Zapamatovat zrušené soubory"
     IDS_AVAILABLEPARTS      "Dostupné èásti"
-    IDS_NOSOUND             "Beze zvuku"
+    IDS_NOSOUND             "Bez zvuku"
+    IDS_LOADURL             "Naèíst"
+    IDS_DELETEAFTERALLOC    "Soubor '%s' nyní alokuje místo na disku a posléze bude smazán."
+    IDS_TRAYDLG_SPEED       "Rychlost eMule"
+    IDS_VIAPASSIVE          "pøes Passive"
+    IDS_WEB_REMOTE_LINK_ADDED "Odkaz pøidán: "
+    IDS_WEB_REMOTE_LINK_NOT_ADDED "Odkaz nebyl pøidán. Špatné heslo."
+    IDS_OPTIONS             "Monosti"
+    IDS_ERR_FAILEDTOLOAD    "Nepodaøilo se naèíst %s: %s "
+    IDS_RUNNINGRESTRICTED   "eMule bìí s omezenım oprávnìním"
 END
 
-/////////////////////////////////////////////////////////////////////////////
+STRINGTABLE 
+BEGIN
+    IDS_RARFULLENCR         "Záhlaví zakryptováno - archiv nelze pøeèíst"
+    IDS_ARCPARSED           "Archiv oskenován."
+    IDS_ARCPREV_LISTMAYBEINCOMPL "Seznam souborù mùe bıt nekompletní."
+    IDS_ARCPREV_DIRNOTFOUND "Obsah nenalezen."
+    IDS_ARCPREV_INSUFFDATA  "Nedostatek dat k dispozici."
+    IDS_PASSWPROT           "Ochrana heslem"
+    IDS_ARCPREV_DIRSUCCREAD "Obsah úspìšnì pøeèten."
+    IDS_ARCPREV_UNKNOWNFORMAT "(neznámı/nepodporovanı)"
+    IDS_ARCPREV_PLEASEWAIT  "Skenování archivu..."
+    IDS_OBFUSCATION         "Zatemnìní"
+    IDS_SUPPORTED           "Podporovanı"
+    IDS_ESTIMATED           "odhadovanı"
+    IDS_MEDIAINFO_DLLMISSING 
+                            "Není zde nainstalovaná ádná MediaInfo knihovna. Pokud máte zájem o získání více informací o audio/video souborech v tomto oknì,\r\nstáhnìte MediaInfo knihovnu z http://sourceforge.net/projects/mediainfo/ a soubor MediaInfo.dll zkopírujte do\r\ninstalaèní sloky eMule ""%s"".\r\n"
+    IDS_WARNING_WRONGFILEEXTENTION 
+                            "Varování: Pøípona souboru ""%s"" neodpovídá obvykle pouívané pøíponì\r\npro tento formát souboru. Moná budete chtít pøejmenovat soubor\r\ns uitím jedné z následujících pøípon ""%s"",\r\naby bylo moné soubor prohlíet èi jinak pouít.\r\n"
+    IDS_MEDIAINFO_DRMWARNING 
+                            "Varování: Soubor ""%s"" se zdá bıt chránìn prostøednictvím Digital Rights Management.\r\nVelmi pravdìpodobnì nebude moné soubor pouít bez licence tvùrce tohoto souboru.\r\n"
+    IDS_LOADFILTER_EMTOOLBAR "Bitmapové soubory eMule Toolbaru"
+    IDS_LOADFILTER_EMSKINFILES "Soubory skinù eMule"
+    IDS_ARCHPREV_ATTRIBINFO "Atributy souboru mohou obsahovat:\r\n\r\nP\tsoubor je chránìn heslem\r\nD\tjedná se o adresáø\r\nC\tKomentáø\r\nLx\tÚroveò komprimace x\r\nM\tkomprimovaná data ještì nejsou kompletnì staena\r\n<\tsoubor je pokraèováním pøedešlé èásti\r\n>\tsoubor pokraèuje v další èásti\r\n"
+    IDS_CONTENT_INFO        "Info o obsahu"
+END
 
+STRINGTABLE 
+BEGIN
+    IDS_MESSAGESCOMMENTS    "Zprávy a komentáøe"
+    IDS_DISABLEOBFUSCATION  "Zakázat podporu pro zatemnìná pøipojení"
+    IDS_ONLYOBFUSCATED      "Povolit pouze zatemnìná pøipojení (není doporuèeno)"
+    IDS_ENABLEOBFUSCATION   "Povolit zatemnìní protokolu"
+    IDS_PROTOCOLOBFUSCATION "Zatemnìní protokolu"
+    IDS_CONNECTINGTOOBFUSCATED 
+                            "Pøipojování k %s (%s:%i - za pouití zatemnìní protokolu) ..."
+    IDS_CONNECTEDTOOBFUSCATED "Zatemnìné pøipojení zaloeno na: %s"
+    IDS_VERIFIED            "Ovìøené"
+    IDS_OBFUSCATED          "Zatemnìné"
+    IDS_UNVERIFIED          "Neovìøené"
+    IDS_INVALIDFILEEXT      "Neplatná pøípona souboru"
+    IDS_UNKNOWNFILEEXT      "Neznámá pøípona souboru"
+    IDS_ENABLEMINIMULE      "Povolit MiniMule"
+    IDS_DISABLE_AUTOARCHPREV 
+                            "Zakázat automatické spuštìní ukázky archivu v detailech souboru"
+    IDS_US_STALLEDW4BR      "Pozastaveno! Èeká se na blokovı poadavek."
+    IDS_US_STALLEDREADINGFDISK "Pozastaveno! Probíhá ètení z disku."
+    IDS_SERVERFEATURE_INTTYPETAGS "Tagy typu integer"
+END
+
+#endif    // Czech resources
+/////////////////////////////////////////////////////////////////////////////
 
 
 #ifndef APSTUDIO_INVOKED

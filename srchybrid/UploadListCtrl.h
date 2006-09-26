@@ -42,6 +42,7 @@ protected:
 	CImageList imagelist;
 	CToolTipCtrlX* m_tooltip;
 	CFont		m_fontBoldSmaller; // Show Client Percentage [Commander/MorphXT] - Mondgott
+	CImageList  m_overlayimages; // Mod Icons - Stulle
 
 	void SetAllIcons();
 	static int CALLBACK SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);

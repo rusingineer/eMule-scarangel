@@ -70,7 +70,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_HTTPDOWNLOAD_GETTING_FILE_INFORMATION "Gaunama failo informacija"
-    IDS_HTTPDOWNLOAD_FAIL_PARSE_ERROR "Klaida transformuojant URL: %s"
     IDS_HTTPDOWNLOAD_GENERIC_ERROR "Klaida gaunant failà, klaida:%s"
     IDS_HTTPDOWNLOAD_FAIL_CONNECT_SERVER 
                             "Klaida jungiantis prie serverio, klaida:%s"
@@ -109,7 +108,6 @@ STRINGTABLE
 BEGIN
     IDS_MAIN_SOCKETERROR    "Fatalinë klaida: negaliu sukurt jungties portui %i"
     IDS_MAIN_BTN_DISCONNECT "At&sijungti"
-    IDS_MAIN_BTN_DISCONNECT_TOOLTIP "Atsijungti nuo esamo serverio"
     IDS_ERR_WRONGFILEID     "nusiøstas neteisingas failo id"
     IDS_ERR_BADHASHSET      "gautas neteisingas ar paþeistas hað rinkinys"
     IDS_ERR_BADDATABLOCK    "gautas neteisingas ar paþeistas duomenø blokas"
@@ -118,17 +116,14 @@ BEGIN
     IDS_ERR_NOSLLINK        "Tai ne eD2k serverio ar failo nuoroda"
     IDS_ERR_WRONGPACKAGESIZE "neteisingas OP_FILEREQUEST pakëto dydis"
     IDS_ERR_WRONGHPACKAGESIZE "neteisingas OP_HASHSETREQUEST pakëto dydis"
-    IDS_ERR_BADCLIENTACTION "Klientas iððaukë klaidà ar padarë kaþkà blogo: %s. Atjungiu klientà!"
     IDS_ERR_UNKNOWNCLIENTACTION 
                             "Neþinomi klientai iðsiuntë iðplësto protokolo paketà"
     IDS_ERR_OPENMET         "Klaida: Nepavyko atidaryti part.met failà! (%s => %s)"
     IDS_ERR_BADMETVERSION   "Klaida: Neteisinga part.met versija! (%s => %s)"
-    IDS_ERR_BADGAP          "Neteisingas Gap-þymà part.met faile"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_EMPTYADRESSESDAT_TITLE "Negaliu gauti serveriø sàraðo"
     IDS_ERR_BADSERVERMETVERSION 
                             "Neteisingas versijos tegas faile server.met (0x%X)!"
     IDS_SERVERSFOUND        "Rasta %i serveriø faile server.met"
@@ -138,7 +133,6 @@ BEGIN
                             "Nenustatyta failo klaida skaitant server.met: %s, neámanoma ákrauti serveriø sàraðo"
     IDS_ERR_SAVESERVERMET   "Nepavyko iðsaugoti server.met!"
     IDS_PASSIVE             "Pasyviai"
-    IDS_MAIN_CONNECTEDTO    "Prisijungta prie: "
     IDS_MAIN_BTN_CANCEL     "&Atðaukt"
     IDS_AVAIL               "Dalys: %d , prieinamos: %d (%.1f%%)\n\n"
     IDS_TYPE                "Tipas"
@@ -157,8 +151,6 @@ BEGIN
     IDS_PREFERENCE          "Nustatymai"
     IDS_PRIONOPREF          "Nëra nustatymø"
     IDS_CONNECTTHIS         "Jungtis á pasirinktà serverá"
-    IDS_CHAT_WELCOME        "Praneðimø sistema\n  \nSpaudþiam deðiná pelës mygtukà ant bet kokio kliento ir iðsirenkam 'Siøsti þinutæ' norëdami pradëti pokalbá"
-    IDS_MAIN_BTN_CANCEL_TOOLTIP "Sustabdo esamus pasijungimo bandymus"
     IDS_MAIN_BTN_CONNECT    "&Jungtis"
     IDS_ERR_SAVESERVERMET2  "Nepavyko áraðyti server.met! Jûs turite iðtrinti server.met ir pervardint server.met.old á server.met!"
     IDS_NOTCONNECTED        "Nesusijungta"
@@ -195,7 +187,6 @@ STRINGTABLE
 BEGIN
     IDS_LINKNOTADDED        "Negaliu pridëti nuorodos"
     IDS_MAIN_EXIT           "Ar tikrai norite iðeiti ið eMule?"
-    IDS_MAIN_EXITTITLE      "Iðëjimo patvirtinimas"
     IDS_MAIN_POPUP_RESTORE  "Atstatyti"
     IDS_CONNECTTOANYSERVER  "Jungtis prie betkokio serverio"
     IDS_EXIT                "Ið&eiti"
@@ -203,7 +194,6 @@ BEGIN
     IDS_FAILED              "nepavyko"
     IDS_ERR_BADSERVERREPLY  "Gautas neteisingas login atsakymas ið serverio"
     IDS_NEWCLIENTID         "Naujas kliento ID yra %u"
-    IDS_NOSHAREDFOLDERS     "Nëra ðarintø katalogø"
     IDS_SHAREDFOLDERS       "Ðarinti katalogai"
     IDS_VIEW1               "Þiûrëti"
     IDS_VIEW2               "(neðarinama)"
@@ -242,8 +232,6 @@ BEGIN
     IDS_ASKED4ANOTHERFILE   "Uþklaustas kitas failas"
     IDS_Q_CANCELDL          "Ar tikrai norite atðaukti ir iðtrinti ðiuos failus?\n"
     IDS_Q_CANCELDL2         "Ar tikrai norite atðaukti ir iðtrinti ðá failà?\n"
-    IDS_COPIED2CB           "Nukopijuota á atmintinæ: \n"
-    IDS_PROCDONE            "% baigta"
     IDS_DL_FILENAME         "Failo pavadinimas"
     IDS_DL_SIZE             "Dydis"
     IDS_DL_TRANSF           "Persiøsta"
@@ -259,7 +247,6 @@ BEGIN
     IDS_DL_REMAINS          "Liko"
     IDS_UPDATEFROM          "Atnaujinti ið URL: (filter.dat arba PeerGuardian formatas)"
     IDS_QL_USERNAME         "Vartotojo vardas"
-    IDS_ERR_PACKAGEHANDLING "Nenustatyta klaida apdorojant paketà ið serverio (%s)"
     IDS_QL_RATING           "Reitingas"
     IDS_CONNECTINGTO        "Jungiamasi á %s (%s:%i)..."
     IDS_CLIENTS             "Klientai"
@@ -282,7 +269,6 @@ BEGIN
     IDS_SRV_ADDR            "Áveskite serverio adresà"
     IDS_SRV_PORT            "Nëra serverio porto: áveskite serverio portà"
     IDS_SRV_NOTADDED        "Serveris nepridëtas!"
-    IDS_SRV_READD           "Serveris paþymëtas kaip miræs, jis pridëtas ið naujo!"
     IDS_SRV_NOURLAV         "Nerandamas URL"
     IDS_INVALIDURL          "Neteisingas URL"
 END
@@ -294,22 +280,15 @@ BEGIN
     IDS_SHAREDFILES         "Ðarinti failai"
     IDS_PRIOVERYLOW         "Labai þemas"
     IDS_PRIORELEASE         "Relyzas"
-    IDS_FSTATUS_LOCKED      "Uþimtas"
-    IDS_KADALPHA            "Kademlia vis dar randasi ankstyvoje vystymo bûsenoje. Mes rekomenduojame ájungti - tik jei jûs domina tai patestuoti"
     IDS_FSTATUS_FRIENDSONLY "Tik draugams"
-    IDS_FSTATUS_PUBLIC      "Vieðas"
-    IDS_ERR_RENAMESF        "Nepavyko pervardinti\r\n    ""%s""\r\ná\r\n    ""%s""\r\n\r\n%hs"
-    IDS_PRIOHIGHEST         "Auksèiausias"
+    IDS_ERR_RENAMESF        "Nepavyko pervardinti\r\n    ""%s""\r\ná\r\n    ""%s""\r\n\r\n%s"
     IDS_AVAILABLE           "jau yra"
-    IDS_ERR_NOPRIMCHANGE    "Jûs negalite pakeisti leidimø kai failas yra gaunamas!"
-    IDS_HIDDEN              "Nematomas"
 END
 
 STRINGTABLE 
 BEGIN
     IDS_FSTAT_TRANSFER      "Siuntimai"
     IDS_FSTAT_CONNECTION    "Jungtis"
-    IDS_FSTAT_CLIENTS       "Klientai"
     IDS_FSTAT_SERVERS       "Serveriai"
     IDS_FSTAT_WAITING       "Laukiama..."
     IDS_TIME                "Laikas"
@@ -322,24 +301,15 @@ BEGIN
     IDS_STATS_ACTUL         "Aktyvûs iðsiuntimai: %i"
     IDS_STATS_WAITINGUSERS  "Laukiantys iðsiuntimai: %i"
     IDS_STATS_RECONNECTS    "Persijungimai: %i"
-    IDS_STATS_WAITTRANSF    "laukia siuntimo..."
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_STATS_WAITCONN      "laukia prisijungimui..."
-    IDS_STATS_CONNECTEDSINCE "Pasijungta prie serverio: %s"
-    IDS_STATS_RATIO         "Sesijos Ið:Gav santykis (sesija (viso))"
     IDS_STATS_UNKNOWNCLIENT "Neþinoma: %i"
     IDS_STATS_TOTAL         "Viso: %i"
-    IDS_STATS_WORKING       "Veikia: %i"
-    IDS_STATS_DEAD          "Miræ/nutrinti: %i"
     IDS_DISABLED            "Iðjungta"
     IDS_STOPPED             "Sustabdyta"
     IDS_STATS_UPDATELABEL   "Atnaujinti kas: %i sek"
-    IDS_QUEUECOUNT          "%u (%u baninti)"
-    IDS_NICKNAME            "Nikas: "
-    IDS_CLIENTSFILENAME     "\nKliento failo pavadinimas: "
     IDS_ASKEDFAF            "\nUþklausë kito failo"
     IDS_WAITED              "Laukta"
     IDS_ERR_LOADCREDITFILE  "Nepavyko ákrauti kreditø failo, bus sukurtas naujas failas"
@@ -368,14 +338,10 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_UDPEXT          "Klaida apdorojant áeinantá iðplëstà UDP paketà"
     IDS_ERR_INCOMPLETEBLOCK "uþklausë nebaigtà siøsti blokà"
     IDS_ERR_OPEN            "nepavyko atidaryti uþsakyto failo"
     IDS_ERR_CLIENTERRORED   "Klientas '%s' padarë klaidà kuriant paketà (%s) - klientas atjungiamas"
     IDS_ERR_REQ_FNF         "nerastas uþsakytas failas"
-    IDS_CLIENTBLOCKED       "Klientas '%s' matomai yra labai agresyvus ir jis uþbanintas ið uploado eilës"
-    IDS_LUSERS              "vartotojø"
-    IDS_LFILES              "failø"
     IDS_DESC                "Detalës: %s"
     IDS_PORT                "Portas"
     IDS_ERR_NOVALIDSERVERSFOUND 
@@ -396,7 +362,6 @@ BEGIN
     IDS_ERR_REHASH          "Dëmesio: %s gali bûti paþeistas, vykdomas naujas haðinimas"
     IDS_SKIN_PROF           "Skinø profiliai"
     IDS_ERR_PART_FNF        "nerastas .part failas"
-    IDS_ERR_OPENMETFILE     "Nepavyko atidaryti part.met failo"
     IDS_KADOPEN             "Pasiekiamas"
     IDS_ERR_SAVEMET         "KLAIDA iðsaugant .part failà: %s (%s)"
     IDS_ERR_FOUNDCORRUPTION "Rasta paþeista dalis (%i) faile %s"
@@ -409,18 +374,15 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_NOSERVERSC      "Nerasta teisingø serveriø prisijungimui serveriø sàraðe"
     IDS_CONNECTEDTO         "Prisijungimas pavyko prie: %s"
     IDS_DL_PREVIEW          "Perþiûra"
     IDS_VIEWQUEUE           "Rodyti eilæ"
-    IDS_VIEWUPLOADS         "Rodyti iðsiuntimus"
     IDS_TW_UPLOADS          "Iðsiuntimai"
     IDS_TW_DOWNLOADS        "Gavimai"
     IDS_TW_QUEUE            "Klientø eilëje:"
     IDS_SW_SEARCHBOX        "Paieðka"
     IDS_SW_NAME             "Pavadinimas"
     IDS_SW_GLOBAL           "Globali paieðka"
-    IDS_SW_TYPE             "Tipas"
     IDS_SW_DIRECTDOWNLOAD   "Ákelti eD2k nuorodas"
     IDS_SW_LINK             "eD2k nuoroda(os)"
     IDS_SW_START            "Startas"
@@ -449,8 +411,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_PRIORITY_UP         "Didinti svarbumà"
-    IDS_PRIORITY_DOWN       "Maþinti svarbumà"
     IDS_SPEED_LIMITS        "Greièio limitai"
     IDS_CAPACITY_LIMITS     "Kanalo pralaidumo limitai"
     IDS_ADMIN               "Administratorius"
@@ -459,10 +419,6 @@ BEGIN
     IDS_WEB_ERR_CANTLOAD    "Negaliu ákrauti ruoðiniø: negaliu atidaryti failà %s"
     IDS_GLOBALSEARCH        "Globaliai (serveris)"
     IDS_METHOD              "Metodas"
-    IDS_SW_WEBBASED         "Web tipo paieðka"
-    IDS_NOTHING             "nieko"
-    IDS_SETUPSPEED          "nustatyti iðsiuntimo limità"
-    IDS_SETDOWNSPEED        "nustatyti gavimo limità"
     IDS_UNDO                "Atðaukti"
     IDS_DAYLY               "kasdien"
 END
@@ -499,7 +455,6 @@ BEGIN
     IDS_ST_SESSION          "sesijos vidurkis"
     IDS_ST_ACTIVED          "aktyvûs gavimai"
     IDS_ST_ACTIVEU          "aktyvûs iðsiuntimai"
-    IDS_ST_WAITINGU         "laukiantys iðsiuntimai"
     IDS_CW_MESSAGES         "Þinutës"
     IDS_CW_FRIENDS          "Draugai"
     IDS_CW_SEND             "Siøsti"
@@ -516,9 +471,7 @@ BEGIN
     IDS_PW_BROWSE           "Nurodyti"
     IDS_PW_SHARED           "Ðarinti katalogai (+Ctrl ir bus átraukti pokatalogiai)"
     IDS_PW_CONNECTION       "Susijungimas"
-    IDS_PW_DOWNC            "Gavimo talpa"
     IDS_PW_DOWNL            "Gavimo limitas"
-    IDS_PW_UPC              "Iðsiuntimo talpa"
     IDS_PW_UPL              "Iðsiuntimo limitas"
     IDS_PW_MAXC             "Max prisijungimø"
     IDS_PW_CLIENTPORT       "Kliento portas"
@@ -550,7 +503,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_PW_FILES            "Failai"
-    IDS_PW_ICH              "&Intelektualus Klaidø Tvarkymas"
     IDS_PW_SHARE            "Rodyt mano ðarintus failus"
     IDS_PW_EVER             "Visiem"
     IDS_PW_FRIENDS          "Draugam"
@@ -570,17 +522,13 @@ END
 STRINGTABLE 
 BEGIN
     IDS_FD_GENERAL          "Pagrindinis"
-    IDS_FD_NAME             "Pavadinimas:"
     IDS_FD_MET              "met - failas:"
     IDS_FD_HASH             "Hað:"
     IDS_FD_SIZE             "Failo dydis:"
-    IDS_FD_STATUS           "Part failo bûsena:"
     IDS_FD_TRANSFER         "Gavimas"
-    IDS_FD_SOURCES          "Rasta ðaltiniø:"
     IDS_FD_PARTS            "Dalys:"
     IDS_FD_TRANS            "Gauta:"
     IDS_FD_DATARATE         "Greitis:"
-    IDS_FD_TRANSI           "Siunèiama ið:"
     IDS_FD_COMPSIZE         "Baigto dydis:"
     IDS_FD_CLOSE            "Uþdaryt"
     IDS_FD_TITLE            "Failo detalës"
@@ -595,7 +543,6 @@ BEGIN
     IDS_CD_UIP              "IP adresas:"
     IDS_CD_SIP              "Serverio IP:"
     IDS_CD_VERSION          "Versija:"
-    IDS_CD_UID              "ID:"
     IDS_CD_SNAME            "Serveris:"
     IDS_CD_CDOWN            "Dabar gaunama:"
     IDS_CD_DOWN             "Gauta (ði sesija):"
@@ -620,7 +567,6 @@ BEGIN
     IDS_PW_MAXSOURCES       "Max ðaltiniø failui"
     IDS_SHAREDFILESCOUNT    "Ðarintø failø kiekis: %i"
     IDS_SF_SIZE             "Bendras ðarintø failø kiekis: %s"
-    IDS_ERR_WRONGPARTNUMBER "neteisingas dalies numeris"
     IDS_ERR_BADPORT         "blogas porto numeris"
     IDS_ERR_NOHELLO         "Uþklausë be pasisveikinimo"
     IDS_ERR_INVALIDPACKAGE  "Gautas neteisingas arba paþeistas paketas"
@@ -630,17 +576,14 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ERR_BADSIZE         "neteisingas dydis (OP_QUEUERANKING)"
-    IDS_ERR_BADCLIENT2      "Klientas '%s' (IP:%s) iððaukë klaidà: %u. Atjungiu klientà!"
     IDS_ERR_NOTAFILELINK    "Tai nëra failo nuoroda"
     IDS_ERR_CREATEPARTFILE  "KLAIDA: Nepavyko sukurt part failo"
-    IDS_ERR_UDP_MISCONF     "Klaida apdorojant áeinantá UDP paketà (tikriausiai serveris blogai sukonfiguruotas)"
     IDS_CHAT_START          "*** Pokalbio sesija startavo : "
     IDS_FILEPRIO            "Failo prioritetas"
     IDS_SCORE               "Taðkai"
     IDS_ASKED               "Klausta"
     IDS_LASTSEEN            "Paskut k. matyta"
     IDS_BANNED              "Uþbanintas"
-    IDS_PRIOVERYHIGH        "Labai aukðta"
     IDS_UUSERS              "Vartot"
     IDS_UFAILED             "Nepavyko"
     IDS_OPENFILE            "Atidaryti failà"
@@ -660,7 +603,6 @@ BEGIN
     IDS_FILESTATS_SESSION   "Failø statistika ðiai sesijai: priimta %d ið %d uþklausimø, %s persiøsta\n"
     IDS_FILESTATS_TOTAL     "Failø statistika visoms sesijoms: priimta %d ið %d uþklausimø, %s persiøsta"
     IDS_REQ_UNKNOWNFILE     "Uþklausë neþinomà failà"
-    IDS_TRANSFERTIME        "Laikas po pirmo siuntimo: %s"
     IDS_SF_AVERAGESIZE      "Vidutinis failo dydis: %s"
     IDS_SF_REQUESTS         "Uþklausimai"
     IDS_SF_ACCEPTS          "Priimti uþklausimai"
@@ -692,7 +634,6 @@ BEGIN
     IDS_ADDED2SSF           "Pridëta prie statiniø serveriø sàraðo"
     IDS_STATICSERVER        "Statinis"
     IDS_ERROR_SSF           "Nepavyko atidaryti staticservers.dat"
-    IDS_ERR_PACKAGEERROR    "Kritinë klaida apdorojant %s duomenø paketà (neteisingas dydis) - atsisakyta duomenø bloko"
     IDS_SF_ACTIVECON        "Aktyvûs susijungimai (planuojama)"
     IDS_SF_MAXCONLIMITREACHED "Max susijungimø limitas iðeikvotas"
     IDS_SF_AVGCON           "Vidutiniðkai susijungimø (planuojama)"
@@ -739,7 +680,6 @@ BEGIN
     IDS_PW_AUTOCONNECTSTATICONLY 
                             "Automatiðkai jungtis tik prie statiniø serveriø"
     IDS_PW_CON_LIMITFRM     "Limitai"
-    IDS_PW_FILE_ICH         "I.K.T. ájungtas"
     IDS_STATS_AVGLABEL      "Vidutinis grafiko laikas: %i min"
     IDS_GRAPHS              "Grafikai"
     IDS_STREE               "Statistikos medis"
@@ -773,11 +713,9 @@ STRINGTABLE
 BEGIN
     IDS_HARDLIMIT           "Grieþtas limitas"
     IDS_COL_MORECOLORS      "daugiau..."
-    IDS_KBYTESEC            "kB/s"
     IDS_TOOMANYCONNS        "Perdaug susijungimø"
     IDS_DOWNLOADRENAMED     "Failas su tokiu vardu jau egzistuoja, failas dabar iðsaugomas kaip %s"
     IDS_TBN_DOWNLOADDONE    "Gauta:"
-    IDS_TBN_DOWNLOADADDED   "Pridëta prie krovimø:"
     IDS_PW_TBN_USESOUND     "Naudoti garsus"
     IDS_PW_TBN_ONLOG        "Nauja reikðmë loge"
     IDS_PW_TBN_ONCHAT       "Pasileidþia nauja pokalbiø sesija"
@@ -792,8 +730,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_PW_CON_CAPFRM       "Ribos"
-    IDS_IRC_STATUSLOG       "Bûsenos logas"
-    IDS_IRC_STATUS          "Bûsena"
     IDS_IRC_PRIVATECHANSTART "* Privati pokalbio sesija startavo"
     IDS_IRC_SLAPMSG         "* %s trinkteli su didele kepta þuvim %s per makaulæ!"
     IDS_IRC_PRIVMESSAGE     "Privati þinutë"
@@ -810,7 +746,6 @@ BEGIN
     IDS_IRC_HASJOINED       "* %s pasijungë prie %s"
     IDS_IRC_HASPARTED       "* %s iðëjo ið %s (%s)"
     IDS_IRC_WASKICKEDBY     "* %s iðspyrë %s (%s)"
-    IDS_IRC_NICKUSED        "Jûsø nikas jau naudojamas IRC serveryje. Praðau pasirinkite kitoká nikà Nustatymuose IRC skiltyje."
     IDS_IRC_HASQUIT         "* %s iðëjo (%s)"
     IDS_IRC_NOWKNOWNAS      "* %s þinomas kaip %s"
     IDS_IRC_SETSMODE        "* %s nustatë bûsenà: %s %s"
@@ -860,12 +795,10 @@ BEGIN
     IDS_SP_ACTCON           "Aktyvûs susijungimai"
     IDS_SP_ACTDL            "Aktyvûs gavimai"
     IDS_SP_ACTUL            "Aktyvûs iðsiuntimai"
-    IDS_PW_TIT_UP           "Nustatyti iðsiuntimo limità"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_PW_TIT_DOWN         "Nustatyti gavimo limità"
     IDS_PW_UNLIMITED        "Neribota"
     IDS_PW_MINREC           "Rekomenduojamas minimumas\t%i "
     IDS_PW_UA               "Nustatyti pilnà Ið/Gav greitá"
@@ -873,11 +806,7 @@ BEGIN
     IDS_IRC_IGNOREINFOMESSAGE "Ignoruoti informacinius praneðimus."
     IDS_CONNECTIONLOST      "Susijungimas nutrûko"
     IDS_WIZ_OS_FRAME        "Operacinë sistema"
-    IDS_WIZ_CONCURENTDOWN_FRAME 
-                            "Kiek jûs paprastai turite gaunamø failø vienu metu?"
     IDS_HASHINGFILE         "Haðinamas failas:"
-    IDS_WIZ_CUSTOM_FRAME    "Jei jûs þinote savo interneto greitá, áveskite já èia."
-    IDS_WIZ_HOTBUTTON_FRAME "Numatytieji mygtukai"
     IDS_WIZ_TRUEUPLOAD_TEXT "Realus iðsiuntimo pralaidumas"
     IDS_WIZ_TRUEDOWNLOAD_TEXT "Realus gavimo pralaidumas"
     IDS_FRIENDLIST          "Draugai"
@@ -889,7 +818,6 @@ BEGIN
     IDS_WIZARD              "Vedlys"
     IDS_ADDFRIEND           "Pridëti prie draugø"
     IDS_REMOVEFRIEND        "Ðalinti draugà"
-    IDS_REMOVEFROMSTOK      "Paðalinta ið statiniø serveriø sàraðo"
     IDS_REMOVEFROMSTATIC    "Paðalinti ið statiniø serveriø sàraðo"
     IDS_LENGTH              "Trukmë"
     IDS_VIDEO               "Video"
@@ -901,7 +829,6 @@ BEGIN
     IDS_FPS                 "Kadrø/s"
     IDS_CHANNELS            "Kanalai"
     IDS_SAMPLERATE          "Semplreitas"
-    IDS_ROUNDBITRATE        "Suapvalintas bitreitas"
 END
 
 STRINGTABLE 
@@ -912,16 +839,12 @@ BEGIN
     IDS_VIEWFILES           "Þiûrëti failus"
     IDS_FRIENDSLOT          "Rezervuot slot'à draugui"
     IDS_FRIENDDETAIL        "(Draugo slotas)"
-    IDS_ASCWOP_PROXYSUPPORT "Automatinis serverio susijungimas be proksi"
     IDS_UDPDISABLED         "iðjungti"
-    IDS_CTINFO              "Iðsirinkite savo susijungimo tipà:"
     IDS_WIZ_CTFRAME         "Susijungimo tipas"
     IDS_CONCURDWL           "Krovimø vienu metu"
-    IDS_UNIT                "Mato vienetai:"
     IDS_WIZARD_CUSTOM       "Individualus"
     IDS_WIZARD_ENTERBELOW   "(áveskite þemiau!)"
     IDS_STATS_MAXAVGDL      "Max vidutinis gavimø greitis (sesija): %s"
-    IDS_USS_MIN             "Dëmesio: IGA ðiuo metu nepalaiko iðsiuntimo greièio maþesnio nei 10KB. Jei jûs þinote, kad jûsø internetas nepatemps ðito greièio, praðom iðjungti IGA."
 END
 
 STRINGTABLE 
@@ -931,14 +854,12 @@ BEGIN
                             "Ignoruoti eMule draugø pridëjimo protokolo praneðimus"
     IDS_PW_FASTSRVCON       "Saugus prisijungimas"
     IDS_SOURCELINKFAILED    "Jûs turite turëti Aukðtà ID jei norite sukurti teisingà ðaltiniø nuorodà"
-    IDS_CREATESOURCELINK    "Kopijuoti eD2k nuorodà á atmintinæ (ðaltinis)"
     IDS_ERR_LOADSERVERMET   "Nepavyko ákrauti server.met!"
     IDS_ERR_CORRUPTCOMPRPKG "Gautas paþeistas suspaustas %s paketas (klaida %i)"
     IDS_ERR_EMFRIENDSINVALID 
                             "Failas emfriends.met yra neteisingas arba paþeistas!"
     IDS_ERR_READEMFRIENDS   "Neþinoma klaika nuskaitant failà emfriends.met: %s"
     IDS_ERR_KNOWNSERVERINFOREC "Gauta neþinoma serverio informacija!"
-    IDS_ERR_TIMERCREATEFAILED "Fatalinë klaida: nepavyko sukurti Timer"
     IDS_WIZ_DOWN            "Gav (kbit/s)"
     IDS_WIZ_UP              "Siunt (kbit/s)"
     IDS_SELECT_INCOMINGDIR  "Pasirinkite katalogà ateinantiems failams"
@@ -953,7 +874,6 @@ BEGIN
     IDS_PRIOAUTORELEASE     "Auto [rel]"
     IDS_PRIOAUTOLOW         "Auto [þem]"
     IDS_ERR_CONTIMEOUT      "Iðseko susijungimo laikas bandant jungtis prie ""%s"" "
-    IDS_ERR_CONFAILED       "Susijungimas prie ""%s"" nepavyko."
     IDS_OUTOFSERVERS        "Nëra daugiau serveriø prie kuriø galima jungtis. Bandau jungtis ið naujo"
     IDS_PW_CONLIMITS        "Susijungimo limitai"
     IDS_MAXCON5SECLABEL     "Max naujø susijungimø / 5sek"
@@ -973,15 +893,11 @@ BEGIN
     IDS_RECOVERED_PARTMET   "Atstatytas part.met ðiam failui: %s"
     IDS_CMT_QUEST           "Raðykite apie ðá failà kà norite (ðis tekstas bus rodomas visiems vartotojams):"
     IDS_CMT_AIDE            "Video failam jûs galite apraðyti trukmæ, istorijà, kalbà... Ir jei tai yra apgavystë - jûs tai galite praneðt kitiem eMule vartotojam... "
-    IDS_CMT_TITLE           "%s failo komentaras"
     IDS_CMT_ADD             "Pakeisti ðio failo komentarus..."
     IDS_CMT_NONE            "Nëra komentarø"
     IDS_CMT_READ            "Failo komentarai:"
-    IDS_CMT_NOTCONNECTED    "Nesusijungta..."
     IDS_CMT_SHOWALL         "Rodyti visus komentarus"
-    IDS_CMT_REFRESH         "Atnaujinti"
     IDS_CMT_READALL         "Visi komentarai"
-    IDS_CMT_NOCOMMENT       "Neávesti jokie komentarai..."
     IDS_CMT_RATEQUEST       "Failo ávertinimas"
     IDS_CMT_RATEHELP        "Pasirinkite failo ávertinimà ar praneðkite kitiem vartotojam jei jis klaidingas"
 END
@@ -1009,7 +925,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_FD_STATS            "Netekta dël paþeidimø: %s       Sutaupyta kompresijos pagalba: %s\nSu I.K.T. iðsaugota paketø: %i"
     IDS_ERR_NOHELP          "Praðom apsilankyti mûsø puslapyje, kad gauti naujausià pagalbos failo kopijà! (download skilitis)\n\nAr norëtumëte dabar iðkart aplankyti online pagalbà?"
     IDS_SHOWOVERHEAD        "Rodyti perteklinæ linijos apkrovà"
     IDS_UPDOWNSMALL         "Siunt: %.1f | Gav: %.1f"
@@ -1036,7 +951,6 @@ BEGIN
     IDS_VISITVERSIONCHECK   "\n\nAr jûs norite aplankyti informaciná puslapá dabar?"
     IDS_PW_VIDEOPLAYER      "Video grotuvas"
     IDS_VIDEOBACKUP         "Kurti rezervinæ perþiûros kopijà"
-    IDS_STATIC_EMPTY        "(tuðèia=numatytasis)"
     IDS_MYINFO              "Mano informacija"
     IDS_ID                  "ID"
     IDS_IDLOW               "Þemas ID"
@@ -1081,8 +995,6 @@ BEGIN
     IDS_COLOR               "Spalva"
     IDS_DEFAULT             "Numatytasis"
     IDS_PW_DISPLAY          "Vaizdavimas"
-    IDS_CAT_INVADD          "Rodyti visus nepriskirtus"
-    IDS_CAT_REINVADD        "Rodyti visus"
     IDS_INDICATERATINGS     "Su ikona rodyti gavimus turinèius komentarus/reitingus"
     IDS_ALLOTHERS           "neapibrëþti"
     IDS_TOCAT               "Priskirti prie kategorijos"
@@ -1092,14 +1004,13 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ADDDOWNLOADSFROMCB  "Pridëti ðias eD2k nuorodas prie gavimø\n"
-    IDS_ADDDOWNLOADSFROMCBTITLE "eD2k nuorodos atmintinëje"
     IDS_PF_WATCHCB          "Stebëti atmintinæ ar turi eD2k nuorodas"
     IDS_SECURITY            "Saugumas"
     IDS_IPFILTERLOADED      "%i IP-filtrø ákrauta"
     IDS_IPFILTER            "IP-filtras"
     IDS_EDIT                "Redaguot"
     IDS_FILTERLEVEL         "Filtravimo lygis"
-    IDS_FILTERSERVERBYIPFILTER "Filtruoti serverius (atmesti dinaminius IP)"
+    IDS_FILTERSERVERBYIPFILTER "Filtruoti serverius"
     IDS_FILTERCOMMENTSLABEL "Ignoruoti komentarus turinèius: (atskyrëjas | )"
     IDS_CLIENTLIST          "Þinomi klientai"
     IDS_FOLDER              "Katalogas"
@@ -1121,10 +1032,8 @@ BEGIN
     IDS_USECREDITSYSTEM     "Naudoti kreditø sistemà (apdovanoti dosniuosius)"
     IDS_FIRSTAUTODOWN       "Ájunkite jei norite, kad eMule tvarkytu jûsø gaunamø failø svarbumus.\n\nTai lems, kad gaunami failai su daug ðaltiniø netrukdys gaunamiems failams su maþai ðaltiniø. Ðis punktas átakos tik bûsimus gavimus."
     IDS_FIRSTAUTOUP         "Ájunkite jei norite, kad eMule tvarkytu jûsø iðsiuntimø svarbumus.\n\nTai leis eMule pagreitinti maþiau paplitusiø failø iðsiuntimà kitiems vartotojams nei failams su dideliu paplitimu. Jei uþdrausti - tai eMule greièiau siøs didesná palitimà turinèius failus kitiems vartotojams, ir kitiems bus sunkiau gauti maþiau paplitusius failus. Ðis punktas átakos tik bûsimus ðarintus failus."
-    IDS_FIRSTCREDITSYSTEM   "Ar jûs norite apdovanoti þmones kurie siunèia jums?\n\nTai yra þinoma kaip Kreditø sistema. Ájungus padeda kovoti su 'tik siurbianèiais' bet ne 'duodanèiais' vartotojais. Jei jûs esate didelis failø platintojas, tai jûs tikriausiai norësite tai iðjungti."
     IDS_FIRSTFULLCHUNK      "Ájunkite jei norite iðsiøsti pilnas dalis.\n\nPilnø daliø naudojimas suteikia klientui didesná ðansà greièiau uþbaigti dalá. Iðjungus jûsø eilë keisis greièiau. Jei jûs esate didelis failø platintojas, tai jûs tikriausiai norësite tai ájungti."
     IDS_FIRSTSAFECON        "Ájunkite jei norite, kad eMule naudotø saugø prisijungimà.\n\nTai leis eMule jungtis prie serveriø greièiau, bet yra ðansû, kad gausite netikrø Þemas ID susijungimø."
-    IDS_FIRSTRUNASSIST      "Ar jûs norite paleisti pirmo paleidimo vedlá?"
     IDS_FIRSTAUTOCON        "Ájunkite jei norite, kad eMule prisijungtu startuojant."
     IDS_FIRSTCOMPLETE       "Jûs jau praëjote pirmo paleidimo vedlá.\n\nVisi ðitie ir kiti nustatymai gali bûti keièiami Nustatymai skiltyje. Dël paaiðkinimø ir pagalbos kreipkitës á pagalbos failà spausdami F1 eMule'je!"
 END
@@ -1156,18 +1065,14 @@ END
 STRINGTABLE 
 BEGIN
     IDS_WEB_SHOW_UPLOAD_QUEUE "Rodyti iðsiuntimo eilæ"
-    IDS_WEB_HIDE_UPLOAD_QUEUE "Slëpti isðiuntimo eilæ"
     IDS_WEB_GZIP_COMPRESSION "Gzip kompresija"
     IDS_WEB_GZIP_COMMENT    "Taupo jûsø internetà, ypatingai su grafika:"
-    IDS_WEB_UPLOAD_QUEUE_COMMENT 
-                            "Ájungti ar iðjungti laukimo eilës rodymà siuntimai lange:"
     IDS_WEB_REFRESH_TIME    "puslapiø atnaujinimo laikas"
     IDS_WEB_REFRESH_COMMENT "Laikas sekundëmis (nulis - iðjungta):"
     IDS_SV_URL              "URL"
     IDS_WS_RELOAD_TMPL      "ðablonas"
     IDS_SV_DEBUGLOG         "Debug logas"
     IDS_WS_PASS             "Slaptaþodis"
-    IDS_WEB_FILESETTINGS    "Failo nustatymai"
     IDS_WS_ERR_LOADTEMPLATE "Negaliu ákrauti ruoðiniø: pakeiskite failà %s naujesne versija!"
     IDS_WEB_CONLIMITS       "Susijungimo limitai"
     IDS_INFLST_USER_TOTALDOWNLOAD "Gauta viso"
@@ -1177,7 +1082,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_WEB_BADLOGINATTEMPT "Web serveris: nepavyko bandymas prisiloginti"
-    IDS_ERR_TOOLARGEFILE    "Failas yra didesnis nei palaiko eDonkey protokolas (>=4GB)"
+    IDS_ERR_TOOLARGEFILE    "Failas yra didesnis nei palaiko eDonkey protokolas (>=256GB)"
     IDS_MSGONLYFRIENDS      "Priimti tik ið draugø"
     IDS_MSGONLYSEC          "Priimti tik ið teisingø klientø"
     IDS_DAY_MO_SA           "Pirm-ðeðt"
@@ -1201,7 +1106,6 @@ BEGIN
     IDS_WEBSRV              "Web serveris"
     IDS_SW_REFETCHRES       "Atnaujint rezultatus"
     IDS_FILEHASH            "Failo hað"
-    IDS_GLOBALSEARCH2       "Globali paieðka"
     IDS_PW_PROXY            "Proksi"
     IDS_PROXY_ENABLE        "Ájungti proksi"
     IDS_PROXY_TYPE          "Proksi tipas:"
@@ -1228,7 +1132,6 @@ BEGIN
     IDS_WIZ1_END_BTN_HINT   "Kad uþdarytumëte ðá vedlá, spauskite Finish."
     IDS_WIZ1_UPLOAD_SUBTITLE "Pilnos dalies iðsiuntimas"
     IDS_DL_RESUMENEXT       "Tæsti kità sustabdytà"
-    IDS_DONTCHANGE          "Nekeisti"
     IDS_STARTPRIO           "Ðios kategorijos svarbumas"
     IDS_PREF_STARTNEXTFILECAT "pageidautinai tà paèia kategorijà"
     IDS_REPAINTGRAPHS       "Neatnaujinti statistikos grafikus keièiant dydá"
@@ -1267,7 +1170,6 @@ BEGIN
     IDS_STATS_CUMULATIVE    "Bendra"
     IDS_STATS_OVRHD         "Perkrova"
     IDS_STATS_RECORDS       "Áraðai"
-    IDS_STATS_OVRHD2        "Perkrova: %s (%s paketai)"
     IDS_STATS_COMPDL        "Baigti gavimai"
     IDS_STATS_SVRECWORKING  "Max veikianèiø serveriø"
     IDS_STATS_SVRECUSERS    "Max pasijungusiø vartotojø"
@@ -1281,7 +1183,6 @@ BEGIN
     IDS_SEARCH_COLUMN       "Ieðkoti stulpelyje"
     IDS_STATS_SHRECSIZE     "Didþiausias ðarø dydis"
     IDS_STATS_SHRECASIZE    "Didþiausias vidutinis failo dydis"
-    IDS_STATS_MYRUNTIME     "Bendras veikimo laikas: %s"
     IDS_STATS_SESSION       "Sesija"
     IDS_STATS_SRATIO        "Sesijos Ið:Gav santykis:"
     IDS_STATS_CRATIO        "Bendras Ið:Gav santykis:"
@@ -1303,15 +1204,12 @@ BEGIN
     IDS_STATS_AVGDATAULSES  "Vidutiniðkai iðsiøsta per sesijà"
     IDS_STATS_ICHSAVED      "I.K.T. pagalba iðsaugota paketø: %u"
     IDS_STATS_MBRESET_TXT   "Ar jûs tikrai norite iðvalyti savo visà statistikà?\n\nJei apsigalvosite, tai galësite atðaukti ðá veiksmà paspaudæ 'Atstatyti statistikà' mygtukà."
-    IDS_STATS_MBRESET_CAP   "Patvirtinkite iðvalymà"
     IDS_STATS_MBRESTORE_TXT "Ar jûs tikrai norite atstatyti visà savo statistikà ið laikinos kopijos failo?\n\nPakartotinai spaudþiant 'Atstatyti statistikà' bus atstatoma jûsø esama statistika."
-    IDS_STATS_MBRESTORE_CAP "Patvirtinkite atstatymà"
     IDS_ERR_NOSTATBKUP      "KLAIDA: nerastas atsarginis statistikos kopijos failas..."
     IDS_STATS_NFOLOADEDBKUP "Ákrauti atsarginius statistikos duomenys..."
     IDS_STATS_NFORESET      "Statistika jau iðvalyta!"
     IDS_STATS_BNRESET       "Iðvalyti statistikà"
     IDS_STATS_BNRESTORE     "Atstatyti statistikà"
-    IDS_CONNECTIONSTATISTICS "Susijungimo statistika"
     IDS_PPGSTATS_YSCALE     "Susijungimø statistika Y-aðies skalë:"
 END
 
@@ -1337,7 +1235,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_STATS_OLDCLIENTS    "Senas"
     IDS_STATS_PRTDEF        "Numatytasis"
     IDS_STATS_PRTOTHER      "Kitas"
     IDS_STATS_MNUTREETITLE  "Statistikos medis"
@@ -1386,13 +1283,8 @@ BEGIN
     IDS_SEARCH_MISSINGNOTRIGHT "Trûksta NOT operatoriaus deðinës pusës"
     IDS_SEARCH_MISSINGEXPRPARANT "Trûksta '(' ')' iðraiðkos"
     IDS_SEARCH_MISSINGCLOSINGPARANT "Trûksta uþdarymo ')'"
-    IDS_SEARCH_MISSINGANDLEFT "Trûksta AND operatoriaus kairës pusës"
-    IDS_SEARCH_MISSINGORLEFT "Trûksta OR operatoriaus kairës pusës"
-    IDS_SEARCH_MISSINGNOTLEFT "Trûksta NOT operatoriaus kairës pusës"
     IDS_SEARCH_EXPRERROR    "Nepavyko apdirbti paieðkos iðraiðkos"
     IDS_SEARCH_TOOCOMPLEX   "Iðraiðka per sudëtinga"
-    IDS_SEARCH_INVALIDMINMAX 
-                            "Nurodyti neteisingi Min/Max failo dydþio vienetø matai"
 END
 
 STRINGTABLE 
@@ -1414,7 +1306,6 @@ STRINGTABLE
 BEGIN
     IDS_SELECT_FONT         "Iðsirinkite ðriftà"
     IDS_SERVER_LIMITS       "Paprastas / grieþtas failø limitas"
-    IDS_SERVERINFO          "Serverio informacija"
     IDS_KBITSSEC            "kBitai/sek"
     IDS_KBYTESSEC           "kBaitai/sek"
     IDS_ERR_CREATE_DIR      "Nepavyko sukurti %s katalogo ""%s"" - %s"
@@ -1439,14 +1330,13 @@ BEGIN
                             "Norëdami, kad ásigaliotu nauji nustatymai - perkraukite eMule!"
     IDS_CREDITSEXPIRED      ", %i klientø paðalinta (nematyti 5 mënesius)"
     IDS_SOURCESINFO         "%i  (naudingi: %i, ND: %i, UKF: %i)"
-    IDS_SHOW_META_DATA      "Rodyti &meta duomenis..."
     IDS_META_DATA           "Meta duomenys"
     IDS_TIMEBEFORE          "(pieð %s)"
     IDS_FD_TIMEDATE         "Datos"
     IDS_FILEINFORMATION     "Failo informacija"
     IDS_STATS_FREESPACE     "Laisva vieta"
     IDS_IRC_HELPCHANNEL     "Jungtis prie pagalbos kanalø."
-    IDS_IRC_HELPCHANNELPERFORM "/join #emule | /join #emule-lithuanian"
+    IDS_IRC_HELPCHANNELPERFORM "/join #emule-lithuanian"
     IDS_IRC_ACCEPTLINKSFRIENDS "Tik ið draugø."
     IDS_COMPLSOURCES        "Pilni ðaltiniai"
     IDS_CHECKNOENDTIME      "be pabaig. laiko"
@@ -1455,7 +1345,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_MATCH_KEYWORDS      "Atitinkantys raktaþodþiai"
     IDS_FAILEDREOPEN        "Fatalinë klaida: nepavyko pakartotinai atidaryti part failo '%s' (%s)!"
     IDS_ERR_PREVIEWALREADY  "Ðiuo metu jau vykdoma perþiûros uþklausa ið ðio kliento"
     IDS_ERR_PREVIEWFAILED   "Perþiûra ið vartotojo '%s' nepavyko"
@@ -1476,8 +1365,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_CREATEHOSTNAMESRCLINK 
-                            "Kopijuoti eD2k nuorodà á atmintinæ (kompiuterio vardas)"
     IDS_HASHINGFILESCOUNT   " (%u haðinama)"
     IDS_CHECKDISKSPACE      "Patikrinkite disko vietà"
     IDS_YOURHOSTNAME        "Kompiuterio vardas eD2k nuorodoms"
@@ -1586,7 +1473,6 @@ BEGIN
     IDS_MINBITRATE          "Min bitreitas [kBit/s]"
     IDS_KAD_RECHECKFW       "Patikrinti ugniasienæ"
     IDS_SHAREDTITLE         "Ðarinama eD2k|Kad"
-    IDS_WARNINGNOBS         "Bootstrap ðiuo metu neaktyvus (Kad iðjungtas arba jau susijungta)."
     IDS_FIREWALLED          "Uþ ugniasienes"
     IDS_KADEMLIA            "Kad"
     IDS_KADCONTACTLAB       "Kontaktai"
@@ -1602,7 +1488,6 @@ BEGIN
     IDS_LOG_SECURE_IDENT    "Loginti saugø identifikavimà"
     IDS_LOG_FILTERED_IPS    "Loginti filtruotus ir/arba ignoruotus IP"
     IDS_LOG_FILE_SAVING     "Loginti failø iðssaugojimo veiksmus"
-	  IDS_IPFILTERFILES       "Visi IP filtro failai (*ipfilter.dat;*ip.prefix;*.p2b;*.p2p;*.p2p.txt;*.zip;*.gz)|*ipfilter.dat;*ip.prefix;*.p2b;*.p2p;*.p2p.txt;*.zip;*.gz|eMule IP filtro failai (*ipfilter.dat;*ip.prefix)|*ipfilter.dat;*ip.prefix|Peer Guardian failai (*.p2b;*.p2p;*.p2p.txt)|*.p2b;*.p2p;*.p2p.txt|Tekstiniai failai (*.txt)|*.txt|ZIP failai (*.zip;*.gz)|*.zip;*.gz|All Files (*.*)|*.*||"
     IDS_DELETEIPFILTERS     "Ar jûs tikrai norite iðtrinti iðsirinktus IP filtrus?"
     IDS_TOTAL_IPFILTER_LABEL "Viso IP filtrø:"
     IDS_TOTAL_IPS_LABEL     "Viso IP:"
@@ -1671,7 +1556,6 @@ BEGIN
     IDS_FO_PREF_SUCCCEEDED  "Sekmingai atidaryti pasirinkti portai vidinëje WinXP ugniasienëje.\nAtkrepkit dëmesá, kad kitos ugniasienës ar routeriai nëra lieèiami!"
     IDS_SOURCESWAPBLOCKED   "Pakeisti blokuotus"
     IDS_A4AF_CHECK_THIS_NOW "Patikrinti dabar ðá ðaltiná (debug)"
-    IDS_SOURCEEXCHANGESWAP  "Laikinas ðaltiniø apsikeitimo pakeitimas"
     IDS_NEWMSG              "Naujas praneðimas ið '%s' (IP:%s)"
     IDS_PREF_STARTNEXTFILECATONLY "tik toje paèioje kategorijoje"
     IDS_LOG_ULDL_EVENTS     "Loginti iðsiuntimo/gavimo ávykius"
@@ -1708,7 +1592,6 @@ BEGIN
     IDS_CHAT_DOWNLOADED     "Gauta:"
     IDS_CHAT_UPLOADED       "Iðsiøsta:"
     IDS_CHAT_IDENT          "Identifikavimas:"
-    IDS_CHAT_CLIENT         "Klientas:"
 END
 
 STRINGTABLE 
@@ -1754,7 +1637,6 @@ BEGIN
     IDS_META_SRCIP          "Ðaltinio IP"
     IDS_META_SRCTYPE        "Ðaltinio tipas"
     IDS_SEARCH_UNICODE      "Paieðka su Unikodu"
-    IDS_PERSEC              "/s"
 END
 
 STRINGTABLE 
@@ -1951,7 +1833,80 @@ STRINGTABLE
 BEGIN
     IDS_ERR_FSCANTHANDLEFILE 
                             "Jûs negalite gauti ðio failo, nes jûsø failø sistema nepalaiko didesniø failø nei 4GB, pagalvokite apie perëjimà prie NTFS"
-    IDS_NEWVERSIONAVLBETA   "Ði Beta versija yra pasenusi. Ji turi daug ávairiø klaidá, taigi yra labai svarbu atsinaujinti á normalià versijà kuo greièiau!"
+    IDS_NEWVERSIONAVLBETA   "Ði Beta versija yra pasenusi. Ji turi daug ávairiø klaidø, taigi yra labai svarbu atsinaujinti á normalià versijà kuo greièiau!"
+    IDS_KADSEARCHACTIVE     "(Vykdoma Kad paieðka...)"
+    IDS_BOLD                "Ájungti storà tekstà"
+    IDS_UNDERLINE           "Ájungit pabrauktà tekstà"
+    IDS_COLOUR              "Pasirenkama teksto spalva,(papildomai ir fono spalva)."
+    IDS_RESETFORMAT         "Atstatomi visi ankstesni formatavimai,(iðsiunèiama atstatymo þyma)."
+    IDS_RESTORESEARCHPARAMS "Atstatyti paieðkos parametrus"
+    IDS_COMMAND             "Komanda"
+    IDS_ARGUMENTS           "Argumentas"
+    IDS_AP_CREATEPREVCOPY   "Sukurti perþiûros failà"
+    IDS_ARCHIVEDETAILS      "Archyvo duomenys"
+    IDS_ARCHTYPE            "Archyvo tipas:"
+    IDS_ATTRIBUTES          "Atributai"
+    IDS_LASTMODIFIED        "Pask. k. modifikuota"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_RARFULLENCR         "Negaliu nuskaityti - katalogas uþðifruotas"
+    IDS_ARCPARSED           "Archyvas nuskanuotas."
+    IDS_ARCPREV_LISTMAYBEINCOMPL "Failø sàraðas gali bûti nepilnas."
+    IDS_ARCPREV_DIRNOTFOUND "Nerastas katalogas."
+    IDS_ARCPREV_INSUFFDATA  "Neuþtenka duomenø."
+    IDS_PASSWPROT           "Apsaugota slaptaþodþiu"
+    IDS_ARCPREV_DIRSUCCREAD "Katalogas sekmingai nuskaitytas."
+    IDS_ARCPREV_UNKNOWNFORMAT "(neþinoma/nepalaikoma)"
+    IDS_ARCPREV_PLEASEWAIT  "Skanuojamas archyvas..."
+    IDS_LOADURL             "Ákrauti"
+    IDS_DELETEAFTERALLOC    "'%s' failas ðiuo metu sujungiamas ir jis bus paðalintas baigus procesà"
+    IDS_TRAYDLG_SPEED       "eMule greitis"
+    IDS_VIAPASSIVE          "per Passive"
+    IDS_WEB_REMOTE_LINK_ADDED "Pridëta nuoroda: "
+    IDS_WEB_REMOTE_LINK_NOT_ADDED "Nuoroda nepridëta. Neteisingas slaptaþodis."
+    IDS_OPTIONS             "Nustatymai"
+    IDS_ERR_FAILEDTOLOAD    "Nepavyko ákrauti %s: %s "
+    IDS_RUNNINGRESTRICTED   "eMule veikia su ribotom teisëm"
+    IDS_OBFUSCATION         "Klaidinimas"
+    IDS_SUPPORTED           "Palaikomas"
+    IDS_ESTIMATED           "planuojama"
+    IDS_MEDIAINFO_DLLMISSING 
+                            "Nëra MediaInfo bibliotekø. Jie norite gauti daugiau informacijos apie audio/video failus ðiame lange,\r\nturite paisimti MediaInfo bibliotekas ið http://sourceforge.net/projects/mediainfo/ ir nukopijuoti MediaInfo.dll faila á \r\neMule katalogà ""%s"".\r\n"
+    IDS_WARNING_WRONGFILEEXTENTION 
+                            "Dëmesio: Ðis ""%s"" failo plëtinys neatitinka failø plëtinio, kuris bûna naudojamias ðiø failø tipui.\r\nGal norësite pakeisti ðio failo plëtiná á vienà ið ðiø\r\nplëtiniø: ""%s"" ,\r\nnorëdami teisingai matyti ar naudoti ðá failà.\r\n"
+    IDS_MEDIAINFO_DRMWARNING 
+                            "Dëmesio: Ðis ""%s"" failas matomai yra apsaugotas DRM.\r\nJûs greièiausiai negalësite naudotis ðiuo failu be licencijos gautos ið failo savininko.\r\n"
+    IDS_LOADFILTER_EMTOOLBAR "eMule uþduoèiø juostos failai"
+    IDS_LOADFILTER_EMSKINFILES "eMule skinø failai"
+    IDS_ARCHPREV_ATTRIBINFO "Failo atributuose gali bûti:\r\n\r\nP\tfailas apsaugotas slaptaþodþiu\r\nD\tyra katalogas\r\nC\tkomentaras\r\nLx\tsuspaudimo laipsnis\r\nM\tsuspausti duomenys dar nepilnai gauti\r\n<\tfailas prasideda ankstesnëje dalyje\r\n>\tfailas tesiasi sekanèioje dalyje\r\n"
+    IDS_CONTENT_INFO        "Turinys"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_MESSAGESCOMMENTS    "Þinutës ir komentarai"
+    IDS_DISABLEOBFUSCATION  "Iðjungti klaidinimo palaikymà susijungimam"
+    IDS_ONLYOBFUSCATED      "Leisti tik klaidinanèius susijungimus (nerekomenduojama)"
+    IDS_ENABLEOBFUSCATION   "Ájungti protokolo klaidinimà"
+    IDS_PROTOCOLOBFUSCATION "Protokolo klaidinimas"
+    IDS_CONNECTINGTOOBFUSCATED 
+                            "Jungiamasi á %s (%s:%i - naudojant klaidinimo protokolà) ..."
+    IDS_CONNECTEDTOOBFUSCATED "Klaidinantis susijungimas pavyko su: %s"
+    IDS_VERIFIED            "patikrinta"
+    IDS_OBFUSCATED          "Klaidinantis"
+    IDS_UNVERIFIED          "nepatikrinta"
+    IDS_INVALIDFILEEXT      "Neteisingas failo plëtinys"
+    IDS_UNKNOWNFILEEXT      "neþinomas failo plëtinys"
+    IDS_ENABLEMINIMULE      "Ájungti MiniMule"
+    IDS_DISABLE_AUTOARCHPREV 
+                            "Iðjungti automatiðkà archyvø perþiûrà failø detalëse"
+    IDS_US_STALLEDW4BR      "Uþdelsimas! Laukiu uþklausimo blokui."
+    IDS_US_STALLEDREADINGFDISK "Uþdelsimas! Skaitoma ið disko."
+    IDS_SERVERFEATURE_INTTYPETAGS "Sveiko tipo tagai"
 END
 
 #endif    // Lithuanian resources

@@ -66,7 +66,8 @@ bool CKnownFileList::Init()
 	return LoadKnownFiles() && LoadCancelledFiles();
 }
 
-bool CKnownFileList::LoadKnownFiles(){
+bool CKnownFileList::LoadKnownFiles()
+{
 	CString fullpath=thePrefs.GetConfigDir();
 	fullpath.Append(KNOWN_MET_FILENAME);
 	CSafeBufferedFile file;
@@ -96,6 +97,7 @@ bool CKnownFileList::LoadKnownFiles(){
 			//Xman Init-Hashtable optimization
 			m_Files_map.InitHashTable(1031);
 			//Xman end
+			LogError(LOG_STATUSBAR, GetResString(IDS_ERR_SERVERMET_BAD));
 			return false;
 		}
 		AddDebugLogLine(false, _T("Known.met file version is %u (%s support 64bit tags)"), header, (header == MET_HEADER) ? _T("doesn't") : _T("does")); 
@@ -356,13 +358,14 @@ void CKnownFileList::Process()
 
 bool CKnownFileList::SafeAddKFile(CKnownFile* toadd)
 {
+	bool bRemovedDuplicateSharedFile = false;
 	CCKey key(toadd->GetFileHash());
 	CKnownFile* pFileInMap;
 	if (m_Files_map.Lookup(key, pFileInMap))
 	{
-		TRACE(_T("%hs: File already in known file list: %s \"%s\" \"%s\"\n"), __FUNCTION__, md4str(pFileInMap->GetFileHash()), pFileInMap->GetFileName(), pFileInMap->GetFilePath());
-		TRACE(_T("%hs: Old entry replaced with:         %s \"%s\" \"%s\"\n"), __FUNCTION__, md4str(toadd->GetFileHash()), toadd->GetFileName(), toadd->GetFilePath());
-#if 1
+		TRACE(_T("%hs: Already in known list:   %s \"%s\"\n"), __FUNCTION__, md4str(pFileInMap->GetFileHash()), pFileInMap->GetFileName());
+		TRACE(_T("%hs: Old entry replaced with: %s \"%s\"\n"), __FUNCTION__, md4str(toadd->GetFileHash()), toadd->GetFileName());
+
 		// if we hash files which are already in known file list and add them later (when the hashing thread is finished),
 		// we can not delete any already available entry from known files list. that entry can already be used by the
 		// shared file list -> crash.
@@ -375,7 +378,28 @@ bool CKnownFileList::SafeAddKFile(CKnownFile* toadd)
 		//Not sure of a good solution yet..
 		if (theApp.sharedfiles)
 		{
-			theApp.sharedfiles->RemoveFile(pFileInMap);
+#if 0
+			// This may crash the client because of dangling ptr in shared files ctrl.
+			// This may happen if a file is re-shared which is also currently downloaded.
+			// After the file was downloaded (again) there is a dangl. ptr in shared files 
+			// ctrl.
+			// Actually that's also wrong in some cases: Keywords are not always removed
+			// because the wrong ptr is used to search for in keyword publish list.
+			theApp.sharedfiles->RemoveKeywords(pFileInMap);
+#else
+			// This solves the problem with dangl. ptr in shared files ctrl,
+			// but creates a new bug. It may lead to unshared files! Even 
+			// worse it may lead to files which are 'shared' in GUI but 
+			// which are though not shared 'logically'.
+			//
+			// To reduce the harm, remove the file from shared files list, 
+			// only if really needed. Right now this 'harm' applies for files
+			// which are re-shared and then completed (again) because they were
+			// also in download queue (they were added there when the already
+			// available file was not in shared file list).
+			if (theApp.sharedfiles->IsFilePtrInList(pFileInMap))
+				bRemovedDuplicateSharedFile = theApp.sharedfiles->RemoveFile(pFileInMap);
+#endif
 			ASSERT( !theApp.sharedfiles->IsFilePtrInList(pFileInMap) );
 		}
 		//Double check to make sure this is the same file as it's possible that a two files have the same hash.
@@ -399,36 +423,25 @@ bool CKnownFileList::SafeAddKFile(CKnownFile* toadd)
 
 		delete pFileInMap;
 
+		//Xman todo: check out if the new official way is working
+		/*
 		//Xman official bugfix for redownloading already downloaded file
 		//Xman 5.1 readded but modified
 		//remark: official emule has a bug at this point. download a shared file and you see:
 		//both files will be unshared. But this patch leads to a crash in an unknown situation
 		if (theApp.sharedfiles && !theApp.sharedfiles->IsFilePtrInList(toadd))
 			theApp.sharedfiles->SafeAddKFileWithOutRemoveHasing(toadd);
-
+		
 		
 		//Xman [MoNKi: -Downloaded History-]
 		theApp.emuledlg->sharedfileswnd->historylistctrl.AddFile(toadd);
+		*/
 
-#else
-		// if the new entry is already in list, update the stats and return false, but do not delete the entry which is
-		// alreay in known file list!
-		ASSERT( toadd->GetFileSize() == pFileInMap->GetFileSize() );
-		ASSERT( toadd != pFileInMap );
-		if (toadd->GetFileSize() == pFileInMap->GetFileSize() && toadd != pFileInMap)
-		{
-			pFileInMap->statistic.MergeFileStats(&toadd->statistic);
-			pFileInMap->SetFileName(toadd->GetFileName(), false);
-			pFileInMap->SetPath(toadd->GetPath());
-			pFileInMap->SetFilePath(toadd->GetFilePath());
-			pFileInMap->date = toadd->date;
-		}
-		ASSERT( !theApp.sharedfiles->IsFilePtrInList(pFileInMap) );
-		ASSERT( theApp.sharedfiles->IsFilePtrInList(toadd) );
-		return false;
-#endif
 	}
 	m_Files_map.SetAt(key, toadd);
+	if (bRemovedDuplicateSharedFile) {
+		theApp.sharedfiles->SafeAddKFile(toadd);
+	}
 	return true;
 }
 

@@ -95,6 +95,7 @@ CKnownFile::CKnownFile()
 	m_lastBuddyIP = 0;
 	m_pAICHHashSet = new CAICHHashSet(this);
 	m_pCollection = NULL;
+	m_verifiedFileType=FILETYPE_UNKNOWN;
 	onuploadqueue = 0; //Xman see OnUploadqueue
 	hideos=1; //Xman PowerRelease
 	// Maella -One-queue-per-file- (idea bloodymad)
@@ -243,7 +244,7 @@ static void HeapSort(CArray<uint16,uint16> &count, UINT first, UINT last){
 }
 // SLUGFILLER: heapsortCompletesrc
 
-void CKnownFile::UpdateFileRatingCommentAvail()
+void CKnownFile::UpdateFileRatingCommentAvail(bool bForceUpdate)
 {
 	bool bOldHasComment = m_bHasComment;
 	UINT uOldUserRatings = m_uUserRating;
@@ -266,11 +267,11 @@ void CKnownFile::UpdateFileRatingCommentAvail()
 	}
 
 	if (uRatings)
-		m_uUserRating = uUserRatings / uRatings;
+		m_uUserRating = (uint32)ROUND((float)uUserRatings / uRatings);
 	else
 		m_uUserRating = 0;
 
-	if (bOldHasComment != m_bHasComment || uOldUserRatings != m_uUserRating)
+	if (bOldHasComment != m_bHasComment || uOldUserRatings != m_uUserRating || bForceUpdate)
 		theApp.emuledlg->sharedfileswnd->sharedfilesctrl.UpdateFile(this);
 }
 
@@ -460,7 +461,7 @@ bool CKnownFile::CreateFromFile(LPCTSTR in_directory, LPCTSTR in_filename, LPVOI
 	SetFilePath(strFilePath);
 	FILE* file = _tfsopen(strFilePath, _T("rbS"), _SH_DENYNO); // can not use _SH_DENYWR because we may access a completing part file
 	if (!file){
-		LogError(GetResString(IDS_ERR_FILEOPEN) + _T(" - %hs"), strFilePath, _T(""), strerror(errno));
+		LogError(GetResString(IDS_ERR_FILEOPEN) + _T(" - %s"), strFilePath, _T(""), _tcserror(errno));
 		return false;
 	}
 
@@ -480,14 +481,15 @@ bool CKnownFile::CreateFromFile(LPCTSTR in_directory, LPCTSTR in_filename, LPVOI
 	
 	// create hashset
 	uint64 togo = m_nFileSize;
-	for (UINT hashcount = 0; togo >= PARTSIZE; )
+	UINT hashcount;
+	for (hashcount = 0; togo >= PARTSIZE; )
 	{
 		CAICHHashTree* pBlockAICHHashTree = m_pAICHHashSet->m_pHashTree.FindHash((uint64)hashcount*PARTSIZE, PARTSIZE);
 		ASSERT( pBlockAICHHashTree != NULL );
 
 		uchar* newhash = new uchar[16];
 		if (!CreateHash(file, PARTSIZE, newhash, pBlockAICHHashTree, true)) { //Xman Nice Hash
-			LogError(_T("Failed to hash file \"%s\" - %hs"), strFilePath, strerror(errno));
+			LogError(_T("Failed to hash file \"%s\" - %s"), strFilePath, _tcserror(errno));
 			fclose(file);
 			delete[] newhash;
 			return false;
@@ -532,7 +534,7 @@ bool CKnownFile::CreateFromFile(LPCTSTR in_directory, LPCTSTR in_filename, LPVOI
 	uchar* lasthash = new uchar[16];
 	md4clr(lasthash);
 	if (!CreateHash(file, togo, lasthash, pBlockAICHHashTree, true)) { //Xman Nice Hash
-		LogError(_T("Failed to hash file \"%s\" - %hs"), strFilePath, strerror(errno));
+		LogError(_T("Failed to hash file \"%s\" - %s"), strFilePath, _tcserror(errno));
 		fclose(file);
 		delete[] lasthash;
 		return false;
@@ -550,7 +552,7 @@ bool CKnownFile::CreateFromFile(LPCTSTR in_directory, LPCTSTR in_filename, LPVOI
 		// ==> WebCache [WC team/MorphXT] - Stulle/Max
 		if(thePrefs.GetLogICHEvents()) //JP log ICH events
 		// <== WebCache [WC team/MorphXT] - Stulle/Max
-			DebugLogError(LOG_STATUSBAR, _T("Failed to calculate AICH Hashset from file %s"), GetFileName());
+		DebugLogError(LOG_STATUSBAR, _T("Failed to calculate AICH Hashset from file %s"), GetFileName());
 	}
 
 	//Xman
@@ -607,7 +609,7 @@ bool CKnownFile::CreateAICHHashSetOnly()
 	m_pAICHHashSet->FreeHashSet();
 	FILE* file = _tfsopen(GetFilePath(), _T("rbS"), _SH_DENYNO); // can not use _SH_DENYWR because we may access a completing part file
 	if (!file){
-		LogError(GetResString(IDS_ERR_FILEOPEN) + _T(" - %hs"), GetFilePath(), _T(""), strerror(errno));
+		LogError(GetResString(IDS_ERR_FILEOPEN) + _T(" - %s"), GetFilePath(), _T(""), _tcserror(errno));
 		return false;
 	}
 	// we are reading the file data later in 8K blocks, adjust the internal file stream buffer accordingly
@@ -615,12 +617,13 @@ bool CKnownFile::CreateAICHHashSetOnly()
 
 	// create aichhashset
 	uint64 togo = m_nFileSize;
-	for (UINT hashcount = 0; togo >= PARTSIZE; )
+	UINT hashcount;
+	for (hashcount = 0; togo >= PARTSIZE; )
 	{
 		CAICHHashTree* pBlockAICHHashTree = m_pAICHHashSet->m_pHashTree.FindHash((uint64)hashcount*PARTSIZE, PARTSIZE);
 		ASSERT( pBlockAICHHashTree != NULL );
 		if (!CreateHash(file, PARTSIZE, NULL, pBlockAICHHashTree)) {
-			LogError(_T("Failed to hash file \"%s\" - %hs"), GetFilePath(), strerror(errno));
+			LogError(_T("Failed to hash file \"%s\" - %s"), GetFilePath(), _tcserror(errno));
 			fclose(file);
 			return false;
 		}
@@ -639,7 +642,7 @@ bool CKnownFile::CreateAICHHashSetOnly()
 		CAICHHashTree* pBlockAICHHashTree = m_pAICHHashSet->m_pHashTree.FindHash((uint64)hashcount*PARTSIZE, togo);
 		ASSERT( pBlockAICHHashTree != NULL );
 		if (!CreateHash(file, togo, NULL, pBlockAICHHashTree)) {
-			LogError(_T("Failed to hash file \"%s\" - %hs"), GetFilePath(), strerror(errno));
+			LogError(_T("Failed to hash file \"%s\" - %s"), GetFilePath(), _tcserror(errno));
 			fclose(file);
 			return false;
 		}
@@ -657,7 +660,7 @@ bool CKnownFile::CreateAICHHashSetOnly()
 		// ==> WebCache [WC team/MorphXT] - Stulle/Max
 		if(thePrefs.GetLogICHEvents()) //JP log ICH events
 		// <== WebCache [WC team/MorphXT] - Stulle/Max
-			DebugLogError(LOG_STATUSBAR, _T("Failed to calculate AICH Hashset from file %s"), GetFileName());
+		DebugLogError(LOG_STATUSBAR, _T("Failed to calculate AICH Hashset from file %s"), GetFileName());
 	}
 
 	fclose(file);
@@ -882,15 +885,7 @@ bool CKnownFile::LoadTagsFromFile(CFileDataIO* file)
 			case FT_ATTRANSFERREDHI:{
 				ASSERT( newtag->IsInt() );
 				if (newtag->IsInt())
-				{
-					uint32 hi,low;
-					low = (UINT)statistic.alltimetransferred;
-					hi = newtag->GetInt();
-					uint64 hi2;
-					hi2=hi;
-					hi2=hi2<<32;
-					statistic.alltimetransferred=low+hi2;
-				}
+					statistic.alltimetransferred = ((uint64)newtag->GetInt() << 32) | (UINT)statistic.alltimetransferred;
 				delete newtag;
 				break;
 			}
@@ -1036,7 +1031,7 @@ bool CKnownFile::WriteToFile(CFileDataIO* file)
 	if(parts > 1){
 		file->WriteUInt16((uint16)parts);
 		for (UINT i = 0; i < parts; i++)
-		file->WriteHash16(hashlist[i]);
+			file->WriteHash16(hashlist[i]);
 	}else
 		file->WriteUInt16(0);
 	/*
@@ -1382,7 +1377,7 @@ Packet*	CKnownFile::CreateSrcInfoPacket(const CUpDownClient* forClient) const
 		{
 			nCount++;
 			uint32 dwID;
-			if (forClient->GetSourceExchangeVersion() > 2)
+			if (forClient->GetSourceExchangeVersion() >= 3)
 				dwID = cur_src->GetUserIDHybrid();
 			else
 				dwID = cur_src->GetIP();
@@ -1390,8 +1385,21 @@ Packet*	CKnownFile::CreateSrcInfoPacket(const CUpDownClient* forClient) const
 		    data.WriteUInt16(cur_src->GetUserPort());
 		    data.WriteUInt32(cur_src->GetServerIP());
 		    data.WriteUInt16(cur_src->GetServerPort());
-			if (forClient->GetSourceExchangeVersion() > 1)
+			if (forClient->GetSourceExchangeVersion() >= 2)
 			    data.WriteHash16(cur_src->GetUserHash());
+			if (forClient->GetSourceExchangeVersion() >= 4){
+				// CryptSettings - SourceExchange V4
+				// 5 Reserved (!)
+				// 1 CryptLayer Required
+				// 1 CryptLayer Requested
+				// 1 CryptLayer Supported
+				//Xman Bugfix (David)
+				const uint8 uSupportsCryptLayer	= cur_src->SupportsCryptLayer() ? 1 : 0;
+				const uint8 uRequestsCryptLayer	= cur_src->RequestsCryptLayer() ? 1 : 0;
+				const uint8 uRequiresCryptLayer	= cur_src->RequiresCryptLayer() ? 1 : 0;
+				const uint8 byCryptOptions = (uRequiresCryptLayer << 2) | (uRequestsCryptLayer << 1) | (uSupportsCryptLayer << 0);
+				data.WriteUInt8(byCryptOptions);
+			}
 			if (nCount > 500)
 				break;
 		}
@@ -1404,7 +1412,7 @@ Packet*	CKnownFile::CreateSrcInfoPacket(const CUpDownClient* forClient) const
 
 	Packet* result = new Packet(&data, OP_EMULEPROT);
 	result->opcode = OP_ANSWERSOURCES;
-	// 16+2+501*(4+2+4+2+16) = 14046 bytes max.
+	// 16+2+501*(4+2+4+2+16+1) = 14547 bytes max.
 	if ( result->size > 354 )
 		result->PackPacket();
 	if (thePrefs.GetDebugSourceExchange())
@@ -1729,6 +1737,7 @@ void CKnownFile::UpdateMetaDataTags()
 		}
 		delete mi;
 
+#if _MSC_VER<1400
 		if (thePrefs.GetExtractMetaData() >= 2)
 		{
 			// starting the MediaDet object takes a noticeable amount of time.. avoid starting that object
@@ -1883,6 +1892,7 @@ void CKnownFile::UpdateMetaDataTags()
 				}
 			}
 		}
+#endif
 	}
 }
 

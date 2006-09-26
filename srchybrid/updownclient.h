@@ -412,6 +412,16 @@ public:
 	bool			GetViewSharedFilesSupport() const				{ return m_fNoViewSharedFiles==0; }
 	bool			SafeSendPacket(Packet* packet);
 	void			CheckForGPLEvilDoer();
+	// Encryption / Obfuscation
+	bool			SupportsCryptLayer() const						{ return m_fSupportsCryptLayer; }
+	bool			RequestsCryptLayer() const						{ return SupportsCryptLayer() && m_fRequestsCryptLayer; }
+	bool			RequiresCryptLayer() const						{ return RequestsCryptLayer() && m_fRequiresCryptLayer; }
+	void			SetCryptLayerSupport(bool bVal)					{ m_fSupportsCryptLayer = bVal ? 1 : 0; }
+	void			SetCryptLayerRequest(bool bVal)					{ m_fRequestsCryptLayer = bVal ? 1 : 0; }
+	void			SetCryptLayerRequires(bool bVal)				{ m_fRequiresCryptLayer = bVal ? 1 : 0; }
+	bool			IsObfuscatedConnectionEstablished() const;
+	bool			ShouldReceiveCryptUDPPackets() const;
+
 	//upload
 	EUploadState	GetUploadState() const							{ return (EUploadState)m_nUploadState; }
 	void			SetUploadState(EUploadState news);
@@ -431,6 +441,7 @@ public:
 	// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	bool			IsDownloading() const							{ return (m_nUploadState == US_UPLOADING); }
 	bool			HasBlocks() const								{ return !m_BlockRequests_queue.IsEmpty(); }
+	UINT            GetNumberOfRequestedBlocksInQueue() const       { return m_BlockRequests_queue.GetCount(); }
 	UINT			GetScore(bool sysvalue, bool isdownloading = false, bool onlybasevalue = false) const;
 	void			AddReqBlock(Requested_Block_Struct* reqblock);
 	void			CreateNextBlockPackage();
@@ -463,8 +474,10 @@ public:
 					}
 
 	UINT			GetSessionDown() const							{ return m_nTransferredDown - m_nCurSessionDown; }
+	UINT            GetSessionPayloadDown() const                   { return m_nCurSessionPayloadDown; }
 	void			ResetSessionDown() {
 						m_nCurSessionDown = m_nTransferredDown;
+						m_nCurSessionPayloadDown = 0;
 					}
 	UINT			GetQueueSessionPayloadUp() const				{ return m_nCurQueueSessionPayloadUp; }
     UINT			GetPayloadInBuffer() const						{ return m_addedPayloadQueueSession - GetQueueSessionPayloadUp(); }
@@ -517,6 +530,7 @@ public:
 	void			UDPReaskACK(uint16 nNewQR);
 	void			UDPReaskFNF();
 	void			UDPReaskForDownload();
+	bool			UDPPacketPending() const						{ return m_bUDPPending; }
 	bool			IsSourceRequestAllowed() const;
     bool            IsSourceRequestAllowed(CPartFile* partfile, bool sourceExchangeCheck = false) const; // ZZ:DownloadManager
 
@@ -665,6 +679,7 @@ public:
     //UINT			GetUploadDatarate(UINT samples) const; //unused
     UINT			GetUploadDatarate() const {return m_nUpDatarate;}
 	UINT			GetDownloadDatarate() const {return m_nDownDatarate;}
+	UINT			GetDownloadDatarate10() const {return m_nDownDatarate10;}
 
 	void			AddUploadRate(const UINT size);
 
@@ -742,7 +757,6 @@ public:
 	uint32 GetLastFileAskedTime(CPartFile* pFile) {return m_partStatusMap[pFile].dwStartUploadReqTime;}
 	uint32 GetJitteredFileReaskTime() const {return m_jitteredFileReaskTime;} // range 25.5..29.5 min 
 	void   CalculateJitteredFileReaskTime(bool longer); //Xman 5.1 
-	bool   IsUdpPending() {return m_bUDPPending;} //Xman to make sure we don't reask with an existing socket, when a client connect during UDP-pending
 	//Xman own method
 	bool   HasTooManyFailedUDP() const {return m_nTotalUDPPackets > 3 && ((float)(m_nFailedUDPPackets/m_nTotalUDPPackets) > .3);} 
 	//Maella end
@@ -802,7 +816,7 @@ private:
 
 	UINT	m_nUpDatarate; // current datarate (updated every seconds)
 	UINT	m_nUpDatarateMeasure; // transfered byte since the last measure
-	CList<TransferredData> m_upHistory_list; 
+	CList<TransferredData> m_upHistory_list;
 
 	UINT	m_nDownDatarate; // current datarate (updated every seconds)
 	UINT	m_nDownDatarate10; //Xman 0.46b: hold the avg over 10 secondes, needed for the faster endgame
@@ -1014,6 +1028,7 @@ protected: // file settings - Stulle
 	uint8*		m_abyPartStatus;
 	CString		m_strClientFilename;
 	UINT		m_nTransferredDown;
+	UINT        m_nCurSessionPayloadDown;
 	uint32		m_dwDownStartTime;
 	uint64      m_nLastBlockOffset;
 	uint32		m_dwLastBlockReceived;
@@ -1063,7 +1078,10 @@ protected: // file settings - Stulle
 		 m_fAICHRequested     : 1,
 		 m_fSentOutOfPartReqs : 1,
 		 m_fSupportsLargeFiles: 1,
-		 m_fExtMultiPacket	  : 1;
+		 m_fExtMultiPacket	  : 1,
+		m_fRequestsCryptLayer: 1,
+		m_fSupportsCryptLayer: 1,
+		m_fRequiresCryptLayer: 1;
 
 
 	CTypedPtrList<CPtrList, Pending_Block_Struct*>	 m_PendingBlocks_list;

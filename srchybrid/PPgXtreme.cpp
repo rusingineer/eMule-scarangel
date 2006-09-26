@@ -63,6 +63,9 @@ BEGIN_MESSAGE_MAP(CPPgXtreme, CPropertyPage)
 	ON_BN_CLICKED(IDC_SENDBUFFER1, OnSettingsChange)
 	ON_BN_CLICKED(IDC_SENDBUFFER2, OnSettingsChange)
 	ON_BN_CLICKED(IDC_SENDBUFFER3, OnSettingsChange)
+	//Xman chunk chooser
+	ON_BN_CLICKED(IDC_CC_MAELLA, OnSettingsChange)
+	ON_BN_CLICKED(IDC_CC_ZZ, OnSettingsChange)
 	ON_BN_CLICKED(IDC_AUTOUPDATEIPFILTER, OnSettingsChange) //Xman auto update IPFilter
 END_MESSAGE_MAP()
 
@@ -90,6 +93,13 @@ void CPPgXtreme::LoadSettings(void)
 		CheckDlgButton(IDC_13RATIO, thePrefs.Is13Ratio());
 		//Xman end
 
+		//Xman chunk chooser
+		if(thePrefs.GetChunkChooseMethod()==1)
+			CheckDlgButton(IDC_CC_MAELLA,TRUE);
+		else
+			CheckDlgButton(IDC_CC_ZZ,TRUE);
+		//Xman end
+
 		//Xman auto update IPFilter
 		CheckDlgButton(IDC_AUTOUPDATEIPFILTER, thePrefs.AutoUpdateIPFilter());
 		//Xman end
@@ -106,7 +116,7 @@ void CPPgXtreme::LoadSettings(void)
 		else
 		{
 			GetDlgItem(IDC_DROPBLOCKINGSOCKETS)->EnableWindow(TRUE);
-		CheckDlgButton(IDC_DROPBLOCKINGSOCKETS, thePrefs.DropBlockingSockets());
+			CheckDlgButton(IDC_DROPBLOCKINGSOCKETS, thePrefs.DropBlockingSockets());
 		}
 		//Xman end
 
@@ -190,6 +200,13 @@ BOOL CPPgXtreme::OnApply()
 	thePrefs.Set13Ratio(IsDlgButtonChecked(IDC_13RATIO)!=0);
 	//Xman end
 
+	//Xman chunk chooser
+	if(IsDlgButtonChecked(IDC_CC_MAELLA)!=0)
+		thePrefs.m_chunkchooser=1;
+	else
+		thePrefs.m_chunkchooser=2;
+	//Xman end
+
 	//Xman auto update IPFilter
 	thePrefs.SetAutoUpdateIPFilter(IsDlgButtonChecked(IDC_AUTOUPDATEIPFILTER)!=0);
 	//Xman end
@@ -238,6 +255,9 @@ void CPPgXtreme::Localize(void)
 
 		//Xman 1:3 Ratio
 		GetDlgItem(IDC_13RATIO)->SetWindowText(GetResString(IDS_13RATIO));
+
+		//Xman chunk chooser
+		GetDlgItem(IDC_CHUNKCHOOSER)->SetWindowText(GetResString(IDS_CHUNKCHOOSER));
 
 		//Xman count block/success send
 		GetDlgItem(IDC_SHOWBLOCKINGRATIO)->SetWindowText(GetResString(IDS_SHOWBLOCKINGRATIO));

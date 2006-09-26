@@ -193,6 +193,8 @@ BOOL CPPgDirectories::OnApply()
 				thePrefs.tempdir.Add(toadd);
 		}
 	}
+	if (thePrefs.tempdir.IsEmpty())
+		thePrefs.tempdir.Add(thePrefs.GetAppDir() + _T("temp"));
 
 	// incomingdir
 	_sntprintf(thePrefs.incomingdir, ARRSIZE(thePrefs.incomingdir), _T("%s"), strIncomingDir);

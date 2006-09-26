@@ -41,6 +41,8 @@ CBandWidthControl::CBandWidthControl()
 	m_maxDownloadLimit = 0.0f;
 	m_maxUploadLimit = 0.0f;
 	m_errorTraced = false;
+	m_obfuscation_InOctets=0;
+	m_obfuscation_OutOctets=0;
 
 	//Xman GlobalMaxHarlimit for fairness
 	m_maxforcedDownloadlimit=0;
@@ -640,6 +642,61 @@ void CBandWidthControl::AddeMuleSYNACK()
 	/**/ m_statistic.eMuleInOverallOctets += 40; // IP + TCP
 	/**/ m_statistic.eMuleOutOverallOctets += 40; // IP + TCP
 	m_statisticLocker.Unlock();
+}
+
+//calculating obfuscation
+//extra send -> we must add it to overhead
+//threading info: called from different threads
+void CBandWidthControl::AddeMuleOutObfuscationTCP(uint32 octets)
+{
+	
+	m_statisticLocker.Lock();
+	/**/ m_obfuscation_OutOctets += octets;
+	/**/ octets += (20 /* IP */ + 20 /* TCP */);
+	/**/ m_statistic.eMuleOutOverallOctets += octets;
+	m_statisticLocker.Unlock();
+}
+
+//the header + overhead will be counted at uploadbandwidththrottler
+//threading info: called from different threads
+void CBandWidthControl::AddeMuleOutObfuscation(uint32 octets)
+{
+
+	m_statisticLocker.Lock();
+	/**/ m_obfuscation_OutOctets += octets;
+	m_statisticLocker.Unlock();
+}
+
+//overhead already calculated at UDP-send-method. Need this only for the stats
+//threading info: called from uploadbandwidththrottler asynchron to main-thread
+void CBandWidthControl::AddeMuleOutObfuscationUDP(uint32 octets)
+{
+	m_statisticLocker.Lock();
+	/**/ m_obfuscation_OutOctets += octets;
+	m_statisticLocker.Unlock();
+}
+
+//overhead already counted within the normal receive
+//threading info: only called from the main-thread
+void CBandWidthControl::AddeMuleInObfuscation(uint32 octets)
+{
+	m_obfuscation_InOctets += octets;
+}
+
+//threading info: Called only from the mainthread (used for statistic)
+uint64 CBandWidthControl::GeteMuleOutObfuscation() const
+{
+	uint64 value;
+	m_statisticLocker.Lock();
+	/**/ value = m_obfuscation_OutOctets;
+	m_statisticLocker.Unlock();
+	return value;
+}
+
+//threading info: Called only from the mainthread (used for statistic)
+uint64 CBandWidthControl::GeteMuleInObfuscation() const
+{
+	return m_obfuscation_InOctets;
 }
 
 #ifdef PRINT_STATISTIC

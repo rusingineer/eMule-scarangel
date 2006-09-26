@@ -72,8 +72,8 @@ BEGIN_MESSAGE_MAP(CMuleListCtrl, CListCtrl)
 	ON_WM_SYSCOLORCHANGE()
 END_MESSAGE_MAP()
 
-CMuleListCtrl::CMuleListCtrl(PFNLVCOMPARE pfnCompare, DWORD dwParamSort) {
-	
+CMuleListCtrl::CMuleListCtrl(PFNLVCOMPARE pfnCompare, DWORD dwParamSort) 
+{
 	m_SortProc = pfnCompare;
 	m_dwParamSort = dwParamSort;
 
@@ -217,7 +217,7 @@ void CMuleListCtrl::ShowColumn(int iColumn) {
 	if(iCurrent == -1)
 		return;
 	INT *piArray = new INT[m_iColumnsTracked];
-	pHeaderCtrl->GetOrderArray(piArray, m_iColumnsTracked);
+	pHeaderCtrl->GetOrderArray(piArray, m_iColumnsTracked); 
 	//<<< WiZaRd::FiX - just to be sure!
 
 	for(; iCurrent < IndexToOrder(pHeaderCtrl, 0) && iCurrent < m_iColumnsTracked - 1; iCurrent++ )
@@ -252,8 +252,9 @@ void CMuleListCtrl::ShowColumn(int iColumn) {
 void CMuleListCtrl::SaveSettings()
 {
 	ASSERT(!m_Name.IsEmpty());
+	ASSERT(GetHeaderCtrl()->GetItemCount() == m_iColumnsTracked);
 	ASSERT(this->m_hWnd!=NULL); //Xman possible fix
-	if (this->m_hWnd==NULL || m_Name.IsEmpty()) //Xman possible fix
+	if (this->m_hWnd==NULL || m_Name.IsEmpty() || GetHeaderCtrl()->GetItemCount() != m_iColumnsTracked) //Xman possible fix
 		return;
 
 	CIni ini(thePrefs.GetConfigFile(), _T("ListControlSetup"));
@@ -764,8 +765,6 @@ BOOL CMuleListCtrl::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT
 
 				CTitleMenu tmColumnMenu;
 				tmColumnMenu.CreatePopupMenu();
-				if(m_Name.GetLength() != 0)
-					tmColumnMenu.AddMenuTitle(m_Name);
 
 				CHeaderCtrl *pHeaderCtrl = GetHeaderCtrl();
 				int iCount = pHeaderCtrl->GetItemCount();
@@ -907,7 +906,10 @@ BOOL CMuleListCtrl::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT
 		POSITION pos = m_Params.FindIndex(((LPLVITEM)lParam)->iItem);
 		if(pos) {
 			m_Params.SetAt(pos, MLC_MAGIC);
-			PostMessage(LVM_UPDATE, ((LPLVITEM)lParam)->iItem);
+			if (m_eUpdateMode == lazy)
+				PostMessage(LVM_UPDATE, ((LPLVITEM)lParam)->iItem);
+			else if (m_eUpdateMode == direct)
+				UpdateLocation(((LPLVITEM)lParam)->iItem);
 		}
 		break;
 	}
@@ -918,8 +920,13 @@ BOOL CMuleListCtrl::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT
 	case LVM_SETITEMTEXT:
 		//need to check for movement
 		*pResult = DefWindowProc(message, wParam, lParam);
-		if(*pResult)
-			PostMessage(WM_COMMAND, MLC_IDC_UPDATE, wParam);
+		if (*pResult)
+		{
+			if (m_eUpdateMode == lazy)
+				PostMessage(WM_COMMAND, MLC_IDC_UPDATE, wParam);
+			else if (m_eUpdateMode == direct)
+				UpdateLocation(wParam);
+		}
 		return *pResult;
 
 	case LVM_SORTITEMS:
@@ -1076,26 +1083,31 @@ void CMuleListCtrl::OnKeyDown(UINT nChar,UINT nRepCnt,UINT nFlags)
 	{
 		// Ctrl+A: Select all items
 		LV_ITEM theItem;
-		theItem.mask= LVIF_STATE;
-		theItem.iItem= -1;
-		theItem.iSubItem= 0;
-		theItem.state= LVIS_SELECTED;
-		theItem.stateMask= 2;
+		theItem.mask = LVIF_STATE;
+		theItem.iItem = -1;
+		theItem.iSubItem = 0;
+		theItem.state = LVIS_SELECTED;
+		theItem.stateMask = 2;
 		SetItemState(-1, &theItem);
 	}
-	else if (nChar==VK_DELETE)
+	else if (nChar == VK_DELETE)
 		PostMessage(WM_COMMAND, MPG_DELETE, 0);
-	else if (nChar==VK_F2)
+	else if (nChar == VK_F2)
 		PostMessage(WM_COMMAND, MPG_F2, 0);
 	else if (nChar == 'C' && (GetKeyState(VK_CONTROL) & 0x8000))
 	{
 		// Ctrl+C: Copy keycombo
 		SendMessage(WM_COMMAND, MP_COPYSELECTED);
 	}
-	if (nChar == 'V' && (GetKeyState(VK_CONTROL) & 0x8000))
+	else if (nChar == 'V' && (GetKeyState(VK_CONTROL) & 0x8000))
 	{
 		// Ctrl+V: Paste keycombo
 		SendMessage(WM_COMMAND, MP_PASTE);
+	}
+	else if (nChar == 'X' && (GetKeyState(VK_CONTROL) & 0x8000))
+	{
+		// Ctrl+X: Paste keycombo
+		SendMessage(WM_COMMAND, MP_CUT);
 	}
 	else if (m_bGeneralPurposeFind){ 
 		if (nChar == 'F' && (GetKeyState(VK_CONTROL) & 0x8000)){
@@ -1601,4 +1613,11 @@ int	CMuleListCtrl::GetNextSortOrder(int dwCurrentSortOrder) const{
 	// current one not found, shouldn't happen
 //	ASSERT( false );
 	return -1;
+}
+
+CMuleListCtrl::EUpdateMode CMuleListCtrl::SetUpdateMode(EUpdateMode eUpdateMode)
+{
+	EUpdateMode eCurUpdateMode = m_eUpdateMode;
+	m_eUpdateMode = eUpdateMode;
+	return eCurUpdateMode;
 }

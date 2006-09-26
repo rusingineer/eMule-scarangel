@@ -26,10 +26,14 @@
 #pragma warning(disable:4516) // access-declarations are deprecated; member using-declarations provide a better alternative
 #pragma warning(disable:4244) // conversion from 'type1' to 'type2', possible loss of data
 #pragma warning(disable:4100) // unreferenced formal parameter
+#pragma warning(disable:4702) // unreachable code
+//Xman
 #include <crypto.v52.1/base64.h>
 #include <crypto.v52.1/osrng.h>
 #include <crypto.v52.1/files.h>
 #include <crypto.v52.1/sha.h>
+//Xman end
+#pragma warning(default:4702) // unreachable code
 #pragma warning(default:4100) // unreferenced formal parameter
 #pragma warning(default:4244) // conversion from 'type1' to 'type2', possible loss of data
 #pragma warning(default:4516) // access-declarations are deprecated; member using-declarations provide a better alternative
@@ -95,9 +99,9 @@ void CClientCredits::AddDownloaded(uint32 bytes, uint32 dwForIP) {
 	// <== Code Optimization [SiRoB] - Stulle
 		return;
 	}
+
 	//encode
-	uint64 current=m_pCredits->nDownloadedHi;
-	current=(current<<32)+ m_pCredits->nDownloadedLo + bytes ;
+	uint64 current = (((uint64)m_pCredits->nDownloadedHi << 32) | m_pCredits->nDownloadedLo) + bytes;
 
 	//recode
 	m_pCredits->nDownloadedLo=(uint32)current;
@@ -115,23 +119,23 @@ void CClientCredits::AddUploaded(uint32 bytes, uint32 dwForIP) {
 	// <== Code Optimization [SiRoB] - Stulle
 		return;
 	}
+
 	//encode
-	uint64 current=m_pCredits->nUploadedHi;
-	current=(current<<32)+ m_pCredits->nUploadedLo + bytes ;
+	uint64 current = (((uint64)m_pCredits->nUploadedHi << 32) | m_pCredits->nUploadedLo) + bytes;
 
 	//recode
-	m_pCredits->nUploadedLo=(uint32)current;
-	m_pCredits->nUploadedHi=(uint32)(current>>32);
+	m_pCredits->nUploadedLo = (uint32)current;
+	m_pCredits->nUploadedHi = (uint32)(current >> 32);
 
 	m_bCheckScoreRatio = true; // CreditSystems [EastShare/ MorphXT] - Stulle
 }
 
-uint64	CClientCredits::GetUploadedTotal() const{
-	return ( (uint64)m_pCredits->nUploadedHi<<32)+m_pCredits->nUploadedLo;
+uint64 CClientCredits::GetUploadedTotal() const {
+	return ((uint64)m_pCredits->nUploadedHi << 32) | m_pCredits->nUploadedLo;
 }
 
-uint64	CClientCredits::GetDownloadedTotal() const{
-	return ( (uint64)m_pCredits->nDownloadedHi<<32)+m_pCredits->nDownloadedLo;
+uint64 CClientCredits::GetDownloadedTotal() const {
+	return ((uint64)m_pCredits->nDownloadedHi << 32) | m_pCredits->nDownloadedLo;
 }
 
 // ==> CreditSystems [EastShare/ MorphXT] - Stulle
