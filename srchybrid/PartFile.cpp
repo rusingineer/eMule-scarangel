@@ -909,6 +909,13 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 	EPartFileFormat partmettype = PMT_UNKNOWN;
 
 	CMap<UINT, UINT, Gap_Struct*, Gap_Struct*> gap_map; // Slugfiller
+
+	// ==> Spread bars [Slugfiller/MorphXT] - Stulle
+	CMap<UINT,UINT,uint64,uint64> spread_start_map;
+	CMap<UINT,UINT,uint64,uint64> spread_end_map;
+	CMap<UINT,UINT,uint64,uint64> spread_count_map;
+	// <== Spread bars [Slugfiller/MorphXT] - Stulle
+
 	m_uTransferred = 0;
 	m_partmetfilename = in_filename;
 	SetPath(in_directory);
@@ -1235,6 +1242,24 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 					}
 					// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 					default:{
+						// ==> Spread bars [Slugfiller/MorphXT] - Stulle
+						if (newtag->GetNameID()==0 && (newtag->GetName()[0]==FT_SPREADSTART || newtag->GetName()[0]==FT_SPREADEND || newtag->GetName()[0]==FT_SPREADCOUNT))
+						{
+							ASSERT( newtag->IsInt64(true) );
+							if (newtag->IsInt64(true))
+							{
+							UINT spreadkey = atoi(&newtag->GetName()[1]);
+							if (newtag->GetName()[0] == FT_SPREADSTART)
+								spread_start_map.SetAt(spreadkey, newtag->GetInt64());
+							else if (newtag->GetName()[0] == FT_SPREADEND)
+								spread_end_map.SetAt(spreadkey, newtag->GetInt64());
+							else if (newtag->GetName()[0] == FT_SPREADCOUNT)
+								spread_count_map.SetAt(spreadkey, newtag->GetInt64());
+							}
+							delete newtag;
+							break;
+						}
+						// <== Spread bars [Slugfiller/MorphXT] - Stulle
 						if (newtag->GetNameID()==0 && (newtag->GetName()[0]==FT_GAPSTART || newtag->GetName()[0]==FT_GAPEND))
 						{
 							ASSERT( newtag->IsInt64(true) );
@@ -1350,6 +1375,24 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 		delete gap;
 		// END SLUGFILLER: SafeHash
 	}
+
+	// ==> Spread bars [Slugfiller/MorphXT] - Stulle
+	// Now to flush the map into the list
+	for (POSITION pos = spread_start_map.GetStartPosition(); pos != NULL; ){
+		UINT spreadkey;
+		uint64 spread_start;
+		uint64 spread_end;
+		uint64 spread_count;
+		spread_start_map.GetNextAssoc(pos, spreadkey, spread_start);
+		if (!spread_end_map.Lookup(spreadkey, spread_end))
+			continue;
+		if (!spread_count_map.Lookup(spreadkey, spread_count))
+			continue;
+		if (!spread_count || spread_start >= spread_end)
+			continue;
+		statistic.AddBlockTransferred(spread_start, spread_end, spread_count);	// All tags accounted for
+	}
+	// <== Spread bars [Slugfiller/MorphXT] - Stulle
 
 	// verify corrupted parts list
 	POSITION posCorruptedPart = corrupted_list.GetHeadPosition();
@@ -1731,6 +1774,71 @@ bool CPartFile::SavePartFile()
 			attag3.WriteTagToFile(&file);
 			uTagCount++;
 		}
+
+		// ==> Spread bars [Slugfiller/MorphXT] - Stulle
+		if(thePrefs.GetSpreadbarSetStatus()){
+			char sbnamebuffer[10];
+			char* sbnumber = &sbnamebuffer[1];
+			UINT i_sbpos = 0;
+			if (IsLargeFile()) {
+				uint64 hideOS = GetHideOS()>=0?GetHideOS():thePrefs.GetHideOvershares();
+				for (POSITION pos = statistic.spreadlist.GetHeadPosition(); pos; ){
+					uint64 count = statistic.spreadlist.GetValueAt(pos);
+					if (!count) {
+						statistic.spreadlist.GetNext(pos);
+						continue;
+					}
+					uint64 start = statistic.spreadlist.GetKeyAt(pos);
+					statistic.spreadlist.GetNext(pos);
+					ASSERT(pos != NULL);	// Last value should always be 0
+					uint64 end = statistic.spreadlist.GetKeyAt(pos);
+					//MORPH - Smooth sample
+					if (end - start < EMBLOCKSIZE && count > hideOS)
+						continue;
+					//MORPH - Smooth sample
+					itoa(i_sbpos,sbnumber,10);
+					sbnamebuffer[0] = FT_SPREADSTART;
+					CTag(sbnamebuffer,start,true).WriteTagToFile(&file);
+					uTagCount++;
+					sbnamebuffer[0] = FT_SPREADEND;
+					CTag(sbnamebuffer,end,true).WriteTagToFile(&file);
+					uTagCount++;
+					sbnamebuffer[0] = FT_SPREADCOUNT;
+					CTag(sbnamebuffer,count,true).WriteTagToFile(&file);
+					uTagCount++;
+					i_sbpos++;
+				}
+			} else {
+				uint32 hideOS = GetHideOS()>=0?GetHideOS():thePrefs.GetHideOvershares();
+				for (POSITION pos = statistic.spreadlist.GetHeadPosition(); pos; ){
+					uint32 count = (uint32)statistic.spreadlist.GetValueAt(pos);
+					if (!count) {
+						statistic.spreadlist.GetNext(pos);
+						continue;
+					}
+					uint32 start = (uint32)statistic.spreadlist.GetKeyAt(pos);
+					statistic.spreadlist.GetNext(pos);
+					ASSERT(pos != NULL);	// Last value should always be 0
+					uint32 end = (uint32)statistic.spreadlist.GetKeyAt(pos);
+					//MORPH - Smooth sample
+					if (end - start < EMBLOCKSIZE && count > hideOS)
+						continue;
+					//MORPH - Smooth sample
+					itoa(i_sbpos,sbnumber,10);
+					sbnamebuffer[0] = FT_SPREADSTART;
+					CTag(sbnamebuffer,start).WriteTagToFile(&file);
+					uTagCount++;
+					sbnamebuffer[0] = FT_SPREADEND;
+					CTag(sbnamebuffer,end).WriteTagToFile(&file);
+					uTagCount++;
+					sbnamebuffer[0] = FT_SPREADCOUNT;
+					CTag(sbnamebuffer,count).WriteTagToFile(&file);
+					uTagCount++;
+					i_sbpos++;
+				}
+			}
+		}
+		// <== Spread bars [Slugfiller/MorphXT] - Stulle
 
 		// currupt part infos
 		POSITION posCorruptedPart = corrupted_list.GetHeadPosition();
@@ -5155,8 +5263,8 @@ void CPartFile::AddClientSources(CSafeMemFile* sources, uint8 uClientSXVersion, 
 				newsource->SetCryptLayerSupport((byCryptOptions & 0x01) != 0);
 				newsource->SetCryptLayerRequest((byCryptOptions & 0x02) != 0);
 				newsource->SetCryptLayerRequires((byCryptOptions & 0x04) != 0);
-				if (thePrefs.GetDebugSourceExchange()) // remove this log later
-					AddDebugLogLine(false, _T("Received CryptLayer aware (%u) source from V4 Sourceexchange (%s)"), byCryptOptions, newsource->DbgGetClientInfo());
+				//if (thePrefs.GetDebugSourceExchange()) // remove this log later
+				//	AddDebugLogLine(false, _T("Received CryptLayer aware (%u) source from V4 Sourceexchange (%s)"), byCryptOptions, newsource->DbgGetClientInfo());
 			}
 			newsource->SetSourceFrom(SF_SOURCE_EXCHANGE);
 			theApp.downloadqueue->CheckAndAddSource(this, newsource);
@@ -5166,7 +5274,7 @@ void CPartFile::AddClientSources(CSafeMemFile* sources, uint8 uClientSXVersion, 
 			//Xman source cache
 			if(uPacketSXVersion>=4)
 				AddToSourceCache(nPort,dwID,dwServerIP,nServerPort,SF_SOURCE_EXCHANGE,false,achUserHash, byCryptOptions);
-			if(uPacketSXVersion>=3)
+			else if(uPacketSXVersion>=3)
 				AddToSourceCache(nPort,dwID,dwServerIP,nServerPort,SF_SOURCE_EXCHANGE,false,achUserHash);
 			else if(uPacketSXVersion>=2)
 				AddToSourceCache(nPort,dwID,dwServerIP,nServerPort,SF_SOURCE_EXCHANGE,true,achUserHash);
@@ -8118,7 +8226,7 @@ int CPartHashThread::Run()
 		file.Close();
 	}
 	for (UINT i = 0; i < (UINT)m_DesiredHashes.GetSize(); i++)
-		delete m_DesiredHashes[i];
+		delete[] m_DesiredHashes[i]; //memleak-fix (wizard)
 	if (m_ICHused)
 		sLock.Unlock();
 	return 0;

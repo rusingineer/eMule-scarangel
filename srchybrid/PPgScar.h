@@ -54,14 +54,14 @@ protected:
 	bool m_bSysInfoGlobal;
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	bool showSrcInTitle; // Show sources on title - Stulle
-//	bool m_bPsFilesRed; // draw PS files red - Stulle
+	bool m_bPsFilesRed; // draw PS files red - Stulle
 	bool m_bFriendsBlue; // draw friends blue - Stulle
 	bool m_bShowGlobalHL; // show global HL - Stulle
 	bool m_bShowFileHLconst; // show HL per file constantaniously - Stulle
 	bool m_bShowInMSN7; // Show in MSN7 [TPT] - Stulle
 	bool m_bQueueProgressBar; // Client queue progress bar [Commander] - Stulle
 //	bool m_bTrayComplete; // Completed in Tray - Stulle
-	bool m_bShowClientPercentage; // Show Client Percentage [Commander/MorphXT] - Mondgott
+	bool m_bShowClientPercentage; // Show Client Percentage optional [Stulle] - Stulle
 
 	// ==> file settings - Stulle
 	bool m_bEnableAutoDropNNSDefault;
@@ -98,6 +98,22 @@ protected:
 	int m_iResumeFileInNewCat;
 	bool m_bUseAutoCat;
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+	// ==> PowerShare [ZZ/MorphXT] - Stulle
+	int m_iPowershareMode;
+	int m_iPowerShareLimit;
+	// <== PowerShare [ZZ/MorphXT] - Stulle
+	// ==> Release Bonus [sivka] - Stulle
+	int m_iReleaseBonus;
+	int m_iReleaseBonusDays;
+	// <== Release Bonus [sivka] - Stulle
+	bool m_bSpreadBars; // Spread bars [Slugfiller/MorphXT] - Stulle
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	int m_iHideOS;
+	bool m_bSelectiveShare;
+	int m_iShareOnlyTheNeed;
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	bool m_bReleaseScoreAssurance; // Release Score Assurance [Stulle] - Stulle
 
 	bool m_bSUQWT; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*	// ==> Spread Credits Slot - Stulle
@@ -174,14 +190,14 @@ protected:
 	HTREEITEM m_htiSysInfoGlobal;
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	HTREEITEM m_htiShowSrcOnTitle; // Show sources on title - Stulle
-//	HTREEITEM m_htiPsFilesRed; // draw PS files red - Stulle
+	HTREEITEM m_htiPsFilesRed; // draw PS files red - Stulle
 	HTREEITEM m_htiFriendsBlue; // draw friends blue - Stulle
 	HTREEITEM m_htiShowGlobalHL; // show global HL - Stulle
 	HTREEITEM m_htiShowFileHLconst; // show HL per file constantaniously - Stulle
 	HTREEITEM m_htiShowInMSN7; // Show in MSN7 [TPT] - Stulle
 	HTREEITEM m_htiQueueProgressBar; // Client queue progress bar [Commander] - Stulle
 //	HTREEITEM m_htiTrayComplete; // Completed in Tray - Stulle
-	HTREEITEM m_htiShowClientPercentage; // Show Client Percentage [Commander/MorphXT] - Mondgott
+	HTREEITEM m_htiShowClientPercentage; // Show Client Percentage optional [Stulle] - Stulle
 
 	// ==> file settings - Stulle
 	HTREEITEM m_htiFileDefaults;
@@ -226,6 +242,30 @@ protected:
 	HTREEITEM m_htiResumeFileInNewCat;
 	HTREEITEM m_htiUseAutoCat;
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+	HTREEITEM m_htiSharedPrefs; // Shared Files Management [Stulle] - Stulle
+	// ==> PowerShare [ZZ/MorphXT] - Stulle
+	HTREEITEM m_htiPowershareMode;
+	HTREEITEM m_htiPowershareDisabled;
+	HTREEITEM m_htiPowershareActivated;
+	HTREEITEM m_htiPowershareAuto;
+	HTREEITEM m_htiPowerShareLimit;
+	HTREEITEM m_htiPowershareLimited;
+	// <== PowerShare [ZZ/MorphXT] - Stulle
+	// ==> Release Bonus [sivka] - Stulle
+	HTREEITEM m_htiReleaseBonusGroup;
+	HTREEITEM m_htiReleaseBonus0;
+	HTREEITEM m_htiReleaseBonus1;
+	HTREEITEM m_htiReleaseBonusDays;
+	HTREEITEM m_htiReleaseBonusDaysEdit;
+	// <== Release Bonus [sivka] - Stulle
+	HTREEITEM m_htiSpreadBars; // Spread bars [Slugfiller/MorphXT] - Stulle
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	HTREEITEM m_htiHideOS;
+	HTREEITEM m_htiSelectiveShare;
+	HTREEITEM m_htiShareOnlyTheNeed;
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	HTREEITEM m_htiReleaseScoreAssurance; // Release Score Assurance [Stulle] - Stulle
 
 	HTREEITEM m_htiMisc;
 	HTREEITEM m_htiSUQWT; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle

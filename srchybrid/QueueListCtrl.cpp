@@ -105,13 +105,13 @@ void CQueueListCtrl::Init()
 	Localize();
 	LoadSettings();
 
-	// ==> Show Client Percentage [Commander/MorphXT] - Mondgott
+	//Xman client percentage
 	CFont* pFont = GetFont();
 	LOGFONT lfFont = {0};
 	pFont->GetLogFont(&lfFont);
 	lfFont.lfHeight = 11;
 	m_fontBoldSmaller.CreateFontIndirect(&lfFont);
-	// <== Show Client Percentage [Commander/MorphXT] - Mondgott
+	//Xman end
 
 	// Barry - Use preferred sort order from preferences
 	SetSortArrow();
@@ -367,10 +367,8 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 		if (client->IsFriend() && thePrefs.GetFriendsBlue())
 			odc->SetBkColor(m_crFriend);
 		// <== draw friends blue - Stulle
-		/*
 		else if(client->GetPowerShared() && thePrefs.GetPsFilesRed())
 			odc->SetBkColor(m_crPsFiles);
-		*/
 		else
 			odc->SetBkColor(GetBkColor());
 	}
@@ -460,8 +458,9 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				if ((client->Credits() && client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED))
 					nOverlayImage |= 1;
 				//Xman changed: display the obfuscation icon for all clients which enabled it
-				if (client->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (client->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()) 
-					&& (client->IsObfuscatedConnectionEstablished() || !(client->socket != NULL && client->socket->IsConnected())))
+				if(client->IsObfuscatedConnectionEstablished() 
+					|| (!(client->socket != NULL && client->socket->IsConnected())
+					&& (client->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (client->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()))))
 					nOverlayImage |= 2;
 
 					POINT point = {cur_rec.left, cur_rec.top+1};
@@ -552,6 +551,15 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 							default:
 								Sbuffer.Empty();
 						}
+						// ==> PowerShare [ZZ/MorphXT] - Stulle
+						if(client->GetPowerShared(file)) {
+							CString tempString = GetResString(IDS_POWERSHARE_PREFIX);
+							tempString.Append(_T(","));
+							tempString.Append(Sbuffer);
+							Sbuffer.Empty();
+							Sbuffer = tempString;
+						}
+						// <== PowerShare [ZZ/MorphXT] - Stulle
 					}
 					else
 						Sbuffer = _T("?");
@@ -585,7 +593,7 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					Sbuffer = CastSecondsToHM((::GetTickCount() - client->GetLastUpRequest())/1000);
 					break;
 				case 7:
-					Sbuffer = CastSecondsToHM((::GetTickCount() - (uint32)(client->GetWaitStartTime()))/1000);
+					Sbuffer = CastSecondsToHM((::GetTickCount() - client->GetWaitStartTime())/1000);
 					break;
 				case 8:
 					if(client->IsBanned())
@@ -598,22 +606,21 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						cur_rec.bottom--;
 						cur_rec.top++;
 						client->DrawUpStatusBar(dc,&cur_rec,false,thePrefs.UseFlatBar());
-						// ==> Show Client Percentage [Commander/MorphXT] - Mondgott
+						//Xman client percentage (font idea by morph)
 						CString buffer;
+						// ==> Show Client Percentage optional [Stulle] - Stulle
+						/*
+						if (thePrefs.GetUseDwlPercentage())
+						*/
 						if (thePrefs.GetShowClientPercentage())
+						// <== Show Client Percentage optional [Stulle] - Stulle
 						{
-							float percent = 0;
-
-							if(client->GetUpPartStatus())
-								percent = (float)client->GetAvailableUpPartCount() / (float)client->GetUpPartCount()* 100.0f;
-
-//							if (percent > 0.05f) // we always display
+							if(client->GetHisCompletedPartsPercent_UP() >=0)
 							{
-								//Commander - Added: Draw Client Percentage xored, caching before draw - Start
 								COLORREF oldclr = dc.SetTextColor(RGB(0,0,0));
 								int iOMode = dc.SetBkMode(TRANSPARENT);
-								buffer.Format(_T("%.1f%%"), percent);
-								CFont *pOldFont = dc.SelectObject(&theApp.emuledlg->transferwnd->queuelistctrl.m_fontBoldSmaller);
+								buffer.Format(_T("%i%%"), client->GetHisCompletedPartsPercent_UP());
+								CFont *pOldFont = dc.SelectObject(&m_fontBoldSmaller);
 #define	DrawClientPercentText	dc.DrawText(buffer, buffer.GetLength(),&cur_rec, ((DLC_DT_TEXT | DT_RIGHT) & ~DT_LEFT) | DT_CENTER)
 								cur_rec.top-=1;cur_rec.bottom-=1;
 								DrawClientPercentText;cur_rec.left+=1;cur_rec.right+=1;
@@ -629,10 +636,9 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 								dc.SelectObject(pOldFont);
 								dc.SetBkMode(iOMode);
 								dc.SetTextColor(oldclr);
-								//Commander - Added: Draw Client Percentage xored, caching before draw - End	
 							}
 						}
-						// <== Show Client Percentage [Commander/MorphXT] - Mondgott
+						//Xman end
 						cur_rec.bottom++;
 						cur_rec.top--;
 					}
@@ -907,7 +913,16 @@ int CQueueListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 			CKnownFile* file1 = theApp.sharedfiles->GetFileByID(item1->GetUploadFileID());
 			CKnownFile* file2 = theApp.sharedfiles->GetFileByID(item2->GetUploadFileID());
 			if( (file1 != NULL) && (file2 != NULL))
+			// ==> PowerShare [ZZ/MorphXT] - Stulle
+			{
+				if (!file1->GetPowerShared() && file2->GetPowerShared())
+					iResult=-1;			
+				else if (file1->GetPowerShared() && !file2->GetPowerShared())
+					iResult=1;
+				else
+			// <== PowerShare [ZZ/MorphXT] - Stulle
 				iResult=((file1->GetUpPriority()==PR_VERYLOW) ? -1 : file1->GetUpPriority()) - ((file2->GetUpPriority()==PR_VERYLOW) ? -1 : file2->GetUpPriority());
+			} // PowerShare [ZZ/MorphXT] - Stulle
 			else if( file1 == NULL )
 				iResult=1;
 			else
@@ -918,7 +933,16 @@ int CQueueListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 			CKnownFile* file1 = theApp.sharedfiles->GetFileByID(item1->GetUploadFileID());
 			CKnownFile* file2 = theApp.sharedfiles->GetFileByID(item2->GetUploadFileID());
 			if( (file1 != NULL) && (file2 != NULL))
+			// ==> PowerShare [ZZ/MorphXT] - Stulle
+			{
+				if (!file2->GetPowerShared() && file1->GetPowerShared())
+					iResult=-1;			
+				else if (file2->GetPowerShared() && !file1->GetPowerShared())
+					iResult=1;
+				else
+			// <== PowerShare [ZZ/MorphXT] - Stulle
 				iResult=((file2->GetUpPriority()==PR_VERYLOW) ? -1 : file2->GetUpPriority()) - ((file1->GetUpPriority()==PR_VERYLOW) ? -1 : file1->GetUpPriority());
+			} // PowerShare [ZZ/MorphXT] - Stulle
 			else if( file1 == NULL )
 				iResult=1;
 			else
@@ -934,9 +958,23 @@ int CQueueListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 			break;
 
 		case 4: 
+			// ==> Superior Client Handling [Stulle] - Stulle
+			if(!item1->IsSuperiorClient() && item2->IsSuperiorClient())
+					iResult=-1;
+			else if(item1->IsSuperiorClient() && !item2->IsSuperiorClient())
+					iResult=1;
+			else
+			// <== Superior Client Handling [Stulle] - Stulle
 			iResult=CompareUnsigned(item1->GetScore(false), item2->GetScore(false));
 			break;
 		case 104: 
+			// ==> Superior Client Handling [Stulle] - Stulle
+			if(!item2->IsSuperiorClient() && item1->IsSuperiorClient())
+					iResult=-1;
+			else if(item2->IsSuperiorClient() && !item1->IsSuperiorClient())
+					iResult=1;
+			else
+			// <== Superior Client Handling [Stulle] - Stulle
 			iResult=CompareUnsigned(item2->GetScore(false), item1->GetScore(false));
 			break;
 

@@ -169,10 +169,10 @@ void CDownloadListCtrl::Init()
 		pFont->GetLogFont(&lfFont);
 		lfFont.lfWeight = FW_BOLD;
 		m_fontBold.CreateFontIndirect(&lfFont);
-		// ==> Show Client Percentage [Commander/MorphXT] - Mondgott
+		//Xman client percentage
 		lfFont.lfHeight = 11;
 		m_fontBoldSmaller.CreateFontIndirect(&lfFont);
-		// <== Show Client Percentage [Commander/MorphXT] - Mondgott
+		//Xman end
 	}
 	//Xman narrow font at transferwindow
 	{
@@ -923,8 +923,9 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 				if ((lpUpDownClient->Credits() && lpUpDownClient->Credits()->GetCurrentIdentState(lpUpDownClient->GetIP()) == IS_IDENTIFIED))
 					uOvlImg |= 1;
 				//Xman changed: display the obfuscation icon for all clients which enabled it
-				if (lpUpDownClient->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (lpUpDownClient->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()) 
-					&& (lpUpDownClient->IsObfuscatedConnectionEstablished() || !(lpUpDownClient->socket != NULL && lpUpDownClient->socket->IsConnected())))
+				if(lpUpDownClient->IsObfuscatedConnectionEstablished() 
+					|| (!(lpUpDownClient->socket != NULL && lpUpDownClient->socket->IsConnected())
+					&& (lpUpDownClient->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (lpUpDownClient->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()))))
 					uOvlImg |= 2;
 
 				POINT point2= {cur_rec.left,cur_rec.top+1};
@@ -982,6 +983,7 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 				if (lpUpDownClient->GetModClient() == MOD_NONE && ((lpUpDownClient->credits)?lpUpDownClient->credits->GetMyScoreRatio(lpUpDownClient->GetIP()):0) > 1)
 						image++;
 				// <== Mod Icons - Stulle
+
 
 				m_ImageList.Draw(dc, image, point2, ILD_NORMAL | INDEXTOOVERLAYMASK(uOvlImg));
 //Xman end
@@ -1097,19 +1099,20 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 					rec_status.right = iWidth; 
 					lpUpDownClient->DrawStatusBar(&cdcStatus,  &rec_status,(lpCtrlItem->type == UNAVAILABLE_SOURCE), thePrefs.UseFlatBar()); 
 
-					// ==> Show Client Percentage [Commander/MorphXT] - Mondgott
+					//Xman client percentage (font idea by morph)
+					CString buffer;
+					// ==> Show Client Percentage optional [Stulle] - Stulle
+					/*
+					if (thePrefs.GetUseDwlPercentage() && lpCtrlItem->type == AVAILABLE_SOURCE)
+					*/
 					if (thePrefs.GetShowClientPercentage() && lpCtrlItem->type == AVAILABLE_SOURCE)
+					// <== Show Client Percentage optional [Stulle] - Stulle
 					{
-						float percent = 0;
-
-						if(lpUpDownClient->GetPartStatus())
-							percent = (float)lpUpDownClient->GetAvailablePartCount() / (float)lpUpDownClient->GetPartCount()* 100.0f;
-//						if (percent > 0.05f) // we always display
+						if(lpUpDownClient->GetHisCompletedPartsPercent_Down() >=0)
 						{
-							//Commander - Added: Draw Client Percentage xored, caching before draw - Start
 							COLORREF oldclr = cdcStatus.SetTextColor(RGB(0,0,0));
 							int iOMode = cdcStatus.SetBkMode(TRANSPARENT);
-							buffer.Format(_T("%.1f%%"), percent);
+							buffer.Format(_T("%i%%"), lpUpDownClient->GetHisCompletedPartsPercent_Down());
 							CFont *pOldFont = cdcStatus.SelectObject(&m_fontBoldSmaller);
 #define	DrawClientPercentText		cdcStatus.DrawText(buffer, buffer.GetLength(),&rec_status, ((DLC_DT_TEXT | DT_RIGHT) & ~DT_LEFT) | DT_CENTER)
 							rec_status.top-=1;rec_status.bottom-=1;
@@ -1126,10 +1129,9 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 							cdcStatus.SelectObject(pOldFont);
 							cdcStatus.SetBkMode(iOMode);
 							cdcStatus.SetTextColor(oldclr);
-							//Commander - Added: Draw Client Percentage xored, caching before draw - End	
 						}
 					}
-					// <== Show Client Percentage [Commander/MorphXT] - Mondgott
+					//Xman end
 
 					lpCtrlItem->dwUpdated = dwTicks + (rand() % 128); 
 				} else 
@@ -1934,7 +1936,6 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 					// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 				}
 				// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
-				// stullemon
 				/*
 				//Xman checkmark to catogory at contextmenu of downloadlist
 				if(iSelectedItems == 1)

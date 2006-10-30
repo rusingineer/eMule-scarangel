@@ -102,13 +102,13 @@ void CUploadListCtrl::Init()
 	Localize();
 	LoadSettings();
 
-	// ==> Show Client Percentage [Commander/MorphXT] - Mondgott
+	//Xman client percentage
 	CFont* pFont = GetFont();
 	LOGFONT lfFont = {0};
 	pFont->GetLogFont(&lfFont);
 	lfFont.lfHeight = 11;
 	m_fontBoldSmaller.CreateFontIndirect(&lfFont);
-	// <== Show Client Percentage [Commander/MorphXT] - Mondgott
+	//Xman end
 
 	// Barry - Use preferred sort order from preferences
 	SetSortArrow();
@@ -323,10 +323,8 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 		if(client->IsFriend() && thePrefs.GetFriendsBlue())
 			odc->SetBkColor(m_crFriend);
 		// <== draw friends blue - Stulle
-		/*
 		else if(client->GetPowerShared() && thePrefs.GetPsFilesRed())
 			odc->SetBkColor(m_crPsFiles);
-		*/
 		else
 			odc->SetBkColor(GetBkColor());
 	}
@@ -442,8 +440,9 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				if ((client->Credits() && client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED))
 					nOverlayImage |= 1;
 				//Xman changed: display the obfuscation icon for all clients which enabled it
-				if (client->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (client->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()) 
-					&& (client->IsObfuscatedConnectionEstablished() || !(client->socket != NULL && client->socket->IsConnected())))
+				if(client->IsObfuscatedConnectionEstablished() 
+					|| (!(client->socket != NULL && client->socket->IsConnected())
+					&& (client->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (client->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()))))
 					nOverlayImage |= 2;
 
 					POINT point = {cur_rec.left, cur_rec.top+1};
@@ -532,29 +531,34 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					Sbuffer = CastSecondsToHM(client->GetUpStartTimeDelay()/1000);
 					break;
 				case 6:
+					{ // PowerShare [ZZ/MorphXT] - Stulle
 					Sbuffer = client->GetUploadStateDisplayString();
+					// ==> PowerShare [ZZ/MorphXT] - Stulle
+					if (client->GetPowerShared())
+						Sbuffer.Append(_T(",PS"));
+					}
+					// <== PowerShare [ZZ/MorphXT] - Stulle
 					break;
 				case 7:
 				{
 					cur_rec.bottom--;
 					cur_rec.top++;
 					client->DrawUpStatusBar(dc, &cur_rec, false, thePrefs.UseFlatBar());
-						// ==> Show Client Percentage [Commander/MorphXT] - Mondgott
+					//Xman client percentage (font idea by morph)
 						CString buffer;
-						if (thePrefs.GetShowClientPercentage())
+					// ==> Show Client Percentage optional [Stulle] - Stulle
+					/*
+					if (thePrefs.GetUseDwlPercentage())
+					*/
+					if (thePrefs.GetShowClientPercentage())
+					// <== Show Client Percentage optional [Stulle] - Stulle
 						{
-							float percent = 0;
-
-							if(client->GetUpPartStatus())
-								percent = (float)client->GetAvailableUpPartCount() / (float)client->GetUpPartCount()* 100.0f;
-
-//							if (percent > 0.05f) // we always display
+						if(client->GetHisCompletedPartsPercent_UP() >=0)
 							{
-								//Commander - Added: Draw Client Percentage xored, caching before draw - Start
 								COLORREF oldclr = dc.SetTextColor(RGB(0,0,0));
 								int iOMode = dc.SetBkMode(TRANSPARENT);
-								buffer.Format(_T("%.1f%%"), percent);
-								CFont *pOldFont = dc.SelectObject(&theApp.emuledlg->transferwnd->uploadlistctrl.m_fontBoldSmaller);
+							buffer.Format(_T("%i%%"), client->GetHisCompletedPartsPercent_UP());
+							CFont *pOldFont = dc.SelectObject(&m_fontBoldSmaller);
 #define	DrawClientPercentText	dc.DrawText(buffer, buffer.GetLength(),&cur_rec, ((DLC_DT_TEXT | DT_RIGHT) & ~DT_LEFT) | DT_CENTER)
 								cur_rec.top-=1;cur_rec.bottom-=1;
 								DrawClientPercentText;cur_rec.left+=1;cur_rec.right+=1;
@@ -570,13 +574,14 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 								dc.SelectObject(pOldFont);
 								dc.SetBkMode(iOMode);
 								dc.SetTextColor(oldclr);
-								//Commander - Added: Draw Client Percentage xored, caching before draw - End	
 							}
 						}
-						// <== Show Client Percentage [Commander/MorphXT] - Mondgott
+					//Xman end
+
 					cur_rec.bottom++;
 					cur_rec.top--;
-					}break;
+					break;
+				}
 				//Xman version see clientversion in every window
 				case 8:
 					Sbuffer.Format(_T("%s"), client->DbgGetFullClientSoftVer()); //Xman // Maella -Support for tag ET_MOD_VERSION 0x55

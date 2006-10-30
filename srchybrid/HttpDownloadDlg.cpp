@@ -21,6 +21,7 @@ All rights reserved.
 #include "HttpDownloadDlg.h"
 #include "OtherFunctions.h"
 #include "Log.h"
+#include "Preferences.h" //Xman Send user agent as firefox for http downloads when obfucscation enabled (leuk_he)
 
 ///////////////////////////////// Defines /////////////////////////////////////
 #define HAS_ZLIB
@@ -444,7 +445,11 @@ void CHttpDownloadDlg::DownloadThread()
 	ENCODING_INIT;
 	//Create the Internet session handle
 	ASSERT(m_hInternetSession == NULL);
-	m_hInternetSession = ::InternetOpen(AfxGetAppName(), INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
+	m_hInternetSession = ::InternetOpen(
+		//Xman Send user agent as firefox for http downloads when obfucscation enabled (leuk_he)
+		thePrefs.IsClientCryptLayerRequested()?_T("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;"):AfxGetAppName(),
+		//Xman end
+		INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
 	if (m_hInternetSession == NULL)
 	{
 		TRACE(_T("Failed in call to InternetOpen, Error:%d\n"), ::GetLastError());

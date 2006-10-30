@@ -97,12 +97,31 @@ CKnownFile::CKnownFile()
 	m_pCollection = NULL;
 	m_verifiedFileType=FILETYPE_UNKNOWN;
 	onuploadqueue = 0; //Xman see OnUploadqueue
+	// ==> Removed Dynamic Hide OS [SlugFiller/Xman] - Stulle
+	/*
 	hideos=1; //Xman PowerRelease
+	*/
+	// <== Removed Dynamic Hide OS [SlugFiller/Xman] - Stulle
 	// Maella -One-queue-per-file- (idea bloodymad)
 	m_startUploadTime = ::GetTickCount();
 	// Maella end
 
 	ReleaseViaWebCache = false; //JP webcache release // WebCache [WC team/MorphXT] - Stulle/Max
+
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	m_iHideOS = -1;
+	m_iSelectiveChunk = -1;
+	m_iShareOnlyTheNeed = -1;
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+
+	// ==> PowerShare [ZZ/MorphXT] - Stulle
+	m_bpowershared = false;
+	m_powershared = -1;
+	m_bPowerShareAuthorized = true;
+	m_bPowerShareAuto = false;
+	m_nVirtualCompleteSourcesCount = 0;
+	m_iPowerShareLimit = -1;
+	// <== PowerShare [ZZ/MorphXT] - Stulle
 }
 
 CKnownFile::~CKnownFile()
@@ -290,6 +309,9 @@ void CKnownFile::UpdatePartsInfo()
 	CArray<uint16, uint16> count;
 	if (flag)
 		count.SetSize(0, m_ClientUploadList.GetSize());
+
+	UINT iCompleteSourcesCountInfoReceived = 0; // PowerShare [ZZ/MorphXT] - Stulle
+
 	for (POSITION pos = m_ClientUploadList.GetHeadPosition(); pos != 0; )
 	{
 		CUpDownClient* cur_src = m_ClientUploadList.GetNext(pos);
@@ -303,7 +325,22 @@ void CKnownFile::UpdatePartsInfo()
 			}
 			if (flag)
 				count.Add(cur_src->GetUpCompleteSourcesCount());
+
+			// ==> PowerShare [ZZ/MorphXT] - Stulle
+			if (cur_src->GetUpCompleteSourcesCount()>0)
+				++iCompleteSourcesCountInfoReceived;
+			// <== PowerShare [ZZ/MorphXT] - Stulle
 		}
+		// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+		if (cur_src->IsDownloading()){
+			uint8* m_abyUpPartUploadingAndUploaded = new uint8[partcount];
+			cur_src->GetUploadingAndUploadedPart(m_abyUpPartUploadingAndUploaded, partcount);
+			for (UINT i = 0; i < partcount; i++)
+				if (m_AvailPartFrequency[i] == 0 && m_abyUpPartUploadingAndUploaded[i]>0)
+					m_AvailPartFrequency[i] = 1;
+			delete[] m_abyUpPartUploadingAndUploaded;
+		}
+		// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 	}
 
 	if (flag)
@@ -378,6 +415,16 @@ void CKnownFile::UpdatePartsInfo()
 		}
 		m_nCompleteSourcesTime = time(NULL) + (60);
 	}
+
+	// ==> PowerShare [ZZ/MorphXT] - Stulle
+	m_nVirtualCompleteSourcesCount = (UINT)-1;
+	for (UINT i = 0; i < partcount; i++){
+		if(m_AvailPartFrequency[i] < m_nVirtualCompleteSourcesCount)
+			m_nVirtualCompleteSourcesCount = m_AvailPartFrequency[i];
+	}
+	UpdatePowerShareLimit(m_nVirtualCompleteSourcesCount<=1 || m_nCompleteSourcesCountHi<=GetPartCount(), m_nCompleteSourcesCountHi==1 && m_nVirtualCompleteSourcesCount==0 && iCompleteSourcesCountInfoReceived>1,m_nCompleteSourcesCountHi>((GetPowerShareLimit()>=0)?GetPowerShareLimit():thePrefs.GetPowerShareLimit()));
+	// <== PowerShare [ZZ/MorphXT] - Stulle
+
 	if (theApp.emuledlg->sharedfileswnd->m_hWnd)
 		theApp.emuledlg->sharedfileswnd->sharedfilesctrl.UpdateFile(this);
 }
@@ -850,6 +897,12 @@ bool CKnownFile::SetHashset(const CArray<uchar*, uchar*>& aHashset)
  
 bool CKnownFile::LoadTagsFromFile(CFileDataIO* file)
 {
+	// ==> Spread bars [Slugfiller/MorphXT] - Stulle
+	CMap<UINT,UINT,uint64,uint64> spread_start_map;
+	CMap<UINT,UINT,uint64,uint64> spread_end_map;
+	CMap<UINT,UINT,uint64,uint64> spread_count_map;
+	// <== Spread bars [Slugfiller/MorphXT] - Stulle
+
 	UINT tagcount = file->ReadUInt32();
 	for (UINT j = 0; j < tagcount; j++){
 		CTag* newtag = new CTag(file, false);
@@ -975,11 +1028,61 @@ bool CKnownFile::LoadTagsFromFile(CFileDataIO* file)
 				break;
 			}
 			default:
+				// ==> Take care of corrupted tags [Mighty Knife] - Stulle
+				if(!newtag->GetNameID() && newtag->IsInt64(true) && newtag->GetName()){
+				// <==  Take care of corrupted tags [Mighty Knife] - Stulle
+					// ==> Spread bars [Slugfiller/MorphXT] - Stulle
+					UINT spreadkey = atoi(&newtag->GetName()[1]);
+					if (newtag->GetName()[0] == FT_SPREADSTART)
+						spread_start_map.SetAt(spreadkey, newtag->GetInt64());
+					else if (newtag->GetName()[0] == FT_SPREADEND)
+						spread_end_map.SetAt(spreadkey, newtag->GetInt64());
+					else if (newtag->GetName()[0] == FT_SPREADCOUNT)
+						spread_count_map.SetAt(spreadkey, newtag->GetInt64());
+					// <== Spread bars [Slugfiller/MorphXT] - Stulle
+					// ==> PowerShare [ZZ/MorphXT] - Stulle
+					else if(CmpED2KTagName(newtag->GetName(), FT_POWERSHARE) == 0)
+						SetPowerShared((newtag->GetInt()<=3)?newtag->GetInt():-1);
+					else if(CmpED2KTagName(newtag->GetName(), FT_POWERSHARE_LIMIT) == 0)
+						SetPowerShareLimit((newtag->GetInt()<=200)?newtag->GetInt():-1);
+					// <== PowerShare [ZZ/MorphXT] - Stulle
+					// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+					else if(CmpED2KTagName(newtag->GetName(), FT_HIDEOS) == 0)
+						SetHideOS((newtag->GetInt()<=10)?newtag->GetInt():-1);
+					else if(CmpED2KTagName(newtag->GetName(), FT_SELECTIVE_CHUNK) == 0)
+						SetSelectiveChunk(newtag->GetInt()<=1?newtag->GetInt():-1);
+					else if(CmpED2KTagName(newtag->GetName(), FT_SHAREONLYTHENEED) == 0)
+						SetShareOnlyTheNeed(newtag->GetInt()<=1?newtag->GetInt():-1);
+					// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+					// ==>  Take care of corrupted tags [Mighty Knife] - Stulle
+					delete newtag;
+					break;
+				}
+				// <==  Take care of corrupted tags [Mighty Knife] - Stulle
+
 				ConvertED2KTag(newtag);
 				if (newtag)
 					taglist.Add(newtag);
 		}
 	}
+
+	// ==> Spread bars [Slugfiller/MorphXT] - Stulle
+	// Now to flush the map into the list
+	for (POSITION pos = spread_start_map.GetStartPosition(); pos != NULL; ){
+		UINT spreadkey;
+		uint64 spread_start;
+		uint64 spread_end;
+		uint64 spread_count;
+		spread_start_map.GetNextAssoc(pos, spreadkey, spread_start);
+		if (!spread_end_map.Lookup(spreadkey, spread_end))
+			continue;
+		if (!spread_count_map.Lookup(spreadkey, spread_count))
+			continue;
+		if (!spread_count || spread_start >= spread_end)
+			continue;
+		statistic.AddBlockTransferred(spread_start, spread_end, spread_count);	// All tags accounted for
+	}
+	// <== Spread bars [Slugfiller/MorphXT] - Stulle
 
 	// 05-Jän-2004 [bc]: ed2k and Kad are already full of totally wrong and/or not properly attached meta data. Take
 	// the chance to clean any available meta data tags and provide only tags which were determined by us.
@@ -1119,6 +1222,98 @@ bool CKnownFile::WriteToFile(CFileDataIO* file)
 		tagFlags.WriteTagToFile(file);
 		uTagCount++;
 	}
+
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	if (GetHideOS()>=0){
+		CTag hideostag(FT_HIDEOS, GetHideOS());
+		hideostag.WriteTagToFile(file);
+		uTagCount++;
+	}
+	if (GetSelectiveChunk()>=0){
+		CTag selectivechunktag(FT_SELECTIVE_CHUNK, GetSelectiveChunk());
+		selectivechunktag.WriteTagToFile(file);
+		uTagCount++;
+	}
+	if (GetShareOnlyTheNeed()>=0){
+		CTag shareonlytheneedtag(FT_SHAREONLYTHENEED, GetShareOnlyTheNeed());
+		shareonlytheneedtag.WriteTagToFile(file);
+		uTagCount++;
+	}
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	// ==> PowerShare [ZZ/MorphXT] - Stulle
+	if (GetPowerSharedMode()>=0){
+		CTag powersharetag(FT_POWERSHARE, GetPowerSharedMode());
+		powersharetag.WriteTagToFile(file);
+		uTagCount++;
+	}
+	if (GetPowerShareLimit()>=0){
+		CTag powersharelimittag(FT_POWERSHARE_LIMIT, GetPowerShareLimit());
+		powersharelimittag.WriteTagToFile(file);
+		uTagCount++;
+	}
+	// <== PowerShare [ZZ/MorphXT] - Stulle
+	// ==> Spread bars [Slugfiller/MorphXT] - Stulle
+	if(thePrefs.GetSpreadbarSetStatus()){
+
+		char namebuffer[10];
+		char* number = &namebuffer[1];
+		UINT i_pos = 0;
+		if (IsLargeFile()) {
+			uint64 hideOS = GetHideOS()>=0?GetHideOS():thePrefs.GetHideOvershares();
+			for (POSITION pos = statistic.spreadlist.GetHeadPosition(); pos; ){
+				uint64 count = statistic.spreadlist.GetValueAt(pos);
+				if (!count) {
+					statistic.spreadlist.GetNext(pos);
+					continue;
+				}
+				uint64 start = statistic.spreadlist.GetKeyAt(pos);
+				statistic.spreadlist.GetNext(pos);
+				ASSERT(pos != NULL);	// Last value should always be 0
+				uint64 end = statistic.spreadlist.GetKeyAt(pos);
+				//MORPH - Smooth sample
+				if (end - start < EMBLOCKSIZE && count > hideOS)
+					continue;
+				//MORPH - Smooth sample
+				itoa(i_pos,number,10);
+				namebuffer[0] = FT_SPREADSTART;
+				CTag(namebuffer,start,true).WriteTagToFile(file);
+				namebuffer[0] = FT_SPREADEND;
+				CTag(namebuffer,end,true).WriteTagToFile(file);
+				namebuffer[0] = FT_SPREADCOUNT;
+				CTag(namebuffer,count,true).WriteTagToFile(file);
+				uTagCount+=3;
+				i_pos++;
+			}
+		} else {
+			uint32 hideOS = GetHideOS()>=0?GetHideOS():thePrefs.GetHideOvershares();
+			for (POSITION pos = statistic.spreadlist.GetHeadPosition(); pos; ){
+				uint32 count = (uint32)statistic.spreadlist.GetValueAt(pos);
+				if (!count) {
+					statistic.spreadlist.GetNext(pos);
+					continue;
+				}
+				uint32 start = (uint32)statistic.spreadlist.GetKeyAt(pos);
+				statistic.spreadlist.GetNext(pos);
+				ASSERT(pos != NULL);	// Last value should always be 0
+				uint32 end = (uint32)statistic.spreadlist.GetKeyAt(pos);
+				//MORPH - Smooth sample
+				if (end - start < EMBLOCKSIZE && count > hideOS)
+					continue;
+				//MORPH - Smooth sample
+				itoa(i_pos,number,10);
+				namebuffer[0] = FT_SPREADSTART;
+				CTag(namebuffer,start).WriteTagToFile(file);
+				namebuffer[0] = FT_SPREADEND;
+				CTag(namebuffer,end).WriteTagToFile(file);
+				namebuffer[0] = FT_SPREADCOUNT;
+				CTag(namebuffer,count).WriteTagToFile(file);
+				uTagCount+=3;
+				i_pos++;
+			}
+		}
+
+	}
+	// <== Spread bars [Slugfiller/MorphXT] - Stulle
 
 	//other tags
 	for (int j = 0; j < taglist.GetCount(); j++){
@@ -1323,7 +1518,12 @@ Packet*	CKnownFile::CreateSrcInfoPacket(const CUpDownClient* forClient) const
 				{
 					for (UINT x = 0; x < GetPartCount(); x++)
 					{
+						// ==> See chunk that we hide [SiRoB] - Stulle
+						/*
 						if (srcstatus[x] && !rcvstatus[x])
+						*/
+						if (srcstatus[x]&SC_AVAILABLE && !(rcvstatus[x]&SC_AVAILABLE))
+						// <== See chunk that we hide [SiRoB] - Stulle
 						{
 							// We know the recieving client needs a chunk from this client.
 							bNeeded = true;
@@ -1993,6 +2193,8 @@ void CKnownFile::GrabbingFinished(CxImage** imgResults, uint8 nFramesGrabbed, vo
 }
 
 
+// ==> Removed Dynamic Hide OS [SlugFiller/Xman] - Stulle
+/*
 //Xman PowerRelease
 // SLUGFILLER: hideOS
 uint32 *CKnownFile::CalcPartSpread(){
@@ -2117,6 +2319,8 @@ bool CKnownFile::HideOvershares(CSafeMemFile* file, CUpDownClient* client){
 	return true;
 }
 //Xman end
+*/
+// <== Removed Dynamic Hide OS [SlugFiller/Xman] - Stulle
 
 //Xman
 // Maella -One-queue-per-file- (idea bloodymad)
@@ -2165,7 +2369,7 @@ uint32 CKnownFile::GetFileScore(uint32 downloadingTime)
 // Maella end
 
 // ==> push rare file - Stulle
-float CKnownFile::GetFileRatio()
+float CKnownFile::GetFileRatio() const
 {
 	if(!thePrefs.GetEnablePushRareFile())
 		return 1.0f;
@@ -2288,3 +2492,330 @@ CString CKnownFile::GetFeedback(bool isUS)
 	return feed;
 }
 // <== Copy feedback feature [MorphXT] - Stulle
+
+// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+void CKnownFile::CalcPartSpread(CArray<uint64>& partspread, CUpDownClient* client)
+{
+	UINT parts = GetPartCount();
+	uint64 min = (uint64)-1;
+	UINT mincount = 1;
+	UINT mincount2 = 1;
+	UINT i;
+
+	ASSERT(client != NULL);
+
+	partspread.RemoveAll();
+
+	CArray<bool, bool> partsavail;
+	bool usepartsavail = false;
+	
+	partspread.SetSize(parts);
+	partsavail.SetSize(parts);
+	for (i = 0; i < parts; i++) {
+		partspread[i] = 0;
+		partsavail[i] = true;
+	}
+
+	if (IsPartFile()) {
+		uint32 somethingtoshare = 0;
+		for (i = 0; i < parts; i++)
+			if (!((CPartFile*)this)->IsPartShareable(i)){	// SLUGFILLER: SafeHash
+				partsavail[i] = false;
+				usepartsavail = true;
+			} else
+				++somethingtoshare;
+		if (somethingtoshare<=2)
+			return;
+	}
+	if (client->m_abyUpPartStatus) {
+		uint32 somethingtoshare = 0;
+		for (i = 0; i < parts; i++)
+			if (client->IsUpPartAvailable(i)) {
+				partsavail[i] = false;
+				usepartsavail = true;
+			} else if (partsavail[i])
+				++somethingtoshare;
+		if (somethingtoshare<=2)
+			return;
+	}
+	
+	UINT hideOS = HideOSInWork();
+	if(hideOS && !statistic.spreadlist.IsEmpty())
+	{
+		POSITION pos = statistic.spreadlist.GetHeadPosition();
+		uint16 last = 0;
+		uint64 count = statistic.spreadlist.GetValueAt(pos);
+		min = count;
+		statistic.spreadlist.GetNext(pos);
+		while (pos && last < parts){
+			uint64 next = statistic.spreadlist.GetKeyAt(pos);
+			if (next >= GetFileSize())
+				break;
+			next /= PARTSIZE;
+			while (last < next) {
+				partspread[last] = count;
+				last++;
+			}
+			if (last >= parts || !(statistic.spreadlist.GetKeyAt(pos) % PARTSIZE)) {
+				count = statistic.spreadlist.GetValueAt(pos);
+				if (min > count)
+					min = count;
+				statistic.spreadlist.GetNext(pos);
+				continue;
+			}
+			partspread[last] = count;
+			while (next == last) {
+				count = statistic.spreadlist.GetValueAt(pos);
+				if (min > count)
+					min = count;
+				if (partspread[last] > count)
+					partspread[last] = count;
+				statistic.spreadlist.GetNext(pos);
+				if (!pos)
+					break;
+				next = statistic.spreadlist.GetKeyAt(pos);
+				if (next >= GetFileSize())
+					break;
+				next /= PARTSIZE;
+			}
+			last++;
+		}
+		while (last < parts) {
+			partspread[last] = count;
+			last++;
+		}
+		for (i = 0; i < parts; i++)
+			if (partspread[i] >= hideOS && client->m_abyUpPartStatus)
+				client->m_abyUpPartStatus[i] |= SC_HIDDENBYHIDEOS;
+	}
+	UINT SOTN = ((GetShareOnlyTheNeed()>=0)?GetShareOnlyTheNeed():thePrefs.GetShareOnlyTheNeed()); 
+	if (SOTN) {
+		/*
+		if (IsPartFile()) {
+			CPartFile* pfile = (CPartFile*)this;
+			if (pfile->m_SrcpartFrequency.IsEmpty() == false) {
+				for (i = 0; i < parts; i++)
+					if (partsavail[i] && pfile->m_SrcpartFrequency[i]>partspread[i]) {
+						partspread[i] = pfile->m_SrcpartFrequency[i];
+						if (client->m_abyUpPartStatus)
+							client->m_abyUpPartStatus[i] |= SC_HIDDENBYSOTN;
+					}
+			}
+		} else {
+		*/
+			if (m_AvailPartFrequency.IsEmpty() == false) {
+				for (i = 0; i < parts; i++)
+					if (partsavail[i] && m_AvailPartFrequency[i]>partspread[i]) {
+						partspread[i] = m_AvailPartFrequency[i];
+						if (client->m_abyUpPartStatus)
+							client->m_abyUpPartStatus[i] |= SC_HIDDENBYSOTN;
+					}
+			}
+//		}
+	}
+
+	if (usepartsavail && !statistic.spreadlist.IsEmpty() || SOTN) {		// Special case, ignore unshareables for min calculation
+		uint64 min2 = min = (uint64)-1;
+		for (i = 0; i < parts; i++)
+			if (partsavail[i]){
+				if (min2>partspread[i])
+					min2 = partspread[i];
+				else if (min2==partspread[i])
+					min = min2;
+			}
+	}
+
+	for (i = 0; i < parts; i++) {
+		if (partspread[i] > min)
+			partspread[i] -= min;
+		else {
+			partspread[i] = 0;
+			if (client->m_abyUpPartStatus)
+				client->m_abyUpPartStatus[i] &= SC_AVAILABLE;
+		}
+	}
+
+	if (!hideOS || ((GetSelectiveChunk()>=0)?!GetSelectiveChunk():!thePrefs.IsSelectiveShareEnabled()))
+		return;
+
+	if (client->m_nSelectedChunk > 0 && (int)client->m_nSelectedChunk <= partspread.GetSize() && partsavail[client->m_nSelectedChunk-1]) {
+		for (i = 0; i < client->m_nSelectedChunk-1; i++) {
+			partspread[i] = hideOS;
+			// ==> See chunk that we hide [SiRoB] - Stulle
+			if (client->m_abyUpPartStatus)
+				client->m_abyUpPartStatus[i] |= SC_HIDDENBYHIDEOS;
+			// <== See chunk that we hide [SiRoB] - Stulle
+		}
+		for (i = client->m_nSelectedChunk; i < parts; i++) {
+			partspread[i] = hideOS;
+			// ==> See chunk that we hide [SiRoB] - Stulle
+			if (client->m_abyUpPartStatus)
+				client->m_abyUpPartStatus[i] |= SC_HIDDENBYHIDEOS;
+			// <== See chunk that we hide [SiRoB] - Stulle
+		}
+		return;
+	}
+	else
+		client->m_nSelectedChunk = 0;
+
+	bool resetSentCount = false;
+	
+	if (m_PartSentCount.GetSize() != partspread.GetSize() || m_PartSentCount.GetSize() == 0)
+		resetSentCount = true;
+	else {
+		min = hideOS;
+		for (i = 0; i < parts; i++) {
+			if (!partsavail[i])
+				continue;
+			if (m_PartSentCount[i] < partspread[i])
+				m_PartSentCount[i] = partspread[i];
+			if (m_PartSentCount[i] < min) {
+				min = m_PartSentCount[i];
+				mincount = 1;
+			}
+			else if (m_PartSentCount[i] == min)
+				mincount++;
+		}
+		if (min >= hideOS)
+			resetSentCount = true;
+	}
+
+	if (resetSentCount) {
+		min = 0;
+		mincount = 0;
+		mincount2 = 0;
+		m_PartSentCount.SetSize(parts);
+		for (i = 0; i < parts; i++){
+			m_PartSentCount[i] = partspread[i];
+			if (partsavail[i] && !partspread[i])
+				mincount++;
+		}
+		if (!mincount)
+		  return; // We're a no-needed source already
+	}
+
+	mincount = (rand() % mincount) + 1;
+	mincount2 = mincount;
+	for (i = 0; i < parts; i++) {
+		if (!partsavail[i])
+			continue;
+		if (m_PartSentCount[i] > min)
+			continue;
+		ASSERT(m_PartSentCount[i] == min);
+		mincount--;
+		if (!mincount)
+			break;
+	}
+	ASSERT(i < parts);
+	if (mincount)
+		return;
+	m_PartSentCount[i]++;
+	client->m_nSelectedChunk = i+1;
+	mincount = i;
+	for (i = 0; i < parts; i++) {
+		if (!partsavail[i])
+			continue;
+		if (m_PartSentCount[i] > min)
+			continue;
+		ASSERT(m_PartSentCount[i] == min);
+		mincount2--;
+		if (!mincount2)
+			break;
+	}
+	if (mincount2)
+		return;
+	m_PartSentCount[i]++;
+	mincount2 = i;
+	/*
+	for (i = 0; i < mincount; i++)
+		partspread[i] = hideOS;
+	for (i = mincount+1; i < parts; i++)
+		partspread[i] = hideOS;
+	*/
+	for (i = 0; i < parts; i++)
+	{	
+		if ( i != mincount && i != mincount2) {
+			partspread[i] = hideOS;
+			// ==> See chunk that we hide [SiRoB] - Stulle
+			if (client->m_abyUpPartStatus)
+				client->m_abyUpPartStatus[i] |= SC_HIDDENBYHIDEOS;
+			// <== See chunk that we hide [SiRoB] - Stulle
+		}
+	}
+	return;
+};
+
+bool CKnownFile::HideOvershares(CSafeMemFile* file, CUpDownClient* client){
+	CArray<uint64> partspread;
+	UINT parts = (UINT)GetPartCount();
+	if (client->m_abyUpPartStatus == NULL) {
+		client->SetPartCount((uint16)parts);
+		client->m_abyUpPartStatus = new uint8[parts];
+		memset(client->m_abyUpPartStatus,0,parts);
+	}
+	CalcPartSpread(partspread, client);
+
+	uint64 max = partspread[0];
+	for (UINT i = 1; i < parts; i++)
+		if (partspread[i] > max)
+			max = partspread[i];
+	UINT hideOS = HideOSInWork();
+	UINT SOTN = ((GetShareOnlyTheNeed()>=0)?GetShareOnlyTheNeed():thePrefs.GetShareOnlyTheNeed());
+	if (!hideOS && SOTN)
+		hideOS = 1;
+	if (max < hideOS || !hideOS)
+		return FALSE;
+	UINT nED2kPartCount = GetED2KPartCount();
+	file->WriteUInt16((uint16)nED2kPartCount);
+	UINT done = 0;
+	while (done != nED2kPartCount){
+		uint8 towrite = 0;
+		for (UINT i = 0;i < 8;i++){
+			if (done < parts && partspread[done] < hideOS) {
+				towrite |= (1<<i);
+				// ==> See chunk that we hide [SiRoB] - Stulle
+				client->m_abyUpPartStatus[done] &= SC_AVAILABLE;
+				// <== See chunk that we hide [SiRoB] - Stulle
+			}
+			done++;
+			if (done == nED2kPartCount)
+				break;
+		}
+		file->WriteUInt8(towrite);
+	}
+	return TRUE;
+}
+
+UINT	CKnownFile::HideOSInWork() const
+{
+	// ==> Spread bars [Slugfiller/MorphXT] - Stulle
+	if(thePrefs.GetSpreadbarSetStatus() == false)
+		return 0;
+	// <== Spread bars [Slugfiller/MorphXT] - Stulle
+	if(IsPartFile() == true) // not for partfiles
+		return 0;
+
+	return  (m_iHideOS>=0)?m_iHideOS:thePrefs.GetHideOvershares();
+}
+// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+
+// ==> PowerShare [ZZ/MorphXT] - Stulle
+void CKnownFile::SetPowerShared(int newValue) {
+    m_powershared = newValue;
+	if (IsPartFile() == false)
+		UpdatePartsInfo();
+}
+
+void CKnownFile::UpdatePowerShareLimit(bool authorizepowershare,bool autopowershare, bool limitedpowershare)
+{
+	m_bPowerShareAuthorized = authorizepowershare;
+	m_bPowerShareAuto = autopowershare;
+	m_bPowerShareLimited = limitedpowershare;
+	int temppowershared = (m_powershared>=0)?m_powershared:thePrefs.GetPowerShareMode();
+	m_bpowershared = ((temppowershared&1) || ((temppowershared == 2) && m_bPowerShareAuto)) && m_bPowerShareAuthorized && !((temppowershared == 3) && m_bPowerShareLimited);
+}
+bool CKnownFile::GetPowerShared() const
+{
+	return m_bpowershared;
+}
+// <== PowerShare [ZZ/MorphXT] - Stulle

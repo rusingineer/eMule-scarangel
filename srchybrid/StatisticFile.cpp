@@ -21,6 +21,7 @@
 #include "KnownFileList.h"
 #include "SharedFileList.h"
 #include "KnownFile.h" //Xman PowerRelease
+#include "Preferences.h" // Spread bars [Slugfiller/MorphXT] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -28,6 +29,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+// ==> Removed Spreadbars (old version) [SlugFiller] - Stulle
+/*
 //Xman PowerRelease
 // SLUGFILLER: Spreadbars (old version)
 CStatisticFile::~CStatisticFile(){
@@ -35,6 +38,8 @@ CStatisticFile::~CStatisticFile(){
 		delete spreadlist.GetAt(pos);
 }
 //Xman end
+*/
+// <== Removed Spreadbars (old version) [SlugFiller] - Stulle
 
 void CStatisticFile::MergeFileStats( CStatisticFile *toMerge )
 {
@@ -44,6 +49,23 @@ void CStatisticFile::MergeFileStats( CStatisticFile *toMerge )
 	alltimerequested += toMerge->GetAllTimeRequests();
 	alltimetransferred += toMerge->GetAllTimeTransferred();
 	alltimeaccepted += toMerge->GetAllTimeAccepts();
+
+	// ==> Spread bars [Slugfiller/MorphXT] - Stulle
+	if (!toMerge->spreadlist.IsEmpty()) {
+		POSITION pos = toMerge->spreadlist.GetHeadPosition();
+		uint64 start = toMerge->spreadlist.GetKeyAt(pos);
+		uint64 count = toMerge->spreadlist.GetValueAt(pos);
+		toMerge->spreadlist.GetNext(pos);
+		while (pos){
+			uint64 end = toMerge->spreadlist.GetKeyAt(pos);
+			if (count)
+				AddBlockTransferred(start, end, count);
+			start = end;
+			count = toMerge->spreadlist.GetValueAt(pos);
+			toMerge->spreadlist.GetNext(pos);
+		}
+	}
+	// <== Spread bars [Slugfiller/MorphXT] - Stulle
 }
 
 void CStatisticFile::AddRequest(){
@@ -72,12 +94,21 @@ void CStatisticFile::AddAccepted(){
 	//Xman end
 }
 	
+// ==> Removed Spreadbars (old version) [SlugFiller] - Stulle
+/*
 void CStatisticFile::AddTransferred(uint64 start, uint32 bytes){ //Xman PowerRelease
+*/
+// <== Removed Spreadbars (old version) [SlugFiller] - Stulle
+void CStatisticFile::AddTransferred(uint64 start, uint64 bytes){ // Spread bars [Slugfiller/MorphXT] - Stulle
 	transferred += bytes;
 	alltimetransferred += bytes;
 	theApp.knownfiles->transferred += bytes;
 	//Xman PowerRelease
+	// ==> Removed Spreadbars (old version) [SlugFiller] - Stulle
+	/*
 	if(!fileParent->IsPartFile() && fileParent->GetED2KPartCount()>3)
+	*/
+	// <== Removed Spreadbars (old version) [SlugFiller] - Stulle
 		AddBlockTransferred(start, start+bytes/*+1*/, 1); //Xman David
 	//Xman end
 	//Xman Code Improvement -> don't update to often
@@ -88,6 +119,8 @@ void CStatisticFile::AddTransferred(uint64 start, uint32 bytes){ //Xman PowerRel
 	}
 	//Xman end
 }
+// ==> Removed Spreadbars (old version) [SlugFiller] - Stulle
+/*
 //Xman PowerRelease
 // SLUGFILLER: Spreadbars (old version)
 void CStatisticFile::AddBlockTransferred(uint64 start, uint64 end, uint32 count){
@@ -236,3 +269,198 @@ void CStatisticFile::AddBlockTransferred(uint64 start, uint64 end, uint32 count)
 	cur_spread->end = end;
 }
 //Xman end
+*/
+// <== Removed Spreadbars (old version) [SlugFiller] - Stulle
+
+// ==> Spread bars [Slugfiller/MorphXT] - Stulle
+void CStatisticFile::AddBlockTransferred(uint64 start, uint64 end, uint64 count){
+	if (start >= end || !count)
+		return;
+
+	if(thePrefs.GetSpreadbarSetStatus() == false)
+		return;
+
+	InChangedSpreadSortValue = false;
+	InChangedFullSpreadCount = false;
+	InChangedSpreadBar = false;
+	
+	if (spreadlist.IsEmpty())
+		spreadlist.SetAt(0, 0);
+
+	POSITION endpos = spreadlist.FindFirstKeyAfter(end+1);
+
+	if (endpos)
+		spreadlist.GetPrev(endpos);
+	else
+		endpos = spreadlist.GetTailPosition();
+
+	ASSERT(endpos != NULL);
+
+	uint64 endcount = spreadlist.GetValueAt(endpos);
+	endpos = spreadlist.SetAt(end, endcount);
+
+	POSITION startpos = spreadlist.FindFirstKeyAfter(start+1);
+
+	for (POSITION pos = startpos; pos != endpos; spreadlist.GetNext(pos)) {
+		spreadlist.SetValueAt(pos, spreadlist.GetValueAt(pos)+count);
+	}
+
+	spreadlist.GetPrev(startpos);
+
+	ASSERT(startpos != NULL);
+
+	uint64 startcount = spreadlist.GetValueAt(startpos)+count;
+	startpos = spreadlist.SetAt(start, startcount);
+
+	POSITION prevpos = startpos;
+	spreadlist.GetPrev(prevpos);
+	if (prevpos && spreadlist.GetValueAt(prevpos) == startcount)
+		spreadlist.RemoveAt(startpos);
+
+	prevpos = endpos;
+	spreadlist.GetPrev(prevpos);
+	if (prevpos && spreadlist.GetValueAt(prevpos) == endcount)
+		spreadlist.RemoveAt(endpos);
+}
+
+CBarShader CStatisticFile::s_SpreadBar(16);
+
+void CStatisticFile::DrawSpreadBar(CDC* dc, RECT* rect, bool bFlat) /*const*/
+{
+	int iWidth=rect->right - rect->left;
+	if (iWidth <= 0)	return;
+	int iHeight=rect->bottom - rect->top;
+	uint64 filesize = fileParent->GetFileSize()>(uint64)0?fileParent->GetFileSize():(uint64)1;
+	if (m_bitmapSpreadBar == (HBITMAP)NULL)
+		VERIFY(m_bitmapSpreadBar.CreateBitmap(1, 1, 1, 8, NULL)); 
+	CDC cdcStatus;
+	HGDIOBJ hOldBitmap;
+	cdcStatus.CreateCompatibleDC(dc);
+
+	if(!InChangedSpreadBar || lastSize!=iWidth || lastbFlat!= bFlat){
+		InChangedSpreadBar = true;
+		lastSize=iWidth;
+		lastbFlat=bFlat;
+		m_bitmapSpreadBar.DeleteObject();
+		m_bitmapSpreadBar.CreateCompatibleBitmap(dc,  iWidth, iHeight); 
+		m_bitmapSpreadBar.SetBitmapDimension(iWidth,  iHeight); 
+		hOldBitmap = cdcStatus.SelectObject(m_bitmapSpreadBar);
+			
+		s_SpreadBar.SetHeight(iHeight);
+		s_SpreadBar.SetWidth(iWidth);
+			
+		s_SpreadBar.SetFileSize(filesize);
+		s_SpreadBar.Fill(RGB(0, 0, 0));
+
+		for(POSITION pos = spreadlist.GetHeadPosition(); pos; ){
+			uint64 count = spreadlist.GetValueAt(pos);
+			uint64 start = spreadlist.GetKeyAt(pos);
+			spreadlist.GetNext(pos);
+			if (!pos)
+				break;
+			uint64 end = spreadlist.GetKeyAt(pos);
+			if (count)
+				s_SpreadBar.FillRange(start, end, RGB(0,
+				(232<22*count)? 0:232-22*count
+				,255));
+		}
+		s_SpreadBar.Draw(&cdcStatus, 0, 0, bFlat);
+	}
+	else
+		hOldBitmap = cdcStatus.SelectObject(m_bitmapSpreadBar);
+	dc->BitBlt(rect->left, rect->top, iWidth, iHeight, &cdcStatus, 0, 0, SRCCOPY);
+	cdcStatus.SelectObject(hOldBitmap);
+}
+
+float CStatisticFile::GetSpreadSortValue() /*const*/
+{
+	if (InChangedSpreadSortValue) return lastSpreadSortValue;
+	InChangedSpreadSortValue=true;
+	float avg, calc;
+	uint64 total = 0;
+	uint64 filesize = fileParent->GetFileSize();
+
+	if (!filesize || spreadlist.IsEmpty())
+		return 0;
+
+	POSITION pos = spreadlist.GetHeadPosition();
+	uint64 start = spreadlist.GetKeyAt(pos);
+	uint64 count = spreadlist.GetValueAt(pos);
+	spreadlist.GetNext(pos);
+	while (pos){
+		uint64 end = spreadlist.GetKeyAt(pos);
+		total += (end-start)*count;
+		start = end;
+		count = spreadlist.GetValueAt(pos);
+		spreadlist.GetNext(pos);
+	}
+
+	avg = (float)total/filesize;
+	calc = 0;
+	pos = spreadlist.GetHeadPosition();
+	start = spreadlist.GetKeyAt(pos);
+	count = spreadlist.GetValueAt(pos);
+	spreadlist.GetNext(pos);
+	while (pos){
+		uint64 end = spreadlist.GetKeyAt(pos);
+		if ((float)count > avg)
+			calc += avg*(end-start);
+		else
+			calc += count*(end-start);
+		start = end;
+		count = spreadlist.GetValueAt(pos);
+		spreadlist.GetNext(pos);
+	}
+	calc /= filesize;
+	lastSpreadSortValue = calc;
+	return calc;
+}
+
+float CStatisticFile::GetFullSpreadCount() /*const*/
+{
+	if (InChangedFullSpreadCount) return lastFullSpreadCount;
+	InChangedFullSpreadCount=true;
+	float next;
+	uint64 min;
+	uint64 filesize = fileParent->GetFileSize();
+
+	if (!filesize || spreadlist.IsEmpty())
+		return 0;
+
+	POSITION pos = spreadlist.GetHeadPosition();
+	min = spreadlist.GetValueAt(pos);
+	spreadlist.GetNext(pos);
+	while (pos && spreadlist.GetKeyAt(pos) < filesize){
+		uint64 count = spreadlist.GetValueAt(pos);
+		if (min > count)
+			min = count;
+		spreadlist.GetNext(pos);
+	}
+
+	next = 0;
+	pos = spreadlist.GetHeadPosition();
+	uint64 start = spreadlist.GetKeyAt(pos);
+	uint64 count = spreadlist.GetValueAt(pos);
+	spreadlist.GetNext(pos);
+	while (pos){
+		uint64 end = spreadlist.GetKeyAt(pos);
+		if (count > min)
+			next += end-start;
+		start = end;
+		count = spreadlist.GetValueAt(pos);
+		spreadlist.GetNext(pos);
+	}
+	next /= filesize;
+	return lastFullSpreadCount = min+next;
+}
+
+void CStatisticFile::ResetSpreadBar()
+{
+	spreadlist.RemoveAll();
+	spreadlist.SetAt(0, 0);
+	InChangedSpreadSortValue = false;
+	InChangedFullSpreadCount = false;
+	InChangedSpreadBar = false;
+	return;
+}
+// <== Spread bars [Slugfiller/MorphXT] - Stulle

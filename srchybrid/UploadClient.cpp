@@ -59,18 +59,33 @@ void CUpDownClient::DrawUpStatusBar(CDC* dc, RECT* rect, bool onlygreyrect, bool
 	COLORREF crNextSending;
 	COLORREF crBoth;
 	COLORREF crSending;
+	// ==> See chunk that we hide [SiRoB] - Stulle
+	COLORREF crHiddenPartBySOTN;
+	COLORREF crHiddenPartByHideOS;
+	COLORREF crHiddenPartBySOTNandHideOS;
+	// <== See chunk that we hide [SiRoB] - Stulle
 
     if(GetUploadState() == US_UPLOADING  ) { //Xman Xtreme Upload
         crNeither = RGB(224, 224, 224);
 	    crNextSending = RGB(255,208,0);
 	    crBoth = bFlat ? RGB(0, 0, 0) : RGB(104, 104, 104);
 	    crSending = RGB(0, 150, 0); //RGB(186, 240, 0);
+		// ==> See chunk that we hide [SiRoB] - Stulle
+		crHiddenPartBySOTN = RGB(192, 96, 255);
+		crHiddenPartByHideOS = RGB(96, 192, 255);
+		crHiddenPartBySOTNandHideOS = RGB(96, 96, 255);
+		// <== See chunk that we hide [SiRoB] - Stulle
     } else {
         // grayed out
         crNeither = RGB(248, 248, 248);
 	    crNextSending = RGB(255,244,191);
 	    crBoth = bFlat ? RGB(191, 191, 191) : RGB(191, 191, 191);
 	    crSending = RGB(191, 229, 191);
+		// ==> See chunk that we hide [SiRoB] - Stulle
+		crHiddenPartBySOTN = RGB(224, 128, 255);
+		crHiddenPartByHideOS = RGB(128, 224, 255);
+		crHiddenPartBySOTNandHideOS = RGB(128, 128, 255);
+		// <== See chunk that we hide [SiRoB] - Stulle
     }
 
 	// wistily: UpStatusFix
@@ -87,11 +102,35 @@ void CUpDownClient::DrawUpStatusBar(CDC* dc, RECT* rect, bool onlygreyrect, bool
 		CBarShader statusBar(rect->bottom - rect->top, rect->right - rect->left);
 		statusBar.SetFileSize(filesize); 
 		statusBar.Fill(crNeither); 
+		// ==> See chunk that we hide [SiRoB] - Stulle
+		/*
 	    if (!onlygreyrect && m_abyUpPartStatus) { 
 		    for (UINT i = 0;i < m_nUpPartCount;i++)
 			    if(m_abyUpPartStatus[i])
 				    statusBar.FillRange(PARTSIZE*(uint64)(i), PARTSIZE*(uint64)(i+1), crBoth);
 	    }
+		*/
+		if (!onlygreyrect && m_abyUpPartStatus && currequpfile) { 
+			UINT i;
+			for (i = 0;i < currequpfile->GetPartCount();i++) {
+				if (m_abyUpPartStatus[i] == 0)
+					continue;
+				COLORREF crChunk;
+				if (m_abyUpPartStatus[i]&SC_AVAILABLE)
+					crChunk = crBoth;
+				else if (m_abyUpPartStatus[i]&SC_HIDDENBYSOTN && m_abyUpPartStatus[i]&SC_HIDDENBYHIDEOS)
+					crChunk = crHiddenPartBySOTNandHideOS;
+				else if (m_abyUpPartStatus[i]&SC_HIDDENBYSOTN)
+					crChunk = crHiddenPartBySOTN;
+				else if (m_abyUpPartStatus[i]&SC_HIDDENBYHIDEOS)
+					crChunk = crHiddenPartByHideOS;
+				else 
+					crChunk = crBoth;
+				statusBar.FillRange(PARTSIZE*(uint64)(i), PARTSIZE*(uint64)(i+1), crChunk);
+			}
+			
+		}
+		// <== See chunk that we hide [SiRoB] - Stulle
 	    const Requested_Block_Struct* block;
 	    if (!m_BlockRequests_queue.IsEmpty()){
 		    block = m_BlockRequests_queue.GetHead();
@@ -321,6 +360,14 @@ uint32 CUpDownClient::GetScore(bool sysvalue, bool isdownloading, bool onlybasev
 		fBaseValue /= 1000;
 	}
 
+	// ==> Release Bonus [sivka] - Stulle
+	if (!onlybasevalue && // we actually need the complete score with waiting time
+		currequpfile->IsPartFile() == false && // no bonus for partfiles
+		(currequpfile->GetUpPriority() == PR_VERYHIGH || currequpfile->GetUpPriority() == PR_POWER) && // release upload prio
+		!IsLeecher()) // not a sucker
+		fBaseValue += 43200.0f * thePrefs.GetReleaseBonus(); // 12h*factor
+	// <== Release Bonus [sivka] - Stulle
+
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 	/*
 	if(thePrefs.UseCreditSystem())
@@ -330,6 +377,36 @@ uint32 CUpDownClient::GetScore(bool sysvalue, bool isdownloading, bool onlybasev
 	}
 	*/
 	float modif = credits->GetScoreRatio(this);
+
+	// ==> Release Score Assurance [Stulle] - Stulle
+	if((thePrefs.GetReleaseScoreAssurance() &&
+		currequpfile->IsPartFile() == false && // no bonus for partfiles
+		(currequpfile->GetUpPriority() == PR_VERYHIGH || currequpfile->GetUpPriority() == PR_POWER) && // release upload prio
+		!IsLeecher()) || // not a sucker
+		IsFriend()) // or a friend
+	{
+		switch (thePrefs.GetCreditSystem())	{
+			case CS_LOVELACE:{
+					if (modif <= 0.984290578f)
+						modif = 0.984290578f;
+				}break;
+			case CS_PAWCIO:{
+					if (modif <= 3.0f)
+						modif = 3.0f;
+				}break;
+			case CS_RATIO:
+			case CS_EASTSHARE:
+			case CS_SIVKA:
+			case CS_SWAT:
+			case CS_OFFICIAL:
+			default:{
+					if (modif <= 1.0f)
+						modif = 1.0f;
+				}break;
+		}
+	}
+	// <== Release Score Assurance [Stulle] - Stulle
+
 	fBaseValue *= modif;
 	// <== CreditSystems [EastShare/ MorphXT] - Stulle
 
@@ -494,6 +571,17 @@ void CUpDownClient::CreateNextBlockPackage(){
 					if (srcfile->IsPartFile() && !((CPartFile*)srcfile)->IsRangeShareable(currentblock->StartOffset,currentblock->EndOffset-1))	// SLUGFILLER: SafeHash - final safety precaution
 					// END SiRoB, SLUGFILLER: SafeHash
 						throw GetResString(IDS_ERR_INCOMPLETEBLOCK);
+					// ==> Anti Anti HideOS & SOTN [SiRoB] - Stulle
+					if (m_abyUpPartStatus) {
+						for (UINT i = (UINT)(currentblock->StartOffset/PARTSIZE); i < (UINT)((currentblock->EndOffset-1)/PARTSIZE+1); i++)
+						if (m_abyUpPartStatus[i]>SC_AVAILABLE)
+							{
+								CString error;
+									error.Format(_T("%s: Part %u, %I64u = %I64u - %I64u "), GetResString(IDS_ERR_HIDDENBLOCK), i, i64uTogo, currentblock->EndOffset, currentblock->StartOffset);
+								throw error;
+							}
+					}
+					// <== Anti Anti HideOS & SOTN [SiRoB] - Stulle
 				}
 
 				if( i64uTogo > EMBLOCKSIZE*3 )
@@ -634,6 +722,12 @@ void CUpDownClient::CreateNextBlockPackage(){
 
 bool CUpDownClient::ProcessExtendedInfo(CSafeMemFile* data, CKnownFile* tempreqfile, bool isUDP) //Xman better passive source finding
 {
+
+	//Xman client percentage
+	sint32 hisfinishedparts=-1;
+	hiscompletedparts_percent_up=-1;
+	//Xman end
+
 	delete[] m_abyUpPartStatus;
 	m_abyUpPartStatus = NULL;	
 	m_nUpPartCount = 0;
@@ -664,6 +758,10 @@ bool CUpDownClient::ProcessExtendedInfo(CSafeMemFile* data, CKnownFile* tempreqf
 			m_nUpPartCount = 0;
 			return false;
 		}
+		//Xman client percentage
+		hisfinishedparts=0;
+		//Xman end
+
 		m_nUpPartCount = tempreqfile->GetPartCount();
 		m_abyUpPartStatus = new uint8[m_nUpPartCount];
 		uint16 done = 0;
@@ -677,6 +775,12 @@ bool CUpDownClient::ProcessExtendedInfo(CSafeMemFile* data, CKnownFile* tempreqf
 				if (shouldbechecked && bPartsNeeded==false && m_abyUpPartStatus[done] && !((CPartFile*)tempreqfile)->IsComplete((uint64)done*PARTSIZE,((uint64)(done+1)*PARTSIZE)-1,false))
 					bPartsNeeded = true;
 				//Xman end
+
+				//Xman client percentage
+				if(m_abyUpPartStatus[done])
+					hisfinishedparts++;
+				//Xman end
+
 				done++;
 				if (done == m_nUpPartCount)
 					break;
@@ -693,6 +797,14 @@ bool CUpDownClient::ProcessExtendedInfo(CSafeMemFile* data, CKnownFile* tempreqf
 			tempreqfile->UpdatePartsInfo();
 		}
 	}
+
+	//Xman client percentage
+	if(hisfinishedparts>=0)
+		hiscompletedparts_percent_up= (sint8)((float)hisfinishedparts/tempreqfile->GetPartCount()*100.0f);	
+	else
+		hiscompletedparts_percent_up= -1;
+	//Xman end
+
 	theApp.emuledlg->transferwnd->queuelistctrl.RefreshClient(this);
 
 	
@@ -1014,6 +1126,7 @@ void CUpDownClient::SetUploadFileID(CKnownFile* newreqfile)
 	m_abyUpPartStatus = NULL;
 	m_nUpPartCount = 0;
 	m_nUpCompleteSourcesCount= 0;
+	m_nSelectedChunk = 0;	// HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 
 	if (newreqfile)
 	{
@@ -1854,14 +1967,70 @@ float CUpDownClient::GetRareFilePushRatio() const {
 }
 // <== push rare file - Stulle
 
-// ==> Show Client Percentage [Commander/MorphXT] - Mondgott
-uint16 CUpDownClient::GetAvailableUpPartCount() const
+// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+void CUpDownClient::GetUploadingAndUploadedPart(uint8* m_abyUpPartUploadingAndUploaded, uint32 partcount) const
 {
-	UINT result = 0;
-	for (UINT i = 0; i < m_nUpPartCount; i++){
-		if (IsUpPartAvailable(i))
-			result++;
+	memset(m_abyUpPartUploadingAndUploaded,0,partcount);
+	const Requested_Block_Struct* block;
+	if (!m_BlockRequests_queue.IsEmpty()){
+		block = m_BlockRequests_queue.GetHead();
+		if(block){
+			uint32 start = (UINT)(block->StartOffset/PARTSIZE);
+			m_abyUpPartUploadingAndUploaded[start] = 1;
+		}
 	}
-	return (uint16)result;
+	if (!m_DoneBlocks_list.IsEmpty()){
+		for(POSITION pos=m_DoneBlocks_list.GetHeadPosition();pos!=0;){
+			block = m_DoneBlocks_list.GetNext(pos);
+			uint32 start = (UINT)(block->StartOffset/PARTSIZE);
+			m_abyUpPartUploadingAndUploaded[start] = 1;
+		}
+	}
 }
-// <== Show Client Percentage [Commander/MorphXT] - Mondgott
+// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+
+// ==> Superior Client Handling [Stulle] - Stulle
+/* This function ist meant to keep full compatibility for further cases */
+/* that could make a client superior to others. This includes features  */
+/* like PBF, Spread Credits Slot or similar.                            */
+/* Friends have 0x0FFFFFFF as the score they will exceed the score of   */
+/* other superior clients, so they will get the upload slot.            */
+/* No bad guys will ever get this status!                               */
+/* So far included are the following features:                          */
+/* PowerShare                                                           */
+bool CUpDownClient::IsSuperiorClient() const
+{
+	CKnownFile* currentReqFile = theApp.sharedfiles->GetFileByID(GetUploadFileID());
+
+	// only clients requesting a valid file, which is not PartFile can be superior
+	if(currentReqFile == NULL || currentReqFile->IsPartFile())
+		return false;
+
+	// no bad guys!
+	if(GetUploadState()==US_BANNED || m_bGPLEvildoer || IsLeecher())
+		return false;
+
+	// friend with friendslot
+	if(IsFriend() && GetFriendSlot() && !HasLowID())
+		return true;
+
+	// ==> PowerShare [ZZ/MorphXT] - Stulle
+	// powershared
+	if(currentReqFile->GetPowerShared())
+		return true;
+	// <== PowerShare [ZZ/MorphXT] - Stulle
+
+	return false;
+}
+// <== Superior Client Handling [Stulle] - Stulle
+
+// ==> PowerShare [ZZ/MorphXT] - Stulle
+bool CUpDownClient::GetPowerShared() const {
+	CKnownFile* currentReqFile = theApp.sharedfiles->GetFileByID(GetUploadFileID());
+	return currentReqFile && currentReqFile->GetPowerShared();
+}
+
+bool CUpDownClient::GetPowerShared(const CKnownFile* file) const {
+	return file->GetPowerShared();
+}
+// <== PowerShare [ZZ/MorphXT] - Stulle

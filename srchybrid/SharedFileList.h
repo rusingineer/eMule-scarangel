@@ -95,6 +95,11 @@ private:
 	int m_currFileKey;
 	uint32 m_lastPublishKadSrc;
 	uint32 m_lastPublishKadNotes;
+
+	// ==> PowerShare [ZZ/MorphXT] - Stulle
+public:
+	void	UpdatePartsInfo(); //MORPH - Added by SiRoB, POWERSHARE Limit
+	// <== PowerShare [ZZ/MorphXT] - Stulle
 };
 
 class CAddFileThread : public CWinThread

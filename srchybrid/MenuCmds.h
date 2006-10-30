@@ -251,3 +251,24 @@
 #define MP_CAT_DL_MODE          20049
 // reserved till 20051
 // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+#define MP_SPREADBAR_RESET      20100 // Spread bars [Slugfiller/MorphXT] - Stulle
+// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+#define MP_HIDEOS_DEFAULT       20110
+#define MP_HIDEOS_SET           20111
+#define MP_SELECTIVE_CHUNK      20120
+#define MP_SELECTIVE_CHUNK_0    20121
+#define MP_SELECTIVE_CHUNK_1    20122
+#define MP_SHAREONLYTHENEED     20130
+#define MP_SHAREONLYTHENEED_0   20131
+#define MP_SHAREONLYTHENEED_1   20132
+// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+// ==> PowerShare [ZZ/MorphXT] - Stulle
+#define MP_POWERSHARE_DEFAULT	20140
+#define MP_POWERSHARE_OFF       20141
+#define MP_POWERSHARE_ON        20142
+#define MP_POWERSHARE_AUTO      20143
+#define MP_POWERSHARE_LIMITED   20144
+#define MP_POWERSHARE_LIMIT     20145
+#define MP_POWERSHARE_LIMIT_SET 20146
+// <== PowerShare [ZZ/MorphXT] - Stulle

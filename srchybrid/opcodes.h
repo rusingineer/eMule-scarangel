@@ -20,12 +20,12 @@
 /*
 //Xman
 //ModID
-#define MOD_VERSION		_T("Xtreme 5.3b1") 
+#define MOD_VERSION		_T("Xtreme 5.3.1") 
 */
 //Xman versions check
 #define MOD_MAIN_VER	5
 #define MOD_MIN_VER		3
-#define	MOD_BUILD_VER	0 //1=Xtreme x.x 2=Xtreme x.x.1
+#define	MOD_BUILD_VER	2 //1=Xtreme x.x 2=Xtreme x.x.1
 /*
 
 //Xman Anti-Leecher: simple Anti-Thief
@@ -667,3 +667,20 @@
 #define MAX_GSL                         8000 // Global Source Limit [Max/Stulle] - Stulle
 
 #define FT_CATRESUMEORDER		0x7F // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+// ==> Spread bars [Slugfiller/MorphXT] - Stulle
+#define FT_SPREADSTART			0x70
+#define FT_SPREADEND			0x71
+#define FT_SPREADCOUNT			0x72
+// <== Spread bars [Slugfiller/MorphXT] - Stulle
+
+// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+#define FT_HIDEOS				"HIDEOS"
+#define FT_SELECTIVE_CHUNK		"SELECT_CHUNK"
+#define FT_SHAREONLYTHENEED		"SHARE_ONLY_THE_NEED"
+// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+
+// ==> PowerShare [ZZ/MorphXT] - Stulle
+#define FT_POWERSHARE           "ZZUL_POWERSHARE"
+#define FT_POWERSHARE_LIMIT		"POWERSHARE_LIMIT"
+// <== PowerShare [ZZ/MorphXT] - Stulle

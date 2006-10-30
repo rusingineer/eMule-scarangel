@@ -843,7 +843,15 @@ bool CemuleApp::ProcessCommandline()
 				delete command;
 				return true; 
 			}
+			//Xman
+			//Fix For Exit Comand Line Option (DreamWalker)
+			if ( command->MakeLower() == _T("exit")){
+				delete command;
+				return true;
+			}
+			//Xman end
 		}
+		delete command; //Xman Memleak (Dreamwalker)
 	}
 	return (maininst || bAlreadyRunning);
 }

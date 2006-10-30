@@ -699,6 +699,9 @@ void CUpDownClient::ProcessFileInfo(CSafeMemFile* data, CPartFile* file)
 		m_abyPartStatus = new uint8[m_nPartCount];
 		memset(m_abyPartStatus,1,m_nPartCount);
 		m_bCompleteSource = true;
+		//Xman client percentage
+		hiscompletedparts_percent_down=100;
+		//Xman end
 
 		if (thePrefs.GetDebugClientTCPLevel() > 0)
 		{
@@ -745,6 +748,10 @@ void CUpDownClient::ProcessFileInfo(CSafeMemFile* data, CPartFile* file)
 
 void CUpDownClient::ProcessFileStatus(bool bUdpPacket, CSafeMemFile* data, CPartFile* file)
 {
+	//Xman client percentage
+	hiscompletedparts_percent_down=-1;
+	//Xman end
+
 	if ( !reqfile || file != reqfile )
 	{
 		if (reqfile==NULL)
@@ -763,6 +770,9 @@ void CUpDownClient::ProcessFileStatus(bool bUdpPacket, CSafeMemFile* data, CPart
 		memset(m_abyPartStatus, 1, m_nPartCount);
 		bPartsNeeded = true;
 		m_bCompleteSource = true;
+		//Xman client percentage
+		hiscompletedparts_percent_down=100;
+		//Xman end
 		if (bUdpPacket ? (thePrefs.GetDebugClientUDPLevel() > 0) : (thePrefs.GetDebugClientTCPLevel() > 0))
 		{
 			for (UINT i = 0; i < m_nPartCount; i++)
@@ -789,6 +799,9 @@ void CUpDownClient::ProcessFileStatus(bool bUdpPacket, CSafeMemFile* data, CPart
 		m_bCompleteSource = false;
 		m_abyPartStatus = new uint8[m_nPartCount];
 		UINT done = 0;
+		//Xman client percentage
+		sint32 hisfinishedparts=0;
+		//Xman end
 		while (done != m_nPartCount)
 		{
 			uint8 toread = data->ReadUInt8();
@@ -797,6 +810,9 @@ void CUpDownClient::ProcessFileStatus(bool bUdpPacket, CSafeMemFile* data, CPart
 				m_abyPartStatus[done] = ((toread>>i)&1)? 1:0; 	
 				if (m_abyPartStatus[done])
 				{
+					//Xman client percentage
+					hisfinishedparts++;
+					//Xman end
 					if (!reqfile->IsComplete((uint64)done*PARTSIZE, ((uint64)(done+1)*PARTSIZE)-1, false)){
 						bPartsNeeded = true;
 						iNeeded++;
@@ -807,6 +823,9 @@ void CUpDownClient::ProcessFileStatus(bool bUdpPacket, CSafeMemFile* data, CPart
 					break;
 			}
 		}
+		//Xman client percentage
+		hiscompletedparts_percent_down= (sint8)((float)hisfinishedparts/m_nPartCount*100.0f);
+		//Xman end
 	}
 	
 	if (bUdpPacket ? (thePrefs.GetDebugClientUDPLevel() > 0) : (thePrefs.GetDebugClientTCPLevel() > 0))
@@ -1967,7 +1986,7 @@ void CUpDownClient::UDPReaskForDownload()
 	//it can happen that our UDP-packet is received by remote client 
 	//but the answer get always lost. In this case it makes no sence to send the second UDP-packet
 	if(m_bUDPPending==true && m_nTotalUDPPackets-1==m_nFailedUDPPackets)
-		return; //not one UDP-answer until know->don't try it again
+		return; //not one UDP-answer until now->don't try it again
 	//Xman end
 
 	// Time stamp

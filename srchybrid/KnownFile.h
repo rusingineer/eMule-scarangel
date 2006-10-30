@@ -177,7 +177,11 @@ protected:
 	bool	CreateHash(const uchar* pucData, uint32 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL, bool slowdown=false) const; //Xman Nice Hash
 	virtual void	UpdateFileRatingCommentAvail(bool bForceUpdate = false);
 
+	// ==> Removed Dynamic Hide OS [SlugFiller/Xman] - Stulle
+	/*
 	uint32	*CalcPartSpread();	//Xman PowerRelease
+	*/
+	// <== Removed Dynamic Hide OS [SlugFiller/Xman] - Stulle
 
 	CArray<uchar*, uchar*>	hashlist;
 	CString					m_strDirectory;
@@ -195,8 +199,12 @@ private:
 // Maella end
 
 private:
-	uint16 onuploadqueue;	//Xman see OnUploadqueue
+	uint16 onuploadqueue;	//Xman ee OnUploadqueue
+	// ==> Removed Dynamic Hide OS [SlugFiller/Xman] - Stulle
+	/*
 	uint16 hideos;			//Xman PowerRelease
+	*/
+	// <== Removed Dynamic Hide OS [SlugFiller/Xman] - Stulle
 	static CBarShader s_ShareStatusBar;
 	uint16	m_iPartCount;
 	uint16	m_iED2KPartCount;
@@ -213,7 +221,7 @@ private:
 	EFileType m_verifiedFileType;
 
 public:
-	float	GetFileRatio(void) ; // push rare file - Stulle
+	float	GetFileRatio() const; // push rare file - Stulle
 
 	bool	IsPushSmallFile(); // push small files [sivka] - Stulle
 
@@ -224,4 +232,41 @@ public:
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	CString GetFeedback(bool isUS = false); // Copy feedback feature [MorphXT] - Stulle
+
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	CArray<uint64> m_PartSentCount;
+	void	SetHideOS(int newValue) {m_iHideOS = newValue;}
+	int		GetHideOS() const {return m_iHideOS;}
+	void	SetSelectiveChunk(int newValue) {m_iSelectiveChunk = newValue;}
+	int		GetSelectiveChunk() const {return m_iSelectiveChunk;}
+	UINT	HideOSInWork() const;
+	void	SetShareOnlyTheNeed(int newValue) {m_iShareOnlyTheNeed = newValue;}
+	int		GetShareOnlyTheNeed() const {return m_iShareOnlyTheNeed;}
+protected:
+	void	CalcPartSpread(CArray<uint64>& partspread, CUpDownClient* client);	// SLUGFILLER: hideOS
+private:
+	int		m_iHideOS;
+	int		m_iSelectiveChunk;
+	int		m_iShareOnlyTheNeed;
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+
+	// ==> PowerShare [ZZ/MorphXT] - Stulle
+	int		m_powershared;
+	bool	m_bPowerShareAuthorized;
+	bool	m_bPowerShareAuto;
+	bool	m_bpowershared;
+	int		m_iPowerShareLimit;
+	bool	m_bPowerShareLimited;
+public:
+	int		GetPowerSharedMode() const {return m_powershared;}
+	bool	GetPowerShareAuthorized() const {return m_bPowerShareAuthorized;}
+	bool	GetPowerShareAuto() const {return m_bPowerShareAuto;}
+	void	SetPowerShareLimit(int newValue) {m_iPowerShareLimit = newValue;}
+	int		GetPowerShareLimit() const {return m_iPowerShareLimit;}
+	bool	GetPowerShareLimited() const {return m_bPowerShareLimited;}
+	void	UpdatePowerShareLimit(bool authorizepowershare,bool autopowershare, bool limitedpowershare);
+	void    SetPowerShared(int newValue);
+	bool    GetPowerShared() const;
+	UINT m_nVirtualCompleteSourcesCount;
+	// <== PowerShare [ZZ/MorphXT] - Stulle
 };

@@ -3005,11 +3005,24 @@ CListenSocket::~CListenSocket()
 
 bool CListenSocket::Rebind()
 {
-	if (thePrefs.GetPort() == m_port)
+	//if (thePrefs.GetPort() == m_port)
+	if (thePrefs.port == m_port) //Xman upnp
 		return false;
 
 	Close();
 	KillAllSockets();
+
+	//Xman
+	//upnp_start
+	if(thePrefs.GetUPnPNat())
+	{
+		if(theApp.m_UPnPNat.RemoveSpecifiedPort(m_port, MyUPnP::UNAT_TCP))
+			AddLogLine(false, _T("UPNP: removed TCP-port %u"), m_port);
+		else
+			AddLogLine(false, _T("UPNP: failed to remove TCP-port %u"), m_port);
+		thePrefs.m_iUPnPTCPExternal=0;
+	}
+	//upnp_end
 
 	return StartListening();
 }

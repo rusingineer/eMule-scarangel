@@ -84,13 +84,13 @@ void CDownloadClientsCtrl::Init()
 	Localize();
 	LoadSettings();
 
-	// ==> Show Client Percentage [Commander/MorphXT] - Mondgott
+	//Xman client percentage
 	CFont* pFont = GetFont();
 	LOGFONT lfFont = {0};
 	pFont->GetLogFont(&lfFont);
 	lfFont.lfHeight = 11;
 	m_fontBoldSmaller.CreateFontIndirect(&lfFont);
-	// <== Show Client Percentage [Commander/MorphXT] - Mondgott
+	//Xman end
 
 	// Barry - Use preferred sort order from preferences
 	SetSortArrow();
@@ -350,7 +350,6 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					else{
 						image = 0;
 					}
-
 					//Xman Anti-Leecher
 					if(client->IsLeecher()>0)
 						image=18;
@@ -372,8 +371,9 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					if ((client->Credits() && client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED))
 						nOverlayImage |= 1;
 					//Xman changed: display the obfuscation icon for all clients which enabled it
-					if (client->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (client->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()) 
-						&& (client->IsObfuscatedConnectionEstablished() || !(client->socket != NULL && client->socket->IsConnected())))
+					if(client->IsObfuscatedConnectionEstablished() 
+						|| (!(client->socket != NULL && client->socket->IsConnected())
+						&& (client->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (client->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()))))
 						nOverlayImage |= 2;
 					POINT point = {cur_rec.left, cur_rec.top+1};
 					m_ImageList.Draw(dc,image, point, ILD_NORMAL | INDEXTOOVERLAYMASK(nOverlayImage));
@@ -432,22 +432,21 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					cur_rec.bottom--;
 					cur_rec.top++;
 					client->DrawStatusBar(dc, &cur_rec, false, thePrefs.UseFlatBar());
-					// ==> Show Client Percentage [Commander/MorphXT] - Mondgott
+					//Xman client percentage (font idea by morph)
 					CString buffer;
+					// ==> Show Client Percentage optional [Stulle] - Stulle
+					/*
+					if (thePrefs.GetUseDwlPercentage())
+					*/
 					if (thePrefs.GetShowClientPercentage())
+					// <== Show Client Percentage optional [Stulle] - Stulle
 					{
-						float percent = 0;
-
-						if(client->GetPartStatus())
-							percent = (float)client->GetAvailablePartCount() / (float)client->GetPartCount()* 100.0f;
-
-//						if (percent > 0.05f) // we always display
+						if(client->GetHisCompletedPartsPercent_Down() >=0)
 						{
-							//Commander - Added: Draw Client Percentage xored, caching before draw - Start
 							COLORREF oldclr = dc.SetTextColor(RGB(0,0,0));
 							int iOMode = dc.SetBkMode(TRANSPARENT);
-							buffer.Format(_T("%.1f%%"), percent);
-							CFont *pOldFont = dc.SelectObject(&theApp.emuledlg->transferwnd->downloadclientsctrl.m_fontBoldSmaller);
+							buffer.Format(_T("%i%%"), client->GetHisCompletedPartsPercent_Down());
+							CFont *pOldFont = dc.SelectObject(&m_fontBoldSmaller);
 #define	DrawClientPercentText		dc.DrawText(buffer, buffer.GetLength(),&cur_rec, ((DLC_DT_TEXT | DT_RIGHT) & ~DT_LEFT) | DT_CENTER)
 							cur_rec.top-=1;cur_rec.bottom-=1;
 							DrawClientPercentText;cur_rec.left+=1;cur_rec.right+=1;
@@ -463,14 +462,13 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 							dc.SelectObject(pOldFont);
 							dc.SetBkMode(iOMode);
 							dc.SetTextColor(oldclr);
-							//Commander - Added: Draw Client Percentage xored, caching before draw - End	
 						}
 					}
-					// <== Show Client Percentage [Commander/MorphXT] - Mondgott
+					//Xman end
 					cur_rec.bottom++;
 					cur_rec.top--;
+					break;
 				}
-				break;	
 				case 5:
 					if(client->Credits() && client->GetSessionDown() < client->credits->GetDownloadedTotal())
 						Sbuffer.Format(_T("%s (%s)"), CastItoXBytes(client->GetSessionDown()), CastItoXBytes(client->credits->GetDownloadedTotal()));

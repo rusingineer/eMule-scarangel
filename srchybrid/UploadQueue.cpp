@@ -119,6 +119,12 @@ CUpDownClient* CUploadQueue::FindBestClientInQueue()
 	uint32  bestlowscore = 0;
     CUpDownClient* lowclient = NULL;
 	uint32 thisTick = ::GetTickCount(); //cache the value
+	// ==> Superior Client Handling [Stulle] - Stulle
+	POSITION toaddSup = 0;
+	uint32	bestscoreSup = 0;
+	uint32  bestlowscoreSup = 0;
+    CUpDownClient* lowclientSup = NULL;
+	// <== Superior Client Handling [Stulle] - Stulle
 
 	POSITION pos1, pos2;
 	for (pos1 = waitinglist.GetHeadPosition();( pos2 = pos1 ) != NULL;)
@@ -135,8 +141,45 @@ CUpDownClient* CUploadQueue::FindBestClientInQueue()
 			RemoveFromWaitingQueue(pos2,true);
 			continue;
 		}
-        else
-        {
+		// ==> Superior Client Handling [Stulle] - Stulle
+		if(cur_client->IsSuperiorClient())
+		{
+		    // finished clearing
+		    uint32 cur_score = cur_client->GetScore(false);
+
+		    if ( cur_score > bestscoreSup)
+		    {
+                // cur_client is more worthy than current best client that is ready to go (connected).
+                if((!cur_client->HasLowID() && cur_client->isupprob==false) || (cur_client->socket && cur_client->socket->IsConnected())) //Xman uploading problem client
+				{
+                    // this client is a HighID or a lowID client that is ready to go (connected)
+                    // and it is more worthy
+					if ((thisTick - cur_client->GetLastUpRequest()< 1800000) //Xman accept only clients which asked the last 30 minutes:
+						&& cur_client->GetLastAction()==OP_STARTUPLOADREQ) //Xman fix for startupload
+					{
+						bestscoreSup = cur_score;
+						toaddSup = pos2;
+					}
+                } 
+				else if(!cur_client->m_bAddNextConnect) 
+				{
+                    // this client is a lowID client that is not ready to go (not connected)
+    
+                    // now that we know this client is not ready to go, compare it to the best not ready client
+                    // the best not ready client may be better than the best ready client, so we need to check
+                    // against that client
+			        if (cur_score > bestlowscoreSup)
+			        {
+                        // it is more worthy, keep it
+				        bestlowscoreSup = cur_score;
+                        lowclientSup = waitinglist.GetAt(pos2);
+			        }
+                }
+            } 
+		}
+		// <== Superior Client Handling [Stulle] - Stulle		
+		else
+		{
 		    // finished clearing
 		    uint32 cur_score = cur_client->GetScore(false);
 
@@ -172,6 +215,8 @@ CUpDownClient* CUploadQueue::FindBestClientInQueue()
 		}
 	}
 	
+	// ==> Superior Client Handling [Stulle] - Stulle
+	/*
 	if (bestlowscore > bestscore && lowclient)
 		lowclient->m_bAddNextConnect = true;
 
@@ -179,6 +224,37 @@ CUpDownClient* CUploadQueue::FindBestClientInQueue()
 		return NULL;
     else
 	    return waitinglist.GetAt(toadd);
+	*/
+	if(lowclientSup && toaddSup)
+	{
+		if (bestlowscoreSup > bestscoreSup && lowclientSup)
+			lowclientSup->m_bAddNextConnect = true;
+
+	    return waitinglist.GetAt(toaddSup);
+	}
+	else if(toaddSup)
+	{
+	    return waitinglist.GetAt(toaddSup);
+	}
+	else if(lowclientSup)
+	{
+			lowclientSup->m_bAddNextConnect = true;
+	}
+
+	if(!toaddSup)
+	{
+		if (!lowclientSup && bestlowscore > bestscore && lowclient)
+			lowclient->m_bAddNextConnect = true;
+
+		if (!toadd)
+			return NULL;
+		else
+			return waitinglist.GetAt(toadd);
+	}
+
+	// will never reach this point anyways
+	return NULL;
+	// <==  Superior Client Handling [Stulle] - Stulle
 }
 //Xman end
 
@@ -277,6 +353,15 @@ bool CUploadQueue::AddUpNextClient(LPCTSTR pszReason, CUpDownClient* directadd){
 	newclient->isupprob=false;
 	//Xman end
 
+
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	// If it doesn't have an up part status, there's no real way
+	// of telling if the selected chunk was completed or not, so
+	// assume it was, otherwise the client wouldn't be able to
+	// download another chunk.
+	if (!newclient->m_abyUpPartStatus)
+		newclient->m_nSelectedChunk = 0;
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 
     InsertInUploadingList(newclient);
 
@@ -990,26 +1075,36 @@ bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReaso
 				CUpDownClient::AddUpStopCount(true, reason); // Maella -Upload Stop Reason-
 			}
 
-            CKnownFile* requestedFile = theApp.sharedfiles->GetFileByID(client->GetUploadFileID());
-            if(requestedFile != NULL) {
-                requestedFile->UpdatePartsInfo();
-            }
+			// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 			theApp.clientlist->AddTrackClient(client); // Keep track of this client
 			client->SetUploadState(US_NONE);
 			client->ClearUploadBlockRequests();
 			client->SetCollectionUploadSlot(false);
+			// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+
+			CKnownFile* requestedFile = theApp.sharedfiles->GetFileByID(client->GetUploadFileID());
+            if(requestedFile != NULL) {
+                requestedFile->UpdatePartsInfo();
+            }
+			// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+			/*
+			theApp.clientlist->AddTrackClient(client); // Keep track of this client
+			client->SetUploadState(US_NONE);
+			client->ClearUploadBlockRequests();
+			client->SetCollectionUploadSlot(false);
+			*/
+			// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 
             //Xman Xtreme Upload
 			m_dwnextallowedscoreremove=0;
 
 			// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 			if (client->Credits()!=NULL) {
-			/* // no need to check this since the call is commented anyways
 				if(earlyabort == true)
 				{
 					//client->Credits()->SaveUploadQueueWaitTime();
 				}
-				else*/ if(client->GetSessionUp() < SESSIONMAXTRANS)
+				else if(client->GetSessionUp() < SESSIONMAXTRANS)
 				{
 					int keeppct = (int)((100 - (100 * client->GetSessionUp()/SESSIONMAXTRANS)) - 10);// At least 10% time credit 'penalty'
 					if (keeppct < 0)    keeppct = 0;

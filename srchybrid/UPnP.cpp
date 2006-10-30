@@ -25,6 +25,7 @@
 //  last changes:
 //  12.06.2006 fixed wrong IP-LAN-Detection (Xman)
 //  12.06.2006 fixed warnings due to wrong Datatypes (Xman)
+//  03.10.2006 added function: RemoveSpecifiedPort(), needed for Restart of Listening (Xman)
 //
 
 
@@ -560,6 +561,22 @@ void MyUPnP::clearNATPortMapping()
 	m_Mappings.RemoveAll();
 }
 
+bool MyUPnP::RemoveSpecifiedPort(WORD port,UPNPNAT_PROTOCOL protocol)
+{
+	UPNPNAT_MAPPING search;
+	POSITION pos = m_Mappings.GetHeadPosition();
+	while(pos){
+		POSITION cur_pos = pos;
+		search = m_Mappings.GetNext(pos);
+		if(search.externalPort==port && search.protocol==protocol)
+		{
+			RemoveNATPortMapping(search, false);
+			m_Mappings.RemoveAt(cur_pos);
+			return true;
+		}
+	}
+	return false;
+}
 /////////////////////////////////////////////////////////////////////////////////
 // Initializes m_localIP variable, for future access to GetLocalIP()
 /////////////////////////////////////////////////////////////////////////////////

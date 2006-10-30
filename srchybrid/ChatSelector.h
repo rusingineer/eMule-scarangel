@@ -95,4 +95,12 @@ private:
 	HWND m_hwndCloseBtn;
 	HWND m_hwndSendBtn;
 	CImageList m_imlChat;
+
+//Xman
+//WiZaRd::Context-FiX
+public:
+	CChatItem* GetChatItemUnderMouse(); 
+private:
+	CChatItem* m_contextItem;
+//Xman end
 };

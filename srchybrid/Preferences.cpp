@@ -601,14 +601,14 @@ uint16	CPreferences::m_iPushSmallBoost;
 bool	CPreferences::enablePushRareFile; // push rare file - Stulle
 
 bool	CPreferences::showSrcInTitle; // Show sources on title - Stulle
-//bool	CPreferences::PsFilesRed; // draw PS files red - Stulle
+bool	CPreferences::PsFilesRed; // draw PS files red - Stulle
 bool	CPreferences::FriendsBlue; // draw friends blue - Stulle
 bool	CPreferences::showOverheadInTitle; // show overhead on title - Stulle
 bool	CPreferences::ShowGlobalHL; // show global HL - Stulle
 bool	CPreferences::ShowFileHLconst; // show HL per file constantaniously - Stulle
 bool	CPreferences::m_bShowInMSN7; //Show in MSN7 [TPT] - Stulle
 bool CPreferences::m_bClientQueueProgressBar; // Client queue progress bar [Commander] - Stulle
-bool	CPreferences::m_bShowClientPercentage; // Show Client Percentage [Commander/MorphXT] - Mondgott
+bool	CPreferences::m_bShowClientPercentage; // Show Client Percentage optional [Stulle] - Stulle
 // ==> CPU/MEM usage [$ick$/Stulle] - Max
 bool	CPreferences::m_bSysInfo;
 bool	CPreferences::m_bSysInfoGlobal;
@@ -770,6 +770,21 @@ bool	CPreferences::m_bRespectMaxSources;
 bool	CPreferences::m_bUseAutoCat;
 uint8	CPreferences::dlMode;
 // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+bool	CPreferences::m_bSpreadbarSetStatus; // Spread bars [Slugfiller/MorphXT] - Stulle
+// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+int		CPreferences::hideOS;
+bool	CPreferences::selectiveShare;
+int		CPreferences::ShareOnlyTheNeed;
+// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+
+// ==> PowerShare [ZZ/MorphXT] - Stulle
+int		CPreferences::m_iPowershareMode;
+int		CPreferences::PowerShareLimit;
+// <== PowerShare [ZZ/MorphXT] - Stulle
+
+uint8	CPreferences::m_uReleaseBonus; // Release Bonus [sivka] - Stulle
+bool	CPreferences::m_bReleaseScoreAssurance; // Release Score Assurance [Stulle] - Stulle
 
 CPreferences::CPreferences()
 {
@@ -2395,14 +2410,14 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("EnablePushRareFile"), enablePushRareFile); // push rare file - Stulle
 
 	ini.WriteBool(_T("ShowSrcOnTitle"),showSrcInTitle); // Show sources on title - Stulle
-//	ini.WriteBool(_T("PsFilesRed"), PsFilesRed); // draw PS files red - Stulle
+	ini.WriteBool(_T("PsFilesRed"), PsFilesRed); // draw PS files red - Stulle
 	ini.WriteBool(_T("FriendsBlue"), FriendsBlue); // draw friends blue - Stulle
 	ini.WriteBool(_T("ShowOverheadOnTitle"),showOverheadInTitle); // show overhead on title - Stulle
 	ini.WriteBool(_T("ShowGlobalHL"),ShowGlobalHL); // show global HL - Stulle
 	ini.WriteBool(_T("ShowFileHLconst"),ShowFileHLconst); // show HL per file constantaniously - Stulle
 	ini.WriteBool(_T("ShowInMSN7"), m_bShowInMSN7); //Show in MSN7 [TPT] - Stulle
 	ini.WriteBool(_T("ClientQueueProgressBar"),m_bClientQueueProgressBar); // Client queue progress bar [Commander] - Stulle
-	ini.WriteBool(_T("ShowClientPercentage"),m_bShowClientPercentage); // Show Client Percentage [Commander/MorphXT] - Mondgott
+	ini.WriteBool(_T("ShowClientPercentage"),m_bShowClientPercentage); // Show Client Percentage optional [Stulle] - Stulle
 	// ==> CPU/MEM usage [$ick$/Stulle] - Max
 	ini.WriteBool(_T("SysInfos"),m_bSysInfo);
 	ini.WriteBool(_T("SysInfosGlobal"),m_bSysInfoGlobal);
@@ -2510,6 +2525,22 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("UseAutoCat"), m_bUseAutoCat);
 	ini.WriteInt(_T("dlMode"),dlMode);
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+	ini.WriteBool(_T("SpreadbarSetStatus"), m_bSpreadbarSetStatus); // Spread bars [Slugfiller/MorphXT] - Stulle
+
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	ini.WriteInt(_T("HideOvershares"),hideOS);
+	ini.WriteBool(_T("SelectiveShare"),selectiveShare);
+	ini.WriteInt(_T("ShareOnlyTheNeed"),ShareOnlyTheNeed);
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+
+	// ==> PowerShare [ZZ/MorphXT] - Stulle
+	ini.WriteInt(_T("PowershareMode"),m_iPowershareMode);
+	ini.WriteInt(_T("PowerShareLimit"),PowerShareLimit);
+	// <== PowerShare [ZZ/MorphXT] - Stulle
+
+	ini.WriteInt(_T("ReleaseBonus"),m_uReleaseBonus); // Release Bonus [sivka] - Stulle
+	ini.WriteBool(_T("ReleaseScoreAssurance"),m_bReleaseScoreAssurance); // Release Score Assurance [Stulle] - Stulle
 }
 
 void CPreferences::ResetStatsColor(int index)
@@ -3120,10 +3151,12 @@ void CPreferences::LoadPreferences()
 	m_bRememberDownloadedFiles = ini.GetBool(L"RememberDownloadedFiles", true);
 
 	m_bNotifierSendMail = ini.GetBool(L"NotifierSendMail", false);
+/* Xman removed
 #if _ATL_VER >= 0x0710
 	if (!IsRunningXPSP2())
 		m_bNotifierSendMail = false;
 #endif
+*/
 	m_strNotifierMailSender = ini.GetString(L"NotifierMailSender", L"");
 	m_strNotifierMailServer = ini.GetString(L"NotifierMailServer", L"");
 	m_strNotifierMailReceiver = ini.GetString(L"NotifierMailRecipient", L"");
@@ -3407,14 +3440,14 @@ void CPreferences::LoadPreferences()
     enablePushRareFile = ini.GetBool(_T("EnablePushRareFile"), false); // push rare file - Stulle
 
 	showSrcInTitle = ini.GetBool(_T("ShowSrcOnTitle"),false); // Show sources on title - Stulle
-//	PsFilesRed = ini.GetBool(_T("PsFilesRed"),false); // draw PS files red - Stulle
+	PsFilesRed = ini.GetBool(_T("PsFilesRed"),false); // draw PS files red - Stulle
 	FriendsBlue = ini.GetBool(_T("FriendsBlue"),false); // draw friends blue - Stulle
 	showOverheadInTitle=ini.GetBool(_T("ShowOverheadOnTitle"),false); // show overhead on title - Stulle
 	ShowGlobalHL = ini.GetBool(_T("ShowGlobalHL"),false); // show global HL - Stulle
 	ShowFileHLconst = ini.GetBool(_T("ShowFileHLconst"),true); // show HL per file constantaniously - Stulle
 	m_bShowInMSN7 = ini.GetBool(_T("ShowInMSN7"), false); //Show in MSN7 [TPT] - Stulle
 	m_bClientQueueProgressBar=ini.GetBool(_T("ClientQueueProgressBar"),true); // Client queue progress bar [Commander] - Stulle
-	m_bShowClientPercentage=ini.GetBool(_T("ShowClientPercentage"),false); // Show Client Percentage [Commander/MorphXT] - Mondgott
+	m_bShowClientPercentage=ini.GetBool(_T("ShowClientPercentage"),false); // Show Client Percentage optional [Stulle] - Stulle
 	// ==> CPU/MEM usage [$ick$/Stulle] - Max
 	m_bSysInfo = ini.GetBool(_T("SysInfos"),false);
 	m_bSysInfoGlobal = ini.GetBool(_T("SysInfosGlobal"),false);
@@ -3539,6 +3572,22 @@ void CPreferences::LoadPreferences()
 	m_bUseAutoCat=ini.GetBool(_T("UseAutoCat"), true);
 	dlMode = (uint8)ini.GetInt(_T("dlMode"),0);
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+	m_bSpreadbarSetStatus = ini.GetBool(_T("SpreadbarSetStatus"), true); // Spread bars [Slugfiller/MorphXT] - Stulle
+
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	hideOS=ini.GetInt(_T("HideOvershares"),0);
+	selectiveShare=ini.GetBool(_T("SelectiveShare"),false);
+	ShareOnlyTheNeed=ini.GetInt(_T("ShareOnlyTheNeed"),false);
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+
+	// ==> PowerShare [ZZ/MorphXT] - Stulle
+	m_iPowershareMode=ini.GetInt(_T("PowershareMode"),0);
+	PowerShareLimit=ini.GetInt(_T("PowerShareLimit"),0);
+	// <== PowerShare [ZZ/MorphXT] - Stulle
+
+	m_uReleaseBonus = (uint8)ini.GetInt(_T("ReleaseBonus"),0); // Release Bonus [sivka] - Stulle
+	m_bReleaseScoreAssurance = ini.GetBool(_T("ReleaseScoreAssurance"),false); // Release Score Assurance [Stulle] - Stulle
 }
 
 //Xman Xtreme Upload

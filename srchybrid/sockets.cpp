@@ -477,7 +477,9 @@ void CServerConnect::CheckForTimeout()
 		}
 
 		if (dwCurTick - tmpkey > dwServerConnectTimeout){
-			LogWarning(GetResString(IDS_ERR_CONTIMEOUT), tmpsock->cur_server->GetListName(), tmpsock->cur_server->GetAddress(), tmpsock->cur_server->GetPort());
+			//Xman additional check:
+			if(tmpsock->cur_server!=NULL)
+				LogWarning(GetResString(IDS_ERR_CONTIMEOUT), tmpsock->cur_server->GetListName(), tmpsock->cur_server->GetAddress(), tmpsock->cur_server->GetPort());
 			connectionattemps.RemoveKey(tmpkey);
 			DestroySocket(tmpsock);
 			if (singleconnecting)
@@ -565,6 +567,20 @@ void CServerConnect::SetClientID(uint32 newid){
 //         => A multiple calls of this method is safe now.
 void CServerConnect::DestroySocket(CServerSocket* pSck){
 	if(pSck != NULL){
+		//Xman make sure this socket is also removed from connection-attemps
+		DWORD tmpkey;
+		CServerSocket* tmpsock;
+		POSITION pos1 = connectionattemps.GetStartPosition();
+		while (pos1) {
+			connectionattemps.GetNextAssoc(pos1, tmpkey, tmpsock);
+			if (tmpsock == pSck) {
+				connectionattemps.RemoveKey(tmpkey);
+				break;
+			}
+		}
+		//Xman end
+
+
 		// Remove from the list
 		POSITION pos = m_lstOpenSockets.Find(pSck);
 		if(pos != NULL){

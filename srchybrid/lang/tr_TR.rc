@@ -1877,6 +1877,156 @@ BEGIN
     IDS_SERVERFEATURE_INTTYPETAGS "Tam sayý yazma etiketleri"
 END
 
+STRINGTABLE 
+BEGIN
+    IDS_DROPNONEEDEDSRCS    "NNS'den vazgec"
+    IDS_DROPQUEUEFULLSRCS   "FullQ ise vazgec"
+    IDS_DROPQUEUETOOMANY    "Fzla ise vazgec"
+    IDS_DROPQUEUEUNKNOWN    "Bilinmeyen vazgec"
+    IDS_DROP_ASKING         "Sorulandan vazgec"
+    IDS_DROPCONNECTING      "Baglanilandan vazgec"
+    IDS_STOP_CLIENT         "Bu kullanicidan vazgec"
+    IDS_SubMenu_Drop        "&Vazgec"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_13RATIO             "1:3 oranýný kullan eger upload < 11"
+    IDS_PPG_MAELLA_MTU_STATIC "MTU (500..1500, normalde 1340)"
+    IDS_PPG_MAELLA_NAFC_CHECK02 "NAFC Full Control U/D Limits"
+    IDS_OPENMORESLOTS       "Gerekirse daha fazla slot ac"
+    IDS_AVG_DATARATE_TIME   "Saniyede aldýgýn ortalama data: %u"
+    IDS_XTREMESETTINGS      "Xtreme"
+    IDS_ZOOMSTATIC          "Zoom: %u"
+    IDS_AVGQR               "AvgQR"
+    IDS_USEDOUBLESENDSIZE   "2 kat yollama boyutu kullan"
+    IDS_LOGDROP             "Vazgectiklerini kaydet"
+    IDS_ANTILEECHER_GROUP   "Anti-Leecher"
+    IDS_ANTILEECHER_CHECK   "Anti-leecher korumasiaktif"
+    IDS_ANTILEECHERNAME_CHECK "Leecher i user name inden bul"
+    IDS_POWERRELEASE        "PowerRelease"
+    IDS_DONTREMOVESTATICSERVER "Sabit serverlari kaldirma"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_LISTREQUESTED       "Istenilen dosyalarý listele"
+    IDS_HIGHPRIOPROCESS     "Yüksek"
+    IDS_ABOVENORMALPROCESS  "Normalin üstü"
+    IDS_NORMALPROCESS       "Normal"
+    IDS_PROCESSGROUP        "Islem önceligi"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_COUNTRYNAME_SHORT   "2 harf göster"
+    IDS_COUNTRYNAME_MID     "3 harf göster"
+    IDS_COUNTRYNAME_LONG    "Tam ismi göster"
+    IDS_COUNTRYNAME_SHOWFLAG "Bayrak"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_IP2COUNTRY_MSG1     "Ip2country servisi www.webhosting.info tarafýndan saglanmaktadir"
+    IDS_IP2COUNTRY_MSG2     "(http://www.webhosting.info), yada http://ip-to-country.webhosting.info"
+    IDS_IP2COUNTRY_LOADED   "IP2Country yüklendi"
+    IDS_IP2COUNTRY_UNLOADED "IP2Country kaldirildi"
+    IDS_IP2COUNTRY_ERROR1   "Hata satiri numarasi : %i"
+    IDS_IP2COUNTRY_ERROR3   "Yüklenme hatasi"
+    IDS_IP2COUNTRY_ERROR4   "ülke bayraklari yüklenemedigi icin devre disi birakildi"
+    IDS_IP2COUNTRY_ERROR5   "Gecersiz RESid lütfen flag icon Dll'inizi tekrar yükleyin"
+    IDS_IP2COUNTRY_INFO     "Incelenen satirlar:%u  bulunan IPCountry araliklari:%u  Kopyalanan:%u  Birleþtirilen:%u"
+    IDS_IP2COUNTRY_FLAGLOAD "Ülke bayraklari yüklendi"
+    IDS_IP2COUNTRY_FILELOAD "IP2Country dosyasý kaldirildi"
+    IDS_IP2COUNTRY_FLAGUNLD "Ülke bayraklari kaldirildi"
+    IDS_IP2COUNTRY_NALONG   "N/A"
+    IDS_IP2COUNTRY_NASHORT  "N/A"
+    IDS_IP2COUNTRY_LOADED2  "IP2Country  ""%s"" icindeki %ums dan yüklendi"
+    IDS_ACCURATEGRAPH       "Dogruluk"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_SMOOTHGRAPH         "Yumusat"
+    IDS_MULTIQUEUE          "Her dosya icin 1 sira (Multiqueue)"
+    IDS_RETRYCONNECTIONATTEMPTS "Tcp den giremesse tekrar dene"
+    IDS_ANTIGHOST           "Ghost-Mod'lar bulundu"
+    IDS_REMEMBERAICH        "Kullanilmayan AICH-Hashes (known2.met)'lari hatirla"
+    IDS_MARKCANCELLED       "Iptal edilmis olarak isaretle"
+    IDS_DOWNHISTORY_CHECK1  "eMule \n id'li dosyayý daha önce indirdiginizi belirledi"
+    IDS_DOWNHISTORY_CHECK2  "eMule %i tane ayni isimle indirilmis dosya buldu (%s):\n"
+    IDS_DOWNHISTORY_CHECK3  "Bunlara ragmen indirmek istiomusunuz?"
+    IDS_DOWNHISTORY_CHECK4  "eMule  id'li dosyayi daha önce iptal ettiginizi tespit etti \n"
+    IDS_DOWNHISTORY         "Download gecmisi"
+    IDS_DOWNHISTORY_REMOVE  "Gecmis den kaldir"
+    IDS_DOWNHISTORY_REMOVE_QUESTION 
+                            """%s""'i download gecmisinden kaldirmak istediginizden eminmisiniz?"
+    IDS_DOWNHISTORY_REMOVE_QUESTION_MULTIPLE 
+                            "Secili dosyalari download gecmisinden silmek istediginizden eminmisinz?"
+    IDS_DOWNHISTORY_SHARED  "Paylasilan"
+    IDS_DOWNHISTORY_CLEAR   "Download gecmisini temizle"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DOWNHISTORY_SHOWSHARED "Paylasilan dosyalari göster"
+    IDS_DOWNHISTORY_ACTIONS "Secenekler"
+    IDS_DOWNHISTORY_CLEAR_QUESTION 
+                            "Download gecmisini silmek istediginizden eminmisiniz"
+    IDS_SENDBUFFER          "buffer yolla"
+    IDS_LEERCHERLOGTITLE    "Leecher-Messages"
+    IDS_ALL_A4AF_TO_THIS    "Tüm kaynaklari bu dosyaya yönlendir"
+    IDS_ALL_A4AF_TO_OTHER   "Tüm kaynaklari bu dosya disinda herhangi bir dosyaya yönlendir"
+    IDS_SWAP_A4AF_TO_THIS   "(A4AF) kaynaklari bu dosyaya yönlendir"
+    IDS_SWAP_A4AF_TO_OTHER  "(A4AF) kaynaklari bu dosyaya disinda herhangi bir dosyaya yönlendir"
+    IDS_ALL_A4AF_AUTO       "Otomatik olarak tüm (A4AF) kaynaklarini bu dosyaya yönlendir"
+    IDS_LEECHER_ACTION_BAN  "Ban"
+    IDS_LEECHER_ACTION_REDUCE "Skor düsür"
+    IDS_ANTILEECHERBADHELLO_CHECK "Yanlis Hello-Tag'larini bul"
+    IDS_ANTILEECHERSNAFU_CHECK "Yanlis taglari bul"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ANTILEECHERMOD_CHECK "Leecher lari modstring kullanarak bul"
+    IDS_ANTILEECHERTHIEF_CHECK "Nick- /Modthiefs'leri bul"
+    IDS_ANTILEECHERSPAMMER_CHECK "Spammer'lari bul"
+    IDS_ANTILEECHERXSEXPLOITER_CHECK "XS-Exploiter'lari bul"
+    IDS_STATIC_LEECHERCOMMUNITY "Community Modlari"
+    IDS_STATIC_LEECHERGHOST "Ghost-Mod'lar"
+    IDS_STATIC_LEECHERTHIEF "Nick- / Modthiefs"
+    IDS_NEWXTREMEVERSION    "Yeni Xtreme-Version Bulundu:)"
+    IDS_NEWXTREMEVERSIONDOWNLOAD 
+                            "New Xtreme-Version bulundu \n Indirmek istermisiniz? ?"
+    IDS_NEWDLP              "Yeni antiLeech.dll (DLP) Bulundu:)"
+    IDS_NEWDLPDOWNLOAD      "New antiLeech.dll (DLP) bulundu \n Indirmek istermisiniz ?"
+    IDS_DROPLEECHER         "Leecher'lari düsür"
+    IDS_ACTIVEDOWNLOADSBOLD "Aktif down'lari kalin göster"
+    IDS_UPDOWNUPLOADLIST    "Up / Down"
+    IDS_MAXGLOBALSOURCES    "Toplam source limiti:"
+    IDS_ACCEPTSOURCES       "Toplam source limitini kabul et"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ACCEPTRATIO         "Eger sources > source limiti 1:3 oturum oranini kullan"
+    IDS_SHOWADDITIONALGRAPH "Fazladan grafik satirlarini göster"
+    IDS_CHECK4UPDATEMOD     "Baslangicta yeni Xtreme versiyonlarini ara"
+    IDS_ANTILEECHEREMCRYPT_CHECK "Emcrypt Bul"
+    IDS_UPLOADMANAGEMENT_FRAME "Upload Secenekler"
+    IDS_UPLOADSLOTSPEED_LABEL "Upload Hizi"
+    IDS_USENARROWFONT       "Transfer penceresinde kücük fontlari kullan"
+    IDS_SHOWBLOCKINGRATIO   "Socket engelleme oranini göster"
+    IDS_FUNNYNICK           "Funny Nick'i göster"
+    IDS_AUTOUPDATEIPFILTER  "IPFilter.dat'i otomatik olarak güncelle"
+    IDS_DROPBLOCKINGSOCKETS "Genelde engellenen socketleri kullanma"
+    IDS_LOGPARTMISMATCH     "Istenilen dosyada boyut uyusmazligi varsa kaydet"
+    IDS_CN_UPNPTRYRANDOM    "UPnP kullanirkan herhangi bir portu kullan"
+    IDS_CN_UPNPNAT          "UPnP destegini etkinlestir"
+    IDS_CHUNKCHOOSER        "Iri parça seçim yöntemi"
+    IDS_UPLOADINSTABLE      "Uyari: Gönderme ayarlariniz çok yüksek görünüyor. Lütfen ayarlarinizi gözden geçirin!\nGönderme çizelgesine bakin, beyaz veya sari (NAFC ile) çizgi düz olmalidir.\nBu mesaj bir kez olusturulur."
+END
+
 #endif    // Türkisch resources
 /////////////////////////////////////////////////////////////////////////////
 

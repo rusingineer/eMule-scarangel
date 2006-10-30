@@ -171,7 +171,18 @@ BOOL CCommentListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 		switch (wParam)
 		{
 		case MP_COPYSELECTED:
-			theApp.CopyTextToClipboard(GetItemText(iSel, 3));
+			//Xman fix by Avi3k & Wizard
+			CString strCmts = _T("");
+			POSITION pos = GetFirstSelectedItemPosition();
+			while (pos)
+			{
+				iSel = GetNextSelectedItem(pos);
+				const SComment* pComment = (iSel != -1) ? (SComment*)GetItemData(iSel) : NULL;
+				if (pComment)
+					strCmts += pComment->m_strComment + _T("\n");
+			}
+			theApp.CopyTextToClipboard(strCmts);
+			//Xman end
 			return TRUE;
 		}
 	}

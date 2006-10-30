@@ -835,7 +835,6 @@ void CDownloadQueue::Process(){
 	if(::GetTickCount() > m_dwResTimer) 
 		{
 			theApp.emuledlg->transferwnd->ShowRessources();
-//			m_dwResTimer = ::GetTickCount() + 2500;
 			m_dwResTimer = ::GetTickCount() + 1000; // update ever 1 sec
 		}
 	// <== CPU/MEM usage [$ick$/Stulle] - Max 

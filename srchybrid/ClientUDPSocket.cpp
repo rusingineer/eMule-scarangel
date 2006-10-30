@@ -656,7 +656,7 @@ bool CClientUDPSocket::Create()
 
 	//Xman
 	//upnp_start
-	if (ret){
+	if (ret && thePrefs.GetUDPPort()){
 		if (thePrefs.GetUPnPNat()){
 			MyUPnP::UPNPNAT_MAPPING mapping;
 
@@ -680,9 +680,23 @@ bool CClientUDPSocket::Create()
 
 bool CClientUDPSocket::Rebind()
 {
-	if (thePrefs.GetUDPPort() == m_port)
+	//if (thePrefs.GetUDPPort() == m_port)
+	if (thePrefs.udpport == m_port) //Xman upnp
 		return false;
 	Close();
+
+	//Xman
+	//upnp_start
+	if(thePrefs.GetUPnPNat())
+	{
+		if(theApp.m_UPnPNat.RemoveSpecifiedPort(m_port, MyUPnP::UNAT_UDP))
+			AddLogLine(false, _T("UPNP: removed UDP-port %u"), m_port);
+		else
+			AddLogLine(false, _T("UPNP: failed to remove UDP-port %u"), m_port);
+		thePrefs.m_iUPnPUDPExternal=0;
+	}
+	//upnp_end
+
 	return Create();
 }
 
@@ -790,18 +804,15 @@ bool CClientUDPSocket::ProcessWebCachePacket(const BYTE* packet, uint32 size, ui
 
 						CSafeMemFile data_out(128);
 
-						// ==> HidedOS/SOTN related change - Max
-						/*
 						if (reqfile->IsPartFile())
+							// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+							/*
 							((CPartFile*)reqfile)->WritePartStatus(&data_out, sender);	// SLUGFILLER: hideOS
+							*/
+							((CPartFile*)reqfile)->WritePartStatus(&data_out);
+							// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 						else if (!reqfile->HideOvershares(&data_out, sender))	//Slugfiller: HideOS
 							data_out.WriteUInt16(0);
-						*/
-						if (reqfile->IsPartFile())
-							((CPartFile*)reqfile)->WritePartStatus(&data_out);
-						else
-							data_out.WriteUInt16(0);
-						// <== HidedOS/SOTN related change - Max
 
 						data_out.WriteUInt16((uint16)theApp.uploadqueue->GetWaitingPosition(sender));
 						if (thePrefs.GetDebugClientUDPLevel() > 0)

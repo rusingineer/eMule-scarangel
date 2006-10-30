@@ -16,6 +16,10 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
 
+#include "BarShader.h" // Spread bars [Slugfiller/MorphXT] - Stulle
+
+// ==> Removed Spreadbars (old version) [SlugFiller] - Stulle
+/*
 //Xman PowerRelease
 struct Spread_Struct{
 	uint64 start;
@@ -23,6 +27,8 @@ struct Spread_Struct{
 	uint32 count;
 };
 //Xman end
+*/
+// <== Removed Spreadbars (old version) [SlugFiller] - Stulle
 
 class CStatisticFile
 {
@@ -37,6 +43,13 @@ public:
 		alltimerequested = 0;
 		alltimetransferred = 0;
 		alltimeaccepted = 0;
+		// ==> Spread bars [Slugfiller/MorphXT] - Stulle
+		InChangedSpreadSortValue = false;
+		InChangedFullSpreadCount = false;
+		InChangedSpreadBar = false;
+		lastSpreadSortValue = 0;;
+		lastFullSpreadCount = 0;
+		// <== Spread bars [Slugfiller/MorphXT] - Stulle
 		m_uFileupdatetime = 0; //Xman Code Improvement -> don't update to often
 	}
 
@@ -46,9 +59,13 @@ public:
 	//void	AddTransferred(uint64 bytes);
 
 	//Xman PowerRelease
+	// ==> Removed Spreadbars (old version) [SlugFiller] - Stulle
+	/*
 	~CStatisticFile();	
 	void	AddTransferred(uint64 start, uint32 bytes);
 	void	AddBlockTransferred(uint64 start, uint64 end, uint32 count);
+	*/
+	// <== Removed Spreadbars (old version) [SlugFiller] - Stulle
 	//Xman end
 
 
@@ -62,7 +79,11 @@ public:
 	CKnownFile* fileParent;
 
 private:
+	// ==> Removed Spreadbars (old version) [SlugFiller] - Stulle
+	/*
 	CTypedPtrList<CPtrList, Spread_Struct*> spreadlist; //Xman PowerRelease
+	*/
+	// <== Removed Spreadbars (old version) [SlugFiller] - Stulle
 	uint32 requested;
 	uint32 accepted;
 	uint64 transferred;
@@ -70,4 +91,29 @@ private:
 	uint64 alltimetransferred;
 	uint32 alltimeaccepted;
 	uint32 m_uFileupdatetime; //Xman Code Improvement -> don't update to often
+
+	// ==> Spread bars [Slugfiller/MorphXT] - Stulle
+	CRBMap<uint64, uint64> spreadlist;
+	static CBarShader s_SpreadBar;
+	bool	InChangedSpreadSortValue;
+	bool	InChangedFullSpreadCount;
+	bool	InChangedSpreadBar;
+	CBitmap m_bitmapSpreadBar;
+	int		lastSize;
+	bool	lastbFlat;
+	float	lastSpreadSortValue;
+	float	lastFullSpreadCount;
+
+public:
+	~CStatisticFile()
+	{
+		m_bitmapSpreadBar.DeleteObject();
+	}
+	void	AddTransferred(uint64 start, uint64 bytes);
+	void	AddBlockTransferred(uint64 start, uint64 end, uint64 count);
+	void	DrawSpreadBar(CDC* dc, RECT* rect, bool bFlat) /*const*/;
+	float	GetSpreadSortValue() /*const*/;
+	float	GetFullSpreadCount() /*const*/;
+	void	ResetSpreadBar(); //MORPH	- Added by AndCycle, SLUGFILLER: Spreadbars - per file
+	// <== Spread bars [Slugfiller/MorphXT] - Stulle
 };

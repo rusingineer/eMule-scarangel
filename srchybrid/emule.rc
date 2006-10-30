@@ -39,21 +39,21 @@ BEGIN
                     14,23,197,11
     CONTROL         "NAFC full control",IDC_NAFCFULLCONTROL,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,14,34,197,11
-    GROUPBOX        "Average Datarate",IDC_AVG_DATARATE_TIME,7,107,212,29
+    GROUPBOX        "Average Datarate",IDC_AVG_DATARATE_TIME,7,111,212,29
     CONTROL         "",IDC_SAMPLERATESLIDER,"msctls_trackbar32",
-                    TBS_AUTOTICKS | WS_TABSTOP,14,118,197,13,
+                    TBS_AUTOTICKS | WS_TABSTOP,14,122,197,13,
                     WS_EX_STATICEDGE
     EDITTEXT        IDC_MTU_EDIT,14,71,35,12,ES_AUTOHSCROLL
     LTEXT           "MTU",IDC_STATIC_MTU,54,72,157,11
     CONTROL         "Use Double Send Size",IDC_USEDOUBLESENDSIZE,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,25,84,81,10
+                    BS_AUTOCHECKBOX | WS_TABSTOP,25,84,179,10
     GROUPBOX        "Process Priority",IDC_PROCESSPRIO_STATIC,7,220,212,21
     CONTROL         "High",IDC_HIGHPRIO_RADIO,"Button",BS_AUTORADIOBUTTON | 
-                    WS_GROUP,14,230,30,10
+                    WS_GROUP,14,230,59,10
     CONTROL         "Above normal",IDC_ABOVENORMALPRIO_RADIO,"Button",
                     BS_AUTORADIOBUTTON,74,230,88,10
     CONTROL         "Normal",IDC_NORMALPRIO_RADIO,"Button",
-                    BS_AUTORADIOBUTTON,164,230,38,10
+                    BS_AUTORADIOBUTTON,164,230,47,10
     CONTROL         "One queue per file",IDC_MULTIQUEUE,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,14,12,179,11
     CONTROL         "retry connectio attempts",IDC_RETRYCONNECTIONATTEMPTS,
@@ -66,16 +66,16 @@ BEGIN
                     57,36,10
     LTEXT           "Sendbuffer:",IDC_SENDBUFFER_STATIC,14,57,59,10
     CONTROL         "show socket blocking ratio",IDC_SHOWBLOCKINGRATIO,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,174,179,11
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,175,179,11
     CONTROL         "Auto-update IPFilter.dat",IDC_AUTOUPDATEIPFILTER,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,14,162,179,11
+                    BS_AUTOCHECKBOX | WS_TABSTOP,14,164,179,11
     CONTROL         "drop too oftenly blocking sockets",
                     IDC_DROPBLOCKINGSOCKETS,"Button",BS_AUTOCHECKBOX | 
                     WS_TABSTOP,14,94,197,12
-    GROUPBOX        "Chunk Chooser",IDC_CHUNKCHOOSER,7,136,212,25
+    GROUPBOX        "Chunk Chooser",IDC_CHUNKCHOOSER,7,140,212,23
     CONTROL         "Maella",IDC_CC_MAELLA,"Button",BS_AUTORADIOBUTTON | 
-                    WS_GROUP,24,148,89,8
-    CONTROL         "zz",IDC_CC_ZZ,"Button",BS_AUTORADIOBUTTON,122,148,89,8
+                    WS_GROUP,24,151,89,8
+    CONTROL         "zz",IDC_CC_ZZ,"Button",BS_AUTORADIOBUTTON,122,151,89,8
 END
 
 IDD_PPG_Xtreme2 DIALOGEX 0, 0, 224, 243
@@ -92,7 +92,7 @@ BEGIN
     CONTROL         "Anti-Ghost-Mod",IDC_ANTIGHOST_CHECK,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,23,66,188,12
     PUSHBUTTON      "Reload",IDC_DLPRELOAD,152,15,59,11
-    LTEXT           "version",IDC_DLP_STATIC,14,17,108,10
+    LTEXT           "version",IDC_DLP_STATIC,14,17,106,10
     CONTROL         "Detect Wrong Hello-Tag",IDC_ANTILEECHERBADHELLO_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,42,188,12
     CONTROL         "Detect Bad Tags",IDC_ANTILEECHERSNAFU_CHECK,"Button",
@@ -105,24 +105,24 @@ BEGIN
                     BS_AUTOCHECKBOX | WS_TABSTOP,23,114,188,12
     CONTROL         "Detect XS-Exploiter",IDC_ANTILEECHERXSEXPLOITER_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,126,188,12
-    LTEXT           "Community Mods:",IDC_STATIC_LEECHERCOMMUNITY,14,151,92,
+    LTEXT           "Community Mods:",IDC_STATIC_LEECHERCOMMUNITY,14,151,84,
                     10,SS_WORDELLIPSIS
     CONTROL         "ban",IDC_RADIO_LEECHERCOMMUNITY_1,"Button",
-                    BS_AUTORADIOBUTTON | WS_GROUP,111,151,28,10
+                    BS_AUTORADIOBUTTON | WS_GROUP,103,151,35,10
     CONTROL         "reduce score",IDC_RADIO_LEECHERCOMMUNITY_2,"Button",
                     BS_AUTORADIOBUTTON,140,151,77,10
     CONTROL         "ban",IDC_RADIO_LEECHERGHOST_1,"Button",
                     BS_AUTORADIOBUTTON | NOT WS_VISIBLE | WS_GROUP | 
-                    WS_TABSTOP,107,168,28,10
+                    WS_TABSTOP,103,168,28,10
     CONTROL         "reduce score",IDC_RADIO_LEECHERGHOST_2,"Button",
                     BS_AUTORADIOBUTTON | NOT WS_VISIBLE | WS_TABSTOP,135,169,
                     76,10
     LTEXT           "Ghost Mods:",IDC_STATIC_LEECHERGHOST,9,170,92,10,
                     SS_WORDELLIPSIS | NOT WS_VISIBLE
-    LTEXT           "Nick / Modthiefs",IDC_STATIC_LEECHERTHIEF,14,161,92,10,
+    LTEXT           "Nick / Modthiefs",IDC_STATIC_LEECHERTHIEF,14,161,84,10,
                     SS_WORDELLIPSIS
     CONTROL         "ban",IDC_RADIO_LEECHERTHIEF_1,"Button",
-                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,111,161,28,10
+                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,103,161,34,10
     CONTROL         "reduce score",IDC_RADIO_LEECHERTHIEF_2,"Button",
                     BS_AUTORADIOBUTTON | WS_TABSTOP,140,161,77,10
     CONTROL         "Show active downloads bold",IDC_ACTIVEDOWNLOADSBOLD,
@@ -2335,8 +2335,7 @@ BEGIN
         VERTGUIDE, 14
         VERTGUIDE, 24
         VERTGUIDE, 73
-        VERTGUIDE, 106
-        VERTGUIDE, 122
+        VERTGUIDE, 103
         VERTGUIDE, 211
         BOTTOMMARGIN, 241
     END
@@ -3287,6 +3286,12 @@ CATREMOVE               ICON                    "res\\catremove.ico"
 CATMERGE                ICON                    "res\\catmerge.ico"
 DLMODE                  ICON                    "res\\DlMode.ico"
 FILELINEARPRIO          ICON                    "res\\FileLinearPrio.ico"
+RESETSPREADBAR          ICON                    "res\\ResetSpreadBar.ico"
+FILEHIDEOS              ICON                    "res\\filehideos.ico"
+FILESHAREONLYTHENEED    ICON                    "res\\fileshareonlytheneed.ico"
+SHAREDFILESMANAGEMENT   ICON                    "res\\SharedFilesManagement.ico"
+FILEPOWERSHARE          ICON                    "res\\FilePowerShare.ico"
+RELEASEBONUS            ICON                    "res\\ReleaseBonus.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -5411,7 +5416,12 @@ BEGIN
     IDS_CN_UPNPTRYRANDOM    "Try to use random port on UPnP gateway"
     IDS_CN_UPNPNAT          "Enable UPnP support"
     IDS_CHUNKCHOOSER        "Chunk choosing method"
-    IDS_UPLOADINSTABLE      "Warning: your upload settings seems to be too high. Please review your settings! \n look at the uploadgraph, the white or the yellow(with NAFC) line should be straight \n this message is only generated once"
+    IDS_UPLOADINSTABLE      "Warning: your upload settings seem to be too high. Please review your settings! \n look at the uploadgraph, the white or the yellow(with NAFC) line should be straight \n this message is only generated once"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_CLIENTPERCENTAGE    "Show client percentage"
 END
 
 STRINGTABLE 
@@ -5436,6 +5446,7 @@ BEGIN
     // ==> push rare file - Stulle
     IDS_PUSH_RARE           "Push rare files"
     IDS_RARE                "Rare"
+    IDS_RARE_RATIO          "Rare file ratio"
     // <== push rare file - Stulle
     IDS_SHOWINMSN7          "Show eMule state in MSN7 (or above) message field" //Show in MSN7 [TPT] - Stulle
     // ==> Show sources on title - Stulle
@@ -5576,7 +5587,6 @@ BEGIN
 	IDS_QUICK_START_MAX_CONN_PER_FIVE_BACK "Return to max. con./5sec"
     IDS_QUICK_START_MAX_CONN_BACK "Return to max. con."
     // <== Quick start [TPT] - Max
-    IDS_CLIENTPERCENTAGE    "Show Client Percentage" // Show Client Percentage [Commander/MorphXT] - Mondgott
     // ==> CPU/MEM usage [$ick$/Stulle] - Stulle
     IDS_SYS_INFO_GROUP      "System information"
     IDS_SYS_INFO_GLOBAL     "Enable global information"
@@ -5727,6 +5737,45 @@ BEGIN
     IDS_DL_NONE             "None"
     IDS_SEARCH_INVALIDMINMAX "Invalid units for Min/Max filesize specified"
     // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+    IDS_SHARED_PREFS        "Shared Files Management" // Shared Files Management [Stulle] - Stulle
+    // ==> Spread bars [Slugfiller/MorphXT] - Stulle
+    IDS_SPREAD_BARS         "Enable Spread bars"
+    IDS_SF_UPLOADED_PARTS   "Spread bar (UL part history)"
+    IDS_SF_TURN_PART        "File UL (part)"
+    IDS_SF_TURN_SIMPLE      "File UL (simple)"
+    IDS_SF_FULLUPLOAD       "File UL (full)"
+    IDS_SPREAD_RESET        "Reset Spread bar(s)"
+	// <== Spread bars [Slugfiller/MorphXT] - Stulle
+    // ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+    IDS_HIDEOS              "Hide Over Share"
+    IDS_SHAREONLYTHENEED    "Share Only The Need"
+    IDS_HIDEOVERSHARES      "Overshares before hiding chunks (0 = Disabled)"
+    IDS_SELECTIVESHARE      "Selective chunk sharing"
+    IDS_ERR_HIDDENBLOCK     "Asked for hidden block "
+    // <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+    // ==> PowerShare [ZZ/MorphXT] - Stulle
+    IDS_POWERSHARE_ACTIVATED "Activated"
+    IDS_POWERSHARE_DISABLED "Disabled"
+    IDS_POWERSHARE_ON_LABEL "On"
+    IDS_POWERSHARE_OFF_LABEL "Off"
+    IDS_POWERSHARE_COLUMN_LABEL "Powershare"
+    IDS_POWERSHARE_PREFIX   "PS"
+    IDS_POWERSHARE          "Powershare"
+    IDS_POWERSHARE_DENIED_LABEL "Denied"
+    IDS_POWERSHARE_ADVISED_LABEL "Advised"
+    IDS_POWERSHARE_AUTHORIZED_LABEL "Authorized"
+    IDS_POWERSHARE_ACTIVATED_LABEL "Activated"
+    IDS_POWERSHARE_DISABLED_LABEL "Disabled"
+    IDS_POWERSHARE_AUTO_LABEL "Auto"
+    IDS_POWERSHARE_AUTO     "Auto"
+    IDS_POWERSHARE_LIMITED  "Limited"
+    IDS_POWERSHARE_LIMIT    "Limit of complete source"
+	// <== PowerShare [ZZ/MorphXT] - Stulle
+    // ==> Release Bonus [sivka] - Stulle
+    IDS_RELEASE_BONUS_GROUP "Release Bonus"
+    IDS_RELEASE_BONUS_EDIT  "Set bonus days"
+    // <== Release Bonus [sivka] - Stulle
+    IDS_RELEASE_SCORE_ASSURANCE "Assure default score for release files" // Release Score Assurance [Stulle] - Stulle
 END
 
 #endif    // Englisch (USA) resources

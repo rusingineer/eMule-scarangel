@@ -47,8 +47,7 @@ public:
 protected:
 	CImageList  m_ImageList;
 	CImageList  m_overlayimages;
-	CFont		m_fontBoldSmaller; // Show Client Percentage [Commander/MorphXT] - Mondgott
-
+	
 	void SetAllIcons();
 
 	DECLARE_MESSAGE_MAP()

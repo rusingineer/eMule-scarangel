@@ -1881,6 +1881,473 @@ BEGIN
     IDS_SERVERFEATURE_INTTYPETAGS "Integer type Tags"
 END
 
+STRINGTABLE 
+BEGIN
+    IDS_DROPNONEEDEDSRCS    "Entferne NNS"
+    IDS_DROPQUEUEFULLSRCS   "Entferne FullQ"
+    IDS_DROPQUEUETOOMANY    "Entferne Too Many"
+    IDS_DROPQUEUEUNKNOWN    "Entferne Unknown"
+    IDS_DROP_ASKING         "Entferne Asking"
+    IDS_DROPCONNECTING      "Entferne Connecting"
+    IDS_STOP_CLIENT         "Diesen Client anhalten"
+    IDS_SubMenu_Drop        "&Entfernen"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_13RATIO             "mengenorientiertes 1:3 Up/Down-Ratio wenn Upload < 11"
+    IDS_PPG_MAELLA_MTU_STATIC "MTU (500..1500, standard 1340)"
+    IDS_PPG_MAELLA_NAFC_CHECK02 "Aktiviere NAFC mit voller UP/DL-Kontrolle"
+    IDS_OPENMORESLOTS       "Öffne mehr Upload-Slots, falls nötig (empfohlen)"
+    IDS_AVG_DATARATE_TIME   "Zeige Durchschnittgeschwindigkeit über %u Sekunde(n)"
+    IDS_XTREMESETTINGS      "Xtreme"
+    IDS_ZOOMSTATIC          "Zoom: %u"
+    IDS_AVGQR               "AvgQR"
+    IDS_USEDOUBLESENDSIZE   "Doppelte Sendegröße"
+    IDS_LOGDROP             "Logge Quellen-Entfernen"
+    IDS_ANTILEECHER_GROUP   "Anti-Leecher"
+    IDS_ANTILEECHER_CHECK   "Aktiviere Anti-Leecher-Schutz"
+    IDS_ANTILEECHERNAME_CHECK "Erkenne Leecher am UserNamen"
+    IDS_POWERRELEASE        "PowerRelease"
+    IDS_DONTREMOVESTATICSERVER "Feste Server nicht entfernen"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_LISTREQUESTED       "Angeforderte Dateien"
+    IDS_HIGHPRIOPROCESS     "Hoch"
+    IDS_ABOVENORMALPROCESS  "Über normal"
+    IDS_NORMALPROCESS       "Normal"
+    IDS_PROCESSGROUP        "Prozess Priorität"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_COUNTRYNAME_SHORT   "Anzeige 2 Buchstaben"
+    IDS_COUNTRYNAME_MID     "Anzeige 3 Buchstaben"
+    IDS_COUNTRYNAME_LONG    "Vollständiger Ländername"
+    IDS_COUNTRYNAME_SHOWFLAG "Flagge anzeigen"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_IP2COUNTRY_MSG1     "IP2Country nutzt die IP-to-Country Datenbank von WebHosting"
+    IDS_IP2COUNTRY_MSG2     "Info (http://www.webhosting.info), verfügbar bei http://ip-to-country.webhosting.info"
+    IDS_IP2COUNTRY_LOADED   "IP2Country geladen"
+    IDS_IP2COUNTRY_UNLOADED "IP2Country entladen"
+    IDS_IP2COUNTRY_ERROR1   "Fehler in Zeile : %i"
+    IDS_IP2COUNTRY_ERROR3   "möglicher Fehler in"
+    IDS_IP2COUNTRY_ERROR4   "CountryFlag deaktiviert, laden fehlgeschlagen"
+    IDS_IP2COUNTRY_ERROR5   "Fehlerhafte resID, die flags.DLL sollte vielleicht aktualisiert werden."
+    IDS_IP2COUNTRY_INFO     "gelesene Linien:%u  gefundene IPCountry bereiche:%u  Doppelt:%u  Hinzugefügt:%u"
+    IDS_IP2COUNTRY_FLAGLOAD "Länderflaggen wurden geladen"
+    IDS_IP2COUNTRY_FILELOAD "IP2Countryfile wurde entladen"
+    IDS_IP2COUNTRY_FLAGUNLD "Länderflaggen wurden entladen"
+    IDS_IP2COUNTRY_NALONG   "Nicht verfügbar"
+    IDS_IP2COUNTRY_NASHORT  "N/V"
+    IDS_IP2COUNTRY_LOADED2  "Geladene IP2Country von %s in %ums"
+    IDS_ACCURATEGRAPH       "akkurat"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_SMOOTHGRAPH         "geglättet"
+    IDS_MULTIQUEUE          "Eine Warteliste pro Datei (Multiqueue)"
+    IDS_RETRYCONNECTIONATTEMPTS 
+                            "Wiederhole fehlgeschlagene Verbindungsversuche"
+    IDS_ANTIGHOST           "Erkenne Ghost-Mods"
+    IDS_REMEMBERAICH        "Merke unbenutzte AICH-Hashes (known2.met)"
+    IDS_MARKCANCELLED       "Markiere als Abgebrochen"
+    IDS_DOWNHISTORY_CHECK1  "eMule hat eine bereits heruntergeladene Datei mit derselben Datei-ID gefunden:\n"
+    IDS_DOWNHISTORY_CHECK2  "eMule hat %i Dateien mit denselben Namen gefunden, die bereits heruntergeladen wurden (%s):\n"
+    IDS_DOWNHISTORY_CHECK3  "Wollen sie die Datei trotzdem herunterladen?"
+    IDS_DOWNHISTORY_CHECK4  "eMule hat eine bereits abgebrochene Datei mit der gleichen ID gefunden:\n"
+    IDS_DOWNHISTORY         "Downloadverlauf"
+    IDS_DOWNHISTORY_REMOVE  "Aus dem Verlauf entfernen"
+    IDS_DOWNHISTORY_REMOVE_QUESTION 
+                            "Wollen sie ""%s"" aus dem Downloadverlauf entfernen?"
+    IDS_DOWNHISTORY_REMOVE_QUESTION_MULTIPLE 
+                            "Wollen sie die markierten Dateien aus dem Downloadverlauf entfernen?"
+    IDS_DOWNHISTORY_SHARED  "Freigegeben"
+    IDS_DOWNHISTORY_CLEAR   "Downloadverlauf löschen"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DOWNHISTORY_SHOWSHARED "Zeige die freigegebenen Dateien"
+    IDS_DOWNHISTORY_ACTIONS "Aktionen"
+    IDS_DOWNHISTORY_CLEAR_QUESTION 
+                            "Wollen sie den Downloadverlauf wirklich löschen?"
+    IDS_SENDBUFFER          "Sendepuffer"
+    IDS_LEERCHERLOGTITLE    "Leecher-Meldungen"
+    IDS_ALL_A4AF_TO_THIS    "Alle Quellen zu dieser Datei"
+    IDS_ALL_A4AF_TO_OTHER   "Alle Quellen zu einer anderen Datei"
+    IDS_SWAP_A4AF_TO_THIS   "Quelle zu dieser Datei"
+    IDS_SWAP_A4AF_TO_OTHER  "Quelle zu anderer Datei"
+    IDS_ALL_A4AF_AUTO       "Automatisches Zuweisen von Quellen zu dieser Datei"
+    IDS_LEECHER_ACTION_BAN  "Ban"
+    IDS_LEECHER_ACTION_REDUCE "Reduziere Score"
+    IDS_ANTILEECHERBADHELLO_CHECK "Erkenne falsches Hello-Tag"
+    IDS_ANTILEECHERSNAFU_CHECK "Erkenne bad Tags"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ANTILEECHERMOD_CHECK "Erkenne Leecher am Modstring"
+    IDS_ANTILEECHERTHIEF_CHECK "Erkenne Nick- / Moddiebe"
+    IDS_ANTILEECHERSPAMMER_CHECK "Erkenne Spammers"
+    IDS_ANTILEECHERXSEXPLOITER_CHECK "Erkenne XS-Exploiter"
+    IDS_STATIC_LEECHERCOMMUNITY "Community Mods"
+    IDS_STATIC_LEECHERGHOST "Ghost-Mods"
+    IDS_STATIC_LEECHERTHIEF "Nick- / Moddiebe"
+    IDS_NEWXTREMEVERSION    "Neue Xtreme-Version verfügbar"
+    IDS_NEWXTREMEVERSIONDOWNLOAD 
+                            "Neue Xtreme-Version verfügbar \n Möchtest Du sie jetzt herunterladen ?"
+    IDS_NEWDLP              "Neue antiLeech.dll (DLP) verfügbar"
+    IDS_NEWDLPDOWNLOAD      "Neue antiLeech.dll (DLP) verfügbar \n Möchtest Du sie jetzt herunterladen ?"
+    IDS_DROPLEECHER         "Entferne Leecher"
+    IDS_ACTIVEDOWNLOADSBOLD "Zeige aktive Downloads in Fettschrift"
+    IDS_UPDOWNUPLOADLIST    "Up / Down"
+    IDS_MAXGLOBALSOURCES    "Globales Quellenlimit:"
+    IDS_ACCEPTSOURCES       "Akzeptiere globales Quellenlimit"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ACCEPTRATIO         "Akzeptiere 1:3 session-ratio wenn gefundene Quellen > Quellenlimit"
+    IDS_SHOWADDITIONALGRAPH "Zeige zusätzliche Graphlinien"
+    IDS_CHECK4UPDATEMOD     "Auf neuere Xtreme-Version prüfen"
+    IDS_ANTILEECHEREMCRYPT_CHECK "Erkenne emcrypt"
+    IDS_UPLOADSLOTSPEED_LABEL "Upload Slot Geschwindigkeit"
+    IDS_USENARROWFONT       "Benutze enge Schrift im Transfer-Fenster"
+    IDS_SHOWBLOCKINGRATIO   "Zeige Socket Blockier-Verhältnis"
+    IDS_FUNNYNICK           "Zeige Funny Nicks"
+    IDS_AUTOUPDATEIPFILTER  "Auto-update IPFilter.dat"
+    IDS_DROPBLOCKINGSOCKETS "Entferne zu häufig blockierende Sockets"
+    IDS_LOGPARTMISMATCH     "Logge Größendifferenz der angeforderten Dateien"
+    IDS_CN_UPNPTRYRANDOM    "Versuche einen zufälligen Port am UPNP Gateway zu verwenden falls der eingestellte Port schon belegt"
+    IDS_CN_UPNPNAT          "Aktiviere UPnP support"
+    IDS_CHUNKCHOOSER 	    "Download Chunk Auswahlmethode"
+    IDS_UPLOADINSTABLE      "Warnung: Dein Uploadlimit scheint zu hoch gewählt zu sein. Bitte überprüfe Deine Uploadeinstellungen! \n Schaue auf Deinen Uploadgraphen, die weiße oder gelbe (mit NAFC) Linie sollte möglichst gerade sein \n Diese Nachricht wird nur einmal generiert."
+END
+
+STRINGTABLE
+BEGIN
+    // ==> ScarAngel Preferences window - Stulle
+    IDS_CON_TWEAKS          "Verbindungs Tweaks"
+	IDS_MISC                "Verschiedene Einstellungen"
+    // <== ScarAngel Preferences window - Stulle
+    // ==> Global Source Limit [Max/Stulle] - Stulle
+    IDS_GLOBAL_HL           "Globales Quellenlimit (GQL)"
+    IDS_GLOBAL_HL_LIMIT     "Globales Quellenlimit"
+    IDS_GLOBAL_HL_ALL       "GQL für alle Dateien nutzen"
+    IDS_GLOBAL_HL_DEFAULT   "GQL als Standard für Dateien"
+    IDS_ENABLE              "aktivieren"
+    // <== Global Source Limit [Max/Stulle] - Stulle
+    IDS_PUSH                "Push Einstellungen"
+    // ==> push small files [sivka] - Stulle
+    IDS_PUSH_SMALL          "Bevorzuge kleine Dateien"
+    IDS_SMALL               "Klein"
+    IDS_PUSH_SMALL_BOOST    "Bevorzuge kleine Dateien Faktor"
+    // <== push small files [sivka] - Stulle
+    // ==> push rare file - Stulle
+    IDS_PUSH_RARE           "Pushe seltene Dateien"
+    IDS_RARE                "Selten"
+    // <== push rare file - Stulle
+    IDS_SHOWINMSN7          "Zeige eMule Status in MSN7 (oder neuer) Nachrichten Feld" //Show in MSN7 [TPT] - Stulle
+    // ==> Show sources on title - Stulle
+    IDS_SHOWSRCONTITLE      "Zeige Quellen im Titel"
+    IDS_SHOWSRCSTRING       "Quellen:"
+    // <== Show sources on title - Stulle
+    IDS_SHOWOVERHEADONTITLE "Zeige Overhead im Titel"// show overhead on title - Stulle
+    // ==> CreditSystems [EastShare/ MorphXT] - Stulle
+    IDS_CREDIT_SYSTEM       "Credit System"
+    IDS_OFFICIAL_CREDIT     "Official Credit"
+    IDS_LOVELACE_CREDIT     "Lovelace Credit"
+    IDS_RATIO_CREDIT        "Ratio Credit"
+    IDS_PAWCIO_CREDIT       "Pawcio Credit"
+    IDS_EASTSHARE_CREDIT    "EastShare Credit"
+    IDS_SIVKA_CREDIT        "Sivka Credit"
+    IDS_SWAT_CREDIT         "S.W.A.T. Credit"
+    IDS_XMAN_CREDIT         "Xman Credit"
+    // <== CreditSystems [EastShare/ MorphXT] - Stulle
+    // ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
+    IDS_SUQWT_LOAD          "Lade %s"
+    IDS_SUQWT               "gleiche Chance für alle Dateien (SUQWT)"
+    // <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
+    IDS_SHOW_FILE_HL_CONST   "Zeige HL pro Datei kontinuierlich" // show HL per file constantaniously - Stulle
+    IDS_PS_FILES_RED        "Hinterlege PS Dateien rot" // draw PS files red - Stulle
+    IDS_FRIENDS_BLUE        "Hinterlege Freunde blau" // draw friends blue - Stulle
+    IDS_SHOW_GLOBAL_HL      "Zeige globales Hardlimit" // show global HL - Stulle
+    // ==> file settings - Stulle
+    IDS_NNS_TIMERLABEL      "AutoNNS Timer 0...60 Sek"
+    IDS_REMOVENNSLIMITLABEL "Starte droping NNS > X%"
+    IDS_FQS_TIMERLABEL      "AutoFQS Timer 0...60 Sek"
+    IDS_REMOVEFQSLIMITLABEL "Starte droping FullQS > X%"
+    IDS_HQRS_TIMERLABEL     "AutoHQRS Timer 0...60 Sek"
+    IDS_REMOVEQRSLABEL      "Maximal erlaubte QR <= X"
+    IDS_REMOVEQRSLIMITLABEL "Starte droping HighQRS > X%"
+    IDS_AUTO_NNS            "Automatisches drop NNS einschalten"
+    IDS_AUTO_FQS            "Automatisches drop FullQS einschalten"
+    IDS_AUTO_QRS            "Automatisches auto drop HighQS einschalten"
+    IDS_SIVKAFILESETTINGS   "Sivka - Datei(en) Einstellungen"
+    IDS_HARDLIMIT_LABEL     "Hard Limit (0=Nutze standard)"
+// so sollte das eigentlich heißen    IDS_DROP_DEFAULTS       "Drop Standard Einstellungen"
+    IDS_FILE_DEFAULTS       "Drop Standard Einstellungen"
+    IDS_XMAN_DROPPING       "Xman Drop System verwenden"
+    IDS_SIVKA_DROPPING      "Sivka Drop System verwenden"
+    IDS_HQR_WAY             "Drop System"
+    // <== file settings - Stulle
+    IDS_SHOW_DROPPED_SRC    "Gedroppte Quellen" // show # of dropped sources - Stulle
+    // ==> Source Graph - Stulle
+    IDS_SRCGRAPH            "Zeichne Quellen Graph"
+    IDS_STATIC_STATSHL      "Min/ Max Hard Limit Wert für Graph:"
+    IDS_SP_SRCGRAPH         "Quellen Graph"
+    // <== Source Graph - Stulle
+    IDS_FD_AVGDL             "Durchschn. DL Geschw.:" // Average download speed - Stulle
+    // ==> WebCache [WC team/MorphXT] - Stulle/Max
+    IDS_PW_WEBCACHE         "WebCache"
+    IDS_WrongPortforWebcache 
+                            "Webcache Download deaktiviert: Bitte einen der Ports   21, 70,  80, 210, 443, 563 oder zwischen 1025 und 65535 verwenden wenn Webcache funktionieren soll."
+    IDS_WEBCACHE_NOSUPPORT  "nicht unterstützt"
+    IDS_STATS_SUCCESSFULLWC "Erfolgreiche WC-DL/WC-Anforderungen:"
+    IDS_STATS_FAILEDWC      "Fehlgeschlagene WC-DL/WC-Anforderungen:"
+    IDS_WEBCACHE_ISP        "ISP-Proxyserver-Einstellungen"
+    IDS_WC_PORT             "Port:"
+    IDS_WC_ADDRESS          "Addresse:"
+    IDS_WC_CONTROLS         "Webcache Einstellungen"
+    IDS_WC_ENABLE           "Webcache-Downloads aktivieren"
+    IDS_WC_WRONGPORT        "Webcache Download deaktiviert: Nur Transfers über die Ports 21, 70, 80, 210, 443, 563 und im Bereich von 1025 bis 65535 werden gecached. Bitte einen dieser Ports einstellen, um Webcache nutzen zu können."
+    IDS_WC_AUTO             "Webcache automatisch erkennen"
+    IDS_WC_NRBLOCKS         "Zu ladende Blocks bis zum Proxy-Reconnect (Nur bei Verbindungsabbrüchen)"
+    IDS_WC_BLOCK            "180k-Blocks"
+    IDS_WC_TIMEOUT          "Extralange Timeouts für Webcache Verbindungen."
+    IDS_WC_LOCAL            "Dieser WC cachet nicht innerhalb desselben ISPs"
+    IDS_WC_SUBMIT_EMAIL     "Diese Einstellungen per E-Mail einsenden"
+    IDS_WC_LINK             "Link: "
+    IDS_WC_PERSISTENT       "Persistente Verbindungen für Proxy Downloads"
+    IDS_WC_ADVANCED         "detaillierte Einstellungen"
+    IDS_WC_TEST             "Webcache-Konfiguration testen. Kann bis 30 Sek. dauern."
+    IDS_WC_HIDE_ADV         "einfache Einstellungen"
+    IDS_WC_SUBMIT_WEB       "Diese Informationen per Webform einsenden"
+    IDS_WC_SOURCES          "Webcache Quellen"
+    IDS_WC_UPDATESETTING    "Update Webcache Einstellungen automatisch"
+    IDS_LOG_WCEVENTS        "WebCache-Ereignisse protokollieren"
+    IDS_LOG_IACH            "IACH-Ereignisse protokollieren"
+    IDS_WEBCACHE_NOPROXY    "kein Proxy gesetzt"
+    IDS_CD_WCSUCCFAIL       "Erfolgreich/Angefordert:"
+    IDS_CD_WCTRUSTSENDER    "Verifizierter OHCB-Sender:"
+    IDS_WCDOWNL             "ohne Funktion"
+    IDS_WC_REQ_SUCC         "WC Erf./Angef.:"
+    IDS_WC_DOWNLOADED       "WC-Download:"
+    IDS_WC_REACTIVATED      "Webcache wurde reaktiviert."
+    IDS_WC_NEWPROXYIP       "Eine neue Proxy IP wurde festgestellt: %s."
+//
+    IDS_STATS_WEBCACHE      "Webcache"
+    IDS_STATS_WEBCACHE_1    "Data 1:"
+    IDS_STATS_WEBCACHE_2    "Data 2:"
+    IDS_STATS_WEBCACHE_3    "Data 3:"
+    IDC_MSG_WEBCACHEFAIL    "Dein Proxy-Server scheint keine Daten zu speichern da die letzten 100 Webcache Anfragen erfolglos waren. Bitte die Proxy-Einstellungen überprüfen. Webcache wurde deaktiviert bis ein anderer Proxy erfolgreich getestet wurde!"
+    IDC_MSG_WEBCACHE_NOAUTODEC 
+                            "Dein ISP ist noch nicht in unserer Datenbank,\ndie Identifizierung deines ISP ist %s\naktiviere die automatische Erkennung, um deinen ISP zu ermitteln und nicht vergessen uns diesen mitzuteilen."
+    IDC_MSG_WEBCACHE_NOIP   "Keine öffentliche IP, bitte verbinde zu einem Ed2k Server oder per Kad.\nDer TCP Port muss bei der Verbindung zu einem Ed2k Server erreichbar sein (highID),\nbei Kad ist dies keine Notwendigkeit."
+    IDC_MSG_WEBCACHE_CONFIGALT 
+                            "Die automatische Webcache Erkennung hat eine Änderung in den Webcache Proxy-Einstellungen festgestellt, daher wird Webcache bis zum Test eines neuen Proxys deaktiviert.\n Die automatische Webcachekonfiguration kann in den Webcache-Einstellungen für fortgeschrittene deaktiviert werden"
+    IDC_MSG_WEBCACHE_NOACTIVE 
+                            "Die automatische Webcache Erkennung hat festgestellt, dass dein ISP keine Daten speichert. Webcache wurde deaktiviert."
+    IDC_MSG_WEBCACHE_ERRRESOLVE 
+                            "WebCache Fehler - Fehler in der HTTP proxy Adresse:\n%s\nBitte die Webcache Einstellungen überprüfen."
+    IDC_MSG_WEBCACHE_TRANSPAR 
+                            "Proxy Test kann keine transparenten Proxys testen. Test abgebrochen!"
+    IDC_MSG_WEBCACHE_TESTRUNNING 
+                            "Proxy wird getestet! ¨Da Resultat erscheint im Serverfenster unten im Log !"
+    IDC_MSG_WEBCACHE_TESTERR "Proxy Test Fehler!"
+    IDC_MSG_WEBCACHE_ALREADYRUNNING 
+                            "Es wurde kein neuer Test gestartet, da bereits ein anderer Test läuft."
+    IDC_MSG_WEBCACHE_TESTREQ 
+                            "Es wurde kein Test durchgeführt da nicht alle Voraussetzungen erfüllt sind.\n Voraussetzungen:\n1. Du musst zu einem Ed2k Server verbunden sein\n2. Du musst eine öffentliche IP haben\n3. Du musst eine high ID haben\n4. Der Test funktioniert nicht bei zu vielen Verbindungen"
+    // <== WebCache [WC team/MorphXT] - Stulle/Max
+    // ==> FunnyNick [SiRoB/Stulle] - Stulle
+    IDS_FN_TAG              "FunnyNick Tag"
+    IDS_NO_TAG              "Kein Tag"
+    IDS_SHORT_TAG           "[FN]"
+    IDS_FULL_TAG            "[FunnyNick]"
+    IDS_CUSTOM_TAG          "Eigenen Tag"
+    IDS_SET_CUSTOM_TAG      "Setze eigenen Tag"
+    IDS_FN_TAG_AT_END       "Zeige Tag am Ende"
+    // <== FunnyNick [SiRoB/Stulle] - Stulle
+    IDS_CLIENTQUEUEPROGRESSBAR 
+                            "Zeige Fortschrittsbalken der Client-Warteliste an"
+    IDS_ACC                 "Verbindungskontrolle aktivieren" // ACC [Max/WiZaRd] - Max
+    // ==> ScarAngel Version Check - Stulle
+    IDS_VISITSVERSIONCHECK  "\n\nMöchtest du die ScarAngel Webseite besuchen?"
+    IDS_SVERSIONCHECK       "&Versioncheck (ScarAngel)"
+    IDS_NONEWSVERVERSION    "Es ist keine neuere Scarangel Version verfügbar.."
+    IDS_NEWSVERSIONAVL      "Eine neue ScarAngel Version ist verfügbar! Besuche die Projekt-Homepage um mehr Informationen zu erhalten."
+    IDS_NEWSVERSIONAVLPOPUP "Eine neuere Version von ScarAngel ist verfügbar. Klicke hier um mehr über die neue Version zu erfahren!"
+    // <== ScarAngel Version Check - Stulle
+    // ==> Quick start [TPT] - Max
+    IDS_QUICK_START_GROUP   "Schnellstart"
+    IDS_QUICK_START         "Schalte Schnellstart ein"
+    IDS_QUICK_START_MAX_TIME "Zeit für Schnellstart [8-18 Min.]"
+    IDS_QUICK_START_MAX_CONN_PER_FIVE "Max. Verb./5sec"
+    IDS_QUICK_START_MAX_CONN "Max. Verb."
+    IDS_QUICK_START_AFTER_IP_CHANGE "Schalte Schnellstart nach IP-Wechsel ein"
+    IDS_QUICK_START_MAX_CONN_PER_FIVE_BACK "Zurück zu Max. Verb./5sec"
+    IDS_QUICK_START_MAX_CONN_BACK "Zurück zu Max. Verb."
+    // <== Quick start [TPT] - Max
+    IDS_CLIENTPERCENTAGE    "Zeige Fortschritt (in Prozent) der Gegenseite an"
+    // ==> CPU/MEM usage [$ick$/Stulle] - Stulle
+    IDS_SYS_INFO_GROUP      "System Informationen"
+    IDS_SYS_INFO_GLOBAL     "Globale Informationen aktivieren"
+    // <== CPU/MEM usage [$ick$/Stulle] - Stulle
+    // ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+    IDS_BACKUP_FILEFRAME    "Dateiarten für Backup"
+    IDS_BACKUP_SELECTALL    "Alle"
+    IDS_BACKUP_AUTOFRAME    "Auto Backup"
+    IDS_BACKUP_AUTOBACKUP   "Backup beim Beenden"
+    IDS_BACKUP_NOTE         "   "
+    IDS_BACKUP_BACKUPNOW    "Sofortbackup"
+    IDS_BACKUP_MESSAGE      "Hinweis: Im Emule-Programmverzeichnis wird ein Ordner ""Backup"" zum Speichern einer Sicherheitskopie angelegt."
+    IDS_BACKUP_AUTOBACKUP2  "Doppel-Backup"
+    IDS_ABORT               "Abbruch?"
+    IDS_CONTINUE            "&Weiter"
+    IDS_DONOTASKAGAIN       "Nicht noch mal frage"
+    IDS_DONOTSHOWAGAIN      "Nicht noch mal anzeigen"
+    IDS_DONOTTELLAGAIN      "Nicht noch mal melden"
+    IDS_HELP                "&Hilfe"
+    IDS_IGNORE              "&Ignorieren"
+    IDS_IGNOREALL           "I&gnoriere Alles"
+    IDS_NOTOALL             "N&ein zu Allem"
+    IDS_OK                  "OK"
+    IDS_REPORT              "Me&ldung"
+    IDS_RETRY               "&Noch mal"
+    IDS_SKIP                "&Überspringe"
+    IDS_SKIPALL             "Ü&berspringe Alles"
+    IDS_TRYAGAIN            "&Noch ein mal versuchen"
+    IDS_YESTOALL            "J&a zu Allem"
+    // <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+    // ==> TBH: minimule - Max
+    IDS_MM_SHOW             "Nutze TBH Mini-Mule stattdessen"
+    IDS_MM_LIVES            "Halte Mini-Mule aktuell"
+    IDS_MM_UPDATE_TIME      "Mini-Mule Update Interval (in Sek.)"
+    IDS_MM_TRANS            "Mini-Mule Transparenz (1-255)"
+    IDS_MM_ACTDL            "Aktive Downloads: %i"
+    IDS_MM_DATA             "Up: %s | Down: %s"
+    IDS_MM_UPDOWN           "Up: %s(%.1f) | Down: %s(%.1f)"
+    IDS_MM_COMPL            "Zeige Dateien die in der Laufzeit beendet wurden"
+    IDS_MM_RATIO            "UL:DL :"
+    IDS_MM_OPEN             "Öffne Mini-Mule wenn eMule in den Tray minimiert wird"
+    // <== TBH: minimule - Max
+    // ==> Copy feedback feature [MorphXT] - Stulle
+    IDS_COPYFEEDBACK        "Kopiere Rückmeldung in Zwischenablage (de)"
+    IDS_COPYFEEDBACK_US     "Kopiere Rückmeldung in Zwischenablage (en)"
+    IDS_FEEDBACK_TRANSFERRED "Übertragen: %s (%s)"
+    IDS_FEEDBACK_REQUESTED  "Angefragt: %i (%i)"
+    IDS_FEEDBACK_ACCEPTED   "Akzeptierte Anfragen: %i (%i)"
+    IDS_FEEDBACK_FROM       "Feedback von %s zu [%s]"
+    IDS_FEEDBACK_FILENAME   "Dateiename: %s"
+    IDS_FEEDBACK_FILETYPE   "Datei Typ: %s"
+    IDS_FEEDBACK_FILESIZE   "Größe: %i MB"
+    IDS_FEEDBACK_DOWNLOADED "Downloaded: %i MB"
+    IDS_FEEDBACK_TOTAL      "Alle Quellen: %i"
+    IDS_FEEDBACK_AVAILABLE  "Verfügbare Quellen: %i"
+    IDS_FEEDBACK_NONEEDPART "Quellen ohne benötigte Teile: %i"
+    IDS_FEEDBACK_COMPLETE   "Vollständige Quellen: %i"
+    // <== Copy feedback feature [MorphXT] - Stulle
+    // ==> MassRename [Dragon] - Stulle
+    IDS_MASSRENAME1         "Dateienamen Maske (Änderungen werden bei allen Dateienamen übernommen):"
+    IDS_FILENAMELEFT        "Dateienamen links"
+    IDS_FILENAMERIGHT       "Dateienamen rechts"
+    IDS_RESETFILENAMES      "&Reset"
+    IDS_SIMPLECLEANUP       "&Assistent"
+    IDS_INSERTTEXTCOLUMN    "&Text aus Zwischenablage einfügen:"
+    IDS_MASSRENAME2         "Original Dateienamen:"
+    IDS_MASSRENAME3         "Neue Dateienamen:"
+    IDS_NOTENOUGHFILENAMES  "Nicht genügend Dateienamen in der Liste neuer Dateienamen. Umbenennen nicht möglich."
+    IDS_IDENTICALFILENAMES  "Zwei oder mehr Dateienamen im selben Verzeichnis sind nicht erlaubt (Line %d).Umbenennen nicht möglich."
+    IDS_MR                  "Mehrfach-Umbenennung"
+    IDS_CHECKDOTTOSPACE     "Konvertiere ""."" zu "" """
+    IDS_CHECKUNDERLINETOSPACE "Konvertiere ""_"" zu "" """
+    IDS_CHECKCONVERTAPOSTROPHES 
+                            "Konvertiere falsches Apostroph ""´"", ""`""zu Standard Apostroph "" ' """
+    IDS_CHECKCONVERTHEX     "Konvertiere Hex-Zahlen ""%xx"" zu Buchstaben"
+    IDS_CHECKSEARCHANDREPLACE "Suchen und ersetzen:"
+    IDS_SC_SEARCHFOR        "Suche nach:"
+    IDS_SC_REPLACEBY        "Ersetze durch:"
+    IDS_CHECKCASESENSITIVE  "Groß/klein beachten"
+    IDS_CHECKCHARACTERREPLACE "Ersetze Buchstaben:"
+    IDS_REPLACECHAR         "Ersetze"
+    IDS_REPLACECHARBY       "mit"
+    IDS_SC_ADD              "&Hinzufügen"
+    IDS_SC_EDIT             "&Edit"
+    IDS_SC_DELETE           "&Löschen"
+    IDS_SEARCHFORCHAR       "Suche nach"
+    IDS_REPLACEBYCHAR         "Ersetze durch"
+    IDS_SC_HEADLINE         "Dateienamen bereinigen"
+    // <== MassRename [Dragon] - Stulle
+    // ==> Startupsound [Commander] - mav744
+    IDS_STARTUPSOUND        "Startsound abspielen"
+    IDS_MISSING_STARTUPSOUND 
+                            "Fehlende startup.wav! Note: Die Datei 'startup.wav' muss sich im eMule - Config Ordner befinden"
+    // <== Startupsound [Commander] - mav744
+    IDS_COMPRESS_LVL        "Kompressionslevel (0 = deaktiviert)" // Adjust Compress Level [Stulle] - Stulle
+    // ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+    IDS_CAT_MINIMUM         "Minimum"
+    IDS_CAT_MAXIMUM         "Maximum"
+    IDS_CAT_DLGHELP         "Die Check-Boxen zeigen an, ob die Kriterien verwendet werden sollten wenn man eine Kategorie für neue Dateien auswählt."
+    IDS_CAT_FILTERS         "Kategorien Filter"
+    IDS_CAT_RS              "Restliche Größe (MB)"
+    IDS_CAT_FS              "    Dateigröße (MB)"
+    IDS_CAT_RT              "Restzeit (M)"
+    IDS_CAT_SC              "alle Quellen"
+    IDS_CAT_ASC             "verfügbare Quellen"
+    IDS_CAT_THISCAT         "Diese Kategorie"
+    IDS_CAT_SUSPENDFILTERS  "Ansicht-Filter aus"
+    IDS_CAT_FROMCATSINFO    "Es müssen alle Dateien dieser Kategorie erst einer anderen Kategorie zugewiesen werden, bevor sie gelöscht werden kann."
+    IDS_CAT_FROMCATSCAP     "Dateien nicht zugewiesen"
+    IDS_CAT_FILTERSACTIVE   "Filter aktiv"
+    IDS_CAT_FILTERSSUSP     "Filter inaktiv"
+    IDS_CAT_SETORDER        "setze gleichmässige Prioriät"
+    IDS_CAT_ORDER           "Bitte eine Zahl größer oder gleich Null eingeben. Kleinere Werte werden zuerst fortgesetzt."
+    IDS_CAT_PAUSEDSHOWN     " | Pausierte anzeigen"
+    IDS_CAT_PAUSEDHIDDEN    " | Pausierte verstecken"
+    IDS_CAT_COLCATEGORY     "Kategorie"
+    IDS_CAT_COLORDER        "LP"
+    IDS_CAT_MNUAUTOINC      "Automatische Erhöhung ausgewählt"
+    IDS_CAT_MNUSTEPTHRU     "Schritt für jedes Angewählte"
+    IDS_CAT_MNUALLSAME      "alle auf selben Wert einstellen"
+    IDS_CAT_EXPAUTOINC      "Eingabe einer positiven Zahl"
+    IDS_CAT_EXPSTEPTHRU     "Eingabe einer positiven Zahl, kleinere Werte werden zuerst fortgesetzt.\nFile:"
+    IDS_CAT_EXPALLSAME      "Eingabe einer positiven Zahl, wird auf alle vorgewählten Dateien angewendet:"
+    IDS_CAT_ABORTSTEPTHRU   "Willst Du den Abschnitt für gleichmäßige Priorität abbrechen"
+    IDS_CAT_SHOWPAUSED      "pausierte Dateien anzeigen"
+    IDS_CAT_HIDEPAUSED      "pausierte Dateien verbergen"
+    IDS_CAT_SELDLGTXT       "Auswahl der Kategorie von der Liste oder Eingabe eines Namen für ein neue Kategorie:"
+    IDS_CAT_SELDLGCAP       "Kategorien-Auswahl"
+    IDS_CAT_SHOWCATNAME     "Vollen Kategorie-Namen im Karteireiter anzeigen"
+    IDS_CAT_SHOWSELCATDLG   "Zeige 'Kategorien-Auswahl-Dialog' an"
+    IDS_CAT_USEACTIVE       "Neue Downloads der gerade angezeigten Kategorie zuordnen"
+    IDS_CAT_AUTORESUMEORD   "Wert automatisch erhöhen und eine gleichmäßige Priorität zuweisen"
+    IDS_CAT_SMALLFILEDLPUSH "Kleine Dateien (< 150 KB) zuerst laden"
+    IDS_CAT_AUTOCAT         "Erweiterte Filtermaske (Separator: | )"
+    IDS_CAT_USEAUTOCAT      "Neue Downloads werden mit Ansichtsfilter den Kategorien hinzugefügt"
+    IDS_CAT_MERGE           "zusammenführen der Kategorien"
+    IDS_CAT_GROUP           "Gruppe"
+    IDS_CAT_RESUMEFILEONLYINSAMECAT 
+                            "Fortsetzen der angehaltenen Downloads nur in derselben Kategorie"
+    IDS_CAT_RESUMENEXT      "nächste fortsetzen"
+    IDS_CAT_PAUSELAST       "zuletzt pausiert"
+    IDS_CAT_STOPLAST        "zuletzt gestoppt"
+    IDS_SCC                 "Intelligente Kategorie-Steuerung (SCC)"
+    IDS_DL_MODE             "Resume Mode"
+    IDS_LP                  "Lineare Priorität"
+    IDS_CAT_STARTFILESONADD "Starte # Dateien,  wenn sie zu einer neuen Kategorie hinzugefügt werden"
+    IDS_DL_MODE_DEFAULT     "Standart Wiederaufnahmemodus"
+    IDS_DL_NONE             "Keinen"
+    // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+END
+
 #endif    // Deutsch (Deutschland) resources
 /////////////////////////////////////////////////////////////////////////////
 

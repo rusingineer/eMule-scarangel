@@ -696,7 +696,11 @@ BOOL CChatSelector::OnCommand(WPARAM wParam, LPARAM lParam)
 {
 	switch (wParam){
 		case MP_DETAIL:{
-			const CChatItem* ci = GetCurrentChatItem();
+			//Xman
+			//WiZaRd::Context-FiX
+			//const CChatItem* ci = GetCurrentChatItem();
+			const CChatItem* ci = m_contextItem;
+			//Xman end
 			if (ci) {
 				CClientDetailDialog dialog(ci->client);
 				dialog.DoModal();
@@ -704,7 +708,12 @@ BOOL CChatSelector::OnCommand(WPARAM wParam, LPARAM lParam)
 			return TRUE;
 		}
 		case MP_ADDFRIEND:{
-			const CChatItem* ci = GetCurrentChatItem();
+			//Xman
+			//WiZaRd::Context-FiX
+			//const CChatItem* ci = GetCurrentChatItem();
+			const CChatItem* ci = m_contextItem;
+			//Xman end
+
 			if (ci) {
 				CFriend* fr = theApp.friendlist->SearchFriend(ci->client->GetUserHash(), 0, 0);
 				if (!fr)
@@ -713,7 +722,12 @@ BOOL CChatSelector::OnCommand(WPARAM wParam, LPARAM lParam)
 			return TRUE;
 		}
 		case MP_REMOVEFRIEND:{
-			const CChatItem* ci = GetCurrentChatItem();
+			//Xman
+			//WiZaRd::Context-FiX
+			//const CChatItem* ci = GetCurrentChatItem();
+			const CChatItem* ci = m_contextItem;
+			//Xman end
+
 			if (ci) {
 				CFriend* fr = theApp.friendlist->SearchFriend(ci->client->GetUserHash(), 0, 0);
 				if (fr)
@@ -722,7 +736,12 @@ BOOL CChatSelector::OnCommand(WPARAM wParam, LPARAM lParam)
 			return TRUE;
 		}
 		case MP_REMOVE:{
-			const CChatItem* ci = GetCurrentChatItem();
+			//Xman
+			//WiZaRd::Context-FiX
+			//const CChatItem* ci = GetCurrentChatItem();
+			const CChatItem* ci = m_contextItem;
+			//Xman end
+
 			if (ci)
 				EndSession(ci->client);
 			return TRUE;
@@ -737,7 +756,13 @@ BOOL CChatSelector::OnCommand(WPARAM wParam, LPARAM lParam)
 // for other (non-selected) items.
 void CChatSelector::OnContextMenu(CWnd*, CPoint point)
 {
-	const CChatItem* ci = GetCurrentChatItem();
+	//Xman
+	//WiZaRd::Context-FiX
+	//const CChatItem* ci = GetCurrentChatItem();
+	CChatItem* ci = GetChatItemUnderMouse();
+	m_contextItem = ci;
+	//Xman end
+
 	if (ci == NULL)
 		return;
 	CFriend* pFriend = theApp.friendlist->SearchFriend(ci->client->GetUserHash(), 0, 0);
@@ -761,3 +786,19 @@ void CChatSelector::OnContextMenu(CWnd*, CPoint point)
 	menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
 }
 
+//Xman
+//WiZaRd::Context-FiX
+CChatItem* CChatSelector::GetChatItemUnderMouse()
+{
+	CPoint pt;
+	GetCursorPos(&pt);
+	ScreenToClient(&pt);
+	int i = GetTabUnderPoint(pt);
+	CChatItem* item = NULL;
+	TCITEM cur_item;
+	cur_item.mask = TCIF_PARAM;
+	if (GetItem(i, &cur_item))
+		item = (CChatItem*)cur_item.lParam;
+	return item;
+}
+//Xman end

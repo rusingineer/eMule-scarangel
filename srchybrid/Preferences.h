@@ -655,14 +655,14 @@ public:
     static  bool enablePushRareFile; // push rare file - Stulle
 
 	static bool	showSrcInTitle; // Show sources on title - Stulle
-//	static bool	PsFilesRed; // draw PS files red - Stulle
+	static bool	PsFilesRed; // draw PS files red - Stulle
 	static bool FriendsBlue; // draw friends blue - Stulle
 	static bool	showOverheadInTitle; // show overhead on title - Stulle
 	static bool ShowGlobalHL; // show global HL - Stulle
 	static bool ShowFileHLconst; // show HL per file constantaniously - Stulle
 	static bool m_bShowInMSN7; //Show in MSN7 [TPT] - Stulle
     static bool m_bClientQueueProgressBar; // Client queue progress bar [Commander] - Stulle
-	static bool m_bShowClientPercentage; // Show Client Percentage [Commander/MorphXT] - Mondgott
+	static bool m_bShowClientPercentage; // Show Client Percentage optional [Stulle] - Stulle
 	// ==> CPU/MEM usage [$ick$/Stulle] - Max
 	static bool m_bSysInfo;
 	static bool m_bSysInfoGlobal;
@@ -821,6 +821,21 @@ public:
 	static bool		m_bUseAutoCat;
 	static uint8	dlMode;
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+	static bool		m_bSpreadbarSetStatus; // Spread bars [Slugfiller/MorphXT] - Stulle
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	static int	hideOS;
+	static bool	selectiveShare;
+	static int	ShareOnlyTheNeed;
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+
+	// ==> PowerShare [ZZ/MorphXT] - Stulle
+	static int	m_iPowershareMode;
+	static int	PowerShareLimit;
+	// <== PowerShare [ZZ/MorphXT] - Stulle
+
+	static	uint8	m_uReleaseBonus; // Release Bonus [sivka] - Stulle
+	static	bool	m_bReleaseScoreAssurance; // Release Score Assurance [Stulle] - Stulle
 
 	enum Table
 	{
@@ -1828,14 +1843,14 @@ public:
     static bool		GetEnablePushRareFile()		{return enablePushRareFile;} // push rare file - Stulle
 
 	static	bool	ShowSrcOnTitle()		{ return showSrcInTitle;} // Show sources on title - Stulle
-//	static	bool	GetPsFilesRed()			{ return PsFilesRed; } // draw PS files red - Stulle
+	static	bool	GetPsFilesRed()			{ return PsFilesRed; } // draw PS files red - Stulle
 	static  bool	GetFriendsBlue()		{ return FriendsBlue; } // draw friends blue - Stulle
 	static	bool	ShowOverheadOnTitle()	{ return showOverheadInTitle;} // show overhead on title - Stulle
 	static	bool	GetShowGlobalHL()		{ return ShowGlobalHL; } // show global HL - Stulle
 	static	bool	GetShowFileHLconst()	{ return ShowFileHLconst; } // show HL per file constantaniously - Stulle
 	static	bool	GetShowMSN7()			{ return m_bShowInMSN7;} // Show in MSN7 [TPT] - Stulle
 	static	bool	ShowClientQueueProgressBar()	{ return m_bClientQueueProgressBar;} // Client queue progress bar [Commander] - Stulle
-	static	bool	GetShowClientPercentage()	{ return m_bShowClientPercentage;}  // Show Client Percentage - Mondgott
+	static	bool	GetShowClientPercentage()	{ return m_bShowClientPercentage;}  // Show Client Percentage optional [Stulle] - Stulle
 	// ==> CPU/MEM usage [$ick$/Stulle] - Max
 	static	bool	GetSysInfo()			{ return m_bSysInfo; }
 	static	bool	GetSysInfoGlobal()		{ return m_bSysInfoGlobal; }
@@ -1984,6 +1999,21 @@ public:
 	static	bool	UseAutoCat()			{ return m_bUseAutoCat; }
 	static	uint8	GetDlMode()				{ return dlMode;}
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+	static	bool	GetSpreadbarSetStatus()	{return m_bSpreadbarSetStatus;} // Spread bars [Slugfiller/MorphXT] - Stulle
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	static	int		GetHideOvershares()		{return hideOS;}
+	static	bool	IsSelectiveShareEnabled()	{return selectiveShare;}
+	static	int		GetShareOnlyTheNeed()	{return ShareOnlyTheNeed;}
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+
+	// ==> PowerShare [ZZ/MorphXT] - Stulle
+	static	int		GetPowerShareMode()	{return m_iPowershareMode;}
+	static	int		GetPowerShareLimit() {return PowerShareLimit;}
+	// <== PowerShare [ZZ/MorphXT] - Stulle
+
+	static	uint8	GetReleaseBonus()			{return m_uReleaseBonus;} // Release Bonus [sivka] - Stulle
+	static	bool	GetReleaseScoreAssurance()	{return m_bReleaseScoreAssurance;} // Release Score Assurance [Stulle] - Stulle
 
 protected:
 	static	CString appdir;

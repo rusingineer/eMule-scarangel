@@ -336,6 +336,11 @@ void CUpDownClient::Init()
 	m_pszFunnyNick=NULL;
 	//Xman end
 
+	//Xman client percentage
+	hiscompletedparts_percent_up=-1;
+	hiscompletedparts_percent_down=-1;
+	//Xman end
+
 	//Xman end --------------
 
 	m_uModClient = MOD_NONE; // Mod Icons - Stulle

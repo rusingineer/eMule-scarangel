@@ -15,6 +15,7 @@
 #include "TransferWnd.h" // CPU/MEM usage [$ick$/Stulle] - Max
 #include "WebCache/webcache.h" // WebCache [WC team/MorphXT] - Stulle/Max
 #include "XMessageBox.h" // TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+#include "sharedfilelist.h" // PowerShare [ZZ/MorphXT] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -146,14 +147,14 @@ CPPgScar::CPPgScar()
 	m_htiSysInfoGlobal = NULL;
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	m_htiShowSrcOnTitle = NULL; // Show sources on title - Stulle
-//	m_htiPsFilesRed = NULL; // draw PS files red - Stulle
+	m_htiPsFilesRed = NULL; // draw PS files red - Stulle
 	m_htiFriendsBlue = NULL; // draw friends blue - Stulle
 	m_htiShowGlobalHL = NULL; // show global HL - Stulle
 	m_htiShowFileHLconst = NULL; // show HL per file constantaniously - Stulle
 	m_htiShowInMSN7 = NULL; // Show in MSN7 [TPT] - Stulle
 	m_htiQueueProgressBar = NULL; // Client queue progress bar [Commander] - Stulle
 //	m_htiTrayComplete = NULL; // Completed in Tray - Stulle
-	m_htiShowClientPercentage = NULL; // Show Client Percentage [Commander/MorphXT] - Mondgott
+	m_htiShowClientPercentage = NULL; // Show Client Percentage optional [Stulle] - Stulle
 
 	// ==> file settings - Stulle
 	m_htiFileDefaults = NULL;
@@ -198,6 +199,30 @@ CPPgScar::CPPgScar()
 	m_htiUseAutoCat = NULL;
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
+	m_htiSharedPrefs = NULL; // Shared Files Management [Stulle] - Stulle
+	// ==> PowerShare [ZZ/MorphXT] - Stulle
+	m_htiPowershareMode = NULL;
+	m_htiPowershareDisabled = NULL;
+	m_htiPowershareActivated = NULL;
+	m_htiPowershareAuto = NULL;
+	m_htiPowershareLimited = NULL;
+	m_htiPowerShareLimit = NULL;
+	// <== PowerShare [ZZ/MorphXT] - Stulle
+	// ==> Release Bonus [sivka] - Stulle
+	m_htiReleaseBonusGroup = NULL;
+	m_htiReleaseBonus0 = NULL;
+	m_htiReleaseBonus1 = NULL;
+	m_htiReleaseBonusDays = NULL;
+	m_htiReleaseBonusDaysEdit = NULL;
+	// <== Release Bonus [sivka] - Stulle
+	m_htiReleaseScoreAssurance = NULL; // Release Score Assurance [Stulle] - Stulle
+	m_htiSpreadBars = NULL; // Spread bars [Slugfiller/MorphXT] - Stulle
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	m_htiHideOS = NULL;
+	m_htiSelectiveShare = NULL;
+	m_htiShareOnlyTheNeed = NULL;
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+
 	m_htiMisc = NULL;
 	m_htiSUQWT = NULL; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*	// ==> Spread Credits Slot - Stulle
@@ -237,6 +262,9 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		int iImgMinimule = 8;
 		int iImgSCC = 8;
 		int iImgDlMode = 8;
+		int iImgSharedPrefs = 8;
+		int iImgPS = 8;
+		int iImgReleaseBonus = 8;
 		int iImgMisc = 8;
 		int iImgGlobal = 8;
 
@@ -253,6 +281,9 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 			iImgMinimule = piml->Add(CTempIconLoader(_T("MINIMULE")));
 			iImgSCC = piml->Add(CTempIconLoader(_T("CATEGORY")));
 			iImgDlMode = piml->Add(CTempIconLoader(_T("DLMODE")));
+			iImgSharedPrefs = piml->Add(CTempIconLoader(_T("SHAREDFILESMANAGEMENT")));
+			iImgPS = piml->Add(CTempIconLoader(_T("FILEPOWERSHARE")));
+			iImgReleaseBonus = piml->Add(CTempIconLoader(_T("RELEASEBONUS")));
 			iImgMisc = piml->Add(CTempIconLoader(_T("SRCUNKNOWN")));
 			iImgGlobal = piml->Add(CTempIconLoader(_T("SEARCHMETHOD_GLOBAL")));
 		}
@@ -331,14 +362,14 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiSysInfoGlobal = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SYS_INFO_GLOBAL), m_htiSysInfoGroup, m_bSysInfoGlobal);
 		// <== CPU/MEM usage [$ick$/Stulle] - Max
 		m_htiShowSrcOnTitle = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOWSRCONTITLE), m_htiDisplay, showSrcInTitle); // Show sources on title - Stulle
-//		m_htiPsFilesRed = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PS_FILES_RED), m_htiDisplay, m_bPsFilesRed); // draw PS files red - Stulle
+		m_htiPsFilesRed = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PS_FILES_RED), m_htiDisplay, m_bPsFilesRed); // draw PS files red - Stulle
 		m_htiFriendsBlue = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_FRIENDS_BLUE), m_htiDisplay, m_bFriendsBlue); // draw friends blue - Stulle
 		m_htiShowGlobalHL = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOW_GLOBAL_HL), m_htiDisplay, m_bShowGlobalHL); // show global HL - Stulle
 		m_htiShowFileHLconst = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOW_FILE_HL_CONST), m_htiDisplay, m_bShowFileHLconst); // show HL per file constantaniously - Stulle
 		m_htiShowInMSN7 = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOWINMSN7), m_htiDisplay, m_bShowInMSN7); // Show in MSN7 [TPT] - Stulle
 		m_htiQueueProgressBar = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CLIENTQUEUEPROGRESSBAR), m_htiDisplay, m_bQueueProgressBar); // Client queue progress bar [Commander] - Stulle
 //		m_htiTrayComplete = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_TRAY_COMPLETE), m_htiDisplay, m_bTrayComplete); // Completed in Tray - Stulle
-		m_htiShowClientPercentage = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CLIENTPERCENTAGE), m_htiDisplay, m_bShowClientPercentage); // Show Client Percentage [Commander/MorphXT] - Mondgott
+		m_htiShowClientPercentage = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CLIENTPERCENTAGE), m_htiDisplay, m_bShowClientPercentage); // Show Client Percentage optional [Stulle] - Stulle
 
 		// ==> file settings - Stulle
 		m_htiFileDefaults = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_FILE_DEFAULTS), iImgDropDefaults, TVI_ROOT);
@@ -396,6 +427,36 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiResumeFileInNewCat = m_ctrlTreeOptions.InsertItem(GetResString(IDS_CAT_STARTFILESONADD), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiSCC);
 		m_ctrlTreeOptions.AddEditBox(m_htiResumeFileInNewCat, RUNTIME_CLASS(CNumTreeOptionsEdit));
 		// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+		m_htiSharedPrefs = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_SHARED_PREFS), iImgSharedPrefs, TVI_ROOT); // Shared Files Management [Stulle] - Stulle
+		// ==> PowerShare [ZZ/MorphXT] - Stulle
+		m_htiPowershareMode = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_POWERSHARE), iImgPS, m_htiSharedPrefs);
+		m_htiPowershareDisabled = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_POWERSHARE_DISABLED), m_htiPowershareMode, m_iPowershareMode == 0);
+		m_htiPowershareActivated =  m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_POWERSHARE_ACTIVATED), m_htiPowershareMode, m_iPowershareMode == 1);
+		m_htiPowershareAuto =  m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_POWERSHARE_AUTO), m_htiPowershareMode, m_iPowershareMode == 2);
+		m_htiPowershareLimited =  m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_POWERSHARE_LIMITED), m_htiPowershareMode, m_iPowershareMode == 3);
+		m_htiPowerShareLimit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_POWERSHARE_LIMIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiPowershareLimited );
+		m_ctrlTreeOptions.AddEditBox(m_htiPowerShareLimit, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		// <== PowerShare [ZZ/MorphXT] - Stulle
+		// ==> Release Bonus [sivka] - Stulle
+		m_htiReleaseBonusGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_RELEASE_BONUS_GROUP), iImgReleaseBonus, m_htiMisc);
+		m_htiReleaseBonus0 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_POWERSHARE_DISABLED), m_htiReleaseBonusGroup, m_iReleaseBonus == 0);
+		m_htiReleaseBonus1 = m_ctrlTreeOptions.InsertRadioButton(_T("12h"), m_htiReleaseBonusGroup, m_iReleaseBonus == 1);
+		m_htiReleaseBonusDays = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_DAYS2), m_htiReleaseBonusGroup, m_iReleaseBonus == 2);
+		m_htiReleaseBonusDaysEdit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_RELEASE_BONUS_EDIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiReleaseBonusDays);
+		m_ctrlTreeOptions.AddEditBox(m_htiReleaseBonusDaysEdit, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_ctrlTreeOptions.Expand(m_htiReleaseBonusDays, TVE_EXPAND);
+		// <== Release Bonus [sivka] - Stulle
+		m_htiSpreadBars = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SPREAD_BARS), m_htiSharedPrefs, m_bSpreadBars); // Spread bars [Slugfiller/MorphXT] - Stulle
+		// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+		m_htiHideOS = m_ctrlTreeOptions.InsertItem(GetResString(IDS_HIDEOVERSHARES), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiSpreadBars);
+		m_ctrlTreeOptions.AddEditBox(m_htiHideOS, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_htiSelectiveShare = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SELECTIVESHARE), m_htiHideOS, m_bSelectiveShare);
+		m_ctrlTreeOptions.Expand(m_htiSpreadBars, TVE_EXPAND);
+		m_ctrlTreeOptions.Expand(m_htiHideOS, TVE_EXPAND);
+		m_htiShareOnlyTheNeed = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHAREONLYTHENEED), m_htiSharedPrefs, m_iShareOnlyTheNeed);
+		// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+		m_htiReleaseScoreAssurance = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_RELEASE_SCORE_ASSURANCE), m_htiReleaseBonusGroup, m_bReleaseScoreAssurance); // Release Score Assurance [Stulle] - Stulle
 
 		m_htiMisc = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_MISC), iImgMisc, TVI_ROOT);
 		m_htiSUQWT = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SUQWT), m_htiMisc, m_bSUQWT); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
@@ -469,14 +530,14 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	if(m_htiSysInfoGlobal) DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSysInfoGlobal, m_bSysInfoGlobal);
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowSrcOnTitle, showSrcInTitle); // Show sources on title - Stulle
-//	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiPsFilesRed, m_bPsFilesRed); // draw PS files red - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiPsFilesRed, m_bPsFilesRed); // draw PS files red - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiFriendsBlue, m_bFriendsBlue); // draw friends blue - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowGlobalHL, m_bShowGlobalHL); // show global HL - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowFileHLconst, m_bShowFileHLconst); // show HL per file constantaniously - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowInMSN7, m_bShowInMSN7); // Show in MSN7 [TPT] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiQueueProgressBar, m_bQueueProgressBar); // Client queue progress bar [Commander] - Stulle
 //	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiTrayComplete, m_bTrayComplete); // Completed in Tray - Stulle
-	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowClientPercentage, m_bShowClientPercentage); // Show Client Percentage [Commander/MorphXT] - Mondgott
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowClientPercentage, m_bShowClientPercentage); // Show Client Percentage optional [Stulle] - Stulle
 
 	// ==> file settings - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiAutoNNS, m_bEnableAutoDropNNSDefault);
@@ -520,6 +581,25 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSmallFileDLPush, m_bSmallFileDLPush);
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiUseAutoCat, m_bUseAutoCat);
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+	// ==> PowerShare [ZZ/MorphXT] - Stulle
+	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiPowerShareLimit, m_iPowerShareLimit);
+	DDV_MinMaxInt(pDX, m_iShareOnlyTheNeed, 0, INT_MAX);
+	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiPowershareMode, m_iPowershareMode);
+	// <== PowerShare [ZZ/MorphXT] - Stulle
+	// ==> Release Bonus [sivka] - Stulle
+	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiReleaseBonusGroup, m_iReleaseBonus);
+	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiReleaseBonusDaysEdit, m_iReleaseBonusDays);
+	DDV_MinMaxInt(pDX, m_iReleaseBonusDays, 1, 16);
+	// <== Release Bonus [sivka] - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSpreadBars, m_bSpreadBars); // Spread bars [Slugfiller/MorphXT] - Stulle
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiHideOS, m_iHideOS);
+	DDV_MinMaxInt(pDX, m_iHideOS, 0, INT_MAX);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSelectiveShare, m_bSelectiveShare);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShareOnlyTheNeed, m_iShareOnlyTheNeed);
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiReleaseScoreAssurance, m_bReleaseScoreAssurance); // Release Score Assurance [Stulle] - Stulle
 
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSUQWT, m_bSUQWT); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*	// ==> Spread Credits Slot - Stulle
@@ -592,14 +672,14 @@ BOOL CPPgScar::OnInitDialog()
 	m_bSysInfoGlobal = thePrefs.GetSysInfoGlobal();
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	showSrcInTitle = thePrefs.ShowSrcOnTitle(); // Show sources on title - Stulle
-//	m_bPsFilesRed = thePrefs.GetPsFilesRed(); // draw PS files red - Stulle
+	m_bPsFilesRed = thePrefs.GetPsFilesRed(); // draw PS files red - Stulle
 	m_bFriendsBlue = thePrefs.GetFriendsBlue(); // draw friends blue - Stulle
 	m_bShowGlobalHL = thePrefs.GetShowGlobalHL(); // show global HL - Stulle
 	m_bShowFileHLconst = thePrefs.GetShowFileHLconst(); // show HL per file constantaniously - Stulle
 	m_bShowInMSN7 = thePrefs.GetShowMSN7(); // Show in MSN7 [TPT] - Stulle
 	m_bQueueProgressBar = thePrefs.ShowClientQueueProgressBar(); // Client queue progress bar [Commander] - Stulle
 //	m_bTrayComplete = thePrefs.GetTrayComplete(); // Completed in Tray - Stulle
-	m_bShowClientPercentage = thePrefs.GetShowClientPercentage(); // Show Client Percentage [Commander/MorphXT] - Mondgott
+	m_bShowClientPercentage = thePrefs.GetShowClientPercentage(); // Show Client Percentage optional [Stulle] - Stulle
 
 	// ==> file settings - Stulle
 	m_bEnableAutoDropNNSDefault = thePrefs.m_EnableAutoDropNNSDefault;
@@ -633,6 +713,30 @@ BOOL CPPgScar::OnInitDialog()
 	m_iResumeFileInNewCat = thePrefs.StartDLInEmptyCats();
 	m_bUseAutoCat = thePrefs.UseAutoCat();
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+	// ==> PowerShare [ZZ/MorphXT] - Stulle
+	m_iPowershareMode = thePrefs.m_iPowershareMode;
+	m_iPowerShareLimit = thePrefs.PowerShareLimit;
+	// <== PowerShare [ZZ/MorphXT] - Stulle
+	// ==> Release Bonus [sivka] - Stulle
+	if (thePrefs.GetReleaseBonus() <= 1)
+	{
+		m_iReleaseBonus = thePrefs.GetReleaseBonus();
+		m_iReleaseBonusDays = 1;
+	}
+	else
+	{
+		m_iReleaseBonus = 2;
+		m_iReleaseBonusDays = (int)(thePrefs.GetReleaseBonus()/2);
+	}
+	// <== Release Bonus [sivka] - Stulle
+	m_bSpreadBars = thePrefs.GetSpreadbarSetStatus(); // Spread bars [Slugfiller/MorphXT] - Stulle
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	m_iHideOS = thePrefs.hideOS;
+	m_bSelectiveShare = thePrefs.selectiveShare;
+	m_iShareOnlyTheNeed = thePrefs.ShareOnlyTheNeed;
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	m_bReleaseScoreAssurance = thePrefs.GetReleaseScoreAssurance(); // Release Score Assurance [Stulle] - Stulle
 
 	m_bSUQWT = thePrefs.SaveUploadQueueWaitTime(); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*	// ==> Spread Credits Slot - Stulle
@@ -799,14 +903,14 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_bSysInfoGlobal = m_bSysInfoGlobal;
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	thePrefs.showSrcInTitle = showSrcInTitle; // Show sources on title - Stulle
-//	thePrefs.PsFilesRed = m_bPsFilesRed; // draw PS files red - Stulle
+	thePrefs.PsFilesRed = m_bPsFilesRed; // draw PS files red - Stulle
 	thePrefs.FriendsBlue = m_bFriendsBlue; // draw friends blue - Stulle
 	thePrefs.ShowGlobalHL = m_bShowGlobalHL; // show global HL - Stulle
 	thePrefs.ShowFileHLconst = m_bShowFileHLconst; // show HL per file constantaniously - Stulle
 	thePrefs.m_bShowInMSN7 = m_bShowInMSN7; // Show in MSN7 [TPT] - Stulle
 	thePrefs.m_bClientQueueProgressBar = m_bQueueProgressBar; // Client queue progress bar [Commander] - Stulle
 //	thePrefs.m_bTrayComplete = m_bTrayComplete; // Completed in Tray - Stulle
-	thePrefs.m_bShowClientPercentage = m_bShowClientPercentage; // Show Client Percentage [Commander/MorphXT] - Mondgott
+	thePrefs.m_bShowClientPercentage = m_bShowClientPercentage; // Show Client Percentage optional [Stulle] - Stulle
 
 	// ==> file settings - Stulle
 	thePrefs.m_EnableAutoDropNNSDefault = m_bEnableAutoDropNNSDefault;
@@ -841,6 +945,25 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_iStartDLInEmptyCats = (uint8)m_iResumeFileInNewCat;
 	thePrefs.m_bUseAutoCat = m_bUseAutoCat;
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+	// ==> PowerShare [ZZ/MorphXT] - Stulle
+	thePrefs.m_iPowershareMode = m_iPowershareMode;
+	thePrefs.PowerShareLimit = m_iPowerShareLimit;
+	theApp.sharedfiles->UpdatePartsInfo();
+	// <== PowerShare [ZZ/MorphXT] - Stulle
+	// ==> Release Bonus [sivka] - Stulle
+	if (m_iReleaseBonus <= 1)
+        thePrefs.m_uReleaseBonus = (uint8)m_iReleaseBonus;
+	else
+		thePrefs.m_uReleaseBonus = (uint8)(m_iReleaseBonusDays*2);
+	// <== Release Bonus [sivka] - Stulle
+	thePrefs.m_bSpreadbarSetStatus = m_bSpreadBars; // Spread bars [Slugfiller/MorphXT] - Stulle
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	thePrefs.hideOS = m_iHideOS;
+	thePrefs.selectiveShare = m_bSelectiveShare;
+	thePrefs.ShareOnlyTheNeed = m_iShareOnlyTheNeed!=0;
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	thePrefs.m_bReleaseScoreAssurance = m_bReleaseScoreAssurance; // Release Score Assurance [Stulle] - Stulle
 
 	thePrefs.m_bSaveUploadQueueWaitTime = m_bSUQWT; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*	// ==> Spread Credits Slot - Stulle
@@ -1011,14 +1134,14 @@ void CPPgScar::Localize(void)
 		if (m_htiSysInfoGlobal) m_ctrlTreeOptions.SetItemText(m_htiSysInfoGlobal, GetResString(IDS_SYS_INFO_GLOBAL));
 		// <== CPU/MEM usage [$ick$/Stulle] - Max
 		if (m_htiShowSrcOnTitle) m_ctrlTreeOptions.SetItemText(m_htiShowSrcOnTitle, GetResString(IDS_SHOWSRCONTITLE)); // Show sources on title - Stulle
-//		if (m_htiPsFilesRed) m_ctrlTreeOptions.SetItemText(m_htiPsFilesRed, GetResString(IDS_PS_FILES_RED)); // draw PS files red - Stulle
+		if (m_htiPsFilesRed) m_ctrlTreeOptions.SetItemText(m_htiPsFilesRed, GetResString(IDS_PS_FILES_RED)); // draw PS files red - Stulle
 		if (m_htiFriendsBlue) m_ctrlTreeOptions.SetItemText(m_htiFriendsBlue, GetResString(IDS_FRIENDS_BLUE)); // draw friends blue - Stulle
 		if (m_htiShowGlobalHL) m_ctrlTreeOptions.SetItemText(m_htiShowGlobalHL, GetResString(IDS_SHOW_GLOBAL_HL)); // show global HL - Stulle
 		if (m_htiShowFileHLconst) m_ctrlTreeOptions.SetItemText(m_htiShowFileHLconst, GetResString(IDS_SHOW_FILE_HL_CONST)); // show HL per file constantaniously - Stulle
 		if (m_htiShowInMSN7) m_ctrlTreeOptions.SetItemText(m_htiShowInMSN7, GetResString(IDS_SHOWINMSN7)); // Show in MSN7 [TPT] - Stulle
 		if (m_htiQueueProgressBar) m_ctrlTreeOptions.SetItemText(m_htiQueueProgressBar, GetResString(IDS_CLIENTQUEUEPROGRESSBAR)); // Client queue progress bar [Commander] - Stulle
 //		if (m_htiTrayComplete) m_ctrlTreeOptions.SetItemText(m_htiTrayComplete, GetResString(IDS_TRAY_COMPLETE)); // Completed in Tray - Stulle
-		if (m_htiShowClientPercentage) m_ctrlTreeOptions.SetItemText(m_htiShowClientPercentage, GetResString(IDS_CLIENTPERCENTAGE)); // Show Client Percentage [Commander/MorphXT] - Mondgott
+		if (m_htiShowClientPercentage) m_ctrlTreeOptions.SetItemText(m_htiShowClientPercentage, GetResString(IDS_CLIENTPERCENTAGE)); // Show Client Percentage optional [Stulle] - Stulle
 
 		// ==> file settings - Stulle
 		if (m_htiAutoNNS) m_ctrlTreeOptions.SetItemText(m_htiAutoNNS, GetResString(IDS_AUTO_NNS));
@@ -1053,6 +1176,22 @@ void CPPgScar::Localize(void)
 		if (m_htiSmallFileDLPush) m_ctrlTreeOptions.SetItemText(m_htiSmallFileDLPush, GetResString(IDS_CAT_SMALLFILEDLPUSH));
 		if (m_htiResumeFileInNewCat) m_ctrlTreeOptions.SetEditLabel(m_htiResumeFileInNewCat, GetResString(IDS_CAT_STARTFILESONADD));
 		// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+		// ==> PowerShare [ZZ/MorphXT] - Stulle
+		if (m_htiPowershareMode) m_ctrlTreeOptions.SetItemText(m_htiPowershareMode, GetResString(IDS_POWERSHARE));
+		if (m_htiPowershareDisabled) m_ctrlTreeOptions.SetItemText(m_htiPowershareDisabled, GetResString(IDS_POWERSHARE_DISABLED));
+		if (m_htiPowershareActivated) m_ctrlTreeOptions.SetItemText(m_htiPowershareActivated, GetResString(IDS_POWERSHARE_ACTIVATED));
+		if (m_htiPowershareAuto) m_ctrlTreeOptions.SetItemText(m_htiPowershareAuto, GetResString(IDS_POWERSHARE_AUTO));
+		if (m_htiPowershareLimited) m_ctrlTreeOptions.SetItemText(m_htiPowershareLimited, GetResString(IDS_POWERSHARE_LIMITED));
+		if (m_htiPowerShareLimit) m_ctrlTreeOptions.SetEditLabel(m_htiPowerShareLimit, GetResString(IDS_POWERSHARE_LIMIT));
+		// <== PowerShare [ZZ/MorphXT] - Stulle
+		if (m_htiSpreadBars) m_ctrlTreeOptions.SetItemText(m_htiSpreadBars, GetResString(IDS_SPREAD_BARS)); // Spread bars [Slugfiller/MorphXT] - Stulle
+		// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+		if (m_htiHideOS) m_ctrlTreeOptions.SetEditLabel(m_htiHideOS, GetResString(IDS_HIDEOVERSHARES));
+		if (m_htiSelectiveShare) m_ctrlTreeOptions.SetItemText(m_htiSelectiveShare, GetResString(IDS_SELECTIVESHARE));
+		if (m_htiShareOnlyTheNeed) m_ctrlTreeOptions.SetItemText(m_htiShareOnlyTheNeed, GetResString(IDS_SHAREONLYTHENEED));
+		// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+		if (m_htiReleaseScoreAssurance) m_ctrlTreeOptions.SetItemText(m_htiReleaseScoreAssurance, GetResString(IDS_RELEASE_SCORE_ASSURANCE)); // Release Score Assurance [Stulle] - Stulle
 
 		if (m_htiSUQWT) m_ctrlTreeOptions.SetItemText(m_htiSUQWT, GetResString(IDS_SUQWT)); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*		// ==> Spread Credits Slot - Stulle
@@ -1163,14 +1302,14 @@ void CPPgScar::OnDestroy()
 	m_htiSysInfoGlobal = NULL;
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	m_htiShowSrcOnTitle = NULL; // Show sources on title - Stulle
-//	m_htiPsFilesRed = NULL; // draw PS files red - Stulle
+	m_htiPsFilesRed = NULL; // draw PS files red - Stulle
 	m_htiFriendsBlue = NULL; // draw friends blue - Stulle
 	m_htiShowGlobalHL = NULL; // show global HL - Stulle
 	m_htiShowFileHLconst = NULL; // show HL per file constantaniously - Stulle
 	m_htiShowInMSN7 = NULL; // Show in MSN7 [TPT] - Stulle
 	m_htiQueueProgressBar = NULL;
 //	m_htiTrayComplete = NULL; // Completed in Tray - Stulle
-	m_htiShowClientPercentage = NULL; // Show Client Percentage [Commander/MorphXT] - Mondgott
+	m_htiShowClientPercentage = NULL; // Show Client Percentage optional [Stulle] - Stulle
 
 	// ==> file settings - Stulle
 	m_htiFileDefaults = NULL;
@@ -1213,6 +1352,30 @@ void CPPgScar::OnDestroy()
 	m_htiResumeFileInNewCat = NULL;
 	m_htiUseAutoCat = NULL;
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+	m_htiSharedPrefs = NULL; // Shared Files Management [Stulle] - Stulle
+	// ==> PowerShare [ZZ/MorphXT] - Stulle
+	m_htiPowershareMode = NULL;
+	m_htiPowershareDisabled = NULL;
+	m_htiPowershareActivated = NULL;
+	m_htiPowershareAuto = NULL;
+	m_htiPowershareLimited = NULL;
+	m_htiPowerShareLimit = NULL;
+	// <== PowerShare [ZZ/MorphXT] - Stulle
+	// ==> Release Bonus [sivka] - Stulle
+	m_htiReleaseBonusGroup = NULL;
+	m_htiReleaseBonus0 = NULL;
+	m_htiReleaseBonus1 = NULL;
+	m_htiReleaseBonusDays = NULL;
+	m_htiReleaseBonusDaysEdit = NULL;
+	// <== Release Bonus [sivka] - Stulle
+	m_htiSpreadBars = NULL; // Spread bars [Slugfiller/MorphXT] - Stulle
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	m_htiHideOS = NULL;
+	m_htiSelectiveShare = NULL;
+	m_htiShareOnlyTheNeed = NULL;
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	m_htiReleaseScoreAssurance = NULL; // Release Score Assurance [Stulle] - Stulle
 
 	m_htiMisc = NULL;
 	m_htiSUQWT = NULL; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle

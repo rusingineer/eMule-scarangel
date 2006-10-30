@@ -149,7 +149,7 @@ protected:
 	COLORREF        m_crFocusLine;
 	COLORREF        m_crNoHighlight;
 	COLORREF        m_crNoFocusLine;
-//	COLORREF         m_crPsFiles; // draw PS files red - Stulle
+	COLORREF         m_crPsFiles; // draw PS files red - Stulle
 	COLORREF		 m_crFriend; // draw friends blue - Stulle
 	NMLVCUSTOMDRAW  m_lvcd;
 	BOOL            m_bCustomDraw;
@@ -172,6 +172,9 @@ protected:
 
 	//Xman narrow font at transferwindow
 	CFont		m_fontNarrow;
+
+	//Xman client percentage
+	CFont		m_fontBoldSmaller;
 
 private:
 	static int	IndexToOrder(CHeaderCtrl* pHeader, int iIndex);

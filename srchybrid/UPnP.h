@@ -62,6 +62,7 @@ public:
 	UPNPNAT_RETURN AddNATPortMapping(UPNPNAT_MAPPING *mapping, bool tryRandom = false);
 	UPNPNAT_RETURN RemoveNATPortMapping(UPNPNAT_MAPPING mapping, bool removeFromList = true);
 	void clearNATPortMapping();
+	bool RemoveSpecifiedPort(WORD port,UPNPNAT_PROTOCOL protocol);
 
 	CString		GetLastError();
 	CString		GetLocalIPStr();

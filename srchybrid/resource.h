@@ -2332,6 +2332,7 @@
 #define IDS_CN_UPNPNAT                  3181
 #define IDS_CHUNKCHOOSER                3182
 #define IDS_UPLOADINSTABLE              3183
+#define IDS_CLIENTPERCENTAGE            3184
 #define IDD_PPG_Xtreme                  4000
 #define IDC_13RATIO                     4001
 #define IDC_UPREDUCTION                 4002
@@ -2443,6 +2444,7 @@
 // ==> push rare file - Stulle
 #define IDS_PUSH_RARE                   60025
 #define IDS_RARE                        60026
+#define IDS_RARE_RATIO                  60027
 // <== push rare file - Stulle
 #define IDS_SHOWINMSN7                  60030 //Show in MSN7 [TPT] - Stulle
 // ==> Show sources on title - Stulle
@@ -2656,7 +2658,6 @@
 #define IDS_QUICK_START_MAX_CONN_PER_FIVE_BACK 60546
 #define IDS_QUICK_START_MAX_CONN_BACK   60547
 // <== Quick start [TPT] - Max
-#define IDS_CLIENTPERCENTAGE            60550 // Show Client Percentage [Commander/MorphXT] - Mondgott
 // ==> CPU/MEM usage [$ick$/Stulle] - Max
 #define IDC_CPU                         60560
 #define IDC_CPUCOUNT                    60561
@@ -2913,6 +2914,45 @@
 #define IDS_DL_NONE                     60849
 #define IDS_SEARCH_INVALIDMINMAX        60850
 // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+#define IDS_SHARED_PREFS                60860 // Shared Files Management [Stulle] - Stulle
+// ==> Spread bars [Slugfiller/MorphXT] - Stulle
+#define IDS_SPREAD_BARS                 60870
+#define IDS_SF_UPLOADED_PARTS           60871
+#define IDS_SF_TURN_PART                60872
+#define IDS_SF_TURN_SIMPLE              60873
+#define IDS_SF_FULLUPLOAD               60874
+#define IDS_SPREAD_RESET                60875
+// <== Spread bars [Slugfiller/MorphXT] - Stulle
+// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+#define IDS_HIDEOS                      60880
+#define IDS_SHAREONLYTHENEED            60881
+#define IDS_HIDEOVERSHARES              60882
+#define IDS_SELECTIVESHARE              60883
+#define IDS_ERR_HIDDENBLOCK             60884
+// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+// ==> PowerShare [ZZ/MorphXT] - Stulle
+#define IDS_POWERSHARE_ACTIVATED        60890
+#define IDS_POWERSHARE_DISABLED         60891
+#define IDS_POWERSHARE_ON_LABEL         60892
+#define IDS_POWERSHARE_OFF_LABEL        60893
+#define IDS_POWERSHARE_COLUMN_LABEL     60894
+#define IDS_POWERSHARE_PREFIX           60895
+#define IDS_POWERSHARE                  60896
+#define IDS_POWERSHARE_DENIED_LABEL     60897
+#define IDS_POWERSHARE_ADVISED_LABEL    60898
+#define IDS_POWERSHARE_AUTHORIZED_LABEL 60899
+#define IDS_POWERSHARE_ACTIVATED_LABEL  60900
+#define IDS_POWERSHARE_DISABLED_LABEL   60901
+#define IDS_POWERSHARE_AUTO_LABEL       60902
+#define IDS_POWERSHARE_AUTO             60903
+#define IDS_POWERSHARE_LIMITED          60904
+#define IDS_POWERSHARE_LIMIT            60905
+// <== PowerShare [ZZ/MorphXT] - Stulle
+// ==> Release Bonus [sivka] - Stulle
+#define IDS_RELEASE_BONUS_GROUP         60910
+#define IDS_RELEASE_BONUS_EDIT          60911
+// <== Release Bonus [sivka] - Stulle
+#define IDS_RELEASE_SCORE_ASSURANCE     60920 // Release Score Assurance [Stulle] - Stulle
 
 // Next default values for new objects
 // 

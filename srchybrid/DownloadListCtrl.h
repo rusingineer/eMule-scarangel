@@ -139,7 +139,6 @@ protected:
 	//Xman narrow font at transferwindow
 	CFont		m_fontNarrowBold;
 	//Xman end
-	CFont		m_fontBoldSmaller; // Show Client Percentage [Commander/MorphXT] - Mondgott
 	CImageList  m_overlayimages; // Mod Icons - Stulle
 	CToolTipCtrlX* m_tooltip;
 

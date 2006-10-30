@@ -48,6 +48,15 @@ protected:
 	CTitleMenu		m_SharedFilesMenu;
 	CTitleMenu		m_CollectionsMenu;
 	CMenu			m_PrioMenu;
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	CMenu		m_HideOSMenu;
+	CMenu		m_SelectiveChunkMenu;
+	CMenu		m_ShareOnlyTheNeedMenu;
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	// ==> PowerShare [ZZ/MorphXT] - Stulle
+	CMenu       m_PowershareMenu;
+	CMenu		m_PowerShareLimitMenu;
+	// <== PowerShare [ZZ/MorphXT] - Stulle
 	bool			sortstat[4];
 	CImageList		m_ImageList;
 	CDirectoryItem*	m_pDirectoryFilter;

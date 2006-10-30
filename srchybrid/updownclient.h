@@ -208,6 +208,15 @@ enum ESourceFrom{
 	SF_SLS				= 5			//Xman SLS
 };
 
+// ==> See chunk that we hide [SiRoB] - Stulle
+enum EChunkStatus{
+	SC_AVAILABLE		= 1,
+	SC_HIDDENBYSOTN		= 2,
+	SC_HIDDENBYHIDEOS	= 4/*,
+	SC_PARTIAL			= 8 //MORPH - Added By SiRoB, ICS merged into partstatus*/
+};
+// <== See chunk that we hide [SiRoB] - Stulle
+
 #ifdef _DEBUG
 // use the 'Enums' only for debug builds, each enum costs 4 bytes (3 unused)
 #define _EClientSoftware	EClientSoftware
@@ -486,7 +495,12 @@ public:
 	uint16			GetUpPartCount() const							{ return m_nUpPartCount; }
 	void			DrawUpStatusBar(CDC* dc, RECT* rect, bool onlygreyrect, bool  bFlat) const;
 	bool			IsUpPartAvailable(UINT iPart) const {
+						// ==> See chunk that we hide [SiRoB] - Stulle
+						/*
 						return (iPart >= m_nUpPartCount || !m_abyUpPartStatus) ? false : m_abyUpPartStatus[iPart] != 0;
+						*/
+						return (iPart>=m_nUpPartCount || !m_abyUpPartStatus) ? false : m_abyUpPartStatus[iPart]&SC_AVAILABLE;
+						// <== See chunk that we hide [SiRoB] - Stulle
 					}
 	uint8*			GetUpPartStatus() const							{ return m_abyUpPartStatus; }
     float           GetCombinedFilePrioAndCredit();
@@ -777,6 +791,13 @@ public:
 
 	//Xman Funny-Nick (Stulle/Morph)
 	void	UpdateFunnyNick();
+	//Xman end
+
+	//Xman client percentage
+	sint8	hiscompletedparts_percent_up;
+	sint8	hiscompletedparts_percent_down;
+	sint8	GetHisCompletedPartsPercent_UP() const		{return hiscompletedparts_percent_up;}
+	sint8	GetHisCompletedPartsPercent_Down() const	{return m_abyPartStatus==NULL ? -1 : hiscompletedparts_percent_down;}
 	//Xman end
 
 #ifdef PRINT_STATISTIC
@@ -1207,7 +1228,18 @@ public:
 	bool HasWebCacheState() {return m_eWebCacheUpState == WCUS_UPLOADING;} 
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
-	uint16			GetAvailableUpPartCount() const; // Show Client Percentage [Commander/MorphXT] - Mondgott
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	uint32			m_nSelectedChunk;
+	void	SetPartCount(uint16 parts) { m_nUpPartCount = parts;}
+	void GetUploadingAndUploadedPart(uint8* abyUpPartUploadingAndUploaded, uint32 partcount) const;
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+
+	bool IsSuperiorClient() const; // Superior Client Handling [Stulle] - Stulle
+
+	// ==> PowerShare [ZZ/MorphXT] - Stulle
+	bool			GetPowerShared() const;
+	bool			GetPowerShared(const CKnownFile* file) const;
+	// <== PowerShare [ZZ/MorphXT] - Stulle
 };
 //#pragma pack()
 

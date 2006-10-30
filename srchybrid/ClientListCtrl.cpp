@@ -312,10 +312,8 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 		if (client->IsFriend() && thePrefs.GetFriendsBlue())
 			odc->SetBkColor(m_crFriend);
 		// ==> draw PS files red - Stulle
-		/*
 		else if(client->GetPowerShared() && thePrefs.GetPsFilesRed())
 			odc->SetBkColor(m_crPsFiles);
-		*/
 		// <== draw PS files red - Stulle
 		else
 			odc->SetBkColor(GetBkColor());
@@ -392,8 +390,9 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				if ((client->Credits() && client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED))
 					nOverlayImage |= 1;
 				//Xman changed: display the obfuscation icon for all clients which enabled it
-				if (client->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (client->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()) 
-					&& (client->IsObfuscatedConnectionEstablished() || !(client->socket != NULL && client->socket->IsConnected())))
+				if(client->IsObfuscatedConnectionEstablished() 
+					|| (!(client->socket != NULL && client->socket->IsConnected())
+					&& (client->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (client->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()))))
 					nOverlayImage |= 2;
 
 					POINT point = {cur_rec.left, cur_rec.top+1};
@@ -789,6 +788,9 @@ int CClientListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 		//Xman
 		// khaos::kmod+ Show IP
 		case 8:
+			iResult = CompareUnsigned(ntohl(item1->GetIP()), ntohl(item2->GetIP()));
+			break;
+			/*
 			if(item2->GetUserIPString() && item1->GetUserIPString())
 				iResult= _tcsicmp(item1->GetUserIPString(), item2->GetUserIPString());
 			else if(item1->GetUserIPString())
@@ -796,7 +798,11 @@ int CClientListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 			else
 				iResult= -1;
 			break;
+			*/
 		case 108:
+			iResult = CompareUnsigned(ntohl(item2->GetIP()), ntohl(item1->GetIP()));
+			break;
+			/*
 			if(item2->GetUserIPString() && item1->GetUserIPString())
 				iResult= _tcsicmp(item2->GetUserIPString(), item1->GetUserIPString());
 			else if(item2->GetUserIPString())
@@ -804,6 +810,7 @@ int CClientListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 			else
 				iResult= -1;
 			break;
+			*/
 		// khaos::kmod- Show IP
 
 		default:
