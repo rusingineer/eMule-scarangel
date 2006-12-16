@@ -1,4 +1,4 @@
-Xtreme 5.0
+Xtreme 5.3.1
 ----------------
 
 Main Features:
@@ -11,16 +11,223 @@ Main Features:
 - Powerrelease with dynamic Hide OS
 - IP to country - show country-flags
 - Dynamic Leecher Protection (DLP)
+- Multi-threaded disc access with threading-queue
+- Universal plug and play support (UPNP) for routers
 - hundrets of code improvements
+- emule is now full translated to chinese language (mod + emule 0.47c) (thx welldl)
+
+supported languages:
+german, english, spanish,  french, italian, chinese, turkish, czech
 
 
-based on emule 0.47a
+based on emule 0.47c
 compiled with:
-libpng 1.2.7
+libpng 1.2.12
 zlib 1.2.3
 crypto 52.1
 CxImage version 5.99c
 
+
+Xtreme 5.3.1
+- added client percentage (enabled if you enable the file percentage)
+- added Send user agent as firefox for http downloads when obfucscation enabled (leuk_he)
+- fixed a bug at UPNP if you didn´t restart emule after portchange
+- fixed: possible crashfix for connecting server sockets
+- Fixed Copying Of Comments In Commentlist (Avi3k/Wizard)
+- fixed memleak in slugfillers savehash (Wizard)
+- Fix For Exit Comand Line Option (DreamWalker)
+- changed at clientlist: sorting by IP is now done by value not by string
+- fixed: choose the corrcect chatitem on context-menu (Wizard)
+
+- added czech translation (poutnik)
+
+
+5.3 final
+- small  changes + fixes
+
+
+5.3 beta 1
+- adapted all Xtreme features to Codebase 0.47c
+- added calculation of obfuscation data to the bandwidthcontrol
+- added option to choose the method how chunks are selected for downloading
++ Maella = traditional or zz = new in 0.47c
+- changed: obfuscation icon is displayed for all clients which enabled it
+- fixed an official bug in source-exchange (Xanatos)
+- fixed few minor bugs
+
+
+
+5.2.2
+- compiled now with VS2003 SP1
+- added additional Ghost-Mod-Checks (Morph)
+- added: Avoid Credits Accumulate Fakers (morph)
+- added manual file allocation (Xanatos)
+- added: you can disable the compression at preferences.ini Xtreme-Section by adding the Line
+UseCompression=0
+
+- Fix for false Corruption-Banning (Xanatos)
+- fixed a crash-bug at turkish language-file
+- fixed wrong Splitbars at statistic-graphs (BlueSonicBoy)
+- fixed bug in sendblockrequest
+- fixed minor memleaks (Wizard)
+- fixed a bug for hidden columns (Wizard)
+- fixed a bug, when there is an exception at file allocation 
+- fixed a bug in FlushBuffer
+
+- changed some NAFC-code for accounting networkdata when adapter is changed
+- changed: process timer code via messages to find unkown errors (Xanatos)
+
+
+- removed netfinity patch (no more needed)
+
+
+changelog Xtreme 5.2.1
+- workaround to avoid crash on exit at some systems when sockets are closed
+- fixed a small issue on uploading just completing files
+- changed: the check if you lost the connection to internet is now less sensitive. 
+Also you can specify at preferences.ini, Xtreme-section: internetdownreactiontime=x
+the number of seconds without upload, until Xtreme asumes the internetconnection may be lost. Standard is 2.
+
+
+
+changelog Xtreme 5.2
+- added: disc access with threading-queue for best IO-performance
+- recoded some parts of uploadbandwiththrottler. The throttler isn't anymore the bottleneck but can handle unlimited slotspeed.
+- added: show blocking-ratio and upload health 
+- added option to remove too oftenly blocking sockets 
+- added: friendslots visualization (Morph)
+- added two new internal methods to detect leechers
+- added the leecher-detection-reason to clientdetail-window
+- added FunnyNick (xrmb/Stulle/Morph/Xman)
+- added Sidebanner (thx emule-web.de)
+- added auto update ipfilter (own implementation + some coees and ideas from morph)
+- added option to log the part-count/size-mismtach
+- added option to use narrow font at transferwindow (good if your monitor use low resolution)
+- added UPNP-support (new implementation without any additionally library) (by ACAT for Xtreme-Mod) 
+- added ipfilter kad patch (leuk_he)
+- added Safe-Hash-compatibility-patch to write a compatible known.met format (thx David Xanatos)
+
+- changed: reask sources after IP-change v3 now works also with Kad only connection
+- changed: NAFC-adapter will be found with Kad only connection
+- changed: hashes (known.met) without AICH-Hashset (known2.met) are internal marked now to keep the data integrity
+- changed: don't continue sending after banning
+- changed: the HighResTimer isn't used anymore in standard-configuration. Only if you write HighresTimer=1 into preferences.ini
+
+- improved: simplified the emsocket::Send()
+- improved: ip-to-country optimazion (less CPU & RAM) (thx lolo for ideas and codes)
+- code-improvement for HasCollectionExtention-function
+- improved: don't update to often statistic-file
+- update libpng to 1.2.12
+- updated flush-thread (Morph) + few improvements 
+
+- fixed show wrong clientdatarate if clientspeed > 400 kb/s
+- fixed a small bug that in some circumstances a lowid client could get a uploadslots although it has a low waiting-time
+- fixed a crash on close when flush-thread was running
+- fixed a bug when you tried to connect to an ipfiltered server (greyed out)
+- fixed Unable To Open Completed File After Rename (Sirob)
+- fixed two small bugs in downloaded-history (thx welldl)
+- fixed a bug in auto-update-priority (thx poutnik)
+- fixed: possible crashfix for emules friendhandling (leuk_he)
+
+- many more small fixes and improvements
+
+- updated language-files: chinese (welldl), polish(colder), french (firnus), italian (frankie4), spanish (unomas)
+- new language added: turkish (alpin)
+
+
+Release-Notes:
+blocking-ratio and upload health:
+after turning on this option in Xtreme I you will see some new values at the transferwindow. The first value inside the uploadtoolbar is your upload-health. This value should always be 100% if not, please review your upload-settings. The second value is the 20sec-avg-blocking-count of all sockets.
+At your uploadslots you'll also find a new value, the 20-sec-avg-blocking-ratio. This is the ratio how oftenly the socket blocked our try to send at the last 20 sec. E.g. 95% would mean: only 5% of our sending-tries was successful.
+
+
+option to remove blocking sockets:
+works only if you enabled the option to open more sockets if needed. Now if your uploadslots grow three slots over the minimum-slots Xtreme looks if there is a slot uploading >3 minutes and has a high blocking-ratio. This slot will be removed.
+Please use this option with caution!
+
+
+auto-update-ipfilter works like this:
+- after you enabled the option... the next restart of the client the ipfilter will be downloaded and the date of this version will be stored
+- on next restart of you clients the ipfilter will be checked in the same interval as versions-check (you can set it at general settings). If it is time to do a check Xtreme will connect to the URL you specified at security-settings. After connection is established Xtreme checks if the version on server is newer than your installed version. If so, your ipfilter will be updated.
+
+
+
+changelog xtreme 5.1.2
+- fixed a bug in socket-queuing (my stupidy)
+- fixed crash when we canceled a file and Flush thread runing (SiRoB)
+- fix: emule fortget to publish known files to server (official bug)
+
+
+changelog Xtreme 5.1.1
+- added proper cleaning of temporary handle-maps 
+ + because official emule doesn't delete this maps emule eats more and more CPU after longer runingtime
+- added variable compression. (idea netfinity)
+ + If your upload is > 80 kb/s emule switch to lower compression = less CPU for high-speed uploaders 
+- added: show filename to IPFiltered-messages if possible
+- added new Kad-Patch by unknown1
+- added: filter outgoing server connections (bluesonicboy)
+
+- fixed a small bug in Auto-Downlaodpriority
+- Fix Connection Collision (Sirob)
+- fixed unicode problem around some error messages
+- fixed: objects in oscopecontrol are safed and restored via handle = proper GUI-coding
+- few fixes to statistic-graph (bluesonicBoy)
+
+- improved socket queuing
+- improved: taking a connected socket on filereask
+- updated flushthread (Sirob)
+
+
+changelog Xtreme 5.1
+This version includes really many patches and improvements for less CPU load and memory consumption.
+because most changes are internal, they aren't listed here.
+By the way, this is the first chinese translated official mod ;-)
+
+- added: Extened credit- table-arragement (less memory)
+- added: Anti-Nick-Changer, bans permamently nick-changers (e.g. Ketamine)
+- added: new slpash-screen arrangement (inspired by KTS)
+- added: don't overwrite bak files if last sessions crashed (idea blomy)
+- added: show complete up/down in queuelist
+- added: slugfiller safehash modified by Sirob
+- added: ReadBlockFromFileThread by Sirob + Improvements for Xtreme-Full-Chunk
+- added: Flush Thread (Sirob)
+- added: readded patch(slightly modified) from previous version for redownloading already downloaded files. 
+- added: chinese translation (welldl)
+
+- changed: grant credits only > 1.65 MB uploaded
+- changed: failed tcp-connection (statistik) now also count the cennected but not responding clients
+- changed: increased reasktime for non UDP-clients to give them a chance to first connect
+- changed: increased the time until a socket will be deleted (maybe this helps against some crashes)*
+* you will see more open sockets at statistic 
+- changed: don't add passive sources with wrong filesize
+- changed: show IP of denied reqeusted share files
+- changed some message strings
+
+- improved: few Improvements to IP to country 
+- improved: Init-Hashtable optimization
+- improved: some code-optimaztions at Xtreme-Creditsystem (less memory)
+- Some Code Improvements by Sirob, eklmn, avi-3k and Wizard
+- and many more imrovements
+
+- fixed: in sharefilelist the AddsearchtoCancelled-Menu didn't appear
+- fixed file rating string Aenarion[ITA]
+- fixed a small bug, that peercachesockets could stop upload to early
+- fixed a problem that good sourcen could be filtered, if a file is finished sooner than the sources can answer
+- fixed wrong displaying of files-count in sharefilelistctrl in some cases
+- fixed: summary not updated after deleting shared file (raccoonI)
+- fixed: eMule steals focus when message from new client is received (raccoonI)
+- minor fixes to progressbar by Sirob
+
+
+changelog 5.0.1 
+- fixed an official Gui Bug In Settings Wizard (FrankyFive)
+- changed creditsytsem: use linear function until half of a chunk is transferred. reduce leeching by only giving 1-2 MB
+- changed the sleeptiming of uploadbandwidththrottler a bit
+- changed some leecher-detection code. Some clients will now be banned instead of reduce score, because they are responsable for many failed downloadsessions
+- changed some icons at toolbar (thx emule-web.de)
+- removed a patch for handling duplicate shared files which could lead to crash
+- few other small improvements
+- added unrar.dll and new mediainfo.dll to the archive
 
 
 changelog 5.0

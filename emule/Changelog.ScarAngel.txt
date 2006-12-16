@@ -1,11 +1,67 @@
 CHANGELOG FOR EMULE ScarAngel MOD
 
 
+eMule v0.47c ScarAngel v1.8:
+------------------------
+- XX.XX.2006 -
+-------------------------------------------------------------------------------
+based on eMule 0.47c Xtreme 5.3.1 compiled with vs2003 SP1
+
+Added: XP-Style menus [Xanatos/ eMule-web.de staff] - Stulle
+
+Fixed: Reset Spread Bars command [Stulle] - Stulle
+Fixed: second categories column in DownloadList removed [Stulle] - Stulle
+
+
+eMule v0.47c ScarAngel v1.7:
+------------------------
+- 30.10.2006 -
+-------------------------------------------------------------------------------
+based on eMule 0.47c Xtreme 5.3.1 compiled with vs2003 SP1
+
+Added: Release Bonus (12h or up to 16 days) (not for partfiles) [sivka]
+Added: Release Score assurance [Stulle]
+
+Fixed: Crash on renaming/ deleting shared file [Stulle] - Stulle
+
+Release Score assurance:
++ clients requesting complete files with release priority will not get
+	a score lower than the default unless they are Reduce Score clients
+
+
+eMule v0.47c ScarAngel v1.6:
+------------------------
+- 27.10.2006 -
+-------------------------------------------------------------------------------
+based on eMule 0.47c Xtreme 5.3.1 compiled with vs2003 SP1
+
+Added: Spread bars [Slugfiller/MorphXT] - Stulle
+Added: HideOS & SOTN [Slugfiller/MorphXT] - Stulle
+	+ for complete files only!
+Added: Anti Anti HideOS & SOTN [SiRoB] - Stulle
+Added: See chunk that we hide [SiRoB] - Stulle
+Added: Rare file ratio column in SharedList [Stulle] - Stulle
+Added: Superior Client Handling [Stulle] - Stulle
+Added: PowerShare [ZZ/MorphXT] - Stulle
+Added: Draw PS file requesting clients red [Stulle] - Stulle
+
+Changed: Show Client Percentage optional [Stulle] - Stulle
+
+Fixed: WebCache working with obfuscation [MorphXT] - Stulle
+
+Removed: Spread bars (old version) [SlugFiller] - Stulle
+Removed: Dynamic Hide OS [SlugFiller/Xman] - Stulle
+
+PowerShare:
+ + PowerShare only works on complete files
+ + Clients requesting PowerShare will get pushed to top of the queue
+
+
 eMule v0.47c ScarAngel v1.5:
 ------------------------
-- 09.09.2006 -
+- 28.09.2006 -
 -------------------------------------------------------------------------------
-based on eMule 0.47c Xtreme 5.3b1 compiled with vs2003 SP1
+based on eMule 0.47c Xtreme 5.3 compiled with vs2003 SP1
 
 Changed: Replaced CPU usage reader code [ejor] - Stulle
 Changed: System Info settings resetted to default [Stulle] - Stulle
