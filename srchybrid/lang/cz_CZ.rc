@@ -2023,6 +2023,360 @@ BEGIN
     IDS_UPLOADINSTABLE      "Varování: Limit uploadu je asi pøíliš vysoký. Zkontroluj nastavení! \n Podívej se na graf uploadu, bílá nebo žlutá (s NAFC) èára má být rovná \n Tato zpráva je zobrazena pouze jednou"
 END
 
+STRINGTABLE
+BEGIN
+    // ==> ScarAngel Preferences window - Stulle
+    IDS_CON_TWEAKS          "Úprava Pøipojení"
+	IDS_MISC                "Jiná Nastavení"
+    // <== ScarAngel Preferences window - Stulle
+    // ==> Global Source Limit [Max/Stulle] - Stulle
+    IDS_GLOBAL_HL           "Celkový LZ"
+    IDS_GLOBAL_HL_LIMIT     "Celkový Limit Zdrojù"
+    IDS_GLOBAL_HL_ALL       "Použij pro všechny soubory"
+    IDS_GLOBAL_HL_DEFAULT   "Implicitní celkový LZ pro soubory"
+    IDS_ENABLE              "Povolit"
+    // <== Global Source Limit [Max/Stulle] - Stulle
+    IDS_PUSH                "Protekèní nastavení" // push files - Stulle
+    // ==> push small files [sivka] - Stulle
+    IDS_PUSH_SMALL          "Protekce pro malé soubory"
+	IDS_SMALL               "Malé"
+	IDS_PUSH_SMALL_BOOST    "Faktor protekce pro malé soubory"
+    // <== push small files [sivka] - Stulle
+    // ==> push rare file - Stulle
+    IDS_PUSH_RARE           "Protekce pro vzácné (Rare) soubory"
+    IDS_RARE                "Vzácné"
+    IDS_RARE_RATIO          "Vzácnost"
+    // <== push rare file - Stulle
+    IDS_SHOWINMSN7          "Zobrazuj stav eMule v poli zpráv MSN7 ( a vyšším ) " //Show in MSN7 [TPT] - Stulle
+    // ==> Show sources on title - Stulle
+    IDS_SHOWSRCONTITLE      "Zobrazuj zdroje v názvu okna"
+    IDS_SHOWSRCSTRING       "Zdrojù:"
+    // <== Show sources on title - Stulle
+    IDS_SHOWOVERHEADONTITLE "Zobrazuj režii v názvu okna"// show overhead on title - Stulle
+    // ==> CreditSystems [EastShare/ MorphXT] - Stulle
+    IDS_CREDIT_SYSTEM       "Credit System"
+    IDS_OFFICIAL_CREDIT     "Official Credit"
+    IDS_LOVELACE_CREDIT     "lovelace Credit"
+    IDS_RATIO_CREDIT        "Ratio Credit"
+    IDS_PAWCIO_CREDIT       "Pawcio Credit"
+    IDS_EASTSHARE_CREDIT    "EastShare Credit"
+    IDS_SIVKA_CREDIT        "Sivka Credit"
+    IDS_SWAT_CREDIT         "S.W.A.T. Credit"
+    IDS_XMAN_CREDIT         "Xman Credit"
+    // <== CreditSystems [EastShare/ MorphXT] - Stulle
+    // ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
+    IDS_SUQWT_LOAD          "Nahrej %s"
+    IDS_SUQWT               "Povolit UložDobyÈekáníVeFrontìUploadù (SUQWT)"
+    // <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
+    IDS_SHOW_FILE_HL_CONST  "Zobrazuj aktuální limit zdrojù pro soubor" // show HL per file constantaniously - Stulle
+    IDS_PS_FILES_RED        "Zobrazuj PS soubory èervenì" // draw PS files red - Stulle
+    IDS_FRIENDS_BLUE        "Zobrazuj pøátele modøe" // draw friends blue - Stulle
+    IDS_SHOW_GLOBAL_HL      "Zobrazuj celkový limit zdrojù" // show global HL - Stulle
+    // ==> file settings - Stulle
+    IDS_NNS_TIMERLABEL      "Èasovaè nepotøebných zdrojù (NZ) 0..60 sec"
+    IDS_REMOVENNSLIMITLABEL "Limit odhození NZ > X%"
+    IDS_FQS_TIMERLABEL      "Èasovaè zdrojù s plnou frontou (ZPF) 0...60 sec"
+    IDS_REMOVEFQSLIMITLABEL "Limit odhození ZPF > X%"
+    IDS_HQRS_TIMERLABEL     "Èasovaè zdrojù s dlouhou frontou (ZDF) 0...120 sec"
+    IDS_REMOVEQRSLABEL      "Maximální poøadí ve frontì <= X"
+    IDS_REMOVEQRSLIMITLABEL "Limit odhození ZDF > X%"
+    IDS_AUTO_NNS            "Povol odhazování NZ"
+    IDS_AUTO_FQS            "Povol odhazování ZPF"
+    IDS_AUTO_QRS            "Povol odhazování ZDF"
+    IDS_SIVKAFILESETTINGS   "Sivka - nastavení souborù"
+    IDS_HARDLIMIT_LABEL     "Limit zdrojù (0=použij implicitní)"
+    IDS_FILE_DEFAULTS       "Implicitní nastavení pro soubory"
+    IDS_XMAN_DROPPING       "Použij metodu odhazování Xman"
+    IDS_SIVKA_DROPPING      "Použij metodu odhazování Sivka"
+    IDS_HQR_WAY             "Mmetodu odhazování"
+    // <== file settings - Stulle
+    IDS_SHOW_DROPPED_SRC    "Odhozené zdroje" // show # of dropped sources - Stulle
+    // ==> Source Graph - Stulle
+    IDS_SRCGRAPH            "Zobrazuj graf zdrojù"
+    IDS_STATIC_STATSHL      "Min/Max pro graf limitu zdrojù :"
+    IDS_SP_SRCGRAPH         "Graf zdrojù"
+    // <== Source Graph - Stulle
+    IDS_FD_AVGDL            "Prùmìrná rychlost DL:" // Average download speed - Stulle
+    // ==> WebCache [WC team/MorphXT] - Stulle/Max
+    IDS_PW_WEBCACHE         "WebCache"
+    IDS_WrongPortforWebcache 
+                            "Webcache Download zakázán: Cache pracuje jen s porty 21, 70,  80, 210, 443, 563 a v rozsahu od 1025 do 65535. Použij jeden z tìchto portù, má-li WebCache pracovat."
+    IDS_WEBCACHE_NOSUPPORT  "nepodporováno"
+    IDS_STATS_SUCCESSFULLWC "Úspìšné WC-DL/WC-žádosti:"
+    IDS_STATS_FAILEDWC      "Neúspìšné WC-DL/WC-žádosti:"
+    IDS_WEBCACHE_ISP        "Nastavení proxyserveru ISP"
+    IDS_WC_PORT             "Port"
+    IDS_WC_ADDRESS          "Adresa"
+    IDS_WC_CONTROLS         "Øízení Webcache"
+    IDS_WC_ENABLE           "Povol Webcache Downloady"
+    IDS_WC_WRONGPORT        "Používáš TCP port, který obvykle není cachován ISP proxy servery. Zmìò TCP port na 21, 70, 80, 210, 443, 563  nebo 1025 - 65535 pro aktivaci downloadù pomocí Webcache."
+    IDS_WC_AUTO             "Autodetekce Webcache"
+    IDS_WC_NRBLOCKS         "Poèet blokù k downloadu pøed obnovením spojení s proxy (mùže nìkdy pomoci vyøešit odpojování)"
+    IDS_WC_BLOCK            "180k-Bloky"
+    IDS_WC_TIMEOUT          "Dlouhý timeout pro webcache spojení"
+    IDS_WC_LOCAL            "Tato webcache není aktivní pro provoz v rámci stejného ISP"
+    IDS_WC_SUBMIT_EMAIL     "Pošli nastavení Webcache emailem"
+    IDS_WC_LINK             "Odkaz: "
+    IDS_WC_PERSISTENT       "Trvalá spojení pro proxy downloady"
+    IDS_WC_ADVANCED         "Zobraz pokroèilá nastavení"
+    IDS_WC_TEST             "Otestuj konfiguraci webcache. Mùže to trvat až 30 sec."
+    IDS_WC_HIDE_ADV         "Schovej pokroèilá nastavení"
+    IDS_WC_SUBMIT_WEB       "Pošli nastavení Webcache webovým formuláøem"
+    IDS_WC_SOURCES          "Webcache umožnìna"
+    IDS_WC_UPDATESETTING    "Aktualizuj nastavení webcache automaticky"
+    IDS_LOG_WCEVENTS        "Loguj WebCache události"
+    IDS_LOG_IACH            "Loguj IACH události"
+    IDS_WEBCACHE_NOPROXY    "proxy není nastavena"
+    IDS_CD_WCSUCCFAIL       "Úspìšných/Požadovaných:"
+    IDS_CD_WCTRUSTSENDER    "Je dùvìryhodným odesílatelem OHCB :"
+    IDS_WCDOWNL             "Ještì nepracuje"
+    IDS_WC_REQ_SUCC         "WC Úsp/Žád:"
+    IDS_WC_DOWNLOADED       "WC-Download:"
+    IDS_WC_REACTIVATED      " Webcache byla reaktivována."
+    IDS_WC_NEWPROXYIP       "U proxy byla zjištìna nová ip adresa: %s."
+    IDS_STATS_WEBCACHE      "Webcache"
+    IDS_STATS_WEBCACHE_1    "Data 1:"
+    IDS_STATS_WEBCACHE_2    "Data 2:"
+    IDS_STATS_WEBCACHE_3    "Data 3:"
+    IDC_MSG_WEBCACHEFAIL    "Váš proxy-server asi neuchovává data. Z více než 100 požadavkù na Webcache nebyl žádný úspìšný. Zkontrolujte nastavení proxy. WebCache downloady jsou zakázány, dokud nebude otestována nová proxy!"
+    IDC_MSG_WEBCACHE_NOAUTODEC 
+                            "Je mi líto, poskytovatel pøipojení (ISP) není v databázi.,\naby byla možná autodetekce ISP %s\nvyhledejte a zašlete(potvrïte) proxy Vašeho ISP."
+    IDC_MSG_WEBCACHE_NOIP   "Nemáte veøejnou IP adresu, pøipojte se k ed2k-serveru nebo do Kad.\n Váš TCP port musí být dosažitelný (highID), jste-li pøipojen k serveru,\nale není to nutné pro pøipojení Kad"
+    IDC_MSG_WEBCACHE_CONFIGALT 
+                            "Webcache autodetekce zjistila zmìnu v nastavení, je doèasnì deaktivovaná, dokud nebude otestována nová proxy.\n Mùžete deaktivovat automatické nastavení webcache v Pokroèilých nastaveních Webcache."
+    IDC_MSG_WEBCACHE_NOACTIVE 
+                            "Webcache Autodetekce zjistila že proxy Vašeho ISP neuchovává data. Webcache je zakázána."
+    IDC_MSG_WEBCACHE_ERRRESOLVE 
+                            "Chyba WebCache - Selhalo ovìøení (DNS) HTTP proxy addresy:\n%s\nOvìøte nastavení webcache"
+    IDC_MSG_WEBCACHE_TRANSPAR 
+                            "Proxy Test neumí testovat transparentní proxy. Test zrušen!"
+    IDC_MSG_WEBCACHE_TESTRUNNING 
+                            "Probíhá Proxy Test! Záznam výsledku zkontrolujte v oknì serverù!"
+    IDC_MSG_WEBCACHE_TESTERR "Chyba Proxy Testu!"
+    IDC_MSG_WEBCACHE_ALREADYRUNNING 
+                            "Test nebyl spuštìn, protože už jeden bìží..."
+    IDC_MSG_WEBCACHE_TESTREQ 
+                            "Test nebyl spuštìn. Nybyly splnìny všechny podmínky.\n Podmínky:\n1. Pøipojení k serveru\n2. Platná a veøejná adresa IP\n3. Musíte mít HighID\n4. Test nefunguje, je-li pøíliš mnoho otevøených spojení"
+    // <== WebCache [WC team/MorphXT] - Stulle/Max
+    // ==> FunnyNick [SiRoB/Stulle] - Stulle
+    IDS_FN_TAG              "Legraèní pøezdívka ( Funny Nick )"
+    IDS_NO_TAG              "Bez pøezdívky"
+    IDS_SHORT_TAG           "[LP]"
+    IDS_FULL_TAG            "[LegraèníP]"
+    IDS_CUSTOM_TAG          "Vlastní oznaèení"
+    IDS_SET_CUSTOM_TAG      "Nastav vlastní oznaèení"
+    IDS_FN_TAG_AT_END       "Ukaž oznaèení na konci"
+    // <== FunnyNick [SiRoB/Stulle] - Stulle
+    IDS_CLIENTQUEUEPROGRESSBAR "Ukaž stav fronty klientù" // Client queue progress bar [Commander] - Stulle
+    IDS_ACC                 "Povol aktivní øízení spojení" // ACC [Max/WiZaRd] - Max
+    // ==> ScarAngel Version Check - Stulle
+    IDS_VISITSVERSIONCHECK  "\n\nChcete navštívit webovou stránku ScarAngel ?"
+    IDS_SVERSIONCHECK       "Kontrola&Verze (ScarAngel)"
+    IDS_NONEWSVERVERSION    "Nová verze eMule ScarAngel nebyla zjištìna."
+    IDS_NEWSVERSIONAVL      "Byla zjištìna nová verze eMule ScarAngel! více info na stránce projectu."
+    IDS_NEWSVERSIONAVLPOPUP "Byla zjištìna nová verze eMule ScarAngel. Kliknìte zde - info o nové verzi!"
+    // <== ScarAngel Version Check - Stulle
+    // ==> Quick start [TPT] - Max
+    IDS_QUICK_START_GROUP   "Rychlý start"
+    IDS_QUICK_START         "Povol Rychlý start"
+    IDS_QUICK_START_MAX_TIME "Èas pro Rychlý start [8-18 min.]"
+    IDS_QUICK_START_MAX_CONN_PER_FIVE "max. spoj./5sec"
+    IDS_QUICK_START_MAX_CONN "max. spoj."
+    IDS_QUICK_START_AFTER_IP_CHANGE "Povol Rychlý start po zmìnì IP"
+	IDS_QUICK_START_MAX_CONN_PER_FIVE_BACK "Vrátit zpìt max. spoj./5sec"
+    IDS_QUICK_START_MAX_CONN_BACK "Vrátit zpìt max. spoj."
+    // <== Quick start [TPT] - Max
+    // ==> CPU/MEM usage [$ick$/Stulle] - Stulle
+    IDS_SYS_INFO_GROUP      "Informace o Systému"
+    IDS_SYS_INFO_GLOBAL     "Povol celkové informace"
+    // <== CPU/MEM usage [$ick$/Stulle] - Stulle
+    // ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+    IDS_BACKUP_FILEFRAME    "Vyber typy souborù k zálohování"
+    IDS_BACKUP_SELECTALL    "Vyber vše"
+    IDS_BACKUP_AUTOFRAME    "Auto-zálohování"
+    IDS_BACKUP_AUTOBACKUP   "Auto-zálohování pøi ukonèení"
+    IDS_BACKUP_NOTE         "Poznámka:"
+    IDS_BACKUP_BACKUPNOW    "Zálohuj okamžitì"
+    IDS_BACKUP_MESSAGE      "V adresáøi eMule bude vytvoøen adresáø ""Backup"" se zálohami."
+    IDS_BACKUP_AUTOBACKUP2  "Dvojí záloha"
+    IDS_ABORT               "Pøerušit?"
+    IDS_CONTINUE            "&Pokraèuj"
+    IDS_DONOTASKAGAIN       "Už se neptej"
+    IDS_DONOTSHOWAGAIN      "Už mi to neukazuj"
+    IDS_DONOTTELLAGAIN      "Už mi to neøíkej"
+    IDS_HELP                "&Help"
+    IDS_IGNORE              "&Ignoruj"
+    IDS_IGNOREALL           "I&gnoruj Vše"
+    IDS_NOTOALL             "N&e pro Všechno"
+    IDS_OK                  "OK"
+    IDS_REPORT              "Re&port"
+    IDS_RETRY               "&Znovu"
+    IDS_SKIP                "&Pøeskoè"
+    IDS_SKIPALL             "P&øeskoè Vše"
+    IDS_TRYAGAIN            "Z&kus Znovu"
+    IDS_YESTOALL            "&Ano pro Vše"
+    // <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+    // ==> TBH: minimule - Max
+    IDS_MM_SHOW             "Použij TBH Mini-Mule"
+    IDS_MM_LIVES            "Aktualizuj Mini-Mule"
+    IDS_MM_UPDATE_TIME      "Aktualizuj každých (sec)"
+    IDS_MM_TRANS            "Prùhlednost Mini-Mule (1-255)"
+    IDS_MM_ACTDL            "Aktivní Downloady: %i"
+    IDS_MM_DATA             "Up: %s | Down: %s"
+    IDS_MM_UPDOWN           "Up: %s(%.1f) | Down: %s(%.1f)"
+    IDS_MM_COMPL            "Ukazuj dokonèené soubory v relaci"
+    IDS_MM_RATIO            "UL:DL :"
+    IDS_MM_OPEN             "Otevøi Mini-Mule pøi minimalizaci do lišty"
+    // <== TBH: minimule - Max
+    // ==> Copy feedback feature [MorphXT] - Stulle
+    IDS_COPYFEEDBACK        "Kopíruj odezvu do schránky"
+    IDS_COPYFEEDBACK_US     "Kopíruj odezvu do schránky(US)"
+    IDS_FEEDBACK_TRANSFERRED "Pøeneseno: %s (%s)"
+    IDS_FEEDBACK_REQUESTED  "Vyžádáno: %i (%i)"
+    IDS_FEEDBACK_ACCEPTED   "Pøijatých žádostí: %i (%i)"
+    IDS_FEEDBACK_FROM       "Odezva od %s on [%s]"
+    IDS_FEEDBACK_FILENAME   "Jméno souboru: %s"
+    IDS_FEEDBACK_FILETYPE   "Typ souboru: %s"
+    IDS_FEEDBACK_FILESIZE   "Velikost: %s"
+    IDS_FEEDBACK_DOWNLOADED "Staženo: %s"
+    IDS_FEEDBACK_TOTAL      "Celkem zdrojù: %i"
+    IDS_FEEDBACK_AVAILABLE  "Dostupných zdrojù : %i"
+    IDS_FEEDBACK_NONEEDPART "Zdroje bez potøebných èástí: %i"
+    IDS_FEEDBACK_COMPLETE   "Kompletní zdroje: %i"
+    // <== Copy feedback feature [MorphXT] - Stulle
+    // ==> MassRename [Dragon] - Stulle
+    IDS_MASSRENAME1         "Maska jména souboru (Zmeny budou provedeny u všech souborù níže ):"
+    IDS_FILENAMELEFT        "Jména souboru zarovnat vlevo"
+    IDS_FILENAMERIGHT       "Jména souboru zarovnat vpravo"
+    IDS_RESETFILENAMES      "&Reset"
+    IDS_SIMPLECLEANUP       "&Jednoduché èištìní"
+    IDS_INSERTTEXTCOLUMN    "&Vložs sloupec textu ze schránky"
+    IDS_MASSRENAME2         "Pùvodní názvy souborù:"
+    IDS_MASSRENAME3         "Nové nazvy souborù:"
+    IDS_NOTENOUGHFILENAMES  "Není dost názvù souborù v seznamu nových názvù. Pøejmenování není možné."
+    IDS_IDENTICALFILENAMES  "Dva nebo více stejných názvù souborù ve stejné adresáøi není dovoleno (Øádek %d). Pøejmenování není možné."
+    IDS_MR                  "Dávkové pøejmenování..."
+    IDS_CHECKDOTTOSPACE     "Zmìò ""."" to "" """
+    IDS_CHECKUNDERLINETOSPACE "Zmìò ""_"" to "" """
+    IDS_CHECKCONVERTAPOSTROPHES 
+                            "Zmìò špatné apostrophes ""´"", ""`"" to standard apostrophes "" ' """
+    IDS_CHECKCONVERTHEX     "Zmìò hexadecimání èísla ""%xx"" na znaky"
+    IDS_CHECKSEARCHANDREPLACE "Vyhledej and Nahraï:"
+    IDS_SC_SEARCHFOR        "Vyhledej :"
+    IDS_SC_REPLACEBY        "Nahraï pomocí:"
+    IDS_CHECKCASESENSITIVE  "Hledání podle velikosti"
+    IDS_CHECKCHARACTERREPLACE "Nahraï znaky:"
+    IDS_REPLACECHAR         "Nahraï"
+    IDS_REPLACECHARBY       "pomocí"
+    IDS_SC_ADD              "&Pøidej"
+    IDS_SC_EDIT             "&Edituj"
+    IDS_SC_DELETE           "&Smaž"
+    IDS_SEARCHFORCHAR       "Vyhledej"
+    IDS_REPLACEBYCHAR       "Nahraï pomocí"
+    IDS_SC_HEADLINE         "jednoduché èištìní"
+    // <== MassRename [Dragon] - Stulle
+    // ==> Startupsound [Commander] - mav744
+    IDS_STARTUPSOUND        "Pøehrej zvuk pøi startu"
+    IDS_MISSING_STARTUPSOUND 
+                            "Chybí startupsound.wav! Poznámka: Soubor 'startup.wav' musí být umístìn v adresáøi Config"
+    // <== Startupsound [Commander] - mav744
+    IDS_COMPRESS_LVL        "Stupeò komprese (0 = zakázána)" // Adjust Compress Level [Stulle] - Stulle
+    // ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+    IDS_CAT_MINIMUM         "Minimum"
+    IDS_CAT_MAXIMUM         "Maximum"
+    IDS_CAT_DLGHELP         "Zatrhávátku urèují, jestli kritérium má být použito pøi výbìru kategorie pro nové soubory."
+    IDS_CAT_FILTERS         "Filtry Kategorií "
+    IDS_CAT_RS              "Zbývající velikost (MB)"
+    IDS_CAT_FS              "Velikost souboru (MB)"
+    IDS_CAT_RT              "Zbývající èas (M)"
+    IDS_CAT_SC              "Poèet zdrojù"
+    IDS_CAT_ASC             "Poèet dostupných zdrojù"
+    IDS_CAT_THISCAT         "Tato kategorie"
+    IDS_CAT_SUSPENDFILTERS  "Potlaè zobrazovací filtry"
+    IDS_CAT_FROMCATSINFO    "Pøiøaïte všechny soubory této kategorie k jiným kategoriím pøed tím, než mùžete nastavit kategorii na Ukaž vše, nebo Vše nepøiøazené!"
+    IDS_CAT_FROMCATSCAP     "Nepøiøazené soubory"
+    IDS_CAT_FILTERSACTIVE   "Filtry aktivní"
+    IDS_CAT_FILTERSSUSP     "Filtry potlaèeny"
+    IDS_CAT_SETORDER        "Nastav lineární prioritu"
+    IDS_CAT_ORDER           "Vlož celé nezáporné èíslo . Nižší èísla jdou na øadu první."
+    IDS_CAT_PAUSEDSHOWN     " | Se zastavenými"
+    IDS_CAT_PAUSEDHIDDEN    " | Bez zastavených"
+    IDS_CAT_COLCATEGORY     "Cat"
+    IDS_CAT_COLORDER        "LP"
+    IDS_CAT_MNUAUTOINC      "Vybráno automatické èíslování"
+    IDS_CAT_MNUSTEPTHRU     "Krokuj pro všechny vybrané"
+    IDS_CAT_MNUALLSAME      "Nastav vše na jednu hodnotu"
+    IDS_CAT_EXPAUTOINC      "Vlož poèáteèní nezáporné èíslo:"
+    IDS_CAT_EXPSTEPTHRU     "Vlož nezáporné èíslo, nižší èísla jdou na øadu první.\nSoubor:"
+    IDS_CAT_EXPALLSAME      "Vlož nezáporné èíslo pro všechny vybrané soubory:"
+    IDS_CAT_ABORTSTEPTHRU   "Chceš zrušit krokování lineární priority?"
+    IDS_CAT_SHOWPAUSED      "Ukaž zastavené"
+    IDS_CAT_HIDEPAUSED      "Skryj zastavené"
+    IDS_CAT_SELDLGTXT       "Vyber kategorii ze seznamu, nebo vlož nézev nové:"
+    IDS_CAT_SELDLGCAP       "Vyber kategorii"
+    IDS_CAT_SHOWCATNAME     "Zobraz celé jméno kategorie ve sloupci 'Cat'"
+    IDS_CAT_SHOWSELCATDLG   "Zobraz dialog 'Vyber kategorii'"
+    IDS_CAT_USEACTIVE       "Nové downloady implicitnì do vybrané kategorie"
+    IDS_CAT_AUTORESUMEORD   "Automaticky zvyš a pøiøaï linearní prioritu"
+    IDS_CAT_SMALLFILEDLPUSH "Stahuj malé soubory jako první (< 150KB)"
+    IDS_CAT_AUTOCAT         "Pokroèilá maska filtrù (oddìlovaè: | )"
+    IDS_CAT_USEAUTOCAT      "Pøidávej nové downloady do kategorií s použitím filtrù"
+    IDS_CAT_MERGE           "Sluè kategorie"
+    IDS_CAT_GROUP           "Skupina"
+    IDS_CAT_RESUMEFILEONLYINSAMECAT 
+                            "Navazuj zastavené soubory jen ve stejné kategorii"
+    IDS_CAT_RESUMENEXT      "Navaž další"
+    IDS_CAT_PAUSELAST       "Pozastav poslední"
+    IDS_CAT_STOPLAST        "Zastav last"
+    IDS_SCC                 "Pokroèilý management kategorií (SCC)"
+    IDS_DL_MODE             "Mod navazování"
+    IDS_LP                  "Lineární Priorita"
+    IDS_CAT_STARTFILESONADD "Spus stahování # souborù po pøidání do nové kategorie"
+    IDS_DL_MODE_DEFAULT     "Implicitní Mod navazování"
+    IDS_DL_NONE             "Žádný"
+    IDS_SEARCH_INVALIDMINMAX "Pro Min/Max velikost souboru vybrány špatné jednotky"
+    // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+    IDS_SHARED_PREFS        "Management sdílených souborù" // Shared Files Management [Stulle] - Stulle
+    // ==> Spread bars [Slugfiller/MorphXT] - Stulle
+    IDS_SPREAD_BARS         "Povol Spread bars"
+    IDS_SF_UPLOADED_PARTS   "Spread bar (UL part history)"
+    IDS_SF_TURN_PART        "File UL (part)"
+    IDS_SF_TURN_SIMPLE      "File UL (simple)"
+    IDS_SF_FULLUPLOAD       "File UL (full)"
+    IDS_SPREAD_RESET        "Reset Spread bar(s)"
+	// <== Spread bars [Slugfiller/MorphXT] - Stulle
+    // ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+    IDS_HIDEOS              "Ukryj nasdílené èásti (HideOS)"
+    IDS_SHAREONLYTHENEED    "Sdílej jen potøebé (SOTN)"
+    IDS_HIDEOVERSHARES      "Poèet extra uploadù èástí pøed skrytím (0 = zakázáno)"
+    IDS_SELECTIVESHARE      "Selektivní výbìr èástí pro sdílení"
+    IDS_ERR_HIDDENBLOCK     "Žádán o skrytý blok"
+    // <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+    // ==> PowerShare [ZZ/MorphXT] - Stulle
+    IDS_POWERSHARE_ACTIVATED "Aktivuj"
+    IDS_POWERSHARE_DISABLED "Zakáž"
+    IDS_POWERSHARE_ON_LABEL "On"
+    IDS_POWERSHARE_OFF_LABEL "Off"
+    IDS_POWERSHARE_COLUMN_LABEL "Powershare"
+    IDS_POWERSHARE_PREFIX   "PS"
+    IDS_POWERSHARE          "Powershare"
+    IDS_POWERSHARE_DENIED_LABEL "Nepovoleno"
+    IDS_POWERSHARE_ADVISED_LABEL "Doporuèeno"
+    IDS_POWERSHARE_AUTHORIZED_LABEL "JenNaPøání"
+    IDS_POWERSHARE_ACTIVATED_LABEL "Activováno"
+    IDS_POWERSHARE_DISABLED_LABEL "Zakázáno"
+    IDS_POWERSHARE_AUTO_LABEL "Auto"
+    IDS_POWERSHARE_AUTO     "Auto"
+    IDS_POWERSHARE_LIMITED  "Omezeno"
+    IDS_POWERSHARE_LIMIT    "Limit kompletních zdrojù"
+	// <== PowerShare [ZZ/MorphXT] - Stulle
+    // ==> Release Bonus [sivka] - Stulle
+    IDS_RELEASE_BONUS_GROUP "Release Bonus"
+    IDS_RELEASE_BONUS_EDIT  "Nastav bonusové dny"
+    // <== Release Bonus [sivka] - Stulle
+    IDS_RELEASE_SCORE_ASSURANCE "Zaruèené implicitní skore pro release soubory" // Release Score Assurance [Stulle] - Stulle
+END
+
 #endif    // Tschechisch resources
 /////////////////////////////////////////////////////////////////////////////
 

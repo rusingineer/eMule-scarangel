@@ -2292,6 +2292,9 @@ BEGIN
 	IDS_XMAN_CREDIT         "Crédit Xman"
 	IDS_XMAN_DROPPING       "Utiliser la méthode de purge Xman"
 	IDS_YESTOALL            "O&ui à tous"
+    IDS_RELEASE_BONUS_GROUP "Bonus pour les release"
+    IDS_RELEASE_BONUS_EDIT  "Nb de jours de bonus"
+    IDS_RELEASE_SCORE_ASSURANCE "Assurer le score par défaut pour les fichiers en release"
 END
 #endif    // Französisch (Frankreich) resources
 /////////////////////////////////////////////////////////////////////////////
