@@ -147,15 +147,17 @@ void CDownloadListCtrl::Init()
 	lsctitle=GetResString(IDS_FD_LASTCHANGE);
 	lsctitle.Remove(_T(':'));
 	InsertColumn(11, lsctitle,LVCFMT_LEFT, 220);
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 	InsertColumn(12, GetResString(IDS_CAT) ,LVCFMT_LEFT, 100);
+	*/
+	InsertColumn(12, GetResString(IDS_CAT_COLCATEGORY) ,LVCFMT_LEFT, 100);
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	InsertColumn(13,GetResString(IDS_AVGQR),LVCFMT_LEFT, 70); //Xman Xtreme-Downloadmanager AVG-QR
 	
-	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
-	InsertColumn(14, GetResString(IDS_CAT_COLCATEGORY),LVCFMT_LEFT,60);
-	InsertColumn(15, GetResString(IDS_CAT_COLORDER),LVCFMT_LEFT,60);
-	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
-	InsertColumn(16, GetResString(IDS_WC_SOURCES) ,LVCFMT_LEFT, 100); // WebCache [WC team/MorphXT] - Stulle/Max
-	InsertColumn(17, GetResString(IDS_SHOW_DROPPED_SRC) ,LVCFMT_LEFT, 80); // show # of dropped sources - Stulle
+	InsertColumn(14, GetResString(IDS_CAT_COLORDER),LVCFMT_LEFT,60); // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	InsertColumn(15, GetResString(IDS_WC_SOURCES) ,LVCFMT_LEFT, 100); // WebCache [WC team/MorphXT] - Stulle/Max
+	InsertColumn(16, GetResString(IDS_SHOW_DROPPED_SRC) ,LVCFMT_LEFT, 80); // show # of dropped sources - Stulle
 
 	SetAllIcons();
 	Localize();
@@ -338,7 +340,12 @@ void CDownloadListCtrl::Localize()
 	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 	pHeaderCtrl->SetItem(11, &hdi);
 
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 	strRes = GetResString(IDS_CAT);
+	*/
+	strRes = GetResString(IDS_CAT_COLCATEGORY);
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 	pHeaderCtrl->SetItem(12, &hdi);
 
@@ -348,25 +355,21 @@ void CDownloadListCtrl::Localize()
 	pHeaderCtrl->SetItem(13, &hdi);
 
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
-	strRes = GetResString(IDS_CAT_COLCATEGORY);
-	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
-	pHeaderCtrl->SetItem(14, &hdi);
-
 	strRes = GetResString(IDS_CAT_COLORDER);
 	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
-	pHeaderCtrl->SetItem(15, &hdi);
+	pHeaderCtrl->SetItem(14, &hdi);
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
 	strRes = GetResString(IDS_WC_SOURCES);
 	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
-	pHeaderCtrl->SetItem(16, &hdi);
+	pHeaderCtrl->SetItem(15, &hdi);
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	// ==> show # of dropped sources - Stulle
 	strRes = GetResString(IDS_SHOW_DROPPED_SRC);
 	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
-	pHeaderCtrl->SetItem(17, &hdi);
+	pHeaderCtrl->SetItem(16, &hdi);
 	// <== show # of dropped sources - Stulle
 
 	CreateMenues();
@@ -750,11 +753,20 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 			}
 			break;
 		case 12: // cat
+			// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+			/*
 			if (!IsColumnHidden(12)) {
 				buffer=(lpPartFile->GetCategory()!=0)?
 					thePrefs.GetCategory(lpPartFile->GetCategory())->title:_T("");
 				dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
 			}
+			*/
+			if (!thePrefs.ShowCatNameInDownList())
+				buffer.Format(_T("%u"), lpPartFile->GetCategory());
+			else
+				buffer.Format(_T("%s"), thePrefs.GetCategory(lpPartFile->GetCategory())->title);
+			dc->DrawText(buffer, buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
+			// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 			break;
 		
 		case 13:		// Xman Xtreme Downloadmanager: AVG-QR
@@ -770,16 +782,7 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 		}
 
 		// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
-		case 14: // Category
-			{
-				if (!thePrefs.ShowCatNameInDownList())
-					buffer.Format(_T("%u"), lpPartFile->GetCategory());
-				else
-					buffer.Format(_T("%s"), thePrefs.GetCategory(lpPartFile->GetCategory())->title);
-				dc->DrawText(buffer, buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
-				break;
-			}
-		case 15: // Resume Mod
+		case 14: // Resume Mod
 			{
 				buffer = _T("");
 				Category_Struct* ActiveCat=thePrefs.GetCategory(theApp.emuledlg->transferwnd->GetActiveCategory());
@@ -823,7 +826,7 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 		// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		case 16:
+		case 15:
 			{
 				UINT wcsc = lpPartFile->GetWebcacheSourceCount();
 				UINT wcsc_our = 0;
@@ -854,7 +857,7 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 		// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 		// ==> show # of dropped sources - Stulle
-		case 17:
+		case 16:
 			{
 				buffer.Format(_T("%i"),lpPartFile->GetShowDroppedSrc());
 				dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
@@ -1851,8 +1854,15 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			    m_FileMenu.CheckMenuItem(MP_TRY_TO_GET_PREVIEW_PARTS, (iSelectedItems == 1 && iFilesGetPreviewParts == 1) ? MF_CHECKED : MF_UNCHECKED);
             }
 			m_FileMenu.EnableMenuItem(MP_PREVIEW, (iSelectedItems == 1 && iFilesToPreview == 1) ? MF_ENABLED : MF_GRAYED);
+			// ==> XP Style Menu [Xanatos] - Stulle
+			/*
 			CMenu PreviewMenu;
 			PreviewMenu.CreateMenu();
+			*/
+			CTitleMenu PreviewMenu;
+			PreviewMenu.CreateMenu();
+			PreviewMenu.AddMenuTitle(NULL, true);
+			// <== XP Style Menu [Xanatos] - Stulle
 			int iPreviewMenuEntries = thePreviewApps.GetAllMenuEntries(PreviewMenu, (iSelectedItems == 1) ? file1 : NULL);
 			if (iPreviewMenuEntries)
 				m_FileMenu.InsertMenu(MP_METINFO, MF_POPUP | (iSelectedItems == 1 ? MF_ENABLED : MF_GRAYED), (UINT_PTR)PreviewMenu.m_hMenu, GetResString(IDS_DL_PREVIEW));
@@ -3151,9 +3161,19 @@ int CDownloadListCtrl::Compare(const CPartFile* file1, const CPartFile* file2, L
 				comp=0;
 			break;
 		case 12:
+			// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+			/*
 			//TODO: 'GetCategory' SHOULD be a 'const' function and 'GetResString' should NOT be called..
 			comp=CompareLocaleStringNoCase(	(const_cast<CPartFile*>(file1)->GetCategory()!=0)?thePrefs.GetCategory(const_cast<CPartFile*>(file1)->GetCategory())->title:GetResString(IDS_ALL),
 											(const_cast<CPartFile*>(file2)->GetCategory()!=0)?thePrefs.GetCategory(const_cast<CPartFile*>(file2)->GetCategory())->title:GetResString(IDS_ALL) );
+			*/
+			if (file1->GetCategory() > file2->GetCategory())
+				comp=1;
+			else if (file1->GetCategory() < file2->GetCategory())
+				comp=-1;
+			else
+				comp=0;
+			// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 			break;
 
 		//Xman Xtreme-Downloadmanager: AVG-QR
@@ -3163,15 +3183,7 @@ int CDownloadListCtrl::Compare(const CPartFile* file1, const CPartFile* file2, L
 		//Xman end
 
 		// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
-		case 14: // Cat
-			if (file1->GetCategory() > file2->GetCategory())
-				comp=1;
-			else if (file1->GetCategory() < file2->GetCategory())
-				comp=-1;
-			else
-				comp=0;
-			break;
-		case 15: // Mod
+		case 14: // Mod
 			/*
 			if (CPartFile::RightFileHasHigherPrio(file2, file1))
 				comp=1;
@@ -3210,13 +3222,13 @@ int CDownloadListCtrl::Compare(const CPartFile* file1, const CPartFile* file2, L
 		// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		case 16:
+		case 15:
 			comp=file1->GetWebcacheSourceCount() - file2->GetWebcacheSourceCount();
 			break;
 		// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 		// ==> show # of dropped sources - Stulle
-		case 17:
+		case 16:
 		{
 			comp=CompareUnsigned(file1->GetShowDroppedSrc(), file2->GetShowDroppedSrc());
 			break;
