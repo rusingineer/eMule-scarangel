@@ -1,6 +1,11 @@
 #pragma once
 
+// ==> XP Style Menu [Xanatos] - Stulle
+/*
 #include "TitleMenu.h"
+*/
+#include "MenuXP.h"
+// <== XP Style Menu [Xanatos] - Stulle
 
 class CHTRichEditCtrl : public CRichEditCtrl
 {

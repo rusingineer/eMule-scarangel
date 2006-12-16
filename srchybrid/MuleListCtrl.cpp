@@ -70,6 +70,7 @@ BEGIN_MESSAGE_MAP(CMuleListCtrl, CListCtrl)
 	ON_WM_KEYDOWN()
 	ON_WM_ERASEBKGND()
 	ON_WM_SYSCOLORCHANGE()
+	ON_WM_MEASUREITEM() // XP Style Menu [Xanatos] - Stulle
 END_MESSAGE_MAP()
 
 CMuleListCtrl::CMuleListCtrl(PFNLVCOMPARE pfnCompare, DWORD dwParamSort) 
@@ -1621,3 +1622,14 @@ CMuleListCtrl::EUpdateMode CMuleListCtrl::SetUpdateMode(EUpdateMode eUpdateMode)
 	m_eUpdateMode = eUpdateMode;
 	return eCurUpdateMode;
 }
+
+// ==> XP Style Menu [Xanatos] - Stulle
+void CMuleListCtrl::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct) 
+{
+	HMENU hMenu = AfxGetThreadState()->m_hTrackingMenu;
+	if(CMenu *pMenu = CMenu::FromHandle(hMenu))
+		pMenu->MeasureItem(lpMeasureItemStruct);
+	
+	CListCtrl::OnMeasureItem(nIDCtl, lpMeasureItemStruct);
+}
+// <== XP Style Menu [Xanatos] - Stulle

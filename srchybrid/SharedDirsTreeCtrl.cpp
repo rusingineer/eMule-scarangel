@@ -88,6 +88,7 @@ BEGIN_MESSAGE_MAP(CSharedDirsTreeCtrl, CTreeCtrl)
 	ON_NOTIFY_REFLECT(TVN_ITEMEXPANDING, OnTvnItemexpanding)
 	ON_NOTIFY_REFLECT(TVN_GETDISPINFO, OnTvnGetdispinfo)
 	ON_NOTIFY_REFLECT(TVN_BEGINDRAG, OnLvnBegindrag)
+	ON_WM_MEASUREITEM() // XP Style Menu [Xanatos] - Stulle
 END_MESSAGE_MAP()
 
 CSharedDirsTreeCtrl::CSharedDirsTreeCtrl()
@@ -102,6 +103,11 @@ CSharedDirsTreeCtrl::CSharedDirsTreeCtrl()
 
 CSharedDirsTreeCtrl::~CSharedDirsTreeCtrl()
 {
+	// ==> XP Style Menu [Xanatos] - Stulle
+	if (m_PrioMenu) VERIFY( m_PrioMenu.DestroyMenu() );
+	if (m_SharedFilesMenu) VERIFY( m_SharedFilesMenu.DestroyMenu() );
+	if (m_ShareDirsMenu) VERIFY( m_ShareDirsMenu.DestroyMenu() );
+	// <== XP Style Menu [Xanatos] - Stulle
 	delete m_pRootDirectoryItem;
 	delete m_pRootUnsharedDirectries;
 	delete pHistory; //Xman [MoNKi: -Downloaded History-]
@@ -1287,3 +1293,13 @@ void CSharedDirsTreeCtrl::OnCancelMode()
 	CTreeCtrl::OnCancelMode();
 }
 
+// ==> XP Style Menu [Xanatos] - Stulle
+void CSharedDirsTreeCtrl::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct) 
+{
+	HMENU hMenu = AfxGetThreadState()->m_hTrackingMenu;
+	if(CMenu *pMenu = CMenu::FromHandle(hMenu))
+		pMenu->MeasureItem(lpMeasureItemStruct);
+	
+	CTreeCtrl::OnMeasureItem(nIDCtl, lpMeasureItemStruct);
+}
+// <== XP Style Menu [Xanatos] - Stulle

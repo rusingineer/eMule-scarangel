@@ -285,6 +285,11 @@ void CSearchListCtrl::Init(CSearchList* in_searchlist)
 
 CSearchListCtrl::~CSearchListCtrl()
 {
+	// ==> XP Style Menu [Xanatos] - Stulle
+	if (m_SearchFileMenu)
+		VERIFY( m_SearchFileMenu.DestroyMenu() );
+	// <== XP Style Menu [Xanatos] - Stulle
+
 	POSITION pos = m_mapSortSelectionStates.GetStartPosition();
 	while (pos != NULL) {
 		int nKey;

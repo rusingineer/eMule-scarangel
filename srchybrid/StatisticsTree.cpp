@@ -49,6 +49,7 @@ BEGIN_MESSAGE_MAP(CStatisticsTree, CTreeCtrl)
 	ON_WM_RBUTTONDOWN()
 	ON_WM_CONTEXTMENU()
 	ON_NOTIFY_REFLECT(TVN_ITEMEXPANDED, OnItemExpanded)
+	ON_WM_MEASUREITEM() // XP Style Menu [Xanatos] - Stulle
 END_MESSAGE_MAP()
 
 CStatisticsTree::CStatisticsTree()
@@ -772,3 +773,14 @@ int CStatisticsTree::ApplyExpandedMask(CString theMask, HTREEITEM theItem, int t
 	}
 	return theStringIndex;
 }
+
+// ==> XP Style Menu [Xanatos] - Stulle
+void CStatisticsTree::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct) 
+{
+	HMENU hMenu = AfxGetThreadState()->m_hTrackingMenu;
+	if(CMenu *pMenu = CMenu::FromHandle(hMenu))
+		pMenu->MeasureItem(lpMeasureItemStruct);
+	
+	CTreeCtrl::OnMeasureItem(nIDCtl, lpMeasureItemStruct);
+}
+// <== XP Style Menu [Xanatos] - Stulle

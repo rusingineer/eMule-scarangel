@@ -128,6 +128,10 @@ protected:
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg void OnSysColorChange();
 
+	// ==> XP Style Menu [Xanatos] - Stulle
+	afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
+	// <== XP Style Menu [Xanatos] - Stulle
+
 	DECLARE_MESSAGE_MAP()
 
 	// Checks the item to see if it is in order

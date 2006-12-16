@@ -79,6 +79,7 @@ BEGIN_MESSAGE_MAP(CTransferWnd, CResizableDialog)
 	ON_NOTIFY(UM_TABMOVED, IDC_DLTAB, OnTabMovement)
 	ON_NOTIFY(LVN_BEGINDRAG, IDC_DOWNLOADLIST, OnLvnBegindrag)
 	ON_NOTIFY(LVN_KEYDOWN, IDC_DOWNLOADLIST, OnLvnKeydownDownloadlist)
+	ON_WM_MEASUREITEM() // XP Style Menu [Xanatos] - Stulle
 END_MESSAGE_MAP()
 
 CTransferWnd::CTransferWnd(CWnd* pParent /*=NULL*/)
@@ -2259,6 +2260,7 @@ void CTransferWnd::OnWnd1BtnDropDown(NMHDR* /*pNMHDR*/, LRESULT* /*pResult*/)
 {
 	CTitleMenu menu;
 	menu.CreatePopupMenu();
+	menu.AddMenuTitle(NULL); // XP Style Menu [Xanatos] - Stulle
 	menu.EnableIcons();
 
 	menu.AppendMenu(MF_STRING | (m_dwShowListIDC == IDC_DOWNLOADLIST + IDC_UPLOADLIST ? MF_GRAYED : 0), MP_VIEW1_SPLIT_WINDOW, GetResString(IDS_SPLIT_WINDOW), _T("SplitWindow"));
@@ -2280,6 +2282,7 @@ void CTransferWnd::OnWnd2BtnDropDown(NMHDR* /*pNMHDR*/, LRESULT* /*pResult*/)
 {
 	CTitleMenu menu;
 	menu.CreatePopupMenu();
+	menu.AddMenuTitle(NULL); // XP Style Menu [Xanatos] - Stulle
 	menu.EnableIcons();
 
 	menu.AppendMenu(MF_STRING | (m_uWnd2 == wnd2Uploading ? MF_GRAYED : 0), MP_VIEW2_UPLOADING, GetResString(IDS_UPLOADING), _T("Upload"));
@@ -2662,3 +2665,14 @@ void CTransferWnd::CreateCategoryMenus()
 
 }
 // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+// ==> XP Style Menu [Xanatos] - Stulle
+void CTransferWnd::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct) 
+{
+	HMENU hMenu = AfxGetThreadState()->m_hTrackingMenu;
+	if(CMenu *pMenu = CMenu::FromHandle(hMenu))
+		pMenu->MeasureItem(lpMeasureItemStruct);
+	
+	CResizableDialog::OnMeasureItem(nIDCtl, lpMeasureItemStruct);
+}
+// <== XP Style Menu [Xanatos] - Stulle

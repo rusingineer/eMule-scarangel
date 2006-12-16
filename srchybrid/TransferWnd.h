@@ -160,6 +160,10 @@ protected:
 	afx_msg void OnSplitterMoved(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnWindowPosChanged(WINDOWPOS* lpwndpos);
 
+	// ==> XP Style Menu [Xanatos] - Stulle
+	afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
+	// <== XP Style Menu [Xanatos] - Stulle
+
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	void		CreateCategoryMenus();
 	CTitleMenu	m_mnuCategory;

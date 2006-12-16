@@ -253,6 +253,7 @@ void CClosableTabCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 		m_ptCtxMenu = point;
 		ScreenToClient(&m_ptCtxMenu);
 		menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
+		VERIFY( menu.DestroyMenu() ); // XP Style Menu [Xanatos] - Stulle
 	}
 }
 

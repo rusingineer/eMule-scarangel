@@ -3,6 +3,7 @@
 #define	WEBSVC_GEN_URLS		0x0001
 #define	WEBSVC_FILE_URLS	0x0002
 
+#define CTitleMenu CMenuXP // XP Style Menu [Xanatos] - Stulle
 class CTitleMenu;
 
 class CWebServices

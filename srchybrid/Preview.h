@@ -18,6 +18,11 @@
 
 class CPartFile;
 
+// ==> XP Style Menu [Xanatos] - Stulle
+#define CTitleMenu CMenuXP
+class CTitleMenu;
+// <== XP Style Menu [Xanatos] - Stulle
+
 ///////////////////////////////////////////////////////////////////////////////
 // CPreviewThread
 
@@ -54,7 +59,12 @@ public:
 	int ReadAllApps();
 	void RemoveAllApps();
 
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
 	int GetAllMenuEntries(CMenu& rMenu, const CPartFile* file);
+	*/
+	int GetAllMenuEntries(CTitleMenu& rMenu, const CPartFile* file);
+	// <== XP Style Menu [Xanatos] - Stulle
 	void RunApp(CPartFile* file, UINT uMenuID);
 
 	enum ECanPreviewRes{

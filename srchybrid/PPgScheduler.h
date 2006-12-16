@@ -44,4 +44,8 @@ protected:
 	afx_msg void OnNMRclickActionlist(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnHelp();
 	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
+
+	// ==> XP Style Menu [Xanatos] - Stulle
+	afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
+	// <== XP Style Menu [Xanatos] - Stulle
 };

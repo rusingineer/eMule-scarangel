@@ -18,7 +18,12 @@
 #include "CommentListCtrl.h"
 #include "OtherFunctions.h"
 #include "MenuCmds.h"
+// ==> XP Style Menu [Xanatos] - Stulle
+/*
 #include "TitleMenu.h"
+*/
+#include "MenuXP.h"
+// <== XP Style Menu [Xanatos] - Stulle
 #include "emule.h"
 #include "UpDownClient.h"
 #include "kademlia/kademlia/Entry.h"

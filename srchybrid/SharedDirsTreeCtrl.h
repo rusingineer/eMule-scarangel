@@ -16,7 +16,12 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #pragma once
+// ==> XP Style Menu [Xanatos] - Stulle
+/*
 #include "TitleMenu.h"
+*/
+#include "MenuXP.h"
+// <== XP Style Menu [Xanatos] - Stulle
 
 enum ESpecialDirectoryItems{
 	SDI_NO = 0,
@@ -92,6 +97,10 @@ protected:
 	afx_msg void	OnLvnBegindrag(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void	OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void	OnCancelMode();
+
+	// ==> XP Style Menu [Xanatos] - Stulle
+	afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
+	// <== XP Style Menu [Xanatos] - Stulle
 
 	CTitleMenu			m_SharedFilesMenu;
 	CTitleMenu			m_ShareDirsMenu;

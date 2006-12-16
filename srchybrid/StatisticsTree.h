@@ -25,7 +25,12 @@
 	and a context menu.
 */
 #pragma once
+// ==> XP Style Menu [Xanatos] - Stulle
+/*
 #include "TitleMenu.h"
+*/
+#include "MenuXP.h"
+// <== XP Style Menu [Xanatos] - Stulle
 
 // -khaos--+++> Items for our stat's tree context menu.
 #define	MP_STATTREE_RESET		10950
@@ -60,6 +65,10 @@ protected:
 	afx_msg		void	OnRButtonDown( UINT nFlags, CPoint point );
 	afx_msg		void	OnContextMenu( CWnd* pWnd, CPoint point );
 	afx_msg		void	OnItemExpanded( NMHDR* pNMHDR, LRESULT* pResult );
+
+	// ==> XP Style Menu [Xanatos] - Stulle
+	afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
+	// <== XP Style Menu [Xanatos] - Stulle
 
 public:
 	void				Init();

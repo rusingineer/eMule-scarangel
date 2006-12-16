@@ -1651,6 +1651,7 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					file->statistic.ResetSpreadBar();
 				}
 				SetRedraw(TRUE);
+				break;
 			}
 			// <== Spread bars [Slugfiller/MorphXT] - Stulle
 			// ==> MassRename [Dragon] - Stulle

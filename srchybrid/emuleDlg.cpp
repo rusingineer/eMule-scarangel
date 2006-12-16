@@ -148,6 +148,8 @@ BEGIN_MESSAGE_MAP(CemuleDlg, CTrayDialog)
 	ON_WM_DESTROY()
 	ON_WM_SETTINGCHANGE()
 
+	ON_WM_MEASUREITEM() // XP Style Menu [Xanatos] - Stulle
+
 	///////////////////////////////////////////////////////////////////////////
 	// WM_COMMAND messages
 	//
@@ -4336,3 +4338,15 @@ void CemuleDlg::SaveSettings (bool _shutdown) {
 	theApp.scheduler->SaveToFile();
 }
 // <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+
+// ==> XP Style Menu [Xanatos] - Stulle
+void CemuleDlg::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct) 
+{
+	HMENU hMenu = AfxGetThreadState()->m_hTrackingMenu;
+	if(CMenu *pMenu = CMenu::FromHandle(hMenu))
+		pMenu->MeasureItem(lpMeasureItemStruct);
+	
+	if(nIDCtl)
+		CTrayDialog::OnMeasureItem(nIDCtl, lpMeasureItemStruct);
+}
+// <== XP Style Menu [Xanatos] - Stulle

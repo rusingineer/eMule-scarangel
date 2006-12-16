@@ -1337,6 +1337,9 @@
 				RelativePath="KademliaWnd.cpp">
 			</File>
 			<File
+				RelativePath=".\KeyHelper.cpp">
+			</File>
+			<File
 				RelativePath="LayeredWindowHelperST.cpp">
 			</File>
 			<File
@@ -1356,6 +1359,9 @@
 			</File>
 			<File
 				RelativePath=".\MassRename.cpp">
+			</File>
+			<File
+				RelativePath=".\MenuXP.cpp">
 			</File>
 			<File
 				RelativePath="MetaDataDlg.cpp">
@@ -1494,9 +1500,6 @@
 			</File>
 			<File
 				RelativePath="TextToSpeech.cpp">
-			</File>
-			<File
-				RelativePath="TitleMenu.cpp">
 			</File>
 			<File
 				RelativePath="ToolBarCtrlX.cpp">
@@ -1767,6 +1770,9 @@
 				RelativePath="KademliaWnd.h">
 			</File>
 			<File
+				RelativePath=".\KeyHelper.h">
+			</File>
+			<File
 				RelativePath="LayeredWindowHelperST.h">
 			</File>
 			<File
@@ -1795,6 +1801,9 @@
 			</File>
 			<File
 				RelativePath="MenuCmds.h">
+			</File>
+			<File
+				RelativePath=".\MenuXP.h">
 			</File>
 			<File
 				RelativePath="MetaDataDlg.h">
@@ -1942,9 +1951,6 @@
 			</File>
 			<File
 				RelativePath="TextToSpeech.h">
-			</File>
-			<File
-				RelativePath="TitleMenu.h">
 			</File>
 			<File
 				RelativePath="ToolBarCtrlX.h">

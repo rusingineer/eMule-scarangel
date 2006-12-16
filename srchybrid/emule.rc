@@ -3328,6 +3328,7 @@ IDR_HTTPDOWNLOAD_ANI    AVI                     "res\\inetdownload.avi"
 
 ABOUT                   JPG                     "res\\logo.jpg"
 BANNER                  JPG                     "res\\banner_quer.jpg"
+MENUBACK                JPG                     "res\\XP-Menu.jpg"
 
 /////////////////////////////////////////////////////////////////////////////
 //

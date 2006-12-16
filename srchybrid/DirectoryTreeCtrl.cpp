@@ -19,7 +19,12 @@
 #include "DirectoryTreeCtrl.h"
 #include "otherfunctions.h"
 #include "Preferences.h"
+// ==> XP Style Menu [Xanatos] - Stulle
+/*
 #include "TitleMenu.h"
+*/
+#include "MenuXP.h"
+// <== XP Style Menu [Xanatos] - Stulle
 #include "UserMsgs.h"
 
 #ifdef _DEBUG

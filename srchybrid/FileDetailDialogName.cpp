@@ -21,7 +21,12 @@
 #include "OtherFunctions.h"
 #include "PartFile.h"
 #include "UpDownClient.h"
+// ==> XP Style Menu [Xanatos] - Stulle
+/*
 #include "TitleMenu.h"
+*/
+#include "MenuXP.h"
+// <== XP Style Menu [Xanatos] - Stulle
 #include "MenuCmds.h"
 #include "StringConversion.h"
 
