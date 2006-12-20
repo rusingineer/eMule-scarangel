@@ -134,16 +134,26 @@ protected:
 	CImageList  m_ImageList;
 	CTitleMenu	m_PrioMenu;
 	CTitleMenu	m_FileMenu;
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
 	CMenu		m_SourcesMenu;
 	CMenu		m_DropMenu;//Xman Xtreme Downloadmanager
+	*/
+	CTitleMenu		m_SourcesMenu;
+	CTitleMenu		m_DropMenu;
+	// <== XP Style Menu [Xanatos] - Stulle
 	bool		m_bRemainSort;
 	typedef std::pair<void*, CtrlItem_Struct*> ListItemsPair;
 	typedef std::multimap<void*, CtrlItem_Struct*> ListItems;
     ListItems	m_ListItems;
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	/*
 	CFont		m_fontBold;
 	//Xman narrow font at transferwindow
 	CFont		m_fontNarrowBold;
 	//Xman end
+	*/
+	// <== Design Settings [eWombat/Stulle] - Stulle
 	CImageList  m_overlayimages; // Mod Icons - Stulle
 	CToolTipCtrlX* m_tooltip;
 

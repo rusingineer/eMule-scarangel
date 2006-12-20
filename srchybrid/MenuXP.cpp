@@ -912,7 +912,7 @@ CMenuXP *CMenuXP::FindSubMenuFromID(DWORD dwID)
 }
 
 // add sidebar and background
-void CMenuXP::AddMenuTitle(LPCTSTR lpszTitle, bool /*bIsIconMenu*/)
+void CMenuXP::AddMenuTitle(LPCTSTR lpszTitle, bool /*bIsIconMenu*/, bool bIsSidebar)
 {
 	// ==> XP Style Menu [Xanatos] - Stulle
 	/*
@@ -948,9 +948,12 @@ void CMenuXP::AddMenuTitle(LPCTSTR lpszTitle, bool /*bIsIconMenu*/)
 	*/
 	SetMenuStyle(CMenuXP::STYLE_STARTMENU);
 
-	AddSideBar(new CMenuXPSideBar(17, lpszTitle));
-	SetSideBarStartColor(RGB(255,194,189));
-	SetSideBarEndColor(RGB(237,237,237));
+	if(bIsSidebar)
+	{
+		AddSideBar(new CMenuXPSideBar(17, lpszTitle));
+		SetSideBarStartColor(RGB(255,194,189));
+		SetSideBarEndColor(RGB(237,237,237));
+	}
 
 	SetBackBitmap(_T("MENUBACK"), _T("JPG"));
 	SetSelectedBarColor(RGB(252,231,211));

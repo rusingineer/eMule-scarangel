@@ -297,8 +297,14 @@ void CPPgScheduler::OnNMRclickActionlist(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	::GetCursorPos(&point);
 
 	CTitleMenu m_ActionMenu;
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
 	CMenu m_ActionSel;
 	CMenu m_CatActionSel;
+	*/
+	CTitleMenu m_ActionSel;
+	CTitleMenu m_CatActionSel;
+	// <== XP Style Menu [Xanatos] - Stulle
 
 	bool isCatAction=false;
 	if (m_actions.GetSelectionMark()!=-1) {
@@ -309,6 +315,10 @@ void CPPgScheduler::OnNMRclickActionlist(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	m_ActionMenu.CreatePopupMenu();
 	m_ActionSel.CreatePopupMenu();
 	m_CatActionSel.CreatePopupMenu();
+	// ==> XP Style Menu [Xanatos] - Stulle
+	m_ActionSel.AddMenuTitle(NULL, false, false);
+	m_CatActionSel.AddMenuTitle(NULL, false, false);
+	// <== XP Style Menu [Xanatos] - Stulle
 
 	UINT nFlag=MF_STRING;
 	if (m_actions.GetSelectionMark()==-1) nFlag=MF_STRING | MF_GRAYED;

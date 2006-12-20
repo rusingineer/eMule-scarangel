@@ -601,8 +601,6 @@ uint16	CPreferences::m_iPushSmallBoost;
 bool	CPreferences::enablePushRareFile; // push rare file - Stulle
 
 bool	CPreferences::showSrcInTitle; // Show sources on title - Stulle
-bool	CPreferences::PsFilesRed; // draw PS files red - Stulle
-bool	CPreferences::FriendsBlue; // draw friends blue - Stulle
 bool	CPreferences::showOverheadInTitle; // show overhead on title - Stulle
 bool	CPreferences::ShowGlobalHL; // show global HL - Stulle
 bool	CPreferences::ShowFileHLconst; // show HL per file constantaniously - Stulle
@@ -786,6 +784,13 @@ int		CPreferences::PowerShareLimit;
 uint8	CPreferences::m_uReleaseBonus; // Release Bonus [sivka] - Stulle
 bool	CPreferences::m_bReleaseScoreAssurance; // Release Score Assurance [Stulle] - Stulle
 
+// ==> Design Settings [eWombat/Stulle] - Stulle
+DWORD	CPreferences::nStyleFlags[style_counts]; 
+COLORREF	CPreferences::nStyleFontColor[style_counts];
+COLORREF	CPreferences::nStyleBackColor[style_counts];
+short	CPreferences::nStyleOnOff[style_counts];
+// <== Design Settings [eWombat/Stulle] - Stulle
+
 CPreferences::CPreferences()
 {
 #ifdef _DEBUG
@@ -859,6 +864,8 @@ void CPreferences::Init()
 	_stprintf(fullpath,L"%spreferences.dat",configdir);
 	FILE* preffile = _tfsopen(fullpath,L"rb", _SH_DENYWR);
 	delete[] fullpath;
+
+	InitStyles(); // Design Settings [eWombat/Stulle] - Stulle
 
 	LoadPreferences();
 
@@ -2410,8 +2417,6 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("EnablePushRareFile"), enablePushRareFile); // push rare file - Stulle
 
 	ini.WriteBool(_T("ShowSrcOnTitle"),showSrcInTitle); // Show sources on title - Stulle
-	ini.WriteBool(_T("PsFilesRed"), PsFilesRed); // draw PS files red - Stulle
-	ini.WriteBool(_T("FriendsBlue"), FriendsBlue); // draw friends blue - Stulle
 	ini.WriteBool(_T("ShowOverheadOnTitle"),showOverheadInTitle); // show overhead on title - Stulle
 	ini.WriteBool(_T("ShowGlobalHL"),ShowGlobalHL); // show global HL - Stulle
 	ini.WriteBool(_T("ShowFileHLconst"),ShowFileHLconst); // show HL per file constantaniously - Stulle
@@ -2541,6 +2546,8 @@ void CPreferences::SavePreferences()
 
 	ini.WriteInt(_T("ReleaseBonus"),m_uReleaseBonus); // Release Bonus [sivka] - Stulle
 	ini.WriteBool(_T("ReleaseScoreAssurance"),m_bReleaseScoreAssurance); // Release Score Assurance [Stulle] - Stulle
+
+	SaveStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
 
 void CPreferences::ResetStatsColor(int index)
@@ -3440,8 +3447,6 @@ void CPreferences::LoadPreferences()
     enablePushRareFile = ini.GetBool(_T("EnablePushRareFile"), false); // push rare file - Stulle
 
 	showSrcInTitle = ini.GetBool(_T("ShowSrcOnTitle"),false); // Show sources on title - Stulle
-	PsFilesRed = ini.GetBool(_T("PsFilesRed"),false); // draw PS files red - Stulle
-	FriendsBlue = ini.GetBool(_T("FriendsBlue"),false); // draw friends blue - Stulle
 	showOverheadInTitle=ini.GetBool(_T("ShowOverheadOnTitle"),false); // show overhead on title - Stulle
 	ShowGlobalHL = ini.GetBool(_T("ShowGlobalHL"),false); // show global HL - Stulle
 	ShowFileHLconst = ini.GetBool(_T("ShowFileHLconst"),true); // show HL per file constantaniously - Stulle
@@ -3588,6 +3593,8 @@ void CPreferences::LoadPreferences()
 
 	m_uReleaseBonus = (uint8)ini.GetInt(_T("ReleaseBonus"),0); // Release Bonus [sivka] - Stulle
 	m_bReleaseScoreAssurance = ini.GetBool(_T("ReleaseScoreAssurance"),false); // Release Score Assurance [Stulle] - Stulle
+
+	LoadStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
 
 //Xman Xtreme Upload
@@ -4306,9 +4313,102 @@ uint16 CPreferences::GetUDPPort(){
 	return udpport;
 }
 //upnp_end
+
 // ==> ScarAngel Version Check - Stulle
 void CPreferences::UpdateLastSVC()
 {
 	m_uScarVerCheckLastAutomatic = safe_mktime(CTime::GetCurrentTime().GetLocalTm());
 }
 // <== ScarAngel Version Check - Stulle
+
+// ==> Design Settings [eWombat/Stulle] - Stulle
+bool CPreferences::SetStyle(int nStyle, StylesStruct *style)
+{
+	if (nStyle < style_counts)
+	{
+		if (style == NULL)
+		{
+			nStyleFlags[nStyle] = STYLE_USED;
+			nStyleFontColor[nStyle]	= CLR_DEFAULT;
+			nStyleBackColor[nStyle]	= CLR_DEFAULT;
+			nStyleOnOff[nStyle] = 0;
+		}
+		else
+		{
+			nStyleFlags[nStyle] = style->nFlags|STYLE_USED;
+			nStyleFontColor[nStyle]	= style->nFontColor;
+			nStyleBackColor[nStyle]	= style->nBackColor;
+			nStyleOnOff[nStyle] = style->nOnOff;
+		}
+		return true;
+	}
+	return false;
+}
+bool CPreferences::GetStyle(int nStyle, StylesStruct *style)
+{
+	if (!style)
+		return false;
+	if (nStyle < style_counts)
+	{
+		style->nFlags = nStyleFlags[nStyle];
+		style->nFontColor = nStyleFontColor[nStyle];
+		style->nBackColor = nStyleBackColor[nStyle];
+		style->nOnOff = nStyleOnOff[nStyle];
+	}
+	else		
+	{
+		style->nFlags = 0;
+		style->nFontColor = CLR_DEFAULT;
+		style->nBackColor = CLR_DEFAULT;
+		style->nOnOff = 0;
+	}
+	return true;
+}
+void CPreferences::InitStyles()
+{
+	for (int i=0;i<style_counts;i++)
+	{
+		nStyleFlags[i] = 0;
+		nStyleFontColor[i]	= CLR_DEFAULT;
+		nStyleBackColor[i]	= CLR_DEFAULT;
+		nStyleOnOff[i] = 0;
+	}
+}
+void CPreferences::SaveStylePrefs(CIni &ini)
+{
+	ini.SetSection(L"STYLES");
+	ini.SerGet(false, nStyleFlags,		ELEMENT_COUNT(nStyleFlags), L"StyleFlags");
+	ini.SerGet(false, nStyleFontColor,	ELEMENT_COUNT(nStyleFontColor), L"StyleFontColor");
+	ini.SerGet(false, nStyleBackColor,	ELEMENT_COUNT(nStyleBackColor), L"StyleBackColor");
+	ini.SerGet(false, nStyleOnOff,		ELEMENT_COUNT(nStyleOnOff), L"StyleOnOff");
+}
+void CPreferences::LoadStylePrefs(CIni &ini)
+{
+	ini.SetSection(L"STYLES");
+	ini.SerGet(true, nStyleFlags,		ELEMENT_COUNT(nStyleFlags), L"StyleFlags");
+	ini.SerGet(true, nStyleFontColor,	ELEMENT_COUNT(nStyleFontColor), L"StyleFontColor");
+	ini.SerGet(true, nStyleBackColor,	ELEMENT_COUNT(nStyleBackColor), L"StyleBackColor");
+	ini.SerGet(true, nStyleOnOff,		ELEMENT_COUNT(nStyleOnOff), L"StyleOnOff");
+
+	for (int i=0;i<style_counts;i++)
+	{
+		if ((nStyleFlags[i] & STYLE_USED) != STYLE_USED)
+		{
+			switch(i)
+			{
+				/*
+				case style_trayspeedbar:
+					nStyleFontColor[i]	= COLORREF(RGB(0,0,0));
+					nStyleFlags[i] = STYLE_USED;
+					break;
+				*/
+				default:
+				{
+		            nStyleFontColor[i]	= CLR_DEFAULT;
+		            nStyleBackColor[i]	= CLR_DEFAULT;
+				}
+			}
+		}
+	}
+}
+// <== Design Settings [eWombat/Stulle] - Stulle

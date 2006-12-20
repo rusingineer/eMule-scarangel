@@ -625,7 +625,7 @@ void CHistoryListCtrl::CreateMenues()
 	if (m_HistoryMenu) VERIFY(m_HistoryMenu.DestroyMenu());
 
 	m_HistoryOpsMenu.CreateMenu();
-	m_HistoryOpsMenu.AddMenuTitle(NULL, true);
+	m_HistoryOpsMenu.AddMenuTitle(NULL, true, false);
 	m_HistoryOpsMenu.AppendMenu(MF_STRING,MP_CLEARHISTORY,GetResString(IDS_DOWNHISTORY_CLEAR), _T("CLEARCOMPLETE"));
 
 	m_HistoryMenu.CreatePopupMenu();
@@ -680,7 +680,7 @@ void CHistoryListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 
 	CTitleMenu WebMenu;
 	WebMenu.CreateMenu();
-	WebMenu.AddMenuTitle(NULL, true);
+	WebMenu.AddMenuTitle(NULL, true, false);
 	int iWebMenuEntries = theWebServices.GetFileMenuEntries(&WebMenu);
 	UINT flag = (iWebMenuEntries == 0 || iSelectedItems != 1) ? MF_GRAYED : MF_ENABLED;
 	m_HistoryMenu.AppendMenu(MF_POPUP | flag, (UINT_PTR)WebMenu.m_hMenu, GetResString(IDS_WEBSERVICES), _T("SEARCHMETHOD_GLOBAL"));

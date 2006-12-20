@@ -2819,3 +2819,27 @@ bool CKnownFile::GetPowerShared() const
 	return m_bpowershared;
 }
 // <== PowerShare [ZZ/MorphXT] - Stulle
+
+// ==> Design Settings [eWombat/Stulle] - Stulle
+int CKnownFile::GetKnownStyle() const
+{
+	int iKnownStyle = style_s_default;
+	if(GetPowerShared() && thePrefs.GetStyleOnOff(style_s_powershare)!=0)
+		iKnownStyle = style_s_powershare;
+	if(IsAutoUpPriority() && thePrefs.GetStyleOnOff(style_s_auto)!=0)
+		iKnownStyle = style_s_auto;
+	if(GetUpPriority()==PR_VERYLOW && thePrefs.GetStyleOnOff(style_s_verylow)!=0)
+		iKnownStyle = style_s_verylow;
+	if(GetUpPriority()==PR_LOW && thePrefs.GetStyleOnOff(style_s_low)!=0)
+		iKnownStyle = style_s_low;
+	if(GetUpPriority()==PR_NORMAL && thePrefs.GetStyleOnOff(style_s_normal)!=0)
+		iKnownStyle = style_s_normal;
+	if(GetUpPriority()==PR_HIGH && thePrefs.GetStyleOnOff(style_s_high)!=0)
+		iKnownStyle = style_s_high;
+	if(GetUpPriority()==PR_VERYHIGH && thePrefs.GetStyleOnOff(style_s_release)!=0)
+		iKnownStyle = style_s_release;
+	if(GetUpPriority()==PR_POWER && thePrefs.GetStyleOnOff(style_s_powerrelease)!=0)
+		iKnownStyle = style_s_powerrelease;
+	return iKnownStyle;
+}
+// <== Design Settings [eWombat/Stulle] - Stulle

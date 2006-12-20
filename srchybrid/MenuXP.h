@@ -139,7 +139,7 @@ public:
 	} MENUSTYLE;
 
 	//Below is the functions to build the menu
-	void	AddMenuTitle(LPCTSTR lpszTitle, bool bIsIconMenu = false);
+	void	AddMenuTitle(LPCTSTR lpszTitle, bool bIsIconMenu = false, bool bIsSidebar = true);
 	BOOL	AppendMenu(UINT nFlags, UINT_PTR nIDNewItem = 0, LPCTSTR lpszNewItem = NULL, LPCTSTR lpszIconName = NULL);
 	BOOL	InsertMenu(UINT nPosition, UINT nFlags, UINT_PTR nIDNewItem = 0, LPCTSTR lpszNewItem = NULL, LPCTSTR lpszIconName = NULL);
 	BOOL	RemoveMenu(UINT nPosition, UINT nFlags);

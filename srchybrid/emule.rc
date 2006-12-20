@@ -3292,6 +3292,9 @@ FILESHAREONLYTHENEED    ICON                    "res\\fileshareonlytheneed.ico"
 SHAREDFILESMANAGEMENT   ICON                    "res\\SharedFilesManagement.ico"
 FILEPOWERSHARE          ICON                    "res\\FilePowerShare.ico"
 RELEASEBONUS            ICON                    "res\\ReleaseBonus.ico"
+IDI_FONTUL              ICON                    "res\\ulFont.ico"
+IDI_FONTI               ICON                    "res\\italicFont.ico"
+IDI_FONTB               ICON                    "res\\boldFont.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -5471,8 +5474,6 @@ BEGIN
     IDS_SUQWT               "Enable SaveUploadQueueWaitingTime (SUQWT)"
     // <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
     IDS_SHOW_FILE_HL_CONST  "Show HL per file constantaniously" // show HL per file constantaniously - Stulle
-    IDS_PS_FILES_RED        "Draw PS files red" // draw PS files red - Stulle
-    IDS_FRIENDS_BLUE        "Draw friends blue" // draw friends blue - Stulle
     IDS_SHOW_GLOBAL_HL      "Show Global Hardlimit" // show global HL - Stulle
     // ==> file settings - Stulle
     IDS_NNS_TIMERLABEL      "AutoNNS Timer 0...60 sec"
@@ -5777,6 +5778,33 @@ BEGIN
     IDS_RELEASE_BONUS_EDIT  "Set bonus days"
     // <== Release Bonus [sivka] - Stulle
     IDS_RELEASE_SCORE_ASSURANCE "Assure default score for release files" // Release Score Assurance [Stulle] - Stulle
+    // ==> Design Settings [eWombat/Stulle] - Stulle
+    IDS_COLOR_MASTER1       "Client styles"
+    IDS_COLOR_MASTER2       "Downloading file styles"
+    IDS_COLOR_MASTER3       "Shared file styles"
+    IDS_COLOR_BOX           "Design settings"
+    IDS_COLOR_FONT_LABEL    "Font color"
+    IDS_COLOR_BACK_LABEL    "Background color"
+//    IDS_COLOR_PREVIEW       "Preview"
+    IDS_COLOR_C1            "Friends"
+    IDS_COLOR_S1            "Still downloading"
+    IDS_COLOR_S2            "Powershared"
+    IDS_COLOR_C2            "Requesting PowerShare file"
+    IDS_COLOR_C3            "Requesting PowerRelease file"
+    IDS_COLOR_C4            "Leecher"
+    IDS_COLOR_C5            "LowID"
+    IDS_COLOR_C6            "Positive Rating"
+    IDS_COLOR_B1            "Known Clients"
+    IDS_COLOR_MASTER4       "Background colors"
+    IDS_COLOR_B2            "Downloading Clients"
+    IDS_COLOR_B3            "Waiting Clients"
+    IDS_COLOR_B4            "Uploading Clients"
+    IDS_COLOR_B5            "Downloading Files"
+    IDS_COLOR_B6            "Shared Files"
+//    IDS_COLOR_C7            "Other"
+    IDS_COLOR_ON            "ON"
+    IDS_COLOR_OFF           "OFF"
+    // <== Design Settings [eWombat/Stulle] - Stulle
 END
 
 #endif    // Englisch (USA) resources

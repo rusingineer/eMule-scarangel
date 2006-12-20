@@ -259,7 +259,8 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 	CDC* odc = CDC::FromHandle(lpDrawItemStruct->hDC);
 	BOOL bCtrlFocused = ((GetFocus() == this) || (GetStyle() & LVS_SHOWSELALWAYS));
-	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData; // draw friends blue - Stulle
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	/*
 	if (lpDrawItemStruct->itemState & ODS_SELECTED) {
 		if (bCtrlFocused)
 			odc->SetBkColor(m_crHighlight);
@@ -267,24 +268,41 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			odc->SetBkColor(m_crNoHighlight);
 	}
 	else
-	// ==> draw friends blue - Stulle
-	/*
 		odc->SetBkColor(GetBkColor());
 	COLORREF crOldBackColor = odc->GetBkColor();  //Xman show LowIDs
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
-	*/
-	{
-		if(client->IsFriend() && thePrefs.GetFriendsBlue())
-			odc->SetBkColor(m_crFriend);
-		else
-			odc->SetBkColor(GetBkColor());
-	}
-	COLORREF crOldBackColor = odc->GetBkColor();  //Xman show LowIDs
-	// <== draw friends blue - Stulle
 	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
 	CFont* pOldFont = dc.SelectObject(thePrefs.UseNarrowFont() ? &m_fontNarrow : GetFont()); //Xman narrow font at transferwindow
 	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
+	*/
+	theApp.emuledlg->transferwnd->SetBackgroundColor(style_b_dlclientlist);
+	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
+	int iClientStyle = client->GetClientStyle(true);
+	StylesStruct style;
+	thePrefs.GetStyle(iClientStyle, &style);
+	COLORREF crTempColor = GetBkColor();
+
+	if (style.nBackColor != CLR_DEFAULT)
+		crTempColor = style.nBackColor;
+
+	if (lpDrawItemStruct->itemState & ODS_SELECTED) {
+		if (bCtrlFocused)
+			odc->SetBkColor(m_crHighlight);
+		else
+			odc->SetBkColor(m_crNoHighlight);
+	}
+	else
+		odc->SetBkColor(crTempColor);
+
+	crTempColor = m_crWindowText;
+	if(style.nFontColor != CLR_DEFAULT)
+		crTempColor = style.nFontColor;
+
+	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
+	CFont* pOldFont = dc.SelectObject(theApp.GetFontByStyle(style.nFlags,thePrefs.UseNarrowFont()));
+	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : crTempColor);
+	// <== Design Settings [eWombat/Stulle] - Stulle
 	/* Xman what is this doing at downloadclients ?
 	if(client->GetSlotNumber() > theApp.uploadqueue->GetActiveUploadsCount()) {
         dc.SetTextColor(::GetSysColor(COLOR_GRAYTEXT));
@@ -418,7 +436,11 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					}
 				case 1:
 					Sbuffer.Format(_T("%s"), client->DbgGetFullClientSoftVer()); //Xman // Maella -Support for tag ET_MOD_VERSION 0x55
+					// ==> Design Settings [eWombat/Stulle] - Stulle
+					/*
 					if(client->HasLowID()) dc.SetBkColor(RGB(255,250,200)); //Xman show LowIDs
+					*/
+					// <== Design Settings [eWombat/Stulle] - Stulle
 					break;
 				case 2:
 					Sbuffer.Format(_T("%s"), client->GetRequestFile()->GetFileName());
@@ -512,7 +534,11 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				}
 				if( iColumn != 4 && iColumn != 0 && iColumn != 3 && iColumn != 11)
 					dc.DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
+				// ==> Design Settings [eWombat/Stulle] - Stulle
+				/*
 				dc.SetBkColor(crOldBackColor); //Xman show LowIDs
+				*/
+				// <== Design Settings [eWombat/Stulle] - Stulle
 				cur_rec.left += GetColumnWidth(iColumn);
 		}
 	}

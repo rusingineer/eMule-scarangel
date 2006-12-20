@@ -269,4 +269,8 @@ public:
 	bool    GetPowerShared() const;
 	UINT m_nVirtualCompleteSourcesCount;
 	// <== PowerShare [ZZ/MorphXT] - Stulle
+
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	int		GetKnownStyle() const;
+	// <== Design Settings [eWombat/Stulle] - Stulle
 };

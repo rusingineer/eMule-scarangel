@@ -2344,3 +2344,64 @@ void CemuleApp::ForeAllDiscAccessThreadsToFinish()
 
 	threadqueuelock.Unlock();
 }
+
+// ==> Design Settings [eWombat/Stulle] - Stulle
+void CemuleApp::CreateExtraFonts(CFont *font)
+{
+	DestroyExtraFonts();
+	LOGFONT lf;
+	font->GetLogFont(&lf);
+	lf.lfWeight=FW_BOLD;
+	m_ExtraFonts[0].CreateFontIndirect(&lf);
+	lf.lfWeight=FW_NORMAL;
+	lf.lfUnderline=TRUE;
+	m_ExtraFonts[1].CreateFontIndirect(&lf);
+	lf.lfUnderline=FALSE;
+	lf.lfItalic = TRUE;
+	m_ExtraFonts[2].CreateFontIndirect(&lf);
+
+	// narrow
+	_tcscpy(lf.lfFaceName, _T("Arial Narrow"));
+	m_ExtraFonts[3].CreateFontIndirect(&lf);
+	lf.lfWeight=FW_BOLD;
+	m_ExtraFonts[4].CreateFontIndirect(&lf);
+	lf.lfWeight=FW_NORMAL;
+	lf.lfUnderline=TRUE;
+	m_ExtraFonts[5].CreateFontIndirect(&lf);
+	lf.lfUnderline=FALSE;
+	lf.lfItalic = TRUE;
+	m_ExtraFonts[6].CreateFontIndirect(&lf);
+}
+
+void CemuleApp::DestroyExtraFonts()
+{
+	for (UINT i=0;i<ARRSIZE(m_ExtraFonts);i++)
+	{
+	if (m_ExtraFonts[i].GetSafeHandle())
+		m_ExtraFonts[i].DeleteObject();
+	}
+}
+
+CFont* CemuleApp::GetFontByStyle(DWORD nStyle,bool bNarrow)
+{
+	nStyle &= STYLE_FONTMASK;
+	if(bNarrow)
+	{
+		if (nStyle == STYLE_BOLD)
+			return &m_ExtraFonts[4];
+		if (nStyle == STYLE_UNDERLINE)
+			return &m_ExtraFonts[5];
+		if (nStyle == STYLE_ITALIC)
+			return &m_ExtraFonts[6];
+		return &m_ExtraFonts[3];
+	}
+
+	if (nStyle == STYLE_BOLD)
+		return &m_ExtraFonts[0];
+	if (nStyle == STYLE_UNDERLINE)
+		return &m_ExtraFonts[1];
+	if (nStyle == STYLE_ITALIC)
+		return &m_ExtraFonts[2];
+	return emuledlg->GetFont();
+}
+// <== Design Settings [eWombat/Stulle] - Stulle

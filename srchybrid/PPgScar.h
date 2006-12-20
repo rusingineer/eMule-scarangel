@@ -1,6 +1,8 @@
 #pragma once
 #include "preferences.h"
 #include "TreeOptionsCtrlEx.h"
+#include "BtnST.h"
+#include "ColorButton.h"
 // CPPgScar dialog
 
 class CPPgScar : public CPropertyPage
@@ -54,8 +56,6 @@ protected:
 	bool m_bSysInfoGlobal;
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	bool showSrcInTitle; // Show sources on title - Stulle
-	bool m_bPsFilesRed; // draw PS files red - Stulle
-	bool m_bFriendsBlue; // draw friends blue - Stulle
 	bool m_bShowGlobalHL; // show global HL - Stulle
 	bool m_bShowFileHLconst; // show HL per file constantaniously - Stulle
 	bool m_bShowInMSN7; // Show in MSN7 [TPT] - Stulle
@@ -190,8 +190,6 @@ protected:
 	HTREEITEM m_htiSysInfoGlobal;
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	HTREEITEM m_htiShowSrcOnTitle; // Show sources on title - Stulle
-	HTREEITEM m_htiPsFilesRed; // draw PS files red - Stulle
-	HTREEITEM m_htiFriendsBlue; // draw friends blue - Stulle
 	HTREEITEM m_htiShowGlobalHL; // show global HL - Stulle
 	HTREEITEM m_htiShowFileHLconst; // show HL per file constantaniously - Stulle
 	HTREEITEM m_htiShowInMSN7; // Show in MSN7 [TPT] - Stulle
@@ -313,9 +311,10 @@ private:
 	NONE,
 	SCAR,
 	WEBCACHE,
-	BACKUP/*,
-	UPDATE,
-	COLOR*/};
+	BACKUP,
+	COLOR,
+//	UPDATE
+	};
 	void SetTab(eTab tab);
 
 	void InitTab();
@@ -366,6 +365,21 @@ private:
 	CButton		m_AutoBackup2;
 	CButton		m_Note;
 	CButton		m_NoteText;
+
+	// Design settings
+	CButton		m_ColorBox;
+	CComboBox	m_MasterCombo;
+	CComboBox	m_SubCombo;
+	CButton		m_OnOff;
+	CButtonST	m_bold;
+	CButtonST	m_underlined;
+	CButtonST	m_italic;
+	CButton		m_FontColorLabel;
+	CColorButton		m_FontColor;
+	CButton		m_BackColorLabel;
+	CColorButton	m_BackColor;
+//	CButton m_ColorPreviewBox;
+//	CXColorStatic m_ColorPreview;
 	// <== Tabbed Preferences [TPT] - Stulle
 
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
@@ -400,4 +414,22 @@ private:
 	void BackupNowEnable();
 	BOOL y2All;
 	// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	StylesStruct styles[style_counts];
+public:
+	void InitMasterStyleCombo();
+	void InitSubStyleCombo();
+	void UpdateStyles();
+	int	GetStyleValue();
+	void OnFontStyle(int iStyle);
+
+	afx_msg LONG OnColorPopupSelChange(UINT lParam, LONG wParam);
+	afx_msg void OnBnClickedBold();
+	afx_msg void OnBnClickedUnderlined();
+	afx_msg void OnBnClickedItalic();
+	afx_msg void OnCbnSelchangeStyleselMaster();
+	afx_msg void OnCbnSelchangeStyleselSub();
+	afx_msg void OnBnClickedOnOff();
+	// <== Design Settings [eWombat/Stulle] - Stulle
 };

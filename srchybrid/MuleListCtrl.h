@@ -153,8 +153,6 @@ protected:
 	COLORREF        m_crFocusLine;
 	COLORREF        m_crNoHighlight;
 	COLORREF        m_crNoFocusLine;
-	COLORREF         m_crPsFiles; // draw PS files red - Stulle
-	COLORREF		 m_crFriend; // draw friends blue - Stulle
 	NMLVCUSTOMDRAW  m_lvcd;
 	BOOL            m_bCustomDraw;
 	CImageList		m_imlHeaderCtrl;
@@ -174,8 +172,12 @@ protected:
 	void OnFindNext();
 	void OnFindPrev();
 
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	/*
 	//Xman narrow font at transferwindow
 	CFont		m_fontNarrow;
+	*/
+	// <== Design Settings [eWombat/Stulle] - Stulle
 
 	//Xman client percentage
 	CFont		m_fontBoldSmaller;

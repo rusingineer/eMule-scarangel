@@ -58,6 +58,16 @@ BEGIN_MESSAGE_MAP(CPPgScar, CPropertyPage)
 	ON_BN_CLICKED(IDC_AUTOBACKUP, OnBnClickedAutobackup)
 	ON_BN_CLICKED(IDC_AUTOBACKUP2, OnBnClickedAutobackup2)
 	// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	ON_BN_CLICKED(IDC_COLOR_ON_OFF, OnBnClickedOnOff)
+	ON_BN_CLICKED(IDC_COLOR_BOLD, OnBnClickedBold)
+	ON_BN_CLICKED(IDC_COLOR_UNDERLINED, OnBnClickedUnderlined)
+	ON_BN_CLICKED(IDC_COLOR_ITALIC, OnBnClickedItalic)
+    ON_MESSAGE(UM_CPN_SELCHANGE, OnColorPopupSelChange)
+
+	ON_CBN_SELCHANGE(IDC_COLOR_MASTER_COMBO, OnCbnSelchangeStyleselMaster)
+	ON_CBN_SELCHANGE(IDC_COLOR_SUB_COMBO, OnCbnSelchangeStyleselSub)
+	// <== Design Settings [eWombat/Stulle] - Stulle
 	ON_WM_HELPINFO()
 END_MESSAGE_MAP()
 
@@ -74,8 +84,8 @@ CPPgScar::CPPgScar()
 	m_imageList.Add(CTempIconLoader(_T("AAAEMULEAPP")));
 	m_imageList.Add(CTempIconLoader(_T("PREF_WEBCACHE")));
 	m_imageList.Add(CTempIconLoader(_T("BACKUP")));
+	m_imageList.Add(CTempIconLoader(_T("SEARCHFILETYPE_PICTURE")));
 //	m_imageList.Add(CTempIconLoader(_T("UPDATE")));
-//	m_imageList.Add(CTempIconLoader(_T("SEARCHFILETYPE_PICTURE")));
 	// <== Tabbed Preferences [TPT] - Stulle
 
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
@@ -147,8 +157,6 @@ CPPgScar::CPPgScar()
 	m_htiSysInfoGlobal = NULL;
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	m_htiShowSrcOnTitle = NULL; // Show sources on title - Stulle
-	m_htiPsFilesRed = NULL; // draw PS files red - Stulle
-	m_htiFriendsBlue = NULL; // draw friends blue - Stulle
 	m_htiShowGlobalHL = NULL; // show global HL - Stulle
 	m_htiShowFileHLconst = NULL; // show HL per file constantaniously - Stulle
 	m_htiShowInMSN7 = NULL; // Show in MSN7 [TPT] - Stulle
@@ -362,8 +370,6 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiSysInfoGlobal = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SYS_INFO_GLOBAL), m_htiSysInfoGroup, m_bSysInfoGlobal);
 		// <== CPU/MEM usage [$ick$/Stulle] - Max
 		m_htiShowSrcOnTitle = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOWSRCONTITLE), m_htiDisplay, showSrcInTitle); // Show sources on title - Stulle
-		m_htiPsFilesRed = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PS_FILES_RED), m_htiDisplay, m_bPsFilesRed); // draw PS files red - Stulle
-		m_htiFriendsBlue = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_FRIENDS_BLUE), m_htiDisplay, m_bFriendsBlue); // draw friends blue - Stulle
 		m_htiShowGlobalHL = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOW_GLOBAL_HL), m_htiDisplay, m_bShowGlobalHL); // show global HL - Stulle
 		m_htiShowFileHLconst = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOW_FILE_HL_CONST), m_htiDisplay, m_bShowFileHLconst); // show HL per file constantaniously - Stulle
 		m_htiShowInMSN7 = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOWINMSN7), m_htiDisplay, m_bShowInMSN7); // Show in MSN7 [TPT] - Stulle
@@ -530,8 +536,6 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	if(m_htiSysInfoGlobal) DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSysInfoGlobal, m_bSysInfoGlobal);
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowSrcOnTitle, showSrcInTitle); // Show sources on title - Stulle
-	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiPsFilesRed, m_bPsFilesRed); // draw PS files red - Stulle
-	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiFriendsBlue, m_bFriendsBlue); // draw friends blue - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowGlobalHL, m_bShowGlobalHL); // show global HL - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowFileHLconst, m_bShowFileHLconst); // show HL per file constantaniously - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowInMSN7, m_bShowInMSN7); // Show in MSN7 [TPT] - Stulle
@@ -672,8 +676,6 @@ BOOL CPPgScar::OnInitDialog()
 	m_bSysInfoGlobal = thePrefs.GetSysInfoGlobal();
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	showSrcInTitle = thePrefs.ShowSrcOnTitle(); // Show sources on title - Stulle
-	m_bPsFilesRed = thePrefs.GetPsFilesRed(); // draw PS files red - Stulle
-	m_bFriendsBlue = thePrefs.GetFriendsBlue(); // draw friends blue - Stulle
 	m_bShowGlobalHL = thePrefs.GetShowGlobalHL(); // show global HL - Stulle
 	m_bShowFileHLconst = thePrefs.GetShowFileHLconst(); // show HL per file constantaniously - Stulle
 	m_bShowInMSN7 = thePrefs.GetShowMSN7(); // Show in MSN7 [TPT] - Stulle
@@ -767,6 +769,26 @@ BOOL CPPgScar::OnInitDialog()
 	SetTab(SCAR);//Tab x defecto Conexion
 	// <== Tabbed Preferences [TPT] - Stulle
 
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	m_bold.SetWindowText(_T(""));
+	m_bold.SetIcon((HICON)::LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE((int)IDI_FONTB), IMAGE_ICON, 16, 16, 0));
+	m_underlined.SetWindowText(_T(""));
+	m_underlined.SetIcon((HICON)::LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE((int)IDI_FONTUL), IMAGE_ICON, 16, 16, 0));
+	m_italic.SetWindowText(_T(""));
+	m_italic.SetIcon((HICON)::LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE((int)IDI_FONTI), IMAGE_ICON, 16, 16, 0));
+	m_bold.SetFont(theApp.GetBoldFont());
+	m_underlined.SetFont(theApp.GetULFont());
+	m_italic.SetFont(theApp.GetItalicFont());
+
+	m_FontColor.SetColor(GetSysColor(COLOR_WINDOWTEXT));
+	m_FontColor.SetDefaultColor(GetSysColor(COLOR_WINDOWTEXT));
+	m_BackColor.SetColor(GetSysColor(COLOR_WINDOW));
+	m_BackColor.SetDefaultColor(GetSysColor(COLOR_WINDOW));
+
+//	m_ColorPreview.SetBackgroundColor(GetSysColor(COLOR_WINDOW));
+//	m_ColorPreview.SetTextColor(GetSysColor(COLOR_WINDOWTEXT));
+	// <== Design Settings [eWombat/Stulle] - Stulle
+
 	// ==> push small files [sivka] - Stulle
 //	InitWindowStyles(this);
 	LoadSettings();
@@ -830,6 +852,11 @@ void CPPgScar::LoadSettings(void)
 		m_AutoBackup2.EnableWindow(thePrefs.GetAutoBackup());
 		m_AutoBackup2.SetCheck(thePrefs.GetAutoBackup2());
 		// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+
+		// ==> Design Settings [eWombat/Stulle] - Stulle
+		for (int i=0;i<style_counts;i++)
+			thePrefs.GetStyle(i,&styles[i]);
+		// <== Design Settings [eWombat/Stulle] - Stulle
 	}
 }
 
@@ -903,8 +930,6 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_bSysInfoGlobal = m_bSysInfoGlobal;
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	thePrefs.showSrcInTitle = showSrcInTitle; // Show sources on title - Stulle
-	thePrefs.PsFilesRed = m_bPsFilesRed; // draw PS files red - Stulle
-	thePrefs.FriendsBlue = m_bFriendsBlue; // draw friends blue - Stulle
 	thePrefs.ShowGlobalHL = m_bShowGlobalHL; // show global HL - Stulle
 	thePrefs.ShowFileHLconst = m_bShowFileHLconst; // show HL per file constantaniously - Stulle
 	thePrefs.m_bShowInMSN7 = m_bShowInMSN7; // Show in MSN7 [TPT] - Stulle
@@ -1062,6 +1087,11 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_bAutoBackup2 = m_AutoBackup2.GetCheck() == BST_CHECKED;
 	// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	for (int i=0;i<style_counts;i++)
+		thePrefs.SetStyle(i,&styles[i]);
+	// <== Design Settings [eWombat/Stulle] - Stulle
+
 	LoadSettings();
 
 	// ==> Show sources on title - Stulle
@@ -1134,8 +1164,6 @@ void CPPgScar::Localize(void)
 		if (m_htiSysInfoGlobal) m_ctrlTreeOptions.SetItemText(m_htiSysInfoGlobal, GetResString(IDS_SYS_INFO_GLOBAL));
 		// <== CPU/MEM usage [$ick$/Stulle] - Max
 		if (m_htiShowSrcOnTitle) m_ctrlTreeOptions.SetItemText(m_htiShowSrcOnTitle, GetResString(IDS_SHOWSRCONTITLE)); // Show sources on title - Stulle
-		if (m_htiPsFilesRed) m_ctrlTreeOptions.SetItemText(m_htiPsFilesRed, GetResString(IDS_PS_FILES_RED)); // draw PS files red - Stulle
-		if (m_htiFriendsBlue) m_ctrlTreeOptions.SetItemText(m_htiFriendsBlue, GetResString(IDS_FRIENDS_BLUE)); // draw friends blue - Stulle
 		if (m_htiShowGlobalHL) m_ctrlTreeOptions.SetItemText(m_htiShowGlobalHL, GetResString(IDS_SHOW_GLOBAL_HL)); // show global HL - Stulle
 		if (m_htiShowFileHLconst) m_ctrlTreeOptions.SetItemText(m_htiShowFileHLconst, GetResString(IDS_SHOW_FILE_HL_CONST)); // show HL per file constantaniously - Stulle
 		if (m_htiShowInMSN7) m_ctrlTreeOptions.SetItemText(m_htiShowInMSN7, GetResString(IDS_SHOWINMSN7)); // Show in MSN7 [TPT] - Stulle
@@ -1235,6 +1263,20 @@ void CPPgScar::Localize(void)
 		m_Note.SetWindowText( GetResString(IDS_BACKUP_NOTE));
 		m_NoteText.SetWindowText( GetResString(IDS_BACKUP_MESSAGE) );
 		// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+
+		// ==> Design Settings [eWombat/Stulle] - Stulle
+		m_ColorBox.SetWindowText( GetResString(IDS_COLOR_BOX) );
+		m_FontColorLabel.SetWindowText( GetResString(IDS_COLOR_FONT_LABEL) );
+		m_BackColorLabel.SetWindowText( GetResString(IDS_COLOR_BACK_LABEL) );
+//		m_ColorPreviewBox.SetWindowText( GetResString(IDS_COLOR_PREVIEW) );
+
+		m_FontColor.CustomText = GetResString(IDS_COL_MORECOLORS);
+		m_FontColor.DefaultText = GetResString(IDS_DEFAULT);
+		m_BackColor.CustomText = GetResString(IDS_COL_MORECOLORS);
+		m_BackColor.DefaultText = GetResString(IDS_DEFAULT);
+
+		InitMasterStyleCombo();
+		// <== Design Settings [eWombat/Stulle] - Stulle
 	}
 
 }
@@ -1302,8 +1344,6 @@ void CPPgScar::OnDestroy()
 	m_htiSysInfoGlobal = NULL;
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
 	m_htiShowSrcOnTitle = NULL; // Show sources on title - Stulle
-	m_htiPsFilesRed = NULL; // draw PS files red - Stulle
-	m_htiFriendsBlue = NULL; // draw friends blue - Stulle
 	m_htiShowGlobalHL = NULL; // show global HL - Stulle
 	m_htiShowFileHLconst = NULL; // show HL per file constantaniously - Stulle
 	m_htiShowInMSN7 = NULL; // Show in MSN7 [TPT] - Stulle
@@ -1499,8 +1539,8 @@ void CPPgScar::InitTab()
 	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, SCAR, _T("ScarAngel"), 0, (LPARAM)SCAR);
 	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, WEBCACHE, _T("WebCache"), 1, (LPARAM)WEBCACHE);
 	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, BACKUP, _T("Backup"), 2, (LPARAM)BACKUP);
-//	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, UPDATE, _T("Update"), 3, (LPARAM)UPDATE);
-//	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, COLOR, _T("Color Settings"), 4, (LPARAM)COLOR);
+	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, COLOR, _T("Design Settings"), 3, (LPARAM)COLOR);
+//	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, UPDATE, _T("Update"), 4, (LPARAM)UPDATE);
 }
 
 
@@ -1727,6 +1767,76 @@ void CPPgScar::InitControl()
 						WS_CHILD /*| WS_VISIBLE*/,
 						CRect(left+10, top+220, right-10, bottom), this, IDC_BACKUP_MESSAGE);
 	m_NoteText.SetFont(GetFont());
+
+	// Design settings
+	m_ColorBox.CreateEx(0, _T("BUTTON"), _T("Design Settings"), 
+						   WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
+						   BS_GROUPBOX,
+						   CRect(left, top, right, top+175), this, IDC_COLOR_BOX);
+	m_ColorBox.SetFont(GetFont());
+
+	m_MasterCombo.Create(WS_CHILD | CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP,							  
+							  CRect(left+10, top+15, right-60, top+35), this, IDC_COLOR_MASTER_COMBO);
+	m_MasterCombo.SetFont(GetFont());
+
+	m_SubCombo.Create(WS_CHILD | CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP,							  
+							  CRect(left+10, top+45, right-60, top+65), this, IDC_COLOR_SUB_COMBO);
+	m_SubCombo.SetFont(GetFont());
+
+	m_OnOff.CreateEx(0, _T("BUTTON"), _T(""), 
+									WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
+									/*BS_FLAT | */BS_PUSHBUTTON/* | BS_AUTOCHECKBOX*/,
+									CRect(right-50, top+25, right-10, top+65), this, IDC_COLOR_ON_OFF);
+	m_OnOff.SetFont(GetFont());
+
+	m_bold.CreateEx(0, _T("BUTTON"), _T("B"), 
+									WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP | BS_PUSHBUTTON |
+									BS_AUTOCHECKBOX,
+									CRect(left+90, top+75, left+108, top+95), this, IDC_COLOR_BOLD);
+	m_bold.SetFont(GetFont());
+
+	m_underlined.CreateEx(0, _T("BUTTON"), _T("U"), 
+									WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP | BS_PUSHBUTTON |
+									BS_AUTOCHECKBOX,
+									CRect(left+115, top+75, left+133, top+95), this, IDC_COLOR_UNDERLINED);
+	m_underlined.SetFont(GetFont());
+
+	m_italic.CreateEx(0, _T("BUTTON"), _T("I"), 
+									WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP | BS_PUSHBUTTON |
+									BS_AUTOCHECKBOX,
+									CRect(left+140, top+75, left+158, top+95), this, IDC_COLOR_ITALIC);
+	m_italic.SetFont(GetFont());
+
+	m_FontColorLabel.CreateEx(0, _T("STATIC"), _T("Font color"),
+						WS_CHILD /*| WS_VISIBLE*/, 
+						CRect(left+10, top+110, right-70, top+125), this, IDC_COLOR_FONT_LABEL);
+	m_FontColorLabel.SetFont(GetFont());
+
+	m_FontColor.CreateEx(0, _T("BUTTON"), _T(""), 
+									WS_CHILD | WS_TABSTOP | BS_PUSHBUTTON,
+									CRect(right-60, top+105, right-10, top+130), this, IDC_COLOR_FONT);
+	m_FontColor.SetFont(GetFont());
+
+	m_BackColorLabel.CreateEx(0, _T("STATIC"), _T("Background color"),
+						WS_CHILD /*| WS_VISIBLE*/, 
+						CRect(left+10, top+145, right-70, top+160), this, IDC_COLOR_BACK_LABEL);
+	m_BackColorLabel.SetFont(GetFont());
+
+	m_BackColor.CreateEx(0, _T("BUTTON"), _T(""), 
+									WS_CHILD | WS_TABSTOP | BS_PUSHBUTTON,
+									CRect(right-60, top+140, right-10, top+165), this, IDC_COLOR_BACK);
+	m_BackColor.SetFont(GetFont());
+
+//	m_ColorPreviewBox.CreateEx(0, _T("BUTTON"), _T("Preview"), 
+//						   WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
+//						   BS_GROUPBOX,
+//						CRect(left+10, top+180, right-10, top+240), this, IDC_COLOR_PREVIEW_BOX);
+//	m_ColorPreviewBox.SetFont(GetFont());
+
+//	m_ColorPreview.CreateEx(0, _T("STATIC"), _T("Thus have I politicly begun my reign."),
+//						WS_CHILD | ES_CENTER, 
+//						CRect(left+15, top+205, right-15, top+220), this, IDC_COLOR_PREVIEW);
+//	m_ColorPreview.SetFont(GetFont());
 }
 
 void CPPgScar::OnTabSelectionChange(NMHDR* /*pNMHDR*/, LRESULT *pResult)
@@ -1821,12 +1931,38 @@ void CPPgScar::SetTab(eTab tab){
 				m_Note.ShowWindow(SW_HIDE);
 				m_Note.EnableWindow(FALSE);
 				m_NoteText.ShowWindow(SW_HIDE);
-				m_NoteText.ShowWindow(SW_HIDE);
-				break;
-/*			case UPDATE:
+				m_NoteText.EnableWindow(FALSE);
 				break;
 			case COLOR:
-				break; */
+				m_ColorBox.ShowWindow(SW_HIDE);
+				m_ColorBox.EnableWindow(FALSE);
+				m_MasterCombo.ShowWindow(SW_HIDE);
+				m_MasterCombo.EnableWindow(FALSE);
+				m_SubCombo.ShowWindow(SW_HIDE);
+				m_SubCombo.EnableWindow(FALSE);
+				m_OnOff.ShowWindow(SW_HIDE);
+				m_OnOff.EnableWindow(FALSE);
+				m_bold.ShowWindow(SW_HIDE);
+				m_bold.EnableWindow(FALSE);
+				m_underlined.ShowWindow(SW_HIDE);
+				m_underlined.EnableWindow(FALSE);
+				m_italic.ShowWindow(SW_HIDE);
+				m_italic.EnableWindow(FALSE);
+				m_FontColorLabel.ShowWindow(SW_HIDE);
+				m_FontColorLabel.EnableWindow(FALSE);
+				m_FontColor.ShowWindow(SW_HIDE);
+				m_FontColor.EnableWindow(FALSE);
+				m_BackColorLabel.ShowWindow(SW_HIDE);
+				m_BackColorLabel.EnableWindow(FALSE);
+				m_BackColor.ShowWindow(SW_HIDE);
+				m_BackColor.EnableWindow(FALSE);
+//				m_ColorPreviewBox.ShowWindow(SW_HIDE);
+//				m_ColorPreviewBox.EnableWindow(FALSE);
+//				m_ColorPreview.ShowWindow(SW_HIDE);
+//				m_ColorPreview.EnableWindow(FALSE);
+				break; 
+/*			case UPDATE:
+				break;*/
 			default:
 				break;
 		}
@@ -1910,9 +2046,35 @@ void CPPgScar::SetTab(eTab tab){
 				m_NoteText.ShowWindow(SW_SHOW);
 				m_NoteText.ShowWindow(TRUE);
 				break;
-/*			case UPDATE:
-				break;
 			case COLOR:
+				m_ColorBox.ShowWindow(SW_SHOW);
+				m_ColorBox.EnableWindow(TRUE);
+				m_MasterCombo.ShowWindow(SW_SHOW);
+				m_MasterCombo.EnableWindow(TRUE);
+				m_SubCombo.ShowWindow(SW_SHOW);
+				m_SubCombo.EnableWindow(TRUE);
+				m_OnOff.ShowWindow(SW_SHOW);
+//				m_OnOff.EnableWindow(TRUE);
+				m_bold.ShowWindow(SW_SHOW);
+//				m_bold.EnableWindow(TRUE);
+				m_underlined.ShowWindow(SW_SHOW);
+//				m_underlined.EnableWindow(TRUE);
+				m_italic.ShowWindow(SW_SHOW);
+//				m_italic.EnableWindow(TRUE);
+				m_FontColorLabel.ShowWindow(SW_SHOW);
+				m_FontColorLabel.EnableWindow(TRUE);
+				m_FontColor.ShowWindow(SW_SHOW);
+//				m_FontColor.EnableWindow(TRUE);
+				m_BackColorLabel.ShowWindow(SW_SHOW);
+				m_BackColorLabel.EnableWindow(TRUE);
+				m_BackColor.ShowWindow(SW_SHOW);
+//				m_BackColor.EnableWindow(TRUE);
+//				m_ColorPreviewBox.ShowWindow(SW_SHOW);
+//				m_ColorPreviewBox.EnableWindow(TRUE);
+//				m_ColorPreview.ShowWindow(SW_SHOW);
+//				m_ColorPreview.EnableWindow(TRUE);
+				break;
+/*			case UPDATE:
 				break;
 */			default:
 				break;
@@ -2457,3 +2619,262 @@ void CPPgScar::Backup3()
 		MessageBox(_T("Error encountered during backup"),_T("Error"),MB_OK);
 }
 // <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+
+// ==> Design Settings [eWombat/Stulle] - Stulle
+void CPPgScar::InitMasterStyleCombo()
+{
+	int iSel = m_MasterCombo.GetCurSel();
+	m_MasterCombo.ResetContent();
+	m_MasterCombo.AddString(GetResString(IDS_COLOR_MASTER1));
+	m_MasterCombo.AddString(GetResString(IDS_COLOR_MASTER2));
+	m_MasterCombo.AddString(GetResString(IDS_COLOR_MASTER3));
+	m_MasterCombo.AddString(GetResString(IDS_COLOR_MASTER4));
+
+	m_MasterCombo.SetCurSel(iSel != CB_ERR ? iSel : 0);
+
+	InitSubStyleCombo();
+
+	UpdateStyles();
+
+	return;
+}
+
+void CPPgScar::InitSubStyleCombo()
+{
+	int iMasterSel = m_MasterCombo.GetCurSel();
+	m_SubCombo.ResetContent();
+
+	switch(iMasterSel)
+	{
+		case 0: // client styles
+		{
+			m_SubCombo.AddString(GetResString(IDS_DEFAULT));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_C1));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_C2));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_C3));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_C4));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_C5));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_C6));
+		}break;
+		case 1: // download styles
+		{
+			m_SubCombo.AddString(GetResString(IDS_DEFAULT));
+			m_SubCombo.AddString(GetResString(IDS_DOWNLOADING));
+			m_SubCombo.AddString(GetResString(IDS_COMPLETE));
+			m_SubCombo.AddString(GetResString(IDS_COMPLETING));
+			m_SubCombo.AddString(GetResString(IDS_HASHING));
+			m_SubCombo.AddString(GetResString(IDS_PAUSED));
+			m_SubCombo.AddString(GetResString(IDS_STOPPED));
+			m_SubCombo.AddString(GetResString(IDS_ERRORLIKE));
+		}break;
+		case 2: // share styles
+		{
+			m_SubCombo.AddString(GetResString(IDS_DEFAULT));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_S1));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_S2));
+			CString strTemp = GetResString(IDS_PRIORITY) + _T(" (") + GetResString(IDS_PW_CON_UPLBL) + _T("): ");
+			m_SubCombo.AddString(strTemp + GetResString(IDS_PRIOAUTO));
+			m_SubCombo.AddString(strTemp + GetResString(IDS_PRIOVERYLOW));
+			m_SubCombo.AddString(strTemp + GetResString(IDS_PRIOLOW));
+			m_SubCombo.AddString(strTemp + GetResString(IDS_PRIONORMAL));
+			m_SubCombo.AddString(strTemp + GetResString(IDS_PRIOHIGH));
+			m_SubCombo.AddString(strTemp + GetResString(IDS_PRIORELEASE));
+			m_SubCombo.AddString(strTemp + GetResString(IDS_POWERRELEASE));
+		}break;
+		case 3: // background styles
+		{
+			m_SubCombo.AddString(GetResString(IDS_COLOR_B1));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_B2));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_B3));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_B4));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_B5));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_B6));
+		}break;
+		default:
+			break;
+	}
+
+	m_SubCombo.SetCurSel(0); // alway first one!
+}
+
+void CPPgScar::UpdateStyles()
+{
+	int iCurStyle = GetStyleValue();
+	int iMasterValue = m_MasterCombo.GetCurSel();
+	bool bEnable = false;
+	bool bOnOff = (iCurStyle != style_c_default && iCurStyle != style_d_default && iCurStyle != style_s_default);
+
+	m_BackColor.SetColor(styles[iCurStyle].nBackColor);
+	if(iMasterValue < 3)
+	{
+		m_FontColor.SetColor(styles[iCurStyle].nFontColor);
+		bEnable = true;
+
+//		m_ColorPreview.SetTextColor(styles[iCurStyle].nFontColor);
+//		m_ColorPreview.SetBackgroundColor(styles[iCurStyle].nBackColor);
+	}
+
+	if(bOnOff)
+	{
+		m_OnOff.EnableWindow(bEnable);
+
+		AddLogLine(false,_T("%i"),styles[iCurStyle].nOnOff);
+		if(styles[iCurStyle].nOnOff != 0 && bEnable)
+		{
+			m_BackColor.EnableWindow(true);
+			m_OnOff.SetWindowText( GetResString(IDS_COLOR_OFF) );
+		}
+		else
+		{
+			m_OnOff.SetWindowText( GetResString(IDS_COLOR_ON) );
+			bEnable = false;
+			m_BackColor.EnableWindow(iMasterValue == 3);
+		}
+	}
+	else
+	{
+		m_BackColor.EnableWindow(true);
+		m_OnOff.EnableWindow(FALSE);
+		m_OnOff.SetWindowText( GetResString(IDS_COLOR_ON) );
+	}
+	m_bold.EnableWindow(bEnable);
+	m_underlined.EnableWindow(bEnable);
+	m_italic.EnableWindow(bEnable);
+	m_FontColor.EnableWindow(bEnable);
+
+	int iStyle = (styles[iCurStyle].nFlags & STYLE_FONTMASK);
+	m_bold.SetCheck(iStyle== STYLE_BOLD ? 1:0);
+	m_underlined.SetCheck(iStyle== STYLE_UNDERLINE ? 1:0);
+	m_italic.SetCheck(iStyle== STYLE_ITALIC ? 1:0);
+
+//	switch (iStyle)
+//	{
+//		case STYLE_BOLD:		m_ColorPreview.SetFont(m_bold.GetFont(),TRUE);break;
+//		case STYLE_UNDERLINE:	m_ColorPreview.SetFont(m_underlined.GetFont(),TRUE);break;
+//		case STYLE_ITALIC:		m_ColorPreview.SetFont(m_italic.GetFont(),TRUE);break;
+//		default:				m_ColorPreview.SetFont(GetFont(),TRUE);break;
+//	}
+}
+
+int CPPgScar::GetStyleValue()
+{
+	int iMasterValue = m_MasterCombo.GetCurSel();
+	int iCurStyle = 0;
+
+	switch(iMasterValue)
+	{
+		case 0:
+			break;
+		case 1:
+			iCurStyle = style_d_default;
+			break;
+		case 2:
+			iCurStyle = style_s_default;
+			break;
+		case 3:
+			iCurStyle = style_b_clientlist;
+			break;
+		default:
+			break;
+	}
+	iCurStyle += m_SubCombo.GetCurSel();
+
+	return iCurStyle;
+}
+
+void CPPgScar::OnFontStyle(int iStyle)
+{
+	m_bold.SetCheck(iStyle==1 ? 1:0);
+	m_underlined.SetCheck(iStyle==2 ? 1:0);
+	m_italic.SetCheck(iStyle==3 ? 1:0);
+	iStyle = 0 ; //Now select font
+
+	if (m_bold.GetCheck())
+		iStyle = STYLE_BOLD;
+	else if (m_underlined.GetCheck())
+		iStyle = STYLE_UNDERLINE;
+	else if (m_italic.GetCheck())
+		iStyle = STYLE_ITALIC;
+
+	int iCurStyle = GetStyleValue();
+	DWORD flags = (styles[iCurStyle].nFlags & ~STYLE_FONTMASK) | iStyle;
+	if (flags != styles[iCurStyle].nFlags)
+	{
+		SetModified();
+		styles[iCurStyle].nFlags = flags;
+		UpdateStyles();
+	}
+}
+
+LONG CPPgScar::OnColorPopupSelChange(UINT /*lParam*/, LONG /*wParam*/)
+{
+	int iSel = GetStyleValue();
+
+	// font
+	if (iSel >= 0)
+	{
+		COLORREF crColor = m_FontColor.GetColor();
+		if (crColor != styles[iSel].nFontColor)
+		{
+			styles[iSel].nFontColor = crColor;
+			SetModified(TRUE);
+			UpdateStyles();
+		}
+	}
+
+	// background
+	if (iSel >= 0)
+	{
+		COLORREF crColor = m_BackColor.GetColor();
+		if (crColor != styles[iSel].nBackColor)
+		{
+			styles[iSel].nBackColor = crColor;
+			SetModified(TRUE);
+			UpdateStyles();
+		}
+	}
+
+	return TRUE;
+}
+
+void CPPgScar::OnBnClickedBold()
+{
+	OnFontStyle(m_bold.GetCheck() ? 1:0);
+}
+
+void CPPgScar::OnBnClickedUnderlined()
+{
+	OnFontStyle(m_underlined.GetCheck() ? 2:0);
+}
+
+void CPPgScar::OnBnClickedItalic()
+{
+	OnFontStyle(m_italic.GetCheck() ? 3:0);
+}
+
+void CPPgScar::OnCbnSelchangeStyleselMaster()
+{
+	InitSubStyleCombo();
+	UpdateStyles();
+}
+
+void CPPgScar::OnCbnSelchangeStyleselSub()
+{
+	UpdateStyles();
+}
+
+void CPPgScar::OnBnClickedOnOff()
+{
+	int iSel = GetStyleValue();
+	short sOnOff = styles[iSel].nOnOff;
+
+	if(sOnOff == 1)
+		sOnOff = 0;
+	else
+		sOnOff = 1;
+	styles[iSel].nOnOff = sOnOff;
+
+	UpdateStyles();
+	SetModified(TRUE);
+}
+// <== Design Settings [eWombat/Stulle] - Stulle

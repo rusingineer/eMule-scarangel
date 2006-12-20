@@ -588,6 +588,8 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 	CDC* odc = CDC::FromHandle(lpDrawItemStruct->hDC);
 	BOOL bCtrlFocused = ((GetFocus() == this) || (GetStyle() & LVS_SHOWSELALWAYS));
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	/*
 	if (lpDrawItemStruct->itemState & ODS_SELECTED) {
 		if (bCtrlFocused)
 			odc->SetBkColor(m_crHighlight);
@@ -606,11 +608,49 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 	COLORREF crOldBackColor = odc->GetBkColor(); //Xman Code Improvement: FillSolidRect
 
-	/*const*/ CKnownFile* file = (CKnownFile*)lpDrawItemStruct->itemData;
+	/*const*//* CKnownFile* file = (CKnownFile*)lpDrawItemStruct->itemData;
 	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
 	CFont* pOldFont = dc.SelectObject(GetFont());
 	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
+	*/
+	COLORREF crTempColor = thePrefs.GetStyleBackColor(style_b_sharedlist);
+	if(crTempColor != CLR_DEFAULT)
+		SetBkColor(crTempColor);
+	CKnownFile* file = (CKnownFile*)lpDrawItemStruct->itemData;
+	int iStyle = 0;
+	if(file->IsPartFile())
+		iStyle = style_s_incomplete;
+	else 
+		iStyle = file->GetKnownStyle();
+	StylesStruct style;
+	thePrefs.GetStyle(iStyle, &style);
+
+    crTempColor = GetBkColor();
+	if (style.nBackColor != CLR_DEFAULT)
+		crTempColor = style.nBackColor;
+
+	if (lpDrawItemStruct->itemState & ODS_SELECTED) {
+		if (bCtrlFocused)
+			odc->SetBkColor(m_crHighlight);
+		else
+			odc->SetBkColor(m_crNoHighlight);
+	}
+	else
+	{
+		odc->SetBkColor(crTempColor);
+	}
+
+	COLORREF crOldBackColor = odc->GetBkColor(); //Xman Code Improvement: FillSolidRect
+	crTempColor = m_crWindowText;
+	if(style.nFontColor != CLR_DEFAULT)
+		crTempColor = style.nFontColor;
+
+	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
+	CFont* pOldFont = dc.SelectObject(theApp.GetFontByStyle(style.nFlags,thePrefs.UseNarrowFont()));
+	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
+	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : crTempColor);
+	// <== Design Settings [eWombat/Stulle] - Stulle
 
 	int iOldBkMode;
 	if (m_crWindowTextBk == CLR_NONE){
@@ -1200,7 +1240,7 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 
 	CTitleMenu WebMenu;
 	WebMenu.CreateMenu();
-	WebMenu.AddMenuTitle(NULL, true);
+	WebMenu.AddMenuTitle(NULL, true, false);
 	int iWebMenuEntries = theWebServices.GetFileMenuEntries(&WebMenu);
 	UINT flag2 = (iWebMenuEntries == 0 || iSelectedItems != 1) ? MF_GRAYED : MF_STRING;
 	m_SharedFilesMenu.AppendMenu(flag2 | MF_POPUP, (UINT_PTR)WebMenu.m_hMenu, GetResString(IDS_WEBSERVICES), _T("WEB"));
@@ -2189,26 +2229,31 @@ void CSharedFilesCtrl::CreateMenues()
 
 	// ==> PowerShare [ZZ/MorphXT] - Stulle
 	m_PowershareMenu.CreateMenu();
+	m_PowershareMenu.AddMenuTitle(NULL, true, false); // XP Style Menu [Xanatos] - Stulle
 	m_PowershareMenu.AppendMenu(MF_STRING,MP_POWERSHARE_DEFAULT,GetResString(IDS_DEFAULT));
 	m_PowershareMenu.AppendMenu(MF_STRING,MP_POWERSHARE_OFF,GetResString(IDS_POWERSHARE_DISABLED));
 	m_PowershareMenu.AppendMenu(MF_STRING,MP_POWERSHARE_ON,GetResString(IDS_POWERSHARE_ACTIVATED));
 	m_PowershareMenu.AppendMenu(MF_STRING,MP_POWERSHARE_AUTO,GetResString(IDS_POWERSHARE_AUTO));
 	m_PowershareMenu.AppendMenu(MF_STRING,MP_POWERSHARE_LIMITED,GetResString(IDS_POWERSHARE_LIMITED)); 
 	m_PowerShareLimitMenu.CreateMenu();
+	m_PowershareMenu.AddMenuTitle(NULL, true, false); // XP Style Menu [Xanatos] - Stulle
 	m_PowerShareLimitMenu.AppendMenu(MF_STRING,MP_POWERSHARE_LIMIT,	GetResString(IDS_DEFAULT));
 	m_PowerShareLimitMenu.AppendMenu(MF_STRING,MP_POWERSHARE_LIMIT_SET,	GetResString(IDS_DISABLED));
 	// <== PowerShare [ZZ/MorphXT] - Stulle
 
 	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 	m_HideOSMenu.CreateMenu();
+	m_HideOSMenu.AddMenuTitle(NULL, true, false); // XP Style Menu [Xanatos] - Stulle
 	m_HideOSMenu.AppendMenu(MF_STRING,MP_HIDEOS_DEFAULT, GetResString(IDS_DEFAULT));
 	m_HideOSMenu.AppendMenu(MF_STRING,MP_HIDEOS_SET, GetResString(IDS_DISABLED));
 	m_SelectiveChunkMenu.CreateMenu();
+	m_SelectiveChunkMenu.AddMenuTitle(NULL, true, false); // XP Style Menu [Xanatos] - Stulle
 	m_SelectiveChunkMenu.AppendMenu(MF_STRING,MP_SELECTIVE_CHUNK,	GetResString(IDS_DEFAULT));
 	m_SelectiveChunkMenu.AppendMenu(MF_STRING,MP_SELECTIVE_CHUNK_0,	GetResString(IDS_DISABLED));
 	m_SelectiveChunkMenu.AppendMenu(MF_STRING,MP_SELECTIVE_CHUNK_1,	GetResString(IDS_ENABLED));
 
 	m_ShareOnlyTheNeedMenu.CreateMenu();
+	m_ShareOnlyTheNeedMenu.AddMenuTitle(NULL, true, false); // XP Style Menu [Xanatos] - Stulle
 	m_ShareOnlyTheNeedMenu.AppendMenu(MF_STRING,MP_SHAREONLYTHENEED,	GetResString(IDS_DEFAULT));
 	m_ShareOnlyTheNeedMenu.AppendMenu(MF_STRING,MP_SHAREONLYTHENEED_0,	GetResString(IDS_DISABLED));
 	m_ShareOnlyTheNeedMenu.AppendMenu(MF_STRING,MP_SHAREONLYTHENEED_1,	GetResString(IDS_ENABLED));
@@ -2216,6 +2261,7 @@ void CSharedFilesCtrl::CreateMenues()
 
 
 	m_PrioMenu.CreateMenu();
+	m_PrioMenu.AddMenuTitle(NULL, true, false); // XP Style Menu [Xanatos] - Stulle
 	m_PrioMenu.AppendMenu(MF_STRING,MP_PRIOVERYLOW,GetResString(IDS_PRIOVERYLOW));
 	m_PrioMenu.AppendMenu(MF_STRING,MP_PRIOLOW,GetResString(IDS_PRIOLOW));
 	m_PrioMenu.AppendMenu(MF_STRING,MP_PRIONORMAL,GetResString(IDS_PRIONORMAL));
@@ -2229,7 +2275,7 @@ void CSharedFilesCtrl::CreateMenues()
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	m_CollectionsMenu.CreateMenu();
-	m_CollectionsMenu.AddMenuTitle(NULL, true);
+	m_CollectionsMenu.AddMenuTitle(NULL, true, false);
 	m_CollectionsMenu.AppendMenu(MF_STRING,MP_CREATECOLLECTION, GetResString(IDS_CREATECOLLECTION), _T("COLLECTION_ADD"));
 	m_CollectionsMenu.AppendMenu(MF_STRING,MP_MODIFYCOLLECTION, GetResString(IDS_MODIFYCOLLECTION), _T("COLLECTION_EDIT"));
 	m_CollectionsMenu.AppendMenu(MF_STRING,MP_VIEWCOLLECTION, GetResString(IDS_VIEWCOLLECTION), _T("COLLECTION_VIEW"));

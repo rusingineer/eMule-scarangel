@@ -320,6 +320,8 @@ CemuleDlg::~CemuleDlg()
 	delete statusbar;
 	delete m_wndTaskbarNotifier;
 	delete m_pDropTarget;
+
+	theApp.DestroyExtraFonts(); // Design Settings [eWombat/Stulle] - Stulle
 }
 
 void CemuleDlg::DoDataExchange(CDataExchange* pDX)
@@ -429,6 +431,8 @@ BOOL CemuleDlg::OnInitDialog()
 		    }
 		}
 	}
+
+	theApp.CreateExtraFonts(GetFont()); // Design Settings [eWombat/Stulle] - Stulle
 
 	// set title
 	// ==> ModID [itsonlyme/SiRoB] - Stulle
@@ -3239,7 +3243,7 @@ void CemuleDlg::ShowToolPopup(bool toolsonly)
 
 	CTitleMenu Links;
 	Links.CreateMenu();
-	Links.AddMenuTitle(NULL, true);
+	Links.AddMenuTitle(NULL, true, false);
 	Links.AppendMenu(MF_STRING, MP_HM_LINK1, GetResString(IDS_HM_LINKHP), _T("WEB"));
 	Links.AppendMenu(MF_STRING, MP_HM_LINK2, GetResString(IDS_HM_LINKFAQ), _T("WEB"));
 	Links.AppendMenu(MF_STRING, MP_HM_LINK3, GetResString(IDS_HM_LINKVC), _T("WEB"));
@@ -3247,8 +3251,15 @@ void CemuleDlg::ShowToolPopup(bool toolsonly)
 	Links.InsertMenu(3, MF_BYPOSITION | MF_SEPARATOR);
 	Links.AppendMenu(MF_STRING, MP_WEBSVC_EDIT, GetResString(IDS_WEBSVEDIT));
 
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
 	CMenu scheduler;
 	scheduler.CreateMenu();
+	*/
+	CTitleMenu scheduler;
+	scheduler.CreatePopupMenu();
+	scheduler.AddMenuTitle(NULL, false, false);
+	// <== XP Style Menu [Xanatos] - Stulle
 	CString schedonoff= (!thePrefs.IsSchedulerEnabled())?GetResString(IDS_HM_SCHED_ON):GetResString(IDS_HM_SCHED_OFF);
 
 	scheduler.AppendMenu(MF_STRING,MP_HM_SCHEDONOFF, schedonoff);

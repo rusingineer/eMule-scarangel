@@ -147,7 +147,7 @@ void CStatisticsTree::DoMenu(CPoint doWhere, UINT nFlags)
 	mnuContext.AppendMenu(MF_SEPARATOR);
 
 	mnuHTML.CreateMenu();
-	mnuHTML.AddMenuTitle(NULL, true);
+	mnuHTML.AddMenuTitle(NULL, true, false);
 	mnuHTML.AppendMenu(MF_STRING, MP_STATTREE_HTMLCOPYSEL, GetResString(IDS_STATS_MNUTREECPYSEL), _T("COPY"));
 	mnuHTML.AppendMenu(MF_STRING, MP_STATTREE_HTMLCOPYVIS, GetResString(IDS_STATS_MNUTREECPYVIS), _T("COPYVISIBLE"));
 	mnuHTML.AppendMenu(MF_STRING, MP_STATTREE_HTMLCOPYALL, GetResString(IDS_STATS_MNUTREECPYALL), _T("COPYSELECTED"));

@@ -434,8 +434,15 @@ void CMuleToolbarCtrl::OnNMRclick(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	///////////////////////////////////////////////////////////////////////////
 	// "Toolbar Bitmap" sub menu
 	//
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
 	CMenu menuBitmaps;
 	menuBitmaps.CreateMenu();
+	*/
+	CTitleMenu menuBitmaps;
+	menuBitmaps.CreatePopupMenu();
+	menuBitmaps.AddMenuTitle(NULL, false, false);
+	// <== XP Style Menu [Xanatos] - Stulle
 	menuBitmaps.AppendMenu(MF_STRING, MP_SELECTTOOLBARBITMAP, GetResString(IDS_SELECTTOOLBARBITMAP));
 	menuBitmaps.AppendMenu(MF_STRING, MP_SELECTTOOLBARBITMAPDIR, GetResString(IDS_SELECTTOOLBARBITMAPDIR));
 	menuBitmaps.AppendMenu(MF_SEPARATOR);
@@ -506,8 +513,15 @@ void CMuleToolbarCtrl::OnNMRclick(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	///////////////////////////////////////////////////////////////////////////
 	// "Skin Profile" sub menu
 	//
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
 	CMenu menuSkins;
 	menuSkins.CreateMenu();
+	*/
+	CTitleMenu menuSkins;
+	menuSkins.CreatePopupMenu();
+	menuSkins.AddMenuTitle(NULL, false, false);
+	// <== XP Style Menu [Xanatos] - Stulle
 	menuSkins.AppendMenu(MF_STRING, MP_SELECT_SKIN_FILE, GetResString(IDS_SEL_SKIN));
 	menuSkins.AppendMenu(MF_STRING, MP_SELECT_SKIN_DIR, GetResString(IDS_SEL_SKINDIR));
 	menuSkins.AppendMenu(MF_SEPARATOR);
@@ -578,8 +592,15 @@ void CMuleToolbarCtrl::OnNMRclick(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	///////////////////////////////////////////////////////////////////////////
 	// "Text Label" sub menu
 	//
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
 	CMenu menuTextLabels;
 	menuTextLabels.CreateMenu();
+	*/
+	CTitleMenu menuTextLabels;
+	menuTextLabels.CreatePopupMenu();
+	menuTextLabels.AddMenuTitle(NULL, false, false);
+	// <== XP Style Menu [Xanatos] - Stulle
 	ASSERT( MP_NOTEXTLABELS == MP_TEXTLABELS-1 && MP_NOTEXTLABELS == MP_TEXTLABELSONRIGHT-2 );
 	ASSERT( MP_NOTEXTLABELS + (int)NoLabels == MP_NOTEXTLABELS );
 	ASSERT( MP_NOTEXTLABELS + (int)LabelsBelow == MP_TEXTLABELS );
@@ -601,8 +622,15 @@ void CMuleToolbarCtrl::OnNMRclick(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	///////////////////////////////////////////////////////////////////////////
 	// Toolbar context menu
 	//
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
 	CMenu menuToolbar;
 	menuToolbar.CreatePopupMenu();
+	*/
+	CTitleMenu menuToolbar;
+	menuToolbar.CreatePopupMenu();
+	menuToolbar.AddMenuTitle(NULL);
+	// <== XP Style Menu [Xanatos] - Stulle
 	menuToolbar.AppendMenu(MF_STRING | MF_POPUP, (UINT_PTR)menuBitmaps.m_hMenu, GetResString(IDS_TOOLBARSKINS));
 	menuToolbar.AppendMenu(MF_STRING | MF_POPUP, (UINT_PTR)menuSkins.m_hMenu, GetResString(IDS_SKIN_PROF));
 	menuToolbar.AppendMenu(MF_STRING | MF_POPUP, (UINT_PTR)menuTextLabels.m_hMenu, GetResString(IDS_TEXTLABELS));

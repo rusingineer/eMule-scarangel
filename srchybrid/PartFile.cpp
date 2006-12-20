@@ -8624,3 +8624,25 @@ void CPartFile::AddWebCachedBlockToStats( bool IsGood, uint64 bytes )
 	}
 }
 // <== WebCache [WC team/MorphXT] - Stulle/Max
+
+// ==> Design Settings [eWombat/Stulle] - Stulle
+int CPartFile::GetPfStyle() const
+{
+	int iPfStyle = style_d_default;
+	if ((GetStatus()==PS_READY || GetStatus()==PS_EMPTY) && GetTransferringSrcCount()>0 && thePrefs.GetStyleOnOff(style_d_downloading)!=0)
+		iPfStyle = style_d_downloading;
+	if (GetStatus() == PS_COMPLETE && thePrefs.GetStyleOnOff(style_d_complete)!=0)
+		iPfStyle = style_d_complete;
+	if (GetStatus() == PS_COMPLETING && thePrefs.GetStyleOnOff(style_d_completing)!=0)
+		iPfStyle = style_d_completing;
+	if (GetStatus() == PS_HASHING && thePrefs.GetStyleOnOff(style_d_hashing)!=0)
+		iPfStyle = style_d_hashing;
+	if (GetStatus()==PS_PAUSED && !IsStopped() && thePrefs.GetStyleOnOff(style_d_paused)!=0)
+		iPfStyle = style_d_paused;
+	if (IsStopped() && IsPartFile() && thePrefs.GetStyleOnOff(style_d_stopped)!=0)
+		iPfStyle = style_d_stopped;
+	if ((GetStatus() == PS_ERROR || GetStatus() == PS_UNKNOWN)  && thePrefs.GetStyleOnOff(style_d_errunk)!=0)
+		iPfStyle = style_d_errunk;
+	return iPfStyle;
+}
+// <== Design Settings [eWombat/Stulle] - Stulle

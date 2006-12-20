@@ -1240,6 +1240,11 @@ public:
 	bool			GetPowerShared() const;
 	bool			GetPowerShared(const CKnownFile* file) const;
 	// <== PowerShare [ZZ/MorphXT] - Stulle
+
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	int		GetClientStyle(bool bDlOnly = false) const;
+	bool	GetPowerReleased() const;
+	// <== Design Settings [eWombat/Stulle] - Stulle
 };
 //#pragma pack()
 

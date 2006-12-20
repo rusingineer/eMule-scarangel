@@ -170,12 +170,18 @@ void CDownloadListCtrl::Init()
 		LOGFONT lfFont = {0};
 		pFont->GetLogFont(&lfFont);
 		lfFont.lfWeight = FW_BOLD;
+		// ==> Design Settings [eWombat/Stulle] - Stulle
+		/*
 		m_fontBold.CreateFontIndirect(&lfFont);
+		*/
+		// <== Design Settings [eWombat/Stulle] - Stulle
 		//Xman client percentage
 		lfFont.lfHeight = 11;
 		m_fontBoldSmaller.CreateFontIndirect(&lfFont);
 		//Xman end
 	}
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	/*
 	//Xman narrow font at transferwindow
 	{
 		CFont* pFont = GetFont();
@@ -186,6 +192,8 @@ void CDownloadListCtrl::Init()
 		m_fontNarrowBold.CreateFontIndirect(&lfFont);
 	}
 	//Xman end
+	*/
+	// <== Design Settings [eWombat/Stulle] - Stulle
 
 	// Barry - Use preferred sort order from preferences
 	m_bRemainSort=thePrefs.TransferlistRemainSortStyle();
@@ -1387,7 +1395,8 @@ void CDownloadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 	CDC* odc = CDC::FromHandle(lpDrawItemStruct->hDC);
 	BOOL bCtrlFocused = ((GetFocus() == this) || (GetStyle() & LVS_SHOWSELALWAYS));
-	CtrlItem_Struct* content = (CtrlItem_Struct*)lpDrawItemStruct->itemData; // draw friends blue - Stulle
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	/*
 	if (lpDrawItemStruct->itemState & ODS_SELECTED) {
 		if (bCtrlFocused)
 			odc->SetBkColor(m_crHighlight);
@@ -1395,20 +1404,8 @@ void CDownloadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			odc->SetBkColor(m_crNoHighlight);
 	}
 	else
-	// ==> draw friends blue - Stulle
-	/*
 		odc->SetBkColor(GetBkColor());
 	CtrlItem_Struct* content = (CtrlItem_Struct*)lpDrawItemStruct->itemData;
-	*/
-	{
-		if(content->type != FILE_TYPE //i.e. it's a src...
-	       && ((const CUpDownClient*)content->value)->IsFriend() //and it's a friend...
-		   && thePrefs.GetFriendsBlue()) // and it's enabled
-				odc->SetBkColor(m_crFriend);
-		else
-		odc->SetBkColor(GetBkColor());
-	}
-	// <== draw friends blue - Stulle
 	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
 	CFont* pOldFont;
 	//Xman Show active downloads bold
@@ -1438,6 +1435,44 @@ void CDownloadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
+	*/
+	theApp.emuledlg->transferwnd->SetBackgroundColor(style_b_downloadlist);
+	CtrlItem_Struct* content = (CtrlItem_Struct*)lpDrawItemStruct->itemData;
+	int iStyle = 0;
+	StylesStruct style;
+	if(content->type == FILE_TYPE)
+		iStyle = ((const CPartFile*)content->value)->GetPfStyle();
+	else if(content->type == UNAVAILABLE_SOURCE || content->type == AVAILABLE_SOURCE)
+	{
+		if(((const CUpDownClient*)content->value)->GetDownloadState() == DS_DOWNLOADING)
+			iStyle = style_d_downloading;
+		else
+			iStyle = ((const CUpDownClient*)content->value)->GetClientStyle(true);
+	}
+	thePrefs.GetStyle(iStyle, &style);
+	COLORREF crTempColor = GetBkColor();
+
+	if (style.nBackColor != CLR_DEFAULT)
+		crTempColor = style.nBackColor;
+
+	if (lpDrawItemStruct->itemState & ODS_SELECTED) {
+		if (bCtrlFocused)
+			odc->SetBkColor(m_crHighlight);
+		else
+			odc->SetBkColor(m_crNoHighlight);
+	}
+	else
+		odc->SetBkColor(crTempColor);
+
+	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
+	CFont* pOldFont = dc.SelectObject(theApp.GetFontByStyle(style.nFlags,thePrefs.UseNarrowFont()));
+
+	crTempColor = m_crWindowText;
+	if(style.nFontColor != CLR_DEFAULT)
+		crTempColor = style.nFontColor;
+
+	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : crTempColor);
+	// <== Design Settings [eWombat/Stulle] - Stulle
 
 	int iOldBkMode;
 	if (m_crWindowTextBk == CLR_NONE){
@@ -1513,6 +1548,8 @@ void CDownloadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				DrawSourceItem(dc, 5, &cur_rec, content);
 				cur_rec.left = iNextLeft;
 			} 
+			// ==> Design Settings [eWombat/Stulle] - Stulle
+			/*
 			//Xman show LowIDs
 			else if(iColumn==6)
 			{
@@ -1531,6 +1568,8 @@ void CDownloadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				}
 			}
 			//Xman end
+			*/
+			// <== Design Settings [eWombat/Stulle] - Stulle
 			else {
 				cur_rec.right += cx;
 				DrawSourceItem(dc, iColumn, &cur_rec, content);
@@ -1861,7 +1900,7 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			*/
 			CTitleMenu PreviewMenu;
 			PreviewMenu.CreateMenu();
-			PreviewMenu.AddMenuTitle(NULL, true);
+			PreviewMenu.AddMenuTitle(NULL, true, false);
 			// <== XP Style Menu [Xanatos] - Stulle
 			int iPreviewMenuEntries = thePreviewApps.GetAllMenuEntries(PreviewMenu, (iSelectedItems == 1) ? file1 : NULL);
 			if (iPreviewMenuEntries)
@@ -1920,14 +1959,21 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 
 			CTitleMenu WebMenu;
 			WebMenu.CreateMenu();
-			WebMenu.AddMenuTitle(NULL, true);
+			WebMenu.AddMenuTitle(NULL, true, false);
 			int iWebMenuEntries = theWebServices.GetFileMenuEntries(&WebMenu);
 			UINT flag = (iWebMenuEntries == 0 || iSelectedItems != 1) ? MF_GRAYED : MF_ENABLED;
 			m_FileMenu.AppendMenu(MF_POPUP | flag, (UINT_PTR)WebMenu.m_hMenu, GetResString(IDS_WEBSERVICES), _T("WEB"));
 
 			// create cat-submenue
+			// ==> XP Style Menu [Xanatos] - Stulle
+			/*
 			CMenu CatsMenu;
 			CatsMenu.CreateMenu();
+			*/
+			CTitleMenu CatsMenu;
+			CatsMenu.CreateMenu();
+			CatsMenu.AddMenuTitle(NULL, false, false);
+			// <== XP Style Menu [Xanatos] - Stulle
 			flag = (thePrefs.GetCatCount() == 1) ? MF_GRAYED : MF_ENABLED;
 			CString label;
 			if (thePrefs.GetCatCount()>1) {
@@ -2018,8 +2064,15 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			ClientMenu.AppendMenu(MF_STRING | (GetItemCount() > 0 ? MF_ENABLED : MF_GRAYED), MP_FIND, GetResString(IDS_FIND), _T("Search"));
 
 
+			// ==> XP Style Menu [Xanatos] - Stulle
+			/*
 			CMenu A4AFMenu;
 			A4AFMenu.CreateMenu();
+			*/
+			CTitleMenu A4AFMenu;
+			A4AFMenu.CreateMenu();
+			A4AFMenu.AddMenuTitle(NULL, false, false);
+			// <== XP Style Menu [Xanatos] - Stulle
 			if (thePrefs.IsExtControlsEnabled()) {
 				//Xman Xtreme Downloadmanager
 				//if (content->type == UNAVAILABLE_SOURCE) {
@@ -2089,7 +2142,7 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 		// less confusing this way.
 		CTitleMenu WebMenu;
 		WebMenu.CreateMenu();
-		WebMenu.AddMenuTitle(NULL, true);
+		WebMenu.AddMenuTitle(NULL, true, false);
 		theWebServices.GetFileMenuEntries(&WebMenu);
 		m_FileMenu.AppendMenu(MF_POPUP | MF_GRAYED, (UINT_PTR)WebMenu.m_hMenu, GetResString(IDS_WEBSERVICES), _T("WEB"));
 
@@ -3403,6 +3456,7 @@ void CDownloadListCtrl::CreateMenues()
 
 	//Xman Xtreme Downloadmanager
 	m_DropMenu.CreateMenu();
+	m_DropMenu.AddMenuTitle(NULL, true, false); // XP Style Menu [Xanatos] - Stulle
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPNONEEDEDSRCS, GetResString(IDS_DROPNONEEDEDSRCS)); 
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPQUEUEFULLSRCS, GetResString(IDS_DROPQUEUEFULLSRCS)); 
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPLEECHER, GetResString(IDS_DROPLEECHER));  //Xman Anti-Leecher
@@ -3423,7 +3477,7 @@ void CDownloadListCtrl::CreateMenues()
 	// Add 'Download Priority' sub menu
 	//
 	m_PrioMenu.CreateMenu();
-	m_PrioMenu.AddMenuTitle(NULL, true);
+	m_PrioMenu.AddMenuTitle(NULL, true, false);
 	m_PrioMenu.AppendMenu(MF_STRING, MP_PRIOLOW, GetResString(IDS_PRIOLOW));
 	m_PrioMenu.AppendMenu(MF_STRING, MP_PRIONORMAL, GetResString(IDS_PRIONORMAL));
 	m_PrioMenu.AppendMenu(MF_STRING, MP_PRIOHIGH, GetResString(IDS_PRIOHIGH));
@@ -3455,6 +3509,7 @@ void CDownloadListCtrl::CreateMenues()
 	//
 	if (thePrefs.IsExtControlsEnabled()) {
 		m_SourcesMenu.CreateMenu();
+		m_SourcesMenu.AddMenuTitle(NULL, true, false); // XP Style Menu [Xanatos] - Stulle
 		//Xman Xtreme Downloadmanager
 		m_SourcesMenu.AppendMenu(MF_STRING, MP_ALL_A4AF_AUTO, GetResString(IDS_ALL_A4AF_AUTO)); //Xman Xtreme Downloadmanager: Auto-A4AF-check
 		m_SourcesMenu.AppendMenu(MF_STRING, MP_ALL_A4AF_TO_THIS, GetResString(IDS_ALL_A4AF_TO_THIS)); 

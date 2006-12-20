@@ -2676,3 +2676,35 @@ void CTransferWnd::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemSt
 	CResizableDialog::OnMeasureItem(nIDCtl, lpMeasureItemStruct);
 }
 // <== XP Style Menu [Xanatos] - Stulle
+
+// ==> Design Settings [eWombat/Stulle] - Stulle
+void CTransferWnd::SetBackgroundColor(int nStyle)
+{
+	StylesStruct style;
+	thePrefs.GetStyle(nStyle,&style);
+
+	if(style.nBackColor == CLR_DEFAULT)
+		return;
+
+	switch(nStyle)
+	{
+		case style_b_clientlist:
+			clientlistctrl.SetBkColor(style.nBackColor);
+			break;
+		case style_b_dlclientlist:
+			downloadclientsctrl.SetBkColor(style.nBackColor);
+			break;
+		case style_b_queuelist:
+			queuelistctrl.SetBkColor(style.nBackColor);
+			break;
+		case style_b_uploadlist:
+			uploadlistctrl.SetBkColor(style.nBackColor);
+			break;
+		case style_b_downloadlist:
+			downloadlistctrl.SetBkColor(style.nBackColor);
+			break;
+		default:
+			break;
+	}
+}
+// <== Design Settings [eWombat/Stulle] - Stulle

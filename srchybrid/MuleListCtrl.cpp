@@ -103,8 +103,6 @@ CMuleListCtrl::CMuleListCtrl(PFNLVCOMPARE pfnCompare, DWORD dwParamSort)
     m_iFindColumn = 0;
 	m_hAccel = NULL;
 	m_uIDAccel = IDR_LISTVIEW;
-	m_crPsFiles = 0; // draw PS files red - Stulle
-	m_crFriend = 0; // draw friends blue - Stulle
 }
 
 CMuleListCtrl::~CMuleListCtrl() {
@@ -414,6 +412,8 @@ void CMuleListCtrl::LoadSettings()
 	delete[] piColHidden;
 	//delete[] piSortHist; // SLUGFILLER: multiSort remove - unused
 
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	/*
 	//Xman narrow font at transferwindow
 	{
 		CFont* pFont = GetFont();
@@ -424,6 +424,8 @@ void CMuleListCtrl::LoadSettings()
 			m_fontNarrow.CreateFontIndirect(&lfFont);
 	}
 	//Xman end
+	*/
+	// <== Design Settings [eWombat/Stulle] - Stulle
 
 }
 
@@ -532,8 +534,6 @@ void CMuleListCtrl::SetColors(LPCTSTR pszLvKey) {
 		m_crHighlight		= MLC_RGBBLEND(crHighlight, m_crWindow, 4);
 		m_crHighlightText	= m_crWindowText;
 		m_crGlow			= MLC_RGBBLEND(crHighlight, m_crWindow, 3);
-		m_crPsFiles			= MLC_RGBBLEND(255,			m_crWindow, 8); // draw PS files red - Stulle
-		m_crFriend			= RGB(100,					175,	  255); // draw friends blue - Stulle	
 	}
 }
 

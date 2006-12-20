@@ -410,6 +410,7 @@ void CSharedDirsTreeCtrl::CreateMenues()
 	
 
 	m_PrioMenu.CreateMenu();
+	m_PrioMenu.AddMenuTitle(NULL, true, false); // XP Style Menu [Xanatos] - Stulle
 	m_PrioMenu.AppendMenu(MF_STRING,MP_PRIOVERYLOW,GetResString(IDS_PRIOVERYLOW));
 	m_PrioMenu.AppendMenu(MF_STRING,MP_PRIOLOW,GetResString(IDS_PRIOLOW));
 	m_PrioMenu.AppendMenu(MF_STRING,MP_PRIONORMAL,GetResString(IDS_PRIONORMAL));
@@ -512,7 +513,7 @@ void CSharedDirsTreeCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 
 		CTitleMenu WebMenu;
 		WebMenu.CreateMenu();
-		WebMenu.AddMenuTitle(NULL, true);
+		WebMenu.AddMenuTitle(NULL, true, false);
 		int iWebMenuEntries = theWebServices.GetFileMenuEntries(&WebMenu);
 		UINT flag2 = (iWebMenuEntries == 0 || iSelectedItems != 1) ? MF_GRAYED : MF_STRING;
 		m_SharedFilesMenu.AppendMenu(flag2 | MF_POPUP, (UINT_PTR)WebMenu.m_hMenu, GetResString(IDS_WEBSERVICES), _T("WEB"));

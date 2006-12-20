@@ -347,7 +347,8 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 	CDC* odc = CDC::FromHandle(lpDrawItemStruct->hDC);
 	BOOL bCtrlFocused = ((GetFocus() == this) || (GetStyle() & LVS_SHOWSELALWAYS));
-	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData; // draw PS files red - Stulle
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	/*
 	if (lpDrawItemStruct->itemState & ODS_SELECTED) {
 		if (bCtrlFocused)
 			odc->SetBkColor(m_crHighlight);
@@ -355,29 +356,42 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			odc->SetBkColor(m_crNoHighlight);
 	}
 	else
-	// ==> draw PS files red - Stulle
-	/*
 		odc->SetBkColor(GetBkColor());
 	COLORREF crOldBackColor = odc->GetBkColor(); //Xman PowerRelease //Xman show LowIDs
 
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
-	*/
-	{
-		// ==> draw friends blue - Stulle
-		if (client->IsFriend() && thePrefs.GetFriendsBlue())
-			odc->SetBkColor(m_crFriend);
-		// <== draw friends blue - Stulle
-		else if(client->GetPowerShared() && thePrefs.GetPsFilesRed())
-			odc->SetBkColor(m_crPsFiles);
-		else
-			odc->SetBkColor(GetBkColor());
-	}
-	COLORREF crOldBackColor = odc->GetBkColor(); //Xman PowerRelease //Xman show LowIDs
-	// <== draw PS files red - Stulle
 	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
 	CFont* pOldFont = dc.SelectObject(thePrefs.UseNarrowFont() ? &m_fontNarrow : GetFont()); //Xman narrow font at transferwindow
 	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
+	*/
+	theApp.emuledlg->transferwnd->SetBackgroundColor(style_b_queuelist);
+	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
+	int iClientStyle = client->GetClientStyle();
+	StylesStruct style;
+	thePrefs.GetStyle(iClientStyle, &style);
+	COLORREF crTempColor = GetBkColor();
+
+	if (style.nBackColor != CLR_DEFAULT)
+		crTempColor = style.nBackColor;
+
+	if (lpDrawItemStruct->itemState & ODS_SELECTED) {
+		if (bCtrlFocused)
+			odc->SetBkColor(m_crHighlight);
+		else
+			odc->SetBkColor(m_crNoHighlight);
+	}
+	else
+		odc->SetBkColor(crTempColor);
+
+	crTempColor = m_crWindowText;
+	if(style.nFontColor != CLR_DEFAULT)
+		crTempColor = style.nFontColor;
+
+	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
+	CFont* pOldFont = dc.SelectObject(theApp.GetFontByStyle(style.nFlags,thePrefs.UseNarrowFont()));
+	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : crTempColor);
+	// <== Design Settings [eWombat/Stulle] - Stulle
 
 	int iOldBkMode;
 	if (m_crWindowTextBk == CLR_NONE){
@@ -507,10 +521,14 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					if(file)
 					{
 						Sbuffer = file->GetFileName();
+						// ==> Design Settings [eWombat/Stulle] - Stulle
+						/*
 						//Xman PowerRelease
 						if(file->GetUpPriority()==PR_POWER)
 							dc.SetBkColor(RGB(255,225,225));
 						//Xman end
+						*/
+						// <== Design Settings [eWombat/Stulle] - Stulle
 					}
 					else
 						Sbuffer = _T("?");
@@ -646,7 +664,11 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				//Xman version see clientversion in every window
 				case 10:
 					Sbuffer.Format(_T("%s"), client->DbgGetFullClientSoftVer()); //Xman // Maella -Support for tag ET_MOD_VERSION 0x55
+					// ==> Design Settings [eWombat/Stulle] - Stulle
+					/*
 					if(client->HasLowID()) dc.SetBkColor(RGB(255,250,200));//Xman show LowIDs
+					*/
+					// <== Design Settings [eWombat/Stulle] - Stulle
 					break;
 				//Xman end
 
@@ -705,7 +727,11 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			if( iColumn != 9 && iColumn != 0 && iColumn != 14)
 			// <== WebCache [WC team/MorphXT] - Stulle/Max
 				dc.DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
+			// ==> Design Settings [eWombat/Stulle] - Stulle
+			/*
 			dc.SetBkColor(crOldBackColor); //Xman PowerRelease //Xman show LowIDs
+			*/
+			// <== Design Settings [eWombat/Stulle] - Stulle
 			cur_rec.left += GetColumnWidth(iColumn);
 		}
 	}

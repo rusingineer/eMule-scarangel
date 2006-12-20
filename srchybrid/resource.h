@@ -2471,8 +2471,6 @@
 #define IDS_SUQWT                       60071
 // <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 #define IDS_SHOW_FILE_HL_CONST          60090 // show HL per file constantaniously - Stulle
-#define IDS_PS_FILES_RED                60240 // draw PS files red - Stulle
-#define IDS_FRIENDS_BLUE                60250 // draw friends blue - Stulle
 #define IDS_SHOW_GLOBAL_HL              60260 // show global HL - Stulle
 // ==> file settings - Stulle
 #define IDC_DEFAULT_BUTTON              60270
@@ -2953,6 +2951,49 @@
 #define IDS_RELEASE_BONUS_EDIT          60911
 // <== Release Bonus [sivka] - Stulle
 #define IDS_RELEASE_SCORE_ASSURANCE     60920 // Release Score Assurance [Stulle] - Stulle
+// ==> Design Settings [eWombat/Stulle] - Stulle
+#define IDC_COLOR_BOX                   60930
+#define IDC_COLOR_MASTER_COMBO          60931
+#define IDC_COLOR_SUB_COMBO             60932
+#define IDC_COLOR_BOLD                  60933
+#define IDC_COLOR_UNDERLINED            60934
+#define IDC_COLOR_ITALIC                60935
+#define IDI_FONTUL                      60936
+#define IDI_FONTI                       60937
+#define IDI_FONTB                       60938
+#define IDC_COLOR_FONT_LABEL            60939
+#define IDC_COLOR_FONT                  60940
+#define IDC_COLOR_BACK_LABEL            60941
+#define IDC_COLOR_BACK                  60942
+//#define IDC_COLOR_PREVIEW               60943
+//#define IDC_COLOR_PREVIEW_BOX           60944
+#define IDS_COLOR_MASTER1               60945
+#define IDS_COLOR_MASTER2               60946
+#define IDS_COLOR_MASTER3               60947
+#define IDS_COLOR_BOX                   60948
+#define IDS_COLOR_FONT_LABEL            60949
+#define IDS_COLOR_BACK_LABEL            60950
+//#define IDS_COLOR_PREVIEW               60951
+#define IDS_COLOR_C1                    60952
+#define IDS_COLOR_S1                    60953
+#define IDS_COLOR_S2                    60954
+#define IDS_COLOR_C2                    60955
+#define IDS_COLOR_C3                    60956
+#define IDS_COLOR_C4                    60957
+#define IDS_COLOR_C5                    60958
+#define IDS_COLOR_C6                    60959
+#define IDS_COLOR_B1                    60960
+#define IDS_COLOR_MASTER4               60961
+#define IDS_COLOR_B2                    60962
+#define IDS_COLOR_B3                    60963
+#define IDS_COLOR_B4                    60964
+#define IDS_COLOR_B5                    60965
+#define IDS_COLOR_B6                    60966
+//#define IDS_COLOR_C7                    60967
+#define IDC_COLOR_ON_OFF                60968
+#define IDS_COLOR_ON                    60969
+#define IDS_COLOR_OFF                   60970
+// <== Design Settings [eWombat/Stulle] - Stulle
 
 // Next default values for new objects
 // 

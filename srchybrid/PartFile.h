@@ -660,6 +660,8 @@ public:
 	void	SetCatResumeOrder(UINT order)	{ m_catResumeOrder = order; SavePartFile(); }
 	UINT	GetCatResumeOrder() const				{ return m_catResumeOrder; }
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+	int		GetPfStyle() const; // Design Settings [eWombat/Stulle] - Stulle
 };
 
 //Xman

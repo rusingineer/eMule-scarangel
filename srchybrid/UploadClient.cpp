@@ -2034,3 +2034,10 @@ bool CUpDownClient::GetPowerShared(const CKnownFile* file) const {
 	return file->GetPowerShared();
 }
 // <== PowerShare [ZZ/MorphXT] - Stulle
+
+// ==> Design Settings [eWombat/Stulle] - Stulle
+bool CUpDownClient::GetPowerReleased() const {
+	CKnownFile* currentReqFile = theApp.sharedfiles->GetFileByID(GetUploadFileID());
+	return currentReqFile && currentReqFile->GetUpPriority()==PR_POWER;
+}
+// <== Design Settings [eWombat/Stulle] - Stulle

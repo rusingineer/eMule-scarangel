@@ -4223,3 +4223,28 @@ void CUpDownClient::UpdateFunnyNick()
 		srand((unsigned)time(NULL));
 }
 //Xman end
+
+// ==> Design Settings [eWombat/Stulle] - Stulle
+int CUpDownClient::GetClientStyle(bool bDlOnly) const
+{
+	int iClientStyle = style_c_default;
+	if(IsFriend() && thePrefs.GetStyleOnOff(style_c_friend)!=0)
+		iClientStyle = style_c_friend;
+	if(GetPowerShared() && !bDlOnly && thePrefs.GetStyleOnOff(style_c_powershare)!=0)
+		iClientStyle = style_c_powershare;
+	if(GetPowerReleased() && !bDlOnly && thePrefs.GetStyleOnOff(style_c_powerrelease)!=0)
+		iClientStyle = style_c_powerrelease;
+	if(IsLeecher()>0 && thePrefs.GetStyleOnOff(style_c_leecher)!=0)
+		iClientStyle = style_c_leecher;
+	if(HasLowID() && thePrefs.GetStyleOnOff(style_c_lowid)!=0)
+		iClientStyle = style_c_lowid;
+	if(Credits() && thePrefs.GetStyleOnOff(style_c_credits)!=0)
+	{
+		if	(
+				(!bDlOnly && credits->GetHasScore(this)) ||
+				( bDlOnly && credits->GetMyScoreRatio(GetIP())>1)
+			)
+			iClientStyle = style_c_credits;
+	}
+	return iClientStyle;
+}

@@ -173,4 +173,6 @@ protected:
 public:
 	int		GetActiveCategory()			{ return m_dlTab.GetCurSel(); }
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+	void SetBackgroundColor(int nStyle); // Design Settings [eWombat/Stulle] - Stulle
 };

@@ -423,3 +423,5 @@ CString CastItoUIXBytes(uint64 count);
 // Wildcard support for Category Selection Mask
 int wildcmp(TCHAR *wild, TCHAR *string);
 // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+#define ELEMENT_COUNT(X) (sizeof(X) / sizeof(X[0])) // Design Settings [eWombat/Stulle] - Stulle

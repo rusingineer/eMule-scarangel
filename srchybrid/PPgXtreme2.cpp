@@ -241,6 +241,7 @@ void CPPgXtreme2::Localize(void)
 		//Xman end
 
 		GetDlgItem(IDC_ACTIVEDOWNLOADSBOLD)->SetWindowText(GetResString(IDS_ACTIVEDOWNLOADSBOLD));
+		GetDlgItem(IDC_ACTIVEDOWNLOADSBOLD)->EnableWindow(FALSE); // Design Settings [eWombat/Stulle] - Stulle
 
 		//Xman show additional graph lines
 		GetDlgItem(IDC_SHOWADDITIONALGRAPH)->SetWindowText(GetResString(IDS_SHOWADDITIONALGRAPH));

@@ -104,7 +104,12 @@ protected:
 
 	CTitleMenu			m_SharedFilesMenu;
 	CTitleMenu			m_ShareDirsMenu;
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
 	CMenu				m_PrioMenu;
+	*/
+	CTitleMenu			m_PrioMenu;
+	// <== XP Style Menu [Xanatos] - Stulle
 	CDirectoryItem*		m_pRootDirectoryItem;
 	CDirectoryItem*		m_pRootUnsharedDirectries;
 	CDirectoryItem*		m_pDraggingItem;

@@ -16,6 +16,8 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
 
+#include "Ini2.h" // Design Settings [eWombat/Stulle] - Stulle
+
 const CString strDefaultToolbar = _T("0099010203040506070899091011");
 
 enum EViewSharedFilesAccess{
@@ -142,6 +144,67 @@ struct Category_Struct{
 };
 #pragma pack()
 // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+// ==> Design Settings [eWombat/Stulle] - Stulle
+struct StylesStruct 
+{
+	short nOnOff;
+	DWORD nFlags;
+	COLORREF nFontColor;
+	COLORREF nBackColor;
+};
+
+#define STYLE_BOLD		0x0001
+#define STYLE_UNDERLINE	0x0002
+#define STYLE_ITALIC	0x0003
+#define STYLE_USED		0x80000000
+#define STYLE_FONTMASK	0x0003
+
+enum eStyles
+{
+	// client styles
+	style_c_default = 0,
+	style_c_friend,
+	style_c_powershare,
+	style_c_powerrelease,
+	style_c_leecher,
+	style_c_lowid,
+	style_c_credits,
+
+	// download styles
+	style_d_default,
+	style_d_downloading,
+	style_d_complete,
+	style_d_completing,
+	style_d_hashing,
+	style_d_paused,
+	style_d_stopped,
+	style_d_errunk,
+
+	// share styles
+	style_s_default,
+	style_s_incomplete,
+	style_s_powershare,
+	style_s_auto,
+	style_s_verylow,
+	style_s_low,
+	style_s_normal,
+	style_s_high,
+	style_s_release,
+	style_s_powerrelease,
+
+	// background styles
+	style_b_clientlist,
+	style_b_dlclientlist,
+	style_b_queuelist,
+	style_b_uploadlist,
+	style_b_downloadlist,
+	style_b_sharedlist,
+
+	// last item
+	style_counts
+};
+// <== Design Settings [eWombat/Stulle] - Stulle
 
 class CPreferences
 {
@@ -655,8 +718,6 @@ public:
     static  bool enablePushRareFile; // push rare file - Stulle
 
 	static bool	showSrcInTitle; // Show sources on title - Stulle
-	static bool	PsFilesRed; // draw PS files red - Stulle
-	static bool FriendsBlue; // draw friends blue - Stulle
 	static bool	showOverheadInTitle; // show overhead on title - Stulle
 	static bool ShowGlobalHL; // show global HL - Stulle
 	static bool ShowFileHLconst; // show HL per file constantaniously - Stulle
@@ -836,6 +897,13 @@ public:
 
 	static	uint8	m_uReleaseBonus; // Release Bonus [sivka] - Stulle
 	static	bool	m_bReleaseScoreAssurance; // Release Score Assurance [Stulle] - Stulle
+
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	static DWORD		nStyleFlags[style_counts]; 
+	static COLORREF		nStyleFontColor[style_counts];
+	static COLORREF		nStyleBackColor[style_counts];
+	static short		nStyleOnOff[style_counts];
+	// <== Design Settings [eWombat/Stulle] - Stulle
 
 	enum Table
 	{
@@ -1843,8 +1911,6 @@ public:
     static bool		GetEnablePushRareFile()		{return enablePushRareFile;} // push rare file - Stulle
 
 	static	bool	ShowSrcOnTitle()		{ return showSrcInTitle;} // Show sources on title - Stulle
-	static	bool	GetPsFilesRed()			{ return PsFilesRed; } // draw PS files red - Stulle
-	static  bool	GetFriendsBlue()		{ return FriendsBlue; } // draw friends blue - Stulle
 	static	bool	ShowOverheadOnTitle()	{ return showOverheadInTitle;} // show overhead on title - Stulle
 	static	bool	GetShowGlobalHL()		{ return ShowGlobalHL; } // show global HL - Stulle
 	static	bool	GetShowFileHLconst()	{ return ShowFileHLconst; } // show HL per file constantaniously - Stulle
@@ -2014,6 +2080,18 @@ public:
 
 	static	uint8	GetReleaseBonus()			{return m_uReleaseBonus;} // Release Bonus [sivka] - Stulle
 	static	bool	GetReleaseScoreAssurance()	{return m_bReleaseScoreAssurance;} // Release Score Assurance [Stulle] - Stulle
+
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	static bool		SetStyle(int nStyle, StylesStruct *style=NULL);
+	static bool		GetStyle(int nStyle, StylesStruct *style=NULL);
+	static DWORD	GetStyleFlags(int nStyle)	{return nStyleFlags[nStyle];}
+	static COLORREF	GetStyleFontColor(int nStyle)	{return nStyleFontColor[nStyle];}
+	static COLORREF	GetStyleBackColor(int nStyle)	{return nStyleBackColor[nStyle];}
+	static short	GetStyleOnOff(int nStyle)	{return nStyleOnOff[nStyle];}
+	static void		InitStyles();
+	static void		SaveStylePrefs(CIni &ini);
+	static void		LoadStylePrefs(CIni &ini);
+	// <== Design Settings [eWombat/Stulle] - Stulle
 
 protected:
 	static	CString appdir;
