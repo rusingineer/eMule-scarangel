@@ -4248,3 +4248,4 @@ int CUpDownClient::GetClientStyle(bool bDlOnly) const
 	}
 	return iClientStyle;
 }
+// <== Design Settings [eWombat/Stulle] - Stulle

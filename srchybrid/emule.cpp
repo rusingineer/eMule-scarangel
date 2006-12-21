@@ -2352,25 +2352,25 @@ void CemuleApp::CreateExtraFonts(CFont *font)
 	LOGFONT lf;
 	font->GetLogFont(&lf);
 	lf.lfWeight=FW_BOLD;
-	m_ExtraFonts[0].CreateFontIndirect(&lf);
+	m_ExtraFonts[0].CreateFontIndirect(&lf); // bold
 	lf.lfWeight=FW_NORMAL;
 	lf.lfUnderline=TRUE;
-	m_ExtraFonts[1].CreateFontIndirect(&lf);
+	m_ExtraFonts[1].CreateFontIndirect(&lf); // underlined
 	lf.lfUnderline=FALSE;
 	lf.lfItalic = TRUE;
-	m_ExtraFonts[2].CreateFontIndirect(&lf);
+	m_ExtraFonts[2].CreateFontIndirect(&lf); // italic
 
 	// narrow
 	_tcscpy(lf.lfFaceName, _T("Arial Narrow"));
-	m_ExtraFonts[3].CreateFontIndirect(&lf);
+	m_ExtraFonts[3].CreateFontIndirect(&lf); // normal
 	lf.lfWeight=FW_BOLD;
-	m_ExtraFonts[4].CreateFontIndirect(&lf);
+	m_ExtraFonts[4].CreateFontIndirect(&lf); // bold
 	lf.lfWeight=FW_NORMAL;
 	lf.lfUnderline=TRUE;
-	m_ExtraFonts[5].CreateFontIndirect(&lf);
+	m_ExtraFonts[5].CreateFontIndirect(&lf); // underlined
 	lf.lfUnderline=FALSE;
 	lf.lfItalic = TRUE;
-	m_ExtraFonts[6].CreateFontIndirect(&lf);
+	m_ExtraFonts[6].CreateFontIndirect(&lf); // italic
 }
 
 void CemuleApp::DestroyExtraFonts()

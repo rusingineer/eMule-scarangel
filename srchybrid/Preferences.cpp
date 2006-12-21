@@ -4396,17 +4396,52 @@ void CPreferences::LoadStylePrefs(CIni &ini)
 		{
 			switch(i)
 			{
-				/*
-				case style_trayspeedbar:
-					nStyleFontColor[i]	= COLORREF(RGB(0,0,0));
+				case style_c_powerrelease:
 					nStyleFlags[i] = STYLE_USED;
+		            nStyleFontColor[i]	= CLR_DEFAULT;
+					nStyleBackColor[i]	= COLORREF(RGB(255,210,210));
+					nStyleOnOff[i] = 1;
 					break;
-				*/
+				case style_c_leecher:
+					nStyleFlags[i] = STYLE_USED;
+					nStyleFontColor[i]	= COLORREF(RGB(255,0,0));
+		            nStyleBackColor[i]	= CLR_DEFAULT;
+					nStyleOnOff[i] = 1;
+					break;
+				case style_c_lowid:
+					nStyleFlags[i] = STYLE_USED;
+		            nStyleFontColor[i]	= CLR_DEFAULT;
+					nStyleBackColor[i]	= COLORREF(RGB(255,250,200));
+					nStyleOnOff[i] = 1;
+					break;
+				case style_d_downloading:
+					nStyleFlags[i] = STYLE_BOLD|STYLE_USED;
+					nStyleFontColor[i]	= COLORREF(RGB(50,205,50));
+		            nStyleBackColor[i]	= CLR_DEFAULT;
+					nStyleOnOff[i] = 1;
+					break;
+				case style_s_incomplete:
+					nStyleFlags[i] = STYLE_ITALIC|STYLE_USED;
+					nStyleFontColor[i]	= COLORREF(RGB(0,0,255));
+		            nStyleBackColor[i]	= CLR_DEFAULT;
+					nStyleOnOff[i] = 1;
+					break;
+				case style_s_powershare:
+					nStyleFlags[i] = STYLE_USED;
+					nStyleFontColor[i]	= COLORREF(RGB(255,0,0));
+		            nStyleBackColor[i]	= CLR_DEFAULT;
+					nStyleOnOff[i] = 1;
+					break;
+				case style_s_powerrelease:
+					nStyleFlags[i] = STYLE_USED;
+		            nStyleFontColor[i]	= CLR_DEFAULT;
+					nStyleBackColor[i]	= COLORREF(RGB(255,210,210));
+					nStyleOnOff[i] = 1;
+					break;
 				default:
-				{
 		            nStyleFontColor[i]	= CLR_DEFAULT;
 		            nStyleBackColor[i]	= CLR_DEFAULT;
-				}
+					break;
 			}
 		}
 	}

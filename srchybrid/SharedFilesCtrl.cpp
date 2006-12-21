@@ -617,9 +617,11 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	COLORREF crTempColor = thePrefs.GetStyleBackColor(style_b_sharedlist);
 	if(crTempColor != CLR_DEFAULT)
 		SetBkColor(crTempColor);
+	else
+		SetBkColor(COLOR_WINDOW);
 	CKnownFile* file = (CKnownFile*)lpDrawItemStruct->itemData;
 	int iStyle = 0;
-	if(file->IsPartFile())
+	if(file->IsPartFile() && thePrefs.GetStyleOnOff(style_s_incomplete)!=0)
 		iStyle = style_s_incomplete;
 	else 
 		iStyle = file->GetKnownStyle();

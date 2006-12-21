@@ -2680,28 +2680,27 @@ void CTransferWnd::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemSt
 // ==> Design Settings [eWombat/Stulle] - Stulle
 void CTransferWnd::SetBackgroundColor(int nStyle)
 {
-	StylesStruct style;
-	thePrefs.GetStyle(nStyle,&style);
+	COLORREF crTempColor = thePrefs.GetStyleBackColor(nStyle);
 
-	if(style.nBackColor == CLR_DEFAULT)
-		return;
+	if(crTempColor == CLR_DEFAULT)
+		crTempColor = COLOR_WINDOW;
 
 	switch(nStyle)
 	{
 		case style_b_clientlist:
-			clientlistctrl.SetBkColor(style.nBackColor);
+			clientlistctrl.SetBkColor(crTempColor);
 			break;
 		case style_b_dlclientlist:
-			downloadclientsctrl.SetBkColor(style.nBackColor);
+			downloadclientsctrl.SetBkColor(crTempColor);
 			break;
 		case style_b_queuelist:
-			queuelistctrl.SetBkColor(style.nBackColor);
+			queuelistctrl.SetBkColor(crTempColor);
 			break;
 		case style_b_uploadlist:
-			uploadlistctrl.SetBkColor(style.nBackColor);
+			uploadlistctrl.SetBkColor(crTempColor);
 			break;
 		case style_b_downloadlist:
-			downloadlistctrl.SetBkColor(style.nBackColor);
+			downloadlistctrl.SetBkColor(crTempColor);
 			break;
 		default:
 			break;
