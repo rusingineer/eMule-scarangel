@@ -324,6 +324,7 @@ CSharedFileList::CSharedFileList(CServerConnect* in_server)
 	m_lastPublishKadSrc = 0;
 	m_lastPublishKadNotes = 0;
 	m_currFileKey = 0;
+	m_lastavgPercent = 0; //Xman advanced upload-priority
 	//Xman
 	//FindSharedFiles();
 	// SLUGFILLER: SafeHash remove - delay load shared files
@@ -1566,6 +1567,70 @@ bool CSharedFileList::IsUnsharedFile(const uchar* auFileHash) const {
 	}
 	return false;
 }
+
+//Xman advanced upload-priority
+void CSharedFileList::CalculateUploadPriority(bool force)
+{
+	static uint32 lastprocess;
+
+	if(!thePrefs.UseAdvancedAutoPtio())
+		return; 
+
+
+	if(force || ::GetTickCount() - lastprocess > MIN2MS(2))
+	{
+		lastprocess=::GetTickCount();
+		double sumavgpercent = 0;
+		UINT countFiles = 0;
+		//first loop to calculate the avg
+		POSITION pos = m_Files_map.GetStartPosition();
+		while( pos != NULL )
+		{
+			CKnownFile* pFile;
+			CCKey key;
+			m_Files_map.GetNextAssoc( pos, key, pFile );
+			//we only take files > 500k into account
+			if((uint64)pFile->GetFileSize() > 500*1024)
+			{
+				sumavgpercent += pFile->CalculateUploadPriorityPercent();
+				countFiles++;
+			}
+		}
+
+#ifdef _DEBUG
+		AddDebugLogLine(false,_T("calculating auto uploadprios. mapcount: %i, coutnFiles: %u"), m_Files_map.GetCount(), countFiles); 
+#endif
+		double avgpercent;
+		if (countFiles > 0)
+			avgpercent= sumavgpercent / countFiles;
+		else
+			avgpercent=0;
+		m_lastavgPercent=avgpercent;
+
+		//second loop to set new prios
+		pos = m_Files_map.GetStartPosition();
+		while( pos != NULL )
+		{
+			CKnownFile* pFile;
+			CCKey key;
+			m_Files_map.GetNextAssoc( pos, key, pFile );
+			pFile->CalculateAndSetUploadPriority();
+		}
+	}
+}
+
+void CSharedFileList::CalculateUploadPriority_Standard()
+{
+	POSITION pos = m_Files_map.GetStartPosition();
+	while( pos != NULL )
+	{
+		CKnownFile* pFile;
+		CCKey key;
+		m_Files_map.GetNextAssoc( pos, key, pFile );
+		pFile->UpdateAutoUpPriority();
+	}
+}
+//Xman end
 
 // ==> PowerShare [ZZ/MorphXT] - Stulle
 void CSharedFileList::UpdatePartsInfo()

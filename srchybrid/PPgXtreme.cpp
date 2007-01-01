@@ -5,21 +5,12 @@
 #include "emule.h"
 #include "PPgXtreme.h"
 #include "emuleDlg.h"
-//#include "PreferencesDlg.h"
 #include "Preferences.h"
 #include "OtherFunctions.h"
-//#include ".\ppgxtreme.h"
 #include "opcodes.h"
 #include "UploadQueue.h"
 #include "BandWidthControl.h"
-
-#ifdef PRINT_STATISTIC
-#include "UploadBandwidthThrottler.h"
-#include "ClientCredits.h"
-#include "ClientList.h"
-#include "TransferWnd.h"
-#include "DownloadQueue.h"
-#endif
+#include "SharedFileList.h" //Xman advanced upload-priority
 
 // CPPgXtreme dialog
 #ifdef _DEBUG
@@ -57,9 +48,6 @@ BEGIN_MESSAGE_MAP(CPPgXtreme, CPropertyPage)
 	ON_BN_CLICKED(IDC_HIGHPRIO_RADIO, OnBnClickedrioRadio)
 	ON_BN_CLICKED(IDC_ABOVENORMALPRIO_RADIO, OnBnClickedrioRadio)
 	ON_BN_CLICKED(IDC_NORMALPRIO_RADIO, OnBnClickedrioRadio)
-	//ON_BN_CLICKED(IDC_HPLINK, OnBnClickedHplink)
-	//ON_BN_CLICKED(IDC_FORUMLINK, OnBnClickedForumlink)
-	//ON_BN_CLICKED(IDC_VOTELINK, OnBnClickedVotelink)
 	ON_BN_CLICKED(IDC_SENDBUFFER1, OnSettingsChange)
 	ON_BN_CLICKED(IDC_SENDBUFFER2, OnSettingsChange)
 	ON_BN_CLICKED(IDC_SENDBUFFER3, OnSettingsChange)
@@ -67,6 +55,12 @@ BEGIN_MESSAGE_MAP(CPPgXtreme, CPropertyPage)
 	ON_BN_CLICKED(IDC_CC_MAELLA, OnSettingsChange)
 	ON_BN_CLICKED(IDC_CC_ZZ, OnSettingsChange)
 	ON_BN_CLICKED(IDC_AUTOUPDATEIPFILTER, OnSettingsChange) //Xman auto update IPFilter
+	// ==> Superior Client Handling [Stulle] - Stulle
+	/*
+	ON_BN_CLICKED(IDC_ONERELEASESLOT, OnSettingsChange)
+	*/
+	// <== Superior Client Handling [Stulle] - Stulle
+	ON_BN_CLICKED(IDC_A_UPPRIO, OnSettingsChange) //Xman advanced upload-priority
 END_MESSAGE_MAP()
 
 // CPPgXtreme message handlers
@@ -91,6 +85,18 @@ void CPPgXtreme::LoadSettings(void)
 		CString buffer;
 		//Xman 1:3 Ratio
 		CheckDlgButton(IDC_13RATIO, thePrefs.Is13Ratio());
+		//Xman end
+
+		// ==> Superior Client Handling [Stulle] - Stulle
+		/*
+		//Xman always one release-slot
+		CheckDlgButton(IDC_ONERELEASESLOT, thePrefs.UseReleasseSlot());
+		//Xman end
+		*/
+		// <== Superior Client Handling [Stulle] - Stulle
+
+		//Xman advanced upload-priority
+		CheckDlgButton(IDC_A_UPPRIO, thePrefs.UseAdvancedAutoPtio());
 		//Xman end
 
 		//Xman chunk chooser
@@ -200,6 +206,31 @@ BOOL CPPgXtreme::OnApply()
 	thePrefs.Set13Ratio(IsDlgButtonChecked(IDC_13RATIO)!=0);
 	//Xman end
 
+	// ==> Superior Client Handling [Stulle] - Stulle
+	/*
+	//Xman always one release-slot
+	thePrefs.SetUseReleaseSlot(IsDlgButtonChecked(IDC_ONERELEASESLOT)!=0);
+	//Xman end
+	*/
+	// <== Superior Client Handling [Stulle] - Stulle
+
+	//Xman advanced upload-priority
+	bool tempupprio=IsDlgButtonChecked(IDC_A_UPPRIO)!=0;
+	if(tempupprio!=thePrefs.UseAdvancedAutoPtio())
+		tempupprio=true;
+	else
+		tempupprio=false;
+	thePrefs.SetAdvancedAutoPrio(IsDlgButtonChecked(IDC_A_UPPRIO)!=0);
+	if(tempupprio)
+	{
+		if(thePrefs.UseAdvancedAutoPtio())
+			theApp.sharedfiles->CalculateUploadPriority(true);
+		else
+			theApp.sharedfiles->CalculateUploadPriority_Standard();
+	}
+	//Xman end
+
+
 	//Xman chunk chooser
 	if(IsDlgButtonChecked(IDC_CC_MAELLA)!=0)
 		thePrefs.m_chunkchooser=1;
@@ -255,6 +286,16 @@ void CPPgXtreme::Localize(void)
 
 		//Xman 1:3 Ratio
 		GetDlgItem(IDC_13RATIO)->SetWindowText(GetResString(IDS_13RATIO));
+
+		// ==> Superior Client Handling [Stulle] - Stulle
+		/*
+		//Xman always one release-slot
+		GetDlgItem(IDC_ONERELEASESLOT)->SetWindowText(GetResString(IDS_ONERELEASESLOT));
+		*/
+		// <== Superior Client Handling [Stulle] - Stulle
+
+		//Xman advanced upload-priority
+		GetDlgItem(IDC_A_UPPRIO)->SetWindowText(GetResString(IDS_A_UPPRIO));
 
 		//Xman chunk chooser
 		GetDlgItem(IDC_CHUNKCHOOSER)->SetWindowText(GetResString(IDS_CHUNKCHOOSER));
@@ -322,19 +363,7 @@ void CPPgXtreme::OnBnClickedrioRadio()
 }
 //Xman end
 
-//Xman Xtreme Links
 
-/*
-void CPPgXtreme::OnBnClickedHplink()
-{
-	ShellExecute(NULL, NULL, MOD_HPLINK, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
-}
-
-void CPPgXtreme::OnBnClickedForumlink()
-{
-	ShellExecute(NULL, NULL, MOD_FORUMLINK, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
-}
-*/
 void CPPgXtreme::OnOpenMoreSlots()
 {
 	if(!IsDlgButtonChecked(IDC_OPENMORESLOTS))
@@ -347,22 +376,5 @@ void CPPgXtreme::OnOpenMoreSlots()
 
 	OnSettingsChange();
 }
-/*
 
-void CPPgXtreme::OnBnClickedVotelink()
-{
-#ifdef PRINT_STATISTIC
-	AddLogLine(false,_T("############################################"));
-	AddLogLine(false,_T("##"));
-	theApp.uploadBandwidthThrottler->PrintStatistic();
-	theApp.clientcredits->PrintStatistic();
-	theApp.clientlist->PrintStatistic();
-	theApp.pBandWidthControl->PrintStatistic();
-	theApp.emuledlg->transferwnd->downloadlistctrl.PrintStatistic();
-	theApp.downloadqueue->PrintStatistic();
-	AddLogLine(false,_T("############################################"));
-#else
-	ShellExecute(NULL, NULL, MOD_VOTELINK, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
-#endif
-}
-*/
+

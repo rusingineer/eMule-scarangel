@@ -81,13 +81,14 @@ public:
 	bool		AcceptNewClient(bool addOnNextConnect = false); //Xman 4.8.2 must be punlic because of access in ClientUDPSocket
 
 	void	UploadTimer(); //Xman process timer code via messages (Xanatos)
+	bool		AddUpNextClient(LPCTSTR pszReason, CUpDownClient* directadd = 0);
 
 protected:
 	void	RemoveFromWaitingQueue(POSITION pos, bool updatewindow);
 	//bool		AcceptNewClient(uint32 curUploadSlots); //Xman Xtreme Upload
 	bool		ForceNewClient(bool allowEmptyWaitingQueue = false);
 
-	bool		AddUpNextClient(LPCTSTR pszReason, CUpDownClient* directadd = 0);
+
 	
 	static VOID CALLBACK UploadTimer(HWND hWnd, UINT nMsg, UINT nId, DWORD dwTime);
 
@@ -102,6 +103,14 @@ private:
 	CList<uint32> m_blockstoplist; //Xman 4.4 this list should avoid too many uploaddrops because user set wrong uploadlimit
 	bool	checkforuploadblock; //Xman 4.4 enable the check-feature.
 	uint32	m_dwnextallowedscoreremove; //additionally check to avoid too short upload by score
+
+	// ==> Superior Client Handling [Stulle] - Stulle
+	/*
+	//Xman always one release-slot
+	CUpDownClient* releaseslotclient;
+	//Xman end
+	*/
+	// <== Superior Client Handling [Stulle] - Stulle
 
     void InsertInUploadingList(CUpDownClient* newclient);
     float GetAverageCombinedFilePrioAndCredit();

@@ -1258,7 +1258,7 @@ uint32 CUpDownClient::SendBlockData(){
 		//after all packets are send, we cancel this upload
 		if (upendsoon && s->StandardPacketQueueIsEmpty()) {
 			theApp.uploadqueue->RemoveFromUploadQueue(this, _T("Completed transfer"),CUpDownClient::USR_COMPLETEDRANSFER ,true ); // Maella -Upload Stop Reason-
-			SendOutOfPartReqsAndAddToWaitingQueue();
+			SendOutOfPartReqsAndAddToWaitingQueue(thePrefs.TransferFullChunks() ? true:false); //Xman Full Chunk
         } 
 		else {
             if(upendsoon==false) //Xman Full Chunk
@@ -1270,7 +1270,7 @@ uint32 CUpDownClient::SendBlockData(){
 	return (UINT)(sentBytesCompleteFile + sentBytesPartFile);
 }
 
-void CUpDownClient::SendOutOfPartReqsAndAddToWaitingQueue()
+void CUpDownClient::SendOutOfPartReqsAndAddToWaitingQueue(bool givebonus) //Xtreme Full Chunk
 {
 	//OP_OUTOFPARTREQS will tell the downloading client to go back to OnQueue..
 	//The main reason for this is that if we put the client back on queue and it goes
@@ -1284,7 +1284,31 @@ void CUpDownClient::SendOutOfPartReqsAndAddToWaitingQueue()
 	theStats.AddUpDataOverheadFileRequest(pPacket->size);
 	socket->SendPacket(pPacket, true, true);
 	m_fSentOutOfPartReqs = 1;
+    
+	//Xtreme Full Chunk
+	//if we gave less than 9 MB payload, we give back some waiting time in relation to payload
+	uint32 bonus=0;
+	uint32 waitingtime= (uint32)(GetWaitTime() ); //only half will be counted 
+	if(givebonus)
+	{
+		//calculate the time
+		if(GetQueueSessionPayloadUp() < 9*1024*1024)
+		{
+			bonus = (uint32)(((9*1024*1024) - GetQueueSessionPayloadUp()) / (double)(9*1024*1024) * (waitingtime/2));
+		}
+	}
+	
+
     theApp.uploadqueue->AddClientToQueue(this, true);
+
+	if(bonus>0)
+	{
+		if(credits)
+		{
+			credits->SetWaitStartTimeBonus(GetIP(),::GetTickCount()-bonus);
+			AddDebugLogLine(false, _T("giving client bonus. old waitingtime: %s, new waitingtime: %s, client: %s"), CastSecondsToHM(waitingtime/1000), CastSecondsToHM((::GetTickCount() - GetWaitStartTime())/1000),DbgGetClientInfo()); 
+		}
+	}
 }
 
 /**
@@ -1711,6 +1735,7 @@ void CUpDownClient::BanLeecher(LPCTSTR pszReason, uint8 leechercategory){
 	//14 = wrong HashSize + reduce score (=new united)
 	//15 = snafu = m4 string
 	//16 = wrong Startuploadrequest (bionic community)
+	//17 = wrong m_fSupportsAICH (applejuice )
 
 	m_strBanMessage.Empty();
 	bool reducescore=false;
@@ -1721,6 +1746,7 @@ void CUpDownClient::BanLeecher(LPCTSTR pszReason, uint8 leechercategory){
 	case 10:
 	case 14:
 	case 15:
+	case 17:
 		reducescore=thePrefs.GetAntiLeecherCommunity_Action();
 		break;
 	case 12: //emcrypt

@@ -949,6 +949,11 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 							_T("  ExtReq=%u  Commnt=%u  Preview=%u  NoViewFiles=%u  Unicode=%u"), 
 							m_fPeerCache, m_byUDPVer, m_byDataCompVer, m_bySupportSecIdent, m_bySourceExchangeVer, 
 							m_byExtendedRequestsVer, m_byAcceptCommentVer, m_fSupportsPreview, m_fNoViewSharedFiles, m_bUnicodeSupport);
+//Xman
+#ifdef LOGTAG
+						m_strHelloInfo.AppendFormat(_T("\n m_fSupportsAICH=%u"), m_fSupportsAICH);
+#endif
+//Xman end						
 					}
 				}
 				else if (bDbgInfo)
@@ -1224,6 +1229,12 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 				BanLeecher(strBanReason,14); //new united community
 				return bIsMule;
 			}
+			if(m_fSupportsAICH > 1  && m_clientSoft == SO_EMULE && m_nClientVersion <= MAKE_CLIENT_VERSION(CemuleApp::m_nVersionMjr, CemuleApp::m_nVersionMin, CemuleApp::m_nVersionUpd))
+			{
+				strBanReason= _T("Applejuice");
+				BanLeecher(strBanReason,17); //Applejuice 
+				return bIsMule;
+			}
 		}
 
 		//if it is now a good mod, remove the reducing of score but do a second test
@@ -1236,6 +1247,14 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 		}
 
 		if(IsLeecher()==14 && isHelloPacket) //check if it is a Hello-Packet
+		{
+			m_bLeecher=0; //it's a good mod now
+			m_strBanMessage.Format(_T("unban - Client %s"),DbgGetClientInfo());
+			old_m_strClientSoftwareFULL.Empty();	//force recheck
+			old_m_pszUsername.Empty();
+		}
+
+		if(IsLeecher()==17)
 		{
 			m_bLeecher=0; //it's a good mod now
 			m_strBanMessage.Format(_T("unban - Client %s"),DbgGetClientInfo());
@@ -1272,7 +1291,7 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 		{
 			if(m_strModVersion.IsEmpty() &&
 				((nonofficialopcodes==true	&&	GetClientSoft()!=SO_LPHANT)
-				|| (unknownopcode.IsEmpty()==false && m_clientSoft == SO_EMULE && m_nClientVersion <= MAKE_CLIENT_VERSION(CemuleApp::m_nVersionMjr, CemuleApp::m_nVersionMin, CemuleApp::m_nVersionUpd)))
+				|| ((unknownopcode.IsEmpty()==false || m_byAcceptCommentVer > 1) && m_clientSoft == SO_EMULE && m_nClientVersion <= MAKE_CLIENT_VERSION(CemuleApp::m_nVersionMjr, CemuleApp::m_nVersionMin, CemuleApp::m_nVersionUpd)))
 				)
 			{
 				if(IsLeecher()==0)
@@ -2621,7 +2640,14 @@ void CUpDownClient::InitClientSoftwareVersion()
 				pszSoftware = _T("aMule");
 				break;
 			case SO_SHAREAZA:
+			// ==> Enhanced Client Recognition [Spike] - Stulle
+			/*
 			case 40:
+			*/
+			case SO_SHAREAZA2:
+			case SO_SHAREAZA3:
+			case SO_SHAREAZA4:
+			// <== Enhanced Client Recognition [Spike] - Stulle
 				m_clientSoft = SO_SHAREAZA;
 				pszSoftware = _T("Shareaza");
 				break;
@@ -2629,18 +2655,59 @@ void CUpDownClient::InitClientSoftwareVersion()
 				m_clientSoft = SO_LPHANT;
 				pszSoftware = _T("lphant");
 				break;
+			// ==> Enhanced Client Recognition [Spike] - Stulle
+			case SO_EMULEPLUS:
+				m_clientSoft = SO_EMULEPLUS;
+				pszSoftware = _T("eMule Plus");
+				break;
+			case SO_HYDRANODE:
+				m_clientSoft = SO_HYDRANODE;
+				pszSoftware = _T("Hydranode");
+				break;
+			case SO_TRUSTYFILES:
+				m_clientSoft = SO_TRUSTYFILES;
+				pszSoftware = _T("TrustyFiles");
+				break;
+			// <== Enhanced Client Recognition [Spike] - Stulle
 			default:
+				// ==> Enhanced Client Recognition [Spike] - Stulle
+				/*
 				if (m_bIsML || m_byCompatibleClient == SO_MLDONKEY){
+				*/
+				if (m_bIsML || m_byCompatibleClient == SO_MLDONKEY || m_byCompatibleClient == SO_MLDONKEY2 || m_byCompatibleClient == SO_MLDONKEY3){
+				// <== Enhanced Client Recognition [Spike] - Stulle
 					m_clientSoft = SO_MLDONKEY;
 					pszSoftware = _T("MLdonkey");
 				}
+				// ==> Enhanced Client Recognition [Spike] - Stulle
+				/*
 				else if (m_bIsHybrid){
+				*/
+				else if (m_bIsHybrid || m_byCompatibleClient == SO_EDONKEYHYBRID){
+				// <== Enhanced Client Recognition [Spike] - Stulle
 					m_clientSoft = SO_EDONKEYHYBRID;
 					pszSoftware = _T("eDonkeyHybrid");
 				}
 				else if (m_byCompatibleClient != 0){
+					// ==> Enhanced Client Recognition [Spike] - Stulle
+					// Recognize other Shareazas - just to be sure :)
+					if (StrStrI(m_pszUsername,_T("shareaza")))
+					{
+						m_clientSoft = SO_SHAREAZA;
+						pszSoftware = _T("Shareaza");
+					}
+					// Recognize all eMulePlus - just to be sure !
+					else if (StrStr(m_strModVersion,_T("Plus 1")))
+					{
+						m_clientSoft = SO_EMULEPLUS;
+						pszSoftware = _T("eMule Plus");
+					}
+					else
+					{
+					// <== Enhanced Client Recognition [Spike] - Stulle
 					m_clientSoft = SO_XMULE; // means: 'eMule Compatible'
 					pszSoftware = _T("eMule Compat");
+					} // Enhanced Client Recognition [Spike] - Stulle
 				}
 				else{
 					m_clientSoft = SO_EMULE;
@@ -2666,6 +2733,25 @@ void CUpDownClient::InitClientSoftwareVersion()
 			m_nClientVersion = MAKE_CLIENT_VERSION(nClientMajVersion, nClientMinVersion, nClientUpVersion);
 			if (m_clientSoft == SO_EMULE)
 				iLen = _sntprintf(szSoftware, ARRSIZE(szSoftware), _T("%s v%u.%u%c"), pszSoftware, nClientMajVersion, nClientMinVersion, _T('a') + nClientUpVersion);
+			// ==> Enhanced Client Recognition [Spike] - Stulle
+			else if (m_clientSoft == SO_EMULEPLUS)
+			{
+				if(nClientMinVersion == 0)
+				{
+					if(nClientUpVersion == 0)
+						iLen = _sntprintf(szSoftware, ARRSIZE(szSoftware), _T("%s v%u"), pszSoftware, nClientMajVersion);
+					else
+						iLen = _sntprintf(szSoftware, ARRSIZE(szSoftware), _T("%s v%u%c"), pszSoftware, nClientMajVersion, _T('a') + nClientUpVersion - 1);
+				}
+				else
+				{
+					if(nClientUpVersion == 0)
+						iLen = _sntprintf(szSoftware, ARRSIZE(szSoftware), _T("%s v%u.%u"), pszSoftware, nClientMajVersion, nClientMinVersion);
+					else
+						iLen = _sntprintf(szSoftware, ARRSIZE(szSoftware), _T("%s v%u.%u%c"), pszSoftware, nClientMajVersion, nClientMinVersion, _T('a') + nClientUpVersion - 1);
+				}
+			}
+			// <== Enhanced Client Recognition [Spike] - Stulle
 			else if (m_clientSoft == SO_AMULE || nClientUpVersion != 0)
 				iLen = _sntprintf(szSoftware, ARRSIZE(szSoftware), _T("%s v%u.%u.%u"), pszSoftware, nClientMajVersion, nClientMinVersion, nClientUpVersion);
 			else if (m_clientSoft == SO_LPHANT)
@@ -2685,7 +2771,12 @@ void CUpDownClient::InitClientSoftwareVersion()
 		return;
 	}
 
+	// ==> Enhanced Client Recognition [Spike] - Stulle
+	/*
 	if (m_bIsHybrid){
+	*/
+	if (m_bIsHybrid || m_byCompatibleClient == SO_EDONKEYHYBRID){
+	// <== Enhanced Client Recognition [Spike] - Stulle
 		m_clientSoft = SO_EDONKEYHYBRID;
 		// seen:
 		// 105010	0.50.10
@@ -2759,7 +2850,12 @@ void CUpDownClient::InitClientSoftwareVersion()
 		return;
 	}
 
+	// ==> Enhanced Client Recognition [Spike] - Stulle
+	/*
 	if (m_bIsML || iHashType == SO_MLDONKEY){
+	*/
+	if (m_bIsML || iHashType == SO_MLDONKEY || iHashType == SO_OLD_MLDONKEY){
+	// <== Enhanced Client Recognition [Spike] - Stulle
 		m_clientSoft = SO_MLDONKEY;
 		UINT nClientMinVersion = m_nClientVersion;
 		m_nClientVersion = MAKE_CLIENT_VERSION(0, nClientMinVersion, 0);
@@ -2803,6 +2899,10 @@ int CUpDownClient::GetHashType() const
 	else if (m_achUserHash[5] == 14 && m_achUserHash[14] == 111)
 		return SO_EMULE;
  	else if (m_achUserHash[5] == 'M' && m_achUserHash[14] == 'L')
+	// ==> Enhanced Client Recognition [Spike] - Stulle
+		return SO_OLD_MLDONKEY;
+	else if (m_achUserHash[5] == 0x0E && m_achUserHash[14] == 0x6F) // Spike2 by Torni - recognize newer MLdonkeys (needed for Enhanced Client Recognization & emulate-Settings!)
+	// <== Enhanced Client Recognition [Spike] - Stulle
 		return SO_MLDONKEY;
 	else
 		return SO_UNKNOWN;
@@ -4225,15 +4325,23 @@ void CUpDownClient::UpdateFunnyNick()
 //Xman end
 
 // ==> Design Settings [eWombat/Stulle] - Stulle
-int CUpDownClient::GetClientStyle(bool bDlOnly) const
+/* uMode as following:                            */
+/* 0 = all                                        */
+/* 1 = upload only                                */
+/* 2 = download only                              */
+int CUpDownClient::GetClientStyle(uint8 uMode) const
 {
 	int iClientStyle = style_c_default;
 	if(IsFriend() && thePrefs.GetStyleOnOff(style_c_friend)!=0)
 		iClientStyle = style_c_friend;
-	if(GetPowerShared() && !bDlOnly && thePrefs.GetStyleOnOff(style_c_powershare)!=0)
+	if(GetPowerShared() && uMode != 2 && thePrefs.GetStyleOnOff(style_c_powershare)!=0)
 		iClientStyle = style_c_powershare;
-	if(GetPowerReleased() && !bDlOnly && thePrefs.GetStyleOnOff(style_c_powerrelease)!=0)
+	if(GetPowerReleased() && uMode != 2 && thePrefs.GetStyleOnOff(style_c_powerrelease)!=0)
 		iClientStyle = style_c_powerrelease;
+	if(GetDownloadState() == DS_DOWNLOADING && uMode != 2 && thePrefs.GetStyleOnOff(style_c_downloading)!=0)
+		iClientStyle = style_c_downloading;
+	if(GetDownloadState() == DS_DOWNLOADING && uMode != 1 && thePrefs.GetStyleOnOff(style_c_uploading)!=0)
+		iClientStyle = style_c_uploading;
 	if(IsLeecher()>0 && thePrefs.GetStyleOnOff(style_c_leecher)!=0)
 		iClientStyle = style_c_leecher;
 	if(HasLowID() && thePrefs.GetStyleOnOff(style_c_lowid)!=0)
@@ -4241,8 +4349,8 @@ int CUpDownClient::GetClientStyle(bool bDlOnly) const
 	if(Credits() && thePrefs.GetStyleOnOff(style_c_credits)!=0)
 	{
 		if	(
-				(!bDlOnly && credits->GetHasScore(this)) ||
-				( bDlOnly && credits->GetMyScoreRatio(GetIP())>1)
+				( uMode != 2 && credits->GetHasScore(this)) ||
+				( uMode == 2 && credits->GetMyScoreRatio(GetIP())>1)
 			)
 			iClientStyle = style_c_credits;
 	}

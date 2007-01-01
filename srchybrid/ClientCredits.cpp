@@ -1471,6 +1471,16 @@ void CClientCredits::ClearWaitStartTime()
 	m_dwUnSecureWaitTime = 0;
 	m_dwSecureWaitTime = 0;
 }
+
+//Xman Xtreme Full Chunk
+void CClientCredits::SetWaitStartTimeBonus(uint32 dwForIP, uint32 timestamp)
+{
+	m_dwUnSecureWaitTime = timestamp-1;
+	m_dwSecureWaitTime = timestamp-1;
+	m_dwWaitTimeIP = dwForIP;
+}
+//Xman end
+
 // ==> CreditSystems [EastShare/ MorphXT] - Stulle
 void CClientCreditsList::ResetCheckScoreRatio(){
 	CClientCredits* cur_credit;

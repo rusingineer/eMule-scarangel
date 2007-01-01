@@ -174,6 +174,9 @@ public:
 	sint64	GetSecureWaitStartTime(uint32 dwForIP);
 	// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	void	SetSecWaitStartTime(uint32 dwForIP);
+
+	void	SetWaitStartTimeBonus(uint32 dwForIP, uint32 timestamp); //Xman Xtreme Full CHunk
+
 	//Xman Extened credit- table-arragement
 	void	MarkToDelete() {m_bmarktodelete=true;} 
 	void	UnMarkToDelete() {m_bmarktodelete=false;}

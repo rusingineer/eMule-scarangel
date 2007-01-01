@@ -58,6 +58,7 @@ public:
 	void ClearHistory();
 	//Xman end
 
+
 private:
 	bool	LoadKnownFiles();
 	bool	LoadCancelledFiles();

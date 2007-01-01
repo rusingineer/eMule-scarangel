@@ -2683,7 +2683,7 @@ void CTransferWnd::SetBackgroundColor(int nStyle)
 	COLORREF crTempColor = thePrefs.GetStyleBackColor(nStyle);
 
 	if(crTempColor == CLR_DEFAULT)
-		crTempColor = COLOR_WINDOW;
+		crTempColor = COLORREF(RGB(255,255,255));
 
 	switch(nStyle)
 	{

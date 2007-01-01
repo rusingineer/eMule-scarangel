@@ -2696,7 +2696,11 @@ void CClientReqSocket::PacketToDebugLogLine(bool isOpcodeKnown, const uchar* pac
 		// Hex packet dump
 		buffer += _T(", data=[");	
 		UINT i;
+#ifdef LOGTAG
+		for (i = 0; i < size ; i++){
+#else
 		for (i = 0; i < size && i < 50; i++){
+#endif
 			if (i > 0)
 				buffer += _T(' ');
 			TCHAR temp[33];

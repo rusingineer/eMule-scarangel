@@ -208,6 +208,12 @@ public:
 	bool	IsAlreadyRequested(uint64 start, uint64 end) const;
     bool    ShrinkToAvoidAlreadyRequested(uint64& start, uint64& end) const;
 	bool	IsCorruptedPart(UINT partnumber) const;
+	
+	//Xman Dynamic block request (netfinity/morph)
+	uint64	GetRemainingAvailableData(const uint8* srcstatus) const;
+	uint64	GetRemainingAvailableData(const CUpDownClient* sender) const;
+	//Xman end
+
 	uint64	GetTotalGapSizeInRange(uint64 uRangeStart, uint64 uRangeEnd) const;
 	uint64	GetTotalGapSizeInPart(UINT uPart) const;
 	void	UpdateCompletedInfos();
@@ -378,7 +384,7 @@ public:
 	/*
 	static bool RightFileHasHigherPrio(CPartFile* left, CPartFile* right, bool allow_go_over_hardlimit=false); //Xman Xtreme Downloadmanager
 	*/
-    static bool RightFileHasHigherPrio(const CPartFile* left, const CPartFile* right, bool allow_go_over_hardlimit=false);
+	static bool RightFileHasHigherPrio(const CPartFile* left, const CPartFile* right, bool allow_go_over_hardlimit=false);
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	CDeadSourceList	m_DeadSourceList;
@@ -432,7 +438,7 @@ public:
 #endif
 
 protected:
-	bool	GetNextEmptyBlockInPart(UINT partnumber, Requested_Block_Struct* result) const;
+	bool	GetNextEmptyBlockInPart(UINT partnumber, Requested_Block_Struct* result, uint64 bytesToRequest = EMBLOCKSIZE) const; //Xman Dynamic block request (netfinity/morph)
 	void	CompleteFile(bool hashingdone);
 	void	CreatePartFile(UINT cat = 0);
 	void	Init();

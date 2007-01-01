@@ -3208,7 +3208,12 @@ CString CWebServer::_GetSharedFilesList(ThreadData Data)
 				else if (strTmp == _T("auto"))
 				{
 					cur_file->SetAutoUpPriority(true);
-					cur_file->UpdateAutoUpPriority();
+					//Xman advanced upload-priority
+					if (thePrefs.UseAdvancedAutoPtio())
+						cur_file->CalculateAndSetUploadPriority();
+					else
+						cur_file->UpdateAutoUpPriority();
+					//Xman end
 				}
 
 				SendMessage(theApp.emuledlg->m_hWnd,WEB_GUI_INTERACTION, WEBGUIIA_UPD_SFUPDATE, (LPARAM)cur_file);

@@ -18,6 +18,7 @@
 #include "DeadSourceList.h"
 //Xman
 #include <atlcoll.h>	// Slugfiller: modid
+#include "IP2Country.h" //Xman extended stats
 #include "UpDownClient.h" // WebCache [WC team/MorphXT] - Stulle/Max
 
 class CClientReqSocket;
@@ -86,7 +87,13 @@ public:
 						  CMap<uint32, uint32, uint32, uint32>& clientVersionEDonkey,
 						  CMap<uint32, uint32, uint32, uint32>& clientVersionEDonkeyHybrid,
 						  CMap<uint32, uint32, uint32, uint32>& clientVersionEMule,
-						  CMap<uint32, uint32, uint32, uint32>& clientVersionAMule);
+						  CMap<uint32, uint32, uint32, uint32>& clientVersionAMule,
+						  //Xman extended stats
+						  CMap<POSITION, POSITION, uint32, uint32>& MODs,
+						  uint32 &totalMODs,
+						  CMap<Country_Struct*, Country_Struct*, uint32, uint32>& pCountries
+						  //Xman end
+						  );
 	//Xman
 	// Slugfiller: modid
 	void	GetModStatistics(CRBMap<uint32, CRBMap<CString, uint32>* > *clientMods);
@@ -173,7 +180,22 @@ public:
 	void ResetIP2Country();
 //EastShare End - added by AndCycle, IP to Country
 
+//Xman extended stats
+public:
+	CString GetMODType(POSITION pos_in)
+	{
+		if (pos_in != 0)
+			return liMODsTypes.GetAt(pos_in);
+		else
+			return _T("");
+	}
+
+protected:
+	CList<CString, CString&> liMODsTypes;
+//Xman end
+
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+public:
 // yonatan - not 2 be confused with the one in CUploadQueue!
 	CUpDownClient*	FindClientByWebCacheUploadId(const uint32 id);
 // Superlexx - OHCB manager
@@ -183,4 +205,8 @@ public:
 // Superlexx - COtN - moved here from the CUpDownClient
 	UINT GetNumberOfClientsBehindOurWebCacheHavingSameFileAndNeedingThisBlock(Pending_Block_Struct* pending, UINT maxNrOfClients);
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
+
+	// ==> Compat Client Stats [Stulle] - Stulle
+	void	GetCompatClientsStats(CRBMap<CString, uint32> *compatClients);
+	// <== Compat Client Stats [Stulle] - Stulle
 };

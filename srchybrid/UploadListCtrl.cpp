@@ -320,10 +320,33 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	CFont* pOldFont = dc.SelectObject(thePrefs.UseNarrowFont() ? &m_fontNarrow : GetFont()); //Xman narrow font at transferwindow
 	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
+
+	//Xman Xtreme Upload 
+	const ThrottledFileSocket* socket=(client->GetFileUploadSocket());
+	if( socket!=NULL)
+	{
+		if (socket->IsFull())
+			dc.SetTextColor(RGB(0,0,0));
+		else if (socket->IsTrickle())
+			dc.SetTextColor(::GetSysColor(COLOR_GRAYTEXT));
+		//Xman this is used for testing purpose
+		else
+		{
+			if(socket->isready)
+				dc.SetTextColor(RGB(0,0,255));
+			else
+				dc.SetTextColor(RGB(0,128,128));
+
+		}
+	}
+	//Xman this is used for testing purpose
+	else
+		dc.SetTextColor(RGB(255,0,0));
+	//Xman end
 	*/
 	theApp.emuledlg->transferwnd->SetBackgroundColor(style_b_uploadlist);
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
-	int iClientStyle = client->GetClientStyle();
+	int iClientStyle = client->GetClientStyle(1); // uploading only
 	StylesStruct style;
 	thePrefs.GetStyle(iClientStyle, &style);
 	COLORREF crTempColor = GetBkColor();
@@ -348,29 +371,6 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	CFont* pOldFont = dc.SelectObject(theApp.GetFontByStyle(style.nFlags,thePrefs.UseNarrowFont()));
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : crTempColor);
 	// <== Design Settings [eWombat/Stulle] - Stulle
-
-	//Xman Xtreme Upload 
-	const ThrottledFileSocket* socket=(client->GetFileUploadSocket());
-	if( socket!=NULL)
-	{
-		if (socket->IsFull())
-			dc.SetTextColor(RGB(0,0,0));
-		else if (socket->IsTrickle())
-			dc.SetTextColor(::GetSysColor(COLOR_GRAYTEXT));
-		//Xman this is used for testing purpose
-		else
-		{
-			if(socket->isready)
-				dc.SetTextColor(RGB(0,0,255));
-			else
-				dc.SetTextColor(RGB(0,128,128));
-
-		}
-	}
-	//Xman this is used for testing purpose
-	else
-		dc.SetTextColor(RGB(255,0,0));
-	//Xman end
 
 	int iOldBkMode;
 	if (m_crWindowTextBk == CLR_NONE){

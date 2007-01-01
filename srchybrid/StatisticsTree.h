@@ -88,6 +88,7 @@ public:
 	void				DoMenu(CPoint doWhere, UINT nFlags);
 	void				ExpandAll(bool onlyBold = false, HTREEITEM theItem = NULL);
 	void				CollapseAll(HTREEITEM theItem = NULL);
+	void				DeleteChildItems(HTREEITEM parentItem); //Xman extended stats (taken from emule plus)
 	CString				GetExpandedMask(HTREEITEM theItem = NULL);
 	int					ApplyExpandedMask(CString theMask, HTREEITEM theItem = NULL, int theStringIndex = 0);
 private:

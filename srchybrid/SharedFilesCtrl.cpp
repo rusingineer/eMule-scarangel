@@ -503,13 +503,13 @@ void CSharedFilesCtrl::RemoveFile(const CKnownFile* file)
 	}
 }
 
-void CSharedFilesCtrl::UpdateFile(const CKnownFile* file)
+void CSharedFilesCtrl::UpdateFile(const CKnownFile* file, bool force) //Xman advanced upload-priority
 {
 	if (!file || !theApp.emuledlg->IsRunning())
 		return;
 
 	//MORPH START - SiRoB, Don't Refresh item if not needed
-	if( theApp.emuledlg->activewnd != theApp.emuledlg->sharedfileswnd)
+	if( theApp.emuledlg->activewnd != theApp.emuledlg->sharedfileswnd && !force) //Xman advanced upload-priority 
 		return;
 	//MORPH END   - SiRoB, Don't Refresh item if not needed
 
@@ -618,7 +618,7 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	if(crTempColor != CLR_DEFAULT)
 		SetBkColor(crTempColor);
 	else
-		SetBkColor(COLOR_WINDOW);
+		SetBkColor(COLORREF(RGB(255,255,255)));
 	CKnownFile* file = (CKnownFile*)lpDrawItemStruct->itemData;
 	int iStyle = 0;
 	if(file->IsPartFile() && thePrefs.GetStyleOnOff(style_s_incomplete)!=0)
@@ -775,22 +775,14 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					buffer.ReleaseBuffer();
 					break;
 				case 10:
-					// ==> PowerShare [ZZ/MorphXT] - Stulle
-					/*
-                    if (file->m_nCompleteSourcesCountLo == file->m_nCompleteSourcesCountHi)
-						buffer.Format(_T("%u"), file->m_nCompleteSourcesCountLo);
-                    else if (file->m_nCompleteSourcesCountLo == 0)
-						buffer.Format(_T("< %u"), file->m_nCompleteSourcesCountHi);
-					else
-						buffer.Format(_T("%u - %u"), file->m_nCompleteSourcesCountLo, file->m_nCompleteSourcesCountHi);
-					*/
+					//Xman show virtual sources (morph)
   					if (file->m_nCompleteSourcesCountLo == file->m_nCompleteSourcesCountHi)
 						buffer.Format(_T("%u (%u)"), file->m_nCompleteSourcesCountLo, file->m_nVirtualCompleteSourcesCount);
                 	else if (file->m_nCompleteSourcesCountLo == 0)
 						buffer.Format(_T("< %u (%u)"), file->m_nCompleteSourcesCountHi, file->m_nVirtualCompleteSourcesCount);
 					else
 						buffer.Format(_T("%u - %u (%u)"), file->m_nCompleteSourcesCountLo, file->m_nCompleteSourcesCountHi, file->m_nVirtualCompleteSourcesCount);
-					// <== PowerShare [ZZ/MorphXT] - Stulle
+					//Xman end
 					break;
 				case 11:{
 					CPoint pt(cur_rec.left, cur_rec.top);
@@ -900,6 +892,12 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 							buffer.AppendFormat(_T(" %s. %i"), ((CString)GetResString(IDS_DEFAULT)).Left(1), thePrefs.GetPowerShareLimit());
 						else
 							buffer.AppendFormat(_T(" %i"), file->GetPowerShareLimit());
+						// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
+						if (file->GetPsAmountLimit()<0)
+							buffer.AppendFormat(_T(" %s. %i%%"), ((CString)GetResString(IDS_DEFAULT)).Left(1), thePrefs.GetPsAmountLimit());
+						else
+							buffer.AppendFormat(_T(" %i%%"), file->GetPsAmountLimit());
+						// <== Limit PS by amount of data uploaded [Stulle] - Stulle
 					}
 					else
 						buffer.Append(GetResString(IDS_POWERSHARE_DISABLED_LABEL));
@@ -984,6 +982,10 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	UINT uPowershareMenuItem = 0;
 	UINT uPowerShareLimitMenuItem = 0;
 	// <== PowerShare [ZZ/MorphXT] - Stulle
+	// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
+	int iPsAmountLimit = -1;
+	UINT uPsAmountLimitMenuItem = 0;
+	// <== Limit PS by amount of data uploaded [Stulle] - Stulle
 
 	const CKnownFile* pSingleSelFile = NULL;
 	POSITION pos = GetFirstSelectedItemPosition();
@@ -1094,6 +1096,26 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			iPowerShareLimit = -1;
 		}
 		// <== PowerShare [ZZ/MorphXT] - Stulle
+
+		// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
+		UINT uCurPsAmountLimitMenuItem = 0;
+		int iCurPsAmountLimit = pFile->GetPsAmountLimit();
+		if (iCurPsAmountLimit==-1)
+			uCurPsAmountLimitMenuItem = MP_PS_AMOUNT_LIMIT;
+		else
+			uCurPsAmountLimitMenuItem = MP_PS_AMOUNT_LIMIT_SET;
+
+		if (bFirstItem)
+		{
+			uPsAmountLimitMenuItem = uCurPsAmountLimitMenuItem;
+			iPsAmountLimit = iCurPsAmountLimit;
+		}
+		else if (uPsAmountLimitMenuItem != uCurPsAmountLimitMenuItem || iPsAmountLimit != iCurPsAmountLimit)
+		{
+			uPsAmountLimitMenuItem = 0;
+			iPsAmountLimit = -1;
+		}
+		// <== Limit PS by amount of data uploaded [Stulle] - Stulle
 
 		// ==> WebCache [WC team/MorphXT] - Stulle/Max
 		if (!pFile->ReleaseViaWebCache)
@@ -1211,6 +1233,22 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	m_PowerShareLimitMenu.ModifyMenu(MP_POWERSHARE_LIMIT_SET, MF_STRING,MP_POWERSHARE_LIMIT_SET, buffer);
 	m_PowerShareLimitMenu.CheckMenuRadioItem(MP_POWERSHARE_LIMIT, MP_POWERSHARE_LIMIT_SET, uPowerShareLimitMenuItem, 0);
 	// <== PowerShare [ZZ/MorphXT] - Stulle
+	// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
+	m_PowershareMenu.EnableMenuItem((UINT_PTR)m_PsAmountLimitMenu.m_hMenu, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
+	if (iPsAmountLimit==0)
+		buffer.Format(_T(" (%s)"),GetResString(IDS_DISABLED));
+	else
+		buffer.Format(_T(" (%i%%)"),thePrefs.GetPsAmountLimit());
+	m_PsAmountLimitMenu.ModifyMenu(MP_PS_AMOUNT_LIMIT, MF_STRING,MP_PS_AMOUNT_LIMIT, GetResString(IDS_DEFAULT) + buffer);
+	if (iPsAmountLimit==-1)
+		buffer = GetResString(IDS_EDIT);
+	else if (iPsAmountLimit==0)
+		buffer = GetResString(IDS_DISABLED);
+	else
+		buffer.Format(_T("%i%%"),iPsAmountLimit);
+	m_PsAmountLimitMenu.ModifyMenu(MP_PS_AMOUNT_LIMIT_SET, MF_STRING,MP_PS_AMOUNT_LIMIT_SET, buffer);
+	m_PowerShareLimitMenu.CheckMenuRadioItem(MP_PS_AMOUNT_LIMIT, MP_PS_AMOUNT_LIMIT_SET, uPsAmountLimitMenuItem, 0);
+	// <== Limit PS by amount of data uploaded [Stulle] - Stulle
 	// ==> MassRename [Dragon] - Stulle
 	m_SharedFilesMenu.EnableMenuItem(MP_MASSRENAME, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
 	// <== MassRename [Dragon] - Stulle
@@ -1562,7 +1600,16 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 							//Xman end
 							case MP_PRIOAUTO:
 								file->SetAutoUpPriority(true);
+								//Xman advanced upload-priority
+								if (thePrefs.UseAdvancedAutoPtio())
+#ifdef _BETA
+									file->CalculateAndSetUploadPriority2(); 
+#else
+									file->CalculateAndSetUploadPriority(); 
+#endif
+								else
 								file->UpdateAutoUpPriority();
+								//Xman end
 								UpdateFile(file); 
 								break;
 							// ==> WebCache [WC team/MorphXT] - Stulle/Max
@@ -1682,6 +1729,48 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 				break;
 			}
 			// <== PowerShare [ZZ/MorphXT] - Stulle
+			// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
+			case MP_PS_AMOUNT_LIMIT:
+			case MP_PS_AMOUNT_LIMIT_SET:
+			{
+				POSITION pos = selectedList.GetHeadPosition();
+				int newPsAmountLimit = -1;
+				if (wParam==MP_PS_AMOUNT_LIMIT_SET)
+				{
+					InputBox inputbox;
+					CString title=GetResString(IDS_POWERSHARE);
+					CString currPsAmountLimit;
+					if (file)
+						currPsAmountLimit.Format(_T("%i"), ((file->GetPsAmountLimit()>=0.0f)?file->GetPsAmountLimit():thePrefs.GetPsAmountLimit()));
+					else
+						currPsAmountLimit = _T("0");
+					inputbox.SetLabels(GetResString(IDS_POWERSHARE), GetResString(IDS_PS_AMOUNT_LIMIT_LABEL), currPsAmountLimit);
+					inputbox.SetNumber(true);
+					int result = inputbox.DoModal();
+					if (result == IDCANCEL || (newPsAmountLimit = inputbox.GetInputInt()) < 0)
+						break;
+					if (newPsAmountLimit > MAX_PS_AMOUNT_LIMIT)
+					{
+						AfxMessageBox(GetResString(IDS_PS_AMOUNT_LIMIT_WRONG),MB_OK | MB_ICONINFORMATION,0);
+						break;
+					}
+				}
+				SetRedraw(FALSE);
+				while (pos != NULL)
+				{
+					file = selectedList.GetNext(pos);
+					if  (newPsAmountLimit == file->GetPsAmountLimit()) break;
+					file->SetPsAmountLimit(newPsAmountLimit);
+					if (file->IsPartFile())
+						((CPartFile*)file)->UpdatePartsInfo();
+					else
+						file->UpdatePartsInfo();
+					UpdateFile(file);
+				}
+				SetRedraw(TRUE);
+				break;
+			}
+			// <== Limit PS by amount of data uploaded [Stulle] - Stulle
 			// ==> Spread bars [Slugfiller/MorphXT] - Stulle
 			case MP_SPREADBAR_RESET:
 			{
@@ -2220,6 +2309,9 @@ void CSharedFilesCtrl::CreateMenues()
 	if (m_PowershareMenu) VERIFY( m_PowershareMenu.DestroyMenu() );
 	if (m_PowerShareLimitMenu) VERIFY( m_PowerShareLimitMenu.DestroyMenu() );
 	// <== PowerShare [ZZ/MorphXT] - Stulle
+	// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
+	if (m_PsAmountLimitMenu) VERIFY( m_PsAmountLimitMenu.DestroyMenu() );
+	// <== Limit PS by amount of data uploaded [Stulle] - Stulle
 	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 	if (m_HideOSMenu) VERIFY( m_HideOSMenu.DestroyMenu() );
 	if (m_SelectiveChunkMenu) VERIFY( m_SelectiveChunkMenu.DestroyMenu() );
@@ -2238,10 +2330,17 @@ void CSharedFilesCtrl::CreateMenues()
 	m_PowershareMenu.AppendMenu(MF_STRING,MP_POWERSHARE_AUTO,GetResString(IDS_POWERSHARE_AUTO));
 	m_PowershareMenu.AppendMenu(MF_STRING,MP_POWERSHARE_LIMITED,GetResString(IDS_POWERSHARE_LIMITED)); 
 	m_PowerShareLimitMenu.CreateMenu();
-	m_PowershareMenu.AddMenuTitle(NULL, true, false); // XP Style Menu [Xanatos] - Stulle
+	m_PowerShareLimitMenu.AddMenuTitle(NULL, true, false); // XP Style Menu [Xanatos] - Stulle
 	m_PowerShareLimitMenu.AppendMenu(MF_STRING,MP_POWERSHARE_LIMIT,	GetResString(IDS_DEFAULT));
 	m_PowerShareLimitMenu.AppendMenu(MF_STRING,MP_POWERSHARE_LIMIT_SET,	GetResString(IDS_DISABLED));
 	// <== PowerShare [ZZ/MorphXT] - Stulle
+
+	// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
+	m_PsAmountLimitMenu.CreateMenu();
+	m_PsAmountLimitMenu.AddMenuTitle(NULL, true, false); // XP Style Menu [Xanatos] - Stulle
+	m_PsAmountLimitMenu.AppendMenu(MF_STRING,MP_PS_AMOUNT_LIMIT,	GetResString(IDS_DEFAULT));
+	m_PsAmountLimitMenu.AppendMenu(MF_STRING,MP_PS_AMOUNT_LIMIT_SET,	GetResString(IDS_DISABLED));
+	// <== Limit PS by amount of data uploaded [Stulle] - Stulle
 
 	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 	m_HideOSMenu.CreateMenu();
@@ -2314,6 +2413,9 @@ void CSharedFilesCtrl::CreateMenues()
 	m_PowershareMenu.AppendMenu(MF_STRING|MF_SEPARATOR);
 	m_PowershareMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_PowerShareLimitMenu.m_hMenu, GetResString(IDS_POWERSHARE_LIMIT));
 	// <== PowerShare [ZZ/MorphXT] - Stulle
+	// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
+    m_PowershareMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_PsAmountLimitMenu.m_hMenu, GetResString(IDS_PS_AMOUNT_LIMIT));
+	// <== Limit PS by amount of data uploaded [Stulle] - Stulle
 	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 	m_SharedFilesMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_HideOSMenu.m_hMenu, GetResString(IDS_HIDEOS), _T("FILEHIDEOS"));
 	m_HideOSMenu.AppendMenu(MF_STRING|MF_SEPARATOR);

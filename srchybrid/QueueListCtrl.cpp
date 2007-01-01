@@ -702,6 +702,7 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 				// ==> WebCache [WC team/MorphXT] - Stulle/Max
 				case 14: {
+					COLORREF crOldBackColor = dc->GetBkColor();
 					if (client->SupportsWebCache())
 					{
 						Sbuffer = client->GetWebCacheName();
@@ -715,7 +716,7 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					else
 						Sbuffer = "";
 					dc->DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
- 					dc->SetTextColor(RGB(0, 0, 0));
+ 					dc->SetTextColor(crOldBackColor);
 					break;
 				}
 				// <== WebCache [WC team/MorphXT] - Stulle/Max
@@ -790,6 +791,7 @@ void CQueueListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	ClientMenu.AppendMenu(MF_SEPARATOR); 
 	ClientMenu.AppendMenu(MF_STRING,MP_LIST_REQUESTED_FILES, GetResString(IDS_LISTREQUESTED), _T("FILEREQUESTED")); 
 	//Xman end
+
 
 	GetPopupMenuPos(*this, point);
 	ClientMenu.TrackPopupMenu(TPM_LEFTALIGN |TPM_RIGHTBUTTON, point.x, point.y, this);
@@ -867,7 +869,6 @@ BOOL CQueueListCtrl::OnCommand(WPARAM wParam,LPARAM /*lParam*/)
 				break;
 										  }
 			  //Xman end
-
 		}
 	}
 	return true;

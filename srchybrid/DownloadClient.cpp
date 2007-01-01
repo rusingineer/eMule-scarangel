@@ -2774,3 +2774,18 @@ void CUpDownClient::TrigNextSafeAskForDownload(CPartFile* pFile){
 	}
 }
 // Maella end
+
+//Xman Dynamic block request (netfinity/morph)
+uint64 CUpDownClient::GetRemainingReservedDataToDownload() const {
+	uint64 reserveddata = 0;
+	for (POSITION pos = m_PendingBlocks_list.GetHeadPosition(); pos != NULL;) {
+		Pending_Block_Struct* Pending = m_PendingBlocks_list.GetNext(pos);
+		Requested_Block_Struct* block = Pending->block;
+		if (m_nLastBlockOffset < block->StartOffset && block->EndOffset > m_nLastBlockOffset)
+			reserveddata += block->EndOffset - block->StartOffset + 1;
+		else
+			reserveddata += block->EndOffset - m_nLastBlockOffset - Pending->totalUnzipped;
+	}
+	return reserveddata;
+}
+//Xman end

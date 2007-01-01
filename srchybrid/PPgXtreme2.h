@@ -35,4 +35,9 @@ protected:
 public:
 	afx_msg void OnBnClickedAntiLeecher(); //Xman Anti-Leecher
 	afx_msg void OnBnClickedDlpreload(); //Xman DLP
+/*
+	afx_msg void OnBnClickedHplink(); //Xman Xtreme Links
+	afx_msg void OnBnClickedForumlink(); //Xman Xtreme Links
+	afx_msg void OnBnClickedVotelink(); //Xman Xtreme Links
+*/
 };

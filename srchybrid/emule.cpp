@@ -851,7 +851,9 @@ bool CemuleApp::ProcessCommandline()
 			}
 			//Xman end
 		}
-		delete command; //Xman Memleak (Dreamwalker)
+		//Xman Memleak Fix
+		if(command != pstrPendingLink)
+			delete command; 
 	}
 	return (maininst || bAlreadyRunning);
 }

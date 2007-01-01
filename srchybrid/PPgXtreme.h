@@ -38,7 +38,4 @@ public:
 	afx_msg void OnOpenMoreSlots();
 	afx_msg void OnBnClickedNafcfullcontrol();
 	afx_msg void OnBnClickedrioRadio(); //Xman process prio
-	//afx_msg void OnBnClickedHplink(); //Xman Xtreme Links
-	//afx_msg void OnBnClickedForumlink(); //Xman Xtreme Links
-	//afx_msg void OnBnClickedVotelink(); //Xman Xtreme Links
 };

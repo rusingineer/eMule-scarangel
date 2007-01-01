@@ -272,3 +272,7 @@
 #define MP_POWERSHARE_LIMIT     20145
 #define MP_POWERSHARE_LIMIT_SET 20146
 // <== PowerShare [ZZ/MorphXT] - Stulle
+// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
+#define MP_PS_AMOUNT_LIMIT      20150
+#define MP_PS_AMOUNT_LIMIT_SET  20151
+// <== Limit PS by amount of data uploaded [Stulle] - Stulle

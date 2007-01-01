@@ -135,10 +135,35 @@ void CClientList::GetStatistics(uint32 &ruTotalClients, int stats[NUM_CLIENTLIST
 								CMap<uint32, uint32, uint32, uint32>& clientVersionEDonkey, 
 								CMap<uint32, uint32, uint32, uint32>& clientVersionEDonkeyHybrid, 
 								CMap<uint32, uint32, uint32, uint32>& clientVersionEMule, 
-								CMap<uint32, uint32, uint32, uint32>& clientVersionAMule)
+								CMap<uint32, uint32, uint32, uint32>& clientVersionAMule,
+								//Xman extended stats
+								CMap<POSITION, POSITION, uint32, uint32>& MODs,
+								uint32 &totalMODs,
+								CMap<Country_Struct*, Country_Struct*, uint32, uint32>& pCountries
+								//Xman end
+								)
 {
 	ruTotalClients = list.GetCount();
 	memset(stats, 0, sizeof(stats[0]) * NUM_CLIENTLIST_STATS);
+
+	//Xman extended stats
+	POSITION			pos_MOD;
+	CString				strMODName;
+	uint32				dwCount;
+	Country_Struct*		cstruct;
+
+	//reset values
+	totalMODs = 0;
+	MODs.RemoveAll();
+	pCountries.RemoveAll();
+	static uint32 lastmodlistclean;
+	if(::GetTickCount()-lastmodlistclean> HR2MS(6))
+	{
+		//don´t clean it up every time -> jumping statistics
+		lastmodlistclean=::GetTickCount();
+		liMODsTypes.RemoveAll(); //Xman extended stats
+	}
+	//Xman end
 
 	for (POSITION pos = list.GetHeadPosition(); pos != NULL; )
 	{
@@ -153,6 +178,42 @@ void CClientList::GetStatistics(uint32 &ruTotalClients, int stats[NUM_CLIENTLIST
 			case SO_OLDEMULE:
 				stats[2]++;
 				clientVersionEMule[cur_client->GetVersion()]++;
+				//Xman extended stats
+				strMODName = cur_client->GetClientModVer();
+
+				if (!strMODName.IsEmpty())
+				{
+					//extract modname without version
+					int length=strMODName.GetLength();
+					int i;
+					for(i=0;i<length;i++)
+					{
+						if(strMODName.GetAt(i)>=_T('0') && strMODName.GetAt(i)<=_T('9'))
+							break;
+					}
+					if(i<length && i>0)
+						strMODName=strMODName.Left(i);
+					if(strMODName.Right(1)==_T('v') && strMODName.GetLength()>2)
+					{
+						strMODName = strMODName.Left(strMODName.GetLength()-1);
+					}
+					strMODName.Trim();
+
+					totalMODs++;
+					pos_MOD = liMODsTypes.Find(strMODName);
+					if (!pos_MOD)
+					{
+						pos_MOD = liMODsTypes.AddTail(strMODName);
+						MODs.SetAt(pos_MOD, 1);
+					}
+					else
+					{
+						dwCount = 0;
+						MODs.Lookup(pos_MOD, dwCount);
+						MODs.SetAt(pos_MOD, ++dwCount);
+					}
+				}
+				//Xman end
 				break;
 
 			case SO_EDONKEYHYBRID : 
@@ -179,6 +240,11 @@ void CClientList::GetStatistics(uint32 &ruTotalClients, int stats[NUM_CLIENTLIST
 				break;
 
 			// all remaining 'eMule Compatible' clients
+			// ==> Enhanced Client Recognition [Spike] - Stulle
+			case SO_HYDRANODE:
+			case SO_EMULEPLUS:
+			case SO_TRUSTYFILES:
+			// <== Enhanced Client Recognition [Spike] - Stulle
 			case SO_CDONKEY:
 			case SO_XMULE:
 			case SO_LPHANT:
@@ -189,6 +255,18 @@ void CClientList::GetStatistics(uint32 &ruTotalClients, int stats[NUM_CLIENTLIST
 				stats[0]++;
 				break;
 		}
+
+		//Xman extended stats
+		//count the countries
+		CMap<Country_Struct*, Country_Struct*, uint32, uint32>::CPair *pPair;
+
+		cstruct = cur_client->m_structUserCountry;
+		pPair = pCountries.PLookup(cstruct);
+		if (pPair != NULL)
+			pPair->value++;
+		else
+			pCountries.SetAt(cstruct, 1);
+		//Xman end
 
 		if (cur_client->Credits() != NULL)
 		{
@@ -283,6 +361,7 @@ void CClientList::DeleteAll(){
 		list.RemoveAt(pos2);
 		delete cur_client; // recursiv: this will call RemoveClient
 	}
+	liMODsTypes.RemoveAll(); //Xman extended stats
 }
 
 bool CClientList::AttachToAlreadyKnown(CUpDownClient** client, CClientReqSocket* sender){
@@ -1194,3 +1273,84 @@ void CClientList::SendOHCBs()
 	}
 }
 // <== WebCache [WC team/MorphXT] - Stulle/Max
+
+// ==> Compat Client Stats [Stulle] - Stulle
+void CClientList::GetCompatClientsStats(CRBMap<CString, uint32> *compatClients)
+{
+	for (POSITION pos = list.GetHeadPosition(); pos != NULL;) {		
+		CUpDownClient* cur_client =	list.GetNext(pos);
+
+		switch (cur_client->GetClientSoft())
+		{
+			case SO_HYDRANODE:
+			{
+				uint32 count;
+
+				if (!compatClients->Lookup(_T("Hydranode"), count))
+					count = 1;
+				else
+					count++;
+
+				compatClients->SetAt(_T("Hydranode"), count);
+			}break;
+			case SO_EMULEPLUS:
+			{
+				uint32 count;
+
+				if (!compatClients->Lookup(_T("eMule Plus"), count))
+					count = 1;
+				else
+					count++;
+
+				compatClients->SetAt(_T("eMule Plus"), count);
+			}break;
+			case SO_TRUSTYFILES:
+			{
+				uint32 count;
+
+				if (!compatClients->Lookup(_T("TrustyFiles"), count))
+					count = 1;
+				else
+					count++;
+
+				compatClients->SetAt(_T("TrustyFiles"), count);
+			}break;
+			case SO_CDONKEY:
+			{
+				uint32 count;
+
+				if (!compatClients->Lookup(_T("cDonkey"), count))
+					count = 1;
+				else
+					count++;
+
+				compatClients->SetAt(_T("cDonkey"), count);
+			}break;
+			case SO_XMULE:
+			{
+				uint32 count;
+
+				if (!compatClients->Lookup(_T("xMule"), count))
+					count = 1;
+				else
+					count++;
+
+				compatClients->SetAt(_T("xMule"), count);
+			}break;
+			case SO_LPHANT:
+			{
+				uint32 count;
+
+				if (!compatClients->Lookup(_T("lphant"), count))
+					count = 1;
+				else
+					count++;
+
+				compatClients->SetAt(_T("lphant"), count);
+			}break;
+			default:
+				continue;
+		}
+	}
+}
+// <== Compat Client Stats [Stulle] - Stulle

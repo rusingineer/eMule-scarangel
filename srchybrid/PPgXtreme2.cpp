@@ -5,11 +5,20 @@
 #include "emule.h"
 #include "PPgXtreme2.h"
 #include "emuleDlg.h"
-//#include "PreferencesDlg.h"
 #include "Preferences.h"
 #include "OtherFunctions.h"
 #include "opcodes.h"
 #include "DLP.h" //Xman DLP
+
+#ifdef PRINT_STATISTIC
+#include "UploadBandwidthThrottler.h"
+#include "ClientCredits.h"
+#include "ClientList.h"
+#include "TransferWnd.h"
+#include "DownloadQueue.h"
+#include "BandWidthControl.h"
+#endif
+
 
 // CPPgXtreme dialog
 #ifdef _DEBUG
@@ -57,6 +66,9 @@ BEGIN_MESSAGE_MAP(CPPgXtreme2, CPropertyPage)
 	// ==> removed - Stulle
 	/*
 	ON_BN_CLICKED(IDC_FUNNYNICK, OnSettingsChange) //Xman Funny-Nick (Stulle/Morph)
+	ON_BN_CLICKED(IDC_HPLINK, OnBnClickedHplink)
+	ON_BN_CLICKED(IDC_FORUMLINK, OnBnClickedForumlink)
+	ON_BN_CLICKED(IDC_VOTELINK, OnBnClickedVotelink)
 	*/
 	// <== removed - Stulle
 END_MESSAGE_MAP()
@@ -318,6 +330,34 @@ void CPPgXtreme2::OnBnClickedDlpreload()
 }
 //Xman end
 
+/*
+//Xman Xtreme Links
+void CPPgXtreme2::OnBnClickedHplink()
+{
+	ShellExecute(NULL, NULL, MOD_HPLINK, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
+}
 
+void CPPgXtreme2::OnBnClickedForumlink()
+{
+	ShellExecute(NULL, NULL, MOD_FORUMLINK, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
+}
+
+void CPPgXtreme2::OnBnClickedVotelink()
+{
+#ifdef PRINT_STATISTIC
+	AddLogLine(false,_T("############################################"));
+	AddLogLine(false,_T("##"));
+	theApp.uploadBandwidthThrottler->PrintStatistic();
+	theApp.clientcredits->PrintStatistic();
+	theApp.clientlist->PrintStatistic();
+	theApp.pBandWidthControl->PrintStatistic();
+	theApp.emuledlg->transferwnd->downloadlistctrl.PrintStatistic();
+	theApp.downloadqueue->PrintStatistic();
+	AddLogLine(false,_T("############################################"));
+#else
+	ShellExecute(NULL, NULL, MOD_VOTELINK, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
+#endif
+}
+*/
 
 

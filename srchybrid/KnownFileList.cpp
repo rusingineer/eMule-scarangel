@@ -33,6 +33,9 @@
 //Xman x4.1.1 
 //Xman [MoNKi: -Downloaded History-]
 #include "SharedFilesWnd.h"
+#include "PartFile.h" //to be able to remove it from transferwindow if necessary
+
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -682,9 +685,13 @@ void CKnownFileList::ClearHistory(){
 		m_Files_map.GetNextAssoc( pos, key, cur_file );
 		if (!theApp.sharedfiles->IsFilePtrInList(cur_file)){
 			m_Files_map.RemoveKey(key);
+			//also remove it from transferwindow:
+			if (cur_file->IsKindOf(RUNTIME_CLASS(CPartFile)))
+				theApp.emuledlg->transferwnd->downloadlistctrl.ClearCompleted(static_cast<CPartFile*>(cur_file));
 			delete cur_file;
 		}
 	}	
 }
 
 //Xman end
+

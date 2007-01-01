@@ -70,6 +70,13 @@ public:
 	bool	IsUnsharedFile(const uchar* auFileHash) const;
 	void	CopySharedFileMap(CMap<CCKey,const CCKey&,CKnownFile*,CKnownFile*> &Files_Map);
 
+	//Xman advanced upload-priority
+	void CalculateUploadPriority(bool force=false);
+	void CalculateUploadPriority_Standard();
+	double m_lastavgPercent;
+	//Xman end
+
+
 	CMutex	m_mutWriteList;
 private:
 	bool	AddFile(CKnownFile* pFile);

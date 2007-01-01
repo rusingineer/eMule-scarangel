@@ -33,15 +33,15 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "Use amount based 1:3 Ratio if upload < 10",IDC_13RATIO,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,45,197,12
-    GROUPBOX        "Upload Management",IDC_UPLOADMANAGEMENT,7,2,212,109
+    GROUPBOX        "Upload Management",IDC_UPLOADMANAGEMENT,7,2,212,129
     CONTROL         "Open more slots if needed (recommend)",
                     IDC_OPENMORESLOTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
                     14,23,197,11
     CONTROL         "NAFC full control",IDC_NAFCFULLCONTROL,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,14,34,197,11
-    GROUPBOX        "Average Datarate",IDC_AVG_DATARATE_TIME,7,111,212,29
+    GROUPBOX        "Average Datarate",IDC_AVG_DATARATE_TIME,7,134,212,29
     CONTROL         "",IDC_SAMPLERATESLIDER,"msctls_trackbar32",
-                    TBS_AUTOTICKS | WS_TABSTOP,14,122,197,13,
+                    TBS_AUTOTICKS | WS_TABSTOP,14,145,197,13,
                     WS_EX_STATICEDGE
     EDITTEXT        IDC_MTU_EDIT,14,71,35,12,ES_AUTOHSCROLL
     LTEXT           "MTU",IDC_STATIC_MTU,54,72,157,11
@@ -57,7 +57,7 @@ BEGIN
     CONTROL         "One queue per file",IDC_MULTIQUEUE,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,14,12,179,11
     CONTROL         "retry connectio attempts",IDC_RETRYCONNECTIONATTEMPTS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,185,179,11
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,209,179,11
     CONTROL         "6000",IDC_SENDBUFFER1,"Button",BS_AUTORADIOBUTTON | 
                     WS_GROUP,81,57,36,10
     CONTROL         "8192",IDC_SENDBUFFER2,"Button",BS_AUTORADIOBUTTON,118,
@@ -66,16 +66,24 @@ BEGIN
                     57,36,10
     LTEXT           "Sendbuffer:",IDC_SENDBUFFER_STATIC,14,57,59,10
     CONTROL         "show socket blocking ratio",IDC_SHOWBLOCKINGRATIO,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,175,179,11
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,198,179,11
     CONTROL         "Auto-update IPFilter.dat",IDC_AUTOUPDATEIPFILTER,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,14,164,179,11
+                    BS_AUTOCHECKBOX | WS_TABSTOP,14,188,179,11
     CONTROL         "drop too oftenly blocking sockets",
                     IDC_DROPBLOCKINGSOCKETS,"Button",BS_AUTOCHECKBOX | 
                     WS_TABSTOP,14,94,197,12
-    GROUPBOX        "Chunk Chooser",IDC_CHUNKCHOOSER,7,140,212,23
+    GROUPBOX        "Chunk Chooser",IDC_CHUNKCHOOSER,7,164,212,23
     CONTROL         "Maella",IDC_CC_MAELLA,"Button",BS_AUTORADIOBUTTON | 
-                    WS_GROUP,24,151,89,8
-    CONTROL         "zz",IDC_CC_ZZ,"Button",BS_AUTORADIOBUTTON,122,151,89,8
+                    WS_GROUP,24,174,89,8
+    CONTROL         "zz",IDC_CC_ZZ,"Button",BS_AUTORADIOBUTTON,122,174,89,8
+// ==> Superior Client Handling [Stulle] - Stulle
+/*
+    CONTROL         "Always one Rlease-Slot",IDC_ONERELEASESLOT,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,14,106,197,12
+*/
+// <== Superior Client Handling [Stulle] - Stulle
+    CONTROL         "Use advanced auto-uploadpriority",IDC_A_UPPRIO,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,14,117,197,12
 END
 
 IDD_PPG_Xtreme2 DIALOGEX 0, 0, 224, 243
@@ -84,55 +92,55 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION |
 CAPTION "Xtreme II"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Anti-Leecher",IDC_ANTILEECHER_GROUP,7,6,212,177
+    GROUPBOX        "Anti-Leecher",IDC_ANTILEECHER_GROUP,7,2,212,168
     CONTROL         "Enable Anti-Leecher-Feature",IDC_ANTILEECHER_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,31,197,12
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,26,197,12
     CONTROL         "Detect Leecher by UserName",IDC_ANTILEECHERNAME_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,90,188,12
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,86,188,12
     CONTROL         "Anti-Ghost-Mod",IDC_ANTIGHOST_CHECK,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,23,66,188,12
-    PUSHBUTTON      "Reload",IDC_DLPRELOAD,152,15,59,11
-    LTEXT           "version",IDC_DLP_STATIC,14,17,106,10
+                    BS_AUTOCHECKBOX | WS_TABSTOP,23,62,188,12
+    PUSHBUTTON      "Reload",IDC_DLPRELOAD,152,10,59,11
+    LTEXT           "version",IDC_DLP_STATIC,14,13,106,10
     CONTROL         "Detect Wrong Hello-Tag",IDC_ANTILEECHERBADHELLO_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,42,188,12
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,38,188,12
     CONTROL         "Detect Bad Tags",IDC_ANTILEECHERSNAFU_CHECK,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,23,54,188,12
+                    BS_AUTOCHECKBOX | WS_TABSTOP,23,50,188,12
     CONTROL         "Detect Leecher by Modstring",IDC_ANTILEECHERMOD_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,78,188,12
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,74,188,12
     CONTROL         "Detect Nick / Modthiefs",IDC_ANTILEECHERTHIEF_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,102,188,12
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,98,188,12
     CONTROL         "Detect Spammers",IDC_ANTILEECHERSPAMMER_CHECK,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,23,114,188,12
+                    BS_AUTOCHECKBOX | WS_TABSTOP,23,110,188,12
     CONTROL         "Detect XS-Exploiter",IDC_ANTILEECHERXSEXPLOITER_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,126,188,12
-    LTEXT           "Community Mods:",IDC_STATIC_LEECHERCOMMUNITY,14,151,84,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,122,188,12
+    LTEXT           "Community Mods:",IDC_STATIC_LEECHERCOMMUNITY,14,146,84,
                     10,SS_WORDELLIPSIS
     CONTROL         "ban",IDC_RADIO_LEECHERCOMMUNITY_1,"Button",
-                    BS_AUTORADIOBUTTON | WS_GROUP,103,151,35,10
+                    BS_AUTORADIOBUTTON | WS_GROUP,103,146,35,10
     CONTROL         "reduce score",IDC_RADIO_LEECHERCOMMUNITY_2,"Button",
-                    BS_AUTORADIOBUTTON,140,151,77,10
+                    BS_AUTORADIOBUTTON,140,146,77,10
     CONTROL         "ban",IDC_RADIO_LEECHERGHOST_1,"Button",
                     BS_AUTORADIOBUTTON | NOT WS_VISIBLE | WS_GROUP | 
-                    WS_TABSTOP,103,168,28,10
+                    WS_TABSTOP,103,164,28,10
     CONTROL         "reduce score",IDC_RADIO_LEECHERGHOST_2,"Button",
-                    BS_AUTORADIOBUTTON | NOT WS_VISIBLE | WS_TABSTOP,135,169,
+                    BS_AUTORADIOBUTTON | NOT WS_VISIBLE | WS_TABSTOP,135,165,
                     76,10
-    LTEXT           "Ghost Mods:",IDC_STATIC_LEECHERGHOST,9,170,92,10,
+    LTEXT           "Ghost Mods:",IDC_STATIC_LEECHERGHOST,9,166,92,10,
                     SS_WORDELLIPSIS | NOT WS_VISIBLE
-    LTEXT           "Nick / Modthiefs",IDC_STATIC_LEECHERTHIEF,14,161,84,10,
+    LTEXT           "Nick / Modthiefs",IDC_STATIC_LEECHERTHIEF,14,157,84,10,
                     SS_WORDELLIPSIS
     CONTROL         "ban",IDC_RADIO_LEECHERTHIEF_1,"Button",
-                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,103,161,34,10
+                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,103,157,34,10
     CONTROL         "reduce score",IDC_RADIO_LEECHERTHIEF_2,"Button",
-                    BS_AUTORADIOBUTTON | WS_TABSTOP,140,161,77,10
+                    BS_AUTORADIOBUTTON | WS_TABSTOP,140,157,77,10
     CONTROL         "Show active downloads bold",IDC_ACTIVEDOWNLOADSBOLD,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,185,197,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,174,197,10
     CONTROL         "Show additional graph-lines",IDC_SHOWADDITIONALGRAPH,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,207,197,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,194,197,10
     CONTROL         "Detect emcrypt",IDC_ANTILEECHEREMCRYPT_CHECK,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,23,137,188,12
+                    BS_AUTOCHECKBOX | WS_TABSTOP,23,133,188,12
     CONTROL         "Use narrow font in transfer window",IDC_USENARROWFONT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,196,197,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,184,197,10
 END
 
 IDD_HTTPDOWNLOAD DIALOGEX 0, 0, 231, 145
@@ -5426,6 +5434,12 @@ END
 STRINGTABLE 
 BEGIN
     IDS_CLIENTPERCENTAGE    "Show client percentage"
+// ==> Superior Client Handling [Stulle] - Stulle
+/*
+    IDS_ONERELEASESLOT      "Always one release-slot"
+*/
+// <== Superior Client Handling [Stulle] - Stulle
+    IDS_A_UPPRIO            "Use advanced auto-uploadpriority (experimental)"
 END
 
 STRINGTABLE 
@@ -5791,9 +5805,9 @@ BEGIN
     IDS_COLOR_S2            "Powershared"
     IDS_COLOR_C2            "Requesting PowerShare file"
     IDS_COLOR_C3            "Requesting PowerRelease file"
-    IDS_COLOR_C4            "Leecher"
-    IDS_COLOR_C5            "LowID"
-    IDS_COLOR_C6            "Positive Rating"
+    IDS_COLOR_C4            "Downloading from"
+    IDS_COLOR_C5            "Uploading to"
+    IDS_COLOR_C6            "Leecher"
     IDS_COLOR_B1            "Known Clients"
     IDS_COLOR_MASTER4       "Background colors"
     IDS_COLOR_B2            "Downloading Clients"
@@ -5801,10 +5815,16 @@ BEGIN
     IDS_COLOR_B4            "Uploading Clients"
     IDS_COLOR_B5            "Downloading Files"
     IDS_COLOR_B6            "Shared Files"
-//    IDS_COLOR_C7            "Other"
+    IDS_COLOR_C7            "LowID"
+    IDS_COLOR_C8            "Positive Rating"
     IDS_COLOR_ON            "ON"
     IDS_COLOR_OFF           "OFF"
     // <== Design Settings [eWombat/Stulle] - Stulle
+    // ==> Limit PS by amount of data uploaded [Stulle] - Stulle
+    IDS_PS_AMOUNT_LIMIT         "Limit by data amount uploaded"
+    IDS_PS_AMOUNT_LIMIT_LABEL   "Limit by data amount uploaded (max. 10000%)"
+    IDS_PS_AMOUNT_LIMIT_WRONG   "Invalid value entered."
+    // <== Limit PS by amount of data uploaded [Stulle] - Stulle
 END
 
 #endif    // Englisch (USA) resources

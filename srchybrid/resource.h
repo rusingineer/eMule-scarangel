@@ -2333,6 +2333,8 @@
 #define IDS_CHUNKCHOOSER                3182
 #define IDS_UPLOADINSTABLE              3183
 #define IDS_CLIENTPERCENTAGE            3184
+#define IDS_ONERELEASESLOT              3185
+#define IDS_A_UPPRIO                    3186
 #define IDD_PPG_Xtreme                  4000
 #define IDC_13RATIO                     4001
 #define IDC_UPREDUCTION                 4002
@@ -2414,8 +2416,11 @@
 #define IDC_DROPBLOCKINGSOCKETS         4077
 #define IDC_SHOWBLOCKINGRATIO           4078
 #define IDC_LEECHERINFO                 4079
+#define IDC_ONERELEASESLOT              4079
 #define IDC_AUTOUPDATEIPFILTER          4080
 #define IDC_USENARROWFONT               4081
+#define IDC_ONERELEASESLOT2             4081
+#define IDC_A_UPPRIO                    4081
 #define IDC_CC_MAELLA                   4082
 #define IDC_CC_ZZ                       4083
 #define IDA_ENTER                       32771
@@ -2989,11 +2994,17 @@
 #define IDS_COLOR_B4                    60964
 #define IDS_COLOR_B5                    60965
 #define IDS_COLOR_B6                    60966
-//#define IDS_COLOR_C7                    60967
-#define IDC_COLOR_ON_OFF                60968
-#define IDS_COLOR_ON                    60969
-#define IDS_COLOR_OFF                   60970
+#define IDS_COLOR_C7                    60967
+#define IDS_COLOR_C8                    60968
+#define IDC_COLOR_ON_OFF                60969
+#define IDS_COLOR_ON                    60970
+#define IDS_COLOR_OFF                   60971
 // <== Design Settings [eWombat/Stulle] - Stulle
+// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
+#define IDS_PS_AMOUNT_LIMIT             61000
+#define IDS_PS_AMOUNT_LIMIT_LABEL       61001
+#define IDS_PS_AMOUNT_LIMIT_WRONG       61002
+// <== Limit PS by amount of data uploaded [Stulle] - Stulle
 
 // Next default values for new objects
 // 

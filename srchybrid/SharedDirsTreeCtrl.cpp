@@ -703,7 +703,16 @@ BOOL CSharedDirsTreeCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 								break;	
 							case MP_PRIOAUTO:
 								file->SetAutoUpPriority(true);
+								//Xman advanced upload-priority
+								if (thePrefs.UseAdvancedAutoPtio())
+#ifdef _BETA
+									file->CalculateAndSetUploadPriority2(); 
+#else
+									file->CalculateAndSetUploadPriority(); 
+#endif
+								else
 								file->UpdateAutoUpPriority();
+								//Xman end
 								m_pSharedFilesCtrl->UpdateFile(file); 
 								break;
 						}

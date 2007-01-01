@@ -774,6 +774,23 @@ int CStatisticsTree::ApplyExpandedMask(CString theMask, HTREEITEM theItem, int t
 	return theStringIndex;
 }
 
+//Xman extended stats (taken from emule plus)
+void CStatisticsTree::DeleteChildItems (HTREEITEM parentItem)
+{
+	if (ItemHasChildren(parentItem))
+	{
+		HTREEITEM hNextItem;
+		HTREEITEM hChildItem = GetChildItem(parentItem);
+		while (hChildItem != NULL)
+		{
+			hNextItem = GetNextItem(hChildItem, TVGN_NEXT);
+			DeleteItem(hChildItem);
+			hChildItem = hNextItem;
+		}
+	}
+}
+//Xman end
+
 // ==> XP Style Menu [Xanatos] - Stulle
 void CStatisticsTree::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct) 
 {

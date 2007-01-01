@@ -1408,7 +1408,7 @@ void CemuleDlg::ShowTransferRate(bool bForceAll)
 		//Xman GlobalMaxHarlimit for fairness
 		if(theApp.downloadqueue->GetLimitState()==1)
 			strTransferRate.Append(_T(" r"));
-		else if(theApp.downloadqueue->GetLimitState()==2)
+		else if(theApp.downloadqueue->GetLimitState()>=2)
 			strTransferRate.Append(_T(" R"));
 		//Xman end
 		statusbar->SetText(strTransferRate, SBarUpDown, 0);

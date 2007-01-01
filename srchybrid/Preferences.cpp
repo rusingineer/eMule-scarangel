@@ -93,6 +93,18 @@ bool CPreferences::m_bUseNarrowFont;
 bool CPreferences::m_13ratio;
 //Xman end
 
+// ==> Superior Client Handling [Stulle] - Stulle
+/*
+//Xman always one release-slot
+bool CPreferences::m_onerealeseslot;
+//Xman end
+*/
+// <== Superior Client Handling [Stulle] - Stulle
+
+//Xman advanced upload-priority
+bool CPreferences::m_AdvancedAutoPrio;
+//Xman end
+
 //Xman chunk chooser
 uint8 CPreferences::m_chunkchooser;
 
@@ -791,6 +803,8 @@ COLORREF	CPreferences::nStyleBackColor[style_counts];
 short	CPreferences::nStyleOnOff[style_counts];
 // <== Design Settings [eWombat/Stulle] - Stulle
 
+int		CPreferences::PsAmountLimit; // Limit PS by amount of data uploaded [Stulle] - Stulle
+
 CPreferences::CPreferences()
 {
 #ifdef _DEBUG
@@ -1440,6 +1454,11 @@ void CPreferences::Add2SessionTransferData(UINT uClientID, UINT uClientPort, BOO
 				case SO_MLDONKEY:		sesUpData_MLDONKEY+=bytes;		break;
 				case SO_AMULE:			sesUpData_AMULE+=bytes;			break;
 				case SO_SHAREAZA:		sesUpData_SHAREAZA+=bytes;		break;
+				// ==> Enhanced Client Recognition [Spike] - Stulle
+				case SO_HYDRANODE:
+				case SO_EMULEPLUS:
+				case SO_TRUSTYFILES:
+				// <== Enhanced Client Recognition [Spike] - Stulle
 				case SO_CDONKEY:
 				case SO_LPHANT:
 				case SO_XMULE:			sesUpData_EMULECOMPAT+=bytes;	break;
@@ -1472,6 +1491,11 @@ void CPreferences::Add2SessionTransferData(UINT uClientID, UINT uClientPort, BOO
 				case SO_MLDONKEY:		sesDownData_MLDONKEY+=bytes;	break;
 				case SO_AMULE:			sesDownData_AMULE+=bytes;		break;
 				case SO_SHAREAZA:		sesDownData_SHAREAZA+=bytes;	break;
+				// ==> Enhanced Client Recognition [Spike] - Stulle
+				case SO_HYDRANODE:
+				case SO_EMULEPLUS:
+				case SO_TRUSTYFILES:
+				// <== Enhanced Client Recognition [Spike] - Stulle
 				case SO_CDONKEY:
 				case SO_LPHANT:
 				case SO_XMULE:			sesDownData_EMULECOMPAT+=bytes;	break;
@@ -2333,6 +2357,18 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(L"amountbasedratio",m_13ratio);
 	//Xman end
 
+	// ==> Superior Client Handling [Stulle] - Stulle
+	/*
+	//Xman always one release-slot
+	ini.WriteBool(L"onerealeseslot",m_onerealeseslot);
+	//Xman end
+	*/
+	// <== Superior Client Handling [Stulle] - Stulle
+
+	//Xman advanced upload-priority
+	ini.WriteBool(L"AdvancedAutoPrio",m_AdvancedAutoPrio);
+	//Xman end
+
 	//Xman chunk chooser
 	ini.WriteInt(L"chunkchooser", m_chunkchooser);
 
@@ -2546,6 +2582,8 @@ void CPreferences::SavePreferences()
 
 	ini.WriteInt(_T("ReleaseBonus"),m_uReleaseBonus); // Release Bonus [sivka] - Stulle
 	ini.WriteBool(_T("ReleaseScoreAssurance"),m_bReleaseScoreAssurance); // Release Score Assurance [Stulle] - Stulle
+
+	ini.WriteInt(_T("PsAmountLimit"),PsAmountLimit); // Limit PS by amount of data uploaded [Stulle] - Stulle
 
 	SaveStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
@@ -3370,6 +3408,18 @@ void CPreferences::LoadPreferences()
 	m_13ratio=ini.GetBool(L"amountbasedratio",false);
 	//Xman end
 
+	// ==> Superior Client Handling [Stulle] - Stulle
+	/*
+	//Xman always one release-slot
+	m_onerealeseslot=ini.GetBool(L"onerealeseslot",false);
+	//Xman end
+	*/
+	// <== Superior Client Handling [Stulle] - Stulle
+
+	//Xman advanced upload-priority
+	m_AdvancedAutoPrio=ini.GetBool(L"AdvancedAutoPrio",false);
+	//Xman end
+
 	//Xman chunk chooser
 	m_chunkchooser=(uint8)ini.GetInt(L"chunkchooser",1); //1 = Mealla 2=zz
 	if(m_chunkchooser<1 || m_chunkchooser>2)
@@ -3593,6 +3643,11 @@ void CPreferences::LoadPreferences()
 
 	m_uReleaseBonus = (uint8)ini.GetInt(_T("ReleaseBonus"),0); // Release Bonus [sivka] - Stulle
 	m_bReleaseScoreAssurance = ini.GetBool(_T("ReleaseScoreAssurance"),false); // Release Score Assurance [Stulle] - Stulle
+
+	// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
+	temp = ini.GetInt(_T("PsAmountLimit"),0);
+	PsAmountLimit = (temp >= 0 && temp <= MAX_PS_AMOUNT_LIMIT)?temp:0;
+	// <== Limit PS by amount of data uploaded [Stulle] - Stulle
 
 	LoadStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
@@ -4400,6 +4455,12 @@ void CPreferences::LoadStylePrefs(CIni &ini)
 					nStyleFlags[i] = STYLE_USED;
 		            nStyleFontColor[i]	= CLR_DEFAULT;
 					nStyleBackColor[i]	= COLORREF(RGB(255,210,210));
+					nStyleOnOff[i] = 1;
+					break;
+				case style_c_downloading:
+					nStyleFlags[i] = STYLE_BOLD|STYLE_USED;
+		            nStyleFontColor[i]	= COLORREF(RGB(50,205,50));
+					nStyleBackColor[i]	= CLR_DEFAULT;
 					nStyleOnOff[i] = 1;
 					break;
 				case style_c_leecher:

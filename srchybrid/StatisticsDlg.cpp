@@ -2744,11 +2744,23 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		uint32									totalclient;
 		int										myStats[NUM_CLIENTLIST_STATS];
 
+		//Xman extended stats
+		CMap<POSITION, POSITION, uint32, uint32>	clientMODs;
+		CMap<Country_Struct*, Country_Struct*, uint32, uint32>				clientCountries;
+		uint32	totalMODs;
+		//Xman end
+
 		theApp.clientlist->GetStatistics(totalclient, myStats, 
 										 clientVersionEDonkey, 
 										 clientVersionEDonkeyHybrid, 
 										 clientVersionEMule, 
-										 clientVersionAMule);
+										 clientVersionAMule,
+										 //Xman extended stats
+										 clientMODs,
+										 totalMODs,
+										 clientCountries
+										 //Xman end
+										 );
 //Xman Code Improvement:
 	if(totalclient>0)
 	{
@@ -3173,6 +3185,38 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 				cli_lastCount[3] = verCount;
 			} // End Clients -> Client Software -> aMule Section
 
+			// ==> Compat Client Stats [Stulle] - Stulle
+			CRBMap<CString, uint32> compatClients;
+			theApp.clientlist->GetCompatClientsStats(&compatClients);
+
+			POSITION mpos = compatClients.GetHeadPosition();
+			if (stattree.ItemHasChildren(clisoft[6])){
+				HTREEITEM hChild; 
+				hChild = stattree.GetChildItem(clisoft[6]);
+				while( hChild != NULL && mpos != NULL )
+				{
+					CString name;
+					uint32 count;
+					compatClients.GetNextAssoc(mpos, name, count);
+					cbuffer.Format(_T("%s: %i (%1.1f%%)"), name, count, (double)count/myStats[ 5]*100);
+					stattree.SetItemText(hChild, cbuffer);
+					hChild = stattree.GetNextSiblingItem( hChild );
+				}
+				while (hChild != NULL){
+					HTREEITEM hTemp = hChild;
+					hChild = stattree.GetNextSiblingItem( hChild );
+					stattree.DeleteItem(hTemp);
+				}
+			}
+			while (mpos != NULL){
+				CString name;
+				uint32 count;
+				compatClients.GetNextAssoc(mpos, name, count);
+				cbuffer.Format(_T("%s: %i (%1.1f%%)"), name, count, (double)count/myStats[ 5]*100);
+				stattree.InsertItem(cbuffer, clisoft[6]);
+			}
+			// <== Compat Client Stats [Stulle] - Stulle
+
 		} // - End Clients -> Client Software Section
 		// CLIENTS -> NETWORK SECTION
 		if (forceUpdate || stattree.IsExpanded(hclinet)) 
@@ -3211,6 +3255,86 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		cbuffer.Format(_T("Leecher: %u"), theStats.leecherclients);
 		stattree.SetItemText(cligen[6], cbuffer);
 		//Xman end
+
+		//Xman extended stats
+		//Mods:
+		if (forceUpdate || stattree.IsExpanded(h_clients))
+		{
+				stattree.DeleteChildItems(cligen[7]);
+				if(totalMODs)
+				{
+					uint32	dwLastTop = 0xFFFFFFFF;
+					while (!clientMODs.IsEmpty())
+					{
+						POSITION	MOD_pos, top_pos = NULL, pos = clientMODs.GetStartPosition();
+						uint32		dwMODCnt, dwCurrTop = 0;
+
+						while(pos)
+						{
+							clientMODs.GetNextAssoc(pos, MOD_pos, dwMODCnt);
+							if ((dwCurrTop < dwMODCnt) && (dwMODCnt <= dwLastTop))
+							{
+								top_pos = MOD_pos;
+								dwCurrTop = dwMODCnt;
+							}
+						}
+						if ((dwLastTop = dwCurrTop) != 0)
+						{
+							cbuffer.Format(_T("%s: %u (%.1f%%)"), theApp.clientlist->GetMODType(top_pos), dwLastTop, static_cast<double>(100*dwLastTop)/totalMODs);
+							stattree.InsertItem(cbuffer, cligen[7]);
+							clientMODs.RemoveKey(top_pos);
+						}	
+					}
+				}
+		}
+		cbuffer.Format(_T("Mods: %u (%.1f%%)"), totalMODs, static_cast<double>(100*totalMODs)/totalclient);
+		stattree.SetItemText(cligen[7], cbuffer);
+
+		//Countries
+		if (forceUpdate || stattree.IsExpanded(h_clients))
+		{
+			stattree.DeleteChildItems(cligen[8]);
+			if (theApp.ip2country->IsIP2Country())
+			{
+				if (totalclient)
+				{
+					uint32	dwLastTop = 0xFFFFFFFF, dwCountryTotal = 0;
+
+					while (!clientCountries.IsEmpty())
+					{
+						POSITION	pos = clientCountries.GetStartPosition();
+						uint32		dwCountryCnt, dwCurrTop = 0;
+						Country_Struct*			iTopIdx = NULL;
+						Country_Struct*	cstruct;
+
+						while(pos)
+						{
+							clientCountries.GetNextAssoc(pos, cstruct, dwCountryCnt);
+							if ((dwCurrTop < dwCountryCnt) && (dwCountryCnt <= dwLastTop))
+							{
+								iTopIdx = cstruct;
+								dwCurrTop = dwCountryCnt;
+							}
+						}
+						if ((dwLastTop = dwCurrTop) != 0)
+						{
+							cbuffer.Format(_T("%s: %u (%.1f%%)"), theApp.ip2country->GetCountryNameFromRef(iTopIdx,true), dwLastTop, static_cast<double>(100*dwLastTop)/totalclient);
+							stattree.InsertItem(cbuffer, cligen[8]);
+							clientCountries.RemoveKey(iTopIdx);
+							dwCountryTotal++;
+						}
+					}
+					cbuffer.Format(_T("Countries: %u"), dwCountryTotal);
+				}
+				else
+					cbuffer.Format(_T("Countries: <%s>"), GetResString(IDS_FSTAT_WAITING));
+			}
+			else
+				cbuffer.Format(_T("Countries: <%s>"), GetResString(IDS_DISABLED));
+			stattree.SetItemText(cligen[8], cbuffer);
+		} // - End Countries
+
+		//Xman end extended stats
 
 	}//Xman Code Improvement
 
@@ -3755,6 +3879,10 @@ void CStatisticsDlg::CreateMyTree()
 	for(int i = 0; i<3; i++)
 		cligen[i] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), h_clients);
 	cligen[6] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), h_clients); //Xman Anti-Leecher
+	//Xman extended stats
+	cligen[7] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), h_clients); //mods
+	cligen[8] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), h_clients); //Countries
+	//Xman end
 	h_servers = stattree.InsertItem(GetResString(IDS_FSTAT_SERVERS),4,4);					// Servers section
 	for(int i = 0; i<6; i++)
 		srv[i] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), h_servers);		// Servers Items

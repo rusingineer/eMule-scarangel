@@ -2227,7 +2227,7 @@ uint64 CPartFile::GetTotalGapSizeInPart(UINT uPart) const
 	return GetTotalGapSizeInRange(uRangeStart, uRangeEnd);
 }
 
-bool CPartFile::GetNextEmptyBlockInPart(UINT partNumber, Requested_Block_Struct *result) const
+bool CPartFile::GetNextEmptyBlockInPart(UINT partNumber, Requested_Block_Struct *result, uint64 bytesToRequest) const //Xman Dynamic block request (netfinity/morph)
 {
 	Gap_Struct *firstGap;
 	Gap_Struct *currentGap;
@@ -2281,6 +2281,14 @@ bool CPartFile::GetNextEmptyBlockInPart(UINT partNumber, Requested_Block_Struct 
 			end = blockLimit;
 		if (end > partEnd)
 			end = partEnd;
+
+		//Xman Dynamic block request (netfinity/morph)
+		bytesToRequest -= bytesToRequest % 10240; 
+		if (bytesToRequest < 10240) bytesToRequest = 10240;
+		else if (bytesToRequest > EMBLOCKSIZE) bytesToRequest = EMBLOCKSIZE;
+		if((start + bytesToRequest) <= end && (end - start) > (bytesToRequest + 3072)) // Avoid creating small fragments
+			end = start + bytesToRequest - 1;
+		//Xman end
 
 		// If this gap has not already been requested, we have found a valid entry
 		if (!IsAlreadyRequested(start, end))
@@ -3762,6 +3770,15 @@ void CPartFile::UpdatePartsInfo()
 		}
 		m_nCompleteSourcesTime = time(NULL) + (60);
 	}
+
+	//Xman show virtual sources (morph)
+	m_nVirtualCompleteSourcesCount = (uint16)-1;
+	for (UINT i = 0; i < partcount; i++){
+		if(m_nVirtualCompleteSourcesCount > m_SrcpartFrequency[i])
+			m_nVirtualCompleteSourcesCount = m_SrcpartFrequency[i];
+	}
+	//Xman end
+
 	UpdateDisplayedInfo();
 }	
 
@@ -6355,13 +6372,60 @@ bool CPartFile::GetNextRequestedBlock_zz(CUpDownClient* sender,
 		tempLastPartAsked = sender->m_lastPartAsked;
 	}
 
+	//Xman Dynamic block request (netfinity/morph)
+	//uint16 countin=*count; //Xman for debug
+	uint64	bytesPerRequest = EMBLOCKSIZE;
+	uint64	bytesLeftToDownload = GetRemainingAvailableData(sender);
+	uint32	fileDatarate = max(GetDownloadDatarate10(), UPLOAD_CLIENT_DATARATE); // Always assume file is being downloaded at atleast 3 kB/s
+	uint32	sourceDatarate = max(sender->GetDownloadDatarate10(), 10); // Always assume client is uploading at atleast 10 B/s
+	uint32	timeToFileCompletion = max((uint32) (bytesLeftToDownload / (uint64) fileDatarate) + 1, 10); // Always assume it will take atleast 10 seconds to complete
+
+	bytesPerRequest = (sourceDatarate * timeToFileCompletion) / 2;
+
+	//uint64 bytesPerRequest_total=bytesPerRequest; //Xman for debug
+
+	uint64 sourcealreadyreserveddata = sender->GetRemainingReservedDataToDownload();
+	if (bytesPerRequest > sourcealreadyreserveddata)
+		bytesPerRequest -= sourcealreadyreserveddata;
+	else
+		return false;
+
+	if (bytesPerRequest > EMBLOCKSIZE) {
+		*count = min((uint16)(bytesPerRequest/EMBLOCKSIZE), *count);
+		bytesPerRequest = EMBLOCKSIZE;
+	} else
+		*count = 1;
+	if (bytesPerRequest < 10240)
+	{
+		// Let an other client request this packet if we are close to completion and source is slow
+		// Use the true file datarate here, otherwise we might get stuck in NNP state
+		if (!requestedblocks_list.IsEmpty() && timeToFileCompletion < 30 && bytesPerRequest < 3400 && 5 * sourceDatarate < GetDownloadDatarate10())
+		{
+			DebugLog(_T("No request block given as source is slow and chunk near completion!"));
+			return false;
+		}
+		bytesPerRequest = 10240;
+	}
+
+	if(sender->GetDownTimeDifference(false)< 10001 && bytesLeftToDownload > 1024*1024 && bytesPerRequest <= 10240)  //we need 10 seconds until a proper Speed measurement
+	{
+		bytesPerRequest = 5*10240; //don´t let the first request become too short !!
+	}
+
+
+	//Xman for debug
+	//AddDebugLogLine(false, _T("DBR: Trying to request %u blocks(%u) of size: %u(%u) for client:%s, file: %s"), *count, countin, (uint32)bytesPerRequest, (uint32)bytesPerRequest_total, sender->DbgGetClientInfo(), GetFileName());
+	//AddDebugLogLine(false, _T("DBR+: bytesLeftToDownload:%u, timeToFileCompletion:%u, fileDatarate: %u, sourceDatarate=%u, pending:%u"), (uint32)bytesLeftToDownload, timeToFileCompletion, fileDatarate, sourceDatarate, sender->GetPendingBlockCount());
+
+	//Xman end
+
 	// Main loop
 	uint16 newBlockCount = 0;
 	while(newBlockCount != *count){
 		// Create a request block stucture if a chunk has been previously selected
 		if(tempLastPartAsked != (uint16)-1){
 			Requested_Block_Struct* pBlock = new Requested_Block_Struct;
-			if(GetNextEmptyBlockInPart(tempLastPartAsked, pBlock) == true){
+			if(GetNextEmptyBlockInPart(tempLastPartAsked, pBlock, bytesPerRequest) == true){ //Xman Dynamic block request (netfinity/morph)
 				//AddDebugLogLine(false, _T("Got request block. Interval %i-%i. File %s. Client: %s"), pBlock->StartOffset, pBlock->EndOffset, GetFileName(), sender->DbgGetClientInfo());
 				// Keep a track of all pending requested blocks
 				requestedblocks_list.AddTail(pBlock);
@@ -6743,13 +6807,61 @@ bool CPartFile::GetNextRequestedBlock_Maella(CUpDownClient* sender,
 	const uint16 partCount = GetPartCount();
 	CList<Chunk> chunksList(partCount);
 
+
+	//Xman Dynamic block request (netfinity/morph)
+	//uint16 countin=*count; //Xman for debug
+	uint64	bytesPerRequest = EMBLOCKSIZE;
+	uint64	bytesLeftToDownload = GetRemainingAvailableData(sender);
+	uint32	fileDatarate = max(GetDownloadDatarate10(), UPLOAD_CLIENT_DATARATE); // Always assume file is being downloaded at atleast 3 kB/s
+	uint32	sourceDatarate = max(sender->GetDownloadDatarate10(), 10); // Always assume client is uploading at atleast 10 B/s
+	uint32	timeToFileCompletion = max((uint32) (bytesLeftToDownload / (uint64) fileDatarate) + 1, 10); // Always assume it will take atleast 10 seconds to complete
+
+	bytesPerRequest = (sourceDatarate * timeToFileCompletion) / 2;
+
+	//uint64 bytesPerRequest_total=bytesPerRequest; //Xman for debug
+
+	uint64 sourcealreadyreserveddata = sender->GetRemainingReservedDataToDownload();
+	if (bytesPerRequest > sourcealreadyreserveddata)
+		bytesPerRequest -= sourcealreadyreserveddata;
+	else
+		return false;
+
+	if (bytesPerRequest > EMBLOCKSIZE) {
+		*count = min((uint16)(bytesPerRequest/EMBLOCKSIZE), *count);
+		bytesPerRequest = EMBLOCKSIZE;
+	} else
+		*count = 1;
+	if (bytesPerRequest < 10240)
+	{
+		// Let an other client request this packet if we are close to completion and source is slow
+		// Use the true file datarate here, otherwise we might get stuck in NNP state
+		if (!requestedblocks_list.IsEmpty() && timeToFileCompletion < 30 && bytesPerRequest < 3400 && 5 * sourceDatarate < GetDownloadDatarate10())
+		{
+			DebugLog(_T("No request block given as source is slow and chunk near completion!"));
+			return false;
+		}
+		bytesPerRequest = 10240;
+	}
+
+	if(sender->GetDownTimeDifference(false)< 10001 && bytesLeftToDownload > 1024*1024 && bytesPerRequest <= 10240)  //we need 10 seconds until a proper Speed measurement
+	{
+		bytesPerRequest = 5*10240; //don´t let the first request become too short !!
+	}
+
+
+	//Xman for debug
+	//AddDebugLogLine(false, _T("DBR: Trying to request %u blocks(%u) of size: %u(%u) for client:%s, file: %s"), *count, countin, (uint32)bytesPerRequest, (uint32)bytesPerRequest_total, sender->DbgGetClientInfo(), GetFileName());
+	//AddDebugLogLine(false, _T("DBR+: bytesLeftToDownload:%u, timeToFileCompletion:%u, fileDatarate: %u, sourceDatarate=%u, pending:%u"), (uint32)bytesLeftToDownload, timeToFileCompletion, fileDatarate, sourceDatarate, sender->GetPendingBlockCount());
+
+	//Xman end
+
 	// Main loop
 	uint16 newBlockCount = 0;
 	while(newBlockCount != *count){
 		// Create a request block stucture if a chunk has been previously selected
 		if(sender->m_lastPartAsked != (uint16)-1){
 			Requested_Block_Struct* pBlock = new Requested_Block_Struct;
-			if(GetNextEmptyBlockInPart(sender->m_lastPartAsked, pBlock) == true){
+			if(GetNextEmptyBlockInPart(sender->m_lastPartAsked, pBlock, bytesPerRequest) == true){ //Xman Dynamic block request (netfinity/morph)
 				// Keep a track of all pending requested blocks
 				requestedblocks_list.AddTail(pBlock);
 				// Update list of blocks to return
@@ -6959,6 +7071,41 @@ bool CPartFile::GetNextRequestedBlock_Maella(CUpDownClient* sender,
 }
 // Maella end
 
+//Xman Dynamic block request (netfinity/morph)
+uint64 CPartFile::GetRemainingAvailableData(const CUpDownClient* sender) const
+{
+	const uint8* srcstatus = sender->GetPartStatus();
+	if (srcstatus)
+		return GetRemainingAvailableData(srcstatus);
+	return 0;
+}
+uint64 CPartFile::GetRemainingAvailableData(const uint8* srcstatus) const
+{
+	uint64 uTotalGapSizeInCommun = 0;
+	POSITION pos = gaplist.GetHeadPosition();
+	while (pos)
+	{
+		const Gap_Struct* pGap = gaplist.GetNext(pos);
+		uint16 i = (uint16)(pGap->start/PARTSIZE);
+		uint16 end_chunk = (uint16)(pGap->end/PARTSIZE);
+		if (i == end_chunk) {
+			if (srcstatus[i]!=0)
+				uTotalGapSizeInCommun += pGap->end - pGap->start + 1;
+		} 
+		else {
+			if (srcstatus[i]!=0)
+				uTotalGapSizeInCommun += PARTSIZE - pGap->start%PARTSIZE;
+			while (++i < end_chunk) {
+				if ((srcstatus[i]!=0))
+					uTotalGapSizeInCommun += PARTSIZE;
+			}
+			if (srcstatus[end_chunk]!=0)
+				uTotalGapSizeInCommun += pGap->end%PARTSIZE + 1;
+		}
+	}
+	return uTotalGapSizeInCommun;
+}
+//Xman end
 
 CString CPartFile::GetInfoSummary() const
 {

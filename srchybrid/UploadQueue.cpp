@@ -99,6 +99,13 @@ CUploadQueue::CUploadQueue()
 	m_dwnextallowedscoreremove=0;
 
     m_dwLastResortedUploadSlots = 0;
+
+	// ==> Superior Client Handling [Stulle] - Stulle
+	/*
+	//Xman always one release-slot
+	releaseslotclient=NULL;
+	*/
+	// <== Superior Client Handling [Stulle] - Stulle
 }
 
 /**
@@ -119,11 +126,20 @@ CUpDownClient* CUploadQueue::FindBestClientInQueue()
 	uint32  bestlowscore = 0;
     CUpDownClient* lowclient = NULL;
 	uint32 thisTick = ::GetTickCount(); //cache the value
+
 	// ==> Superior Client Handling [Stulle] - Stulle
+	/*
+	//Xman always one release-slot
+	uint32 bestpowerscore=0;
+	POSITION toaddpower=NULL;
+	CUpDownClient* bestscoreclient=NULL;
+	CUpDownClient* bestaddpowerclient=NULL;
+	//Xman end
+	*/
 	POSITION toaddSup = 0;
 	uint32	bestscoreSup = 0;
 	uint32  bestlowscoreSup = 0;
-    CUpDownClient* lowclientSup = NULL;
+	CUpDownClient* lowclientSup = NULL;
 	// <== Superior Client Handling [Stulle] - Stulle
 
 	POSITION pos1, pos2;
@@ -183,6 +199,32 @@ CUpDownClient* CUploadQueue::FindBestClientInQueue()
 		    // finished clearing
 		    uint32 cur_score = cur_client->GetScore(false);
 
+			// ==> Superior Client Handling [Stulle] - Stulle
+			/*
+			//Xman always one release-slot
+			CKnownFile* totest=theApp.sharedfiles->GetFileByID(cur_client->GetUploadFileID());
+			if(totest->GetUpPriority()==PR_POWER || totest->GetUpPriority()==PR_VERYHIGH)
+			{
+				if(cur_score > bestpowerscore)
+				{
+					if((!cur_client->HasLowID() && cur_client->isupprob==false) || (cur_client->socket && cur_client->socket->IsConnected())) //Xman uploading problem client
+					{
+						// this client is a HighID or a lowID client that is ready to go (connected)
+						// and it is more worthy
+						if ((thisTick - cur_client->GetLastUpRequest()< 1800000) //Xman accept only clients which asked the last 30 minutes:
+							&& cur_client->GetLastAction()==OP_STARTUPLOADREQ) //Xman fix for startupload
+						{
+							bestpowerscore = cur_score;
+							toaddpower = pos2;
+							bestaddpowerclient=cur_client;
+						}
+					} 
+				}
+			}
+			//Xman end
+			*/
+			// <== Superior Client Handling [Stulle] - Stulle
+
 		    if ( cur_score > bestscore)
 		    {
                 // cur_client is more worthy than current best client that is ready to go (connected).
@@ -195,6 +237,11 @@ CUpDownClient* CUploadQueue::FindBestClientInQueue()
 					{
 					bestscore = cur_score;
 			        toadd = pos2;
+					// ==> Superior Client Handling [Stulle] - Stulle
+					/*
+					bestscoreclient=cur_client; //Xman always one release-slot
+					*/
+					// <== Superior Client Handling [Stulle] - Stulle
 					}
                 } 
 				else if(!cur_client->m_bAddNextConnect) 
@@ -222,8 +269,18 @@ CUpDownClient* CUploadQueue::FindBestClientInQueue()
 
     if (!toadd)
 		return NULL;
-    else
-	    return waitinglist.GetAt(toadd);
+
+	//Xman always one release-slot
+	if(bestscoreclient && bestscoreclient->GetFriendSlot())
+		return bestscoreclient;
+	if (toaddpower && thePrefs.UseReleasseSlot() && releaseslotclient==NULL)
+	{
+		releaseslotclient=bestaddpowerclient;
+		return bestaddpowerclient;
+	}
+	else
+		return waitinglist.GetAt(toadd);
+	//Xman end
 	*/
 	if(lowclientSup && toaddSup)
 	{
@@ -1051,6 +1108,15 @@ bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReaso
             client->m_bAddNextConnect = false;
 			uploadinglist.RemoveAt(pos);
 			
+			// ==> Superior Client Handling [Stulle] - Stulle
+			/*
+			//Xman always one release-slot
+			if(client==releaseslotclient)
+				releaseslotclient=NULL;
+			//Xman end
+			*/
+			// <== Superior Client Handling [Stulle] - Stulle
+
 			//Xman Full Chunk
 			//set the flag back
 			client->upendsoon=false;
@@ -1225,8 +1291,17 @@ bool CUploadQueue::CheckForTimeOver(CUpDownClient* client){
     }
 
 
+	//not full chunk method:
+	if (!thePrefs.TransferFullChunks() 
+		// ==> Superior Client Handling [Stulle] - Stulle
+		/*
+		&& client!=releaseslotclient //Xman always one release-slot //releaseslot-clients get always a full chunk
+		*/
+		// <== Superior Client Handling [Stulle] - Stulle
+		)
+	{
 	//Xman: we allow a min of 1.8 MB
-	if (!thePrefs.TransferFullChunks() && client->GetSessionUp() >= 1887437
+		if( client->GetSessionUp() >= 1887437
 		&& m_dwnextallowedscoreremove < ::GetTickCount() //Xman avoid to short upload-periods
 		)
 	{
@@ -1257,8 +1332,9 @@ bool CUploadQueue::CheckForTimeOver(CUpDownClient* client){
 			returnvalue=true;
 		}
 	}
-	
-	if(thePrefs.TransferFullChunks() && (client->IsDifferentPartBlock() || client->GetQueueSessionPayloadUp() > SESSIONMAXTRANS))
+	}
+	else //full chunk method
+	if( (client->IsDifferentPartBlock() || client->GetQueueSessionPayloadUp() > SESSIONMAXTRANS))
 	{	
 		// Allow the client to download a specified amount per session
 			if (thePrefs.GetLogUlDlEvents() && client->GetQueueSessionPayloadUp() > SESSIONMAXTRANS)
@@ -1474,6 +1550,7 @@ void CUploadQueue::UploadTimer()
 			else if (sec==2) {
 				theApp.OnlineSig(); // Added By Bouc7 
 				theApp.friendlist->Process(); // 19 minutes
+				theApp.sharedfiles->CalculateUploadPriority(); //Xman advanced upload-priority //every minute
 			}
 			else if (sec==3) {
 				theApp.ipfilter->Process(); //Xman dynamic IP-Filters

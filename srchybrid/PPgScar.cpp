@@ -216,6 +216,7 @@ CPPgScar::CPPgScar()
 	m_htiPowershareLimited = NULL;
 	m_htiPowerShareLimit = NULL;
 	// <== PowerShare [ZZ/MorphXT] - Stulle
+	m_htiPsAmountLimit = NULL; // Limit PS by amount of data uploaded [Stulle] - Stulle
 	// ==> Release Bonus [sivka] - Stulle
 	m_htiReleaseBonusGroup = NULL;
 	m_htiReleaseBonus0 = NULL;
@@ -444,6 +445,10 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiPowerShareLimit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_POWERSHARE_LIMIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiPowershareLimited );
 		m_ctrlTreeOptions.AddEditBox(m_htiPowerShareLimit, RUNTIME_CLASS(CNumTreeOptionsEdit));
 		// <== PowerShare [ZZ/MorphXT] - Stulle
+		// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
+		m_htiPsAmountLimit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_PS_AMOUNT_LIMIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiPowershareLimited );
+		m_ctrlTreeOptions.AddEditBox(m_htiPsAmountLimit, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		// <== Limit PS by amount of data uploaded [Stulle] - Stulle
 		// ==> Release Bonus [sivka] - Stulle
 		m_htiReleaseBonusGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_RELEASE_BONUS_GROUP), iImgReleaseBonus, m_htiMisc);
 		m_htiReleaseBonus0 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_POWERSHARE_DISABLED), m_htiReleaseBonusGroup, m_iReleaseBonus == 0);
@@ -591,6 +596,10 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxInt(pDX, m_iShareOnlyTheNeed, 0, INT_MAX);
 	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiPowershareMode, m_iPowershareMode);
 	// <== PowerShare [ZZ/MorphXT] - Stulle
+	// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
+	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiPsAmountLimit, m_iPsAmountLimit);
+	DDV_MinMaxInt(pDX, m_iPsAmountLimit, 0, MAX_PS_AMOUNT_LIMIT);
+	// <== Limit PS by amount of data uploaded [Stulle] - Stulle
 	// ==> Release Bonus [sivka] - Stulle
 	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiReleaseBonusGroup, m_iReleaseBonus);
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiReleaseBonusDaysEdit, m_iReleaseBonusDays);
@@ -720,6 +729,7 @@ BOOL CPPgScar::OnInitDialog()
 	m_iPowershareMode = thePrefs.m_iPowershareMode;
 	m_iPowerShareLimit = thePrefs.PowerShareLimit;
 	// <== PowerShare [ZZ/MorphXT] - Stulle
+	m_iPsAmountLimit = thePrefs.GetPsAmountLimit(); // Limit PS by amount of data uploaded [Stulle] - Stulle
 	// ==> Release Bonus [sivka] - Stulle
 	if (thePrefs.GetReleaseBonus() <= 1)
 	{
@@ -782,8 +792,8 @@ BOOL CPPgScar::OnInitDialog()
 
 	m_FontColor.SetColor(GetSysColor(COLOR_WINDOWTEXT));
 	m_FontColor.SetDefaultColor(GetSysColor(COLOR_WINDOWTEXT));
-	m_BackColor.SetColor(GetSysColor(COLOR_WINDOW));
-	m_BackColor.SetDefaultColor(GetSysColor(COLOR_WINDOW));
+	m_BackColor.SetColor(COLORREF(RGB(255,255,255)));
+	m_BackColor.SetDefaultColor(COLORREF(RGB(255,255,255)));
 
 //	m_ColorPreview.SetBackgroundColor(GetSysColor(COLOR_WINDOW));
 //	m_ColorPreview.SetTextColor(GetSysColor(COLOR_WINDOWTEXT));
@@ -976,6 +986,9 @@ BOOL CPPgScar::OnApply()
 	thePrefs.PowerShareLimit = m_iPowerShareLimit;
 	theApp.sharedfiles->UpdatePartsInfo();
 	// <== PowerShare [ZZ/MorphXT] - Stulle
+	// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
+	thePrefs.PsAmountLimit = m_iPsAmountLimit;
+	// <== Limit PS by amount of data uploaded [Stulle] - Stulle
 	// ==> Release Bonus [sivka] - Stulle
 	if (m_iReleaseBonus <= 1)
         thePrefs.m_uReleaseBonus = (uint8)m_iReleaseBonus;
@@ -1213,6 +1226,9 @@ void CPPgScar::Localize(void)
 		if (m_htiPowershareLimited) m_ctrlTreeOptions.SetItemText(m_htiPowershareLimited, GetResString(IDS_POWERSHARE_LIMITED));
 		if (m_htiPowerShareLimit) m_ctrlTreeOptions.SetEditLabel(m_htiPowerShareLimit, GetResString(IDS_POWERSHARE_LIMIT));
 		// <== PowerShare [ZZ/MorphXT] - Stulle
+		// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
+		if (m_htiPsAmountLimit) m_ctrlTreeOptions.SetEditLabel(m_htiPsAmountLimit, GetResString(IDS_PS_AMOUNT_LIMIT));
+		// <== Limit PS by amount of data uploaded [Stulle] - Stulle
 		if (m_htiSpreadBars) m_ctrlTreeOptions.SetItemText(m_htiSpreadBars, GetResString(IDS_SPREAD_BARS)); // Spread bars [Slugfiller/MorphXT] - Stulle
 		// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 		if (m_htiHideOS) m_ctrlTreeOptions.SetEditLabel(m_htiHideOS, GetResString(IDS_HIDEOVERSHARES));
@@ -1402,6 +1418,7 @@ void CPPgScar::OnDestroy()
 	m_htiPowershareLimited = NULL;
 	m_htiPowerShareLimit = NULL;
 	// <== PowerShare [ZZ/MorphXT] - Stulle
+	m_htiPsAmountLimit = NULL; // Limit PS by amount of data uploaded [Stulle] - Stulle
 	// ==> Release Bonus [sivka] - Stulle
 	m_htiReleaseBonusGroup = NULL;
 	m_htiReleaseBonus0 = NULL;
@@ -2655,6 +2672,8 @@ void CPPgScar::InitSubStyleCombo()
 			m_SubCombo.AddString(GetResString(IDS_COLOR_C4));
 			m_SubCombo.AddString(GetResString(IDS_COLOR_C5));
 			m_SubCombo.AddString(GetResString(IDS_COLOR_C6));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_C7));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_C8));
 		}break;
 		case 1: // download styles
 		{

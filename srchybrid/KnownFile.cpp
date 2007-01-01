@@ -50,6 +50,9 @@
 #include "MediaInfo.h"
 #include "MuleStatusBarCtrl.h" //Xman Progress Hash (O2)
 
+//Xman advanced upload-priority
+//#include <math.h>
+
 // id3lib
 #pragma warning(disable:4100) // unreferenced formal parameter
 #include <id3/tag.h>
@@ -105,6 +108,8 @@ CKnownFile::CKnownFile()
 	// Maella -One-queue-per-file- (idea bloodymad)
 	m_startUploadTime = ::GetTickCount();
 	// Maella end
+	//Xman show virtual sources (morph)
+	m_nVirtualCompleteSourcesCount = 0;
 
 	ReleaseViaWebCache = false; //JP webcache release // WebCache [WC team/MorphXT] - Stulle/Max
 
@@ -119,9 +124,10 @@ CKnownFile::CKnownFile()
 	m_powershared = -1;
 	m_bPowerShareAuthorized = true;
 	m_bPowerShareAuto = false;
-	m_nVirtualCompleteSourcesCount = 0;
 	m_iPowerShareLimit = -1;
 	// <== PowerShare [ZZ/MorphXT] - Stulle
+
+	m_iPsAmountLimit = -1; // Limit PS by amount of data uploaded [Stulle] - Stulle
 }
 
 CKnownFile::~CKnownFile()
@@ -416,13 +422,28 @@ void CKnownFile::UpdatePartsInfo()
 		m_nCompleteSourcesTime = time(NULL) + (60);
 	}
 
-	// ==> PowerShare [ZZ/MorphXT] - Stulle
+	//Xman show virtual sources (morph)
 	m_nVirtualCompleteSourcesCount = (UINT)-1;
 	for (UINT i = 0; i < partcount; i++){
 		if(m_AvailPartFrequency[i] < m_nVirtualCompleteSourcesCount)
 			m_nVirtualCompleteSourcesCount = m_AvailPartFrequency[i];
 	}
+	//Xman end
+	// ==> PowerShare [ZZ/MorphXT] - Stulle
+	/*
 	UpdatePowerShareLimit(m_nVirtualCompleteSourcesCount<=1 || m_nCompleteSourcesCountHi<=GetPartCount(), m_nCompleteSourcesCountHi==1 && m_nVirtualCompleteSourcesCount==0 && iCompleteSourcesCountInfoReceived>1,m_nCompleteSourcesCountHi>((GetPowerShareLimit()>=0)?GetPowerShareLimit():thePrefs.GetPowerShareLimit()));
+	*/
+	int iPsAmountLimit = (GetPsAmountLimit()>=0 ? GetPsAmountLimit() : thePrefs.GetPsAmountLimit());
+	int iPowerShareLimit = (GetPowerShareLimit()>=0 ? GetPowerShareLimit() : thePrefs.GetPowerShareLimit());
+	bool bPowerShareLimit = true;
+	if(iPsAmountLimit>0)
+	{
+		if((((double)statistic.GetAllTimeTransferred())/((double)GetFileSize())) < (((double)iPsAmountLimit)/100.0f))
+			bPowerShareLimit = false;
+	}
+	if(iPowerShareLimit > 0)
+		bPowerShareLimit = (m_nCompleteSourcesCountHi > iPowerShareLimit);
+	UpdatePowerShareLimit(m_nVirtualCompleteSourcesCount<=1 || m_nCompleteSourcesCountHi<=GetPartCount(), m_nCompleteSourcesCountHi==1 && m_nVirtualCompleteSourcesCount==0 && iCompleteSourcesCountInfoReceived>1,bPowerShareLimit);
 	// <== PowerShare [ZZ/MorphXT] - Stulle
 
 	if (theApp.emuledlg->sharedfileswnd->m_hWnd)
@@ -1054,6 +1075,10 @@ bool CKnownFile::LoadTagsFromFile(CFileDataIO* file)
 					else if(CmpED2KTagName(newtag->GetName(), FT_SHAREONLYTHENEED) == 0)
 						SetShareOnlyTheNeed(newtag->GetInt()<=1?newtag->GetInt():-1);
 					// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+					// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
+					else if(CmpED2KTagName(newtag->GetName(), FT_PS_AMOUNT_LIMIT) == 0)
+						SetPsAmountLimit(newtag->GetInt()<=MAX_PS_AMOUNT_LIMIT?newtag->GetInt():-1);
+					// <== Limit PS by amount of data uploaded [Stulle] - Stulle
 					// ==>  Take care of corrupted tags [Mighty Knife] - Stulle
 					delete newtag;
 					break;
@@ -1240,6 +1265,13 @@ bool CKnownFile::WriteToFile(CFileDataIO* file)
 		uTagCount++;
 	}
 	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
+	if (GetPsAmountLimit()>=0){
+		CTag psamountlimittag(FT_PS_AMOUNT_LIMIT, GetPsAmountLimit());
+		psamountlimittag.WriteTagToFile(file);
+		uTagCount++;
+	}
+	// <== Limit PS by amount of data uploaded [Stulle] - Stulle
 	// ==> PowerShare [ZZ/MorphXT] - Stulle
 	if (GetPowerSharedMode()>=0){
 		CTag powersharetag(FT_POWERSHARE, GetPowerSharedMode());
@@ -1653,6 +1685,12 @@ void CKnownFile::SetFileRating(UINT uRating)
 void CKnownFile::UpdateAutoUpPriority(){
 	if( !IsAutoUpPriority() )
 		return;
+	
+	//Xman advanced upload-priority
+	if(thePrefs.UseAdvancedAutoPtio())
+		return; 
+	//Xman end
+
 	//Xman : if we use the multiqueue, high uploadprio will be useless because
 	//clients which ask for a rare file already are preferred
 	// Maella -One-queue-per-file- (idea bloodymad)
@@ -1660,7 +1698,7 @@ void CKnownFile::UpdateAutoUpPriority(){
 	{
 		if( GetUpPriority() != PR_NORMAL ){
 			SetUpPriority( PR_NORMAL );
-			theApp.emuledlg->sharedfileswnd->sharedfilesctrl.UpdateFile(this);
+			//theApp.emuledlg->sharedfileswnd->sharedfilesctrl.UpdateFile(this);
 		}
 		return;
 	}
@@ -1675,20 +1713,29 @@ void CKnownFile::UpdateAutoUpPriority(){
 	if ( GetOnUploadqueue() > 15 ){
 		if( GetUpPriority() != PR_NORMAL ){
 			SetUpPriority( PR_NORMAL );
-			theApp.emuledlg->sharedfileswnd->sharedfilesctrl.UpdateFile(this);
+			//theApp.emuledlg->sharedfileswnd->sharedfilesctrl.UpdateFile(this);
 		}
 		return;
 	}
 	if( GetUpPriority() != PR_HIGH){
 		SetUpPriority( PR_HIGH );
-		theApp.emuledlg->sharedfileswnd->sharedfilesctrl.UpdateFile(this);
+		//theApp.emuledlg->sharedfileswnd->sharedfilesctrl.UpdateFile(this);
 	}
 }
 //Xman end
 
 void CKnownFile::SetUpPriority(uint8 iNewUpPriority, bool bSave)
 {
-	m_iUpPriority = iNewUpPriority;
+	//Xman advanced upload-priority
+	if(m_iUpPriority!=iNewUpPriority)
+	{
+		m_iUpPriority = iNewUpPriority;
+		theApp.emuledlg->sharedfileswnd->sharedfilesctrl.UpdateFile(this,true);
+	}
+	else
+		m_iUpPriority = iNewUpPriority;
+	//Xman end
+
 	ASSERT( m_iUpPriority == PR_VERYLOW || m_iUpPriority == PR_LOW || m_iUpPriority == PR_NORMAL || m_iUpPriority == PR_HIGH || m_iUpPriority == PR_VERYHIGH || m_iUpPriority == PR_POWER ); //Xman PowerRelease
 
 	if( IsPartFile() && bSave )
@@ -2367,6 +2414,122 @@ uint32 CKnownFile::GetFileScore(uint32 downloadingTime)
 	return 0;
 }
 // Maella end
+
+//Xman advanced upload-priority
+double CKnownFile::CalculateUploadPriorityPercent()
+{
+	uint64 wantedUpload = GetWantedUpload();
+	uint64 oldtransferred ;
+	if (statistic.GetAllTimeTransferred() > statistic.GetTransferred())
+		oldtransferred = statistic.GetAllTimeTransferred()-statistic.GetTransferred();
+	else
+		oldtransferred = 0;
+
+	double percent = statistic.GetTransferred()/(double)wantedUpload*100.0 + oldtransferred/(double)wantedUpload*100.0/2.0; //old count only half
+	
+	return percent;
+}
+
+void CKnownFile::CalculateAndSetUploadPriority()
+{
+	if (!IsAutoUpPriority())
+		return;
+
+	double avgpercent = theApp.sharedfiles->m_lastavgPercent;
+	double changefactor= avgpercent / 100 * 25;
+	if (changefactor < 2)  changefactor =2;
+	if (changefactor > 20) changefactor=20;
+
+
+	if((uint64)GetFileSize() > 500*1024)
+	{
+		double uploadpercent = CalculateUploadPriorityPercent();
+
+		if (uploadpercent < avgpercent - changefactor)
+		{
+				SetUpPriority( PR_HIGH );
+		}
+		else if (uploadpercent > avgpercent + changefactor)
+		{
+				SetUpPriority( PR_LOW );
+		}
+		else
+		{
+				SetUpPriority( PR_NORMAL );
+		}
+	}
+	else
+			SetUpPriority( PR_HIGH ); //files < 500k always high prio
+}
+
+//Xman this is the debug version
+void CKnownFile::CalculateAndSetUploadPriority2()
+{
+	if (!IsAutoUpPriority())
+		return;
+
+	double avgpercent = theApp.sharedfiles->m_lastavgPercent;
+	double changefactor= avgpercent / 100 * 25;
+	if (changefactor < 2)  changefactor =2;
+	if (changefactor > 20) changefactor=20;
+	
+
+	if((uint64)GetFileSize() > 500*1024)
+	{
+		double uploadpercent = CalculateUploadPriorityPercent();
+		uint64 wantedUpload = GetWantedUpload();
+		AddDebugLogLine(false, _T("avg: %0.00f%% percent: %0.00f%%, wanted: %s, file: %s"),avgpercent,uploadpercent, CastItoXBytes(wantedUpload),this->GetFileName()); 
+
+		if (uploadpercent < avgpercent - changefactor)
+		{
+				SetUpPriority( PR_HIGH );
+			AddDebugLogLine(false, _T("setting high")); 
+		}
+		else if (uploadpercent > avgpercent + changefactor)
+		{
+				SetUpPriority( PR_LOW );
+			AddDebugLogLine(false, _T("setting low")); 
+		}
+		else
+		{
+				SetUpPriority( PR_NORMAL );
+			AddDebugLogLine(false, _T("setting normal")); 
+		}
+	}
+	else
+	{
+			SetUpPriority( PR_HIGH ); //files < 500k always high prio
+		AddDebugLogLine(false, _T("small file->high Prio. file: %s"), GetFileName());
+	}
+}
+
+uint64 CKnownFile::GetWantedUpload()
+{
+	/* alternative 1:
+	uint64 filesize = GetFileSize();
+	if (filesize <=0) filesize = 1;
+	if(filesize>100*1024*1024)
+		return filesize;
+	else if (filesize>= 50 *1024*1024)
+		return 100*1024*1024;
+	else
+	{
+		double ln2=log(2.0);
+		return (uint64)(log(200.0/(filesize/1024.0/1024.0))/ln2)*filesize;
+	}
+	*/
+
+	//alternative 2
+	uint64 filesize = GetFileSize();
+	if (filesize <=0) filesize = 1;
+	if(filesize>=600*1024*1024)
+		return filesize;
+	else
+	{
+		double factor = 1.0 + (60.63 / ( (filesize/1024.0/1024.0) + 2.2 ));
+		return (uint64)(factor * (double)filesize);
+	}
+}
 
 // ==> push rare file - Stulle
 float CKnownFile::GetFileRatio() const

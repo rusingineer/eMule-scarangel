@@ -103,6 +103,16 @@ public:
 	
 	bool	HideOvershares(CSafeMemFile* file, CUpDownClient* client); //Xman PowerRelease
 
+	//Xman advanced upload-priority
+	double CalculateUploadPriorityPercent();
+	void CalculateAndSetUploadPriority();
+	void CalculateAndSetUploadPriority2(); //Xman the debug version
+	uint64 GetWantedUpload();
+	//Xman end
+
+	//Xman show virtual sources (morph)
+	UINT m_nVirtualCompleteSourcesCount;
+
 	//Xman see OnUploadqueue
 	void AddOnUploadqueue()				{onuploadqueue++;UpdateAutoUpPriority();}
 	void RemoveOnUploadqueue()			{if(onuploadqueue!=0) onuploadqueue--;UpdateAutoUpPriority();}
@@ -199,7 +209,7 @@ private:
 // Maella end
 
 private:
-	uint16 onuploadqueue;	//Xman ee OnUploadqueue
+	uint16 onuploadqueue;	//Xman see OnUploadqueue
 	// ==> Removed Dynamic Hide OS [SlugFiller/Xman] - Stulle
 	/*
 	uint16 hideos;			//Xman PowerRelease
@@ -267,10 +277,16 @@ public:
 	void	UpdatePowerShareLimit(bool authorizepowershare,bool autopowershare, bool limitedpowershare);
 	void    SetPowerShared(int newValue);
 	bool    GetPowerShared() const;
-	UINT m_nVirtualCompleteSourcesCount;
 	// <== PowerShare [ZZ/MorphXT] - Stulle
 
 	// ==> Design Settings [eWombat/Stulle] - Stulle
 	int		GetKnownStyle() const;
 	// <== Design Settings [eWombat/Stulle] - Stulle
+
+	// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
+	void	SetPsAmountLimit(int newValue) {m_iPsAmountLimit = newValue;}
+	int		GetPsAmountLimit() const {return m_iPsAmountLimit;}
+protected:
+	int		m_iPsAmountLimit;
+	// <== Limit PS by amount of data uploaded [Stulle] - Stulle
 };

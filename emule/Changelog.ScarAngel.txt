@@ -5,12 +5,26 @@ eMule v0.47c ScarAngel v1.8:
 ------------------------
 - XX.XX.2006 -
 -------------------------------------------------------------------------------
-based on eMule 0.47c Xtreme 5.3.1 compiled with vs2003 SP1
+based on eMule 0.47c Xtreme 5.4 compiled with vs2003 SP1
 
 Added: XP-Style menus [Xanatos/ eMule-web.de staff] - Stulle
+Added: Design Settings [eWombat/Stulle] - Stulle
+Added: Static IP Filter [Stulle] - Stulle
+	remark: save "ipfilter_static.dat" in config dir
+Added: Limit PS by amount of data uploaded [Stulle] - Stulle
+Added: Enhanced Client Recognition [Spike]
+Added: Compat Client Stats [Stulle] - Stulle
 
 Fixed: Reset Spread Bars command [Stulle] - Stulle
 Fixed: second categories column in DownloadList removed [Stulle] - Stulle
+
+Removed: always one release slot [Xman] - Stulle
+	+ use PowerShare instead
+
+Design Settings:
++ Only enabled styles will be applied
++ Styles sorted by importance in triggering (default excluded)
++ Combining two styles is impossible
 
 
 eMule v0.47c ScarAngel v1.7:

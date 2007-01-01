@@ -42,7 +42,7 @@ public:
 	void	ReloadFileList();
 	void	AddFile(const CKnownFile* file);
 	void	RemoveFile(const CKnownFile* file);
-	void	UpdateFile(const CKnownFile* file);
+	void	UpdateFile(const CKnownFile* file, bool force=false); //Xman advanced upload-priority
 	void	Localize();
 	void	ShowFilesCount();
 	void	ShowComments(CKnownFile* file);
@@ -66,6 +66,9 @@ protected:
 	CTitleMenu       m_PowershareMenu;
 	CTitleMenu		m_PowerShareLimitMenu;
 	// <== PowerShare [ZZ/MorphXT] - Stulle
+	// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
+	CTitleMenu		m_PsAmountLimitMenu;
+	// <== Limit PS by amount of data uploaded [Stulle] - Stulle
 	// <== XP Style Menu [Xanatos] - Stulle
 	bool			sortstat[4];
 	CImageList		m_ImageList;

@@ -167,6 +167,8 @@ enum eStyles
 	style_c_friend,
 	style_c_powershare,
 	style_c_powerrelease,
+	style_c_downloading,
+	style_c_uploading,
 	style_c_leecher,
 	style_c_lowid,
 	style_c_credits,
@@ -898,6 +900,8 @@ public:
 	static	uint8	m_uReleaseBonus; // Release Bonus [sivka] - Stulle
 	static	bool	m_bReleaseScoreAssurance; // Release Score Assurance [Stulle] - Stulle
 
+	static	int		GetPsAmountLimit() {return PsAmountLimit;} // Limit PS by amount of data uploaded [Stulle] - Stulle
+
 	// ==> Design Settings [eWombat/Stulle] - Stulle
 	static DWORD		nStyleFlags[style_counts]; 
 	static COLORREF		nStyleFontColor[style_counts];
@@ -1091,6 +1095,22 @@ public:
 	static bool m_13ratio;
 	static bool Is13Ratio() {return m_13ratio;}
 	static Set13Ratio(bool in) {m_13ratio=in;}
+	//Xman end
+
+	// ==> Superior Client Handling [Stulle] - Stulle
+	/*
+	//Xman always one release-slot
+	static bool m_onerealeseslot;
+	static bool UseReleasseSlot() {return m_onerealeseslot;}
+	static SetUseReleaseSlot(bool in) {m_onerealeseslot=in;}
+	//Xman end
+	*/
+	// <== Superior Client Handling [Stulle] - Stulle
+
+	//Xman advanced upload-priority
+	static	bool m_AdvancedAutoPrio;
+	static bool UseAdvancedAutoPtio() {return m_AdvancedAutoPrio;}
+	static SetAdvancedAutoPrio(bool in) {m_AdvancedAutoPrio=in;}
 	//Xman end
 
 	//Xman chunk chooser
@@ -2080,6 +2100,8 @@ public:
 
 	static	uint8	GetReleaseBonus()			{return m_uReleaseBonus;} // Release Bonus [sivka] - Stulle
 	static	bool	GetReleaseScoreAssurance()	{return m_bReleaseScoreAssurance;} // Release Score Assurance [Stulle] - Stulle
+
+	static int	PsAmountLimit; // Limit PS by amount of data uploaded [Stulle] - Stulle
 
 	// ==> Design Settings [eWombat/Stulle] - Stulle
 	static bool		SetStyle(int nStyle, StylesStruct *style=NULL);

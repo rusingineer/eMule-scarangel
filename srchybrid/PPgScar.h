@@ -103,6 +103,7 @@ protected:
 	int m_iPowershareMode;
 	int m_iPowerShareLimit;
 	// <== PowerShare [ZZ/MorphXT] - Stulle
+	int m_iPsAmountLimit; // Limit PS by amount of data uploaded [Stulle] - Stulle
 	// ==> Release Bonus [sivka] - Stulle
 	int m_iReleaseBonus;
 	int m_iReleaseBonusDays;
@@ -250,6 +251,7 @@ protected:
 	HTREEITEM m_htiPowerShareLimit;
 	HTREEITEM m_htiPowershareLimited;
 	// <== PowerShare [ZZ/MorphXT] - Stulle
+	HTREEITEM m_htiPsAmountLimit; // Limit PS by amount of data uploaded [Stulle] - Stulle
 	// ==> Release Bonus [sivka] - Stulle
 	HTREEITEM m_htiReleaseBonusGroup;
 	HTREEITEM m_htiReleaseBonus0;

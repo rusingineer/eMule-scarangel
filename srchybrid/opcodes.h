@@ -20,12 +20,12 @@
 /*
 //Xman
 //ModID
-#define MOD_VERSION		_T("Xtreme 5.3.1") 
+#define MOD_VERSION		_T("Xtreme 5.4") 
 */
 //Xman versions check
 #define MOD_MAIN_VER	5
-#define MOD_MIN_VER		3
-#define	MOD_BUILD_VER	2 //1=Xtreme x.x 2=Xtreme x.x.1
+#define MOD_MIN_VER		4
+#define	MOD_BUILD_VER	1 //1=Xtreme x.x 2=Xtreme x.x.1
 /*
 
 //Xman Anti-Leecher: simple Anti-Thief
@@ -684,3 +684,8 @@
 #define FT_POWERSHARE           "ZZUL_POWERSHARE"
 #define FT_POWERSHARE_LIMIT		"POWERSHARE_LIMIT"
 // <== PowerShare [ZZ/MorphXT] - Stulle
+
+// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
+#define FT_PS_AMOUNT_LIMIT		"PS_AMOUNT_LIMIT"
+#define MAX_PS_AMOUNT_LIMIT             10000
+// <== Limit PS by amount of data uploaded [Stulle] - Stulle

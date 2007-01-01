@@ -664,15 +664,20 @@ void CDownloadQueue::Process(){
 		}
 		else 
 		{
-			//Xman 4.8
+			//Xman 
 			//application can hang. compensate to 1 second:
 			if(deltaTime>1000)
 				deltaTime=1000;
 
 			//Xman GlobalMaxHarlimit for fairness
-			if(limitbysources)
+			if(limitbysources && maxDownload < theApp.pBandWidthControl->GetMaxDownloadEx(false))
 				m_limitstate=2; //session ratio is reached->full limitation
 			//Xman end
+
+			else if (thePrefs.Is13Ratio()) //downloadlimit although it should be unlimited => we have a ratio
+				m_limitstate=3;
+			else if (maxDownload < thePrefs.GetMaxDownload()) //can only be NAFC
+				m_limitstate=4;
 
 			//Xman changed sint32 to sint64
 			// Bandwidth control
@@ -2541,6 +2546,7 @@ void CDownloadQueue::PrintStatistic()
 	AddLogLine(false, _T("SrcpartFrequency: %u"), SrcpartFrequency);
 	AddLogLine(false, _T("BufferedData: %u"), BufferedData);
 	AddLogLine(false, _T("A4AFsrclist: %u"), A4AFsrclist);
+	AddLogLine(false, _T("internal global sources: %u"), GetGlobalSources());
 	AddLogLine(false, _T("---------------------------------------"));
 }
 #endif
