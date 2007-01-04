@@ -357,7 +357,6 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	}
 	else
 		odc->SetBkColor(GetBkColor());
-	COLORREF crOldBackColor = odc->GetBkColor(); //Xman PowerRelease //Xman show LowIDs
 
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
 	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
@@ -384,6 +383,7 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	else
 		odc->SetBkColor(crTempColor);
 
+	COLORREF crOldBackColor = odc->GetBkColor(); //Xman PowerRelease //Xman show LowIDs
 	crTempColor = m_crWindowText;
 	if(style.nFontColor != CLR_DEFAULT)
 		crTempColor = style.nFontColor;
@@ -728,11 +728,7 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			if( iColumn != 9 && iColumn != 0 && iColumn != 14)
 			// <== WebCache [WC team/MorphXT] - Stulle/Max
 				dc.DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
-			// ==> Design Settings [eWombat/Stulle] - Stulle
-			/*
 			dc.SetBkColor(crOldBackColor); //Xman PowerRelease //Xman show LowIDs
-			*/
-			// <== Design Settings [eWombat/Stulle] - Stulle
 			cur_rec.left += GetColumnWidth(iColumn);
 		}
 	}

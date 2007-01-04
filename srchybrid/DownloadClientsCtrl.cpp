@@ -295,6 +295,7 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	else
 		odc->SetBkColor(crTempColor);
 
+	COLORREF crOldBackColor = odc->GetBkColor();  //Xman show LowIDs
 	crTempColor = m_crWindowText;
 	if(style.nFontColor != CLR_DEFAULT)
 		crTempColor = style.nFontColor;
@@ -534,11 +535,7 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				}
 				if( iColumn != 4 && iColumn != 0 && iColumn != 3 && iColumn != 11)
 					dc.DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
-				// ==> Design Settings [eWombat/Stulle] - Stulle
-				/*
 				dc.SetBkColor(crOldBackColor); //Xman show LowIDs
-				*/
-				// <== Design Settings [eWombat/Stulle] - Stulle
 				cur_rec.left += GetColumnWidth(iColumn);
 		}
 	}
