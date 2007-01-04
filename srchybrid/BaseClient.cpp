@@ -4325,32 +4325,29 @@ void CUpDownClient::UpdateFunnyNick()
 //Xman end
 
 // ==> Design Settings [eWombat/Stulle] - Stulle
-/* uMode as following:                            */
-/* 0 = all                                        */
-/* 1 = upload only                                */
-/* 2 = download only                              */
-int CUpDownClient::GetClientStyle(uint8 uMode) const
+int CUpDownClient::GetClientStyle(bool bDl, bool bUl, bool bShare, bool bOwnCredits) const
 {
 	int iClientStyle = style_c_default;
 	if(IsFriend() && thePrefs.GetStyleOnOff(style_c_friend)!=0)
 		iClientStyle = style_c_friend;
-	if(GetPowerShared() && uMode != 2 && thePrefs.GetStyleOnOff(style_c_powershare)!=0)
+	else if(GetPowerShared() && bShare && thePrefs.GetStyleOnOff(style_c_powershare)!=0)
 		iClientStyle = style_c_powershare;
-	if(GetPowerReleased() && uMode != 2 && thePrefs.GetStyleOnOff(style_c_powerrelease)!=0)
+	else if(GetPowerReleased() && bShare && thePrefs.GetStyleOnOff(style_c_powerrelease)!=0)
 		iClientStyle = style_c_powerrelease;
-	if(GetDownloadState() == DS_DOWNLOADING && uMode != 2 && thePrefs.GetStyleOnOff(style_c_downloading)!=0)
+	else if(GetDownloadState() == DS_DOWNLOADING && bDl && thePrefs.GetStyleOnOff(style_c_downloading)!=0)
 		iClientStyle = style_c_downloading;
-	if(GetDownloadState() == DS_DOWNLOADING && uMode != 1 && thePrefs.GetStyleOnOff(style_c_uploading)!=0)
+	else if(GetUploadState() == US_UPLOADING && bUl && thePrefs.GetStyleOnOff(style_c_uploading)!=0)
 		iClientStyle = style_c_uploading;
-	if(IsLeecher()>0 && thePrefs.GetStyleOnOff(style_c_leecher)!=0)
+	else if(IsLeecher()>0 && thePrefs.GetStyleOnOff(style_c_leecher)!=0)
 		iClientStyle = style_c_leecher;
-	if(HasLowID() && thePrefs.GetStyleOnOff(style_c_lowid)!=0)
+	else if(HasLowID() && thePrefs.GetStyleOnOff(style_c_lowid)!=0)
 		iClientStyle = style_c_lowid;
-	if(Credits() && thePrefs.GetStyleOnOff(style_c_credits)!=0)
+	else if(Credits() && thePrefs.GetStyleOnOff(style_c_credits)!=0)
 	{
 		if	(
-				( uMode != 2 && credits->GetHasScore(this)) ||
-				( uMode == 2 && credits->GetMyScoreRatio(GetIP())>1)
+				(!bOwnCredits && credits->GetHasScore(this))
+				||
+				( bOwnCredits && credits->GetMyScoreRatio(GetIP())>1)
 			)
 			iClientStyle = style_c_credits;
 	}

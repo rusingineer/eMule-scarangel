@@ -805,6 +805,11 @@ short	CPreferences::nStyleOnOff[style_counts];
 
 int		CPreferences::PsAmountLimit; // Limit PS by amount of data uploaded [Stulle] - Stulle
 
+// ==> Enforce Ratio [Stulle] - Stulle
+bool	CPreferences::m_bEnforceRatio;
+uint8	CPreferences::m_uRatioValue;
+// <== Enforce Ratio [Stulle] - Stulle
+
 CPreferences::CPreferences()
 {
 #ifdef _DEBUG
@@ -2585,6 +2590,11 @@ void CPreferences::SavePreferences()
 
 	ini.WriteInt(_T("PsAmountLimit"),PsAmountLimit); // Limit PS by amount of data uploaded [Stulle] - Stulle
 
+	// ==> Enforce Ratio [Stulle] - Stulle
+	ini.WriteBool(_T("EnforceRatio"), m_bEnforceRatio);
+	ini.WriteInt(_T("RatioValue"), m_uRatioValue);
+	// <== Enforce Ratio [Stulle] - Stulle
+
 	SaveStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
 
@@ -3648,6 +3658,12 @@ void CPreferences::LoadPreferences()
 	temp = ini.GetInt(_T("PsAmountLimit"),0);
 	PsAmountLimit = (temp >= 0 && temp <= MAX_PS_AMOUNT_LIMIT)?temp:0;
 	// <== Limit PS by amount of data uploaded [Stulle] - Stulle
+
+	// ==> Enforce Ratio [Stulle] - Stulle
+	m_bEnforceRatio = ini.GetBool(_T("EnforceRatio"),false);
+	temp = ini.GetInt(_T("RatioValue"),3);
+	m_uRatioValue = (uint8)((temp > 0 && temp <= 4)?temp:3);
+	// <== Enforce Ratio [Stulle] - Stulle
 
 	LoadStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }

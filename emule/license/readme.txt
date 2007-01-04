@@ -1,4 +1,4 @@
-eMule Copyright (C)2002-2005 Merkur (merkur-@users.sourceforge.net)
+eMule Copyright (C)2002-2006 Merkur (devteam at emule-project dot net)
 
 
 This program is free software; you can redistribute it and/or modify it under 

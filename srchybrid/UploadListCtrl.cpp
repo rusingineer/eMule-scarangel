@@ -346,7 +346,7 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	*/
 	theApp.emuledlg->transferwnd->SetBackgroundColor(style_b_uploadlist);
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
-	int iClientStyle = client->GetClientStyle(1); // uploading only
+	int iClientStyle = client->GetClientStyle(true,false,true,true);
 	StylesStruct style;
 	thePrefs.GetStyle(iClientStyle, &style);
 	COLORREF crTempColor = GetBkColor();
@@ -363,6 +363,7 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	else
 		odc->SetBkColor(crTempColor);
 
+	COLORREF crOldBackColor = odc->GetBkColor(); //Xman PowerRelease
 	crTempColor = m_crWindowText;
 	if(style.nFontColor != CLR_DEFAULT)
 		crTempColor = style.nFontColor;
@@ -623,11 +624,7 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			}
 			if (iColumn != 7 && iColumn != 0)
 				dc.DrawText(Sbuffer, Sbuffer.GetLength(), &cur_rec, DLC_DT_TEXT);
-			// ==> Design Settings [eWombat/Stulle] - Stulle
-			/*
 			dc.SetBkColor(crOldBackColor); //Xman PowerRelease //Xman show LowIDs
-			*/
-			// <== Design Settings [eWombat/Stulle] - Stulle
 			cur_rec.left += GetColumnWidth(iColumn);
 		}
 	}

@@ -16,6 +16,10 @@
 #include "WebCache/webcache.h" // WebCache [WC team/MorphXT] - Stulle/Max
 #include "XMessageBox.h" // TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 #include "sharedfilelist.h" // PowerShare [ZZ/MorphXT] - Stulle
+// ==> Design Settings [eWombat/Stulle] - Stulle
+#include "SharedFilesWnd.h"
+#include "SharedFilesCtrl.h"
+// <== Design Settings [eWombat/Stulle] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -127,6 +131,11 @@ CPPgScar::CPPgScar()
 	m_htiQuickStartMaxConnBack = NULL;
 	m_htiQuickStartAfterIPChange = NULL;
 	// <== Quick start [TPT] - Max
+	// ==> Enforce Ratio [Stulle] - Stulle
+	m_htiRatioGroup = NULL;
+	m_htiEnforceRatio = NULL;
+	m_htiRatioValue = NULL;
+	// <== Enforce Ratio [Stulle] - Stulle
 //	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources - Stulle
 	m_htiACC = NULL; // ACC [Max/WiZaRd] - Max
 /*
@@ -264,6 +273,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		int iImgFunnyNick = 8;
 		int iImgConTweaks = 8;
 		int iImgQuickstart = 8;
+		int iImgRatio = 8;
 		int iImgCS = 8;
 		int iImgDisplay = 8;
 		int iImgSysInfo = 8;
@@ -283,6 +293,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 			iImgFunnyNick = piml->Add(CTempIconLoader(_T("FUNNYNICK")));
 			iImgConTweaks =  piml->Add(CTempIconLoader(_T("CONNECTION")));
 			iImgQuickstart = piml->Add(CTempIconLoader(_T("QUICKSTART"))); // Thx to the eF-Mod team for the icon
+			iImgRatio = piml->Add(CTempIconLoader(_T("TRANSFERUPDOWN")));
 			iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS")));
 			iImgDisplay = piml->Add(CTempIconLoader(_T("DISPLAY")));
 			iImgSysInfo = piml->Add(CTempIconLoader(_T("SYSINFO")));
@@ -338,6 +349,12 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.Expand(m_htiQuickStart, TVE_EXPAND);
 		m_htiQuickStartAfterIPChange = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_QUICK_START_AFTER_IP_CHANGE), m_htiQuickStartGroup, m_bQuickStartAfterIPChange);
 		// <== Quick start [TPT] - Max
+		// ==> Enforce Ratio [Stulle] - Stulle
+		m_htiRatioGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_RATIO_GROUP), iImgRatio, m_htiConTweaks);
+		m_htiEnforceRatio = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ENFORCE_RATIO), m_htiRatioGroup, m_bEnforceRatio);
+		m_htiRatioValue = m_ctrlTreeOptions.InsertItem(GetResString(IDS_RATIO_VALUE), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiRatioGroup);
+		m_ctrlTreeOptions.AddEditBox(m_htiRatioValue, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		// <== Enforce Ratio [Stulle] - Stulle
 /*		// ==> Timer for ReAsk File Sources - Stulle
 		m_htiReAskFileSrc = m_ctrlTreeOptions.InsertItem(GetResString(IDS_REASK_FILE_SRC), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiConTweaks);
 		m_ctrlTreeOptions.AddEditBox(m_htiReAskFileSrc, RUNTIME_CLASS(CNumTreeOptionsEdit));
@@ -522,6 +539,11 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxInt(pDX, m_iQuickStartMaxConnBack, 1, INT_MAX);
 	if(m_htiQuickStartAfterIPChange) DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiQuickStartAfterIPChange, m_bQuickStartAfterIPChange);
 	// <== Quick start [TPT] - Max
+	// ==> Enforce Ratio [Stulle] - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiEnforceRatio, m_bEnforceRatio);
+	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiRatioValue, m_iRatioValue);
+	DDV_MinMaxInt(pDX, m_iRatioValue, 1, 4);
+	// <== Enforce Ratio [Stulle] - Stulle
 /*	// ==> Timer for ReAsk File Sources - Stulle
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiReAskFileSrc, m_iReAskFileSrc);
 	DDV_MinMaxInt(pDX, m_iReAskFileSrc, 29, 55);
@@ -672,6 +694,10 @@ BOOL CPPgScar::OnInitDialog()
 	m_iQuickStartMaxConnBack = (int)(thePrefs.GetQuickStartMaxConnBack());
 	m_bQuickStartAfterIPChange = thePrefs.GetQuickStartAfterIPChange();
 	// <== Quick start [TPT] - Max
+	// ==> Enforce Ratio [Stulle] - Stulle
+	m_bEnforceRatio = thePrefs.GetEnforceRatio();
+	m_iRatioValue = (int)thePrefs.GetRatioValue();
+	// <== Enforce Ratio [Stulle] - Stulle
 //	m_iReAskFileSrc = (thePrefs.GetReAskTimeDif() + FILEREASKTIME)/60000; // Timer for ReAsk File Sources - Stulle
 	m_bACC = thePrefs.GetACC(); // ACC [Max/WiZaRd] - Max
 /*
@@ -780,6 +806,7 @@ BOOL CPPgScar::OnInitDialog()
 	// <== Tabbed Preferences [TPT] - Stulle
 
 	// ==> Design Settings [eWombat/Stulle] - Stulle
+	m_bDesignChanged = false;
 	m_bold.SetWindowText(_T(""));
 	m_bold.SetIcon((HICON)::LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE((int)IDI_FONTB), IMAGE_ICON, 16, 16, 0));
 	m_underlined.SetWindowText(_T(""));
@@ -916,6 +943,10 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_iQuickStartMaxConnBack = m_iQuickStartMaxConnBack;
 	thePrefs.m_bQuickStartAfterIPChange = m_bQuickStartAfterIPChange;
 	// <== Quick start [TPT] - Max
+	// ==> Enforce Ratio [Stulle] - Stulle
+	thePrefs.m_bEnforceRatio = m_bEnforceRatio;
+	thePrefs.m_uRatioValue = (uint8) m_iRatioValue;
+	// <== Enforce Ratio [Stulle] - Stulle
 //	thePrefs.m_uReAskTimeDif = (m_iReAskFileSrc-29)*60000; // Timer for ReAsk File Sources - Stulle
 	thePrefs.m_bACC = m_bACC; // ACC [Max/WiZaRd] - Max
 /*
@@ -1102,7 +1133,16 @@ BOOL CPPgScar::OnApply()
 
 	// ==> Design Settings [eWombat/Stulle] - Stulle
 	for (int i=0;i<style_counts;i++)
+	{
 		thePrefs.SetStyle(i,&styles[i]);
+	}
+	if(m_bDesignChanged)
+	{
+		m_bDesignChanged = false;
+		theApp.emuledlg->transferwnd->Localize();
+		theApp.emuledlg->sharedfileswnd->sharedfilesctrl.Localize();
+		AddLogLine(false,_T("Design Settings changed"));
+	}
 	// <== Design Settings [eWombat/Stulle] - Stulle
 
 	LoadSettings();
@@ -1165,6 +1205,10 @@ void CPPgScar::Localize(void)
 		if (m_htiQuickStartMaxConnBack) m_ctrlTreeOptions.SetEditLabel(m_htiQuickStartMaxConnBack, GetResString(IDS_QUICK_START_MAX_CONN_BACK));
 		if (m_htiQuickStartAfterIPChange) m_ctrlTreeOptions.SetItemText(m_htiQuickStartAfterIPChange, GetResString(IDS_QUICK_START_AFTER_IP_CHANGE));
 		// <== Quick start [TPT] - Max
+		// ==> Enforce Ratio [Stulle] - Stulle
+		if (m_htiEnforceRatio) m_ctrlTreeOptions.SetItemText(m_htiEnforceRatio, GetResString(IDS_ENFORCE_RATIO));
+		if (m_htiRatioValue) m_ctrlTreeOptions.SetEditLabel(m_htiRatioValue, GetResString(IDS_RATIO_VALUE));
+		// <== Enforce Ratio [Stulle] - Stulle
 //		if (m_htiReAskFileSrc) m_ctrlTreeOptions.SetEditLabel(m_htiReAskFileSrc, GetResString(IDS_REASK_FILE_SRC)); // Timer for ReAsk File Sources - Stulle
 		if (m_htiACC) m_ctrlTreeOptions.SetItemText(m_htiACC, GetResString(IDS_ACC)); // ACC [Max/WiZaRd] - Max
 /*
@@ -1331,6 +1375,11 @@ void CPPgScar::OnDestroy()
 	m_htiQuickStartMaxConnBack = NULL;
 	m_htiQuickStartAfterIPChange = NULL;
 	// <== Quick start [TPT] - Max
+	// ==> Enforce Ratio [Stulle] - Stulle
+	m_htiRatioGroup = NULL;
+	m_htiEnforceRatio = NULL;
+	m_htiRatioValue = NULL;
+	// <== Enforce Ratio [Stulle] - Stulle
 //	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources - Stulle
 	m_htiACC = NULL; // ACC [Max/WiZaRd] - Max
 /*
@@ -1553,10 +1602,10 @@ void CPPgScar::InitTab()
 
 	// Add all items with icon
 	m_tabCtr.SetImageList(&m_imageList);
-	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, SCAR, _T("ScarAngel"), 0, (LPARAM)SCAR);
-	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, WEBCACHE, _T("WebCache"), 1, (LPARAM)WEBCACHE);
-	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, BACKUP, _T("Backup"), 2, (LPARAM)BACKUP);
-	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, COLOR, _T("Design Settings"), 3, (LPARAM)COLOR);
+	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, SCAR, GetResString(IDS_SCARANGEL), 0, (LPARAM)SCAR);
+	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, WEBCACHE, GetResString(IDS_WEBCACHE), 1, (LPARAM)WEBCACHE);
+	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, BACKUP, GetResString(IDS_BACKUP), 2, (LPARAM)BACKUP);
+	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, COLOR, GetResString(IDS_COLOR_BOX), 3, (LPARAM)COLOR);
 //	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, UPDATE, _T("Update"), 4, (LPARAM)UPDATE);
 }
 
@@ -2071,17 +2120,17 @@ void CPPgScar::SetTab(eTab tab){
 				m_SubCombo.ShowWindow(SW_SHOW);
 				m_SubCombo.EnableWindow(TRUE);
 				m_OnOff.ShowWindow(SW_SHOW);
-//				m_OnOff.EnableWindow(TRUE);
+				m_OnOff.EnableWindow(TRUE);
 				m_bold.ShowWindow(SW_SHOW);
-//				m_bold.EnableWindow(TRUE);
+				m_bold.EnableWindow(TRUE);
 				m_underlined.ShowWindow(SW_SHOW);
-//				m_underlined.EnableWindow(TRUE);
+				m_underlined.EnableWindow(TRUE);
 				m_italic.ShowWindow(SW_SHOW);
-//				m_italic.EnableWindow(TRUE);
+				m_italic.EnableWindow(TRUE);
 				m_FontColorLabel.ShowWindow(SW_SHOW);
 				m_FontColorLabel.EnableWindow(TRUE);
 				m_FontColor.ShowWindow(SW_SHOW);
-//				m_FontColor.EnableWindow(TRUE);
+				m_FontColor.EnableWindow(TRUE);
 				m_BackColorLabel.ShowWindow(SW_SHOW);
 				m_BackColorLabel.EnableWindow(TRUE);
 				m_BackColor.ShowWindow(SW_SHOW);
@@ -2090,6 +2139,7 @@ void CPPgScar::SetTab(eTab tab){
 //				m_ColorPreviewBox.EnableWindow(TRUE);
 //				m_ColorPreview.ShowWindow(SW_SHOW);
 //				m_ColorPreview.EnableWindow(TRUE);
+				UpdateStyles(true);
 				break;
 /*			case UPDATE:
 				break;
@@ -2716,7 +2766,7 @@ void CPPgScar::InitSubStyleCombo()
 	m_SubCombo.SetCurSel(0); // alway first one!
 }
 
-void CPPgScar::UpdateStyles()
+void CPPgScar::UpdateStyles(bool bShow)
 {
 	int iCurStyle = GetStyleValue();
 	int iMasterValue = m_MasterCombo.GetCurSel();
@@ -2737,7 +2787,6 @@ void CPPgScar::UpdateStyles()
 	{
 		m_OnOff.EnableWindow(bEnable);
 
-		AddLogLine(false,_T("%i"),styles[iCurStyle].nOnOff);
 		if(styles[iCurStyle].nOnOff != 0 && bEnable)
 		{
 			m_BackColor.EnableWindow(true);
@@ -2760,6 +2809,13 @@ void CPPgScar::UpdateStyles()
 	m_underlined.EnableWindow(bEnable);
 	m_italic.EnableWindow(bEnable);
 	m_FontColor.EnableWindow(bEnable);
+	if(bShow) // stupid, yet working workarround some gui glitch...
+	{
+		m_FontColor.ShowWindow(SW_HIDE);
+		m_BackColor.ShowWindow(SW_HIDE);
+		m_FontColor.ShowWindow(SW_SHOW);
+		m_BackColor.ShowWindow(SW_SHOW);
+	}
 
 	int iStyle = (styles[iCurStyle].nFlags & STYLE_FONTMASK);
 	m_bold.SetCheck(iStyle== STYLE_BOLD ? 1:0);
@@ -2822,6 +2878,7 @@ void CPPgScar::OnFontStyle(int iStyle)
 		SetModified();
 		styles[iCurStyle].nFlags = flags;
 		UpdateStyles();
+		m_bDesignChanged = true;
 	}
 }
 
@@ -2838,6 +2895,7 @@ LONG CPPgScar::OnColorPopupSelChange(UINT /*lParam*/, LONG /*wParam*/)
 			styles[iSel].nFontColor = crColor;
 			SetModified(TRUE);
 			UpdateStyles();
+			m_bDesignChanged = true;
 		}
 	}
 
@@ -2850,6 +2908,7 @@ LONG CPPgScar::OnColorPopupSelChange(UINT /*lParam*/, LONG /*wParam*/)
 			styles[iSel].nBackColor = crColor;
 			SetModified(TRUE);
 			UpdateStyles();
+			m_bDesignChanged = true;
 		}
 	}
 
@@ -2895,5 +2954,6 @@ void CPPgScar::OnBnClickedOnOff()
 
 	UpdateStyles();
 	SetModified(TRUE);
+	m_bDesignChanged = true;
 }
 // <== Design Settings [eWombat/Stulle] - Stulle

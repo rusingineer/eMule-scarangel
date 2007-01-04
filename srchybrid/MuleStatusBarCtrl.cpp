@@ -25,6 +25,7 @@
 #include "Sockets.h"
 #include "Server.h"
 #include "ServerList.h"
+#include "DownloadQueue.h" // Enforce Ratio [Stulle] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -39,6 +40,7 @@ IMPLEMENT_DYNAMIC(CMuleStatusBarCtrl, CStatusBarCtrl)
 
 BEGIN_MESSAGE_MAP(CMuleStatusBarCtrl, CStatusBarCtrl)
 	ON_WM_LBUTTONDBLCLK()
+	ON_NOTIFY_RANGE(TTN_GETDISPINFO, 0,SBarChatMsg, OnToolTipNotify) // Enforce Ratio [Stulle] - Stulle
 END_MESSAGE_MAP()
 
 CMuleStatusBarCtrl::CMuleStatusBarCtrl()
@@ -113,6 +115,42 @@ CString CMuleStatusBarCtrl::GetPaneToolTipText(EStatusBarPane iPane) const
 			}
 		}
 		break;
+	// ==> Enforce Ratio [Stulle] - Stulle
+	case SBarUpDown:
+		{
+			uint8 uLimitState = theApp.downloadqueue->GetLimitState();
+			if(uLimitState < 2)
+				strText.Format(GetResString(IDS_RATIO_ACTIVATION)+_T(": %s"),GetResString(IDS_NO));
+			else if (uLimitState >= 2)
+			{
+				CString strTemp = NULL;
+				switch(uLimitState)
+				{
+					case 2:
+						strTemp = GetResString(IDS_RATIO_REASON2);
+						break;
+					case 3:
+						strTemp = GetResString(IDS_RATIO_REASON3);
+						break;
+					case 4:
+						strTemp = GetResString(IDS_RATIO_REASON4);
+						break;
+					case 5:
+						strTemp = GetResString(IDS_RATIO_REASON5);
+						break;
+					default:
+						break;
+				}
+
+				strText.Format(GetResString(IDS_RATIO_ACTIVATION)+_T(": %s"),GetResString(IDS_YES));
+				strText.AppendFormat(_T("\n\r\x2022 ")+GetResString(IDS_RATIO_REASON)+_T(": %s"),strTemp);
+			}
+
+			if(uLimitState > 0)
+				strText.AppendFormat(_T("\n\r\x2022 ")+GetResString(IDS_RATIO_LIMIT)+_T(":%i"),(thePrefs.GetEnforceRatio())?thePrefs.GetRatioValue():3);
+			break;
+		}
+	// <== Enforce Ratio [Stulle] - Stulle
 	}
 	return strText;
 }
@@ -132,7 +170,12 @@ int CMuleStatusBarCtrl::OnToolHitTest(CPoint point, TOOLINFO* pTI) const
 				pTI->uId = (UINT_PTR)iPane;
 				pTI->uFlags &= ~TTF_IDISHWND;
 				pTI->uFlags |= TTF_NOTBUTTON|TTF_ALWAYSTIP;
+				// ==> Enforce Ratio [Stulle] - Stulle
+				/*
 				pTI->lpszText = _tcsdup(strToolTipText); // gets freed by MFC
+				*/
+				pTI->lpszText = LPSTR_TEXTCALLBACK;
+				// <== Enforce Ratio [Stulle] - Stulle
 				GetRect(iPane, &pTI->rect);
 				iHit = iPane;
 			}
@@ -140,3 +183,14 @@ int CMuleStatusBarCtrl::OnToolHitTest(CPoint point, TOOLINFO* pTI) const
 	}
 	return iHit;
 }
+
+// ==> Enforce Ratio [Stulle] - Stulle
+static TCHAR pzToolTipText[512];
+void CMuleStatusBarCtrl::OnToolTipNotify( UINT /*id*/, NMHDR * pNotifyStruct, LRESULT * /*result*/ )
+{
+	TOOLTIPTEXTW* pTI = (TOOLTIPTEXTW*)pNotifyStruct;
+    _stprintf(pzToolTipText, GetPaneToolTipText( (EStatusBarPane)pNotifyStruct->idFrom ));
+	::SendMessage(pNotifyStruct->hwndFrom, TTM_SETMAXTIPWIDTH, 0, 300);
+	pTI->lpszText = pzToolTipText;
+}
+// <== Enforce Ratio [Stulle] - Stulle

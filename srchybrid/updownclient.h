@@ -1264,7 +1264,7 @@ public:
 	// <== PowerShare [ZZ/MorphXT] - Stulle
 
 	// ==> Design Settings [eWombat/Stulle] - Stulle
-	int		GetClientStyle(uint8 uMode = 0) const;
+	int		GetClientStyle(bool bDl, bool bUl, bool bShare, bool bOwnCredits) const;
 	bool	GetPowerReleased() const;
 	// <== Design Settings [eWombat/Stulle] - Stulle
 };

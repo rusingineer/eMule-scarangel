@@ -312,7 +312,7 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	*/
 	theApp.emuledlg->transferwnd->SetBackgroundColor(style_b_clientlist);
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
-	int iClientStyle = client->GetClientStyle();
+	int iClientStyle = client->GetClientStyle(true,true,true,true);
 	StylesStruct style;
 	thePrefs.GetStyle(iClientStyle, &style);
 	COLORREF crTempColor = GetBkColor();

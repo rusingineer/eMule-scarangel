@@ -38,6 +38,10 @@ protected:
 	int m_iQuickStartMaxConnBack;
 	bool m_bQuickStartAfterIPChange;
 	// <== Quick start [TPT] - Max
+	// ==> Enforce Ratio [Stulle] - Stulle
+	bool m_bEnforceRatio;
+	int m_iRatioValue;
+	// <== Enforce Ratio [Stulle] - Stulle
 //	int m_iReAskFileSrc; // Timer for ReAsk File Sources - Stulle
 	bool m_bACC; // ACC [Max/WiZaRd] - Max
 /*
@@ -162,6 +166,11 @@ protected:
 	HTREEITEM m_htiQuickStartMaxConnBack;
 	HTREEITEM m_htiQuickStartAfterIPChange;
 	// <== Quick start [TPT] - Max
+	// ==> Enforce Ratio [Stulle] - Stulle
+	HTREEITEM m_htiRatioGroup;
+	HTREEITEM m_htiEnforceRatio;
+	HTREEITEM m_htiRatioValue;
+	// <== Enforce Ratio [Stulle] - Stulle
 //	HTREEITEM m_htiReAskFileSrc; // Timer for ReAsk File Sources - Stulle
 	HTREEITEM m_htiACC; // ACC [Max/WiZaRd] - Max
 /*
@@ -419,10 +428,11 @@ private:
 
 	// ==> Design Settings [eWombat/Stulle] - Stulle
 	StylesStruct styles[style_counts];
+	bool m_bDesignChanged;
 public:
 	void InitMasterStyleCombo();
 	void InitSubStyleCombo();
-	void UpdateStyles();
+	void UpdateStyles(bool bShow = false);
 	int	GetStyleValue();
 	void OnFontStyle(int iStyle);
 

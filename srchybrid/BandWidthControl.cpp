@@ -324,7 +324,12 @@ void CBandWidthControl::Process()
 		//we have to calculate it on each loop.
 		//also we need the additionally limit for NAFC, if the forced downloadlimit isn't be used
 		m_maxforcedDownloadlimit=m_maxDownloadLimit; //initialize with the standard
+		// ==> Enforce Ratio [Stulle] - Stulle
+		/*
 		if(thePrefs.m_bAcceptsourcelimit==false) //only if user doesn't accept it
+		*/
+		if(thePrefs.m_bAcceptsourcelimit==false || thePrefs.GetEnforceRatio())
+		// <== Enforce Ratio [Stulle] - Stulle
 		{
 			if(m_statisticHistory.GetSize() > 10){
 				const Statistic& newestSample = m_statisticHistory.GetHead();
@@ -337,7 +342,16 @@ void CBandWidthControl::Process()
 				}
 				const uint32 eMuleOut = (1000 * (uint32)(newestSample.eMuleOutOctets - oldestSample.eMuleOutOctets) / deltaTime); // in [Bytes/s]
 				//remark: this is always a 1:4 Ratio-Limit
+				// ==> Enforce Ratio [Stulle] - Stulle
+				/*
 				float maxDownloadLimit = (float)(4*eMuleOut) / 1024.0f; // [KB/s]
+				*/
+				float maxDownloadLimit = 0.0f;
+				if(thePrefs.GetEnforceRatio())
+					maxDownloadLimit = (float)(thePrefs.GetRatioValue()*eMuleOut) / 1024.0f; // [KB/s]
+				else
+					maxDownloadLimit = (float)(4*eMuleOut) / 1024.0f; // [KB/s]
+				// <== Enforce Ratio [Stulle] - Stulle
 				if(maxDownloadLimit < m_maxforcedDownloadlimit){
 					m_maxforcedDownloadlimit = maxDownloadLimit;
 				}
@@ -483,12 +497,26 @@ void CBandWidthControl::GetFullHistoryDatarates(uint32& eMuleInHistory, uint32& 
 }
 
 //Xman 1:3 Ratio
+// ==> Enforce Ratio [Stulle] - Stulle
+/*
 float CBandWidthControl::GetMaxDownloadEx(bool force)
 {
 	//Xman GlobalMaxHarlimit for fairness
 	if(force && GeteMuleIn()>GeteMuleOut()*3) //session/amount based ratio
 		return GetForcedDownloadlimit();
 	//Xman end
+*/
+float CBandWidthControl::GetMaxDownloadEx(uint8 force)
+{
+	if(force == 2)
+	{
+		int eMuleOut = (int)(GeteMuleOut()*((float)(thePrefs.GetRatioValue()*.8f)));
+		if(GeteMuleIn() > eMuleOut)
+			return GetForcedDownloadlimit();
+	}
+	else if(force == 1 && GeteMuleIn()>GeteMuleOut()*3) //session/amount based ratio
+		return GetForcedDownloadlimit();
+// <== Enforce Ratio [Stulle] - Stulle
 
    if(thePrefs.Is13Ratio() && GeteMuleIn()<=GeteMuleOut()*3) 
        return UNLIMITED;

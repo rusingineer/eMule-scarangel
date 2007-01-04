@@ -93,7 +93,12 @@ public:
 
    //Xman 1:3 Ratio (use this instead of GetMaxDownload()
    //Xman GlobalMaxHarlimit for fairness	
+   // ==> Enforce Ratio [Stulle] - Stulle
+   /*
 	float GetMaxDownloadEx(bool force);
+	*/
+	float GetMaxDownloadEx(uint8 force);
+   // <== Enforce Ratio [Stulle] - Stulle
 	float GetForcedDownloadlimit() const {return m_maxforcedDownloadlimit;}
 
    //Xman new adapter selection

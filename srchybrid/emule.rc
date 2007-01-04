@@ -5825,6 +5825,23 @@ BEGIN
     IDS_PS_AMOUNT_LIMIT_LABEL   "Limit by data amount uploaded (max. 10000%)"
     IDS_PS_AMOUNT_LIMIT_WRONG   "Invalid value entered."
     // <== Limit PS by amount of data uploaded [Stulle] - Stulle
+    // ==> Enforce Ratio [Stulle] - Stulle
+    IDS_RATIO_GROUP             "UL:DL Ratio"
+    IDS_ENFORCE_RATIO           "Always enforce ratio"
+    IDS_RATIO_VALUE             "Max ratio 1"
+	IDS_RATIO_REASON            "Reason"
+    IDS_RATIO_REASON2           "GlobalMaxHarlimit for fairness"
+    IDS_RATIO_REASON3           "Amount based 1:3 ratio if upload < 11"
+    IDS_RATIO_REASON4           "NAFC dynamic download limit"
+    IDS_RATIO_REASON5           "Enforced ratio"
+	IDS_RATIO_ACTIVATION        "Download limit activated"
+    IDS_RATIO_LIMIT             "UL:DL Ratio will be limited to max. 1"
+    // <== Enforce Ratio [Stulle] - Stulle
+    // ==> Tabbed Preferences [TPT] - Stulle
+    IDS_SCARANGEL               "ScarAngel"
+    IDS_WEBCACHE                "WebCache"
+    IDS_BACKUP                  "Backup"
+    // <== Tabbed Preferences [TPT] - Stulle
 END
 
 #endif    // Englisch (USA) resources

@@ -27,4 +27,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnLButtonDblClk(UINT nFlags,CPoint point);
+	// ==> Enforce Ratio [Stulle] - Stulle
+	afx_msg void OnToolTipNotify( UINT id, NMHDR * pNotifyStruct, LRESULT * result );
+	// <== Enforce Ratio [Stulle] - Stulle
 };

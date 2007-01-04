@@ -647,9 +647,20 @@ void CDownloadQueue::Process(){
 
 		//Xman 1:3 Raitio
 		//Xman GlobalMaxHarlimit for fairness
+		// ==> Enforce Ratio [Stulle] - Stulle
+		/*
 		const bool limitbysources=GetGlobalSources()> thePrefs.m_uMaxGlobalSources && thePrefs.m_bAcceptsourcelimit==false;
 		const float maxDownload = theApp.pBandWidthControl->GetMaxDownloadEx(limitbysources); //in [kb/s]
 		if(limitbysources)
+		*/
+		uint8 limitbysources = 0;
+		if(thePrefs.GetEnforceRatio())
+			limitbysources = 2;
+		else if(GetGlobalSources() > thePrefs.m_uMaxGlobalSources && thePrefs.m_bAcceptsourcelimit == false)
+			limitbysources = 1;
+		const float maxDownload = theApp.pBandWidthControl->GetMaxDownloadEx(limitbysources); //in [kb/s]
+		if(limitbysources > 0)
+		// <== Enforce Ratio [Stulle] - Stulle
 			m_limitstate=1; //at least session ratio
 		else
 			m_limitstate=0; //no limit
@@ -670,8 +681,16 @@ void CDownloadQueue::Process(){
 				deltaTime=1000;
 
 			//Xman GlobalMaxHarlimit for fairness
+			// ==> Enforce Ratio [Stulle] - Stulle
+			/*
 			if(limitbysources && maxDownload < theApp.pBandWidthControl->GetMaxDownloadEx(false))
 				m_limitstate=2; //session ratio is reached->full limitation
+			*/
+			if(limitbysources == 1 && maxDownload < theApp.pBandWidthControl->GetMaxDownloadEx(0))
+				m_limitstate=2; //session ratio is reached->full limitation
+			else if(limitbysources == 2 && maxDownload < theApp.pBandWidthControl->GetMaxDownloadEx(0))
+				m_limitstate=5;
+			// <== Enforce Ratio [Stulle] - Stulle
 			//Xman end
 
 			else if (thePrefs.Is13Ratio()) //downloadlimit although it should be unlimited => we have a ratio

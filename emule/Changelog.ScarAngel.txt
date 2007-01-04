@@ -3,7 +3,7 @@ CHANGELOG FOR EMULE ScarAngel MOD
 
 eMule v0.47c ScarAngel v1.8:
 ------------------------
-- XX.XX.2006 -
+- 04.01.2007 -
 -------------------------------------------------------------------------------
 based on eMule 0.47c Xtreme 5.4 compiled with vs2003 SP1
 
@@ -14,6 +14,9 @@ Added: Static IP Filter [Stulle] - Stulle
 Added: Limit PS by amount of data uploaded [Stulle] - Stulle
 Added: Enhanced Client Recognition [Spike]
 Added: Compat Client Stats [Stulle] - Stulle
+Added: Enforce Ratio [Stulle] - Stulle
+
+Changed: Tabs in ScarAngel preferences dialog can be translated [Stulle] - Stulle
 
 Fixed: Reset Spread Bars command [Stulle] - Stulle
 Fixed: second categories column in DownloadList removed [Stulle] - Stulle
@@ -25,6 +28,11 @@ Design Settings:
 + Only enabled styles will be applied
 + Styles sorted by importance in triggering (default excluded)
 + Combining two styles is impossible
+
+Enforce Ratio:
++ Download will be limited when 80% of the max ratio is reached
++ Example: Ratio = 1:1 --> Limit when 1:0.8 to download = upload*1
++ Display details on ratio activation
 
 
 eMule v0.47c ScarAngel v1.7:

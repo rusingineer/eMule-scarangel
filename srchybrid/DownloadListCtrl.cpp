@@ -1443,7 +1443,7 @@ void CDownloadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	if(content->type == FILE_TYPE)
 		iStyle = ((const CPartFile*)content->value)->GetPfStyle();
 	else if(content->type == UNAVAILABLE_SOURCE || content->type == AVAILABLE_SOURCE)
-		iStyle = ((const CUpDownClient*)content->value)->GetClientStyle(2); // downloading only
+		iStyle = ((const CUpDownClient*)content->value)->GetClientStyle(true,true,false,true);
 	thePrefs.GetStyle(iStyle, &style);
 	COLORREF crTempColor = GetBkColor();
 

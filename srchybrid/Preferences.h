@@ -909,6 +909,11 @@ public:
 	static short		nStyleOnOff[style_counts];
 	// <== Design Settings [eWombat/Stulle] - Stulle
 
+	// ==> Enforce Ratio [Stulle] - Stulle
+	static bool		m_bEnforceRatio;
+	static uint8	m_uRatioValue;
+	// <== Enforce Ratio [Stulle] - Stulle
+
 	enum Table
 	{
 		tableDownload, 
@@ -2114,6 +2119,11 @@ public:
 	static void		SaveStylePrefs(CIni &ini);
 	static void		LoadStylePrefs(CIni &ini);
 	// <== Design Settings [eWombat/Stulle] - Stulle
+
+	// ==> Enforce Ratio [Stulle] - Stulle
+	static	bool	GetEnforceRatio()	{ return m_bEnforceRatio; }
+	static	uint8	GetRatioValue()		{ return m_uRatioValue; }
+	// <== Enforce Ratio [Stulle] - Stulle
 
 protected:
 	static	CString appdir;

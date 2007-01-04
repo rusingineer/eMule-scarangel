@@ -1,4 +1,4 @@
-Xtreme 5.3.1
+Xtreme 5.4
 ----------------
 
 Main Features:
@@ -26,6 +26,21 @@ libpng 1.2.12
 zlib 1.2.3
 crypto 52.1
 CxImage version 5.99c
+
+
+
+Xtreme 5.4
+- added: extended statistics: Mod + Country statistics (partically taken from emule plus)
+- added new leecher-community detection code 
+- added: Dynamic block request (netfinity/morph/Xman)
+- added: whenever Xtreme decides to give you a lower downloadlimit than wanted "R" is displayed at statusbar
+- added: advanced auto uploadpriority (experimental) 
++ this new priority system sets the uploadpriority in relation to the avarage amount of uploaded data. This means, the more you have shared of a special file, the less it is it´s priority
+- added: always one release slot
+- added: show virtual sources at shared files (morph)
+- added: give back some waitingtime when an uploadsession was shorter than 9 MB and the session was canceled because of reached chunk boarder
+- fixed a bug if you started emule via ed2k-link
+
 
 
 Xtreme 5.3.1

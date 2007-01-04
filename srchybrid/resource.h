@@ -2671,7 +2671,9 @@
 // <== CPU/MEM usage [$ick$/Stulle] - Max
 // ==> Tabbed Preferences [TPT] - Stulle
 #define IDC_PPG_SCAR_TAB                60570
-//#define IDC_TEST                        60571
+#define IDS_SCARANGEL                   60571
+#define IDS_WEBCACHE                    60572
+#define IDS_BACKUP                      60573
 // <== Tabbed Preferences [TPT] - Stulle
 // ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 #define IDC_BACKUP_FILEFRAME            60580
@@ -3004,7 +3006,19 @@
 #define IDS_PS_AMOUNT_LIMIT             61000
 #define IDS_PS_AMOUNT_LIMIT_LABEL       61001
 #define IDS_PS_AMOUNT_LIMIT_WRONG       61002
-// <== Limit PS by amount of data uploaded [Stulle] - Stulle
+// <== Limit PS by amount of data uploaded [Sulle] - Stulle
+// ==> Enforce Ratio [Stulle] - Stulle
+#define IDS_RATIO_GROUP                 61010
+#define IDS_ENFORCE_RATIO               61011
+#define IDS_RATIO_VALUE                 61012
+#define IDS_RATIO_REASON                61013
+#define IDS_RATIO_REASON2               61014
+#define IDS_RATIO_REASON3               61015
+#define IDS_RATIO_REASON4               61016
+#define IDS_RATIO_REASON5               61017
+#define IDS_RATIO_ACTIVATION            61018
+#define IDS_RATIO_LIMIT                 61019
+// <== Enforce Ratio [Stulle] - Stulle
 
 // Next default values for new objects
 // 

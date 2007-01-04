@@ -278,7 +278,7 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	*/
 	theApp.emuledlg->transferwnd->SetBackgroundColor(style_b_dlclientlist);
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
-	int iClientStyle = client->GetClientStyle(2); // downloading only
+	int iClientStyle = client->GetClientStyle(false,true,false,true);
 	StylesStruct style;
 	thePrefs.GetStyle(iClientStyle, &style);
 	COLORREF crTempColor = GetBkColor();

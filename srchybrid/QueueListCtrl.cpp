@@ -367,7 +367,7 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	*/
 	theApp.emuledlg->transferwnd->SetBackgroundColor(style_b_queuelist);
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
-	int iClientStyle = client->GetClientStyle();
+	int iClientStyle = client->GetClientStyle(true,true,true,true);
 	StylesStruct style;
 	thePrefs.GetStyle(iClientStyle, &style);
 	COLORREF crTempColor = GetBkColor();
