@@ -324,7 +324,12 @@ void CUploadQueue::InsertInUploadingList(CUpDownClient* newclient)
 
 	//Xman Xtreme Upload
 	//Full Power for friendslots
+	// ==> Superior Client Handling [Stulle] - Stulle
+	/*
 	if (newclient->GetFriendSlot())
+	*/
+	if(newclient->IsSuperiorClient())
+	// <== Superior Client Handling [Stulle] - Stulle
 	{
 		theApp.uploadBandwidthThrottler->AddToStandardList(true, newclient->GetFileUploadSocket());
 		theApp.uploadBandwidthThrottler->RecalculateOnNextLoop();
