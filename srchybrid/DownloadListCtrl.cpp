@@ -1355,7 +1355,7 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 			break;
 
 		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		case 16: {
+		case 15: {
 			if (lpUpDownClient->SupportsWebCache())
 			{
 				buffer = lpUpDownClient->GetWebCacheName();
@@ -3370,7 +3370,7 @@ int CDownloadListCtrl::Compare(const CUpDownClient *client1, const CUpDownClient
 	//Xman end
 
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	case 16:
+	case 15:
 		if (client1->SupportsWebCache() && client2->SupportsWebCache() )
 			return CompareLocaleStringNoCase(client1->GetWebCacheName(),client2->GetWebCacheName());
 		else
