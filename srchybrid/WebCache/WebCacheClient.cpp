@@ -828,7 +828,8 @@ UINT CUpDownClient::ProcessWebCacheUpHttpRequest(const CStringAArray& astrHeader
 	md4cpy(reqblock->FileID, aucUploadFileID);
 	reqblock->transferred = 0;
 	AddReqBlock(reqblock);
-
+	if (GetUploadState() == US_UPLOADING)
+		CreateNextBlockPackage();
 	return HTTP_STATUS_OK;
 }
 
