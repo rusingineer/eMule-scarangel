@@ -580,6 +580,11 @@ void CUpDownClient::CreateNextBlockPackage(){
 									error.Format(_T("%s: Part %u, %I64u = %I64u - %I64u "), GetResString(IDS_ERR_HIDDENBLOCK), i, i64uTogo, currentblock->EndOffset, currentblock->StartOffset);
 								throw error;
 							}
+					} else {
+						CString	error;
+						error.Format(_T("%s: Part %u, %I64u = %I64u - %I64u "), GetResString(IDS_ERR_HIDDENSOURCE), (UINT)(currentBlock->StartOffset/PARTSIZE), i64uTogo, currentBlock->EndOffset, currentBlock->StartOffset);
+						throw error;
+					
 					}
 					// <== Anti Anti HideOS & SOTN [SiRoB] - Stulle
 				}
