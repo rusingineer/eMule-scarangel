@@ -161,7 +161,13 @@ void CCommentListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 
 	CTitleMenu popupMenu;
 	popupMenu.CreatePopupMenu();
+	popupMenu.AddMenuTitle(NULL, true, false); // XP Style Menu [Xanatos] - Stulle
+	// ==> more icons - Stulle
+	/*
 	popupMenu.AppendMenu(MF_STRING | flag, MP_COPYSELECTED, GetResString(IDS_COPY));
+	*/
+	popupMenu.AppendMenu(MF_STRING | flag, MP_COPYSELECTED, GetResString(IDS_COPY), _T("COPY"));
+	// <== more icons - Stulle
 
 	GetPopupMenuPos(*this, point);
 	popupMenu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);

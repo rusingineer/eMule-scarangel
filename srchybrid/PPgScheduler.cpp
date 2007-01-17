@@ -332,19 +332,36 @@ void CPPgScheduler::OnNMRclickActionlist(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	m_ActionSel.AppendMenu(MF_STRING,MP_SCHACTIONS+ACTION_CATRESUME,GetResString(IDS_SCHED_CATRESUME));
 
 	m_ActionMenu.AddMenuTitle(GetResString(IDS_ACTION));
+	// ==> more icons - Stulle
+	/*
 	m_ActionMenu.AppendMenu(MF_POPUP,(UINT_PTR)m_ActionSel.m_hMenu,	GetResString(IDS_ADD));
+	*/
+	m_ActionMenu.AppendMenu(MF_POPUP,(UINT_PTR)m_ActionSel.m_hMenu,	GetResString(IDS_ADD), _T("SCHEDULERADD"));
+	// <== more icons - Stulle
 
 	if (isCatAction) {
 		if (thePrefs.GetCatCount()>1) m_CatActionSel.AppendMenu(MF_STRING,MP_SCHACTIONS+20,GetResString(IDS_ALLUNASSIGNED));
 		m_CatActionSel.AppendMenu(MF_STRING,MP_SCHACTIONS+21,GetResString(IDS_ALL));
 		for (int i=1;i<thePrefs.GetCatCount();i++)
 			m_CatActionSel.AppendMenu(MF_STRING,MP_SCHACTIONS+22+i,thePrefs.GetCategory(i)->title );
+		// ==> more icons - Stulle
+		/*
 		m_ActionMenu.AppendMenu(MF_POPUP,(UINT_PTR)m_CatActionSel.m_hMenu,	GetResString(IDS_SELECTCAT));
 	} else
 		m_ActionMenu.AppendMenu(nFlag,MP_CAT_EDIT,	GetResString(IDS_EDIT));
+		*/
+		m_ActionMenu.AppendMenu(MF_POPUP,(UINT_PTR)m_CatActionSel.m_hMenu,	GetResString(IDS_SELECTCAT), _T("CATEDIT"));
+	} else
+		m_ActionMenu.AppendMenu(nFlag,MP_CAT_EDIT,	GetResString(IDS_EDIT), _T("SCHEDULEREDIT"));
+		// <== more icons - Stulle
 
 
+	// ==> more icons - Stulle
+	/*
 	m_ActionMenu.AppendMenu(nFlag,MP_CAT_REMOVE,GetResString(IDS_REMOVE));
+	*/
+	m_ActionMenu.AppendMenu(nFlag,MP_CAT_REMOVE,GetResString(IDS_REMOVE), _T("SCHEDULERREMOVE"));
+	// <== more icons - Stulle
 
 	m_ActionMenu.TrackPopupMenu(TPM_LEFTALIGN |TPM_RIGHTBUTTON, point.x, point.y, this);
 	VERIFY( m_ActionSel.DestroyMenu() );

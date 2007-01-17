@@ -3303,6 +3303,14 @@ RELEASEBONUS            ICON                    "res\\ReleaseBonus.ico"
 IDI_FONTUL              ICON                    "res\\ulFont.ico"
 IDI_FONTI               ICON                    "res\\italicFont.ico"
 IDI_FONTB               ICON                    "res\\boldFont.ico"
+NOTSHARED               ICON                    "res\\NotShared.ico"
+SAVE                    ICON                    "res\\Save.ico"
+CUT                     ICON                    "res\\Cut.ico"
+UNDO                    ICON                    "res\\Undo.ico"
+PASTE                   ICON                    "res\\Paste.ico"
+SCHEDULERADD            ICON                    "res\\SchedulerAdd.ico"
+SCHEDULERREMOVE         ICON                    "res\\SchedulerRemove.ico"
+SCHEDULEREDIT           ICON                    "res\\SchedulerEdit.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -5842,6 +5850,7 @@ BEGIN
     IDS_WEBCACHE                "WebCache"
     IDS_BACKUP                  "Backup"
     // <== Tabbed Preferences [TPT] - Stulle
+    IDS_ERR_HIDDENSOURCE    "Asked Block without telling us what he need" // Anti Anti HideOS & SOTN [SiRoB] - Stulle
 END
 
 #endif    // Englisch (USA) resources

@@ -444,8 +444,15 @@ void CServerListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	ServerMenu.AppendMenu(MF_STRING | (iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED), MP_CONNECTTO, GetResString(IDS_CONNECTTHIS), _T("CONNECT"));
 	ServerMenu.SetDefaultItem(iSelectedItems > 0 ? MP_CONNECTTO : -1);
 
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
 	CMenu ServerPrioMenu;
 	ServerPrioMenu.CreateMenu();
+	*/
+	CTitleMenu ServerPrioMenu;
+	ServerPrioMenu.CreateMenu();
+	ServerPrioMenu.AddMenuTitle(NULL, true, false);
+	// <== XP Style Menu [Xanatos] - Stulle
 	if (iSelectedItems > 0){
 		ServerPrioMenu.AppendMenu(MF_STRING, MP_PRIOLOW, GetResString(IDS_PRIOLOW));
 		ServerPrioMenu.AppendMenu(MF_STRING, MP_PRIONORMAL, GetResString(IDS_PRIONORMAL));

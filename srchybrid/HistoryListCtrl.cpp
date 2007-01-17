@@ -680,7 +680,12 @@ void CHistoryListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 
 	CTitleMenu WebMenu;
 	WebMenu.CreateMenu();
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
+	WebMenu.AddMenuTitle(NULL, true);
+	*/
 	WebMenu.AddMenuTitle(NULL, true, false);
+	// <== XP Style Menu [Xanatos] - Stulle
 	int iWebMenuEntries = theWebServices.GetFileMenuEntries(&WebMenu);
 	UINT flag = (iWebMenuEntries == 0 || iSelectedItems != 1) ? MF_GRAYED : MF_ENABLED;
 	m_HistoryMenu.AppendMenu(MF_POPUP | flag, (UINT_PTR)WebMenu.m_hMenu, GetResString(IDS_WEBSERVICES), _T("SEARCHMETHOD_GLOBAL"));

@@ -770,7 +770,12 @@ void CSearchListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 
 	CTitleMenu WebMenu;
 	WebMenu.CreateMenu();
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
+	WebMenu.AddMenuTitle(NULL, true);
+	*/
 	WebMenu.AddMenuTitle(NULL, true, false);
+	// <== XP Style Menu [Xanatos] - Stulle
 	int iWebMenuEntries = theWebServices.GetFileMenuEntries(&WebMenu);
 	UINT flag2 = (iWebMenuEntries == 0 || iSelected != 1) ? MF_GRAYED : MF_STRING;
 	m_SearchFileMenu.AppendMenu(MF_POPUP | flag2, (UINT_PTR)WebMenu.m_hMenu, GetResString(IDS_WEBSERVICES), _T("WEB"));

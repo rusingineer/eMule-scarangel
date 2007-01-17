@@ -301,9 +301,17 @@ void CFileDetailDialogName::OnNMRclickList(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	::GetCursorPos(&point);
 	CTitleMenu popupMenu;
 	popupMenu.CreatePopupMenu();
+	popupMenu.AddMenuTitle(NULL, true, true); // XP Style Menu [Xanatos] - Stulle
+	// ==> more icons - Stulle
+	/*
 	popupMenu.AppendMenu(flag,MP_MESSAGE, GetResString(IDS_TAKEOVER));
 	popupMenu.AppendMenu(flag,MP_COPYSELECTED, GetResString(IDS_COPY));
 	popupMenu.AppendMenu(MF_STRING,MP_RESTORE, GetResString(IDS_SV_UPDATE));
+	*/
+	popupMenu.AppendMenu(flag,MP_MESSAGE, GetResString(IDS_TAKEOVER), _T("SAVE"));
+	popupMenu.AppendMenu(flag,MP_COPYSELECTED, GetResString(IDS_COPY), _T("COPY"));
+	popupMenu.AppendMenu(MF_STRING,MP_RESTORE, GetResString(IDS_SV_UPDATE), _T("UPDATE"));
+	// <== more icons - Stulle
 	popupMenu.TrackPopupMenu(TPM_LEFTALIGN |TPM_RIGHTBUTTON, point.x, point.y, this);
 	VERIFY( popupMenu.DestroyMenu() );
 

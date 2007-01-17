@@ -582,7 +582,7 @@ void CUpDownClient::CreateNextBlockPackage(){
 							}
 					} else {
 						CString	error;
-						error.Format(_T("%s: Part %u, %I64u = %I64u - %I64u "), GetResString(IDS_ERR_HIDDENSOURCE), (UINT)(currentBlock->StartOffset/PARTSIZE), i64uTogo, currentBlock->EndOffset, currentBlock->StartOffset);
+						error.Format(_T("%s: Part %u, %I64u = %I64u - %I64u "), GetResString(IDS_ERR_HIDDENSOURCE), (UINT)(currentblock->StartOffset/PARTSIZE), i64uTogo, currentblock->EndOffset, currentblock->StartOffset);
 						throw error;
 					
 					}

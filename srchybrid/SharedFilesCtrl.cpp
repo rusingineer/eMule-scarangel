@@ -1178,22 +1178,46 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 		buffer.Format(_T(" (%s)"),GetResString(IDS_DISABLED));
 	else
 		buffer.Format(_T(" (%u)"),thePrefs.GetHideOvershares());
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
 	m_HideOSMenu.ModifyMenu(MP_HIDEOS_DEFAULT, MF_STRING,MP_HIDEOS_DEFAULT, GetResString(IDS_DEFAULT) + buffer);
+	*/
+	m_HideOSMenu.RemoveMenu(MP_HIDEOS_DEFAULT,MF_BYCOMMAND);
+	m_HideOSMenu.InsertMenu(0,MF_STRING|MF_BYPOSITION,MP_HIDEOS_DEFAULT,GetResString(IDS_DEFAULT) + buffer);
+	// <== XP Style Menu [Xanatos] - Stulle
 	if (iHideOS==-1)
 		buffer = GetResString(IDS_EDIT);
 	else if (iHideOS==0)
 		buffer = GetResString(IDS_DISABLED);
 	else
 		buffer.Format(_T("%i"), iHideOS);
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
 	m_HideOSMenu.ModifyMenu(MP_HIDEOS_SET, MF_STRING,MP_HIDEOS_SET, buffer);
+	*/
+	m_HideOSMenu.RemoveMenu(MP_HIDEOS_SET,MF_BYCOMMAND);
+	m_HideOSMenu.InsertMenu(1,MF_STRING|MF_BYPOSITION,MP_HIDEOS_SET,buffer);
+	// <== XP Style Menu [Xanatos] - Stulle
 	m_HideOSMenu.CheckMenuRadioItem(MP_HIDEOS_DEFAULT, MP_HIDEOS_SET, uHideOSMenuItem, 0);
 	buffer.Format(_T(" (%s)"),thePrefs.IsSelectiveShareEnabled()?GetResString(IDS_ENABLED):GetResString(IDS_DISABLED));
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
 	m_SelectiveChunkMenu.ModifyMenu(MP_SELECTIVE_CHUNK, MF_STRING, MP_SELECTIVE_CHUNK, GetResString(IDS_DEFAULT) + buffer);
+	*/
+	m_SelectiveChunkMenu.RemoveMenu(MP_SELECTIVE_CHUNK,MF_BYCOMMAND);
+	m_SelectiveChunkMenu.InsertMenu(0,MF_STRING|MF_BYPOSITION,MP_SELECTIVE_CHUNK,GetResString(IDS_DEFAULT) + buffer);
+	// <== XP Style Menu [Xanatos] - Stulle
 	m_SelectiveChunkMenu.CheckMenuRadioItem(MP_SELECTIVE_CHUNK, MP_SELECTIVE_CHUNK_1, uSelectiveChunkMenuItem, 0);
 
 	m_SharedFilesMenu.EnableMenuItem((UINT_PTR)m_ShareOnlyTheNeedMenu.m_hMenu, (iSelectedItems > 0 && iCompleteFileSelected > 0) ? MF_ENABLED : MF_GRAYED);
 	buffer.Format(_T(" (%s)"),thePrefs.GetShareOnlyTheNeed()?GetResString(IDS_ENABLED):GetResString(IDS_DISABLED));
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
 	m_ShareOnlyTheNeedMenu.ModifyMenu(MP_SHAREONLYTHENEED, MF_STRING, MP_SHAREONLYTHENEED, GetResString(IDS_DEFAULT) + buffer);
+	*/
+	m_ShareOnlyTheNeedMenu.RemoveMenu(MP_SHAREONLYTHENEED,MF_BYCOMMAND);
+	m_ShareOnlyTheNeedMenu.InsertMenu(0,MF_STRING|MF_BYPOSITION,MP_SHAREONLYTHENEED,GetResString(IDS_DEFAULT) + buffer);
+	// <== XP Style Menu [Xanatos] - Stulle
 	m_ShareOnlyTheNeedMenu.CheckMenuRadioItem(MP_SHAREONLYTHENEED, MP_SHAREONLYTHENEED_1, uShareOnlyTheNeedMenuItem, 0);
 	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 	m_SharedFilesMenu.EnableMenuItem(MP_SPREADBAR_RESET, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED); // Spread bars [Slugfiller/MorphXT] - Stulle
@@ -1216,21 +1240,39 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			buffer = _T(" (?)");
 			break;
 	}
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
 	m_PowershareMenu.ModifyMenu(MP_POWERSHARE_DEFAULT, MF_STRING,MP_POWERSHARE_DEFAULT, GetResString(IDS_DEFAULT) + buffer);
+	*/
+	m_PowershareMenu.RemoveMenu(MP_POWERSHARE_DEFAULT,MF_BYCOMMAND);
+	m_PowershareMenu.InsertMenu(0,MF_STRING|MF_BYPOSITION,MP_POWERSHARE_DEFAULT,GetResString(IDS_DEFAULT) + buffer);
+	// <== XP Style Menu [Xanatos] - Stulle
 	m_PowershareMenu.CheckMenuRadioItem(MP_POWERSHARE_DEFAULT, MP_POWERSHARE_LIMITED, uPowershareMenuItem, 0);
 	m_PowershareMenu.EnableMenuItem((UINT_PTR)m_PowerShareLimitMenu.m_hMenu, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
 	if (iPowerShareLimit==0)
 		buffer.Format(_T(" (%s)"),GetResString(IDS_DISABLED));
 	else
 		buffer.Format(_T(" (%u)"),thePrefs.GetPowerShareLimit());
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
 	m_PowerShareLimitMenu.ModifyMenu(MP_POWERSHARE_LIMIT, MF_STRING,MP_POWERSHARE_LIMIT, GetResString(IDS_DEFAULT) + buffer);
+	*/
+	m_PowerShareLimitMenu.RemoveMenu(MP_POWERSHARE_LIMIT,MF_BYCOMMAND);
+	m_PowerShareLimitMenu.InsertMenu(0,MF_STRING|MF_BYPOSITION,MP_POWERSHARE_LIMIT,GetResString(IDS_DEFAULT) + buffer);
+	// <== XP Style Menu [Xanatos] - Stulle
 	if (iPowerShareLimit==-1)
 		buffer = GetResString(IDS_EDIT);
 	else if (iPowerShareLimit==0)
 		buffer = GetResString(IDS_DISABLED);
 	else
 		buffer.Format(_T("%i"),iPowerShareLimit);
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
 	m_PowerShareLimitMenu.ModifyMenu(MP_POWERSHARE_LIMIT_SET, MF_STRING,MP_POWERSHARE_LIMIT_SET, buffer);
+	*/
+	m_PowerShareLimitMenu.RemoveMenu(MP_POWERSHARE_LIMIT_SET,MF_BYCOMMAND);
+	m_PowerShareLimitMenu.InsertMenu(1,MF_STRING|MF_BYPOSITION,MP_POWERSHARE_LIMIT_SET,buffer);
+	// <== XP Style Menu [Xanatos] - Stulle
 	m_PowerShareLimitMenu.CheckMenuRadioItem(MP_POWERSHARE_LIMIT, MP_POWERSHARE_LIMIT_SET, uPowerShareLimitMenuItem, 0);
 	// <== PowerShare [ZZ/MorphXT] - Stulle
 	// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
@@ -1239,14 +1281,26 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 		buffer.Format(_T(" (%s)"),GetResString(IDS_DISABLED));
 	else
 		buffer.Format(_T(" (%i%%)"),thePrefs.GetPsAmountLimit());
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
 	m_PsAmountLimitMenu.ModifyMenu(MP_PS_AMOUNT_LIMIT, MF_STRING,MP_PS_AMOUNT_LIMIT, GetResString(IDS_DEFAULT) + buffer);
+	*/
+	m_PsAmountLimitMenu.RemoveMenu(MP_PS_AMOUNT_LIMIT,MF_BYCOMMAND);
+	m_PsAmountLimitMenu.InsertMenu(0,MF_STRING|MF_BYPOSITION,MP_PS_AMOUNT_LIMIT,GetResString(IDS_DEFAULT) + buffer);
+	// <== XP Style Menu [Xanatos] - Stulle
 	if (iPsAmountLimit==-1)
 		buffer = GetResString(IDS_EDIT);
 	else if (iPsAmountLimit==0)
 		buffer = GetResString(IDS_DISABLED);
 	else
 		buffer.Format(_T("%i%%"),iPsAmountLimit);
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
 	m_PsAmountLimitMenu.ModifyMenu(MP_PS_AMOUNT_LIMIT_SET, MF_STRING,MP_PS_AMOUNT_LIMIT_SET, buffer);
+	*/
+	m_PsAmountLimitMenu.RemoveMenu(MP_PS_AMOUNT_LIMIT_SET,MF_BYCOMMAND);
+	m_PsAmountLimitMenu.InsertMenu(1,MF_STRING|MF_BYPOSITION,MP_PS_AMOUNT_LIMIT_SET,buffer);
+	// <== XP Style Menu [Xanatos] - Stulle
 	m_PowerShareLimitMenu.CheckMenuRadioItem(MP_PS_AMOUNT_LIMIT, MP_PS_AMOUNT_LIMIT_SET, uPsAmountLimitMenuItem, 0);
 	// <== Limit PS by amount of data uploaded [Stulle] - Stulle
 	// ==> MassRename [Dragon] - Stulle
@@ -1280,7 +1334,12 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 
 	CTitleMenu WebMenu;
 	WebMenu.CreateMenu();
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
+	WebMenu.AddMenuTitle(NULL, true);
+	*/
 	WebMenu.AddMenuTitle(NULL, true, false);
+	// <== XP Style Menu [Xanatos] - Stulle
 	int iWebMenuEntries = theWebServices.GetFileMenuEntries(&WebMenu);
 	UINT flag2 = (iWebMenuEntries == 0 || iSelectedItems != 1) ? MF_GRAYED : MF_STRING;
 	m_SharedFilesMenu.AppendMenu(flag2 | MF_POPUP, (UINT_PTR)WebMenu.m_hMenu, GetResString(IDS_WEBSERVICES), _T("WEB"));
@@ -2376,7 +2435,12 @@ void CSharedFilesCtrl::CreateMenues()
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	m_CollectionsMenu.CreateMenu();
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
+	m_CollectionsMenu.AddMenuTitle(NULL, true);
+	*/
 	m_CollectionsMenu.AddMenuTitle(NULL, true, false);
+	// <== XP Style Menu [Xanatos] - Stulle
 	m_CollectionsMenu.AppendMenu(MF_STRING,MP_CREATECOLLECTION, GetResString(IDS_CREATECOLLECTION), _T("COLLECTION_ADD"));
 	m_CollectionsMenu.AppendMenu(MF_STRING,MP_MODIFYCOLLECTION, GetResString(IDS_MODIFYCOLLECTION), _T("COLLECTION_EDIT"));
 	m_CollectionsMenu.AppendMenu(MF_STRING,MP_VIEWCOLLECTION, GetResString(IDS_VIEWCOLLECTION), _T("COLLECTION_VIEW"));

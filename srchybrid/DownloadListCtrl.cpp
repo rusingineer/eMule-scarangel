@@ -1954,7 +1954,12 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 
 			CTitleMenu WebMenu;
 			WebMenu.CreateMenu();
+			// ==> XP Style Menu [Xanatos] - Stulle
+			/*
+			WebMenu.AddMenuTitle(NULL, true);
+			*/
 			WebMenu.AddMenuTitle(NULL, true, false);
+			// <== XP Style Menu [Xanatos] - Stulle
 			int iWebMenuEntries = theWebServices.GetFileMenuEntries(&WebMenu);
 			UINT flag = (iWebMenuEntries == 0 || iSelectedItems != 1) ? MF_GRAYED : MF_ENABLED;
 			m_FileMenu.AppendMenu(MF_POPUP | flag, (UINT_PTR)WebMenu.m_hMenu, GetResString(IDS_WEBSERVICES), _T("WEB"));
@@ -2004,7 +2009,7 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			CTitleMenu mnuOrder;
 			if (this->GetSelectedCount() > 1) {
 				mnuOrder.CreatePopupMenu();
-				mnuOrder.AddMenuTitle(GetResString(IDS_CAT_SETORDER));
+				mnuOrder.AddMenuTitle(GetResString(IDS_CAT_SETORDER),false,false);
 				mnuOrder.AppendMenu(MF_STRING, MP_CAT_ORDERAUTOINC, GetResString(IDS_CAT_MNUAUTOINC));
 				mnuOrder.AppendMenu(MF_STRING, MP_CAT_ORDERSTEPTHRU, GetResString(IDS_CAT_MNUSTEPTHRU));
 				mnuOrder.AppendMenu(MF_STRING, MP_CAT_ORDERALLSAME, GetResString(IDS_CAT_MNUALLSAME));
@@ -2137,7 +2142,12 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 		// less confusing this way.
 		CTitleMenu WebMenu;
 		WebMenu.CreateMenu();
+		// ==> XP Style Menu [Xanatos] - Stulle
+		/*
+		WebMenu.AddMenuTitle(NULL, true);
+		*/
 		WebMenu.AddMenuTitle(NULL, true, false);
+		// <== XP Style Menu [Xanatos] - Stulle
 		theWebServices.GetFileMenuEntries(&WebMenu);
 		m_FileMenu.AppendMenu(MF_POPUP | MF_GRAYED, (UINT_PTR)WebMenu.m_hMenu, GetResString(IDS_WEBSERVICES), _T("WEB"));
 
@@ -3472,7 +3482,12 @@ void CDownloadListCtrl::CreateMenues()
 	// Add 'Download Priority' sub menu
 	//
 	m_PrioMenu.CreateMenu();
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
+	m_PrioMenu.AddMenuTitle(NULL, true);
+	*/
 	m_PrioMenu.AddMenuTitle(NULL, true, false);
+	// <== XP Style Menu [Xanatos] - Stulle
 	m_PrioMenu.AppendMenu(MF_STRING, MP_PRIOLOW, GetResString(IDS_PRIOLOW));
 	m_PrioMenu.AppendMenu(MF_STRING, MP_PRIONORMAL, GetResString(IDS_PRIONORMAL));
 	m_PrioMenu.AppendMenu(MF_STRING, MP_PRIOHIGH, GetResString(IDS_PRIOHIGH));

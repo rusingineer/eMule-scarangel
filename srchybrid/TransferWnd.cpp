@@ -2593,7 +2593,7 @@ void CTransferWnd::CreateCategoryMenus()
 
 	// Priority Menu
 	m_mnuCatPriority.CreateMenu();
-	m_mnuCatPriority.AddMenuTitle(GetResString(IDS_PRIORITY));
+	m_mnuCatPriority.AddMenuTitle(GetResString(IDS_PRIORITY),false,false);
 	m_mnuCatPriority.AppendMenu(MF_STRING, MP_PRIOLOW, GetResString(IDS_PRIOLOW));
 	m_mnuCatPriority.AppendMenu(MF_STRING, MP_PRIONORMAL, GetResString(IDS_PRIONORMAL));
 	m_mnuCatPriority.AppendMenu(MF_STRING, MP_PRIOHIGH, GetResString(IDS_PRIOHIGH));
@@ -2601,14 +2601,14 @@ void CTransferWnd::CreateCategoryMenus()
 
 	// Dl Mode Menu
 	m_mnuCatDlMode.CreateMenu();
-	m_mnuCatDlMode.AddMenuTitle(GetResString(IDS_DL_MODE));
+	m_mnuCatDlMode.AddMenuTitle(GetResString(IDS_DL_MODE),false,false);
 	m_mnuCatDlMode.AppendMenu(MF_STRING, MP_CAT_DL_MODE, GetResString(IDS_DEFAULT));
 	m_mnuCatDlMode.AppendMenu(MF_STRING, MP_CAT_DL_MODE+1, GetResString(IDS_DOWNLOAD_ALPHABETICAL));
 	m_mnuCatDlMode.AppendMenu(MF_STRING, MP_CAT_DL_MODE+2, GetResString(IDS_LP));
 
 	// View Filter Menu
 	m_mnuCatViewFilter.CreateMenu();
-	m_mnuCatViewFilter.AddMenuTitle(GetResString(IDS_CHANGECATVIEW));
+	m_mnuCatViewFilter.AddMenuTitle(GetResString(IDS_CHANGECATVIEW),false,false);
 	m_mnuCatViewFilter.AppendMenu(MF_STRING, MP_CAT_SET0, GetResString(IDS_ALL) );
 	//m_mnuCatViewFilter.AppendMenu(MF_STRING, MP_CAT_SET0+1, GetResString(IDS_ALLOTHERS) );
 	m_mnuCatViewFilter.AppendMenu(MF_STRING, MP_CAT_SET0+2, GetResString(IDS_CAT_THISCAT) );

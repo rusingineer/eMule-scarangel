@@ -957,6 +957,8 @@ void CMenuXP::AddMenuTitle(LPCTSTR lpszTitle, bool /*bIsIconMenu*/, bool bIsSide
 
 	SetBackBitmap(_T("MENUBACK"), _T("JPG"));
 	SetSelectedBarColor(RGB(252,231,211));
+	SetTextColor(RGB(0,0,0));
+	SetSelectedTextColor(RGB(0,0,0));
 	// <== XP Style Menu [Xanatos] - Stulle
 }
 

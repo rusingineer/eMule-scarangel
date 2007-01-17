@@ -68,7 +68,6 @@ BEGIN_MESSAGE_MAP(CPPgScar, CPropertyPage)
 	ON_BN_CLICKED(IDC_COLOR_UNDERLINED, OnBnClickedUnderlined)
 	ON_BN_CLICKED(IDC_COLOR_ITALIC, OnBnClickedItalic)
     ON_MESSAGE(UM_CPN_SELCHANGE, OnColorPopupSelChange)
-
 	ON_CBN_SELCHANGE(IDC_COLOR_MASTER_COMBO, OnCbnSelchangeStyleselMaster)
 	ON_CBN_SELCHANGE(IDC_COLOR_SUB_COMBO, OnCbnSelchangeStyleselSub)
 	// <== Design Settings [eWombat/Stulle] - Stulle
@@ -1141,7 +1140,6 @@ BOOL CPPgScar::OnApply()
 		m_bDesignChanged = false;
 		theApp.emuledlg->transferwnd->Localize();
 		theApp.emuledlg->sharedfileswnd->sharedfilesctrl.Localize();
-		AddLogLine(false,_T("Design Settings changed"));
 	}
 	// <== Design Settings [eWombat/Stulle] - Stulle
 

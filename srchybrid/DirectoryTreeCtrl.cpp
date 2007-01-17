@@ -543,7 +543,12 @@ void CDirectoryTreeCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 		CString strDisplayPath(m_lstShared.GetNext(pos));
 		PathRemoveBackslash(strDisplayPath.GetBuffer(strDisplayPath.GetLength()));
 		strDisplayPath.ReleaseBuffer();
+		// ==> more icons - Stulle
+		/*
 		SharedMenu.AppendMenu(MF_STRING,MP_SHAREDFOLDERS_FIRST+iCnt, GetResString(IDS_VIEW1) + strDisplayPath);
+		*/
+		SharedMenu.AppendMenu(MF_STRING,MP_SHAREDFOLDERS_FIRST+iCnt, GetResString(IDS_VIEW1) + strDisplayPath, _T("SHAREDFILES"));
+		// <== more icons - Stulle
 		bMenuIsEmpty = false;
 	}
 
@@ -558,7 +563,12 @@ void CDirectoryTreeCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			strDisplayPath.ReleaseBuffer();
 			if (!bMenuIsEmpty)
 				SharedMenu.AppendMenu(MF_SEPARATOR);
+			// ==> more icons - Stulle
+			/*
 			SharedMenu.AppendMenu(MF_STRING, MP_SHAREDFOLDERS_FIRST-1, GetResString(IDS_VIEW1) + strDisplayPath + GetResString(IDS_VIEW2));
+			*/
+			SharedMenu.AppendMenu(MF_STRING, MP_SHAREDFOLDERS_FIRST-1, GetResString(IDS_VIEW1) + strDisplayPath + GetResString(IDS_VIEW2), _T("NOTSHARED"));
+			// <== more icons - Stulle
 			bMenuIsEmpty = false;
 		}
 	}

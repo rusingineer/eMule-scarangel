@@ -36,8 +36,6 @@
 //	
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-// NEO: NMX - [NeoMenuXP] -- Xanatos -->
-
 //The ownerdraw data
 class CMenuXPItem
 {
@@ -221,6 +219,4 @@ protected:
 };
 
 #define CTitleMenu CMenuXP
-// NEO: NMX END <-- Xanatos --
-
 #endif // !defined(AFX_MENUXP_H__8FC060B7_2454_11D5_99BD_5254AB339987__INCLUDED_)

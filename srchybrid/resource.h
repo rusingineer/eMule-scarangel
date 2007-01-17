@@ -3019,6 +3019,7 @@
 #define IDS_RATIO_ACTIVATION            61018
 #define IDS_RATIO_LIMIT                 61019
 // <== Enforce Ratio [Stulle] - Stulle
+#define IDS_ERR_HIDDENSOURCE            61020 // Anti Anti HideOS & SOTN [SiRoB] - Stulle
 
 // Next default values for new objects
 // 
