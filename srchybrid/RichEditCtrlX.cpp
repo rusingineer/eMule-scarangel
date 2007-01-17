@@ -19,6 +19,8 @@
 #include "MenuCmds.h"
 #include "RichEditCtrlX.h"
 #include "OtherFunctions.h"
+#include "emule.h" // XP Style Menu [Xanatos] - Stulle
+#include "MenuXP.h" // XP Style Menu [Xanatos] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -37,6 +39,7 @@ BEGIN_MESSAGE_MAP(CRichEditCtrlX, CRichEditCtrl)
 	ON_NOTIFY_REFLECT_EX(EN_LINK, OnEnLink)
 	ON_CONTROL_REFLECT(EN_CHANGE, OnEnChange)
 	ON_WM_SETCURSOR()
+	ON_WM_MEASUREITEM() // XP Style Menu [Xanatos] - Stulle
 END_MESSAGE_MAP()
 
 CRichEditCtrlX::CRichEditCtrlX()
@@ -166,6 +169,8 @@ void CRichEditCtrlX::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 
 	bool bReadOnly = (GetStyle() & ES_READONLY)!=0;
 
+	// ==> XP Style Menu [Xanatos] - Stulle
+	/*
 	CMenu menu;
 	menu.CreatePopupMenu();
 	if (!bReadOnly){
@@ -181,6 +186,24 @@ void CRichEditCtrlX::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	}
 	menu.AppendMenu(MF_SEPARATOR);
 	menu.AppendMenu(MF_STRING, MP_SELECTALL, GetResString(IDS_SELECTALL));
+	*/
+	CTitleMenu menu;
+	menu.CreatePopupMenu();
+	menu.AddMenuTitle(GetResString(IDS_LOGENTRY));
+	if (!bReadOnly){
+		menu.AppendMenu(MF_STRING, MP_UNDO, GetResString(IDS_UNDO), _T("UNDO"));
+		menu.AppendMenu(MF_SEPARATOR);
+	}
+	if (!bReadOnly)
+		menu.AppendMenu(MF_STRING, MP_CUT, GetResString(IDS_CUT), _T("CUT"));
+	menu.AppendMenu(MF_STRING, MP_COPYSELECTED, GetResString(IDS_COPY), _T("COPY"));
+	if (!bReadOnly){
+		menu.AppendMenu(MF_STRING, MP_PASTE, GetResString(IDS_PASTE), _T("PASTE"));
+		menu.AppendMenu(MF_STRING, MP_REMOVESELECTED, GetResString(IDS_DELETESELECTED), _T("DELETE"));
+	}
+	menu.AppendMenu(MF_SEPARATOR);
+	menu.AppendMenu(MF_STRING, MP_SELECTALL, GetResString(IDS_SELECTALL), _T("SEARCHFILETYPE_DOCUMENT"));
+	// <== XP Style Menu [Xanatos] - Stulle
 
 	menu.EnableMenuItem(MP_UNDO, CanUndo() ? MF_ENABLED : MF_GRAYED);
 	menu.EnableMenuItem(MP_CUT, iSelEnd > iSelStart ? MF_ENABLED : MF_GRAYED);
@@ -339,3 +362,14 @@ void CRichEditCtrlX::SetRTFText(const CStringA& rstrTextA)
 	es.dwCookie = (DWORD_PTR)&memFile;
 	StreamIn(SF_RTF, es);
 }
+
+// ==> XP Style Menu [Xanatos] - Stulle
+void CRichEditCtrlX::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct) 
+{
+	HMENU hMenu = AfxGetThreadState()->m_hTrackingMenu;
+	CMenu	*pMenu = CMenu::FromHandle(hMenu);
+		pMenu->MeasureItem(lpMeasureItemStruct);
+	
+	CWnd::OnMeasureItem(nIDCtl, lpMeasureItemStruct);
+}
+// <== XP Style Menu [Xanatos] - Stulle
