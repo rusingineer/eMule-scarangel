@@ -144,6 +144,8 @@ const float CClientCredits::GetScoreRatio(const CUpDownClient* client) const
 */
 float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 {
+	EIdentState currentIDstate =  GetCurrentIdentState(dwForIP);
+	bool bBadGuy = false;
 	if(m_bCheckScoreRatio == false){//only refresh ScoreRatio when really need
 		return m_fLastScoreRatio;
 	}
@@ -155,8 +157,9 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 	switch (thePrefs.GetCreditSystem())	{
 
 		case CS_LOVELACE:{
-			if ( GetCurrentIdentState(dwForIP) != IS_IDENTIFIED  && GetCurrentIdentState(dwForIP) != IS_NOTAVAILABLE && theApp.clientcredits->CryptoAvailable() ){
-				result = 0.8f; // this might be a bit more than the result... who care's!?!?!
+			if ( currentIDstate != IS_IDENTIFIED  && currentIDstate != IS_NOTAVAILABLE && theApp.clientcredits->CryptoAvailable() ){
+				result = 0.8f;
+				bBadGuy = true;
 				break;
 			}
 
@@ -180,7 +183,8 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 		}break;
 
 		case CS_PAWCIO:{	
-			if ( GetCurrentIdentState(dwForIP) != IS_IDENTIFIED  && GetCurrentIdentState(dwForIP) != IS_NOTAVAILABLE && theApp.clientcredits->CryptoAvailable() ){
+			if ( currentIDstate != IS_IDENTIFIED  && currentIDstate != IS_NOTAVAILABLE && theApp.clientcredits->CryptoAvailable() ){
+				bBadGuy = true;
 				result = 0.8f;
 				break;
 			}
@@ -214,7 +218,8 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 
 		case CS_RATIO:
 		{
-			if ( GetCurrentIdentState(dwForIP) != IS_IDENTIFIED  && GetCurrentIdentState(dwForIP) != IS_NOTAVAILABLE && theApp.clientcredits->CryptoAvailable() ){
+			if ( currentIDstate != IS_IDENTIFIED  && currentIDstate != IS_NOTAVAILABLE && theApp.clientcredits->CryptoAvailable() ){
+				bBadGuy = true;
 				result = 0.8f;
 				break;
 			}
@@ -276,17 +281,20 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 		}break;
 
 		case CS_SIVKA:{
-			switch(GetCurrentIdentState(dwForIP)){
+			switch(currentIDstate){
 				case IS_IDNEEDED: if(theApp.clientcredits->CryptoAvailable()) {
+										bBadGuy = true;
 										result = 0.75f;
 										break;
 							  }
 				case IS_IDFAILED: {
+									bBadGuy = true;
 									result = 0.5f;
 									break;
 								  }
 				case IS_IDBADGUY:
 					default: {
+						bBadGuy = true;
 						result = 0.0f;
 						break;
 							 }
@@ -309,7 +317,8 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 		}break;
 
 		case CS_SWAT:{
-			if ( GetCurrentIdentState(dwForIP) != IS_IDENTIFIED  && GetCurrentIdentState(dwForIP) != IS_NOTAVAILABLE && theApp.clientcredits->CryptoAvailable() ){
+			if ( currentIDstate != IS_IDENTIFIED  && currentIDstate != IS_NOTAVAILABLE && theApp.clientcredits->CryptoAvailable() ){
+				bBadGuy = true;
 				result = 0.8f;
 				break;
 			}
@@ -347,7 +356,7 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 	float m_bonusfaktor=0;
 
 	// Check the client ident status
-	if((GetCurrentIdentState(dwForIP) == IS_IDFAILED || GetCurrentIdentState(dwForIP) == IS_IDBADGUY || GetCurrentIdentState(dwForIP) == IS_IDNEEDED) && 
+	if((currentIDstate == IS_IDFAILED || currentIDstate == IS_IDBADGUY || currentIDstate == IS_IDNEEDED) && 
 		theApp.clientcredits->CryptoAvailable() == true){
 			// bad guy - no credits for you
 			//return 1.0f;
@@ -435,7 +444,8 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 
 		case CS_OFFICIAL:
 		default:{
-			if ( GetCurrentIdentState(dwForIP) != IS_IDENTIFIED  && GetCurrentIdentState(dwForIP) != IS_NOTAVAILABLE && theApp.clientcredits->CryptoAvailable() ){
+			if ( currentIDstate != IS_IDENTIFIED  && currentIDstate != IS_NOTAVAILABLE && theApp.clientcredits->CryptoAvailable() ){
+				bBadGuy = true;
 				result = 0.8f;
 				break;
 			}
@@ -465,6 +475,8 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 			}
 		}break;
 	}
+	if(bBadGuy)
+		m_bCheckScoreRatio = true;
 
 	return m_fLastScoreRatio = result;
 }
