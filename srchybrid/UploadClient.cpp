@@ -1291,6 +1291,8 @@ void CUpDownClient::SendOutOfPartReqsAndAddToWaitingQueue(bool givebonus) //Xtre
 	m_fSentOutOfPartReqs = 1;
     
 	//Xtreme Full Chunk
+	// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
+	/*
 	//if we gave less than 9 MB payload, we give back some waiting time in relation to payload
 	uint32 bonus=0;
 	uint32 waitingtime= (uint32)(GetWaitTime() ); //only half will be counted 
@@ -1302,10 +1304,14 @@ void CUpDownClient::SendOutOfPartReqsAndAddToWaitingQueue(bool givebonus) //Xtre
 			bonus = (uint32)(((9*1024*1024) - GetQueueSessionPayloadUp()) / (double)(9*1024*1024) * (waitingtime/2));
 		}
 	}
+	*/
+	// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	
 
     theApp.uploadqueue->AddClientToQueue(this, true);
 
+	// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
+	/*
 	if(bonus>0)
 	{
 		if(credits)
@@ -1314,6 +1320,8 @@ void CUpDownClient::SendOutOfPartReqsAndAddToWaitingQueue(bool givebonus) //Xtre
 			AddDebugLogLine(false, _T("giving client bonus. old waitingtime: %s, new waitingtime: %s, client: %s"), CastSecondsToHM(waitingtime/1000), CastSecondsToHM((::GetTickCount() - GetWaitStartTime())/1000),DbgGetClientInfo()); 
 		}
 	}
+	*/
+	// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 }
 
 /**

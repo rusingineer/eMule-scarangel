@@ -1177,10 +1177,14 @@ bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReaso
 				}
 				else if(client->GetSessionUp() < SESSIONMAXTRANS)
 				{
-					int keeppct = (int)((100 - (100 * client->GetSessionUp()/SESSIONMAXTRANS)) - 10);// At least 10% time credit 'penalty'
-					if (keeppct < 0)    keeppct = 0;
+					uint32 waitingtime= (uint32)(client->GetWaitTime() );
+					int keeppct = (int)(100 * client->GetSessionUp()/SESSIONMAXTRANS);
+					if(keeppct < 10)
+						keeppct = 10; // min 10% penalty
+					keeppct = 100 - keeppct;
 					client->Credits()->SaveUploadQueueWaitTime(keeppct);
 					client->Credits()->SetSecWaitStartTime();
+					AddDebugLogLine(false, _T("giving client bonus. old waitingtime: %s, new waitingtime: %s, client: %s"), CastSecondsToHM(waitingtime/1000), CastSecondsToHM((::GetTickCount() - client->GetWaitStartTime())/1000),client->DbgGetClientInfo()); 
 				}
 				else
 				{
