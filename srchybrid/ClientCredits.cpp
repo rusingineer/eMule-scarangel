@@ -144,7 +144,6 @@ const float CClientCredits::GetScoreRatio(const CUpDownClient* client) const
 */
 float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 {
-	EIdentState currentIDstate =  GetCurrentIdentState(dwForIP);
 	bool bBadGuy = false;
 	if(m_bCheckScoreRatio == false){//only refresh ScoreRatio when really need
 		return m_fLastScoreRatio;
@@ -152,6 +151,7 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 	m_bCheckScoreRatio = false;
 
 	uint32 dwForIP=client->GetIP();
+	EIdentState currentIDstate =  GetCurrentIdentState(dwForIP);
 	float result = 1.0F;//everybody share one result.
 
 	switch (thePrefs.GetCreditSystem())	{
@@ -328,8 +328,6 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 				break;
 				}
 			
-				float result = 0;
-
 				if (!GetUploadedTotal())
 					result = 10;
 				else
