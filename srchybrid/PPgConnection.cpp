@@ -385,6 +385,10 @@ BOOL CPPgConnection::OnApply()
 			
 			theApp.emuledlg->preferenceswnd->m_wndScar.UpdateEnableWC();
 			// <== WebCache [WC team/MorphXT] - Stulle/Max
+
+			// ==> Improved ICS-Firewall support [MoNKi]-Max
+			theApp.m_pFirewallOpener->ClearMappingsAtEnd();
+			// <== Improved ICS-Firewall support [MoNKi]-Max
 		}
 	}
 	
@@ -404,6 +408,10 @@ BOOL CPPgConnection::OnApply()
 				theApp.clientudp->Rebind();
 			else 
 				bRestartApp = true;
+
+			// ==> Improved ICS-Firewall support [MoNKi]-Max
+			theApp.m_pFirewallOpener->ClearMappingsAtEnd();
+			// <== Improved ICS-Firewall support [MoNKi]-Max
 		}
 	}
 
@@ -644,6 +652,12 @@ BOOL CPPgConnection::OnHelpInfo(HELPINFO* /*pHelpInfo*/)
 
 void CPPgConnection::OnBnClickedOpenports()
 {
+
+	// ==> Improved ICS-Firewall support [MoNKi]-Max
+	thePrefs.SetICFSupport(true);
+	thePrefs.m_bICFSupportStatusChanged = true;
+	// <== Improved ICS-Firewall support [MoNKi]-Max
+	
 	OnApply();
 	theApp.m_pFirewallOpener->RemoveRule(EMULE_DEFAULTRULENAME_UDP);
 	theApp.m_pFirewallOpener->RemoveRule(EMULE_DEFAULTRULENAME_TCP);

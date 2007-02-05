@@ -595,12 +595,30 @@ BOOL CemuleApp::InitInstance()
 
 	m_pFirewallOpener = new CFirewallOpener();
 	m_pFirewallOpener->Init(true); // we need to init it now (even if we may not use it yet) because of CoInitializeSecurity - which kinda ruins the sense of the class interface but ooohh well :P
+	
+	// ==> Improved ICS-Firewall support [MoNKi]-Max
+	if(!thePrefs.GetICFSupport()&& !IsRunningXPSP2() && thePrefs.GetICFSupportFirstTime() && m_pFirewallOpener->DoesFWConnectionExist()){ 	 
+		if(MessageBox(NULL, GetResString(IDS_ICFSUPPORTFIRST), _T("eMule"), MB_YESNO | MB_ICONQUESTION) == IDYES){ 	 
+			thePrefs.SetICFSupport(true); 	 
+		} 	 
+		thePrefs.SetICFSupportFirstTime(false); 	 
+	}
+	// <== Improved ICS-Firewall support [MoNKi]-Max
+		
 	// Open WinXP firewallports if set in preferences and possible
 	if (thePrefs.IsOpenPortsOnStartupEnabled()){
 		if (m_pFirewallOpener->DoesFWConnectionExist()){
+
+			// ==> Improved ICS-Firewall support [MoNKi]-Max
+			/*
 			// delete old rules added by eMule
 			m_pFirewallOpener->RemoveRule(EMULE_DEFAULTRULENAME_UDP);
 			m_pFirewallOpener->RemoveRule(EMULE_DEFAULTRULENAME_TCP);
+			*/
+			// delete old rules added by eMule
+			m_pFirewallOpener->ClearOld();
+			// <== Improved ICS-Firewall support [MoNKi]-Max
+
 			// open port for this session
 			if (m_pFirewallOpener->OpenPort(thePrefs.GetPort(), NAT_PROTOCOL_TCP, EMULE_DEFAULTRULENAME_TCP, true))
 				QueueLogLine(false, GetResString(IDS_FO_TEMPTCP_S), thePrefs.GetPort());

@@ -34,6 +34,8 @@
 #include "SearchDlg.h"
 #include "Log.h"
 #include "Sockets.h"
+#include "FirewallOpener.h" //Improved ICS-Firewall support [MoNKi]-Max
+
 //Xman
 #include "BandWidthControl.h" // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 
@@ -148,6 +150,16 @@ bool CUDPSocket::Create()
 			MyUPnP::UPNPNAT_MAPPING mapping;
 
 			GetSockName(client, port);
+
+			// ==> Improved ICS-Firewall support [MoNKi]-Max
+			if(thePrefs.GetICFSupport() && thePrefs.GetICFSupportServerUDP()){
+				if (theApp.m_pFirewallOpener->OpenPort((uint16)port, NAT_PROTOCOL_UDP, EMULE_DEFAULTRULENAME_SERVERUDP, thePrefs.IsOpenPortsOnStartupEnabled() || thePrefs.GetServerUDPPort()==0xFFFF))
+					Log(GetResString(IDS_FO_TEMPUDP_S), port);
+				else
+					Log(GetResString(IDS_FO_TEMPUDP_F), port);
+			}
+			// <== Improved ICS-Firewall support [MoNKi]-Max
+
 			mapping.internalPort = mapping.externalPort = (WORD)port;
 			mapping.protocol = MyUPnP::UNAT_UDP;
 			mapping.description = "Server UDP Port";

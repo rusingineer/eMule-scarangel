@@ -292,6 +292,16 @@ protected:
 	HTREEITEM m_htiStartupSound; // Startupsound [Commander] - mav744
 	HTREEITEM m_htiCompressLevel; // Adjust Compress Level [Stulle] - Stulle
 
+	// ==> Improved ICS-Firewall support [MoNKi]-Max
+	HTREEITEM	m_htiICFSupportRoot;
+	HTREEITEM	m_htiICFSupport;
+	HTREEITEM	m_htiICFSupportClearAtEnd;
+	HTREEITEM	m_htiICFSupportServerUDP;
+	bool		m_bICFSupport;
+	bool		m_bICFSupportClearAtEnd;
+	bool		m_bICFSupportServerUDP;
+	// <== Improved ICS-Firewall support [MoNKi]-Max
+
 	// ==> push small files [sivka] - Stulle
 	uint32 m_iPushSmallFiles;
 	void ShowPushSmallFileValues();

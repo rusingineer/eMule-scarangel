@@ -686,6 +686,13 @@ bool	CPreferences::m_bACC; // ACC [Max/WiZaRd] - Max
 
 uint32	CPreferences::m_uScarVerCheckLastAutomatic; // ScarAngel Version Check - Stulle
 
+// ==> Improved ICS-Firewall support [MoNKi]-Max
+bool	CPreferences::m_bICFSupport;
+bool	CPreferences::m_bICFSupportFirstTime;
+bool	CPreferences::m_bICFSupportStatusChanged;
+bool	CPreferences::m_bICFSupportServerUDP;
+// <== Improved ICS-Firewall support [MoNKi]-Max
+
 // ==> WebCache [WC team/MorphXT] - Stulle/Max
 CString	CPreferences::webcacheName;
 uint16	CPreferences::webcachePort;
@@ -2312,6 +2319,12 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(L"Enabled", m_bPeerCacheEnabled);
 	ini.WriteInt(L"PCPort", m_nPeerCachePort);
 
+	// ==> Improved ICS-Firewall support [MoNKi]-Max
+	ini.WriteBool(_T("ICFSupportFirstTime"), m_bICFSupportFirstTime, _T("eMule"));
+	ini.WriteBool(_T("ICFSupport"), m_bICFSupport, _T("eMule"));
+	ini.WriteBool(_T("ICFSupportServerUDP"), m_bICFSupportServerUDP , _T("eMule"));
+	// <== Improved ICS-Firewall support [MoNKi]-Max
+
 	//Xman Xtreme Mod:
 	//--------------------------------------------------------------------------
 
@@ -3295,6 +3308,14 @@ void CPreferences::LoadPreferences()
 	m_bPeerCacheEnabled = ini.GetBool(L"Enabled", true);
 	m_nPeerCachePort = (uint16)ini.GetInt(L"PCPort", 0);
 	m_bPeerCacheShow = ini.GetBool(L"Show", false);
+
+	// ==> Improved ICS-Firewall support [MoNKi]-Max
+	m_bICFSupportStatusChanged = false;
+	m_bICFSupport = ini.GetBool(_T("ICFSupport"), false, _T("eMule"));
+	m_bICFSupportFirstTime = ini.GetBool(_T("ICFSupportFirstTime"), true, _T("eMule"));
+	m_bICFSupportServerUDP = ini.GetBool(_T("ICFSupportServerUDP"), false, _T("eMule"));
+	// <== Improved ICS-Firewall support [MoNKi]-Max
+
 
 	LoadCats();
 	//SetLanguage(); //Xman done above

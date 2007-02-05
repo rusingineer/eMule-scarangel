@@ -255,6 +255,14 @@ CPPgScar::CPPgScar()
 	// <== Global Source Limit [Max/Stulle] - Stulle
 	m_htiStartupSound = NULL; // Startupsound [Commander] - mav744
 	m_htiCompressLevel = NULL; // Adjust Compress Level [Stulle] - Stulle
+
+	// ==> Improved ICS-Firewall support [MoNKi]-Max
+	m_htiICFSupportRoot = NULL;
+	m_htiICFSupport = NULL;
+	m_htiICFSupportClearAtEnd = NULL;
+	m_bICFSupport = false;
+	m_bICFSupportClearAtEnd = false;
+	// <== Improved ICS-Firewall support [MoNKi]-Max
 }
 
 CPPgScar::~CPPgScar()
@@ -285,6 +293,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		int iImgReleaseBonus = 8;
 		int iImgMisc = 8;
 		int iImgGlobal = 8;
+		int iImgICF = 8; //Improved ICS-Firewall support [MoNKi]-Max
 
 		CImageList* piml = m_ctrlTreeOptions.GetImageList(TVSIL_NORMAL);
 		if (piml){
@@ -305,6 +314,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 			iImgReleaseBonus = piml->Add(CTempIconLoader(_T("RELEASEBONUS")));
 			iImgMisc = piml->Add(CTempIconLoader(_T("SRCUNKNOWN")));
 			iImgGlobal = piml->Add(CTempIconLoader(_T("SEARCHMETHOD_GLOBAL")));
+			iImgICF = piml->Add(CTempIconLoader(_T("PROXY")));
 		}
 		
 		CString Buffer;
@@ -507,6 +517,13 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.AddEditBox(m_htiCompressLevel, RUNTIME_CLASS(CNumTreeOptionsEdit));
 		// <== Adjust Compress Level [Stulle] - Stulle
 
+		// ==> Improved ICS-Firewall support [MoNKi]-Max
+		m_htiICFSupportRoot = m_ctrlTreeOptions.InsertGroup(_T("Internet Connection Firewall (ICF)"), iImgICF,  TVI_ROOT);// leuk_he: item -> group
+		m_htiICFSupport = m_ctrlTreeOptions.InsertCheckBox(_T("Enable Windows Internet Connection Firewall (ICF) support"), m_htiICFSupportRoot, m_bICFSupport);
+		m_htiICFSupportClearAtEnd = m_ctrlTreeOptions.InsertCheckBox(_T("Clear mappings at end"), m_htiICFSupportRoot, m_bICFSupportClearAtEnd);
+		m_htiICFSupportServerUDP = m_ctrlTreeOptions.InsertCheckBox(_T("Add mapping for \"ServerUDP\" port"), m_htiICFSupportRoot, m_bICFSupportServerUDP);
+		// <== Improved ICS-Firewall support [MoNKi]-Max
+
 		m_ctrlTreeOptions.SendMessage(WM_VSCROLL, SB_TOP);
 		m_bInitializedTreeOpts = true;
 	}
@@ -654,6 +671,12 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxInt(pDX, m_iCompressLevel, 0, 9);
 	// <== Adjust Compress Level [Stulle] - Stulle
 
+	// ==> Improved ICS-Firewall support [MoNKi]-Max
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiICFSupport, m_bICFSupport);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiICFSupportClearAtEnd, m_bICFSupportClearAtEnd);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiICFSupportServerUDP, m_bICFSupportServerUDP);
+	// <== Improved ICS-Firewall support [MoNKi]-Max
+
 	// ==> FunnyNick [SiRoB/Stulle] - Stulle
 	if(m_htiFnTagMode)	m_ctrlTreeOptions.SetGroupEnable(m_htiFnTagMode, m_bFnActive);
 	if(m_htiFnTagAtEnd)	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiFnTagAtEnd, m_bFnActive);
@@ -788,6 +811,12 @@ BOOL CPPgScar::OnInitDialog()
 	// <== Global Source Limit [Max/Stulle] - Stulle
 	m_bStartupSound = thePrefs.UseStartupSound(); // Startupsound [Commander] - mav744
 	m_iCompressLevel = thePrefs.GetCompressLevel(); // Adjust Compress Level [Stulle] - Stulle
+
+	// ==> Improved ICS-Firewall support [MoNKi]-Max
+	m_bICFSupport = thePrefs.GetICFSupport();
+	m_bICFSupportClearAtEnd = thePrefs.IsOpenPortsOnStartupEnabled();
+	m_bICFSupportServerUDP = thePrefs.GetICFSupportServerUDP();
+	// <== Improved ICS-Firewall support [MoNKi]-Max
 
 	CPropertyPage::OnInitDialog();
 
@@ -1062,8 +1091,30 @@ BOOL CPPgScar::OnApply()
 		thePrefs.m_bUseCompression = false;
 	// <=== Adjust Compress Level [Stulle] - Stulle
 
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
 	bool bRestartApp = false;
+
+	// ==> Improved ICS-Firewall support [MoNKi]-Max
+	if(thePrefs.m_bICFSupportStatusChanged)
+	{
+		m_ctrlTreeOptions.SetCheckBox(m_htiICFSupport,thePrefs.GetICFSupport());
+		m_bICFSupport = thePrefs.GetICFSupport();
+		thePrefs.m_bICFSupportStatusChanged = false;
+	}
+
+	if((BOOL)thePrefs.GetICFSupport() != m_bICFSupport
+		|| (BOOL)thePrefs.IsOpenPortsOnStartupEnabled() != m_bICFSupportClearAtEnd
+		|| (BOOL)thePrefs.GetICFSupportServerUDP() != m_bICFSupportServerUDP)
+	{
+		bRestartApp = true;
+	}
+
+	thePrefs.SetICFSupport(m_bICFSupport);
+	thePrefs.m_bOpenPortsOnStartUp = m_bICFSupportClearAtEnd;
+	thePrefs.SetICFSupportServerUDP(m_bICFSupportServerUDP);
+	// <== Improved ICS-Firewall support [MoNKi]-Max
+
+	// ==> WebCache [WC team/MorphXT] - Stulle/Max
+	
 
 	// set thePrefs.webcacheName
 	if(m_webcacheAddressEdit.GetWindowTextLength())
@@ -1292,6 +1343,16 @@ void CPPgScar::Localize(void)
 		// <== Global Source Limit [Max/Stulle] - Stulle
 		if (m_htiStartupSound) m_ctrlTreeOptions.SetItemText(m_htiStartupSound, GetResString(IDS_STARTUPSOUND)); // Startupsound [Commander] - mav744
 		if (m_htiCompressLevel) m_ctrlTreeOptions.SetEditLabel(m_htiCompressLevel, GetResString(IDS_COMPRESS_LVL)); // Adjust Compress Level [Stulle] - Stulle
+		
+		// ==> Improved ICS-Firewall support [MoNKi]-Max
+		if (m_htiICFSupport)
+		{
+			m_ctrlTreeOptions.SetItemText(m_htiICFSupportRoot, GetResString(IDS_ICF));
+			m_ctrlTreeOptions.SetItemText(m_htiICFSupport, GetResString(IDS_ICFSUPPORT));
+			m_ctrlTreeOptions.SetItemText(m_htiICFSupportClearAtEnd, GetResString(IDS_FO_PREF_STARTUP));
+			m_ctrlTreeOptions.SetItemText(m_htiICFSupportServerUDP, GetResString(IDS_ICF_SERVERUDP));
+		}
+		// <== Improved ICS-Firewall support [MoNKi]-Max
 
 		// ==> WebCache [WC team/MorphXT] - Stulle/Max
 		m_WcProxyBox.SetWindowText( GetResString(IDS_WEBCACHE_ISP) );

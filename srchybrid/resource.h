@@ -3020,6 +3020,15 @@
 #define IDS_RATIO_LIMIT                 61019
 // <== Enforce Ratio [Stulle] - Stulle
 #define IDS_ERR_HIDDENSOURCE            61020 // Anti Anti HideOS & SOTN [SiRoB] - Stulle
+// ==> Improved ICS-Firewall support [MoNKi]-Max
+#define IDS_ICF 61021
+#define IDS_ICFSUPPORT 61022
+#define IDS_ICF_SERVERUDP 61023
+#define IDS_ICFSUPPORTFIRST 61024
+// <== Improved ICS-Firewall support [MoNKi]-Max
+
+
+
 
 // Next default values for new objects
 // 

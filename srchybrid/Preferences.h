@@ -684,6 +684,13 @@ public:
 	static	uint16	m_nPeerCachePort;
 	static	bool	m_bPeerCacheShow;
 
+	// ==> Improved ICS-Firewall support [MoNKi]-Max
+	static bool		m_bICFSupport;
+	static bool		m_bICFSupportFirstTime;
+	static bool		m_bICFSupportStatusChanged;
+	static bool		m_bICFSupportServerUDP;
+	// <== Improved ICS-Firewall support [MoNKi]-Max
+
 	// Firewall settings
 	static bool		m_bOpenPortsOnStartUp;
 
@@ -2124,6 +2131,15 @@ public:
 	static	bool	GetEnforceRatio()	{ return m_bEnforceRatio; }
 	static	uint8	GetRatioValue()		{ return m_uRatioValue; }
 	// <== Enforce Ratio [Stulle] - Stulle
+
+	// ==> Improved ICS-Firewall support [MoNKi]-Max
+	static	bool	GetICFSupport() { return m_bICFSupport; }
+	static	void	SetICFSupport(bool on) { m_bICFSupport = on; }
+	static	bool	GetICFSupportFirstTime() { return m_bICFSupportFirstTime; }
+	static	void	SetICFSupportFirstTime(bool on) { m_bICFSupportFirstTime = on; }
+	static	bool	GetICFSupportServerUDP() { return m_bICFSupportServerUDP; }
+	static	void	SetICFSupportServerUDP(bool on) { m_bICFSupportServerUDP = on; }
+	// <== Improved ICS-Firewall support [MoNKi]-Max
 
 protected:
 	static	CString appdir;

@@ -5851,6 +5851,14 @@ BEGIN
     IDS_BACKUP                  "Backup"
     // <== Tabbed Preferences [TPT] - Stulle
     IDS_ERR_HIDDENSOURCE    "Asked Block without telling us what he need" // Anti Anti HideOS & SOTN [SiRoB] - Stulle
+    
+     // ==> Improved ICS-Firewall support [MoNKi]-Max
+    IDS_ICFSUPPORT          "Enable Windows Internet Connection Firewall (ICF) support"
+    IDS_ICFSUPPORTFIRST     "eMule has detected Windows Internet Connection Firewall (ICF) running on your machine,\n\rDo you want eMule to automatically configure it? (Recomended)"
+    IDS_ICF                 "Windows Internet Connection Firewall (ICF)"
+    IDS_ICF_SERVERUDP       "Add rule for the ""Server UDP"" port"
+    // <== Improved ICS-Firewall support [MoNKi]-Max
+
 END
 
 #endif    // Englisch (USA) resources
