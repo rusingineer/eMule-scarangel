@@ -73,7 +73,9 @@ public:
 	//Xman advanced upload-priority
 	void CalculateUploadPriority(bool force=false);
 	void CalculateUploadPriority_Standard();
-	double m_lastavgPercent;
+	float m_lastavgPercent;
+	uint32 m_avg_virtual_sources;
+	uint32 m_avg_client_on_uploadqueue;
 	//Xman end
 
 

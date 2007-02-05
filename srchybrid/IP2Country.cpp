@@ -194,7 +194,7 @@ bool CIP2Country::LoadFromFile(){
 				szbuffer=szIPStart-1;
 				++iCount;
 				#pragma warning(default:4245)
-				AddIPRange(_tstoi(szIPStart),_tstoi(szIPEnd), sz2L, sz3L, szCountry);
+				AddIPRange((uint32)_tstoi(szIPStart),(uint32)_tstoi(szIPEnd), sz2L, sz3L, szCountry);
 			}
 			fclose(readFile);
 

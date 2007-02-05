@@ -654,6 +654,8 @@ bool CClientUDPSocket::Create()
 			m_port = thePrefs.GetUDPPort();
 	}
 
+	// ==> UPnP support [Xtreme] - Stulle
+	/*
 	//Xman
 	//upnp_start
 	if (ret && thePrefs.GetUDPPort()){
@@ -671,6 +673,8 @@ bool CClientUDPSocket::Create()
 		}
 	}
 	//upnp_end
+	*/
+	// <== UPnP support [Xtreme] - Stulle
 
 	if (ret)
 		m_port = thePrefs.GetUDPPort();
@@ -680,6 +684,8 @@ bool CClientUDPSocket::Create()
 
 bool CClientUDPSocket::Rebind()
 {
+	// ==> UPnP support [Xtreme] - Stulle
+	/*
 	//if (thePrefs.GetUDPPort() == m_port)
 	if (thePrefs.udpport == m_port) //Xman upnp
 		return false;
@@ -696,6 +702,11 @@ bool CClientUDPSocket::Rebind()
 		thePrefs.m_iUPnPUDPExternal=0;
 	}
 	//upnp_end
+	*/
+	if (thePrefs.GetUDPPort() == m_port)
+		return false;
+	Close();
+	// <== UPnP support [Xtreme] - Stulle
 
 	return Create();
 }

@@ -42,6 +42,10 @@
 #include "Collection.h"
 #include "SHAHashSet.h" //Xman remove unused AICH-hashes
 
+//Xman advanced upload-priority
+#include "UploadQueue.h"
+
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -324,7 +328,11 @@ CSharedFileList::CSharedFileList(CServerConnect* in_server)
 	m_lastPublishKadSrc = 0;
 	m_lastPublishKadNotes = 0;
 	m_currFileKey = 0;
-	m_lastavgPercent = 0; //Xman advanced upload-priority
+	//Xman advanced upload-priority
+	m_lastavgPercent = 0; 
+	m_avg_virtual_sources = 0;
+	m_avg_client_on_uploadqueue = 0;
+	//Xman end
 	//Xman
 	//FindSharedFiles();
 	// SLUGFILLER: SafeHash remove - delay load shared files
@@ -1580,8 +1588,17 @@ void CSharedFileList::CalculateUploadPriority(bool force)
 	if(force || ::GetTickCount() - lastprocess > MIN2MS(2))
 	{
 		lastprocess=::GetTickCount();
-		double sumavgpercent = 0;
-		UINT countFiles = 0;
+		
+
+#ifdef _DEBUG
+		AddDebugLogLine(false,_T("calculating auto uploadprios. mapcount: %i"), m_Files_map.GetCount()); 
+#endif
+
+
+		// v2 other avg calculation
+		double sum_wanted_upload=0;
+		double sum_uploaded=0;
+		uint32 all_virtual_sources=0;
 		//first loop to calculate the avg
 		POSITION pos = m_Files_map.GetStartPosition();
 		while( pos != NULL )
@@ -1592,20 +1609,43 @@ void CSharedFileList::CalculateUploadPriority(bool force)
 			//we only take files > 500k into account
 			if((uint64)pFile->GetFileSize() > 500*1024)
 			{
-				sumavgpercent += pFile->CalculateUploadPriorityPercent();
-				countFiles++;
+				//update virtual uploadsources not in realtime
+				if(pFile->IsPartFile())
+					pFile->UpdateVirtualUploadSources();
+
+				sum_wanted_upload += pFile->GetWantedUpload();
+				uint64 oldtransferred ;
+				if (pFile->statistic.GetAllTimeTransferred() > pFile->statistic.GetTransferred())
+					oldtransferred = pFile->statistic.GetAllTimeTransferred()-pFile->statistic.GetTransferred();
+				else
+					oldtransferred = 0;
+
+				sum_uploaded += (pFile->statistic.GetTransferred() + oldtransferred/2.0);
+
+				all_virtual_sources += pFile->GetVirtualSourceIndicator();
 			}
 		}
-
-#ifdef _DEBUG
-		AddDebugLogLine(false,_T("calculating auto uploadprios. mapcount: %i, coutnFiles: %u"), m_Files_map.GetCount(), countFiles); 
-#endif
-		double avgpercent;
-		if (countFiles > 0)
-			avgpercent= sumavgpercent / countFiles;
+		float avgpercent;
+		if (sum_wanted_upload > 0)
+			avgpercent = (float)(sum_uploaded / sum_wanted_upload * 100.0);
 		else
 			avgpercent=0;
+
 		m_lastavgPercent=avgpercent;
+
+		if(m_Files_map.GetCount()>0)
+		{
+			m_avg_virtual_sources = all_virtual_sources / m_Files_map.GetCount();
+			m_avg_client_on_uploadqueue = theApp.uploadqueue->GetWaitingUserCount() / m_Files_map.GetCount();
+		}
+		else
+		{
+			m_avg_virtual_sources = 0;
+			m_avg_client_on_uploadqueue = 0;
+		}
+		
+		//end v2
+
 
 		//second loop to set new prios
 		pos = m_Files_map.GetStartPosition();

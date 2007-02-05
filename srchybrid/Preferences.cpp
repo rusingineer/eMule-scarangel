@@ -52,12 +52,16 @@ CPreferences thePrefs;
 //-------------------------------------------------------------------------------
 //Xman Xtreme Mod:
 
+// ==> UPnP support [Xtreme] - Stulle
+/*
 //upnp_start
 bool	CPreferences::m_bUPnPNat; // UPnP On/Off
 bool	CPreferences::m_bUPnPTryRandom; // Try to use random external port if already in use On/Off
 uint16	CPreferences::m_iUPnPTCPExternal = 0; // TCP External Port
 uint16	CPreferences::m_iUPnPUDPExternal = 0; // UDP External Port
 //upnp_end
+*/
+// <== UPnP support [Xtreme] - Stulle
 
 //Xman Xtreme Upload
 float	CPreferences::m_slotspeed;
@@ -2329,10 +2333,14 @@ void CPreferences::SavePreferences()
 	//Xman Xtreme Mod:
 	//--------------------------------------------------------------------------
 
+	// ==> UPnP support [Xtreme] - Stulle
+	/*
 	//upnp_start
 	ini.WriteBool(L"UPnPNAT", m_bUPnPNat, L"UPnP");
 	ini.WriteBool(L"UPnPNAT_TryRandom", m_bUPnPTryRandom, L"UPnP");
 	//upnp_end
+	*/
+	// <== UPnP support [Xtreme] - Stulle
 
 
 	//Xman Xtreme Upload
@@ -3329,10 +3337,14 @@ void CPreferences::LoadPreferences()
 	//--------------------------------------------------------------------------
 	//Xman Xtreme Mod:
 
+	// ==> UPnP support [Xtreme] - Stulle
+	/*
 	//upnp_start
 	m_bUPnPNat = ini.GetBool(L"UPnPNAT", false, L"UPnP");
 	m_bUPnPTryRandom = ini.GetBool(L"UPnPNAT_TryRandom", false, L"UPnP");
 	//upnp_end
+	*/
+	// <== UPnP support [Xtreme] - Stulle
 
 	//Xman Xtreme Upload
 	m_slotspeed=ini.GetFloat(L"uploadslotspeed",3.2f, L"Xtreme");
@@ -4407,6 +4419,8 @@ uint16 CPreferences::GetRandomUDPPort()
 	return nPort;
 }
 
+// ==> UPnP support [Xtreme] - Stulle
+/*
 //Xman
 //upnp_start
 uint16 CPreferences::GetPort(){
@@ -4426,6 +4440,8 @@ uint16 CPreferences::GetUDPPort(){
 	return udpport;
 }
 //upnp_end
+*/
+// <== UPnP support [Xtreme] - Stulle
 
 // ==> ScarAngel Version Check - Stulle
 void CPreferences::UpdateLastSVC()

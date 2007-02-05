@@ -2149,6 +2149,8 @@ bool CemuleDlg::CanClose()
 
 void CemuleDlg::OnClose()
 {
+	if(theApp.IsSplash()) theApp.DestroySplash(); //Xman new slpash-screen arrangement
+
 	if (!CanClose())
 		return;
 
@@ -2353,10 +2355,14 @@ void CemuleDlg::OnClose()
 	delete theApp.pBandWidthControl;theApp.pBandWidthControl = NULL;
 	// Maella end
 
+	// ==> UPnP support [Xtreme] - Stulle
+	/*
 	//Xman
 	//upnp_start
 	theApp.m_UPnPNat.clearNATPortMapping();
 	//upnp_end
+	*/
+	// <== UPnP support [Xtreme] - Stulle
 
 	theApp.UpdateSplash(_T("unload IP to Country ..."));  //Xman new slpash-screen arrangement
 

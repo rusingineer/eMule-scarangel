@@ -50,8 +50,6 @@
 #include "MediaInfo.h"
 #include "MuleStatusBarCtrl.h" //Xman Progress Hash (O2)
 
-//Xman advanced upload-priority
-//#include <math.h>
 
 // id3lib
 #pragma warning(disable:4100) // unreferenced formal parameter
@@ -110,6 +108,11 @@ CKnownFile::CKnownFile()
 	// Maella end
 	//Xman show virtual sources (morph)
 	m_nVirtualCompleteSourcesCount = 0;
+
+	//Xman advanced upload-priority
+	pushfaktor=0;
+	m_nVirtualUploadSources = 0;
+	//Xman end
 
 	ReleaseViaWebCache = false; //JP webcache release // WebCache [WC team/MorphXT] - Stulle/Max
 
@@ -360,6 +363,9 @@ void CKnownFile::UpdatePartsInfo()
 			if (m_nCompleteSourcesCount > m_AvailPartFrequency[i])
 				m_nCompleteSourcesCount = m_AvailPartFrequency[i];
 		}
+		//Xman show virtual sources
+		m_nVirtualCompleteSourcesCount=m_nCompleteSourcesCount;
+		//Xman end
 
 		count.Add(m_nCompleteSourcesCount+1); // plus 1 since we have the file complete too
 
@@ -423,11 +429,13 @@ void CKnownFile::UpdatePartsInfo()
 	}
 
 	//Xman show virtual sources (morph)
+	/* //Xman 5.4.1 moved up
 	m_nVirtualCompleteSourcesCount = (UINT)-1;
 	for (UINT i = 0; i < partcount; i++){
 		if(m_AvailPartFrequency[i] < m_nVirtualCompleteSourcesCount)
 			m_nVirtualCompleteSourcesCount = m_AvailPartFrequency[i];
 	}
+	*/
 	//Xman end
 	// ==> PowerShare [ZZ/MorphXT] - Stulle
 	/*
@@ -1697,7 +1705,7 @@ void CKnownFile::UpdateAutoUpPriority(){
 	if(thePrefs.GetEnableMultiQueue())
 	{
 		if( GetUpPriority() != PR_NORMAL ){
-			SetUpPriority( PR_NORMAL );
+			SetUpPriority( PR_NORMAL,false );
 			//theApp.emuledlg->sharedfileswnd->sharedfilesctrl.UpdateFile(this);
 		}
 		return;
@@ -1705,20 +1713,20 @@ void CKnownFile::UpdateAutoUpPriority(){
 	//Maella end
 	if ( GetOnUploadqueue() > 100 ){
 		if( GetUpPriority() != PR_LOW ){
-			SetUpPriority( PR_LOW );
-			theApp.emuledlg->sharedfileswnd->sharedfilesctrl.UpdateFile(this);
+			SetUpPriority( PR_LOW,false );
+			//theApp.emuledlg->sharedfileswnd->sharedfilesctrl.UpdateFile(this);
 		}
 		return;
 	}
 	if ( GetOnUploadqueue() > 15 ){
 		if( GetUpPriority() != PR_NORMAL ){
-			SetUpPriority( PR_NORMAL );
+			SetUpPriority( PR_NORMAL,false );
 			//theApp.emuledlg->sharedfileswnd->sharedfilesctrl.UpdateFile(this);
 		}
 		return;
 	}
 	if( GetUpPriority() != PR_HIGH){
-		SetUpPriority( PR_HIGH );
+		SetUpPriority( PR_HIGH,false );
 		//theApp.emuledlg->sharedfileswnd->sharedfilesctrl.UpdateFile(this);
 	}
 }
@@ -2425,7 +2433,7 @@ double CKnownFile::CalculateUploadPriorityPercent()
 	else
 		oldtransferred = 0;
 
-	double percent = statistic.GetTransferred()/(double)wantedUpload*100.0 + oldtransferred/(double)wantedUpload*100.0/2.0; //old count only half
+	double percent = (statistic.GetTransferred() + oldtransferred/2) /(double)wantedUpload*100.0; //old count only half
 	
 	return percent;
 }
@@ -2435,31 +2443,39 @@ void CKnownFile::CalculateAndSetUploadPriority()
 	if (!IsAutoUpPriority())
 		return;
 
-	double avgpercent = theApp.sharedfiles->m_lastavgPercent;
-	double changefactor= avgpercent / 100 * 25;
-	if (changefactor < 2)  changefactor =2;
-	if (changefactor > 20) changefactor=20;
+	float avgpercent = theApp.sharedfiles->m_lastavgPercent;
+	float changefactor= avgpercent / 100 * 22;
+	if (changefactor < 3)  changefactor =3;
+	//if (changefactor > 20) changefactor=20;
 
+	uint8 wantedprio=0;
 
 	if((uint64)GetFileSize() > 500*1024)
 	{
 		double uploadpercent = CalculateUploadPriorityPercent();
+		if (GetUpPriority()==PR_NORMAL)
+			changefactor *= 1.2f; //prefer to keep the level
 
 		if (uploadpercent < avgpercent - changefactor)
 		{
-				SetUpPriority( PR_HIGH );
+				wantedprio=PR_HIGH;
 		}
 		else if (uploadpercent > avgpercent + changefactor)
 		{
-				SetUpPriority( PR_LOW );
+				wantedprio=PR_LOW;
 		}
 		else
 		{
-				SetUpPriority( PR_NORMAL );
+				wantedprio=PR_NORMAL;
 		}
+		if(GetOnUploadqueue() < theApp.sharedfiles->m_avg_client_on_uploadqueue/8)
+			wantedprio=PR_HIGH;
+		else if(wantedprio==PR_LOW && GetOnUploadqueue() < theApp.sharedfiles->m_avg_client_on_uploadqueue/4)
+			wantedprio=PR_NORMAL;
+		SetUpPriority(wantedprio,false);
 	}
 	else
-			SetUpPriority( PR_HIGH ); //files < 500k always high prio
+			SetUpPriority( PR_HIGH,false ); //files < 500k always high prio
 }
 
 //Xman this is the debug version
@@ -2468,66 +2484,166 @@ void CKnownFile::CalculateAndSetUploadPriority2()
 	if (!IsAutoUpPriority())
 		return;
 
-	double avgpercent = theApp.sharedfiles->m_lastavgPercent;
-	double changefactor= avgpercent / 100 * 25;
-	if (changefactor < 2)  changefactor =2;
-	if (changefactor > 20) changefactor=20;
+	float avgpercent = theApp.sharedfiles->m_lastavgPercent;
+	float changefactor= avgpercent / 100 * 22;
+	if (changefactor < 3)  changefactor =3;
+	//if (changefactor > 20) changefactor=20;
 	
+	uint8 wantedprio=0;
 
 	if((uint64)GetFileSize() > 500*1024)
 	{
 		double uploadpercent = CalculateUploadPriorityPercent();
+		if (GetUpPriority()==PR_NORMAL)
+			changefactor *= 1.2f; //prefer to keep the level
 		uint64 wantedUpload = GetWantedUpload();
-		AddDebugLogLine(false, _T("avg: %0.00f%% percent: %0.00f%%, wanted: %s, file: %s"),avgpercent,uploadpercent, CastItoXBytes(wantedUpload),this->GetFileName()); 
+		uint64 completedup= IsPartFile() ? ((CPartFile*)this)->GetCompletedSize() : GetFileSize();
+		
+		uint32 virtualsources=GetVirtualSourceIndicator();
+
+		
+		AddDebugLogLine(false, _T("avg: %0.2f%% percent: %0.2f%% , wanted: %s, completed: %s, pushfaktor: %i, avg virtuals: %u, own virtuals: %u, file: %s"),avgpercent,uploadpercent,  CastItoXBytes(wantedUpload),CastItoXBytes(completedup),(int16)((pushfaktor-1)*100),theApp.sharedfiles->m_avg_virtual_sources, virtualsources,this->GetFileName()); 
 
 		if (uploadpercent < avgpercent - changefactor)
 		{
-				SetUpPriority( PR_HIGH );
+			wantedprio=PR_HIGH;
 			AddDebugLogLine(false, _T("setting high")); 
 		}
 		else if (uploadpercent > avgpercent + changefactor)
 		{
-				SetUpPriority( PR_LOW );
+			wantedprio=PR_LOW;
 			AddDebugLogLine(false, _T("setting low")); 
 		}
 		else
 		{
-				SetUpPriority( PR_NORMAL );
+			wantedprio=PR_NORMAL;
 			AddDebugLogLine(false, _T("setting normal")); 
 		}
+		if(wantedprio!=PR_HIGH && GetOnUploadqueue() < theApp.sharedfiles->m_avg_client_on_uploadqueue/8)
+		{
+			wantedprio=PR_HIGH;
+			AddDebugLogLine(false, _T("setting high because low requests")); 
+		}
+		else if(wantedprio==PR_LOW && GetOnUploadqueue() < theApp.sharedfiles->m_avg_client_on_uploadqueue/4)
+		{
+			wantedprio=PR_NORMAL;
+			AddDebugLogLine(false, _T("setting normal because low requests")); 
+		}
+		SetUpPriority(wantedprio,false);
 	}
 	else
 	{
-			SetUpPriority( PR_HIGH ); //files < 500k always high prio
+			SetUpPriority( PR_HIGH,false ); //files < 500k always high prio
 		AddDebugLogLine(false, _T("small file->high Prio. file: %s"), GetFileName());
+	}
+}
+
+uint32 CKnownFile::GetVirtualSourceIndicator() const
+{
+	if(IsPartFile())
+	{
+		uint32 fullsources;
+		if(m_nCompleteSourcesCountHi > m_nVirtualCompleteSourcesCount)
+			fullsources = m_nVirtualCompleteSourcesCount + (m_nCompleteSourcesCountHi-m_nVirtualCompleteSourcesCount)/4;
+		else
+			fullsources = m_nVirtualCompleteSourcesCount;
+		return m_nVirtualUploadSources*2 + fullsources; 
+	}
+	else
+	{
+		uint32 fullsources;
+		if(m_nCompleteSourcesCountHi > m_nCompleteSourcesCountLo)
+			fullsources = (m_nCompleteSourcesCountLo + (m_nCompleteSourcesCountHi-m_nCompleteSourcesCountLo)/4);
+		else
+			fullsources = m_nCompleteSourcesCountLo;
+		return m_nVirtualCompleteSourcesCount*2 + fullsources; 
 	}
 }
 
 uint64 CKnownFile::GetWantedUpload()
 {
-	/* alternative 1:
-	uint64 filesize = GetFileSize();
-	if (filesize <=0) filesize = 1;
-	if(filesize>100*1024*1024)
-		return filesize;
-	else if (filesize>= 50 *1024*1024)
-		return 100*1024*1024;
-	else
-	{
-		double ln2=log(2.0);
-		return (uint64)(log(200.0/(filesize/1024.0/1024.0))/ln2)*filesize;
-	}
-	*/
+	double returnvalue=0;
 
-	//alternative 2
-	uint64 filesize = GetFileSize();
+	uint64 filesize = IsPartFile() ? ((CPartFile*)this)->GetCompletedSize() : GetFileSize();
 	if (filesize <=0) filesize = 1;
+	/*
 	if(filesize>=600*1024*1024)
-		return filesize;
+		returnvalue = (double)filesize;
 	else
+	*/
 	{
-		double factor = 1.0 + (60.63 / ( (filesize/1024.0/1024.0) + 2.2 ));
-		return (uint64)(factor * (double)filesize);
+		double factor = 1.0 + (60.63 / ( (filesize/(1024.0*1024.0)) + 2.2 ));
+		returnvalue = (factor * (double)filesize);
+	}
+
+	if(!thePrefs.GetEnableMultiQueue()  )
+	{
+
+		//v4:
+		uint32 virtualsources=GetVirtualSourceIndicator();
+		
+		pushfaktor=1;
+		if(theApp.sharedfiles->m_avg_virtual_sources > 0)
+		{
+			if(virtualsources < theApp.sharedfiles->m_avg_virtual_sources)
+			{
+				virtualsources = theApp.sharedfiles->m_avg_virtual_sources - virtualsources;
+				pushfaktor = 1 + (float)virtualsources / theApp.sharedfiles->m_avg_virtual_sources;
+			}
+			else
+			{
+				if(virtualsources > theApp.sharedfiles->m_avg_virtual_sources*3)
+					pushfaktor = 0.67f; //-33%
+				else if(virtualsources > theApp.sharedfiles->m_avg_virtual_sources*2)
+					pushfaktor = 0.85f; //-15%
+			}
+		}
+		returnvalue *= pushfaktor;
+		//end v4
+	}
+	
+	if(returnvalue <=1) //just to be sure
+		returnvalue = 1;
+
+	return (uint64)returnvalue;
+}
+
+void CKnownFile::UpdateVirtualUploadSources()
+{
+	UINT partcount = GetPartCount();
+
+	CArray<uint16, uint16> tmp_AvailPartFrequency;
+
+	tmp_AvailPartFrequency.SetSize(partcount);
+	for (UINT i = 0; i < partcount; i++)
+		tmp_AvailPartFrequency[i] = 0;
+
+	for (POSITION pos = m_ClientUploadList.GetHeadPosition(); pos != 0; )
+	{
+		CUpDownClient* cur_src = m_ClientUploadList.GetNext(pos);
+		if (cur_src->m_abyUpPartStatus && cur_src->GetUpPartCount() == partcount)
+		{
+			for (UINT i = 0; i < partcount; i++)
+			{
+				if (cur_src->IsUpPartAvailable(i))
+					tmp_AvailPartFrequency[i] += 1;
+			}
+		}
+	}
+
+
+	UINT nVirtualUploadSources = (UINT)-1;
+	for (UINT i = 0; i < partcount; i++){
+		if(tmp_AvailPartFrequency[i] < nVirtualUploadSources)
+			nVirtualUploadSources = tmp_AvailPartFrequency[i];
+	}
+
+
+	if (m_nVirtualUploadSources!=nVirtualUploadSources)
+	{
+		m_nVirtualUploadSources=nVirtualUploadSources;
+		if(theApp.emuledlg->sharedfileswnd->m_hWnd)
+			theApp.emuledlg->sharedfileswnd->sharedfilesctrl.UpdateFile(this);
 	}
 }
 

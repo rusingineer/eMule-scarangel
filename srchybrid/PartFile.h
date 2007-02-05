@@ -190,8 +190,11 @@ public:
 
 	bool	SavePartFile();
 	void	PartFileHashFinished(CKnownFile* result);
+	
+	//Xman Flush Thread/Safehash: need the mono threaded hashing when shutting down
+	bool	HashSinglePart(UINT partnumber); // true = ok , false = corrupted
+	//Xman end
 	//Xman
-	//bool	HashSinglePart(UINT partnumber); // true = ok , false = corrupted
 	// BEGIN SLUGFILLER: SafeHash - replaced old handlers, full hash checker remains for file completion
 	void	PartHashFinished(UINT partnumber, bool corrupt);
 	void	PartHashFinishedAICHRecover(UINT partnumber, bool corrupt);
@@ -209,9 +212,10 @@ public:
     bool    ShrinkToAvoidAlreadyRequested(uint64& start, uint64& end) const;
 	bool	IsCorruptedPart(UINT partnumber) const;
 	
-	//Xman Dynamic block request (netfinity/morph)
+	//Xman Dynamic block request (netfinity/morph/Xman)
 	uint64	GetRemainingAvailableData(const uint8* srcstatus) const;
 	uint64	GetRemainingAvailableData(const CUpDownClient* sender) const;
+	uint32  GetDownloadSpeedInPart(uint16 forpart, CUpDownClient* current_source) const;
 	//Xman end
 
 	uint64	GetTotalGapSizeInRange(uint64 uRangeStart, uint64 uRangeEnd) const;
@@ -438,7 +442,7 @@ public:
 #endif
 
 protected:
-	bool	GetNextEmptyBlockInPart(UINT partnumber, Requested_Block_Struct* result, uint64 bytesToRequest = EMBLOCKSIZE) const; //Xman Dynamic block request (netfinity/morph)
+	bool	GetNextEmptyBlockInPart(UINT partnumber, Requested_Block_Struct* result, uint64 bytesToRequest = EMBLOCKSIZE) const; //Xman Dynamic block request (netfinity/Xman)
 	void	CompleteFile(bool hashingdone);
 	void	CreatePartFile(UINT cat = 0);
 	void	Init();

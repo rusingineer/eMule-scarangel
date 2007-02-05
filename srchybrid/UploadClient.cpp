@@ -164,6 +164,7 @@ void CUpDownClient::SetUploadState(EUploadState eNewState)
 		// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 		if(m_nUploadState == US_UPLOADING || eNewState == US_UPLOADING || m_nUploadState== US_CONNECTING){
 			m_nUpDatarate = 0;
+			m_nUpDatarate10 = 0;
 			m_nUpDatarateMeasure = 0;
 			m_upHistory_list.RemoveAll();
 
@@ -270,10 +271,10 @@ int CUpDownClient::GetFilePrioAsNumber() const {
 				filepriority = 25;
 				break;
 			case PR_HIGH: 
-				filepriority = 14; 
+			filepriority = thePrefs.UseAdvancedAutoPtio() ? 15 : 14; //Xman advanced upload-priority
 				break; 
 			case PR_LOW: 
-				filepriority = 7; 
+			filepriority = thePrefs.UseAdvancedAutoPtio() ? 6 : 7; //Xman advanced upload-priority
 				break; 
 			case PR_VERYLOW:
 				filepriority = 2;
@@ -874,10 +875,21 @@ bool CUpDownClient::ProcessExtendedInfo(CSafeMemFile* data, CKnownFile* tempreqf
 void CUpDownClient::CreateStandartPackets(byte* data,uint32 togo, Requested_Block_Struct* currentblock, bool bFromPF){
 	uint32 nPacketSize;
 	CMemFile memfile((BYTE*)data,togo);
-	if (togo > 10240) 
-		nPacketSize = togo/(uint32)(togo/10240);
+	
+	//Xman flexible splittingsize
+	uint32 splittingsize = 10240;
+	if( m_nUpDatarate10 > 5120 && !IsUploadingToPeerCache() && !GetDownloadState()==DS_DOWNLOADING)
+	{
+		splittingsize = m_nUpDatarate10 << 1;
+		if (splittingsize > 36000)
+			splittingsize = 36000;
+	}
+	
+	if (togo > splittingsize) 
+		nPacketSize = togo/(uint32)(togo/splittingsize);
 	else
 		nPacketSize = togo;
+	//Xman end
 	while (togo){
 		if (togo < nPacketSize*2)
 			nPacketSize = togo;
@@ -1066,10 +1078,21 @@ void CUpDownClient::CreatePackedPackets(byte* data, uint32 togo, Requested_Block
 	uint32 oldSize = togo;
 	togo = newsize;
 	uint32 nPacketSize;
-	if (togo > 10240) 
-		nPacketSize = togo/(uint32)(togo/10240);
+
+	//Xman flexible splittingsize
+	uint32 splittingsize = 10240;
+	if( m_nUpDatarate10 > 5120 && !GetDownloadState()==DS_DOWNLOADING)
+	{
+		splittingsize = m_nUpDatarate10 << 1; //one packet can be send between 2 - 4 seconds
+		if (splittingsize > 36000)
+			splittingsize = 36000;
+	}
+
+	if (togo > splittingsize) 
+		nPacketSize = togo/(uint32)(togo/splittingsize);
 	else
 		nPacketSize = togo;
+	//Xman end
 
 	uint32 totalPayloadSize = 0;
 
@@ -1086,6 +1109,7 @@ void CUpDownClient::CreatePackedPackets(byte* data, uint32 togo, Requested_Block
 			PokeUInt64(&packet->pBuffer[16], statpos);
 			PokeUInt32(&packet->pBuffer[24], newsize);
 			memfile.Read(&packet->pBuffer[28],nPacketSize);
+			theStats.AddUpDataOverheadFileRequest(28); //Xman fix
 		}
 		else{
 			packet = new Packet(OP_COMPRESSEDPART,nPacketSize+24,OP_EMULEPROT,bFromPF);
@@ -1093,6 +1117,7 @@ void CUpDownClient::CreatePackedPackets(byte* data, uint32 togo, Requested_Block
 			PokeUInt32(&packet->pBuffer[16], (uint32)statpos);
 			PokeUInt32(&packet->pBuffer[20], newsize);
 			memfile.Read(&packet->pBuffer[24],nPacketSize);
+			theStats.AddUpDataOverheadFileRequest(24); //Xman fix
 		}
 
 		if (thePrefs.GetDebugClientTCPLevel() > 0){
@@ -1108,7 +1133,7 @@ void CUpDownClient::CreatePackedPackets(byte* data, uint32 togo, Requested_Block
 		totalPayloadSize += payloadSize;
 
 		// put packet directly on socket
-		theStats.AddUpDataOverheadFileRequest(24);
+		//theStats.AddUpDataOverheadFileRequest(24); //Xman fix: we have different sizes , moved up
 		socket->SendPacket(packet,true,false, payloadSize);
 	}
 	delete[] output;
@@ -1306,7 +1331,7 @@ void CUpDownClient::SendOutOfPartReqsAndAddToWaitingQueue(bool /*givebonus*/) //
 		//calculate the time
 		if(GetQueueSessionPayloadUp() < 9*1024*1024)
 		{
-			bonus = (uint32)(((9*1024*1024) - GetQueueSessionPayloadUp()) / (double)(9*1024*1024) * (waitingtime/2));
+			bonus = (uint32)(((PARTSIZE) - GetQueueSessionPayloadUp()) / (double)(PARTSIZE) * (waitingtime/2));
 		}
 	}
 	*/
@@ -1672,6 +1697,18 @@ void CUpDownClient::CompUploadRate(){
 		m_nUpDatarate = (deltaTime > 0) ? (UINT)(1000.0 * deltaByte / deltaTime) : 0;   // [bytes/s]
 	}
 
+	if(m_upHistory_list.GetSize() > 3){	
+		// Compute datarate (=> display)
+		POSITION pos = m_upHistory_list.FindIndex(10);
+		if(pos == NULL){
+			pos = m_upHistory_list.GetTailPosition();
+		}
+		TransferredData& oldestSample = m_upHistory_list.GetAt(pos);
+		uint32 deltaTime = newSample.timeStamp - oldestSample.timeStamp;
+		UINT deltaByte = newSample.dataLength - oldestSample.dataLength;
+		m_nUpDatarate10 = (deltaTime > 0) ? (UINT)(1000.0 * deltaByte / deltaTime) : 0;   // [bytes/s]
+	}
+
 	// Check and then refresh GUI
 	m_displayUpDatarateCounter++;
 	//Xman Code Improvement: slower refresh for clientlist
@@ -1892,7 +1929,6 @@ int CReadBlockFromFileThread::Run() {
 		else{
 			fullname.Format(_T("%s\\%s"),srcfile->GetPath(),srcfile->GetFileName());
 		}
-
 
 		if (!file.Open(fullname,CFile::modeRead|CFile::osSequentialScan|CFile::shareDenyNone))
 			throw GetResString(IDS_ERR_OPEN);

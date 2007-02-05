@@ -625,7 +625,12 @@ void CHistoryListCtrl::CreateMenues()
 	if (m_HistoryMenu) VERIFY(m_HistoryMenu.DestroyMenu());
 
 	m_HistoryOpsMenu.CreateMenu();
+	// ==> UPnP support [Xtreme] - Stulle
+	/*
+	m_HistoryOpsMenu.AddMenuTitle(NULL, true);
+	*/
 	m_HistoryOpsMenu.AddMenuTitle(NULL, true, false);
+	// <== UPnP support [Xtreme] - Stulle
 	m_HistoryOpsMenu.AppendMenu(MF_STRING,MP_CLEARHISTORY,GetResString(IDS_DOWNHISTORY_CLEAR), _T("CLEARCOMPLETE"));
 
 	m_HistoryMenu.CreatePopupMenu();
@@ -690,9 +695,14 @@ void CHistoryListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	UINT flag = (iWebMenuEntries == 0 || iSelectedItems != 1) ? MF_GRAYED : MF_ENABLED;
 	m_HistoryMenu.AppendMenu(MF_POPUP | flag, (UINT_PTR)WebMenu.m_hMenu, GetResString(IDS_WEBSERVICES), _T("SEARCHMETHOD_GLOBAL"));
 
+	m_HistoryMenu.AppendMenu(MF_SEPARATOR); 
+	m_HistoryMenu.AppendMenu(MF_STRING | (GetItemCount() > 0 ? MF_ENABLED : MF_GRAYED), MP_FIND, GetResString(IDS_FIND), _T("Search"));
+
 	m_HistoryMenu.TrackPopupMenu(TPM_LEFTALIGN |TPM_RIGHTBUTTON,point.x,point.y,this);
 
-	m_HistoryMenu.RemoveMenu(m_HistoryMenu.GetMenuItemCount()-1,MF_BYPOSITION);
+	m_HistoryMenu.RemoveMenu(m_HistoryMenu.GetMenuItemCount()-1,MF_BYPOSITION); //find menu
+	m_HistoryMenu.RemoveMenu(m_HistoryMenu.GetMenuItemCount()-1,MF_BYPOSITION); //separator
+	m_HistoryMenu.RemoveMenu(m_HistoryMenu.GetMenuItemCount()-1,MF_BYPOSITION); //web menu
 	VERIFY( WebMenu.DestroyMenu() );
 
 }
@@ -722,6 +732,14 @@ BOOL CHistoryListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 {
 	UINT selectedCount = this->GetSelectedCount(); 
 	int iSel = GetSelectionMark();
+
+	switch (wParam)
+	{
+	case MP_FIND:
+		OnFindStart();
+		return TRUE;
+	}
+
 
 	CTypedPtrList<CPtrList, CKnownFile*> selectedList;
 	POSITION pos = GetFirstSelectedItemPosition();

@@ -5449,6 +5449,7 @@ BEGIN
 */
 // <== Superior Client Handling [Stulle] - Stulle
     IDS_A_UPPRIO            "Use advanced auto-uploadpriority (experimental)"
+    IDS_SHAREFACTOR         "Sharefactor"
 END
 
 STRINGTABLE 

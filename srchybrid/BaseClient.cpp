@@ -154,7 +154,6 @@ void CUpDownClient::Init()
 	m_nTransferredUp = 0;
 	m_cAsked = 0;
 	m_cDownAsked = 0;
-	m_nUpDatarate = 0;
 	m_pszUsername = 0;
 	m_nUserIDHybrid = 0;
 	m_dwServerIP = 0;
@@ -289,6 +288,7 @@ void CUpDownClient::Init()
 	m_displayDownDatarateCounter = 0;
 
 	m_nUpDatarate = 0;
+	m_nUpDatarate10 = 0;
 	m_nUpDatarateMeasure = 0;
 
 	m_nDownDatarate = 0;
@@ -540,7 +540,10 @@ void CUpDownClient::TestLeecher(){
 				{
 					m_uNickchanges++;
 					if(m_uNickchanges >=3)
+					{
 						BanLeecher(_T("Nick-Changer"),5); //hard ban
+						return;
+					}
 				}
 			}
 			else
@@ -552,16 +555,10 @@ void CUpDownClient::TestLeecher(){
 		}
 		//Xman end Anti-Nick-Changer
 		
-		if(m_pszUsername!=NULL && (old_m_pszUsername.IsEmpty() || old_m_pszUsername!=m_pszUsername)) //remark: because old_m_pszUsername is CString and there operator != is defined, it isn't a pointer comparison 
+		if(m_bLeecher!=4 && m_pszUsername!=NULL && (old_m_pszUsername.IsEmpty() || old_m_pszUsername!=m_pszUsername)) //remark: because old_m_pszUsername is CString and there operator != is defined, it isn't a pointer comparison 
 		{
 			old_m_pszUsername = m_pszUsername;
 			m_ulastNickChage=::GetTickCount(); //Xman Anti-Nick-Changer
-			LPCTSTR reason=theApp.dlp->DLPCheckUsername_Hard(m_pszUsername);
-			if(reason)
-			{
-				BanLeecher(reason,5); //hard ban
-				return;
-			}
 
 			//find gamer snake 
 			if (HasValidHash())
@@ -575,10 +572,17 @@ void CUpDownClient::TestLeecher(){
 				}
 			}
 
-			reason=theApp.dlp->DLPCheckUsername_Soft(m_pszUsername);
+			LPCTSTR reason=theApp.dlp->DLPCheckUsername_Soft(m_pszUsername);
 			if(reason)
 			{
 				BanLeecher(reason,10); //soft ban
+				return;
+			}
+
+			reason=theApp.dlp->DLPCheckUsername_Hard(m_pszUsername);
+			if(reason)
+			{
+				BanLeecher(reason,5); //hard ban
 				return;
 			}
 

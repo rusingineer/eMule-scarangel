@@ -568,7 +568,7 @@ void CPartFile::CreatePartFile(UINT cat)
 
 	CString partfull(RemoveFileExtension(m_fullname));
 	SetFilePath(partfull);
-	if (!m_hpartfile.Open(partfull,CFile::modeCreate|CFile::modeReadWrite|CFile::shareDenyWrite|CFile::osSequentialScan)){
+	if (!m_hpartfile.Open(partfull,CFile::modeCreate|CFile::modeReadWrite|CFile::shareDenyWrite|CFile::osRandomAccess)){ //Xman Code-improvement: changed to osRandomAccess - no caching needed (idea morph)
 		LogError(LOG_STATUSBAR, GetResString(IDS_ERR_CREATEPARTFILE));
 		SetStatus(PS_ERROR);
 	}
@@ -2282,7 +2282,7 @@ bool CPartFile::GetNextEmptyBlockInPart(UINT partNumber, Requested_Block_Struct 
 		if (end > partEnd)
 			end = partEnd;
 
-		//Xman Dynamic block request (netfinity/morph)
+		//Xman Dynamic block request (netfinity/Xman)
 		bytesToRequest -= bytesToRequest % 10240; 
 		if (bytesToRequest < 10240) bytesToRequest = 10240;
 		else if (bytesToRequest > EMBLOCKSIZE) bytesToRequest = EMBLOCKSIZE;
@@ -3301,7 +3301,7 @@ uint32 CPartFile::Process(uint32 maxammount, bool isLimited, bool fullProcess)
 							//nächste TCP ist in weniger als 10 minuten
 							(cur_src->GetNextTCPAskedTime() - (10*60000) < dwCurTick ||
 							//Xman falls socket, dann darf der TCP-request immer stattfinden, wenn nächster request in 2 Minuten wäre
-							//aber nicht falsl wir noch auf UDP-Antwort warten
+							//aber nicht falls wir noch auf UDP-Antwort warten
 							(cur_src->UDPPacketPending()==false && (cur_src->GetLastAskedTime() + cur_src->GetJitteredFileReaskTime() - MIN2MS(2) < dwCurTick)) ||
 							//client antwortet nicht auf UDP also schau nicht auf NextTCPAskedTime
 							//sondern wann muß das nächste mal abgefragt werden - 10 Minuten
@@ -3703,6 +3703,10 @@ void CPartFile::UpdatePartsInfo()
 				m_nCompleteSourcesCount = m_SrcpartFrequency[i];
 		}
 	
+		//Xman show virtual sources
+		m_nVirtualCompleteSourcesCount=m_nCompleteSourcesCount;
+		//Xman end
+
 		count.Add(m_nCompleteSourcesCount);
 	
 		int n = count.GetSize();
@@ -3772,11 +3776,13 @@ void CPartFile::UpdatePartsInfo()
 	}
 
 	//Xman show virtual sources (morph)
+	/* //Xman 5.4.1 moved up
 	m_nVirtualCompleteSourcesCount = (uint16)-1;
 	for (UINT i = 0; i < partcount; i++){
 		if(m_nVirtualCompleteSourcesCount > m_SrcpartFrequency[i])
 			m_nVirtualCompleteSourcesCount = m_SrcpartFrequency[i];
 	}
+	*/
 	//Xman end
 
 	UpdateDisplayedInfo();
@@ -4305,9 +4311,12 @@ void CPartFile::DeleteFile(){
 	delete this;
 }
 
-//Xman
+//Xman <5.4.1
 // SLUGFILLER: SafeHash remove - removed HashSinglePart completely.
-/*
+//Xman 5.4.1
+//Xman readded this method
+//Xman Flush Thread/Safehash: need the mono threaded hashing when shutting down
+//otherwise the partfile must be rehashed on next startup
 bool CPartFile::HashSinglePart(UINT partnumber)
 {
 	if ((GetHashCount() <= partnumber) && (GetPartCount() > 1)){
@@ -4344,7 +4353,7 @@ bool CPartFile::HashSinglePart(UINT partnumber)
 		}
 	}
 }
-*/
+//Xman end
 
 bool CPartFile::IsCorruptedPart(UINT partnumber) const
 {
@@ -5626,7 +5635,10 @@ void CPartFile::FlushBuffer(bool forcewait, bool bForceICH, bool /*bNoAICH*/)
 		FlushBuffersExceptionHandler(error);	
 		delete[] changedPart;
 		if (m_FlushSetting)
+		{
 			delete m_FlushSetting;
+			m_FlushSetting=NULL;
+		}
 	}
 #ifndef _DEBUG
 	catch(...)
@@ -5634,7 +5646,10 @@ void CPartFile::FlushBuffer(bool forcewait, bool bForceICH, bool /*bNoAICH*/)
 		FlushBuffersExceptionHandler();
 		delete[] changedPart;
 		if (m_FlushSetting)
+		{
 			delete m_FlushSetting;
+			m_FlushSetting=NULL;
+		}
 	}
 #endif
 }
@@ -5671,15 +5686,41 @@ void CPartFile::FlushDone()
 				// Is part corrupt
 				// Let's check in another thread
 				m_PartsHashing++;
-				CPartHashThread* parthashthread = (CPartHashThread*) AfxBeginThread(RUNTIME_CLASS(CPartHashThread), THREAD_PRIORITY_BELOW_NORMAL,0, CREATE_SUSPENDED);
-				parthashthread->SetSinglePartHash(this, (uint16)uPartNumber);
-				parthashthread->ResumeThread();
+				if (theApp.emuledlg->IsRunning()) //Xman Flush Thread/Safehash (Morph)
+				{
+					CPartHashThread* parthashthread = (CPartHashThread*) AfxBeginThread(RUNTIME_CLASS(CPartHashThread), THREAD_PRIORITY_BELOW_NORMAL,0, CREATE_SUSPENDED);
+					parthashthread->SetSinglePartHash(this, (uint16)uPartNumber);
+					parthashthread->ResumeThread();
+			}
+				//Xman Flush Thread/Safehash (Morph)
+				else
+				{
+					//mono threaded at shutting down
+					if (!HashSinglePart(uPartNumber))
+						PartHashFinished(uPartNumber, true);
+					else
+						PartHashFinished(uPartNumber, false);
+				}
+				//Xman end
 			}
 			else if (IsCorruptedPart(uPartNumber) && (thePrefs.IsICHEnabled() || m_FlushSetting->bForceICH))
 			{
-				CPartHashThread* parthashthread = (CPartHashThread*) AfxBeginThread(RUNTIME_CLASS(CPartHashThread), THREAD_PRIORITY_BELOW_NORMAL,0, CREATE_SUSPENDED);
-				parthashthread->SetSinglePartHash(this, (uint16)uPartNumber, true);	// Special case, doesn't increment hashing parts, since part isn't really complete
-				parthashthread->ResumeThread();
+				if (theApp.emuledlg->IsRunning()) //Xman Flush Thread/Safehash (Morph)
+				{
+					CPartHashThread* parthashthread = (CPartHashThread*) AfxBeginThread(RUNTIME_CLASS(CPartHashThread), THREAD_PRIORITY_BELOW_NORMAL,0, CREATE_SUSPENDED);
+					parthashthread->SetSinglePartHash(this, (uint16)uPartNumber, true);	// Special case, doesn't increment hashing parts, since part isn't really complete
+					parthashthread->ResumeThread();
+			}
+				//Xman Flush Thread/Safehash (Morph)
+				else
+				{
+					//mono threaded at shutting down
+					if (!HashSinglePart(uPartNumber))
+						PartHashFinishedAICHRecover(uPartNumber, true);
+					else
+						PartHashFinishedAICHRecover(uPartNumber, false);
+				}
+				//Xman end
 			}
 		}
 	}
@@ -6322,6 +6363,22 @@ struct Chunk {
 };
 #pragma pack()
 
+//Xman Dynamic block request
+uint32 CPartFile::GetDownloadSpeedInPart(uint16 forpart, CUpDownClient* current_source) const
+{
+	ASSERT(forpart!=(uint16)-1);
+	uint32 parttransferrate=0;
+	for(POSITION pos = m_downloadingSourceList.GetHeadPosition(); pos != NULL;)
+	{
+		CUpDownClient* cur_src = srclist.GetNext(pos);
+		if(cur_src->m_lastPartAsked==forpart && cur_src!=current_source)
+		{
+			parttransferrate += cur_src->GetDownloadDatarate10();
+		}
+	}
+	return parttransferrate;
+}
+
 
 bool CPartFile::GetNextRequestedBlock_zz(CUpDownClient* sender, 
 									  Requested_Block_Struct** newblocks, 
@@ -6372,37 +6429,45 @@ bool CPartFile::GetNextRequestedBlock_zz(CUpDownClient* sender,
 		tempLastPartAsked = sender->m_lastPartAsked;
 	}
 
-	//Xman Dynamic block request (netfinity/morph)
+	//Xman Dynamic block request (netfinity/Xman)
 	//uint16 countin=*count; //Xman for debug
 	uint64	bytesPerRequest = EMBLOCKSIZE;
 	uint64	bytesLeftToDownload = GetRemainingAvailableData(sender);
-	uint32	fileDatarate = max(GetDownloadDatarate10(), UPLOAD_CLIENT_DATARATE); // Always assume file is being downloaded at atleast 3 kB/s
-	uint32	sourceDatarate = max(sender->GetDownloadDatarate10(), 10); // Always assume client is uploading at atleast 10 B/s
+	uint32	fileDatarate = max(GetDownloadDatarate10(), UPLOAD_CLIENT_DATARATE); // Always assume file is being downloaded at at least 3072 B/s 
+	uint32	sourceDatarate = max(sender->GetDownloadDatarate10(), 22); // Always assume client is uploading at at least 25 B/s //Xman changed from 10
 	uint32	timeToFileCompletion = max((uint32) (bytesLeftToDownload / (uint64) fileDatarate) + 1, 10); // Always assume it will take atleast 10 seconds to complete
+	bool	is_slow_source=false; 
 
-	bytesPerRequest = (sourceDatarate * timeToFileCompletion) / 2;
+	bytesPerRequest = (sourceDatarate * timeToFileCompletion) >>1;
 
 	//uint64 bytesPerRequest_total=bytesPerRequest; //Xman for debug
 
-	uint64 sourcealreadyreserveddata = sender->GetRemainingReservedDataToDownload();
-	if (bytesPerRequest > sourcealreadyreserveddata)
-		bytesPerRequest -= sourcealreadyreserveddata;
+	uint16 remainingblocks = sender->GetRemainingBlocksToDownload();
+	
+	UINT blockstorequest;
+	if (bytesPerRequest > EMBLOCKSIZE) {
+		blockstorequest = (UINT)(bytesPerRequest/EMBLOCKSIZE);
+		bytesPerRequest = EMBLOCKSIZE;
+	}
 	else
+		blockstorequest = 1;
+	if(remainingblocks >= blockstorequest)
 		return false;
 
-	if (bytesPerRequest > EMBLOCKSIZE) {
-		*count = min((uint16)(bytesPerRequest/EMBLOCKSIZE), *count);
-		bytesPerRequest = EMBLOCKSIZE;
-	} else
-		*count = 1;
+	*count = (uint16)min(blockstorequest - remainingblocks , *count);
+
 	if (bytesPerRequest < 10240)
 	{
 		// Let an other client request this packet if we are close to completion and source is slow
 		// Use the true file datarate here, otherwise we might get stuck in NNP state
-		if (!requestedblocks_list.IsEmpty() && timeToFileCompletion < 30 && bytesPerRequest < 3400 && 5 * sourceDatarate < GetDownloadDatarate10())
+		if (GetDownloadDatarate10()>0)
 		{
-			DebugLog(_T("No request block given as source is slow and chunk near completion!"));
-			return false;
+			uint32 realtimeToFileCompletion=(uint32)(bytesLeftToDownload/GetDownloadDatarate10());
+
+			if (!requestedblocks_list.IsEmpty() && realtimeToFileCompletion < 30 && bytesPerRequest < 3400 /* && 5 * sourceDatarate < GetDownloadDatarate10()*/)
+			{
+				is_slow_source=true;
+			}
 		}
 		bytesPerRequest = 10240;
 	}
@@ -6417,6 +6482,10 @@ bool CPartFile::GetNextRequestedBlock_zz(CUpDownClient* sender,
 	//AddDebugLogLine(false, _T("DBR: Trying to request %u blocks(%u) of size: %u(%u) for client:%s, file: %s"), *count, countin, (uint32)bytesPerRequest, (uint32)bytesPerRequest_total, sender->DbgGetClientInfo(), GetFileName());
 	//AddDebugLogLine(false, _T("DBR+: bytesLeftToDownload:%u, timeToFileCompletion:%u, fileDatarate: %u, sourceDatarate=%u, pending:%u"), (uint32)bytesLeftToDownload, timeToFileCompletion, fileDatarate, sourceDatarate, sender->GetPendingBlockCount());
 
+
+	//prevent an endless loop
+	bool chunklist_initialized=false;
+
 	//Xman end
 
 	// Main loop
@@ -6424,8 +6493,24 @@ bool CPartFile::GetNextRequestedBlock_zz(CUpDownClient* sender,
 	while(newBlockCount != *count){
 		// Create a request block stucture if a chunk has been previously selected
 		if(tempLastPartAsked != (uint16)-1){
+			//Xman Dynamic block request
+			//a slow source could be dropped when there are fast sources and the fiel is near to completion
+			//but it could happen that we drop a slow source, although it is the only one which has the last part needed
+			//now I drop only if there are no other (and faster) clients uploading the wanted chunk
+			if (is_slow_source && 5 * sourceDatarate < GetDownloadSpeedInPart(tempLastPartAsked,sender) )
+			{
+				DebugLog(_T("No request block given as source is slow and chunk near completion! -->trying an other chunk"));
+				//return false;
+
+				// => Try to select another chunk
+				sender->m_lastPartAsked = tempLastPartAsked = (uint16)-1;
+			}
+			else
+			{
+			//Xman end
+
 			Requested_Block_Struct* pBlock = new Requested_Block_Struct;
-			if(GetNextEmptyBlockInPart(tempLastPartAsked, pBlock, bytesPerRequest) == true){ //Xman Dynamic block request (netfinity/morph)
+			if(GetNextEmptyBlockInPart(tempLastPartAsked, pBlock, bytesPerRequest) == true){ //Xman Dynamic block request (netfinity/Xman)
 				//AddDebugLogLine(false, _T("Got request block. Interval %i-%i. File %s. Client: %s"), pBlock->StartOffset, pBlock->EndOffset, GetFileName(), sender->DbgGetClientInfo());
 				// Keep a track of all pending requested blocks
 				requestedblocks_list.AddTail(pBlock);
@@ -6440,6 +6525,7 @@ bool CPartFile::GetNextRequestedBlock_zz(CUpDownClient* sender,
 				// => Try to select another chunk
 				sender->m_lastPartAsked = tempLastPartAsked = (uint16)-1;
 			}
+			}//Xman Dynamic block request
 		}
 
 		// Check if a new chunk must be selected (e.g. download starting, previous chunk complete)
@@ -6447,7 +6533,7 @@ bool CPartFile::GetNextRequestedBlock_zz(CUpDownClient* sender,
 
 			// Quantify all chunks (create list of chunks to download) 
 			// This is done only one time and only if it is necessary (=> CPU load)
-			if(chunksList.IsEmpty() == TRUE){
+			if(chunksList.IsEmpty() == TRUE && chunklist_initialized==false){ //Xman Dynamic block request
 				// Indentify the locally missing part(s) that this source has
 				for(uint16 i = 0; i < partCount; i++){
 					if(sender->IsPartAvailable(i) == true && GetNextEmptyBlockInPart(i, NULL) == true){
@@ -6458,6 +6544,7 @@ bool CPartFile::GetNextRequestedBlock_zz(CUpDownClient* sender,
 						chunksList.AddTail(newEntry);
 					}
 				}
+				chunklist_initialized = true; //Xman Dynamic block request	
 
 				// Check if any block(s) could be downloaded
 				if(chunksList.IsEmpty() == TRUE){
@@ -6808,37 +6895,45 @@ bool CPartFile::GetNextRequestedBlock_Maella(CUpDownClient* sender,
 	CList<Chunk> chunksList(partCount);
 
 
-	//Xman Dynamic block request (netfinity/morph)
+	//Xman Dynamic block request (netfinity/Xman)
 	//uint16 countin=*count; //Xman for debug
 	uint64	bytesPerRequest = EMBLOCKSIZE;
 	uint64	bytesLeftToDownload = GetRemainingAvailableData(sender);
-	uint32	fileDatarate = max(GetDownloadDatarate10(), UPLOAD_CLIENT_DATARATE); // Always assume file is being downloaded at atleast 3 kB/s
-	uint32	sourceDatarate = max(sender->GetDownloadDatarate10(), 10); // Always assume client is uploading at atleast 10 B/s
+	uint32	fileDatarate = max(GetDownloadDatarate10(), UPLOAD_CLIENT_DATARATE); // Always assume file is being downloaded at at least 3072 B/s 
+	uint32	sourceDatarate = max(sender->GetDownloadDatarate10(), 22); // Always assume client is uploading at at least 25 B/s //Xman changed from 10
 	uint32	timeToFileCompletion = max((uint32) (bytesLeftToDownload / (uint64) fileDatarate) + 1, 10); // Always assume it will take atleast 10 seconds to complete
+	bool	is_slow_source=false; 
 
-	bytesPerRequest = (sourceDatarate * timeToFileCompletion) / 2;
+	bytesPerRequest = (sourceDatarate * timeToFileCompletion) >>1;
 
 	//uint64 bytesPerRequest_total=bytesPerRequest; //Xman for debug
 
-	uint64 sourcealreadyreserveddata = sender->GetRemainingReservedDataToDownload();
-	if (bytesPerRequest > sourcealreadyreserveddata)
-		bytesPerRequest -= sourcealreadyreserveddata;
+	uint16 remainingblocks = sender->GetRemainingBlocksToDownload();
+
+	UINT blockstorequest;
+	if (bytesPerRequest > EMBLOCKSIZE) {
+		blockstorequest = (UINT)(bytesPerRequest/EMBLOCKSIZE);
+		bytesPerRequest = EMBLOCKSIZE;
+	}
 	else
+		blockstorequest = 1;
+	if(remainingblocks >= blockstorequest)
 		return false;
 
-	if (bytesPerRequest > EMBLOCKSIZE) {
-		*count = min((uint16)(bytesPerRequest/EMBLOCKSIZE), *count);
-		bytesPerRequest = EMBLOCKSIZE;
-	} else
-		*count = 1;
+	*count = (uint16)min(blockstorequest - remainingblocks , *count);
+
 	if (bytesPerRequest < 10240)
 	{
 		// Let an other client request this packet if we are close to completion and source is slow
 		// Use the true file datarate here, otherwise we might get stuck in NNP state
-		if (!requestedblocks_list.IsEmpty() && timeToFileCompletion < 30 && bytesPerRequest < 3400 && 5 * sourceDatarate < GetDownloadDatarate10())
+		if (GetDownloadDatarate10()>0)
 		{
-			DebugLog(_T("No request block given as source is slow and chunk near completion!"));
-			return false;
+			uint32 realtimeToFileCompletion=(uint32)(bytesLeftToDownload/GetDownloadDatarate10());
+
+			if (!requestedblocks_list.IsEmpty() && realtimeToFileCompletion < 30 && bytesPerRequest < 3400 /* && 5 * sourceDatarate < GetDownloadDatarate10()*/)
+			{
+				is_slow_source=true;
+			}
 		}
 		bytesPerRequest = 10240;
 	}
@@ -6853,6 +6948,9 @@ bool CPartFile::GetNextRequestedBlock_Maella(CUpDownClient* sender,
 	//AddDebugLogLine(false, _T("DBR: Trying to request %u blocks(%u) of size: %u(%u) for client:%s, file: %s"), *count, countin, (uint32)bytesPerRequest, (uint32)bytesPerRequest_total, sender->DbgGetClientInfo(), GetFileName());
 	//AddDebugLogLine(false, _T("DBR+: bytesLeftToDownload:%u, timeToFileCompletion:%u, fileDatarate: %u, sourceDatarate=%u, pending:%u"), (uint32)bytesLeftToDownload, timeToFileCompletion, fileDatarate, sourceDatarate, sender->GetPendingBlockCount());
 
+	//prevent an endless loop
+	bool chunklist_initialized=false;
+
 	//Xman end
 
 	// Main loop
@@ -6860,8 +6958,24 @@ bool CPartFile::GetNextRequestedBlock_Maella(CUpDownClient* sender,
 	while(newBlockCount != *count){
 		// Create a request block stucture if a chunk has been previously selected
 		if(sender->m_lastPartAsked != (uint16)-1){
+			//Xman Dynamic block request
+			//a slow source could be dropped when there are fast sources and the fiel is near to completion
+			//but it could happen that we drop a slow source, although it is the only one which has the last part needed
+			//now I drop only if there are no other (and faster) clients uploading the wanted chunk
+			if (is_slow_source && 5 * sourceDatarate < GetDownloadSpeedInPart(sender->m_lastPartAsked,sender) )
+			{
+				DebugLog(_T("No request block given as source is slow and chunk near completion! -->trying an other chunk"));
+				//return false;
+
+				// => Try to select another chunk
+				sender->m_lastPartAsked = (uint16)-1;
+			}
+			else
+			{
+			//Xman end
+
 			Requested_Block_Struct* pBlock = new Requested_Block_Struct;
-			if(GetNextEmptyBlockInPart(sender->m_lastPartAsked, pBlock, bytesPerRequest) == true){ //Xman Dynamic block request (netfinity/morph)
+			if(GetNextEmptyBlockInPart(sender->m_lastPartAsked, pBlock, bytesPerRequest) == true){ //Xman Dynamic block request (netfinity/Xman)
 				// Keep a track of all pending requested blocks
 				requestedblocks_list.AddTail(pBlock);
 				// Update list of blocks to return
@@ -6875,6 +6989,7 @@ bool CPartFile::GetNextRequestedBlock_Maella(CUpDownClient* sender,
 				// => Try to select another chunk
 				sender->m_lastPartAsked = (uint16)-1;
 			}
+			}//Xman Dynamic block request
 		}
 
 		// Check if a new chunk must be selected (e.g. download starting, previous chunk complete)
@@ -6882,7 +6997,7 @@ bool CPartFile::GetNextRequestedBlock_Maella(CUpDownClient* sender,
 
 			// Quantify all chunks (create list of chunks to download) 
 			// This is done only one time and only if it is necessary (=> CPU load)
-			if(chunksList.IsEmpty() == TRUE){
+			if(chunksList.IsEmpty() == TRUE && chunklist_initialized==false){ //Xman Dynamic block request
 				// Indentify the locally missing part(s) that this source has
 				for(uint16 i = 0; i < partCount; i++){
 					if(sender->IsPartAvailable(i) == true && GetNextEmptyBlockInPart(i, NULL) == true){
@@ -6893,6 +7008,7 @@ bool CPartFile::GetNextRequestedBlock_Maella(CUpDownClient* sender,
 						chunksList.AddTail(newEntry);
 					}
 				}
+				chunklist_initialized = true; //Xman Dynamic block request
 
 				// Check if any block(s) could be downloaded
 				if(chunksList.IsEmpty() == TRUE){
@@ -7205,7 +7321,7 @@ void CPartFile::GrabbingFinished(CxImage** imgResults, uint8 nFramesGrabbed, voi
 	// unlock and reopen the file
 	if (IsPartFile()){
 		CString strFileName = RemoveFileExtension(GetFullName());
-		if (!m_hpartfile.Open(strFileName, CFile::modeReadWrite|CFile::shareDenyWrite|CFile::osSequentialScan)){
+		if (!m_hpartfile.Open(strFileName, CFile::modeReadWrite|CFile::shareDenyWrite|CFile::osRandomAccess)){ //Xman Code-improvement: changed to osRandomAccess - no caching needed (idea morph)
 			// uhuh, that's really bad
 			LogError(LOG_STATUSBAR, GetResString(IDS_FAILEDREOPEN), RemoveFileExtension(GetPartMetFileName()), GetFileName());
 			SetStatus(PS_ERROR);

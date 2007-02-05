@@ -41,6 +41,7 @@
 #include "SharedFileList.h"
 #include "Log.h"
 #include "UploadQueue.h" //Xman UDPReaskFNF-Fix against Leechers (idea by WiZaRd)		
+#include "Sockets.h" //Xman spread reask
 // ==> WebCache [WC team/MorphXT] - Stulle/Max
 #include "WebCache/WebCacheSocket.h" // yonatan http
 #include "SharedFileList.h"	// Superlexx - IFP
@@ -270,17 +271,27 @@ bool CUpDownClient::AskForDownload()
 	// Delay the next refresh of the download session initiated from CPartFile::Process()
 	m_dwLastAskedTime = ::GetTickCount();
 	
-	//Xman 5.1
-	//increase the reask-time for  non UDP-clients
+	//Xman
+	//increase the reask-time for  non UDP-clients + LowID-clients
 	//and give them the chance to connect first. Xtreme will use the connection, see partfile->process
-	//remark: don't do this for LowID-Clients, because they aren't reasked, but flagged
+	//remark: don't do this for LowID-Clients we can't connect, because they aren't reasked, but flagged
 	//see TryToConnect
-	if((!HasLowID() && HasTooManyFailedUDP()) && GetJitteredFileReaskTime()< MIN2MS(30) )
+
+	bool longreask = HasTooManyFailedUDP() || (HasLowID() && (theApp.serverconnect->IsLocalServer(m_dwServerIP,m_nServerPort) || (Kademlia::CKademlia::IsConnected() && HasValidBuddyID())));
+	if(GetJitteredFileReaskTime()< MIN2MS(30) )
+	{	
+		if(longreask)
 		CalculateJitteredFileReaskTime(true);
-	else if((HasLowID()) && GetJitteredFileReaskTime() > MIN2MS(30))
+	}
+	else
+	{
+		if(longreask==false)
 		CalculateJitteredFileReaskTime(false);
+	}
 	m_dwNextTCPAskedTime = m_dwLastAskedTime + GetJitteredFileReaskTime();
+
 	// Maella end
+
 
 
 	SetDownloadState(DS_CONNECTING);
@@ -1223,16 +1234,19 @@ void CUpDownClient::SendBlockRequests(bool ed2krequest)
 
 	// prevent locking of too many blocks when we are on a slow (probably standby/trickle) slot
 	int blockCount = 3;
-	if(IsEmuleClient() && m_byCompatibleClient==0 && reqfile->GetFileSize()-reqfile->GetCompletedSize() <= (uint64)PARTSIZE*4) {
+	
+	//Xman Dynamic block request
+	if(/*IsEmuleClient() && m_byCompatibleClient==0 &&*/ reqfile->GetFileSize()-reqfile->GetCompletedSize() <= (uint64)PARTSIZE*4) {
 		// if there's less than two chunks left, request fewer blocks for
 		// slow downloads, so they don't lock blocks from faster clients.
 		// Only trust eMule clients to be able to handle less blocks than three
-		if(m_nDownDatarate10 < 600 || GetSessionPayloadDown() < 40*1024) { //Xman Xtreme Mod
+		if(m_nDownDatarate10 < 600 || GetSessionPayloadDown() < 40*1024) { 
 			blockCount = 1;
-		} else if(m_nDownDatarate10 < 2400) { //Xman Xtreme Mod, Xman 5.1 raised from 1200
+		} else if(m_nDownDatarate10 < 2400) { 
 			blockCount = 2;
 		}
 	}
+	//Xman end Dynamic block request
 	CreateBlockRequests(blockCount);
 	
 	if (m_PendingBlocks_list.IsEmpty()){
@@ -1877,6 +1891,31 @@ void CUpDownClient::CheckDownloadTimeout()
 				if (!socket->IsRawDataMode())
 					SendCancelTransfer();
 			}
+			//Xman Code Improvement
+			//we will trigger a reask in SetdownloadSate but most probably the socket isn't empty and can't answer
+			//--> let it timeout and use a new one, or at least wait
+			// Maella -Unnecessary Protocol Overload-
+			if(reqfile)
+			{
+				uint32 value1=0;
+				uint32 value2=0;
+				if (GetTickCount() > MIN_REQUESTTIME)
+					value1 = GetTickCount() - MIN_REQUESTTIME; //in one minute
+
+				PartStatusMap::const_iterator it = m_partStatusMap.find(reqfile);
+				if(it != m_partStatusMap.end())
+					value2= it->second.dwStartUploadReqTime;
+				
+				if (value1 > value2)
+				{
+					m_partStatusMap[reqfile].dwStartUploadReqTime = value1;
+					m_dwLastAskedTime = value1;
+				}
+			}
+			//remark: why we can't simple disconnect the socket:
+			// a) it would remove the client from upload
+			// b) the CancelTranfer wouldn't be send
+			//Xman end
 			SetDownloadState(DS_ONQUEUE, _T("Timeout. More than 100 seconds since last complete block was received.") , CUpDownClient::DSR_TIMEOUT); // - Maella -Download Stop Reason-
 		}
 	}
@@ -2774,18 +2813,3 @@ void CUpDownClient::TrigNextSafeAskForDownload(CPartFile* pFile){
 	}
 }
 // Maella end
-
-//Xman Dynamic block request (netfinity/morph)
-uint64 CUpDownClient::GetRemainingReservedDataToDownload() const {
-	uint64 reserveddata = 0;
-	for (POSITION pos = m_PendingBlocks_list.GetHeadPosition(); pos != NULL;) {
-		Pending_Block_Struct* Pending = m_PendingBlocks_list.GetNext(pos);
-		Requested_Block_Struct* block = Pending->block;
-		if (m_nLastBlockOffset < block->StartOffset && block->EndOffset > m_nLastBlockOffset)
-			reserveddata += block->EndOffset - block->StartOffset + 1;
-		else
-			reserveddata += block->EndOffset - m_nLastBlockOffset - Pending->totalUnzipped;
-	}
-	return reserveddata;
-}
-//Xman end

@@ -768,10 +768,29 @@ int IsRunningXPSP2(){
 			return 0;
 	}
 
+	//Xman changed:
+	//method is used for three cases:
+	//1) set half open connections
+	//2) open firewall
+	//3) send mail, which is always enable at Xtreme due to VS 2003 SP1
+	// things are equal for XP SP2, win 2003 SP1 and vista
+	// patch by leuk_he 1/2007
+	/*
 	if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT && osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1){
 		if (osvi.wServicePackMajor >= 2)
 			return 1;
 	}
+	*/
+
+	if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT &&
+		((osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1 && osvi.wServicePackMajor >= 2)  //xp sp2
+		||(osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 2 && osvi.wServicePackMajor >= 1)  //2003 sp1
+		||(osvi.dwMajorVersion == 5 && osvi.dwMinorVersion >2 )  // 2003 product line...
+		||(osvi.dwMajorVersion > 5 )))  //vista and above...
+						return 1;
+	//Xman end
+
+
 	return 0;
 }
 

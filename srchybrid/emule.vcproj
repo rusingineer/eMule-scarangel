@@ -86,7 +86,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include;..\crypto.v52.1"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;SUPPORT_LARGE_FILES"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;SUPPORT_LARGE_FILES;PRINT_STATISTIC;LOGTAG"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -2991,12 +2991,6 @@
 			</File>
 			<File
 				RelativePath=".\SplashScreenEx.h">
-			</File>
-			<File
-				RelativePath=".\UPnP.cpp">
-			</File>
-			<File
-				RelativePath=".\UPnP.h">
 			</File>
 			<File
 				RelativePath=".\WndUtil.h">

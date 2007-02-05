@@ -3917,7 +3917,12 @@ void CDownloadListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 						if ( (uJitteredFileReaskTime+client->GetLastAskedTime()) < ::GetTickCount() )
 							askbuffer=_T(": 0\n");
 						else
+							if(client->GetDownloadState()==DS_NONEEDEDPARTS || uJitteredFileReaskTime+client->GetLastAskedTime() <= client->GetNextTCPAskedTime())
 							askbuffer.Format(_T(": %s\n"),CastSecondsToHM((uJitteredFileReaskTime+client->GetLastAskedTime()-::GetTickCount())/1000));
+							else
+							{
+								askbuffer.Format(_T(": %s (%s)\n"), CastSecondsToHM((uJitteredFileReaskTime+client->GetLastAskedTime()-::GetTickCount())/1000), CastSecondsToHM((client->GetNextTCPAskedTime()-::GetTickCount())/1000));
+							}
 					}
 					else
 					{
@@ -3943,6 +3948,8 @@ void CDownloadListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 							info.AppendFormat(_T("\nclient has buddy"));
 						else
 							info.AppendFormat(_T("\nclient has no buddy"));
+						if (client->GetLowIDReaskPening())
+							info.Append(_T(", reask pending"));
 					}
 					//Xman end
 

@@ -2335,6 +2335,7 @@
 #define IDS_CLIENTPERCENTAGE            3184
 #define IDS_ONERELEASESLOT              3185
 #define IDS_A_UPPRIO                    3186
+#define IDS_SHAREFACTOR                 3187
 #define IDD_PPG_Xtreme                  4000
 #define IDC_13RATIO                     4001
 #define IDC_UPREDUCTION                 4002
@@ -2419,10 +2420,9 @@
 #define IDC_ONERELEASESLOT              4079
 #define IDC_AUTOUPDATEIPFILTER          4080
 #define IDC_USENARROWFONT               4081
-#define IDC_ONERELEASESLOT2             4081
-#define IDC_A_UPPRIO                    4081
-#define IDC_CC_MAELLA                   4082
-#define IDC_CC_ZZ                       4083
+#define IDC_A_UPPRIO                    4082
+#define IDC_CC_MAELLA                   4083
+#define IDC_CC_ZZ                       4084
 #define IDA_ENTER                       32771
 // ==> ScarAngel Preferences window - Stulle
 #define IDD_PPG_SCAR                    60000

@@ -267,19 +267,20 @@ void CSharedFilesCtrl::Init()
 	InsertColumn(9,GetResString(IDS_FOLDER),LVCFMT_LEFT,200,9);
 	InsertColumn(10,GetResString(IDS_COMPLSOURCES),LVCFMT_LEFT,100,10);
 	InsertColumn(11,GetResString(IDS_SHAREDTITLE),LVCFMT_LEFT,200,11);
-	InsertColumn(12,GetResString(IDS_ONQUEUE),LVCFMT_LEFT,100,12); //Xman see OnUploadqueue
+	InsertColumn(12,GetResString(IDS_ONQUEUE),LVCFMT_LEFT,50,12); //Xman see OnUploadqueue
+	InsertColumn(13,GetResString(IDS_SHAREFACTOR),LVCFMT_LEFT,100,13); //Xman advanced upload-priority
 	// ==> Spread bars [Slugfiller/MorphXT] - Stulle
-	InsertColumn(13,GetResString(IDS_SF_UPLOADED_PARTS),LVCFMT_LEFT,170,13);
-	InsertColumn(14,GetResString(IDS_SF_TURN_PART),LVCFMT_LEFT,100,14);
-	InsertColumn(15,GetResString(IDS_SF_TURN_SIMPLE),LVCFMT_LEFT,100,15);
-	InsertColumn(16,GetResString(IDS_SF_FULLUPLOAD),LVCFMT_LEFT,100,16);
+	InsertColumn(14,GetResString(IDS_SF_UPLOADED_PARTS),LVCFMT_LEFT,170,13);
+	InsertColumn(15,GetResString(IDS_SF_TURN_PART),LVCFMT_LEFT,100,14);
+	InsertColumn(16,GetResString(IDS_SF_TURN_SIMPLE),LVCFMT_LEFT,100,15);
+	InsertColumn(17,GetResString(IDS_SF_FULLUPLOAD),LVCFMT_LEFT,100,16);
 	// <== Spread bars [Slugfiller/MorphXT] - Stulle
-	InsertColumn(17,GetResString(IDS_RARE_RATIO),LVCFMT_LEFT,100,17); // push rare file - Stulle
+	InsertColumn(18,GetResString(IDS_RARE_RATIO),LVCFMT_LEFT,100,17); // push rare file - Stulle
 	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
-    InsertColumn(18,GetResString(IDS_HIDEOS),LVCFMT_LEFT,100,18);
-	InsertColumn(19,GetResString(IDS_SHAREONLYTHENEED),LVCFMT_LEFT,100,19);
+	InsertColumn(19,GetResString(IDS_HIDEOS),LVCFMT_LEFT,100,18);
+	InsertColumn(20,GetResString(IDS_SHAREONLYTHENEED),LVCFMT_LEFT,100,19);
 	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
-	InsertColumn(20,GetResString(IDS_POWERSHARE_COLUMN_LABEL),LVCFMT_LEFT,70,20); // PowerShare [ZZ/MorphXT] - Stulle
+	InsertColumn(21,GetResString(IDS_POWERSHARE_COLUMN_LABEL),LVCFMT_LEFT,70,20); // PowerShare [ZZ/MorphXT] - Stulle
 
 	SetAllIcons();
 	CreateMenues();
@@ -381,44 +382,50 @@ void CSharedFilesCtrl::Localize()
 	pHeaderCtrl->SetItem(12, &hdi);
 	//Xman end
 
+	//Xman advanced upload-priority
+	strRes = GetResString(IDS_SHAREFACTOR);
+	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
+	pHeaderCtrl->SetItem(13, &hdi);
+	//Xman end
+
 	// ==> Spread bars [Slugfiller/MorphXT] - Stulle
 	strRes = GetResString(IDS_SF_UPLOADED_PARTS);
 	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
-	pHeaderCtrl->SetItem(13, &hdi);
+	pHeaderCtrl->SetItem(14, &hdi);
 
 	strRes = GetResString(IDS_SF_TURN_PART);
 	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
-	pHeaderCtrl->SetItem(14, &hdi);
+	pHeaderCtrl->SetItem(15, &hdi);
 
 	strRes = GetResString(IDS_SF_TURN_SIMPLE);
 	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
-	pHeaderCtrl->SetItem(15, &hdi);
+	pHeaderCtrl->SetItem(16, &hdi);
 
 	strRes = GetResString(IDS_SF_FULLUPLOAD);
 	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
-	pHeaderCtrl->SetItem(16, &hdi);
+	pHeaderCtrl->SetItem(17, &hdi);
 	// <== Spread bars [Slugfiller/MorphXT] - Stulle
 
 	// ==> push rare file - Stulle
 	strRes = GetResString(IDS_RARE_RATIO);
 	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
-	pHeaderCtrl->SetItem(17, &hdi);
+	pHeaderCtrl->SetItem(18, &hdi);
 	// <== push rare file - Stulle
 
 	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
     strRes = GetResString(IDS_HIDEOS);
 	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
-	pHeaderCtrl->SetItem(18, &hdi);
+	pHeaderCtrl->SetItem(19, &hdi);
 
 	strRes = GetResString(IDS_SHAREONLYTHENEED);
 	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
-	pHeaderCtrl->SetItem(19, &hdi);
+	pHeaderCtrl->SetItem(20, &hdi);
 	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 
 	// ==> PowerShare [ZZ/MorphXT] - Stulle
 	strRes = GetResString(IDS_POWERSHARE_COLUMN_LABEL);
 	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
-	pHeaderCtrl->SetItem(20, &hdi);
+	pHeaderCtrl->SetItem(21, &hdi);
 	// <== PowerShare [ZZ/MorphXT] - Stulle
 
 	CreateMenues();
@@ -775,13 +782,27 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					buffer.ReleaseBuffer();
 					break;
 				case 10:
-					//Xman show virtual sources (morph)
-  					if (file->m_nCompleteSourcesCountLo == file->m_nCompleteSourcesCountHi)
-						buffer.Format(_T("%u (%u)"), file->m_nCompleteSourcesCountLo, file->m_nVirtualCompleteSourcesCount);
-                	else if (file->m_nCompleteSourcesCountLo == 0)
-						buffer.Format(_T("< %u (%u)"), file->m_nCompleteSourcesCountHi, file->m_nVirtualCompleteSourcesCount);
+					//Xman show virtual sources (morph) + virtualUploadsources
+					if(file->IsPartFile()==false || thePrefs.UseAdvancedAutoPtio()==false)
+					{
+  						if (file->m_nCompleteSourcesCountLo == file->m_nCompleteSourcesCountHi)
+							buffer.Format(_T("%u (%u)"), file->m_nCompleteSourcesCountLo, file->m_nVirtualCompleteSourcesCount);
+						else if (file->m_nCompleteSourcesCountLo == 0)
+							buffer.Format(_T("< %u (%u)"), file->m_nCompleteSourcesCountHi, file->m_nVirtualCompleteSourcesCount);
+						else
+							buffer.Format(_T("%u - %u (%u)"), file->m_nCompleteSourcesCountLo, file->m_nCompleteSourcesCountHi, file->m_nVirtualCompleteSourcesCount);
+					}
 					else
-						buffer.Format(_T("%u - %u (%u)"), file->m_nCompleteSourcesCountLo, file->m_nCompleteSourcesCountHi, file->m_nVirtualCompleteSourcesCount);
+					{
+						//Xman advanced upload-priority
+						if (file->m_nCompleteSourcesCountLo == file->m_nCompleteSourcesCountHi)
+							buffer.Format(_T("%u (%u/%u)"), file->m_nCompleteSourcesCountLo, file->m_nVirtualCompleteSourcesCount, file->m_nVirtualUploadSources);
+						else if (file->m_nCompleteSourcesCountLo == 0)
+							buffer.Format(_T("< %u (%u/%u)"), file->m_nCompleteSourcesCountHi, file->m_nVirtualCompleteSourcesCount, file->m_nVirtualUploadSources);
+						else
+							buffer.Format(_T("%u - %u (%u/%u)"), file->m_nCompleteSourcesCountLo, file->m_nCompleteSourcesCountHi, file->m_nVirtualCompleteSourcesCount, file->m_nVirtualUploadSources);
+						//Xman end
+					}
 					//Xman end
 					break;
 				case 11:{
@@ -814,34 +835,46 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						break;
 					}
 				//Xman end
-				// ==> Spread bars [Slugfiller/MorphXT] - Stulle
+
+				//Xman advanced upload-priority
 				case 13:
+				{
+					if(thePrefs.UseAdvancedAutoPtio())
+						buffer.Format(_T("%.0f%% / %.0f%%"), file->CalculateUploadPriorityPercent(), file->statistic.GetAllTimeTransferred()/(float)file->GetFileSize()*100);
+					else
+						buffer.Format(_T("%.0f%%"), file->statistic.GetAllTimeTransferred()/(float)file->GetFileSize()*100);
+					break;
+				}
+				//Xman end
+
+				// ==> Spread bars [Slugfiller/MorphXT] - Stulle
+				case 14:
 					cur_rec.bottom--;
 					cur_rec.top++;
 					((CKnownFile*)lpDrawItemStruct->itemData)->statistic.DrawSpreadBar(dc,&cur_rec,thePrefs.UseFlatBar());
 					cur_rec.bottom++;
 					cur_rec.top--;
 					break;
-				case 14:
+				case 15:
 					buffer.Format(_T("%.2f"),((CKnownFile*)lpDrawItemStruct->itemData)->statistic.GetSpreadSortValue());
 					break;
-				case 15:
+				case 16:
 					if (file->GetFileSize()>(uint64)0)
 						buffer.Format(_T("%.2f"),((double)file->statistic.GetAllTimeTransferred())/((double)file->GetFileSize()));
 					else
 						buffer.Format(_T("%.2f"),0.0f);
 					break;
-				case 16:
+				case 17:
 					buffer.Format(_T("%.2f"),((CKnownFile*)lpDrawItemStruct->itemData)->statistic.GetFullSpreadCount());
 					break;
 				// <== Spread bars [Slugfiller/MorphXT] - Stulle
 				// ==> push rare file - Stulle
-				case 17:
+				case 18:
 					buffer.Format(_T("%.1f"),file->GetFileRatio());
 					break;
 				// <== push rare file - Stulle
 				// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
-				case 18:
+				case 19:
 				{
 					UINT hideOSInWork = file->HideOSInWork();
 					buffer = _T("[") + GetResString((hideOSInWork>0)?IDS_POWERSHARE_ON_LABEL:IDS_POWERSHARE_OFF_LABEL) + _T("] ");
@@ -860,7 +893,7 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 							buffer.Append(_T(" + ") + ((CString)GetResString(IDS_DEFAULT)).Left(1) + _T(". S"));
 					break;
 				}
-				case 19:
+				case 20:
 					if(file->GetShareOnlyTheNeed()>=0) {
 						if (file->GetShareOnlyTheNeed())
 							buffer.Format(_T("%i") ,file->GetShareOnlyTheNeed());
@@ -872,7 +905,7 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					break;
 				// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 				// ==> PowerShare [ZZ/MorphXT] - Stulle
-				case 20:{
+				case 22:{
 					int powersharemode;
 					bool powershared = file->GetPowerShared();
 					buffer = _T("[") + GetResString((powershared)?IDS_POWERSHARE_ON_LABEL:IDS_POWERSHARE_OFF_LABEL) + _T("] ");
@@ -1904,17 +1937,27 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 			// <== MassRename [Dragon] - Stulle
 			// ==> Copy feedback feature [MorphXT] - Stulle
 			/*
-			// Xman: IcEcRacKer Copy UL-feedback
+			// Xman: idea: IcEcRacKer Copy UL-feedback
 			case MP_ULFEEDBACK: 
 				{ 
 					CString feed; 
 
+					bool morefiles = selectedList.GetCount() > 1;
+					uint64 sumTransferred=0;
+					uint64 sumAllTimeTransferred=0;
+
+					if(!selectedList.IsEmpty())
+					{
+						feed.AppendFormat(_T("%s: %s \r\n"), GetResString(IDS_SF_STATISTICS),thePrefs.GetUserNick()); 
+						feed.AppendFormat(_T("Mod: %s%s[%s] \r\n"),_T("eMule"), theApp.m_strCurVersionLong, MOD_VERSION);  
+					}
+
 					while (!selectedList.IsEmpty())
 					{
 						CKnownFile* file = selectedList.RemoveHead();
+						sumTransferred += file->statistic.GetTransferred();
+						sumAllTimeTransferred += file->statistic.GetAllTimeTransferred();
 
-						feed.AppendFormat(_T("%s: %s \r\n"), GetResString(IDS_SF_STATISTICS),thePrefs.GetUserNick()); 
-						feed.AppendFormat(_T("Mod: %s%s[%s] \r\n"),_T("eMule"), theApp.m_strCurVersionLong, MOD_VERSION);  
 						feed.AppendFormat(_T("%s: %s \r\n"),GetResString(IDS_DL_FILENAME),file->GetFileName()); 
 						feed.AppendFormat(_T("%s: %s \r\n"),GetResString(IDS_TYPE),file->GetFileType()); 
 						feed.AppendFormat(_T("%s: %s\r\n"),GetResString(IDS_DL_SIZE), CastItoXBytes(file->GetFileSize(), false, false)); 
@@ -1924,11 +1967,13 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 						else 
 							feed.AppendFormat(_T("%s 100%%\r\n"), GetResString(IDS_FD_COMPSIZE)); 
 						feed.AppendFormat(_T("%s: %s (%s) \r\n"),GetResString(IDS_SF_TRANSFERRED), CastItoXBytes(file->statistic.GetTransferred(), false, false), CastItoXBytes(file->statistic.GetAllTimeTransferred(), false, false));   
-						feed.AppendFormat(_T("%s: %u \r\n"),GetResString(IDS_COMPLSOURCES),file->m_nCompleteSourcesCountLo); 
+						feed.AppendFormat(_T("%s: %u (%u)\r\n"),GetResString(IDS_COMPLSOURCES),file->m_nCompleteSourcesCountLo, file->m_nVirtualCompleteSourcesCount); 
 						feed.AppendFormat(_T("%s: %u \r\n"),GetResString(IDS_ONQUEUE),(file->GetOnUploadqueue()));  //Xman see OnUploadqueue
 						feed.AppendFormat(_T("%s: %u (%u) \r\n\r\n"),GetResString(IDS_SF_ACCEPTS),file->statistic.GetAccepts(),(file->statistic.GetAllTimeAccepts())); 
-
 					}
+					if(morefiles)
+						feed.AppendFormat(_T("sum: %s: %s (%s) \r\n\r\n"),GetResString(IDS_SF_TRANSFERRED), CastItoXBytes(sumTransferred, false, false), CastItoXBytes(sumAllTimeTransferred, false, false));   
+
 					theApp.CopyTextToClipboard(feed); 
 					break; 
 				} 
@@ -2172,59 +2217,77 @@ int CSharedFilesCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort
 			break;
 		//Xman end
 
+		//Xman advanced upload-priority
+		//sort by the second value-> faster
+		case 13:
+			{
+				float it1value= item1->statistic.GetAllTimeTransferred()/(float)item1->GetFileSize()*1000; //sort one number after ,
+				float it2value= item2->statistic.GetAllTimeTransferred()/(float)item2->GetFileSize()*1000;
+				iResult=(int)(it1value-it2value);
+				break;
+			}
+		case 43:
+			{
+				float it1value= item1->statistic.GetAllTimeTransferred()/(float)item1->GetFileSize()*1000; //sort one number after ,
+				float it2value= item2->statistic.GetAllTimeTransferred()/(float)item2->GetFileSize()*1000;
+				iResult=(int)(it2value-it1value);
+				break;
+			}
+		//Xman end
+
 		// ==> Spread bars [Slugfiller/MorphXT] - Stulle
-		case 13: //spread asc
-		case 14:
+		case 14: //spread asc
+		case 15:
 			iResult=CompareFloat(((CKnownFile*)lParam1)->statistic.GetSpreadSortValue(),((CKnownFile*)lParam2)->statistic.GetSpreadSortValue());
 			break;
-		case 43: //spread desc
-		case 44:
+		case 44: //spread desc
+		case 45:
 			iResult=CompareFloat(((CKnownFile*)lParam2)->statistic.GetSpreadSortValue(),((CKnownFile*)lParam1)->statistic.GetSpreadSortValue());
 			break;
 
-		case 15: // VQB:  Simple UL asc
-		case 45: //VQB:  Simple UL desc
+		case 16: // VQB:  Simple UL asc
+		case 46: //VQB:  Simple UL desc
 			{
 				float x1 = ((float)item1->statistic.GetAllTimeTransferred())/((float)item1->GetFileSize());
 				float x2 = ((float)item2->statistic.GetAllTimeTransferred())/((float)item2->GetFileSize());
 				if (lParamSort == 15) iResult=CompareFloat(x1,x2); else iResult=CompareFloat(x2,x1);
 			break;
 			}
-		case 16: // SF:  Full Upload Count asc
+		case 17: // SF:  Full Upload Count asc
 			iResult=CompareFloat(((CKnownFile*)lParam1)->statistic.GetFullSpreadCount(),((CKnownFile*)lParam2)->statistic.GetFullSpreadCount());
 			break;
-		case 46: // SF:  Full Upload Count desc
+		case 47: // SF:  Full Upload Count desc
 			iResult=CompareFloat(((CKnownFile*)lParam2)->statistic.GetFullSpreadCount(),((CKnownFile*)lParam1)->statistic.GetFullSpreadCount());
 			break;
 		// <== Spread bars [Slugfiller/MorphXT] - Stulle
 		// ==> push rare file - Stulle
-		case 17:
+		case 18:
 			iResult=CompareFloat(item1->GetFileRatio(),item2->GetFileRatio());
-		case 47:
+		case 48:
 			iResult=CompareFloat(item2->GetFileRatio(),item1->GetFileRatio());
 		// <== push rare file - Stulle
 		// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
-		case 18:
+		case 19:
 			if (item1->GetHideOS() == item2->GetHideOS())
 				iResult=item1->GetSelectiveChunk() - item2->GetSelectiveChunk();
 			else
 				iResult=item1->GetHideOS() - item2->GetHideOS();
 			break;
-		case 48:
+		case 49:
 			if (item2->GetHideOS() == item1->GetHideOS())
 				iResult=item2->GetSelectiveChunk() - item1->GetSelectiveChunk();
 			else
 				iResult=item2->GetHideOS() - item1->GetHideOS();
 			break;
-		case 19:
+		case 20:
 			iResult=item1->GetShareOnlyTheNeed() - item2->GetShareOnlyTheNeed();
 			break;
-		case 49:
+		case 50:
 			iResult=item2->GetShareOnlyTheNeed() - item1->GetShareOnlyTheNeed();
 			break;
 		// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 		// ==> PowerShare [ZZ/MorphXT] - Stulle
-		case 20:
+		case 21:
 			if (!item1->GetPowerShared() && item2->GetPowerShared())
 				iResult=-1;
 			else if (item1->GetPowerShared() && !item2->GetPowerShared())
@@ -2250,7 +2313,7 @@ int CSharedFilesCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort
 							else
 								iResult=0;
 			break;
-		case 50:
+		case 51:
 			if (!item2->GetPowerShared() && item1->GetPowerShared())
 				iResult=-1;
 			else if (item2->GetPowerShared() && !item1->GetPowerShared())

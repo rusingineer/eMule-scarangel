@@ -108,6 +108,10 @@ public:
 	void CalculateAndSetUploadPriority();
 	void CalculateAndSetUploadPriority2(); //Xman the debug version
 	uint64 GetWantedUpload();
+	float pushfaktor;
+	void UpdateVirtualUploadSources();
+	UINT m_nVirtualUploadSources;
+	uint32 GetVirtualSourceIndicator() const;
 	//Xman end
 
 	//Xman show virtual sources (morph)

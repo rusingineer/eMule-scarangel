@@ -996,11 +996,17 @@ public:
 
 	static	LPCSTR	GetBindAddrA()						{return m_pszBindAddrA; }
 	static	LPCWSTR	GetBindAddrW()						{return m_pszBindAddrW; }
+	// ==> UPnP support [Xtreme] - Stulle
+	/*
 	//Xman
 	//upnp_start
 	static	uint16	GetPort();//							{return port;}
 	static	uint16	GetUDPPort();//						{return udpport;}
 	//upnp_end
+	*/
+	static	uint16	GetPort()							{return port;}
+	static	uint16	GetUDPPort()						{return udpport;}
+	// <== UPnP support [Xtreme] - Stulle
 	static	uint16	GetServerUDPPort()					{return nServerUDPPort;}
 	static	uchar*	GetUserHash()						{return userhash;}
 	// ZZ:UploadSpeedSense -->
@@ -1030,11 +1036,13 @@ public:
 	//--------------------------------------------------------------------------------------
 	//Xman Xtreme Mod:
 
+	// ==> UPnP support [Xtreme] - Stulle
+	/*
 	//upnp_start
 	static	bool m_bUPnPNat; // UPnP On/Off
 	static	bool m_bUPnPTryRandom; // Try to use random external port if already in use On/Off
 	static	uint16 m_iUPnPTCPExternal; // TCP External Port
-	static	uint16 m_iUPnPUDPExternal; // UDP External Port*/
+	static	uint16 m_iUPnPUDPExternal; // UDP External Port*//*
 	static	bool GetUPnPNat()    { return m_bUPnPNat; }
 	static	void SetUPnPNat(bool on)    { m_bUPnPNat = on; }
 	static	void SetUPnPTCPExternal(uint16 port) { m_iUPnPTCPExternal = port; }
@@ -1042,6 +1050,8 @@ public:
 	static	bool GetUPnPNatTryRandom()  { return m_bUPnPTryRandom; }
 	static	void SetUPnPNatTryRandom(bool on) { m_bUPnPTryRandom = on; }
 	//upnp_end
+	*/
+	// <== UPnP support [Xtreme] - Stulle
 
 
 	//Xman Xtreme Upload

@@ -3009,6 +3009,8 @@ CListenSocket::~CListenSocket()
 
 bool CListenSocket::Rebind()
 {
+	// ==> UPnP support [Xtreme] - Stulle
+	/*
 	//if (thePrefs.GetPort() == m_port)
 	if (thePrefs.port == m_port) //Xman upnp
 		return false;
@@ -3027,10 +3029,19 @@ bool CListenSocket::Rebind()
 		thePrefs.m_iUPnPTCPExternal=0;
 	}
 	//upnp_end
+	*/
+	if (thePrefs.GetPort() == m_port)
+		return false;
+
+	Close();
+	KillAllSockets();
+	// <== UPnP support [Xtreme] - Stulle
 
 	return StartListening();
 }
 
+// ==> UPnP support [Xtreme] - Stulle
+/*
 //Xman
 //upnp_start
 bool CListenSocket::StartListening(){
@@ -3041,7 +3052,7 @@ bool CListenSocket::StartListening(){
 	}
 	//Xman Info about binding
 
-	bool ret=Create(thePrefs.GetPort(), SOCK_STREAM, FD_ACCEPT, thePrefs.GetBindAddrA(), FALSE/*bReuseAddr*/) && Listen();
+	bool ret=Create(thePrefs.GetPort(), SOCK_STREAM, FD_ACCEPT, thePrefs.GetBindAddrA(), FALSE/*bReuseAddr*//*) && Listen();
 
 	//Xman Info about binding
 	if(thePrefs.GetBindAddrW()!=NULL && ret)
@@ -3070,6 +3081,65 @@ bool CListenSocket::StartListening(){
 
 	return ret;
 }
+*/
+bool CListenSocket::StartListening()
+{
+	bListening = true;
+
+	// Creating the socket with SO_REUSEADDR may solve LowID issues if emule was restarted
+	// quickly or started after a crash, but(!) it will also create another problem. If the
+	// socket is already used by some other application (e.g. a 2nd emule), we though bind
+	// to that socket leading to the situation that 2 applications are listening at the same
+	// port!
+	if (!Create(thePrefs.GetPort(), SOCK_STREAM, FD_ACCEPT, thePrefs.GetBindAddrA(), FALSE/*bReuseAddr*/))
+		return false;
+
+	// Rejecting a connection with conditional WSAAccept and not using SO_CONDITIONAL_ACCEPT
+	// -------------------------------------------------------------------------------------
+	// recv: SYN
+	// send: SYN ACK (!)
+	// recv: ACK
+	// send: ACK RST
+	// recv: PSH ACK + OP_HELLO packet
+	// send: RST
+	// --- 455 total bytes (depending on OP_HELLO packet)
+	// In case SO_CONDITIONAL_ACCEPT is not used, the TCP/IP stack establishes the connection
+	// before WSAAccept has a chance to reject it. That's why the remote peer starts to send
+	// it's first data packet.
+	// ---
+	// Not using SO_CONDITIONAL_ACCEPT gives us 6 TCP packets and the OP_HELLO data. We
+	// have to lookup the IP only 1 time. This is still way less traffic than rejecting the
+	// connection by closing it after the 'Accept'.
+
+	// Rejecting a connection with conditional WSAAccept and using SO_CONDITIONAL_ACCEPT
+	// ---------------------------------------------------------------------------------
+	// recv: SYN
+	// send: ACK RST
+	// recv: SYN
+	// send: ACK RST
+	// recv: SYN
+	// send: ACK RST
+	// --- 348 total bytes
+	// The TCP/IP stack tries to establish the connection 3 times until it gives up. 
+	// Furthermore the remote peer experiences a total timeout of ~ 1 minute which is
+	// supposed to be the default TCP/IP connection timeout (as noted in MSDN).
+	// ---
+	// Although we get a total of 6 TCP packets in case of using SO_CONDITIONAL_ACCEPT,
+	// it's still less than not using SO_CONDITIONAL_ACCEPT. But, we have to lookup
+	// the IP 3 times instead of 1 time.
+
+	//if (thePrefs.GetConditionalTCPAccept() && !thePrefs.GetProxySettings().UseProxy) {
+	//	int iOptVal = 1;
+	//	VERIFY( SetSockOpt(SO_CONDITIONAL_ACCEPT, &iOptVal, sizeof iOptVal) );
+	//}
+
+	if (!Listen())
+		return false;
+
+	m_port = thePrefs.GetPort();
+	return true;
+}
+// <== UPnP support [Xtreme] - Stulle
 
 //bool CListenSocket::StartListening()
 //{

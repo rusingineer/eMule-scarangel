@@ -708,8 +708,8 @@ public:
 	bool 			IsDifferentPartBlock();
 	//Xman end
 	
-	//Xman Dynamic block request (netfinity/morph)
-	uint64			GetRemainingReservedDataToDownload() const;
+	//Xman Dynamic block request (netfinity/Xman)
+	uint16			GetRemainingBlocksToDownload() const { return (uint16)m_PendingBlocks_list.GetCount() /*+ m_DownloadBlocks_list.GetCount()*/;}
 
 	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
     //UINT			GetUploadDatarate(UINT samples) const; //unused
@@ -795,6 +795,7 @@ public:
 	void   CalculateJitteredFileReaskTime(bool longer); //Xman 5.1 
 	//Xman own method
 	bool   HasTooManyFailedUDP() const {return m_nTotalUDPPackets > 3 && ((float)(m_nFailedUDPPackets/m_nTotalUDPPackets) > .3);} 
+	bool	GetLowIDReaskPening() const {return m_bReaskPending;}
 	//Maella end
 
 	//Xman Xtreme Downloadmanager
@@ -858,6 +859,7 @@ private:
 	uint8	m_displayDownDatarateCounter; // refresh display timer
 
 	UINT	m_nUpDatarate; // current datarate (updated every seconds)
+	UINT	m_nUpDatarate10; //current datarate over 10 seconds
 	UINT	m_nUpDatarateMeasure; // transfered byte since the last measure
 	CList<TransferredData> m_upHistory_list;
 
