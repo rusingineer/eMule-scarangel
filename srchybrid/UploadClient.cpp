@@ -1275,7 +1275,12 @@ uint32 CUpDownClient::SendBlockData(){
 	return (UINT)(sentBytesCompleteFile + sentBytesPartFile);
 }
 
+// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
+/*
 void CUpDownClient::SendOutOfPartReqsAndAddToWaitingQueue(bool givebonus) //Xtreme Full Chunk
+*/
+void CUpDownClient::SendOutOfPartReqsAndAddToWaitingQueue(bool /*givebonus*/) //Xtreme Full Chunk
+// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 {
 	//OP_OUTOFPARTREQS will tell the downloading client to go back to OnQueue..
 	//The main reason for this is that if we put the client back on queue and it goes

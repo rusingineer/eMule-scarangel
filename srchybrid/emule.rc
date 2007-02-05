@@ -3311,6 +3311,7 @@ PASTE                   ICON                    "res\\Paste.ico"
 SCHEDULERADD            ICON                    "res\\SchedulerAdd.ico"
 SCHEDULERREMOVE         ICON                    "res\\SchedulerRemove.ico"
 SCHEDULEREDIT           ICON                    "res\\SchedulerEdit.ico"
+INVMODE                 ICON                    "res\\InvMode.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -5851,14 +5852,22 @@ BEGIN
     IDS_BACKUP                  "Backup"
     // <== Tabbed Preferences [TPT] - Stulle
     IDS_ERR_HIDDENSOURCE    "Asked Block without telling us what he need" // Anti Anti HideOS & SOTN [SiRoB] - Stulle
-    
-     // ==> Improved ICS-Firewall support [MoNKi]-Max
+    // ==> Improved ICS-Firewall support [MoNKi] - Max
     IDS_ICFSUPPORT          "Enable Windows Internet Connection Firewall (ICF) support"
     IDS_ICFSUPPORTFIRST     "eMule has detected Windows Internet Connection Firewall (ICF) running on your machine,\n\rDo you want eMule to automatically configure it? (Recomended)"
     IDS_ICF                 "Windows Internet Connection Firewall (ICF)"
     IDS_ICF_SERVERUDP       "Add rule for the ""Server UDP"" port"
-    // <== Improved ICS-Firewall support [MoNKi]-Max
-
+    // <== Improved ICS-Firewall support [MoNKi] - Max
+    // ==> Invisible Mode [TPT/MoNKi] - Stulle
+    IDS_CTRLKEY             "CTRL"
+    IDS_ALTKEY              "ALT"
+    IDS_SHIFTKEY            "SHIFT"
+    IDS_INVMODE             "Activate Invisible Mode"
+    IDS_INVMODE_MODKEY      "Modifier Keys:"
+    IDS_INVMODE_VKEY        "Key:"
+    IDS_INVMODE_GROUP       "Invisible Mode"
+    IDS_INVMODE_START       "Start up invisible"
+    // <== Invisible Mode [TPT/MoNKi] - Stulle
 END
 
 #endif    // Englisch (USA) resources

@@ -52,13 +52,11 @@ protected:
 	bool m_bCheckDiskspace;
 	float m_fMinFreeDiskSpaceMB;
 	CString m_sYourHostname;
-	
-	// ==> Removed - Max 
-	/* Moved to PPgScar - Improved ICS-Firewall support [MoNKi]-Max
+	// ==> Improved ICS-Firewall support [MoNKi] - Max
+	/*
 	bool m_bFirewallStartup;
 	*/
-	// <== Removed - Max 
-
+	// <== Improved ICS-Firewall support [MoNKi] - Max
 	int m_iLogLevel;
 	bool m_bDisablePeerCache;
 	/* Xman
@@ -121,14 +119,11 @@ protected:
 	HTREEITEM m_htiCheckDiskspace;
 	HTREEITEM m_htiMinFreeDiskSpace;
 	HTREEITEM m_htiYourHostname;
-
-	// ==> Removed - Max 
-	/* Moved to PPgScar - Improved ICS-Firewall support [MoNKi]-Max
+	// ==> Improved ICS-Firewall support [MoNKi] - Max
+	/*
 	HTREEITEM m_htiFirewallStartup;
 	*/
-	// <== Removed - Max 
-
-
+	// <== Improved ICS-Firewall support [MoNKi] - Max
 	HTREEITEM m_htiLogLevel;
 	HTREEITEM m_htiDisablePeerCache;
 	/* Xman

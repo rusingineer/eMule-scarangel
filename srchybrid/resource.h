@@ -3026,9 +3026,16 @@
 #define IDS_ICF_SERVERUDP 61023
 #define IDS_ICFSUPPORTFIRST 61024
 // <== Improved ICS-Firewall support [MoNKi]-Max
-
-
-
+// ==> Invisible Mode [TPT/MoNKi] - Stulle
+#define IDS_CTRLKEY                     61030
+#define IDS_ALTKEY                      61031
+#define IDS_SHIFTKEY                    61032
+#define IDS_INVMODE                     61033
+#define IDS_INVMODE_MODKEY              61034
+#define IDS_INVMODE_VKEY                61035
+#define IDS_INVMODE_GROUP               61036
+#define IDS_INVMODE_START               61037
+// <== Invisible Mode [TPT/MoNKi] - Stulle
 
 // Next default values for new objects
 // 

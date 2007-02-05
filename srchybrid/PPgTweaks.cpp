@@ -93,13 +93,11 @@ CPPgTweaks::CPPgTweaks()
 	m_bCheckDiskspace = false;
 	m_fMinFreeDiskSpaceMB = 0.0F;
 	(void)m_sYourHostname;
-	
-	// ==> Removed - Max 
-	/* Moved to PPgScar - Improved ICS-Firewall support [MoNKi]-Max
+	// ==> Improved ICS-Firewall support [MoNKi] - Max
+	/*
 	m_bFirewallStartup = false;
 	*/
-	// <== Removed - Max 
-	
+	// <== Improved ICS-Firewall support [MoNKi] - Max
 	m_iLogLevel = 0;
 	m_bDisablePeerCache = false;
 	/* Xman
@@ -154,13 +152,11 @@ CPPgTweaks::CPPgTweaks()
 	m_htiCheckDiskspace = NULL;
 	m_htiMinFreeDiskSpace = NULL;
 	m_htiYourHostname = NULL;
-	
-	// ==> Removed - Max 
-	/* Moved to PPgScar - Improved ICS-Firewall support [MoNKi]-Max
+	// ==> Improved ICS-Firewall support [MoNKi] - Max
+	/*
 	m_htiFirewallStartup = NULL;
 	*/
-	// <== Removed - Max 
-
+	// <== Improved ICS-Firewall support [MoNKi] - Max
 	m_htiLogLevel = NULL;
 	m_htiDisablePeerCache = NULL;
 	/* Xman
@@ -239,13 +235,11 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 		m_htiCreditSystem = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_USECREDITSYSTEM), TVI_ROOT, m_bCreditSystem);
 		*/
 		// <== CreditSystems [EastShare/ MorphXT] - Stulle
-
-		// ==> Removed - Max 
-		/* Moved to PPgScar - Improved ICS-Firewall support [MoNKi]-Max
+		// ==> Improved ICS-Firewall support [MoNKi] - Max
+		/*
 		m_htiFirewallStartup = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_FO_PREF_STARTUP), TVI_ROOT, m_bFirewallStartup);
 		*/
-		// <== Removed - Max 
-		
+		// <== Improved ICS-Firewall support [MoNKi] - Max
 		m_htiFilterLANIPs = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PW_FILTER), TVI_ROOT, m_bFilterLANIPs);
 		m_htiExtControls = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOWEXTSETTINGS), TVI_ROOT, m_bExtControls);
         //m_htiA4AFSaveCpu = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_A4AF_SAVE_CPU), TVI_ROOT, m_bA4AFSaveCpu); // ZZ:DownloadManager
@@ -365,14 +359,12 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiCreditSystem, m_bCreditSystem);
 	*/
 	// <== CreditSystems [EastShare/ MorphXT] - Stulle
-	
-	// ==> Removed - Max 
-	/* Moved to PPgScar - Improved ICS-Firewall support [MoNKi]-Max	
+	// ==> Improved ICS-Firewall support [MoNKi] - Max
+	/*
 	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiFirewallStartup, m_bFirewallStartup);
 	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiFirewallStartup, thePrefs.GetWindowsVersion() == _WINVER_XP_);
 	*/
-	// <== Removed - Max 
-	
+	// <== Improved ICS-Firewall support [MoNKi] - Max
 	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiFilterLANIPs, m_bFilterLANIPs);
 	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiExtControls, m_bExtControls);
     //DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiA4AFSaveCpu, m_bA4AFSaveCpu); // ZZ:DownloadManager
@@ -501,13 +493,11 @@ BOOL CPPgTweaks::OnInitDialog()
 	m_bCheckDiskspace = thePrefs.checkDiskspace;
 	m_fMinFreeDiskSpaceMB = (float)(thePrefs.m_uMinFreeDiskSpace / (1024.0 * 1024.0));
 	m_sYourHostname = thePrefs.GetYourHostname();
-
-	// ==> Removed - Max 
-	/* Moved to PPgScar - Improved ICS-Firewall support [MoNKi]-Max	
+	// ==> Improved ICS-Firewall support [MoNKi] - Max
+	/*
 	m_bFirewallStartup = ((thePrefs.GetWindowsVersion() == _WINVER_XP_) ? thePrefs.m_bOpenPortsOnStartUp : 0); 
 	*/
-	// <== Removed - Max 
-	
+	// <== Improved ICS-Firewall support [MoNKi] - Max
 	m_bDisablePeerCache = !thePrefs.m_bPeerCacheEnabled;
 	m_bAutoArchDisable = !thePrefs.m_bAutomaticArcPreviewStart;
 
@@ -646,15 +636,12 @@ BOOL CPPgTweaks::OnApply()
 		thePrefs.SetYourHostname(m_sYourHostname);
 		theApp.emuledlg->serverwnd->UpdateMyInfo();
 	}
-
-	// ==> Removed - Max 
-	/* Moved to PPgScar - Improved ICS-Firewall support [MoNKi]-Max
+	// ==> Improved ICS-Firewall support [MoNKi] - Max
+	/*
 	thePrefs.m_bOpenPortsOnStartUp = m_bFirewallStartup;
 	*/
-	// <== Removed - Max
-	
+	// <== Improved ICS-Firewall support [MoNKi] - Max
 	thePrefs.m_bPeerCacheEnabled = !m_bDisablePeerCache;
-	 
 
 	/* Xman
 	// ZZ:UploadSpeedSense -->
@@ -761,13 +748,11 @@ void CPPgTweaks::Localize(void)
 		if (m_htiCheckDiskspace) m_ctrlTreeOptions.SetItemText(m_htiCheckDiskspace, GetResString(IDS_CHECKDISKSPACE));
 		if (m_htiMinFreeDiskSpace) m_ctrlTreeOptions.SetEditLabel(m_htiMinFreeDiskSpace, GetResString(IDS_MINFREEDISKSPACE));
 		if (m_htiYourHostname) m_ctrlTreeOptions.SetEditLabel(m_htiYourHostname, GetResString(IDS_YOURHOSTNAME));	// itsonlyme: hostnameSource
-		
-		// ==> Removed - Max 
-		/* Moved to PPgScar - Improved ICS-Firewall support [MoNKi]-Max
+		// ==> Improved ICS-Firewall support [MoNKi] - Max
+		/*
 		if (m_htiFirewallStartup) m_ctrlTreeOptions.SetItemText(m_htiFirewallStartup, GetResString(IDS_FO_PREF_STARTUP));
 		*/
-		// <== Removed - Max 
-		
+		// <== Improved ICS-Firewall support [MoNKi] - Max
 		if (m_htiDisablePeerCache) m_ctrlTreeOptions.SetItemText(m_htiDisablePeerCache, GetResString(IDS_DISABLEPEERACHE));
         /* Xman
 		// ZZ:UploadSpeedSense -->
@@ -845,13 +830,11 @@ void CPPgTweaks::OnDestroy()
 	m_htiCheckDiskspace = NULL;
 	m_htiMinFreeDiskSpace = NULL;
 	m_htiYourHostname = NULL;
-
-	// ==> Removed - Max 
-	/* Moved to PPgScar - Improved ICS-Firewall support [MoNKi]-Max
+	// ==> Improved ICS-Firewall support [MoNKi] - Max
+	/*
 	m_htiFirewallStartup = NULL;
 	*/
-	// <== Removed - Max 
-
+	// <== Improved ICS-Firewall support [MoNKi] - Max
 	m_htiDisablePeerCache = NULL;
     /* Xman
 	// ZZ:UploadSpeedSense -->

@@ -1517,6 +1517,12 @@
 				RelativePath="TreeOptionsCtrlEx.cpp">
 			</File>
 			<File
+				RelativePath=".\TreeOptionsInvisibleKeyCombo.cpp">
+			</File>
+			<File
+				RelativePath=".\TreeOptionsInvisibleModCombo.cpp">
+			</File>
+			<File
 				RelativePath="TreePropSheet.cpp">
 			</File>
 			<File
@@ -1966,6 +1972,12 @@
 			</File>
 			<File
 				RelativePath="TreeOptionsCtrlEx.h">
+			</File>
+			<File
+				RelativePath=".\TreeOptionsInvisibleKeyCombo.h">
+			</File>
+			<File
+				RelativePath=".\TreeOptionsInvisibleModCombo.h">
 			</File>
 			<File
 				RelativePath="TreePropSheet.h">

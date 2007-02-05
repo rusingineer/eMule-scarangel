@@ -122,6 +122,16 @@ BOOL (WINAPI *_TransparentBlt)(HDC, int, int, int, int, HDC, int, int, int, int,
 const static UINT UWM_ARE_YOU_EMULE = RegisterWindowMessage(EMULE_GUID);
 UINT _uMainThreadId = 0;
 
+// ==> Invisible Mode [TPT/MoNKi] - Stulle
+// Allows "invisible mode" on multiple instances of eMule
+#ifdef _DEBUG
+#define EMULE_GUID_INVMODE				"EMULE-{4EADC6FC-516F-4b7c-9066-97D893649569}-DEBUG-INVISIBLEMODE"
+#else
+#define EMULE_GUID_INVMODE				"EMULE-{4EADC6FC-516F-4b7c-9066-97D893649569}-INVISIBLEMODE"
+#endif
+const static UINT UWM_RESTORE_WINDOW_IM=RegisterWindowMessage(_T(EMULE_GUID_INVMODE));
+// <== Invisible Mode [TPT/MoNKi] - Stulle
+
 
 ///////////////////////////////////////////////////////////////////////////
 // CemuleDlg Dialog
@@ -147,6 +157,7 @@ BEGIN_MESSAGE_MAP(CemuleDlg, CTrayDialog)
 	ON_WM_SHOWWINDOW()
 	ON_WM_DESTROY()
 	ON_WM_SETTINGCHANGE()
+	ON_MESSAGE(WM_HOTKEY, OnHotKey)	// Invisible Mode [TPT/MoNKi] - Stulle
 
 	ON_WM_MEASUREITEM() // XP Style Menu [Xanatos] - Stulle
 
@@ -166,6 +177,9 @@ BEGIN_MESSAGE_MAP(CemuleDlg, CTrayDialog)
 	ON_NOTIFY_EX_RANGE(RBN_CHEVRONPUSHED, 0, 0xFFFF, OnChevronPushed)
 
 	ON_REGISTERED_MESSAGE(UWM_ARE_YOU_EMULE, OnAreYouEmule)
+	// ==> Invisible Mode [TPT/MoNKi] - Stulle
+	ON_REGISTERED_MESSAGE(UWM_RESTORE_WINDOW_IM, OnRestoreWindowInvisibleMode)
+	// <== Invisible Mode [TPT/MoNKi] - Stulle
 	ON_BN_CLICKED(IDC_HOTMENU, OnBnClickedHotmenu)
 
 	///////////////////////////////////////////////////////////////////////////
@@ -280,6 +294,8 @@ CemuleDlg::CemuleDlg(CWnd* pParent /*=NULL*/)
 	m_dwMSNtime = 0;
 	m_uMSNup2Date = 0;
 	// <== Show in MSN7 [TPT] - Stulle
+
+	b_HideApp = false; // Invisible Mode [TPT/MoNKi] - Stulle
 }
 
 CemuleDlg::~CemuleDlg()
@@ -339,6 +355,11 @@ BOOL CemuleDlg::OnInitDialog()
 	m_bStartMinimized = thePrefs.GetStartMinimized();
 	if (!m_bStartMinimized)
 		m_bStartMinimized = theApp.DidWeAutoStart();
+
+	// ==> Invisible Mode [TPT/MoNKi] - Stulle
+	if (thePrefs.GetInvisibleMode() && (theApp.DidWeAutoStart() || thePrefs.GetInvisibleModeStart()))
+		m_bStartMinimized = true;
+	// <== Invisible Mode [TPT/MoNKi] - Stulle
 
 	// temporary disable the 'startup minimized' option, otherwise no window will be shown at all
 	if (thePrefs.IsFirstStart())
@@ -574,7 +595,12 @@ BOOL CemuleDlg::OnInitDialog()
 	if (m_bStartMinimized)
 	{
 		// To avoid the window flickering during startup we try to set the proper window show state right here.
+		// ==> Invisible Mode [TPT/MoNKi] - Stulle
+		/*
 		if (*thePrefs.GetMinTrayPTR())
+		*/
+		if (*thePrefs.GetMinTrayPTR() || thePrefs.GetInvisibleMode() && (theApp.DidWeAutoStart() || thePrefs.GetInvisibleModeStart()))
+		// <== Invisible Mode [TPT/MoNKi] - Stulle
 		{
 			// Minimize to System Tray
 			//
@@ -658,6 +684,11 @@ BOOL CemuleDlg::OnInitDialog()
 		}
 		*/
 	}
+
+	// ==> Invisible Mode [TPT/MoNKi] - Stulle
+	if(thePrefs.GetInvisibleMode())
+		RegisterInvisibleHotKey();
+	// <== Invisible Mode [TPT/MoNKi] - Stulle
 
 	VERIFY( m_pDropTarget->Register(this) );
 
@@ -1536,6 +1567,11 @@ void CemuleDlg::MinimizeWindow()
 	{
 		TrayShow();
 		ShowWindow(SW_HIDE);
+
+		// ==> Invisible Mode [TPT/MoNKi] - Stulle
+		if (thePrefs.GetInvisibleMode() && (theApp.DidWeAutoStart() || thePrefs.GetInvisibleModeStart()))
+			ToggleHide();
+		// <== Invisible Mode [TPT/MoNKi] - Stulle
 	}
 	else
 	{
@@ -2246,6 +2282,11 @@ void CemuleDlg::OnClose()
 		theApp.emuledlg->preferenceswnd->m_wndScar.Backup(_T("*.met"), false);
 	}
 	// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+
+	// ==> Invisible Mode [TPT/MoNKi] - Stulle
+	if(thePrefs.GetInvisibleMode())
+		UnRegisterInvisibleHotKey();
+	// <== Invisible Mode [TPT/MoNKi] - Stulle
 
 	theApp.UpdateSplash(_T("clearing displayed items ...")); //Xman new slpash-screen arrangement
 
@@ -4366,3 +4407,101 @@ void CemuleDlg::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruc
 		CTrayDialog::OnMeasureItem(nIDCtl, lpMeasureItemStruct);
 }
 // <== XP Style Menu [Xanatos] - Stulle
+
+// ==> Invisible Mode [TPT/MoNKi] - Stulle
+LRESULT CemuleDlg::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
+{
+	if(wParam == HOTKEY_INVISIBLEMODE_ID)
+		b_HideApp = !b_HideApp;
+		if(b_HideApp)
+		{
+			EnumWindows(AskEmulesForInvisibleMode, INVMODE_HIDEWINDOW);
+		}
+		else
+		{
+			EnumWindows(AskEmulesForInvisibleMode, INVMODE_RESTOREWINDOW);
+		}
+	return 0;
+}
+
+void CemuleDlg::ToggleHide()
+{
+	b_HideApp = true;
+	b_TrayWasVisible = TrayHide();
+	b_WindowWasVisible = IsWindowVisible();
+	ShowWindow(SW_HIDE);
+}
+
+void CemuleDlg::ToggleShow()
+{
+	b_HideApp = false;
+	if(b_TrayWasVisible)
+		TrayShow();
+	if(b_WindowWasVisible)
+		ShowWindow(SW_SHOW);
+}
+
+BOOL CemuleDlg::RegisterInvisibleHotKey()
+{
+	if(m_hWnd && IsRunning()){
+		bool res = RegisterHotKey( this->m_hWnd, HOTKEY_INVISIBLEMODE_ID ,
+						   thePrefs.GetInvisibleModeHKKeyModifier(),
+						   thePrefs.GetInvisibleModeHKKey())!=0;
+		return res;
+	} else
+		return false;
+}
+
+BOOL CemuleDlg::UnRegisterInvisibleHotKey()
+{
+	if(m_hWnd){
+		bool res = !(UnregisterHotKey(this->m_hWnd, HOTKEY_INVISIBLEMODE_ID));
+
+		// Allows "invisible mode" on multiple instances of eMule
+		// Only one app (eMule) can register the hotkey, if we unregister, we need
+		// to register the hotkey in other emule.
+		EnumWindows(AskEmulesForInvisibleMode, INVMODE_REGISTERHOTKEY);
+		return res;
+	} else
+		return false;
+}
+
+// Allows "invisible mode" on multiple instances of eMule
+// LOWORD(WPARAM) -> HotKey KeyModifier
+// HIWORD(WPARAM) -> HotKey VirtualKey
+// LPARAM		  -> int:	INVMODE_RESTOREWINDOW	-> Restores the window
+//							INVMODE_REGISTERHOTKEY	-> Registers the hotkey
+LRESULT CemuleDlg::OnRestoreWindowInvisibleMode(WPARAM wParam, LPARAM lParam)
+{
+	if (thePrefs.GetInvisibleMode() &&
+		(UINT)LOWORD(wParam) == thePrefs.GetInvisibleModeHKKeyModifier() &&
+		(char)HIWORD(wParam) == thePrefs.GetInvisibleModeHKKey()) {
+			switch(lParam){
+				case INVMODE_RESTOREWINDOW:
+					ToggleShow();
+					break;
+				case INVMODE_REGISTERHOTKEY:
+					RegisterInvisibleHotKey();
+					break;
+				case INVMODE_HIDEWINDOW:
+					ToggleHide();
+			}
+			return UWM_RESTORE_WINDOW_IM;
+	} else
+		return false;
+} 
+
+// Allows "invisible mode" on multiple instances of eMule
+BOOL CALLBACK CemuleDlg::AskEmulesForInvisibleMode(HWND hWnd, LPARAM lParam){
+	DWORD dwMsgResult;
+	WPARAM msgwParam;
+
+	msgwParam=MAKEWPARAM(thePrefs.GetInvisibleModeHKKeyModifier(),
+				thePrefs.GetInvisibleModeHKKey());
+
+	LRESULT res = ::SendMessageTimeout(hWnd,UWM_RESTORE_WINDOW_IM, msgwParam, lParam,
+				SMTO_BLOCK |SMTO_ABORTIFHUNG,10000,&dwMsgResult);
+	
+	return res; 
+} 
+// <== Invisible Mode [TPT/MoNKi] - Stulle

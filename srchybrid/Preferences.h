@@ -684,13 +684,6 @@ public:
 	static	uint16	m_nPeerCachePort;
 	static	bool	m_bPeerCacheShow;
 
-	// ==> Improved ICS-Firewall support [MoNKi]-Max
-	static bool		m_bICFSupport;
-	static bool		m_bICFSupportFirstTime;
-	static bool		m_bICFSupportStatusChanged;
-	static bool		m_bICFSupportServerUDP;
-	// <== Improved ICS-Firewall support [MoNKi]-Max
-
 	// Firewall settings
 	static bool		m_bOpenPortsOnStartUp;
 
@@ -920,6 +913,20 @@ public:
 	static bool		m_bEnforceRatio;
 	static uint8	m_uRatioValue;
 	// <== Enforce Ratio [Stulle] - Stulle
+
+	// ==> Improved ICS-Firewall support [MoNKi]-Max
+	static bool		m_bICFSupport;
+	static bool		m_bICFSupportFirstTime;
+	static bool		m_bICFSupportStatusChanged;
+	static bool		m_bICFSupportServerUDP;
+	// <== Improved ICS-Firewall support [MoNKi]-Max
+
+	// ==> Invisible Mode [TPT/MoNKi] - Stulle
+    static bool		m_bInvisibleMode;		
+	static UINT		m_iInvisibleModeHotKeyModifier;
+	static char		m_cInvisibleModeHotKey;
+	static bool		m_bInvisibleModeStart;
+	// <== Invisible Mode [TPT/MoNKi] - Stulle
 
 	enum Table
 	{
@@ -2140,6 +2147,14 @@ public:
 	static	bool	GetICFSupportServerUDP() { return m_bICFSupportServerUDP; }
 	static	void	SetICFSupportServerUDP(bool on) { m_bICFSupportServerUDP = on; }
 	// <== Improved ICS-Firewall support [MoNKi]-Max
+
+	// ==> Invisible Mode [TPT/MoNKi] - Stulle
+    static	bool GetInvisibleMode() { return m_bInvisibleMode; }
+	static	UINT GetInvisibleModeHKKeyModifier() { return m_iInvisibleModeHotKeyModifier; }
+	static	char GetInvisibleModeHKKey() { return m_cInvisibleModeHotKey; }
+	static	void SetInvisibleMode(bool on, UINT keymodifier, char key);
+	static	bool GetInvisibleModeStart() { return m_bInvisibleModeStart; }
+	// <== Invisible Mode [TPT/MoNKi] - Stulle
 
 protected:
 	static	CString appdir;

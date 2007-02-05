@@ -37,7 +37,7 @@ CFirewallOpener::CFirewallOpener(void)
 	m_pINetSM = NULL;
 
 	
-	m_bClearMappings = false;//Improved ICS-Firewall support [MoNKi]-Max
+	m_bClearMappings = false; // Improved ICS-Firewall support [MoNKi] - Max
 	
 }
 
@@ -80,12 +80,12 @@ void CFirewallOpener::UnInit(){
 		return;
 	
 	for (int i = 0; i != m_liAddedRules.GetCount(); i++){
-		// ==> Improved ICS-Firewall support [MoNKi]-Max
+		// ==> Improved ICS-Firewall support [MoNKi] - Max
 		/*
 		if (m_liAddedRules[i].m_bRemoveOnExit)
 		*/
 		if (m_liAddedRules[i].m_bRemoveOnExit || m_bClearMappings)
-		// <== Improved ICS-Firewall support [MoNKi]-Max
+		// <== Improved ICS-Firewall support [MoNKi] - Max
 			RemoveRule(m_liAddedRules[i]);
 	}
 	m_liAddedRules.RemoveAll();
@@ -196,12 +196,12 @@ bool CFirewallOpener::AddRule(const CICSRuleInfo& riPortRule, const INetSharingC
 		CComBSTR bstrName;
 		pNCP->get_Name(&bstrName);
 		if ( SUCCEEDED(hr) && SUCCEEDED(pNSPM->Enable())){
-			// ==> Improved ICS-Firewall support [MoNKi]-Max
+			// ==> Improved ICS-Firewall support [MoNKi] - Max
 			if(riPortRule.m_bRemoveOnExit || m_bClearMappings){
 				CICSRuleInfo ruleToAdd(riPortRule);
 				AddToICFdat(ruleToAdd);
 			}
-			// <== Improved ICS-Firewall support [MoNKi]-Max
+			// <== Improved ICS-Firewall support [MoNKi] - Max
 			theApp.QueueDebugLogLine(false, _T("Succeeded to add Rule '%s' for Port '%u' on Connection '%s'"),riPortRule.m_strRuleName, riPortRule.m_nPortNumber, CString(bstrName));
 			return true;
 		}
@@ -233,37 +233,37 @@ bool CFirewallOpener::FindRule(const EFOCAction eAction, const CICSRuleInfo& riP
 			pNSPMP->get_IPProtocol (&ucProt);
 			pNSPMP->get_ExternalPort (&uExternal);
 			pNSPMP->get_Name(&bstrName);
-			// ==> Improved ICS-Firewall support [MoNKi]-Max
+			// ==> Improved ICS-Firewall support [MoNKi] - Max
 			CComBSTR bstrTargetIP;
 			pNSPMP->get_TargetIPAddress(&bstrTargetIP);
-			// <== Improved ICS-Firewall support [MoNKi]-Max
+			// <== Improved ICS-Firewall support [MoNKi] - Max
 			switch(eAction){
 				case FOC_FINDRULEBYPORT:
-					// ==> Improved ICS-Firewall support [MoNKi]-Max
+					// ==> Improved ICS-Firewall support [MoNKi] - Max
 					/*
 					if (riPortRule.m_nPortNumber == uExternal && riPortRule.m_byProtocol == ucProt){
 					*/
 					if (riPortRule.m_nPortNumber == uExternal && riPortRule.m_byProtocol == ucProt && bstrTargetIP == CComBSTR("127.0.0.1")){
-					// <== Improved ICS-Firewall support [MoNKi]-Max
+					// <== Improved ICS-Firewall support [MoNKi] - Max
 						if (outNSPMP != NULL)
 							*outNSPMP = pNSPM;
 						return true;
 					}
 					break;
 				case FOC_FINDRULEBYNAME:
-					// ==> Improved ICS-Firewall support [MoNKi]-Max
+					// ==> Improved ICS-Firewall support [MoNKi] - Max
 					/*
 					if (riPortRule.m_strRuleName == CString(bstrName)){
 					*/
 					if (riPortRule.m_strRuleName == CString(bstrName) && bstrTargetIP == CComBSTR("127.0.0.1")){
-					// <== Improved ICS-Firewall support [MoNKi]-Max
+					// <== Improved ICS-Firewall support [MoNKi] - Max
 						if (outNSPMP != NULL)
 							*outNSPMP = pNSPM;
 						return true;
 					}
 					break;
 				case FOC_DELETERULEEXCACT:
-					// ==> Improved ICS-Firewall support [MoNKi]-Max
+					// ==> Improved ICS-Firewall support [MoNKi] - Max
 					/*
 					if (riPortRule.m_strRuleName == CString(bstrName)
 						&& riPortRule.m_nPortNumber == uExternal && riPortRule.m_byProtocol == ucProt)
@@ -273,19 +273,18 @@ bool CFirewallOpener::FindRule(const EFOCAction eAction, const CICSRuleInfo& riP
 						&& riPortRule.m_nPortNumber == uExternal && riPortRule.m_byProtocol == ucProt
 						&& bstrTargetIP == CComBSTR("127.0.0.1"))
 					{
-					// <== Improved ICS-Firewall support [MoNKi]-Max
+					// <== Improved ICS-Firewall support [MoNKi] - Max
 						RETURN_ON_FAIL(pNSC->RemovePortMapping(pNSPM));
 						theApp.QueueDebugLogLine(false,_T("Rule removed"));
 					}
 					break;
 				case FOC_DELETERULEBYNAME:
-					// ==> Improved ICS-Firewall support [MoNKi]-Max
+					// ==> Improved ICS-Firewall support [MoNKi] - Max
 					/*
 					if (riPortRule.m_strRuleName == CString(bstrName)){
 					*/
 					if (riPortRule.m_strRuleName == CString(bstrName) && bstrTargetIP == CComBSTR("127.0.0.1")){
-					// <== Improved ICS-Firewall support [MoNKi]-Max
-
+					// <== Improved ICS-Firewall support [MoNKi] - Max
 						RETURN_ON_FAIL(pNSC->RemovePortMapping(pNSPM));
 						theApp.QueueDebugLogLine(false,_T("Rule removed"));
 					}
@@ -335,8 +334,7 @@ bool CFirewallOpener::OpenPort(const CICSRuleInfo& riPortRule){
 bool CFirewallOpener::DoesFWConnectionExist(){
 	return DoAction(FOC_FWCONNECTIONEXISTS, CICSRuleInfo());
 }
-
-// ==> Improved ICS-Firewall support [MoNKi]-Max
+// ==> Improved ICS-Firewall support [MoNKi] - Max
 void CFirewallOpener::ClearOld(){
 	bool deleteFile = true;
 	bool ret = false;
@@ -451,4 +449,4 @@ bool CFirewallOpener::ReadFromICFdat(CFile &file, CICSRuleInfo &mapping){
 CString CFirewallOpener::GetICFdatFileName(){
 	return CString(thePrefs.GetConfigDir()+_T("ICF.dat"));
 }
-// <== Improved ICS-Firewall support [MoNKi]-Max
+// <== Improved ICS-Firewall support [MoNKi] - Max

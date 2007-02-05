@@ -38,18 +38,16 @@ enum EFOCAction{
 	FOC_FWCONNECTIONEXISTS
 };
 
-// ==> Improved ICS-Firewall support [MoNKi]-Max
-#define EMULE_DEFAULTRULENAME_UDP			_T("UDP Port")
-#define EMULE_DEFAULTRULENAME_TCP			_T("TCP Port")
-#define EMULE_DEFAULTRULENAME_SERVERUDP		_T("Server UDP Port")
-#define EMULE_DEFAULTRULEDESCRIPTIONFORMAT 	_T("eMule (%s) [%s: %u]")
-// ==> Removed - Max
+// ==> Improved ICS-Firewall support [MoNKi] - Max
 /*
 #define EMULE_DEFAULTRULENAME_UDP	_T("eMule_UDP_Port")
 #define EMULE_DEFAULTRULENAME_TCP	_T("eMule_TCP_Port")
 */
-// <== Removed - Max 
-// <== Improved ICS-Firewall support [MoNKi]-Max
+#define EMULE_DEFAULTRULENAME_UDP			_T("UDP Port")
+#define EMULE_DEFAULTRULENAME_TCP			_T("TCP Port")
+#define EMULE_DEFAULTRULENAME_SERVERUDP		_T("Server UDP Port")
+#define EMULE_DEFAULTRULEDESCRIPTIONFORMAT 	_T("eMule (%s) [%s: %u]")
+// <== Improved ICS-Firewall support [MoNKi] - Max
 
 #define NAT_PROTOCOL_TCP 6
 #define NAT_PROTOCOL_UDP 17
@@ -64,7 +62,15 @@ public:
 	{
 		m_nPortNumber = nPortNumber;
 		m_byProtocol = byProtocol;
+		// ==> Improved ICS-Firewall support [MoNKi] - Max
+		/*
 		m_strRuleName = strRuleName;
+		*/
+		m_strRuleName.Format(EMULE_DEFAULTRULEDESCRIPTIONFORMAT,
+			strRuleName,
+			(byProtocol == NAT_PROTOCOL_TCP) ? _T("TCP") : _T("UDP"),
+			nPortNumber);
+		// <== Improved ICS-Firewall support [MoNKi] - Max
 		m_bRemoveOnExit = bRemoveOnExit;
 	}
 
@@ -113,7 +119,7 @@ private:
 	INetSharingManager*		m_pINetSM;
 	bool					m_bInited;
 
-// ==> Improved ICS-Firewall support [MoNKi]-Max
+// ==> Improved ICS-Firewall support [MoNKi] - Max
 public:
 	void		ClearOld();
 	void		ClearMappingsAtEnd();
@@ -124,5 +130,5 @@ private:
 	bool		AddToICFdat(CICSRuleInfo &mapping);
 	bool		ReadFromICFdat(CFile &file, CICSRuleInfo &mapping);
 	CString		GetICFdatFileName();
-// <== Improved ICS-Firewall support [MoNKi]-Max
+// <== Improved ICS-Firewall support [MoNKi] - Max
 };

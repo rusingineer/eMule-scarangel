@@ -686,13 +686,6 @@ bool	CPreferences::m_bACC; // ACC [Max/WiZaRd] - Max
 
 uint32	CPreferences::m_uScarVerCheckLastAutomatic; // ScarAngel Version Check - Stulle
 
-// ==> Improved ICS-Firewall support [MoNKi]-Max
-bool	CPreferences::m_bICFSupport;
-bool	CPreferences::m_bICFSupportFirstTime;
-bool	CPreferences::m_bICFSupportStatusChanged;
-bool	CPreferences::m_bICFSupportServerUDP;
-// <== Improved ICS-Firewall support [MoNKi]-Max
-
 // ==> WebCache [WC team/MorphXT] - Stulle/Max
 CString	CPreferences::webcacheName;
 uint16	CPreferences::webcachePort;
@@ -816,6 +809,20 @@ int		CPreferences::PsAmountLimit; // Limit PS by amount of data uploaded [Stulle
 bool	CPreferences::m_bEnforceRatio;
 uint8	CPreferences::m_uRatioValue;
 // <== Enforce Ratio [Stulle] - Stulle
+
+// ==> Improved ICS-Firewall support [MoNKi]-Max
+bool	CPreferences::m_bICFSupport;
+bool	CPreferences::m_bICFSupportFirstTime;
+bool	CPreferences::m_bICFSupportStatusChanged;
+bool	CPreferences::m_bICFSupportServerUDP;
+// <== Improved ICS-Firewall support [MoNKi]-Max
+
+// ==> Invisible Mode [TPT/MoNKi] - Stulle
+bool	CPreferences::m_bInvisibleMode;		
+UINT	CPreferences::m_iInvisibleModeHotKeyModifier;
+char	CPreferences::m_cInvisibleModeHotKey;
+bool	CPreferences::m_bInvisibleModeStart;
+// <== Invisible Mode [TPT/MoNKi] - Stulle
 
 CPreferences::CPreferences()
 {
@@ -2319,12 +2326,6 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(L"Enabled", m_bPeerCacheEnabled);
 	ini.WriteInt(L"PCPort", m_nPeerCachePort);
 
-	// ==> Improved ICS-Firewall support [MoNKi]-Max
-	ini.WriteBool(_T("ICFSupportFirstTime"), m_bICFSupportFirstTime, _T("eMule"));
-	ini.WriteBool(_T("ICFSupport"), m_bICFSupport, _T("eMule"));
-	ini.WriteBool(_T("ICFSupportServerUDP"), m_bICFSupportServerUDP , _T("eMule"));
-	// <== Improved ICS-Firewall support [MoNKi]-Max
-
 	//Xman Xtreme Mod:
 	//--------------------------------------------------------------------------
 
@@ -2607,6 +2608,19 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("EnforceRatio"), m_bEnforceRatio);
 	ini.WriteInt(_T("RatioValue"), m_uRatioValue);
 	// <== Enforce Ratio [Stulle] - Stulle
+
+	// ==> Improved ICS-Firewall support [MoNKi]-Max
+	ini.WriteBool(_T("ICFSupportFirstTime"), m_bICFSupportFirstTime);
+	ini.WriteBool(_T("ICFSupport"), m_bICFSupport);
+	ini.WriteBool(_T("ICFSupportServerUDP"), m_bICFSupportServerUDP);
+	// <== Improved ICS-Firewall support [MoNKi]-Max
+
+	// ==> Invisible Mode [TPT/MoNKi] - Stulle
+	ini.WriteBool(_T("InvisibleMode"), m_bInvisibleMode);
+	ini.WriteInt(_T("InvisibleModeHKKey"), (int)m_cInvisibleModeHotKey);
+	ini.WriteInt(_T("InvisibleModeHKKeyModifier"), m_iInvisibleModeHotKeyModifier);
+	ini.WriteBool(_T("InvisibleModeStart"), m_bInvisibleModeStart);
+	// <== Invisible Mode [TPT/MoNKi] - Stulle
 
 	SaveStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
@@ -3309,14 +3323,6 @@ void CPreferences::LoadPreferences()
 	m_nPeerCachePort = (uint16)ini.GetInt(L"PCPort", 0);
 	m_bPeerCacheShow = ini.GetBool(L"Show", false);
 
-	// ==> Improved ICS-Firewall support [MoNKi]-Max
-	m_bICFSupportStatusChanged = false;
-	m_bICFSupport = ini.GetBool(_T("ICFSupport"), false, _T("eMule"));
-	m_bICFSupportFirstTime = ini.GetBool(_T("ICFSupportFirstTime"), true, _T("eMule"));
-	m_bICFSupportServerUDP = ini.GetBool(_T("ICFSupportServerUDP"), false, _T("eMule"));
-	// <== Improved ICS-Firewall support [MoNKi]-Max
-
-
 	LoadCats();
 	//SetLanguage(); //Xman done above
 
@@ -3685,6 +3691,21 @@ void CPreferences::LoadPreferences()
 	temp = ini.GetInt(_T("RatioValue"),3);
 	m_uRatioValue = (uint8)((temp > 0 && temp <= 4)?temp:3);
 	// <== Enforce Ratio [Stulle] - Stulle
+
+	// ==> Improved ICS-Firewall support [MoNKi]-Max
+	m_bICFSupportStatusChanged = false;
+	m_bICFSupport = ini.GetBool(_T("ICFSupport"), false);
+	m_bICFSupportFirstTime = ini.GetBool(_T("ICFSupportFirstTime"), true);
+	m_bICFSupportServerUDP = ini.GetBool(_T("ICFSupportServerUDP"), false);
+	// <== Improved ICS-Firewall support [MoNKi]-Max
+
+	// ==> Invisible Mode [TPT/MoNKi] - Stulle
+    m_bInvisibleMode = ini.GetBool(_T("InvisibleMode"), false);
+	m_iInvisibleModeHotKeyModifier = ini.GetInt(_T("InvisibleModeHKKeyModifier"), MOD_CONTROL | MOD_SHIFT | MOD_ALT);
+	m_cInvisibleModeHotKey = (char)ini.GetInt(_T("InvisibleModeHKKey"),(int)'E');
+    SetInvisibleMode(m_bInvisibleMode  ,m_iInvisibleModeHotKeyModifier ,m_cInvisibleModeHotKey );
+	m_bInvisibleModeStart = ini.GetBool(_T("InvisibleModeStart"), false);
+	// <== Invisible Mode [TPT/MoNKi] - Stulle
 
 	LoadStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
@@ -4545,3 +4566,17 @@ void CPreferences::LoadStylePrefs(CIni &ini)
 	}
 }
 // <== Design Settings [eWombat/Stulle] - Stulle
+
+// ==> Invisible Mode [TPT/MoNKi] - Stulle
+void CPreferences::SetInvisibleMode(bool on, UINT keymodifier, char key) 
+{
+	m_bInvisibleMode = on;
+	m_iInvisibleModeHotKeyModifier = keymodifier;
+	m_cInvisibleModeHotKey = key;
+	if(theApp.emuledlg!=NULL){
+		//Always unregister, the keys could be different.
+		theApp.emuledlg->UnRegisterInvisibleHotKey();
+		if(m_bInvisibleMode)	theApp.emuledlg->RegisterInvisibleHotKey();
+	}
+}
+// <== Invisible Mode [TPT/MoNKi] - Stulle

@@ -20,6 +20,10 @@
 #include "SharedFilesWnd.h"
 #include "SharedFilesCtrl.h"
 // <== Design Settings [eWombat/Stulle] - Stulle
+// ==> Invisible Mode [TPT/MoNKi] - Stulle
+#include "TreeOptionsInvisibleModCombo.h"
+#include "TreeOptionsInvisibleKeyCombo.h"
+// <== Invisible Mode [TPT/MoNKi] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -135,6 +139,13 @@ CPPgScar::CPPgScar()
 	m_htiEnforceRatio = NULL;
 	m_htiRatioValue = NULL;
 	// <== Enforce Ratio [Stulle] - Stulle
+	// ==> Improved ICS-Firewall support [MoNKi] - Max
+	m_htiICFSupportRoot = NULL;
+	m_htiICFSupport = NULL;
+	m_htiICFSupportClearAtEnd = NULL;
+	m_bICFSupport = false;
+	m_bICFSupportClearAtEnd = false;
+	// <== Improved ICS-Firewall support [MoNKi] - Max
 //	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources - Stulle
 	m_htiACC = NULL; // ACC [Max/WiZaRd] - Max
 /*
@@ -164,6 +175,18 @@ CPPgScar::CPPgScar()
 	m_htiSysInfo = NULL;
 	m_htiSysInfoGlobal = NULL;
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
+	// ==> Invisible Mode [TPT/MoNKi] - Stulle
+	m_htiInvisibleModeRoot = NULL;
+	m_htiInvisibleMode = NULL;
+	m_htiInvisibleModeMod = NULL;
+	m_htiInvisibleModeKey = NULL;
+	m_htiInvisibleModeStart = NULL;
+	m_bInvisibleMode = false;
+	m_sInvisibleModeMod = "";
+	m_sInvisibleModeKey = "";
+	m_iInvisibleModeActualKeyModifier = 0;
+	m_bInvisibleModeStart = false;
+	// <== Invisible Mode [TPT/MoNKi] - Stulle
 	m_htiShowSrcOnTitle = NULL; // Show sources on title - Stulle
 	m_htiShowGlobalHL = NULL; // show global HL - Stulle
 	m_htiShowFileHLconst = NULL; // show HL per file constantaniously - Stulle
@@ -255,14 +278,6 @@ CPPgScar::CPPgScar()
 	// <== Global Source Limit [Max/Stulle] - Stulle
 	m_htiStartupSound = NULL; // Startupsound [Commander] - mav744
 	m_htiCompressLevel = NULL; // Adjust Compress Level [Stulle] - Stulle
-
-	// ==> Improved ICS-Firewall support [MoNKi]-Max
-	m_htiICFSupportRoot = NULL;
-	m_htiICFSupport = NULL;
-	m_htiICFSupportClearAtEnd = NULL;
-	m_bICFSupport = false;
-	m_bICFSupportClearAtEnd = false;
-	// <== Improved ICS-Firewall support [MoNKi]-Max
 }
 
 CPPgScar::~CPPgScar()
@@ -281,9 +296,11 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		int iImgConTweaks = 8;
 		int iImgQuickstart = 8;
 		int iImgRatio = 8;
+		int iImgICF = 8;
 		int iImgCS = 8;
 		int iImgDisplay = 8;
 		int iImgSysInfo = 8;
+		int iImgInvisibleMode = 8;
 		int iImgDropDefaults = 8;
 		int iImgMinimule = 8;
 		int iImgSCC = 8;
@@ -293,7 +310,6 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		int iImgReleaseBonus = 8;
 		int iImgMisc = 8;
 		int iImgGlobal = 8;
-		int iImgICF = 8; //Improved ICS-Firewall support [MoNKi]-Max
 
 		CImageList* piml = m_ctrlTreeOptions.GetImageList(TVSIL_NORMAL);
 		if (piml){
@@ -302,9 +318,11 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 			iImgConTweaks =  piml->Add(CTempIconLoader(_T("CONNECTION")));
 			iImgQuickstart = piml->Add(CTempIconLoader(_T("QUICKSTART"))); // Thx to the eF-Mod team for the icon
 			iImgRatio = piml->Add(CTempIconLoader(_T("TRANSFERUPDOWN")));
+			iImgICF = piml->Add(CTempIconLoader(_T("PROXY")));
 			iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS")));
 			iImgDisplay = piml->Add(CTempIconLoader(_T("DISPLAY")));
 			iImgSysInfo = piml->Add(CTempIconLoader(_T("SYSINFO")));
+			iImgInvisibleMode = piml->Add(CTempIconLoader(_T("INVMODE")));
 			iImgDropDefaults = piml->Add(CTempIconLoader(_T("DROPDEFAULTS")));
 			iImgMinimule = piml->Add(CTempIconLoader(_T("MINIMULE")));
 			iImgSCC = piml->Add(CTempIconLoader(_T("CATEGORY")));
@@ -314,7 +332,6 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 			iImgReleaseBonus = piml->Add(CTempIconLoader(_T("RELEASEBONUS")));
 			iImgMisc = piml->Add(CTempIconLoader(_T("SRCUNKNOWN")));
 			iImgGlobal = piml->Add(CTempIconLoader(_T("SEARCHMETHOD_GLOBAL")));
-			iImgICF = piml->Add(CTempIconLoader(_T("PROXY")));
 		}
 		
 		CString Buffer;
@@ -364,6 +381,12 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiRatioValue = m_ctrlTreeOptions.InsertItem(GetResString(IDS_RATIO_VALUE), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiRatioGroup);
 		m_ctrlTreeOptions.AddEditBox(m_htiRatioValue, RUNTIME_CLASS(CNumTreeOptionsEdit));
 		// <== Enforce Ratio [Stulle] - Stulle
+		// ==> Improved ICS-Firewall support [MoNKi] - Max
+		m_htiICFSupportRoot = m_ctrlTreeOptions.InsertGroup(_T("Internet Connection Firewall (ICF)"), iImgICF,  m_htiConTweaks);
+		m_htiICFSupport = m_ctrlTreeOptions.InsertCheckBox(_T("Enable Windows Internet Connection Firewall (ICF) support"), m_htiICFSupportRoot, m_bICFSupport);
+		m_htiICFSupportClearAtEnd = m_ctrlTreeOptions.InsertCheckBox(_T("Clear mappings at end"), m_htiICFSupportRoot, m_bICFSupportClearAtEnd);
+		m_htiICFSupportServerUDP = m_ctrlTreeOptions.InsertCheckBox(_T("Add mapping for \"ServerUDP\" port"), m_htiICFSupportRoot, m_bICFSupportServerUDP);
+		// <== Improved ICS-Firewall support [MoNKi] - Max
 /*		// ==> Timer for ReAsk File Sources - Stulle
 		m_htiReAskFileSrc = m_ctrlTreeOptions.InsertItem(GetResString(IDS_REASK_FILE_SRC), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiConTweaks);
 		m_ctrlTreeOptions.AddEditBox(m_htiReAskFileSrc, RUNTIME_CLASS(CNumTreeOptionsEdit));
@@ -396,6 +419,15 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiSysInfo = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ENABLE), m_htiSysInfoGroup, m_bSysInfo);
 		m_htiSysInfoGlobal = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SYS_INFO_GLOBAL), m_htiSysInfoGroup, m_bSysInfoGlobal);
 		// <== CPU/MEM usage [$ick$/Stulle] - Max
+		// ==> Invisible Mode [TPT/MoNKi] - Stulle
+		m_htiInvisibleModeRoot = m_ctrlTreeOptions.InsertItem(GetResString(IDS_INVMODE_GROUP), iImgInvisibleMode, iImgInvisibleMode, m_htiDisplay);
+		m_htiInvisibleMode = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_INVMODE), m_htiInvisibleModeRoot, m_bInvisibleMode);
+		m_htiInvisibleModeMod = m_ctrlTreeOptions.InsertItem(GetResString(IDS_INVMODE_MODKEY), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiInvisibleModeRoot);
+		m_ctrlTreeOptions.AddComboBox(m_htiInvisibleModeMod, RUNTIME_CLASS(CTreeOptionsInvisibleModCombo));
+		m_htiInvisibleModeKey = m_ctrlTreeOptions.InsertItem(GetResString(IDS_INVMODE_VKEY), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiInvisibleModeRoot);
+		m_ctrlTreeOptions.AddComboBox(m_htiInvisibleModeKey, RUNTIME_CLASS(CTreeOptionsInvisibleKeyCombo));
+		m_htiInvisibleModeStart = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_INVMODE_START), m_htiInvisibleModeRoot, m_bInvisibleModeStart);
+		// <== Invisible Mode [TPT/MoNKi] - Stulle
 		m_htiShowSrcOnTitle = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOWSRCONTITLE), m_htiDisplay, showSrcInTitle); // Show sources on title - Stulle
 		m_htiShowGlobalHL = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOW_GLOBAL_HL), m_htiDisplay, m_bShowGlobalHL); // show global HL - Stulle
 		m_htiShowFileHLconst = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOW_FILE_HL_CONST), m_htiDisplay, m_bShowFileHLconst); // show HL per file constantaniously - Stulle
@@ -517,13 +549,6 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.AddEditBox(m_htiCompressLevel, RUNTIME_CLASS(CNumTreeOptionsEdit));
 		// <== Adjust Compress Level [Stulle] - Stulle
 
-		// ==> Improved ICS-Firewall support [MoNKi]-Max
-		m_htiICFSupportRoot = m_ctrlTreeOptions.InsertGroup(_T("Internet Connection Firewall (ICF)"), iImgICF,  TVI_ROOT);// leuk_he: item -> group
-		m_htiICFSupport = m_ctrlTreeOptions.InsertCheckBox(_T("Enable Windows Internet Connection Firewall (ICF) support"), m_htiICFSupportRoot, m_bICFSupport);
-		m_htiICFSupportClearAtEnd = m_ctrlTreeOptions.InsertCheckBox(_T("Clear mappings at end"), m_htiICFSupportRoot, m_bICFSupportClearAtEnd);
-		m_htiICFSupportServerUDP = m_ctrlTreeOptions.InsertCheckBox(_T("Add mapping for \"ServerUDP\" port"), m_htiICFSupportRoot, m_bICFSupportServerUDP);
-		// <== Improved ICS-Firewall support [MoNKi]-Max
-
 		m_ctrlTreeOptions.SendMessage(WM_VSCROLL, SB_TOP);
 		m_bInitializedTreeOpts = true;
 	}
@@ -560,6 +585,11 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiRatioValue, m_iRatioValue);
 	DDV_MinMaxInt(pDX, m_iRatioValue, 1, 4);
 	// <== Enforce Ratio [Stulle] - Stulle
+	// ==> Improved ICS-Firewall support [MoNKi] - Max
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiICFSupport, m_bICFSupport);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiICFSupportClearAtEnd, m_bICFSupportClearAtEnd);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiICFSupportServerUDP, m_bICFSupportServerUDP);
+	// <== Improved ICS-Firewall support [MoNKi] - Max
 /*	// ==> Timer for ReAsk File Sources - Stulle
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiReAskFileSrc, m_iReAskFileSrc);
 	DDV_MinMaxInt(pDX, m_iReAskFileSrc, 29, 55);
@@ -578,6 +608,12 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSysInfo, m_bSysInfo);
 	if(m_htiSysInfoGlobal) DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSysInfoGlobal, m_bSysInfoGlobal);
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
+	// ==> Invisible Mode [TPT/MoNKi] - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiInvisibleMode, m_bInvisibleMode);
+	DDX_TreeCombo(pDX, IDC_SCAR_OPTS, m_htiInvisibleModeMod, m_sInvisibleModeMod);
+	DDX_TreeCombo(pDX, IDC_SCAR_OPTS, m_htiInvisibleModeKey, m_sInvisibleModeKey);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiInvisibleModeStart, m_bInvisibleModeStart);
+	// <== Invisible Mode [TPT/MoNKi] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowSrcOnTitle, showSrcInTitle); // Show sources on title - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowGlobalHL, m_bShowGlobalHL); // show global HL - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowFileHLconst, m_bShowFileHLconst); // show HL per file constantaniously - Stulle
@@ -671,12 +707,6 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxInt(pDX, m_iCompressLevel, 0, 9);
 	// <== Adjust Compress Level [Stulle] - Stulle
 
-	// ==> Improved ICS-Firewall support [MoNKi]-Max
-	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiICFSupport, m_bICFSupport);
-	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiICFSupportClearAtEnd, m_bICFSupportClearAtEnd);
-	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiICFSupportServerUDP, m_bICFSupportServerUDP);
-	// <== Improved ICS-Firewall support [MoNKi]-Max
-
 	// ==> FunnyNick [SiRoB/Stulle] - Stulle
 	if(m_htiFnTagMode)	m_ctrlTreeOptions.SetGroupEnable(m_htiFnTagMode, m_bFnActive);
 	if(m_htiFnTagAtEnd)	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiFnTagAtEnd, m_bFnActive);
@@ -720,6 +750,11 @@ BOOL CPPgScar::OnInitDialog()
 	m_bEnforceRatio = thePrefs.GetEnforceRatio();
 	m_iRatioValue = (int)thePrefs.GetRatioValue();
 	// <== Enforce Ratio [Stulle] - Stulle
+	// ==> Improved ICS-Firewall support [MoNKi] - Max
+	m_bICFSupport = thePrefs.GetICFSupport();
+	m_bICFSupportClearAtEnd = thePrefs.IsOpenPortsOnStartupEnabled();
+	m_bICFSupportServerUDP = thePrefs.GetICFSupportServerUDP();
+	// <== Improved ICS-Firewall support [MoNKi] - Max
 //	m_iReAskFileSrc = (thePrefs.GetReAskTimeDif() + FILEREASKTIME)/60000; // Timer for ReAsk File Sources - Stulle
 	m_bACC = thePrefs.GetACC(); // ACC [Max/WiZaRd] - Max
 /*
@@ -732,6 +767,24 @@ BOOL CPPgScar::OnInitDialog()
 	m_bSysInfo = thePrefs.GetSysInfo();
 	m_bSysInfoGlobal = thePrefs.GetSysInfoGlobal();
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
+	// ==> Invisible Mode [TPT/MoNKi] - Stulle
+	m_bInvisibleMode = thePrefs.GetInvisibleMode();
+	m_iInvisibleModeActualKeyModifier = thePrefs.GetInvisibleModeHKKeyModifier();
+	m_sInvisibleModeKey = thePrefs.GetInvisibleModeHKKey();
+
+	m_sInvisibleModeMod = "";
+	if (m_iInvisibleModeActualKeyModifier & MOD_CONTROL)
+		m_sInvisibleModeMod=GetResString(IDS_CTRLKEY);
+	if (m_iInvisibleModeActualKeyModifier & MOD_ALT){
+		if (!m_sInvisibleModeMod.IsEmpty()) m_sInvisibleModeMod += " + ";
+		m_sInvisibleModeMod+=GetResString(IDS_ALTKEY);
+	}
+	if (m_iInvisibleModeActualKeyModifier & MOD_SHIFT){
+		if (!m_sInvisibleModeMod.IsEmpty()) m_sInvisibleModeMod += " + ";
+		m_sInvisibleModeMod+=GetResString(IDS_SHIFTKEY);
+	}
+	m_bInvisibleModeStart = thePrefs.GetInvisibleModeStart();
+	// <== Invisible Mode [TPT/MoNKi] - Stulle
 	showSrcInTitle = thePrefs.ShowSrcOnTitle(); // Show sources on title - Stulle
 	m_bShowGlobalHL = thePrefs.GetShowGlobalHL(); // show global HL - Stulle
 	m_bShowFileHLconst = thePrefs.GetShowFileHLconst(); // show HL per file constantaniously - Stulle
@@ -811,12 +864,6 @@ BOOL CPPgScar::OnInitDialog()
 	// <== Global Source Limit [Max/Stulle] - Stulle
 	m_bStartupSound = thePrefs.UseStartupSound(); // Startupsound [Commander] - mav744
 	m_iCompressLevel = thePrefs.GetCompressLevel(); // Adjust Compress Level [Stulle] - Stulle
-
-	// ==> Improved ICS-Firewall support [MoNKi]-Max
-	m_bICFSupport = thePrefs.GetICFSupport();
-	m_bICFSupportClearAtEnd = thePrefs.IsOpenPortsOnStartupEnabled();
-	m_bICFSupportServerUDP = thePrefs.GetICFSupportServerUDP();
-	// <== Improved ICS-Firewall support [MoNKi]-Max
 
 	CPropertyPage::OnInitDialog();
 
@@ -975,6 +1022,26 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_bEnforceRatio = m_bEnforceRatio;
 	thePrefs.m_uRatioValue = (uint8) m_iRatioValue;
 	// <== Enforce Ratio [Stulle] - Stulle
+	// ==> Improved ICS-Firewall support [MoNKi] - Max
+	bool bRestartApp = false;
+	if(thePrefs.m_bICFSupportStatusChanged)
+	{
+		m_ctrlTreeOptions.SetCheckBox(m_htiICFSupport,thePrefs.GetICFSupport());
+		m_bICFSupport = thePrefs.GetICFSupport();
+		thePrefs.m_bICFSupportStatusChanged = false;
+	}
+
+	if((BOOL)thePrefs.GetICFSupport() != m_bICFSupport
+		|| (BOOL)thePrefs.IsOpenPortsOnStartupEnabled() != m_bICFSupportClearAtEnd
+		|| (BOOL)thePrefs.GetICFSupportServerUDP() != m_bICFSupportServerUDP)
+	{
+		bRestartApp = true;
+	}
+
+	thePrefs.SetICFSupport(m_bICFSupport);
+	thePrefs.m_bOpenPortsOnStartUp = m_bICFSupportClearAtEnd;
+	thePrefs.SetICFSupportServerUDP(m_bICFSupportServerUDP);
+	// <== Improved ICS-Firewall support [MoNKi] - Max
 //	thePrefs.m_uReAskTimeDif = (m_iReAskFileSrc-29)*60000; // Timer for ReAsk File Sources - Stulle
 	thePrefs.m_bACC = m_bACC; // ACC [Max/WiZaRd] - Max
 /*
@@ -998,6 +1065,10 @@ BOOL CPPgScar::OnApply()
 	}
 	thePrefs.m_bSysInfoGlobal = m_bSysInfoGlobal;
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
+	// ==> Invisible Mode [TPT/MoNKi] - Stulle
+	thePrefs.SetInvisibleMode(m_bInvisibleMode, m_iInvisibleModeActualKeyModifier, (char)m_sInvisibleModeKey.GetAt(0));
+	thePrefs.m_bInvisibleModeStart = m_bInvisibleModeStart;
+	// <== Invisible Mode [TPT/MoNKi] - Stulle
 	thePrefs.showSrcInTitle = showSrcInTitle; // Show sources on title - Stulle
 	thePrefs.ShowGlobalHL = m_bShowGlobalHL; // show global HL - Stulle
 	thePrefs.ShowFileHLconst = m_bShowFileHLconst; // show HL per file constantaniously - Stulle
@@ -1091,31 +1162,7 @@ BOOL CPPgScar::OnApply()
 		thePrefs.m_bUseCompression = false;
 	// <=== Adjust Compress Level [Stulle] - Stulle
 
-	bool bRestartApp = false;
-
-	// ==> Improved ICS-Firewall support [MoNKi]-Max
-	if(thePrefs.m_bICFSupportStatusChanged)
-	{
-		m_ctrlTreeOptions.SetCheckBox(m_htiICFSupport,thePrefs.GetICFSupport());
-		m_bICFSupport = thePrefs.GetICFSupport();
-		thePrefs.m_bICFSupportStatusChanged = false;
-	}
-
-	if((BOOL)thePrefs.GetICFSupport() != m_bICFSupport
-		|| (BOOL)thePrefs.IsOpenPortsOnStartupEnabled() != m_bICFSupportClearAtEnd
-		|| (BOOL)thePrefs.GetICFSupportServerUDP() != m_bICFSupportServerUDP)
-	{
-		bRestartApp = true;
-	}
-
-	thePrefs.SetICFSupport(m_bICFSupport);
-	thePrefs.m_bOpenPortsOnStartUp = m_bICFSupportClearAtEnd;
-	thePrefs.SetICFSupportServerUDP(m_bICFSupportServerUDP);
-	// <== Improved ICS-Firewall support [MoNKi]-Max
-
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	
-
 	// set thePrefs.webcacheName
 	if(m_webcacheAddressEdit.GetWindowTextLength())
 	{
@@ -1258,6 +1305,15 @@ void CPPgScar::Localize(void)
 		if (m_htiEnforceRatio) m_ctrlTreeOptions.SetItemText(m_htiEnforceRatio, GetResString(IDS_ENFORCE_RATIO));
 		if (m_htiRatioValue) m_ctrlTreeOptions.SetEditLabel(m_htiRatioValue, GetResString(IDS_RATIO_VALUE));
 		// <== Enforce Ratio [Stulle] - Stulle
+		// ==> Improved ICS-Firewall support [MoNKi] - Max
+		if (m_htiICFSupport)
+		{
+			m_ctrlTreeOptions.SetItemText(m_htiICFSupportRoot, GetResString(IDS_ICF));
+			m_ctrlTreeOptions.SetItemText(m_htiICFSupport, GetResString(IDS_ICFSUPPORT));
+			m_ctrlTreeOptions.SetItemText(m_htiICFSupportClearAtEnd, GetResString(IDS_FO_PREF_STARTUP));
+			m_ctrlTreeOptions.SetItemText(m_htiICFSupportServerUDP, GetResString(IDS_ICF_SERVERUDP));
+		}
+		// <== Improved ICS-Firewall support [MoNKi] - Max
 //		if (m_htiReAskFileSrc) m_ctrlTreeOptions.SetEditLabel(m_htiReAskFileSrc, GetResString(IDS_REASK_FILE_SRC)); // Timer for ReAsk File Sources - Stulle
 		if (m_htiACC) m_ctrlTreeOptions.SetItemText(m_htiACC, GetResString(IDS_ACC)); // ACC [Max/WiZaRd] - Max
 /*
@@ -1269,6 +1325,39 @@ void CPPgScar::Localize(void)
 		if (m_htiSysInfo) m_ctrlTreeOptions.SetItemText(m_htiSysInfo, GetResString(IDS_ENABLED));
 		if (m_htiSysInfoGlobal) m_ctrlTreeOptions.SetItemText(m_htiSysInfoGlobal, GetResString(IDS_SYS_INFO_GLOBAL));
 		// <== CPU/MEM usage [$ick$/Stulle] - Max
+		// ==> Invisible Mode [TPT/MoNKi] - Stulle
+		if ( m_htiInvisibleModeRoot )
+		{
+			m_ctrlTreeOptions.SetItemText(m_htiInvisibleMode, GetResString(IDS_INVMODE));
+			m_ctrlTreeOptions.SetItemText(m_htiInvisibleModeStart, GetResString(IDS_INVMODE_START));
+			m_ctrlTreeOptions.SetItemText(m_htiInvisibleModeMod, GetResString(IDS_INVMODE_MODKEY));
+			m_ctrlTreeOptions.SetItemText(m_htiInvisibleModeKey, GetResString(IDS_INVMODE_VKEY));
+
+			m_sInvisibleModeMod = "";
+			if (m_iInvisibleModeActualKeyModifier & MOD_CONTROL)
+				m_sInvisibleModeMod=GetResString(IDS_CTRLKEY);
+			if (m_iInvisibleModeActualKeyModifier & MOD_ALT){
+				if (!m_sInvisibleModeMod.IsEmpty()) m_sInvisibleModeMod += " + ";
+				m_sInvisibleModeMod+=GetResString(IDS_ALTKEY);
+			}
+			if (m_iInvisibleModeActualKeyModifier & MOD_SHIFT){
+				if (!m_sInvisibleModeMod.IsEmpty()) m_sInvisibleModeMod += " + ";
+				m_sInvisibleModeMod+=GetResString(IDS_SHIFTKEY);
+			}
+
+			m_ctrlTreeOptions.SetComboText(m_htiInvisibleModeMod, m_sInvisibleModeMod);		
+			m_ctrlTreeOptions.SetComboText(m_htiInvisibleModeKey, m_sInvisibleModeKey);
+
+			BOOL bCheck;
+			if(m_ctrlTreeOptions.GetCheckBox(m_htiInvisibleMode, /*m_bInvisibleMode*/bCheck)){
+				if(/*m_bInvisibleMode*/bCheck)
+					m_ctrlTreeOptions.SetItemText(m_htiInvisibleModeRoot, GetResString(IDS_INVMODE_GROUP) + 
+						_T(" (") + m_sInvisibleModeMod + _T(" + ") + m_sInvisibleModeKey + _T(")"));
+				else
+					m_ctrlTreeOptions.SetItemText(m_htiInvisibleModeRoot, GetResString(IDS_INVMODE_GROUP));
+			}
+		}
+		// <== Invisible Mode [TPT/MoNKi] - Stulle
 		if (m_htiShowSrcOnTitle) m_ctrlTreeOptions.SetItemText(m_htiShowSrcOnTitle, GetResString(IDS_SHOWSRCONTITLE)); // Show sources on title - Stulle
 		if (m_htiShowGlobalHL) m_ctrlTreeOptions.SetItemText(m_htiShowGlobalHL, GetResString(IDS_SHOW_GLOBAL_HL)); // show global HL - Stulle
 		if (m_htiShowFileHLconst) m_ctrlTreeOptions.SetItemText(m_htiShowFileHLconst, GetResString(IDS_SHOW_FILE_HL_CONST)); // show HL per file constantaniously - Stulle
@@ -1343,16 +1432,6 @@ void CPPgScar::Localize(void)
 		// <== Global Source Limit [Max/Stulle] - Stulle
 		if (m_htiStartupSound) m_ctrlTreeOptions.SetItemText(m_htiStartupSound, GetResString(IDS_STARTUPSOUND)); // Startupsound [Commander] - mav744
 		if (m_htiCompressLevel) m_ctrlTreeOptions.SetEditLabel(m_htiCompressLevel, GetResString(IDS_COMPRESS_LVL)); // Adjust Compress Level [Stulle] - Stulle
-		
-		// ==> Improved ICS-Firewall support [MoNKi]-Max
-		if (m_htiICFSupport)
-		{
-			m_ctrlTreeOptions.SetItemText(m_htiICFSupportRoot, GetResString(IDS_ICF));
-			m_ctrlTreeOptions.SetItemText(m_htiICFSupport, GetResString(IDS_ICFSUPPORT));
-			m_ctrlTreeOptions.SetItemText(m_htiICFSupportClearAtEnd, GetResString(IDS_FO_PREF_STARTUP));
-			m_ctrlTreeOptions.SetItemText(m_htiICFSupportServerUDP, GetResString(IDS_ICF_SERVERUDP));
-		}
-		// <== Improved ICS-Firewall support [MoNKi]-Max
 
 		// ==> WebCache [WC team/MorphXT] - Stulle/Max
 		m_WcProxyBox.SetWindowText( GetResString(IDS_WEBCACHE_ISP) );
@@ -1439,6 +1518,13 @@ void CPPgScar::OnDestroy()
 	m_htiEnforceRatio = NULL;
 	m_htiRatioValue = NULL;
 	// <== Enforce Ratio [Stulle] - Stulle
+	// ==> Improved ICS-Firewall support [MoNKi] - Max
+	m_htiICFSupportRoot = NULL;
+	m_htiICFSupport = NULL;
+	m_htiICFSupportClearAtEnd = NULL;
+	m_bICFSupport = false;
+	m_bICFSupportClearAtEnd = false;
+	// <== Improved ICS-Firewall support [MoNKi] - Max
 //	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources - Stulle
 	m_htiACC = NULL; // ACC [Max/WiZaRd] - Max
 /*
@@ -1467,6 +1553,13 @@ void CPPgScar::OnDestroy()
 	m_htiSysInfo = NULL;
 	m_htiSysInfoGlobal = NULL;
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
+	// ==> Invisible Mode [TPT/MoNKi] - Stulle
+	m_htiInvisibleModeRoot = NULL;
+	m_htiInvisibleMode = NULL;
+	m_htiInvisibleModeMod = NULL;
+	m_htiInvisibleModeKey = NULL;
+	m_htiInvisibleModeStart = NULL;
+	// <== Invisible Mode [TPT/MoNKi] - Stulle
 	m_htiShowSrcOnTitle = NULL; // Show sources on title - Stulle
 	m_htiShowGlobalHL = NULL; // show global HL - Stulle
 	m_htiShowFileHLconst = NULL; // show HL per file constantaniously - Stulle
@@ -1598,6 +1691,46 @@ LRESULT CPPgScar::OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam)
 			}
 		}
 		// <== CPU/MEM usage [$ick$/Stulle] - Max
+
+		// ==> Invisible Mode [TPT/MoNKi] - Stulle
+		if (m_htiInvisibleModeMod && pton->hItem == m_htiInvisibleModeMod)
+		{
+			CTreeOptionsInvisibleModCombo* modCombo = (CTreeOptionsInvisibleModCombo*)pton->nmhdr.code;
+			if (modCombo)
+				modCombo->GetLBText(modCombo->GetCurSel(),m_sInvisibleModeMod);
+
+			m_iInvisibleModeActualKeyModifier = 0;
+			if (m_sInvisibleModeMod.Find(GetResString(IDS_CTRLKEY))!=-1)
+				m_iInvisibleModeActualKeyModifier |= MOD_CONTROL;
+			if (m_sInvisibleModeMod.Find(GetResString(IDS_ALTKEY))!=-1)
+				m_iInvisibleModeActualKeyModifier |= MOD_ALT;
+			if (m_sInvisibleModeMod.Find(GetResString(IDS_SHIFTKEY))!=-1)
+				m_iInvisibleModeActualKeyModifier |= MOD_SHIFT;
+		}
+
+		if (m_htiInvisibleModeMod && pton->hItem == m_htiInvisibleModeKey)
+		{
+			CTreeOptionsInvisibleModCombo* keyCombo = (CTreeOptionsInvisibleModCombo*)pton->nmhdr.code;
+			if (keyCombo)
+				keyCombo->GetLBText(keyCombo->GetCurSel(),m_sInvisibleModeKey);
+		}
+
+		if(m_htiInvisibleMode && pton->hItem == m_htiInvisibleMode)
+		{
+			if(m_ctrlTreeOptions.GetCheckBox(m_htiInvisibleMode, /*m_bInvisibleMode*/bCheck)){
+				if(/*m_bInvisibleMode*/bCheck)
+					m_ctrlTreeOptions.SetItemText(m_htiInvisibleModeRoot, GetResString(IDS_INVMODE_GROUP) + 
+						_T(" (") + m_sInvisibleModeMod + _T(" + ") + m_sInvisibleModeKey + _T(")"));
+				else
+					m_ctrlTreeOptions.SetItemText(m_htiInvisibleModeRoot, GetResString(IDS_INVMODE_GROUP));
+			}
+
+			if (m_ctrlTreeOptions.GetCheckBox(m_htiInvisibleMode, bCheck))
+			{
+				if (m_htiInvisibleModeStart)	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiInvisibleModeStart, bCheck);
+			}
+		}
+		// <== Invisible Mode [TPT/MoNKi] - Stulle
 
 		SetModified();
 	}

@@ -333,6 +333,25 @@ protected:
 public:
 	void SaveSettings (bool _shutdown=false);
 	// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+
+	// ==> Invisible Mode [TPT/MoNKi] - Stulle
+	BOOL	RegisterInvisibleHotKey();
+	BOOL	UnRegisterInvisibleHotKey();
+protected:
+	LRESULT	OnHotKey(WPARAM wParam, LPARAM lParam);
+
+	// Allows "invisible mode" on multiple instances of eMule
+	afx_msg LRESULT OnRestoreWindowInvisibleMode(WPARAM, LPARAM);
+	static BOOL CALLBACK AskEmulesForInvisibleMode(HWND hWnd, LPARAM lParam);
+
+private:
+	void	ToggleShow();
+	void	ToggleHide();
+	BOOL	b_TrayWasVisible;
+	BOOL	b_WindowWasVisible;
+	bool	b_HideApp;
+
+	// <== Invisible Mode [TPT/MoNKi] - Stulle
 };
 
 
@@ -380,3 +399,17 @@ enum EWebinterfaceOrders
 	WEBGUIIA_KAD_STOP,
 	WEBGUIIA_KAD_RCFW
 };
+
+// ==> Invisible Mode [TPT/MoNKi] - Stulle
+enum EEmuleHotKeysIDs
+{
+	HOTKEY_INVISIBLEMODE_ID
+};
+
+enum EEMuleInvisibleModeEnumOptions
+{
+	INVMODE_RESTOREWINDOW,
+	INVMODE_REGISTERHOTKEY,
+	INVMODE_HIDEWINDOW
+};
+// <== Invisible Mode [TPT/MoNKi] - Stulle

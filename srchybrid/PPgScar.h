@@ -42,6 +42,11 @@ protected:
 	bool m_bEnforceRatio;
 	int m_iRatioValue;
 	// <== Enforce Ratio [Stulle] - Stulle
+	// ==> Improved ICS-Firewall support [MoNKi]-Max
+	bool		m_bICFSupport;
+	bool		m_bICFSupportClearAtEnd;
+	bool		m_bICFSupportServerUDP;
+	// <== Improved ICS-Firewall support [MoNKi]-Max
 //	int m_iReAskFileSrc; // Timer for ReAsk File Sources - Stulle
 	bool m_bACC; // ACC [Max/WiZaRd] - Max
 /*
@@ -59,6 +64,13 @@ protected:
 	bool m_bSysInfo;
 	bool m_bSysInfoGlobal;
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
+	// ==> Invisible Mode [TPT/MoNKi] - Stulle
+	bool		m_bInvisibleMode;
+	CString		m_sInvisibleModeMod;
+	CString		m_sInvisibleModeKey;
+	UINT		m_iInvisibleModeActualKeyModifier;
+	bool		m_bInvisibleModeStart;
+	// <== Invisible Mode [TPT/MoNKi] - Stulle
 	bool showSrcInTitle; // Show sources on title - Stulle
 	bool m_bShowGlobalHL; // show global HL - Stulle
 	bool m_bShowFileHLconst; // show HL per file constantaniously - Stulle
@@ -171,6 +183,12 @@ protected:
 	HTREEITEM m_htiEnforceRatio;
 	HTREEITEM m_htiRatioValue;
 	// <== Enforce Ratio [Stulle] - Stulle
+	// ==> Improved ICS-Firewall support [MoNKi]-Max
+	HTREEITEM	m_htiICFSupportRoot;
+	HTREEITEM	m_htiICFSupport;
+	HTREEITEM	m_htiICFSupportClearAtEnd;
+	HTREEITEM	m_htiICFSupportServerUDP;
+	// <== Improved ICS-Firewall support [MoNKi]-Max
 //	HTREEITEM m_htiReAskFileSrc; // Timer for ReAsk File Sources - Stulle
 	HTREEITEM m_htiACC; // ACC [Max/WiZaRd] - Max
 /*
@@ -199,6 +217,13 @@ protected:
 	HTREEITEM m_htiSysInfo;
 	HTREEITEM m_htiSysInfoGlobal;
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
+	// ==> Invisible Mode [TPT/MoNKi] - Stulle
+	HTREEITEM	m_htiInvisibleModeRoot;
+	HTREEITEM	m_htiInvisibleMode;
+	HTREEITEM	m_htiInvisibleModeMod;
+	HTREEITEM	m_htiInvisibleModeKey;
+	HTREEITEM	m_htiInvisibleModeStart;
+	// <== Invisible Mode [TPT/MoNKi] - Stulle
 	HTREEITEM m_htiShowSrcOnTitle; // Show sources on title - Stulle
 	HTREEITEM m_htiShowGlobalHL; // show global HL - Stulle
 	HTREEITEM m_htiShowFileHLconst; // show HL per file constantaniously - Stulle
@@ -291,16 +316,6 @@ protected:
 	// <== Global Source Limit [Max/Stulle] - Stulle
 	HTREEITEM m_htiStartupSound; // Startupsound [Commander] - mav744
 	HTREEITEM m_htiCompressLevel; // Adjust Compress Level [Stulle] - Stulle
-
-	// ==> Improved ICS-Firewall support [MoNKi]-Max
-	HTREEITEM	m_htiICFSupportRoot;
-	HTREEITEM	m_htiICFSupport;
-	HTREEITEM	m_htiICFSupportClearAtEnd;
-	HTREEITEM	m_htiICFSupportServerUDP;
-	bool		m_bICFSupport;
-	bool		m_bICFSupportClearAtEnd;
-	bool		m_bICFSupportServerUDP;
-	// <== Improved ICS-Firewall support [MoNKi]-Max
 
 	// ==> push small files [sivka] - Stulle
 	uint32 m_iPushSmallFiles;
