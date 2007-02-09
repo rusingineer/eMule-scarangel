@@ -170,10 +170,11 @@ public:
 	// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	/*
 	uint32	GetSecureWaitStartTime(uint32 dwForIP);
+	void	SetSecWaitStartTime(uint32 dwForIP);
 	*/
 	sint64	GetSecureWaitStartTime(uint32 dwForIP);
+	void	SetSecWaitStartTime(uint32 dwForIP, int iKeepPct = 0);
 	// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-	void	SetSecWaitStartTime(uint32 dwForIP);
 
 	void	SetWaitStartTimeBonus(uint32 dwForIP, uint32 timestamp); //Xman Xtreme Full CHunk
 

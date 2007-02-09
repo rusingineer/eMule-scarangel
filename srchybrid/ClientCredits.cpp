@@ -1461,16 +1461,25 @@ void CClientCredits::SetSecWaitStartTime(uint32 dwForIP)
 	m_dwWaitTimeIP = dwForIP;
 }
 */
-void CClientCredits::SetSecWaitStartTime(uint32 dwForIP)
+void CClientCredits::SetSecWaitStartTime(uint32 dwForIP, int iKeepPct)
 {
 	if(theApp.clientcredits->IsSaveUploadQueueWaitTime()){
 		m_dwUnSecureWaitTime = ::GetTickCount() - ((sint64) m_pCredits->nUnSecuredWaitTime) - 1;
 		m_dwSecureWaitTime = ::GetTickCount() - ((sint64) m_pCredits->nSecuredWaitTime) - 1;
 	}
 	else{
-		//original
-		m_dwUnSecureWaitTime = ::GetTickCount()-1;
-		m_dwSecureWaitTime = ::GetTickCount()-1;
+		if(iKeepPct != 0) // give time back for non SUQWT
+		{
+			DWORD curTick = ::GetTickCount();
+			m_dwUnSecureWaitTime = curTick - ((sint64)((curTick - m_dwUnSecureWaitTime) / 100) * iKeepPct) - 1;
+			m_dwSecureWaitTime = curTick - ((sint64)((curTick - m_dwSecureWaitTime) / 100) * iKeepPct) - 1;
+		}
+		else
+		{
+			//original
+			m_dwUnSecureWaitTime = ::GetTickCount()-1;
+			m_dwSecureWaitTime = ::GetTickCount()-1;
+		}
 	}
 	m_dwWaitTimeIP = dwForIP;
 }
