@@ -19,6 +19,8 @@
 // ==> Design Settings [eWombat/Stulle] - Stulle
 #include "SharedFilesWnd.h"
 #include "SharedFilesCtrl.h"
+#include "ServerWnd.h"
+#include "ServerListCtrl.h"
 // <== Design Settings [eWombat/Stulle] - Stulle
 // ==> Invisible Mode [TPT/MoNKi] - Stulle
 #include "TreeOptionsInvisibleModCombo.h"
@@ -74,6 +76,8 @@ BEGIN_MESSAGE_MAP(CPPgScar, CPropertyPage)
     ON_MESSAGE(UM_CPN_SELCHANGE, OnColorPopupSelChange)
 	ON_CBN_SELCHANGE(IDC_COLOR_MASTER_COMBO, OnCbnSelchangeStyleselMaster)
 	ON_CBN_SELCHANGE(IDC_COLOR_SUB_COMBO, OnCbnSelchangeStyleselSub)
+	ON_EN_KILLFOCUS(IDC_COLOR_MASTER_COMBO, OnEnKillfocusMasterCombo)
+	ON_EN_KILLFOCUS(IDC_COLOR_SUB_COMBO, OnEnKillfocusSubCombo)
 	// <== Design Settings [eWombat/Stulle] - Stulle
 	ON_WM_HELPINFO()
 END_MESSAGE_MAP()
@@ -882,6 +886,7 @@ BOOL CPPgScar::OnInitDialog()
 
 	// ==> Design Settings [eWombat/Stulle] - Stulle
 	m_bDesignChanged = false;
+	m_bFocusWasOnCombo = false;
 	m_bold.SetWindowText(_T(""));
 	m_bold.SetIcon((HICON)::LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE((int)IDI_FONTB), IMAGE_ICON, 16, 16, 0));
 	m_underlined.SetWindowText(_T(""));
@@ -896,9 +901,6 @@ BOOL CPPgScar::OnInitDialog()
 	m_FontColor.SetDefaultColor(GetSysColor(COLOR_WINDOWTEXT));
 	m_BackColor.SetColor(COLORREF(RGB(255,255,255)));
 	m_BackColor.SetDefaultColor(COLORREF(RGB(255,255,255)));
-
-//	m_ColorPreview.SetBackgroundColor(GetSysColor(COLOR_WINDOW));
-//	m_ColorPreview.SetTextColor(GetSysColor(COLOR_WINDOWTEXT));
 	// <== Design Settings [eWombat/Stulle] - Stulle
 
 	// ==> push small files [sivka] - Stulle
@@ -966,8 +968,23 @@ void CPPgScar::LoadSettings(void)
 		// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 
 		// ==> Design Settings [eWombat/Stulle] - Stulle
-		for (int i=0;i<style_counts;i++)
-			thePrefs.GetStyle(i,&styles[i]);
+		for (int i=0;i<style_c_count;i++)
+			thePrefs.GetStyle(client_styles, i, &nClientStyles[i]);
+
+		for (int i=0;i<style_d_count;i++)
+			thePrefs.GetStyle(download_styles, i, &nDownloadStyles[i]);
+
+		for (int i=0;i<style_s_count;i++)
+			thePrefs.GetStyle(share_styles, i, &nShareStyles[i]);
+
+		for (int i=0;i<style_se_count;i++)
+			thePrefs.GetStyle(server_styles, i, &nServerStyles[i]);
+
+		for (int i=0;i<style_b_count;i++)
+			thePrefs.GetStyle(background_styles, i, &nBackgroundStyles[i]);
+
+		for (int i=0;i<style_w_count;i++)
+			thePrefs.GetStyle(window_styles, i, &nWindowStyles[i]);
 		// <== Design Settings [eWombat/Stulle] - Stulle
 	}
 }
@@ -1229,15 +1246,30 @@ BOOL CPPgScar::OnApply()
 	// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 
 	// ==> Design Settings [eWombat/Stulle] - Stulle
-	for (int i=0;i<style_counts;i++)
-	{
-		thePrefs.SetStyle(i,&styles[i]);
-	}
+	for (int i=0;i<style_c_count;i++)
+		thePrefs.SetStyle(client_styles, i, &nClientStyles[i]);
+
+	for (int i=0;i<style_d_count;i++)
+		thePrefs.SetStyle(download_styles, i, &nDownloadStyles[i]);
+
+	for (int i=0;i<style_s_count;i++)
+		thePrefs.SetStyle(share_styles, i, &nShareStyles[i]);
+
+	for (int i=0;i<style_se_count;i++)
+		thePrefs.SetStyle(server_styles, i, &nServerStyles[i]);
+
+	for (int i=0;i<style_b_count;i++)
+		thePrefs.SetStyle(background_styles, i, &nBackgroundStyles[i]);
+
+	for (int i=0;i<style_w_count;i++)
+		thePrefs.SetStyle(window_styles, i, &nWindowStyles[i]);
+
 	if(m_bDesignChanged)
 	{
 		m_bDesignChanged = false;
 		theApp.emuledlg->transferwnd->Localize();
 		theApp.emuledlg->sharedfileswnd->sharedfilesctrl.Localize();
+		theApp.emuledlg->serverwnd->serverlistctrl.Localize();
 	}
 	// <== Design Settings [eWombat/Stulle] - Stulle
 
@@ -1466,7 +1498,6 @@ void CPPgScar::Localize(void)
 		m_ColorBox.SetWindowText( GetResString(IDS_COLOR_BOX) );
 		m_FontColorLabel.SetWindowText( GetResString(IDS_COLOR_FONT_LABEL) );
 		m_BackColorLabel.SetWindowText( GetResString(IDS_COLOR_BACK_LABEL) );
-//		m_ColorPreviewBox.SetWindowText( GetResString(IDS_COLOR_PREVIEW) );
 
 		m_FontColor.CustomText = GetResString(IDS_COL_MORECOLORS);
 		m_FontColor.DefaultText = GetResString(IDS_DEFAULT);
@@ -2888,6 +2919,8 @@ void CPPgScar::InitMasterStyleCombo()
 	m_MasterCombo.AddString(GetResString(IDS_COLOR_MASTER2));
 	m_MasterCombo.AddString(GetResString(IDS_COLOR_MASTER3));
 	m_MasterCombo.AddString(GetResString(IDS_COLOR_MASTER4));
+	m_MasterCombo.AddString(GetResString(IDS_COLOR_MASTER5));
+	m_MasterCombo.AddString(GetResString(IDS_COLOR_MASTER6));
 
 	m_MasterCombo.SetCurSel(iSel != CB_ERR ? iSel : 0);
 
@@ -2905,7 +2938,7 @@ void CPPgScar::InitSubStyleCombo()
 
 	switch(iMasterSel)
 	{
-		case 0: // client styles
+		case client_styles: // client styles
 		{
 			m_SubCombo.AddString(GetResString(IDS_DEFAULT));
 			m_SubCombo.AddString(GetResString(IDS_COLOR_C1));
@@ -2917,7 +2950,7 @@ void CPPgScar::InitSubStyleCombo()
 			m_SubCombo.AddString(GetResString(IDS_COLOR_C7));
 			m_SubCombo.AddString(GetResString(IDS_COLOR_C8));
 		}break;
-		case 1: // download styles
+		case download_styles: // download styles
 		{
 			m_SubCombo.AddString(GetResString(IDS_DEFAULT));
 			m_SubCombo.AddString(GetResString(IDS_DOWNLOADING));
@@ -2928,7 +2961,7 @@ void CPPgScar::InitSubStyleCombo()
 			m_SubCombo.AddString(GetResString(IDS_STOPPED));
 			m_SubCombo.AddString(GetResString(IDS_ERRORLIKE));
 		}break;
-		case 2: // share styles
+		case share_styles: // share styles
 		{
 			m_SubCombo.AddString(GetResString(IDS_DEFAULT));
 			m_SubCombo.AddString(GetResString(IDS_COLOR_S1));
@@ -2942,7 +2975,16 @@ void CPPgScar::InitSubStyleCombo()
 			m_SubCombo.AddString(strTemp + GetResString(IDS_PRIORELEASE));
 			m_SubCombo.AddString(strTemp + GetResString(IDS_POWERRELEASE));
 		}break;
-		case 3: // background styles
+		case server_styles: // server styles
+		{
+			m_SubCombo.AddString(GetResString(IDS_DEFAULT));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_SE1));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_SE2));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_SE3));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_SE4));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_SE5));
+		}break;
+		case background_styles: // background styles
 		{
 			m_SubCombo.AddString(GetResString(IDS_COLOR_B1));
 			m_SubCombo.AddString(GetResString(IDS_COLOR_B2));
@@ -2950,6 +2992,13 @@ void CPPgScar::InitSubStyleCombo()
 			m_SubCombo.AddString(GetResString(IDS_COLOR_B4));
 			m_SubCombo.AddString(GetResString(IDS_COLOR_B5));
 			m_SubCombo.AddString(GetResString(IDS_COLOR_B6));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_B7));
+		}break;
+		case window_styles: // window styles
+		{
+			m_SubCombo.AddString(GetResString(IDS_DEFAULT));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_W1));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_W2));
 		}break;
 		default:
 			break;
@@ -2960,26 +3009,25 @@ void CPPgScar::InitSubStyleCombo()
 
 void CPPgScar::UpdateStyles(bool bShow)
 {
-	int iCurStyle = GetStyleValue();
+	int iCurStyle = m_SubCombo.GetCurSel();
 	int iMasterValue = m_MasterCombo.GetCurSel();
+	StylesStruct styles;
+	styles = GetStyle(iMasterValue, iCurStyle);
 	bool bEnable = false;
-	bool bOnOff = (iCurStyle != style_c_default && iCurStyle != style_d_default && iCurStyle != style_s_default);
+	bool bOnOff = (iCurStyle != style_c_default && iCurStyle != style_d_default && iCurStyle != style_s_default && iCurStyle != style_se_default);
 
-	m_BackColor.SetColor(styles[iCurStyle].nBackColor);
-	if(iMasterValue < 3)
+	m_BackColor.SetColor(styles.nBackColor);
+	if(iMasterValue < background_styles)
 	{
-		m_FontColor.SetColor(styles[iCurStyle].nFontColor);
+		m_FontColor.SetColor(styles.nFontColor);
 		bEnable = true;
-
-//		m_ColorPreview.SetTextColor(styles[iCurStyle].nFontColor);
-//		m_ColorPreview.SetBackgroundColor(styles[iCurStyle].nBackColor);
 	}
 
 	if(bOnOff)
 	{
 		m_OnOff.EnableWindow(bEnable);
 
-		if(styles[iCurStyle].nOnOff != 0 && bEnable)
+		if(styles.nOnOff != 0 && bEnable)
 		{
 			m_BackColor.EnableWindow(true);
 			m_OnOff.SetWindowText( GetResString(IDS_COLOR_OFF) );
@@ -2988,7 +3036,7 @@ void CPPgScar::UpdateStyles(bool bShow)
 		{
 			m_OnOff.SetWindowText( GetResString(IDS_COLOR_ON) );
 			bEnable = false;
-			m_BackColor.EnableWindow(iMasterValue == 3);
+			m_BackColor.EnableWindow(iMasterValue == background_styles);
 		}
 	}
 	else
@@ -3009,44 +3057,12 @@ void CPPgScar::UpdateStyles(bool bShow)
 		m_BackColor.ShowWindow(SW_SHOW);
 	}
 
-	int iStyle = (styles[iCurStyle].nFlags & STYLE_FONTMASK);
+	int iStyle = (styles.nFlags & STYLE_FONTMASK);
 	m_bold.SetCheck(iStyle== STYLE_BOLD ? 1:0);
 	m_underlined.SetCheck(iStyle== STYLE_UNDERLINE ? 1:0);
 	m_italic.SetCheck(iStyle== STYLE_ITALIC ? 1:0);
 
-//	switch (iStyle)
-//	{
-//		case STYLE_BOLD:		m_ColorPreview.SetFont(m_bold.GetFont(),TRUE);break;
-//		case STYLE_UNDERLINE:	m_ColorPreview.SetFont(m_underlined.GetFont(),TRUE);break;
-//		case STYLE_ITALIC:		m_ColorPreview.SetFont(m_italic.GetFont(),TRUE);break;
-//		default:				m_ColorPreview.SetFont(GetFont(),TRUE);break;
-//	}
-}
-
-int CPPgScar::GetStyleValue()
-{
-	int iMasterValue = m_MasterCombo.GetCurSel();
-	int iCurStyle = 0;
-
-	switch(iMasterValue)
-	{
-		case 0:
-			break;
-		case 1:
-			iCurStyle = style_d_default;
-			break;
-		case 2:
-			iCurStyle = style_s_default;
-			break;
-		case 3:
-			iCurStyle = style_b_clientlist;
-			break;
-		default:
-			break;
-	}
-	iCurStyle += m_SubCombo.GetCurSel();
-
-	return iCurStyle;
+	SetStyle(iMasterValue, iCurStyle, &styles);
 }
 
 void CPPgScar::OnFontStyle(int iStyle)
@@ -3063,12 +3079,17 @@ void CPPgScar::OnFontStyle(int iStyle)
 	else if (m_italic.GetCheck())
 		iStyle = STYLE_ITALIC;
 
-	int iCurStyle = GetStyleValue();
-	DWORD flags = (styles[iCurStyle].nFlags & ~STYLE_FONTMASK) | iStyle;
-	if (flags != styles[iCurStyle].nFlags)
+	int iCurStyle = m_SubCombo.GetCurSel();
+	int iMasterValue = m_MasterCombo.GetCurSel();
+	StylesStruct styles;
+	styles = GetStyle(iMasterValue, iCurStyle);
+
+	DWORD flags = (styles.nFlags & ~STYLE_FONTMASK) | iStyle;
+	if (flags != styles.nFlags)
 	{
 		SetModified();
-		styles[iCurStyle].nFlags = flags;
+		styles.nFlags = flags;
+		SetStyle(iMasterValue, iCurStyle, &styles);
 		UpdateStyles();
 		m_bDesignChanged = true;
 	}
@@ -3076,34 +3097,38 @@ void CPPgScar::OnFontStyle(int iStyle)
 
 LONG CPPgScar::OnColorPopupSelChange(UINT /*lParam*/, LONG /*wParam*/)
 {
-	int iSel = GetStyleValue();
+	int iCurStyle = m_SubCombo.GetCurSel();
+	int iMasterValue = m_MasterCombo.GetCurSel();
+	StylesStruct styles;
+	styles = GetStyle(iMasterValue, iCurStyle);
 
 	// font
-	if (iSel >= 0)
+	if (iCurStyle >= 0)
 	{
 		COLORREF crColor = m_FontColor.GetColor();
-		if (crColor != styles[iSel].nFontColor)
+		if (crColor != styles.nFontColor)
 		{
-			styles[iSel].nFontColor = crColor;
+			styles.nFontColor = crColor;
 			SetModified(TRUE);
+			SetStyle(iMasterValue, iCurStyle, &styles);
 			UpdateStyles();
 			m_bDesignChanged = true;
 		}
 	}
 
 	// background
-	if (iSel >= 0)
+	if (iCurStyle >= 0)
 	{
 		COLORREF crColor = m_BackColor.GetColor();
-		if (crColor != styles[iSel].nBackColor)
+		if (crColor != styles.nBackColor)
 		{
-			styles[iSel].nBackColor = crColor;
+			styles.nBackColor = crColor;
 			SetModified(TRUE);
+			SetStyle(iMasterValue, iCurStyle, &styles);
 			UpdateStyles();
 			m_bDesignChanged = true;
 		}
 	}
-
 	return TRUE;
 }
 
@@ -3126,26 +3151,109 @@ void CPPgScar::OnCbnSelchangeStyleselMaster()
 {
 	InitSubStyleCombo();
 	UpdateStyles();
+	if(m_bFocusWasOnCombo)
+		m_MasterCombo.SetFocus();
+	m_bFocusWasOnCombo = false;
 }
 
 void CPPgScar::OnCbnSelchangeStyleselSub()
 {
 	UpdateStyles();
+	if(m_bFocusWasOnCombo)
+		m_SubCombo.SetFocus();
+	m_bFocusWasOnCombo = false;
 }
 
 void CPPgScar::OnBnClickedOnOff()
 {
-	int iSel = GetStyleValue();
-	short sOnOff = styles[iSel].nOnOff;
+	int iCurStyle = m_SubCombo.GetCurSel();
+	int iMasterValue = m_MasterCombo.GetCurSel();
+	StylesStruct styles;
+	styles = GetStyle(iMasterValue, iCurStyle);
+
+	short sOnOff = styles.nOnOff;
 
 	if(sOnOff == 1)
 		sOnOff = 0;
 	else
 		sOnOff = 1;
-	styles[iSel].nOnOff = sOnOff;
+	styles.nOnOff = sOnOff;
 
+	SetStyle(iMasterValue, iCurStyle, &styles);
 	UpdateStyles();
 	SetModified(TRUE);
 	m_bDesignChanged = true;
+}
+
+StylesStruct CPPgScar::GetStyle(int nMaster, int nStyle)
+{
+	if(nMaster == client_styles)
+		return nClientStyles[nStyle];
+	else if(nMaster == download_styles)
+		return nDownloadStyles[nStyle];
+	else if(nMaster == share_styles)
+		return nShareStyles[nStyle];
+	else if(nMaster == server_styles)
+		return nServerStyles[nStyle];
+	else if(nMaster == background_styles)
+		return nBackgroundStyles[nStyle];
+	else if(nMaster == window_styles)
+		return nWindowStyles[nStyle];
+	return nClientStyles[nStyle];
+}
+
+void CPPgScar::SetStyle(int nMaster, int nStyle, StylesStruct *style)
+{
+	switch(nMaster)
+	{
+		case client_styles:
+			{
+				nClientStyles[nStyle].nFlags = style->nFlags;
+				nClientStyles[nStyle].nFontColor = style->nFontColor;
+				nClientStyles[nStyle].nBackColor = style->nBackColor;
+				nClientStyles[nStyle].nOnOff = style->nOnOff;
+			}break;
+		case download_styles:
+			{
+				nDownloadStyles[nStyle].nFlags = style->nFlags;
+				nDownloadStyles[nStyle].nFontColor = style->nFontColor;
+				nDownloadStyles[nStyle].nBackColor = style->nBackColor;
+				nDownloadStyles[nStyle].nOnOff = style->nOnOff;
+			}break;
+		case share_styles:
+			{
+				nShareStyles[nStyle].nFlags = style->nFlags;
+				nShareStyles[nStyle].nFontColor = style->nFontColor;
+				nShareStyles[nStyle].nBackColor = style->nBackColor;
+				nShareStyles[nStyle].nOnOff = style->nOnOff;
+			}break;
+		case server_styles:
+			{
+				nServerStyles[nStyle].nFlags = style->nFlags;
+				nServerStyles[nStyle].nFontColor = style->nFontColor;
+				nServerStyles[nStyle].nBackColor = style->nBackColor;
+				nServerStyles[nStyle].nOnOff = style->nOnOff;
+			}break;
+		case background_styles:
+			{
+				nBackgroundStyles[nStyle].nBackColor = style->nBackColor;
+			}break;
+		case window_styles:
+			{
+				nWindowStyles[nStyle].nBackColor = style->nBackColor;
+			}break;
+		default:
+			break;
+	}
+}
+
+void CPPgScar::OnEnKillfocusMasterCombo()
+{
+	m_bFocusWasOnCombo = true;
+}
+
+void CPPgScar::OnEnKillfocusSubCombo()
+{
+	m_bFocusWasOnCombo = true;
 }
 // <== Design Settings [eWombat/Stulle] - Stulle

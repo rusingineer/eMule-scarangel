@@ -146,6 +146,7 @@ struct Category_Struct{
 // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 // ==> Design Settings [eWombat/Stulle] - Stulle
+#define STYLE_VERSION 2
 struct StylesStruct 
 {
 	short nOnOff;
@@ -160,9 +161,21 @@ struct StylesStruct
 #define STYLE_USED		0x80000000
 #define STYLE_FONTMASK	0x0003
 
-enum eStyles
+// master styles
+enum eMasterStyles
 {
-	// client styles
+	client_styles = 0,
+	download_styles,
+	share_styles,
+	server_styles,
+	background_styles,
+	window_styles,
+	master_count
+};
+
+// client styles
+enum eClientStyles
+{
 	style_c_default = 0,
 	style_c_friend,
 	style_c_powershare,
@@ -172,9 +185,13 @@ enum eStyles
 	style_c_leecher,
 	style_c_lowid,
 	style_c_credits,
+	style_c_count
+};
 
-	// download styles
-	style_d_default,
+// download styles
+enum eDownloadStyles
+{
+	style_d_default = 0,
 	style_d_downloading,
 	style_d_complete,
 	style_d_completing,
@@ -182,9 +199,13 @@ enum eStyles
 	style_d_paused,
 	style_d_stopped,
 	style_d_errunk,
+	style_d_count
+};
 
-	// share styles
-	style_s_default,
+// share styles
+enum eShareStyles
+{
+	style_s_default = 0,
 	style_s_incomplete,
 	style_s_powershare,
 	style_s_auto,
@@ -194,17 +215,41 @@ enum eStyles
 	style_s_high,
 	style_s_release,
 	style_s_powerrelease,
+	style_s_count
+};
 
-	// background styles
-	style_b_clientlist,
+// server styles
+enum eServerStyles
+{
+	style_se_default = 0,
+	style_se_connected,
+	style_se_static,
+	style_se_filtered,
+	style_se_dead,
+	style_se_unreliable,
+	style_se_count
+};
+
+// background styles
+enum eBackgroundStyles
+{
+	style_b_clientlist = 0,
 	style_b_dlclientlist,
 	style_b_queuelist,
 	style_b_uploadlist,
 	style_b_downloadlist,
 	style_b_sharedlist,
+	style_b_serverwnd,
+	style_b_count
+};
 
-	// last item
-	style_counts
+// window styles
+enum eWindowStyles
+{
+	style_w_default = 0,
+	style_w_transfer,
+	style_w_statusbar,
+	style_w_count
 };
 // <== Design Settings [eWombat/Stulle] - Stulle
 
@@ -903,10 +948,41 @@ public:
 	static	int		GetPsAmountLimit() {return PsAmountLimit;} // Limit PS by amount of data uploaded [Stulle] - Stulle
 
 	// ==> Design Settings [eWombat/Stulle] - Stulle
-	static DWORD		nStyleFlags[style_counts]; 
-	static COLORREF		nStyleFontColor[style_counts];
-	static COLORREF		nStyleBackColor[style_counts];
-	static short		nStyleOnOff[style_counts];
+	// client styles
+	static DWORD		nClientStyleFlags[style_c_count]; 
+	static COLORREF		nClientStyleFontColor[style_c_count];
+	static COLORREF		nClientStyleBackColor[style_c_count];
+	static short		nClientStyleOnOff[style_c_count];
+
+	// download styles
+	static DWORD		nDownloadStyleFlags[style_d_count]; 
+	static COLORREF		nDownloadStyleFontColor[style_d_count];
+	static COLORREF		nDownloadStyleBackColor[style_d_count];
+	static short		nDownloadStyleOnOff[style_d_count];
+
+	// share styles
+	static DWORD		nShareStyleFlags[style_s_count]; 
+	static COLORREF		nShareStyleFontColor[style_s_count];
+	static COLORREF		nShareStyleBackColor[style_s_count];
+	static short		nShareStyleOnOff[style_s_count];
+
+	// server styles
+	static DWORD		nServerStyleFlags[style_se_count]; 
+	static COLORREF		nServerStyleFontColor[style_se_count];
+	static COLORREF		nServerStyleBackColor[style_se_count];
+	static short		nServerStyleOnOff[style_se_count];
+
+	// background styles
+	static DWORD		nBackgroundStyleFlags[style_b_count]; 
+	static COLORREF		nBackgroundStyleFontColor[style_b_count];
+	static COLORREF		nBackgroundStyleBackColor[style_b_count];
+	static short		nBackgroundStyleOnOff[style_b_count];
+
+	// window styles
+	static DWORD		nWindowStyleFlags[style_w_count]; 
+	static COLORREF		nWindowStyleFontColor[style_w_count];
+	static COLORREF		nWindowStyleBackColor[style_w_count];
+	static short		nWindowStyleOnOff[style_w_count];
 	// <== Design Settings [eWombat/Stulle] - Stulle
 
 	// ==> Enforce Ratio [Stulle] - Stulle
@@ -996,7 +1072,7 @@ public:
 
 	static	LPCSTR	GetBindAddrA()						{return m_pszBindAddrA; }
 	static	LPCWSTR	GetBindAddrW()						{return m_pszBindAddrW; }
-	// ==> UPnP support [Xtreme] - Stulle
+	// ==> Removed UPnP support [Xtreme] - Stulle
 	/*
 	//Xman
 	//upnp_start
@@ -1006,7 +1082,7 @@ public:
 	*/
 	static	uint16	GetPort()							{return port;}
 	static	uint16	GetUDPPort()						{return udpport;}
-	// <== UPnP support [Xtreme] - Stulle
+	// <== Removed UPnP support [Xtreme] - Stulle
 	static	uint16	GetServerUDPPort()					{return nServerUDPPort;}
 	static	uchar*	GetUserHash()						{return userhash;}
 	// ZZ:UploadSpeedSense -->
@@ -1036,7 +1112,7 @@ public:
 	//--------------------------------------------------------------------------------------
 	//Xman Xtreme Mod:
 
-	// ==> UPnP support [Xtreme] - Stulle
+	// ==> Removed UPnP support [Xtreme] - Stulle
 	/*
 	//upnp_start
 	static	bool m_bUPnPNat; // UPnP On/Off
@@ -1051,7 +1127,7 @@ public:
 	static	void SetUPnPNatTryRandom(bool on) { m_bUPnPTryRandom = on; }
 	//upnp_end
 	*/
-	// <== UPnP support [Xtreme] - Stulle
+	// <== Removed UPnP support [Xtreme] - Stulle
 
 
 	//Xman Xtreme Upload
@@ -2133,13 +2209,17 @@ public:
 	static int	PsAmountLimit; // Limit PS by amount of data uploaded [Stulle] - Stulle
 
 	// ==> Design Settings [eWombat/Stulle] - Stulle
-	static bool		SetStyle(int nStyle, StylesStruct *style=NULL);
-	static bool		GetStyle(int nStyle, StylesStruct *style=NULL);
-	static DWORD	GetStyleFlags(int nStyle)	{return nStyleFlags[nStyle];}
-	static COLORREF	GetStyleFontColor(int nStyle)	{return nStyleFontColor[nStyle];}
-	static COLORREF	GetStyleBackColor(int nStyle)	{return nStyleBackColor[nStyle];}
-	static short	GetStyleOnOff(int nStyle)	{return nStyleOnOff[nStyle];}
 	static void		InitStyles();
+	static bool		GetStyle(int nMaster, int nStyle, StylesStruct *style=NULL);
+	static bool		SetStyle(int nMaster, int nStyle, StylesStruct *style=NULL);
+	static DWORD	GetStyleFlags(int nMaster, int nStyle);
+	static void		SetStyleFlags(int nMaster, int nStyle, DWORD dwNew);
+	static COLORREF	GetStyleFontColor(int nMaster, int nStyle);
+	static void		SetStyleFontColor(int nMaster, int nStyle, COLORREF crNew);
+	static COLORREF	GetStyleBackColor(int nMaster, int nStyle);
+	static void		SetStyleBackColor(int nMaster, int nStyle, COLORREF crNew);
+	static short	GetStyleOnOff(int nMaster, int nStyle);
+	static void		SetStyleOnOff(int nMaster, int nStyle, short sNew);
 	static void		SaveStylePrefs(CIni &ini);
 	static void		LoadStylePrefs(CIni &ini);
 	// <== Design Settings [eWombat/Stulle] - Stulle

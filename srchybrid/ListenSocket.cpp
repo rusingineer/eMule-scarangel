@@ -3009,7 +3009,7 @@ CListenSocket::~CListenSocket()
 
 bool CListenSocket::Rebind()
 {
-	// ==> UPnP support [Xtreme] - Stulle
+	// ==> Removed UPnP support [Xtreme] - Stulle
 	/*
 	//if (thePrefs.GetPort() == m_port)
 	if (thePrefs.port == m_port) //Xman upnp
@@ -3035,12 +3035,12 @@ bool CListenSocket::Rebind()
 
 	Close();
 	KillAllSockets();
-	// <== UPnP support [Xtreme] - Stulle
+	// <== Removed UPnP support [Xtreme] - Stulle
 
 	return StartListening();
 }
 
-// ==> UPnP support [Xtreme] - Stulle
+// ==> Removed UPnP support [Xtreme] - Stulle
 /*
 //Xman
 //upnp_start
@@ -3139,7 +3139,7 @@ bool CListenSocket::StartListening()
 	m_port = thePrefs.GetPort();
 	return true;
 }
-// <== UPnP support [Xtreme] - Stulle
+// <== Removed UPnP support [Xtreme] - Stulle
 
 //bool CListenSocket::StartListening()
 //{

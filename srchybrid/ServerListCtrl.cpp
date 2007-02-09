@@ -1073,6 +1073,8 @@ void CServerListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	BOOL bCtrlFocused = ((GetFocus() == this ) || (GetStyle() & LVS_SHOWSELALWAYS));
 	const CServer* server = (CServer*)lpDrawItemStruct->itemData;
 	const CServer* cur_srv;
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	/*
 	if( (lpDrawItemStruct->itemAction | ODA_SELECT) && (lpDrawItemStruct->itemState & ODS_SELECTED )
 		)
 	{
@@ -1122,6 +1124,55 @@ void CServerListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			dc->SetTextColor(RGB(128,128,128));
 		}
 		//Xman end
+	*/
+	cur_srv = theApp.serverconnect->GetCurrentServer();
+	COLORREF crTempColor = thePrefs.GetStyleBackColor(background_styles, style_b_serverwnd);
+	if(crTempColor != CLR_DEFAULT)
+		SetBkColor(crTempColor);
+	else
+		SetBkColor(COLORREF(RGB(255,255,255)));
+
+	int iClientStyle = style_se_default;
+	if(thePrefs.GetStyleOnOff(server_styles, style_se_connected)!=0
+		&& theApp.serverconnect->IsConnected()
+		&& cur_srv != NULL
+		&& cur_srv->GetPort() == server->GetPort()
+		&& _tcsicmp(cur_srv->GetAddress(), server->GetAddress()) == 0)
+		iClientStyle = style_se_connected;
+	else if(thePrefs.GetStyleOnOff(server_styles, style_se_static)!=0
+		&& cur_srv != NULL
+		&& cur_srv->IsStaticMember())
+		iClientStyle = style_se_static;
+	else if(thePrefs.GetStyleOnOff(server_styles, style_se_filtered)!=0
+		&& theApp.ipfilter->IsFiltered(server->GetIP()))
+		iClientStyle = style_se_filtered;
+	else if(thePrefs.GetStyleOnOff(server_styles, style_se_dead)!=0
+		&& server->GetFailedCount() >= thePrefs.GetDeadServerRetries())
+		iClientStyle = style_se_dead;
+	else if(thePrefs.GetStyleOnOff(server_styles, style_se_unreliable)!=0
+		&& server->GetFailedCount() >= 2)
+		iClientStyle = style_se_unreliable;
+
+	StylesStruct style;
+	thePrefs.GetStyle(server_styles, iClientStyle, &style);
+	crTempColor = GetBkColor();
+	if (style.nBackColor != CLR_DEFAULT)
+		crTempColor = style.nBackColor;
+
+	if( (lpDrawItemStruct->itemAction | ODA_SELECT) && (lpDrawItemStruct->itemState & ODS_SELECTED )
+		)
+	{
+		if(bCtrlFocused)
+			odc->SetBkColor(m_crHighlight);
+		else
+			odc->SetBkColor(m_crNoHighlight);
+	}
+	else
+		odc->SetBkColor(crTempColor);
+	CMemDC dc(CDC::FromHandle(lpDrawItemStruct->hDC), &lpDrawItemStruct->rcItem);
+	CFont* pOldFont = dc.SelectObject(theApp.GetFontByStyle(style.nFlags,thePrefs.UseNarrowFont()));
+	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : crTempColor);
+	// <== Design Settings [eWombat/Stulle] - Stulle
 
 		int iOldBkMode;
 		if (m_crWindowTextBk == CLR_NONE){
@@ -1325,6 +1376,10 @@ void CServerListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			dc.SetBkMode(iOldBkMode);
 		dc.SelectObject(pOldFont);
 		dc.SetTextColor(crOldTextColor);
+		// ==> Design Settings [eWombat/Stulle] - Stulle
+		/*
 		fontCustom.DeleteObject();
+		*/
+		// <== Design Settings [eWombat/Stulle] - Stulle
 }
 //Commander - Added: CountryFlag - End

@@ -145,7 +145,7 @@ protected:
 	// ZZ:DownloadManager <--
 	*/
 
-	// ==> UPnP support [Xtreme] - Stulle
+	// ==> Removed UPnP support [Xtreme] - Stulle
 	/*
 	//Xman
 	//upnp_start
@@ -155,7 +155,7 @@ protected:
 	bool m_iUPnPTryRandom;
 	//upnp_end
 	*/
-	// <== UPnP support [Xtreme] - Stulle
+	// <== Removed UPnP support [Xtreme] - Stulle
 
 	HTREEITEM m_htiExtractMetaData;
 	HTREEITEM m_htiExtractMetaDataNever;

@@ -1916,7 +1916,7 @@ bool CemuleApp::IsEd2kServerLinkInClipboard()
 	return IsEd2kLinkInClipboard(_szEd2kServerLink, ARRSIZE(_szEd2kServerLink)-1);
 }
 
-// ==> UPnP support [Xtreme] - Stulle
+// ==> Removed UPnP support [Xtreme] - Stulle
 /*
 //Xman
 //upnp_start
@@ -1947,7 +1947,7 @@ BOOL CemuleApp::RemoveUPnPNatPort(MyUPnP::UPNPNAT_MAPPING *mapping){
 }
 //upnp_end
 */
-// <== UPnP support [Xtreme] - Stulle
+// <== Removed UPnP support [Xtreme] - Stulle
 
 // Elandal:ThreadSafeLogging -->
 void CemuleApp::QueueDebugLogLine(bool bAddToStatusbar, LPCTSTR line, ...)

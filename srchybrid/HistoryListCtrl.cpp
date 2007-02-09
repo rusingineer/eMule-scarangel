@@ -625,12 +625,12 @@ void CHistoryListCtrl::CreateMenues()
 	if (m_HistoryMenu) VERIFY(m_HistoryMenu.DestroyMenu());
 
 	m_HistoryOpsMenu.CreateMenu();
-	// ==> UPnP support [Xtreme] - Stulle
+	// ==> XP Style Menu [Xanatos] - Stulle
 	/*
 	m_HistoryOpsMenu.AddMenuTitle(NULL, true);
 	*/
 	m_HistoryOpsMenu.AddMenuTitle(NULL, true, false);
-	// <== UPnP support [Xtreme] - Stulle
+	// <== XP Style Menu [Xanatos] - Stulle
 	m_HistoryOpsMenu.AppendMenu(MF_STRING,MP_CLEARHISTORY,GetResString(IDS_DOWNHISTORY_CLEAR), _T("CLEARCOMPLETE"));
 
 	m_HistoryMenu.CreatePopupMenu();

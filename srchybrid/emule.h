@@ -23,14 +23,14 @@
 #include "ReadWriteLock.h"	// SLUGFILLER: SafeHash
 #include "Version.h"		// netfinity: Mod version
 
-// ==> UPnP support [Xtreme] - Stulle
+// ==> Removed UPnP support [Xtreme] - Stulle
 /*
 //Xman
 //upnp_start
 #include "UPnP.h"
 //upnp_end
 */
-// <== UPnP support [Xtreme] - Stulle
+// <== Removed UPnP support [Xtreme] - Stulle
 
 #include ".\MiniMule\SystemInfo.h" // CPU/MEM usage [$ick$/Stulle] - Max 
 #include ".\MiniMule\TBHMM.h" // TBH: minimule - Max
@@ -281,7 +281,7 @@ public:
 	uint32 last_ip_change;
 //Xman end
 
-	// ==> UPnP support [Xtreme] - Stulle
+	// ==> Removed UPnP support [Xtreme] - Stulle
 	/*
 	//Xman
 	//upnp_start
@@ -291,7 +291,7 @@ public:
 	BOOL  RemoveUPnPNatPort(MyUPnP::UPNPNAT_MAPPING *mapping);
 	//upnp_end
 	*/
-	// <== UPnP support [Xtreme] - Stulle
+	// <== Removed UPnP support [Xtreme] - Stulle
 
 	//Xman queued disc-access for read/flushing-threads
 	void AddNewDiscAccessThread(CWinThread* threadtoadd);

@@ -52,7 +52,7 @@ CPreferences thePrefs;
 //-------------------------------------------------------------------------------
 //Xman Xtreme Mod:
 
-// ==> UPnP support [Xtreme] - Stulle
+// ==> Removed UPnP support [Xtreme] - Stulle
 /*
 //upnp_start
 bool	CPreferences::m_bUPnPNat; // UPnP On/Off
@@ -61,7 +61,7 @@ uint16	CPreferences::m_iUPnPTCPExternal = 0; // TCP External Port
 uint16	CPreferences::m_iUPnPUDPExternal = 0; // UDP External Port
 //upnp_end
 */
-// <== UPnP support [Xtreme] - Stulle
+// <== Removed UPnP support [Xtreme] - Stulle
 
 //Xman Xtreme Upload
 float	CPreferences::m_slotspeed;
@@ -801,10 +801,41 @@ uint8	CPreferences::m_uReleaseBonus; // Release Bonus [sivka] - Stulle
 bool	CPreferences::m_bReleaseScoreAssurance; // Release Score Assurance [Stulle] - Stulle
 
 // ==> Design Settings [eWombat/Stulle] - Stulle
-DWORD	CPreferences::nStyleFlags[style_counts]; 
-COLORREF	CPreferences::nStyleFontColor[style_counts];
-COLORREF	CPreferences::nStyleBackColor[style_counts];
-short	CPreferences::nStyleOnOff[style_counts];
+// client styles
+DWORD		CPreferences::nClientStyleFlags[style_c_count]; 
+COLORREF	CPreferences::nClientStyleFontColor[style_c_count];
+COLORREF	CPreferences::nClientStyleBackColor[style_c_count];
+short		CPreferences::nClientStyleOnOff[style_c_count];
+
+// download styles
+DWORD		CPreferences::nDownloadStyleFlags[style_d_count]; 
+COLORREF	CPreferences::nDownloadStyleFontColor[style_d_count];
+COLORREF	CPreferences::nDownloadStyleBackColor[style_d_count];
+short		CPreferences::nDownloadStyleOnOff[style_d_count];
+
+// share styles
+DWORD		CPreferences::nShareStyleFlags[style_s_count]; 
+COLORREF	CPreferences::nShareStyleFontColor[style_s_count];
+COLORREF	CPreferences::nShareStyleBackColor[style_s_count];
+short		CPreferences::nShareStyleOnOff[style_s_count];
+
+// server styles
+DWORD		CPreferences::nServerStyleFlags[style_se_count]; 
+COLORREF	CPreferences::nServerStyleFontColor[style_se_count];
+COLORREF	CPreferences::nServerStyleBackColor[style_se_count];
+short		CPreferences::nServerStyleOnOff[style_se_count];
+
+// background styles
+DWORD		CPreferences::nBackgroundStyleFlags[style_b_count]; 
+COLORREF	CPreferences::nBackgroundStyleFontColor[style_b_count];
+COLORREF	CPreferences::nBackgroundStyleBackColor[style_b_count];
+short		CPreferences::nBackgroundStyleOnOff[style_b_count];
+
+// window styles
+DWORD		CPreferences::nWindowStyleFlags[style_w_count]; 
+COLORREF	CPreferences::nWindowStyleFontColor[style_w_count];
+COLORREF	CPreferences::nWindowStyleBackColor[style_w_count];
+short		CPreferences::nWindowStyleOnOff[style_w_count];
 // <== Design Settings [eWombat/Stulle] - Stulle
 
 int		CPreferences::PsAmountLimit; // Limit PS by amount of data uploaded [Stulle] - Stulle
@@ -2333,14 +2364,14 @@ void CPreferences::SavePreferences()
 	//Xman Xtreme Mod:
 	//--------------------------------------------------------------------------
 
-	// ==> UPnP support [Xtreme] - Stulle
+	// ==> Removed UPnP support [Xtreme] - Stulle
 	/*
 	//upnp_start
 	ini.WriteBool(L"UPnPNAT", m_bUPnPNat, L"UPnP");
 	ini.WriteBool(L"UPnPNAT_TryRandom", m_bUPnPTryRandom, L"UPnP");
 	//upnp_end
 	*/
-	// <== UPnP support [Xtreme] - Stulle
+	// <== Removed UPnP support [Xtreme] - Stulle
 
 
 	//Xman Xtreme Upload
@@ -3337,14 +3368,14 @@ void CPreferences::LoadPreferences()
 	//--------------------------------------------------------------------------
 	//Xman Xtreme Mod:
 
-	// ==> UPnP support [Xtreme] - Stulle
+	// ==> Removed UPnP support [Xtreme] - Stulle
 	/*
 	//upnp_start
 	m_bUPnPNat = ini.GetBool(L"UPnPNAT", false, L"UPnP");
 	m_bUPnPTryRandom = ini.GetBool(L"UPnPNAT_TryRandom", false, L"UPnP");
 	//upnp_end
 	*/
-	// <== UPnP support [Xtreme] - Stulle
+	// <== Removed UPnP support [Xtreme] - Stulle
 
 	//Xman Xtreme Upload
 	m_slotspeed=ini.GetFloat(L"uploadslotspeed",3.2f, L"Xtreme");
@@ -4419,7 +4450,7 @@ uint16 CPreferences::GetRandomUDPPort()
 	return nPort;
 }
 
-// ==> UPnP support [Xtreme] - Stulle
+// ==> Removed UPnP support [Xtreme] - Stulle
 /*
 //Xman
 //upnp_start
@@ -4441,7 +4472,7 @@ uint16 CPreferences::GetUDPPort(){
 }
 //upnp_end
 */
-// <== UPnP support [Xtreme] - Stulle
+// <== Removed UPnP support [Xtreme] - Stulle
 
 // ==> ScarAngel Version Check - Stulle
 void CPreferences::UpdateLastSVC()
@@ -4451,38 +4482,189 @@ void CPreferences::UpdateLastSVC()
 // <== ScarAngel Version Check - Stulle
 
 // ==> Design Settings [eWombat/Stulle] - Stulle
-bool CPreferences::SetStyle(int nStyle, StylesStruct *style)
+void CPreferences::InitStyles()
 {
-	if (nStyle < style_counts)
+	// client styles
+	for (int i=0;i<style_c_count;i++)
 	{
-		if (style == NULL)
-		{
-			nStyleFlags[nStyle] = STYLE_USED;
-			nStyleFontColor[nStyle]	= CLR_DEFAULT;
-			nStyleBackColor[nStyle]	= CLR_DEFAULT;
-			nStyleOnOff[nStyle] = 0;
-		}
-		else
-		{
-			nStyleFlags[nStyle] = style->nFlags|STYLE_USED;
-			nStyleFontColor[nStyle]	= style->nFontColor;
-			nStyleBackColor[nStyle]	= style->nBackColor;
-			nStyleOnOff[nStyle] = style->nOnOff;
-		}
-		return true;
+		nClientStyleFlags[i] = 0;
+		nClientStyleFontColor[i]	= CLR_DEFAULT;
+		nClientStyleBackColor[i]	= CLR_DEFAULT;
+		nClientStyleOnOff[i] = 0;
 	}
-	return false;
+
+	// download styles
+	for (int i=0;i<style_d_count;i++)
+	{
+		nDownloadStyleFlags[i] = 0;
+		nDownloadStyleFontColor[i]	= CLR_DEFAULT;
+		nDownloadStyleBackColor[i]	= CLR_DEFAULT;
+		nDownloadStyleOnOff[i] = 0;
+	}
+
+	// share styles
+	for (int i=0;i<style_s_count;i++)
+	{
+		nShareStyleFlags[i] = 0;
+		nShareStyleFontColor[i]	= CLR_DEFAULT;
+		nShareStyleBackColor[i]	= CLR_DEFAULT;
+		nShareStyleOnOff[i] = 0;
+	}
+
+	// server styles
+	for (int i=0;i<style_se_count;i++)
+	{
+		nServerStyleFlags[i] = 0;
+		nServerStyleFontColor[i]	= CLR_DEFAULT;
+		nServerStyleBackColor[i]	= CLR_DEFAULT;
+		nServerStyleOnOff[i] = 0;
+	}
+
+	// background styles
+	for (int i=0;i<style_b_count;i++)
+	{
+		nBackgroundStyleFlags[i] = 0;
+		nBackgroundStyleFontColor[i]	= CLR_DEFAULT;
+		nBackgroundStyleBackColor[i]	= CLR_DEFAULT;
+		nBackgroundStyleOnOff[i] = 0;
+	}
+
+	// window styles
+	for (int i=0;i<style_w_count;i++)
+	{
+		nWindowStyleFlags[i] = 0;
+		nWindowStyleFontColor[i]	= CLR_DEFAULT;
+		nWindowStyleBackColor[i]	= CLR_DEFAULT;
+		nWindowStyleOnOff[i] = 0;
+	}
 }
-bool CPreferences::GetStyle(int nStyle, StylesStruct *style)
+
+DWORD CPreferences::GetStyleFlags(int nMaster, int nStyle)
+{
+	DWORD dwTemp = 0;
+	switch(nMaster)
+	{
+		case client_styles:
+			dwTemp = nClientStyleFlags[nStyle];
+			break;
+		case download_styles:
+			dwTemp = nDownloadStyleFlags[nStyle];
+			break;
+		case share_styles:
+			dwTemp = nShareStyleFlags[nStyle];
+			break;
+		case server_styles:
+			dwTemp = nServerStyleFlags[nStyle];
+			break;
+		case background_styles:
+			dwTemp = nBackgroundStyleFlags[nStyle];
+			break;
+		case window_styles:
+			dwTemp = nWindowStyleFlags[nStyle];
+			break;
+		default:
+			break;
+	}
+	return dwTemp;
+}
+
+COLORREF CPreferences::GetStyleFontColor(int nMaster, int nStyle)
+{
+	COLORREF crTemp = 0;
+	switch(nMaster)
+	{
+		case client_styles:
+			crTemp = nClientStyleFontColor[nStyle];
+			break;
+		case download_styles:
+			crTemp = nDownloadStyleFontColor[nStyle];
+			break;
+		case share_styles:
+			crTemp = nShareStyleFontColor[nStyle];
+			break;
+		case server_styles:
+			crTemp = nServerStyleFontColor[nStyle];
+			break;
+		case background_styles:
+			crTemp = nBackgroundStyleFontColor[nStyle];
+			break;
+		case window_styles:
+			crTemp = nWindowStyleFontColor[nStyle];
+			break;
+		default:
+			break;
+	}
+	return crTemp;
+}
+
+COLORREF CPreferences::GetStyleBackColor(int nMaster, int nStyle)
+{
+	COLORREF crTemp = 0;
+	switch(nMaster)
+	{
+		case client_styles:
+			crTemp = nClientStyleBackColor[nStyle];
+			break;
+		case download_styles:
+			crTemp = nDownloadStyleBackColor[nStyle];
+			break;
+		case share_styles:
+			crTemp = nShareStyleBackColor[nStyle];
+			break;
+		case server_styles:
+			crTemp = nServerStyleBackColor[nStyle];
+			break;
+		case background_styles:
+			crTemp = nBackgroundStyleBackColor[nStyle];
+			break;
+		case window_styles:
+			crTemp = nWindowStyleBackColor[nStyle];
+			break;
+		default:
+			break;
+	}
+	return crTemp;
+}
+
+short CPreferences::GetStyleOnOff(int nMaster, int nStyle)
+{
+	short sTemp = 0;
+	switch(nMaster)
+	{
+		case client_styles:
+			sTemp = nClientStyleOnOff[nStyle];
+			break;
+		case download_styles:
+			sTemp = nDownloadStyleOnOff[nStyle];
+			break;
+		case share_styles:
+			sTemp = nShareStyleOnOff[nStyle];
+			break;
+		case server_styles:
+			sTemp = nServerStyleOnOff[nStyle];
+			break;
+		case background_styles:
+			sTemp = nBackgroundStyleOnOff[nStyle];
+			break;
+		case window_styles:
+			sTemp = nWindowStyleOnOff[nStyle];
+			break;
+		default:
+			break;
+	}
+	return sTemp;
+}
+
+bool CPreferences::GetStyle(int nMaster, int nStyle, StylesStruct *style)
 {
 	if (!style)
 		return false;
-	if (nStyle < style_counts)
+	if (nMaster < master_count)
 	{
-		style->nFlags = nStyleFlags[nStyle];
-		style->nFontColor = nStyleFontColor[nStyle];
-		style->nBackColor = nStyleBackColor[nStyle];
-		style->nOnOff = nStyleOnOff[nStyle];
+		style->nFlags = GetStyleFlags(nMaster,nStyle);
+		style->nFontColor = GetStyleFontColor(nMaster,nStyle);
+		style->nBackColor = GetStyleBackColor(nMaster,nStyle);
+		style->nOnOff = GetStyleOnOff(nMaster,nStyle);
 	}
 	else		
 	{
@@ -4493,90 +4675,407 @@ bool CPreferences::GetStyle(int nStyle, StylesStruct *style)
 	}
 	return true;
 }
-void CPreferences::InitStyles()
+
+void CPreferences::SetStyleFlags(int nMaster, int nStyle, DWORD dwNew)
 {
-	for (int i=0;i<style_counts;i++)
+	switch(nMaster)
 	{
-		nStyleFlags[i] = 0;
-		nStyleFontColor[i]	= CLR_DEFAULT;
-		nStyleBackColor[i]	= CLR_DEFAULT;
-		nStyleOnOff[i] = 0;
+		case client_styles:
+			nClientStyleFlags[nStyle] = dwNew;
+			break;
+		case download_styles:
+			nDownloadStyleFlags[nStyle] = dwNew;
+			break;
+		case share_styles:
+			nShareStyleFlags[nStyle] = dwNew;
+			break;
+		case server_styles:
+			nServerStyleFlags[nStyle] = dwNew;
+			break;
+		case background_styles:
+			nBackgroundStyleFlags[nStyle] = dwNew;
+			break;
+		case window_styles:
+			nWindowStyleFlags[nStyle] = dwNew;
+			break;
+		default:
+			break;
 	}
 }
+
+void CPreferences::SetStyleFontColor(int nMaster, int nStyle, COLORREF crNew)
+{
+	switch(nMaster)
+	{
+		case client_styles:
+			nClientStyleFontColor[nStyle] = crNew;
+			break;
+		case download_styles:
+			nDownloadStyleFontColor[nStyle] = crNew;
+			break;
+		case share_styles:
+			nShareStyleFontColor[nStyle] = crNew;
+			break;
+		case server_styles:
+			nServerStyleFontColor[nStyle] = crNew;
+			break;
+		case background_styles:
+			nBackgroundStyleFontColor[nStyle] = crNew;
+			break;
+		case window_styles:
+			nWindowStyleFontColor[nStyle] = crNew;
+			break;
+		default:
+			break;
+	}
+}
+
+void CPreferences::SetStyleBackColor(int nMaster, int nStyle, COLORREF crNew)
+{
+	switch(nMaster)
+	{
+		case client_styles:
+			nClientStyleBackColor[nStyle] = crNew;
+			break;
+		case download_styles:
+			nDownloadStyleBackColor[nStyle] = crNew;
+			break;
+		case share_styles:
+			nShareStyleBackColor[nStyle] = crNew;
+			break;
+		case server_styles:
+			nServerStyleBackColor[nStyle] = crNew;
+			break;
+		case background_styles:
+			nBackgroundStyleBackColor[nStyle] = crNew;
+			break;
+		case window_styles:
+			nWindowStyleBackColor[nStyle] = crNew;
+			break;
+		default:
+			break;
+	}
+}
+
+void CPreferences::SetStyleOnOff(int nMaster, int nStyle, short sNew)
+{
+	switch(nMaster)
+	{
+		case client_styles:
+			nClientStyleOnOff[nStyle] = sNew;
+			break;
+		case download_styles:
+			nDownloadStyleOnOff[nStyle] = sNew;
+			break;
+		case share_styles:
+			nShareStyleOnOff[nStyle] = sNew;
+			break;
+		case server_styles:
+			nServerStyleOnOff[nStyle] = sNew;
+			break;
+		case background_styles:
+			nBackgroundStyleOnOff[nStyle] = sNew;
+			break;
+		case window_styles:
+			nWindowStyleOnOff[nStyle] = sNew;
+			break;
+		default:
+			break;
+	}
+}
+
+bool CPreferences::SetStyle(int nMaster, int nStyle, StylesStruct *style)
+{
+	if (nMaster < master_count)
+	{
+		if (style == NULL)
+		{
+			SetStyleFlags(nMaster, nStyle, STYLE_USED);
+			SetStyleFontColor(nMaster, nStyle, CLR_DEFAULT);
+			SetStyleBackColor(nMaster, nStyle, CLR_DEFAULT);
+			SetStyleOnOff(nMaster, nStyle, 0);
+		}
+		else
+		{
+			SetStyleFlags(nMaster, nStyle, style->nFlags|STYLE_USED);
+			SetStyleFontColor(nMaster, nStyle, style->nFontColor);
+			SetStyleBackColor(nMaster, nStyle, style->nBackColor);
+			SetStyleOnOff(nMaster, nStyle, style->nOnOff);
+		}
+		return true;
+	}
+	return false;
+}
+
 void CPreferences::SaveStylePrefs(CIni &ini)
 {
 	ini.SetSection(L"STYLES");
-	ini.SerGet(false, nStyleFlags,		ELEMENT_COUNT(nStyleFlags), L"StyleFlags");
-	ini.SerGet(false, nStyleFontColor,	ELEMENT_COUNT(nStyleFontColor), L"StyleFontColor");
-	ini.SerGet(false, nStyleBackColor,	ELEMENT_COUNT(nStyleBackColor), L"StyleBackColor");
-	ini.SerGet(false, nStyleOnOff,		ELEMENT_COUNT(nStyleOnOff), L"StyleOnOff");
+	ini.WriteInt(L"Version",STYLE_VERSION);
+
+	// client styles
+	ini.SerGet(false, nClientStyleFlags,		ELEMENT_COUNT(nClientStyleFlags), L"ClientStyleFlags");
+	ini.SerGet(false, nClientStyleFontColor,	ELEMENT_COUNT(nClientStyleFontColor), L"ClientStyleFontColor");
+	ini.SerGet(false, nClientStyleBackColor,	ELEMENT_COUNT(nClientStyleBackColor), L"ClientStyleBackColor");
+	ini.SerGet(false, nClientStyleOnOff,		ELEMENT_COUNT(nClientStyleOnOff), L"ClientStyleOnOff");
+
+	// download styles
+	ini.SerGet(false, nDownloadStyleFlags,		ELEMENT_COUNT(nDownloadStyleFlags), L"DownloadStyleFlags");
+	ini.SerGet(false, nDownloadStyleFontColor,	ELEMENT_COUNT(nDownloadStyleFontColor), L"DownloadStyleFontColor");
+	ini.SerGet(false, nDownloadStyleBackColor,	ELEMENT_COUNT(nDownloadStyleBackColor), L"DownloadStyleBackColor");
+	ini.SerGet(false, nDownloadStyleOnOff,		ELEMENT_COUNT(nDownloadStyleOnOff), L"DownloadStyleOnOff");
+
+	// share styles
+	ini.SerGet(false, nShareStyleFlags,		ELEMENT_COUNT(nShareStyleFlags), L"ShareStyleFlags");
+	ini.SerGet(false, nShareStyleFontColor,	ELEMENT_COUNT(nShareStyleFontColor), L"ShareStyleFontColor");
+	ini.SerGet(false, nShareStyleBackColor,	ELEMENT_COUNT(nShareStyleBackColor), L"ShareStyleBackColor");
+	ini.SerGet(false, nShareStyleOnOff,		ELEMENT_COUNT(nShareStyleOnOff), L"ShareStyleOnOff");
+
+	// server styles
+	ini.SerGet(false, nServerStyleFlags,		ELEMENT_COUNT(nServerStyleFlags), L"ServerStyleFlags");
+	ini.SerGet(false, nServerStyleFontColor,	ELEMENT_COUNT(nServerStyleFontColor), L"ServerStyleFontColor");
+	ini.SerGet(false, nServerStyleBackColor,	ELEMENT_COUNT(nServerStyleBackColor), L"ServerStyleBackColor");
+	ini.SerGet(false, nServerStyleOnOff,		ELEMENT_COUNT(nServerStyleOnOff), L"ServerStyleOnOff");
+
+	// background styles
+	ini.SerGet(false, nBackgroundStyleFlags,		ELEMENT_COUNT(nBackgroundStyleFlags), L"BackgroundStyleFlags");
+	ini.SerGet(false, nBackgroundStyleBackColor,	ELEMENT_COUNT(nBackgroundStyleBackColor), L"BackgroundStyleBackColor");
+
+	// window styles
+	ini.SerGet(false, nWindowStyleFlags,		ELEMENT_COUNT(nWindowStyleFlags), L"WindowStyleFlags");
+	ini.SerGet(false, nWindowStyleBackColor,	ELEMENT_COUNT(nWindowStyleBackColor), L"WindowStyleBackColor");
 }
 void CPreferences::LoadStylePrefs(CIni &ini)
 {
 	ini.SetSection(L"STYLES");
-	ini.SerGet(true, nStyleFlags,		ELEMENT_COUNT(nStyleFlags), L"StyleFlags");
-	ini.SerGet(true, nStyleFontColor,	ELEMENT_COUNT(nStyleFontColor), L"StyleFontColor");
-	ini.SerGet(true, nStyleBackColor,	ELEMENT_COUNT(nStyleBackColor), L"StyleBackColor");
-	ini.SerGet(true, nStyleOnOff,		ELEMENT_COUNT(nStyleOnOff), L"StyleOnOff");
+	int iVersion = ini.GetInt(L"Version");
 
-	for (int i=0;i<style_counts;i++)
+	// client styles
+	ini.SerGet(true, nClientStyleFlags,		ELEMENT_COUNT(nClientStyleFlags), L"ClientStyleFlags");
+	ini.SerGet(true, nClientStyleFontColor,	ELEMENT_COUNT(nClientStyleFontColor), L"ClientStyleFontColor");
+	ini.SerGet(true, nClientStyleBackColor,	ELEMENT_COUNT(nClientStyleBackColor), L"ClientStyleBackColor");
+	ini.SerGet(true, nClientStyleOnOff,		ELEMENT_COUNT(nClientStyleOnOff), L"ClientStyleOnOff");
+
+	for (int i=0;i<style_c_count;i++)
 	{
-		if ((nStyleFlags[i] & STYLE_USED) != STYLE_USED)
+		if ((nClientStyleFlags[i] & STYLE_USED) != STYLE_USED)
 		{
 			switch(i)
 			{
 				case style_c_powerrelease:
-					nStyleFlags[i] = STYLE_USED;
-		            nStyleFontColor[i]	= CLR_DEFAULT;
-					nStyleBackColor[i]	= COLORREF(RGB(255,210,210));
-					nStyleOnOff[i] = 1;
+					nClientStyleFlags[i] = STYLE_USED;
+		            nClientStyleFontColor[i]	= CLR_DEFAULT;
+					nClientStyleBackColor[i]	= COLORREF(RGB(255,210,210));
+					nClientStyleOnOff[i] = 1;
 					break;
 				case style_c_downloading:
-					nStyleFlags[i] = STYLE_BOLD|STYLE_USED;
-		            nStyleFontColor[i]	= COLORREF(RGB(50,205,50));
-					nStyleBackColor[i]	= CLR_DEFAULT;
-					nStyleOnOff[i] = 1;
+					nClientStyleFlags[i] = STYLE_BOLD|STYLE_USED;
+		            nClientStyleFontColor[i]	= COLORREF(RGB(50,205,50));
+					nClientStyleBackColor[i]	= CLR_DEFAULT;
+					nClientStyleOnOff[i] = 1;
 					break;
 				case style_c_leecher:
-					nStyleFlags[i] = STYLE_USED;
-					nStyleFontColor[i]	= COLORREF(RGB(255,0,0));
-		            nStyleBackColor[i]	= CLR_DEFAULT;
-					nStyleOnOff[i] = 1;
+					nClientStyleFlags[i] = STYLE_USED;
+					nClientStyleFontColor[i]	= COLORREF(RGB(255,0,0));
+		            nClientStyleBackColor[i]	= CLR_DEFAULT;
+					nClientStyleOnOff[i] = 1;
 					break;
 				case style_c_lowid:
-					nStyleFlags[i] = STYLE_USED;
-		            nStyleFontColor[i]	= CLR_DEFAULT;
-					nStyleBackColor[i]	= COLORREF(RGB(255,250,200));
-					nStyleOnOff[i] = 1;
-					break;
-				case style_d_downloading:
-					nStyleFlags[i] = STYLE_BOLD|STYLE_USED;
-					nStyleFontColor[i]	= COLORREF(RGB(50,205,50));
-		            nStyleBackColor[i]	= CLR_DEFAULT;
-					nStyleOnOff[i] = 1;
-					break;
-				case style_s_incomplete:
-					nStyleFlags[i] = STYLE_ITALIC|STYLE_USED;
-					nStyleFontColor[i]	= COLORREF(RGB(0,0,255));
-		            nStyleBackColor[i]	= CLR_DEFAULT;
-					nStyleOnOff[i] = 1;
-					break;
-				case style_s_powershare:
-					nStyleFlags[i] = STYLE_USED;
-					nStyleFontColor[i]	= COLORREF(RGB(255,0,0));
-		            nStyleBackColor[i]	= CLR_DEFAULT;
-					nStyleOnOff[i] = 1;
-					break;
-				case style_s_powerrelease:
-					nStyleFlags[i] = STYLE_USED;
-		            nStyleFontColor[i]	= CLR_DEFAULT;
-					nStyleBackColor[i]	= COLORREF(RGB(255,210,210));
-					nStyleOnOff[i] = 1;
+					nClientStyleFlags[i] = STYLE_USED;
+		            nClientStyleFontColor[i]	= CLR_DEFAULT;
+					nClientStyleBackColor[i]	= COLORREF(RGB(255,250,200));
+					nClientStyleOnOff[i] = 1;
 					break;
 				default:
-		            nStyleFontColor[i]	= CLR_DEFAULT;
-		            nStyleBackColor[i]	= CLR_DEFAULT;
+		            nClientStyleFontColor[i]	= CLR_DEFAULT;
+		            nClientStyleBackColor[i]	= CLR_DEFAULT;
 					break;
+			}
+		}
+	}
+
+	// download styles
+	ini.SerGet(true, nDownloadStyleFlags,		ELEMENT_COUNT(nDownloadStyleFlags), L"DownloadStyleFlags");
+	ini.SerGet(true, nDownloadStyleFontColor,	ELEMENT_COUNT(nDownloadStyleFontColor), L"DownloadStyleFontColor");
+	ini.SerGet(true, nDownloadStyleBackColor,	ELEMENT_COUNT(nDownloadStyleBackColor), L"DownloadStyleBackColor");
+	ini.SerGet(true, nDownloadStyleOnOff,		ELEMENT_COUNT(nDownloadStyleOnOff), L"DownloadStyleOnOff");
+
+	for (int i=0;i<style_d_count;i++)
+	{
+		if ((nDownloadStyleFlags[i] & STYLE_USED) != STYLE_USED)
+		{
+			switch(i)
+			{
+				case style_d_downloading:
+					nDownloadStyleFlags[i] = STYLE_BOLD|STYLE_USED;
+					nDownloadStyleFontColor[i]	= COLORREF(RGB(50,205,50));
+		            nDownloadStyleBackColor[i]	= CLR_DEFAULT;
+					nDownloadStyleOnOff[i] = 1;
+					break;
+				default:
+		            nDownloadStyleFontColor[i]	= CLR_DEFAULT;
+		            nDownloadStyleBackColor[i]	= CLR_DEFAULT;
+					break;
+			}
+		}
+	}
+
+	// share styles
+	ini.SerGet(true, nShareStyleFlags,		ELEMENT_COUNT(nShareStyleFlags), L"ShareStyleFlags");
+	ini.SerGet(true, nShareStyleFontColor,	ELEMENT_COUNT(nShareStyleFontColor), L"ShareStyleFontColor");
+	ini.SerGet(true, nShareStyleBackColor,	ELEMENT_COUNT(nShareStyleBackColor), L"ShareStyleBackColor");
+	ini.SerGet(true, nShareStyleOnOff,		ELEMENT_COUNT(nShareStyleOnOff), L"ShareStyleOnOff");
+
+	for (int i=0;i<style_s_count;i++)
+	{
+		if ((nShareStyleFlags[i] & STYLE_USED) != STYLE_USED)
+		{
+			switch(i)
+			{
+				case style_s_incomplete:
+					nShareStyleFlags[i] = STYLE_ITALIC|STYLE_USED;
+					nShareStyleFontColor[i]	= COLORREF(RGB(0,0,255));
+		            nShareStyleBackColor[i]	= CLR_DEFAULT;
+					nShareStyleOnOff[i] = 1;
+					break;
+				case style_s_powershare:
+					nShareStyleFlags[i] = STYLE_USED;
+					nShareStyleFontColor[i]	= COLORREF(RGB(255,0,0));
+		            nShareStyleBackColor[i]	= CLR_DEFAULT;
+					nShareStyleOnOff[i] = 1;
+					break;
+				case style_s_powerrelease:
+					nShareStyleFlags[i] = STYLE_USED;
+		            nShareStyleFontColor[i]	= CLR_DEFAULT;
+					nShareStyleBackColor[i]	= COLORREF(RGB(255,210,210));
+					nShareStyleOnOff[i] = 1;
+					break;
+				default:
+		            nShareStyleFontColor[i]	= CLR_DEFAULT;
+		            nShareStyleBackColor[i]	= CLR_DEFAULT;
+					break;
+			}
+		}
+	}
+
+	// server styles
+	ini.SerGet(true, nServerStyleFlags,		ELEMENT_COUNT(nServerStyleFlags), L"ServerStyleFlags");
+	ini.SerGet(true, nServerStyleFontColor,	ELEMENT_COUNT(nServerStyleFontColor), L"ServerStyleFontColor");
+	ini.SerGet(true, nServerStyleBackColor,	ELEMENT_COUNT(nServerStyleBackColor), L"ServerStyleBackColor");
+	ini.SerGet(true, nServerStyleOnOff,		ELEMENT_COUNT(nServerStyleOnOff), L"ServerStyleOnOff");
+
+	for (int i=0;i<style_se_count;i++)
+	{
+		if ((nServerStyleFlags[i] & STYLE_USED) != STYLE_USED)
+		{
+			switch(i)
+			{
+				case style_se_connected:
+					nServerStyleFlags[i] = STYLE_BOLD|STYLE_USED;
+		            nServerStyleFontColor[i]	= COLORREF(RGB(0,0,192));
+					nServerStyleBackColor[i]	= CLR_DEFAULT;
+					nServerStyleOnOff[i] = 1;
+					break;
+				case style_se_filtered:
+					nServerStyleFlags[i] = STYLE_USED;
+		            nServerStyleFontColor[i]	= COLORREF(RGB(192,192,192));
+					nServerStyleBackColor[i]	= CLR_DEFAULT;
+					nServerStyleOnOff[i] = 1;
+					break;
+				case style_se_dead:
+					nServerStyleFlags[i] = STYLE_USED;
+		            nServerStyleFontColor[i]	= COLORREF(RGB(192,192,192));
+					nServerStyleBackColor[i]	= CLR_DEFAULT;
+					nServerStyleOnOff[i] = 1;
+					break;
+				case style_se_unreliable:
+					nServerStyleFlags[i] = STYLE_USED;
+		            nServerStyleFontColor[i]	= COLORREF(RGB(128,128,128));
+					nServerStyleBackColor[i]	= CLR_DEFAULT;
+					nServerStyleOnOff[i] = 1;
+					break;
+				default:
+		            nServerStyleFontColor[i]	= CLR_DEFAULT;
+		            nServerStyleBackColor[i]	= CLR_DEFAULT;
+					break;
+			}
+		}
+	}
+
+	// background styles
+	ini.SerGet(true, nBackgroundStyleFlags,		ELEMENT_COUNT(nBackgroundStyleFlags), L"BackgroundStyleFlags");
+	ini.SerGet(true, nBackgroundStyleBackColor,	ELEMENT_COUNT(nBackgroundStyleBackColor), L"BackgroundStyleBackColor");
+
+	for (int i=0;i<style_b_count;i++)
+	{
+		if ((nBackgroundStyleFlags[i] & STYLE_USED) != STYLE_USED)
+		{
+//			switch(i)
+			{
+//				default:
+		            nBackgroundStyleBackColor[i]	= CLR_DEFAULT;
+//					break;
+			}
+		}
+	}
+
+	// window styles
+	ini.SerGet(true, nWindowStyleFlags,	ELEMENT_COUNT(nWindowStyleFlags), L"WindowStyleFlags");
+	ini.SerGet(true, nWindowStyleBackColor,	ELEMENT_COUNT(nWindowStyleBackColor), L"WindowStyleBackColor");
+
+	for (int i=0;i<style_w_count;i++)
+	{
+		if ((nWindowStyleFlags[i] & STYLE_USED) != STYLE_USED)
+		{
+//			switch(i)
+			{
+//				default:
+		            nWindowStyleBackColor[i]	= CLR_DEFAULT;
+//					break;
+			}
+		}
+	}
+
+	// import v1 settings
+	if(iVersion == 0)
+	{
+		DWORD nStyleFlags[33];
+		COLORREF nStyleFontColor[33];
+		COLORREF nStyleBackColor[33];
+		short nStyleOnOff[33];
+
+		ini.SerGet(true, nStyleFlags,		ELEMENT_COUNT(nStyleFlags), L"StyleFlags");
+		ini.SerGet(true, nStyleFontColor,	ELEMENT_COUNT(nStyleFontColor), L"StyleFontColor");
+		ini.SerGet(true, nStyleBackColor,	ELEMENT_COUNT(nStyleBackColor), L"StyleBackColor");
+		ini.SerGet(true, nStyleOnOff,		ELEMENT_COUNT(nStyleOnOff), L"StyleOnOff");
+
+		int iMaster = client_styles;
+		int iSub = style_c_default;
+		for (int i=0;i<33;i++)
+		{
+			if(nStyleFlags[i] != 0)
+				SetStyleFlags(iMaster, iSub, nStyleFlags[i]);
+			if(nStyleFontColor[i] != 0)
+				SetStyleFontColor(iMaster, iSub, nStyleFontColor[i]);
+			if(nStyleOnOff[i] != 0)
+				SetStyleOnOff(iMaster, iSub, nStyleOnOff[i]);
+			if(nStyleFontColor[i] != 0)
+				SetStyleBackColor(iMaster, iSub, nStyleBackColor[i]);
+
+			iSub++;
+			if(i == 8)
+			{
+				iSub = style_d_default;
+				iMaster = download_styles;
+			}
+			else if(i == 16)
+			{
+				iSub = style_s_default;
+				iMaster = share_styles;
+			}
+			else if(i == 26)
+			{
+				iSub = style_b_clientlist;
+				iMaster = background_styles;
 			}
 		}
 	}

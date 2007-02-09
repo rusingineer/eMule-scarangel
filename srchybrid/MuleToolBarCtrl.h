@@ -64,11 +64,6 @@ protected:
 	void Dump();
 #endif
 
-	// ==> TBH: minimule - Max
-	CDblScope		m_ctrlSpeedMeter;
-	bool			m_bUseSpeedMeter;
-	// <== TBH: minimule - Max
-
 	void AutoSize();
 	virtual	BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 
@@ -83,12 +78,4 @@ protected:
 	afx_msg void OnTbnReset(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnTbnInitCustomize(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnTbnEndAdjust(NMHDR* pNMHDR, LRESULT* pResult);
-
-	// ==> TBH: minimule - Max
-public:
-	void SetSpeedMeterValues(int iValue1, int iValue2)	{m_ctrlSpeedMeter.AddValues(iValue1,iValue2);}
-	void SetSpeedMeterRange(UINT nMax, UINT nMin)		{m_ctrlSpeedMeter.SetRange(nMin, nMax);}
-	void GetSpeedMeterRange(UINT& nMax, UINT& nMin)		{m_ctrlSpeedMeter.GetRange(nMax, nMin);}
-	bool IsSpeedMeterEnabled() const					{return m_bUseSpeedMeter;}
-	// <== TBH: minimule - Max
 };

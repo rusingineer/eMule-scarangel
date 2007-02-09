@@ -142,7 +142,7 @@ bool CUDPSocket::Create()
 			LogError(LOG_STATUSBAR, _T("Error: Server UDP socket: Failed to create server UDP socket - %s"), GetErrorMessage(GetLastError()));
 			return false;
 		}
-		// ==> UPnP support [Xtreme] - Stulle
+		// ==> Removed UPnP support [Xtreme] - Stulle
 		/*
 		//Xman
 		//upnp_start
@@ -160,7 +160,7 @@ bool CUDPSocket::Create()
 		}
 		//upnp_end
 		*/
-		// <== UPnP support [Xtreme] - Stulle
+		// <== Removed UPnP support [Xtreme] - Stulle
 
 		return true;
 	}

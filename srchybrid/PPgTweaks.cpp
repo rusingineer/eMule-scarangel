@@ -322,7 +322,7 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
         if (m_htiVerboseGroup)
 		    m_ctrlTreeOptions.Expand(m_htiVerboseGroup, TVE_EXPAND);
 
-		// ==> UPnP support [Xtreme] - Stulle
+		// ==> Removed UPnP support [Xtreme] - Stulle
 		/*
 		//Xman
 		//upnp_start
@@ -330,7 +330,7 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 		m_htiUPnPTryRandom = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CN_UPNPTRYRANDOM), TVI_ROOT, m_iUPnPTryRandom);
 		//upnp_end
 		*/
-		// <== UPnP support [Xtreme] - Stulle
+		// <== Removed UPnP support [Xtreme] - Stulle
 
 		m_ctrlTreeOptions.Expand(m_htiCommit, TVE_EXPAND);
 		m_ctrlTreeOptions.Expand(m_htiCheckDiskspace, TVE_EXPAND);
@@ -447,7 +447,7 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	// ZZ:UploadSpeedSense <--
 	*/
 
-	// ==> UPnP support [Xtreme] - Stulle
+	// ==> Removed UPnP support [Xtreme] - Stulle
 	/*
 	//Xman
 	//upnp_start
@@ -456,7 +456,7 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiUPnPTryRandom, m_iUPnPNat);
 	//upnp_end
 	*/
-	// <== UPnP support [Xtreme] - Stulle
+	// <== Removed UPnP support [Xtreme] - Stulle
 }
 
 BOOL CPPgTweaks::OnInitDialog()
@@ -522,7 +522,7 @@ BOOL CPPgTweaks::OnInitDialog()
 	*/
     //m_bA4AFSaveCpu = thePrefs.GetA4AFSaveCpu(); // ZZ:DownloadManager
 
-	// ==> UPnP support [Xtreme] - Stulle
+	// ==> Removed UPnP support [Xtreme] - Stulle
 	/*
 	//Xman
 	//upnp_start
@@ -530,7 +530,7 @@ BOOL CPPgTweaks::OnInitDialog()
 	m_iUPnPTryRandom = thePrefs.GetUPnPNatTryRandom();
 	//upnp_end
 	*/
-	// <== UPnP support [Xtreme] - Stulle
+	// <== Removed UPnP support [Xtreme] - Stulle
 
 	m_ctrlTreeOptions.SetImageListColorFlags(theApp.m_iDfltImageListColorFlags);
     CPropertyPage::OnInitDialog();
@@ -670,7 +670,7 @@ BOOL CPPgTweaks::OnApply()
 	thePrefs.m_bAutomaticArcPreviewStart = !m_bAutoArchDisable;
     //thePrefs.m_bA4AFSaveCpu = m_bA4AFSaveCpu; // ZZ:DownloadManager
 
-	// ==> UPnP support [Xtreme] - Stulle
+	// ==> Removed UPnP support [Xtreme] - Stulle
 	/*
 	//Xman
 	//upnp_start
@@ -680,7 +680,7 @@ BOOL CPPgTweaks::OnApply()
 	thePrefs.SetUPnPNatTryRandom( m_iUPnPTryRandom );
 	//upnp_end
 	*/
-	// <== UPnP support [Xtreme] - Stulle
+	// <== Removed UPnP support [Xtreme] - Stulle
 
 	if (thePrefs.GetEnableVerboseOptions())
 	{
@@ -782,7 +782,7 @@ void CPPgTweaks::Localize(void)
 		// ZZ:UploadSpeedSense <--
 		*/
 		
-		// ==> UPnP support [Xtreme] - Stulle
+		// ==> Removed UPnP support [Xtreme] - Stulle
 		/*
 		//Xman
 		//upnp_start
@@ -790,7 +790,7 @@ void CPPgTweaks::Localize(void)
 		if (m_htiUPnPTryRandom) m_ctrlTreeOptions.SetItemText(m_htiUPnPTryRandom, GetResString(IDS_CN_UPNPTRYRANDOM));
 		//upnp_end
 		*/
-		// <== UPnP support [Xtreme] - Stulle
+		// <== Removed UPnP support [Xtreme] - Stulle
 
 		//if (m_htiA4AFSaveCpu) m_ctrlTreeOptions.SetItemText(m_htiA4AFSaveCpu, GetResString(IDS_A4AF_SAVE_CPU)); // ZZ:DownloadManager
 		if (m_htiFullAlloc) m_ctrlTreeOptions.SetItemText(m_htiFullAlloc, GetResString(IDS_FULLALLOC));
@@ -881,7 +881,7 @@ void CPPgTweaks::OnDestroy()
 	m_htiAutoArch = NULL;
 	//m_htiExtractMetaDataMediaDet = NULL;
     
-	// ==> UPnP support [Xtreme] - Stulle
+	// ==> Removed UPnP support [Xtreme] - Stulle
 	/*
 	//Xman
 	//upnp_start
@@ -891,7 +891,7 @@ void CPPgTweaks::OnDestroy()
 	m_iUPnPTryRandom = 0;
 	//upnp_end
 	*/
-	// <== UPnP support [Xtreme] - Stulle
+	// <== Removed UPnP support [Xtreme] - Stulle
 
     CPropertyPage::OnDestroy();
 }
@@ -923,7 +923,7 @@ LRESULT CPPgTweaks::OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam)
 				// <== WebCache [WC team/MorphXT] - Stulle/Max
 			}
 		}
-		// ==> UPnP support [Xtreme] - Stulle
+		// ==> Removed UPnP support [Xtreme] - Stulle
 		/*
 		//Xman
 		//upnp_start
@@ -937,7 +937,7 @@ LRESULT CPPgTweaks::OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam)
 		}
 		//upnp_end
 		*/
-		// <== UPnP support [Xtreme] - Stulle
+		// <== Removed UPnP support [Xtreme] - Stulle
 
 		SetModified();
 	}

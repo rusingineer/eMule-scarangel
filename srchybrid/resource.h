@@ -2972,15 +2972,15 @@
 #define IDC_COLOR_FONT                  60940
 #define IDC_COLOR_BACK_LABEL            60941
 #define IDC_COLOR_BACK                  60942
-//#define IDC_COLOR_PREVIEW               60943
-//#define IDC_COLOR_PREVIEW_BOX           60944
+#define IDS_COLOR_B7                    60943
+#define IDS_COLOR_SE1                   60944
 #define IDS_COLOR_MASTER1               60945
 #define IDS_COLOR_MASTER2               60946
 #define IDS_COLOR_MASTER3               60947
 #define IDS_COLOR_BOX                   60948
 #define IDS_COLOR_FONT_LABEL            60949
 #define IDS_COLOR_BACK_LABEL            60950
-//#define IDS_COLOR_PREVIEW               60951
+#define IDS_COLOR_SE2                   60951
 #define IDS_COLOR_C1                    60952
 #define IDS_COLOR_S1                    60953
 #define IDS_COLOR_S2                    60954
@@ -3001,6 +3001,13 @@
 #define IDC_COLOR_ON_OFF                60969
 #define IDS_COLOR_ON                    60970
 #define IDS_COLOR_OFF                   60971
+#define IDS_COLOR_SE3                   60972
+#define IDS_COLOR_SE4                   60973
+#define IDS_COLOR_SE5                   60974
+#define IDS_COLOR_MASTER5               60975
+#define IDS_COLOR_W1                    60976
+#define IDS_COLOR_W2                    60977
+#define IDS_COLOR_MASTER6               60978
 // <== Design Settings [eWombat/Stulle] - Stulle
 // ==> Limit PS by amount of data uploaded [Stulle] - Stulle
 #define IDS_PS_AMOUNT_LIMIT             61000
