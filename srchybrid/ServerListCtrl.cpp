@@ -1169,9 +1169,13 @@ void CServerListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	}
 	else
 		odc->SetBkColor(crTempColor);
+	crTempColor = m_crWindowText;
+	if(style.nFontColor != CLR_DEFAULT)
+		crTempColor = style.nFontColor;
+
 	CMemDC dc(CDC::FromHandle(lpDrawItemStruct->hDC), &lpDrawItemStruct->rcItem);
 	CFont* pOldFont = dc.SelectObject(theApp.GetFontByStyle(style.nFlags,thePrefs.UseNarrowFont()));
-	COLORREF crOldTextColor = dc.SetTextColor(crTempColor);
+	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : crTempColor);
 	// <== Design Settings [eWombat/Stulle] - Stulle
 
 		int iOldBkMode;
