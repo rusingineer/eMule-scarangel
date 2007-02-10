@@ -42,11 +42,11 @@ protected:
 	bool m_bEnforceRatio;
 	int m_iRatioValue;
 	// <== Enforce Ratio [Stulle] - Stulle
-	// ==> Improved ICS-Firewall support [MoNKi]-Max
+	// ==> Improved ICS-Firewall support [MoNKi] - Max
 	bool		m_bICFSupport;
 	bool		m_bICFSupportClearAtEnd;
 	bool		m_bICFSupportServerUDP;
-	// <== Improved ICS-Firewall support [MoNKi]-Max
+	// <== Improved ICS-Firewall support [MoNKi] - Max
 //	int m_iReAskFileSrc; // Timer for ReAsk File Sources - Stulle
 	bool m_bACC; // ACC [Max/WiZaRd] - Max
 /*
@@ -183,12 +183,12 @@ protected:
 	HTREEITEM m_htiEnforceRatio;
 	HTREEITEM m_htiRatioValue;
 	// <== Enforce Ratio [Stulle] - Stulle
-	// ==> Improved ICS-Firewall support [MoNKi]-Max
+	// ==> Improved ICS-Firewall support [MoNKi] - Max
 	HTREEITEM	m_htiICFSupportRoot;
 	HTREEITEM	m_htiICFSupport;
 	HTREEITEM	m_htiICFSupportClearAtEnd;
 	HTREEITEM	m_htiICFSupportServerUDP;
-	// <== Improved ICS-Firewall support [MoNKi]-Max
+	// <== Improved ICS-Firewall support [MoNKi] - Max
 //	HTREEITEM m_htiReAskFileSrc; // Timer for ReAsk File Sources - Stulle
 	HTREEITEM m_htiACC; // ACC [Max/WiZaRd] - Max
 /*
@@ -452,14 +452,21 @@ private:
 	// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 
 	// ==> Design Settings [eWombat/Stulle] - Stulle
-	StylesStruct styles[style_counts];
+	StylesStruct nClientStyles[style_c_count];
+	StylesStruct nDownloadStyles[style_d_count];
+	StylesStruct nShareStyles[style_s_count];
+	StylesStruct nServerStyles[style_se_count];
+	StylesStruct nBackgroundStyles[style_b_count];
+	StylesStruct nWindowStyles[style_w_count];
+	bool m_bFocusWasOnCombo;
 	bool m_bDesignChanged;
 public:
 	void InitMasterStyleCombo();
 	void InitSubStyleCombo();
 	void UpdateStyles(bool bShow = false);
-	int	GetStyleValue();
 	void OnFontStyle(int iStyle);
+	StylesStruct GetStyle(int nMaster, int nStyle);
+	void SetStyle(int nMaster, int nStyle, StylesStruct *style=NULL);
 
 	afx_msg LONG OnColorPopupSelChange(UINT lParam, LONG wParam);
 	afx_msg void OnBnClickedBold();
@@ -468,5 +475,7 @@ public:
 	afx_msg void OnCbnSelchangeStyleselMaster();
 	afx_msg void OnCbnSelchangeStyleselSub();
 	afx_msg void OnBnClickedOnOff();
+	afx_msg void OnEnKillfocusMasterCombo();
+	afx_msg void OnEnKillfocusSubCombo();
 	// <== Design Settings [eWombat/Stulle] - Stulle
 };

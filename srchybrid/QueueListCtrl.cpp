@@ -368,7 +368,7 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
 	int iClientStyle = client->GetClientStyle(true,true,true,true);
 	StylesStruct style;
-	thePrefs.GetStyle(iClientStyle, &style);
+	thePrefs.GetStyle(client_styles, iClientStyle, &style);
 	COLORREF crTempColor = GetBkColor();
 
 	if (style.nBackColor != CLR_DEFAULT)

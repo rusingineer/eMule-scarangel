@@ -4332,21 +4332,21 @@ void CUpDownClient::UpdateFunnyNick()
 int CUpDownClient::GetClientStyle(bool bDl, bool bUl, bool bShare, bool bOwnCredits) const
 {
 	int iClientStyle = style_c_default;
-	if(IsFriend() && thePrefs.GetStyleOnOff(style_c_friend)!=0)
+	if(IsFriend() && thePrefs.GetStyleOnOff(client_styles, style_c_friend)!=0)
 		iClientStyle = style_c_friend;
-	else if(GetPowerShared() && bShare && thePrefs.GetStyleOnOff(style_c_powershare)!=0)
+	else if(GetPowerShared() && bShare && thePrefs.GetStyleOnOff(client_styles, style_c_powershare)!=0)
 		iClientStyle = style_c_powershare;
-	else if(GetPowerReleased() && bShare && thePrefs.GetStyleOnOff(style_c_powerrelease)!=0)
+	else if(GetPowerReleased() && bShare && thePrefs.GetStyleOnOff(client_styles, style_c_powerrelease)!=0)
 		iClientStyle = style_c_powerrelease;
-	else if(GetDownloadState() == DS_DOWNLOADING && bDl && thePrefs.GetStyleOnOff(style_c_downloading)!=0)
+	else if(GetDownloadState() == DS_DOWNLOADING && bDl && thePrefs.GetStyleOnOff(client_styles, style_c_downloading)!=0)
 		iClientStyle = style_c_downloading;
-	else if(GetUploadState() == US_UPLOADING && bUl && thePrefs.GetStyleOnOff(style_c_uploading)!=0)
+	else if(GetUploadState() == US_UPLOADING && bUl && thePrefs.GetStyleOnOff(client_styles, style_c_uploading)!=0)
 		iClientStyle = style_c_uploading;
-	else if(IsLeecher()>0 && thePrefs.GetStyleOnOff(style_c_leecher)!=0)
+	else if(IsLeecher()>0 && thePrefs.GetStyleOnOff(client_styles, style_c_leecher)!=0)
 		iClientStyle = style_c_leecher;
-	else if(HasLowID() && thePrefs.GetStyleOnOff(style_c_lowid)!=0)
+	else if(HasLowID() && thePrefs.GetStyleOnOff(client_styles, style_c_lowid)!=0)
 		iClientStyle = style_c_lowid;
-	else if(Credits() && thePrefs.GetStyleOnOff(style_c_credits)!=0)
+	else if(Credits() && thePrefs.GetStyleOnOff(client_styles, style_c_credits)!=0)
 	{
 		if	(
 				(!bOwnCredits && credits->GetHasScore(this))

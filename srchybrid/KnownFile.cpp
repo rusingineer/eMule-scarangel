@@ -3103,21 +3103,21 @@ bool CKnownFile::GetPowerShared() const
 int CKnownFile::GetKnownStyle() const
 {
 	int iKnownStyle = style_s_default;
-	if(GetPowerShared() && thePrefs.GetStyleOnOff(style_s_powershare)!=0)
+	if(GetPowerShared() && thePrefs.GetStyleOnOff(share_styles, style_s_powershare)!=0)
 		iKnownStyle = style_s_powershare;
-	else if(IsAutoUpPriority() && thePrefs.GetStyleOnOff(style_s_auto)!=0)
+	else if(IsAutoUpPriority() && thePrefs.GetStyleOnOff(share_styles, style_s_auto)!=0)
 		iKnownStyle = style_s_auto;
-	else if(GetUpPriority()==PR_VERYLOW && thePrefs.GetStyleOnOff(style_s_verylow)!=0)
+	else if(GetUpPriority()==PR_VERYLOW && thePrefs.GetStyleOnOff(share_styles, style_s_verylow)!=0)
 		iKnownStyle = style_s_verylow;
-	else if(GetUpPriority()==PR_LOW && thePrefs.GetStyleOnOff(style_s_low)!=0)
+	else if(GetUpPriority()==PR_LOW && thePrefs.GetStyleOnOff(share_styles, style_s_low)!=0)
 		iKnownStyle = style_s_low;
-	else if(GetUpPriority()==PR_NORMAL && thePrefs.GetStyleOnOff(style_s_normal)!=0)
+	else if(GetUpPriority()==PR_NORMAL && thePrefs.GetStyleOnOff(share_styles, style_s_normal)!=0)
 		iKnownStyle = style_s_normal;
-	else if(GetUpPriority()==PR_HIGH && thePrefs.GetStyleOnOff(style_s_high)!=0)
+	else if(GetUpPriority()==PR_HIGH && thePrefs.GetStyleOnOff(share_styles, style_s_high)!=0)
 		iKnownStyle = style_s_high;
-	else if(GetUpPriority()==PR_VERYHIGH && thePrefs.GetStyleOnOff(style_s_release)!=0)
+	else if(GetUpPriority()==PR_VERYHIGH && thePrefs.GetStyleOnOff(share_styles, style_s_release)!=0)
 		iKnownStyle = style_s_release;
-	else if(GetUpPriority()==PR_POWER && thePrefs.GetStyleOnOff(style_s_powerrelease)!=0)
+	else if(GetUpPriority()==PR_POWER && thePrefs.GetStyleOnOff(share_styles, style_s_powerrelease)!=0)
 		iKnownStyle = style_s_powerrelease;
 	return iKnownStyle;
 }

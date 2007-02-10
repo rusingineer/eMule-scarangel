@@ -2680,7 +2680,7 @@ void CTransferWnd::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemSt
 // ==> Design Settings [eWombat/Stulle] - Stulle
 void CTransferWnd::SetBackgroundColor(int nStyle)
 {
-	COLORREF crTempColor = thePrefs.GetStyleBackColor(nStyle);
+	COLORREF crTempColor = thePrefs.GetStyleBackColor(background_styles, nStyle);
 
 	if(crTempColor == CLR_DEFAULT)
 		crTempColor = COLORREF(RGB(255,255,255));

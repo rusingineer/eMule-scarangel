@@ -621,19 +621,19 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
 	*/
-	COLORREF crTempColor = thePrefs.GetStyleBackColor(style_b_sharedlist);
+	COLORREF crTempColor = thePrefs.GetStyleBackColor(background_styles, style_b_sharedlist);
 	if(crTempColor != CLR_DEFAULT)
 		SetBkColor(crTempColor);
 	else
 		SetBkColor(COLORREF(RGB(255,255,255)));
 	CKnownFile* file = (CKnownFile*)lpDrawItemStruct->itemData;
 	int iStyle = 0;
-	if(file->IsPartFile() && thePrefs.GetStyleOnOff(style_s_incomplete)!=0)
+	if(file->IsPartFile() && thePrefs.GetStyleOnOff(share_styles, style_s_incomplete)!=0)
 		iStyle = style_s_incomplete;
 	else 
 		iStyle = file->GetKnownStyle();
 	StylesStruct style;
-	thePrefs.GetStyle(iStyle, &style);
+	thePrefs.GetStyle(share_styles, iStyle, &style);
 
     crTempColor = GetBkColor();
 	if (style.nBackColor != CLR_DEFAULT)
@@ -905,7 +905,7 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					break;
 				// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 				// ==> PowerShare [ZZ/MorphXT] - Stulle
-				case 22:{
+				case 21:{
 					int powersharemode;
 					bool powershared = file->GetPowerShared();
 					buffer = _T("[") + GetResString((powershared)?IDS_POWERSHARE_ON_LABEL:IDS_POWERSHARE_OFF_LABEL) + _T("] ");
@@ -953,7 +953,7 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			/*
 			if (iColumn != 8)
 			*/
-			if (iColumn != 8 && iColumn != 13)
+			if (iColumn != 8 && iColumn != 14)
 			// <== Spread bars [Slugfiller/MorphXT] - Stulle
 				dc.DrawText(buffer, buffer.GetLength(), &cur_rec, uDTFlags);
 			if (iColumn == 0)

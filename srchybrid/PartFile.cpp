@@ -8892,19 +8892,19 @@ void CPartFile::AddWebCachedBlockToStats( bool IsGood, uint64 bytes )
 int CPartFile::GetPfStyle() const
 {
 	int iPfStyle = style_d_default;
-	if ((GetStatus()==PS_READY || GetStatus()==PS_EMPTY) && GetTransferringSrcCount()>0 && thePrefs.GetStyleOnOff(style_d_downloading)!=0)
+	if ((GetStatus()==PS_READY || GetStatus()==PS_EMPTY) && GetTransferringSrcCount()>0 && thePrefs.GetStyleOnOff(download_styles, style_d_downloading)!=0)
 		iPfStyle = style_d_downloading;
-	else if (GetStatus() == PS_COMPLETE && thePrefs.GetStyleOnOff(style_d_complete)!=0)
+	else if (GetStatus() == PS_COMPLETE && thePrefs.GetStyleOnOff(download_styles, style_d_complete)!=0)
 		iPfStyle = style_d_complete;
-	else if (GetStatus() == PS_COMPLETING && thePrefs.GetStyleOnOff(style_d_completing)!=0)
+	else if (GetStatus() == PS_COMPLETING && thePrefs.GetStyleOnOff(download_styles, style_d_completing)!=0)
 		iPfStyle = style_d_completing;
-	else if (GetStatus() == PS_HASHING && thePrefs.GetStyleOnOff(style_d_hashing)!=0)
+	else if (GetStatus() == PS_HASHING && thePrefs.GetStyleOnOff(download_styles, style_d_hashing)!=0)
 		iPfStyle = style_d_hashing;
-	else if (GetStatus()==PS_PAUSED && !IsStopped() && thePrefs.GetStyleOnOff(style_d_paused)!=0)
+	else if (GetStatus()==PS_PAUSED && !IsStopped() && thePrefs.GetStyleOnOff(download_styles, style_d_paused)!=0)
 		iPfStyle = style_d_paused;
-	else if (IsStopped() && IsPartFile() && thePrefs.GetStyleOnOff(style_d_stopped)!=0)
+	else if (IsStopped() && IsPartFile() && thePrefs.GetStyleOnOff(download_styles, style_d_stopped)!=0)
 		iPfStyle = style_d_stopped;
-	else if ((GetStatus() == PS_ERROR || GetStatus() == PS_UNKNOWN)  && thePrefs.GetStyleOnOff(style_d_errunk)!=0)
+	else if ((GetStatus() == PS_ERROR || GetStatus() == PS_UNKNOWN)  && thePrefs.GetStyleOnOff(download_styles, style_d_errunk)!=0)
 		iPfStyle = style_d_errunk;
 	return iPfStyle;
 }

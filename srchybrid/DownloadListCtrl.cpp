@@ -1439,12 +1439,19 @@ void CDownloadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	theApp.emuledlg->transferwnd->SetBackgroundColor(style_b_downloadlist);
 	CtrlItem_Struct* content = (CtrlItem_Struct*)lpDrawItemStruct->itemData;
 	int iStyle = 0;
+	int iMaster = 0;
 	StylesStruct style;
 	if(content->type == FILE_TYPE)
+	{
 		iStyle = ((const CPartFile*)content->value)->GetPfStyle();
+		iMaster = download_styles;
+	}
 	else if(content->type == UNAVAILABLE_SOURCE || content->type == AVAILABLE_SOURCE)
+	{
 		iStyle = ((const CUpDownClient*)content->value)->GetClientStyle(true,true,false,true);
-	thePrefs.GetStyle(iStyle, &style);
+		iMaster = client_styles;
+	}
+	thePrefs.GetStyle(iMaster, iStyle, &style);
 	COLORREF crTempColor = GetBkColor();
 
 	if (style.nBackColor != CLR_DEFAULT)
