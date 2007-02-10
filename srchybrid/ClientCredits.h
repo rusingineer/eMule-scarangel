@@ -191,7 +191,7 @@ public:
 	void    SaveUploadQueueWaitTime(int iKeepPct = 100);
 	void	ClearUploadQueueWaitTime();
 	bool	IsActive(uint32 dwExpire);	// Moonlight: SUQWT, new function to determine if the record has expired.
-	void	SetSecWaitStartTime();
+	void	SetSecWaitStartTime(int iKeepPct = 0);
 	// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 
 protected:

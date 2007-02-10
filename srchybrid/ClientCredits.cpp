@@ -1449,8 +1449,8 @@ void CClientCredits::ClearUploadQueueWaitTime() {
 	// Doing SaveUploadQueueWaitTime(0) should be reduced to something equivalent during compile.
 }
 
-void CClientCredits::SetSecWaitStartTime() {
-	SetSecWaitStartTime(m_dwWaitTimeIP);
+void CClientCredits::SetSecWaitStartTime(int iKeepPct) {
+	SetSecWaitStartTime(m_dwWaitTimeIP, iKeepPct);
 }
 // Moonlight: SUQWT: Adjust to take previous wait time into account.
 /*

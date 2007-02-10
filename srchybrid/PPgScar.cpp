@@ -1150,7 +1150,13 @@ BOOL CPPgScar::OnApply()
 	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 	thePrefs.m_bReleaseScoreAssurance = m_bReleaseScoreAssurance; // Release Score Assurance [Stulle] - Stulle
 
-	thePrefs.m_bSaveUploadQueueWaitTime = m_bSUQWT; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
+	// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
+	if(thePrefs.m_bSaveUploadQueueWaitTime != m_bSUQWT)
+	{
+		thePrefs.m_bSaveUploadQueueWaitTime = m_bSUQWT;
+		bRestartApp = true;
+	}
+	// <<== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*	// ==> Spread Credits Slot - Stulle
 	thePrefs.SpreadCreditsSlot = m_bSpreadCreditsSlot;
 	thePrefs.SpreadCreditsSlotCounter = m_iSpreadCreditsSlotCounter;

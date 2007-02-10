@@ -1183,7 +1183,7 @@ bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReaso
 						keeppct = 10; // min 10% penalty
 					keeppct = 100 - keeppct;
 					client->Credits()->SaveUploadQueueWaitTime(keeppct);
-					client->Credits()->SetSecWaitStartTime();
+					client->Credits()->SetSecWaitStartTime(keeppct);
 					AddDebugLogLine(false, _T("giving client bonus. old waitingtime: %s, new waitingtime: %s, client: %s"), CastSecondsToHM(waitingtime/1000), CastSecondsToHM((::GetTickCount() - client->GetWaitStartTime())/1000),client->DbgGetClientInfo()); 
 				}
 				else
