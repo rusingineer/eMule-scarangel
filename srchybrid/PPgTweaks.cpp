@@ -178,6 +178,11 @@ CPPgTweaks::CPPgTweaks()
 	m_htiLogA4AF = NULL;
 	m_htiLogDrop = NULL; //Xman Xtreme Downloadmanager
 	m_htiLogpartmismtach = NULL; //Xman Log part/size-mismatch
+	// ==> use uPNP to forward ports (MoNKi)   leuk_he verbose log
+	m_bLogUPnP = false;
+	m_htiLogUPnP = NULL;
+	// <== use uPNP to forward ports (MoNKi)   leuk_he verbose log
+
 	m_htiExtractMetaData = NULL;
 	m_htiAutoArch = NULL;
 }
@@ -290,6 +295,10 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 			m_htiLogWebCacheEvents = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOG_WCEVENTS), m_htiVerboseGroup, m_bLogWebCacheEvents); //JP log webcache events
 			m_htiLogICHEvents = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOG_IACH), m_htiVerboseGroup, m_bLogICHEvents); //JP log ICH events
 			// <== WebCache [WC team/MorphXT] - Stulle/Max
+			// ==> use uPNP to forward ports (MoNKi)   leuk_he  verbose log
+			m_htiLogUPnP = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_UPNP_VERBOSELOG), m_htiVerboseGroup, m_bLogUPnP); //JP log webcache events
+			// <== use uPNP to forward ports (MoNKi)   leuk_he verbose log
+
 		}
 
 		/////////////////////////////////////////////////////////////////////////////
@@ -424,6 +433,10 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	if (m_htiLogICHEvents)			DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiLogICHEvents, m_bLogICHEvents);//JP log ICH events
 	if (m_htiLogICHEvents)			m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogICHEvents, m_bVerbose);//JP log ICH events
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
+	// ==> use uPNP to forward ports (MoNKi)   leuk_he 
+	if (m_htiLogUPnP)				DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiLogUPnP, m_bLogUPnP);
+	if (m_htiLogUPnP)				m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogUPnP, m_bVerbose);
+	// <== use uPNP to forward ports (MoNKi)   leuk_he
 
 	/////////////////////////////////////////////////////////////////////////////
 	// USS group
@@ -483,6 +496,11 @@ BOOL CPPgTweaks::OnInitDialog()
 		m_bLogWebCacheEvents = thePrefs.m_bLogWebCacheEvents;//JP log webcache events
 		m_bLogICHEvents = thePrefs.m_bLogICHEvents;//JP log ICH events
 		// <== WebCache [WC team/MorphXT] - Stulle/Max
+		// ==> use uPNP to forward ports (MoNKi)   leuk_he 
+		m_bLogUPnP = thePrefs.GetUPnPVerboseLog();
+		// <== use uPNP to forward ports (MoNKi)   leuk_he 
+
+
 		m_iLogLevel = 5 - thePrefs.m_byLogLevel;
 	}
 	m_bLog2Disk = thePrefs.log2disk;
@@ -618,6 +636,10 @@ BOOL CPPgTweaks::OnApply()
 		thePrefs.m_bLogWebCacheEvents = m_bLogWebCacheEvents;//JP log webcache events
 		thePrefs.m_bLogICHEvents = m_bLogICHEvents;//JP log ICH events
 		// <== WebCache [WC team/MorphXT] - Stulle/Max
+		// ==> use uPNP to forward ports (MoNKi)   leuk_he 
+		thePrefs.SetUPnPVerboseLog(m_bLogUPnP);
+		// <== use uPNP to forward ports (MoNKi)   leuk_he 
+
 		thePrefs.m_byLogLevel = 5 - m_iLogLevel;
 
 		thePrefs.m_bVerbose = m_bVerbose; // store after related options were stored!

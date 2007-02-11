@@ -264,6 +264,10 @@ public:
 	static	CStringA m_strBindAddrA;
 	static	LPCWSTR	m_pszBindAddrW;
 	static	CStringW m_strBindAddrW;
+	// ==> use uPNP to forward ports (MoNKi)   leuk_he upnp bindaddr
+	static DWORD	 m_dwUpnpBindAddr;
+	static bool      m_bBindAddrIsDhcp;
+	// e una upnp bindaddr
 	static	uint16	port;
 	static	uint16	udpport;
 	static	uint16	nServerUDPPort;
@@ -712,6 +716,15 @@ public:
 
     static bool     m_bHighresTimer;
 
+	//==> use uPNP to forward ports (MoNKi)   leuk_he
+	static bool		m_bUPnPNat;
+	static bool		m_bUPnPNatWeb;
+	static bool		m_bUPnPVerboseLog;
+	static uint16	m_iUPnPPort;
+	static bool		m_bUPnPLimitToFirstConnection;
+	static bool		m_bUPnPClearOnClose;
+	static int    m_iDetectuPnP; //leuk_he autodetect in startup wizard
+	//<== use uPNP to forward ports (MoNKi)   leuk_he
 	static	CStringList shareddir_list;
 	static	CStringList addresses_list;
 
@@ -1083,6 +1096,13 @@ public:
 	static	uint16	GetPort()							{return port;}
 	static	uint16	GetUDPPort()						{return udpport;}
 	// <== Removed UPnP support [Xtreme] - Stulle
+// ==> use uPNP to forward ports (MoNKi)   leuk_he  upnp bindaddr
+	static DWORD	 GetUpnpBindAddr()				{return m_dwUpnpBindAddr; }
+    static void      SetUpnpBindAddr(DWORD bindip); 
+	static void      SetUpnpBindDhcp(bool BindAddrIsDhcp) {m_bBindAddrIsDhcp=BindAddrIsDhcp;};
+	static bool      GetUpnpBindDhcp() {return m_bBindAddrIsDhcp;};
+	// <== use uPNP to forward ports (MoNKi)   leuk_he
+
 	static	uint16	GetServerUDPPort()					{return nServerUDPPort;}
 	static	uchar*	GetUserHash()						{return userhash;}
 	// ZZ:UploadSpeedSense -->
@@ -1118,7 +1138,7 @@ public:
 	static	bool m_bUPnPNat; // UPnP On/Off
 	static	bool m_bUPnPTryRandom; // Try to use random external port if already in use On/Off
 	static	uint16 m_iUPnPTCPExternal; // TCP External Port
-	static	uint16 m_iUPnPUDPExternal; // UDP External Port*//*
+	static	uint16 m_iUPnPUDPExternal; // UDP External Port
 	static	bool GetUPnPNat()    { return m_bUPnPNat; }
 	static	void SetUPnPNat(bool on)    { m_bUPnPNat = on; }
 	static	void SetUPnPTCPExternal(uint16 port) { m_iUPnPTCPExternal = port; }
@@ -2263,6 +2283,29 @@ protected:
 	static void LoadPreferences();
 	static void SavePreferences();
 	static CString GetHomepageBaseURLForLevel(int nLevel);
+public:
+	//==> use uPNP to forward ports (MoNKi)   leuk_he
+	static	bool	IsUPnPEnabled()						{ return m_bUPnPNat; }
+	// Note: setting upnp to disbale/enable is in theApp.m_UPnP_IGDControlPoint->SetUPnPNat to actually stop and start upnp. 
+	static	bool	GetUPnPNatWeb()						{ return m_bUPnPNatWeb; }
+	static	void	SetUPnPNatWeb(bool on)				{ m_bUPnPNatWeb = on; }
+	static	void	SetUPnPVerboseLog(bool on)			{ m_bUPnPVerboseLog = on; }
+	static	bool	GetUPnPVerboseLog()					{ return m_bUPnPVerboseLog; }
+	static	void	SetUPnPPort(uint16 port)			{ m_iUPnPPort = port; }
+	static	uint16	GetUPnPPort()						{ return m_iUPnPPort; }
+	static	void	SetUPnPClearOnClose(bool on)		{ m_bUPnPClearOnClose = on; }
+	static	bool	GetUPnPClearOnClose()				{ return m_bUPnPClearOnClose; }
+	static	bool	SetUPnPLimitToFirstConnection(bool on)	{ m_bUPnPLimitToFirstConnection = on; }
+	static	bool	GetUPnPLimitToFirstConnection()		{ return m_bUPnPLimitToFirstConnection; }
+	static	int  	GetUpnpDetect()					{ return m_iDetectuPnP; } //leuk_he autodetect upnp in wizard
+	static	void    SetUpnpDetect(int on)				{ m_iDetectuPnP=on; } //leuk_he autodetect upnp in wizard
+    #define UPNP_DO_AUTODETECT 2
+    #define UPNP_DETECTED 0
+    #define UPNP_NOT_DETECTED -1 
+	#define UPNP_NO_DETECTEDTION -2 
+    #define UPNP_NOT_NEEDED -10
+	
+	//<== use uPNP to forward ports (MoNKi)   leuk_he
 };
 
 extern CPreferences thePrefs;

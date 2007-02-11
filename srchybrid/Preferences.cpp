@@ -192,6 +192,11 @@ LPCSTR	CPreferences::m_pszBindAddrA;
 CStringA CPreferences::m_strBindAddrA;
 LPCWSTR	CPreferences::m_pszBindAddrW;
 CStringW CPreferences::m_strBindAddrW;
+//==> use uPNP to forward ports (MoNKi)   leuk_he
+DWORD	 CPreferences::m_dwUpnpBindAddr;
+bool     CPreferences::m_bBindAddrIsDhcp;
+// <== use uPNP to forward ports (MoNKi)   leuk_he
+
 uint16	CPreferences::port;
 uint16	CPreferences::udpport;
 uint16	CPreferences::nServerUDPPort;
@@ -604,6 +609,15 @@ bool	CPreferences::m_bCryptLayerRequired;
 
 // ==> Global Source Limit [Max/Stulle] - Stulle
 bool    CPreferences::m_bGlobalHlDefault; 
+//==> use uPNP to forward ports (MoNKi)   leuk_he
+	bool	CPreferences::m_bUPnPNat;
+	bool	CPreferences::m_bUPnPNatWeb;
+	bool	CPreferences::m_bUPnPVerboseLog;
+	uint16	CPreferences::m_iUPnPPort;
+	bool	CPreferences::m_bUPnPLimitToFirstConnection;
+	bool	CPreferences::m_bUPnPClearOnClose;
+	int     CPreferences::m_iDetectuPnP; //leuk_he autodetect in startup wizard
+//<== use uPNP to forward ports (MoNKi)   leuk_he
 UINT	CPreferences::m_uGlobalHL; 
 bool	CPreferences::m_bGlobalHL;
 bool	CPreferences::m_bGlobalHlAll;
@@ -2081,6 +2095,10 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(L"StatsInterval",statsInterval);
 	ini.WriteInt(L"DeadServerRetry",m_uDeadServerRetries);
 	ini.WriteInt(L"ServerKeepAliveTimeout",m_dwServerKeepAliveTimeout);
+	// ==> use uPNP to forward ports (MoNKi)   leuk_he leuk_he upnp bindaddr
+	ini.WriteString(L"UpnpBindAddr", ipstr(htonl(GetUpnpBindAddr())));
+	ini.WriteBool(L"UpnpBindAddrDhcp",GetUpnpBindDhcp());
+    // <== use uPNP to forward ports (MoNKi)   leuk_he  leuk_he upnp bindaddr
 	ini.WriteInt(L"SplitterbarPosition",splitterbarPosition+2);
 	ini.WriteInt(L"SplitterbarPositionServer",splitterbarPositionSvr);
 	ini.WriteInt(L"SplitterbarPositionStat",splitterbarPositionStat+1);
@@ -2647,6 +2665,16 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("EnforceRatio"), m_bEnforceRatio);
 	ini.WriteInt(_T("RatioValue"), m_uRatioValue);
 	// <== Enforce Ratio [Stulle] - Stulle
+    // ==> use uPNP to forward ports (MoNKi)   leuk_he
+	ini.WriteBool(_T("UPnPNAT"), m_bUPnPNat, _T("eMule"));
+	ini.WriteBool(_T("UPnPNAT_Web"), m_bUPnPNatWeb, _T("eMule"));
+	ini.WriteBool(_T("UPnPVerbose"), m_bUPnPVerboseLog, _T("eMule"));
+	ini.WriteInt(_T("UPnPPort"), m_iUPnPPort, _T("eMule"));
+	ini.WriteBool(_T("UPnPClearOnClose"), m_bUPnPClearOnClose, _T("eMule"));
+	ini.WriteBool(_T("UPnPLimitToFirstConnection"), m_bUPnPLimitToFirstConnection, _T("eMule"));
+	ini.WriteInt(_T("UPnPDetect"), m_iDetectuPnP, _T("eMule")); // 
+	//<== use uPNP to forward ports (MoNKi)   leuk_he
+ 
 
 	// ==> Improved ICS-Firewall support [MoNKi]-Max
 	ini.WriteBool(_T("ICFSupportFirstTime"), m_bICFSupportFirstTime);
@@ -2933,6 +2961,13 @@ void CPreferences::LoadPreferences()
 		else if (dwCurSP2 == 1)
 			maxhalfconnections = 9;
 	}
+  // ==> use uPNP to forward ports (MoNKi)   leuk_he
+	// abuse m_strBindAddrW will be overwriten in a sec...
+	m_strBindAddrW = ini.GetString(L"upnpBindAddr");
+	m_strBindAddrW.Trim();
+
+  	SetUpnpBindAddr(ntohl(inet_addr((LPCSTR)(CStringA)m_strBindAddrW  )));
+  // <== use uPNP to forward ports (MoNKi)   leuk_he
 
 	m_strBindAddrW = ini.GetString(L"BindAddr");
 	m_strBindAddrW.Trim();
@@ -3361,6 +3396,17 @@ void CPreferences::LoadPreferences()
 	m_bPeerCacheEnabled = ini.GetBool(L"Enabled", true);
 	m_nPeerCachePort = (uint16)ini.GetInt(L"PCPort", 0);
 	m_bPeerCacheShow = ini.GetBool(L"Show", false);
+
+    //==> use uPNP to forward ports (MoNKi)   leuk_he
+	m_bUPnPNat = ini.GetBool(_T("UPnPNAT"), false, _T("eMule"));
+	m_bUPnPNatWeb = ini.GetBool(_T("UPnPNAT_Web"), false, _T("eMule"));
+	m_bUPnPVerboseLog = ini.GetBool(_T("UPnPVerbose"), true, _T("eMule"));
+	m_iUPnPPort = (uint16)ini.GetInt(_T("UPnPPort"), 0, _T("eMule"));
+	m_bUPnPLimitToFirstConnection = ini.GetBool(_T("UPnPLimitToFirstConnection"), false, _T("eMule"));
+	m_bUPnPClearOnClose = ini.GetBool(_T("UPnPClearOnClose"), true, _T("eMule"));
+    SetUpnpDetect(ini.GetInt(_T("uPnPDetect"), UPNP_DO_AUTODETECT, _T("eMule"))); //leuk_he autodetect upnp in wizard
+	//<== use uPNP to forward ports (MoNKi)   leuk_he
+
 
 	LoadCats();
 	//SetLanguage(); //Xman done above
@@ -4460,7 +4506,9 @@ uint16 CPreferences::GetPort(){
 
 	return port;
 }
+ <== use uPNP to forward ports (MoNKi)   leuk_he*/
 
+/* not used: ==> use uPNP to forward ports (MoNKi)   leuk_he
 uint16 CPreferences::GetUDPPort(){
 	if (udpport == 0)
 		return 0;
@@ -5081,6 +5129,16 @@ void CPreferences::LoadStylePrefs(CIni &ini)
 	}
 }
 // <== Design Settings [eWombat/Stulle] - Stulle
+
+// ==> use uPNP to forward ports (MoNKi)   leuk_he
+void CPreferences::SetUpnpBindAddr(DWORD bindip) {
+		if ( GetBindAddrA() != NULL || bindip== ntohl(inet_addr(GetBindAddrA())))
+			m_dwUpnpBindAddr =0;
+		else 
+	    	m_dwUpnpBindAddr= bindip;
+	}
+// <== use uPNP to forward ports (MoNKi)   leuk_he
+
 
 // ==> Invisible Mode [TPT/MoNKi] - Stulle
 void CPreferences::SetInvisibleMode(bool on, UINT keymodifier, char key) 

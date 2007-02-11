@@ -150,6 +150,21 @@ CPPgScar::CPPgScar()
 	m_bICFSupport = false;
 	m_bICFSupportClearAtEnd = false;
 	// <== Improved ICS-Firewall support [MoNKi] - Max
+	// ==> use uPNP to forward ports (MoNKi)   leuk_he
+	m_htiUPnPNat = NULL;
+	m_htiUpnPNATwebservice = NULL;
+	m_htiRandomports = NULL;
+	m_htiRandomFirstPort = NULL;
+	m_htiRandomLastPort = NULL;
+	int  m_iUPnPNat = 0;
+	bool m_bUpnPNATwebservice=false;
+	bool m_bRandomports=false;
+	int m_iRandomFirstPort=1;
+	int m_iRandomLastPort=65000;
+	// <== use uPNP to forward ports (MoNKi)   leuk_he 
+
+
+
 //	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources - Stulle
 	m_htiACC = NULL; // ACC [Max/WiZaRd] - Max
 /*
@@ -391,6 +406,17 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiICFSupportClearAtEnd = m_ctrlTreeOptions.InsertCheckBox(_T("Clear mappings at end"), m_htiICFSupportRoot, m_bICFSupportClearAtEnd);
 		m_htiICFSupportServerUDP = m_ctrlTreeOptions.InsertCheckBox(_T("Add mapping for \"ServerUDP\" port"), m_htiICFSupportRoot, m_bICFSupportServerUDP);
 		// <== Improved ICS-Firewall support [MoNKi] - Max
+		// ==> use uPNP to forward ports (MoNKi)   leuk_he
+		m_htiUPnPNat= m_ctrlTreeOptions.InsertCheckBox(_T("Forward ports via uPnP"),m_htiConTweaks, m_iUPnPNat);
+		m_htiUpnPNATwebservice = m_ctrlTreeOptions.InsertCheckBox(_T("Forward websevivice port via uPnP"),m_htiConTweaks, m_bUpnPNATwebservice);
+		;
+		/* TODO:
+		m_htiRandomports= m_ctrlTreeOptions.InsertCheckBox(_T("Random ports"),m_htiConTweaks, m_htiRandomports);
+		m_htiRandomFirstPort = m_ctrlTreeOptions.InsertItem(_T("First random port"), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiConTweaks);
+		m_ctrlTreeOptions.AddEditBox(m_htiRandomFirstPort, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_htiRandomLastPort = m_ctrlTreeOptions.InsertItem(_T("Last random port"), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiConTweaks);
+		m_ctrlTreeOptions.AddEditBox(m_htiRandomLastPort , RUNTIME_CLASS(CNumTreeOptionsEdit));
+		// <== use uPNP to forward ports (MoNKi)   leuk_he
 /*		// ==> Timer for ReAsk File Sources - Stulle
 		m_htiReAskFileSrc = m_ctrlTreeOptions.InsertItem(GetResString(IDS_REASK_FILE_SRC), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiConTweaks);
 		m_ctrlTreeOptions.AddEditBox(m_htiReAskFileSrc, RUNTIME_CLASS(CNumTreeOptionsEdit));
@@ -594,6 +620,19 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiICFSupportClearAtEnd, m_bICFSupportClearAtEnd);
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiICFSupportServerUDP, m_bICFSupportServerUDP);
 	// <== Improved ICS-Firewall support [MoNKi] - Max
+	// ==> use uPNP to forward ports (MoNKi)   leuk_he 
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS,m_htiUPnPNat,m_iUPnPNat  )	;
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS,m_htiUpnPNATwebservice,  m_bUpnPNATwebservice);
+	/* TODO:
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS,m_htiRandomports,m_bRandomports);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS,m_htiRandomFirstPort,  m_iRandomFirstPort);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS,m_htiRandomLastPort,  m_iRandomLastPort);
+		// also check min< max or switch them
+	*/
+	// <== use uPNP to forward ports (MoNKi)   leuk_he
+
+
+
 /*	// ==> Timer for ReAsk File Sources - Stulle
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiReAskFileSrc, m_iReAskFileSrc);
 	DDV_MinMaxInt(pDX, m_iReAskFileSrc, 29, 55);
@@ -759,6 +798,18 @@ BOOL CPPgScar::OnInitDialog()
 	m_bICFSupportClearAtEnd = thePrefs.IsOpenPortsOnStartupEnabled();
 	m_bICFSupportServerUDP = thePrefs.GetICFSupportServerUDP();
 	// <== Improved ICS-Firewall support [MoNKi] - Max
+	//==> use uPNP to forward ports (MoNKi)   leuk_he 
+	m_iUPnPNat = thePrefs.IsUPnPEnabled();
+	/* todo: 
+	bool m_bUpnPNATwebservice;
+	bool m_bRandomports;
+	int m_iRandomFirstPort;
+	int m_iRandomLastPort;
+	*/
+	//<== use uPNP to forward ports (MoNKi)   leuk_he
+
+
+
 //	m_iReAskFileSrc = (thePrefs.GetReAskTimeDif() + FILEREASKTIME)/60000; // Timer for ReAsk File Sources - Stulle
 	m_bACC = thePrefs.GetACC(); // ACC [Max/WiZaRd] - Max
 /*
@@ -1059,6 +1110,15 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_bOpenPortsOnStartUp = m_bICFSupportClearAtEnd;
 	thePrefs.SetICFSupportServerUDP(m_bICFSupportServerUDP);
 	// <== Improved ICS-Firewall support [MoNKi] - Max
+	//==> use uPNP to forward ports (MoNKi)   leuk_he
+	if(thePrefs.IsUPnPEnabled()!=m_iUPnPNat )
+	theApp.m_UPnP_IGDControlPoint->SetUPnPNat(m_iUPnPNat); // and start/stop nat. 
+	// TODO: Random ports and webservice. 
+	//<== use uPNP to forward ports (MoNKi)   leuk_he
+
+
+
+
 //	thePrefs.m_uReAskTimeDif = (m_iReAskFileSrc-29)*60000; // Timer for ReAsk File Sources - Stulle
 	thePrefs.m_bACC = m_bACC; // ACC [Max/WiZaRd] - Max
 /*

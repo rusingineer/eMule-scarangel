@@ -25,8 +25,10 @@
 #include "./Log.h"
 //Xman
 #include "BandWidthControl.h" // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
-#include "emule.h"
 //Xman end
+// ==> use uPNP to forward ports (MoNKi)   leuk_he
+#include "emule.h" //UPNPNAT
+// <== use uPNP to forward ports (MoNKi)   leuk_he
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -43,6 +45,15 @@ CIrcSocket::CIrcSocket(CIrcMain* pIrcMain) : CAsyncSocketEx()
 CIrcSocket::~CIrcSocket()
 {
 	RemoveAllLayers();
+	// ==> use uPNP to forward ports (MoNKi)   leuk_he
+	CString client;
+	UINT port;
+
+	GetSockName(client, port);
+	theApp.m_UPnP_IGDControlPoint->DeletePortMapping((uint16)port,
+		CUPnP_IGDControlPoint::UNAT_TCP,
+		_T("IRC"));
+	// <== use uPNP to forward ports (MoNKi)   leuk_he
 }
 
 BOOL CIrcSocket::Create(UINT uSocketPort, int uSocketType, long lEvent, LPCSTR lpszSocketAddress)
@@ -71,7 +82,25 @@ BOOL CIrcSocket::Create(UINT uSocketPort, int uSocketType, long lEvent, LPCSTR l
 		AddLayer(m_pProxyLayer);
 	}
 
+	// ==> use uPNP to forward ports (MoNKi)   leuk_he
+	/* obsolete:
 	return CAsyncSocketEx::Create(uSocketPort, uSocketType, lEvent, lpszSocketAddress);
+	*/
+	if(CAsyncSocketEx::Create(uSocketPort, uSocketType, lEvent, lpszSocketAddress)){
+		if(theApp.m_UPnP_IGDControlPoint->IsUpnpAcceptsPorts()){
+			CString client;
+			UINT port;
+
+			GetSockName(client, port);
+			theApp.m_UPnP_IGDControlPoint->AddPortMapping((uint16)port,
+				CUPnP_IGDControlPoint::UNAT_TCP,
+				_T("IRC"));
+		}
+		return true;
+	}
+	else
+		return false;
+	//<== use uPNP to forward ports (MoNKi)   leuk_he
 }
 
 void CIrcSocket::Connect()

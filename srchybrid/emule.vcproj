@@ -25,7 +25,7 @@
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories=".,..;..\id3lib\include;..\crypto.v52.1"
+				AdditionalIncludeDirectories=".;..;..\id3lib\include;..\crypto.v52.1;pthreads\pthreads\inc;upnplib\ixml\inc"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_DUMP;ID3LIB_LINKOPTION=1"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="0"
@@ -86,7 +86,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include;..\crypto.v52.1"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;SUPPORT_LARGE_FILES;PRINT_STATISTIC;LOGTAG"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;SUPPORT_LARGE_FILES"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -231,8 +231,8 @@
 				EnableFiberSafeOptimizations="TRUE"
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories=".,..;..\id3lib\include;..\crypto.v52.1"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;_BETA;SUPPORT_LARGE_FILES;PRINT_STATISTIC"
+				AdditionalIncludeDirectories=".;..;..\id3lib\include;..\crypto.v52.1;.\upnplib\ixml\inc;.\upnplib\threadutil\inc;pthreads\pthreads\inc"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;_BETA;SUPPORT_LARGE_FILES;PRINT_STATISTIC;UPNP_STATIC_LIB;PTW32_STATIC_LIB"
 				StringPooling="TRUE"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
@@ -2991,6 +2991,12 @@
 			</File>
 			<File
 				RelativePath=".\SplashScreenEx.h">
+			</File>
+			<File
+				RelativePath=".\UPnP.h">
+			</File>
+			<File
+				RelativePath=".\UPnP_IGDControlPoint.cpp">
 			</File>
 			<File
 				RelativePath=".\WndUtil.h">

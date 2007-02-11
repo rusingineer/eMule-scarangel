@@ -277,6 +277,9 @@ public:
 	void OnPortChange();
 
 	CString m_sTestURL,m_sUDP,m_sTCP;
+	// ==> use uPNP to forward ports (MoNKi)   leuk_he
+	int   uPnPNAT; 
+	// <== use uPNP to forward ports (MoNKi)   leuk_he
 	uint16 GetTCPPort();
 	uint16 GetUDPPort();
 
@@ -357,7 +360,9 @@ void CPPgWiz1Ports::OnStartConTest() {
 
 	uint16 tcp=GetTCPPort();
 	uint16 udp=GetUDPPort();
-
+    // ==> use uPNP to forward ports (MoNKi)   leuk_he
+	theApp.m_UPnP_IGDControlPoint->SetUPnPNat(IsDlgButtonChecked(IDC_ENABLE_PNP)==BST_CHECKED); // add upnpnat to startup wizard [leuk_he]
+    // <== use uPNP to forward ports (MoNKi)   leuk_he
 	if (tcp==0)
 		return;
 
@@ -394,8 +399,24 @@ BOOL CPPgWiz1Ports::OnInitDialog()
 	SetDlgItemText(IDC_TESTFRAME , GetResString(IDS_CONNECTIONTEST) );
 	SetDlgItemText(IDC_TESTINFO , GetResString(IDS_TESTINFO) );
 	SetDlgItemText(IDC_STARTTEST, GetResString(IDS_STARTTEST) );
-	SetDlgItemText(IDC_UDPDISABLE, GetResString(IDS_UDPDISABLED));
+	// ==> use uPNP to forward ports (MoNKi)   leuk_he
+	SetDlgItemText(IDC_ENABLE_PNP, GetResString(IDS_CN_UPNPNAT)); // enable upnpnat
 
+	switch(thePrefs.GetUpnpDetect()) {
+	    case   UPNP_DO_AUTODETECT :
+		case   UPNP_NOT_DETECTED :
+		case   UPNP_NO_DETECTEDTION:
+			      CheckDlgButton(IDC_ENABLE_PNP,thePrefs.IsUPnPEnabled());
+                    break; // let the user decide, disabled by def. 
+		case UPNP_DETECTED:
+			        CheckDlgButton(IDC_ENABLE_PNP,1);/* enable since a upnp device is available */
+			        break;
+		case UPNP_NOT_NEEDED :
+ 			        CheckDlgButton(IDC_ENABLE_PNP,0);// faulty upnp config: direct internt ip
+			        GetDlgItem(IDC_ENABLE_PNP)->EnableWindow(0); // disable window
+				break;
+	}
+	// <== use uPNP to forward ports (MoNKi)   leuk_he
 	return TRUE;
 }
 
@@ -782,6 +803,10 @@ BOOL FirstTimeWizard()
 	thePrefs.SetSafeServerConnectEnabled(page6.m_iSafeServerConnect!=0);
 	thePrefs.SetNetworkKademlia(page6.m_iKademlia!=0);
 	thePrefs.SetNetworkED2K(page6.m_iED2K!=0);
+    // ==> use uPNP to forward ports (MoNKi)   leuk_he
+	theApp.m_UPnP_IGDControlPoint->SetUPnPNat(page3.uPnPNAT!=0); // leuk_he add upnp to startup wizard
+	thePrefs.SetUpnpDetect(UPNP_NO_DETECTEDTION);// leuk_he add upnp to startup wizard no more detecion next time.
+	// <== use uPNP to forward ports (MoNKi)   leuk_he
 
 	// set ports
 	thePrefs.port=(uint16)_tstoi(page3.m_sTCP);

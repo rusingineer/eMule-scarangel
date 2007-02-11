@@ -288,6 +288,10 @@ CemuleApp::CemuleApp(LPCTSTR lpszAppName)
 	m_strModVersionPure.AppendFormat(_T(" "));
 	m_uModLength = (uint8)(m_strModVersionPure.GetLength()); // one space included!
 	// <== ModID [itsonlyme/SiRoB] - Stulle
+	//==> use uPNP to forward ports (MoNKi)   leuk_he
+	m_UPnP_IGDControlPoint = CUPnP_IGDControlPoint::GetInstance();
+	//<== use uPNP to forward ports (MoNKi)   leuk_he
+
 }
 
 
@@ -635,6 +639,14 @@ BOOL CemuleApp::InitInstance()
 		}
 	}
 
+	// ==> use uPNP to forward ports (MoNKi)   leuk_he
+	if((m_UPnP_IGDControlPoint != NULL && thePrefs.IsUPnPEnabled()) || thePrefs.GetUpnpDetect()>0){  //leuk_he add startupwizard auto detect
+      m_UPnP_IGDControlPoint->Init(thePrefs.GetUPnPLimitToFirstConnection());
+		if(thePrefs.GetUPnPClearOnClose() /*|| thePrefs.GetUseRandomPorts()*/)
+			m_UPnP_IGDControlPoint->DeleteAllPortMappingsOnClose();
+	}
+	// <== use uPNP to forward ports (MoNKi)   leuk_he
+	
 	// Highres scheduling gives better resolution for Sleep(...) calls, and timeGetTime() calls
 	m_wTimerRes = 0;
 	if(thePrefs.GetHighresTimer()) //Xman always enabled
@@ -1920,6 +1932,7 @@ bool CemuleApp::IsEd2kServerLinkInClipboard()
 /*
 //Xman
 //upnp_start
+/* Use other implemnetation: 
 BOOL CemuleApp::AddUPnPNatPort(MyUPnP::UPNPNAT_MAPPING *mapping, bool tryRandom){
 	CString args;
 
@@ -1938,13 +1951,15 @@ BOOL CemuleApp::AddUPnPNatPort(MyUPnP::UPNPNAT_MAPPING *mapping, bool tryRandom)
 		return false;
 	}
 }
-
+*/
+/*
 BOOL CemuleApp::RemoveUPnPNatPort(MyUPnP::UPNPNAT_MAPPING *mapping){
 	if(m_UPnPNat.RemoveNATPortMapping(*mapping) == MyUPnP::UNAT_OK )
 		return true;
 	else
 		return false;
 }
+*/
 //upnp_end
 */
 // <== Removed UPnP support [Xtreme] - Stulle

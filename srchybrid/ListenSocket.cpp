@@ -3032,6 +3032,12 @@ bool CListenSocket::Rebind()
 	*/
 	if (thePrefs.GetPort() == m_port)
 		return false;
+   // ==> use uPNP to forward ports (MoNKi)   leuk_he
+	if(theApp.m_UPnP_IGDControlPoint->IsUpnpAcceptsPorts()){
+		theApp.m_UPnP_IGDControlPoint->DeletePortMapping(m_port, CUPnP_IGDControlPoint::UNAT_TCP, _T("TCP Port"));
+	}
+	// <== use uPNP to forward ports (MoNKi)   leuk_he
+
 
 	Close();
 	KillAllSockets();
@@ -3061,6 +3067,7 @@ bool CListenSocket::StartListening(){
 	}
 	//Xman Info about binding
 
+	/* obsolete ==> use uPNP to forward ports (MoNKi)   leuk_he 
 	if(ret){
 		if(thePrefs.GetUPnPNat()){
 			MyUPnP::UPNPNAT_MAPPING mapping;
@@ -3081,7 +3088,8 @@ bool CListenSocket::StartListening(){
 
 	return ret;
 }
-*/
+	end obsolete <== use uPNP to forward ports (MoNKi)   leuk_he */
+
 bool CListenSocket::StartListening()
 {
 	bListening = true;
@@ -3091,8 +3099,39 @@ bool CListenSocket::StartListening()
 	// socket is already used by some other application (e.g. a 2nd emule), we though bind
 	// to that socket leading to the situation that 2 applications are listening at the same
 	// port!
-	if (!Create(thePrefs.GetPort(), SOCK_STREAM, FD_ACCEPT, thePrefs.GetBindAddrA(), FALSE/*bReuseAddr*/))
-		return false;
+	//
+	// ==> use uPNP to forward ports (MoNKi)   leuk_he 
+	// MORPH START - Modified by SiRoB, [MoNKi: -Random Ports-]
+	//
+	//if (!Create(thePrefs.GetPort(), SOCK_STREAM, FD_ACCEPT, thePrefs.GetBindAddrA(), FALSE/*bReuseAddr*/))
+	//	return false;
+
+	bool ret = false;
+	WORD rndPort;
+	int retries=0;
+	int maxRetries = 50;
+
+	static bool bFirstRun = true;
+	if(!bFirstRun)
+		thePrefs.GetPort(/*false, false, true*/ ); //Resets port data
+	 /* TODO RANDOM PORT:
+	if(thePrefs.GetUseRandomPorts()){
+		do{
+			retries++;
+			rndPort = thePrefs.GetPort(!bFirstRun);
+
+			if((retries < (maxRetries / 2)) && ((thePrefs.GetICFSupport() && !theApp.m_pFirewallOpener->DoesRuleExist(rndPort, NAT_PROTOCOL_TCP))
+				|| !thePrefs.GetICFSupport()))
+			{
+				ret = Create(thePrefs.GetPort(), SOCK_STREAM, FD_ACCEPT, thePrefs.GetBindAddrA(), FALSE/*bReuseAddr * / )!=0;
+			}
+			else if (retries >= (maxRetries / 2))
+				ret = Create(thePrefs.GetPort(), SOCK_STREAM, FD_ACCEPT, thePrefs.GetBindAddrA(), FALSE/*bReuseAddr* /)!=0;
+		}while(!ret && retries<maxRetries);
+	}
+	else
+	*/
+		ret = Create(thePrefs.GetPort(/*false, true*/), SOCK_STREAM, FD_ACCEPT, thePrefs.GetBindAddrA(), FALSE/*bReuseAddr*/)!=0;
 
 	// Rejecting a connection with conditional WSAAccept and not using SO_CONDITIONAL_ACCEPT
 	// -------------------------------------------------------------------------------------
@@ -3133,11 +3172,35 @@ bool CListenSocket::StartListening()
 	//	VERIFY( SetSockOpt(SO_CONDITIONAL_ACCEPT, &iOptVal, sizeof iOptVal) );
 	//}
 
+	/*
 	if (!Listen())
 		return false;
+	*/
 
-	m_port = thePrefs.GetPort();
-	return true;
+	bFirstRun = false;
+
+	if(ret && Listen()){
+		m_port=thePrefs.GetPort();		
+	  /* TODO START CHECK WITH MAX: ICF?
+		if(thePrefs.GetICFSupport()){
+			if (theApp.m_pFirewallOpener->OpenPort(thePrefs.GetPort(), NAT_PROTOCOL_TCP, EMULE_DEFAULTRULENAME_TCP, thePrefs.IsOpenPortsOnStartupEnabled() || thePrefs.GetUseRandomPorts()))
+				theApp.QueueLogLine(false, GetResString(IDS_FO_TEMPTCP_S), thePrefs.GetPort());
+			else
+				theApp.QueueLogLine(false, GetResString(IDS_FO_TEMPTCP_F), thePrefs.GetPort());
+		}
+	  //  END TODO */
+        // Do the mapping:
+		if(theApp.m_UPnP_IGDControlPoint->IsUpnpAcceptsPorts()){
+			theApp.m_UPnP_IGDControlPoint->AddPortMapping(m_port, CUPnP_IGDControlPoint::UNAT_TCP, _T("TCP Port"));
+		}
+	
+	
+		return true;
+	}
+	else
+		return false;
+	//  MORPH END   - Modified by SiRoB, [MoNKi: -Random Ports-]
+	//<== use uPNP to forward ports (MoNKi)   leuk_he 
 }
 // <== Removed UPnP support [Xtreme] - Stulle
 

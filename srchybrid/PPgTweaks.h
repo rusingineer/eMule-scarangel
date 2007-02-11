@@ -157,6 +157,11 @@ protected:
 	*/
 	// <== Removed UPnP support [Xtreme] - Stulle
 
+	// ==> use uPNP to forward ports (MoNKi)   leuk_he verbose log
+	bool m_bLogUPnP;
+	HTREEITEM m_htiLogUPnP;
+	// <== use uPNP to forward ports (MoNKi)   leuk_he 
+
 	HTREEITEM m_htiExtractMetaData;
 	HTREEITEM m_htiExtractMetaDataNever;
 	HTREEITEM m_htiExtractMetaDataID3Lib;

@@ -47,6 +47,13 @@ protected:
 	bool		m_bICFSupportClearAtEnd;
 	bool		m_bICFSupportServerUDP;
 	// <== Improved ICS-Firewall support [MoNKi] - Max
+	// ==> use uPNP to forward ports (MoNKi)   leuk_he
+	int  m_iUPnPNat;
+	bool m_bUpnPNATwebservice;
+	bool m_bRandomports;
+	int m_iRandomFirstPort;
+	int m_iRandomLastPort;
+	// <== use uPNP to forward ports (MoNKi)   leuk_he
 //	int m_iReAskFileSrc; // Timer for ReAsk File Sources - Stulle
 	bool m_bACC; // ACC [Max/WiZaRd] - Max
 /*
@@ -189,6 +196,14 @@ protected:
 	HTREEITEM	m_htiICFSupportClearAtEnd;
 	HTREEITEM	m_htiICFSupportServerUDP;
 	// <== Improved ICS-Firewall support [MoNKi] - Max
+	// ==> use uPNP to forward ports (MoNKi)   leuk_he 
+	HTREEITEM	m_htiUPnPNat;
+	HTREEITEM	m_htiUpnPNATwebservice;
+	HTREEITEM	m_htiRandomports;
+	HTREEITEM	m_htiRandomFirstPort;
+	HTREEITEM	m_htiRandomLastPort;
+	// <== use uPNP to forward ports (MoNKi)   leuk_he
+
 //	HTREEITEM m_htiReAskFileSrc; // Timer for ReAsk File Sources - Stulle
 	HTREEITEM m_htiACC; // ACC [Max/WiZaRd] - Max
 /*

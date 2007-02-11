@@ -675,6 +675,12 @@ bool CClientUDPSocket::Create()
 	//upnp_end
 	*/
 	// <== Removed UPnP support [Xtreme] - Stulle
+	// ==> use uPNP to forward ports (MoNKi)   leuk_he
+	if (thePrefs.GetUDPPort()){
+		if(theApp.m_UPnP_IGDControlPoint->IsUpnpAcceptsPorts())
+			theApp.m_UPnP_IGDControlPoint->AddPortMapping(m_port, CUPnP_IGDControlPoint::UNAT_UDP, _T("UDP Port"));
+		}
+	//<== use uPNP to forward ports (MoNKi)   leuk_he
 
 	if (ret)
 		m_port = thePrefs.GetUDPPort();
@@ -691,23 +697,17 @@ bool CClientUDPSocket::Rebind()
 		return false;
 	Close();
 
-	//Xman
-	//upnp_start
-	if(thePrefs.GetUPnPNat())
-	{
-		if(theApp.m_UPnPNat.RemoveSpecifiedPort(m_port, MyUPnP::UNAT_UDP))
-			AddLogLine(false, _T("UPNP: removed UDP-port %u"), m_port);
-		else
-			AddLogLine(false, _T("UPNP: failed to remove UDP-port %u"), m_port);
-		thePrefs.m_iUPnPUDPExternal=0;
+	// ==> use uPNP to forward ports (MoNKi)   leuk_he
+	if(theApp.m_UPnP_IGDControlPoint->IsUpnpAcceptsPorts()){
+		theApp.m_UPnP_IGDControlPoint->DeletePortMapping(m_port, CUPnP_IGDControlPoint::UNAT_UDP, _T("UDP Port"));
 	}
 	//upnp_end
+	// <== Removed UPnP support [Xtreme] - Stulle
 	*/
+	// <== use uPNP to forward ports (MoNKi)   leuk_he
 	if (thePrefs.GetUDPPort() == m_port)
 		return false;
 	Close();
-	// <== Removed UPnP support [Xtreme] - Stulle
-
 	return Create();
 }
 

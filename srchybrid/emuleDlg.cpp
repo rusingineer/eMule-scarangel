@@ -821,6 +821,9 @@ void CALLBACK CemuleDlg::StartupTimer(HWND /*hwnd*/, UINT /*uiMsg*/, UINT /*idEv
 						theApp.emuledlg->ShowNotifier(strError, TBN_IMPORTANTEVENT);
 				}
 				
+				// s uan1 // random ports
+				theApp.emuledlg->serverwnd->UpdateMyInfo();
+				// <== use uPNP to forward ports (MoNKi)   leuk_he  random ports
 				if (!bError) // show the success msg, only if we had no serious error
 				{
 					//<<< eWombat [WINSOCK2] for Pawcio: BC
@@ -2308,6 +2311,9 @@ void CemuleDlg::OnClose()
 	CPartFileConvert::CloseGUI();
 	CPartFileConvert::RemoveAllJobs();
 
+	// ==> use uPNP to forward ports (MoNKi)   leuk_he
+	AfxBeginThread(theApp.m_UPnP_IGDControlPoint->RemoveInstance,NULL); // seperate thread since devic may have hickups...
+	// <== use uPNP to forward ports (MoNKi)   leuk_he
     theApp.uploadBandwidthThrottler->EndThread();
     //Xman
 	//theApp.lastCommonRouteFinder->EndThread();
