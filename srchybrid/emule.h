@@ -300,7 +300,6 @@ public:
 	BOOL  RemoveUPnPNatPort(MyUPnP::UPNPNAT_MAPPING *mapping);
 	*/
 	//upnp_end
-	*/
 	// <== Removed UPnP support [Xtreme] - Stulle
 
 	//Xman queued disc-access for read/flushing-threads

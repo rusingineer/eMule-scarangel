@@ -1961,7 +1961,6 @@ BOOL CemuleApp::RemoveUPnPNatPort(MyUPnP::UPNPNAT_MAPPING *mapping){
 }
 */
 //upnp_end
-*/
 // <== Removed UPnP support [Xtreme] - Stulle
 
 // Elandal:ThreadSafeLogging -->
