@@ -264,10 +264,6 @@ public:
 	static	CStringA m_strBindAddrA;
 	static	LPCWSTR	m_pszBindAddrW;
 	static	CStringW m_strBindAddrW;
-	// ==> use uPNP to forward ports (MoNKi)   leuk_he upnp bindaddr
-	static DWORD	 m_dwUpnpBindAddr;
-	static bool      m_bBindAddrIsDhcp;
-	// e una upnp bindaddr
 	static	uint16	port;
 	static	uint16	udpport;
 	static	uint16	nServerUDPPort;
@@ -716,15 +712,6 @@ public:
 
     static bool     m_bHighresTimer;
 
-	//==> use uPNP to forward ports (MoNKi)   leuk_he
-	static bool		m_bUPnPNat;
-	static bool		m_bUPnPNatWeb;
-	static bool		m_bUPnPVerboseLog;
-	static uint16	m_iUPnPPort;
-	static bool		m_bUPnPLimitToFirstConnection;
-	static bool		m_bUPnPClearOnClose;
-	static int    m_iDetectuPnP; //leuk_he autodetect in startup wizard
-	//<== use uPNP to forward ports (MoNKi)   leuk_he
 	static	CStringList shareddir_list;
 	static	CStringList addresses_list;
 
@@ -1011,11 +998,33 @@ public:
 	// <== Improved ICS-Firewall support [MoNKi]-Max
 
 	// ==> Invisible Mode [TPT/MoNKi] - Stulle
-    static bool		m_bInvisibleMode;		
+	static bool		m_bInvisibleMode;		
 	static UINT		m_iInvisibleModeHotKeyModifier;
 	static char		m_cInvisibleModeHotKey;
 	static bool		m_bInvisibleModeStart;
 	// <== Invisible Mode [TPT/MoNKi] - Stulle
+
+	//==> UPnP support [MoNKi] - leuk_he
+	static bool		m_bUPnPNat;
+	static bool		m_bUPnPNatWeb;
+	static bool		m_bUPnPVerboseLog;
+	static uint16	m_iUPnPPort;
+	static bool		m_bUPnPLimitToFirstConnection;
+	static bool		m_bUPnPClearOnClose;
+	static int    m_iDetectuPnP; //leuk_he autodetect in startup wizard
+	static DWORD	 m_dwUpnpBindAddr;
+	static bool      m_bBindAddrIsDhcp;
+	//<== UPnP support [MoNKi] - leuk_he
+
+	// ==> Random Ports [MoNKi] - Stulle
+	static bool		m_bRndPorts;
+	static uint16	m_iMinRndPort;
+	static uint16	m_iMaxRndPort;
+	static bool		m_bRndPortsResetOnRestart;
+	static uint16	m_iRndPortsSafeResetOnRestartTime;
+	static uint16	m_iCurrentTCPRndPort;
+	static uint16	m_iCurrentUDPRndPort;
+	// <== Random Ports [MoNKi] - Stulle
 
 	enum Table
 	{
@@ -1085,7 +1094,7 @@ public:
 
 	static	LPCSTR	GetBindAddrA()						{return m_pszBindAddrA; }
 	static	LPCWSTR	GetBindAddrW()						{return m_pszBindAddrW; }
-	// ==> Removed UPnP support [Xtreme] - Stulle
+	// ==> UPnP support [MoNKi] - leuk_he
 	/*
 	//Xman
 	//upnp_start
@@ -1093,16 +1102,7 @@ public:
 	static	uint16	GetUDPPort();//						{return udpport;}
 	//upnp_end
 	*/
-	static	uint16	GetPort()							{return port;}
-	static	uint16	GetUDPPort()						{return udpport;}
-	// <== Removed UPnP support [Xtreme] - Stulle
-// ==> use uPNP to forward ports (MoNKi)   leuk_he  upnp bindaddr
-	static DWORD	 GetUpnpBindAddr()				{return m_dwUpnpBindAddr; }
-    static void      SetUpnpBindAddr(DWORD bindip); 
-	static void      SetUpnpBindDhcp(bool BindAddrIsDhcp) {m_bBindAddrIsDhcp=BindAddrIsDhcp;};
-	static bool      GetUpnpBindDhcp() {return m_bBindAddrIsDhcp;};
-	// <== use uPNP to forward ports (MoNKi)   leuk_he
-
+	// <== UPnP support [MoNKi] - leuk_he
 	static	uint16	GetServerUDPPort()					{return nServerUDPPort;}
 	static	uchar*	GetUserHash()						{return userhash;}
 	// ZZ:UploadSpeedSense -->
@@ -1132,7 +1132,7 @@ public:
 	//--------------------------------------------------------------------------------------
 	//Xman Xtreme Mod:
 
-	// ==> Removed UPnP support [Xtreme] - Stulle
+	// ==> UPnP support [MoNKi] - leuk_he
 	/*
 	//upnp_start
 	static	bool m_bUPnPNat; // UPnP On/Off
@@ -1147,7 +1147,7 @@ public:
 	static	void SetUPnPNatTryRandom(bool on) { m_bUPnPTryRandom = on; }
 	//upnp_end
 	*/
-	// <== Removed UPnP support [Xtreme] - Stulle
+	// <== UPnP support [MoNKi] - leuk_he
 
 
 	//Xman Xtreme Upload
@@ -2266,6 +2266,47 @@ public:
 	static	bool GetInvisibleModeStart() { return m_bInvisibleModeStart; }
 	// <== Invisible Mode [TPT/MoNKi] - Stulle
 
+	// ==> UPnP support [MoNKi] - leuk_he  upnp bindaddr
+	static DWORD	 GetUpnpBindAddr()				{return m_dwUpnpBindAddr; }
+	static void      SetUpnpBindAddr(DWORD bindip); 
+	static void      SetUpnpBindDhcp(bool BindAddrIsDhcp) {m_bBindAddrIsDhcp=BindAddrIsDhcp;};
+	static bool      GetUpnpBindDhcp() {return m_bBindAddrIsDhcp;};
+	static	bool	IsUPnPEnabled()						{ return m_bUPnPNat; }
+	// Note: setting upnp to disbale/enable is in theApp.m_UPnP_IGDControlPoint->SetUPnPNat to actually stop and start upnp. 
+	static	bool	GetUPnPNatWeb()						{ return m_bUPnPNatWeb; }
+	static	void	SetUPnPNatWeb(bool on)				{ m_bUPnPNatWeb = on; }
+	static	void	SetUPnPVerboseLog(bool on)			{ m_bUPnPVerboseLog = on; }
+	static	bool	GetUPnPVerboseLog()					{ return m_bUPnPVerboseLog; }
+	static	void	SetUPnPPort(uint16 port)			{ m_iUPnPPort = port; }
+	static	uint16	GetUPnPPort()						{ return m_iUPnPPort; }
+	static	void	SetUPnPClearOnClose(bool on)		{ m_bUPnPClearOnClose = on; }
+	static	bool	GetUPnPClearOnClose()				{ return m_bUPnPClearOnClose; }
+	static	bool	SetUPnPLimitToFirstConnection(bool on)	{ m_bUPnPLimitToFirstConnection = on; }
+	static	bool	GetUPnPLimitToFirstConnection()		{ return m_bUPnPLimitToFirstConnection; }
+	static	int  	GetUpnpDetect()					{ return m_iDetectuPnP; } //leuk_he autodetect upnp in wizard
+	static	void    SetUpnpDetect(int on)				{ m_iDetectuPnP=on; } //leuk_he autodetect upnp in wizard
+	#define UPNP_DO_AUTODETECT 2
+	#define UPNP_DETECTED 0
+	#define UPNP_NOT_DETECTED -1 
+	#define UPNP_NO_DETECTEDTION -2 
+	#define UPNP_NOT_NEEDED -10
+	// <== UPnP support [MoNKi] - leuk_he
+
+	// ==> Random Ports [MoNKi] - Stulle
+	static	uint16	GetPort(bool newPort = false, bool original = false, bool reset = false);
+	static	uint16	GetUDPPort(bool newPort = false, bool original = false, bool reset = false);
+	static	bool	GetUseRandomPorts()				{ return m_bRndPorts; }
+	static	void	SetUseRandomPorts(bool on)		{ m_bRndPorts = on; }
+	static	uint16	GetMinRandomPort()				{ return m_iMinRndPort; }
+	static	void	SetMinRandomPort(uint16 min)	{ m_iMinRndPort = min; }
+	static	uint16	GetMaxRandomPort()				{ return m_iMaxRndPort; }
+	static	void	SetMaxRandomPort(uint16 max)	{ m_iMaxRndPort = max; }
+	static	bool	GetRandomPortsResetOnRestart()	{ return m_bRndPortsResetOnRestart; }
+	static	void	SetRandomPortsResetOnRestart(bool on)	{ m_bRndPortsResetOnRestart = on; }
+	static	uint16	GetRandomPortsSafeResetOnRestartTime(){ return m_iRndPortsSafeResetOnRestartTime; }
+	static	void	SetRandomPortsSafeResetOnRestartTime(uint16 time){ m_iRndPortsSafeResetOnRestartTime = time; }
+	// <== Random Ports [MoNKi] - Stulle
+
 protected:
 	static	CString appdir;
 	static	CString configdir;
@@ -2283,29 +2324,6 @@ protected:
 	static void LoadPreferences();
 	static void SavePreferences();
 	static CString GetHomepageBaseURLForLevel(int nLevel);
-public:
-	//==> use uPNP to forward ports (MoNKi)   leuk_he
-	static	bool	IsUPnPEnabled()						{ return m_bUPnPNat; }
-	// Note: setting upnp to disbale/enable is in theApp.m_UPnP_IGDControlPoint->SetUPnPNat to actually stop and start upnp. 
-	static	bool	GetUPnPNatWeb()						{ return m_bUPnPNatWeb; }
-	static	void	SetUPnPNatWeb(bool on)				{ m_bUPnPNatWeb = on; }
-	static	void	SetUPnPVerboseLog(bool on)			{ m_bUPnPVerboseLog = on; }
-	static	bool	GetUPnPVerboseLog()					{ return m_bUPnPVerboseLog; }
-	static	void	SetUPnPPort(uint16 port)			{ m_iUPnPPort = port; }
-	static	uint16	GetUPnPPort()						{ return m_iUPnPPort; }
-	static	void	SetUPnPClearOnClose(bool on)		{ m_bUPnPClearOnClose = on; }
-	static	bool	GetUPnPClearOnClose()				{ return m_bUPnPClearOnClose; }
-	static	bool	SetUPnPLimitToFirstConnection(bool on)	{ m_bUPnPLimitToFirstConnection = on; }
-	static	bool	GetUPnPLimitToFirstConnection()		{ return m_bUPnPLimitToFirstConnection; }
-	static	int  	GetUpnpDetect()					{ return m_iDetectuPnP; } //leuk_he autodetect upnp in wizard
-	static	void    SetUpnpDetect(int on)				{ m_iDetectuPnP=on; } //leuk_he autodetect upnp in wizard
-    #define UPNP_DO_AUTODETECT 2
-    #define UPNP_DETECTED 0
-    #define UPNP_NOT_DETECTED -1 
-	#define UPNP_NO_DETECTEDTION -2 
-    #define UPNP_NOT_NEEDED -10
-	
-	//<== use uPNP to forward ports (MoNKi)   leuk_he
 };
 
 extern CPreferences thePrefs;

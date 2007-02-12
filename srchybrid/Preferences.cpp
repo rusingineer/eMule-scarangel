@@ -52,7 +52,7 @@ CPreferences thePrefs;
 //-------------------------------------------------------------------------------
 //Xman Xtreme Mod:
 
-// ==> Removed UPnP support [Xtreme] - Stulle
+// ==> UPnP support [MoNKi] - leuk_he
 /*
 //upnp_start
 bool	CPreferences::m_bUPnPNat; // UPnP On/Off
@@ -61,7 +61,7 @@ uint16	CPreferences::m_iUPnPTCPExternal = 0; // TCP External Port
 uint16	CPreferences::m_iUPnPUDPExternal = 0; // UDP External Port
 //upnp_end
 */
-// <== Removed UPnP support [Xtreme] - Stulle
+// <== UPnP support [MoNKi] - leuk_he
 
 //Xman Xtreme Upload
 float	CPreferences::m_slotspeed;
@@ -192,10 +192,6 @@ LPCSTR	CPreferences::m_pszBindAddrA;
 CStringA CPreferences::m_strBindAddrA;
 LPCWSTR	CPreferences::m_pszBindAddrW;
 CStringW CPreferences::m_strBindAddrW;
-//==> use uPNP to forward ports (MoNKi)   leuk_he
-DWORD	 CPreferences::m_dwUpnpBindAddr;
-bool     CPreferences::m_bBindAddrIsDhcp;
-// <== use uPNP to forward ports (MoNKi)   leuk_he
 
 uint16	CPreferences::port;
 uint16	CPreferences::udpport;
@@ -609,15 +605,6 @@ bool	CPreferences::m_bCryptLayerRequired;
 
 // ==> Global Source Limit [Max/Stulle] - Stulle
 bool    CPreferences::m_bGlobalHlDefault; 
-//==> use uPNP to forward ports (MoNKi)   leuk_he
-	bool	CPreferences::m_bUPnPNat;
-	bool	CPreferences::m_bUPnPNatWeb;
-	bool	CPreferences::m_bUPnPVerboseLog;
-	uint16	CPreferences::m_iUPnPPort;
-	bool	CPreferences::m_bUPnPLimitToFirstConnection;
-	bool	CPreferences::m_bUPnPClearOnClose;
-	int     CPreferences::m_iDetectuPnP; //leuk_he autodetect in startup wizard
-//<== use uPNP to forward ports (MoNKi)   leuk_he
 UINT	CPreferences::m_uGlobalHL; 
 bool	CPreferences::m_bGlobalHL;
 bool	CPreferences::m_bGlobalHlAll;
@@ -872,6 +859,28 @@ UINT	CPreferences::m_iInvisibleModeHotKeyModifier;
 char	CPreferences::m_cInvisibleModeHotKey;
 bool	CPreferences::m_bInvisibleModeStart;
 // <== Invisible Mode [TPT/MoNKi] - Stulle
+
+//==> UPnP support [MoNKi] - leuk_he
+bool	CPreferences::m_bUPnPNat;
+bool	CPreferences::m_bUPnPNatWeb;
+bool	CPreferences::m_bUPnPVerboseLog;
+uint16	CPreferences::m_iUPnPPort;
+bool	CPreferences::m_bUPnPLimitToFirstConnection;
+bool	CPreferences::m_bUPnPClearOnClose;
+int     CPreferences::m_iDetectuPnP; //leuk_he autodetect in startup wizard
+DWORD	 CPreferences::m_dwUpnpBindAddr;
+bool     CPreferences::m_bBindAddrIsDhcp;
+//<== UPnP support [MoNKi] - leuk_he
+
+// ==> Random Ports [MoNKi] - Stulle
+bool	CPreferences::m_bRndPorts;
+uint16	CPreferences::m_iMinRndPort;
+uint16	CPreferences::m_iMaxRndPort;
+bool	CPreferences::m_bRndPortsResetOnRestart;
+uint16	CPreferences::m_iRndPortsSafeResetOnRestartTime;
+uint16	CPreferences::m_iCurrentTCPRndPort;
+uint16	CPreferences::m_iCurrentUDPRndPort;
+// <== Random Ports [MoNKi] - Stulle
 
 CPreferences::CPreferences()
 {
@@ -2095,10 +2104,6 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(L"StatsInterval",statsInterval);
 	ini.WriteInt(L"DeadServerRetry",m_uDeadServerRetries);
 	ini.WriteInt(L"ServerKeepAliveTimeout",m_dwServerKeepAliveTimeout);
-	// ==> use uPNP to forward ports (MoNKi)   leuk_he leuk_he upnp bindaddr
-	ini.WriteString(L"UpnpBindAddr", ipstr(htonl(GetUpnpBindAddr())));
-	ini.WriteBool(L"UpnpBindAddrDhcp",GetUpnpBindDhcp());
-    // <== use uPNP to forward ports (MoNKi)   leuk_he  leuk_he upnp bindaddr
 	ini.WriteInt(L"SplitterbarPosition",splitterbarPosition+2);
 	ini.WriteInt(L"SplitterbarPositionServer",splitterbarPositionSvr);
 	ini.WriteInt(L"SplitterbarPositionStat",splitterbarPositionStat+1);
@@ -2382,14 +2387,14 @@ void CPreferences::SavePreferences()
 	//Xman Xtreme Mod:
 	//--------------------------------------------------------------------------
 
-	// ==> Removed UPnP support [Xtreme] - Stulle
+	// ==> UPnP support [MoNKi] - leuk_he
 	/*
 	//upnp_start
 	ini.WriteBool(L"UPnPNAT", m_bUPnPNat, L"UPnP");
 	ini.WriteBool(L"UPnPNAT_TryRandom", m_bUPnPTryRandom, L"UPnP");
 	//upnp_end
 	*/
-	// <== Removed UPnP support [Xtreme] - Stulle
+	// <== UPnP support [MoNKi] - leuk_he
 
 
 	//Xman Xtreme Upload
@@ -2665,16 +2670,6 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("EnforceRatio"), m_bEnforceRatio);
 	ini.WriteInt(_T("RatioValue"), m_uRatioValue);
 	// <== Enforce Ratio [Stulle] - Stulle
-    // ==> use uPNP to forward ports (MoNKi)   leuk_he
-	ini.WriteBool(_T("UPnPNAT"), m_bUPnPNat, _T("eMule"));
-	ini.WriteBool(_T("UPnPNAT_Web"), m_bUPnPNatWeb, _T("eMule"));
-	ini.WriteBool(_T("UPnPVerbose"), m_bUPnPVerboseLog, _T("eMule"));
-	ini.WriteInt(_T("UPnPPort"), m_iUPnPPort, _T("eMule"));
-	ini.WriteBool(_T("UPnPClearOnClose"), m_bUPnPClearOnClose, _T("eMule"));
-	ini.WriteBool(_T("UPnPLimitToFirstConnection"), m_bUPnPLimitToFirstConnection, _T("eMule"));
-	ini.WriteInt(_T("UPnPDetect"), m_iDetectuPnP, _T("eMule")); // 
-	//<== use uPNP to forward ports (MoNKi)   leuk_he
- 
 
 	// ==> Improved ICS-Firewall support [MoNKi]-Max
 	ini.WriteBool(_T("ICFSupportFirstTime"), m_bICFSupportFirstTime);
@@ -2688,6 +2683,29 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("InvisibleModeHKKeyModifier"), m_iInvisibleModeHotKeyModifier);
 	ini.WriteBool(_T("InvisibleModeStart"), m_bInvisibleModeStart);
 	// <== Invisible Mode [TPT/MoNKi] - Stulle
+
+	// ==> UPnP support [MoNKi] - leuk_he
+	ini.WriteBool(_T("UPnPNAT"), m_bUPnPNat);
+	ini.WriteBool(_T("UPnPNAT_Web"), m_bUPnPNatWeb);
+	ini.WriteBool(_T("UPnPVerbose"), m_bUPnPVerboseLog);
+	ini.WriteInt(_T("UPnPPort"), m_iUPnPPort);
+	ini.WriteBool(_T("UPnPClearOnClose"), m_bUPnPClearOnClose);
+	ini.WriteBool(_T("UPnPLimitToFirstConnection"), m_bUPnPLimitToFirstConnection);
+	ini.WriteInt(_T("UPnPDetect"), m_iDetectuPnP);
+	ini.WriteString(L"UpnpBindAddr", ipstr(htonl(GetUpnpBindAddr())));
+	ini.WriteBool(L"UpnpBindAddrDhcp",GetUpnpBindDhcp());
+	//<== UPnP support [MoNKi] - leuk_he
+
+	// ==> Random Ports [MoNKi] - Stulle
+	ini.WriteBool(_T("RandomPorts"), m_bRndPorts);
+	ini.WriteInt(_T("MinRandomPort"), m_iMinRndPort);
+	ini.WriteInt(_T("MaxRandomPort"), m_iMaxRndPort);
+	ini.WriteBool(_T("RandomPortsReset"), m_bRndPortsResetOnRestart);
+	ini.WriteInt(_T("RandomPortsSafeResetOnRestartTime"), m_iRndPortsSafeResetOnRestartTime);
+	ini.WriteInt(_T("OldTCPRandomPort"), m_iCurrentTCPRndPort);
+	ini.WriteInt(_T("OldUDPRandomPort"), m_iCurrentUDPRndPort);
+	ini.WriteUInt64(_T("RandomPortsLastRun"), CTime::GetCurrentTime().GetTime());
+	// <== Random Ports [MoNKi] - Stulle
 
 	SaveStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
@@ -2961,14 +2979,6 @@ void CPreferences::LoadPreferences()
 		else if (dwCurSP2 == 1)
 			maxhalfconnections = 9;
 	}
-  // ==> use uPNP to forward ports (MoNKi)   leuk_he
-	// abuse m_strBindAddrW will be overwriten in a sec...
-	m_strBindAddrW = ini.GetString(L"upnpBindAddr");
-	m_strBindAddrW.Trim();
-
-  	SetUpnpBindAddr(ntohl(inet_addr((LPCSTR)(CStringA)m_strBindAddrW  )));
-  // <== use uPNP to forward ports (MoNKi)   leuk_he
-
 	m_strBindAddrW = ini.GetString(L"BindAddr");
 	m_strBindAddrW.Trim();
 	m_pszBindAddrW = m_strBindAddrW.IsEmpty() ? NULL : (LPCWSTR)m_strBindAddrW;
@@ -3397,31 +3407,20 @@ void CPreferences::LoadPreferences()
 	m_nPeerCachePort = (uint16)ini.GetInt(L"PCPort", 0);
 	m_bPeerCacheShow = ini.GetBool(L"Show", false);
 
-    //==> use uPNP to forward ports (MoNKi)   leuk_he
-	m_bUPnPNat = ini.GetBool(_T("UPnPNAT"), false, _T("eMule"));
-	m_bUPnPNatWeb = ini.GetBool(_T("UPnPNAT_Web"), false, _T("eMule"));
-	m_bUPnPVerboseLog = ini.GetBool(_T("UPnPVerbose"), true, _T("eMule"));
-	m_iUPnPPort = (uint16)ini.GetInt(_T("UPnPPort"), 0, _T("eMule"));
-	m_bUPnPLimitToFirstConnection = ini.GetBool(_T("UPnPLimitToFirstConnection"), false, _T("eMule"));
-	m_bUPnPClearOnClose = ini.GetBool(_T("UPnPClearOnClose"), true, _T("eMule"));
-    SetUpnpDetect(ini.GetInt(_T("uPnPDetect"), UPNP_DO_AUTODETECT, _T("eMule"))); //leuk_he autodetect upnp in wizard
-	//<== use uPNP to forward ports (MoNKi)   leuk_he
-
-
 	LoadCats();
 	//SetLanguage(); //Xman done above
 
 	//--------------------------------------------------------------------------
 	//Xman Xtreme Mod:
 
-	// ==> Removed UPnP support [Xtreme] - Stulle
+	// ==> UPnP support [MoNKi] - leuk_he
 	/*
 	//upnp_start
 	m_bUPnPNat = ini.GetBool(L"UPnPNAT", false, L"UPnP");
 	m_bUPnPTryRandom = ini.GetBool(L"UPnPNAT_TryRandom", false, L"UPnP");
 	//upnp_end
 	*/
-	// <== Removed UPnP support [Xtreme] - Stulle
+	// <== UPnP support [MoNKi] - leuk_he
 
 	//Xman Xtreme Upload
 	m_slotspeed=ini.GetFloat(L"uploadslotspeed",3.2f, L"Xtreme");
@@ -3795,6 +3794,46 @@ void CPreferences::LoadPreferences()
     SetInvisibleMode(m_bInvisibleMode  ,m_iInvisibleModeHotKeyModifier ,m_cInvisibleModeHotKey );
 	m_bInvisibleModeStart = ini.GetBool(_T("InvisibleModeStart"), false);
 	// <== Invisible Mode [TPT/MoNKi] - Stulle
+
+	//==> UPnP support [MoNKi] - leuk_he
+	CString strTemp = ini.GetString(L"UpnpBindAddr");
+	strTemp.Trim();
+  	SetUpnpBindAddr(ntohl(inet_addr((LPCSTR)(CStringA)strTemp  )));
+	m_bUPnPNat = ini.GetBool(_T("UPnPNAT"), false);
+	m_bUPnPNatWeb = ini.GetBool(_T("UPnPNAT_Web"), false);
+	m_bUPnPVerboseLog = ini.GetBool(_T("UPnPVerbose"), true);
+	m_iUPnPPort = (uint16)ini.GetInt(_T("UPnPPort"), 0);
+	m_bUPnPLimitToFirstConnection = ini.GetBool(_T("UPnPLimitToFirstConnection"), false);
+	m_bUPnPClearOnClose = ini.GetBool(_T("UPnPClearOnClose"), true);
+	SetUpnpDetect(ini.GetInt(_T("uPnPDetect"), UPNP_DO_AUTODETECT)); //leuk_he autodetect upnp in wizard
+	//<== UPnP support [MoNKi] - leuk_he
+
+	// ==> Random Ports [MoNKi] - Stulle
+	m_bRndPorts = ini.GetBool(_T("RandomPorts"), false);
+	m_iMinRndPort = (uint16)ini.GetInt(_T("MinRandomPort"), 3000);
+	m_iMaxRndPort = (uint16)ini.GetInt(_T("MaxRandomPort"), 0xFFFF);
+	m_bRndPortsResetOnRestart = ini.GetBool(_T("RandomPortsReset"), false);
+	m_iRndPortsSafeResetOnRestartTime = (uint16)ini.GetInt(_T("RandomPortsSafeResetOnRestartTime"), 0);
+	uint16 iOldRndTCPPort = (uint16)ini.GetInt(_T("OldTCPRandomPort"), 0);
+	uint16 iOldRndUDPPort = (uint16)ini.GetInt(_T("OldUDPRandomPort"), 0);
+	__time64_t iRndPortsLastRun = ini.GetUInt64(_T("RandomPortsLastRun"), 0);
+	
+	m_iCurrentTCPRndPort = 0;
+	m_iCurrentUDPRndPort = 0;
+
+	if(m_bRndPorts && !m_bRndPortsResetOnRestart &&
+		m_iRndPortsSafeResetOnRestartTime != 0)
+	{
+		CTime tNow = CTime::GetCurrentTime();
+		CTime tOld = CTime(iRndPortsLastRun);
+		CTimeSpan ts = tNow - tOld;
+		if(ts.GetTimeSpan() <= m_iRndPortsSafeResetOnRestartTime){
+			m_iCurrentTCPRndPort = iOldRndTCPPort;
+			m_iCurrentUDPRndPort = iOldRndUDPPort;
+		}
+	}
+	m_bRndPortsResetOnRestart = false;
+	// <== Random Ports [MoNKi] - Stulle
 
 	LoadStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
@@ -4496,7 +4535,7 @@ uint16 CPreferences::GetRandomUDPPort()
 	return nPort;
 }
 
-// ==> Removed UPnP support [Xtreme] - Stulle
+// ==> UPnP support [MoNKi] - leuk_he
 /*
 //Xman
 //upnp_start
@@ -4506,9 +4545,7 @@ uint16 CPreferences::GetPort(){
 
 	return port;
 }
- <== use uPNP to forward ports (MoNKi)   leuk_he*/
 
-/* not used: ==> use uPNP to forward ports (MoNKi)   leuk_he
 uint16 CPreferences::GetUDPPort(){
 	if (udpport == 0)
 		return 0;
@@ -4520,7 +4557,7 @@ uint16 CPreferences::GetUDPPort(){
 }
 //upnp_end
 */
-// <== Removed UPnP support [Xtreme] - Stulle
+// <== UPnP support [MoNKi] - leuk_he
 
 // ==> ScarAngel Version Check - Stulle
 void CPreferences::UpdateLastSVC()
@@ -5100,27 +5137,26 @@ void CPreferences::LoadStylePrefs(CIni &ini)
 		int iSub = style_c_default;
 		for (int i=0;i<33;i++)
 		{
-			if(nStyleFlags[i] != 0)
+			if((nStyleFlags[i] & STYLE_USED) == STYLE_USED)
+			{
 				SetStyleFlags(iMaster, iSub, nStyleFlags[i]);
-			if(nStyleFontColor[i] != 0)
 				SetStyleFontColor(iMaster, iSub, nStyleFontColor[i]);
-			if(nStyleOnOff[i] != 0)
 				SetStyleOnOff(iMaster, iSub, nStyleOnOff[i]);
-			if(nStyleFontColor[i] != 0)
 				SetStyleBackColor(iMaster, iSub, nStyleBackColor[i]);
+			}
 
 			iSub++;
-			if(i == 8)
+			if(i == 9)
 			{
 				iSub = style_d_default;
 				iMaster = download_styles;
 			}
-			else if(i == 16)
+			else if(i == 17)
 			{
 				iSub = style_s_default;
 				iMaster = share_styles;
 			}
-			else if(i == 26)
+			else if(i == 27)
 			{
 				iSub = style_b_clientlist;
 				iMaster = background_styles;
@@ -5129,16 +5165,6 @@ void CPreferences::LoadStylePrefs(CIni &ini)
 	}
 }
 // <== Design Settings [eWombat/Stulle] - Stulle
-
-// ==> use uPNP to forward ports (MoNKi)   leuk_he
-void CPreferences::SetUpnpBindAddr(DWORD bindip) {
-		if ( GetBindAddrA() != NULL || bindip== ntohl(inet_addr(GetBindAddrA())))
-			m_dwUpnpBindAddr =0;
-		else 
-	    	m_dwUpnpBindAddr= bindip;
-	}
-// <== use uPNP to forward ports (MoNKi)   leuk_he
-
 
 // ==> Invisible Mode [TPT/MoNKi] - Stulle
 void CPreferences::SetInvisibleMode(bool on, UINT keymodifier, char key) 
@@ -5153,3 +5179,55 @@ void CPreferences::SetInvisibleMode(bool on, UINT keymodifier, char key)
 	}
 }
 // <== Invisible Mode [TPT/MoNKi] - Stulle
+
+// ==> UPnP support [MoNKi] - leuk_he
+void CPreferences::SetUpnpBindAddr(DWORD bindip) {
+		if ( GetBindAddrA() != NULL || bindip== ntohl(inet_addr(GetBindAddrA())))
+			m_dwUpnpBindAddr =0;
+		else 
+	    	m_dwUpnpBindAddr= bindip;
+	}
+// <== UPnP support [MoNKi] - leuk_he
+
+// ==> Random Ports [MoNKi] - Stulle
+uint16	CPreferences::GetPort(bool newPort, bool original, bool reset){
+	if(original)
+		return port;
+
+	if(reset){
+		m_iCurrentTCPRndPort = 0;
+	}
+
+	if (m_iCurrentTCPRndPort == 0 || newPort){
+		if(GetUseRandomPorts())
+			do{
+				m_iCurrentTCPRndPort = GetMinRandomPort() + (uint16)((((float)rand() / RAND_MAX) * (GetMaxRandomPort() - GetMinRandomPort())));
+			}while(m_iCurrentTCPRndPort==GetUDPPort() && ((GetMaxRandomPort() - GetMinRandomPort())>0));
+		else
+			m_iCurrentTCPRndPort = port;
+	}
+	return m_iCurrentTCPRndPort;
+}
+
+uint16	CPreferences::GetUDPPort(bool newPort, bool original, bool reset){
+	if(original)
+		return udpport;
+
+	if(reset){
+		m_iCurrentUDPRndPort = 0;
+	}
+
+	if(udpport == 0)
+		return 0;
+	
+	if (m_iCurrentUDPRndPort == 0 || newPort){
+		if(GetUseRandomPorts())
+			do{
+				m_iCurrentUDPRndPort = GetMinRandomPort() + (uint16)(((float)rand() / RAND_MAX) * (GetMaxRandomPort() - GetMinRandomPort()));
+			}while(m_iCurrentUDPRndPort==GetPort() && ((GetMaxRandomPort() - GetMinRandomPort())>0));
+		else
+			m_iCurrentUDPRndPort = udpport;
+	}
+	return m_iCurrentUDPRndPort;
+}
+// <== Random Ports [MoNKi] - Stulle

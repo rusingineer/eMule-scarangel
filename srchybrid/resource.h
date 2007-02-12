@@ -3043,8 +3043,7 @@
 #define IDS_INVMODE_GROUP               61036
 #define IDS_INVMODE_START               61037
 // <== Invisible Mode [TPT/MoNKi] - Stulle
-
-// ==> use uPNP to forward ports (MoNKi)   leuk_he
+// ==> UPnP support [MoNKi] - leuk_he
 #define IDC_ENABLE_PNP                  21021
 #define IDS_UPNP_INIT                   21002
 #define IDS_UPNP_FAILEDINIT             21003
@@ -3052,8 +3051,7 @@
 #define IDS_UPNP_FAILEDREGISTER         21005
 #define IDS_UPNP_NEWDEVICE              21007
 #define IDS_UPNP_VERBOSELOG				21008
-// <== use uPNP to forward ports (MoNKi)   leuk_he
-
+// <== UPnP support [MoNKi] - leuk_he
 
 // Next default values for new objects
 // 

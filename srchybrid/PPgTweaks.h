@@ -145,7 +145,7 @@ protected:
 	// ZZ:DownloadManager <--
 	*/
 
-	// ==> Removed UPnP support [Xtreme] - Stulle
+	// ==> UPnP support [MoNKi] - leuk_he
 	/*
 	//Xman
 	//upnp_start
@@ -155,12 +155,12 @@ protected:
 	bool m_iUPnPTryRandom;
 	//upnp_end
 	*/
-	// <== Removed UPnP support [Xtreme] - Stulle
+	// <== UPnP support [MoNKi] - leuk_he
 
-	// ==> use uPNP to forward ports (MoNKi)   leuk_he verbose log
+	// ==> UPnP support [MoNKi] - leuk_he verbose log
 	bool m_bLogUPnP;
 	HTREEITEM m_htiLogUPnP;
-	// <== use uPNP to forward ports (MoNKi)   leuk_he 
+	// <== UPnP support [MoNKi] - leuk_he 
 
 	HTREEITEM m_htiExtractMetaData;
 	HTREEITEM m_htiExtractMetaDataNever;

@@ -348,15 +348,15 @@ CListenMMSocket::~CListenMMSocket(void)
 	while(!m_socket_list.IsEmpty())
 		delete m_socket_list.RemoveHead();
 
-	//==> use uPNP to forward ports (MoNKi)   leuk_he
+	//==> UPnP support [MoNKi] - leuk_he
 	theApp.m_UPnP_IGDControlPoint->DeletePortMapping(thePrefs.GetMMPort(),
 		CUPnP_IGDControlPoint::UNAT_TCP,
 		_T("MobileMule"));
-	//<== use uPNP to forward ports (MoNKi)   leuk_he
+	//<== UPnP support [MoNKi] - leuk_he
 }
 
 bool  CListenMMSocket::Create(){
-	//==> use uPNP to forward ports (MoNKi)   leuk_he
+	//==> UPnP support [MoNKi] - leuk_he
 	/*
 	return CAsyncSocket::Create(thePrefs.GetMMPort(),SOCK_STREAM,FD_ACCEPT) && Listen();;
 	*/
@@ -370,7 +370,7 @@ bool  CListenMMSocket::Create(){
 	}
 	else
 		return false;
-	//<== use uPNP to forward ports (MoNKi)   leuk_he
+	//<== UPnP support [MoNKi] - leuk_he
 }
 
 

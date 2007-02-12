@@ -821,9 +821,9 @@ void CALLBACK CemuleDlg::StartupTimer(HWND /*hwnd*/, UINT /*uiMsg*/, UINT /*idEv
 						theApp.emuledlg->ShowNotifier(strError, TBN_IMPORTANTEVENT);
 				}
 				
-				// s uan1 // random ports
+				// ==> Random Ports [MoNKi] - Stulle
 				theApp.emuledlg->serverwnd->UpdateMyInfo();
-				// <== use uPNP to forward ports (MoNKi)   leuk_he  random ports
+				// <== Random Ports [MoNKi] - Stulle
 				if (!bError) // show the success msg, only if we had no serious error
 				{
 					//<<< eWombat [WINSOCK2] for Pawcio: BC
@@ -2311,9 +2311,9 @@ void CemuleDlg::OnClose()
 	CPartFileConvert::CloseGUI();
 	CPartFileConvert::RemoveAllJobs();
 
-	// ==> use uPNP to forward ports (MoNKi)   leuk_he
+	// ==> UPnP support [MoNKi] - leuk_he
 	AfxBeginThread(theApp.m_UPnP_IGDControlPoint->RemoveInstance,NULL); // seperate thread since devic may have hickups...
-	// <== use uPNP to forward ports (MoNKi)   leuk_he
+	// <== UPnP support [MoNKi] - leuk_he
     theApp.uploadBandwidthThrottler->EndThread();
     //Xman
 	//theApp.lastCommonRouteFinder->EndThread();
@@ -2361,14 +2361,14 @@ void CemuleDlg::OnClose()
 	delete theApp.pBandWidthControl;theApp.pBandWidthControl = NULL;
 	// Maella end
 
-	// ==> Removed UPnP support [Xtreme] - Stulle
+	// ==> UPnP support [MoNKi] - leuk_he
 	/*
 	//Xman
 	//upnp_start
 	theApp.m_UPnPNat.clearNATPortMapping();
 	//upnp_end
 	*/
-	// <== Removed UPnP support [Xtreme] - Stulle
+	// <== UPnP support [MoNKi] - leuk_he
 
 	theApp.UpdateSplash(_T("unload IP to Country ..."));  //Xman new slpash-screen arrangement
 

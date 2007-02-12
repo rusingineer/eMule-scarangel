@@ -23,20 +23,18 @@
 #include "ReadWriteLock.h"	// SLUGFILLER: SafeHash
 #include "Version.h"		// netfinity: Mod version
 
-//==> use uPNP to forward ports (MoNKi)   leuk_he
+//==> UPnP support [MoNKi] - leuk_he
 #include "UPnP_IGDControlPoint.h" //[MoNKi: -UPnPNAT Support-]
-//<== use uPNP to forward ports (MoNKi)   leuk_he
+//<== UPnP support [MoNKi] - leuk_he
 
-
-
-// ==> Removed UPnP support [Xtreme] - Stulle
+// ==> UPnP support [MoNKi] - leuk_he
 /*
 //Xman
 //upnp_start
-//#include "UPnP.h"
+#include "UPnP.h"
 //upnp_end
 */
-// <== Removed UPnP support [Xtreme] - Stulle
+// <== UPnP support [MoNKi] - leuk_he
 
 #include ".\MiniMule\SystemInfo.h" // CPU/MEM usage [$ick$/Stulle] - Max 
 #include ".\MiniMule\TBHMM.h" // TBH: minimule - Max
@@ -286,21 +284,21 @@ public:
 	bool m_bneedpublicIP; 
 	uint32 last_ip_change;
 //Xman end
-    // ==> use uPNP to forward ports (MoNKi)   leuk_he
+	// ==> UPnP support [MoNKi] - leuk_he
 	CUPnP_IGDControlPoint *m_UPnP_IGDControlPoint;
-	//<== use uPNP to forward ports (MoNKi)   leuk_he
+	// <== UPnP support [MoNKi] - leuk_he
 
-	// ==> Removed UPnP support [Xtreme] - Stulle
+	// ==> UPnP support [MoNKi] - leuk_he
 	/*
 	//Xman
 	//upnp_start
-	/* use other upnp nat
+public:
 	MyUPnP m_UPnPNat;
 	BOOL  AddUPnPNatPort(MyUPnP::UPNPNAT_MAPPING *mapping, bool tryRandom = false);
 	BOOL  RemoveUPnPNatPort(MyUPnP::UPNPNAT_MAPPING *mapping);
-	*/
 	//upnp_end
-	// <== Removed UPnP support [Xtreme] - Stulle
+	*/
+	// <== UPnP support [MoNKi] - leuk_he
 
 	//Xman queued disc-access for read/flushing-threads
 	void AddNewDiscAccessThread(CWinThread* threadtoadd);

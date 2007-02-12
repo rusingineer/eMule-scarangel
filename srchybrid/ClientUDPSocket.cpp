@@ -44,6 +44,7 @@
 #include "SafeFile.h" // yonatan http (for udp ohcbs)
 #include "WebCache/WebCachedBlockList.h" // Superlexx - managed OHCB list
 // <== WebCache [WC team/MorphXT] - Stulle/Max
+#include "FirewallOpener.h" // Random Ports [MoNKi] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -643,6 +644,9 @@ bool CClientUDPSocket::SendPacket(Packet* packet, uint32 dwIP, uint16 nPort, boo
 	// <-- ZZ:UploadBandWithThrottler (UDP)
 }
 
+// ==> UPnP support [MoNKi] - leuk_he
+// ==> Random Ports [MoNKi] - Stulle
+/*
 bool CClientUDPSocket::Create()
 {
 	bool ret = true;
@@ -654,8 +658,6 @@ bool CClientUDPSocket::Create()
 			m_port = thePrefs.GetUDPPort();
 	}
 
-	// ==> Removed UPnP support [Xtreme] - Stulle
-	/*
 	//Xman
 	//upnp_start
 	if (ret && thePrefs.GetUDPPort()){
@@ -673,41 +675,97 @@ bool CClientUDPSocket::Create()
 		}
 	}
 	//upnp_end
-	*/
-	// <== Removed UPnP support [Xtreme] - Stulle
-	// ==> use uPNP to forward ports (MoNKi)   leuk_he
-	if (thePrefs.GetUDPPort()){
-		if(theApp.m_UPnP_IGDControlPoint->IsUpnpAcceptsPorts())
-			theApp.m_UPnP_IGDControlPoint->AddPortMapping(m_port, CUPnP_IGDControlPoint::UNAT_UDP, _T("UDP Port"));
-		}
-	//<== use uPNP to forward ports (MoNKi)   leuk_he
 
 	if (ret)
 		m_port = thePrefs.GetUDPPort();
 
 	return ret;
 }
+*/
+bool CClientUDPSocket::Create()
+{
+	bool ret = true;
+	WORD rndPort;
+	int retries=0;
+	int maxRetries = 50;
+
+	static bool bNotFirstRun = false;
+
+	if (thePrefs.GetUDPPort(false, false, bNotFirstRun)){
+		if(thePrefs.GetUseRandomPorts()){
+			do{
+				retries++;
+				rndPort = thePrefs.GetUDPPort(bNotFirstRun);
+				if((retries < (maxRetries / 2)) && ((thePrefs.GetICFSupport() && !theApp.m_pFirewallOpener->DoesRuleExist(rndPort, NAT_PROTOCOL_UDP))
+					|| !thePrefs.GetICFSupport()))
+				{
+					ret = CAsyncSocket::Create(rndPort,SOCK_DGRAM,FD_READ|FD_WRITE, thePrefs.GetBindAddrW())!=FALSE;
+				}
+				else if (retries >= (maxRetries / 2))
+					ret = CAsyncSocket::Create(rndPort,SOCK_DGRAM,FD_READ|FD_WRITE, thePrefs.GetBindAddrW())!=FALSE;
+			}while(!ret && retries<maxRetries);
+		}
+		else
+			ret = CAsyncSocket::Create(thePrefs.GetUDPPort(false, true),SOCK_DGRAM,FD_READ|FD_WRITE, thePrefs.GetBindAddrW())!=FALSE;
+
+		if(ret){
+			m_port=thePrefs.GetUDPPort();
+		
+			if(thePrefs.GetICFSupport()){
+				if (theApp.m_pFirewallOpener->OpenPort(thePrefs.GetUDPPort(), NAT_PROTOCOL_UDP, EMULE_DEFAULTRULENAME_UDP, thePrefs.IsOpenPortsOnStartupEnabled() || thePrefs.GetUseRandomPorts()))
+					theApp.QueueLogLine(false, GetResString(IDS_FO_TEMPUDP_S), thePrefs.GetUDPPort());
+				else
+					theApp.QueueLogLine(false, GetResString(IDS_FO_TEMPUDP_F), thePrefs.GetUDPPort());
+			}
+
+			if(theApp.m_UPnP_IGDControlPoint->IsUpnpAcceptsPorts())
+				theApp.m_UPnP_IGDControlPoint->AddPortMapping(m_port, CUPnP_IGDControlPoint::UNAT_UDP, _T("UDP Port"));
+		}
+	}
+
+	bNotFirstRun = true;
+	
+	if (ret)
+		m_port=thePrefs.GetUDPPort();
+
+	return ret;
+}
+// <== Random Ports [MoNKi] - Stulle
+// <== UPnP support [MoNKi] - leuk_he
 
 bool CClientUDPSocket::Rebind()
 {
-	// ==> Removed UPnP support [Xtreme] - Stulle
+	// ==> UPnP support [MoNKi] - leuk_he
 	/*
 	//if (thePrefs.GetUDPPort() == m_port)
 	if (thePrefs.udpport == m_port) //Xman upnp
 		return false;
 	Close();
 
-	// ==> use uPNP to forward ports (MoNKi)   leuk_he
+	//Xman
+	//upnp_start
+	if(thePrefs.GetUPnPNat())
+	{
+		if(theApp.m_UPnPNat.RemoveSpecifiedPort(m_port, MyUPnP::UNAT_UDP))
+			AddLogLine(false, _T("UPNP: removed UDP-port %u"), m_port);
+		else
+			AddLogLine(false, _T("UPNP: failed to remove UDP-port %u"), m_port);
+		thePrefs.m_iUPnPUDPExternal=0;
+	}
+	//upnp_end
+	*/
+	// ==> Random Ports [MoNKi] - Stulle
+	if (!thePrefs.GetUseRandomPorts() && thePrefs.GetUDPPort(false, true)==m_port)
+		return false;
+	// <== Random Ports [MoNKi] - Stulle
+
 	if(theApp.m_UPnP_IGDControlPoint->IsUpnpAcceptsPorts()){
 		theApp.m_UPnP_IGDControlPoint->DeletePortMapping(m_port, CUPnP_IGDControlPoint::UNAT_UDP, _T("UDP Port"));
 	}
-	//upnp_end
-	// <== Removed UPnP support [Xtreme] - Stulle
-	*/
-	// <== use uPNP to forward ports (MoNKi)   leuk_he
-	if (thePrefs.GetUDPPort() == m_port)
-		return false;
+	// <== UPnP support [MoNKi] - leuk_he
+
 	Close();
+
 	return Create();
 }
 

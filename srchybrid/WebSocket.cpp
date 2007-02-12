@@ -424,7 +424,7 @@ UINT AFX_CDECL WebSocketListeningFunc(LPVOID pThis)
 			{
 				if (!WSAEventSelect(hSocket, hEvent, FD_ACCEPT))
 				{
-					// ==> use uPNP to forward ports (MoNKi)   leuk_he
+					// ==> UPnP support [MoNKi] - leuk_he
 					CUPnP_IGDControlPoint::UPNPNAT_MAPPING mapping;
 					BOOL UPnP = false;
 
@@ -433,7 +433,7 @@ UINT AFX_CDECL WebSocketListeningFunc(LPVOID pThis)
 					mapping.description = "Web Interface";
 					if(theApp.m_UPnP_IGDControlPoint->IsUpnpAcceptsPorts() && thePrefs.GetUPnPNatWeb())
 						UPnP = theApp.m_UPnP_IGDControlPoint->AddPortMapping(&mapping);
-					// <== use uPNP to forward ports (MoNKi)   leuk_he
+					// <== UPnP support [MoNKi] - leuk_he
 
 					HANDLE pWait[] = { hEvent, s_hTerminate };
 					while (WAIT_OBJECT_0 == WaitForMultipleObjects(2, pWait, FALSE, INFINITE))
@@ -491,10 +491,10 @@ UINT AFX_CDECL WebSocketListeningFunc(LPVOID pThis)
 						}
 					}
 
-					// ==> use uPNP to forward ports (MoNKi)   leuk_he
+					// ==> UPnP support [MoNKi] - leuk_he
 					if(UPnP)
 						theApp.m_UPnP_IGDControlPoint->DeletePortMapping(mapping);
-					// <== use uPNP to forward ports (MoNKi)   leuk_he
+					// <== UPnP support [MoNKi] - leuk_he
 				}
 				VERIFY( CloseHandle(hEvent) );
 				hEvent = NULL;

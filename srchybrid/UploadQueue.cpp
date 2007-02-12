@@ -1058,7 +1058,16 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 
 	// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	if (client->Credits() != NULL)
-		client->Credits()->SetSecWaitStartTime();
+	{
+		uint32 waitingtime= (uint32)(client->GetWaitTime() );
+		if (client->GetWaitTime() > 0)
+		{
+			client->Credits()->SetSecWaitStartTime(100);
+			AddDebugLogLine(false,_T("client had waitingtime: %s 100% recovered"),CastSecondsToHM(waitingtime/1000));
+		}
+		else
+			client->Credits()->SetSecWaitStartTime();
+	}
 	// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 
 	if (waitinglist.IsEmpty() && ForceNewClient(true))
@@ -1175,10 +1184,10 @@ bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReaso
 				{
 					//client->Credits()->SaveUploadQueueWaitTime();
 				}
-				else if(client->GetSessionUp() < SESSIONMAXTRANS)
+				else if(client->GetSessionUp() < PARTSIZE)
 				{
 					uint32 waitingtime= (uint32)(client->GetWaitTime() );
-					int keeppct = (int)(100 * client->GetSessionUp()/SESSIONMAXTRANS);
+					int keeppct = (int)(100 * client->GetSessionUp()/PARTSIZE);
 					if(keeppct < 10)
 						keeppct = 10; // min 10% penalty
 					keeppct = 100 - keeppct;

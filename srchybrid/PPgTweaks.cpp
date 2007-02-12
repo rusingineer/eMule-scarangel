@@ -178,10 +178,10 @@ CPPgTweaks::CPPgTweaks()
 	m_htiLogA4AF = NULL;
 	m_htiLogDrop = NULL; //Xman Xtreme Downloadmanager
 	m_htiLogpartmismtach = NULL; //Xman Log part/size-mismatch
-	// ==> use uPNP to forward ports (MoNKi)   leuk_he verbose log
+	// ==> UPnP support [MoNKi] - leuk_he verbose log
 	m_bLogUPnP = false;
 	m_htiLogUPnP = NULL;
-	// <== use uPNP to forward ports (MoNKi)   leuk_he verbose log
+	// <== UPnP support [MoNKi] - leuk_he verbose log
 
 	m_htiExtractMetaData = NULL;
 	m_htiAutoArch = NULL;
@@ -295,9 +295,9 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 			m_htiLogWebCacheEvents = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOG_WCEVENTS), m_htiVerboseGroup, m_bLogWebCacheEvents); //JP log webcache events
 			m_htiLogICHEvents = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOG_IACH), m_htiVerboseGroup, m_bLogICHEvents); //JP log ICH events
 			// <== WebCache [WC team/MorphXT] - Stulle/Max
-			// ==> use uPNP to forward ports (MoNKi)   leuk_he  verbose log
+			// ==> UPnP support [MoNKi] - leuk_he  verbose log
 			m_htiLogUPnP = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_UPNP_VERBOSELOG), m_htiVerboseGroup, m_bLogUPnP); //JP log webcache events
-			// <== use uPNP to forward ports (MoNKi)   leuk_he verbose log
+			// <== UPnP support [MoNKi] - leuk_he verbose log
 
 		}
 
@@ -331,7 +331,7 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
         if (m_htiVerboseGroup)
 		    m_ctrlTreeOptions.Expand(m_htiVerboseGroup, TVE_EXPAND);
 
-		// ==> Removed UPnP support [Xtreme] - Stulle
+		// ==> UPnP support [MoNKi] - leuk_he
 		/*
 		//Xman
 		//upnp_start
@@ -339,7 +339,7 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 		m_htiUPnPTryRandom = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CN_UPNPTRYRANDOM), TVI_ROOT, m_iUPnPTryRandom);
 		//upnp_end
 		*/
-		// <== Removed UPnP support [Xtreme] - Stulle
+		// <== UPnP support [MoNKi] - leuk_he
 
 		m_ctrlTreeOptions.Expand(m_htiCommit, TVE_EXPAND);
 		m_ctrlTreeOptions.Expand(m_htiCheckDiskspace, TVE_EXPAND);
@@ -433,10 +433,10 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	if (m_htiLogICHEvents)			DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiLogICHEvents, m_bLogICHEvents);//JP log ICH events
 	if (m_htiLogICHEvents)			m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogICHEvents, m_bVerbose);//JP log ICH events
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
-	// ==> use uPNP to forward ports (MoNKi)   leuk_he 
+	// ==> UPnP support [MoNKi] - leuk_he 
 	if (m_htiLogUPnP)				DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiLogUPnP, m_bLogUPnP);
 	if (m_htiLogUPnP)				m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogUPnP, m_bVerbose);
-	// <== use uPNP to forward ports (MoNKi)   leuk_he
+	// <== UPnP support [MoNKi] - leuk_he
 
 	/////////////////////////////////////////////////////////////////////////////
 	// USS group
@@ -460,7 +460,7 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	// ZZ:UploadSpeedSense <--
 	*/
 
-	// ==> Removed UPnP support [Xtreme] - Stulle
+	// ==> UPnP support [MoNKi] - leuk_he
 	/*
 	//Xman
 	//upnp_start
@@ -469,7 +469,7 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiUPnPTryRandom, m_iUPnPNat);
 	//upnp_end
 	*/
-	// <== Removed UPnP support [Xtreme] - Stulle
+	// <== UPnP support [MoNKi] - leuk_he
 }
 
 BOOL CPPgTweaks::OnInitDialog()
@@ -496,9 +496,9 @@ BOOL CPPgTweaks::OnInitDialog()
 		m_bLogWebCacheEvents = thePrefs.m_bLogWebCacheEvents;//JP log webcache events
 		m_bLogICHEvents = thePrefs.m_bLogICHEvents;//JP log ICH events
 		// <== WebCache [WC team/MorphXT] - Stulle/Max
-		// ==> use uPNP to forward ports (MoNKi)   leuk_he 
+		// ==> UPnP support [MoNKi] - leuk_he 
 		m_bLogUPnP = thePrefs.GetUPnPVerboseLog();
-		// <== use uPNP to forward ports (MoNKi)   leuk_he 
+		// <== UPnP support [MoNKi] - leuk_he 
 
 
 		m_iLogLevel = 5 - thePrefs.m_byLogLevel;
@@ -540,7 +540,7 @@ BOOL CPPgTweaks::OnInitDialog()
 	*/
     //m_bA4AFSaveCpu = thePrefs.GetA4AFSaveCpu(); // ZZ:DownloadManager
 
-	// ==> Removed UPnP support [Xtreme] - Stulle
+	// ==> UPnP support [MoNKi] - leuk_he
 	/*
 	//Xman
 	//upnp_start
@@ -548,7 +548,7 @@ BOOL CPPgTweaks::OnInitDialog()
 	m_iUPnPTryRandom = thePrefs.GetUPnPNatTryRandom();
 	//upnp_end
 	*/
-	// <== Removed UPnP support [Xtreme] - Stulle
+	// <== UPnP support [MoNKi] - leuk_he
 
 	m_ctrlTreeOptions.SetImageListColorFlags(theApp.m_iDfltImageListColorFlags);
     CPropertyPage::OnInitDialog();
@@ -636,9 +636,9 @@ BOOL CPPgTweaks::OnApply()
 		thePrefs.m_bLogWebCacheEvents = m_bLogWebCacheEvents;//JP log webcache events
 		thePrefs.m_bLogICHEvents = m_bLogICHEvents;//JP log ICH events
 		// <== WebCache [WC team/MorphXT] - Stulle/Max
-		// ==> use uPNP to forward ports (MoNKi)   leuk_he 
+		// ==> UPnP support [MoNKi] - leuk_he 
 		thePrefs.SetUPnPVerboseLog(m_bLogUPnP);
-		// <== use uPNP to forward ports (MoNKi)   leuk_he 
+		// <== UPnP support [MoNKi] - leuk_he 
 
 		thePrefs.m_byLogLevel = 5 - m_iLogLevel;
 
@@ -692,7 +692,7 @@ BOOL CPPgTweaks::OnApply()
 	thePrefs.m_bAutomaticArcPreviewStart = !m_bAutoArchDisable;
     //thePrefs.m_bA4AFSaveCpu = m_bA4AFSaveCpu; // ZZ:DownloadManager
 
-	// ==> Removed UPnP support [Xtreme] - Stulle
+	// ==> UPnP support [MoNKi] - leuk_he
 	/*
 	//Xman
 	//upnp_start
@@ -702,7 +702,7 @@ BOOL CPPgTweaks::OnApply()
 	thePrefs.SetUPnPNatTryRandom( m_iUPnPTryRandom );
 	//upnp_end
 	*/
-	// <== Removed UPnP support [Xtreme] - Stulle
+	// <== UPnP support [MoNKi] - leuk_he
 
 	if (thePrefs.GetEnableVerboseOptions())
 	{
@@ -804,7 +804,7 @@ void CPPgTweaks::Localize(void)
 		// ZZ:UploadSpeedSense <--
 		*/
 		
-		// ==> Removed UPnP support [Xtreme] - Stulle
+		// ==> UPnP support [MoNKi] - leuk_he
 		/*
 		//Xman
 		//upnp_start
@@ -812,7 +812,7 @@ void CPPgTweaks::Localize(void)
 		if (m_htiUPnPTryRandom) m_ctrlTreeOptions.SetItemText(m_htiUPnPTryRandom, GetResString(IDS_CN_UPNPTRYRANDOM));
 		//upnp_end
 		*/
-		// <== Removed UPnP support [Xtreme] - Stulle
+		// <== UPnP support [MoNKi] - leuk_he
 
 		//if (m_htiA4AFSaveCpu) m_ctrlTreeOptions.SetItemText(m_htiA4AFSaveCpu, GetResString(IDS_A4AF_SAVE_CPU)); // ZZ:DownloadManager
 		if (m_htiFullAlloc) m_ctrlTreeOptions.SetItemText(m_htiFullAlloc, GetResString(IDS_FULLALLOC));
@@ -903,7 +903,7 @@ void CPPgTweaks::OnDestroy()
 	m_htiAutoArch = NULL;
 	//m_htiExtractMetaDataMediaDet = NULL;
     
-	// ==> Removed UPnP support [Xtreme] - Stulle
+	// ==> UPnP support [MoNKi] - leuk_he
 	/*
 	//Xman
 	//upnp_start
@@ -913,7 +913,7 @@ void CPPgTweaks::OnDestroy()
 	m_iUPnPTryRandom = 0;
 	//upnp_end
 	*/
-	// <== Removed UPnP support [Xtreme] - Stulle
+	// <== UPnP support [MoNKi] - leuk_he
 
     CPropertyPage::OnDestroy();
 }
@@ -945,7 +945,7 @@ LRESULT CPPgTweaks::OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam)
 				// <== WebCache [WC team/MorphXT] - Stulle/Max
 			}
 		}
-		// ==> Removed UPnP support [Xtreme] - Stulle
+		// ==> UPnP support [MoNKi] - leuk_he
 		/*
 		//Xman
 		//upnp_start
@@ -959,7 +959,7 @@ LRESULT CPPgTweaks::OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam)
 		}
 		//upnp_end
 		*/
-		// <== Removed UPnP support [Xtreme] - Stulle
+		// <== UPnP support [MoNKi] - leuk_he
 
 		SetModified();
 	}

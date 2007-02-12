@@ -142,22 +142,7 @@ bool CUDPSocket::Create()
 			LogError(LOG_STATUSBAR, _T("Error: Server UDP socket: Failed to create server UDP socket - %s"), GetErrorMessage(GetLastError()));
 			return false;
 		}
-		// ==> use uPNP to forward ports (MoNKi)   leuk_he
-		// Don't add UPnP port mapping if is a random port and we don't want
-		// to clear mappings on close
-		if(theApp.m_UPnP_IGDControlPoint->IsUpnpAcceptsPorts() &&
-			(!(thePrefs.GetServerUDPPort()==0xFFFF && !thePrefs.GetUPnPClearOnClose())))
-		{
-			CString client;
-			UINT port;
-			GetSockName(client, port);
-			
-			theApp.m_UPnP_IGDControlPoint->AddPortMapping((uint16)port,
-				CUPnP_IGDControlPoint::UNAT_UDP,
-				_T("Server UDP Port"));
-		}
-		// <== use uPNP to forward ports (MoNKi)   leuk_he
-		// ==> Removed UPnP support [Xtreme] - Stulle
+		// ==> UPnP support [MoNKi] - leuk_he
 		/*
 		//Xman
 		//upnp_start
@@ -175,7 +160,20 @@ bool CUDPSocket::Create()
 		}
 		//upnp_end
 		*/
-		// <== Removed UPnP support [Xtreme] - Stulle
+		// Don't add UPnP port mapping if is a random port and we don't want
+		// to clear mappings on close
+		if(theApp.m_UPnP_IGDControlPoint->IsUpnpAcceptsPorts() &&
+			(!(thePrefs.GetServerUDPPort()==0xFFFF && !thePrefs.GetUPnPClearOnClose())))
+		{
+			CString client;
+			UINT port;
+			GetSockName(client, port);
+			
+			theApp.m_UPnP_IGDControlPoint->AddPortMapping((uint16)port,
+				CUPnP_IGDControlPoint::UNAT_UDP,
+				_T("Server UDP Port"));
+		}
+		// <== UPnP support [MoNKi] - leuk_he
 
 		return true;
 	}
