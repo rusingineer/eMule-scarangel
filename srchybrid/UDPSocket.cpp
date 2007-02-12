@@ -168,7 +168,16 @@ bool CUDPSocket::Create()
 			CString client;
 			UINT port;
 			GetSockName(client, port);
-			
+
+			// ==> Improved ICS-Firewall support [MoNKi] - Max
+			if(thePrefs.GetICFSupport() && thePrefs.GetICFSupportServerUDP()){
+				if (theApp.m_pFirewallOpener->OpenPort((uint16)port, NAT_PROTOCOL_UDP, EMULE_DEFAULTRULENAME_SERVERUDP, thePrefs.IsOpenPortsOnStartupEnabled() || thePrefs.GetServerUDPPort()==0xFFFF))
+					Log(GetResString(IDS_FO_TEMPUDP_S), port);
+				else
+					Log(GetResString(IDS_FO_TEMPUDP_F), port);
+			}
+			// <== Improved ICS-Firewall support [MoNKi] - Max
+
 			theApp.m_UPnP_IGDControlPoint->AddPortMapping((uint16)port,
 				CUPnP_IGDControlPoint::UNAT_UDP,
 				_T("Server UDP Port"));

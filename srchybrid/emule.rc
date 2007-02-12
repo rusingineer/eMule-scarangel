@@ -3328,6 +3328,8 @@ SCHEDULERADD            ICON                    "res\\SchedulerAdd.ico"
 SCHEDULERREMOVE         ICON                    "res\\SchedulerRemove.ico"
 SCHEDULEREDIT           ICON                    "res\\SchedulerEdit.ico"
 INVMODE                 ICON                    "res\\InvMode.ico"
+UPNP                    ICON                    "res\\UPnP.ico"
+PORTS                   ICON                    "res\\Ports.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -5879,7 +5881,7 @@ BEGIN
     // <== Tabbed Preferences [TPT] - Stulle
     IDS_ERR_HIDDENSOURCE    "Asked Block without telling us what he need" // Anti Anti HideOS & SOTN [SiRoB] - Stulle
     // ==> Improved ICS-Firewall support [MoNKi] - Max
-    IDS_ICFSUPPORT          "Enable Windows Internet Connection Firewall (ICF) support"
+    IDS_ICFSUPPORT          "Enable ICF support"
     IDS_ICFSUPPORTFIRST     "eMule has detected Windows Internet Connection Firewall (ICF) running on your machine,\n\rDo you want eMule to automatically configure it? (Recomended)"
     IDS_ICF                 "Windows Internet Connection Firewall (ICF)"
     IDS_ICF_SERVERUDP       "Add rule for the ""Server UDP"" port"
@@ -5902,7 +5904,17 @@ BEGIN
     IDS_UPNP_NEWDEVICE      "UPnP: New compatible device found: %s"
     IDS_UPNP_VERBOSELOG		"Upnp Events"
     IDS_UPNP_NETSTATUS		"Upnp"
+    IDS_UPNP_GROUP          "Universal Plug and Play (UPnP)"
+    IDS_UPNP_ENABLE         "Enable UPnP"
+    IDS_UPNP_ENABLE_WEB     "Enable UPnP on web interface port"
+    IDS_UPNPBINDADDR        "UPnP host address bind to"
     // <== UPnP support [MoNKi] - leuk_he
+    // ==> Random Ports [MoNKi] - Stulle
+    IDS_RND_PORT_GROUP      "Random Ports"
+    IDS_RND_PORT_FIRST      "First random port"
+    IDS_RND_PORT_LAST       "Last random port"
+    IDS_RND_PORT_RESET      "Random ports safe restart time"
+    // <== Random Ports [MoNKi] - Stulle
 END
 
 

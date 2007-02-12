@@ -652,7 +652,6 @@ BOOL CPPgConnection::OnHelpInfo(HELPINFO* /*pHelpInfo*/)
 
 void CPPgConnection::OnBnClickedOpenports()
 {
-
 	// ==> Improved ICS-Firewall support [MoNKi] - Max
 	thePrefs.SetICFSupport(true);
 	thePrefs.m_bICFSupportStatusChanged = true;

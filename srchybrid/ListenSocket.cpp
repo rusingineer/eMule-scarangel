@@ -55,7 +55,7 @@
 #include "WebCache/WebCachedBlockList.h"
 #include "WebCache/WebCacheOHCBManager.h"
 // <== WebCache [WC team/MorphXT] - Stulle/Max
-#include "FirewallOpener.h" // Random Ports [MoNKi] - Stulle
+#include "FirewallOpener.h" // Improved ICS-Firewall support [MoNKi] - Max
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -3120,12 +3120,14 @@ bool CListenSocket::StartListening()
 			retries++;
 			rndPort = thePrefs.GetPort(!bFirstRun);
 
+			// ==> Improved ICS-Firewall support [MoNKi] - Max
 			if((retries < (maxRetries / 2)) && ((thePrefs.GetICFSupport() && !theApp.m_pFirewallOpener->DoesRuleExist(rndPort, NAT_PROTOCOL_TCP))
 				|| !thePrefs.GetICFSupport()))
 			{
 				ret = Create(thePrefs.GetPort(), SOCK_STREAM, FD_ACCEPT, thePrefs.GetBindAddrA(), FALSE/*bReuseAddr*/)!=0;
 			}
 			else if (retries >= (maxRetries / 2))
+			// <== Improved ICS-Firewall support [MoNKi] - Max
 				ret = Create(thePrefs.GetPort(), SOCK_STREAM, FD_ACCEPT, thePrefs.GetBindAddrA(), FALSE/*bReuseAddr*/)!=0;
 		}while(!ret && retries<maxRetries);
 	}
@@ -3175,13 +3177,15 @@ bool CListenSocket::StartListening()
 
 	if(ret && Listen()){
 		m_port=thePrefs.GetPort();		
-	
+
+		// ==> Improved ICS-Firewall support [MoNKi] - Max
 		if(thePrefs.GetICFSupport()){
 			if (theApp.m_pFirewallOpener->OpenPort(thePrefs.GetPort(), NAT_PROTOCOL_TCP, EMULE_DEFAULTRULENAME_TCP, thePrefs.IsOpenPortsOnStartupEnabled() || thePrefs.GetUseRandomPorts()))
 				theApp.QueueLogLine(false, GetResString(IDS_FO_TEMPTCP_S), thePrefs.GetPort());
 			else
 				theApp.QueueLogLine(false, GetResString(IDS_FO_TEMPTCP_F), thePrefs.GetPort());
 		}
+		// <== Improved ICS-Firewall support [MoNKi] - Max
 
 		if(theApp.m_UPnP_IGDControlPoint->IsUpnpAcceptsPorts()){
 			theApp.m_UPnP_IGDControlPoint->AddPortMapping(m_port, CUPnP_IGDControlPoint::UNAT_TCP, _T("TCP Port"));

@@ -3044,15 +3044,25 @@
 #define IDS_INVMODE_START               61037
 // <== Invisible Mode [TPT/MoNKi] - Stulle
 // ==> UPnP support [MoNKi] - leuk_he
-#define IDC_ENABLE_PNP                  21021
-#define IDS_UPNP_INIT                   21002
-#define IDS_UPNP_FAILEDINIT             21003
-#define IDS_UPNP_PUBLICIP               21004
-#define IDS_UPNP_FAILEDREGISTER         21005
-#define IDS_UPNP_NEWDEVICE              21007
-#define IDS_UPNP_VERBOSELOG				21008
-#define IDS_UPNP_NETSTATUS				21009
+#define IDC_ENABLE_PNP                  61040
+#define IDS_UPNP_INIT                   61041
+#define IDS_UPNP_FAILEDINIT             61042
+#define IDS_UPNP_PUBLICIP               61043
+#define IDS_UPNP_FAILEDREGISTER         61044
+#define IDS_UPNP_NEWDEVICE              61045
+#define IDS_UPNP_VERBOSELOG             61046
+#define IDS_UPNP_NETSTATUS              61047
+#define IDS_UPNP_GROUP                  61048
+#define IDS_UPNP_ENABLE                 61049
+#define IDS_UPNP_ENABLE_WEB             61050
+#define IDS_UPNPBINDADDR                61051
 // <== UPnP support [MoNKi] - leuk_he
+// ==> Random Ports [MoNKi] - Stulle
+#define IDS_RND_PORT_GROUP              61070
+#define IDS_RND_PORT_FIRST              61071
+#define IDS_RND_PORT_LAST               61072
+#define IDS_RND_PORT_RESET              61073
+// <== Random Ports [MoNKi] - Stulle
 
 // Next default values for new objects
 // 

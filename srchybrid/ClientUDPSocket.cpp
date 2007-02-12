@@ -44,7 +44,7 @@
 #include "SafeFile.h" // yonatan http (for udp ohcbs)
 #include "WebCache/WebCachedBlockList.h" // Superlexx - managed OHCB list
 // <== WebCache [WC team/MorphXT] - Stulle/Max
-#include "FirewallOpener.h" // Random Ports [MoNKi] - Stulle
+#include "FirewallOpener.h" // Improved ICS-Firewall support [MoNKi] - Max
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -696,12 +696,14 @@ bool CClientUDPSocket::Create()
 			do{
 				retries++;
 				rndPort = thePrefs.GetUDPPort(bNotFirstRun);
+				// ==> Improved ICS-Firewall support [MoNKi] - Max
 				if((retries < (maxRetries / 2)) && ((thePrefs.GetICFSupport() && !theApp.m_pFirewallOpener->DoesRuleExist(rndPort, NAT_PROTOCOL_UDP))
 					|| !thePrefs.GetICFSupport()))
 				{
 					ret = CAsyncSocket::Create(rndPort,SOCK_DGRAM,FD_READ|FD_WRITE, thePrefs.GetBindAddrW())!=FALSE;
 				}
 				else if (retries >= (maxRetries / 2))
+				// <== Improved ICS-Firewall support [MoNKi] - Max
 					ret = CAsyncSocket::Create(rndPort,SOCK_DGRAM,FD_READ|FD_WRITE, thePrefs.GetBindAddrW())!=FALSE;
 			}while(!ret && retries<maxRetries);
 		}
@@ -710,13 +712,15 @@ bool CClientUDPSocket::Create()
 
 		if(ret){
 			m_port=thePrefs.GetUDPPort();
-		
+
+			// ==> Improved ICS-Firewall support [MoNKi] - Max
 			if(thePrefs.GetICFSupport()){
 				if (theApp.m_pFirewallOpener->OpenPort(thePrefs.GetUDPPort(), NAT_PROTOCOL_UDP, EMULE_DEFAULTRULENAME_UDP, thePrefs.IsOpenPortsOnStartupEnabled() || thePrefs.GetUseRandomPorts()))
 					theApp.QueueLogLine(false, GetResString(IDS_FO_TEMPUDP_S), thePrefs.GetUDPPort());
 				else
 					theApp.QueueLogLine(false, GetResString(IDS_FO_TEMPUDP_F), thePrefs.GetUDPPort());
 			}
+			// <== Improved ICS-Firewall support [MoNKi] - Max
 
 			if(theApp.m_UPnP_IGDControlPoint->IsUpnpAcceptsPorts())
 				theApp.m_UPnP_IGDControlPoint->AddPortMapping(m_port, CUPnP_IGDControlPoint::UNAT_UDP, _T("UDP Port"));
