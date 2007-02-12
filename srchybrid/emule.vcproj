@@ -740,6 +740,9 @@
 				RelativePath="UploadQueue.cpp">
 			</File>
 			<File
+				RelativePath="UPnP_IGDControlPoint.cpp">
+			</File>
+			<File
 				RelativePath="URLClient.cpp">
 			</File>
 			<File
@@ -1089,6 +1092,9 @@
 			</File>
 			<File
 				RelativePath="UploadQueue.h">
+			</File>
+			<File
+				RelativePath="UPnP_IGDControlPoint.h">
 			</File>
 			<File
 				RelativePath="URLClient.h">
@@ -2991,12 +2997,6 @@
 			</File>
 			<File
 				RelativePath=".\SplashScreenEx.h">
-			</File>
-			<File
-				RelativePath=".\UPnP.h">
-			</File>
-			<File
-				RelativePath=".\UPnP_IGDControlPoint.cpp">
 			</File>
 			<File
 				RelativePath=".\WndUtil.h">

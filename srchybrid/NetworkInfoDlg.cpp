@@ -355,7 +355,7 @@ void CreateNetworkInfo(CRichEditCtrlX& rCtrl, CHARFORMAT& rcfDef, CHARFORMAT& rc
 	}
 
 
-	//s una1
+	// ==> UPnP support [MoNKi] - leuk_he
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	// upnp																								//
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -371,7 +371,7 @@ void CreateNetworkInfo(CRichEditCtrlX& rCtrl, CHARFORMAT& rcfDef, CHARFORMAT& rc
 	}
 	else
 		rCtrl << GetResString(IDS_DISABLED) << _T("\r\n");
-	// e una1 
+	// <== UPnP support [MoNKi] - leuk_he
 
 	//Xman show Hash always at end
 	if (!bFullInfo)
