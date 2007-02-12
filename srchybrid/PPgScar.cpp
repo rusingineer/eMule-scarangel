@@ -26,6 +26,11 @@
 #include "TreeOptionsInvisibleModCombo.h"
 #include "TreeOptionsInvisibleKeyCombo.h"
 // <== Invisible Mode [TPT/MoNKi] - Stulle
+#include "FirewallOpener.h" // Improved ICS-Firewall support [MoNKi] - Max
+// ==> Random Ports [MoNKi] - Stulle
+#include "ClientUDPSocket.h"
+#include "ListenSocket.h"
+// <== Random Ports [MoNKi] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -147,21 +152,21 @@ CPPgScar::CPPgScar()
 	m_htiICFSupportRoot = NULL;
 	m_htiICFSupport = NULL;
 	m_htiICFSupportClearAtEnd = NULL;
-	m_bICFSupport = false;
-	m_bICFSupportClearAtEnd = false;
+	m_htiICFSupportServerUDP = NULL;
 	// <== Improved ICS-Firewall support [MoNKi] - Max
 	// ==> UPnP support [MoNKi] - leuk_he
+	m_htiUPnPNatGroup = NULL;
 	m_htiUPnPNat = NULL;
 	m_htiUpnPNATwebservice = NULL;
+	m_htiUpnpBinaddr = NULL;
+	// <== UPnP support [MoNKi] - leuk_he 
+	// ==> Random Ports [MoNKi] - Stulle
+	m_htiRndGrp = NULL;
 	m_htiRandomports = NULL;
 	m_htiRandomFirstPort = NULL;
 	m_htiRandomLastPort = NULL;
-	int  m_iUPnPNat = 0;
-	bool m_bUpnPNATwebservice=false;
-	bool m_bRandomports=false;
-	int m_iRandomFirstPort=1;
-	int m_iRandomLastPort=65000;
-	// <== UPnP support [MoNKi] - leuk_he 
+	m_htiRandomPortsResetTime = NULL;
+	// <== Random Ports [MoNKi] - Stulle
 //	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources - Stulle
 	m_htiACC = NULL; // ACC [Max/WiZaRd] - Max
 /*
@@ -313,6 +318,8 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		int iImgQuickstart = 8;
 		int iImgRatio = 8;
 		int iImgICF = 8;
+		int iImgUPnP = 8;
+		int iImgRndGrp = 8;
 		int iImgCS = 8;
 		int iImgDisplay = 8;
 		int iImgSysInfo = 8;
@@ -335,6 +342,8 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 			iImgQuickstart = piml->Add(CTempIconLoader(_T("QUICKSTART"))); // Thx to the eF-Mod team for the icon
 			iImgRatio = piml->Add(CTempIconLoader(_T("TRANSFERUPDOWN")));
 			iImgICF = piml->Add(CTempIconLoader(_T("PROXY")));
+			iImgUPnP = piml->Add(CTempIconLoader(_T("UPNP")));
+			iImgRndGrp = piml->Add(CTempIconLoader(_T("PORTS")));
 			iImgCS = piml->Add(CTempIconLoader(_T("STATSCLIENTS")));
 			iImgDisplay = piml->Add(CTempIconLoader(_T("DISPLAY")));
 			iImgSysInfo = piml->Add(CTempIconLoader(_T("SYSINFO")));
@@ -398,22 +407,28 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.AddEditBox(m_htiRatioValue, RUNTIME_CLASS(CNumTreeOptionsEdit));
 		// <== Enforce Ratio [Stulle] - Stulle
 		// ==> Improved ICS-Firewall support [MoNKi] - Max
-		m_htiICFSupportRoot = m_ctrlTreeOptions.InsertGroup(_T("Internet Connection Firewall (ICF)"), iImgICF,  m_htiConTweaks);
-		m_htiICFSupport = m_ctrlTreeOptions.InsertCheckBox(_T("Enable Windows Internet Connection Firewall (ICF) support"), m_htiICFSupportRoot, m_bICFSupport);
-		m_htiICFSupportClearAtEnd = m_ctrlTreeOptions.InsertCheckBox(_T("Clear mappings at end"), m_htiICFSupportRoot, m_bICFSupportClearAtEnd);
-		m_htiICFSupportServerUDP = m_ctrlTreeOptions.InsertCheckBox(_T("Add mapping for \"ServerUDP\" port"), m_htiICFSupportRoot, m_bICFSupportServerUDP);
+		m_htiICFSupportRoot = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_ICF), iImgICF,  m_htiConTweaks);
+		m_htiICFSupport = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ICFSUPPORT), m_htiICFSupportRoot, m_bICFSupport);
+		m_htiICFSupportClearAtEnd = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_FO_PREF_STARTUP), m_htiICFSupportRoot, m_bICFSupportClearAtEnd);
+		m_htiICFSupportServerUDP = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ICF_SERVERUDP), m_htiICFSupportRoot, m_bICFSupportServerUDP);
 		// <== Improved ICS-Firewall support [MoNKi] - Max
 		// ==> UPnP support [MoNKi] - leuk_he
-		m_htiUPnPNat= m_ctrlTreeOptions.InsertCheckBox(_T("Forward ports via uPnP"),m_htiConTweaks, m_iUPnPNat);
-		m_htiUpnPNATwebservice = m_ctrlTreeOptions.InsertCheckBox(_T("Forward websevivice port via uPnP"),m_htiConTweaks, m_bUpnPNATwebservice);
-		;
-		/* TODO:
-		m_htiRandomports= m_ctrlTreeOptions.InsertCheckBox(_T("Random ports"),m_htiConTweaks, m_htiRandomports);
-		m_htiRandomFirstPort = m_ctrlTreeOptions.InsertItem(_T("First random port"), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiConTweaks);
-		m_ctrlTreeOptions.AddEditBox(m_htiRandomFirstPort, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		m_htiRandomLastPort = m_ctrlTreeOptions.InsertItem(_T("Last random port"), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiConTweaks);
-		m_ctrlTreeOptions.AddEditBox(m_htiRandomLastPort , RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_htiUPnPNatGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_UPNP_GROUP), iImgUPnP,  m_htiConTweaks);
+		m_htiUPnPNat = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_UPNP_ENABLE),m_htiUPnPNatGroup, m_bUPnPNat);
+		m_htiUpnPNATwebservice = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_UPNP_ENABLE_WEB),m_htiUPnPNatGroup, m_bUpnPNATwebservice);
+         m_htiUpnpBinaddr =	 m_ctrlTreeOptions.InsertItem(GetResString(IDS_UPNPBINDADDR), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiUPnPNatGroup);
+		 m_ctrlTreeOptions.AddIPAddress(m_htiUpnpBinaddr , RUNTIME_CLASS(CTreeOptionsIPAddressCtrl));
 		// <== UPnP support [MoNKi] - leuk_he
+		// ==> Random Ports [MoNKi] - Stulle
+		m_htiRndGrp = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_RND_PORT_GROUP), iImgRndGrp,  m_htiConTweaks);
+		m_htiRandomports= m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ENABLE),m_htiRndGrp, m_bRandomports);
+		m_htiRandomFirstPort = m_ctrlTreeOptions.InsertItem(GetResString(IDS_RND_PORT_FIRST), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiRndGrp);
+		m_ctrlTreeOptions.AddEditBox(m_htiRandomFirstPort, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_htiRandomLastPort = m_ctrlTreeOptions.InsertItem(GetResString(IDS_RND_PORT_LAST), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiRndGrp);
+		m_ctrlTreeOptions.AddEditBox(m_htiRandomLastPort , RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_htiRandomPortsResetTime = m_ctrlTreeOptions.InsertItem(GetResString(IDS_RND_PORT_RESET), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiRndGrp);
+		m_ctrlTreeOptions.AddEditBox(m_htiRandomPortsResetTime, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		// <== Random Ports [MoNKi] - Stulle
 /*		// ==> Timer for ReAsk File Sources - Stulle
 		m_htiReAskFileSrc = m_ctrlTreeOptions.InsertItem(GetResString(IDS_REASK_FILE_SRC), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiConTweaks);
 		m_ctrlTreeOptions.AddEditBox(m_htiReAskFileSrc, RUNTIME_CLASS(CNumTreeOptionsEdit));
@@ -618,15 +633,19 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiICFSupportServerUDP, m_bICFSupportServerUDP);
 	// <== Improved ICS-Firewall support [MoNKi] - Max
 	// ==> UPnP support [MoNKi] - leuk_he 
-	DDX_TreeCheck(pDX, IDC_SCAR_OPTS,m_htiUPnPNat,m_iUPnPNat  )	;
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS,m_htiUPnPNat,m_bUPnPNat  )	;
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS,m_htiUpnPNATwebservice,  m_bUpnPNATwebservice);
-	/* TODO:
-	DDX_TreeCheck(pDX, IDC_SCAR_OPTS,m_htiRandomports,m_bRandomports);
-	DDX_TreeCheck(pDX, IDC_SCAR_OPTS,m_htiRandomFirstPort,  m_iRandomFirstPort);
-	DDX_TreeCheck(pDX, IDC_SCAR_OPTS,m_htiRandomLastPort,  m_iRandomLastPort);
-		// also check min< max or switch them
-	*/
+	DDX_TreeIPAddress(pDX, IDC_SCAR_OPTS,m_htiUpnpBinaddr  , m_dwUpnpBindAddr);
 	// <== UPnP support [MoNKi] - leuk_he
+	// ==> Random Ports [MoNKi] - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS,m_htiRandomports,m_bRandomports);
+	DDX_TreeEdit(pDX, IDC_SCAR_OPTS,m_htiRandomFirstPort,  m_iRandomFirstPort);
+	DDV_MinMaxInt(pDX, m_iRandomPortsResetTime, 1, 0xffff);
+	DDX_TreeEdit(pDX, IDC_SCAR_OPTS,m_htiRandomLastPort,  m_iRandomLastPort);
+	DDV_MinMaxInt(pDX, m_iRandomPortsResetTime, m_iRandomFirstPort, 0xffff);
+	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiRandomPortsResetTime, m_iRandomPortsResetTime);
+	DDV_MinMaxInt(pDX, m_iRandomPortsResetTime, 0, 900);
+	// <== Random Ports [MoNKi] - Stulle
 /*	// ==> Timer for ReAsk File Sources - Stulle
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiReAskFileSrc, m_iReAskFileSrc);
 	DDV_MinMaxInt(pDX, m_iReAskFileSrc, 29, 55);
@@ -793,14 +812,16 @@ BOOL CPPgScar::OnInitDialog()
 	m_bICFSupportServerUDP = thePrefs.GetICFSupportServerUDP();
 	// <== Improved ICS-Firewall support [MoNKi] - Max
 	//==> UPnP support [MoNKi] - leuk_he 
-	m_iUPnPNat = thePrefs.IsUPnPEnabled();
-	/* todo: 
-	bool m_bUpnPNATwebservice;
-	bool m_bRandomports;
-	int m_iRandomFirstPort;
-	int m_iRandomLastPort;
-	*/
+	m_bUPnPNat = thePrefs.IsUPnPEnabled();
+	m_bUpnPNATwebservice = thePrefs.GetUPnPNatWeb();
+	m_dwUpnpBindAddr = thePrefs.GetUpnpBindAddr();
 	//<== UPnP support [MoNKi] - leuk_he
+	// ==> Random Ports [MoNKi] - Stulle
+	m_bRandomports = thePrefs.GetUseRandomPorts();
+	m_iRandomFirstPort = thePrefs.GetMinRandomPort();
+	m_iRandomLastPort = thePrefs.GetMaxRandomPort();
+	m_iRandomPortsResetTime = thePrefs.GetRandomPortsSafeResetOnRestartTime();
+	// <== Random Ports [MoNKi] - Stulle
 //	m_iReAskFileSrc = (thePrefs.GetReAskTimeDif() + FILEREASKTIME)/60000; // Timer for ReAsk File Sources - Stulle
 	m_bACC = thePrefs.GetACC(); // ACC [Max/WiZaRd] - Max
 /*
@@ -1102,10 +1123,53 @@ BOOL CPPgScar::OnApply()
 	thePrefs.SetICFSupportServerUDP(m_bICFSupportServerUDP);
 	// <== Improved ICS-Firewall support [MoNKi] - Max
 	//==> UPnP support [MoNKi] - leuk_he
-	if(thePrefs.IsUPnPEnabled()!=m_iUPnPNat )
-	theApp.m_UPnP_IGDControlPoint->SetUPnPNat(m_iUPnPNat); // and start/stop nat. 
-	// TODO: Random ports and webservice. 
+	if((BOOL)thePrefs.IsUPnPEnabled() != m_bUPnPNat ||
+		(BOOL)thePrefs.GetUPnPNatWeb() != m_bUpnPNATwebservice)
+	{
+		theApp.m_UPnP_IGDControlPoint->SetUPnPNat(m_bUPnPNat); // and start/stop nat. 
+		thePrefs.SetUPnPNatWeb(m_bUpnPNATwebservice);
+	}
+	thePrefs.SetUpnpBindAddr(m_dwUpnpBindAddr);// Note: read code in thePrefs..
 	//<== UPnP support [MoNKi] - leuk_he
+	// ==> Random Ports [MoNKi] - Stulle
+	bool oldUseRandom = thePrefs.GetUseRandomPorts();
+	uint16 oldRndMin = thePrefs.GetMinRandomPort();
+	uint16 oldRndMax = thePrefs.GetMaxRandomPort();
+	thePrefs.SetUseRandomPorts(m_bRandomports);
+	thePrefs.SetMinRandomPort((uint16)m_iRandomFirstPort);
+	thePrefs.SetMaxRandomPort((uint16)m_iRandomLastPort);
+	thePrefs.SetRandomPortsSafeResetOnRestartTime((uint16)m_iRandomPortsResetTime);
+
+	if(m_bRandomports != oldUseRandom){
+		if (theApp.IsPortchangeAllowed()){
+			theApp.listensocket->Rebind();
+			theApp.clientudp->Rebind();
+		}
+		else{
+			bRestartApp = true;
+			thePrefs.SetRandomPortsResetOnRestart(true);
+		}
+		// ==> Improved ICS-Firewall support [MoNKi] - Max
+		theApp.m_pFirewallOpener->ClearMappingsAtEnd();
+		// <== Improved ICS-Firewall support [MoNKi] - Max
+	}
+	else if(oldUseRandom){
+		if(m_iRandomFirstPort != oldRndMin || m_iRandomLastPort != oldRndMax){
+			if (theApp.IsPortchangeAllowed()){
+				theApp.listensocket->Rebind();
+				theApp.clientudp->Rebind();
+			}
+			else {
+				bRestartApp = true;
+				thePrefs.SetRandomPortsResetOnRestart(true);
+			}
+
+			// ==> Improved ICS-Firewall support [MoNKi] - Max
+			theApp.m_pFirewallOpener->ClearMappingsAtEnd();
+			// <== Improved ICS-Firewall support [MoNKi] - Max
+		}
+	}
+	// <== Random Ports [MoNKi] - Stulle
 //	thePrefs.m_uReAskTimeDif = (m_iReAskFileSrc-29)*60000; // Timer for ReAsk File Sources - Stulle
 	thePrefs.m_bACC = m_bACC; // ACC [Max/WiZaRd] - Max
 /*
@@ -1399,6 +1463,19 @@ void CPPgScar::Localize(void)
 			m_ctrlTreeOptions.SetItemText(m_htiICFSupportServerUDP, GetResString(IDS_ICF_SERVERUDP));
 		}
 		// <== Improved ICS-Firewall support [MoNKi] - Max
+		// ==> UPnP support [MoNKi] - leuk_he
+		if (m_htiUPnPNatGroup) m_ctrlTreeOptions.SetItemText(m_htiUPnPNatGroup, GetResString(IDS_UPNP_GROUP));
+		if (m_htiUPnPNat) m_ctrlTreeOptions.SetItemText(m_htiUPnPNat, GetResString(IDS_UPNP_ENABLE));
+		if (m_htiUpnPNATwebservice) m_ctrlTreeOptions.SetItemText(m_htiUpnPNATwebservice, GetResString(IDS_UPNP_ENABLE_WEB));
+		if (m_htiUpnpBinaddr) m_ctrlTreeOptions.SetEditLabel(m_htiUpnpBinaddr, GetResString(IDS_UPNPBINDADDR));
+		// <== UPnP support [MoNKi] - leuk_he
+		// ==> Random Ports [MoNKi] - Stulle
+		if (m_htiRndGrp) m_ctrlTreeOptions.SetItemText(m_htiRndGrp, GetResString(IDS_RND_PORT_GROUP));
+		if (m_htiRandomports) m_ctrlTreeOptions.SetItemText(m_htiRandomports, GetResString(IDS_ENABLED));
+		if (m_htiRandomFirstPort) m_ctrlTreeOptions.SetEditLabel(m_htiRandomFirstPort, GetResString(IDS_RND_PORT_FIRST));
+		if (m_htiRandomLastPort) m_ctrlTreeOptions.SetEditLabel(m_htiRandomLastPort, GetResString(IDS_RND_PORT_LAST));
+		if (m_htiRandomPortsResetTime) m_ctrlTreeOptions.SetEditLabel(m_htiRandomPortsResetTime, GetResString(IDS_RND_PORT_RESET));
+		// <== Random Ports [MoNKi] - Stulle
 //		if (m_htiReAskFileSrc) m_ctrlTreeOptions.SetEditLabel(m_htiReAskFileSrc, GetResString(IDS_REASK_FILE_SRC)); // Timer for ReAsk File Sources - Stulle
 		if (m_htiACC) m_ctrlTreeOptions.SetItemText(m_htiACC, GetResString(IDS_ACC)); // ACC [Max/WiZaRd] - Max
 /*
@@ -1606,9 +1683,21 @@ void CPPgScar::OnDestroy()
 	m_htiICFSupportRoot = NULL;
 	m_htiICFSupport = NULL;
 	m_htiICFSupportClearAtEnd = NULL;
-	m_bICFSupport = false;
-	m_bICFSupportClearAtEnd = false;
+	m_htiICFSupportServerUDP = NULL;
 	// <== Improved ICS-Firewall support [MoNKi] - Max
+	// ==> UPnP support [MoNKi] - leuk_he
+	m_htiUPnPNatGroup = NULL;
+	m_htiUPnPNat = NULL;
+	m_htiUpnPNATwebservice = NULL;
+	m_htiUpnpBinaddr = NULL;
+	// <== UPnP support [MoNKi] - leuk_he 
+	// ==> Random Ports [MoNKi] - Stulle
+	m_htiRndGrp = NULL;
+	m_htiRandomports = NULL;
+	m_htiRandomFirstPort = NULL;
+	m_htiRandomLastPort = NULL;
+	m_htiRandomPortsResetTime = NULL;
+	// <== Random Ports [MoNKi] - Stulle
 //	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources - Stulle
 	m_htiACC = NULL; // ACC [Max/WiZaRd] - Max
 /*

@@ -48,12 +48,16 @@ protected:
 	bool		m_bICFSupportServerUDP;
 	// <== Improved ICS-Firewall support [MoNKi] - Max
 	// ==> UPnP support [MoNKi] - leuk_he
-	int  m_iUPnPNat;
+	bool m_bUPnPNat;
 	bool m_bUpnPNATwebservice;
+	DWORD m_dwUpnpBindAddr;
+	// <== UPnP support [MoNKi] - leuk_he
+	// ==> Random Ports [MoNKi] - Stulle
 	bool m_bRandomports;
 	int m_iRandomFirstPort;
 	int m_iRandomLastPort;
-	// <== UPnP support [MoNKi] - leuk_he
+	int m_iRandomPortsResetTime;
+	// <== Random Ports [MoNKi] - Stulle
 //	int m_iReAskFileSrc; // Timer for ReAsk File Sources - Stulle
 	bool m_bACC; // ACC [Max/WiZaRd] - Max
 /*
@@ -191,18 +195,24 @@ protected:
 	HTREEITEM m_htiRatioValue;
 	// <== Enforce Ratio [Stulle] - Stulle
 	// ==> Improved ICS-Firewall support [MoNKi] - Max
-	HTREEITEM	m_htiICFSupportRoot;
-	HTREEITEM	m_htiICFSupport;
-	HTREEITEM	m_htiICFSupportClearAtEnd;
-	HTREEITEM	m_htiICFSupportServerUDP;
+	HTREEITEM m_htiICFSupportRoot;
+	HTREEITEM m_htiICFSupport;
+	HTREEITEM m_htiICFSupportClearAtEnd;
+	HTREEITEM m_htiICFSupportServerUDP;
 	// <== Improved ICS-Firewall support [MoNKi] - Max
 	// ==> UPnP support [MoNKi] - leuk_he 
-	HTREEITEM	m_htiUPnPNat;
-	HTREEITEM	m_htiUpnPNATwebservice;
-	HTREEITEM	m_htiRandomports;
-	HTREEITEM	m_htiRandomFirstPort;
-	HTREEITEM	m_htiRandomLastPort;
+	HTREEITEM m_htiUPnPNatGroup;
+	HTREEITEM m_htiUPnPNat;
+	HTREEITEM m_htiUpnPNATwebservice;
+	HTREEITEM m_htiUpnpBinaddr;
 	// <== UPnP support [MoNKi] - leuk_he
+	// ==> Random Ports [MoNKi] - Stulle
+	HTREEITEM m_htiRndGrp;
+	HTREEITEM m_htiRandomports;
+	HTREEITEM m_htiRandomFirstPort;
+	HTREEITEM m_htiRandomLastPort;
+	HTREEITEM m_htiRandomPortsResetTime;
+	// <== Random Ports [MoNKi] - Stulle
 //	HTREEITEM m_htiReAskFileSrc; // Timer for ReAsk File Sources - Stulle
 	HTREEITEM m_htiACC; // ACC [Max/WiZaRd] - Max
 /*
