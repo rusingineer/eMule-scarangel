@@ -712,6 +712,7 @@ CUPnP_IGDControlPoint * CUPnP_IGDControlPoint::GetInstance(){
 
 UINT CUPnP_IGDControlPoint::RemoveInstance(LPVOID /*pParam*/ ){
 	delete m_IGDControlPoint;
+	m_IGDControlPoint = NULL;
 	return 0;
 }
 
@@ -978,7 +979,7 @@ UINT CUPnP_IGDControlPoint::TimerThreadFunc( LPVOID /*pParam*/ ){
 
 	static long int testTime = sleepTime; //SiRoB
 
-	while(m_IGDControlPoint){
+	while(m_IGDControlPoint  ){
 		// SiRoB >>
 		/*
 		Sleep(sleepTime);
@@ -1567,9 +1568,9 @@ int  CUPnP_IGDControlPoint::GetStatusString(CString & displaystring,bool verbose
 				CString port;
 				port.Format(_T("%d"), mapping.externalPort );
 				if (verbose)
-					displaystring +=  port + ((mapping.protocol == UNAT_UDP)?_T(":UDP  ="): _T(":TCP  =")) +  mapping.description +_T("\r\n");
+					displaystring +=  port + ((mapping.protocol == UNAT_UDP)?_T(":UDP\t"): _T(":TCP\t")) +  mapping.description +_T("\r\n");
 				else
-					displaystring +=  port + ((mapping.protocol == UNAT_UDP)?_T(":UDP"): _T(":TCP  ")) + _T(", ");
+					displaystring +=  port + ((mapping.protocol == UNAT_UDP)?_T(":UDP"): _T(":TCP")) + _T(", ");
 		}
 	}
 	else 
