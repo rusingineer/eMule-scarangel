@@ -5901,6 +5901,7 @@ BEGIN
     IDS_UPNP_FAILEDREGISTER "UPnP: Failed registering control point [%s]"
     IDS_UPNP_NEWDEVICE      "UPnP: New compatible device found: %s"
     IDS_UPNP_VERBOSELOG		"Upnp Events"
+    IDS_UPNP_NETSTATUS		"Upnp"
     // <== UPnP support [MoNKi] - leuk_he
 END
 

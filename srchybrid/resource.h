@@ -3051,6 +3051,7 @@
 #define IDS_UPNP_FAILEDREGISTER         21005
 #define IDS_UPNP_NEWDEVICE              21007
 #define IDS_UPNP_VERBOSELOG				21008
+#define IDS_UPNP_NETSTATUS				21009
 // <== UPnP support [MoNKi] - leuk_he
 
 // Next default values for new objects

@@ -85,8 +85,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".,..;..\id3lib\include;..\crypto.v52.1"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;SUPPORT_LARGE_FILES"
+				AdditionalIncludeDirectories=".;..;..\id3lib\include;..\crypto.v52.1;.\upnplib\ixml\inc;.\upnplib\threadutil\inc;pthreads\pthreads\inc"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;SUPPORT_LARGE_FILES;PTW32_STATIC_LIB;UPNP_STATIC_LIB"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -2991,6 +2991,9 @@
 			</File>
 			<File
 				RelativePath=".\SplashScreenEx.h">
+			</File>
+			<File
+				RelativePath=".\UPnP.h">
 			</File>
 			<File
 				RelativePath=".\UPnP_IGDControlPoint.cpp">
