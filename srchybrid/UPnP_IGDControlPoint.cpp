@@ -263,7 +263,7 @@ int CUPnP_IGDControlPoint::IGD_Callback( Upnp_EventType EventType, void* Event, 
 		}
 		case UPNP_DISCOVERY_SEARCH_TIMEOUT:
 			if (thePrefs.GetUpnpDetect() != UPNP_DETECTED) {	  	 //leuk_he autodetect upnp in wizard
-				 	thePrefs.SetUpnpDetect(UPNP_NOT_DETECTED);//leuk_he autodetect upnp in wizard
+		 		thePrefs.SetUpnpDetect(UPNP_NOT_DETECTED);//leuk_he autodetect upnp in wizard
 			}
 			InitializingEvent->SetEvent();
 			break;
@@ -1524,7 +1524,7 @@ void CUPnP_IGDControlPoint::DeleteAllPortMappingsOnClose(){
 	m_bClearOnClose = true;
 }
 
-int  CUPnP_IGDControlPoint::GetStatusString(CString & displaystring,bool /*verbose=false */)
+int  CUPnP_IGDControlPoint::GetStatusString(CString & displaystring,bool verbose)
 {
 	if(!m_bInit){
 		displaystring=_T("Failed");
@@ -1534,6 +1534,7 @@ int  CUPnP_IGDControlPoint::GetStatusString(CString & displaystring,bool /*verbo
 	m_MappingsLock.Lock();
 
 	if(m_devices.GetCount()>0){
+		displaystring += GetResString(IDS_ENABLED) + _T("\r\n");
         POSITION devpos;
 		devpos= m_devices.GetHeadPosition();
 		while (devpos) {
@@ -1541,13 +1542,34 @@ int  CUPnP_IGDControlPoint::GetStatusString(CString & displaystring,bool /*verbo
 			item = m_devices.GetNext(devpos);
 			displaystring += item->FriendlyName +  _T("\r\n");
 		}
-		// how to display services user friendly? -> todo. 
+		if (verbose) {
+			POSITION srvpos = m_knownServices.GetHeadPosition();
+			while(srvpos){
+				UPNP_SERVICE *srv;
+				srv = m_knownServices.GetNext(srvpos);
+				displaystring += _T("srv:") +  srv->ServiceID + _T(":") + srv->ServiceType ;
+				switch (srv->Enabled){
+					case -1:
+						displaystring += _T(",not initialed\r\n");
+						break;
+					case 1:
+						displaystring += _T(",enabled\r\n");
+						break;
+					case 0:
+					default:
+						displaystring += _T(",disabled\r\n");
+				}
+			}
+		}
 		POSITION map_pos = m_Mappings.GetHeadPosition();
 		while(map_pos){
 				UPNPNAT_MAPPING mapping = m_Mappings.GetNext(map_pos);
 				CString port;
 				port.Format(_T("%d"), mapping.externalPort );
-				displaystring +=  port + ((mapping.protocol == UNAT_UDP)?_T(":UDP"): _T(":TCP")) + _T(",");
+				if (verbose)
+					displaystring +=  port + ((mapping.protocol == UNAT_UDP)?_T(":UDP  ="): _T(":TCP  =")) +  mapping.description +_T("\r\n");
+				else
+					displaystring +=  port + ((mapping.protocol == UNAT_UDP)?_T(":UDP"): _T(":TCP  ")) + _T(", ");
 		}
 	}
 	else 

@@ -353,9 +353,11 @@ void CreateNetworkInfo(CRichEditCtrlX& rCtrl, CHARFORMAT& rcfDef, CHARFORMAT& rc
 			strHostname = ipstr(theApp.serverconnect->GetLocalIP());
 		rCtrl << _T("URL:\t") << _T("http://") << strHostname << _T(":") << thePrefs.GetWSPort() << _T("/\r\n");
 	}
+	
 
 
 	// ==> UPnP support [MoNKi] - leuk_he
+	rCtrl << _T("\r\n");
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	// upnp																								//
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
