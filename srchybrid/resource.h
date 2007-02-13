@@ -3056,6 +3056,12 @@
 #define IDS_UPNP_ENABLE                 61049
 #define IDS_UPNP_ENABLE_WEB             61050
 #define IDS_UPNPBINDADDR                61051
+#define IDS_UPNP_INFOUNINIT				21010
+#define IDS_UPNP_INFOENABLED			21011
+#define IDS_UPNP_INFODISABLED			21012
+#define IDS_UPNP_INFOSTANDBY			21013
+#define IDS_UPNP_INFO_NONEED			21014
+
 // <== UPnP support [MoNKi] - leuk_he
 // ==> Random Ports [MoNKi] - Stulle
 #define IDS_RND_PORT_GROUP              61070

@@ -18,6 +18,7 @@
 // ----------------------------------------------------------------------
 //
 // emulEspaña. Added by MoNKi [MoNKi: -UPnPNAT Support-]
+// modified by leuk_he for morph /scarangel for gui integration 
 
 #include "StdAfx.h"
 #include "emule.h"
@@ -27,6 +28,10 @@
 #include "upnp_igdcontrolpoint.h"
 #include "upnplib\upnp\inc\upnptools.h"
 #include "Log.h"
+
+#include "emuleDlg.h" // for WEBGUIIA_UPDATEMYINFO
+#include "UserMsgs.h" // for webguiintercation
+#include "resource.h" // for myinfo text
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -104,11 +109,16 @@ bool CUPnP_IGDControlPoint::SetUPnPNat(bool upnpNat)
 		thePrefs.m_bUPnPNat=true;
 		Init(thePrefs.GetUPnPLimitToFirstConnection()); 
 		UpdateAllMappings(true,false); // send any queued mappings to device. 
+	    if (theApp.emuledlg->GetSafeHwnd()!= NULL) // display status window:
+			PostMessage(theApp.emuledlg->GetSafeHwnd(),WEB_GUI_INTERACTION,WEBGUIIA_UPDATEMYINFO,0); // update myinfo if device detected. (from different thread!)
+
 	}
 	else if (upnpNat==false && thePrefs.IsUPnPEnabled()==true ){
    		DeleteAllPortMappingsOnClose(); // idependand of setting thePrefs.GetUPnPClearOnClose
 	    // Note that devices are not removed. 
 		thePrefs.m_bUPnPNat=false;
+	    if (theApp.emuledlg->GetSafeHwnd()!= NULL) // display status window:
+			PostMessage(theApp.emuledlg->GetSafeHwnd(),WEB_GUI_INTERACTION,WEBGUIIA_UPDATEMYINFO,0); // update myinfo if device detected. (from different thread!)
 	    }
   return thePrefs.m_bUPnPNat;
 }
@@ -1528,14 +1538,20 @@ void CUPnP_IGDControlPoint::DeleteAllPortMappingsOnClose(){
 int  CUPnP_IGDControlPoint::GetStatusString(CString & displaystring,bool verbose)
 {
 	if(!m_bInit){
-		displaystring=_T("Failed");
+		displaystring=GetResString(IDS_UPNP_INFO_NONEED);
 		return (1);
 	}
+
+	CString upnpIpPort ;
+	upnpIpPort .Format(_T("\t%s:%u\r\n"),CString(CA2CT(UpnpGetServerIpAddress())),(int)UpnpGetServerPort());
+
 	m_devListLock.Lock();
 	m_MappingsLock.Lock();
 
 	if(m_devices.GetCount()>0){
 		displaystring += GetResString(IDS_ENABLED) + _T("\r\n");
+		if (verbose)
+			displaystring += GetResString(IDS_IP)+_T(":")+ GetResString(IDS_PORT) +upnpIpPort ;
         POSITION devpos;
 		devpos= m_devices.GetHeadPosition();
 		while (devpos) {
@@ -1551,14 +1567,14 @@ int  CUPnP_IGDControlPoint::GetStatusString(CString & displaystring,bool verbose
 				displaystring += _T("srv:") +  srv->ServiceID + _T(":") + srv->ServiceType ;
 				switch (srv->Enabled){
 					case -1:
-						displaystring += _T(",not initialed\r\n");
+						displaystring += GetResString(IDS_UPNP_INFOUNINIT);
 						break;
 					case 1:
-						displaystring += _T(",enabled\r\n");
+						displaystring += GetResString(IDS_UPNP_INFOENABLED);
 						break;
 					case 0:
 					default:
-						displaystring += _T(",disabled\r\n");
+						displaystring += GetResString(IDS_UPNP_INFODISABLED);
 				}
 			}
 		}
@@ -1574,11 +1590,9 @@ int  CUPnP_IGDControlPoint::GetStatusString(CString & displaystring,bool verbose
 		}
 	}
 	else 
-	{ 	if(!IsLANIP(UpnpGetServerIpAddress())){
-			displaystring +=  _T("No needed\r\n"); // direct or invalid ip
-		}
-		else
-			displaystring +=  _T("No Device detected\r\n");
+	{	displaystring +=  GetResString(IDS_UPNP_INFOSTANDBY ); //No Device detected\r\n
+		if (verbose)
+			displaystring += GetResString(IDS_IP)+_T(":")+ GetResString(IDS_PORT) + upnpIpPort ;
 	}
 	m_MappingsLock.Unlock();
 	m_devListLock.Unlock();

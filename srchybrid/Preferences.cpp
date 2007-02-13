@@ -41,6 +41,10 @@
 #include "MuleToolbarCtrl.h"
 //Xman
 #include "BandWidthControl.h" // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+// ==> UPnP support [MoNKi] - leuk_he
+#include "emuleDlg.h" // for WEBGUIIA_UPDATEMYINFO
+#include "UserMsgs.h" // for webguiintercation
+// <== UPnP support [MoNKi] - leuk_he
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -5181,6 +5185,13 @@ void CPreferences::SetInvisibleMode(bool on, UINT keymodifier, char key)
 // <== Invisible Mode [TPT/MoNKi] - Stulle
 
 // ==> UPnP support [MoNKi] - leuk_he
+
+void CPreferences::SetUpnpDetect(int on)//autodetect upnp in wizard
+  { m_iDetectuPnP=on; 
+    if (theApp.emuledlg->GetSafeHwnd()!= NULL)
+		PostMessage(theApp.emuledlg->GetSafeHwnd(),WEB_GUI_INTERACTION,WEBGUIIA_UPDATEMYINFO,0); // update myinfo if device detected. (from different thread!)
+  } 
+
 void CPreferences::SetUpnpBindAddr(DWORD bindip) {
 		if ( GetBindAddrA() != NULL || bindip== ntohl(inet_addr(GetBindAddrA())))
 			m_dwUpnpBindAddr =0;

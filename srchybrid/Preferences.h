@@ -2284,7 +2284,7 @@ public:
 	static	bool	SetUPnPLimitToFirstConnection(bool on)	{ m_bUPnPLimitToFirstConnection = on; }
 	static	bool	GetUPnPLimitToFirstConnection()		{ return m_bUPnPLimitToFirstConnection; }
 	static	int  	GetUpnpDetect()					{ return m_iDetectuPnP; } //leuk_he autodetect upnp in wizard
-	static	void    SetUpnpDetect(int on)				{ m_iDetectuPnP=on; } //leuk_he autodetect upnp in wizard
+	static void     SetUpnpDetect(int on);
 	#define UPNP_DO_AUTODETECT 2
 	#define UPNP_DETECTED 0
 	#define UPNP_NOT_DETECTED -1 

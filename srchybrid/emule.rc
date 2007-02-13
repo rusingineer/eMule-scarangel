@@ -5908,6 +5908,11 @@ BEGIN
     IDS_UPNP_ENABLE         "Enable UPnP"
     IDS_UPNP_ENABLE_WEB     "Enable UPnP on web interface port"
     IDS_UPNPBINDADDR        "UPnP host address bind to"
+   	IDS_UPNP_INFO_NONEED     "Failed or not needed"
+	IDS_UPNP_INFOUNINIT     ",not initialized\r\n"
+	IDS_UPNP_INFOENABLED    ",enabled\r\n"
+	IDS_UPNP_INFODISABLED	",disabled\r\n"
+	IDS_UPNP_INFOSTANDBY	"No Device detected\r\n"
     // <== UPnP support [MoNKi] - leuk_he
     // ==> Random Ports [MoNKi] - Stulle
     IDS_RND_PORT_GROUP      "Random Ports"
