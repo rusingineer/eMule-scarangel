@@ -640,9 +640,9 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	// ==> Random Ports [MoNKi] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS,m_htiRandomports,m_bRandomports);
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS,m_htiRandomFirstPort,  m_iRandomFirstPort);
-	DDV_MinMaxInt(pDX, m_iRandomPortsResetTime, 1, 0xffff);
+	DDV_MinMaxInt(pDX, m_iRandomFirstPort, 1, USHRT_MAX);
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS,m_htiRandomLastPort,  m_iRandomLastPort);
-	DDV_MinMaxInt(pDX, m_iRandomPortsResetTime, m_iRandomFirstPort, 0xffff);
+	DDV_MinMaxInt(pDX, m_iRandomLastPort, m_iRandomFirstPort, USHRT_MAX);
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiRandomPortsResetTime, m_iRandomPortsResetTime);
 	DDV_MinMaxInt(pDX, m_iRandomPortsResetTime, 0, 900);
 	// <== Random Ports [MoNKi] - Stulle
