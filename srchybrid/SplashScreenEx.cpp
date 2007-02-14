@@ -48,7 +48,7 @@ CSplashScreenEx::CSplashScreenEx()
 	/*
 	m_rcText2.SetRect(10,252,210,270);
 	*/
-	m_rcText2.SetRect(75,252,325,270);
+	m_rcText2.SetRect(75,262,325,280);
 	// <== changed - Stulle
 	m_crTextColor2=RGB(0,0,0);
 	m_uTextFormat2=DT_SINGLELINE | DT_CENTER | DT_VCENTER;
@@ -72,7 +72,7 @@ CSplashScreenEx::~CSplashScreenEx()
 BOOL CSplashScreenEx::Create(CWnd *pWndParent,LPCTSTR szText,DWORD dwTimeout,DWORD dwStyle)
 {
 	if(pWndParent)
-	m_pWndParent = pWndParent;
+		m_pWndParent = pWndParent;
 	else
 		m_pWndParent = this;
 

@@ -2285,7 +2285,7 @@ void CemuleApp::ShowSplash(bool start)
 				/*
 				CRect x=CRect(10,230,210,248);
 				*/
-				CRect x=CRect(75,230,325,248);
+				CRect x=CRect(75,225,325,258);
 				// <== changed - Stulle
 				m_pSplashWnd->SetTextRect(x);
 				m_pSplashWnd->SetTextColor(RGB(0,0,0));
