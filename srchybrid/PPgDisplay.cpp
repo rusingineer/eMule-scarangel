@@ -264,8 +264,8 @@ BOOL CPPgDisplay::OnApply()
 			/*
 			_stprintf(buffer,_T("eMule v%s"),theApp.m_strCurVersionLong+ _T(" ") + MOD_VERSION); // Xman // Maella -Support for tag ET_MOD_VERSION 0x55
 			*/
-			// <== ModID [itsonlyme/SiRoB] - Stulle
 			_stprintf(buffer,_T("eMule v%s [%s]"),theApp.m_strCurVersionLong,theApp.m_strModLongVersion);
+			// <== ModID [itsonlyme/SiRoB] - Stulle
 			theApp.emuledlg->SetWindowText(buffer);
 		}
 
