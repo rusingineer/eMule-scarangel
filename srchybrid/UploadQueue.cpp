@@ -1059,11 +1059,11 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 	// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	if (client->Credits() != NULL)
 	{
-		uint32 waitingtime= (uint32)(client->GetWaitTime() );
-		if (client->GetWaitTime() > 0)
+		if (client->GetGiveWaittimeBack())
 		{
 			client->Credits()->SetSecWaitStartTime(100);
-			AddDebugLogLine(false,_T("client had waitingtime: %s 100% recovered"),CastSecondsToHM(waitingtime/1000));
+			client->SetGiveWaittimeBack(false);
+			AddDebugLogLine(false,_T("client had waitingtime: %s 100% recovered"),CastSecondsToHM(client->GetWaitTime()/1000));
 		}
 		else
 			client->Credits()->SetSecWaitStartTime();
@@ -1193,6 +1193,7 @@ bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReaso
 					keeppct = 100 - keeppct;
 					client->Credits()->SaveUploadQueueWaitTime(keeppct);
 					client->Credits()->SetSecWaitStartTime(keeppct);
+					client->SetGiveWaittimeBack(true);
 					AddDebugLogLine(false, _T("giving client bonus. old waitingtime: %s, new waitingtime: %s, client: %s"), CastSecondsToHM(waitingtime/1000), CastSecondsToHM((::GetTickCount() - client->GetWaitStartTime())/1000),client->DbgGetClientInfo()); 
 				}
 				else

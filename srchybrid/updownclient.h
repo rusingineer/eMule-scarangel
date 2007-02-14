@@ -1269,6 +1269,13 @@ public:
 	int		GetClientStyle(bool bDl, bool bUl, bool bShare, bool bOwnCredits) const;
 	bool	GetPowerReleased() const;
 	// <== Design Settings [eWombat/Stulle] - Stulle
+
+	// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
+	void	SetGiveWaittimeBack(bool in)		{m_bGiveWaittimeBack = in;}
+	bool	GetGiveWaittimeBack() const			{return m_bGiveWaittimeBack;}
+protected:
+	bool	m_bGiveWaittimeBack;
+	// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 };
 //#pragma pack()
 

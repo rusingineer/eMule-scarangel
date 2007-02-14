@@ -375,6 +375,8 @@ void CUpDownClient::Init()
     lastMultiOHCBPacketSent = 0; // Superlexx - Multi-OHCB
 	m_bWebCacheSupportsMultiOHCBs = false;
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
+
+	m_bGiveWaittimeBack = false; // m000h
 }
 
 CUpDownClient::~CUpDownClient(){

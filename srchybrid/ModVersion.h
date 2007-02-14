@@ -21,6 +21,6 @@
 #define MOD_VERSION_MJR		1
 #define MOD_VERSION_MIN		9
 #define MOD_VERSION_BUILD   0
-#define	MOD_VERSION			_T("ScarAngel a6") // remark: last sign != ' ' (space) !!!
-#define	MOD_VERSION_LONG	_T("ScarAngel a6 v")
+#define	MOD_VERSION			_T("ScarAngel a8") // remark: last sign != ' ' (space) !!!
+#define	MOD_VERSION_LONG	_T("ScarAngel a8 v")
 //END - This part should not be changed in anyway
