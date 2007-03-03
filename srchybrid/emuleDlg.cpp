@@ -158,6 +158,7 @@ BEGIN_MESSAGE_MAP(CemuleDlg, CTrayDialog)
 	ON_WM_DESTROY()
 	ON_WM_SETTINGCHANGE()
 	ON_MESSAGE(WM_HOTKEY, OnHotKey)	// Invisible Mode [TPT/MoNKi] - Stulle
+	ON_WM_CTLCOLOR() // Design Settings [eWombat/Stulle] - Max
 
 	ON_WM_MEASUREITEM() // XP Style Menu [Xanatos] - Stulle
 
@@ -4520,3 +4521,14 @@ BOOL CALLBACK CemuleDlg::AskEmulesForInvisibleMode(HWND hWnd, LPARAM lParam){
 	return res; 
 } 
 // <== Invisible Mode [TPT/MoNKi] - Stulle
+
+// ==> Design Settings [eWombat/Stulle] - Max
+HBRUSH CemuleDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	m_hbrWndClr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	pDC->SetBkMode(TRANSPARENT);
+
+	return m_hbrWndClr;
+}
+// <== Design Settings [eWombat/Stulle] - Max

@@ -352,6 +352,15 @@ private:
 	bool	b_HideApp;
 
 	// <== Invisible Mode [TPT/MoNKi] - Stulle
+
+	// ==> Design Settings [eWombat/Stulle] - Max
+private:
+	HBRUSH	m_hbrWndClr;
+public:
+	HBRUSH	GetWndClr()	{return m_hbrWndClr;}
+protected:
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	// <== Design Settings [eWombat/Stulle] - Max
 };
 
 

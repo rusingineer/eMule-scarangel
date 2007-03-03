@@ -19,7 +19,7 @@ public:
 
 	void Init(void);
 
-	void CMuleStatusBarCtrl::UpdateColor(); // Design Settings [eWombat/Stulle] - Max
+	void UpdateColor(); // Design Settings [eWombat/Stulle] - Max
 
 protected:
 	int GetPaneAtPosition(CPoint& point) const;

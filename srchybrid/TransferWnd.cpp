@@ -2708,18 +2708,18 @@ void CTransferWnd::SetBackgroundColor(int nStyle)
 	}
 }
 // <== Design Settings [eWombat/Stulle] - Stulle
+
 // ==> Design Settings [eWombat/Stulle] - Max
 HBRUSH CTransferWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
-	
+	HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
 	COLORREF crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_transfer);
 
 	if(crTempColor == CLR_DEFAULT)
 		crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
-
-
 	
-	HBRUSH hbr = CreateSolidBrush(crTempColor);
+	if(crTempColor != CLR_DEFAULT)
+		hbr = CreateSolidBrush(crTempColor);
 
 	pDC->SetBkMode(TRANSPARENT);
 

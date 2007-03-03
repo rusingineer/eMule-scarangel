@@ -1875,16 +1875,16 @@ void CSearchResultsWnd::OnNMClickCattab2(NMHDR* /*pNMHDR*/, LRESULT *pResult)
 // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 // ==> Design Settings [eWombat/Stulle] - Max
-HBRUSH CSearchResultsWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+HBRUSH CSearchResultsWnd::OnCtlColor(CDC* pDC, CWnd* /*pWnd*/, UINT /*nCtlColor*/)
 {
+	HBRUSH hbr = theApp.emuledlg->GetWndClr();
 	COLORREF crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_search);
 
 	if(crTempColor == CLR_DEFAULT)
 		crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
 
-
-
-	HBRUSH hbr = CreateSolidBrush(crTempColor);
+	if(crTempColor != CLR_DEFAULT)
+		hbr = CreateSolidBrush(crTempColor);
 
 	pDC->SetBkMode(TRANSPARENT);
 

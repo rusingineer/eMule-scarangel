@@ -194,6 +194,7 @@ void CMuleStatusBarCtrl::OnToolTipNotify( UINT /*id*/, NMHDR * pNotifyStruct, LR
 	pTI->lpszText = pzToolTipText;
 }
 // <== Enforce Ratio [Stulle] - Stulle
+
 // ==> Design Settings [eWombat/Stulle] - Max
 void CMuleStatusBarCtrl::UpdateColor()
 {

@@ -595,14 +595,14 @@ void CSharedFilesWnd::OnShowWindow( BOOL bShow,UINT /*nStatus*/ )
 // ==> Design Settings [eWombat/Stulle] - Max
 HBRUSH CSharedFilesWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
+	HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
 	COLORREF crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_shared);
 
 	if(crTempColor == CLR_DEFAULT)
 		crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
 
-
-
-	HBRUSH hbr = CreateSolidBrush(crTempColor);
+	if(crTempColor != CLR_DEFAULT)
+		hbr = CreateSolidBrush(crTempColor);
 
 	pDC->SetBkMode(TRANSPARENT);
 
