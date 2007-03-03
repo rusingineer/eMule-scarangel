@@ -66,4 +66,7 @@ protected:
 	afx_msg void OnLvnItemActivateFrlist(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMClickFrlist(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnStnDblclickFriendsicon();
+	// ==> Design Settings [eWombat/Stulle] - Max
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	// <== Design Settings [eWombat/Stulle] - Max
 };

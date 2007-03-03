@@ -31,6 +31,7 @@
 #include "ClientUDPSocket.h"
 #include "ListenSocket.h"
 // <== Random Ports [MoNKi] - Stulle
+#include "MuleStatusBarCtrl.h" // Design Settings [eWombat/Stulle] - Max
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -1384,6 +1385,10 @@ BOOL CPPgScar::OnApply()
 	if(m_bDesignChanged)
 	{
 		m_bDesignChanged = false;
+                
+		theApp.emuledlg->activewnd->RedrawWindow();//redraw only the active Wnd after color change - Max
+		theApp.emuledlg->statusbar->UpdateColor();
+                	
 		theApp.emuledlg->transferwnd->Localize();
 		theApp.emuledlg->sharedfileswnd->sharedfilesctrl.Localize();
 		theApp.emuledlg->serverwnd->serverlistctrl.Localize();
@@ -3141,6 +3146,13 @@ void CPPgScar::InitSubStyleCombo()
 			m_SubCombo.AddString(GetResString(IDS_DEFAULT));
 			m_SubCombo.AddString(GetResString(IDS_COLOR_W1));
 			m_SubCombo.AddString(GetResString(IDS_COLOR_W2));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_W3));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_W4));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_W5));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_W6));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_W7));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_W8));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_W9));
 		}break;
 		default:
 			break;
@@ -3178,7 +3190,7 @@ void CPPgScar::UpdateStyles(bool bShow)
 		{
 			m_OnOff.SetWindowText( GetResString(IDS_COLOR_ON) );
 			bEnable = false;
-			m_BackColor.EnableWindow(iMasterValue == background_styles);
+			m_BackColor.EnableWindow(iMasterValue >= background_styles);
 		}
 	}
 	else

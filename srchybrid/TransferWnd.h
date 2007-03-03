@@ -164,6 +164,10 @@ protected:
 	afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
 	// <== XP Style Menu [Xanatos] - Stulle
 
+	// ==> Design Settings [eWombat/Stulle] - Max
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	// <== Design Settings [eWombat/Stulle] - Max
+
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	void		CreateCategoryMenus();
 	CTitleMenu	m_mnuCategory;

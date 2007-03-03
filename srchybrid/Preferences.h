@@ -247,7 +247,14 @@ enum eBackgroundStyles
 enum eWindowStyles
 {
 	style_w_default = 0,
+	style_w_kademlia,
+	style_w_server,
 	style_w_transfer,
+	style_w_search,
+	style_w_shared,
+	style_w_messages,
+	style_w_irc,
+	style_w_statistic,
 	style_w_statusbar,
 	style_w_count
 };

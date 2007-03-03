@@ -480,6 +480,9 @@ BOOL CemuleDlg::OnInitDialog()
 	// this solves font and sizing problems when using large system fonts
 	statusbar->SubclassWindow(GetDlgItem(IDC_STATUSBAR)->m_hWnd);
 	statusbar->EnableToolTips(true);
+
+	statusbar->UpdateColor();// Design Settings [eWombat/Stulle] - Max
+
 	SetStatusBarPartsSize();
 
 	// create main window dialog pages

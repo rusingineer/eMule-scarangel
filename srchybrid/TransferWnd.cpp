@@ -80,6 +80,7 @@ BEGIN_MESSAGE_MAP(CTransferWnd, CResizableDialog)
 	ON_NOTIFY(LVN_BEGINDRAG, IDC_DOWNLOADLIST, OnLvnBegindrag)
 	ON_NOTIFY(LVN_KEYDOWN, IDC_DOWNLOADLIST, OnLvnKeydownDownloadlist)
 	ON_WM_MEASUREITEM() // XP Style Menu [Xanatos] - Stulle
+	ON_WM_CTLCOLOR() // Design Settings [eWombat/Stulle] - Max
 END_MESSAGE_MAP()
 
 CTransferWnd::CTransferWnd(CWnd* pParent /*=NULL*/)
@@ -2707,3 +2708,21 @@ void CTransferWnd::SetBackgroundColor(int nStyle)
 	}
 }
 // <== Design Settings [eWombat/Stulle] - Stulle
+// ==> Design Settings [eWombat/Stulle] - Max
+HBRUSH CTransferWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	
+	COLORREF crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_transfer);
+
+	if(crTempColor == CLR_DEFAULT)
+		crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
+
+
+	
+	HBRUSH hbr = CreateSolidBrush(crTempColor);
+
+	pDC->SetBkMode(TRANSPARENT);
+
+	return hbr;
+}
+// <== Design Settings [eWombat/Stulle] - Max

@@ -68,6 +68,7 @@ BEGIN_MESSAGE_MAP(CServerWnd, CResizableDialog)
 	ON_EN_CHANGE(IDC_SERVERMETURL, OnSvrTextChange)
 	ON_STN_DBLCLK(IDC_SERVLST_ICO, OnStnDblclickServlstIco)
 	ON_NOTIFY(UM_SPN_SIZED, IDC_SPLITTER_SERVER, OnSplitterMoved)
+	ON_WM_CTLCOLOR() // Design Settings [eWombat/Stulle] - Max
 END_MESSAGE_MAP()
 
 CServerWnd::CServerWnd(CWnd* pParent /*=NULL*/)
@@ -1076,3 +1077,21 @@ void CServerWnd::OnSplitterMoved(NMHDR* pNMHDR, LRESULT* /*pResult*/)
 	SPC_NMHDR* pHdr = (SPC_NMHDR*)pNMHDR;
 	DoResize(pHdr->delta);
 }
+
+// ==> Design Settings [eWombat/Stulle] - Max
+HBRUSH CServerWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	COLORREF crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_server);
+
+	if(crTempColor == CLR_DEFAULT)
+		crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
+
+
+
+	HBRUSH hbr = CreateSolidBrush(crTempColor);
+
+	pDC->SetBkMode(TRANSPARENT);
+
+	return hbr;
+}
+// <== Design Settings [eWombat/Stulle] - Max

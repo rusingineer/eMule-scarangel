@@ -3007,7 +3007,14 @@
 #define IDS_COLOR_MASTER5               60975
 #define IDS_COLOR_W1                    60976
 #define IDS_COLOR_W2                    60977
-#define IDS_COLOR_MASTER6               60978
+#define IDS_COLOR_W3			60978
+#define IDS_COLOR_W4			60979
+#define IDS_COLOR_W5			60980
+#define IDS_COLOR_W6			60981
+#define IDS_COLOR_W7			60982
+#define IDS_COLOR_W8			60983
+#define IDS_COLOR_W9			60984
+#define IDS_COLOR_MASTER6               60985
 // <== Design Settings [eWombat/Stulle] - Stulle
 // ==> Limit PS by amount of data uploaded [Stulle] - Stulle
 #define IDS_PS_AMOUNT_LIMIT             61000

@@ -105,6 +105,7 @@ BEGIN_MESSAGE_MAP(CSearchResultsWnd, CResizableFormView)
 	ON_MESSAGE(UM_DELAYED_EVALUATE, OnChangeFilter)
 	ON_NOTIFY(TBN_DROPDOWN, IDC_SEARCHLST_ICO, OnSearchListMenuBtnDropDown)
 	ON_NOTIFY(NM_CLICK, IDC_CATTAB2, OnNMClickCattab2) // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	ON_WM_CTLCOLOR() // Design Settings [eWombat/Stulle] - Max
 END_MESSAGE_MAP()
 
 CSearchResultsWnd::CSearchResultsWnd(CWnd* /*pParent*/)
@@ -1872,3 +1873,21 @@ void CSearchResultsWnd::OnNMClickCattab2(NMHDR* /*pNMHDR*/, LRESULT *pResult)
 	*pResult = 0;
 }
 // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+// ==> Design Settings [eWombat/Stulle] - Max
+HBRUSH CSearchResultsWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	COLORREF crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_search);
+
+	if(crTempColor == CLR_DEFAULT)
+		crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
+
+
+
+	HBRUSH hbr = CreateSolidBrush(crTempColor);
+
+	pDC->SetBkMode(TRANSPARENT);
+
+	return hbr;
+}
+// <== Design Settings [eWombat/Stulle] - Max

@@ -78,6 +78,9 @@ class CIrcWnd : public CResizableDialog
 		afx_msg void OnBnClickedReset();
 		afx_msg LONG OnSelEndOK(UINT lParam, LONG /*wParam*/);
 		afx_msg LONG OnSelEndCancel(UINT lParam, LONG /*wParam*/);
+		// ==> Design Settings [eWombat/Stulle] - Max
+		afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+		// <== Design Settings [eWombat/Stulle] - Max
 		void DoResize(int iDelta);
 		virtual LRESULT DefWindowProc(UINT uMessage, WPARAM wParam, LPARAM lParam);
 		CSplitterControl m_wndSplitterIRC;

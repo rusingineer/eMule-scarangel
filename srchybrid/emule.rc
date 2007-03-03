@@ -5853,8 +5853,15 @@ BEGIN
     IDS_COLOR_SE3           "Filtered sever"
     IDS_COLOR_SE4           "Dead server"
     IDS_COLOR_SE5           "Unreliable server"
-    IDS_COLOR_W1            "Transfer window"
-    IDS_COLOR_W2            "Statusbar"
+    IDS_COLOR_W1            "Kademlia window"
+    IDS_COLOR_W2            "Server window"
+    IDS_COLOR_W3            "Transfer window"
+    IDS_COLOR_W4            "Search window"
+    IDS_COLOR_W5            "Shared files window"
+    IDS_COLOR_W6            "Messages window"
+    IDS_COLOR_W7            "IRC window"
+    IDS_COLOR_W8            "Statistic window"
+    IDS_COLOR_W9            "Statusbar"
     IDS_COLOR_MASTER6       "Window styles"
     // <== Design Settings [eWombat/Stulle] - Stulle
     // ==> Limit PS by amount of data uploaded [Stulle] - Stulle

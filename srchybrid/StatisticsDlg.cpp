@@ -59,6 +59,7 @@ BEGIN_MESSAGE_MAP(CStatisticsDlg, CResizableDialog)
 	ON_STN_DBLCLK(IDC_SCOPE_U, OnStnDblclickScopeU)
 	ON_STN_DBLCLK(IDC_STATSSCOPE, OnStnDblclickStatsscope)
 	ON_MESSAGE(UM_OSCOPEPOSITION, OnOscopePositionMsg)
+	ON_WM_CTLCOLOR() // Design Settings [eWombat/Stulle] - Max
 END_MESSAGE_MAP()
 
 //Xman
@@ -4045,4 +4046,21 @@ BOOL CStatisticsDlg::PreTranslateMessage(MSG* pMsg)
 	}
 
 	return CDialog::PreTranslateMessage(pMsg);
+}
+
+// ==> Design Settings [eWombat/Stulle] - Max
+HBRUSH CStatisticsDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	COLORREF crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_statistic);
+
+	if(crTempColor == CLR_DEFAULT)
+		crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
+
+
+
+	HBRUSH hbr = CreateSolidBrush(crTempColor);
+
+	pDC->SetBkMode(TRANSPARENT);
+
+	return hbr;
 }

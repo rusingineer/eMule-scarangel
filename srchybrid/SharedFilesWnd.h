@@ -75,4 +75,7 @@ protected:
 	afx_msg void OnLvnItemActivateHistorylist(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMClickHistorylist(NMHDR *pNMHDR, LRESULT *pResult);
 	//Xman end
+	// ==> Design Settings [eWombat/Stulle] - Max
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	// <== Design Settings [eWombat/Stulle] - Max
 };

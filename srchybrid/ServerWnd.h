@@ -111,4 +111,7 @@ protected:
 	afx_msg void OnStnDblclickServlstIco();
 	afx_msg void OnSplitterMoved(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnWindowPosChanged(WINDOWPOS* lpwndpos);
+	// ==> Design Settings [eWombat/Stulle] - Max
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	// <== Design Settings [eWombat/Stulle] - Max
 };

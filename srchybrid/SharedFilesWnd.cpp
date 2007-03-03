@@ -53,6 +53,7 @@ BEGIN_MESSAGE_MAP(CSharedFilesWnd, CResizableDialog)
 	ON_NOTIFY(NM_CLICK, IDC_DOWNHISTORYLIST, OnNMClickHistorylist)
 	ON_WM_SHOWWINDOW() 
 	//Xman end
+	ON_WM_CTLCOLOR() // Design Settings [eWombat/Stulle] - Max
 END_MESSAGE_MAP()
 
 CSharedFilesWnd::CSharedFilesWnd(CWnd* pParent /*=NULL*/)
@@ -590,3 +591,21 @@ void CSharedFilesWnd::OnShowWindow( BOOL bShow,UINT /*nStatus*/ )
 	//Xman end
 }
 //Xman end
+
+// ==> Design Settings [eWombat/Stulle] - Max
+HBRUSH CSharedFilesWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	COLORREF crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_shared);
+
+	if(crTempColor == CLR_DEFAULT)
+		crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
+
+
+
+	HBRUSH hbr = CreateSolidBrush(crTempColor);
+
+	pDC->SetBkMode(TRANSPARENT);
+
+	return hbr;
+}
+// <== Design Settings [eWombat/Stulle] - Max

@@ -57,4 +57,8 @@ protected:
 	afx_msg void OnBnClickedFirewallcheckbutton();
 	afx_msg void OnSysColorChange();
 	afx_msg void OnEnSetfocusBootstrapip();
+
+	// ==> Design Settings [eWombat/Stulle] - Max
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	// <== Design Settings [eWombat/Stulle] - Max
 };

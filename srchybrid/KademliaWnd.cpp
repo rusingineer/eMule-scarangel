@@ -52,6 +52,7 @@ BEGIN_MESSAGE_MAP(CKademliaWnd, CResizableDialog)
 	ON_EN_CHANGE(IDC_BOOTSTRAPPORT, UpdateControlsState)
 	ON_BN_CLICKED(IDC_RADCLIENTS, UpdateControlsState)
 	ON_BN_CLICKED(IDC_RADIP, UpdateControlsState)
+	ON_WM_CTLCOLOR() // Design Settings [eWombat/Stulle] - Max
 END_MESSAGE_MAP()
 
 CKademliaWnd::CKademliaWnd(CWnd* pParent /*=NULL*/)
@@ -324,3 +325,21 @@ void CKademliaWnd::ContactRef(const Kademlia::CContact* contact)
 {
 	m_contactListCtrl->ContactRef(contact);
 }
+
+// ==> Design Settings [eWombat/Stulle] - Max
+HBRUSH CKademliaWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	COLORREF crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_kademlia);
+
+	if(crTempColor == CLR_DEFAULT)
+		crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
+
+
+
+	HBRUSH hbr = CreateSolidBrush(crTempColor);
+
+	pDC->SetBkMode(TRANSPARENT);
+
+	return hbr;
+}
+// <== Design Settings [eWombat/Stulle] - Max

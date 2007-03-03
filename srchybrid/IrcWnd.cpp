@@ -76,6 +76,7 @@ ON_MESSAGE(UM_CLOSETAB, OnCloseTab)
 ON_MESSAGE(UM_QUERYTAB, OnQueryTab)
 ON_MESSAGE(UM_CPN_SELENDOK, OnSelEndOK)
 ON_MESSAGE(UM_CPN_SELENDCANCEL, OnSelEndCancel)
+ON_WM_CTLCOLOR() // Design Settings [eWombat/Stulle] - Max
 END_MESSAGE_MAP()
 
 CIrcWnd::CIrcWnd(CWnd* pParent ) : CResizableDialog(CIrcWnd::IDD, pParent)
@@ -1392,3 +1393,21 @@ void CIrcWnd::OnBnClickedReset()
 	m_editInputWindow.SetSel(iSelStart, iSelEnd);//update selection info
 	m_editInputWindow.SetFocus();//set focus (from button) to edit control
 }
+
+// ==> Design Settings [eWombat/Stulle] - Max
+HBRUSH CIrcWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	COLORREF crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_irc);
+
+	if(crTempColor == CLR_DEFAULT)
+		crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
+
+
+
+	HBRUSH hbr = CreateSolidBrush(crTempColor);
+
+	pDC->SetBkMode(TRANSPARENT);
+
+	return hbr;
+}
+// <== Design Settings [eWombat/Stulle] - Max

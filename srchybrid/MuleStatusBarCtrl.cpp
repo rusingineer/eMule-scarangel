@@ -194,3 +194,14 @@ void CMuleStatusBarCtrl::OnToolTipNotify( UINT /*id*/, NMHDR * pNotifyStruct, LR
 	pTI->lpszText = pzToolTipText;
 }
 // <== Enforce Ratio [Stulle] - Stulle
+// ==> Design Settings [eWombat/Stulle] - Max
+void CMuleStatusBarCtrl::UpdateColor()
+{
+	COLORREF crTempColor_stb = thePrefs.GetStyleBackColor(window_styles, style_w_statusbar);
+
+	if(crTempColor_stb == CLR_DEFAULT)
+		crTempColor_stb = thePrefs.GetStyleBackColor(window_styles, style_w_default);
+
+	SetBkColor(crTempColor_stb);
+};
+// <== Design Settings [eWombat/Stulle] - Max
