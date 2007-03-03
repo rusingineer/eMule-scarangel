@@ -376,7 +376,7 @@ void CUpDownClient::Init()
 	m_bWebCacheSupportsMultiOHCBs = false;
 	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
-	m_bGiveWaittimeBack = false; // m000h
+	m_bGiveWaittimeBack = false; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 }
 
 CUpDownClient::~CUpDownClient(){
