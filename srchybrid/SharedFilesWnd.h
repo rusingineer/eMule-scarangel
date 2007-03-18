@@ -51,6 +51,13 @@ private:
 	CSplitterControl m_wndSplitter;
 
 protected:
+
+	HBRUSH m_hbrMyBrush;
+	CBrush m_brMyBrush;
+	COLORREF m_backcol;
+
+	void OnBackcolor();
+
 	void SetAllIcons();
 	void DoResize(int delta);
 

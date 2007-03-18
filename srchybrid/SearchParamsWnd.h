@@ -73,7 +73,7 @@ protected:
 	CSize m_szMRU;
 	CSize m_szFloat;
 	CCustomAutoComplete* m_pacSearchString;
-
+	
 	void UpdateControls();
 	void UpdateUnicodeCtrl();
 	BOOL SaveSearchStrings();
@@ -102,7 +102,4 @@ protected:
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
 	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
-	// ==> Design Settings [eWombat/Stulle] - Max
-	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-	// <== Design Settings [eWombat/Stulle] - Max
 };

@@ -58,7 +58,14 @@ class CIrcWnd : public CResizableDialog
 		CIrcChannelTabCtrl m_tabctrlChannelSelect;
 		CIrcNickListCtrl m_listctrlNickList;
 		CIrcChannelListCtrl m_listctrlServerChannelList;
-	protected:
+
+		void OnBackcolor();
+	
+protected:
+
+		CBrush m_brMyBrush;
+		HBRUSH hbr;
+
 		virtual BOOL OnInitDialog();
 		virtual void OnSize(UINT iType, int iCx, int iCy);
 		virtual int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -90,4 +97,5 @@ class CIrcWnd : public CResizableDialog
 		CString m_sSendString;
 		bool m_bLoggedIn;
 		bool m_bConnected;
+		
 };

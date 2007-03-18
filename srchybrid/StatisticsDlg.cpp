@@ -4049,6 +4049,45 @@ BOOL CStatisticsDlg::PreTranslateMessage(MSG* pMsg)
 }
 
 // ==> Design Settings [eWombat/Stulle] - Max
+void CStatisticsDlg::OnBackcolor() 
+{
+	// TODO: Add your control notification handler code here
+	m_backcol = COLORREF(RGB(0,255,255));//<- testcolor
+	if (m_brMyBrush.Detach())  // check if brush already exists
+		m_brMyBrush.DeleteObject();
+	m_brMyBrush.CreateSolidBrush(m_backcol);
+	m_hbrMyBrush = (HBRUSH) m_brMyBrush;
+
+
+}
+
+HBRUSH CStatisticsDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	// TODO: Change any attributes of the DC here
+	if (nCtlColor == CTLCOLOR_DLG)
+		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+/*
+	int b1 = pWnd->GetDlgCtrlID();
+
+	if (b1 == IDC_QUEUECOUNT_LABEL)
+	{ pDC->SetBkMode(TRANSPARENT);
+	//pDC->SetTextColor(m_textcol);
+	hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+	//pDC->SetBkColor(m_backcol);
+	}
+
+	if (b1 == IDC_QUEUECOUNT)
+	{ pDC->SetBkMode(TRANSPARENT);
+	//pDC->SetTextColor(m_textcol);
+	hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+	//pDC->SetBkColor(m_backcol);
+	}
+	*/
+	return hbr;
+}
+/*
 HBRUSH CStatisticsDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
@@ -4064,4 +4103,5 @@ HBRUSH CStatisticsDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 	return hbr;
 }
+*/
 // <== Design Settings [eWombat/Stulle] - Max

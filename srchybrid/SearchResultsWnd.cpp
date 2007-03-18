@@ -182,6 +182,7 @@ void CSearchResultsWnd::OnInitialUpdate()
 		GetDlgItem(IDC_STATIC_DLTOof)->SetFont(&theApp.m_fontSymbol);
 		GetDlgItem(IDC_STATIC_DLTOof)->SetWindowText(GetExStyle() & WS_EX_LAYOUTRTL ? _T("3") : _T("4")); // show a right-arrow
 	}
+	void OnBackcolor();
 }
 
 void CSearchResultsWnd::DoDataExchange(CDataExchange* pDX)
@@ -1875,18 +1876,48 @@ void CSearchResultsWnd::OnNMClickCattab2(NMHDR* /*pNMHDR*/, LRESULT *pResult)
 // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 // ==> Design Settings [eWombat/Stulle] - Max
-HBRUSH CSearchResultsWnd::OnCtlColor(CDC* pDC, CWnd* /*pWnd*/, UINT /*nCtlColor*/)
+void CSearchResultsWnd::OnBackcolor() 
 {
-	HBRUSH hbr = theApp.emuledlg->GetWndClr();
 	COLORREF crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_search);
 
 	if(crTempColor == CLR_DEFAULT)
 		crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
 
-	if(crTempColor != CLR_DEFAULT)
-		hbr = CreateSolidBrush(crTempColor);
+	m_brMyBrush.DeleteObject();
 
-	pDC->SetBkMode(TRANSPARENT);
+	if(crTempColor != CLR_DEFAULT)
+		m_brMyBrush.CreateSolidBrush(crTempColor);
+}
+
+HBRUSH CSearchResultsWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = theApp.emuledlg->GetWndClr();
+
+	//hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	if (nCtlColor == CTLCOLOR_DLG)
+		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+
+	int b1 = pWnd->GetDlgCtrlID();
+
+	switch(b1)
+	{
+	case	IDC_SEARCHLST_ICO:
+		//case	IDC_SERVLIST_TEXT:
+		//case	IDC_SSTATIC4:
+		//case	IDC_SSTATIC5:
+		//case	IDC_SSTATIC7:
+		//case	IDC_SSTATIC3:
+		{ 
+			pDC->SetBkMode(TRANSPARENT);
+
+			hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+			//pDC->SetTextColor(m_textcol);
+			//pDC->SetBkColor(m_backcol);
+			break;
+		}
+
+	}
 
 	return hbr;
 }

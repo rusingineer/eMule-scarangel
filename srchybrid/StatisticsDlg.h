@@ -142,6 +142,13 @@ private:
 	HTREEITEM h_allocSizes[32];
 
 protected:
+
+	HBRUSH m_hbrMyBrush;
+	CBrush m_brMyBrush;
+	COLORREF m_backcol;
+
+	void OnBackcolor();
+
 	void SetAllIcons();
 
 	virtual BOOL OnInitDialog(); 

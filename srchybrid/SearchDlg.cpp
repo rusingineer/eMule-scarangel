@@ -94,6 +94,7 @@ int CSearchDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	LoadBarState(SEARCH_PARAMS_PROFILE);
 	DockParametersWnd(); // Too much bug reports about vanished search parameters window. Force to dock.
 	ShowControlBar(m_pwndParams, TRUE, TRUE);
+
 	Localize();
 
 	return 0;
@@ -306,3 +307,11 @@ BOOL CSearchDlg::PreTranslateMessage(MSG* pMsg)
 	}
 	return CFrameWnd::PreTranslateMessage(pMsg);
 }
+
+// ==> Design Settings [eWombat/Stulle] - Max
+void CSearchDlg::OnBackcolor() 
+{
+	m_pwndResults->OnBackcolor();
+	m_pwndParams->RedrawWindow();
+}
+// <== Design Settings [eWombat/Stulle] - Max

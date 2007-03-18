@@ -231,6 +231,8 @@ BOOL CTransferWnd::OnInitDialog()
 	m_tooltipCats->SetDelayTime(TTDT_INITIAL, thePrefs.GetToolTipDelay()*1000);
 	m_tooltipCats->Activate(TRUE);
 
+	OnBackcolor();
+
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	/*
 	VerifyCatTabSize();
@@ -2710,19 +2712,59 @@ void CTransferWnd::SetBackgroundColor(int nStyle)
 // <== Design Settings [eWombat/Stulle] - Stulle
 
 // ==> Design Settings [eWombat/Stulle] - Max
-HBRUSH CTransferWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+void CTransferWnd::OnBackcolor() 
 {
-	HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
 	COLORREF crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_transfer);
 
 	if(crTempColor == CLR_DEFAULT)
 		crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
-	
+		
+	m_brMyBrush.DeleteObject();
+
 	if(crTempColor != CLR_DEFAULT)
-		hbr = CreateSolidBrush(crTempColor);
+		m_brMyBrush.CreateSolidBrush(crTempColor);
+}
 
-	pDC->SetBkMode(TRANSPARENT);
+HBRUSH CTransferWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
 
+	if (nCtlColor == CTLCOLOR_DLG)
+		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+
+	int b1 = pWnd->GetDlgCtrlID();
+	
+	switch(b1)
+	{
+		case	IDC_QUEUECOUNT_LABEL:
+		case	IDC_QUEUECOUNT:
+			{ 
+				pDC->SetBkMode(TRANSPARENT);
+
+				hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+				//pDC->SetTextColor(m_textcol);
+				//pDC->SetBkColor(m_backcol);
+				break;
+			}
+
+	}
+	/*
+	if (b1 == IDC_QUEUECOUNT_LABEL)
+	{ 
+		pDC->SetBkMode(TRANSPARENT);
+		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+		//pDC->SetTextColor(m_textcol);
+		//pDC->SetBkColor(m_backcol);
+	}
+
+	if (b1 == IDC_QUEUECOUNT)
+	{ 
+		pDC->SetBkMode(TRANSPARENT);
+		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+		//pDC->SetTextColor(m_textcol);
+		//pDC->SetBkColor(m_backcol);
+	}
+	*/
 	return hbr;
 }
 // <== Design Settings [eWombat/Stulle] - Max

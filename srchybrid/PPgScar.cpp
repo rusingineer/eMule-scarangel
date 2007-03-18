@@ -31,7 +31,11 @@
 #include "ClientUDPSocket.h"
 #include "ListenSocket.h"
 // <== Random Ports [MoNKi] - Stulle
+
 #include "MuleStatusBarCtrl.h" // Design Settings [eWombat/Stulle] - Max
+#include "IrcWnd.h"
+#include "KademliaWnd.h"
+#include "SearchDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -1385,8 +1389,15 @@ BOOL CPPgScar::OnApply()
 	if(m_bDesignChanged)
 	{
 		m_bDesignChanged = false;
-                
+
+		theApp.emuledlg->kademliawnd->OnBackcolor();
+		theApp.emuledlg->serverwnd->OnBackcolor();
+		theApp.emuledlg->transferwnd->OnBackcolor();
+		theApp.emuledlg->searchwnd->OnBackcolor();
+		theApp.emuledlg->ircwnd->OnBackcolor();
+
 		theApp.emuledlg->activewnd->RedrawWindow();//redraw only the active Wnd after color change - Max
+		
 		theApp.emuledlg->statusbar->UpdateColor();
                 	
 		theApp.emuledlg->transferwnd->Localize();

@@ -50,6 +50,12 @@ protected:
 	HICON icon_msg;
 	CSplitterControl m_wndSplitterchat;
 
+	HBRUSH m_hbrMyBrush;
+	CBrush m_brMyBrush;
+	COLORREF m_backcol;
+
+	void OnBackcolor(); 
+
 	void SetAllIcons();
 	void DoResize(int delta);
 

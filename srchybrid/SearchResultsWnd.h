@@ -97,8 +97,11 @@ public:
 	int		GetSelectedCat() { return m_cattabs.GetCurSel(); }
 	void	UpdateCatTabs();
 
+	void OnBackcolor();
+
 	uint32	GetFilterColumn() const				{ return m_nFilterColumn; }
 
+	
 protected:
 	Packet*		searchpacket;
 	bool		m_b64BitSearchPacket;
@@ -116,6 +119,8 @@ protected:
 	CDropDownButton* m_btnSearchListMenu;
 	int			m_iSentMoreReq;
 	uint32		m_nFilterColumn;
+
+	CBrush m_brMyBrush;
 
 	bool StartNewSearch(SSearchParams* pParams);
 	void SearchStarted();

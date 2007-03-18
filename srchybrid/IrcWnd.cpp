@@ -206,6 +206,9 @@ BOOL CIrcWnd::OnInitDialog()
 	m_listctrlServerChannelList.Init();
 	m_listctrlNickList.Init();
 	m_tabctrlChannelSelect.Init();
+
+	OnBackcolor();
+
 	OnChatTextChange();
 
 	return true;
@@ -1395,19 +1398,27 @@ void CIrcWnd::OnBnClickedReset()
 }
 
 // ==> Design Settings [eWombat/Stulle] - Max
-HBRUSH CIrcWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+void CIrcWnd::OnBackcolor() 
 {
-	HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
 	COLORREF crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_irc);
 
 	if(crTempColor == CLR_DEFAULT)
 		crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
+	
+	m_brMyBrush.DeleteObject();
 
 	if(crTempColor != CLR_DEFAULT)
-		hbr = CreateSolidBrush(crTempColor);
+		m_brMyBrush.CreateSolidBrush(crTempColor);
+}
 
-	pDC->SetBkMode(TRANSPARENT);
+HBRUSH CIrcWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+	
+	if (nCtlColor == CTLCOLOR_DLG)
+		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
 
 	return hbr;
 }
+
 // <== Design Settings [eWombat/Stulle] - Max

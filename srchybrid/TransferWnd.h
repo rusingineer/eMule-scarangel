@@ -108,7 +108,9 @@ protected:
 	CFont bold;
 	// <== Client queue progress bar [Commander] - Stulle
 
-
+	CBrush m_brMyBrush;
+	HBRUSH hbr;
+	
 	void	ShowWnd2(EWnd2 uList);
 	void	SetWnd2(EWnd2 uWnd2);
 	void	DoResize(int delta);
@@ -177,6 +179,8 @@ protected:
 public:
 	int		GetActiveCategory()			{ return m_dlTab.GetCurSel(); }
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
-
 	void SetBackgroundColor(int nStyle); // Design Settings [eWombat/Stulle] - Stulle
+
+	void OnBackcolor();
+
 };

@@ -64,6 +64,9 @@ public:
 
 	void UpdateSearch(CSearchFile* pSearchFile);
 
+	void OnBackcolor();
+
+
 protected:
 	CSearchParamsWnd* m_pwndParams;
 
