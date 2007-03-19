@@ -1,4 +1,5 @@
 #pragma once
+#include "HypertextCtrl.h"
 #include "preferences.h"
 #include "TreeOptionsCtrlEx.h"
 #include "BtnST.h"
@@ -373,7 +374,8 @@ private:
 	WEBCACHE,
 	BACKUP,
 	COLOR,
-//	UPDATE
+//	UPDATE,
+	SUPPORT
 	};
 	void SetTab(eTab tab);
 
@@ -438,8 +440,13 @@ private:
 	CColorButton		m_FontColor;
 	CButton		m_BackColorLabel;
 	CColorButton	m_BackColor;
-//	CButton m_ColorPreviewBox;
-//	CXColorStatic m_ColorPreview;
+
+	// Support
+	CHyperTextCtrl	m_HpLink;
+	CHyperTextCtrl	m_BoardGerLink;
+	CHyperTextCtrl	m_BoardEngLink;
+	CHyperTextCtrl	m_RateLink;
+	CHyperTextCtrl	m_XtremeLink;
 	// <== Tabbed Preferences [TPT] - Stulle
 
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max

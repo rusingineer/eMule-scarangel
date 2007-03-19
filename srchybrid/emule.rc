@@ -3313,6 +3313,7 @@ SCHEDULEREDIT           ICON                    "res\\SchedulerEdit.ico"
 INVMODE                 ICON                    "res\\InvMode.ico"
 UPNP                    ICON                    "res\\UPnP.ico"
 PORTS                   ICON                    "res\\Ports.ico"
+SUPPORT                 ICON                    "res\\Support.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -5911,6 +5912,14 @@ BEGIN
     IDS_RND_PORT_LAST       "Last random port"
     IDS_RND_PORT_RESET      "Random ports safe restart time"
     // <== Random Ports [MoNKi] - Stulle
+    // ==> Support page in preferences [Stulle] - Stulle
+    IDS_SUPPORT             "Support"
+	IDS_HOMEPAGE            "Homepage"
+    IDS_BOARD_GER           "German support board"
+    IDS_BOARD_ENG           "English support board"
+    IDS_RATE                "Rate ScarAngel"
+    IDS_XTREME              "Xtreme Mod Homepage"
+    // <== Support page in preferences [Stulle] - Stulle
 END
 
 

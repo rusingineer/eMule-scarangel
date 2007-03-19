@@ -110,6 +110,7 @@ CPPgScar::CPPgScar()
 	m_imageList.Add(CTempIconLoader(_T("BACKUP")));
 	m_imageList.Add(CTempIconLoader(_T("SEARCHFILETYPE_PICTURE")));
 //	m_imageList.Add(CTempIconLoader(_T("UPDATE")));
+	m_imageList.Add(CTempIconLoader(_T("SUPPORT")));
 	// <== Tabbed Preferences [TPT] - Stulle
 
 	// ==> WebCache [WC team/MorphXT] - Stulle/Max
@@ -1662,6 +1663,30 @@ void CPPgScar::Localize(void)
 
 		InitMasterStyleCombo();
 		// <== Design Settings [eWombat/Stulle] - Stulle
+
+		// ==> Support page in preferences [Stulle] - Stulle
+		m_HpLink.AppendText(GetResString(IDS_HOMEPAGE)+_T(": "));
+		m_HpLink.AppendHyperLink(_T("eMule ScarAngel Mod"),0,CString(_T("http://scarangel.sourceforge.net/")),0,0);
+		m_BoardGerLink.AppendText(GetResString(IDS_BOARD_GER)+_T(": "));
+		m_BoardGerLink.AppendHyperLink(_T("eMule-web.de"),0,CString(_T("http://www.emule-web.de/board/")),0,0);
+		m_BoardEngLink.AppendText(GetResString(IDS_BOARD_ENG)+_T(": "));
+		m_BoardEngLink.AppendHyperLink(_T("eMule-project.net"),0,CString(_T("http://forum.emule-project.net/index.php?showforum=97")),0,0);
+		m_RateLink.AppendText(GetResString(IDS_RATE)+_T(": "));
+		m_RateLink.AppendHyperLink(_T("eMule-mods.de"),0,CString(_T("http://www.emule-mods.de/?comment=ScarAngel")),0,0);
+		m_XtremeLink.AppendText(GetResString(IDS_XTREME)+_T(": "));
+		m_XtremeLink.AppendHyperLink(_T("eMule Xtreme Mod official homepage"),0,CString(_T("http://www.xtreme-mod.net/")),0,0);
+
+		m_HpLink.ShowWindow(SW_HIDE);
+		m_HpLink.EnableWindow(FALSE);
+		m_BoardGerLink.ShowWindow(SW_HIDE);
+		m_BoardGerLink.EnableWindow(FALSE);
+		m_BoardEngLink.ShowWindow(SW_HIDE);
+		m_BoardEngLink.EnableWindow(FALSE);
+		m_RateLink.ShowWindow(SW_HIDE);
+		m_RateLink.EnableWindow(FALSE);
+		m_XtremeLink.ShowWindow(SW_HIDE);
+		m_XtremeLink.EnableWindow(FALSE);
+		// <== Support page in preferences [Stulle] - Stulle
 	}
 
 }
@@ -1993,11 +2018,13 @@ void CPPgScar::InitTab()
 
 	// Add all items with icon
 	m_tabCtr.SetImageList(&m_imageList);
-	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, SCAR, GetResString(IDS_SCARANGEL), 0, (LPARAM)SCAR);
-	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, WEBCACHE, GetResString(IDS_WEBCACHE), 1, (LPARAM)WEBCACHE);
-	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, BACKUP, GetResString(IDS_BACKUP), 2, (LPARAM)BACKUP);
-	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, COLOR, GetResString(IDS_COLOR_BOX), 3, (LPARAM)COLOR);
-//	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, UPDATE, _T("Update"), 4, (LPARAM)UPDATE);
+	int iTemp=0;
+	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, SCAR, GetResString(IDS_SCARANGEL), iTemp++, (LPARAM)SCAR);
+	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, WEBCACHE, GetResString(IDS_WEBCACHE), iTemp++, (LPARAM)WEBCACHE);
+	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, BACKUP, GetResString(IDS_BACKUP), iTemp++, (LPARAM)BACKUP);
+	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, COLOR, GetResString(IDS_COLOR_BOX), iTemp++, (LPARAM)COLOR);
+//	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, UPDATE, _T("Update"), iTemp++, (LPARAM)UPDATE);
+	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, SUPPORT, GetResString(IDS_SUPPORT), iTemp++, (LPARAM)SUPPORT);
 }
 
 
@@ -2284,16 +2311,31 @@ void CPPgScar::InitControl()
 									CRect(right-60, top+140, right-10, top+165), this, IDC_COLOR_BACK);
 	m_BackColor.SetFont(GetFont());
 
-//	m_ColorPreviewBox.CreateEx(0, _T("BUTTON"), _T("Preview"), 
-//						   WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
-//						   BS_GROUPBOX,
-//						CRect(left+10, top+180, right-10, top+240), this, IDC_COLOR_PREVIEW_BOX);
-//	m_ColorPreviewBox.SetFont(GetFont());
+	// Support
+	m_HpLink.CreateEx(0, _T("BUTTON"), _T(""), 
+						WS_BORDER | WS_VISIBLE | WS_CHILD | HTC_WORDWRAP | HTC_UNDERLINE_HOVER,
+						CRect(left+10, top, right-10, top+20), this, IDC_HP_LINK);
+	m_HpLink.SetFont(GetFont());
 
-//	m_ColorPreview.CreateEx(0, _T("STATIC"), _T("Thus have I politicly begun my reign."),
-//						WS_CHILD | ES_CENTER, 
-//						CRect(left+15, top+205, right-15, top+220), this, IDC_COLOR_PREVIEW);
-//	m_ColorPreview.SetFont(GetFont());
+	m_BoardGerLink.CreateEx(0, _T("BUTTON"), _T(""), 
+						WS_BORDER | WS_VISIBLE | WS_CHILD | HTC_WORDWRAP | HTC_UNDERLINE_HOVER,
+						CRect(left+10, top+30, right-10, top+50), this, IDC_BOARD_GER_LINK);
+	m_BoardGerLink.SetFont(GetFont());
+
+	m_BoardEngLink.CreateEx(0, _T("BUTTON"), _T(""), 
+						WS_BORDER | WS_VISIBLE | WS_CHILD | HTC_WORDWRAP | HTC_UNDERLINE_HOVER,
+						CRect(left+10, top+60, right-10, top+80), this, IDC_BOARD_ENG_LINK);
+	m_BoardEngLink.SetFont(GetFont());
+
+	m_RateLink.CreateEx(0, _T("BUTTON"), _T(""), 
+						WS_BORDER | WS_VISIBLE | WS_CHILD | HTC_WORDWRAP | HTC_UNDERLINE_HOVER,
+						CRect(left+10, top+90, right-10, top+110), this, IDC_RATE_LINK);
+	m_RateLink.SetFont(GetFont());
+
+	m_XtremeLink.CreateEx(0, _T("BUTTON"), _T(""), 
+						WS_BORDER | WS_VISIBLE | WS_CHILD | HTC_WORDWRAP | HTC_UNDERLINE_HOVER,
+						CRect(left+10, top+120, right-10, top+150), this, IDC_XTREME_LINK);
+	m_XtremeLink.SetFont(GetFont());
 }
 
 void CPPgScar::OnTabSelectionChange(NMHDR* /*pNMHDR*/, LRESULT *pResult)
@@ -2413,13 +2455,20 @@ void CPPgScar::SetTab(eTab tab){
 				m_BackColorLabel.EnableWindow(FALSE);
 				m_BackColor.ShowWindow(SW_HIDE);
 				m_BackColor.EnableWindow(FALSE);
-//				m_ColorPreviewBox.ShowWindow(SW_HIDE);
-//				m_ColorPreviewBox.EnableWindow(FALSE);
-//				m_ColorPreview.ShowWindow(SW_HIDE);
-//				m_ColorPreview.EnableWindow(FALSE);
 				break; 
 /*			case UPDATE:
 				break;*/
+			case SUPPORT:
+				m_HpLink.ShowWindow(SW_HIDE);
+				m_HpLink.EnableWindow(FALSE);
+				m_BoardGerLink.ShowWindow(SW_HIDE);
+				m_BoardGerLink.EnableWindow(FALSE);
+				m_BoardEngLink.ShowWindow(SW_HIDE);
+				m_BoardEngLink.EnableWindow(FALSE);
+				m_RateLink.ShowWindow(SW_HIDE);
+				m_RateLink.EnableWindow(FALSE);
+				m_XtremeLink.ShowWindow(SW_HIDE);
+				m_XtremeLink.EnableWindow(FALSE);
 			default:
 				break;
 		}
@@ -2526,15 +2575,22 @@ void CPPgScar::SetTab(eTab tab){
 				m_BackColorLabel.EnableWindow(TRUE);
 				m_BackColor.ShowWindow(SW_SHOW);
 //				m_BackColor.EnableWindow(TRUE);
-//				m_ColorPreviewBox.ShowWindow(SW_SHOW);
-//				m_ColorPreviewBox.EnableWindow(TRUE);
-//				m_ColorPreview.ShowWindow(SW_SHOW);
-//				m_ColorPreview.EnableWindow(TRUE);
 				UpdateStyles(true);
 				break;
 /*			case UPDATE:
-				break;
-*/			default:
+				break;*/
+			case SUPPORT:
+				m_HpLink.ShowWindow(SW_SHOW);
+				m_HpLink.EnableWindow(TRUE);
+				m_BoardGerLink.ShowWindow(SW_SHOW);
+				m_BoardGerLink.EnableWindow(TRUE);
+				m_BoardEngLink.ShowWindow(SW_SHOW);
+				m_BoardEngLink.EnableWindow(TRUE);
+				m_RateLink.ShowWindow(SW_SHOW);
+				m_RateLink.EnableWindow(TRUE);
+				m_XtremeLink.ShowWindow(SW_SHOW);
+				m_XtremeLink.EnableWindow(TRUE);
+			default:
 				break;
 		}
 	}

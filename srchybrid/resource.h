@@ -3078,6 +3078,19 @@
 #define IDS_RND_PORT_LAST               61072
 #define IDS_RND_PORT_RESET              61073
 // <== Random Ports [MoNKi] - Stulle
+// ==> Support page in preferences [Stulle] - Stulle
+#define IDS_SUPPORT                     61080
+#define IDC_HP_LINK                     61081
+#define IDC_BOARD_GER_LINK              61082
+#define IDC_BOARD_ENG_LINK              61083
+#define IDC_RATE_LINK                   61084
+#define IDC_XTREME_LINK                 61085
+#define IDS_HOMEPAGE                    61086
+#define IDS_BOARD_GER                   61087
+#define IDS_BOARD_ENG                   61088
+#define IDS_RATE                        61089
+#define IDS_XTREME                      61090
+// <== Support page in preferences [Stulle] - Stulle
 
 // Next default values for new objects
 // 
