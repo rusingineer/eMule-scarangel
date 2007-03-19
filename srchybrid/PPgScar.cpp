@@ -1394,19 +1394,24 @@ BOOL CPPgScar::OnApply()
 		m_bDesignChanged = false;
                 
 		theApp.emuledlg->kademliawnd->OnBackcolor();
+		theApp.emuledlg->kademliawnd->Localize();
 		theApp.emuledlg->serverwnd->OnBackcolor();
+		theApp.emuledlg->serverwnd->Localize();
 		theApp.emuledlg->transferwnd->OnBackcolor();
+		theApp.emuledlg->transferwnd->Localize();
 		theApp.emuledlg->searchwnd->OnBackcolor();
+		theApp.emuledlg->searchwnd->Localize();
 		theApp.emuledlg->sharedfileswnd->OnBackcolor();
+		theApp.emuledlg->sharedfileswnd->Localize();
 		theApp.emuledlg->chatwnd->OnBackcolor();
+		theApp.emuledlg->chatwnd->Localize();
 		theApp.emuledlg->ircwnd->OnBackcolor();
+		theApp.emuledlg->ircwnd->Localize();
 		theApp.emuledlg->statisticswnd->OnBackcolor();
+		theApp.emuledlg->statisticswnd->Localize();
 
 		theApp.emuledlg->statusbar->UpdateColor();
-                	
-		theApp.emuledlg->transferwnd->Localize();
-		theApp.emuledlg->sharedfileswnd->sharedfilesctrl.Localize();
-		theApp.emuledlg->serverwnd->serverlistctrl.Localize();
+
 		theApp.emuledlg->activewnd->RedrawWindow();//redraw only the active Wnd after color change - Max
 	}
 	// <== Design Settings [eWombat/Stulle] - Stulle
