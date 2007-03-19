@@ -2510,22 +2510,22 @@ void CUpDownClient::ConnectionEstablished()
 	m_bUDPPending = false;
 
 
-	//Xman -Reask sources after IP change- v3 (main part by Maella)
+	//Xman -Reask sources after IP change- v4 
 	//Xman at this point we know, we have a internet-connection -> enable upload
 
 	static uint32 lastaskedforip;
-	if(theApp.uploadqueue->internetmaybedown==true)
+	if(theApp.internetmaybedown)
 	{
 		if(Kademlia::CKademlia::IsConnected() 
-			&& (theApp.serverconnect->IsConnected()==false || IsLowID(theApp.serverconnect->GetClientID()==false))
 			&& (theApp.uploadqueue->waitinglist.GetSize()>10 //check if we have clients queued, otherwise inetmaybedown gives a wrong value
 			|| theApp.last_ip_change==0) //we just started the client //Xman new adapter selection 
-			&& theApp.last_ip_change  < ::GetTickCount() - MIN2MS(3) //only once in 3 minutes
+			&& theApp.last_ip_change  < ::GetTickCount() - MIN2MS(2) //only once in 2 minutes
 			) 
 			theApp.m_bneedpublicIP=true;
 		if(theApp.IsConnected()) //only free the upload if we are connected. important! otherwise we would have problems with nafc-adapter on a hotstart
 		{
-			theApp.uploadqueue->internetmaybedown=false;
+			theApp.internetmaybedown=false;
+			theApp.last_traffic_reception=::GetTickCount();
 			theApp.pBandWidthControl->AddeMuleOut(1); //this reopens the upload (internetmaybedown checks for upload==0
 		}
 	}
@@ -2537,7 +2537,7 @@ void CUpDownClient::ConnectionEstablished()
 	{
 		SendPublicIPRequest();
 		lastaskedforip=::GetTickCount();
-		AddDebugLogLine(false, _T("inet maybe down ask client for ip: %s"), DbgGetClientInfo()); 
+		AddDebugLogLine(false, _T("internet-connection was possible down. ask client for ip: %s"), DbgGetClientInfo()); 
 	}
 
 	// ok we have a connection, lets see if we want anything from this client
@@ -3806,61 +3806,81 @@ void CUpDownClient::ProcessPublicIPAnswer(const BYTE* pbyData, UINT uSize){
 	if (m_fNeedOurPublicIP == 1){ // did we?
 		m_fNeedOurPublicIP = 0;
 
-		//Xman -Reask sources after IP change- v3 (main part by Maella)
+		//Xman -Reask sources after IP change- v4 
 		if(theApp.m_bneedpublicIP && !::IsLowID(dwIP)) //this is the case we have kad-only but no upload->inet down ?
 		{
+
 			//Xman new adapter selection 
 			{
 				uint32 test=dwIP;
 				CString tmp;
-				tmp.Format(_T("received an IP: %u.%u.%u.%u, NAFC-Adapter will be checked"), (uint8)test, (uint8)(test>>8), (uint8)(test>>16), (uint8)(test>>24));
+				tmp.Format(_T("received an IP from a client: %u.%u.%u.%u, NAFC-Adapter will be checked"), (uint8)test, (uint8)(test>>8), (uint8)(test>>16), (uint8)(test>>24));
 				AddLogLine(false,tmp);
 				theApp.pBandWidthControl->checkAdapterIndex(dwIP);
 			}
 			//Xman end
 
-			if(theApp.GetPublicIP()!=0 && theApp.GetPublicIP()!=dwIP)
+			if(theApp.last_valid_ip!=0 && theApp.last_valid_ip != dwIP)
 			{
-				//ip changed, let's trigger
-				if(GetTickCount() - theApp.last_ip_change > FILEREASKTIME + 60000)
+
+				//if we had a lowID we asume we get it again. Then let the server trigger
+				if((theApp.serverconnect->IsConnecting() && IsLowID(theApp.last_valid_serverid))
+					|| (theApp.serverconnect->IsConnected() && theApp.serverconnect->IsLowID() && theApp.GetPublicIP(true)!=dwIP))
 				{
-					theApp.clientlist->TrigReaskForDownload(true);
-					AddLogLine(false, _T("Kad Connection detected IP-change, changed IP from %s to %s, all sources will be reasked immediately"), ipstr(theApp.GetPublicIP()), ipstr(dwIP));
+					//don't trigger
 				}
 				else
 				{
-					theApp.clientlist->TrigReaskForDownload(false);
-					AddLogLine(false, _T("Kad Connection detected IP-change, changed IP from %s to %s, all sources will be reasked within the next 10 minutes"), ipstr(theApp.GetPublicIP()), ipstr(dwIP));
+					if(GetTickCount() - theApp.last_ip_change > FILEREASKTIME + 60000)
+					{
+						theApp.clientlist->TrigReaskForDownload(true);
+						AddLogLine(false, _T("Kad Connection detected IP-change, changed IP from %s to %s, all sources will be reasked immediately"), ipstr(theApp.last_valid_ip), ipstr(dwIP));
+					}
+					else
+					{
+						theApp.clientlist->TrigReaskForDownload(false);
+						AddLogLine(false, _T("Kad Connection detected IP-change, changed IP from %s to %s, all sources will be reasked within the next 10 minutes"), ipstr(theApp.last_valid_ip), ipstr(dwIP));
+					}
+					SetNextTCPAskedTime(::GetTickCount() + FILEREASKTIME); //not for this source
 				}
-				// ==> Quick start [TPT] - Max
-				if(thePrefs.GetQuickStart() && thePrefs.GetQuickStartAfterIPChange())
-				{
-					theApp.downloadqueue->quickflag = 0;
-					theApp.downloadqueue->quickflags = 0;
-				}
-				// <== Quick start [TPT] - Max
-				SetNextTCPAskedTime(::GetTickCount() + FILEREASKTIME); //not for this source
-				
 				// Xman reconnect Kad on IP-change
-				if(Kademlia::CKademlia::IsConnected())
-				{
-					AddDebugLogLine(DLP_DEFAULT, false,  _T("Public IP Address reported from Kademlia (%s) differs from new found (%s), restart Kad"),ipstr(ntohl(Kademlia::CKademlia::GetIPAddress())),ipstr(dwIP));
-					Kademlia::CKademlia::Stop();
-					Kademlia::CKademlia::Start();
-					//Kad loaded the old IP, we must reset
-					if(Kademlia::CKademlia::IsRunning()) //one more check
-						Kademlia::CKademlia::GetPrefs()->SetIPAddress(htonl(dwIP));
-				}
+				if (Kademlia::CKademlia::IsConnected() && Kademlia::CKademlia::GetPrefs()->GetIPAddress())
+					if(ntohl(Kademlia::CKademlia::GetIPAddress()) != dwIP)
+					{
+						if(Kademlia::CKademlia::GetIPAddress()!=0)
+						{
+							AddDebugLogLine(DLP_DEFAULT, false,  _T("Public IP Address reported from Kademlia (%s) differs from new found (%s), restart Kad"),ipstr(ntohl(Kademlia::CKademlia::GetIPAddress())),ipstr(dwIP));
+							Kademlia::CKademlia::Stop();
+							Kademlia::CKademlia::Start();
+						}
+						//Kad loaded the old IP, we must reset
+						if(Kademlia::CKademlia::IsRunning()) //one more check
+						{
+							Kademlia::CKademlia::GetPrefs()->SetIPAddress(0);
+							Kademlia::CKademlia::GetPrefs()->SetIPAddress(htonl(dwIP));
+						}
+					}
 				//Xman end
 
+				//on some routers it needs endless time until a server-reconnect is initiated after ip-change
+				if(theApp.serverconnect->IsConnected() && theApp.GetPublicIP(true)!=dwIP)
+				{
+					theApp.serverconnect->Disconnect();
+					theApp.serverconnect->ConnectToAnyServer();
+				}
 			}
+			theApp.last_valid_ip=dwIP;
+
 			theApp.m_bneedpublicIP=false;
 			theApp.last_ip_change=::GetTickCount(); //remark: this is set when ever inet was down, even we receive the old ip
 
 		}
-		else if(theApp.serverconnect->IsConnected())//remark: this is the case we have a lowid-server-connect
+		if(theApp.serverconnect->IsConnected())//remark: this is the case we have a lowid-server-connect
 			if (theApp.GetPublicIP() == 0 && !::IsLowID(dwIP) )
+			{
 				theApp.SetPublicIP(dwIP); 
+				theApp.last_valid_ip=dwIP;
+			}
 		//Xman end
 	}	
 }

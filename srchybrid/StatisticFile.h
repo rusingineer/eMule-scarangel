@@ -51,6 +51,11 @@ public:
 		lastFullSpreadCount = 0;
 		// <== Spread bars [Slugfiller/MorphXT] - Stulle
 		m_uFileupdatetime = 0; //Xman Code Improvement -> don't update to often
+		
+		//Xman advanced upload-priority
+		m_unotcountedtransferred = 0;
+		m_tlastdataupdate = 0;
+		//Xman end
 	}
 
 	void	MergeFileStats( CStatisticFile* toMerge );
@@ -75,6 +80,14 @@ public:
 	UINT	GetAllTimeRequests() const		{return alltimerequested;}
 	UINT	GetAllTimeAccepts() const		{return alltimeaccepted;}
 	uint64	GetAllTimeTransferred() const	{return alltimetransferred;}
+	
+	//Xman advanced upload-priority
+	uint64	GetCountedTransferred() const	{return alltimetransferred - m_unotcountedtransferred;}
+	void  UpdateCountedTransferred();
+	uint64 m_unotcountedtransferred;
+	uint32 m_tlastdataupdate;
+	//Xman end
+
 	
 	CKnownFile* fileParent;
 

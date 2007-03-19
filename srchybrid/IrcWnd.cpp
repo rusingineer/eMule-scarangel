@@ -207,7 +207,7 @@ BOOL CIrcWnd::OnInitDialog()
 	m_listctrlNickList.Init();
 	m_tabctrlChannelSelect.Init();
 
-	OnBackcolor();
+	OnBackcolor(); // Design Settings [eWombat/Stulle] - Max
 
 	OnChatTextChange();
 
@@ -1404,17 +1404,19 @@ void CIrcWnd::OnBackcolor()
 
 	if(crTempColor == CLR_DEFAULT)
 		crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
-	
+
 	m_brMyBrush.DeleteObject();
 
 	if(crTempColor != CLR_DEFAULT)
 		m_brMyBrush.CreateSolidBrush(crTempColor);
+	else
+		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
 }
 
 HBRUSH CIrcWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
-	
+
 	if (nCtlColor == CTLCOLOR_DLG)
 		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
 

@@ -193,7 +193,7 @@ BOOL CServerWnd::OnInitDialog()
 	}
 	//Xman end
 
-	OnBackcolor();
+	OnBackcolor(); // Design Settings [eWombat/Stulle] - Max
 
 	SetAllIcons();
 	Localize();
@@ -1083,15 +1083,20 @@ void CServerWnd::OnSplitterMoved(NMHDR* pNMHDR, LRESULT* /*pResult*/)
 // ==> Design Settings [eWombat/Stulle] - Max
 void CServerWnd::OnBackcolor() 
 {
-	COLORREF crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_server);
+	clrSrvColor = thePrefs.GetStyleBackColor(window_styles, style_w_server);
 
-	if(crTempColor == CLR_DEFAULT)
-		crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
+	if(clrSrvColor == CLR_DEFAULT)
+		clrSrvColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
 
 	m_brMyBrush.DeleteObject();
 
-	if(crTempColor != CLR_DEFAULT)
-		m_brMyBrush.CreateSolidBrush(crTempColor);
+	if(clrSrvColor != CLR_DEFAULT)
+		m_brMyBrush.CreateSolidBrush(clrSrvColor);
+	else
+	{
+		clrSrvColor = NULL;
+		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
+	}
 }
 
 HBRUSH CServerWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
@@ -1101,25 +1106,28 @@ HBRUSH CServerWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	if (nCtlColor == CTLCOLOR_DLG)
 		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
 
-	int b1 = pWnd->GetDlgCtrlID();
-
-	switch(b1)
+	if(clrSrvColor!=NULL)
 	{
-	case	IDC_SERVLST_ICO:
-	case	IDC_SERVLIST_TEXT:
-	case	IDC_SSTATIC4:
-	case	IDC_SSTATIC5:
-	case	IDC_SSTATIC7:
-	case	IDC_SSTATIC3:
-		{ 
-			pDC->SetBkMode(TRANSPARENT);
+		int b1 = pWnd->GetDlgCtrlID();
 
-			hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-			//pDC->SetTextColor(m_textcol);
-			//pDC->SetBkColor(m_backcol);
-			break;
+		switch(b1)
+		{
+			case	IDC_SERVERMETURL:
+			case	IDC_IPADDRESS:
+			case	IDC_SPORT:
+			case	IDC_SNAME:
+				break;
+			default:
+			{ 
+				pDC->SetBkMode(TRANSPARENT);
+
+				hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+				//pDC->SetTextColor(m_textcol);
+				//pDC->SetBkColor(m_backcol);
+				break;
+			}
+		
 		}
-	
 	}
 
 	return hbr;

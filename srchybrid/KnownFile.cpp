@@ -416,6 +416,7 @@ void CKnownFile::UpdatePartsInfo()
 				//For high guess
 				//  Adjust network accounts for 100%, we account for 0% with what we see and make sure we are still above the normal.
 			{
+				/* Xman Code Improvement
 				m_nCompleteSourcesCountLo= m_nCompleteSourcesCount;
 				m_nCompleteSourcesCount= count.GetAt(j);
 				if( m_nCompleteSourcesCount < m_nCompleteSourcesCountLo )
@@ -423,6 +424,21 @@ void CKnownFile::UpdatePartsInfo()
 				m_nCompleteSourcesCountHi= count.GetAt(k);
 				if( m_nCompleteSourcesCountHi < m_nCompleteSourcesCount )
 					m_nCompleteSourcesCountHi = m_nCompleteSourcesCount;
+				*/
+
+				//Xman Code Improvement:
+				//the difference to partfiles is, that we don't see the complete sources
+				//-> the official CountLo gives a too small number
+				m_nCompleteSourcesCountLo= count.GetAt(i);
+				if(m_nCompleteSourcesCountLo < m_nCompleteSourcesCount)
+				m_nCompleteSourcesCountLo= m_nCompleteSourcesCount;
+				m_nCompleteSourcesCount= count.GetAt(j);
+				if( m_nCompleteSourcesCount < m_nCompleteSourcesCountLo )
+					m_nCompleteSourcesCount = m_nCompleteSourcesCountLo;
+				m_nCompleteSourcesCountHi= count.GetAt(k);
+				if( m_nCompleteSourcesCountHi < m_nCompleteSourcesCount )
+					m_nCompleteSourcesCountHi = m_nCompleteSourcesCount;
+				//Xman end
 			}
 		}
 		m_nCompleteSourcesTime = time(NULL) + (60);
@@ -622,6 +638,13 @@ bool CKnownFile::CreateFromFile(LPCTSTR in_directory, LPCTSTR in_filename, LPVOI
 		m_pAICHHashSet->SetStatus(AICH_HASHSETCOMPLETE);
 		if (!m_pAICHHashSet->SaveHashSet())
 			LogError(LOG_STATUSBAR, GetResString(IDS_SAVEACFAILED));
+		//Xman remove unused AICH-hashes
+		//we must apply the status a second time, because aich-synthread could be running
+		//and change the Status,
+		//however the hashset is saved correctly because saving is using the mutex
+		//better solution would be to move the mutex here
+		m_pAICHHashSet->SetStatus(AICH_HASHSETCOMPLETE);
+		//Xman end
 	}
 	else{
 		// now something went pretty wrong
@@ -1056,6 +1079,33 @@ bool CKnownFile::LoadTagsFromFile(CFileDataIO* file)
 				delete newtag;
 				break;
 			}
+			//Xman advanced upload-priority
+			case FT_NOTCOUNTEDTRANSFERREDLOW:
+			{
+				ASSERT( newtag->IsInt() );
+				if (newtag->IsInt())
+					statistic.m_unotcountedtransferred = newtag->GetInt();
+				delete newtag;
+				break;
+			}
+			case FT_NOTCOUNTEDTRANSFERREDHIGH:
+			{
+				ASSERT( newtag->IsInt() );
+				if (newtag->IsInt())
+					statistic.m_unotcountedtransferred = ((uint64)newtag->GetInt() << 32) | (UINT)statistic.m_unotcountedtransferred;
+				delete newtag;
+				break;
+			}
+			case FT_LASTDATAUPDATE:
+			{
+				ASSERT( newtag->IsInt() );
+				if (newtag->IsInt())
+					statistic.m_tlastdataupdate = newtag->GetInt();
+				delete newtag;
+				break;
+			}
+			//Xman end
+
 			default:
 				// ==> Take care of corrupted tags [Mighty Knife] - Stulle
 				if(!newtag->GetNameID() && newtag->IsInt64(true) && newtag->GetName()){
@@ -1255,6 +1305,25 @@ bool CKnownFile::WriteToFile(CFileDataIO* file)
 		tagFlags.WriteTagToFile(file);
 		uTagCount++;
 	}
+
+	//Xman advanced upload-priority
+	if (statistic.m_unotcountedtransferred)
+	{
+		CTag stag1(FT_NOTCOUNTEDTRANSFERREDLOW, (uint32)statistic.m_unotcountedtransferred);
+		stag1.WriteTagToFile(file);
+		uTagCount++;
+
+		CTag stag2(FT_NOTCOUNTEDTRANSFERREDHIGH, (uint32)(statistic.m_unotcountedtransferred >> 32));
+		stag2.WriteTagToFile(file);
+		uTagCount++;
+	}
+	if (statistic.m_tlastdataupdate!=0)
+	{
+		CTag stag1(FT_LASTDATAUPDATE, statistic.m_tlastdataupdate);
+		stag1.WriteTagToFile(file);
+		uTagCount++;
+	}
+	//Xman end
 
 	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 	if (GetHideOS()>=0){
@@ -2427,6 +2496,7 @@ uint32 CKnownFile::GetFileScore(uint32 downloadingTime)
 double CKnownFile::CalculateUploadPriorityPercent()
 {
 	uint64 wantedUpload = GetWantedUpload();
+	/*
 	uint64 oldtransferred ;
 	if (statistic.GetAllTimeTransferred() > statistic.GetTransferred())
 		oldtransferred = statistic.GetAllTimeTransferred()-statistic.GetTransferred();
@@ -2434,6 +2504,9 @@ double CKnownFile::CalculateUploadPriorityPercent()
 		oldtransferred = 0;
 
 	double percent = (statistic.GetTransferred() + oldtransferred/2) /(double)wantedUpload*100.0; //old count only half
+	*/
+	
+	double percent = statistic.GetCountedTransferred() /(double)wantedUpload*100.0; 
 	
 	return percent;
 }
@@ -2502,7 +2575,7 @@ void CKnownFile::CalculateAndSetUploadPriority2()
 		uint32 virtualsources=GetVirtualSourceIndicator();
 
 		
-		AddDebugLogLine(false, _T("avg: %0.2f%% percent: %0.2f%% , wanted: %s, completed: %s, pushfaktor: %i, avg virtuals: %u, own virtuals: %u, file: %s"),avgpercent,uploadpercent,  CastItoXBytes(wantedUpload),CastItoXBytes(completedup),(int16)((pushfaktor-1)*100),theApp.sharedfiles->m_avg_virtual_sources, virtualsources,this->GetFileName()); 
+		AddDebugLogLine(false, _T("avg: %0.2f%% percent: %0.2f%% , wanted: %s, counted upload: %s, completed: %s, pushfaktor: %i, avg virtuals: %u, own virtuals: %u, file: %s"),avgpercent,uploadpercent,  CastItoXBytes(wantedUpload), CastItoXBytes(statistic.GetCountedTransferred()),CastItoXBytes(completedup),(int16)((pushfaktor-1)*100),theApp.sharedfiles->m_avg_virtual_sources, virtualsources,this->GetFileName()); 
 
 		if (uploadpercent < avgpercent - changefactor)
 		{
@@ -2543,10 +2616,10 @@ uint32 CKnownFile::GetVirtualSourceIndicator() const
 	if(IsPartFile())
 	{
 		uint32 fullsources;
-		if(m_nCompleteSourcesCountHi > m_nVirtualCompleteSourcesCount)
-			fullsources = m_nVirtualCompleteSourcesCount + (m_nCompleteSourcesCountHi-m_nVirtualCompleteSourcesCount)/4;
+		if(m_nCompleteSourcesCountHi > m_nCompleteSourcesCountLo)
+			fullsources = m_nCompleteSourcesCountLo + (m_nCompleteSourcesCountHi-m_nCompleteSourcesCountLo)/4;
 		else
-			fullsources = m_nVirtualCompleteSourcesCount;
+			fullsources = m_nCompleteSourcesCountLo;
 		return m_nVirtualUploadSources*2 + fullsources; 
 	}
 	else
@@ -2644,6 +2717,48 @@ void CKnownFile::UpdateVirtualUploadSources()
 		m_nVirtualUploadSources=nVirtualUploadSources;
 		if(theApp.emuledlg->sharedfileswnd->m_hWnd)
 			theApp.emuledlg->sharedfileswnd->sharedfilesctrl.UpdateFile(this);
+	}
+}
+
+void CKnownFile::CheckAUPFilestats(bool allowUpdatePrio)
+{
+	if(statistic.m_tlastdataupdate==0 && statistic.GetAllTimeTransferred()==0)
+	{
+		//this is a new shared file. set NOW the auto-prio if user want it
+		if(allowUpdatePrio)
+		{
+			if(thePrefs.GetNewAutoUp()){
+				SetAutoUpPriority(true);
+				SetUpPriority(PR_HIGH);
+			}
+			else
+			{
+				if(IsAutoUpPriority())
+				{
+					SetAutoUpPriority(false);
+					SetUpPriority(PR_NORMAL);
+				}
+			}
+		}
+		statistic.m_tlastdataupdate=time(NULL);
+	}
+	else if(statistic.m_tlastdataupdate==0 || statistic.m_tlastdataupdate>(uint32)time(NULL))
+	{
+		//this file was uploaded with a previous version or there is anything wrong
+		//count old upload 50%
+		if(statistic.m_tlastdataupdate>(uint32)time(NULL))
+			AddDebugLogLine(false,_T("found mismatch at date of file: %s"), GetFileName());
+#ifdef _BETA
+		if(statistic.m_tlastdataupdate==0)
+			AddDebugLogLine(false,_T("found file without timestamp. Old upload is counted half. file: %s"), GetFileName());
+#endif
+		statistic.m_unotcountedtransferred=statistic.GetAllTimeTransferred()/2;
+		statistic.m_tlastdataupdate=time(NULL);
+	}
+	else
+	{
+		//update normal:
+		statistic.UpdateCountedTransferred();
 	}
 }
 

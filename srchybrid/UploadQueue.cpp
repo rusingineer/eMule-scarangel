@@ -94,7 +94,6 @@ CUploadQueue::CUploadQueue()
 	waituntilnextlook=0;
 	dataratestocheck=10;
 	currentuploadlistsize=0; //Xman x4
-	internetmaybedown=true; //Xman x4
 	checkforuploadblock=true; //Xman 4.4 enable the feature the check for too many too slow clients.
 	m_dwnextallowedscoreremove=0;
 
@@ -545,7 +544,6 @@ bool CUploadQueue::AcceptNewClient(bool addOnNextConnect)
 
 	//Xman Xtreme Upload
 
-	//uint16 MinSlots=(uint16)ceil((thePrefs.GetMaxUpload()-0.5f)/thePrefs.m_slotspeed +1 );
 	uint16 MinSlots=(uint16)ceil(thePrefs.GetMaxUpload()/thePrefs.m_slotspeed  );
 	if(MinSlots<3) MinSlots=3; 
 	uint16 MaxSlots=0;
@@ -561,7 +559,7 @@ bool CUploadQueue::AcceptNewClient(bool addOnNextConnect)
 	uint16 curUpSlots = (uint16)uploadinglist.GetCount();
 
 	//Xman only one slot if maybe no internetconnection
-	if(internetmaybedown && curUpSlots>=1)
+	if(theApp.internetmaybedown==1 && curUpSlots>=1)
 		return false;
 
 	//Xman count the blocksend to remove such clients if needed
@@ -710,35 +708,36 @@ bool CUploadQueue::ForceNewClient(bool allowEmptyWaitingQueue) {
 	lastchecktimefull=thisTick;
 
     //Xman only if we have an internet connection
-	//I test this, if we have a serverconnect and outgoing traffic
+	
+	//Xman -Reask sources after IP change- v4 
 
 	// Compute all datarates elapsed for the last 1 seconds
 	uint32 eMuleIn;	uint32 eMuleInOverall;
 	uint32 eMuleOut; uint32 eMuleOutOverall;
 	uint32 networkIn; uint32 networkOut;
 
-	//if (theApp.serverconnect->IsConnected()==false)
-	//{
 		theApp.pBandWidthControl->GetDatarates(thePrefs.m_internetdownreactiontime, // 2 seconds
 			eMuleIn, eMuleInOverall,
 			eMuleOut, eMuleOutOverall,
 			networkIn, networkOut);
 
+	
 		//Xman check out if eventually we don't have an internet-connection
-		if(eMuleOut==0)
-			internetmaybedown=true;
+	if(eMuleOut==0 && (thisTick - theApp.last_traffic_reception) > (uint32)SEC2MS(thePrefs.m_internetdownreactiontime))
+			theApp.internetmaybedown=1;
 		else
-			internetmaybedown=false;
+		if(theApp.internetmaybedown) //don't full open here.. it will be done when new IP received
+			theApp.internetmaybedown=2; //but open the upload (because it could be a wrong detection)
 
-		if(theApp.IsConnected()==false)
-		{
-			if(eMuleOut==0)
-				return false;
-		}
 
-	//}
-	//else
-	//	internetmaybedown=false;
+	if(theApp.IsConnected()==false)
+	{
+		//Xman: don't ask here inetmaybedown==1... won't work because of possible hotstart => traffic =>state 2
+		//don't ask here inetmaybedown==true (1 or 2).. won't work .. if we are disconnected and have a short uploadstop (false alarm)
+		//the upload is only reopened on next ConnectionEsteblished
+		if(eMuleOut==0)
+			return false;
+	}
 
 
 	return AcceptNewClient();
@@ -1722,14 +1721,17 @@ void CUploadQueue::CompUploadRate(){
 	//check if one slot is over tolerance and tell the throttler
 	bool isovertolerance=false;
 	// Compute the upload datarate of all clients
-	for(POSITION pos = uploadinglist.GetHeadPosition(); pos != NULL; ){
+	for(POSITION pos = uploadinglist.GetHeadPosition(); pos != NULL; uploadinglist.GetNext(pos)){
 		uploadinglist.GetAt(pos)->CompUploadRate();
-		if(uploadinglist.GetNext(pos)->CheckDatarate(dataratestocheck))
+		if(waituntilnextlook==0 && isovertolerance==false && uploadinglist.GetAt(pos)->CheckDatarate(dataratestocheck))
 			isovertolerance=true;
 	}
-	if(isovertolerance && waituntilnextlook==0)
+	if(isovertolerance)
 	{
-		waituntilnextlook=5; //5 seconds until we redo this test //Xman up to 5
+		if(theApp.uploadBandwidthThrottler->GetNumberOfFullyActivatedSlots() < (uint16)ceil(thePrefs.GetMaxUpload()/thePrefs.m_slotspeed/2)  )
+			waituntilnextlook=3; //3 seconds only if we have only few slots
+		else
+			waituntilnextlook=5; //5 seconds until we redo this test
 		dataratestocheck=-1; //Xman don't check the first, but the next three
 		theApp.uploadBandwidthThrottler->SetNextTrickleToFull();
 	}
@@ -1738,6 +1740,7 @@ void CUploadQueue::CompUploadRate(){
 	if(dataratestocheck<15) 
 		dataratestocheck++;
 }
+
 // Maella end
 
 //Xman Xtreme Upload

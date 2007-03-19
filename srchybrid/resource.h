@@ -2331,11 +2331,25 @@
 #define IDS_CN_UPNPTRYRANDOM            3180
 #define IDS_CN_UPNPNAT                  3181
 #define IDS_CHUNKCHOOSER                3182
+#define IDI_ICON1                       3182
 #define IDS_UPLOADINSTABLE              3183
 #define IDS_CLIENTPERCENTAGE            3184
 #define IDS_ONERELEASESLOT              3185
 #define IDS_A_UPPRIO                    3186
 #define IDS_SHAREFACTOR                 3187
+#define IDS_MASSRENAME1                 3188
+#define IDS_FILENAMELEFT                3189
+#define IDS_FILENAMERIGHT               3190
+#define IDS_RESETFILENAMES              3191
+#define IDS_SIMPLECLEANUP               3192
+#define IDS_INSERTTEXTCOLUMN            3193
+#define IDS_MASSRENAME2                 3194
+#define IDS_MASSRENAME3                 3195
+#define IDS_NOTENOUGHFILENAMES          3196
+#define IDS_IDENTICALFILENAMES          3197
+#define IDS_MR                          3198
+#define IDS_MASSRENAME_TITLE            3199
+#define IDS_STATIC_DOWNINFO             3200
 #define IDD_PPG_Xtreme                  4000
 #define IDC_13RATIO                     4001
 #define IDC_UPREDUCTION                 4002
@@ -2423,6 +2437,20 @@
 #define IDC_A_UPPRIO                    4082
 #define IDC_CC_MAELLA                   4083
 #define IDC_CC_ZZ                       4084
+#define IDC_STATIC_DOWNINFO             4084
+#define IDC_MR_STATIC1                  4085
+#define IDC_FILENAMEMASKEDITTEMPLATE    4086
+#define IDC_MR_STATIC2                  4087
+#define IDC_MR_STATIC3                  4088
+#define IDC_FILENAMELEFT                4089
+#define IDC_FILENAMERIGHT               4090
+#define IDC_RESETBUTTON                 4091
+#define IDD_MASSRENAME                  4092
+#define IDC_NEWFILENAMESEDITLEFT        4094
+#define IDC_NEWFILENAMESEDITRIGHT       4095
+#define IDC_OLDFILENAMESEDIT            4096
+#define IDC_SIMPLECLEANUP               4097
+#define IDC_INSERTTEXTCOLUMN            4098
 #define IDA_ENTER                       32771
 // ==> ScarAngel Preferences window - Stulle
 #define IDD_PPG_SCAR                    60000
@@ -2756,18 +2784,7 @@
 #define IDS_FEEDBACK_NONEEDPART         60662
 #define IDS_FEEDBACK_COMPLETE           60663
 // <== Copy feedback feature [MorphXT] - Stulle
-// ==> MassRename [Dragon] - Stulle
-#define IDS_MASSRENAME1                 60670
-#define IDS_FILENAMELEFT                60671
-#define IDS_FILENAMERIGHT               60672
-#define IDS_RESETFILENAMES              60673
-#define IDS_SIMPLECLEANUP               60674
-#define IDS_INSERTTEXTCOLUMN            60675
-#define IDS_MASSRENAME2                 60676
-#define IDS_MASSRENAME3                 60677
-#define IDS_NOTENOUGHFILENAMES          60678
-#define IDS_IDENTICALFILENAMES          60679
-#define IDS_MR                          60680
+// ==> Simple cleanup [MorphXT] - Stulle
 #define IDS_CHECKDOTTOSPACE             60681
 #define IDS_CHECKUNDERLINETOSPACE       60682
 #define IDS_CHECKCONVERTAPOSTROPHES     60683
@@ -2790,7 +2807,6 @@
 #define IDC_DELETECHARACTER             60700
 #define IDC_REPLACECHARSLIST            60701
 #define IDC_BUTTONEDIT                  60702
-#define IDS_MASSRENAME_TITLE            60703
 #define IDC_SC_STATIC1                  60704
 #define IDC_SC_STATIC2                  60705
 #define IDC_SC_STATIC3                  60706
@@ -2804,23 +2820,10 @@
 #define IDC_CHECKCHARACTERREPLACE       60714
 #define IDC_CHARSOURCE                  60715
 #define IDC_CHARDEST                    60716
-#define IDD_MASSRENAME                  60717
-#define IDC_OLDFILENAMESEDIT            60718
-#define IDC_NEWFILENAMESEDITLEFT        60719
-#define IDC_NEWFILENAMESEDITRIGHT       60720
-#define IDC_FILENAMELEFT                60721
-#define IDC_FILENAMERIGHT               60722
-#define IDC_RESETBUTTON                 60723
-#define IDC_SIMPLECLEANUP               60724
-#define IDC_INSERTTEXTCOLUMN            60725
-#define IDC_MR_STATIC1                  60726
-#define IDC_MR_STATIC2                  60727
-#define IDC_MR_STATIC3                  60728
 #define IDC_BUTTONCHANGE                60729
 #define IDC_EDITREPLACEBY               60730
 #define IDC_EDITSEARCH                  60731
-#define IDC_FILENAMEMASKEDITTEMPLATE    60732
-// <== MassRename [Dragon] - Stulle
+// <== Simple cleanup [MorphXT] - Stulle
 // ==> Startupsound [Commander] - mav744
 #define IDS_STARTUPSOUND                60740
 #define IDS_MISSING_STARTUPSOUND        60741

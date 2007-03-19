@@ -161,6 +161,9 @@ public:
 	CString*			pstrPendingLink;
 	COPYDATASTRUCT		sendstruct;
 
+	//Xman remove unused AICH-hashes
+	volatile bool				m_AICH_Is_synchronizing;
+	
 
 // Implementierung
 	virtual BOOL InitInstance();
@@ -279,10 +282,14 @@ protected:
 
 private:
 	UINT     m_wTimerRes;
-//Xman -Reask sources after IP change- v3 (main part by Maella)
+//Xman -Reask sources after IP change- v4 
 public:
 	bool m_bneedpublicIP; 
 	uint32 last_ip_change;
+	uint32 last_valid_serverid;
+	uint32 last_valid_ip;
+	uint32	last_traffic_reception;
+	uint8	internetmaybedown;
 //Xman end
 	// ==> UPnP support [MoNKi] - leuk_he
 	CUPnP_IGDControlPoint *m_UPnP_IGDControlPoint;

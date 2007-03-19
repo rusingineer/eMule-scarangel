@@ -220,6 +220,7 @@
 #define MP_ULFEEDBACK           14016 // Xman: IcEcRacKer Copy UL-feedback
 #define MP_DROPLEECHER			14017 //Xman Anti-Leecher
 #define	MP_PREALOCATE			14018 //Xman manual file allocation (Xanatos)
+#define MP_MASSRENAME    		14019 //Xman Mass Rename (Morph)
 
 #define MP_SIVKA_FILE_SETTINGS	20000 // file settings - Stulle
 
@@ -236,7 +237,6 @@
 #define	MP_COPYFEEDBACK			20020
 #define MP_COPYFEEDBACK_US		20021
 // <== Copy feedback feature [MorphXT] - Stulle
-#define MP_MASSRENAME    		20030 // MassRename [Dragon] - Stulle
 
 // ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 #define MP_CAT_SHOWHIDEPAUSED	20040

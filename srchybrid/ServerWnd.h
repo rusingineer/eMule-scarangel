@@ -46,8 +46,6 @@ public:
 	bool AddServer(uint16 uPort, CString strAddress, CString strName = _T(""), bool bShowErrorMB = true);
 	CString GetMyInfoString();
 
-	void OnBackcolor();
-
 // Dialog Data
 	enum { IDD = IDD_SERVER };
 
@@ -92,10 +90,6 @@ private:
 	LCID m_uLangID;
 
 protected:
-
-	CBrush m_brMyBrush;
-	HBRUSH hbr;
-		
 	void SetAllIcons();
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -119,5 +113,10 @@ protected:
 	afx_msg void OnWindowPosChanged(WINDOWPOS* lpwndpos);
 	// ==> Design Settings [eWombat/Stulle] - Max
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	CBrush m_brMyBrush;
+	HBRUSH hbr;
+	COLORREF clrSrvColor;
+public:
+	void OnBackcolor();
 	// <== Design Settings [eWombat/Stulle] - Max
 };

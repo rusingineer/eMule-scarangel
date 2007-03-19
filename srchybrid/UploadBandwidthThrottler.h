@@ -88,7 +88,7 @@ private:
     //uint64 m_SentBytesSinceLastCall;
     //uint64 m_SentBytesSinceLastCallOverhead;
     uint16 m_highestNumberOfFullyActivatedSlots; //used inside
-    uint16 m_highestNumberOfFullyActivatedSlots_out; //used outside
+    volatile uint16 m_highestNumberOfFullyActivatedSlots_out; //used outside
 	bool doRun;
 
 	//Xman Xtreme Upload

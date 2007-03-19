@@ -44,6 +44,8 @@ CIconStatic::~CIconStatic()
 	m_MemBMP.DeleteObject();
 }
 
+// ==> Design Settings [eWombat/Stulle] - Max
+/*
 void CIconStatic::SetWindowText(LPCTSTR pszText)
 {
 	m_strText = pszText;
@@ -51,6 +53,15 @@ void CIconStatic::SetWindowText(LPCTSTR pszText)
 }
 
 void CIconStatic::SetIcon(LPCTSTR pszIconID)
+*/
+void CIconStatic::SetWindowText(LPCTSTR pszText, COLORREF clrInput)
+{
+	m_strText = pszText;
+	SetIcon(m_strIconID, clrInput);
+}
+
+void CIconStatic::SetIcon(LPCTSTR pszIconID, COLORREF clrInput)
+// <== Design Settings [eWombat/Stulle] - Max
 {
 	m_strIconID = pszIconID;
 
@@ -88,7 +99,15 @@ void CIconStatic::SetIcon(LPCTSTR pszIconID)
 	VERIFY( m_MemBMP.CreateCompatibleBitmap(pDC, rCaption.Width(), rCaption.Height()) );
 	pOldBMP = MemDC.SelectObject(&m_MemBMP);
 
+	// ==> Design Settings [eWombat/Stulle] - Max
+	/*
 	MemDC.FillSolidRect(rCaption, GetSysColor(COLOR_BTNFACE));
+	*/
+	if(clrInput==NULL)
+		MemDC.FillSolidRect(rCaption, GetSysColor(COLOR_BTNFACE));
+	else
+		MemDC.FillSolidRect(rCaption, clrInput);
+	// <== Design Settings [eWombat/Stulle] - Max
 	
 	if (!m_strIconID.IsEmpty())
 		VERIFY( DrawState( MemDC.m_hDC, NULL, NULL, (LPARAM)(HICON)CTempIconLoader(m_strIconID, 16, 16), NULL, 3, 0, 16, 16, DST_ICON | DSS_NORMAL) );

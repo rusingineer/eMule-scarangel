@@ -56,6 +56,7 @@ BEGIN_MESSAGE_MAP(CSearchParamsWnd, CDialogBar)
 	ON_WM_SYSCOMMAND()
 	ON_WM_SETCURSOR()
 	ON_WM_HELPINFO()
+	ON_WM_CTLCOLOR() // Design Settings [eWombat/Stulle] - Max
 END_MESSAGE_MAP()
 
 
@@ -125,6 +126,7 @@ LRESULT CSearchParamsWnd::OnInitDialog(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	m_szMRU = m_szFloat;
 
 	UpdateData(FALSE);
+	OnBackcolor(); // Design Settings [eWombat/Stulle] - Max
 	SetAllIcons();
 
 	GetDlgItem(IDC_MSTATIC3)->GetWindowRect(&m_rcNameLbl);
@@ -215,7 +217,7 @@ LRESULT CSearchParamsWnd::OnInitDialog(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	m_ctlOpts.InsertItem(orArtist, GetResString(IDS_ARTIST));
 	m_ctlOpts.SetColumnWidth(0, 100/*LVSCW_AUTOSIZE*/);
 	m_ctlOpts.SetColumnWidth(1, 120);
-	
+
 	UpdateControls();
 	OnEnChangeName();
 
@@ -1121,3 +1123,50 @@ BOOL CSearchParamsWnd::OnHelpInfo(HELPINFO* /*pHelpInfo*/)
 	theApp.ShowHelp(eMule_FAQ_Search);
 	return TRUE;
 }
+
+// ==> Design Settings [eWombat/Stulle] - Max
+void CSearchParamsWnd::OnBackcolor() 
+{
+	COLORREF crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_search);
+
+	if(crTempColor == CLR_DEFAULT)
+		crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
+
+	m_brMyBrush.DeleteObject();
+
+	if(crTempColor != CLR_DEFAULT)
+		m_brMyBrush.CreateSolidBrush(crTempColor);
+	else
+		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
+}
+
+HBRUSH CSearchParamsWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = theApp.emuledlg->GetWndClr();
+
+	//hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	if (nCtlColor == CTLCOLOR_DLG)
+		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+
+	int b1 = pWnd->GetDlgCtrlID();
+
+	switch(b1)
+	{
+		case	IDC_SEARCHNAME:
+			break;
+		default:
+		{ 
+			pDC->SetBkMode(TRANSPARENT);
+
+			hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+			//pDC->SetTextColor(m_textcol);
+			//pDC->SetBkColor(m_backcol);
+			break;
+		}
+
+	}
+
+	return hbr;
+}
+// <== Design Settings [eWombat/Stulle] - Max

@@ -46,7 +46,7 @@ bool CSourceSaver::Process() // return false if sources not saved
 
 		// Load sources from the file
 		CString slsfilepath;
-		slsfilepath.Format(_T("%s\\%s.txtsrc"), thePrefs.GetTempDir(), m_pFile->GetPartMetFileName());
+		slsfilepath.Format(_T("%s\\%s.txtsrc"), m_pFile->GetTempPath(), m_pFile->GetPartMetFileName());
 		LoadSourcesFromFile(slsfilepath);
 
 		// Try to add the sources
@@ -58,7 +58,7 @@ bool CSourceSaver::Process() // return false if sources not saved
 
 		// Save sources to the file
 		CString slsfilepath;
-		slsfilepath.Format(_T("%s\\%s.txtsrc"), thePrefs.GetTempDir(), m_pFile->GetPartMetFileName());
+		slsfilepath.Format(_T("%s\\%s.txtsrc"), m_pFile->GetTempPath(), m_pFile->GetPartMetFileName());
 		SaveSources(slsfilepath);
 
 		// Try to reload the unsuccessfull source
@@ -76,7 +76,7 @@ void CSourceSaver::DeleteFile()
 {
 	m_sourceList.RemoveAll(); //Xman x4.1
 	CString slsfilepath;
-	slsfilepath.Format(_T("%s\\%s.txtsrc"), thePrefs.GetTempDir(), m_pFile->GetPartMetFileName());
+	slsfilepath.Format(_T("%s\\%s.txtsrc"), m_pFile->GetTempPath(), m_pFile->GetPartMetFileName());
 	if (_tremove(slsfilepath)) if (errno != ENOENT)
 		AddLogLine(true, _T("Failed to delete %s, you will need to do this by hand"), slsfilepath);    
 }

@@ -158,6 +158,7 @@ void CSearchResultsWnd::OnInitialUpdate()
 	//m_ctlFilter.OnInit(searchlistctrl.GetHeaderCtrl());
 	m_ctlFilter.OnInit(&searchlistctrl);
 	//Xman end
+	OnBackcolor(); // Design Settings [eWombat/Stulle] - Max
 
 	SetAllIcons();
 	Localize();
@@ -182,7 +183,6 @@ void CSearchResultsWnd::OnInitialUpdate()
 		GetDlgItem(IDC_STATIC_DLTOof)->SetFont(&theApp.m_fontSymbol);
 		GetDlgItem(IDC_STATIC_DLTOof)->SetWindowText(GetExStyle() & WS_EX_LAYOUTRTL ? _T("3") : _T("4")); // show a right-arrow
 	}
-	void OnBackcolor();
 }
 
 void CSearchResultsWnd::DoDataExchange(CDataExchange* pDX)
@@ -1887,6 +1887,8 @@ void CSearchResultsWnd::OnBackcolor()
 
 	if(crTempColor != CLR_DEFAULT)
 		m_brMyBrush.CreateSolidBrush(crTempColor);
+	else
+		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
 }
 
 HBRUSH CSearchResultsWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
@@ -1902,12 +1904,9 @@ HBRUSH CSearchResultsWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 	switch(b1)
 	{
-	case	IDC_SEARCHLST_ICO:
-		//case	IDC_SERVLIST_TEXT:
-		//case	IDC_SSTATIC4:
-		//case	IDC_SSTATIC5:
-		//case	IDC_SSTATIC7:
-		//case	IDC_SSTATIC3:
+		case IDC_FILTER:
+			break;
+		default:
 		{ 
 			pDC->SetBkMode(TRANSPARENT);
 

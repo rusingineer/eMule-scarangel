@@ -49,10 +49,8 @@
 #include "SearchParams.h"
 #include "SearchDlg.h"
 #include "SearchResultsWnd.h"
-// ==> MassRename [Dragon] - Stulle
-#include "MassRename.h"
-#include "Log.h"
-// <== MassRename [Dragon] - Stulle
+#include "MassRename.h" //Xman Mass Rename (Morph)
+#include "Log.h" //Xman Mass Rename (Morph)
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -1336,9 +1334,6 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	// <== XP Style Menu [Xanatos] - Stulle
 	m_PowerShareLimitMenu.CheckMenuRadioItem(MP_PS_AMOUNT_LIMIT, MP_PS_AMOUNT_LIMIT_SET, uPsAmountLimitMenuItem, 0);
 	// <== Limit PS by amount of data uploaded [Stulle] - Stulle
-	// ==> MassRename [Dragon] - Stulle
-	m_SharedFilesMenu.EnableMenuItem(MP_MASSRENAME, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
-	// <== MassRename [Dragon] - Stulle
 	// ==> Copy feedback feature [MorphXT] - Stulle
 	/*
 	// Xman: IcEcRacKer Copy UL-feedback
@@ -1350,6 +1345,10 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	// <== Copy feedback feature [MorphXT] - Stulle
 
 	m_SharedFilesMenu.EnableMenuItem(MP_FIND, GetItemCount() > 0 ? MF_ENABLED : MF_GRAYED);
+
+	//Xman Mass Rename (Morph)
+	m_SharedFilesMenu.EnableMenuItem(MP_MASSRENAME, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
+	//Xman end
 
 	m_CollectionsMenu.EnableMenuItem(MP_MODIFYCOLLECTION, ( pSingleSelFile != NULL && pSingleSelFile->m_pCollection != NULL ) ? MF_ENABLED : MF_GRAYED);
 	m_CollectionsMenu.EnableMenuItem(MP_VIEWCOLLECTION, ( pSingleSelFile != NULL && pSingleSelFile->m_pCollection != NULL ) ? MF_ENABLED : MF_GRAYED);
@@ -1877,64 +1876,6 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 				break;
 			}
 			// <== Spread bars [Slugfiller/MorphXT] - Stulle
-			// ==> MassRename [Dragon] - Stulle
-			case MP_MASSRENAME: {
-					CMassRenameDialog MRDialog;
-					// Add the files to the dialog
-					POSITION pos = selectedList.GetHeadPosition();
-					while (pos != NULL) {
-						CKnownFile*  file = selectedList.GetAt (pos);
-						MRDialog.m_FileList.AddTail (file);
-						selectedList.GetNext (pos);
-					}
-					int result = MRDialog.DoModal ();
-					if (result == IDOK) {
-						// The user has successfully entered new filenames. Now we have
-						// to rename all the files...
-						POSITION pos = selectedList.GetHeadPosition();
-						int i=0;
-						while (pos != NULL) {
-							CString newname = MRDialog.m_NewFilenames.at (i);
-							CString newpath = MRDialog.m_NewFilePaths.at (i);
-							CKnownFile* file = selectedList.GetAt (pos);
-							// .part files could be renamed by simply changing the filename
-							// in the CKnownFile object.
-							if ((!file->IsPartFile()) && (_trename(file->GetFilePath(), newpath) != 0)){
-								// Use the "Format"-Syntax of AddLogLine here instead of
-								// CString.Format+AddLogLine, because if "%"-characters are
-								// in the string they would be misinterpreted as control sequences!
-								AddLogLine(false,_T("Failed to rename '%s' to '%s', Error: %hs"), file->GetFilePath(), newpath, _tcserror(errno));
-							} else {
-								CString strres;
-								if (!file->IsPartFile()) {
-									// Use the "Format"-Syntax of AddLogLine here instead of
-									// CString.Format+AddLogLine, because if "%"-characters are
-									// in the string they would be misinterpreted as control sequences!
-									AddLogLine(false,_T("Successfully renamed '%s' to '%s'"), file->GetFilePath(), newpath);
-									file->SetFileName(newname);
-									if (file->IsKindOf(RUNTIME_CLASS(CPartFile)))
-										((CPartFile*) file)->SetFullName(newpath);
-								} else {
-									// Use the "Format"-Syntax of AddLogLine here instead of
-									// CString.Format+AddLogLine, because if "%"-characters are
-									// in the string they would be misinterpreted as control sequences!
-									AddLogLine(false,_T("Successfully renamed .part file '%s' to '%s'"), file->GetFileName(), newname);
-									file->SetFileName(newname, true); 
-									((CPartFile*) file)->UpdateDisplayedInfo();
-									((CPartFile*) file)->SavePartFile(); 
-								}
-								file->SetFilePath(newpath);
-									UpdateFile(file);
-								}
-
-							// Next item
-							selectedList.GetNext (pos);
-							i++;
-						}
-					}
-				}
-				break;
-			// <== MassRename [Dragon] - Stulle
 			// ==> Copy feedback feature [MorphXT] - Stulle
 			/*
 			// Xman: idea: IcEcRacKer Copy UL-feedback
@@ -2011,6 +1952,66 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 				break;
 			}
 			// <== Copy feedback feature [MorphXT] - Stulle
+
+			//Xman Mass Rename (Morph)
+			case MP_MASSRENAME: 
+			{
+				CMassRenameDialog MRDialog;
+				// Add the files to the dialog
+				POSITION pos = selectedList.GetHeadPosition();
+				while (pos != NULL) {
+					CKnownFile*  file = selectedList.GetAt (pos);
+					MRDialog.m_FileList.AddTail (file);
+					selectedList.GetNext (pos);
+				}
+				int result = MRDialog.DoModal ();
+				if (result == IDOK) {
+					// The user has successfully entered new filenames. Now we have
+					// to rename all the files...
+					POSITION pos = selectedList.GetHeadPosition();
+					int i=0;
+					while (pos != NULL) {
+						CString newname = MRDialog.m_NewFilenames.at (i);
+						CString newpath = MRDialog.m_NewFilePaths.at (i);
+						CKnownFile* file = selectedList.GetAt (pos);
+						// .part files could be renamed by simply changing the filename
+						// in the CKnownFile object.
+						if ((!file->IsPartFile()) && (_trename(file->GetFilePath(), newpath) != 0)){
+							// Use the "Format"-Syntax of AddLogLine here instead of
+							// CString.Format+AddLogLine, because if "%"-characters are
+							// in the string they would be misinterpreted as control sequences!
+							AddLogLine(false,_T("Failed to rename '%s' to '%s', Error: %hs"), file->GetFilePath(), newpath, _tcserror(errno));
+						} else {
+							CString strres;
+							if (!file->IsPartFile()) {
+								// Use the "Format"-Syntax of AddLogLine here instead of
+								// CString.Format+AddLogLine, because if "%"-characters are
+								// in the string they would be misinterpreted as control sequences!
+								AddLogLine(false,_T("Successfully renamed '%s' to '%s'"), file->GetFilePath(), newpath);
+								file->SetFileName(newname);
+								if (file->IsKindOf(RUNTIME_CLASS(CPartFile)))
+									((CPartFile*) file)->SetFullName(newpath);
+							} else {
+								// Use the "Format"-Syntax of AddLogLine here instead of
+								// CString.Format+AddLogLine, because if "%"-characters are
+								// in the string they would be misinterpreted as control sequences!
+								AddLogLine(false,_T("Successfully renamed .part file '%s' to '%s'"), file->GetFileName(), newname);
+								file->SetFileName(newname, true); 
+								((CPartFile*) file)->UpdateDisplayedInfo();
+								((CPartFile*) file)->SavePartFile(); 
+							}
+							file->SetFilePath(newpath);
+							UpdateFile(file);
+						}
+
+						// Next item
+						selectedList.GetNext (pos);
+						i++;
+					}
+				}
+				break;
+			}
+			//Xman end
 			default:
 				// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 				/*
@@ -2552,11 +2553,6 @@ void CSharedFilesCtrl::CreateMenues()
 	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_SPREADBAR_RESET, GetResString(IDS_SPREAD_RESET), _T("RESETSPREADBAR")); // Spread bars [Slugfiller/MorphXT] - Stulle
 
-	// ==> MassRename [Dragon] - Stulle
-	m_SharedFilesMenu.AppendMenu(MF_STRING|MF_SEPARATOR); 
-	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_MASSRENAME,GetResString(IDS_MR), _T("FILEMASSRENAME"));
-	m_SharedFilesMenu.AppendMenu(MF_STRING|MF_SEPARATOR); 
-	// <== MassRename [Dragon] - Stulle
 	// ==> Copy feedback feature [MorphXT] - Stulle
 	/*
 	// Xman: IcEcRacKer Copy UL-feedback
@@ -2568,6 +2564,14 @@ void CSharedFilesCtrl::CreateMenues()
 	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_COPYFEEDBACK_US, GetResString(IDS_COPYFEEDBACK_US), _T("COPY"));
 	m_SharedFilesMenu.AppendMenu(MF_SEPARATOR);
 	// <== Copy feedback feature [MorphXT] - Stulle
+
+	//Xman Mass Rename (Morph)
+	if (thePrefs.IsExtControlsEnabled())
+	{
+		m_SharedFilesMenu.AppendMenu(MF_STRING,MP_MASSRENAME,GetResString(IDS_MR), _T("FILEMASSRENAME"));
+		m_SharedFilesMenu.AppendMenu(MF_STRING|MF_SEPARATOR); 
+	}
+	//Xman end
 
 #if defined(_DEBUG)
 	if (thePrefs.IsExtControlsEnabled()){

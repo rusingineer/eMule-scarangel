@@ -541,6 +541,7 @@ void CPPgConnection::Localize(void)
 		GetDlgItem(IDC_DCAP_LBL2)->SetWindowText(GetResString(IDS_PW_CON_DOWNLBL));
 		GetDlgItem(IDC_UCAP_LBL2)->SetWindowText(GetResString(IDS_PW_CON_UPLBL));
 		GetDlgItem(IDC_UCAP_LBL3)->SetWindowText(GetResString(IDS_UPLOADSLOTSPEED_LABEL));
+		GetDlgItem(IDC_STATIC_DOWNINFO)->SetWindowText(GetResString(IDS_STATIC_DOWNINFO));
 		//Xman end		
 		GetDlgItem(IDC_CONNECTION_NETWORK)->SetWindowText(GetResString(IDS_NETWORK));
 		GetDlgItem(IDC_KBS2)->SetWindowText(GetResString(IDS_KBYTESPERSEC));

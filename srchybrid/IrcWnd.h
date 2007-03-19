@@ -58,14 +58,7 @@ class CIrcWnd : public CResizableDialog
 		CIrcChannelTabCtrl m_tabctrlChannelSelect;
 		CIrcNickListCtrl m_listctrlNickList;
 		CIrcChannelListCtrl m_listctrlServerChannelList;
-
-		void OnBackcolor();
-	
 protected:
-
-		CBrush m_brMyBrush;
-		HBRUSH hbr;
-
 		virtual BOOL OnInitDialog();
 		virtual void OnSize(UINT iType, int iCx, int iCy);
 		virtual int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -97,5 +90,11 @@ protected:
 		CString m_sSendString;
 		bool m_bLoggedIn;
 		bool m_bConnected;
-		
+		// ==> Design Settings [eWombat/Stulle] - Max
+	public:
+		void OnBackcolor();
+	protected:
+		CBrush m_brMyBrush;
+		HBRUSH hbr;
+		// <== Design Settings [eWombat/Stulle] - Max
 };

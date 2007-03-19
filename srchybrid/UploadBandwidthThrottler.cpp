@@ -695,6 +695,10 @@ UINT UploadBandwidthThrottler::RunInternal() {
 			minFragSize = 536;
 			doubleSendSize = minFragSize; // don't send two packages at a time at very low speeds to give them a smoother load
 		}
+		else if(allowedDataRate < 16*1024)
+		{
+			doubleSendSize = minFragSize;
+		}
 
 		m_currentOverallSentBytes=theApp.pBandWidthControl->GeteMuleOutOverall();
 		m_currentNetworkOut=theApp.pBandWidthControl->GetNetworkOut();
@@ -1083,7 +1087,7 @@ UINT UploadBandwidthThrottler::RunInternal() {
 		if(uSlope<TRICKLESPEED)
 			lastTickReachedBandwidth=thisLoopTick;
 		else
-			if(thisLoopTick - lastTickReachedBandwidth  > 3000 && thePrefs.m_bandwidthnotreachedslots==true) //since 3 seconds bandwidth couldn't be reached
+			if(thePrefs.m_bandwidthnotreachedslots==true && thisLoopTick - lastTickReachedBandwidth  > 3000) //since 3 seconds bandwidth couldn't be reached
 			{
 				needslot=true;
 				lastTickReachedBandwidth=thisLoopTick;

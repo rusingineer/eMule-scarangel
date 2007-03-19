@@ -878,7 +878,7 @@ void CUpDownClient::CreateStandartPackets(byte* data,uint32 togo, Requested_Bloc
 	
 	//Xman flexible splittingsize
 	uint32 splittingsize = 10240;
-	if( m_nUpDatarate10 > 5120 && !IsUploadingToPeerCache() && !GetDownloadState()==DS_DOWNLOADING)
+	if( m_nUpDatarate10 > 5120 && !IsUploadingToPeerCache() && GetDownloadState()!=DS_DOWNLOADING)
 	{
 		splittingsize = m_nUpDatarate10 << 1;
 		if (splittingsize > 36000)
@@ -1081,7 +1081,7 @@ void CUpDownClient::CreatePackedPackets(byte* data, uint32 togo, Requested_Block
 
 	//Xman flexible splittingsize
 	uint32 splittingsize = 10240;
-	if( m_nUpDatarate10 > 5120 && !GetDownloadState()==DS_DOWNLOADING)
+	if( m_nUpDatarate10 > 5120 && GetDownloadState()!=DS_DOWNLOADING)
 	{
 		splittingsize = m_nUpDatarate10 << 1; //one packet can be send between 2 - 4 seconds
 		if (splittingsize > 36000)
@@ -1727,7 +1727,7 @@ bool CUpDownClient::CheckDatarate(uint8 dataratestocheck)
 {
 	//Xman Xtreme Upload
 	//look if a slot is over the wanted speed (+ tolerance) 
-	if(m_upHistory_list.GetSize() > 4 && dataratestocheck > 2)
+	if(m_upHistory_list.GetSize() > 4 && dataratestocheck >= 2)
 	{	
 		// Compute datarate (=> display)
 		POSITION pos = m_upHistory_list.FindIndex(dataratestocheck); //avg of 10 seconds

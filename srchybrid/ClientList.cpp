@@ -1154,7 +1154,7 @@ bool CClientList::IsKadFirewallCheckIP(uint32 dwIP) const{
 	return false;
 }
 
-//Xman -Reask sources after IP change- v3 (main part by Maella)
+//Xman -Reask sources after IP change- v4 
 void CClientList::TrigReaskForDownload(bool immediate){
 	for(POSITION pos = list.GetHeadPosition(); pos != NULL;){				
 		CUpDownClient* cur_client =	list.GetNext(pos);

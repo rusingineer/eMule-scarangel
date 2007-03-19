@@ -28,7 +28,7 @@
 #include "OtherFunctions.h"
 #include "emuledlg.h"
 #include "clientlist.h"
-#include ".\kademliawnd.h"
+#include ".\kademliawnd.h" // Design Settings [eWombat/Stulle] - Max
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -99,7 +99,7 @@ BOOL CKademliaWnd::OnInitDialog()
 	m_contactListCtrl->Init();
 	searchList->Init();
 	 
-	OnBackcolor();
+	OnBackcolor(); // Design Settings [eWombat/Stulle] - Max
 
 	SetAllIcons();
 	Localize();
@@ -234,7 +234,12 @@ void CKademliaWnd::OnSysColorChange()
 void CKademliaWnd::SetAllIcons()
 {
 	// frames
+	// ==> Design Settings [eWombat/Stulle] - Max
+	/*
 	m_ctrlBootstrap.SetIcon(_T("KadBootstrap"));
+	*/
+	m_ctrlBootstrap.SetIcon(_T("KadBootstrap"),crKadColor);
+	// <== Design Settings [eWombat/Stulle] - Max
 
 	if (icon_kadcont)
 		VERIFY( DestroyIcon(icon_kadcont) );
@@ -249,7 +254,12 @@ void CKademliaWnd::SetAllIcons()
 
 void CKademliaWnd::Localize()
 {
+	// ==> Design Settings [eWombat/Stulle] - Max
+	/*
 	m_ctrlBootstrap.SetWindowText(GetResString(IDS_BOOTSTRAP));
+	*/
+	m_ctrlBootstrap.SetWindowText(GetResString(IDS_BOOTSTRAP),crKadColor);
+	// <== Design Settings [eWombat/Stulle] - Max
 	GetDlgItem(IDC_BOOTSTRAPBUTTON)->SetWindowText(GetResString(IDS_BOOTSTRAP));
 	GetDlgItem(IDC_SSTATIC4)->SetWindowText(GetResString(IDS_SV_ADDRESS) + _T(":"));
 	GetDlgItem(IDC_SSTATIC7)->SetWindowText(GetResString(IDS_SV_PORT) + _T(":"));
@@ -333,15 +343,20 @@ void CKademliaWnd::ContactRef(const Kademlia::CContact* contact)
 // ==> Design Settings [eWombat/Stulle] - Max
 void CKademliaWnd::OnBackcolor() 
 {
-	COLORREF crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_kademlia);
+	crKadColor = thePrefs.GetStyleBackColor(window_styles, style_w_kademlia);
 
-	if(crTempColor == CLR_DEFAULT)
-		crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
+	if(crKadColor == CLR_DEFAULT)
+		crKadColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
 
 	m_brMyBrush.DeleteObject();
 
-	if(crTempColor != CLR_DEFAULT)
-		m_brMyBrush.CreateSolidBrush(crTempColor);
+	if(crKadColor != CLR_DEFAULT)
+		m_brMyBrush.CreateSolidBrush(crKadColor);
+	else
+	{
+		crKadColor = NULL;
+		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
+	}
 }
 
 HBRUSH CKademliaWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
@@ -351,101 +366,27 @@ HBRUSH CKademliaWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	if (nCtlColor == CTLCOLOR_DLG)
 		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
 
-	int b1 = pWnd->GetDlgCtrlID();
-	
-	switch(b1)
+	if(crKadColor!=NULL)
 	{
-		case	IDC_KADCONTACTLAB:
-		case	IDC_KADSEARCHLAB:
-		case	IDC_KADICO1:
-		case	IDC_KADICO2:
-		case	IDC_SSTATIC4:
-		case	IDC_SSTATIC7:
-		case	IDC_RADIP:
-		case	IDC_RADCLIENTS:
-			{ 
-				pDC->SetBkMode(TRANSPARENT);
+		int b1 = pWnd->GetDlgCtrlID();
 
-				hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-				//pDC->SetTextColor(m_textcol);
-				//pDC->SetBkColor(m_backcol);
+		switch(b1)
+		{
+			case	IDC_BOOTSTRAPIP:
+			case	IDC_BOOTSTRAPPORT:
 				break;
-			}
+			default:
+				{ 
+					pDC->SetBkMode(TRANSPARENT);
 
-	}
-/*
-	if (b1 == IDC_KADCONTACTLAB)
-	{ 
-	pDC->SetBkMode(TRANSPARENT);
-	
-	hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-	//pDC->SetTextColor(m_textcol);
-	//pDC->SetBkColor(m_backcol);
-	}
+					hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+					//pDC->SetTextColor(m_textcol);
+					//pDC->SetBkColor(m_backcol);
+					break;
+				}
 
-	if (b1 == IDC_KADSEARCHLAB)
-	{ 
-	pDC->SetBkMode(TRANSPARENT);
-	
-	hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-	//pDC->SetTextColor(m_textcol);
-	//pDC->SetBkColor(m_backcol);
-	}
-
-	if (b1 == IDC_KADICO1)
-	{ 
-	pDC->SetBkMode(TRANSPARENT);
-	
-	hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-	//pDC->SetTextColor(m_textcol);
-	//pDC->SetBkColor(m_backcol);
-	}
-
-	if (b1 == IDC_KADICO2)
-	{ 
-	pDC->SetBkMode(TRANSPARENT);
-	
-	hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-	//pDC->SetTextColor(m_textcol);
-	//pDC->SetBkColor(m_backcol);
-	}
-
-	if (b1 == IDC_SSTATIC4)
-	{ 
-	pDC->SetBkMode(TRANSPARENT);
-	
-	hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-	//pDC->SetTextColor(m_textcol);
-	//pDC->SetBkColor(m_backcol);
-	}
-
-	if (b1 == IDC_SSTATIC7)
-	{ 
-		pDC->SetBkMode(TRANSPARENT);
-
-		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-		//pDC->SetTextColor(m_textcol);
-		//pDC->SetBkColor(m_backcol);
-	}
-	
-		if (b1 == IDC_RADIP)
-		{ 
-			pDC->SetBkMode(TRANSPARENT);
-
-			hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-			//pDC->SetTextColor(m_textcol);
-			//pDC->SetBkColor(m_backcol);
 		}
-
-		if (b1 == IDC_RADCLIENTS)
-		{ 
-			pDC->SetBkMode(TRANSPARENT);
-
-			hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-			//pDC->SetTextColor(m_textcol);
-			//pDC->SetBkColor(m_backcol);
-		}
-*/
+	}
 	return hbr;
 }
 // <== Design Settings [eWombat/Stulle] - Max

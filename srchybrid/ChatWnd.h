@@ -50,12 +50,6 @@ protected:
 	HICON icon_msg;
 	CSplitterControl m_wndSplitterchat;
 
-	HBRUSH m_hbrMyBrush;
-	CBrush m_brMyBrush;
-	COLORREF m_backcol;
-
-	void OnBackcolor(); 
-
 	void SetAllIcons();
 	void DoResize(int delta);
 
@@ -72,7 +66,14 @@ protected:
 	afx_msg void OnLvnItemActivateFrlist(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMClickFrlist(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnStnDblclickFriendsicon();
+
 	// ==> Design Settings [eWombat/Stulle] - Max
+protected:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	CBrush m_brMyBrush;
+	HBRUSH hbr;	
+	COLORREF clrChatColor;
+public:
+	void OnBackcolor(); 
 	// <== Design Settings [eWombat/Stulle] - Max
 };

@@ -449,7 +449,17 @@ bool CIPFilter::ParseFilterLine2(const CStringA& sbuffer, uint32& ip1, uint32& i
 void CIPFilter::RemoveAllIPFilters()
 {
 	for (int i = 0; i < m_iplist.GetCount(); i++)
-		delete m_iplist[i];
+	{
+		//Xman Code Fix: deleting the description-String can throw an exception
+		try 
+		{
+			delete m_iplist[i];
+		}
+		catch(...)
+		{
+			//nothing
+		}
+	}
 	m_iplist.RemoveAll();
 	m_pLastHit = NULL;
 }

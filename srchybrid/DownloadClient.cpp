@@ -1814,7 +1814,7 @@ void CUpDownClient::CompDownloadRate(){
 	}
 
 	//Xman 0.46b for faster endgame
-	if(m_downHistory_list.GetSize() > 3){	//wait 4 seconds to have a valid value
+	if(m_downHistory_list.GetSize() > 1){	//wait 4 seconds to have a valid value
 		// Compute datarate (=> avg10 seconds for faster endgame)
 		POSITION pos = m_downHistory_list.FindIndex(10);
 		if(pos == NULL){

@@ -202,7 +202,7 @@ BEGIN_MESSAGE_MAP(CemuleDlg, CTrayDialog)
 
 	//Xman versions check
 	ON_MESSAGE(UM_MVERSIONCHECK_RESPONSE, OnMVersionCheckResponse)
-	ON_MESSAGE(UM_DLPVERSIONCHECK_RESPONSE, OnDLPVersionCheckResponse) //Xman DLP
+	ON_MESSAGE(UM_DLPVERSIONCHECK_RESPONSE, OnDLPVersionCheckResponse) //Xman DLP //MOD NOTE: if you are using DLP, don't remove/modify this versions-check
 	//Xman end
 
 	// ScarAngel Version Check - Stulle
@@ -748,7 +748,7 @@ void CemuleDlg::DoMVersioncheck(bool manual) {
 		AddLogLine(true,GetResString(IDS_NEWVERSIONFAILED));
 	}
 	else
-		WSAAsyncGetHostByName(m_hWnd, UM_DLPVERSIONCHECK_RESPONSE, "dlp.dyndns.info", m_acDLPBuffer, sizeof(m_acDLPBuffer)); //Xman DLP
+		WSAAsyncGetHostByName(m_hWnd, UM_DLPVERSIONCHECK_RESPONSE, "dlp.dyndns.info", m_acDLPBuffer, sizeof(m_acDLPBuffer)); //Xman DLP //MOD NOTE: if you are using DLP, don't remove/modify this versions-check
 }
 //Xman end
 
@@ -862,6 +862,8 @@ void CALLBACK CemuleDlg::StartupTimer(HWND /*hwnd*/, UINT /*uiMsg*/, UINT /*idEv
 			// BEGIN SLUGFILLER: SafeHash - delay load shared files
 			case 6:
 				theApp.emuledlg->status++;
+				//Xman remove unused AICH-hashes
+				theApp.m_AICH_Is_synchronizing=true;
 				theApp.sharedfiles->SetOutputCtrl(&theApp.emuledlg->sharedfileswnd->sharedfilesctrl);
 				theApp.emuledlg->sharedfileswnd->historylistctrl.Init(); //Xman [MoNKi: -Downloaded History-]
 
@@ -927,6 +929,7 @@ void CemuleDlg::StopTimer()
 	if (thePrefs.UpdateNotify())
 		DoVersioncheck(false);
 
+	//MOD NOTE: if you are using DLP, don't remove/modify this versions-check
 	//Xman versions check
 	if (thePrefs.UpdateNotifyMod())
 		DoMVersioncheck(false);
@@ -1914,8 +1917,9 @@ LRESULT CemuleDlg::OnHashFailed(WPARAM /*wParam*/, LPARAM lParam)
 
 LRESULT CemuleDlg::OnPartHashedOK(WPARAM wParam,LPARAM lParam)
 {
+	//Xman
 	// BEGIN SiRoB: Fix crash at shutdown
-	if (theApp.m_app_state == APP_STATE_SHUTTINGDOWN)
+	if (theApp.m_app_state != APP_STATE_RUNNING || theApp.downloadqueue==NULL)
 		return FALSE;
 	// END SiRoB: Fix crash at shutdown
 	CPartFile* pOwner = (CPartFile*)lParam;
@@ -1926,8 +1930,9 @@ LRESULT CemuleDlg::OnPartHashedOK(WPARAM wParam,LPARAM lParam)
 
 LRESULT CemuleDlg::OnPartHashedCorrupt(WPARAM wParam,LPARAM lParam)
 {
+	//Xman
 	// BEGIN SiRoB: Fix crash at shutdown
-	if (theApp.m_app_state == APP_STATE_SHUTTINGDOWN)
+	if (theApp.m_app_state != APP_STATE_RUNNING || theApp.downloadqueue==NULL)
 		return FALSE;
 	// END SiRoB: Fix crash at shutdown
 	CPartFile* pOwner = (CPartFile*)lParam;
@@ -1938,8 +1943,9 @@ LRESULT CemuleDlg::OnPartHashedCorrupt(WPARAM wParam,LPARAM lParam)
 
 LRESULT CemuleDlg::OnPartHashedOKAICHRecover(WPARAM wParam,LPARAM lParam)
 {
+	//Xman
 	// BEGIN SiRoB: Fix crash at shutdown
-	if (theApp.m_app_state == APP_STATE_SHUTTINGDOWN)
+	if (theApp.m_app_state != APP_STATE_RUNNING || theApp.downloadqueue==NULL)
 		return FALSE;
 	// END SiRoB: Fix crash at shutdown
 	CPartFile* pOwner = (CPartFile*)lParam;
@@ -1950,8 +1956,9 @@ LRESULT CemuleDlg::OnPartHashedOKAICHRecover(WPARAM wParam,LPARAM lParam)
 
 LRESULT CemuleDlg::OnPartHashedCorruptAICHRecover(WPARAM wParam,LPARAM lParam)
 {
+	//Xman
 	// BEGIN SiRoB: Fix crash at shutdown
-	if (theApp.m_app_state == APP_STATE_SHUTTINGDOWN)
+	if (theApp.m_app_state != APP_STATE_RUNNING || theApp.downloadqueue==NULL)
 		return FALSE;
 	// END SiRoB: Fix crash at shutdown
 	CPartFile* pOwner = (CPartFile*)lParam;
@@ -3570,6 +3577,7 @@ LRESULT CemuleDlg::OnMVersionCheckResponse(WPARAM /*wParam*/, LPARAM lParam)
 	return 0;
 }
 
+//MOD NOTE: if you are using DLP, don't remove/modify this versions-check
 //Xman DLP
 LRESULT CemuleDlg::OnDLPVersionCheckResponse(WPARAM /*wParam*/, LPARAM lParam)
 {

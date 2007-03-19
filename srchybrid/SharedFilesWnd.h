@@ -51,13 +51,6 @@ private:
 	CSplitterControl m_wndSplitter;
 
 protected:
-
-	HBRUSH m_hbrMyBrush;
-	CBrush m_brMyBrush;
-	COLORREF m_backcol;
-
-	void OnBackcolor();
-
 	void SetAllIcons();
 	void DoResize(int delta);
 
@@ -84,5 +77,10 @@ protected:
 	//Xman end
 	// ==> Design Settings [eWombat/Stulle] - Max
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	CBrush m_brMyBrush;
+	HBRUSH hbr;	
+	COLORREF crSharedColor;
+public:
+	void OnBackcolor(); 
 	// <== Design Settings [eWombat/Stulle] - Max
 };

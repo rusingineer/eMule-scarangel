@@ -112,6 +112,7 @@ public:
 	void UpdateVirtualUploadSources();
 	UINT m_nVirtualUploadSources;
 	uint32 GetVirtualSourceIndicator() const;
+	void CheckAUPFilestats(bool allowUpdatePrio);
 	//Xman end
 
 	//Xman show virtual sources (morph)

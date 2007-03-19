@@ -197,6 +197,7 @@ BOOL CChatWnd::OnInitDialog()
 	inputtext.SetLimitText(MAX_CLIENT_MSG_LEN);
 	chatselector.Init();
 	m_FriendListCtrl.Init();
+	OnBackcolor(); // Design Settings [eWombat/Stulle] - Max
 
 	SetAllIcons();
 
@@ -412,14 +413,24 @@ void CChatWnd::SetAllIcons()
 	icon_msg = theApp.LoadIcon(_T("Message"), 16, 16);
 	((CStatic*)GetDlgItem(IDC_MESSAGEICON))->SetIcon(icon_msg);
 	((CStatic*)GetDlgItem(IDC_FRIENDSICON))->SetIcon(icon_friend);
+	// ==> Design Settings [eWombat/Stulle] - Max
+	/*
 	m_cUserInfo.SetIcon(_T("Info"));
+	*/
+	m_cUserInfo.SetIcon(_T("Info"),clrChatColor);
+	// <== Design Settings [eWombat/Stulle] - Max
 }
 
 void CChatWnd::Localize()
 {
 	GetDlgItem(IDC_FRIENDS_LBL)->SetWindowText(GetResString(IDS_CW_FRIENDS));
 	GetDlgItem(IDC_MESSAGES_LBL)->SetWindowText(GetResString(IDS_CW_MESSAGES));
+	// ==> Design Settings [eWombat/Stulle] - Max
+	/*
 	m_cUserInfo.SetWindowText(GetResString(IDS_INFO));
+	*/
+	m_cUserInfo.SetWindowText(GetResString(IDS_INFO),clrChatColor);
+	// <== Design Settings [eWombat/Stulle] - Max
 	GetDlgItem(IDC_FRIENDS_DOWNLOADED)->SetWindowText(GetResString(IDS_CHAT_DOWNLOADED));
 	GetDlgItem(IDC_FRIENDS_UPLOADED)->SetWindowText(GetResString(IDS_CHAT_UPLOADED));
 	GetDlgItem(IDC_FRIENDS_IDENT)->SetWindowText(GetResString(IDS_CHAT_IDENT));
@@ -484,57 +495,45 @@ void CChatWnd::OnStnDblclickFriendsicon()
 // ==> Design Settings [eWombat/Stulle] - Max
 void CChatWnd::OnBackcolor() 
 {
-	// TODO: Add your control notification handler code here
-	m_backcol = COLORREF(RGB(0,255,255));//<- testcolor
-	if (m_brMyBrush.Detach())  // check if brush already exists
-		m_brMyBrush.DeleteObject();
-	m_brMyBrush.CreateSolidBrush(m_backcol);
-	m_hbrMyBrush = (HBRUSH) m_brMyBrush;
+	clrChatColor = thePrefs.GetStyleBackColor(window_styles, style_w_messages);
 
+	if(clrChatColor == CLR_DEFAULT)
+		clrChatColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
 
+	m_brMyBrush.DeleteObject();
+
+	if(clrChatColor != CLR_DEFAULT)
+		m_brMyBrush.CreateSolidBrush(clrChatColor);
+	else
+	{
+		clrChatColor = NULL;
+		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
+	}
 }
 
 HBRUSH CChatWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
-	HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+	hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
 
-	// TODO: Change any attributes of the DC here
 	if (nCtlColor == CTLCOLOR_DLG)
 		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-/*
-	int b1 = pWnd->GetDlgCtrlID();
 
-	if (b1 == IDC_QUEUECOUNT_LABEL)
-	{ pDC->SetBkMode(TRANSPARENT);
-	//pDC->SetTextColor(m_textcol);
-	hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-	//pDC->SetBkColor(m_backcol);
+//	int b1 = pWnd->GetDlgCtrlID();
+
+//	switch(b1)
+	{
+//		default:
+			{ 
+				pDC->SetBkMode(TRANSPARENT);
+
+				hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+				//pDC->SetTextColor(m_textcol);
+				//pDC->SetBkColor(m_backcol);
+//				break;
+			}
+
 	}
-
-	if (b1 == IDC_QUEUECOUNT)
-	{ pDC->SetBkMode(TRANSPARENT);
-	//pDC->SetTextColor(m_textcol);
-	hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-	//pDC->SetBkColor(m_backcol);
-	}
-	*/
-	return hbr;
-}
-/*
-HBRUSH CChatWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
-{
-	HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
-	COLORREF crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_messages);
-
-	if(crTempColor == CLR_DEFAULT)
-		crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
-
-	if(crTempColor != CLR_DEFAULT)
-		hbr = CreateSolidBrush(crTempColor);
-
-	pDC->SetBkMode(TRANSPARENT);
 
 	return hbr;
 }
-*/
 // <== Design Settings [eWombat/Stulle] - Max

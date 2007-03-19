@@ -765,13 +765,13 @@ bool	CPreferences::m_bMMCompl;
 bool	CPreferences::m_bMMOpen;
 // <== TBH: minimule - Max
 
-// ==> MassRename [Dragon] - Stulle
+// ==> Simple cleanup [MorphXT] - Stulle
 int      CPreferences::m_SimpleCleanupOptions;
 CString  CPreferences::m_SimpleCleanupSearch;
 CString  CPreferences::m_SimpleCleanupReplace;
 CString  CPreferences::m_SimpleCleanupSearchChars;
 CString  CPreferences::m_SimpleCleanupReplaceChars;
-// <== MassRename [Dragon] - Stulle
+// <== Simple cleanup [MorphXT] - Stulle
 
 bool	CPreferences::startupsound; // Startupsound [Commander] - mav744
 
@@ -2626,7 +2626,7 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("MiniMuleOpen"),m_bMMOpen);
 	// <== TBH: minimule - Max
 
-	// ==> MassRename [Dragon] - Stulle
+	// ==> Simple cleanup [MorphXT] - Stulle
 	ini.WriteInt (_T("SimpleCleanupOptions"),m_SimpleCleanupOptions);
 	// Enclose the strings with '"' before writing them to the file.
 	// These will be filtered if the string is read again
@@ -2634,7 +2634,7 @@ void CPreferences::SavePreferences()
 	ini.WriteString (_T("SimpleCleanupReplace"),CString ('\"')+m_SimpleCleanupReplace+'\"');
 	ini.WriteString (_T("SimpleCleanupSearchChars"),CString ('\"')+m_SimpleCleanupSearchChars+'\"');
 	ini.WriteString (_T("SimpleCleanupReplaceChars"),CString ('\"')+m_SimpleCleanupReplaceChars+'\"');
-	// <== MassRename [Dragon] - Stulle
+	// <== Simple cleanup [MorphXT] - Stulle
 
 	ini.WriteBool(L"Startupsound",startupsound); // Startupsound [Commander] - mav744
 
@@ -3724,7 +3724,7 @@ void CPreferences::LoadPreferences()
 	m_bMMOpen = ini.GetBool(_T("MiniMuleOpen"),true);
 	// <== TBH: minimule - Max
 
-	// ==> MassRename [Dragon] - Stulle
+	// ==> Simple cleanup [MorphXT] - Stulle
 	SetSimpleCleanupOptions (ini.GetInt (_T("SimpleCleanupOptions"),3));
 	SetSimpleCleanupSearch (ini.GetString (_T("SimpleCleanupSearch")));
 	SetSimpleCleanupReplace (ini.GetString (_T("SimpleCleanupReplace")));
@@ -3736,7 +3736,7 @@ void CPreferences::LoadPreferences()
 								 _T("\"\xE4\";\"\xF6\";\"\xFC\";\"\xC4\";\"\xD6\";\"\xDC\";\"\xDF\"")));/*ISO 8859-4*/
 	SetSimpleCleanupReplaceChars (ini.GetString (_T("SimpleCleanupReplaceChars"),
 								 _T("\"ae\";\"oe\";\"ue\";\"Ae\";\"Oe\";\"Ue\";\"ss\"")));
-	// <== MassRename [Dragon] - Stulle
+	// <== Simple cleanup [MorphXT] - Stulle
 	startupsound=ini.GetBool(L"Startupsound",true); // Startupsound [Commander] - mav744
 
 	// ==> Adjust Compress Level [Stulle] - Stulle
@@ -5150,17 +5150,17 @@ void CPreferences::LoadStylePrefs(CIni &ini)
 			}
 
 			iSub++;
-			if(i == 9)
+			if(i == 8)
 			{
 				iSub = style_d_default;
 				iMaster = download_styles;
 			}
-			else if(i == 17)
+			else if(i == 16)
 			{
 				iSub = style_s_default;
 				iMaster = share_styles;
 			}
-			else if(i == 27)
+			else if(i == 26)
 			{
 				iSub = style_b_clientlist;
 				iMaster = background_styles;

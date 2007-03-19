@@ -64,8 +64,7 @@ public:
 
 	void UpdateSearch(CSearchFile* pSearchFile);
 
-	void OnBackcolor();
-
+	void OnBackcolor(); // Design Settings [eWombat/Stulle] - Max
 
 protected:
 	CSearchParamsWnd* m_pwndParams;

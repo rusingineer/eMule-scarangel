@@ -81,6 +81,11 @@ void CClientUDPSocket::OnReceive(int nErrorCode)
 			DebugLogError(_T("Error: Client UDP socket, error on receive event: %s"), GetErrorMessage(nErrorCode, 1));
 	}
 
+	//Xman -Reask sources after IP change- v4 
+	theApp.last_traffic_reception=::GetTickCount(); //Threading Info: synchronized with the main thread
+	//Xman end
+
+
 	BYTE buffer[5000];
 	SOCKADDR_IN sockAddr = {0};
 	int iSockAddrLen = sizeof sockAddr;

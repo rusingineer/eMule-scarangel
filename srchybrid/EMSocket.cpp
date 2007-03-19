@@ -336,6 +336,11 @@ void CEMSocket::OnReceive(int nErrorCode){
 		return;
 	}
 	
+	//Xman -Reask sources after IP change- v4
+	if(pendingOnReceive==false)
+		theApp.last_traffic_reception=::GetTickCount(); //Threading Info: synchronized with the main thread
+	//Xman end
+	
 	// Check current connection state
 	//Xman threadsafe!
 	sendLocker.Lock();
@@ -402,7 +407,17 @@ void CEMSocket::ProcessReceiveData()
 
 	// CPU load improvement
 	// Detect if the socket's buffer is empty (or the size did match...)
-	pendingOnReceive = m_bFullReceive;
+	//Xman Code Improvement: what is if the sizes match per accident ?
+	//pendingOnReceive = m_bFullReceive;
+	//more accurate
+	DWORD nBytes=0;
+	if(downloadLimitEnable == false || !IOCtl(FIONREAD, &nBytes))
+		pendingOnReceive=false;
+	else if (nBytes != 0)
+		pendingOnReceive=true;
+	else	
+		pendingOnReceive=false;
+	//Xman end
 
 	if (ret == 0)
 		return;

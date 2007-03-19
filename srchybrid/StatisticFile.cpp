@@ -21,6 +21,13 @@
 #include "KnownFileList.h"
 #include "SharedFileList.h"
 #include "KnownFile.h" //Xman PowerRelease
+
+//Xman advanced upload-priority
+#ifdef _BETA
+#include "Log.h"
+#include "otherfunctions.h"
+#endif
+//Xman end
 #include "Preferences.h" // Spread bars [Slugfiller/MorphXT] - Stulle
 
 #ifdef _DEBUG
@@ -49,6 +56,15 @@ void CStatisticFile::MergeFileStats( CStatisticFile *toMerge )
 	alltimerequested += toMerge->GetAllTimeRequests();
 	alltimetransferred += toMerge->GetAllTimeTransferred();
 	alltimeaccepted += toMerge->GetAllTimeAccepts();
+	//Xman advanced upload-priority
+	m_unotcountedtransferred += toMerge->m_unotcountedtransferred;
+	if(m_unotcountedtransferred > alltimetransferred)
+		m_unotcountedtransferred = alltimetransferred;
+	//Xman end
+
+#ifdef _BETA
+	AddDebugLogLine(false,_T("merged file stats: %s"), toMerge->fileParent->GetFileName());
+#endif
 
 	// ==> Spread bars [Slugfiller/MorphXT] - Stulle
 	if (!toMerge->spreadlist.IsEmpty()) {
@@ -271,6 +287,38 @@ void CStatisticFile::AddBlockTransferred(uint64 start, uint64 end, uint32 count)
 //Xman end
 */
 // <== Removed Spreadbars (old version) [SlugFiller] - Stulle
+
+//Xman advanced upload-priority
+void CStatisticFile::UpdateCountedTransferred() 
+{
+	ASSERT(m_tlastdataupdate!=0);
+	ASSERT(m_unotcountedtransferred <= alltimetransferred);
+	if(time(NULL) - m_tlastdataupdate > 3600 * 12) // every 12 hours
+	{
+#ifdef _BETA
+		uint64 oldcounted=GetCountedTransferred();
+#endif
+		//we subtract every day 10% from the counted upload
+		//this means, if you close emule for >=10 days and restart, no old upload is counted for Auto-Prio
+		//also if there are no uploads for longer time the file get pushed via Auto-Prio
+		//remark: when emule is running 10 days, the counted upload will never reach 0, because always subtracting 10%
+		//however this method is the best one without adding lot of more information to the met files
+		//and it's crash-safe
+		uint32 difference = (time(NULL)-m_tlastdataupdate)/(3600*12); //in half days
+		if(difference>20) difference = 20;
+		//every half day = 5%
+		difference *=5;
+		if(difference>=100) //manual to avoid overflow because rounding errors
+			m_unotcountedtransferred = alltimetransferred;
+		else
+			m_unotcountedtransferred += (uint64)((double)GetCountedTransferred() * ((double)difference/100));
+#ifdef _BETA
+		AddDebugLogLine(false,_T("--> Calc file stats: old counted upload: %s, new counted upload: %s, half days difference: %u%%, file: %s"),CastItoXBytes(oldcounted),CastItoXBytes(GetCountedTransferred()),difference,fileParent->GetFileName());
+#endif
+		m_tlastdataupdate=time(NULL);
+	}
+}
+//Xman end
 
 // ==> Spread bars [Slugfiller/MorphXT] - Stulle
 void CStatisticFile::AddBlockTransferred(uint64 start, uint64 end, uint64 count){

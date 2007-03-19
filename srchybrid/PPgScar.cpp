@@ -31,11 +31,14 @@
 #include "ClientUDPSocket.h"
 #include "ListenSocket.h"
 // <== Random Ports [MoNKi] - Stulle
-
-#include "MuleStatusBarCtrl.h" // Design Settings [eWombat/Stulle] - Max
+// ==> Design Settings [eWombat/Stulle] - Max
+#include "MuleStatusBarCtrl.h"
 #include "IrcWnd.h"
 #include "KademliaWnd.h"
 #include "SearchDlg.h"
+#include "ChatWnd.h"
+#include "StatisticsDlg.h"
+// <== Design Settings [eWombat/Stulle] - Max
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -1389,20 +1392,22 @@ BOOL CPPgScar::OnApply()
 	if(m_bDesignChanged)
 	{
 		m_bDesignChanged = false;
-
+                
 		theApp.emuledlg->kademliawnd->OnBackcolor();
 		theApp.emuledlg->serverwnd->OnBackcolor();
 		theApp.emuledlg->transferwnd->OnBackcolor();
 		theApp.emuledlg->searchwnd->OnBackcolor();
+		theApp.emuledlg->sharedfileswnd->OnBackcolor();
+		theApp.emuledlg->chatwnd->OnBackcolor();
 		theApp.emuledlg->ircwnd->OnBackcolor();
+		theApp.emuledlg->statisticswnd->OnBackcolor();
 
-		theApp.emuledlg->activewnd->RedrawWindow();//redraw only the active Wnd after color change - Max
-		
 		theApp.emuledlg->statusbar->UpdateColor();
                 	
 		theApp.emuledlg->transferwnd->Localize();
 		theApp.emuledlg->sharedfileswnd->sharedfilesctrl.Localize();
 		theApp.emuledlg->serverwnd->serverlistctrl.Localize();
+		theApp.emuledlg->activewnd->RedrawWindow();//redraw only the active Wnd after color change - Max
 	}
 	// <== Design Settings [eWombat/Stulle] - Stulle
 

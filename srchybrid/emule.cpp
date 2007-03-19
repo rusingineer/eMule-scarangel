@@ -221,9 +221,13 @@ CemuleApp::CemuleApp(LPCTSTR lpszAppName)
 
 	srand(time(NULL));
 	m_dwPublicIP = 0;
-	//Xman -Reask sources after IP change- v3 (main part by Maella) 
+	//Xman -Reask sources after IP change- v4
 	m_bneedpublicIP = false; 
 	last_ip_change = 0;
+	last_valid_serverid = 0;
+	last_valid_ip = 0;
+	last_traffic_reception = 0;
+	internetmaybedown=1;
 	//Xman end
 	m_bAutoStart = false;
 
@@ -1422,7 +1426,10 @@ void CemuleApp::SetPublicIP(const uint32 dwIP){
 				Kademlia::CKademlia::Start();
 				//Kad loaded the old IP, we must reset
 				if(Kademlia::CKademlia::IsRunning())
+				{
+					Kademlia::CKademlia::GetPrefs()->SetIPAddress(0);
 					Kademlia::CKademlia::GetPrefs()->SetIPAddress(htonl(dwIP));
+				}
 				//Xman end
 			}
 		m_pPeerCache->FoundMyPublicIPAddress(dwIP);	

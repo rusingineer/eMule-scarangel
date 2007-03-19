@@ -20,12 +20,12 @@
 /*
 //Xman
 //ModID
-#define MOD_VERSION		_T("Xtreme 5.4.1") 
+#define MOD_VERSION		_T("Xtreme 5.4.2") 
 */
 //Xman versions check
 #define MOD_MAIN_VER	5
 #define MOD_MIN_VER		4
-#define	MOD_BUILD_VER	2 //1=Xtreme x.x 2=Xtreme x.x.1
+#define	MOD_BUILD_VER	3 //1=Xtreme x.x 2=Xtreme x.x.1
 /*
 
 //Xman Anti-Leecher: simple Anti-Thief
@@ -414,6 +414,13 @@
 #define  FT_CATEGORY			 0x53	// <uint32>
 #define	 FT_ATTRANSFERREDHI		 0x54	// <uint32>
 #define	 FT_MAXSOURCES			 0x55	// <uint32>
+
+//Xman advanced upload-priority
+#define	 FT_NOTCOUNTEDTRANSFERREDLOW	 0x90
+#define	 FT_NOTCOUNTEDTRANSFERREDHIGH	 0x91
+#define	 FT_LASTDATAUPDATE		 0x92
+//Xman end
+
 #define	 FT_MEDIA_ARTIST		 0xD0	// <string>
 #define	TAG_MEDIA_ARTIST		"\xD0"	// <string>
 #define	 FT_MEDIA_ALBUM			 0xD1	// <string>

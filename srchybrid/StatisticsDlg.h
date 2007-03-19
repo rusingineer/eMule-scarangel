@@ -142,13 +142,6 @@ private:
 	HTREEITEM h_allocSizes[32];
 
 protected:
-
-	HBRUSH m_hbrMyBrush;
-	CBrush m_brMyBrush;
-	COLORREF m_backcol;
-
-	void OnBackcolor();
-
 	void SetAllIcons();
 
 	virtual BOOL OnInitDialog(); 
@@ -177,9 +170,7 @@ protected:
 	afx_msg void OnStnDblclickScopeU();
 	afx_msg void OnStnDblclickStatsscope();
 	afx_msg LRESULT OnOscopePositionMsg(WPARAM wParam, LPARAM lParam);
-	// ==> Design Settings [eWombat/Stulle] - Max
-	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-	// <== Design Settings [eWombat/Stulle] - Max
+	//Xman end
 
 	//Xman
 	// Maella -Network Adapter Feedback Control-
@@ -190,4 +181,13 @@ private:
 	int m_lastRange[2];
 	// Maella end
 
+	// ==> Design Settings [eWombat/Stulle] - Max
+protected:
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	CBrush m_brMyBrush;
+	HBRUSH hbr;	
+	COLORREF crStatsColor;
+public:
+	void OnBackcolor(); 
+	// <== Design Settings [eWombat/Stulle] - Max
 };

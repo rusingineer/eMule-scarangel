@@ -35,8 +35,6 @@ public:
 	void UpdateControlsState();
 	BOOL SaveAllSettings();
 
-	void OnBackcolor(); 
-
 protected:
 	CStatic kadContactLab;
 	CStatic kadSearchLab;
@@ -47,9 +45,6 @@ protected:
 	HICON icon_kadcont;
 	HICON icon_kadsea;
 
-	CBrush m_brMyBrush;
-	HBRUSH hbr;	
-	
 	void SetAllIcons();
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -65,6 +60,10 @@ protected:
 
 	// ==> Design Settings [eWombat/Stulle] - Max
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	CBrush m_brMyBrush;
+	HBRUSH hbr;	
+	COLORREF crKadColor;
+public:
+	void OnBackcolor(); 
 	// <== Design Settings [eWombat/Stulle] - Max
-
 };

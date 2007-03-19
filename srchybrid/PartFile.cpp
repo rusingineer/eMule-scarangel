@@ -1229,7 +1229,35 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 							ASSERT( false );
 						delete newtag;
 						break;
-									  }
+					}
+
+					//Xman advanced upload-priority
+					case FT_NOTCOUNTEDTRANSFERREDLOW:
+					{
+						ASSERT( newtag->IsInt() );
+						if (newtag->IsInt())
+							statistic.m_unotcountedtransferred = newtag->GetInt();
+						delete newtag;
+						break;
+					}
+					case FT_NOTCOUNTEDTRANSFERREDHIGH:
+					{
+						ASSERT( newtag->IsInt() );
+						if (newtag->IsInt())
+							statistic.m_unotcountedtransferred = ((uint64)newtag->GetInt() << 32) | (UINT)statistic.m_unotcountedtransferred;
+						delete newtag;
+						break;
+					}
+					case FT_LASTDATAUPDATE:
+					{
+						ASSERT( newtag->IsInt() );
+						if (newtag->IsInt())
+							statistic.m_tlastdataupdate = newtag->GetInt();
+						delete newtag;
+						break;
+					}
+					//Xman end
+
 					// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 					case FT_CATRESUMEORDER:{
 						ASSERT( newtag->IsInt() );
@@ -1900,6 +1928,25 @@ bool CPartFile::SavePartFile()
 
 			i_pos++;
 		}
+
+		//Xman advanced upload-priority
+		if (statistic.m_unotcountedtransferred)
+		{
+			CTag stag1(FT_NOTCOUNTEDTRANSFERREDLOW, (uint32)statistic.m_unotcountedtransferred);
+			stag1.WriteTagToFile(&file);
+			uTagCount++;
+
+			CTag stag2(FT_NOTCOUNTEDTRANSFERREDHIGH, (uint32)(statistic.m_unotcountedtransferred >> 32));
+			stag2.WriteTagToFile(&file);
+			uTagCount++;
+		}
+		if (statistic.m_tlastdataupdate!=0)
+		{
+			CTag stag1(FT_LASTDATAUPDATE, statistic.m_tlastdataupdate);
+			stag1.WriteTagToFile(&file);
+			uTagCount++;
+		}
+		//Xman end
 
 		file.Seek(uTagCountFilePos, CFile::begin);
 		file.WriteUInt32(uTagCount);
@@ -3041,7 +3088,7 @@ uint32 CPartFile::Process(uint32 maxammount, bool isLimited, bool fullProcess)
 
 					// doubled reasktime for no needed parts - save connections and traffic
 					// Maella -Spread Request- (idea SlugFiller)
-					if(!((cur_src->GetNextTCPAskedTime() == 0) //Xman -Reask sources after IP change- v3 (main part by Maella)
+					if(!((cur_src->GetNextTCPAskedTime() == 0) //Xman -Reask sources after IP change- v4
 						|| (dwCurTick - cur_src->GetLastAskedTime()) > 2 * cur_src->GetJitteredFileReaskTime()))
 						break; 
 					// Maella end
@@ -3073,7 +3120,7 @@ uint32 CPartFile::Process(uint32 maxammount, bool isLimited, bool fullProcess)
 
 					// doubled reasktime for no needed parts - save connections and traffic
 					// Maella -Spread Request- (idea SlugFiller)
-					if(!((cur_src->GetNextTCPAskedTime() == 0) //Xman -Reask sources after IP change- v3 (main part by Maella)
+					if(!((cur_src->GetNextTCPAskedTime() == 0) //Xman -Reask sources after IP change- v4
 						|| (dwCurTick - cur_src->GetLastAskedTime()) > 2 * cur_src->GetJitteredFileReaskTime()))
 						break; 
 					// Maella end
@@ -3676,7 +3723,11 @@ void CPartFile::UpdatePartsInfo()
 			}
 			if ( flag )
 			{
+				//Xman Code Improvement
+				//for complete sources the value isn't up to date btw. we don't have this value
+				if(cur_src->HasFileComplete()==false && cur_src->m_abyUpPartStatus)
 				count.Add(cur_src->GetUpCompleteSourcesCount());
+				//Xman end
 			}
 		}
 	}
@@ -3749,8 +3800,9 @@ void CPartFile::UpdatePartsInfo()
 					m_nCompleteSourcesCountLo = m_nCompleteSourcesCount;
 				else
 					m_nCompleteSourcesCountLo = (uint16)((float)(count.GetAt(i)*.8)+(float)(m_nCompleteSourcesCount*.2));
-				m_nCompleteSourcesCount= m_nCompleteSourcesCountLo;
+				//m_nCompleteSourcesCount= m_nCompleteSourcesCountLo; //Xman Code Fix moved down
 				m_nCompleteSourcesCountHi= (uint16)((float)(count.GetAt(j)*.8)+(float)(m_nCompleteSourcesCount*.2));
+				m_nCompleteSourcesCount= m_nCompleteSourcesCountLo; //Xman Code Fix
 				if( m_nCompleteSourcesCountHi < m_nCompleteSourcesCount )
 					m_nCompleteSourcesCountHi = m_nCompleteSourcesCount;
 			}
@@ -3767,7 +3819,7 @@ void CPartFile::UpdatePartsInfo()
 				m_nCompleteSourcesCount= (uint16)((float)(count.GetAt(j)*.8)+(float)(m_nCompleteSourcesCount*.2));
 				if( m_nCompleteSourcesCount < m_nCompleteSourcesCountLo )
 					m_nCompleteSourcesCount = m_nCompleteSourcesCountLo;
-				m_nCompleteSourcesCountHi= (uint16)((float)(count.GetAt(k)*.8)+(float)(m_nCompleteSourcesCount*.2));
+				m_nCompleteSourcesCountHi= (uint16)((float)(count.GetAt(k)*.8)+(float)(m_nCompleteSourcesCountLo*.2)); //Xman Code Fix: must use m_nCompleteSourcesCountLo instead of m_nCompleteSourcesCount
 				if( m_nCompleteSourcesCountHi < m_nCompleteSourcesCount )
 					m_nCompleteSourcesCountHi = m_nCompleteSourcesCount;
 			}
@@ -4202,6 +4254,11 @@ void CPartFile::PerformFileCompleteEnd(DWORD dwResult)
 				m_pCollection = NULL;
 			}
 		}
+		//Xman advanced upload-priority
+		//don't wait for the next request, update now!
+		m_nCompleteSourcesTime=0;
+		UpdatePartsInfo(); 
+		//Xman end
 	}
 
 	theApp.downloadqueue->StartNextFileIfPrefs(GetCategory());
@@ -6432,7 +6489,12 @@ bool CPartFile::GetNextRequestedBlock_zz(CUpDownClient* sender,
 	//Xman Dynamic block request (netfinity/Xman)
 	//uint16 countin=*count; //Xman for debug
 	uint64	bytesPerRequest = EMBLOCKSIZE;
-	uint64	bytesLeftToDownload = GetRemainingAvailableData(sender);
+	//Xman 5.4.2: removed the faster chunk completion because: 
+	//e.g. downloading 2 different chunks from 2 different sources... there is no need 
+	//to reduce the blocksize for the slow source. It would only make sense if we know
+	//that both sources are downloading the same chunk ==>would need much more calculation
+	//also reducing the blocksize means more stress for the uploader. Only do it at the end of the download!
+	uint64	bytesLeftToDownload = GetFileSize()-GetCompletedSize();
 	uint32	fileDatarate = max(GetDownloadDatarate10(), UPLOAD_CLIENT_DATARATE); // Always assume file is being downloaded at at least 3072 B/s 
 	uint32	sourceDatarate = max(sender->GetDownloadDatarate10(), 22); // Always assume client is uploading at at least 25 B/s //Xman changed from 10
 	uint32	timeToFileCompletion = max((uint32) (bytesLeftToDownload / (uint64) fileDatarate) + 1, 10); // Always assume it will take atleast 10 seconds to complete
@@ -6479,8 +6541,8 @@ bool CPartFile::GetNextRequestedBlock_zz(CUpDownClient* sender,
 
 
 	//Xman for debug
-	//AddDebugLogLine(false, _T("DBR: Trying to request %u blocks(%u) of size: %u(%u) for client:%s, file: %s"), *count, countin, (uint32)bytesPerRequest, (uint32)bytesPerRequest_total, sender->DbgGetClientInfo(), GetFileName());
-	//AddDebugLogLine(false, _T("DBR+: bytesLeftToDownload:%u, timeToFileCompletion:%u, fileDatarate: %u, sourceDatarate=%u, pending:%u"), (uint32)bytesLeftToDownload, timeToFileCompletion, fileDatarate, sourceDatarate, sender->GetPendingBlockCount());
+	//AddDebugLogLine(false, _T("DBR: Trying to request %u blocks(%u) of size(%u): %u for client:%s, file: %s"), *count, countin, (uint32)bytesPerRequest,(uint32)bytesPerRequest_total,  sender->DbgGetClientInfo(), GetFileName());
+	//AddDebugLogLine(false, _T("DBR+: bytesLeftToDownload:%u, timeToFileCompletion:%u, fileDatarate: %u, sourceDatarate=%u(%u), pending:%u"), (uint32)bytesLeftToDownload, timeToFileCompletion, fileDatarate, sourceDatarate,sender->GetDownloadDatarate(), sender->GetPendingBlockCount());
 
 
 	//prevent an endless loop
@@ -6898,7 +6960,12 @@ bool CPartFile::GetNextRequestedBlock_Maella(CUpDownClient* sender,
 	//Xman Dynamic block request (netfinity/Xman)
 	//uint16 countin=*count; //Xman for debug
 	uint64	bytesPerRequest = EMBLOCKSIZE;
-	uint64	bytesLeftToDownload = GetRemainingAvailableData(sender);
+	//Xman 5.4.2: removed the faster chunk completion because: 
+	//e.g. downloading 2 different chunks from 2 different sources... there is no need 
+	//to reduce the blocksize for the slow source. It would only make sense if we know
+	//that both sources are downloading the same chunk ==>would need much more calculation
+	//also reducing the blocksize means more stress for the uploader. Only do it at the end of the download!
+	uint64	bytesLeftToDownload = GetFileSize()-GetCompletedSize();
 	uint32	fileDatarate = max(GetDownloadDatarate10(), UPLOAD_CLIENT_DATARATE); // Always assume file is being downloaded at at least 3072 B/s 
 	uint32	sourceDatarate = max(sender->GetDownloadDatarate10(), 22); // Always assume client is uploading at at least 25 B/s //Xman changed from 10
 	uint32	timeToFileCompletion = max((uint32) (bytesLeftToDownload / (uint64) fileDatarate) + 1, 10); // Always assume it will take atleast 10 seconds to complete
@@ -6945,8 +7012,8 @@ bool CPartFile::GetNextRequestedBlock_Maella(CUpDownClient* sender,
 
 
 	//Xman for debug
-	//AddDebugLogLine(false, _T("DBR: Trying to request %u blocks(%u) of size: %u(%u) for client:%s, file: %s"), *count, countin, (uint32)bytesPerRequest, (uint32)bytesPerRequest_total, sender->DbgGetClientInfo(), GetFileName());
-	//AddDebugLogLine(false, _T("DBR+: bytesLeftToDownload:%u, timeToFileCompletion:%u, fileDatarate: %u, sourceDatarate=%u, pending:%u"), (uint32)bytesLeftToDownload, timeToFileCompletion, fileDatarate, sourceDatarate, sender->GetPendingBlockCount());
+	//AddDebugLogLine(false, _T("DBR: Trying to request %u blocks(%u) of size(%u): %u for client:%s, file: %s"), *count, countin, (uint32)bytesPerRequest,(uint32)bytesPerRequest_total,  sender->DbgGetClientInfo(), GetFileName());
+	//AddDebugLogLine(false, _T("DBR+: bytesLeftToDownload:%u, timeToFileCompletion:%u, fileDatarate: %u, sourceDatarate=%u(%u), pending:%u"), (uint32)bytesLeftToDownload, timeToFileCompletion, fileDatarate, sourceDatarate,sender->GetDownloadDatarate(), sender->GetPendingBlockCount());
 
 	//prevent an endless loop
 	bool chunklist_initialized=false;

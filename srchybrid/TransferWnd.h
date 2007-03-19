@@ -108,8 +108,6 @@ protected:
 	CFont bold;
 	// <== Client queue progress bar [Commander] - Stulle
 
-	CBrush m_brMyBrush;
-	HBRUSH hbr;
 	
 	void	ShowWnd2(EWnd2 uList);
 	void	SetWnd2(EWnd2 uWnd2);
@@ -179,8 +177,11 @@ protected:
 public:
 	int		GetActiveCategory()			{ return m_dlTab.GetCurSel(); }
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
-	void SetBackgroundColor(int nStyle); // Design Settings [eWombat/Stulle] - Stulle
-
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	void SetBackgroundColor(int nStyle);
 	void OnBackcolor();
-
+protected:
+	CBrush m_brMyBrush;
+	HBRUSH hbr;
+	// <== Design Settings [eWombat/Stulle] - Stulle
 };

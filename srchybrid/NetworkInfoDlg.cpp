@@ -289,7 +289,7 @@ void CreateNetworkInfo(CRichEditCtrlX& rCtrl, CHARFORMAT& rcfDef, CHARFORMAT& rc
 		buffer.Format(_T("%s:%i"), IP, thePrefs.GetUDPPort());
 		rCtrl << GetResString(IDS_IP) << _T(":") << GetResString(IDS_PORT) << _T(":\t") << buffer << _T("\r\n");
 
-		buffer.Format(_T("%u"),Kademlia::CKademlia::GetPrefs()->GetIPAddress());
+		buffer.Format(_T("%u"),ntohl(Kademlia::CKademlia::GetPrefs()->GetIPAddress())); //Xman Bugfix
 		rCtrl << GetResString(IDS_ID) << _T(":\t") << buffer << _T("\r\n");
 
 		rCtrl << GetResString(IDS_BUDDY) << _T(":\t");
@@ -353,7 +353,7 @@ void CreateNetworkInfo(CRichEditCtrlX& rCtrl, CHARFORMAT& rcfDef, CHARFORMAT& rc
 			strHostname = ipstr(theApp.serverconnect->GetLocalIP());
 		rCtrl << _T("URL:\t") << _T("http://") << strHostname << _T(":") << thePrefs.GetWSPort() << _T("/\r\n");
 	}
-	
+
 
 
 	// ==> UPnP support [MoNKi] - leuk_he

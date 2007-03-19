@@ -410,7 +410,10 @@ bool CKnownFileList::SafeAddKFile(CKnownFile* toadd)
 		ASSERT( toadd->GetFileSize() == pFileInMap->GetFileSize() );
 		ASSERT( toadd != pFileInMap );
 		if (toadd->GetFileSize() == pFileInMap->GetFileSize())
+		{
+			pFileInMap->CheckAUPFilestats(false); //Xman advanced upload-priority
 			toadd->statistic.MergeFileStats(&pFileInMap->statistic);
+		}
 
 		ASSERT( theApp.sharedfiles==NULL || !theApp.sharedfiles->IsFilePtrInList(pFileInMap) );
 		ASSERT( theApp.downloadqueue==NULL || !theApp.downloadqueue->IsPartFile(pFileInMap) );
@@ -694,4 +697,5 @@ void CKnownFileList::ClearHistory(){
 }
 
 //Xman end
+
 

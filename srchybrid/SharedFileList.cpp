@@ -549,7 +549,9 @@ void CSharedFileList::AddFilesFromDirectory(const CString& rstrDirectory)
 			{
 				//Xman remove unused AICH-hashes
 				//we must rehash the files without masterhash
-				if(toadd->GetAICHHashset()->GetStatus()==AICH_EMPTY)
+				if(toadd->GetAICHHashset()->GetStatus()==AICH_EMPTY
+					&& theApp.m_AICH_Is_synchronizing == false  //AICH-Sync-Thread has finished the observation of shared files
+					)
 				{
 					if (!IsHashing(rstrDirectory, ff.GetFileName()) && !theApp.downloadqueue->IsTempFile(rstrDirectory, ff.GetFileName()) && !thePrefs.IsConfigFile(rstrDirectory, ff.GetFileName())){
 						UnknownFile_Struct* tohash = new UnknownFile_Struct;
@@ -565,7 +567,10 @@ void CSharedFileList::AddFilesFromDirectory(const CString& rstrDirectory)
 				//Xman end
 					toadd->SetPath(rstrDirectory);
 					toadd->SetFilePath(ff.GetFilePath());
-					AddFile(toadd);
+					//Xman advanced upload-priority
+					if(AddFile(toadd))
+						toadd->CheckAUPFilestats(false);
+					//Xman end
 				}
 			}
 		}
@@ -607,26 +612,14 @@ bool CSharedFileList::SafeAddKFile(CKnownFile* toadd, bool bOnlyAdd)
 	bool bAdded = false;
 	RemoveFromHashing(toadd);	// SLUGFILLER: SafeHash - hashed ok, remove from list, in case it was on the list
 	bAdded = AddFile(toadd);
-	if (bOnlyAdd)
-		return bAdded;
-	if (bAdded && output)
-	{
-		output->AddFile(toadd);
-		//Xman [MoNKi: -Downloaded History-]
-		if(!toadd->IsPartFile())
-			theApp.emuledlg->sharedfileswnd->historylistctrl.AddFile(toadd); 
-		//Xman end
-	}
-	m_lastPublishED2KFlag = true;
-	return bAdded;
-}
 
-//Xman official bugfix for redownloading already downloaded file
-//same as above but without RemoveHashing. It isn't needed and it can crash there
-bool CSharedFileList::SafeAddKFileWithOutRemoveHasing(CKnownFile* toadd, bool bOnlyAdd)
-{
-	bool bAdded = false;
-	bAdded = AddFile(toadd);
+	//Xman advanced upload-priority
+	if(bAdded)
+	{
+		toadd->CheckAUPFilestats(true);
+	}
+		//Xman end
+
 	if (bOnlyAdd)
 		return bAdded;
 	if (bAdded && output)
@@ -640,7 +633,6 @@ bool CSharedFileList::SafeAddKFileWithOutRemoveHasing(CKnownFile* toadd, bool bO
 	m_lastPublishED2KFlag = true;
 	return bAdded;
 }
-//Xman end
 
 void CSharedFileList::RepublishFile(CKnownFile* pFile)
 {
@@ -1579,15 +1571,32 @@ bool CSharedFileList::IsUnsharedFile(const uchar* auFileHash) const {
 //Xman advanced upload-priority
 void CSharedFileList::CalculateUploadPriority(bool force)
 {
-	static uint32 lastprocess;
+	static uint32 lastprocess; //if used Advanced Auto Prio
+	static uint32 lastprocess2; //if Advanced Auto Prio is not used
 
 	if(!thePrefs.UseAdvancedAutoPtio())
+	{
+		if(::GetTickCount() - lastprocess2 > HR2MS(1))
+		{
+			lastprocess2=::GetTickCount();
+			//the counted upload stats must be updated from time to time, user can switch to AUP
+			POSITION pos = m_Files_map.GetStartPosition();
+			while( pos != NULL )
+			{
+				CKnownFile* pFile;
+				CCKey key;
+				m_Files_map.GetNextAssoc( pos, key, pFile );
+				pFile->statistic.UpdateCountedTransferred();
+			}
+		}
 		return; 
+	}
 
 
 	if(force || ::GetTickCount() - lastprocess > MIN2MS(2))
 	{
 		lastprocess=::GetTickCount();
+		lastprocess2=lastprocess;
 		
 
 #ifdef _DEBUG
@@ -1606,6 +1615,9 @@ void CSharedFileList::CalculateUploadPriority(bool force)
 			CKnownFile* pFile;
 			CCKey key;
 			m_Files_map.GetNextAssoc( pos, key, pFile );
+
+			pFile->statistic.UpdateCountedTransferred();
+
 			//we only take files > 500k into account
 			if((uint64)pFile->GetFileSize() > 500*1024)
 			{
@@ -1614,13 +1626,17 @@ void CSharedFileList::CalculateUploadPriority(bool force)
 					pFile->UpdateVirtualUploadSources();
 
 				sum_wanted_upload += pFile->GetWantedUpload();
+				/*
 				uint64 oldtransferred ;
 				if (pFile->statistic.GetAllTimeTransferred() > pFile->statistic.GetTransferred())
 					oldtransferred = pFile->statistic.GetAllTimeTransferred()-pFile->statistic.GetTransferred();
 				else
 					oldtransferred = 0;
 
+
 				sum_uploaded += (pFile->statistic.GetTransferred() + oldtransferred/2.0);
+				*/
+				sum_uploaded += pFile->statistic.GetCountedTransferred();
 
 				all_virtual_sources += pFile->GetVirtualSourceIndicator();
 			}

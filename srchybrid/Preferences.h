@@ -912,13 +912,13 @@ public:
 	static	bool	m_bMMOpen;
 	// <== TBH: minimule - Max
 
-	// ==> MassRename [Dragon] - Stulle
+	// ==> Simple cleanup [MorphXT] - Stulle
 	static int      m_SimpleCleanupOptions;
 	static CString  m_SimpleCleanupSearch;
 	static CString  m_SimpleCleanupReplace;
 	static CString  m_SimpleCleanupSearchChars;
 	static CString  m_SimpleCleanupReplaceChars;
-	// <== MassRename [Dragon] - Stulle
+	// <== Simple cleanup [MorphXT] - Stulle
 
 	static	bool	startupsound; // Startupsound [Commander] - mav744
 
@@ -2189,7 +2189,7 @@ public:
 	static	bool	GetMMOpen()				{ return m_bMMOpen; }
 	// <== TBH: minimule - Max
 
-	// ==> MassRename [Dragon] - Stulle
+	// ==> Simple cleanup [MorphXT] - Stulle
 	static	void	SetSimpleCleanupOptions (int _i)	      { m_SimpleCleanupOptions = _i; }
 	static	int 	GetSimpleCleanupOptions ()			      { return m_SimpleCleanupOptions; }
 	static	void	SetSimpleCleanupSearch (CString _s)	      { m_SimpleCleanupSearch = _s; }
@@ -2200,7 +2200,7 @@ public:
 	static	CString	GetSimpleCleanupSearchChars ()			  { return m_SimpleCleanupSearchChars; }
 	static	void	SetSimpleCleanupReplaceChars (CString _s) { m_SimpleCleanupReplaceChars = _s; }
 	static	CString	GetSimpleCleanupReplaceChars ()			  { return m_SimpleCleanupReplaceChars; }
-	// <== MassRename [Dragon] - Stulle
+	// <== Simple cleanup [MorphXT] - Stulle
 
 	static  bool	UseStartupSound()			{return startupsound;} // Startupsound [Commander] - mav744
 

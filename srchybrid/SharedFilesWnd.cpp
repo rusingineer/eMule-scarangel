@@ -86,6 +86,7 @@ BOOL CSharedFilesWnd::OnInitDialog()
 {
 	CResizableDialog::OnInitDialog();
 	InitWindowStyles(this);
+	OnBackcolor(); // Design Settings [eWombat/Stulle] - Max
 	SetAllIcons();
 	sharedfilesctrl.Init();
 	m_ctlSharedDirTree.Initalize(&sharedfilesctrl);
@@ -344,7 +345,12 @@ void CSharedFilesWnd::ShowSelectedFilesSummary(bool bHistory /*=false*/) //Xman 
 		CString str(GetResString(IDS_SF_STATISTICS));
 		if (iFiles == 1 && pTheFile != NULL)
 			str += _T(" (") + MakeStringEscaped(pTheFile->GetFileName()) +_T(")");
+		// ==> Design Settings [eWombat/Stulle] - Max
+		/*
 		m_ctrlStatisticsFrm.SetWindowText(str);
+		*/
+		m_ctrlStatisticsFrm.SetWindowText(str,crSharedColor);
+		// <== Design Settings [eWombat/Stulle] - Max
 	}
 	else
 	{
@@ -367,7 +373,12 @@ void CSharedFilesWnd::ShowSelectedFilesSummary(bool bHistory /*=false*/) //Xman 
 		SetDlgItemText(IDC_SREQUESTED2, _T("-"));
 		SetDlgItemText(IDC_SACCEPTED2, _T("-"));
 
+		// ==> Design Settings [eWombat/Stulle] - Max
+		/*
 		m_ctrlStatisticsFrm.SetWindowText(GetResString(IDS_SF_STATISTICS));
+		*/
+		m_ctrlStatisticsFrm.SetWindowText(GetResString(IDS_SF_STATISTICS),crSharedColor);
+		// <== Design Settings [eWombat/Stulle] - Max
 	}
 }
 
@@ -422,7 +433,12 @@ void CSharedFilesWnd::OnSysColorChange()
 
 void CSharedFilesWnd::SetAllIcons()
 {
+	// ==> Design Settings [eWombat/Stulle] - Max
+	/*
 	m_ctrlStatisticsFrm.SetIcon(_T("StatsDetail"));
+	*/
+	m_ctrlStatisticsFrm.SetIcon(_T("StatsDetail"),crSharedColor);
+	// <== Design Settings [eWombat/Stulle] - Max
 
 	if (icon_files)
 		VERIFY( DestroyIcon(icon_files) );
@@ -449,7 +465,12 @@ void CSharedFilesWnd::Localize()
 
 	//GetDlgItem(IDC_TRAFFIC_TEXT)->SetWindowText(GetResString(IDS_SF_FILES)); //Xman [MoNKi: -Downloaded History-]
 	GetDlgItem(IDC_RELOADSHAREDFILES)->SetWindowText(GetResString(IDS_SF_RELOAD));
+	// ==> Design Settings [eWombat/Stulle] - Max
+	/*
 	m_ctrlStatisticsFrm.SetWindowText(GetResString(IDS_SF_STATISTICS));
+	*/
+	m_ctrlStatisticsFrm.SetWindowText(GetResString(IDS_SF_STATISTICS),crSharedColor);
+	// <== Design Settings [eWombat/Stulle] - Max
 	GetDlgItem(IDC_CURSESSION_LBL)->SetWindowText(GetResString(IDS_SF_CURRENT));
 	GetDlgItem(IDC_TOTAL_LBL)->SetWindowText(GetResString(IDS_SF_TOTAL));
 	GetDlgItem(IDC_FSTATIC6)->SetWindowText(GetResString(IDS_SF_TRANS));
@@ -595,57 +616,45 @@ void CSharedFilesWnd::OnShowWindow( BOOL bShow,UINT /*nStatus*/ )
 // ==> Design Settings [eWombat/Stulle] - Max
 void CSharedFilesWnd::OnBackcolor() 
 {
-	// TODO: Add your control notification handler code here
-	m_backcol = COLORREF(RGB(0,255,255));//<- testcolor
-	if (m_brMyBrush.Detach())  // check if brush already exists
-		m_brMyBrush.DeleteObject();
-	m_brMyBrush.CreateSolidBrush(m_backcol);
-	m_hbrMyBrush = (HBRUSH) m_brMyBrush;
+	crSharedColor = thePrefs.GetStyleBackColor(window_styles, style_w_shared);
 
+	if(crSharedColor == CLR_DEFAULT)
+		crSharedColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
 
+	m_brMyBrush.DeleteObject();
+
+	if(crSharedColor != CLR_DEFAULT)
+		m_brMyBrush.CreateSolidBrush(crSharedColor);
+	else
+	{
+		crSharedColor = NULL;
+		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
+	}
 }
 
 HBRUSH CSharedFilesWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
-	HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+	hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
 
-	// TODO: Change any attributes of the DC here
 	if (nCtlColor == CTLCOLOR_DLG)
 		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-/*
-	int b1 = pWnd->GetDlgCtrlID();
 
-	if (b1 == IDC_QUEUECOUNT_LABEL)
-	{ pDC->SetBkMode(TRANSPARENT);
-	//pDC->SetTextColor(m_textcol);
-	hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-	//pDC->SetBkColor(m_backcol);
+//	int b1 = pWnd->GetDlgCtrlID();
+
+//	switch(b1)
+	{
+//		default:
+			{ 
+				pDC->SetBkMode(TRANSPARENT);
+
+				hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+				//pDC->SetTextColor(m_textcol);
+				//pDC->SetBkColor(m_backcol);
+//				break;
+			}
+
 	}
-
-	if (b1 == IDC_QUEUECOUNT)
-	{ pDC->SetBkMode(TRANSPARENT);
-	//pDC->SetTextColor(m_textcol);
-	hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-	//pDC->SetBkColor(m_backcol);
-	}
-	*/
-	return hbr;
-}
-/*
-HBRUSH CSharedFilesWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
-{
-	HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
-	COLORREF crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_shared);
-
-	if(crTempColor == CLR_DEFAULT)
-		crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
-
-	if(crTempColor != CLR_DEFAULT)
-		hbr = CreateSolidBrush(crTempColor);
-
-	pDC->SetBkMode(TRANSPARENT);
 
 	return hbr;
 }
-*/
 // <== Design Settings [eWombat/Stulle] - Max

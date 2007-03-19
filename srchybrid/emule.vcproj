@@ -4,7 +4,6 @@
 	Version="7.10"
 	Name="emule"
 	ProjectGUID="{584EA69D-3443-4197-8994-364880FC1B9B}"
-	RootNamespace="emule"
 	Keyword="MFCProj">
 	<Platforms>
 		<Platform
@@ -87,7 +86,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".;..;..\id3lib\include;..\crypto.v52.1;.\upnplib\ixml\inc;.\upnplib\threadutil\inc;pthreads\pthreads\inc"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;SUPPORT_LARGE_FILES;PRINT_STATISTIC;LOGTAG;PTW32_STATIC_LIB;UPNP_STATIC_LIB"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;SUPPORT_LARGE_FILES;PRINT_STATISTIC;PTW32_STATIC_LIB;UPNP_STATIC_LIB"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -159,7 +158,7 @@
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include;..\crypto.v52.1;upnplib\build\inc;upnplib\ixml\src\inc;upnplib\upnp\src\inc;upnplib\upnp\inc;upnplib\threadutil\inc;upnplib\ixml\inc;pthreads\pthreads\inc"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;SUPPORT_LARGE_FILES;_WIN32;HAVE_SAPI_H;PTW32_STATIC_LIB;UPNP_STATIC_LIB"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;SUPPORT_LARGE_FILES;_WIN32;PTW32_STATIC_LIB;UPNP_STATIC_LIB"
 				StringPooling="TRUE"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
@@ -1365,9 +1364,6 @@
 				RelativePath="ListViewWalkerPropertySheet.cpp">
 			</File>
 			<File
-				RelativePath=".\MassRename.cpp">
-			</File>
-			<File
 				RelativePath=".\MenuXP.cpp">
 			</File>
 			<File
@@ -1807,9 +1803,6 @@
 				RelativePath="ListViewWalkerPropertySheet.h">
 			</File>
 			<File
-				RelativePath=".\MassRename.h">
-			</File>
-			<File
 				RelativePath="MemDC.h">
 			</File>
 			<File
@@ -2096,43 +2089,13 @@
 				RelativePath="res\ArchivePreview.ico">
 			</File>
 			<File
-				RelativePath=".\res\Backup.ico">
-			</File>
-			<File
-				RelativePath=".\res\banner_quer.jpg">
-			</File>
-			<File
 				RelativePath="res\bold.ico">
-			</File>
-			<File
-				RelativePath=".\res\boldFont.ico">
 			</File>
 			<File
 				RelativePath="res\Cancel.ico">
 			</File>
 			<File
-				RelativePath=".\res\catadd.ico">
-			</File>
-			<File
-				RelativePath=".\res\catedit.ico">
-			</File>
-			<File
 				RelativePath="res\Category.ico">
-			</File>
-			<File
-				RelativePath=".\res\catmerge.ico">
-			</File>
-			<File
-				RelativePath=".\res\catPauseLast.ico">
-			</File>
-			<File
-				RelativePath=".\res\catremove.ico">
-			</File>
-			<File
-				RelativePath=".\res\catResumeNext.ico">
-			</File>
-			<File
-				RelativePath=".\res\catStopLast.ico">
 			</File>
 			<File
 				RelativePath="res\Chat.ico">
@@ -2142,9 +2105,6 @@
 			</File>
 			<File
 				RelativePath="res\clear2.ico">
-			</File>
-			<File
-				RelativePath=".\res\Client-Neo.ico">
 			</File>
 			<File
 				RelativePath="res\Client0.ico">
@@ -2342,19 +2302,7 @@
 				RelativePath="res\CopyVisible.ico">
 			</File>
 			<File
-				RelativePath=".\res\CreditOvl.ico">
-			</File>
-			<File
-				RelativePath=".\res\CreditSecureOvl.ico">
-			</File>
-			<File
-				RelativePath=".\res\Cut.ico">
-			</File>
-			<File
 				RelativePath="res\CycleView.ico">
-			</File>
-			<File
-				RelativePath=".\res\Cyrex2001.ico">
 			</File>
 			<File
 				RelativePath="res\Delete.ico">
@@ -2372,9 +2320,6 @@
 				RelativePath="res\Display.ico">
 			</File>
 			<File
-				RelativePath=".\res\DlMode.ico">
-			</File>
-			<File
 				RelativePath="res\Download.gif">
 			</File>
 			<File
@@ -2384,13 +2329,7 @@
 				RelativePath="res\DownloadFiles.ico">
 			</File>
 			<File
-				RelativePath=".\res\DropDefaults.ico">
-			</File>
-			<File
 				RelativePath=".\res\Dropicon.ico">
-			</File>
-			<File
-				RelativePath=".\res\EastShare.ico">
 			</File>
 			<File
 				RelativePath="res\eD2kLink.ico">
@@ -2453,25 +2392,16 @@
 				RelativePath="res\FileDonkey.ico">
 			</File>
 			<File
-				RelativePath=".\res\FileHideOS.ico">
-			</File>
-			<File
 				RelativePath="res\FileInfo.gif">
 			</File>
 			<File
 				RelativePath="res\FileInfo.ico">
 			</File>
 			<File
-				RelativePath=".\res\FileLinearPrio.ico">
-			</File>
-			<File
 				RelativePath=".\res\FileMassRename.ico">
 			</File>
 			<File
 				RelativePath="res\FileOpen.ico">
-			</File>
-			<File
-				RelativePath=".\res\FilePowerShare.ico">
 			</File>
 			<File
 				RelativePath="res\FilePriority.ico">
@@ -2505,9 +2435,6 @@
 			</File>
 			<File
 				RelativePath="res\FileSharedServer.ico">
-			</File>
-			<File
-				RelativePath=".\res\FileShareONlyTheNeed.ico">
 			</File>
 			<File
 				RelativePath="res\FileTypeAny.ico">
@@ -2573,9 +2500,6 @@
 				RelativePath=".\res\FriendSlotOvl.ico">
 			</File>
 			<File
-				RelativePath=".\res\FunnyNick.ico">
-			</File>
-			<File
 				RelativePath="res\Global.ico">
 			</File>
 			<File
@@ -2589,9 +2513,6 @@
 			</File>
 			<File
 				RelativePath=".\res\iconmax.ico">
-			</File>
-			<File
-				RelativePath=".\res\iconstulle.ico">
 			</File>
 			<File
 				RelativePath="res\Import.ico">
@@ -2609,12 +2530,6 @@
 				RelativePath="res\Info.ico">
 			</File>
 			<File
-				RelativePath=".\res\InvMode.ico">
-			</File>
-			<File
-				RelativePath=".\res\ionix.ico">
-			</File>
-			<File
 				RelativePath="res\IPFilter.ico">
 			</File>
 			<File
@@ -2622,9 +2537,6 @@
 			</File>
 			<File
 				RelativePath="res\IRCClipboard.ico">
-			</File>
-			<File
-				RelativePath=".\res\italicFont.ico">
 			</File>
 			<File
 				RelativePath="res\Kad.ico">
@@ -2700,40 +2612,7 @@
 				DeploymentContent="TRUE">
 			</File>
 			<File
-				RelativePath=".\res\MiniMule.ICO">
-			</File>
-			<File
 				RelativePath="res\MiniMuleBack.gif">
-			</File>
-			<File
-				RelativePath=".\res\MM_ConCon.ico">
-			</File>
-			<File
-				RelativePath=".\res\MM_ConDis.ico">
-			</File>
-			<File
-				RelativePath=".\res\MM_ConLow.ico">
-			</File>
-			<File
-				RelativePath=".\res\MM_DisCon.ico">
-			</File>
-			<File
-				RelativePath=".\res\MM_DisDis.ico">
-			</File>
-			<File
-				RelativePath=".\res\MM_DisLow.ico">
-			</File>
-			<File
-				RelativePath=".\res\MM_LowCon.ico">
-			</File>
-			<File
-				RelativePath=".\res\MM_LowDis.ico">
-			</File>
-			<File
-				RelativePath=".\res\MM_LowLow.ico">
-			</File>
-			<File
-				RelativePath=".\res\Morph.ico">
 			</File>
 			<File
 				RelativePath="res\Mule.ico">
@@ -2751,22 +2630,10 @@
 				RelativePath="res\NavigateForward.ico">
 			</File>
 			<File
-				RelativePath=".\res\nextEMF.ico">
-			</File>
-			<File
 				RelativePath="res\Notifications.ico">
 			</File>
 			<File
-				RelativePath=".\res\NotShared.ico">
-			</File>
-			<File
-				RelativePath=".\res\Paste.ico">
-			</File>
-			<File
 				RelativePath="res\Pause.ico">
-			</File>
-			<File
-				RelativePath=".\res\Ports.ico">
 			</File>
 			<File
 				RelativePath="res\Preferences.gif">
@@ -2802,9 +2669,6 @@
 				RelativePath="res\queue.ico">
 			</File>
 			<File
-				RelativePath=".\res\quickstart.ico">
-			</File>
-			<File
 				RelativePath="res\Rating.ico">
 			</File>
 			<File
@@ -2814,16 +2678,10 @@
 				RelativePath="res\Records.ico">
 			</File>
 			<File
-				RelativePath=".\res\ReleaseBonus.ico">
-			</File>
-			<File
 				RelativePath="res\Rename.ico">
 			</File>
 			<File
 				RelativePath="res\resetformat.ico">
-			</File>
-			<File
-				RelativePath=".\res\ResetSpreadBar.ico">
 			</File>
 			<File
 				RelativePath="res\Restore.ico">
@@ -2835,22 +2693,7 @@
 				RelativePath="res\RestoreWindow.ico">
 			</File>
 			<File
-				RelativePath=".\res\Save.ico">
-			</File>
-			<File
-				RelativePath=".\res\ScarAngel.ico">
-			</File>
-			<File
 				RelativePath="res\Scheduler.ico">
-			</File>
-			<File
-				RelativePath=".\res\SchedulerAdd.ico">
-			</File>
-			<File
-				RelativePath=".\res\SchedulerEdit.ico">
-			</File>
-			<File
-				RelativePath=".\res\SchedulerRemove.ico">
 			</File>
 			<File
 				RelativePath="res\Search.ico">
@@ -2904,9 +2747,6 @@
 				RelativePath="res\SharedFilesList.ico">
 			</File>
 			<File
-				RelativePath=".\res\SharedFilesManagement.ico">
-			</File>
-			<File
 				RelativePath=".\res\sidebanner.jpg">
 			</File>
 			<File
@@ -2926,9 +2766,6 @@
 			</File>
 			<File
 				RelativePath="res\Start.ico">
-			</File>
-			<File
-				RelativePath=".\res\startup.bmp">
 			</File>
 			<File
 				RelativePath="res\Statistics.ico">
@@ -2959,9 +2796,6 @@
 			</File>
 			<File
 				RelativePath="res\Stop.ico">
-			</File>
-			<File
-				RelativePath=".\res\SysInfo.ico">
 			</File>
 			<File
 				RelativePath="res\TaskbarNotifier.gif">
@@ -2997,13 +2831,7 @@
 				RelativePath="res\Tweak.ico">
 			</File>
 			<File
-				RelativePath=".\res\ulFont.ico">
-			</File>
-			<File
 				RelativePath="res\underline.ico">
-			</File>
-			<File
-				RelativePath=".\res\Undo.ico">
 			</File>
 			<File
 				RelativePath="res\Up0down0.ico">
@@ -3018,16 +2846,10 @@
 				RelativePath="res\Up1down1.ico">
 			</File>
 			<File
-				RelativePath=".\res\Update.ico">
-			</File>
-			<File
 				RelativePath="res\Upload.gif">
 			</File>
 			<File
 				RelativePath="res\Upload.ico">
-			</File>
-			<File
-				RelativePath=".\res\UPnP.ico">
 			</File>
 			<File
 				RelativePath="res\User.ico">
@@ -3067,9 +2889,6 @@
 			</File>
 			<File
 				RelativePath="res\Wizzard.ico">
-			</File>
-			<File
-				RelativePath=".\res\XP-Menu.JPG">
 			</File>
 		</Filter>
 		<Filter
@@ -3133,6 +2952,12 @@
 			</File>
 			<File
 				RelativePath=".\KCSideBannerWnd.h">
+			</File>
+			<File
+				RelativePath=".\MassRename.cpp">
+			</File>
+			<File
+				RelativePath=".\MassRename.h">
 			</File>
 			<File
 				RelativePath=".\NumEdit.cpp">

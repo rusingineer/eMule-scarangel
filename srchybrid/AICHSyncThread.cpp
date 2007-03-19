@@ -66,6 +66,7 @@ int CAICHSyncThread::Run()
 	CSingleLock lockKnown2Met(&CAICHHashSet::m_mutKnown2File);
 	lockKnown2Met.Lock();
 	
+
 	CSafeFile file;
 	bool bJustCreated = ConvertToKnown2ToKnown264(&file);
 	
@@ -172,6 +173,8 @@ int CAICHSyncThread::Run()
 			m_liToHash.AddTail(pCurFile);
 		}
 	}
+	//Xman remove unused AICH-hashes
+	theApp.m_AICH_Is_synchronizing=false;
 	sharelock.Unlock();
 
 	// removed all unused AICH hashsets from known2.met
@@ -268,9 +271,13 @@ int CAICHSyncThread::Run()
 				}
 			}
 			if(!bFound)
+			{
 				cur_file->GetAICHHashset()->SetStatus(AICH_EMPTY);
+			}
 		}
 	}
+	//Xman remark: it is important that this code is done while known2met is locked
+	//to not delete a just generated, new Hash
 	//Xman end
 
 

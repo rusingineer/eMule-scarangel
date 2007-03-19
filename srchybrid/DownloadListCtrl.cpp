@@ -46,11 +46,9 @@
 #include "SearchDlg.h"
 #include "SharedFileList.h"
 #include "ListenSocket.h" //Xman changed: display the obfuscation icon for all clients which enabled it
-//Xman
-#include "Log.h"
-//#include "ClientList.h"
+#include "MassRename.h" //Xman Mass Rename (Morph)
+#include "Log.h" //Xman Mass Rename (Morph)
 #include "SivkaFileSettings.h" // file settings - Stulle
-#include "MassRename.h" // MassRename [Dragon] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -1917,7 +1915,6 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			else
 				m_FileMenu.SetDefaultItem((UINT)-1);
 			m_FileMenu.EnableMenuItem(MP_VIEWFILECOMMENTS, (iSelectedItems >= 1 /*&& iFilesNotDone == 1*/) ? MF_ENABLED : MF_GRAYED);
-			m_FileMenu.EnableMenuItem(MP_MASSRENAME, iSelectedItems > 0? MF_ENABLED : MF_GRAYED); // MassRename [Dragon] - Stulle
 
 			int total;
 			m_FileMenu.EnableMenuItem(MP_CLEARCOMPLETED, GetCompleteDownloads(curTab, total) > 0 ? MF_ENABLED : MF_GRAYED);
@@ -1958,6 +1955,8 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 				ispreallomenu=true;
 			}
 			//Xman end
+
+			m_FileMenu.EnableMenuItem(MP_MASSRENAME, iSelectedItems > 0? MF_ENABLED : MF_GRAYED); //Xman Mass Rename (Morph)
 
 			CTitleMenu WebMenu;
 			WebMenu.CreateMenu();
@@ -2122,10 +2121,10 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			m_FileMenu.EnableMenuItem(MP_TRY_TO_GET_PREVIEW_PARTS, MF_GRAYED);
 			m_FileMenu.CheckMenuItem(MP_TRY_TO_GET_PREVIEW_PARTS, MF_UNCHECKED);
         }
+		m_FileMenu.EnableMenuItem(MP_MASSRENAME,MF_GRAYED);//Xman Mass Rename (Morph)
 		m_FileMenu.EnableMenuItem(MP_PREVIEW, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_METINFO, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_VIEWFILECOMMENTS, MF_GRAYED);
-		m_FileMenu.EnableMenuItem(MP_MASSRENAME,MF_GRAYED); // MassRename [Dragon] - Stulle
 		m_FileMenu.EnableMenuItem(MP_CLEARCOMPLETED, GetCompleteDownloads(curTab,total) > 0 ? MF_ENABLED : MF_GRAYED);
 		// ==> file settings - Stulle
 		if (thePrefs.IsExtControlsEnabled()) {
@@ -2348,6 +2347,65 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					}
 					SetRedraw(true);
 					break;
+
+				//Xman Mass Rename (Morph)
+				case MP_MASSRENAME: 
+				{
+					CMassRenameDialog MRDialog;
+					// Add the files to the dialog
+					POSITION pos = selectedList.GetHeadPosition();
+					while (pos != NULL) {
+						CPartFile*  file = selectedList.GetAt (pos);
+						MRDialog.m_FileList.AddTail (file);
+						selectedList.GetNext (pos);
+					}
+					int result = MRDialog.DoModal ();
+					if (result == IDOK) {
+						// The user has successfully entered new filenames. Now we have
+						// to rename all the files...
+						POSITION pos = selectedList.GetHeadPosition();
+						int i=0;
+						while (pos != NULL) {
+							CString newname = MRDialog.m_NewFilenames.at (i);
+							CString newpath = MRDialog.m_NewFilePaths.at (i);
+							CPartFile* file = selectedList.GetAt (pos);
+							// .part files could be renamed by simply changing the filename
+							// in the CKnownFile object.
+							if ((!file->IsPartFile()) && (_trename(file->GetFilePath(), newpath) != 0)){
+								// Use the "Format"-Syntax of AddLogLine here instead of
+								// CString.Format+AddLogLine, because if "%"-characters are
+								// in the string they would be misinterpreted as control sequences!
+								AddLogLine(false,_T("Failed to rename '%s' to '%s', Error: %hs"), file->GetFilePath(), newpath, _tcserror(errno));
+							} else {
+								CString strres;
+								if (!file->IsPartFile()) {
+									// Use the "Format"-Syntax of AddLogLine here instead of
+									// CString.Format+AddLogLine, because if "%"-characters are
+									// in the string they would be misinterpreted as control sequences!
+									AddLogLine(false,_T("Successfully renamed '%s' to '%s'"), file->GetFilePath(), newpath);
+									file->SetFileName(newname);
+									file->SetFilePath(newpath);
+									file->SetFullName(newpath);
+								} else {
+									// Use the "Format"-Syntax of AddLogLine here instead of
+									// CString.Format+AddLogLine, because if "%"-characters are
+									// in the string they would be misinterpreted as control sequences!
+									AddLogLine(false,_T("Successfully renamed .part file '%s' to '%s'"), file->GetFileName(), newname);
+									file->SetFileName(newname, true);
+									file->SetFilePath(newpath);
+									file->SavePartFile(); 
+								}
+							}
+
+							// Next item
+							selectedList.GetNext (pos);
+							i++;
+						}
+					}
+					break;
+				}
+				//Xman end
+
 				// ==> file settings - Stulle
 				case MP_SIVKA_FILE_SETTINGS:
 					if(selectedCount > 0)
@@ -2449,62 +2507,6 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					break;
 				}
 				// <== Copy feedback feature [MorphXT] - Stulle
-				// ==> MassRename [Dragon] - Stulle
-			case MP_MASSRENAME: {
-				CMassRenameDialog MRDialog;
-				// Add the files to the dialog
-				POSITION pos = selectedList.GetHeadPosition();
-				while (pos != NULL) {
-					CPartFile*  file = selectedList.GetAt (pos);
-					MRDialog.m_FileList.AddTail (file);
-					selectedList.GetNext (pos);
-				}
-				int result = MRDialog.DoModal ();
-				if (result == IDOK) {
-					// The user has successfully entered new filenames. Now we have
-					// to rename all the files...
-					POSITION pos = selectedList.GetHeadPosition();
-					int i=0;
-					while (pos != NULL) {
-						CString newname = MRDialog.m_NewFilenames.at (i);
-						CString newpath = MRDialog.m_NewFilePaths.at (i);
-						CPartFile* file = selectedList.GetAt (pos);
-						// .part files could be renamed by simply changing the filename
-						// in the CKnownFile object.
-						if ((!file->IsPartFile()) && (_trename(file->GetFilePath(), newpath) != 0)){
-							// Use the "Format"-Syntax of AddLogLine here instead of
-							// CString.Format+AddLogLine, because if "%"-characters are
-							// in the string they would be misinterpreted as control sequences!
-							AddLogLine(false,_T("Failed to rename '%s' to '%s', Error: %hs"), file->GetFilePath(), newpath, _tcserror(errno));
-						} else {
-							CString strres;
-							if (!file->IsPartFile()) {
-								// Use the "Format"-Syntax of AddLogLine here instead of
-								// CString.Format+AddLogLine, because if "%"-characters are
-								// in the string they would be misinterpreted as control sequences!
-								AddLogLine(false,_T("Successfully renamed '%s' to '%s'"), file->GetFilePath(), newpath);
-								file->SetFileName(newname);
-								file->SetFilePath(newpath);
-								file->SetFullName(newpath);
-							} else {
-								// Use the "Format"-Syntax of AddLogLine here instead of
-								// CString.Format+AddLogLine, because if "%"-characters are
-								// in the string they would be misinterpreted as control sequences!
-								AddLogLine(false,_T("Successfully renamed .part file '%s' to '%s'"), file->GetFileName(), newname);
-								file->SetFileName(newname, true); 
-								file->SetFilePath(newpath);
-								file->SavePartFile(); 
-							}
-						}
-
-						// Next item
-						selectedList.GetNext (pos);
-						i++;
-					}
-				}
-								}
-								break;
-				// <== MassRename [Dragon] - Stulle
 				case MP_PAUSE:
 					SetRedraw(false);
 					while (!selectedList.IsEmpty()){
@@ -2884,6 +2886,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 			CPartFile* file = (CPartFile*)content->owner; //Xman Xtreme Downloadmanager
 
 			switch (wParam){
+
 				//Xman Xtreme Downloadmanager
 				case MP_STOP_CLIENT: 
 					StopSingleClient(client);
@@ -3514,10 +3517,7 @@ void CDownloadListCtrl::CreateMenues()
 	m_FileMenu.AppendMenu(MF_STRING, MP_PREVIEW, GetResString(IDS_DL_PREVIEW), _T("PREVIEW"));
 	m_FileMenu.AppendMenu(MF_STRING, MP_METINFO, GetResString(IDS_DL_INFO), _T("FILEINFO"));
 	m_FileMenu.AppendMenu(MF_STRING, MP_VIEWFILECOMMENTS, GetResString(IDS_CMT_SHOWALL), _T("FILECOMMENTS"));
-	// ==> MassRename [Dragon] - Stulle
-	if (thePrefs.IsExtControlsEnabled())
-		m_FileMenu.AppendMenu(MF_STRING,MP_MASSRENAME, GetResString(IDS_MR), _T("FILEMASSRENAME"));
-	// <== MassRename [Dragon] - Stulle
+	if (thePrefs.IsExtControlsEnabled()) m_FileMenu.AppendMenu(MF_STRING,MP_MASSRENAME, GetResString(IDS_MR), _T("FILEMASSRENAME")); //Xman Mass Rename (Morph)
 	m_FileMenu.AppendMenu(MF_SEPARATOR);
 	m_FileMenu.AppendMenu(MF_STRING, MP_CLEARCOMPLETED, GetResString(IDS_DL_CLEAR), _T("CLEARCOMPLETE"));
 

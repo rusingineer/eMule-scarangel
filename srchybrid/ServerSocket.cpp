@@ -36,9 +36,6 @@
 #include "SearchDlg.h"
 #include "IPFilter.h"
 #include "Log.h"
-//Xman -Reask sources after IP change- v3
-#include "Kademlia/Kademlia/Kademlia.h"
-#include "Kademlia/Kademlia/Prefs.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -358,29 +355,21 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 					theApp.OnlineSig();       // Added By Bouc7 
 				}
 
-				//Xman -Reask sources after IP change- v3 (main part by Maella)
-				uint32 oldkadIP=0;
-				if(Kademlia::CKademlia::IsRunning() && Kademlia::CKademlia::GetPrefs()->GetIPAddress())
-					oldkadIP=ntohl(Kademlia::CKademlia::GetIPAddress());
-				//Xman -Reask sources after IP change- v3 (main part by Maella)
-
 
 				serverconnect->SetClientID(la->clientid);
 				if (::IsLowID(la->clientid) && dwServerReportedIP != 0)
 					theApp.SetPublicIP(dwServerReportedIP);
 				AddLogLine(false, GetResString(IDS_NEWCLIENTID), la->clientid);
 
-				//Xman -Reask sources after IP change- v3 (main part by Maella)
-				static uint32 s_lastValidId;
-				if(s_lastValidId != 0 && serverconnect->GetClientID() != 0 && s_lastValidId != serverconnect->GetClientID()){
-					//Xman: don't trigger if we are connected to kad with this IP for a longer time (5minutes)
-					if (/*Kademlia::CKademlia::IsConnected() && Kademlia::CKademlia::GetPrefs()->GetIPAddress()
-						&& ntohl(Kademlia::CKademlia::GetIPAddress())== serverconnect->GetClientID()
-						&& Kademlia::CKademlia::GetPrefs()->newIPtimestamp + MIN2MS(5) < ::GetTickCount()*/
-						oldkadIP!= 0 && oldkadIP==serverconnect->GetClientID()
-						)
-						AddDebugLogLine(false,_T("reported IP from server changed, but sources won't be reasked because of Kad-Connection"));
-					else
+				//Xman -Reask sources after IP change- v4
+				if(serverconnect->GetClientID() != 0 && theApp.last_valid_ip != 0
+				   && serverconnect->GetClientID() != theApp.last_valid_ip 
+				   && serverconnect->GetClientID() != theApp.last_valid_serverid)
+				{
+					//remark: this code doesn't trigger when changing low->hidh-ID and we already had
+					//a session with this HighID-IP. This is because we don't know when this last lowID-session was.
+					//but there is no need to trigger when changing low to high-id but keeping the IP, we can'tt loose the waiting-position!
+
 					{
 						// Public IP has been changed, it's necessary to inform all sources about it
 						// All sources would be informed during their next session refresh (with TCP)
@@ -397,8 +386,8 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 							theApp.last_ip_change=::GetTickCount();
 							theApp.m_bneedpublicIP=false;
 							AddLogLine(false, _T("Change from %u (%s ID) to %u (%s ID) detected%s"), 
-								s_lastValidId,
-								(s_lastValidId < 16777216) ? _T("low") : _T("high"),
+								theApp.last_valid_serverid,
+								(theApp.last_valid_serverid < 16777216) ? _T("low") : _T("high"),
 								serverconnect->GetClientID(),
 								(serverconnect->GetClientID() < 16777216)  ? _T("low") : _T("high"),
 								_T(", all sources will be reasked immediately"));
@@ -408,8 +397,8 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 							theApp.last_ip_change=::GetTickCount();
 							theApp.m_bneedpublicIP=false;
 							AddLogLine(false, _T("Change from %u (%s ID) to %u (%s ID) detected%s"), 
-								s_lastValidId,
-								(s_lastValidId < 16777216) ? _T("low") : _T("high"),
+								theApp.last_valid_serverid,
+								(theApp.last_valid_serverid < 16777216) ? _T("low") : _T("high"),
 								serverconnect->GetClientID(),
 								(serverconnect->GetClientID() < 16777216)  ? _T("low") : _T("high"),
 								_T(", all sources will be reasked within the next 10 minutes"));
@@ -418,10 +407,14 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 				}
 				if(serverconnect->GetClientID() != 0 && theApp.last_ip_change==0)
 					theApp.last_ip_change=::GetTickCount();
-				if(serverconnect->GetClientID() != 0 && serverconnect->GetClientID() != s_lastValidId){
+				if(serverconnect->GetClientID() != 0 && serverconnect->GetClientID() != theApp.last_valid_serverid){
 					// Keep track of a change of the global IP
-					s_lastValidId = serverconnect->GetClientID();
+					theApp.last_valid_serverid = serverconnect->GetClientID();
 				}
+				theApp.last_valid_ip=theApp.GetPublicIP(true); //can also be 0
+
+				theApp.last_traffic_reception=::GetTickCount();
+				theApp.internetmaybedown=false; //we have to reopen here if we are using server only
 				// Xman end
 
 				theApp.downloadqueue->ResetLocalServerRequests();

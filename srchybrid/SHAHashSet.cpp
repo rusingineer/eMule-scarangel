@@ -631,6 +631,14 @@ bool CAICHHashSet::SaveHashSet(){
 		ASSERT( false );
 		return false;
 	}
+
+	//Xman remove unused AICH-hashes
+	//Xman improvement also for official
+	//if the file got the mutex BEFORE the AICH-Syncthread a just created Hash could be deleted
+	while(theApp.m_AICH_Is_synchronizing)
+		Sleep(100);
+	//Xman end
+
 	CSingleLock lockKnown2Met(&m_mutKnown2File, false);
 	if (!lockKnown2Met.Lock(5000)){
 		return false;
