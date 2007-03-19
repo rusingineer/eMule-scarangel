@@ -1116,6 +1116,7 @@ void CServerWnd::OnBackcolor()
 		m_brMyBrush.CreateSolidBrush(clrSrvColor);
 	else
 		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
+	SetAllIcons();
 }
 
 HBRUSH CServerWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
@@ -1125,28 +1126,25 @@ HBRUSH CServerWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	if (nCtlColor == CTLCOLOR_DLG)
 		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
 
-	if(clrSrvColor!=CLR_DEFAULT)
+	int b1 = pWnd->GetDlgCtrlID();
+
+	switch(b1)
 	{
-		int b1 = pWnd->GetDlgCtrlID();
+		case	IDC_SERVERMETURL:
+		case	IDC_IPADDRESS:
+		case	IDC_SPORT:
+		case	IDC_SNAME:
+			break;
+		default:
+		{ 
+			pDC->SetBkMode(TRANSPARENT);
 
-		switch(b1)
-		{
-			case	IDC_SERVERMETURL:
-			case	IDC_IPADDRESS:
-			case	IDC_SPORT:
-			case	IDC_SNAME:
-				break;
-			default:
-			{ 
-				pDC->SetBkMode(TRANSPARENT);
-
-				hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-				//pDC->SetTextColor(m_textcol);
-				//pDC->SetBkColor(m_backcol);
-				break;
-			}
-		
+			hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+			//pDC->SetTextColor(m_textcol);
+			//pDC->SetBkColor(m_backcol);
+			break;
 		}
+	
 	}
 
 	return hbr;

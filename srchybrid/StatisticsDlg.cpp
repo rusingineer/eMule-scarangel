@@ -4072,21 +4072,18 @@ HBRUSH CStatisticsDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	if (nCtlColor == CTLCOLOR_DLG)
 		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
 
-	if(crStatsColor!=CLR_DEFAULT)
+//	int b1 = pWnd->GetDlgCtrlID();
+
+//	switch(b1)
 	{
-//		int b1 = pWnd->GetDlgCtrlID();
+//		default:
+		{ 
+			pDC->SetBkMode(TRANSPARENT);
 
-//		switch(b1)
-		{
-//			default:
-			{ 
-				pDC->SetBkMode(TRANSPARENT);
-
-				hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-				//pDC->SetTextColor(m_textcol);
-				//pDC->SetBkColor(m_backcol);
-//				break;
-			}
+			hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+			//pDC->SetTextColor(m_textcol);
+			//pDC->SetBkColor(m_backcol);
+//			break;
 		}
 	}
 
