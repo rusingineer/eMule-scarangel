@@ -386,9 +386,16 @@ void CServerWnd::OnSysColorChange()
 
 void CServerWnd::SetAllIcons()
 {
+	// ==> Design Settings [eWombat/Stulle] - Max
+	/*
 	m_ctrlNewServerFrm.SetIcon(_T("AddServer"));
 	m_ctrlUpdateServerFrm.SetIcon(_T("ServerUpdateMET"));
 	m_ctrlMyInfoFrm.SetIcon(_T("Info"));
+	*/
+	m_ctrlNewServerFrm.SetIcon(_T("AddServer"),clrSrvColor);
+	m_ctrlUpdateServerFrm.SetIcon(_T("ServerUpdateMET"),clrSrvColor);
+	m_ctrlMyInfoFrm.SetIcon(_T("Info"),clrSrvColor);
+	// <== Design Settings [eWombat/Stulle] - Max
 
 	CImageList iml;
 	iml.Create(16,16,theApp.m_iDfltImageListColorFlags|ILC_MASK,0,1);
@@ -411,15 +418,30 @@ void CServerWnd::Localize()
 	if (thePrefs.GetLanguageID() != m_uLangID){
 		m_uLangID = thePrefs.GetLanguageID();
 	    GetDlgItem(IDC_SERVLIST_TEXT)->SetWindowText(GetResString(IDS_SV_SERVERLIST));
+		// ==> Design Settings [eWombat/Stulle] - Max
+		/*
 	    m_ctrlNewServerFrm.SetWindowText(GetResString(IDS_SV_NEWSERVER));
+		*/
+	    m_ctrlNewServerFrm.SetWindowText(GetResString(IDS_SV_NEWSERVER),clrSrvColor);
+		// <== Design Settings [eWombat/Stulle] - Max
 	    GetDlgItem(IDC_SSTATIC4)->SetWindowText(GetResString(IDS_SV_ADDRESS));
 	    GetDlgItem(IDC_SSTATIC7)->SetWindowText(GetResString(IDS_SV_PORT));
 	    GetDlgItem(IDC_SSTATIC3)->SetWindowText(GetResString(IDS_SW_NAME));
 	    GetDlgItem(IDC_ADDSERVER)->SetWindowText(GetResString(IDS_SV_ADD));
+		// ==> Design Settings [eWombat/Stulle] - Max
+		/*
 	    m_ctrlUpdateServerFrm.SetWindowText(GetResString(IDS_SV_MET));
+		*/
+	    m_ctrlUpdateServerFrm.SetWindowText(GetResString(IDS_SV_NEWSERVER),clrSrvColor);
+		// <== Design Settings [eWombat/Stulle] - Max
 	    GetDlgItem(IDC_UPDATESERVERMETFROMURL)->SetWindowText(GetResString(IDS_SV_UPDATE));
 	    GetDlgItem(IDC_LOGRESET)->SetWindowText(GetResString(IDS_PW_RESET));
+		// ==> Design Settings [eWombat/Stulle] - Max
+		/*
 	    m_ctrlMyInfoFrm.SetWindowText(GetResString(IDS_MYINFO));
+		*/
+	    m_ctrlMyInfoFrm.SetWindowText(GetResString(IDS_SV_NEWSERVER),clrSrvColor);
+		// <== Design Settings [eWombat/Stulle] - Max
     
 	    TCITEM item;
 	    CString name;
@@ -1093,10 +1115,7 @@ void CServerWnd::OnBackcolor()
 	if(clrSrvColor != CLR_DEFAULT)
 		m_brMyBrush.CreateSolidBrush(clrSrvColor);
 	else
-	{
-		clrSrvColor = NULL;
 		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
-	}
 }
 
 HBRUSH CServerWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
@@ -1106,7 +1125,7 @@ HBRUSH CServerWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	if (nCtlColor == CTLCOLOR_DLG)
 		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
 
-	if(clrSrvColor!=NULL)
+	if(clrSrvColor!=CLR_DEFAULT)
 	{
 		int b1 = pWnd->GetDlgCtrlID();
 
