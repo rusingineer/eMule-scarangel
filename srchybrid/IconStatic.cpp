@@ -103,7 +103,7 @@ void CIconStatic::SetIcon(LPCTSTR pszIconID, COLORREF clrInput)
 	/*
 	MemDC.FillSolidRect(rCaption, GetSysColor(COLOR_BTNFACE));
 	*/
-	if(clrInput==NULL)
+	if(clrInput==CLR_DEFAULT)
 		MemDC.FillSolidRect(rCaption, GetSysColor(COLOR_BTNFACE));
 	else
 		MemDC.FillSolidRect(rCaption, clrInput);

@@ -4062,10 +4062,7 @@ void CStatisticsDlg::OnBackcolor()
 	if(crStatsColor != CLR_DEFAULT)
 		m_brMyBrush.CreateSolidBrush(crStatsColor);
 	else
-	{
-		crStatsColor = NULL;
 		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
-	}
 }
 
 HBRUSH CStatisticsDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
@@ -4075,7 +4072,7 @@ HBRUSH CStatisticsDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	if (nCtlColor == CTLCOLOR_DLG)
 		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
 
-	if(crStatsColor!=NULL)
+	if(crStatsColor!=CLR_DEFAULT)
 	{
 //		int b1 = pWnd->GetDlgCtrlID();
 

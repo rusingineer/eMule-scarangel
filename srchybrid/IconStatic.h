@@ -15,8 +15,8 @@ public:
 	void SetIcon(LPCTSTR pszIconID);
 	void SetWindowText(LPCTSTR lpszString);
 	*/
-	void SetIcon(LPCTSTR pszIconID, COLORREF clrInput = NULL);
-	void SetWindowText(LPCTSTR lpszString, COLORREF clrInput = NULL);
+	void SetIcon(LPCTSTR pszIconID, COLORREF clrInput = CLR_DEFAULT);
+	void SetWindowText(LPCTSTR lpszString, COLORREF clrInput = CLR_DEFAULT);
 	// <== Design Settings [eWombat/Stulle] - Max
 
 protected:

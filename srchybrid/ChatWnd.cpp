@@ -505,10 +505,7 @@ void CChatWnd::OnBackcolor()
 	if(clrChatColor != CLR_DEFAULT)
 		m_brMyBrush.CreateSolidBrush(clrChatColor);
 	else
-	{
-		clrChatColor = NULL;
 		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
-	}
 }
 
 HBRUSH CChatWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)

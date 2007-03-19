@@ -626,10 +626,7 @@ void CSharedFilesWnd::OnBackcolor()
 	if(crSharedColor != CLR_DEFAULT)
 		m_brMyBrush.CreateSolidBrush(crSharedColor);
 	else
-	{
-		crSharedColor = NULL;
 		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
-	}
 }
 
 HBRUSH CSharedFilesWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)

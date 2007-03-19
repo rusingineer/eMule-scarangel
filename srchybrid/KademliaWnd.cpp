@@ -353,10 +353,7 @@ void CKademliaWnd::OnBackcolor()
 	if(crKadColor != CLR_DEFAULT)
 		m_brMyBrush.CreateSolidBrush(crKadColor);
 	else
-	{
-		crKadColor = NULL;
 		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
-	}
 }
 
 HBRUSH CKademliaWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
@@ -366,7 +363,7 @@ HBRUSH CKademliaWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	if (nCtlColor == CTLCOLOR_DLG)
 		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
 
-	if(crKadColor!=NULL)
+	if(crKadColor!=CLR_DEFAULT)
 	{
 		int b1 = pWnd->GetDlgCtrlID();
 
