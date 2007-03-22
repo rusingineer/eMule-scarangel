@@ -440,6 +440,7 @@ private:
 	CColorButton		m_FontColor;
 	CButton		m_BackColorLabel;
 	CColorButton	m_BackColor;
+	CStatic		m_ColorWarning;
 
 	// Support
 	CHyperTextCtrl	m_HpLink;
@@ -494,7 +495,7 @@ private:
 public:
 	void InitMasterStyleCombo();
 	void InitSubStyleCombo();
-	void UpdateStyles(bool bShow = false);
+	void UpdateStyles();
 	void OnFontStyle(int iStyle);
 	StylesStruct GetStyle(int nMaster, int nStyle);
 	void SetStyle(int nMaster, int nStyle, StylesStruct *style=NULL);

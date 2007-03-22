@@ -1658,6 +1658,7 @@ void CPPgScar::Localize(void)
 		m_ColorBox.SetWindowText( GetResString(IDS_COLOR_BOX) );
 		m_FontColorLabel.SetWindowText( GetResString(IDS_COLOR_FONT_LABEL) );
 		m_BackColorLabel.SetWindowText( GetResString(IDS_COLOR_BACK_LABEL) );
+		m_ColorWarning.SetWindowText(GetResString(IDS_COLOR_WARNING));
 
 		m_FontColor.CustomText = GetResString(IDS_COL_MORECOLORS);
 		m_FontColor.DefaultText = GetResString(IDS_DEFAULT);
@@ -2319,6 +2320,11 @@ void CPPgScar::InitControl()
 									CRect(right-60, top+140, right-10, top+165), this, IDC_COLOR_BACK);
 	m_BackColor.SetFont(GetFont());
 
+	m_ColorWarning.CreateEx(0, _T("STATIC"), _T(""), 
+							WS_CHILD /*| WS_VISIBLE*/, 
+							CRect(left+10, top+175, right-10, top+204), this, IDC_COLOR_WARNING);
+	m_ColorWarning.SetFont(GetFont());	
+
 	// Support
 	m_HpLink.CreateEx(0, _T("BUTTON"), _T(""), 
 						WS_BORDER | WS_VISIBLE | WS_CHILD | HTC_WORDWRAP | HTC_UNDERLINE_HOVER,
@@ -2463,6 +2469,8 @@ void CPPgScar::SetTab(eTab tab){
 				m_BackColorLabel.EnableWindow(FALSE);
 				m_BackColor.ShowWindow(SW_HIDE);
 				m_BackColor.EnableWindow(FALSE);
+				m_ColorWarning.ShowWindow(SW_HIDE);
+				m_ColorWarning.EnableWindow(FALSE);
 				break; 
 /*			case UPDATE:
 				break;*/
@@ -2583,7 +2591,7 @@ void CPPgScar::SetTab(eTab tab){
 				m_BackColorLabel.EnableWindow(TRUE);
 				m_BackColor.ShowWindow(SW_SHOW);
 //				m_BackColor.EnableWindow(TRUE);
-				UpdateStyles(true);
+				UpdateStyles();
 				break;
 /*			case UPDATE:
 				break;*/
@@ -3247,7 +3255,7 @@ void CPPgScar::InitSubStyleCombo()
 	m_SubCombo.SetCurSel(0); // alway first one!
 }
 
-void CPPgScar::UpdateStyles(bool bShow)
+void CPPgScar::UpdateStyles()
 {
 	int iCurStyle = m_SubCombo.GetCurSel();
 	int iMasterValue = m_MasterCombo.GetCurSel();
@@ -3255,6 +3263,32 @@ void CPPgScar::UpdateStyles(bool bShow)
 	styles = GetStyle(iMasterValue, iCurStyle);
 	bool bEnable = false;
 	bool bOnOff = (iCurStyle != style_c_default && iCurStyle != style_d_default && iCurStyle != style_s_default && iCurStyle != style_se_default);
+
+	// Retrieve the bottom of the tab's header
+	RECT rect1;
+	RECT rect2;
+	m_tabCtr.GetWindowRect(&rect1);
+	ScreenToClient(&rect1);
+	m_tabCtr.GetItemRect(m_tabCtr.GetItemCount() - 1 , &rect2);
+	const int top = rect1.top + (rect2.bottom - rect2.top + 1) * m_tabCtr.GetRowCount() + 10;
+	const int left = rect1.left + 6;
+//	const int bottom = rect1.bottom-10;
+	const int right = rect1.right - 6;
+
+	// set the warning
+	if(iMasterValue == window_styles && // window styles
+		thePrefs.GetWindowsVersion() == _WINVER_XP_) // using XP
+	{
+			m_ColorWarning.ShowWindow(SW_SHOW);
+			m_ColorWarning.EnableWindow(TRUE);
+			m_ColorBox.MoveWindow(CRect(left, top, right, top+214),TRUE);
+	}
+	else
+	{
+			m_ColorWarning.ShowWindow(SW_HIDE);
+			m_ColorWarning.EnableWindow(FALSE);
+			m_ColorBox.MoveWindow(CRect(left, top, right, top+175),TRUE);
+	}
 
 	m_BackColor.SetColor(styles.nBackColor);
 	if(iMasterValue < background_styles)
@@ -3289,13 +3323,6 @@ void CPPgScar::UpdateStyles(bool bShow)
 	m_underlined.EnableWindow(bEnable);
 	m_italic.EnableWindow(bEnable);
 	m_FontColor.EnableWindow(bEnable);
-	if(bShow) // stupid, yet working workarround some gui glitch...
-	{
-		m_FontColor.ShowWindow(SW_HIDE);
-		m_BackColor.ShowWindow(SW_HIDE);
-		m_FontColor.ShowWindow(SW_SHOW);
-		m_BackColor.ShowWindow(SW_SHOW);
-	}
 
 	int iStyle = (styles.nFlags & STYLE_FONTMASK);
 	m_bold.SetCheck(iStyle== STYLE_BOLD ? 1:0);
@@ -3303,6 +3330,8 @@ void CPPgScar::UpdateStyles(bool bShow)
 	m_italic.SetCheck(iStyle== STYLE_ITALIC ? 1:0);
 
 	SetStyle(iMasterValue, iCurStyle, &styles);
+
+	RedrawWindow(); // work around all glitches. :D
 }
 
 void CPPgScar::OnFontStyle(int iStyle)
