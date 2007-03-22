@@ -5846,8 +5846,9 @@ BEGIN
     IDS_COLOR_W6            "Messages window"
     IDS_COLOR_W7            "IRC window"
     IDS_COLOR_W8            "Statistic window"
-    IDS_COLOR_W9            "Statusbar (Win2K only)"
+    IDS_COLOR_W9            "Statusbar"
     IDS_COLOR_MASTER6       "Window styles"
+    IDS_COLOR_W10           "Toolbar"
     // <== Design Settings [eWombat/Stulle] - Stulle
     // ==> Limit PS by amount of data uploaded [Stulle] - Stulle
     IDS_PS_AMOUNT_LIMIT         "Limit by data amount uploaded"

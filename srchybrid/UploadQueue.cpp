@@ -1062,7 +1062,7 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 		{
 			client->Credits()->SetSecWaitStartTime(100);
 			client->SetGiveWaittimeBack(false);
-			AddDebugLogLine(false, _T("client had waitingtime: %s 100% recovered, client: %s"), CastSecondsToHM((::GetTickCount() - client->GetWaitStartTime())/1000),client->DbgGetClientInfo()); 
+//			AddDebugLogLine(false, _T("client had waitingtime: %s 100% recovered, client: %s"), CastSecondsToHM((::GetTickCount() - client->GetWaitStartTime())/1000),client->DbgGetClientInfo()); 
 		}
 		else
 			client->Credits()->SetSecWaitStartTime();

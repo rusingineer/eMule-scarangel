@@ -1412,6 +1412,9 @@ BOOL CPPgScar::OnApply()
 		theApp.emuledlg->statisticswnd->Localize();
 
 		theApp.emuledlg->statusbar->UpdateColor();
+		theApp.emuledlg->RedrawWindow();
+		theApp.emuledlg->toolbar->UpdateBackground();
+		theApp.emuledlg->toolbar->RedrawWindow();
 
 		theApp.emuledlg->activewnd->RedrawWindow();//redraw only the active Wnd after color change - Max
 	}
@@ -1665,14 +1668,19 @@ void CPPgScar::Localize(void)
 		// <== Design Settings [eWombat/Stulle] - Stulle
 
 		// ==> Support page in preferences [Stulle] - Stulle
+		m_HpLink.Clear();
 		m_HpLink.AppendText(GetResString(IDS_HOMEPAGE)+_T(": "));
 		m_HpLink.AppendHyperLink(_T("eMule ScarAngel Mod"),0,CString(_T("http://scarangel.sourceforge.net/")),0,0);
+		m_BoardGerLink.Clear();
 		m_BoardGerLink.AppendText(GetResString(IDS_BOARD_GER)+_T(": "));
 		m_BoardGerLink.AppendHyperLink(_T("eMule-web.de"),0,CString(_T("http://www.emule-web.de/board/")),0,0);
+		m_BoardEngLink.Clear();
 		m_BoardEngLink.AppendText(GetResString(IDS_BOARD_ENG)+_T(": "));
 		m_BoardEngLink.AppendHyperLink(_T("eMule-project.net"),0,CString(_T("http://forum.emule-project.net/index.php?showforum=97")),0,0);
+		m_RateLink.Clear();
 		m_RateLink.AppendText(GetResString(IDS_RATE)+_T(": "));
 		m_RateLink.AppendHyperLink(_T("eMule-mods.de"),0,CString(_T("http://www.emule-mods.de/?comment=ScarAngel")),0,0);
+		m_XtremeLink.Clear();
 		m_XtremeLink.AppendText(GetResString(IDS_XTREME)+_T(": "));
 		m_XtremeLink.AppendHyperLink(_T("eMule Xtreme Mod official homepage"),0,CString(_T("http://www.xtreme-mod.net/")),0,0);
 
@@ -3230,6 +3238,7 @@ void CPPgScar::InitSubStyleCombo()
 			m_SubCombo.AddString(GetResString(IDS_COLOR_W7));
 			m_SubCombo.AddString(GetResString(IDS_COLOR_W8));
 			m_SubCombo.AddString(GetResString(IDS_COLOR_W9));
+			m_SubCombo.AddString(GetResString(IDS_COLOR_W10));
 		}break;
 		default:
 			break;

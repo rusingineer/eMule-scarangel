@@ -256,6 +256,7 @@ enum eWindowStyles
 	style_w_irc,
 	style_w_statistic,
 	style_w_statusbar,
+	style_w_toolbar,
 	style_w_count
 };
 // <== Design Settings [eWombat/Stulle] - Stulle

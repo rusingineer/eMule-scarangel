@@ -31,6 +31,7 @@
 #include "ChatWnd.h"
 #include "IrcWnd.h"
 #include "StatisticsDlg.h"
+#include "log.h" // m000h
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -1135,6 +1136,33 @@ void CMuleToolbarCtrl::UpdateBackground()
 	if (theApp.emuledlg->m_ctlMainTopReBar)
 	{
 		HBITMAP hbmp = theApp.LoadImage(_T("MainToolBarBk"), _T("BMP"));
+		// ==> Design Settings [eWombat/Stulle] - Max
+		COLORREF crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_toolbar);
+
+		if(crTempColor == CLR_DEFAULT)
+			crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
+
+		if(crTempColor != CLR_DEFAULT)
+		{
+			REBARBANDINFO rbbi = {0};
+			rbbi.cbSize = sizeof(rbbi);
+			rbbi.fMask = RBBIM_STYLE;
+			if (theApp.emuledlg->m_ctlMainTopReBar.GetBandInfo(MULE_TOOLBAR_BAND_NR, &rbbi))
+			{
+				rbbi.fMask = RBBIM_STYLE | RBBIM_BACKGROUND | RBBIM_COLORS;
+				rbbi.clrFore = crTempColor;
+				rbbi.clrBack = crTempColor;
+				rbbi.fStyle &= ~RBBS_FIXEDBMP;
+				rbbi.hbmBack = NULL;
+				if (theApp.emuledlg->m_ctlMainTopReBar.SetBandInfo(MULE_TOOLBAR_BAND_NR, &rbbi))
+				{
+					if (m_bmpBack.m_hObject)
+						VERIFY( m_bmpBack.DeleteObject() );
+				}
+			}
+		}
+		else
+		// <== Design Settings [eWombat/Stulle] - Max
 		if (hbmp)
 		{
 			REBARBANDINFO rbbi = {0};
@@ -1142,7 +1170,14 @@ void CMuleToolbarCtrl::UpdateBackground()
 			rbbi.fMask = RBBIM_STYLE;
 			if (theApp.emuledlg->m_ctlMainTopReBar.GetBandInfo(MULE_TOOLBAR_BAND_NR, &rbbi))
 			{
+				// ==> Design Settings [eWombat/Stulle] - Max
+				/*
 				rbbi.fMask = RBBIM_STYLE | RBBIM_BACKGROUND;
+				*/
+				rbbi.fMask = RBBIM_STYLE | RBBIM_BACKGROUND | RBBIM_COLORS;
+				rbbi.clrFore = GetSysColor(COLOR_BTNFACE);
+				rbbi.clrBack = GetSysColor(COLOR_BTNFACE);
+				// <== Design Settings [eWombat/Stulle] - Max
 				rbbi.fStyle |= RBBS_FIXEDBMP;
 				rbbi.hbmBack = hbmp;
 				if (theApp.emuledlg->m_ctlMainTopReBar.SetBandInfo(MULE_TOOLBAR_BAND_NR, &rbbi))
@@ -1163,7 +1198,14 @@ void CMuleToolbarCtrl::UpdateBackground()
 			rbbi.fMask = RBBIM_STYLE;
 			if (theApp.emuledlg->m_ctlMainTopReBar.GetBandInfo(MULE_TOOLBAR_BAND_NR, &rbbi))
 			{
+				// ==> Design Settings [eWombat/Stulle] - Max
+				/*
 				rbbi.fMask = RBBIM_STYLE | RBBIM_BACKGROUND;
+				*/
+				rbbi.fMask = RBBIM_STYLE | RBBIM_BACKGROUND | RBBIM_COLORS;
+				rbbi.clrFore = GetSysColor(COLOR_BTNFACE);
+				rbbi.clrBack = GetSysColor(COLOR_BTNFACE);
+				// <== Design Settings [eWombat/Stulle] - Max
 				rbbi.fStyle &= ~RBBS_FIXEDBMP;
 				rbbi.hbmBack = NULL;
 				if (theApp.emuledlg->m_ctlMainTopReBar.SetBandInfo(MULE_TOOLBAR_BAND_NR, &rbbi))
