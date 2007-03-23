@@ -3226,6 +3226,7 @@ void CPPgScar::InitSubStyleCombo()
 		}break;
 		case background_styles: // background styles
 		{
+			m_SubCombo.AddString(GetResString(IDS_DEFAULT));
 			m_SubCombo.AddString(GetResString(IDS_COLOR_B1));
 			m_SubCombo.AddString(GetResString(IDS_COLOR_B2));
 			m_SubCombo.AddString(GetResString(IDS_COLOR_B3));
@@ -3264,31 +3265,39 @@ void CPPgScar::UpdateStyles()
 	bool bEnable = false;
 	bool bOnOff = (iCurStyle != style_c_default && iCurStyle != style_d_default && iCurStyle != style_s_default && iCurStyle != style_se_default);
 
-	// Retrieve the bottom of the tab's header
-	RECT rect1;
-	RECT rect2;
-	m_tabCtr.GetWindowRect(&rect1);
-	ScreenToClient(&rect1);
-	m_tabCtr.GetItemRect(m_tabCtr.GetItemCount() - 1 , &rect2);
-	const int top = rect1.top + (rect2.bottom - rect2.top + 1) * m_tabCtr.GetRowCount() + 10;
-	const int left = rect1.left + 6;
-//	const int bottom = rect1.bottom-10;
-	const int right = rect1.right - 6;
+	if(thePrefs.GetWindowsVersion() == _WINVER_XP_) // using XP
+	{
+		// Retrieve the bottom of the tab's header
+		RECT rect1;
+		RECT rect2;
+		m_tabCtr.GetWindowRect(&rect1);
+		ScreenToClient(&rect1);
+		m_tabCtr.GetItemRect(m_tabCtr.GetItemCount() - 1 , &rect2);
+		const int top = rect1.top + (rect2.bottom - rect2.top + 1) * m_tabCtr.GetRowCount() + 10;
+		const int left = rect1.left + 6;
+//		const int bottom = rect1.bottom-10;
+		const int right = rect1.right - 6;
 
-	// set the warning
-	if(iMasterValue == window_styles && // window styles
-		thePrefs.GetWindowsVersion() == _WINVER_XP_) // using XP
-	{
-			m_ColorWarning.ShowWindow(SW_SHOW);
-			m_ColorWarning.EnableWindow(TRUE);
-			m_ColorBox.MoveWindow(CRect(left, top, right, top+214),TRUE);
+		// set the warning
+		if(iMasterValue == window_styles) // window styles
+		{
+				m_ColorWarning.ShowWindow(SW_SHOW);
+				m_ColorWarning.EnableWindow(TRUE);
+				m_ColorBox.MoveWindow(CRect(left, top, right, top+214),TRUE);
+		}
+		else
+		{
+				m_ColorWarning.ShowWindow(SW_HIDE);
+				m_ColorWarning.EnableWindow(FALSE);
+				m_ColorBox.MoveWindow(CRect(left, top, right, top+175),TRUE);
+		}
 	}
+
+	// set default for background
+	if(iMasterValue == window_styles)
+		m_BackColor.SetDefaultColor(GetSysColor(COLOR_BTNFACE));
 	else
-	{
-			m_ColorWarning.ShowWindow(SW_HIDE);
-			m_ColorWarning.EnableWindow(FALSE);
-			m_ColorBox.MoveWindow(CRect(left, top, right, top+175),TRUE);
-	}
+		m_BackColor.SetDefaultColor(COLORREF(RGB(255,255,255)));
 
 	m_BackColor.SetColor(styles.nBackColor);
 	if(iMasterValue < background_styles)

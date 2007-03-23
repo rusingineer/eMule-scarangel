@@ -201,6 +201,9 @@ void CClientListCtrl::Localize()
 		// khaos::kmod-
 
 	}
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	theApp.emuledlg->transferwnd->SetBackgroundColor(style_b_clientlist);
+	// <== Design Settings [eWombat/Stulle] - Stulle
 }
 
 void CClientListCtrl::ShowKnownClients()
@@ -310,7 +313,6 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
 	*/
-	theApp.emuledlg->transferwnd->SetBackgroundColor(style_b_clientlist);
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
 	int iClientStyle = client->GetClientStyle(true,true,true,true);
 	StylesStruct style;

@@ -232,6 +232,10 @@ void CUploadListCtrl::Localize()
 	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 	pHeaderCtrl->SetItem(9, &hdi);
 	//Xman end
+
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	theApp.emuledlg->transferwnd->SetBackgroundColor(style_b_uploadlist);
+	// <== Design Settings [eWombat/Stulle] - Stulle
 }
 
 void CUploadListCtrl::AddClient(const CUpDownClient* client)

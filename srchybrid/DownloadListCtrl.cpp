@@ -381,6 +381,10 @@ void CDownloadListCtrl::Localize()
 	CreateMenues();
 
 	ShowFilesCount();
+
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	theApp.emuledlg->transferwnd->SetBackgroundColor(style_b_downloadlist);
+	// <== Design Settings [eWombat/Stulle] - Stulle
 }
 
 void CDownloadListCtrl::AddFile(CPartFile* toadd)
@@ -1434,7 +1438,6 @@ void CDownloadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
 	*/
-	theApp.emuledlg->transferwnd->SetBackgroundColor(style_b_downloadlist);
 	CtrlItem_Struct* content = (CtrlItem_Struct*)lpDrawItemStruct->itemData;
 	int iStyle = 0;
 	int iMaster = 0;

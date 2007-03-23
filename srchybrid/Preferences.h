@@ -233,7 +233,8 @@ enum eServerStyles
 // background styles
 enum eBackgroundStyles
 {
-	style_b_clientlist = 0,
+	style_b_default = 0,
+	style_b_clientlist,
 	style_b_dlclientlist,
 	style_b_queuelist,
 	style_b_uploadlist,

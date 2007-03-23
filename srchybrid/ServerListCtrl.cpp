@@ -202,6 +202,18 @@ void CServerListCtrl::Localize()
 	int iItems = GetItemCount();
 	for (int i = 0; i < iItems; i++)
 		RefreshServer((CServer*)GetItemData(i));
+
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	COLORREF crTempColor = thePrefs.GetStyleBackColor(background_styles, style_b_serverwnd);
+
+	if(crTempColor == CLR_DEFAULT)
+		crTempColor = thePrefs.GetStyleBackColor(background_styles, style_b_default);
+
+	if(crTempColor != CLR_DEFAULT)
+		SetBkColor(crTempColor);
+	else
+		SetBkColor(COLORREF(RGB(255,255,255)));
+	// <== Design Settings [eWombat/Stulle] - Stulle
 }
 
 void CServerListCtrl::RemoveServer(const CServer* pServer)
@@ -1126,11 +1138,6 @@ void CServerListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 		//Xman end
 	*/
 	cur_srv = theApp.serverconnect->GetCurrentServer();
-	COLORREF crTempColor = thePrefs.GetStyleBackColor(background_styles, style_b_serverwnd);
-	if(crTempColor != CLR_DEFAULT)
-		SetBkColor(crTempColor);
-	else
-		SetBkColor(COLORREF(RGB(255,255,255)));
 
 	int iClientStyle = style_se_default;
 	if(thePrefs.GetStyleOnOff(server_styles, style_se_connected)!=0
@@ -1155,7 +1162,7 @@ void CServerListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 	StylesStruct style;
 	thePrefs.GetStyle(server_styles, iClientStyle, &style);
-	crTempColor = GetBkColor();
+	COLORREF crTempColor = GetBkColor();
 	if (style.nBackColor != CLR_DEFAULT)
 		crTempColor = style.nBackColor;
 

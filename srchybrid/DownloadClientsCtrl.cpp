@@ -194,6 +194,10 @@ void CDownloadClientsCtrl::Localize()
 	strRes = GetResString(IDS_META_SRCTYPE);
 	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 	pHeaderCtrl->SetItem(7, &hdi);
+
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	theApp.emuledlg->transferwnd->SetBackgroundColor(style_b_dlclientlist);
+	// <== Design Settings [eWombat/Stulle] - Stulle
 }
 
 void CDownloadClientsCtrl::AddClient(CUpDownClient* client)
@@ -276,7 +280,6 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
 	*/
-	theApp.emuledlg->transferwnd->SetBackgroundColor(style_b_dlclientlist);
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
 	int iClientStyle = client->GetClientStyle(false,true,false,true);
 	StylesStruct style;

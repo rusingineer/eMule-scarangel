@@ -31,7 +31,6 @@
 #include "ChatWnd.h"
 #include "IrcWnd.h"
 #include "StatisticsDlg.h"
-#include "log.h" // m000h
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

@@ -266,6 +266,9 @@ void CQueueListCtrl::Localize()
 		// <== WebCache [WC team/MorphXT] - Stulle/Max
 //breakpoint
 	}
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	theApp.emuledlg->transferwnd->SetBackgroundColor(style_b_queuelist);
+	// <== Design Settings [eWombat/Stulle] - Stulle
 }
 
 void CQueueListCtrl::AddClient(/*const*/ CUpDownClient* client, bool resetclient)
@@ -364,7 +367,6 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
 	*/
-	theApp.emuledlg->transferwnd->SetBackgroundColor(style_b_queuelist);
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
 	int iClientStyle = client->GetClientStyle(true,true,true,true);
 	StylesStruct style;

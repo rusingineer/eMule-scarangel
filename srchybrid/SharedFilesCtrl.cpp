@@ -426,6 +426,18 @@ void CSharedFilesCtrl::Localize()
 	pHeaderCtrl->SetItem(21, &hdi);
 	// <== PowerShare [ZZ/MorphXT] - Stulle
 
+	// ==> Design Settings [eWombat/Stulle] - Stulle
+	COLORREF crTempColor = thePrefs.GetStyleBackColor(background_styles, style_b_sharedlist);
+
+	if(crTempColor == CLR_DEFAULT)
+		crTempColor = thePrefs.GetStyleBackColor(background_styles, style_b_default);
+
+	if(crTempColor != CLR_DEFAULT)
+		SetBkColor(crTempColor);
+	else
+		SetBkColor(COLORREF(RGB(255,255,255)));
+	// <== Design Settings [eWombat/Stulle] - Stulle
+
 	CreateMenues();
 
 	int iItems = GetItemCount();
@@ -619,11 +631,6 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
 	*/
-	COLORREF crTempColor = thePrefs.GetStyleBackColor(background_styles, style_b_sharedlist);
-	if(crTempColor != CLR_DEFAULT)
-		SetBkColor(crTempColor);
-	else
-		SetBkColor(COLORREF(RGB(255,255,255)));
 	CKnownFile* file = (CKnownFile*)lpDrawItemStruct->itemData;
 	int iStyle = 0;
 	if(file->IsPartFile() && thePrefs.GetStyleOnOff(share_styles, style_s_incomplete)!=0)
@@ -633,7 +640,7 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	StylesStruct style;
 	thePrefs.GetStyle(share_styles, iStyle, &style);
 
-    crTempColor = GetBkColor();
+	COLORREF crTempColor = GetBkColor();
 	if (style.nBackColor != CLR_DEFAULT)
 		crTempColor = style.nBackColor;
 
