@@ -1125,27 +1125,13 @@ HBRUSH CServerWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 	if (nCtlColor == CTLCOLOR_DLG)
 		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-
-	int b1 = pWnd->GetDlgCtrlID();
-
-	switch(b1)
+	else if(nCtlColor != CTLCOLOR_EDIT)
 	{
-		case	IDC_SERVERMETURL:
-		case	IDC_IPADDRESS:
-		case	IDC_SPORT:
-		case	IDC_SNAME:
-			break;
-		default:
-		{ 
-			pDC->SetBkMode(TRANSPARENT);
-
-			hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-			//pDC->SetTextColor(m_textcol);
-			//pDC->SetBkColor(m_backcol);
-			break;
-		}
-	
+		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+		pDC->SetBkMode(TRANSPARENT);
 	}
+	else
+		hbr = (HBRUSH) WHITE_BRUSH;
 
 	return hbr;
 }
