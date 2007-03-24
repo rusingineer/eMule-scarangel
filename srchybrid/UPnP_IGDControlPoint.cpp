@@ -70,10 +70,6 @@ CUPnP_IGDControlPoint::~CUPnP_IGDControlPoint(void)
 	if(m_bClearOnClose)
 		DeleteAllPortMappings();
 
-	//Lock devices and mappings before use it
-	m_devListLock.Lock();
-	m_MappingsLock.Lock();
-
 	//Unregister control point and finish UPnP
 	if(m_ctrlPoint){
 		UpnpUnRegisterClient(m_ctrlPoint);
@@ -84,6 +80,11 @@ CUPnP_IGDControlPoint::~CUPnP_IGDControlPoint(void)
 	{  InitializingEvent->SetEvent(); 
 		delete InitializingEvent; InitializingEvent=NULL;}
 	//Remove devices/services
+    //Lock devices and mappings before use it
+	m_devListLock.Lock(); 
+	m_MappingsLock.Lock();
+
+
 	POSITION pos = m_devices.GetHeadPosition();
 	while(pos){
 		UPNP_DEVICE *item;
@@ -215,7 +216,7 @@ if(thePrefs.GetUPnPVerboseLog())
 	AddDebugLogLine(false, _T("Waiting short for upnp to complete registration.") );
 
 if (InitializingEvent) 
-      return InitializingEvent->Lock((MINIMUM_DELAY*1000)+1) ; // 10 secs...  (should be UPNPTIMEOUT, btu 40 seconds is too long....)
+         return (bool)InitializingEvent->Lock((MINIMUM_DELAY*1000)+1) ; // 10 secs...  (should be UPNPTIMEOUT, btu 40 seconds is too long....)
 
 return 0;
 }
