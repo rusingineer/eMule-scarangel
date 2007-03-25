@@ -175,7 +175,12 @@ void CSearchResultsWnd::OnInitialUpdate()
 	AddAnchor(IDC_OPEN_PARAMS_WND, TOP_RIGHT);
 	AddAnchor(searchselect.m_hWnd, TOP_LEFT, TOP_RIGHT);
 	AddAnchor(IDC_STATIC_DLTOof, BOTTOM_LEFT);
+	// ==> Design Settings [eWombat/Stulle] - Max
+	/*
 	AddAnchor(IDC_CATTAB2, BOTTOM_LEFT, BOTTOM_RIGHT);
+	*/
+	ResizeTab();
+	// <== Design Settings [eWombat/Stulle] - Max
 
 	ShowSearchSelector(false);
 
@@ -1624,6 +1629,8 @@ void CSearchResultsWnd::UpdateCatTabs()
 	
 	GetDlgItem(IDC_CATTAB2)->ShowWindow(flag);
 	GetDlgItem(IDC_STATIC_DLTOof)->ShowWindow(flag);
+
+	ResizeTab(); // Design Settings [eWombat/Stulle] - Max
 }
 
 void CSearchResultsWnd::ShowSearchSelector(bool visible)
@@ -1662,6 +1669,7 @@ void CSearchResultsWnd::OnDestroy()
 void CSearchResultsWnd::OnSize(UINT nType, int cx, int cy)
 {
 	CResizableFormView::OnSize(nType, cx, cy);
+	ResizeTab(); // Design Settings [eWombat/Stulle] - Max
 }
 
 void CSearchResultsWnd::OnClose()
@@ -1891,7 +1899,7 @@ void CSearchResultsWnd::OnBackcolor()
 		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
 }
 
-HBRUSH CSearchResultsWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+HBRUSH CSearchResultsWnd::OnCtlColor(CDC* pDC, CWnd* /*pWnd*/, UINT nCtlColor)
 {
 	HBRUSH hbr = theApp.emuledlg->GetWndClr();
 
@@ -1906,5 +1914,38 @@ HBRUSH CSearchResultsWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 		hbr = (HBRUSH) WHITE_BRUSH;
 
 	return hbr;
+}
+
+void CSearchResultsWnd::ResizeTab()
+{
+	if (!::IsWindow(m_cattabs.m_hWnd))
+		return;
+
+	int size = 0;
+	for (int i = 0; i < m_cattabs.GetItemCount(); i++)
+	{
+		CRect rect;
+		m_cattabs.GetItemRect(i, &rect);
+		size += rect.Width();
+	}
+	size += 4;
+
+	CRect TabRect,leftRect,rightRect;
+	m_cattabs.GetWindowRect(TabRect);
+	GetDlgItem(IDC_STATIC_DLTOof)->GetWindowRect(leftRect);
+	GetDlgItem(IDC_CLEARALL)->GetWindowRect(rightRect);
+	ScreenToClient(TabRect);
+	ScreenToClient(leftRect);
+	ScreenToClient(rightRect);
+
+	TabRect.left = leftRect.right+10;
+	int right = TabRect.left+size;
+	if(right > (rightRect.left-10))
+		right = rightRect.left-10;
+	TabRect.right = right;
+	TabRect.top = rightRect.top;
+	TabRect.bottom = rightRect.bottom;
+
+	m_cattabs.MoveWindow(TabRect,TRUE);
 }
 // <== Design Settings [eWombat/Stulle] - Max

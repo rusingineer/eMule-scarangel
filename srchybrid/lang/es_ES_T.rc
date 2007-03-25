@@ -2033,6 +2033,26 @@ BEGIN
     IDS_UPLOADINSTABLE      "Advertencia: La configuración de subida parece ser demasiado elevada. Por favor, revise la configuración! \n Mire el gráfico de subida, la línea blanca o amarilla (con NAFC) debería ser plana \n Este mensaje se genera una única vez"
 END
 
+STRINGTABLE 
+BEGIN
+    IDS_CLIENTPERCENTAGE    "Show client percentage"
+    IDS_ONERELEASESLOT      "Siempre un slot libre"
+    IDS_A_UPPRIO            "Activar auto-prioridad-subida avanzada"
+    IDS_SHAREFACTOR         "Indice-compartidos"
+    IDS_MASSRENAME1         "Máscara de Nombre de Archivo (los cambios tendran efecto en todos los nombres de archivo que estén debajo):"
+    IDS_FILENAMELEFT        "Nombre de Archivos ajustados a la izquierda"
+    IDS_FILENAMERIGHT       "Nombre de Archivos ajustados a la derecha"
+    IDS_RESETFILENAMES      "&Resetear"
+    IDS_SIMPLECLEANUP       "&Limpiar"
+    IDS_INSERTTEXTCOLUMN    "&Copia la columna del portapapeles"
+    IDS_MASSRENAME2         "Nombre de Archivo Originales:"
+    IDS_MASSRENAME3         "Nuevos Nombres de Archivo:"
+    IDS_NOTENOUGHFILENAMES  "No hay suficientes Nombres de Archivos en la lista de nuevos nombres de archivos. No se pudo renombrar."
+    IDS_IDENTICALFILENAMES  "No está permitido que haya dos o más nombres de archivos iguales en un mismo directorio (Línea %d). No se pudo renombrar."
+    IDS_MR                  "Renombrado Masivo..."
+    IDS_MASSRENAME_TITLE    "Renombrado Masivo"
+    IDS_STATIC_DOWNINFO     "Descarga 0 = sin límite"
+END
 #endif    // Spanisch (Kastilisch) resources
 /////////////////////////////////////////////////////////////////////////////
 

@@ -2031,6 +2031,27 @@ BEGIN
     IDS_UPLOADINSTABLE      "Warnung: Dein Uploadlimit scheint zu hoch gewählt zu sein. Bitte überprüfe Deine Uploadeinstellungen! \n Schaue auf Deinen Uploadgraphen, die weiße oder gelbe (mit NAFC) Linie sollte möglichst gerade sein \n Diese Nachricht wird nur einmal generiert."
 END
 
+STRINGTABLE 
+BEGIN
+    IDS_CLIENTPERCENTAGE    "Client Prozentangabe"
+    IDS_ONERELEASESLOT      "Immer einen Release-Upload-Slot"
+    IDS_A_UPPRIO            "Forgeschrittene Auto-Upload-Priorität"
+    IDS_SHAREFACTOR         "ShareFaktor"
+    IDS_MASSRENAME1         "Dateinamen Maske (Änderungen werden bei allen Dateinamen übernommen):"
+    IDS_FILENAMELEFT        "Dateinamen links"
+    IDS_FILENAMERIGHT       "Dateinamen rechts"
+    IDS_RESETFILENAMES      "&Reset"
+    IDS_SIMPLECLEANUP       "&Simple cleanup"
+    IDS_INSERTTEXTCOLUMN    "&Text aus Zwischenablage einfügen:"
+    IDS_MASSRENAME2         "Original Dateinamen:"
+    IDS_MASSRENAME3         "Neue Dateinamen:"
+    IDS_NOTENOUGHFILENAMES  "Nicht genügend Dateinamen in der Liste neuer Dateinamen. Umbenennen nicht möglich."
+    IDS_IDENTICALFILENAMES  "Zwei oder mehr Dateinamen im selben Verzeichnis sind nicht erlaubt (Line %d).Umbenennen nicht möglich."
+    IDS_MR                  "Mehrfach-Umbenennung.."
+    IDS_MASSRENAME_TITLE    "Mehrfach-Umbenennung"
+    IDS_STATIC_DOWNINFO     "Download 0 = unlimitiert"
+END
+
 STRINGTABLE
 BEGIN
     // ==> ScarAngel Preferences window - Stulle

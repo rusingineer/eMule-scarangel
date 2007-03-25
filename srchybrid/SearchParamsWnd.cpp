@@ -1140,7 +1140,7 @@ void CSearchParamsWnd::OnBackcolor()
 		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
 }
 
-HBRUSH CSearchParamsWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+HBRUSH CSearchParamsWnd::OnCtlColor(CDC* pDC, CWnd* /*pWnd*/, UINT nCtlColor)
 {
 	HBRUSH hbr = theApp.emuledlg->GetWndClr();
 

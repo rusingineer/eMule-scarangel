@@ -2033,6 +2033,27 @@ BEGIN
     IDS_UPLOADINSTABLE      "Attention: votre limite en émission semble étre trop haute. Veuillez revoir votre configuration! \n Regardez le graphique de la vitesse d'émission dans les statistiques, les ligne blanches et jaunes (avec NAFC) doivent étre planent \n ce message ne sera affiché qu'une seule fois."
 END
 
+STRINGTABLE 
+BEGIN
+    IDS_CLIENTPERCENTAGE    "Show client percentage"
+    IDS_ONERELEASESLOT      "Toujours un slot en release"
+    IDS_A_UPPRIO            "Utiliser la priorité auto d'upload avancé"
+    IDS_SHAREFACTOR         "Indice de partage"
+    IDS_MASSRENAME1         "Masque de nom de fichier (modifiera tous les noms ci-dessous):"
+    IDS_FILENAMELEFT        "Alignement à gauche"
+    IDS_FILENAMERIGHT       "Alignement à droite"
+    IDS_RESETFILENAMES      "&Annuler"
+    IDS_SIMPLECLEANUP       "&Nettoyage simple"
+    IDS_INSERTTEXTCOLUMN    "&Insérer le texte du presse-papiers"
+    IDS_MASSRENAME2         "Nom de fichier original:"
+    IDS_MASSRENAME3         "Nouveau nom:"
+    IDS_NOTENOUGHFILENAMES  "Il n'y a pas de nom de fichier dans la liste des nouveaux noms de fichiers. Impossible de renommer."
+    IDS_IDENTICALFILENAMES  "Deux ou plus, noms identiques dans le même répertoire n'est pas autorisé (Ligne %d). Impossible de renommer."
+    IDS_MR                  "Renommer les fichiers sélectionnés..."
+    IDS_MASSRENAME_TITLE    "Renommer les fichiers sélectionnés"
+    IDS_STATIC_DOWNINFO     "Réception à 0 = illimitée"
+END
+
 STRINGTABLE
 BEGIN
 	IDC_MSG_WEBCACHE_ALREADYRUNNING "Pas de nouveau test lancé. Il y a déjà un test en cours."

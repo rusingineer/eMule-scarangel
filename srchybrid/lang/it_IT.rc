@@ -2032,6 +2032,27 @@ END
 
 STRINGTABLE 
 BEGIN
+    IDS_CLIENTPERCENTAGE    "Mostra la Percentuale del Client"
+    IDS_ONERELEASESLOT      "Riserva sempre uno slot release"
+    IDS_A_UPPRIO            "Usa priorità automatica avanzata per upload"
+    IDS_SHAREFACTOR         "Sharefactor"
+    IDS_MASSRENAME1         "Maschera nome del File (cambieranno tutti i file sottostanti):"
+    IDS_FILENAMELEFT        "Allinea nomi a sinistra"
+    IDS_FILENAMERIGHT       "Allinea nomi a destra"
+    IDS_RESETFILENAMES      "&Resetta"
+    IDS_SIMPLECLEANUP       "&Pulizia semplice"
+    IDS_INSERTTEXTCOLUMN    "&Inserisci colonna testo dagli appunti"
+    IDS_MASSRENAME2         "Nomi Originali:"
+    IDS_MASSRENAME3         "Nomi Nuovi:"
+    IDS_NOTENOUGHFILENAMES  "Non ci sono abbastanza nomi di File nella lista dei nuovi nomi dei File. Il cambio nome non è possibile."
+    IDS_IDENTICALFILENAMES  "Ci sono due o più nomi di File uguali nella stessa cartella (Linea %d). Il cambio nome non è possibile."
+    IDS_MR                  "Rinomina i File Selezionati..."
+    IDS_MASSRENAME_TITLE    "Rinomina i File Selezionati"
+    IDS_STATIC_DOWNINFO     "Download 0 = Illimitato"
+END
+
+STRINGTABLE 
+BEGIN
     // ==> ScarAngel Preferences window - Stulle
     IDS_CON_TWEAKS          "Strumenti di connessione"
     IDS_MISC                "Altre impostazioni"

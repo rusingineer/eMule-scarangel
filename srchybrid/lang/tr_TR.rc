@@ -2023,8 +2023,33 @@ BEGIN
     IDS_LOGPARTMISMATCH     "Istenilen dosyada boyut uyusmazligi varsa kaydet"
     IDS_CN_UPNPTRYRANDOM    "UPnP kullanirkan herhangi bir portu kullan"
     IDS_CN_UPNPNAT          "UPnP destegini etkinlestir"
-    IDS_CHUNKCHOOSER        "Iri parça seçim yöntemi"
-    IDS_UPLOADINSTABLE      "Uyari: Gönderme ayarlariniz çok yüksek görünüyor. Lütfen ayarlarinizi gözden geçirin!\nGönderme çizelgesine bakin, beyaz veya sari (NAFC ile) çizgi düz olmalidir.\nBu mesaj bir kez olusturulur."
+    IDS_CHUNKCHOOSER        "Ýri parça seçim yöntemi"
+    IDS_UPLOADINSTABLE      "Uyarý: Gönderme ayarlarýnýz çok yüksek görünüyor. Lütfen ayarlarýnýzý gözden geçirin!\nGönderme çizelgesine bakýn, beyaz veya sarý (NAFC ile) çizgi düz olmalýdýr.\nBu mesaj bir kez oluþturulur."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_CLIENTPERCENTAGE    "Client yüzdesini göster"
+    IDS_ONERELEASESLOT      "Her zaman tek slotdan yayinla"
+    IDS_A_UPPRIO            "Gelismis otomatik upload kullan"
+    IDS_SHAREFACTOR         "Sharefactor"
+    IDS_MASSRENAME1         "Dosya ismi maskesi(Bu basliktakitum dosyalara uygulanicaktir):"
+    IDS_FILENAMELEFT        "Dosya ismi sola dayalý"
+    IDS_FILENAMERIGHT       "Dosya ismi saga dayalý"
+    IDS_RESETFILENAMES      "&Reset"
+    IDS_SIMPLECLEANUP       "&Basit temizlik"
+    IDS_INSERTTEXTCOLUMN    "&clipboard dan yazi yapistir"
+    IDS_MASSRENAME2         "Orjinal dosya ismi:"
+    IDS_MASSRENAME3         "Yeni dosya ismi:"
+    IDS_NOTENOUGHFILENAMES  "Yeni dosyalari isimlendirmek icin yeterli isim yok."
+    IDS_IDENTICALFILENAMES  "Ayni kalsörde ayný 2 isim olamaz(Line %d). Ad degistirilemedi."
+    IDS_MR                  "Coklu ad degistirme.."
+    IDS_MASSRENAME_TITLE    "Coklu-Ad degistirme"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STATIC_DOWNINFO     "Download 0 = Sinirsiz"
 END
 
 #endif    // Türkisch resources

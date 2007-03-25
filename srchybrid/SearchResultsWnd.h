@@ -154,6 +154,7 @@ protected:
 	afx_msg void OnNMClickCattab2(NMHDR *pNMHDR, LRESULT *pResult); // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	// ==> Design Settings [eWombat/Stulle] - Max
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	void ResizeTab();
 	CBrush m_brMyBrush;
 public:
 	void OnBackcolor();

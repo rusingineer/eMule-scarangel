@@ -53,7 +53,278 @@ END
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
+// 
+/////////////////////////////////////////////////////////////////////////////
+// Xtreme Start
 //
+//
+STRINGTABLE 
+BEGIN
+    IDS_DROPNONEEDEDSRCS    "不需要的来源" //"Drop NNS"
+    IDS_DROPQUEUEFULLSRCS   "已满的队列" //"Drop FullQ"
+    IDS_DROPQUEUETOOMANY    "Drop Too Many"
+    IDS_DROPQUEUEUNKNOWN    "Drop Unknown"
+    IDS_DROP_ASKING         "Drop Asking"
+    IDS_DROPCONNECTING      "Drop Connecting"
+    IDS_STOP_CLIENT         "断开此客户" //"Stop this client"
+    IDS_SubMenu_Drop        "剔除(仅在""请求队列""中)" //"&Drop"
+END
+
+STRINGTABLE 
+BEGIN
+IDS_13RATIO             "使用1:3的比例限制下载(当上传 < 11KB/s)" //"Use amount based 1:3 ratio if upload < 11"
+	IDS_PPG_MAELLA_MTU_STATIC "MTU (500..1500, 默认:1340)"
+    IDS_PPG_MAELLA_NAFC_CHECK02 "使用""NAFC""监控上传/下载" //"NAFC Full Control U/D Limits"
+    IDS_OPENMORESLOTS       "开启更多的上传槽 (推荐)" //"Open more slots if needed (recommended)"
+	IDS_AVG_DATARATE_TIME   "平均速率显示间隔: %u 秒" //"Show Average Datarate over seconds: %u"
+    IDS_XTREMESETTINGS      "Xtreme"
+	IDS_ZOOMSTATIC          "放大: %u 倍" //"Zoom: %u"
+    IDS_AVGQR               "平均队列" //"AvgQR"
+    IDS_USEDOUBLESENDSIZE   "双倍发送尺寸" //"Use Double Sendsize"
+    IDS_LOGDROP             "记录剔除动作" //"Log Drop actions"
+    IDS_ANTILEECHER_GROUP   "Anti-Leecher"
+    IDS_ANTILEECHER_CHECK   "启用 Anti-Leecher保护" //"Enable Anti-Leecher-Protection"
+    IDS_ANTILEECHERNAME_CHECK "监控 Leecher by UserName"
+    IDS_POWERRELEASE        "强力发布" //"PowerRelease"
+    IDS_DONTREMOVESTATICSERVER "禁止自动移除静态服务器" //"Don't remove static server"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_LISTREQUESTED       "被请求文件列表" //"list requested files"
+    IDS_HIGHPRIOPROCESS     "高" //"High"
+    IDS_ABOVENORMALPROCESS  "中高" //"Above Normal"
+    IDS_NORMALPROCESS       "正常" //"Normal"
+    IDS_PROCESSGROUP        "程序优先级" //"Process Priority"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_COUNTRYNAME_SHORT   "Display 2 letters"
+    IDS_COUNTRYNAME_MID     "Display 3 letters"
+    IDS_COUNTRYNAME_LONG    "Display full name"
+    IDS_COUNTRYNAME_SHOWFLAG "ShowFlag"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_IP2COUNTRY_MSG1     "IP2Country uses the IP-to-Country Database provided by WebHosting.Info"
+    IDS_IP2COUNTRY_MSG2     "(http://www.webhosting.info), available from http://ip-to-country.webhosting.info"
+    IDS_IP2COUNTRY_LOADED   "IP2Country loaded"
+    IDS_IP2COUNTRY_UNLOADED "IP2Country unloaded"
+    IDS_IP2COUNTRY_ERROR1   "error line number : %i"
+    IDS_IP2COUNTRY_ERROR3   "Failed to load in"
+    IDS_IP2COUNTRY_ERROR4   "CountryFlag Disabled, failed to load"
+    IDS_IP2COUNTRY_ERROR5   "Invalid resID, maybe you need to upgrade your flag icon Dll,"
+    IDS_IP2COUNTRY_INFO     "Parsed lines:%u  Found IPCountry ranges:%u  Duplicate:%u  Merged:%u"
+    IDS_IP2COUNTRY_FLAGLOAD "Country Flags have been loaded"
+    IDS_IP2COUNTRY_FILELOAD "IP2Countryfile has been unloaded"
+    IDS_IP2COUNTRY_FLAGUNLD "Country Flags have been unloaded"
+    IDS_IP2COUNTRY_NALONG   "Not Applicable"
+    IDS_IP2COUNTRY_NASHORT  "N/A"
+    IDS_IP2COUNTRY_LOADED2  "Loaded IP2Country from ""%s"" in %ums"
+END
+
+STRINGTABLE 
+BEGIN
+	IDS_ACCURATEGRAPH       "精确的" //"accurate"
+    IDS_SMOOTHGRAPH         "平滑的" //"smooth"
+    IDS_MULTIQUEUE          "每个文件一个队列 (多队列)" //"One queue per file (Multiqueue)"
+    IDS_RETRYCONNECTIONATTEMPTS "尝试重新请求失败的TCP连接" //"Retry failed TCP connection attempts"
+    IDS_ANTIGHOST           "监控 Ghost-Mods"
+    IDS_REMEMBERAICH        "保留未使用的 AICH-Hashes (known2.met)" //"Remember unused AICH-Hashes (known2.met)"
+    IDS_MARKCANCELLED       "标记为""已取消""" //"Mark as Cancelled"
+	IDS_DOWNHISTORY_CHECK1  "eMule发现曾经下载过同样的文件 ID:\n" //"eMule has found a file already downloaded with the same file ID:\n"
+	IDS_DOWNHISTORY_CHECK2  "eMule发现文件 %i 曾经下载过且文件名相同 (%s):\n" //"eMule has found %i files already downloaded with the same file name (%s):\n"
+    IDS_DOWNHISTORY_CHECK3  "无论如何您都要下载这个文件吗？" //"Do you want to download the file anyway?"
+	IDS_DOWNHISTORY_CHECK4  "eMule发现曾经取消了此文件的下载 ID:\n" //"eMule has found a file already cancelled with the same file ID:\n"
+    IDS_DOWNHISTORY         "下载历史" //"Downloaded history"
+    IDS_DOWNHISTORY_REMOVE  "清除此记录" //"Remove from history"
+    IDS_DOWNHISTORY_REMOVE_QUESTION 
+                            "您真的想把 ""%s"" 从下载历史中清除吗？" //"Do you really want to remove ""%s"" from downloaded history?"
+    IDS_DOWNHISTORY_REMOVE_QUESTION_MULTIPLE 
+                            "您真的想要把所选的文件从下载历史中清除吗？" //"Do you really want to remove selected files from downloaded history?"
+    IDS_DOWNHISTORY_SHARED  "共享" //"Shared"
+    IDS_DOWNHISTORY_CLEAR   "清除所有下载记录" //"Clear downloaded history"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DOWNHISTORY_SHOWSHARED "显示共享中的文件" //"Show shared files"
+    IDS_DOWNHISTORY_ACTIONS "选项" //"Actions"
+    IDS_DOWNHISTORY_CLEAR_QUESTION 
+                            "您确定想要清除所有的下载记录吗？" //"Are you sure you want to clear download history?"
+	IDS_SENDBUFFER          "  发送缓存:" //"Sendbuffer"
+    IDS_LEERCHERLOGTITLE    "Leecher_过滤记录" //"Leecher-Messages"
+    IDS_ALL_A4AF_TO_THIS    "立刻交换全部来源到此文件" //"Swap All Sources To This File Now"
+    IDS_ALL_A4AF_TO_OTHER   "立刻交换全部来源到其他文件" //"Swap All Sources To Any Other File Now"
+    IDS_SWAP_A4AF_TO_THIS   "立刻交换(A4AF)来源到此文件" //"Swap (A4AF) Sources To This File Now"
+    IDS_SWAP_A4AF_TO_OTHER  "立刻交换(A4AF)来源到其他文件" //"Swap (A4AF) Sources To Any Other File Now"
+    IDS_ALL_A4AF_AUTO       "自动交换全部(A4AF)来源到此文件" //"Automatically Swap All (A4AF) Sources To This File"
+    IDS_LEECHER_ACTION_BAN  "屏蔽" //"Ban"
+    IDS_LEECHER_ACTION_REDUCE "减少积分" //"Reduce score"
+    IDS_ANTILEECHERBADHELLO_CHECK "监控 wrong Hello-Tag"
+    IDS_ANTILEECHERSNAFU_CHECK "监控 bad Tags"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ANTILEECHERMOD_CHECK "监控 Leecher by Modstring"
+    IDS_ANTILEECHERTHIEF_CHECK "监控 Nick- / Modthiefs"
+    IDS_ANTILEECHERSPAMMER_CHECK "监控 Spammers"
+    IDS_ANTILEECHERXSEXPLOITER_CHECK "监控 XS-Exploiter"
+    IDS_STATIC_LEECHERCOMMUNITY "Community Mods"
+    IDS_STATIC_LEECHERGHOST "Ghost-Mods"
+    IDS_STATIC_LEECHERTHIEF "Nick- / Modthiefs"
+    IDS_NEWXTREMEVERSION    "发现新版 Xtreme 可用" //"New Xtreme-Version available"
+    IDS_NEWXTREMEVERSIONDOWNLOAD 
+                            "发现新版 Xtreme 可用 \n 您想现在下载它吗？" //"New Xtreme-Version available \n Do you want it to download ?"
+    IDS_NEWDLP              "发现新版 antiLeech.dll (DLP) 可用" //"New antiLeech.dll (DLP) available"
+    IDS_NEWDLPDOWNLOAD      "发现新版 antiLeech.dll (DLP) 可用 \n 您想现在下载它吗？" //"New antiLeech.dll (DLP) available \n Do you want it to download ?"
+    IDS_DROPLEECHER         "Leecher" //"Drop Leecher"
+    IDS_ACTIVEDOWNLOADSBOLD "对正在下载的任务使用黑体字显示" //"Show active downloads bold"
+    IDS_UPDOWNUPLOADLIST    "上传 / 下载" //"Up / Down"
+	IDS_MAXGLOBALSOURCES    "全球来源限制:" //"global sourcelimit:"
+    IDS_ACCEPTSOURCES       "使用全球来源限制" //"Accept global sourcelimit"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ACCEPTRATIO         "如果找到的源多于源限制时使用1:3的上传/下载限制" //"Accept 1:3 session ratio if found sources > sourcelimit"
+    IDS_SHOWADDITIONALGRAPH "显示附加的统计曲线" //"Show additional graph-lines"
+    IDS_CHECK4UPDATEMOD     "启动时检查 Xtreme 的新版本" //"Check for new Xtreme version on startup"
+    IDS_ANTILEECHEREMCRYPT_CHECK "监控 emcrypt"
+    IDS_UPLOADMANAGEMENT_FRAME "上传管理" //"Upload Management"
+	IDS_UPLOADSLOTSPEED_LABEL "   上传槽速度:" //"Upload Slot Speed"
+    
+	IDS_USENARROWFONT       "在传输窗口使用纤体字显示" //"Use narrow font in transfer window"
+    IDS_SHOWBLOCKINGRATIO   "显示Socket阻塞率" //"Show socket blocking ratio"
+    IDS_FUNNYNICK           "使用随机昵称[FN]" //"Display Funny Nick"
+    IDS_AUTOUPDATEIPFILTER  "自动升级IP过滤文件(IPFilter.dat)" //"Auto-update IPFilter.dat"
+    IDS_DROPBLOCKINGSOCKETS  "剔除频繁阻塞的Sockets" //"drop too oftenly blocking sockets"
+    IDS_LOGPARTMISMATCH     "记录不匹配大小的被请求文件" //"Log size-mismatch of requested files"
+    IDS_CN_UPNPTRYRANDOM    "对UPnP网关使用随机端口" //"Try to use random port on UPnP gateway"
+    IDS_CN_UPNPNAT          "启用 UPnP" //"Enable UPnP support"
+	IDS_CHUNKCHOOSER        "文件块选择方式:" //"Chunk choosing method"
+    IDS_UPLOADINSTABLE      "警告: 你的上传值设置似乎太高了. 请检查你的设置!\n查看上传统计曲线, 那白色或者黄色(使用NAFC时)的线应该是比较平整的.\n 此消息只提示一次"
+	//"Warning: your upload settings seems to be too high. Please review your settings! \n look at the uploadgraph, the white or the yellow(with NAFC) line should be straight \n this message is only generated once"
+    
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_CLIENTPERCENTAGE    "显示客户端百分比" //"Show client percentage"
+    IDS_ONERELEASESLOT      "预留上传槽给共享文件" //"Always one release-slot"
+    IDS_A_UPPRIO            "使用全自动上传优先级" //"Use advanced auto-uploadpriority (experimental)"
+	IDS_SHAREFACTOR         "共享系数" //"Sharefactor"
+END
+
+STRINGTABLE 
+BEGIN
+   IDS_MASSRENAME1         "文件名过滤 (此设置将会被应用到以下所有的文件名)"  //"Filename mask (changes here will be done to all filenames below):"
+   IDS_FILENAMELEFT        "左对齐文件名" //"Filenames left-justified"
+   IDS_FILENAMERIGHT       "右对齐文件名" //"Filenames right-justified"
+   IDS_RESETFILENAMES      "复位" //"&Reset"
+   IDS_SIMPLECLEANUP       "简单清除" //"&Simple cleanup"
+   IDS_INSERTTEXTCOLUMN    "从剪切板插入文字" //"&Insert text column from clipboard"
+   IDS_MASSRENAME2         "原始文件名:" //"Original filenames:"
+   IDS_MASSRENAME3         "新文件名:" //"New filenames:"
+   IDS_NOTENOUGHFILENAMES  "新文件名列表里没有足够的文件名可用. 不能重命名." //"Not enough filenames in the list of new filenames. Rename not possible."
+   IDS_IDENTICALFILENAMES  "不允许两个或多个相同的文件名在同一目录里 (第 %d 行). 不能重命名."
+													//"Two or more equal filenames within the same directory are not allowed (Line %d). Rename not possible."
+   IDS_MR                  "批量重命名..." //"Mass Rename..."
+   IDS_MASSRENAME_TITLE    "批量重命名" //"Mass-Rename"
+   IDS_STATIC_DOWNINFO     "下载 0 = 无限制" //"Download 0 = unlimited"
+END
+
+//
+//   Xtreme End
+//
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//   eMule0.47c Start   
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_BOLD                "粗体" //"Toggles bold text"
+    IDS_UNDERLINE           "下划线" //"Toggles underlined text"
+    IDS_COLOUR              "选择字符颜色 (可选择背景颜色)" //"Selects foreground text colour (optional background colour)"
+    IDS_RESETFORMAT         "重置上述所有格式 (发送一个重置标签)" //"Resets all previous formatting (sends a reset tag)"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_RESTORESEARCHPARAMS "还原搜索条件" //"Restore Search Parameters"
+    IDS_COMMAND             "路径" //"Command"
+    IDS_ARGUMENTS           "运行参数" //"Arguments"
+    IDS_ARCPREV_PLEASEWAIT  "扫描文档..." //"Scanning archive..."
+    IDS_AP_CREATEPREVCOPY   "创建预览文件" //"Create preview file"
+    IDS_ARCHIVEDETAILS      "文档详情" //"Archive-Details"
+    IDS_ARCHTYPE            "文档类型" // "Archive type"
+    IDS_ATTRIBUTES          "属性" // "Attributes"
+    IDS_LASTMODIFIED        "最后改进" //"Last Modified"
+    IDS_RARFULLENCR         "文件头加密(Headers encrypted) - 不能读取文档." //"Headers encrypted - unable to read archive."
+    IDS_ARCPARSED           "已扫描文档." //"Archive scanned."
+    IDS_ARCPREV_LISTMAYBEINCOMPL "文件列表可能不完整." //"File list may be incomplete."
+    IDS_ARCPREV_DIRNOTFOUND "未发现目录." //"Table of contents not found."
+    IDS_ARCPREV_INSUFFDATA  "无足够数据可用." //"Insufficent data available."
+    IDS_PASSWPROT           "密码保护" //"Passwort protection"
+    IDS_ARCPREV_DIRSUCCREAD "成功读取目录." //"Table of contents successfully read."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ARCPREV_UNKNOWNFORMAT "(未知的/不支持的)" //"(unknown/unsupported)"
+    IDS_KADSEARCHACTIVE     "(正在进行Kad搜索...)" //"(Kad search in progress...)"
+    IDS_OBFUSCATION         "迷惑协议" //"Obfuscation"
+    IDS_SUPPORTED           "支持" //"Supported"
+    IDS_ESTIMATED           "评价" //"estimated"
+    IDS_MEDIAINFO_DLLMISSING 
+							"未安装媒体信息库文件. 如果你想要在这个对话框里获得更多关于视频和音频的信息,\r\n请从这里下载媒体信息库文件 http://sourceforge.net/projects/mediainfo/ 然后拷贝 MediaInfo.dll 文件到\r\n电骡的安装目录 ""%s"".\r\n"
+    // "There is no MediaInfo library installed. If you want to get more information about audio/video files in this dialog,\r\ndownload the MediaInfo library from http://sourceforge.net/projects/mediainfo/ and copy the MediaInfo.dll file into\r\neMule's installation folder ""%s"".\r\n"
+    IDS_WARNING_WRONGFILEEXTENTION 
+                            "警告: 文件扩展名""%s""和用于该文件格式的标准的文件扩展名不符\r\n你可能要使用""%s""中的一个文件扩展名来重新命名该文件,才能正确地使用或者浏览它. \r\n"
+	//"Warning: The file extension of ""%s"" does not match the file extension\r\ntypically used for that file format. You may want to rename the file to\r\nuse one of those file extensions ""%s""\r\nfor properly using or viewing that file format.\r\n"
+    IDS_MEDIAINFO_DRMWARNING 
+                           "警告: 文件 ""%s"" 似乎是受到数字版权所保护的.\r\n在没有从版权所有人那里获得授权的情况下,你将很可能不能够使用此文件.\r\n" 
+	//"Warning: The file ""%s"" seems to be protected with Digital Rights Management.\r\nYou will most likely not be able to use that file without a license from the originator of that file.\r\n"
+    IDS_ARCHPREV_ATTRIBINFO "文件属性可能包含有:\r\n\r\nP\t文件被密码保护\r\nD\t是个目录\r\nC\t注释\r\nLx\t压缩级别 x\r\nM\t被压缩数据尚未完全下载\r\n<\t文件接前一卷\r\n>\t文件接后一卷\r\n"
+    //"File attributes can contain:\r\n\r\nP\tfile is password protected\r\nD\tis a directory\r\nC\tComment\r\nLx\tCompression level x\r\nM\tcompressed data not completely downloaded yet\r\n<\tfile continued from previous volume\r\n>\tfile continues in next volume\r\n"
+    
+
+    IDS_LOADFILTER_EMTOOLBAR "工具条图位文件" //"eMule Toolbar Bitmap Files"
+    IDS_LOADFILTER_EMSKINFILES "皮肤文件" //"eMule Skin Files"
+    IDS_CONTENT_INFO        "内容" //"Content"
+    IDS_MESSAGESCOMMENTS    "消息与注释" //"Messages and Comments"
+    IDS_PROTOCOLOBFUSCATION "迷惑协议" //"Protocol Obfuscation"
+    IDS_ONLYOBFUSCATED      "只允许支持迷惑协议的连接 (不推荐)" //"Allow obfuscated connections only (not recommended)"
+    IDS_DISABLEOBFUSCATION  "禁用迷惑协议连接" //"Disable support for obfuscated connections"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ENABLEOBFUSCATION   "启用迷惑协议" //"Enable Protocol Obfuscation"
+    IDS_CONNECTINGTOOBFUSCATED 
+                            "正连接到 %s (%s:%i - 支持迷惑协议) ..." // "Connecting to %s (%s:%i - using Protocol Obfuscation) ..."
+    IDS_CONNECTEDTOOBFUSCATED "使用迷惑协议连接到: %s" //"Obfuscated connection established on: %s"
+    IDS_VERIFIED            "已验证" //"Verified"
+    IDS_OBFUSCATED          "使用迷惑协议" //"Obfuscated"
+    IDS_UNVERIFIED          "未验证" //"Unverified"
+    IDS_INVALIDFILEEXT      "无效的文件扩展" // "Invalid file extension"
+    IDS_UNKNOWNFILEEXT      "未知的文件扩展" //"Unknown file extension"
+    IDS_ENABLEMINIMULE      "启用迷你骡" //"Enable MiniMule"
+    IDS_DISABLE_AUTOARCHPREV 
+                            "禁止在文件详情里自动开始预览文档" //"Disable automatic archive preview start in file details"
+    IDS_US_STALLEDW4BR      "延迟! 等待文件块请求." //"Stalled! Waiting for block request."
+    IDS_US_STALLEDREADINGFDISK "延迟! 从硬盘读取." //"Stalled! Reading from disk."
+    IDS_SERVERFEATURE_INTTYPETAGS "整型标签" //"Integer type tags"
+END
+
+//
+// eMule0.47c End
+//
+////////////////////////////////////////////////////////////////////////////////////
 
 STRINGTABLE 
 BEGIN
@@ -321,7 +592,7 @@ BEGIN
     IDS_STATS_TOTAL         "总共:%i"
     IDS_DISABLED            "已禁用"
     IDS_STOPPED             "已停止"
-    IDS_STATS_UPDATELABEL   "更新间隔:%i秒"
+    IDS_STATS_UPDATELABEL   "更新间隔:%i 秒"
     IDS_ASKEDFAF            "\n已请求另一个文件"
     IDS_WAITED              "已等待"
     IDS_ERR_LOADCREDITFILE  "加载Creditfile失败,新文件将被创建"
@@ -363,9 +634,9 @@ BEGIN
     IDS_STATS_FILTEREDCLIENTS "已过滤:%i"
     IDS_FILTERLABEL         "过滤包含以下内容的消息:(分隔符‘|’)"
     IDS_ERR_LARGEREQBLOCK   "客户端请求了太大的文件块"
-    IDS_SHOWRATEONTITLE     "在标题栏中显示传输比例"
+    IDS_SHOWRATEONTITLE     "在标题栏显示传输速度"
     IDS_TBN_NOMESSAGEHISTORY "无历史消息!"
-    IDS_PW_DAP              "新增下载时使用自动优先级"
+    IDS_PW_DAP              "新添加的下载文件使用自动优先级"
     IDS_FD_LASTCHANGE       "上次接收:"
 END
 
@@ -859,7 +1130,7 @@ BEGIN
     IDS_IRC_LOADCHANNELLISTONCON "连接时加载服务器频道列表"
     IDS_IRC_ADDASFRIEND     "把你加为好友!"
     IDS_PW_WARNING          "你为""%s""选定的数值超过了操作系统的支持范围: %d\n这可能导致系统不稳定.\n\n确认要设置吗?"
-    IDS_TAKEOVER            "取代"
+    IDS_TAKEOVER            "替换"
     IDS_CLEANUP             "清除"
     IDS_RENAME              "改名"
     IDS_IRC_ADDLINKTOIRC    "将此加入IRC剪贴板以发送给好友"
@@ -1011,7 +1282,7 @@ BEGIN
     IDS_SF_SRVOCC           "服务器占用:%.2f%%"
     IDS_3DDEP               "进度条样式"
     IDS_AUTOTAKEED2KLINKS   "仅在运行时自动接受ED2K链接"
-    IDS_ADDNEWFILESPAUSED   "新添加下载文件为暂停模式"
+    IDS_ADDNEWFILESPAUSED   "新添加的下载文件使用暂停模式"
 END
 
 STRINGTABLE 
@@ -1555,7 +1826,7 @@ BEGIN
     IDS_SHAREDTITLE         "共享ED2K|Kad"
     IDS_FIREWALLED          "通过防火墙"
     IDS_KADEMLIA            "Kad"
-    IDS_KADCONTACTLAB       "联系"
+    IDS_KADCONTACTLAB       "节点"
     IDS_KADDISTANCE         "距离"
     IDS_KEY                 "关键词"
     IDS_NUMBER              "数量"
@@ -1837,630 +2108,6 @@ BEGIN
     IDS_ERR_FSCANTHANDLEFILE 
                             "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
     IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
-    IDS_KADSEARCHACTIVE     "(Kad search in progress...)"
-    IDS_BOLD                "Toggles bold text"
-    IDS_UNDERLINE           "Toggles underlined text"
-    IDS_COLOUR              "Selects foreground text colour (optional background colour)"
-    IDS_RESETFORMAT         "Resets all previous formatting (sends a reset tag)"
-    IDS_RESTORESEARCHPARAMS "Restore Search Parameters"
-    IDS_COMMAND             "Command"
-    IDS_ARGUMENTS           "Arguments"
-    IDS_AP_CREATEPREVCOPY   "Create preview file"
-    IDS_ARCHIVEDETAILS      "Archive-Details"
-    IDS_ARCHTYPE            "Archive type"
-    IDS_ATTRIBUTES          "Attributes"
-    IDS_LASTMODIFIED        "Last Modified"
-END
-
-
-STRINGTABLE 
-BEGIN
-    IDS_RARFULLENCR         "Headers encrypted - unable to read archive."
-    IDS_ARCPARSED           "Archive scanned."
-    IDS_ARCPREV_LISTMAYBEINCOMPL "File list may be incomplete."
-    IDS_ARCPREV_DIRNOTFOUND "Table of contents not found."
-    IDS_ARCPREV_INSUFFDATA  "Insufficent data available."
-    IDS_PASSWPROT           "Password protection"
-    IDS_ARCPREV_DIRSUCCREAD "Table of contents successfully read."
-    IDS_ARCPREV_UNKNOWNFORMAT "(unknown/unsupported)"
-    IDS_ARCPREV_PLEASEWAIT  "Scanning archive..."
-    IDS_OBFUSCATION         "Obfuscation"
-    IDS_SUPPORTED           "Supported"
-    IDS_ESTIMATED           "estimated"
-    IDS_MEDIAINFO_DLLMISSING 
-                            "There is no MediaInfo library installed. If you want to get more information about audio/video files in this dialog,\r\ndownload the MediaInfo library from http://sourceforge.net/projects/mediainfo/ and copy the MediaInfo.dll file into\r\neMule's installation folder ""%s"".\r\n"
-    IDS_WARNING_WRONGFILEEXTENTION 
-                            "Warning: The file extension of ""%s"" does not match the file extension\r\ntypically used for that file format. You may want to rename the file to\r\nuse one of those file extensions ""%s""\r\nfor properly using or viewing that file format.\r\n"
-    IDS_MEDIAINFO_DRMWARNING 
-                            "Warning: The file ""%s"" seems to be protected with Digital Rights Management.\r\nYou will most likely not be able to use that file without a license from the originator of that file.\r\n"
-    IDS_LOADFILTER_EMTOOLBAR "eMule Toolbar Bitmap Files"
-    IDS_LOADFILTER_EMSKINFILES "eMule Skin Files"
-    IDS_ARCHPREV_ATTRIBINFO "File attributes can contain:\r\n\r\nP\tfile is password protected\r\nD\tis a directory\r\nC\tComment\r\nLx\tCompression level x\r\nM\tcompressed data not completely downloaded yet\r\n<\tfile continued from previous volume\r\n>\tfile continues in next volume\r\n"
-    IDS_CONTENT_INFO        "Content"
-END
-
-
-STRINGTABLE 
-BEGIN
-    IDS_MESSAGESCOMMENTS    "Messages and Comments"
-    IDS_DISABLEOBFUSCATION  "Disable support for obfuscated connections"
-    IDS_ONLYOBFUSCATED      "Allow obfuscated connections only (not recommended)"
-    IDS_ENABLEOBFUSCATION   "Enable Protocol Obfuscation"
-    IDS_PROTOCOLOBFUSCATION "Protocol Obfuscation"
-    IDS_CONNECTINGTOOBFUSCATED 
-                            "Connecting to %s (%s:%i - using Protocol Obfuscation) ..."
-    IDS_CONNECTEDTOOBFUSCATED "Obfuscated connection established on: %s"
-    IDS_VERIFIED            "Verified"
-    IDS_OBFUSCATED          "Obfuscated"
-    IDS_UNVERIFIED          "Unverified"
-    IDS_INVALIDFILEEXT      "Invalid file extension"
-    IDS_UNKNOWNFILEEXT      "unknown file extension"
-    IDS_ENABLEMINIMULE      "Enable MiniMule"
-    IDS_DISABLE_AUTOARCHPREV 
-                            "Disable automatic archive preview start in file details"
-    IDS_US_STALLEDW4BR      "Stalled! Waiting for block request."
-    IDS_US_STALLEDREADINGFDISK "Stalled! Reading from disk."
-    IDS_SERVERFEATURE_INTTYPETAGS "Integer type tags"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_DROPNONEEDEDSRCS    "丢弃无需要部分的来源"
-    IDS_DROPQUEUEFULLSRCS   "丢弃队列已满的来源"
-    IDS_DROPQUEUETOOMANY    "丢弃连接数太多的来源"
-    IDS_DROPQUEUEUNKNOWN    "丢弃状态未知的来源"
-    IDS_DROP_ASKING         "丢弃正在请求的来源"
-    IDS_DROPCONNECTING      "丢弃正在连接的来源"
-    IDS_STOP_CLIENT         "踢掉它！"
-    IDS_SubMenu_Drop        "丢弃(&D)"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_13RATIO             "如果上传带宽小于11KB/s，强制应用1:3比率"
-    IDS_PPG_MAELLA_MTU_STATIC "MTU (500～1500, 默认为1340)"
-    IDS_PPG_MAELLA_NAFC_CHECK02 "完全使用NAFC限制上传与下载速度"
-    IDS_OPENMORESLOTS       "打开更多的上传槽 (推荐)"
-    IDS_AVG_DATARATE_TIME   "显示几秒内的平均传输率: %u"
-    IDS_XTREMESETTINGS      "Xtreme"
-    IDS_ZOOMSTATIC          "缩放: %u"
-    IDS_AVGQR               "平均队列位置"
-    IDS_USEDOUBLESENDSIZE   "使用双倍发送大小"
-    IDS_LOGDROP             "记录丢弃事件"
-    IDS_ANTILEECHER_GROUP   "反吸血骡"
-    IDS_ANTILEECHER_CHECK   "允许反吸血骡"
-    IDS_ANTILEECHERNAME_CHECK "根据昵称检测吸血骡"
-    IDS_POWERRELEASE        "强力发布"
-    IDS_DONTREMOVESTATICSERVER "不删除静态服务器"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_LISTREQUESTED       "列出已请求的文件"
-    IDS_HIGHPRIOPROCESS     "很高"
-    IDS_ABOVENORMALPROCESS  "高于标准"
-    IDS_NORMALPROCESS       "标准"
-    IDS_PROCESSGROUP        "进程优先级"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_COUNTRYNAME_SHORT   "显示2个字母"
-    IDS_COUNTRYNAME_MID     "显示3个字母"
-    IDS_COUNTRYNAME_LONG    "显示完整名称"
-    IDS_COUNTRYNAME_SHOWFLAG "显示国旗或地区旗"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_IP2COUNTRY_MSG1     "“根据IP显示地区”功能使用了WebHosting.Info提供的地理位置数据库"
-    IDS_IP2COUNTRY_MSG2     "(http://www.webhosting.info), 可以从http://ip-to-country.webhosting.info下载"
-    IDS_IP2COUNTRY_LOADED   "“根据IP显示地区”已载入"
-    IDS_IP2COUNTRY_UNLOADED "“根据IP显示地区”已卸载"
-    IDS_IP2COUNTRY_ERROR1   "错误行号: %i"
-    IDS_IP2COUNTRY_ERROR3   "载入失败"
-    IDS_IP2COUNTRY_ERROR4   "国旗或地区旗载入失败，已经禁用"
-    IDS_IP2COUNTRY_ERROR5   "无效的资源ID。你需要重新安装旗帜图标DLL文件"
-    IDS_IP2COUNTRY_INFO     "有效行数:%u  发现 IPCountry 范围:%u  重复的:%u  已合并:%u"
-    IDS_IP2COUNTRY_FLAGLOAD "国旗或地区旗已载入"
-    IDS_IP2COUNTRY_FILELOAD "国旗或地区旗已卸载"
-    IDS_IP2COUNTRY_FLAGUNLD "国旗或地区旗已卸载"
-    IDS_IP2COUNTRY_NALONG   "不可用"
-    IDS_IP2COUNTRY_NASHORT  "无"
-    IDS_IP2COUNTRY_LOADED2  "“根据IP显示地区”已载入，花费""%s""和%u毫秒"
-    IDS_ACCURATEGRAPH       "精确"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_SMOOTHGRAPH         "平滑"
-    IDS_MULTIQUEUE          "每个文件一个队列 (多队列)"
-    IDS_RETRYCONNECTIONATTEMPTS "重试失败的TCP连接请求"
-    IDS_ANTIGHOST           "检测幽灵Mods"
-    IDS_REMEMBERAICH        "记住未使用的AICH-Hashes (known2.met)"
-    IDS_MARKCANCELLED       "标记为已取消"
-    IDS_DOWNHISTORY_CHECK1  "eMule发现了一个有相同ID的文件已经下载:\n"
-    IDS_DOWNHISTORY_CHECK2  "eMule发现了%i个有相同名字的文件已经下载 (%s):\n"
-    IDS_DOWNHISTORY_CHECK3  "你仍然想下载这个文件吗?"
-    IDS_DOWNHISTORY_CHECK4  "eMule发现了一个有相同ID的文件已经取消:\n"
-    IDS_DOWNHISTORY         "下载历史记录"
-    IDS_DOWNHISTORY_REMOVE  "从历史记录中删除"
-    IDS_DOWNHISTORY_REMOVE_QUESTION 
-                            "你真的要把 ""%s"" 从历史记录中删除吗?"
-    IDS_DOWNHISTORY_REMOVE_QUESTION_MULTIPLE 
-                            "你真的要把选中的文件从历史记录中删除吗?"
-    IDS_DOWNHISTORY_SHARED  "已共享"
-    IDS_DOWNHISTORY_CLEAR   "清空历史记录"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_DOWNHISTORY_SHOWSHARED "显示已共享的文件"
-    IDS_DOWNHISTORY_ACTIONS "操作"
-    IDS_DOWNHISTORY_CLEAR_QUESTION 
-                            "你真的要清空历史记录吗?"
-    IDS_SENDBUFFER          "发送缓冲区"
-    IDS_LEERCHERLOGTITLE    "吸血骡消息"
-    IDS_ALL_A4AF_TO_THIS    "立即把所有的来源都交换到这个文件"
-    IDS_ALL_A4AF_TO_OTHER   "立即把所有的来源都交换到其他文件"
-    IDS_SWAP_A4AF_TO_THIS   "立即把所有的A4AF来源都交换到这个文件"
-    IDS_SWAP_A4AF_TO_OTHER  "立即把所有的A4AF来源都交换到其他文件"
-    IDS_ALL_A4AF_AUTO       "自动把所有的A4AF来源都交换到这个文件"
-    IDS_LEECHER_ACTION_BAN  "封杀"
-    IDS_LEECHER_ACTION_REDUCE "扣分"
-    IDS_ANTILEECHERBADHELLO_CHECK "检测错误的握手标签"
-    IDS_ANTILEECHERSNAFU_CHECK "检测坏标签"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_ANTILEECHERMOD_CHECK "根据Mod标志检测吸血骡"
-    IDS_ANTILEECHERTHIEF_CHECK "检测盗用昵称或Mod标志的人"
-    IDS_ANTILEECHERSPAMMER_CHECK "检测发送垃圾消息的人"
-    IDS_ANTILEECHERXSEXPLOITER_CHECK "检测攻击来源交换系统的人"
-    IDS_STATIC_LEECHERCOMMUNITY "小圈子Mods"
-    IDS_STATIC_LEECHERGHOST "幽灵Mods"
-    IDS_STATIC_LEECHERTHIEF "盗用昵称或Mod标志的人"
-    IDS_NEWXTREMEVERSION    "检测到新的Xtreme版本"
-    IDS_NEWXTREMEVERSIONDOWNLOAD 
-                            "检测到新的Xtreme版本\n你想下载它吗?"
-    IDS_NEWDLP              "检测到新的antiLeech.dll (DLP)"
-    IDS_NEWDLPDOWNLOAD      "检测到新的antiLeech.dll (DLP)\n你想下载它吗?"
-    IDS_DROPLEECHER         "丢弃吸血骡"
-    IDS_ACTIVEDOWNLOADSBOLD "用粗体字显示活动的下载"
-    IDS_UPDOWNUPLOADLIST    "上传/下载"
-    IDS_MAXGLOBALSOURCES    "总体来源限制:"
-    IDS_ACCEPTSOURCES       "接受总体来源限制"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_ACCEPTRATIO         "如果找到的来源数超过来源限制，就接受1:3会话比率"
-    IDS_SHOWADDITIONALGRAPH "显示附加的统计图线"
-    IDS_CHECK4UPDATEMOD     "启动时检测新的Xtreme版本"
-    IDS_ANTILEECHEREMCRYPT_CHECK "检测emcrypt"
-    IDS_UPLOADMANAGEMENT_FRAME "上传管理"
-    IDS_UPLOADSLOTSPEED_LABEL "上传槽速度"
-    IDS_USENARROWFONT       "在传输窗口中使用窄字体"
-    IDS_SHOWBLOCKINGRATIO   "显示端口阻塞率"
-    IDS_FUNNYNICK           "显示Funny Nick"
-    IDS_AUTOUPDATEIPFILTER  "自动更新IPFilter.dat"
-    IDS_DROPBLOCKINGSOCKETS "丢弃频繁阻塞的端口"
-    IDS_LOGPARTMISMATCH     "记录请求文件时发生的大小不匹配"
-    IDS_CN_UPNPTRYRANDOM    "在UPnP网关上试图使用随机端口"
-    IDS_CN_UPNPNAT          "允许UPnP支持"
-    IDS_CHUNKCHOOSER        "区块选择方案"
-    IDS_UPLOADINSTABLE      "警告：你设置的上传速度似乎太高. 请检查你的设置！\n观察上传统计图, 白线或黄线(有NAFC时)应该是平直的。\n这个消息只会显示一次。"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_CLIENTPERCENTAGE    "显示客户端百分比"
-    IDS_ONERELEASESLOT      "总是使用一个发布槽"
-    IDS_A_UPPRIO            "使用高级的自动上传优先级(实验中)"
-    IDS_SHAREFACTOR         "共享因数"
-END
-
-STRINGTABLE
-BEGIN
-    // ==> ScarAngel Preferences window - Stulle
-    IDS_CON_TWEAKS          "连接调整"
-	IDS_MISC                "杂项设置"
-    // <== ScarAngel Preferences window - Stulle
-    // ==> Global Source Limit [Max/Stulle] - Stulle
-    IDS_GLOBAL_HL           "总体来源限制"
-    IDS_GLOBAL_HL_LIMIT     "总体硬性限制"
-    IDS_GLOBAL_HL_ALL       "在所有文件上启用"
-    IDS_GLOBAL_HL_DEFAULT   "在所有文件上启用总体硬性限制"
-    IDS_ENABLE              "允许"
-    // <== Global Source Limit [Max/Stulle] - Stulle
-    IDS_PUSH                "推送设置" // push files - Stulle
-    // ==> push small files [sivka] - Stulle
-    IDS_PUSH_SMALL          "推送小文件"
-	IDS_SMALL               "小"
-	IDS_PUSH_SMALL_BOOST    "推送小文件的加速度"
-    // <== push small files [sivka] - Stulle
-    // ==> push rare file - Stulle
-    IDS_PUSH_RARE           "推送稀有文件"
-    IDS_RARE                "稀有"
-    IDS_RARE_RATIO          "稀有文件比率"
-    // <== push rare file - Stulle
-    IDS_SHOWINMSN7          "在MSN7(或更高)的信息栏中显示eMule状态" //Show in MSN7 [TPT] - Stulle
-    // ==> Show sources on title - Stulle
-    IDS_SHOWSRCONTITLE      "在标题栏中显示来源数"
-    IDS_SHOWSRCSTRING       "来源:"
-    // <== Show sources on title - Stulle
-    IDS_SHOWOVERHEADONTITLE "在标题栏中显示负载"// show overhead on title - Stulle
-    // ==> CreditSystems [EastShare/ MorphXT] - Stulle
-    IDS_CREDIT_SYSTEM       "积分系统"
-    IDS_OFFICIAL_CREDIT     "官方"
-    IDS_LOVELACE_CREDIT     "lovelace"
-    IDS_RATIO_CREDIT        "Ratio"
-    IDS_PAWCIO_CREDIT       "Pawcio"
-    IDS_EASTSHARE_CREDIT    "EastShare"
-    IDS_SIVKA_CREDIT        "Sivka"
-    IDS_SWAT_CREDIT         "S.W.A.T."
-    IDS_XMAN_CREDIT         "Xman"
-    // <== CreditSystems [EastShare/ MorphXT] - Stulle
-    // ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-    IDS_SUQWT_LOAD          "载入 %s"
-    IDS_SUQWT               "允许保存上传排队时间 (SUQWT)"
-    // <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-    IDS_SHOW_FILE_HL_CONST  "总是显示每个文件的硬性限制" // show HL per file constantaniously - Stulle
-    IDS_SHOW_GLOBAL_HL      "显示总体硬性限制" // show global HL - Stulle
-    // ==> file settings - Stulle
-    IDS_NNS_TIMERLABEL      "自动NNS计时器 0～60秒"
-    IDS_REMOVENNSLIMITLABEL "开始丢弃无需要部分的来源 > X%"
-    IDS_FQS_TIMERLABEL      "自动FQS计时器 0～60秒"
-    IDS_REMOVEFQSLIMITLABEL "开始丢弃队列已满的来源 > X%"
-    IDS_HQRS_TIMERLABEL     "自动HQRS计时器 0～120秒"
-    IDS_REMOVEQRSLABEL      "允许的最大队列位置 <= X"
-    IDS_REMOVEQRSLIMITLABEL "S开始丢弃队列位置太靠后的来源 > X%"
-    IDS_AUTO_NNS            "自动丢弃无需要部分的来源"
-    IDS_AUTO_FQS            "自动丢弃队列已满的来源"
-    IDS_AUTO_QRS            "自动丢弃队列位置太靠后的来源"
-    IDS_SIVKAFILESETTINGS   "Sivka - 文件设置"
-    IDS_HARDLIMIT_LABEL     "硬性限制 (0=使用默认值)"
-    IDS_FILE_DEFAULTS       "文件默认设置"
-    IDS_XMAN_DROPPING       "使用Xman丢弃方案"
-    IDS_SIVKA_DROPPING      "使用Sivka丢弃方案"
-    IDS_HQR_WAY             "丢弃方案"
-    // <== file settings - Stulle
-    IDS_SHOW_DROPPED_SRC    "已丢弃的来源" // show # of dropped sources - Stulle
-    // ==> Source Graph - Stulle
-    IDS_SRCGRAPH            "绘制来源统计图"
-    IDS_STATIC_STATSHL      "统计图的最小/最大硬性限制值"
-    IDS_SP_SRCGRAPH         "来源统计图"
-    // <== Source Graph - Stulle
-    IDS_FD_AVGDL            "平均下载速度:" // Average download speed - Stulle
-    // ==> WebCache [WC team/MorphXT] - Stulle/Max
-    IDS_PW_WEBCACHE         "WebCache"
-    IDS_WrongPortforWebcache 
-                            "Webcache下载已禁用: 只有位于端口21, 70,  80, 210, 443, 563，以及从1025到65535的传输才能被缓存. 如果你想使用Webcache，请使用这些端口."
-    IDS_WEBCACHE_NOSUPPORT  "不支持"
-    IDS_STATS_SUCCESSFULLWC "成功的WC下载/WC请求:"
-    IDS_STATS_FAILEDWC      "失败的WC下载/WC请求:"
-    IDS_WEBCACHE_ISP        "ISP代理服务器设置"
-    IDS_WC_PORT             "端口"
-    IDS_WC_ADDRESS          "地址"
-    IDS_WC_CONTROLS         "Webcache控制"
-    IDS_WC_ENABLE           "允许Webcache下载"
-    IDS_WC_WRONGPORT        "你正在使用一个通常不被ISP的代理服务器所缓存的TCP端口. 请把你的TCP端口改成21, 70, 80, 210, 443 563或1025到65535，才能使用Webcache下载！"
-    IDS_WC_AUTO             "自动探测Webcache"
-    IDS_WC_NRBLOCKS         "重新连接代理服务器前下载的块数量 (也许能解决某些掉线问题)"
-    IDS_WC_BLOCK            "180k-每个块"
-    IDS_WC_TIMEOUT          "延长webcache连接的超时时间"
-    IDS_WC_LOCAL            "这个webcache不缓存同一个ISP内的通信"
-    IDS_WC_SUBMIT_EMAIL     "通过email提交这些设置"
-    IDS_WC_LINK             "链接: "
-    IDS_WC_PERSISTENT       "对通过代理的下载保持其连接"
-    IDS_WC_ADVANCED         "显示高级控制"
-    IDS_WC_TEST             "测试webcache配置. 大约花费30秒"
-    IDS_WC_HIDE_ADV         "隐藏高级控制"
-    IDS_WC_SUBMIT_WEB       "通过网页表单提交这些设置"
-    IDS_WC_SOURCES          "Webcache容量"
-    IDS_WC_UPDATESETTING    "自动更新webcache设置"
-    IDS_LOG_WCEVENTS        "记录WebCache事件"
-    IDS_LOG_IACH            "记录IACH事件"
-    IDS_WEBCACHE_NOPROXY    "未设置代理服务器"
-    IDS_CD_WCSUCCFAIL       "成功/已请求:"
-    IDS_CD_WCTRUSTSENDER    "信任的OHCB发送者:"
-    IDS_WCDOWNL             "尚未工作"
-    IDS_WC_REQ_SUCC         "WC成功/请求:"
-    IDS_WC_DOWNLOADED       "WC下载:"
-    IDS_WC_REACTIVATED      " Webcache已被重新激活."
-    IDS_WC_NEWPROXYIP       "探测到新的代理服务器IP: %s."
-    IDS_STATS_WEBCACHE      "Webcache"
-    IDS_STATS_WEBCACHE_1    "数据 1:"
-    IDS_STATS_WEBCACHE_2    "数据 2:"
-    IDS_STATS_WEBCACHE_3    "数据 3:"
-    IDC_MSG_WEBCACHEFAIL    "你的代理服务器似乎没有缓存数据. 已发送的100多次Webcache请求没有一次成功. 请检查你的代理服务器设置. WebCache下载已被禁用，直到测试到一个可用的代理服务器！"
-    IDC_MSG_WEBCACHE_NOAUTODEC 
-                            "对不起, 你的ISP不在数据库里,\n你的ISP标志%s\n允许自动探测, 请找出并提交你的ISP代理."
-    IDC_MSG_WEBCACHE_NOIP   "没有公网IP, 请连接到一个ed2k服务器或Kad网络.\n如果你连接一个ed2k服务器，你的TCP端口必须可连接 (高ID)\n，但连接到Kad网络时则不需要。"
-    IDC_MSG_WEBCACHE_CONFIGALT 
-                            "Webcache自动探测发现了Webcache设置中的一处更改, webcache下载已被禁用，直到测试到一个可用的代理服务器！\n 你可以在高级Webcache设置中禁用Webcache自动探测。"
-    IDC_MSG_WEBCACHE_NOACTIVE 
-                            "Webcache自动探测发现你的ISP代理不缓存数据. Webcache已禁用."
-    IDC_MSG_WEBCACHE_ERRRESOLVE 
-                            "WebCache错误 - 解析HTTP代理服务器地址失败:\n%s\n请检查你的代理服务器设置"
-    IDC_MSG_WEBCACHE_TRANSPAR 
-                            "代理测试不能测试透明代理. 测试已取消!"
-    IDC_MSG_WEBCACHE_TESTRUNNING 
-                            "正在进行代理测试! 请检查服务器窗口中的日志以获得测试结果!"
-    IDC_MSG_WEBCACHE_TESTERR "代理测试错误!"
-    IDC_MSG_WEBCACHE_ALREADYRUNNING 
-                            "已经有一个测试在进行。"
-    IDC_MSG_WEBCACHE_TESTREQ 
-                            "没有进行代理测试. 不符合所有要求.\n 要求:\n1. 你必须连接到一个ed2k服务器\n2. 你必须有公网IP\n3. 你必须有高ID\n4. 连接数太多的话，不能进行测试"
-    // <== WebCache [WC team/MorphXT] - Stulle/Max
-    // ==> FunnyNick [SiRoB/Stulle] - Stulle
-    IDS_FN_TAG              "FunnyNick标签"
-    IDS_NO_TAG              "没有标签"
-    IDS_SHORT_TAG           "[FN]"
-    IDS_FULL_TAG            "[FunnyNick]"
-    IDS_CUSTOM_TAG          "自定义标签"
-    IDS_SET_CUSTOM_TAG      "设置自定义标签"
-    IDS_FN_TAG_AT_END       "在末尾显示标签"
-    // <== FunnyNick [SiRoB/Stulle] - Stulle
-    IDS_CLIENTQUEUEPROGRESSBAR "显示客户端进度" // Client queue progress bar [Commander] - Stulle
-    IDS_ACC                 "允许主动连接控制" // ACC [Max/WiZaRd] - Max
-    // ==> ScarAngel 版本检查 - Stulle
-    IDS_VISITSVERSIONCHECK  "\n\n你想访问ScarAngel主页吗?"
-    IDS_SVERSIONCHECK       "版本检查 (ScarAngel)"
-    IDS_NONEWSVERVERSION    "没有检查到新的eMule ScarAngel版本"
-    IDS_NEWSVERSIONAVL      "检查到新的eMule ScarAngel版本! 请访问ScarAngel主页."
-    IDS_NEWSVERSIONAVLPOPUP "检查到新的eMule ScarAngel版本! 点击这里阅读有关信息!"
-    // <== ScarAngel Version Check - Stulle
-    // ==> Quick start [TPT] - Max
-    IDS_QUICK_START_GROUP   "快速启动"
-    IDS_QUICK_START         "允许快速启动"
-    IDS_QUICK_START_MAX_TIME "快速启动持续时间 [8-18分钟]"
-    IDS_QUICK_START_MAX_CONN_PER_FIVE "每5秒的最大连接数"
-    IDS_QUICK_START_MAX_CONN "最大连接数"
-    IDS_QUICK_START_AFTER_IP_CHANGE "IP地址改变后进行快速启动"
-	IDS_QUICK_START_MAX_CONN_PER_FIVE_BACK "恢复到每5秒的最大连接数"
-    IDS_QUICK_START_MAX_CONN_BACK "恢复到最大连接数"
-    // <== Quick start [TPT] - Max
-    // ==> CPU/MEM usage [$ick$/Stulle] - Stulle
-    IDS_SYS_INFO_GROUP      "系统信息"
-    IDS_SYS_INFO_GLOBAL     "允许总体信息"
-    // <== CPU/MEM usage [$ick$/Stulle] - Stulle
-    // ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
-    IDS_BACKUP_FILEFRAME    "选择要备份的文件类型"
-    IDS_BACKUP_SELECTALL    "全选"
-    IDS_BACKUP_AUTOFRAME    "自动备份"
-    IDS_BACKUP_AUTOBACKUP   "退出时自动备份"
-    IDS_BACKUP_NOTE         "备注:"
-    IDS_BACKUP_BACKUPNOW    "立即备份"
-    IDS_BACKUP_MESSAGE      "一个名叫""Backup""的目录将被创建在你的eMule安装目录里，用来放置备份"
-    IDS_BACKUP_AUTOBACKUP2  "双备份"
-    IDS_ABORT               "中止?"
-    IDS_CONTINUE            "继续"
-    IDS_DONOTASKAGAIN       "以后不要再问我"
-    IDS_DONOTSHOWAGAIN      "以后不要再显示"
-    IDS_DONOTTELLAGAIN      "以后不要再告诉我"
-    IDS_HELP                "帮助"
-    IDS_IGNORE              "忽略"
-    IDS_IGNOREALL           "全部忽略"
-    IDS_NOTOALL             "全部不"
-    IDS_OK                  "确定"
-    IDS_REPORT              "报告"
-    IDS_RETRY               "重试"
-    IDS_SKIP                "跳过"
-    IDS_SKIPALL             "全部跳过"
-    IDS_TRYAGAIN            "再试一次"
-    IDS_YESTOALL            "全部是"
-    // <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
-    // ==> TBH: minimule - Max
-    IDS_MM_SHOW             "使用TBH迷你骡"
-    IDS_MM_LIVES            "总是更新迷你骡数据"
-    IDS_MM_UPDATE_TIME      "迷你骡更新间隔 (秒)"
-    IDS_MM_TRANS            "迷你骡透明度 (1-255)"
-    IDS_MM_ACTDL            "正进行的下载: %i"
-    IDS_MM_DATA             "上传: %s | 下载: %s"
-    IDS_MM_UPDOWN           "上传: %s(%.1f) | 下载: %s(%.1f)"
-    IDS_MM_COMPL            "显示会话中的完成数"
-    IDS_MM_RATIO            "上:下 :"
-    IDS_MM_OPEN             "最小化到托盘时显示迷你骡"
-    // <== TBH: minimule - Max
-    // ==> Copy feedback feature [MorphXT] - Stulle
-    IDS_COPYFEEDBACK        "把反馈信息复制到剪贴板"
-    IDS_COPYFEEDBACK_US     "把反馈信息复制到剪贴板 (US)"
-    IDS_FEEDBACK_TRANSFERRED "已传输: %s (%s)"
-    IDS_FEEDBACK_REQUESTED  "已请求: %i (%i)"
-    IDS_FEEDBACK_ACCEPTED   "已接受的请求: %i (%i)"
-    IDS_FEEDBACK_FROM       "反馈信息来自%s 在 [%s]"
-    IDS_FEEDBACK_FILENAME   "文件名: %s"
-    IDS_FEEDBACK_FILETYPE   "文件类型: %s"
-    IDS_FEEDBACK_FILESIZE   "大小: %s"
-    IDS_FEEDBACK_DOWNLOADED "已下载: %s"
-    IDS_FEEDBACK_TOTAL      "总计来源: %i"
-    IDS_FEEDBACK_AVAILABLE  "可用来源: %i"
-    IDS_FEEDBACK_NONEEDPART "无无需要部分的来源: %i"
-    IDS_FEEDBACK_COMPLETE   "已完成的来源: %i"
-    // <== Copy feedback feature [MorphXT] - Stulle
-    // ==> MassRename [Dragon] - Stulle
-    IDS_MASSRENAME1         "文件名通配符 (对以下所有文件生效):"
-    IDS_FILENAMELEFT        "文件名左对齐"
-    IDS_FILENAMERIGHT       "文件名右对齐"
-    IDS_RESETFILENAMES      "复位"
-    IDS_SIMPLECLEANUP       "简单清理"
-    IDS_INSERTTEXTCOLUMN    "从剪贴板中插入文本栏"
-    IDS_MASSRENAME2         "原始文件名:"
-    IDS_MASSRENAME3         "新文件名:"
-    IDS_NOTENOUGHFILENAMES  "在新文件名列表中没有足够的文件名. 不能重命名."
-    IDS_IDENTICALFILENAMES  "同一个目录中不能存在多个同名文件 (行 %d). 不能重命名."
-    IDS_MR                  "批量重命名..."
-    IDS_CHECKDOTTOSPACE     "转换 ""."" 到 "" """
-    IDS_CHECKUNDERLINETOSPACE "转换 ""_"" 到 "" """
-//    IDS_CHECKCONVERTAPOSTROPHES 
-//                            "转换错误的撇号 ""?", ""`"" 到标准的撇号 "" ' """
-    IDS_CHECKCONVERTHEX     "转换十六进制数 ""%xx"" 到字符"
-    IDS_CHECKSEARCHANDREPLACE "查找并替换:"
-    IDS_SC_SEARCHFOR        "找:"
-    IDS_SC_REPLACEBY        "替换为:"
-    IDS_CHECKCASESENSITIVE  "区分大小写"
-    IDS_CHECKCHARACTERREPLACE "替换字符:"
-    IDS_REPLACECHAR         "替换"
-    IDS_REPLACECHARBY       "用"
-    IDS_SC_ADD              "添加"
-    IDS_SC_EDIT             "编辑"
-    IDS_SC_DELETE           "删除"
-    IDS_SEARCHFORCHAR       "找"
-    IDS_REPLACEBYCHAR       "替换为"
-    IDS_SC_HEADLINE         "简单清理"
-    // <== MassRename [Dragon] - Stulle
-    // ==> Startupsound [Commander] - mav744
-    IDS_STARTUPSOUND        "播放启动音效"
-    IDS_MISSING_STARTUPSOUND 
-                            "启动音效文件startup.wav丢失! startup.wav需要放在你的config目录"
-    // <== Startupsound [Commander] - mav744
-    IDS_COMPRESS_LVL        "压缩率 (0 = 禁用)" // Adjust Compress Level [Stulle] - Stulle
-    // ==> 智能分类控制 (SCC) [khaos/SiRoB/Stulle] - Stulle
-    IDS_CAT_MINIMUM         "最小"
-    IDS_CAT_MAXIMUM         "最大"
-    IDS_CAT_DLGHELP         "这些复选框指示出当为一个新文件选择分类时使用这个标准。"
-    IDS_CAT_FILTERS         "分类过滤器"
-    IDS_CAT_RS              "剩余大小 (MB)"
-    IDS_CAT_FS              "     文件大小 (MB)"
-    IDS_CAT_RT              "剩余时间 (M)"
-    IDS_CAT_SC              "来源计数"
-    IDS_CAT_ASC             "可用的来源计数"
-    IDS_CAT_THISCAT         "这个分类"
-    IDS_CAT_SUSPENDFILTERS  "挂起查看过滤器"
-    IDS_CAT_FROMCATSINFO    "在设置这个分类为显示所有文件或所有未指定的文件前，你必须把此分类中的文件都指定为其他的分类!"
-    IDS_CAT_FROMCATSCAP     "未指定的文件"
-    IDS_CAT_FILTERSACTIVE   "已启用的过滤器"
-    IDS_CAT_FILTERSSUSP     "已挂起的过滤器"
-    IDS_CAT_SETORDER        "设置线性优先级"
-    IDS_CAT_ORDER           "输入一个大于等于零的整数，小的值会先恢复"
-    IDS_CAT_PAUSEDSHOWN     " | 显示已暂停的"
-    IDS_CAT_PAUSEDHIDDEN    " | 隐藏已暂停的"
-    IDS_CAT_COLCATEGORY     "分类"
-    IDS_CAT_COLORDER        "LP"
-    IDS_CAT_MNUAUTOINC      "自动增加已选择的"
-    IDS_CAT_MNUSTEPTHRU     "潜伏所有已选择的"
-    IDS_CAT_MNUALLSAME      "全部设为同一个值"
-    IDS_CAT_EXPAUTOINC      "输入一个非负的开始数:"
-    IDS_CAT_EXPSTEPTHRU     "输入一个非负数, 小的值会先恢复.\n文件:"
-    IDS_CAT_EXPALLSAME      "输入一个非负数, 这将应用到所有已选择的文件:"
-    IDS_CAT_ABORTSTEPTHRU   "你想中止线性优先级潜伏吗?"
-    IDS_CAT_SHOWPAUSED      "显示已暂停的"
-    IDS_CAT_HIDEPAUSED      "隐藏已暂停的"
-    IDS_CAT_SELDLGTXT       "从列表中选择一个分类，或输入一个新分类:"
-    IDS_CAT_SELDLGCAP       "选择分类"
-    IDS_CAT_SHOWCATNAME     "在“分类”栏中显示完整分类名"
-    IDS_CAT_SHOWSELCATDLG   "显示 '选择分类' 对话框"
-    IDS_CAT_USEACTIVE       "新下载任务的默认分类"
-    IDS_CAT_AUTORESUMEORD   "自动增加并指定线性优先级"
-    IDS_CAT_SMALLFILEDLPUSH "先下载小文件 （小于150KB）"
-    IDS_CAT_AUTOCAT         "高级过滤通配符 (分隔符: | )"
-    IDS_CAT_USEAUTOCAT      "添加新下载到分类时使用查看过滤器"
-    IDS_CAT_MERGE           "合并分类"
-    IDS_CAT_GROUP           "组"
-    IDS_CAT_RESUMEFILEONLYINSAMECAT 
-                            "只恢复同一个分类中的已暂停文件"
-    IDS_CAT_RESUMENEXT      "恢复下一个"
-    IDS_CAT_PAUSELAST       "暂停最后一个"
-    IDS_CAT_STOPLAST        "停止最后一个"
-    IDS_SCC                 "智能分类控制 (SCC)"
-    IDS_DL_MODE             "恢复模式"
-    IDS_LP                  "线性优先级"
-    IDS_CAT_STARTFILESONADD "当添加到一个新分类时开始的文件数"
-    IDS_DL_MODE_DEFAULT     "默认恢复模式"
-    IDS_DL_NONE             "无"
-    IDS_SEARCH_INVALIDMINMAX "指定的最小/最大文件大小中有无效的单位"
-    // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
-    IDS_SHARED_PREFS        "共享文件管理" // Shared Files Management [Stulle] - Stulle
-    // ==> Spread bars [Slugfiller/MorphXT] - Stulle
-    IDS_SPREAD_BARS         "允许传播条"
-    IDS_SF_UPLOADED_PARTS   "传播条 (上传区块历史)"
-    IDS_SF_TURN_PART        "文件上传 (区块)"
-    IDS_SF_TURN_SIMPLE      "文件上传 (简单)"
-    IDS_SF_FULLUPLOAD       "文件上传 (完整)"
-    IDS_SPREAD_RESET        "复位传播条"
-	// <== Spread bars [Slugfiller/MorphXT] - Stulle
-    // ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
-    IDS_HIDEOS              "隐藏过度共享"
-    IDS_SHAREONLYTHENEED    "只共享需要的部分"
-    IDS_HIDEOVERSHARES      "在隐藏区块前过度共享 (0 = 禁用)"
-    IDS_SELECTIVESHARE      "选择性的区块共享"
-    IDS_ERR_HIDDENBLOCK     "请求隐藏的区块"
-    // <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
-    // ==> PowerShare [ZZ/MorphXT] - Stulle
-    IDS_POWERSHARE_ACTIVATED "激活"
-    IDS_POWERSHARE_DISABLED "禁止"
-    IDS_POWERSHARE_ON_LABEL "开"
-    IDS_POWERSHARE_OFF_LABEL "关"
-    IDS_POWERSHARE_COLUMN_LABEL "强力共享"
-    IDS_POWERSHARE_PREFIX   "PS"
-    IDS_POWERSHARE          "强力共享"
-    IDS_POWERSHARE_DENIED_LABEL "已拒绝"
-    IDS_POWERSHARE_ADVISED_LABEL "已建议"
-    IDS_POWERSHARE_AUTHORIZED_LABEL "已授权"
-    IDS_POWERSHARE_ACTIVATED_LABEL "已激活"
-    IDS_POWERSHARE_DISABLED_LABEL "已禁止"
-    IDS_POWERSHARE_AUTO_LABEL "自动"
-    IDS_POWERSHARE_AUTO     "自动"
-    IDS_POWERSHARE_LIMITED  "有限"
-    IDS_POWERSHARE_LIMIT    "完成来源限制"
-	// <== PowerShare [ZZ/MorphXT] - Stulle
-    // ==> Release Bonus [sivka] - Stulle
-    IDS_RELEASE_BONUS_GROUP "发布奖励"
-    IDS_RELEASE_BONUS_EDIT  "设置奖励天数"
-    // <== Release Bonus [sivka] - Stulle
-    IDS_RELEASE_SCORE_ASSURANCE "保证发布文件的默认积分" // Release Score Assurance [Stulle] - Stulle
-    // ==> Design Settings [eWombat/Stulle] - Stulle
-    IDS_COLOR_MASTER1       "客户"
-    IDS_COLOR_MASTER2       "正下载的文件"
-    IDS_COLOR_MASTER3       "共享的文件"
-    IDS_COLOR_BOX           "布局设置"
-    IDS_COLOR_FONT_LABEL    "字体色"
-    IDS_COLOR_BACK_LABEL    "背景色"
-//    IDS_COLOR_PREVIEW       "预览"
-    IDS_COLOR_C1            "好友"
-    IDS_COLOR_S1            "仍在下载"
-    IDS_COLOR_S2            "强力共享的"
-    IDS_COLOR_C2            "正在请求强力共享的文件"
-    IDS_COLOR_C3            "正在请求强力发布的文件"
-    IDS_COLOR_C4            "从它下载"
-    IDS_COLOR_C5            "上传到"
-    IDS_COLOR_C6            "吸血骡"
-    IDS_COLOR_B1            "已知的客户"
-    IDS_COLOR_MASTER4       "背景色"
-    IDS_COLOR_B2            "正在下载的客户"
-    IDS_COLOR_B3            "正在等待的客户"
-    IDS_COLOR_B4            "正在上传的客户"
-    IDS_COLOR_B5            "正在下载的文件"
-    IDS_COLOR_B6            "共享的文件"
-    IDS_COLOR_C7            "低ID"
-    IDS_COLOR_C8            "正评级"
-    IDS_COLOR_ON            "开"
-    IDS_COLOR_OFF           "关"
-    // <== Design Settings [eWombat/Stulle] - Stulle
-    // ==> Limit PS by amount of data uploaded [Stulle] - Stulle
-    IDS_PS_AMOUNT_LIMIT         "用上传数据量限制"
-    IDS_PS_AMOUNT_LIMIT_LABEL   "用上传数据量限制 (最大 10000%)"
-    IDS_PS_AMOUNT_LIMIT_WRONG   "输入了无效的值."
-    // <== Limit PS by amount of data uploaded [Stulle] - Stulle
-    // ==> Enforce Ratio [Stulle] - Stulle
-    IDS_RATIO_GROUP             "上:下比率"
-    IDS_ENFORCE_RATIO           "总是强制应用比率"
-    IDS_RATIO_VALUE             "最大比率1"
-	IDS_RATIO_REASON            "原因"
-    IDS_RATIO_REASON2           "总体硬性限制（为了公平）"
-    IDS_RATIO_REASON3           "如果上传带宽小于11KB/s，强制应用1:3比率"
-    IDS_RATIO_REASON4           "NAFC动态下载限制"
-    IDS_RATIO_REASON5           "强制比率"
-	IDS_RATIO_ACTIVATION        "下载限制已激活"
-    IDS_RATIO_LIMIT             "上传:下载比率将被限制到1:1"
-    // <== Enforce Ratio [Stulle] - Stulle
-    // ==> Tabbed Preferences [TPT] - Stulle
-    IDS_SCARANGEL               "ScarAngel"
-    IDS_WEBCACHE                "WebCache"
-    IDS_BACKUP                  "备份"
-    // <== Tabbed Preferences [TPT] - Stulle
 END
 
 #endif    // Chinese (P.R.C.) resources
