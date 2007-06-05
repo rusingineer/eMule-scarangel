@@ -32,10 +32,6 @@ protected:
 	bool m_bLogDrop; //Xman Xtreme Downloadmanager
 	bool m_bLogpartmismatch; //Xman Log part/size-mismatch
 	bool m_bLogUlDlEvents;
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	bool m_bLogWebCacheEvents;//JP log webcache events
-	bool m_bLogICHEvents;//JP log ICH events
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 	/*
 	bool m_bCreditSystem;
@@ -74,6 +70,15 @@ protected:
 	*/
 	bool m_bAutoArchDisable;
 	int m_iExtractMetaData;
+	//Xman official UPNP removed
+	/*
+	bool m_bCloseUPnPOnExit;
+	bool m_bSkipWANIPSetup;
+	bool m_bSkipWANPPPSetup;
+	*/
+	int m_iShareeMule;
+	int m_iCryptTCPPaddingLength; //Xman Added PaddingLength to Extended preferences
+	bool bShowedWarning;
 
 	CSliderCtrl m_ctlFileBuffSize;
 	CSliderCtrl m_ctlQueueSize;
@@ -96,10 +101,6 @@ protected:
 	HTREEITEM m_htiLogDrop; //Xman Xtreme Downloadmanager
 	HTREEITEM m_htiLogpartmismtach; //Xman Log part/size-mismatch
 	HTREEITEM m_htiLogUlDlEvents;
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	HTREEITEM m_htiLogWebCacheEvents; //jp log webcache events
-	HTREEITEM m_htiLogICHEvents; //JP log ICH events
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 	/*
 	HTREEITEM m_htiCreditSystem;
@@ -166,7 +167,20 @@ protected:
 	HTREEITEM m_htiExtractMetaDataNever;
 	HTREEITEM m_htiExtractMetaDataID3Lib;
 	HTREEITEM m_htiAutoArch;
+	//Xman official UPNP removed
+	/*
+	HTREEITEM m_htiUPnP;
+	HTREEITEM m_htiCloseUPnPPorts;
+	HTREEITEM m_htiSkipWANIPSetup;
+	HTREEITEM m_htiSkipWANPPPSetup;
+	*/
+	HTREEITEM m_htiShareeMule;
+	HTREEITEM m_htiShareeMuleMultiUser;
+	HTREEITEM m_htiShareeMulePublicUser;
+	HTREEITEM m_htiShareeMuleOldStyle;
 	//HTREEITEM m_htiExtractMetaDataMediaDet;
+
+	HTREEITEM m_htiCryptTCPPaddingLength; //Xman Added PaddingLength to Extended preferences
 
 	virtual void DoDataExchange(CDataExchange* pDX);
 	virtual BOOL OnInitDialog();

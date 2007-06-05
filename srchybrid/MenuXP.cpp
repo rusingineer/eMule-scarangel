@@ -994,7 +994,7 @@ BOOL CMenuXP::RemoveMenu(UINT nPosition, UINT nFlags)
 }
 
 // change icon
-void CMenuXP::ChangeMenuIcon(UINT_PTR nIDNewItem, LPCTSTR lpszNewItem, LPCTSTR lpszIconName)
+void CMenuXP::ChangeMenuIcon(UINT_PTR nIDNewItem, LPCTSTR /*lpszNewItem*/, LPCTSTR lpszIconName)
 {
 	MENUITEMINFO	info;
 	ZeroMemory(&info, sizeof(MENUITEMINFO));
@@ -1007,7 +1007,7 @@ void CMenuXP::ChangeMenuIcon(UINT_PTR nIDNewItem, LPCTSTR lpszNewItem, LPCTSTR l
 	{
 		if (pData->m_hIcon)
 			::DestroyIcon(pData->m_hIcon);
-		pData->m_hIcon = (lpszNewItem, lpszIconName ? theApp.LoadIcon(lpszIconName, 16, 16) : NULL);
+		pData->m_hIcon = (/*lpszNewItem, */lpszIconName ? theApp.LoadIcon(lpszIconName, 16, 16) : NULL);
 	}
 }
 

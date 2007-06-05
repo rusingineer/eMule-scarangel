@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -39,12 +39,7 @@ public:
 	void	SetClient(CUpDownClient* pClient);
 	void	Disconnect(LPCTSTR pszReason, CUpDownClient::UpStopReason reason = CUpDownClient::USR_NONE); // Maella -Upload Stop Reason-
 	void	WaitForOnConnect();
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	/*
 	void	ResetTimeOutTimer();
-	*/
-	virtual void	ResetTimeOutTimer(); // yonatan http - made virtual, WC-TODO ?
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	bool	CheckTimeOut();
 	virtual UINT GetTimeOut();
 	virtual void Safe_Delete();
@@ -61,9 +56,14 @@ public:
 	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 	//CUpDownClient*	client; //declare this in emsocket
 
+
+	//Xman improved socket closing
+	void	CloseSocket();
+
+
 protected:
 	virtual ~CClientReqSocket();
-	virtual void Close()	{CEMSocket::Close();} //Xman // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+	virtual void Close()	{CAsyncSocketEx::Close();}
 	void	Delete_Timed();
 	virtual void OnConnect(int nErrorCode);
 	void		 OnClose(int nErrorCode);
@@ -89,11 +89,6 @@ protected:
 	uint32	deltimer;
 	bool	m_bPortTestCon;
 	uint32	m_nOnConnect;
-
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-protected:
-	bool	ProcessWebCachePacket(const BYTE* packet, uint32 size, UINT opcode, UINT uRawSize); // yonatan - webcache protocol packets
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 };
 
 

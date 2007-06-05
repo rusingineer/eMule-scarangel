@@ -371,7 +371,6 @@ private:
 	enum eTab{
 	NONE,
 	SCAR,
-	WEBCACHE,
 	BACKUP,
 	COLOR,
 //	UPDATE,
@@ -392,26 +391,6 @@ private:
 	CStatic		m_strWarning;
 	CStatic		m_strPushSmall, m_iPushSmallLabel;
 	CSliderCtrl m_iPushSmall;
-
-	// WebCache
-	CButton		m_WcCtrlBox;
-	CButton		m_bWcDl;
-	CButton		m_hideControls;
-	CButton		m_WcProxyBox;
-	CStatic		m_webcacheAddressStatic;
-	CEdit		m_webcacheAddressEdit;
-	CStatic		m_webcachePortStatic;
-	CEdit		m_webcachePortEdit;
-	CButton		m_webcacheTest;
-	CStatic		m_blockText;
-	CEdit		m_blockEdit;
-	CStatic		m_blockLabel;
-	CButton		m_TimeOut;
-	CButton		m_CacheISP;
-	CButton		m_WcDlPersistent;
-	CButton		m_Update;
-	CButton		m_autoDetect;
-	CStatic		m_WrongPort;
 
 	// Backup
 	CButton		m_BackupBox;
@@ -450,22 +429,8 @@ private:
 	CHyperTextCtrl	m_XtremeLink;
 	// <== Tabbed Preferences [TPT] - Stulle
 
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-protected:
-	bool guardian;
-	bool showadvanced;
-	void ShowLimitValues();
-	bool bCreated, bCreated2;
-	afx_msg void OnEnChangeActivatewebcachedownloads();
-	afx_msg void OnBnClickedDetectWebCache();
-	afx_msg void OnBnClickedAdvancedcontrols();
-	afx_msg void OnBnClickedTestProxy(); //JP Proxy Configuration Test
-public:
-	virtual void UpdateEnableWC()	{ OnEnChangeActivatewebcachedownloads(); }
-	virtual bool GetWcDlCheckBox()	{ return m_bWcDl.GetCheck() == BST_CHECKED; }
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
-
 	// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
+public:
 	void Backup(LPCTSTR extensionToBack, BOOL conFirm);
 	void Backup3();
 	afx_msg void OnBnClickedBackupnow();

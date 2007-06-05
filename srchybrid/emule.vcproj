@@ -25,7 +25,7 @@
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories=".;..;..\id3lib\include;..\crypto.v52.1;pthreads\pthreads\inc;upnplib\ixml\inc"
+				AdditionalIncludeDirectories=".,..;..\id3lib\include;..\crypto.v52.1;pthreads\pthreads\inc;upnplib\ixml\inc"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_DUMP;ID3LIB_LINKOPTION=1"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="0"
@@ -85,7 +85,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;..;..\id3lib\include;..\crypto.v52.1;.\upnplib\ixml\inc;.\upnplib\threadutil\inc;pthreads\pthreads\inc"
+				AdditionalIncludeDirectories=".,..;..\id3lib\include;..\crypto.v52.1;.\upnplib\ixml\inc;.\upnplib\threadutil\inc;pthreads\pthreads\inc"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;SUPPORT_LARGE_FILES;PRINT_STATISTIC;PTW32_STATIC_LIB;UPNP_STATIC_LIB"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -231,7 +231,7 @@
 				EnableFiberSafeOptimizations="TRUE"
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories=".;..;..\id3lib\include;..\crypto.v52.1;.\upnplib\ixml\inc;.\upnplib\threadutil\inc;pthreads\pthreads\inc"
+				AdditionalIncludeDirectories=".,..;..\id3lib\include;..\crypto.v52.1;.\upnplib\ixml\inc;.\upnplib\threadutil\inc;pthreads\pthreads\inc"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;_BETA;SUPPORT_LARGE_FILES;PRINT_STATISTIC;UPNP_STATIC_LIB;PTW32_STATIC_LIB"
 				StringPooling="TRUE"
 				MinimalRebuild="FALSE"
@@ -983,9 +983,6 @@
 				RelativePath="PartFileConvert.h">
 			</File>
 			<File
-				RelativePath="PeerCacheClient.h">
-			</File>
-			<File
 				RelativePath="PeerCacheFinder.h">
 			</File>
 			<File
@@ -1101,6 +1098,9 @@
 			</File>
 			<File
 				RelativePath="Version.h">
+			</File>
+			<File
+				RelativePath="VistaDefines.h">
 			</File>
 			<File
 				RelativePath="WebServices.h">
@@ -1482,6 +1482,9 @@
 			</File>
 			<File
 				RelativePath=".\SivkaFileSettings.cpp">
+			</File>
+			<File
+				RelativePath="SmileySelector.cpp">
 			</File>
 			<File
 				RelativePath="SplashScreen.cpp">
@@ -1936,6 +1939,9 @@
 			</File>
 			<File
 				RelativePath=".\SivkaFileSettings.h">
+			</File>
+			<File
+				RelativePath="SmileySelector.h">
 			</File>
 			<File
 				RelativePath="SplashScreen.h">
@@ -2750,6 +2756,60 @@
 				RelativePath=".\res\sidebanner.jpg">
 			</File>
 			<File
+				RelativePath=".\res\Smiley_Cry.ico">
+			</File>
+			<File
+				RelativePath=".\res\Smiley_Disgust.ico">
+			</File>
+			<File
+				RelativePath=".\res\Smiley_Happy.ico">
+			</File>
+			<File
+				RelativePath=".\res\Smiley_Interest.ico">
+			</File>
+			<File
+				RelativePath=".\res\Smiley_Laugh.ico">
+			</File>
+			<File
+				RelativePath=".\res\Smiley_lookside.ico">
+			</File>
+			<File
+				RelativePath=".\res\Smiley_Love.ico">
+			</File>
+			<File
+				RelativePath=".\res\Smiley_omg.ico">
+			</File>
+			<File
+				RelativePath=".\res\Smiley_Ph34r.ico">
+			</File>
+			<File
+				RelativePath=".\res\Smiley_Sad.ico">
+			</File>
+			<File
+				RelativePath=".\res\Smiley_sadq.ico">
+			</File>
+			<File
+				RelativePath=".\res\Smiley_Sealed.ico">
+			</File>
+			<File
+				RelativePath=".\res\Smiley_Skeptic.ico">
+			</File>
+			<File
+				RelativePath=".\res\Smiley_Smile.ico">
+			</File>
+			<File
+				RelativePath=".\res\Smiley_smileq.ico">
+			</File>
+			<File
+				RelativePath=".\res\Smiley_Tongue.ico">
+			</File>
+			<File
+				RelativePath=".\res\Smiley_Wink.ico">
+			</File>
+			<File
+				RelativePath=".\res\Spam.ico">
+			</File>
+			<File
 				RelativePath="res\Speed.ico">
 			</File>
 			<File
@@ -3067,64 +3127,6 @@
 			</File>
 			<File
 				RelativePath=".\MiniMule\TKTypes.h">
-			</File>
-		</Filter>
-		<Filter
-			Name="WebCache"
-			Filter="">
-			<File
-				RelativePath=".\WebCache\ThrottledChunkList.cpp">
-			</File>
-			<File
-				RelativePath=".\WebCache\ThrottledChunkList.h">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCache.cpp">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCache.h">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCacheClient.cpp">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCacheCryptography.cpp">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCacheCryptography.h">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCachedBlock.cpp">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCachedBlock.h">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCachedBlockList.cpp">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCachedBlockList.h">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCacheMFRList.cpp">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCacheMFRList.h">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCacheOHCBManager.cpp">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCacheOHCBManager.h">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCacheProxyClient.cpp">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCacheProxyClient.h">
-			</File>
-			<File
-				RelativePath=".\WebCache\WebCacheSocket.h">
 			</File>
 		</Filter>
 	</Files>

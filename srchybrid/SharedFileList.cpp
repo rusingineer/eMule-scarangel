@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -411,7 +411,7 @@ void CSharedFileList::FindSharedFiles()
 	CString tempDir;
 	CString ltempDir;
 
-	tempDir=thePrefs.GetIncomingDir();
+	tempDir = thePrefs.GetMuleDirectory(EMULE_INCOMINGDIR);
 	if (tempDir.Right(1)!=_T("\\"))
 		tempDir+=_T("\\");
 	AddFilesFromDirectory(tempDir);
@@ -618,7 +618,7 @@ bool CSharedFileList::SafeAddKFile(CKnownFile* toadd, bool bOnlyAdd)
 	{
 		toadd->CheckAUPFilestats(true);
 	}
-		//Xman end
+	//Xman end
 
 	if (bOnlyAdd)
 		return bAdded;
@@ -710,13 +710,13 @@ void CSharedFileList::FileHashingFinished(CKnownFile* file)
 	// BEGIN SLUGFILLER: SafeHash
 	//Borschtsch
 	bool dontadd = true;
-	if (!CompareDirectories(thePrefs.GetIncomingDir(), file->GetPath()))
+	if (!CompareDirectories(thePrefs.GetMuleDirectory(EMULE_INCOMINGDIR), file->GetPath()))
 		dontadd = false;
 	if (dontadd) {
 		for (int i = 0; i < thePrefs.GetCatCount(); i++) {
 			Category_Struct* pCatStruct = thePrefs.GetCategory(i);
 			if (pCatStruct != NULL){
-				if (CompareDirectories(pCatStruct->incomingpath, file->GetPath()))
+				if (CompareDirectories(pCatStruct->strIncomingPath, file->GetPath()))
 					continue;
 				dontadd = false;
 				break;
@@ -1338,7 +1338,7 @@ int CAddFileThread::Run()
 	*/
 
 	CString strFilePath;
-	_tmakepath(strFilePath.GetBuffer(MAX_PATH), NULL, m_strDirectory, m_strFilename, NULL);
+	_tmakepathlimit(strFilePath.GetBuffer(MAX_PATH), NULL, m_strDirectory, m_strFilename, NULL);
 	strFilePath.ReleaseBuffer();
 	if (m_partfile)
 		Log(GetResString(IDS_HASHINGFILE) + _T(" \"%s\" \"%s\""), m_partfile->GetFileName(), strFilePath);
@@ -1632,7 +1632,7 @@ void CSharedFileList::CalculateUploadPriority(bool force)
 					oldtransferred = pFile->statistic.GetAllTimeTransferred()-pFile->statistic.GetTransferred();
 				else
 					oldtransferred = 0;
-
+				
 
 				sum_uploaded += (pFile->statistic.GetTransferred() + oldtransferred/2.0);
 				*/
@@ -1645,7 +1645,7 @@ void CSharedFileList::CalculateUploadPriority(bool force)
 		if (sum_wanted_upload > 0)
 			avgpercent = (float)(sum_uploaded / sum_wanted_upload * 100.0);
 		else
-			avgpercent=0;
+			avgpercent = 0;
 
 		m_lastavgPercent=avgpercent;
 
@@ -1687,7 +1687,6 @@ void CSharedFileList::CalculateUploadPriority_Standard()
 	}
 }
 //Xman end
-
 // ==> PowerShare [ZZ/MorphXT] - Stulle
 void CSharedFileList::UpdatePartsInfo()
 {

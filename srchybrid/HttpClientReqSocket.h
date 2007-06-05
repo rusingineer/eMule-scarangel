@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -15,8 +15,6 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
-
-#include "ListenSocket.h" // WebCache [WC team/MorphXT] - Stulle/Max
 
 class Packet;
 
@@ -57,9 +55,7 @@ protected:
 	CStringAArray		m_astrHttpHeaders;
 	int					m_iHttpHeadersSize;
 
-public: // WebCache [WC team/MorphXT] - Stulle/Max
 	bool ProcessHttpPacket(const BYTE* packet, UINT size);
-protected: // WebCache [WC team/MorphXT] - Stulle/Max
 	void ProcessHttpHeaderPacket(const char* packet, UINT size, LPBYTE& pBody, int& iSizeBody);
 
 	virtual bool ProcessHttpResponse();

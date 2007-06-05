@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -152,7 +152,6 @@ bool CUDPSocket::Create()
 			MyUPnP::UPNPNAT_MAPPING mapping;
 
 			GetSockName(client, port);
-
 			mapping.internalPort = mapping.externalPort = (WORD)port;
 			mapping.protocol = MyUPnP::UNAT_UDP;
 			mapping.description = "Server UDP Port";
@@ -229,7 +228,7 @@ void CUDPSocket::OnReceive(int nErrorCode)
 			nPayLoadLen = DecryptReceivedServer(buffer, length, &pBuffer, dwKey,sockAddr.sin_addr.S_un.S_addr);
 			if (nPayLoadLen == length)
 				DebugLogWarning(_T("Expected encrypted packet, but received unencrytped from server %s, UDPKey %u, Challenge: %u"), pServer->GetListName(), pServer->GetServerKeyUDP(), pServer->GetChallenge());
-			else
+			else if (thePrefs.GetDebugServerUDPLevel() > 0)
 				DEBUG_ONLY(DebugLog(_T("Received encrypted packet from server %s, UDPKey %u, Challenge: %u"), pServer->GetListName(), pServer->GetServerKeyUDP(), pServer->GetChallenge()));
 		}
 
@@ -863,7 +862,8 @@ void CUDPSocket::SendPacket(Packet* packet, CServer* pServer, uint16 nSpecialPor
 		uRawPacketSize = packet->size + 2;
 		if (thePrefs.IsServerCryptLayerUDPEnabled() && pServer->GetServerKeyUDP() != 0 && pServer->SupportsObfuscationUDP()){
 			uRawPacketSize = EncryptSendServer(&pRawPacket, uRawPacketSize, pServer->GetServerKeyUDP());
-			DEBUG_ONLY(DebugLog(_T("Sending encrypted packet to server %s, UDPKey %u"), pServer->GetListName(), pServer->GetServerKeyUDP()));
+			if (thePrefs.GetDebugServerUDPLevel() > 0)
+				DEBUG_ONLY(DebugLog(_T("Sending encrypted packet to server %s, UDPKey %u"), pServer->GetListName(), pServer->GetServerKeyUDP()));
 			nPort = pServer->GetObfuscationPortUDP();
 		}
 		else

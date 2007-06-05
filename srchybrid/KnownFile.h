@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -150,7 +150,7 @@ public:
 	bool	PublishNotes();
 
 	// file sharing
-	virtual Packet* CreateSrcInfoPacket(const CUpDownClient* forClient) const;
+	virtual Packet* CreateSrcInfoPacket(const CUpDownClient* forClient, uint8 byRequestedVersion, uint16 nRequestedOptions) const;
 	UINT	GetMetaDataVer() const { return m_uMetaDataVer; }
 	void	UpdateMetaDataTags();
 	void	RemoveMetaDataTags();
@@ -163,6 +163,11 @@ public:
 	// aich
 	CAICHHashSet*	GetAICHHashset() const							{return m_pAICHHashSet;}
 	void			SetAICHHashset(CAICHHashSet* val)				{m_pAICHHashSet = val;}
+	
+	// Display / Info / Strings
+	CString			GetInfoSummary() const;
+	CString			GetUpPriorityDisplayString() const;
+
 	// last file modification time in (DST corrected, if NTFS) real UTC format
 	// NOTE: this value can *not* be compared with NT's version of the UTC time
 	uint32	m_tUtcLastModified;
@@ -239,12 +244,6 @@ public:
 	float	GetFileRatio() const; // push rare file - Stulle
 
 	bool	IsPushSmallFile(); // push small files [sivka] - Stulle
-
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	bool ReleaseViaWebCache; //JP webcache release
-	uint32 GetNumberOfClientsRequestingThisFileUsingThisWebcache(CString webcachename, uint32 maxCount);
-	void SetReleaseViaWebCache(bool WCRelease) {ReleaseViaWebCache=WCRelease;}
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	CString GetFeedback(bool isUS = false); // Copy feedback feature [MorphXT] - Stulle
 

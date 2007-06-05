@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -116,6 +116,7 @@ public:
 	int ShowPreferences(UINT uStartPageID = (UINT)-1);
 	bool IsPreferencesDlgOpen() const;
 	bool IsTrayIconToFlash()	{ return m_iMsgIcon!=0; }
+	void SetToolTipsDelay(UINT uDelay);
 
 	void RunMiniMule(); // TBH: minimule (open on tray) - Stulle
 
@@ -173,6 +174,7 @@ protected:
 	CMenu			m_menuDownloadCtrl;
 	char			m_acVCDNSBuffer[MAXGETHOSTSTRUCT];
 	bool			m_iMsgBlinkState;
+	//bool			m_bConnectRequestDelayedForUPnP; //Xman official UPNP removed
 
 	//Xman versions check
 	char			m_acMVCDNSBuffer[MAXGETHOSTSTRUCT];
@@ -203,6 +205,13 @@ protected:
 	// Startup Timer
 	UINT_PTR m_hTimer;
 	static void CALLBACK StartupTimer(HWND hwnd, UINT uiMsg, UINT idEvent, DWORD dwTime);
+
+	//Xman official UPNP removed
+	/*
+	// UPnP TimeOutTimer
+	UINT_PTR m_hUPnPTimeOutTimer;
+	static void CALLBACK UPnPTimeOutTimer(HWND hwnd, UINT uiMsg, UINT idEvent, DWORD dwTime);
+	*/
 
 	void StartConnection();
 	void CloseConnection();
@@ -322,6 +331,9 @@ protected:
 
 	// Terminal Services
 	afx_msg LRESULT OnConsoleThreadEvent(WPARAM wParam, LPARAM lParam);
+
+	// UPnP
+	//afx_msg LRESULT OnUPnPResult(WPARAM wParam, LPARAM lParam); //Xman official UPNP removed
 
 // ==> Show in MSN7 [TPT] - Stulle
 protected:

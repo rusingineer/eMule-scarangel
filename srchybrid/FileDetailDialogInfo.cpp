@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -41,6 +41,7 @@ BEGIN_MESSAGE_MAP(CFileDetailDialogInfo, CResizablePage)
 	ON_WM_TIMER()
 	ON_WM_DESTROY()
 	ON_MESSAGE(UM_DATA_CHANGED, OnDataChanged)
+	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 CFileDetailDialogInfo::CFileDetailDialogInfo()
@@ -52,6 +53,7 @@ CFileDetailDialogInfo::CFileDetailDialogInfo()
 	m_psp.pszTitle = m_strCaption;
 	m_psp.dwFlags |= PSP_USETITLE;
 	m_timer = 0;
+	m_bShowFileTypeWarning = false;
 }
 
 CFileDetailDialogInfo::~CFileDetailDialogInfo()
@@ -255,7 +257,7 @@ void CFileDetailDialogInfo::RefreshData()
 			} else
 				str=GetResString(IDS_UNKNOWN);
 		}
-		GetDlgItem(IDC_EXT_WARNING)->ShowWindow(showwarning?SW_SHOW:SW_HIDE);
+		m_bShowFileTypeWarning = showwarning;
 		SetDlgItemText(IDC_FD_X11,str);
 	}
 	else
@@ -266,8 +268,6 @@ void CFileDetailDialogInfo::RefreshData()
 
 		SetDlgItemText(IDC_PFSTATUS, sm_pszNotAvail);
 		SetDlgItemText(IDC_PARTCOUNT, sm_pszNotAvail);
-
-		GetDlgItem(IDC_EXT_WARNING)->ShowWindow(SW_HIDE);
 		SetDlgItemText(IDC_FD_X11, sm_pszNotAvail);
 
 		SetDlgItemText(IDC_FILECREATED, sm_pszNotAvail);
@@ -290,11 +290,6 @@ void CFileDetailDialogInfo::RefreshData()
 	UINT uValidSources = 0;
 	UINT uNNPSources = 0;
 	UINT uA4AFSources = 0;
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	uint32	uWebcacherequests = 0; //JP webcache
-	uint32	uSuccessfulWebcacherequests = 0;//jp webcache
-	uint64  uWebcachedownloaded = 0;//jp webcache
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	double dAvgDlSpeed = 0; // Average download speed - Stulle
 	for (int i = 0; i < m_paFiles->GetSize(); i++)
 	{
@@ -309,12 +304,6 @@ void CFileDetailDialogInfo::RefreshData()
 		uDataRate += file->GetDownloadDatarate10(); //Xman // Maella -Accurate measure of bandwidth
 		uCompleted += (uint64)file->GetCompletedSize();
 		iHashsetAvailable += (file->GetHashCount() == file->GetED2KPartCount()) ? 1 : 0; //Xman // SLUGFILLER: SafeHash - use GetED2KPartCount
-
-		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		uWebcacherequests += file->Webcacherequests;//jp webcache
-		uSuccessfulWebcacherequests += file->SuccessfulWebcacherequests;//jp webcache
-		uWebcachedownloaded += file->WebCacheDownDataThisFile;//jp webcache
-		// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 		// ==> Average download speed - Stulle
 		if(file->GetDlActiveTime() > 0)
@@ -365,12 +354,6 @@ void CFileDetailDialogInfo::RefreshData()
 
 	str.Format(_T("%s (%.1f%%)"), CastItoXBytes(uCompression, false, false), uTransferred!=0 ? (uCompression * 100.0 / uTransferred) : 0.0);
 	SetDlgItemText(IDC_COMPRESSION, str);
-
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	str.Format(_T("%u/%u (%1.1f%%)"), uSuccessfulWebcacherequests, uWebcacherequests, uWebcacherequests != 0 ?(uSuccessfulWebcacherequests * 100.0) / uWebcacherequests:0.0);
-	SetDlgItemText(IDC_WCReq, str);
-	SetDlgItemText(IDC_WCDOWNL, CastItoXBytes(uWebcachedownloaded, false, false));
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 }
 
 void CFileDetailDialogInfo::OnDestroy()
@@ -408,9 +391,12 @@ void CFileDetailDialogInfo::Localize()
 	GetDlgItem(IDC_FD_XAICH)->SetWindowText(GetResString(IDS_IACHHASH)+_T(':'));
 	SetDlgItemText(IDC_REMAINING_TEXT, GetResString(IDS_DL_REMAINS)+_T(':'));
 	SetDlgItemText(IDC_FD_X10, GetResString(IDS_TYPE)+_T(':') );
+}
 
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	GetDlgItem(IDC_WC_REQ_SUCC)->SetWindowText(GetResString(IDS_WC_REQ_SUCC));
-	GetDlgItem(IDC_WC_DOWNLOADED)->SetWindowText(GetResString(IDS_WC_DOWNLOADED));
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
+HBRUSH CFileDetailDialogInfo::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = CResizablePage::OnCtlColor(pDC, pWnd, nCtlColor);
+	if (m_bShowFileTypeWarning && pWnd->GetDlgCtrlID() == IDC_FD_X11)
+		pDC->SetTextColor(RGB(255,0,0));
+	return hbr;
 }

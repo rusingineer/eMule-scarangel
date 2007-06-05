@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -175,6 +175,7 @@ void CPPgNotify::Localize(void)
 		GetDlgItem(IDC_TXT_RECEIVER)->SetWindowText(GetResString(IDS_PW_RECEIVERADDRESS));
 		GetDlgItem(IDC_TXT_SENDER)->SetWindowText(GetResString(IDS_PW_SENDERADDRESS));
 		GetDlgItem(IDC_CB_ENABLENOTIFICATIONS)->SetWindowText(GetResString(IDS_PW_ENABLEEMAIL));
+		SetDlgItemText(IDC_TEST_NOTIFICATION, GetResString(IDS_TEST) );
 	}
 }
 

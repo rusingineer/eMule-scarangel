@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -35,21 +35,19 @@ public:
 	uint32	m_dwLastUsedIP;
 	uint16	m_nLastUsedPort;
 	uint32	m_dwLastChatted;
-	uint32	m_dwHasHash;
 	CString m_strName;
 
-    CUpDownClient* GetLinkedClient() const { return m_LinkedClient; };
+    CUpDownClient* GetLinkedClient(bool bValidCheck = false) const;
     void SetLinkedClient(CUpDownClient* linkedClient);
 
 	void	LoadFromFile(CFileDataIO* file);
 	void	WriteToFile(CFileDataIO* file);
 
-	static const char sm_abyNullHash[16];
-
     void SetFriendSlot(bool newValue);
     bool GetFriendSlot() const;
+	
+	bool HasUserhash() const;
 private:
-    bool HasUserhash();
     bool m_friendSlot;
 
 	CUpDownClient* m_LinkedClient;

@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -23,6 +23,7 @@
 #include "emuledlg.h"
 #include "HelpIDs.h"
 #include "Log.h"
+#include "ChatWnd.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -41,6 +42,7 @@ BEGIN_MESSAGE_MAP(CPPgMessages, CPropertyPage)
 	ON_BN_CLICKED(IDC_MSGONLYSEC, OnSettingsChange)
 	ON_BN_CLICKED(IDC_ADVSPAMFILTER , OnSettingsChange)
 	ON_BN_CLICKED(IDC_INDICATERATINGS , OnSettingsChange)
+	ON_BN_CLICKED(IDC_MSHOWSMILEYS, OnSettingsChange)
 	ON_WM_HELPINFO()
 	ON_WM_DESTROY()
 END_MESSAGE_MAP()
@@ -83,6 +85,11 @@ void CPPgMessages::LoadSettings(void)
 	else
 		CheckDlgButton(IDC_INDICATERATINGS,0);
 
+	if(thePrefs.GetMessageEnableSmileys())
+		CheckDlgButton(IDC_MSHOWSMILEYS,1);
+	else
+		CheckDlgButton(IDC_MSHOWSMILEYS,0);
+
 	GetDlgItem(IDC_FILTER)->SetWindowText(thePrefs.messageFilter);
 	GetDlgItem(IDC_COMMENTFILTER)->SetWindowText(thePrefs.commentFilter);
 }
@@ -106,6 +113,11 @@ BOOL CPPgMessages::OnApply()
 	thePrefs.msgsecure = IsDlgButtonChecked(IDC_MSGONLYSEC)!=0;
 	thePrefs.m_bAdvancedSpamfilter = IsDlgButtonChecked(IDC_ADVSPAMFILTER)!=0;
 	thePrefs.indicateratings = IsDlgButtonChecked(IDC_INDICATERATINGS)!=0;
+	
+	bool bOldSmileys = thePrefs.GetMessageEnableSmileys();
+	thePrefs.m_bMessageEnableSmileys = IsDlgButtonChecked(IDC_MSHOWSMILEYS) != 0;
+	if (bOldSmileys != thePrefs.GetMessageEnableSmileys())
+		theApp.emuledlg->chatwnd->EnableSmileys(thePrefs.GetMessageEnableSmileys());
 
 	GetDlgItem(IDC_FILTER)->GetWindowText(thePrefs.messageFilter);
 
@@ -149,6 +161,8 @@ void CPPgMessages::Localize(void)
 		GetDlgItem(IDC_MSGONLYSEC)->SetWindowText(GetResString(IDS_MSGONLYSEC));
 
 		GetDlgItem(IDC_ADVSPAMFILTER)->SetWindowText(GetResString(IDS_ADVSPAMFILTER));
+
+		GetDlgItem(IDC_MSHOWSMILEYS)->SetWindowText(GetResString(IDS_SHOWSMILEYS));		
 	}
 }
 

@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -25,6 +25,7 @@
 #include "Statistics.h"
 #include "emuledlg.h"
 #include "Log.h"
+#include "Otherfunctions.h"
 //Xman
 #include "BandwidthControl.h"	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 
@@ -65,14 +66,11 @@ void CPerfLog::Startup()
 		m_eFileFormat = (ELogFileFormat)ini.GetInt(_T("FileFormat"), CSV);
 
 		// set default log file path
-		TCHAR szAppPath[MAX_PATH];
-		GetModuleFileName(NULL, szAppPath, MAX_PATH);
-		PathRemoveFileSpec(szAppPath);
-		CString strDefFilePath = szAppPath;
+		CString strDefFilePath = thePrefs.GetMuleDirectory(EMULE_CONFIGBASEDIR);
 		if (m_eFileFormat == CSV)
-			strDefFilePath += _T("\\perflog.csv");
+			strDefFilePath += _T("perflog.csv");
 		else
-			strDefFilePath += _T("\\perflog.mrtg");
+			strDefFilePath += _T("perflog.mrtg");
 
 		m_strFilePath = ini.GetString(_T("File"), strDefFilePath);
 		if (m_strFilePath.IsEmpty())
@@ -86,10 +84,10 @@ void CPerfLog::Startup()
 			_tsplitpath(m_strFilePath, drv, dir, nam, NULL);
 			m_strFilePath.Empty();
 
-			_tmakepath(m_strMRTGDataFilePath.GetBuffer(MAX_PATH), drv, dir, CString(nam) + _T("_data"), _T("mrtg"));
+			_tmakepathlimit(m_strMRTGDataFilePath.GetBuffer(MAX_PATH), drv, dir, CString(nam) + _T("_data"), _T("mrtg"));
 			m_strMRTGDataFilePath.ReleaseBuffer();
 
-			_tmakepath(m_strMRTGOverheadFilePath.GetBuffer(MAX_PATH), drv, dir, CString(nam) + _T("_overhead"), _T("mrtg"));
+			_tmakepathlimit(m_strMRTGOverheadFilePath.GetBuffer(MAX_PATH), drv, dir, CString(nam) + _T("_overhead"), _T("mrtg"));
 			m_strMRTGOverheadFilePath.ReleaseBuffer();
 		}
 

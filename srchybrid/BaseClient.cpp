@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -61,7 +61,6 @@
 #include "Log.h"
 #include "DLP.h" //Xman DLP
 #include "BandWidthControl.h"
-#include "WebCache/WebCacheSocket.h" // WebCache [WC team/MorphXT] - Stulle/Max
 
 
 #ifdef _DEBUG
@@ -179,7 +178,7 @@ void CUpDownClient::Init()
 	m_dwLastBlockReceived = 0;
 	m_byDataCompVer = 0;
 	m_byUDPVer = 0;
-	m_bySourceExchangeVer = 0;
+	m_bySourceExchange1Ver = 0;
 	m_byAcceptCommentVer = 0;
 	m_byExtendedRequestsVer = 0;
 	m_nRemoteQueueRank = 0;
@@ -281,6 +280,7 @@ void CUpDownClient::Init()
 	m_fRequestsCryptLayer = 0;
 	m_fSupportsCryptLayer = 0;
 	m_fRequiresCryptLayer = 0;
+	m_fSupportsSourceEx2 = 0;
 
 	//Xman -----------------
 	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
@@ -292,7 +292,7 @@ void CUpDownClient::Init()
 	m_nUpDatarateMeasure = 0;
 
 	m_nDownDatarate = 0;
-	m_nDownDatarate10=0;
+	m_nDownDatarate10 = 0;
 	m_nDownDatarateMeasure = 0;
 	// Maella end
 
@@ -345,37 +345,6 @@ void CUpDownClient::Init()
 
 	m_uModClient = MOD_NONE; // Mod Icons - Stulle
 
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-    m_bProxy = false;
-	m_bIsAcceptingOurOhcbs = true;
-	m_bIsTrustedOHCBSender = true;
-	m_bIsAllowedToSendOHCBs = true;
-	m_uWebCacheFlags = 0;
-	m_pWCDownSocket = NULL;
-	m_pWCUpSocket = NULL;
-	m_WA_webCacheIndex = -1;
-	m_bWebcacheFailedTry = false;
-	m_bWebCacheSupport = false;
-	m_uWebCacheDownloadId = 0;
-	m_uWebCacheUploadId = 0;
-	m_eWebCacheDownState = WCDS_NONE;
-	m_eWebCacheUpState = WCUS_NONE;
-	b_webcacheInfoNeeded = false;
-	//JP trusted OHCB-Senders Start
-	WebCachedBlockRequests = 0;
-	SuccessfulWebCachedBlockDownloads = 0;
-	//JP trusted OHCB-Senders END
-	// Superlexx - encryption
-	Crypt.useNewKey = true;
-	Crypt.isProxy = false;
-	GenerateKey(Crypt.remoteMasterKey);	// generate a key - will be done right before sending
-	memset(Crypt.localMasterKey, 0, WC_KEYLENGTH);
-	// TODO: WC: remove this
-	//for (int i=0; i<WC_KEYLENGTH; i++) Crypt.localMasterKey[i] = 0; // fill with zeroes so we can say if the key is valid
-    lastMultiOHCBPacketSent = 0; // Superlexx - Multi-OHCB
-	m_bWebCacheSupportsMultiOHCBs = false;
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
-
 	m_bGiveWaittimeBack = false; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 }
 
@@ -386,10 +355,11 @@ CUpDownClient::~CUpDownClient(){
 		CAICHHashSet::ClientAICHRequestFailed(this);
 	}
 
-	theApp.clientlist->RemoveClient(this, _T("Destructing client object"));
 	if (m_Friend)
         m_Friend->SetLinkedClient(NULL);
 	
+	theApp.clientlist->RemoveClient(this, _T("Destructing client object"));
+
 	if (socket){
 		socket->client = 0;
 		socket->Safe_Delete();
@@ -402,17 +372,6 @@ CUpDownClient::~CUpDownClient(){
 		m_pPCUpSocket->client = NULL;
 		m_pPCUpSocket->Safe_Delete();
 	}
-
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	if (m_pWCDownSocket){
-		m_pWCDownSocket->client = NULL;
-		m_pWCDownSocket->Safe_Delete();
-	}
-	if (m_pWCUpSocket){
-		m_pWCUpSocket->client = NULL;
-		m_pWCUpSocket->Safe_Delete();
-	}
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	free(m_pszUsername);
 
@@ -698,7 +657,7 @@ void CUpDownClient::ClearHelloProperties()
 	m_byUDPVer = 0;
 	m_byDataCompVer = 0;
 	m_byEmuleVersion = 0;
-	m_bySourceExchangeVer = 0;
+	m_bySourceExchange1Ver = 0;
 	m_byAcceptCommentVer = 0;
 	m_byExtendedRequestsVer = 0;
 	m_byCompatibleClient = 0;
@@ -717,6 +676,7 @@ void CUpDownClient::ClearHelloProperties()
 	m_fRequestsCryptLayer = 0;
 	m_fSupportsCryptLayer = 0;
 	m_fRequiresCryptLayer = 0;
+	m_fSupportsSourceEx2 = 0;
 	m_strModVersion.Empty(); //Maella -Support for tag ET_MOD_VERSION 0x55
 }
 
@@ -872,20 +832,6 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 				CheckForGPLEvilDoer();
 				break;
 
-			// ==> WebCache [WC team/MorphXT] - Stulle/Max
-			case WC_TAG_VOODOO:
-				m_bWebCacheSupport = temptag.IsInt() && temptag.GetInt() == 'ARC4';
-				break;
-			case WC_TAG_FLAGS:
-				if (m_bWebCacheSupport && temptag.IsInt())
-				{
-					m_uWebCacheFlags = temptag.GetInt();
-					b_webcacheInfoNeeded = m_uWebCacheFlags & WC_FLAGS_INFO_NEEDED;
-					m_bWebCacheSupportsMultiOHCBs = (m_uWebCacheFlags & WC_FLAGS_MULTI_OHCBS)!=0;
-				}
-				break;
-			// <== WebCache [WC team/MorphXT] - Stulle/Max
-
 			case CT_EMULE_UDPPORTS:
 				// 16 KAD Port
 				// 16 UDP Port
@@ -929,7 +875,7 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 				//  4 UDP version
 				//  4 Data compression version
 				//  4 Secure Ident
-				//  4 Source Exchange
+				//  4 Source Exchange - deprecated
 				//  4 Ext. Requests
 				//  4 Comments
 				//	1 PeerChache supported
@@ -942,7 +888,7 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 					m_byUDPVer				= (uint8)((temptag.GetInt() >> 24) & 0x0f);
 					m_byDataCompVer			= (uint8)((temptag.GetInt() >> 20) & 0x0f);
 					m_bySupportSecIdent		= (uint8)((temptag.GetInt() >> 16) & 0x0f);
-					m_bySourceExchangeVer	= (uint8)((temptag.GetInt() >> 12) & 0x0f);
+					m_bySourceExchange1Ver	= (uint8)((temptag.GetInt() >> 12) & 0x0f);
 					m_byExtendedRequestsVer	= (uint8)((temptag.GetInt() >>  8) & 0x0f);
 					m_byAcceptCommentVer	= (uint8)((temptag.GetInt() >>  4) & 0x0f);
 					m_fPeerCache			= (temptag.GetInt() >>  3) & 0x01;
@@ -953,7 +899,7 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 					if (bDbgInfo) {
 						m_strHelloInfo.AppendFormat(_T("\n  PeerCache=%u  UDPVer=%u  DataComp=%u  SecIdent=%u  SrcExchg=%u")
 							_T("  ExtReq=%u  Commnt=%u  Preview=%u  NoViewFiles=%u  Unicode=%u"), 
-							m_fPeerCache, m_byUDPVer, m_byDataCompVer, m_bySupportSecIdent, m_bySourceExchangeVer, 
+							m_fPeerCache, m_byUDPVer, m_byDataCompVer, m_bySupportSecIdent, m_bySourceExchange1Ver, 
 							m_byExtendedRequestsVer, m_byAcceptCommentVer, m_fSupportsPreview, m_fNoViewSharedFiles, m_bUnicodeSupport);
 //Xman
 #ifdef LOGTAG
@@ -967,7 +913,8 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 				break;
 
 			case CT_EMULE_MISCOPTIONS2:
-				//	22 Reserved
+				//	21 Reserved
+				//	 1 Supports SourceExachnge2 Packets, ignores SX1 Packet Version
 				//	 1 Requires CryptLayer
 				//	 1 Requests CryptLayer
 				//	 1 Supports CryptLayer
@@ -976,6 +923,7 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 				//   1 Large Files (includes support for 64bit tags)
 				//   4 Kad Version
 				if (temptag.IsInt()) {
+					m_fSupportsSourceEx2	= (temptag.GetInt() >>  10) & 0x01;
 					m_fRequiresCryptLayer	= (temptag.GetInt() >>  9) & 0x01;
 					m_fRequestsCryptLayer	= (temptag.GetInt() >>  8) & 0x01;
 					m_fSupportsCryptLayer	= (temptag.GetInt() >>  7) & 0x01;
@@ -985,7 +933,7 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 					m_byKadVersion			= (uint8)((temptag.GetInt() >>  0) & 0x0f);
 					dwEmuleTags |= 8;
 					if (bDbgInfo)
-						m_strHelloInfo.AppendFormat(_T("\n  KadVersion=%u, LargeFiles=%u ExtMultiPacket=%u CryptLayerSupport=%u CryptLayerRequest=%u CryptLayerRequires=%u"), m_byKadVersion, m_fSupportsLargeFiles, m_fExtMultiPacket, m_fSupportsCryptLayer, m_fRequestsCryptLayer, m_fRequiresCryptLayer);
+						m_strHelloInfo.AppendFormat(_T("\n  KadVersion=%u, LargeFiles=%u ExtMultiPacket=%u CryptLayerSupport=%u CryptLayerRequest=%u CryptLayerRequires=%u m_fSupportsSourceEx2=%u"), m_byKadVersion, m_fSupportsLargeFiles, m_fExtMultiPacket, m_fSupportsCryptLayer, m_fRequestsCryptLayer, m_fRequiresCryptLayer, m_fSupportsSourceEx2);
 					m_fRequestsCryptLayer &= m_fSupportsCryptLayer;
 					m_fRequiresCryptLayer &= m_fRequestsCryptLayer;
 				}
@@ -1013,12 +961,8 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 				break;
 
 			//Xman Anti-Leecher
-			// ==> WebCache [WC team/MorphXT] - Stulle/Max
-			/*
 			case 0x69: //Webcache WC_TAG_VOODOO
 			case 0x6A: //Webcache WC_TAG_FLAGS
-			*/
-			// <== WebCache [WC team/MorphXT] - Stulle/Max
 			case 0x3D: //ICS
 				nonofficialopcodes=true; //Xman Anti-Leecher
 				break;
@@ -1444,7 +1388,7 @@ void CUpDownClient::ProcessMuleInfoPacket(const uchar* pachPacket, uint32 nSize)
 			m_byUDPVer = 1;
 
 		if (m_byEmuleVersion < 0x25 && m_byEmuleVersion > 0x21)
-			m_bySourceExchangeVer = 1;
+			m_bySourceExchange1Ver = 1;
 
 		if (m_byEmuleVersion == 0x24)
 			m_byAcceptCommentVer = 1;
@@ -1507,7 +1451,7 @@ void CUpDownClient::ProcessMuleInfoPacket(const uchar* pachPacket, uint32 nSize)
 				// Bits 31- 8: 0 - reserved
 				// Bits  7- 0: source exchange protocol version
 				if (temptag.IsInt()) {
-					m_bySourceExchangeVer = (uint8)temptag.GetInt();
+					m_bySourceExchange1Ver = (uint8)temptag.GetInt();
 					if (bDbgInfo)
 						m_strMuleInfo.AppendFormat(_T("\n  SrcExch=%u"), (UINT)temptag.GetInt());
 				}
@@ -1620,7 +1564,7 @@ void CUpDownClient::ProcessMuleInfoPacket(const uchar* pachPacket, uint32 nSize)
 	}
 
 	if (m_byDataCompVer == 0) {
-		m_bySourceExchangeVer = 0;
+		m_bySourceExchange1Ver = 0;
 		m_byExtendedRequestsVer = 0;
 		m_byAcceptCommentVer = 0;
 		m_nUDPPort = 0;
@@ -1720,7 +1664,6 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 	if (bSendModVersion) tagcount+=1;
 	//Xman END   - Added by SiRoB, Don't send MOD_VERSION to client that don't support it to reduce overhead
 
-	if (bSendModVersion || m_clientSoft == SO_LPHANT) tagcount+=(1/*WC_VOODOO*/+1/*WC_FLAGS*/); // WebCache [WC team/MorphXT] - Stulle/Max
 
 	data->WriteUInt32(tagcount);
 
@@ -1789,7 +1732,11 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 	const UINT uUdpVer				= 4;
 	const UINT uDataCompVer			= 1;
 	const UINT uSupportSecIdent		= theApp.clientcredits->CryptoAvailable() ? 3 : 0;
-	const UINT uSourceExchangeVer	= 4;
+	// ***
+	// deprecated - will be set back to 3 with the next release (to allow the new version to spread first),
+	// due to a bug in earlier eMule version. Use SupportsSourceEx2 and new opcodes instead
+	const UINT uSourceExchange1Ver	= 4;
+	// ***
 	const UINT uExtendedRequestsVer	= 2;
 	const UINT uAcceptCommentVer	= 1;
 	const UINT uNoViewSharedFiles	= (thePrefs.CanSeeShares() == vsfaNobody) ? 1 : 0; // for backward compatibility this has to be a 'negative' flag
@@ -1804,7 +1751,7 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 				(uUdpVer				<< 24) |
 				(uDataCompVer			<< 20) |
 				(uSupportSecIdent		<< 16) |
-				(uSourceExchangeVer		<< 12) |
+				(uSourceExchange1Ver		<< 12) |
 				(uExtendedRequestsVer	<<  8) |
 				(uAcceptCommentVer		<<  4) |
 				(uPeerCache				<<  3) |
@@ -1822,9 +1769,11 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 	const UINT uSupportsCryptLayer	= thePrefs.IsClientCryptLayerSupported() ? 1 : 0;
 	const UINT uRequestsCryptLayer	= thePrefs.IsClientCryptLayerRequested() ? 1 : 0;
 	const UINT uRequiresCryptLayer	= thePrefs.IsClientCryptLayerRequired() ? 1 : 0;
+	const UINT uSupportsSourceEx2	= 1;
 
 	CTag tagMisOptions2(CT_EMULE_MISCOPTIONS2, 
 //		(RESERVED				     )
+		(uSupportsSourceEx2		<< 10) |
 		(uRequiresCryptLayer	<<  9) |
 		(uRequestsCryptLayer	<<  8) |
 		(uSupportsCryptLayer	<<  7) |
@@ -1856,23 +1805,6 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 		tagMODVersion.WriteTagToFile(data);
 	}
 	//Xman end - modID
-
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	if (bSendModVersion || m_clientSoft == SO_LPHANT)
-	{
-		CTag tagWebCacheVoodoo( WC_TAG_VOODOO, (uint32)'ARC4' );
-		tagWebCacheVoodoo.WriteTagToFile(data);
-		uint32 flags = WC_FLAGS_UDP | WC_FLAGS_NO_OHCBS | WC_FLAGS_MULTI_OHCBS;
-		bool localMasterKeyNeeded = true;
-		for(int i=0; localMasterKeyNeeded && i < WC_KEYLENGTH; i++)
-		localMasterKeyNeeded = (Crypt.localMasterKey[i]==0);
-		if (b_webcacheInfoNeeded || m_WA_webCacheIndex == -1 || localMasterKeyNeeded)
-			flags |= WC_FLAGS_INFO_NEEDED;
-		CTag tagWebCacheFlags( WC_TAG_FLAGS, flags);
-		tagWebCacheFlags.WriteTagToFile(data);
-	}
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
-
 	uint32 dwIP;
 	uint16 nPort;
 	if (theApp.serverconnect->IsConnected()){
@@ -2174,20 +2106,6 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket, UpStopReas
 			m_pPCUpSocket->client = NULL;
 			m_pPCUpSocket->Safe_Delete();
 		}
-
-		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		SetWebCacheDownState(WCDS_NONE);
-		SetWebCacheUpState(WCUS_NONE);
-		if (m_pWCDownSocket){
-			m_pWCDownSocket->client = NULL;
-			m_pWCDownSocket->Safe_Delete();
-		}
-		if (m_pWCUpSocket){
-			m_pWCUpSocket->client = NULL;
-			m_pWCUpSocket->Safe_Delete();
-		}
-		// <== WebCache [WC team/MorphXT] - Stulle/Max
-
 		m_fSentOutOfPartReqs = 0;
 		return false;
 	}
@@ -2405,7 +2323,8 @@ bool CUpDownClient::TryToConnect(bool bIgnoreMaxCon, CRuntimeClass* pClassSocket
 							Packet* packet = new Packet(&bio, OP_KADEMLIAHEADER);
 							packet->opcode = KADEMLIA_CALLBACK_REQ;
 							theStats.AddUpDataOverheadKad(packet->size);
-							theApp.clientudp->SendPacket(packet, GetBuddyIP(), GetBuddyPort(), false, NULL);  // kad doesnt supports obfuscation yet
+							// FIXME: We dont know which kadversion the buddy has, so we need to send unencrypted
+							theApp.clientudp->SendPacket(packet, GetBuddyIP(), GetBuddyPort(), false, NULL, true, 0);
 							SetDownloadState(DS_WAITCALLBACKKAD);
 						}
 						else
@@ -3397,7 +3316,7 @@ void CUpDownClient::AssertValid() const
 	(void)m_nUDPPort;
 	(void)m_nKadPort;
 	(void)m_byUDPVer;
-	(void)m_bySourceExchangeVer;
+	(void)m_bySourceExchange1Ver;
 	(void)m_byAcceptCommentVer;
 	(void)m_byExtendedRequestsVer;
 	CHECK_BOOL(m_bFriendSlot);
@@ -3697,24 +3616,6 @@ CString CUpDownClient::GetDownloadStateDisplayString() const
 			strState += _T(" Hit");
 	//}
 
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	switch (m_eWebCacheDownState)
-	{
-	case WCDS_WAIT_CLIENT_REPLY:
-		strState += _T(" ProxyWait");
-		break;
-	case WCDS_WAIT_CACHE_REPLY:
-		strState += _T(" WC-Bug:CacheWait"); // not needed...
-		break;
-	case WCDS_DOWNLOADINGVIA:
-		strState += _T(" Via Proxy");
-		break;
-	case WCDS_DOWNLOADINGFROM:
-		strState += _T(" From Proxy");
-		break;
-	}
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
-
 	//Xman 4.2
 	if(GetUploadState()==US_UPLOADING)
 		strState = _T(">>") + strState;
@@ -3774,11 +3675,6 @@ CString CUpDownClient::GetUploadStateDisplayString() const
 		if (m_ePeerCacheUpState != PCUS_NONE && m_bPeerCacheUpHit)
 			strState += _T(" Hit");
 	//}
-
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	if( m_eWebCacheUpState == WCUS_UPLOADING )
-		strState += _T(" Via Proxy");
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	//Xman 4.2
 	if(GetDownloadState()==DS_DOWNLOADING)

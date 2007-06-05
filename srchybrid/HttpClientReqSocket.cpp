@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -26,10 +26,6 @@
 #include "Log.h"
 //Xman
 #include "ClientList.h"
-// ==> WebCache [WC team/MorphXT] - Stulle/Max
-#include "WebCache/WebCachedBlockList.h"
-#include "WebCache/WebCacheProxyClient.h" 
-// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -88,7 +84,6 @@ void CHttpClientReqSocket::OnConnect(int nErrorCode)
 
 void CHttpClientReqSocket::DataReceived(const BYTE* pucData, UINT uSize)
 {
-	USES_CONVERSION; // yonatan - unicode bugfix // WebCache [WC team/MorphXT] - Stulle/Max
 	bool bResult = false;
 	CString strError;
 	try
@@ -106,12 +101,7 @@ void CHttpClientReqSocket::DataReceived(const BYTE* pucData, UINT uSize)
 	{
 		TCHAR szError[MAX_CFEXP_ERRORMSG];
 		ex->GetErrorMessage(szError, ARRSIZE(szError));
-		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		/*
 		strError.Format(_T("Error: HTTP socket: File exception - %s"), szError);
-		*/
-		strError.Format(_T("Error: HTTP socket: File exception - %s; %s"), szError, DbgGetClientInfo());
-		// <== WebCache [WC team/MorphXT] - Stulle/Max
 		if (thePrefs.GetVerbose())
 			AddDebugLogLine(false, _T("%s"), strError);
 		ex->Delete();
@@ -121,17 +111,6 @@ void CHttpClientReqSocket::DataReceived(const BYTE* pucData, UINT uSize)
 		strError.Format(_T("Error: HTTP socket: %s; %s"), ex, DbgGetClientInfo());
 		if (thePrefs.GetVerbose())
 			AddDebugLogLine(false, _T("%s"), strError);
-		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		// client removal experiment
-		if( GetClient() && GetClient()->IsProxy() ) {
-			Debug( _T("Restarting Proxy Downloads\n") );
-			SINGLEProxyClient->SetDownloadState( DS_NONE );
-			SINGLEProxyClient->SetWebCacheDownState( WCDS_NONE );
-			if (SINGLEProxyClient->ProxyClientIsBusy())
-				SINGLEProxyClient->DeleteBlock(); // make SingleProxyClient not busy
-			WebCachedBlockList.TryToDL(); // download next block
-		}
-		// <== WebCache [WC team/MorphXT] - Stulle/Max
 	}
 
 	if (!bResult && !deletethis)
@@ -139,12 +118,7 @@ void CHttpClientReqSocket::DataReceived(const BYTE* pucData, UINT uSize)
 		if (thePrefs.GetVerbose() && thePrefs.GetDebugClientTCPLevel() <= 0)
 		{
 			for (int i = 0; i < m_astrHttpHeaders.GetCount(); i++)
-				// ==> WebCache [WC team/MorphXT] - Stulle/Max
-				/*
 				AddDebugLogLine(false, _T("<%hs"), m_astrHttpHeaders.GetAt(i));
-				*/
-				AddDebugLogLine(false, _T("<%s"), CA2T(m_astrHttpHeaders.GetAt(i))); // yonatan - unicode bugfix
-				// <== WebCache [WC team/MorphXT] - Stulle/Max
 		}
 
 		// In case this socket is attached to an CUrlClient, we are dealing with the real CUpDownClient here
@@ -163,15 +137,6 @@ void CHttpClientReqSocket::DataReceived(const BYTE* pucData, UINT uSize)
 		// In case this socket is a PeerCacheUp/Down socket, we are not disconnecting the attached CUpDownClient here
 		// PC-TODO: This needs to be cleaned up thoroughly because that client dependency is somewhat hidden in the
 		// usage of CClientReqSocket::client and CHttpClientReqSocket::GetClient.
-
-		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		if (GetClient() && !GetClient()->IsProxy() && GetClient()->m_pWCDownSocket) {
-			AddDebugLogLine(false, _T("WebCache failed try requesting by ed2k to client: %s"), GetClient()->DbgGetClientInfo());
-			GetClient()->SetWebCacheDownState(WCDS_NONE);
-			GetClient()->SendBlockRequests(true);
-		}
-		// <== WebCache [WC team/MorphXT] - Stulle/Max
-
 		Disconnect(strError);
 	}
 }
@@ -240,14 +205,7 @@ bool CHttpClientReqSocket::ProcessHttpPacket(const BYTE* pucData, UINT uSize)
 	}
 	else{
 		theStats.AddDownDataOverheadFileRequest(uSize);
-		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		/*
 		throw CString(_T("Invalid HTTP socket state"));
-		*/
-		CString tmp;
-		tmp.Format( _T("Invalid HTTP socket state: %u"), GetHttpState() );
-		throw tmp;
-		// <== WebCache [WC team/MorphXT] - Stulle/Max
 	}
 
 	return true;

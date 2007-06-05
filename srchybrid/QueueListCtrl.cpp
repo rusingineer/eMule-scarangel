@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -71,13 +71,14 @@ CQueueListCtrl::CQueueListCtrl()
 void CQueueListCtrl::Init()
 {
 	SetName(_T("QueueListCtrl"));
+
 	CImageList ilDummyImageList; //dummy list for getting the proper height of listview entries
 	ilDummyImageList.Create(1, theApp.GetSmallSytemIconSize().cy,theApp.m_iDfltImageListColorFlags|ILC_MASK, 1, 1); 
 	SetImageList(&ilDummyImageList, LVSIL_SMALL);
 	ASSERT( (GetStyle() & LVS_SHAREIMAGELISTS) == 0 );
 	ilDummyImageList.Detach();
 
-	SetExtendedStyle(LVS_EX_FULLROWSELECT);
+	SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_INFOTIP);
 	InsertColumn(0,GetResString(IDS_QL_USERNAME),LVCFMT_LEFT,150,0);
 	InsertColumn(1,GetResString(IDS_FILE),LVCFMT_LEFT,275,1);
 	InsertColumn(2,GetResString(IDS_FILEPRIO),LVCFMT_LEFT,110,2);
@@ -98,8 +99,6 @@ void CQueueListCtrl::Init()
 	// ==> push rare file - Stulle
 	InsertColumn(13,GetResString(IDS_RARE),LVCFMT_LEFT,40,13);
 	// <== push rare file - Stulle
-
-	InsertColumn(14, GetResString(IDS_WC_SOURCES) ,LVCFMT_LEFT, 100,14); // WebCache [WC team/MorphXT] - Stulle/Max
 
 	SetAllIcons();
 	Localize();
@@ -259,12 +258,6 @@ void CQueueListCtrl::Localize()
 		pHeaderCtrl->SetItem(13, &hdi);
 		// <== push rare file - Stulle
 
-		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		strRes = GetResString(IDS_WC_SOURCES);
-		hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
-		pHeaderCtrl->SetItem(14, &hdi);
-		// <== WebCache [WC team/MorphXT] - Stulle/Max
-//breakpoint
 	}
 	// ==> Design Settings [eWombat/Stulle] - Stulle
 	theApp.emuledlg->transferwnd->SetBackgroundColor(style_b_queuelist);
@@ -360,6 +353,7 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	}
 	else
 		odc->SetBkColor(GetBkColor());
+	COLORREF crOldBackColor = odc->GetBkColor(); //Xman PowerRelease //Xman show LowIDs
 
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
 	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
@@ -701,34 +695,8 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						break;
 					}
 				// <== push rare file - Stulle
-
-				// ==> WebCache [WC team/MorphXT] - Stulle/Max
-				case 14: {
-					COLORREF crOldBackColor = dc->GetBkColor();
-					if (client->SupportsWebCache())
-					{
-						Sbuffer = client->GetWebCacheName();
-						if (client->IsBehindOurWebCache())
-							dc->SetTextColor(RGB(0, 180, 0)); //if is behind our webcache display green
-						else if (Sbuffer != "")
-							dc->SetTextColor(RGB(255, 0, 0)); // if webcache info is there but not our own set red
-						else
-							Sbuffer = GetResString(IDS_WEBCACHE_NOPROXY);	// if no webcache info colour is black
-					   }
-					else
-						Sbuffer = "";
-					dc->DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
- 					dc->SetTextColor(crOldBackColor);
-					break;
-				}
-				// <== WebCache [WC team/MorphXT] - Stulle/Max
 		   	}
-			// ==> WebCache [WC team/MorphXT] - Stulle/Max
-			/*
 			if( iColumn != 9 && iColumn != 0)
-			*/
-			if( iColumn != 9 && iColumn != 0 && iColumn != 14)
-			// <== WebCache [WC team/MorphXT] - Stulle/Max
 				dc.DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
 			dc.SetBkColor(crOldBackColor); //Xman PowerRelease //Xman show LowIDs
 			cur_rec.left += GetColumnWidth(iColumn);
@@ -1132,21 +1100,6 @@ int CQueueListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 			break;
 		// <== push rare file - Stulle
 
-		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		case 14:
-			if (item1->SupportsWebCache() && item2->SupportsWebCache() )
-				iResult=CompareLocaleStringNoCase(item1->GetWebCacheName(),item2->GetWebCacheName());
-			else
-				iResult=item1->SupportsWebCache() - item2->SupportsWebCache();
-			break;
-		case 114:
-			if (item2->SupportsWebCache() && item1->SupportsWebCache() )
-				iResult=CompareLocaleStringNoCase(item2->GetWebCacheName(),item1->GetWebCacheName());
-			else
-				iResult=item2->SupportsWebCache() - item1->SupportsWebCache();
-			break;
-		// <== WebCache [WC team/MorphXT] - Stulle/Max
-
 		default:
 			iResult=0;
 			break;
@@ -1180,7 +1133,8 @@ void CQueueListCtrl::UpdateAll()
 void CALLBACK CQueueListCtrl::QueueUpdateTimer(HWND /*hwnd*/, UINT /*uiMsg*/, UINT /*idEvent*/, DWORD /*dwTime*/)
 {
 	// NOTE: Always handle all type of MFC exceptions in TimerProcs - otherwise we'll get mem leaks
-	try
+	//Xman unreachable
+	//try
 	{
 		if (   !theApp.emuledlg->IsRunning() // Don't do anything if the app is shutting down - can cause unhandled exceptions
 			|| !thePrefs.GetUpdateQueueList()
@@ -1196,6 +1150,8 @@ void CALLBACK CQueueListCtrl::QueueUpdateTimer(HWND /*hwnd*/, UINT /*uiMsg*/, UI
 		}
 		//Xman end
 	}
+	//Xman unreachable
+	/*
 	CATCH_DFLT_EXCEPTIONS(_T("CQueueListCtrl::QueueUpdateTimer"))
 		// Maella -Code Improvement-
 		// Remark: The macro CATCH_DFLT_EXCEPTIONS will not catch all types of exception.
@@ -1205,6 +1161,7 @@ void CALLBACK CQueueListCtrl::QueueUpdateTimer(HWND /*hwnd*/, UINT /*uiMsg*/, UI
 				AddLogLine(true, _T("Unknown exception in %s"), __FUNCTION__);
 		}
 		// Maella end
+	*/
 }
 //Xman end
 

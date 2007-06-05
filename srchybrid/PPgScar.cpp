@@ -13,7 +13,6 @@
 #include "log.h"
 #include "DownloadQueue.h" // Global Source Limit [Max/Stulle] - Stulle
 #include "TransferWnd.h" // CPU/MEM usage [$ick$/Stulle] - Max
-#include "WebCache/webcache.h" // WebCache [WC team/MorphXT] - Stulle/Max
 #include "XMessageBox.h" // TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 #include "sharedfilelist.h" // PowerShare [ZZ/MorphXT] - Stulle
 // ==> Design Settings [eWombat/Stulle] - Stulle
@@ -57,19 +56,6 @@ BEGIN_MESSAGE_MAP(CPPgScar, CPropertyPage)
 	ON_WM_DESTROY()
 	ON_MESSAGE(UM_TREEOPTSCTRL_NOTIFY, OnTreeOptsCtrlNotify)
 	ON_NOTIFY(TCN_SELCHANGE, IDC_PPG_SCAR_TAB, OnTabSelectionChange) // Tabbed Preferences [TPT] - Stulle
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	ON_EN_CHANGE(IDC_webcacheName, OnSettingsChange) 
-	ON_EN_CHANGE(IDC_webcachePort, OnSettingsChange)
-	ON_EN_CHANGE(IDC_BLOCKS, OnSettingsChange)
-	ON_BN_CLICKED(IDC_Activatewebcachedownloads, OnEnChangeActivatewebcachedownloads)
-	ON_BN_CLICKED(IDC_DETECTWEBCACHE, OnBnClickedDetectWebCache)
-	ON_BN_CLICKED(IDC_EXTRATIMEOUT, OnSettingsChange)
-	ON_BN_CLICKED(IDC_LOCALTRAFFIC, OnSettingsChange)
-	ON_BN_CLICKED(IDC_PERSISTENT_PROXY_CONNS, OnSettingsChange)
-	ON_BN_CLICKED(IDC_UPDATE_WCSETTINGS, OnSettingsChange)
-	ON_BN_CLICKED(IDC_ADVANCEDCONTROLS, OnBnClickedAdvancedcontrols)
-	ON_BN_CLICKED(IDC_TestProxy, OnBnClickedTestProxy)//JP TMP
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 	ON_BN_CLICKED(IDC_BACKUPNOW, OnBnClickedBackupnow)
 	ON_BN_CLICKED(IDC_DAT, OnBnClickedDat)
@@ -106,19 +92,11 @@ CPPgScar::CPPgScar()
 	m_imageList.Create(16,16,theApp.m_iDfltImageListColorFlags|ILC_MASK,0,1);
 	m_imageList.SetBkColor(CLR_NONE);
 	m_imageList.Add(CTempIconLoader(_T("AAAEMULEAPP")));
-	m_imageList.Add(CTempIconLoader(_T("PREF_WEBCACHE")));
 	m_imageList.Add(CTempIconLoader(_T("BACKUP")));
 	m_imageList.Add(CTempIconLoader(_T("SEARCHFILETYPE_PICTURE")));
 //	m_imageList.Add(CTempIconLoader(_T("UPDATE")));
 	m_imageList.Add(CTempIconLoader(_T("SUPPORT")));
 	// <== Tabbed Preferences [TPT] - Stulle
-
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	guardian=false;
-	bCreated = false;
-	bCreated2 = false;
-	showadvanced = false;
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	m_bInitializedTreeOpts = false;
 	m_htiPush = NULL; // push files - Stulle
@@ -1003,36 +981,6 @@ void CPPgScar::LoadSettings(void)
 		// <== Tabbed Preferences [TPT] - Stulle
 		// <== push small files [sivka] - Stulle
 
-		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		bool bTemp = thePrefs.webcacheEnabled;
-		// check/uncheck webcache
-		m_bWcDl.SetCheck(bTemp);
-		// enter name 
-		m_webcacheAddressEdit.EnableWindow(bTemp);
-		strBuffer.Format(_T("%s"), thePrefs.webcacheName);
-		m_webcacheAddressEdit.SetWindowText(strBuffer);
-		// enter Port
-		m_webcachePortEdit.EnableWindow(bTemp);
-		strBuffer.Format(_T("%d"), thePrefs.webcachePort);
-		m_webcachePortEdit.SetWindowText(strBuffer);
-		// load parts to download before reconnect
-		m_blockEdit.EnableWindow(bTemp);
-		strBuffer.Format(_T("%d"), thePrefs.GetWebCacheBlockLimit());
-		m_blockEdit.SetWindowText(strBuffer);
-		// load extratimeoutsetting
-		m_TimeOut.EnableWindow(bTemp);
-		m_TimeOut.SetCheck(thePrefs.GetWebCacheExtraTimeout());
-		// load localtrafficsettings
-		m_CacheISP.EnableWindow(bTemp);
-		m_CacheISP.SetCheck(thePrefs.GetWebCacheCachesLocalTraffic()==false);
-		// load persistent proxy conns
-		m_WcDlPersistent.EnableWindow(bTemp);
-		m_WcDlPersistent.SetCheck(thePrefs.PersistentConnectionsForProxyDownloads);
-		// load autoupdate
-		m_Update.EnableWindow(bTemp);
-		m_Update.SetCheck(thePrefs.WCAutoupdate);
-		// <== WebCache [WC team/MorphXT] - Stulle/Max
-
 		// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 		m_AutoBackup.SetCheck(thePrefs.GetAutoBackup());
 		m_AutoBackup2.EnableWindow(thePrefs.GetAutoBackup());
@@ -1305,67 +1253,6 @@ BOOL CPPgScar::OnApply()
 		thePrefs.m_bUseCompression = false;
 	// <=== Adjust Compress Level [Stulle] - Stulle
 
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	// set thePrefs.webcacheName
-	if(m_webcacheAddressEdit.GetWindowTextLength())
-	{
-		CString nNewwebcache;
-		m_webcacheAddressEdit.GetWindowText(nNewwebcache);
-		if (thePrefs.webcacheName != nNewwebcache){
-			thePrefs.webcacheName = nNewwebcache;
-			//MORPH - Removed by SiRoB, New ResolveWebCachename
-			//bRestartApp = true;
-		}
-	}
-
-	// set thePrefs.webcachePort
-	if(m_webcachePortEdit.GetWindowTextLength())
-	{
-		m_webcachePortEdit.GetWindowText(strBuffer);
-		uint16 nNewPort = (uint16)_tstol(strBuffer);
-		if (!nNewPort) nNewPort=0;
-		if (nNewPort != thePrefs.webcachePort){
-			thePrefs.webcachePort = nNewPort;
-		}
-	}
-	
-	// set thePrefs.webcacheEnabled
-	thePrefs.webcacheEnabled = m_bWcDl.GetCheck() == BST_CHECKED;
-	
-	
-	// set thePrefs.webcacheBlockLimit
-	if(m_blockEdit.GetWindowTextLength())
-	{
-		m_blockEdit.GetWindowText(strBuffer);
-		uint16 nNewBlocks = (uint16)_tstol(strBuffer);
-		if ((!nNewBlocks) || (nNewBlocks > 50000) || (nNewBlocks < 0)) nNewBlocks=0;
-		if (nNewBlocks != thePrefs.GetWebCacheBlockLimit()){
-			thePrefs.SetWebCacheBlockLimit(nNewBlocks);
-		}
-	}
-	
-	// set thePrefs.WebCacheExtraTimeout
-	thePrefs.SetWebCacheExtraTimeout(m_TimeOut.GetCheck() == BST_CHECKED);
-
-	// set thePrefs.WebCacheCachesLocalTraffic
-	bool cachestraffic;
-	cachestraffic = m_CacheISP.GetCheck() == BST_CHECKED;
-	if (cachestraffic == true) thePrefs.SetWebCacheCachesLocalTraffic(0);
-	else thePrefs.SetWebCacheCachesLocalTraffic(1);
-
-	// set thePrefs.PersistentConnectionsForProxyDownloads
-	thePrefs.PersistentConnectionsForProxyDownloads = m_WcDlPersistent.GetCheck() == BST_CHECKED;
-
-	// set thePrefs.WCAutoupdate
-	thePrefs.WCAutoupdate = m_Update.GetCheck() == BST_CHECKED;
-
-	if (bRestartApp)
-	{
-		AfxMessageBox(GetResString(IDS_SETTINGCHANGED_RESTART));
-		thePrefs.WebCacheDisabledThisSession = true;
-	}
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
-
 	// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 	thePrefs.m_bAutoBackup = m_AutoBackup.GetCheck() == BST_CHECKED;
 	thePrefs.m_bAutoBackup2 = m_AutoBackup2.GetCheck() == BST_CHECKED;
@@ -1624,24 +1511,6 @@ void CPPgScar::Localize(void)
 		// <== Global Source Limit [Max/Stulle] - Stulle
 		if (m_htiStartupSound) m_ctrlTreeOptions.SetItemText(m_htiStartupSound, GetResString(IDS_STARTUPSOUND)); // Startupsound [Commander] - mav744
 		if (m_htiCompressLevel) m_ctrlTreeOptions.SetEditLabel(m_htiCompressLevel, GetResString(IDS_COMPRESS_LVL)); // Adjust Compress Level [Stulle] - Stulle
-
-		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		m_WcProxyBox.SetWindowText( GetResString(IDS_WEBCACHE_ISP) );
-		m_webcachePortStatic.SetWindowText( GetResString(IDS_WC_PORT) );
-		m_webcacheAddressStatic.SetWindowText( GetResString(IDS_WC_ADDRESS) );
-		m_WcCtrlBox.SetWindowText( GetResString(IDS_WC_CONTROLS) );
-		m_bWcDl.SetWindowText( GetResString(IDS_WC_ENABLE) );
-		m_autoDetect.SetWindowText( GetResString(IDS_WC_AUTO) );
-		m_blockText.SetWindowText( GetResString(IDS_WC_NRBLOCKS) );
-		m_blockLabel.SetWindowText( GetResString(IDS_WC_BLOCK) );
-		m_TimeOut.SetWindowText( GetResString(IDS_WC_TIMEOUT) );
-		m_CacheISP.SetWindowText( GetResString(IDS_WC_LOCAL) );
-		m_WcDlPersistent.SetWindowText( GetResString(IDS_WC_PERSISTENT) );
-		m_hideControls.SetWindowText( GetResString(IDS_WC_ADVANCED) );
-		m_webcacheTest.SetWindowText( GetResString(IDS_WC_TEST) );
-		m_Update.SetWindowText( GetResString(IDS_WC_UPDATESETTING) );
-		m_WrongPort.SetWindowText( GetResString(IDS_WC_WRONGPORT) );
-		// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 		// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 		m_BackupBox.SetWindowText( GetResString(IDS_BACKUP_FILEFRAME) );
@@ -2029,7 +1898,6 @@ void CPPgScar::InitTab()
 	m_tabCtr.SetImageList(&m_imageList);
 	int iTemp=0;
 	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, SCAR, GetResString(IDS_SCARANGEL), iTemp++, (LPARAM)SCAR);
-	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, WEBCACHE, GetResString(IDS_WEBCACHE), iTemp++, (LPARAM)WEBCACHE);
 	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, BACKUP, GetResString(IDS_BACKUP), iTemp++, (LPARAM)BACKUP);
 	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, COLOR, GetResString(IDS_COLOR_BOX), iTemp++, (LPARAM)COLOR);
 //	m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, UPDATE, _T("Update"), iTemp++, (LPARAM)UPDATE);
@@ -2076,113 +1944,6 @@ void CPPgScar::InitControl()
 							  CRect(left, bottom-16, right, bottom), this, IDC_PUSHSMALL_SLIDER);
 	m_iPushSmall.SetFont(GetFont());
 	m_iPushSmall.SetRange(1, PARTSIZE);	
-
-
-	// WebCache
-	m_WcCtrlBox.CreateEx(0, _T("BUTTON"), _T("Webcache Controls"), 
-						   WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
-						   BS_GROUPBOX,
-						   CRect(left, top, right, top+50), this, IDC_STATIC_CONTROLS);
-	m_WcCtrlBox.SetFont(GetFont());
-
-	m_bWcDl.CreateEx(0, _T("BUTTON"), _T("Enable Webcached Downloads"), 
-									WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
-									BS_AUTOCHECKBOX, 
-									CRect(left+5, top+25, right-137, top+40), this, IDC_Activatewebcachedownloads);
-	m_bWcDl.SetFont(GetFont());
-
-	m_hideControls.CreateEx(0, _T("BUTTON"), _T("show advanced controls"), 
-									WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
-									BS_FLAT,
-									CRect(right-135, top+15, right-8, top+40), this, IDC_ADVANCEDCONTROLS);
-	m_hideControls.SetFont(GetFont());
-
-	m_WcProxyBox.CreateEx(0, _T("BUTTON"), _T("ISP Proxyserver Settings"), 
-						   WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
-						   BS_GROUPBOX,
-						   CRect(left, top+55, right, bottom), this, IDC_STATIC_CONTROLS);
-	m_WcProxyBox.SetFont(GetFont());
-
-	m_webcacheAddressStatic.CreateEx(0, _T("STATIC"), _T("Port"), 
-						WS_CHILD /*| WS_VISIBLE*/, 
-						CRect(left+10, top+73, left+65, top+88), this, IDC_STATIC_PORT);
-	m_webcacheAddressStatic.SetFont(GetFont());
-
-	m_webcacheAddressEdit.CreateEx(WS_EX_CLIENTEDGE, _T("EDIT"), _T(""), 
-						WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
-						ES_LEFT | ES_AUTOHSCROLL, 
-						CRect(left+70, top+71, right-15, top+90), this, IDC_webcacheName);
-	m_webcacheAddressEdit.SetFont(GetFont());
-
-	m_webcachePortStatic.CreateEx(0, _T("STATIC"), _T("Address"), 
-						WS_CHILD /*| WS_VISIBLE*/, 
-						CRect(left+10, top+98, left+65, top+113), this, IDC_STATIC_ADDRESS);
-	m_webcachePortStatic.SetFont(GetFont());
-
-	m_webcachePortEdit.CreateEx(WS_EX_CLIENTEDGE, _T("EDIT"), _T(""), 
-						WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
-						ES_LEFT | ES_AUTOHSCROLL | ES_NUMBER, 
-						CRect(left+70, top+96, left+120, top+115), this, IDC_webcachePort);
-	m_webcachePortEdit.SetFont(GetFont());
-	m_webcachePortEdit.SetLimitText(5);
-
-	m_webcacheTest.CreateEx(0, _T("BUTTON"), _T("Test webcache configuration. Might take up to 30 Seconds"), 
-									WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
-									BS_FLAT,
-									CRect(left+7, top+118, right-7, top+140), this, IDC_TestProxy);
-	m_webcacheTest.SetFont(GetFont());
-
-	m_blockText.CreateEx(0, _T("STATIC"), _T("Number of blocks to download before reconnecting to the proxy (may help to solve disconnects in some cases)"), 
-						WS_CHILD /*| WS_VISIBLE*/, 
-						CRect(left+10, top+143, right-125, top+183), this, IDC_STATIC_NRBLOCKS);
-	m_blockText.SetFont(GetFont());
-
-	m_blockEdit.CreateEx(WS_EX_CLIENTEDGE, _T("EDIT"), _T(""), 
-						WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
-						ES_LEFT | ES_AUTOHSCROLL | ES_NUMBER, 
-						CRect(right-120, top+156, right-70, top+175), this, IDC_BLOCKS);
-	m_blockEdit.SetFont(GetFont());
-	m_blockEdit.SetLimitText(5);
-
-	m_blockLabel.CreateEx(0, _T("STATIC"), _T("180k-Blocks"), 
-						WS_CHILD /*| WS_VISIBLE*/, 
-						CRect(right-65, top+158, right-10, top+173), this, IDC_STATIC_BLOCKS);
-	m_blockLabel.SetFont(GetFont());
-
-	m_TimeOut.CreateEx(0, _T("BUTTON"), _T("Extra long timeout for webcache connections"), 
-									WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
-									BS_AUTOCHECKBOX, 
-									CRect(left+7, top+184, right-7, top+199), this, IDC_EXTRATIMEOUT);
-	m_TimeOut.SetFont(GetFont());
-
-	m_CacheISP.CreateEx(0, _T("BUTTON"), _T("This webcache does NOT cache traffic within the same ISP"), 
-									WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
-									BS_AUTOCHECKBOX, 
-									CRect(left+7, top+201, right-7, top+216), this, IDC_LOCALTRAFFIC);
-	m_CacheISP.SetFont(GetFont());
-
-	m_WcDlPersistent.CreateEx(0, _T("BUTTON"), _T("Persistent connections for proxy downloads"), 
-									WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
-									BS_AUTOCHECKBOX, 
-									CRect(left+7, top+218, right-7, top+233), this, IDC_PERSISTENT_PROXY_CONNS);
-	m_WcDlPersistent.SetFont(GetFont());
-
-	m_Update.CreateEx(0, _T("BUTTON"), _T("Update webcachesettings automatically"), 
-									WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
-									BS_AUTOCHECKBOX, 
-									CRect(left+7, top+235, right-7, top+250), this, IDC_UPDATE_WCSETTINGS);
-	m_Update.SetFont(GetFont());
-
-	m_autoDetect.CreateEx(0, _T("BUTTON"), _T("Autodetect Webcache"), 
-									WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
-									BS_FLAT,
-									CRect(left+7, top+252, right-7, top+274), this, IDC_DETECTWEBCACHE);
-	m_autoDetect.SetFont(GetFont());
-
-	m_WrongPort.CreateEx(0, _T("STATIC"), _T("You are using a TCP port that is usually not cached by ISP proxy-servers. Please change your TCP port to  21, 70, 80, 210, 443 563  or 1025-65535 to be able to activate the webcache download!"), 
-						WS_CHILD /*| WS_VISIBLE*/, 
-						CRect(left+7, top+277, right-7, bottom-5), this, IDC_WrongPortWarning);
-	m_WrongPort.SetFont(GetFont());
 
 	// Backup
 	m_BackupBox.CreateEx(0, _T("BUTTON"), _T("Select File Types to Backup"), 
@@ -2380,44 +2141,6 @@ void CPPgScar::SetTab(eTab tab){
 				m_iPushSmall.ShowWindow(SW_HIDE);
 				m_iPushSmall.EnableWindow(FALSE);
 				break;
-			case WEBCACHE:
-				m_WcCtrlBox.ShowWindow(SW_HIDE);
-				m_WcCtrlBox.EnableWindow(FALSE);
-				m_bWcDl.ShowWindow(SW_HIDE);
-				m_bWcDl.EnableWindow(FALSE);
-				m_hideControls.ShowWindow(SW_HIDE);
-				m_hideControls.EnableWindow(FALSE);
-				m_WcProxyBox.ShowWindow(SW_HIDE);
-				m_WcProxyBox.EnableWindow(FALSE);
-				m_webcacheAddressStatic.ShowWindow(SW_HIDE);
-				m_webcacheAddressStatic.EnableWindow(FALSE);
-				m_webcacheAddressEdit.ShowWindow(SW_HIDE);
-				m_webcacheAddressEdit.EnableWindow(FALSE);
-				m_webcachePortStatic.ShowWindow(SW_HIDE);
-				m_webcachePortStatic.EnableWindow(FALSE);
-				m_webcachePortEdit.ShowWindow(SW_HIDE);
-				m_webcachePortEdit.EnableWindow(FALSE);
-				m_webcacheTest.ShowWindow(SW_HIDE);
-				m_webcacheTest.EnableWindow(FALSE);
-				m_blockText.ShowWindow(SW_HIDE);
-				m_blockText.EnableWindow(FALSE);
-				m_blockEdit.ShowWindow(SW_HIDE);
-				m_blockEdit.EnableWindow(FALSE);
-				m_blockLabel.ShowWindow(SW_HIDE);
-				m_blockLabel.EnableWindow(FALSE);
-				m_TimeOut.ShowWindow(SW_HIDE);
-				m_TimeOut.EnableWindow(FALSE);
-				m_CacheISP.ShowWindow(SW_HIDE);
-				m_CacheISP.EnableWindow(FALSE);
-				m_WcDlPersistent.ShowWindow(SW_HIDE);
-				m_WcDlPersistent.EnableWindow(FALSE);
-				m_Update.ShowWindow(SW_HIDE);
-				m_Update.EnableWindow(FALSE);
-				m_autoDetect.ShowWindow(SW_HIDE);
-				m_autoDetect.EnableWindow(FALSE);
-				m_WrongPort.ShowWindow(SW_HIDE);
-				m_WrongPort.EnableWindow(FALSE);
-				break;
 			case BACKUP:
 				m_BackupBox.ShowWindow(SW_HIDE);
 				m_BackupBox.EnableWindow(FALSE);
@@ -2504,42 +2227,6 @@ void CPPgScar::SetTab(eTab tab){
 				m_iPushSmall.ShowWindow(SW_SHOW);
 				m_iPushSmall.EnableWindow(TRUE);
 				break;
-			case WEBCACHE:
-				m_WcCtrlBox.ShowWindow(SW_SHOW);
-				m_WcCtrlBox.EnableWindow(TRUE);
-				m_bWcDl.ShowWindow(SW_SHOW);
-				m_bWcDl.EnableWindow(TRUE);
-				m_hideControls.ShowWindow(SW_SHOW);
-				m_WcProxyBox.ShowWindow(SW_SHOW);
-				m_WcProxyBox.EnableWindow(TRUE);
-				m_webcacheAddressStatic.ShowWindow(SW_SHOW);
-				m_webcacheAddressEdit.ShowWindow(SW_SHOW);
-				m_webcachePortStatic.ShowWindow(SW_SHOW);
-				m_webcachePortEdit.ShowWindow(SW_SHOW);
-				m_webcacheTest.ShowWindow(SW_SHOW);
-				m_autoDetect.ShowWindow(SW_SHOW);
-				if (showadvanced)
-				{
-					m_blockText.ShowWindow(SW_SHOW);
-					m_blockEdit.ShowWindow(SW_SHOW);
-					m_blockLabel.ShowWindow(SW_SHOW);
-					m_TimeOut.ShowWindow(SW_SHOW);
-					m_CacheISP.ShowWindow(SW_SHOW);
-					m_WcDlPersistent.ShowWindow(SW_SHOW);
-					m_Update.ShowWindow(SW_SHOW);
-				}
-				else
-				{
-					m_blockText.ShowWindow(SW_HIDE);
-					m_blockEdit.ShowWindow(SW_HIDE);
-					m_blockLabel.ShowWindow(SW_HIDE);
-					m_TimeOut.ShowWindow(SW_HIDE);
-					m_CacheISP.ShowWindow(SW_HIDE);
-					m_WcDlPersistent.ShowWindow(SW_HIDE);
-					m_Update.ShowWindow(SW_HIDE);
-				}
-				OnEnChangeActivatewebcachedownloads();
-				break;
 			case BACKUP:
 				m_BackupBox.ShowWindow(SW_SHOW);
 				m_BackupBox.EnableWindow(TRUE);
@@ -2612,166 +2299,6 @@ void CPPgScar::SetTab(eTab tab){
 	}
 }
 // <== Tabbed Preferences [TPT] - Stulle
-
-// ==> WebCache [WC team/MorphXT] - Stulle/Max
-void CPPgScar::OnEnChangeActivatewebcachedownloads(){
-		
-		if (guardian) return;
-
-		guardian=true;
-
-		SetModified();
-		bool bTemp;
-
-		if(thePrefs.UsesCachedTCPPort() == false)
-		{
-			m_bWcDl.SetCheck(false);
-			thePrefs.webcacheEnabled=false;
-			m_webcacheTest.EnableWindow(FALSE);
-			if(m_currentTab == WEBCACHE)
-			{
-				m_WrongPort.ShowWindow(SW_SHOW);
-				m_WrongPort.EnableWindow(TRUE);
-			}
-			bTemp = false;
-		}
-		else
-		{
-			m_webcacheTest.EnableWindow(true);
-			bTemp = m_bWcDl.GetCheck() == BST_CHECKED;
-			m_WrongPort.ShowWindow(SW_HIDE);
-			m_WrongPort.EnableWindow(FALSE);
-		}
-
-		m_hideControls.EnableWindow(bTemp);
-		m_webcacheAddressStatic.EnableWindow(bTemp);
-		m_webcacheAddressEdit.EnableWindow(bTemp);
-		m_webcachePortStatic.EnableWindow(bTemp);
-		m_webcachePortEdit.EnableWindow(bTemp);
-		m_autoDetect.EnableWindow(bTemp);
-		m_blockText.EnableWindow(bTemp);
-		m_blockEdit.EnableWindow(bTemp);
-		m_blockLabel.EnableWindow(bTemp);
-		m_TimeOut.EnableWindow(bTemp);
-		m_CacheISP.EnableWindow(bTemp);
-		m_WcDlPersistent.EnableWindow(bTemp);
-		m_Update.EnableWindow(bTemp);
-
-		guardian=false;
-}
-
-void CPPgScar::OnBnClickedDetectWebCache()
-{
-	WCInfo_Struct* detectedWebcache = new WCInfo_Struct();
-	bool reaskedDNS;	// tells if a DNS reverse lookup has been performed during detection; unneeded since we don't show it anymore
-
-	try
-	{
-		reaskedDNS=DetectWebCache(detectedWebcache);
-	}
-	catch(CString strError)
-	{
-		delete detectedWebcache;
-		AfxMessageBox(strError ,MB_OK | MB_ICONINFORMATION,0);
-		return;
-	}
-	catch (...)
-	{
-		delete detectedWebcache;
-		AfxMessageBox(_T("Autodetection failed") ,MB_OK | MB_ICONINFORMATION,0);
-		return;
-	}
-
-	CString comment = detectedWebcache->comment;
-	for (int i=1; i*45 < comment.GetLength(); i++) // some quick-n-dirty beautifying  
-		comment = comment.Left(i*45) + _T(" \n\t\t\t") + comment.Right(comment.GetLength() - i*45);
-
-	CString message =	_T("Your ISP is:\t\t") + detectedWebcache->isp + _T(", ") + detectedWebcache->country + _T("\n") +
-		_T("Your proxy name is:\t") + detectedWebcache->webcache + _T("\n") +
-						_T("The proxy port is:\t\t") + detectedWebcache->port + _T("\n") +
-						(comment != _T("") ? _T("comment: \t\t") + comment : _T(""));
-	if (detectedWebcache->active == "0")
-		message += _T("\n\ndue to detection results, webcache downloading has been deactivated;\nsee the comment for more details");
-
-	if (AfxMessageBox(message, MB_OKCANCEL | MB_ICONINFORMATION,0) == IDCANCEL)
-	{
-		delete detectedWebcache;
-		return;
-	}
-
-	m_bWcDl.SetCheck(detectedWebcache->active == "1");
-	m_webcacheAddressEdit.SetWindowText(detectedWebcache->webcache);
-	m_webcachePortEdit.SetWindowText(detectedWebcache->port);
-	m_blockEdit.SetWindowText(detectedWebcache->blockLimit);
-	m_TimeOut.SetCheck(detectedWebcache->active == "1");
-	m_CacheISP.SetCheck(detectedWebcache->active == "0");
-	m_WcDlPersistent.SetCheck(detectedWebcache->active == "1");
-
-	delete detectedWebcache;
-}
-
-void CPPgScar::OnBnClickedAdvancedcontrols(){
-	showadvanced = !showadvanced;
-	if (showadvanced)
-	{
-		m_hideControls.SetWindowText(GetResString(IDS_WC_HIDE_ADV));
-		m_TimeOut.ShowWindow(SW_SHOW);
-		m_CacheISP.ShowWindow(SW_SHOW);
-		m_blockEdit.ShowWindow(SW_SHOW);
-		m_blockText.ShowWindow(SW_SHOW);
-		m_blockLabel.ShowWindow(SW_SHOW);
-		m_WcDlPersistent.ShowWindow(SW_SHOW);
-		m_Update.ShowWindow(SW_SHOW);
-	}
-	else
-	{
-		m_hideControls.SetWindowText(GetResString(IDS_WC_ADVANCED));
-		m_TimeOut.ShowWindow(SW_HIDE);
-		m_CacheISP.ShowWindow(SW_HIDE);
-		m_blockEdit.ShowWindow(SW_HIDE);
-		m_blockText.ShowWindow(SW_HIDE);
-		m_blockLabel.ShowWindow(SW_HIDE);
-		m_WcDlPersistent.ShowWindow(SW_HIDE);
-		m_Update.ShowWindow(SW_HIDE);
-	}
-}
-//JP proxy configuration test
-void CPPgScar::OnBnClickedTestProxy()
-{
-	if (thePrefs.IsWebCacheTestPossible())
-	{
-		if (!thePrefs.expectingWebCachePing)
-		{
-			//get webcache name from IDC_webcacheName
-			CString cur_WebCacheName;
-			m_webcacheAddressEdit.GetWindowText(cur_WebCacheName);
-			if (cur_WebCacheName.GetLength() > 15 && cur_WebCacheName.Left(12) == "transparent@") //doesn't work for transparent proxies
-			{
-				AfxMessageBox(GetResString(IDC_MSG_WEBCACHE_TRANSPAR)); // leuk_he to rc.
-				// Proxy Test can not test Transparent proxies. Test Canceled!
-				return;
-			}
-			//get webcache port from IDC_webcachePort
-			CString buffer;			
-			m_webcachePortEdit.GetWindowText(buffer);
-			uint16 cur_WebCachePort = (uint16)_tstol(buffer);
-			if (PingviaProxy(cur_WebCacheName, cur_WebCachePort))
-			{
-				thePrefs.WebCachePingSendTime = ::GetTickCount();
-				thePrefs.expectingWebCachePing = true;
-				AfxMessageBox(GetResString(IDC_MSG_WEBCACHE_TESTRUNNING  )); // leuk_he to rc
-				//Performing Proxy Test! Please check the log in the serverwindow for the results!
-			}
-			else
-				AfxMessageBox(GetResString(IDC_MSG_WEBCACHE_TESTERR)); // leuk_he to rc
-		}
-		else 
-			AfxMessageBox(GetResString(IDC_MSG_WEBCACHE_ALREADYRUNNING));// leuk_he to rc
-	}
-	else
-		AfxMessageBox(GetResString(IDC_MSG_WEBCACHE_TESTREQ));// leuk_he to rc
-}
-// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 // ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 void CPPgScar::BackupNowEnable()
@@ -2893,8 +2420,8 @@ void CPPgScar::Backup(LPCTSTR extensionToBack, BOOL conFirm)
 	WIN32_FIND_DATA FileData; 
 	HANDLE hSearch; 
 	TCHAR buffer[200];
-	//CString szDirPath = CString(thePrefs.GetAppDir());
-	CString szDirPath = CString(thePrefs.GetConfigDir());
+	//CString szDirPath = CString(thePrefs.GetMuleDirectory(EMULE_EXECUTEABLEDIR));
+	CString szDirPath = CString(thePrefs.GetMuleDirectory(EMULE_CONFIGDIR));
 	TCHAR szNewPath[MAX_PATH]; 
 
 	SetCurrentDirectory(szDirPath);
@@ -2984,7 +2511,7 @@ void CPPgScar::Backup2(LPCTSTR extensionToBack)
 
 
 	//CString szDirPath = CString(thePrefs.GetAppDir());  
-	CString szDirPath = CString(thePrefs.GetConfigDir());
+	CString szDirPath = CString(thePrefs.GetMuleDirectory(EMULE_CONFIGDIR));
 	CString szTempPath = CString(thePrefs.GetTempDir());  
 	TCHAR szNewPath[MAX_PATH]; 
 
@@ -3061,7 +2588,7 @@ void CPPgScar::Backup2(LPCTSTR extensionToBack)
 	{   
 		error = TRUE;  
 	}   
-	SetCurrentDirectory(CString(thePrefs.GetConfigDir()));  
+	SetCurrentDirectory(CString(thePrefs.GetMuleDirectory(EMULE_CONFIGDIR)));  
 
 	if (error)  
 		MessageBox(_T("Error encountered during backup"),_T("Error"),MB_OK);  
@@ -3093,13 +2620,13 @@ void CPPgScar::Backup3()
 {
 	WIN32_FIND_DATA FileData; 
 	HANDLE hSearch; 
-	CString szDirPath = CString(thePrefs.GetConfigDir())+_T("Backup\\");
+	CString szDirPath = CString(thePrefs.GetMuleDirectory(EMULE_CONFIGDIR))+_T("Backup\\");
 	if(!PathFileExists(szDirPath)) return;
 	TCHAR szNewPath[MAX_PATH]; 
 
 	SetCurrentDirectory(szDirPath);
 	BOOL error = FALSE;
-	szDirPath = CString(thePrefs.GetConfigDir())+_T("Backup2\\");
+	szDirPath = CString(thePrefs.GetMuleDirectory(EMULE_CONFIGDIR))+_T("Backup2\\");
 
 	BOOL fFinished = FALSE; 
 

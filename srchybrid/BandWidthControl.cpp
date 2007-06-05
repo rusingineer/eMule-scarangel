@@ -89,14 +89,21 @@ void CBandWidthControl::checkAdapterIndex(uint32 highid)
 	if(m_fGetNumberOfInterfaces != NULL && m_fGetIfTable != NULL && m_fGetIpAddrTable != NULL){
 		DWORD dwNumIf = 0;
 		if(m_fGetNumberOfInterfaces(&dwNumIf) == NO_ERROR && dwNumIf > 0 ){
-			BYTE buffer[10*sizeof(MIB_IFROW)];
-			ULONG size = sizeof(buffer);
-			MIB_IFTABLE& mibIfTable = reinterpret_cast<MIB_IFTABLE&>(buffer[0]);
-			if(m_fGetIfTable(&mibIfTable, &size, true) == NO_ERROR){
+			PMIB_IFTABLE mibIfTable=NULL;
+			DWORD dwSize = 0;
+			DWORD dwRetVal = 0;
+			mibIfTable = (MIB_IFTABLE*) malloc(sizeof(MIB_IFTABLE));
+			if (m_fGetIfTable(mibIfTable, &dwSize, true) == ERROR_INSUFFICIENT_BUFFER) {
+				free(mibIfTable);
+				mibIfTable = (MIB_IFTABLE *) malloc (dwSize);
+			}
+
+			if ((dwRetVal = m_fGetIfTable(mibIfTable, &dwSize, true)) == NO_ERROR) {
+
 				// Trace list of Adapters
 				if(m_errorTraced == false){
-					for(DWORD dwNumEntries = 0; dwNumEntries < mibIfTable.dwNumEntries; dwNumEntries++){
-						const MIB_IFROW& mibIfRow = mibIfTable.table[dwNumEntries];
+					for(DWORD dwNumEntries = 0; dwNumEntries < mibIfTable->dwNumEntries; dwNumEntries++){
+						const MIB_IFROW& mibIfRow = mibIfTable->table[dwNumEntries];
 						theApp.QueueDebugLogLine(false, _T("NAFC: Adapter %u is '%s'"), mibIfRow.dwIndex, (CString)mibIfRow.bDescr);
 					}
 				}
@@ -104,6 +111,8 @@ void CBandWidthControl::checkAdapterIndex(uint32 highid)
 				//Xman forceNAFCadapter-option
 				if(thePrefs.GetForcedNAFCAdapter()!=0)
 				{
+					free(mibIfTable);
+					mibIfTable=NULL;
 					theApp.QueueDebugLogLine(false, _T("NAFC: you forced to use NAFC-Adapter with index: %u"), thePrefs.GetForcedNAFCAdapter());
 					return;
 				}
@@ -116,33 +125,47 @@ void CBandWidthControl::checkAdapterIndex(uint32 highid)
 					if(lphost != NULL){
 						DWORD dwAddr = ((LPIN_ADDR)lphost->h_addr)->s_addr;
 						// Pick the interface matching the IP
-						BYTE buffer[10*sizeof(MIB_IPADDRROW)];
-						ULONG size = sizeof(buffer);
-						MIB_IPADDRTABLE& mibIPAddrTable = reinterpret_cast<MIB_IPADDRTABLE&>(buffer[0]);
-						if(m_fGetIpAddrTable(&mibIPAddrTable, &size, FALSE) == 0){
+						PMIB_IPADDRTABLE mibIPAddrTable=NULL;
+						DWORD dwSize = 0;
+
+						mibIPAddrTable = (MIB_IPADDRTABLE*) malloc( sizeof( MIB_IPADDRTABLE) );
+						if (m_fGetIpAddrTable(mibIPAddrTable, &dwSize, FALSE) == ERROR_INSUFFICIENT_BUFFER) {
+							free( mibIPAddrTable );
+							mibIPAddrTable = (MIB_IPADDRTABLE *) malloc ( dwSize );
+						}
+
+						if(m_fGetIpAddrTable(mibIPAddrTable, &dwSize, FALSE) == NO_ERROR){
 							//Xman: first we seek the highid from the server
-							for(DWORD i = 0; i < mibIPAddrTable.dwNumEntries; i++){
-								if(mibIPAddrTable.table[i].dwAddr == highid){
+							for(DWORD i = 0; i < mibIPAddrTable->dwNumEntries; i++){
+								if(mibIPAddrTable->table[i].dwAddr == highid){
 									//const MIB_IPADDRROW& row = mibIPAddrTable.table[i];
 									m_errorTraced = false;
-									theApp.QueueDebugLogLine(false, _T("NAFC found by IP: Select adapter with index %u"), mibIPAddrTable.table[i].dwIndex);
-									m_currentAdapterIndex= mibIPAddrTable.table[i].dwIndex;
+									theApp.QueueDebugLogLine(false, _T("NAFC found by IP: Select adapter with index %u"), mibIPAddrTable->table[i].dwIndex);
+									m_currentAdapterIndex= mibIPAddrTable->table[i].dwIndex;
 									//reactivate NAFC	
 									if(wasNAFCLastActive)
 										thePrefs.SetNAFCFullControl(true);
+									free(mibIfTable);
+									mibIfTable=NULL;
+									free( mibIPAddrTable );
+									mibIPAddrTable=NULL;
 									return;
 								}
 							}
 							//Xman: if highid not found, search the hostip
-							for(DWORD i = 0; i < mibIPAddrTable.dwNumEntries; i++){
-								if(mibIPAddrTable.table[i].dwAddr == dwAddr){
+							for(DWORD i = 0; i < mibIPAddrTable->dwNumEntries; i++){
+								if(mibIPAddrTable->table[i].dwAddr == dwAddr){
 									//const MIB_IPADDRROW& row = mibIPAddrTable.table[i];
 									m_errorTraced = false;
-									theApp.QueueDebugLogLine(false, _T("NAFC: Select adapter with index %u"), mibIPAddrTable.table[i].dwIndex);
-									m_currentAdapterIndex= mibIPAddrTable.table[i].dwIndex;
+									theApp.QueueDebugLogLine(false, _T("NAFC: Select adapter with index %u"), mibIPAddrTable->table[i].dwIndex);
+									m_currentAdapterIndex= mibIPAddrTable->table[i].dwIndex;
 									//reactivate NAFC	
 									if(wasNAFCLastActive)
 										thePrefs.SetNAFCFullControl(true);
+									free(mibIfTable);
+									mibIfTable=NULL;
+									free( mibIPAddrTable );
+									mibIPAddrTable=NULL;
 									return;
 								}
 							}
@@ -151,12 +174,20 @@ void CBandWidthControl::checkAdapterIndex(uint32 highid)
 							if(m_errorTraced == false){
 								m_errorTraced = true;
 								theApp.QueueDebugLogLine(false, _T("NAFC: Failed to get IP tables error=0x%x"), ::GetLastError());
+								free(mibIfTable);
+								mibIfTable=NULL;
+								free( mibIPAddrTable );
+								mibIPAddrTable=NULL;
 								return ;
 							}
 						}
+						free( mibIPAddrTable );
+						mibIPAddrTable=NULL;
 					}
 				}
 			}
+			free(mibIfTable);
+			mibIfTable=NULL;
 			if(m_errorTraced == false){
 				m_errorTraced = true;
 				theApp.QueueDebugLogLine(false, _T("NAFC: Failed to get tables of interface error=0x%x"), ::GetLastError());
@@ -174,73 +205,101 @@ void CBandWidthControl::checkAdapterIndex(uint32 highid)
 //Xman new adapter selection end
 
 DWORD CBandWidthControl::getAdapterIndex(){
-   // Check if the library was successfully loaded
-   if(m_fGetNumberOfInterfaces != NULL && m_fGetIfTable != NULL && m_fGetIpAddrTable != NULL){
-      DWORD dwNumIf = 0;
-      if(m_fGetNumberOfInterfaces(&dwNumIf) == NO_ERROR && dwNumIf > 0 ){
-         BYTE buffer[10*sizeof(MIB_IFROW)];
-         ULONG size = sizeof(buffer);
-         MIB_IFTABLE& mibIfTable = reinterpret_cast<MIB_IFTABLE&>(buffer[0]);
-         if(m_fGetIfTable(&mibIfTable, &size, true) == NO_ERROR){
-                // Trace list of Adapters
-                if(m_errorTraced == false){
-                for(DWORD dwNumEntries = 0; dwNumEntries < mibIfTable.dwNumEntries; dwNumEntries++){
-                        const MIB_IFROW& mibIfRow = mibIfTable.table[dwNumEntries];
-                        theApp.QueueDebugLogLine(false, _T("NAFC: Adapter %u is '%s'"), mibIfRow.dwIndex, (CString)mibIfRow.bDescr);
-                }
-                }
+	// Check if the library was successfully loaded
+	if(m_fGetNumberOfInterfaces != NULL && m_fGetIfTable != NULL && m_fGetIpAddrTable != NULL){
+		DWORD dwNumIf = 0;
+		if(m_fGetNumberOfInterfaces(&dwNumIf) == NO_ERROR && dwNumIf > 0 ){
+			PMIB_IFTABLE mibIfTable=NULL;
+			DWORD dwSize = 0;
+			DWORD dwRetVal = 0;
+			mibIfTable = (MIB_IFTABLE*) malloc(sizeof(MIB_IFTABLE));
+			if (m_fGetIfTable(mibIfTable, &dwSize, true) == ERROR_INSUFFICIENT_BUFFER) {
+				free(mibIfTable);
+				mibIfTable = (MIB_IFTABLE *) malloc (dwSize);
+			}
+
+			if ((dwRetVal = m_fGetIfTable(mibIfTable, &dwSize, true)) == NO_ERROR) {
+
+				// Trace list of Adapters
+				if(m_errorTraced == false){
+					for(DWORD dwNumEntries = 0; dwNumEntries < mibIfTable->dwNumEntries; dwNumEntries++){
+						const MIB_IFROW& mibIfRow = mibIfTable->table[dwNumEntries];
+						theApp.QueueDebugLogLine(false, _T("NAFC: Adapter %u is '%s'"), mibIfRow.dwIndex, (CString)mibIfRow.bDescr);
+					}
+				}
 
 				//Xman forceNAFCadapter-option
 				if(thePrefs.GetForcedNAFCAdapter()!=0)
 				{
+					free(mibIfTable);
+					mibIfTable=NULL;
 					theApp.QueueDebugLogLine(false, _T("NAFC: you forced to use NAFC-Adapter with index: %u"), thePrefs.GetForcedNAFCAdapter());
 					return thePrefs.GetForcedNAFCAdapter();
 				}
 				//Xman end
-                // Retrieve the default used IP (=> in case of multiple adapters)
-                char hostName[256];
-                if(gethostname(hostName, sizeof(hostName)) == 0){
-                    hostent* lphost = gethostbyname(hostName);
-                    if(lphost != NULL){
-                        DWORD dwAddr = ((LPIN_ADDR)lphost->h_addr)->s_addr;
-                        // Pick the interface matching the IP
-                      BYTE buffer[10*sizeof(MIB_IPADDRROW)];
-                      ULONG size = sizeof(buffer);
-                      MIB_IPADDRTABLE& mibIPAddrTable = reinterpret_cast<MIB_IPADDRTABLE&>(buffer[0]);
-                        if(m_fGetIpAddrTable(&mibIPAddrTable, &size, FALSE) == 0){
-                            for(DWORD i = 0; i < mibIPAddrTable.dwNumEntries; i++){
-                                if(mibIPAddrTable.table[i].dwAddr == dwAddr){
-                                    //const MIB_IPADDRROW& row = mibIPAddrTable.table[i];
 
-                                    m_errorTraced = false;
-                                    theApp.QueueDebugLogLine(false, _T("NAFC: Select adapter with index %u"), mibIPAddrTable.table[i].dwIndex);
-                                    return mibIPAddrTable.table[i].dwIndex;
-                                }
-                            }
-                        }
-                        else {
-                            if(m_errorTraced == false){
-                                m_errorTraced = true;
-                                theApp.QueueDebugLogLine(false, _T("NAFC: Failed to get IP tables error=0x%x"), ::GetLastError());
-                                return 0;
-                            }
-                        }
-                    }
-                }
-         }
-            if(m_errorTraced == false){
-                m_errorTraced = true;
-                theApp.QueueDebugLogLine(false, _T("NAFC: Failed to get tables of interface error=0x%x"), ::GetLastError());
-                return 0;
-            }
-      }
-        if(m_errorTraced == false){
-            m_errorTraced = true;
-            theApp.QueueDebugLogLine(false, _T("NAFC: Failed to get the number of interface error=0x%x"), ::GetLastError());
-            return 0;
-        }
-   }
-   return 0;
+				// Retrieve the default used IP (=> in case of multiple adapters)
+				char hostName[256];
+				if(gethostname(hostName, sizeof(hostName)) == 0){
+					hostent* lphost = gethostbyname(hostName);
+					if(lphost != NULL){
+						DWORD dwAddr = ((LPIN_ADDR)lphost->h_addr)->s_addr;
+						// Pick the interface matching the IP
+						PMIB_IPADDRTABLE mibIPAddrTable=NULL;
+						DWORD dwSize = 0;
+
+						mibIPAddrTable = (MIB_IPADDRTABLE*) malloc( sizeof( MIB_IPADDRTABLE) );
+						if (m_fGetIpAddrTable(mibIPAddrTable, &dwSize, FALSE) == ERROR_INSUFFICIENT_BUFFER) {
+							free( mibIPAddrTable );
+							mibIPAddrTable = (MIB_IPADDRTABLE *) malloc ( dwSize );
+						}
+
+						if(m_fGetIpAddrTable(mibIPAddrTable, &dwSize, FALSE) == NO_ERROR){
+							for(DWORD i = 0; i < mibIPAddrTable->dwNumEntries; i++){
+								if(mibIPAddrTable->table[i].dwAddr == dwAddr){
+									//const MIB_IPADDRROW& row = mibIPAddrTable.table[i];
+									m_errorTraced = false;
+									theApp.QueueDebugLogLine(false, _T("NAFC: Select adapter with index %u"), mibIPAddrTable->table[i].dwIndex);
+									DWORD dwIndex=mibIPAddrTable->table[i].dwIndex;
+									free(mibIfTable);
+									mibIfTable=NULL;
+									free( mibIPAddrTable );
+									mibIPAddrTable=NULL;
+									return dwIndex;
+								}
+							}
+						}
+						else {
+							if(m_errorTraced == false){
+								m_errorTraced = true;
+								theApp.QueueDebugLogLine(false, _T("NAFC: Failed to get IP tables error=0x%x"), ::GetLastError());
+								free(mibIfTable);
+								mibIfTable=NULL;
+								free( mibIPAddrTable );
+								mibIPAddrTable=NULL;
+								return 0;
+							}
+						}
+						free( mibIPAddrTable );
+						mibIPAddrTable=NULL;
+					}
+				}
+			}
+			free(mibIfTable);
+			mibIfTable=NULL;
+			if(m_errorTraced == false){
+				m_errorTraced = true;
+				theApp.QueueDebugLogLine(false, _T("NAFC: Failed to get tables of interface error=0x%x"), ::GetLastError());
+				return 0;
+			}
+		}
+		if(m_errorTraced == false){
+			m_errorTraced = true;
+			theApp.QueueDebugLogLine(false, _T("NAFC: Failed to get the number of interface error=0x%x"), ::GetLastError());
+			return 0;
+		}
+	}
+	return 0;
 }
 
 //                 Only the code related to the instance bandwidth is 

@@ -91,9 +91,10 @@ public:
 		arrowDoubleDown = IDB_DOWN2X, arrowDoubleUp = IDB_UP2X };
 
 	int	GetSortType(ArrowType at);
-	ArrowType	GetArrowType(int iat);
+	ArrowType GetArrowType(int iat);
 	int GetSortItem() const { return m_iCurrentSortItem; }
 	bool GetSortAscending() const { return m_atSortArrow == arrowUp || m_atSortArrow == arrowDoubleUp; }
+	bool GetSortSecondValue() const { return m_atSortArrow == arrowDoubleDown || m_atSortArrow == arrowDoubleUp; }
 	// Places a sort arrow in a column
 	void SetSortArrow(int iColumn, ArrowType atType);
 	void SetSortArrow() { SetSortArrow(m_iCurrentSortItem, m_atSortArrow); }
@@ -122,17 +123,16 @@ protected:
 	virtual BOOL OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT* pResult);
 	virtual BOOL OnChildNotify(UINT message, WPARAM wParam, LPARAM lParam, LRESULT* pResult);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 
+	DECLARE_MESSAGE_MAP()
+	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg void OnSysColorChange();
-
+	afx_msg void OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult);
 	// ==> XP Style Menu [Xanatos] - Stulle
 	afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
 	// <== XP Style Menu [Xanatos] - Stulle
-
-	DECLARE_MESSAGE_MAP()
 
 	// Checks the item to see if it is in order
 	int          UpdateLocation(int iItem);

@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -19,7 +19,6 @@
 //Xman
 #include <atlcoll.h>	// Slugfiller: modid
 #include "IP2Country.h" //Xman extended stats
-#include "UpDownClient.h" // WebCache [WC team/MorphXT] - Stulle/Max
 
 class CClientReqSocket;
 class CUpDownClient;
@@ -194,19 +193,8 @@ protected:
 	CList<CString, CString&> liMODsTypes;
 //Xman end
 
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-public:
-// yonatan - not 2 be confused with the one in CUploadQueue!
-	CUpDownClient*	FindClientByWebCacheUploadId(const uint32 id);
-// Superlexx - OHCB manager
-	CUpDownClientPtrList* XpressOHCBRecipients(uint32 maxNrOfClients, const Requested_Block_Struct* block);
-	void SendOHCBs(); // sends OHCBs to every client every x minutes
-	uint32 m_dwLastSendOHCBs;
-// Superlexx - COtN - moved here from the CUpDownClient
-	UINT GetNumberOfClientsBehindOurWebCacheHavingSameFileAndNeedingThisBlock(Pending_Block_Struct* pending, UINT maxNrOfClients);
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
-
 	// ==> Compat Client Stats [Stulle] - Stulle
+public:
 	void	GetCompatClientsStats(CRBMap<CString, uint32> *compatClients);
 	// <== Compat Client Stats [Stulle] - Stulle
 };

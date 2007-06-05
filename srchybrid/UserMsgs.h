@@ -52,4 +52,8 @@ enum EUserWndMessages
 	// ==> ScarAngel Version Check - Stulle
 	UM_SVERSIONCHECK_RESPONSE
 	// <== ScarAngel Version Check - Stulle
+
+	//Xman official UPNP removed
+	// UPnP
+    //UM_UPNP_RESULT
 };

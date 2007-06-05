@@ -62,7 +62,7 @@ CCommentListCtrl::~CCommentListCtrl()
 void CCommentListCtrl::Init(void)
 {
 	SetName(_T("CommentListCtrl"));
-	ModifyStyle(LVS_SINGLESEL, 0);
+	ASSERT( (GetStyle() & LVS_SINGLESEL) == 0 );
 	SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_INFOTIP);
 	InsertColumn(colRating, GetResString(IDS_QL_RATING), LVCFMT_LEFT, 80);
 	InsertColumn(colComment, GetResString(IDS_COMMENT), LVCFMT_LEFT, 340);
@@ -86,7 +86,7 @@ void CCommentListCtrl::Init(void)
 
 	LoadSettings();
 	SetSortArrow();
-	SortItems(SortProc, MAKELONG(GetSortItem(), (GetSortAscending() ? 0:1)));
+	SortItems(SortProc, MAKELONG(GetSortItem(), (GetSortAscending() ? 0 : 1)));
 }
 
 int CCommentListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
@@ -176,25 +176,24 @@ void CCommentListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 
 BOOL CCommentListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 {
-	int iSel = GetNextItem(-1, LVIS_SELECTED | LVIS_FOCUSED);
-	if (iSel != -1)
+	switch (wParam)
 	{
-		switch (wParam)
-		{
-		case MP_COPYSELECTED:
-			//Xman fix by Avi3k & Wizard
-			CString strCmts = _T("");
-			POSITION pos = GetFirstSelectedItemPosition();
-			while (pos)
-			{
-				iSel = GetNextSelectedItem(pos);
-				const SComment* pComment = (iSel != -1) ? (SComment*)GetItemData(iSel) : NULL;
-				if (pComment)
-					strCmts += pComment->m_strComment + _T("\n");
+		case MP_COPYSELECTED: {
+			CString strText;
+			POSITION posItem = GetFirstSelectedItemPosition();
+			while (posItem) {
+				int iItem = GetNextSelectedItem(posItem);
+				if (iItem >= 0) {
+					CString strComment = GetItemText(iItem, colComment);
+					if (!strComment.IsEmpty()) {
+						if (!strText.IsEmpty())
+							strText += _T("\r\n");
+						strText += strComment;
+					}
+				}
 			}
-			theApp.CopyTextToClipboard(strCmts);
-			//Xman end
-			return TRUE;
+			theApp.CopyTextToClipboard(strText);
+			break;
 		}
 	}
 	return CMuleListCtrl::OnCommand(wParam, lParam);

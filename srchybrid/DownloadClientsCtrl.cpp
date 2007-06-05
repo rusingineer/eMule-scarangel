@@ -62,13 +62,14 @@ CDownloadClientsCtrl::CDownloadClientsCtrl()
 void CDownloadClientsCtrl::Init()
 {
 	SetName(_T("DownloadClientsCtrl"));
+
 	CImageList ilDummyImageList; //dummy list for getting the proper height of listview entries
 	ilDummyImageList.Create(1, theApp.GetSmallSytemIconSize().cy,theApp.m_iDfltImageListColorFlags|ILC_MASK, 1, 1); 
 	SetImageList(&ilDummyImageList, LVSIL_SMALL);
 	ASSERT( (GetStyle() & LVS_SHAREIMAGELISTS) == 0 );
 	ilDummyImageList.Detach();
 
-	SetExtendedStyle(LVS_EX_FULLROWSELECT);
+	SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_INFOTIP);
 
 	InsertColumn(0,	GetResString(IDS_QL_USERNAME), LVCFMT_LEFT, 165);
 	InsertColumn(1,	GetResString(IDS_CD_CSOFT), LVCFMT_LEFT, 90); 
@@ -131,18 +132,19 @@ void CDownloadClientsCtrl::SetAllIcons()
 	//Xman end
 	
 	//Xman end
-	m_ImageList.Add(CTempIconLoader(_T("PREF_WEBCACHE"))); // 20 // WebCache [WC team/MorphXT] - Stulle/Max
+
+
 	// ==> Mod Icons - Stulle
-	m_ImageList.Add(CTempIconLoader(_T("AAAEMULEAPP"))); //21
-	m_ImageList.Add(CTempIconLoader(_T("STULLE"))); //22
-	m_ImageList.Add(CTempIconLoader(_T("MAXMOD"))); //23
-	m_ImageList.Add(CTempIconLoader(_T("XTREME"))); //24
-	m_ImageList.Add(CTempIconLoader(_T("MORPH"))); //25
-	m_ImageList.Add(CTempIconLoader(_T("EASTSHARE"))); //26
-	m_ImageList.Add(CTempIconLoader(_T("IONIX"))); //27
-	m_ImageList.Add(CTempIconLoader(_T("CYREX"))); //28
-	m_ImageList.Add(CTempIconLoader(_T("NEXTEMF"))); //29
-	m_ImageList.Add(CTempIconLoader(_T("NEO"))); //30
+	m_ImageList.Add(CTempIconLoader(_T("AAAEMULEAPP"))); //20
+	m_ImageList.Add(CTempIconLoader(_T("STULLE"))); //21
+	m_ImageList.Add(CTempIconLoader(_T("MAXMOD"))); //22
+	m_ImageList.Add(CTempIconLoader(_T("XTREME"))); //23
+	m_ImageList.Add(CTempIconLoader(_T("MORPH"))); //24
+	m_ImageList.Add(CTempIconLoader(_T("EASTSHARE"))); //25
+	m_ImageList.Add(CTempIconLoader(_T("IONIX"))); //26
+	m_ImageList.Add(CTempIconLoader(_T("CYREX"))); //27
+	m_ImageList.Add(CTempIconLoader(_T("NEXTEMF"))); //28
+	m_ImageList.Add(CTempIconLoader(_T("NEO"))); //29
 	// <== Mod Icons - Stulle
 	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
 	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("OverlayObfu"))), 2);
@@ -353,11 +355,6 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					else if (client->GetClientSoft() == SO_LPHANT){
 						image = 16;
 					}
-					// ==> WebCache [WC team/MorphXT] - Stulle/Max
-					else if (client->GetClientSoft() == SO_WEBCACHE) {
-						image = 20;
-					}
-					// <== WebCache [WC team/MorphXT] - Stulle/Max
 					else if (client->ExtProtocolAvailable()){
 						// ==> Mod Icons - Stulle
 						/*
@@ -366,7 +363,7 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						if(client->GetModClient() == MOD_NONE)
 							image = 4;
 						else
-							image = (uint8)(client->GetModClient() + 20);
+							image = (uint8)(client->GetModClient() + 19);
 						// <== Mod Icons - Stulle
 					}
 					else{
@@ -473,7 +470,7 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 							int iOMode = dc.SetBkMode(TRANSPARENT);
 							buffer.Format(_T("%i%%"), client->GetHisCompletedPartsPercent_Down());
 							CFont *pOldFont = dc.SelectObject(&m_fontBoldSmaller);
-#define	DrawClientPercentText		dc.DrawText(buffer, buffer.GetLength(),&cur_rec, ((DLC_DT_TEXT | DT_RIGHT) & ~DT_LEFT) | DT_CENTER)
+#define	DrawClientPercentText	dc.DrawText(buffer, buffer.GetLength(),&cur_rec, ((DLC_DT_TEXT | DT_RIGHT) & ~DT_LEFT) | DT_CENTER)
 							cur_rec.top-=1;cur_rec.bottom-=1;
 							DrawClientPercentText;cur_rec.left+=1;cur_rec.right+=1;
 							DrawClientPercentText;cur_rec.left+=1;cur_rec.right+=1;

@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -30,6 +30,7 @@
 #include "TransferWnd.h"
 #include "Log.h"
 #include "packets.h"
+#include "MD5Sum.h"
 //Xman x4.1.1 
 //Xman [MoNKi: -Downloaded History-]
 #include "SharedFilesWnd.h"
@@ -47,6 +48,10 @@ static char THIS_FILE[] = __FILE__;
 #define KNOWN_MET_FILENAME		_T("known.met")
 #define CANCELLED_MET_FILENAME	_T("cancelled.met")
 
+#define CANCELLED_HEADER_OLD	MET_HEADER
+#define CANCELLED_HEADER		MET_HEADER + 0x01
+#define CANCELLED_VERSION		0x01
+
 CKnownFileList::CKnownFileList()
 {
 	//Xman Init-Hashtable optimization
@@ -55,6 +60,7 @@ CKnownFileList::CKnownFileList()
 	accepted = 0;
 	requested = 0;
 	transferred = 0;
+	m_dwCancelledFilesSeed = 0;
 	m_nLastSaved = ::GetTickCount();
 	Init();
 }
@@ -71,7 +77,7 @@ bool CKnownFileList::Init()
 
 bool CKnownFileList::LoadKnownFiles()
 {
-	CString fullpath=thePrefs.GetConfigDir();
+	CString fullpath = thePrefs.GetMuleDirectory(EMULE_CONFIGDIR);
 	fullpath.Append(KNOWN_MET_FILENAME);
 	CSafeBufferedFile file;
 	CFileException fexp;
@@ -148,6 +154,7 @@ bool CKnownFileList::LoadKnownFiles()
 }
 
 bool CKnownFileList::LoadCancelledFiles(){
+	// cancelled.met Format: <Header 1 = CANCELLED_HEADER><Version 1 = CANCELLED_VERSION><Seed 4><Count 4>[<HashHash 16><TagCount 1>[Tags TagCount] Count]
 	if (!thePrefs.IsRememberingCancelledFiles())
 	{
 		//Xman Init-Hashtable optimization
@@ -155,7 +162,7 @@ bool CKnownFileList::LoadCancelledFiles(){
 		//Xman end
 		return true;
 	}
-	CString fullpath=thePrefs.GetConfigDir();
+	CString fullpath = thePrefs.GetMuleDirectory(EMULE_CONFIGDIR);
 	fullpath.Append(CANCELLED_MET_FILENAME);
 	CSafeBufferedFile file;
 	CFileException fexp;
@@ -177,13 +184,37 @@ bool CKnownFileList::LoadCancelledFiles(){
 	setvbuf(file.m_pStream, NULL, _IOFBF, 16384);
 	uchar ucHash[16];
 	try {
+		bool bOldVersion = false;
 		uint8 header = file.ReadUInt8();
-		if (header != MET_HEADER){
-			file.Close();
-			//Xman Init-Hashtable optimization
-			m_mapCancelledFiles.InitHashTable(209);
-			//Xman end
-			return false;
+		if (header != CANCELLED_HEADER){
+			if (header == CANCELLED_HEADER_OLD){
+				bOldVersion = true;
+				DebugLog(_T("Deprecated version of cancelled.met found, converting to new version"));
+			}
+			else{
+				file.Close();
+				//Xman Init-Hashtable optimization
+				m_mapCancelledFiles.InitHashTable(209);
+				//Xman end
+				return false;
+			}
+		}
+		uint8 byVersion = 0;
+		if (!bOldVersion){
+			byVersion = file.ReadUInt8();
+			if (byVersion > CANCELLED_VERSION){
+				file.Close();
+				//Xman Init-Hashtable optimization
+				m_mapCancelledFiles.InitHashTable(209);
+				//Xman end
+				return false;
+			}
+
+			m_dwCancelledFilesSeed = file.ReadUInt32();
+		}
+		if (m_dwCancelledFilesSeed == 0) {
+			ASSERT( bOldVersion || file.GetLength() <= 10 );
+			m_dwCancelledFilesSeed = (GetRandomUInt32() % 0xFFFFFFFE) + 1;
 		}
 
 		UINT RecordsNumber = file.ReadUInt32();
@@ -197,6 +228,14 @@ bool CKnownFileList::LoadCancelledFiles(){
 			for (UINT j = 0; j < nCount; j++) {
 				CTag tag(&file, false);
 			}
+			if (bOldVersion){
+				// convert old real hash to new hashash
+				uchar pachSeedHash[20];
+				PokeUInt32(pachSeedHash, m_dwCancelledFilesSeed);
+				md4cpy(pachSeedHash + 4, ucHash);
+				MD5Sum md5(pachSeedHash, sizeof(pachSeedHash));
+				md4cpy(ucHash, md5.GetRawHash()); 
+			}
 			m_mapCancelledFiles.SetAt(CSKey(ucHash), 1);
 		}
 		file.Close();
@@ -209,11 +248,11 @@ bool CKnownFileList::LoadCancelledFiles(){
 			error->GetErrorMessage(buffer, ARRSIZE(buffer));
 			LogError(LOG_STATUSBAR, GetResString(IDS_ERR_FAILEDTOLOAD), CANCELLED_MET_FILENAME, buffer);
 		}
-		error->Delete();
 		//Xman Init-Hashtable optimization
 		if(m_mapCancelledFiles.GetHashTableSize()==0)
 			m_mapCancelledFiles.InitHashTable(209);
 		//Xman end
+		error->Delete();
 		return false;
 	}
 	return true;
@@ -224,7 +263,7 @@ void CKnownFileList::Save()
 	if (thePrefs.GetLogFileSaving())
 		AddDebugLogLine(false, _T("Saving known files list file \"%s\""), KNOWN_MET_FILENAME);
 	m_nLastSaved = ::GetTickCount(); 
-	CString fullpath=thePrefs.GetConfigDir();
+	CString fullpath = thePrefs.GetMuleDirectory(EMULE_CONFIGDIR);
 	fullpath += KNOWN_MET_FILENAME;
 	CSafeBufferedFile file;
 	CFileException fexp;
@@ -287,7 +326,7 @@ void CKnownFileList::Save()
 
 	if (thePrefs.GetLogFileSaving())
 		AddDebugLogLine(false, _T("Saving known files list file \"%s\""), CANCELLED_MET_FILENAME);
-	fullpath=thePrefs.GetConfigDir();
+	fullpath = thePrefs.GetMuleDirectory(EMULE_CONFIGDIR);
 	fullpath += CANCELLED_MET_FILENAME;
 	if (!file.Open(fullpath, CFile::modeWrite|CFile::modeCreate|CFile::typeBinary|CFile::shareDenyWrite, &fexp)){
 		CString strError(_T("Failed to save ") CANCELLED_MET_FILENAME _T(" file"));
@@ -302,7 +341,9 @@ void CKnownFileList::Save()
 		setvbuf(file.m_pStream, NULL, _IOFBF, 16384);
 
 		try{
-			file.WriteUInt8(MET_HEADER);
+			file.WriteUInt8(CANCELLED_HEADER);
+			file.WriteUInt8(CANCELLED_VERSION);
+			file.WriteUInt32(m_dwCancelledFilesSeed);
 			if (!thePrefs.IsRememberingCancelledFiles()){
 				file.WriteUInt32(0);
 			}
@@ -517,15 +558,29 @@ bool CKnownFileList::IsFilePtrInList(const CKnownFile* file) const
 
 void CKnownFileList::AddCancelledFileID(const uchar* hash){
 	if (thePrefs.IsRememberingCancelledFiles()){
-		m_mapCancelledFiles.SetAt(CSKey(hash), 1);	
+		if (m_dwCancelledFilesSeed == 0) {
+			m_dwCancelledFilesSeed = (GetRandomUInt32() % 0xFFFFFFFE) + 1;
+		}
+		uchar pachSeedHash[20];
+		PokeUInt32(pachSeedHash, m_dwCancelledFilesSeed);
+		md4cpy(pachSeedHash + 4, hash);
+		MD5Sum md5(pachSeedHash, sizeof(pachSeedHash));
+		md4cpy(pachSeedHash, md5.GetRawHash()); 
+		m_mapCancelledFiles.SetAt(CSKey(pachSeedHash), 1);	
 	}
 }
 
 bool CKnownFileList::IsCancelledFileByID(const uchar* hash) const
 {
 	if (thePrefs.IsRememberingCancelledFiles()){
+		uchar pachSeedHash[20];
+		PokeUInt32(pachSeedHash, m_dwCancelledFilesSeed);
+		md4cpy(pachSeedHash + 4, hash);
+		MD5Sum md5(pachSeedHash, sizeof(pachSeedHash));
+		md4cpy(pachSeedHash, md5.GetRawHash()); 
+
 		int dwDummy;
-		if (m_mapCancelledFiles.Lookup(CSKey(hash), dwDummy)){
+		if (m_mapCancelledFiles.Lookup(CSKey(pachSeedHash), dwDummy)){
 			return true;
 		}
 	}

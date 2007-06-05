@@ -33,12 +33,9 @@ public:
 
 	enum { IDD = IDD_CAT };
 
-	bool WasCancelled() const { return m_bCancelled; }
-
 protected:
 	Category_Struct* m_myCat;
 	DWORD newcolor;
-	bool m_bCancelled;
 	CColorButton m_ctlColor;
 	CComboBox m_prio;
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
@@ -57,8 +54,10 @@ protected:
 	afx_msg LONG OnSelChange(UINT lParam, LONG wParam);
 	afx_msg void OnBnClickedBrowse();
 	afx_msg void OnBnClickedOk();
-	afx_msg void OnBnClickedCancel();
-	afx_msg void OnDDBnClickedCancel();
-
-	CComboBox m_comboDlMode; // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
+	afx_msg void OnDDBnClicked();
+	*/
+	CComboBox m_comboDlMode;
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 };

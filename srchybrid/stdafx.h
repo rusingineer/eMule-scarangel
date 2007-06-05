@@ -35,7 +35,30 @@
 // Disable some warnings which get fired with /W4 for Windows/MFC/ATL headers
 #pragma warning(disable:4127) // conditional expression is constant
 
+// Disable some warnings which are only generated when using "/Wall"
+#pragma warning(disable:4061) // enumerate in switch of enum is not explicitly handled by a case label
+#pragma warning(disable:4062) // enumerate in switch of enum is not handled
+#pragma warning(disable:4191) // 'type cast' : unsafe conversion from <this> to <that>
+#pragma warning(disable:4217) // <func>: member template functions cannot be used for copy-assignment or copy-construction
+#pragma warning(disable:4263) // <func> member function does not override any base class virtual member function
+#pragma warning(disable:4264) // <func>: no override available for virtual member function from base <class>; function is hidden
+#pragma warning(disable:4265) // <class>: class has virtual functions, but destructor is not virtual
+#pragma warning(disable:4529) // forming a pointer-to-member requires explicit use of the address-of operator ('&') and a qualified name
+#pragma warning(disable:4548) // expression before comma has no effect; expected expression with side-effect
+#pragma warning(disable:4555) // expression has no effect; expected expression with side-effect
+#pragma warning(disable:4619) // #pragma warning : there is no warning number <n>
+#pragma warning(disable:4625) // <class> : copy constructor could not be generated because a base class copy constructor is inaccessible
+#pragma warning(disable:4626) // <class> : assignment operator could not be generated because a base class copy constructor is inaccessible
+#pragma warning(disable:4640) // construction of local static object is not thread-safe
+#pragma warning(disable:4668) // <name>  is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+#pragma warning(disable:4710) // function not inlined
+#pragma warning(disable:4711) // function <func> selected for automatic inline expansion
+#pragma warning(disable:4820) // <n> bytes padding added after member <member>
+#pragma warning(disable:4917) // a GUID can only be associated with a class, interface or namespace
+#pragma warning(disable:4928) // illegal copy-initialization; more than one user-defined conversion has been implicitly applied
+
 #if _MSC_VER>=1400
+#define _CRT_SECURE_NO_DEPRECATE	//TODO: resolve
 #define _SECURE_ATL	0		  //TODO: resolve
 #if !_SECURE_ATL
 #pragma warning(disable:4996) // 'foo' was declared deprecated
@@ -118,6 +141,12 @@
 
 // Enable warnings which were disabled for Windows/MFC/ATL headers
 #pragma warning(default:4127) // conditional expression is constant
+#if _MSC_VER<=1310
+#pragma warning(default:4548) // expression before comma has no effect; expected expression with side-effect
+#endif
+#if _MSC_VER==1310
+#pragma warning(default:4555) // expression has no effect; expected expression with side-effect
+#endif
 
 // when using warning level 4
 #pragma warning(disable:4201) // nonstandard extension used : nameless struct/union (not worth to mess with, it's due to MIDL created code)

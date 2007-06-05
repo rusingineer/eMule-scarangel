@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -31,7 +31,6 @@
 #include "updownclient.h" //Xman Xtreme Upload
 #include "BandWidthControl.h" // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 #include "ListenSocket.h" //Xman 
-#include "WebCache/WebCacheSocket.h" // WebCache [WC team/MorphXT] - Stulle/Max
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -173,7 +172,7 @@ CEMSocket::~CEMSocket(){
 	AsyncSelect(0);
 	//Xman
 	// Maella -Accurate download rate measurement directly at socket-
-	if(client != NULL && (CEMSocket*)client->socket == this){ //Xman x4 test
+	if(client != NULL && (CEMSocket*)client->socket == this){ 
 		// They might have an error in the cross link somewhere
 		//Xman only for test
 		AddDebugLogLine(false,_T("emsocket destructor exception"));
@@ -335,7 +334,7 @@ void CEMSocket::OnReceive(int nErrorCode){
 		OnError(nErrorCode);
 		return;
 	}
-	
+
 	//Xman -Reask sources after IP change- v4
 	if(pendingOnReceive==false)
 		theApp.last_traffic_reception=::GetTickCount(); //Threading Info: synchronized with the main thread
@@ -438,25 +437,6 @@ void CEMSocket::ProcessReceiveData()
 	char *rptr = GlobalReadBuffer; // floating index initialized with begin of buffer
 	const char *rend = GlobalReadBuffer + ret; // end of buffer
 
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	if( *(uint32*)GlobalReadBuffer == ' TEG' ) {
-		CWebCacheUpSocket* WCSocket;
-		if( !IsKindOf( RUNTIME_CLASS( CWebCacheUpSocket ) ) ) { // yonatan http - WC-TODO: make sure this is a new, incoming connection?
-			// Turn this into a CWebCacheUpSocket and attach to client.
-			SOCKET s = Detach(); // Detach socket from this (CClientReqSocket)
-			WCSocket = new CWebCacheUpSocket(); // Create a new WebCache socket
-			WCSocket->Attach( s, FD_WRITE|FD_READ|FD_CLOSE );
-			if( WCSocket->ProcessFirstHttpGet( GlobalReadBuffer, ret ) ) {
-				WCSocket->SetConnected(); //MORPH - WebCache Fix, set socket connected
-				delete this;
-				return;
-			}
-		} else {
-			static_cast<CWebCacheUpSocket*>(this)->ProcessHttpPacket( (BYTE*)GlobalReadBuffer, ret );
-		}
-	}
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
-
 	// Loop, processing packets until we run out of them
 	while ((rend - rptr >= PACKET_HEADER_SIZE) || ((pendingPacket != NULL) && (rend - rptr > 0)))
 	{
@@ -490,10 +470,6 @@ void CEMSocket::ProcessReceiveData()
 				case OP_EDONKEYPROT:
 				case OP_PACKEDPROT:
 				case OP_EMULEPROT:
-				// ==> WebCache [WC team/MorphXT] - Stulle/Max
-				case OP_WEBCACHEPACKEDPROT:
-				case OP_WEBCACHEPROT: // yonatan - webcache protocol packets
-				// <== WebCache [WC team/MorphXT] - Stulle/Max
 					break;
 				default:
 					EMTrace("CEMSocket::OnReceive ERROR Wrong header");
@@ -595,16 +571,8 @@ void CEMSocket::ProcessReceiveData()
 }
 
 void CEMSocket::SetDownloadLimit(uint32 limit){	
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	/*
 	downloadLimit = limit;
 	downloadLimitEnable = true;	
-	*/
-	downloadLimit += limit; 
-	downloadLimitEnable = true;	
-	if(downloadLimit > 20 * limit && downloadLimit > 4500) // Allow a maximum of 2.0 sec to accumulate or 3 * MTU
-		downloadLimit = max(20 * limit, 4500); 
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	
 	// CPU load improvement
 	//Xman include ACK
@@ -1444,10 +1412,15 @@ int CEMSocket::Receive(void* lpBuf, int nBufLen, int nFlags)
 		//EMTrace("CEMSocket::##Received FIN on %d, maxSize=%d",(SOCKET)this,nBufLen);
 		// FIN received on socket // Connection is being closed by peer
 		//ASSERT (false);
+		//Xman improved socket closing
+		//removed this old patch. At least the FD-WRITE is wrong here
+		/*
 		if ( 0 == AsyncSelect(FD_CLOSE|FD_WRITE) ) { // no more READ notifications ...
 			//int waserr = GetLastError(); // oups, AsyncSelect failed !!!
 			ASSERT(false);
 		}
+		*/
+		//Xman end
 		return 0;
 	case SOCKET_ERROR:
 		switch(GetLastError()) {

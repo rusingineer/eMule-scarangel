@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -410,7 +410,7 @@ void CDownloadQueue::AddFileLinkToDownload(CED2KFileLink* pLink, int cat)
 	if (partfile)
 	{
 		if (pLink->HasValidSources())
-			partfile->AddClientSources(pLink->SourcesList,1);
+			partfile->AddClientSources(pLink->SourcesList, 1, false);
 		if (pLink->HasValidAICHHash() ){
 			if ( !(partfile->GetAICHHashset()->HasValidMasterHash() && partfile->GetAICHHashset()->GetMasterHash() == pLink->GetAICHHash())){
 				partfile->GetAICHHashset()->SetMasterHash(pLink->GetAICHHash(), AICH_VERIFIED);
@@ -481,7 +481,7 @@ void CDownloadQueue::AddFileLinkToDownload(CED2KFileLink* pLink, int theCat, boo
 	if (partfile)
 	{
 		if (pLink->HasValidSources())
-			partfile->AddClientSources(pLink->SourcesList,1);
+			partfile->AddClientSources(pLink->SourcesList,1,false);
 		if (pLink->HasValidAICHHash() ){
 			if ( !(partfile->GetAICHHashset()->HasValidMasterHash() && partfile->GetAICHHashset()->GetMasterHash() == pLink->GetAICHHash())){
 				partfile->GetAICHHashset()->SetMasterHash(pLink->GetAICHHash(), AICH_VERIFIED);
@@ -489,18 +489,6 @@ void CDownloadQueue::AddFileLinkToDownload(CED2KFileLink* pLink, int theCat, boo
 			}
 		}
 	}
-
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	if (!theApp.sharedfiles->GetFileByID(pLink->GetHashKey())	// not already in the shared files list
-		&& partfile							// valid pointer
-		&& !partfile->hashsetneeded			// hash set not needed
-		&& thePrefs.IsWebCacheDownloadEnabled()			// webcache downloading on
-		&& partfile->GetStatus() == PS_EMPTY)	// file not stopped or paused
-	{
-			partfile->SetStatus(PS_READY);
-		theApp.sharedfiles->SafeAddKFile(partfile);
-	}
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	if (pLink->HasHostnameSources())
 	{
@@ -548,8 +536,6 @@ void CDownloadQueue::AddDownload(CPartFile* newfile,bool paused) {
 	msgTemp.Format(GetResString(IDS_NEWDOWNLOAD) + _T("\n"), newfile->GetFileName());
 	theApp.emuledlg->ShowNotifier(msgTemp, TBN_DOWNLOADADDED);
 	ExportPartMetFilesOverview();
-
-	thePrefs.UpdateWebcacheReleaseAllowed(); // WebCache [WC team/MorphXT] - Stulle/Max
 }
 
 bool CDownloadQueue::IsFileExisting(const uchar* fileid, bool bLogWarnings) const
@@ -580,20 +566,6 @@ void CDownloadQueue::Process(){
 	// <== Global Source Limit [Max/Stulle] - Stulle
 	
 	ProcessLocalRequests(); // send src requests to local server
-
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	////JP Proxy configuration testing START!!! This should probably be somewhere else.
-	if (thePrefs.expectingWebCachePing && (::GetTickCount() - thePrefs.WebCachePingSendTime > SEC2MS(30)))
-	{
-		thePrefs.expectingWebCachePing = false;
-		thePrefs.WebCacheDisabledThisSession = true; //Disable webcache downloads for the current proxy settings
-		//JP we need a modeless dialogue here!!
-		//			AfxMessageBox(_T("Proxy configuration Test Failed please review your proxy-settings"));
-		//MORPH - Changed by SiRoB, New ResolveWebcachename
-		theApp.QueueLogLine(false, _T("Proxy configuration Test Failed please review your proxy-settings. Webcache downloads have been deactivated until new proxy is tested."));
-	}
-	////JP Proxy configuration testing END!!! This should probably be somewhere else.
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	// ==> Quick start [TPT] - Max
 	static DWORD QuickStartEndTime=0;
@@ -630,7 +602,6 @@ void CDownloadQueue::Process(){
 		}
 	}
 	// <== Quick start [TPT] - Max
-
 
 	// Elapsed time (TIMER_PERIOD not accurate)	
 	uint32 deltaTime = ::GetTickCount() - m_lastProcessTime;
@@ -684,7 +655,7 @@ void CDownloadQueue::Process(){
 			// ==> Enforce Ratio [Stulle] - Stulle
 			/*
 			if(limitbysources && maxDownload < theApp.pBandWidthControl->GetMaxDownloadEx(false))
-				m_limitstate=2; //session ratio is reached->full limitation
+				m_limitstate=2; //session ratio is reached->full limitation 
 			*/
 			if(limitbysources == 1 && maxDownload < theApp.pBandWidthControl->GetMaxDownloadEx(0))
 				m_limitstate=2; //session ratio is reached->full limitation
@@ -1676,7 +1647,7 @@ void CDownloadQueue::CheckDiskspace(bool bNotEnoughSpaceLeft)
 }
 // SLUGFILLER: checkDiskspace
 
-void CDownloadQueue::GetDownloadStats(SDownloadStats& results)
+void CDownloadQueue::GetDownloadSourcesStats(SDownloadStats& results)
 {
 	memset(&results, 0, sizeof results);
 	for (POSITION pos = filelist.GetHeadPosition(); pos != 0; )
@@ -2124,31 +2095,27 @@ void CDownloadQueue::SendLocalSrcRequest(CPartFile* sender){
 	m_localServerReqQueue.AddTail(sender);
 }
 
-void CDownloadQueue::GetDownloadStats(int results[],
-									  uint64& rui64TotFileSize,
-									  uint64& rui64TotBytesLeftToTransfer,
-									  uint64& rui64TotNeededSpace)
+int CDownloadQueue::GetDownloadFilesStats(uint64 &rui64TotalFileSize,
+										  uint64 &rui64TotalLeftToTransfer,
+										  uint64 &rui64TotalAdditionalNeededSpace)
 {
-	results[0] = 0;
-	results[1] = 0;
-	results[2] = 0;
+	int iActiveFiles = 0;
 	for (POSITION pos = filelist.GetHeadPosition();pos != 0; )
 	{
 		const CPartFile* cur_file = filelist.GetNext(pos);
 		UINT uState = cur_file->GetStatus();
 		if (uState == PS_READY || uState == PS_EMPTY)
 		{
-			uint64 ui64SizeToTransfer = 0;
-			uint64 ui64NeededSpace = 0;
-			cur_file->GetSizeToTransferAndNeededSpace(ui64SizeToTransfer, ui64NeededSpace);
-			rui64TotFileSize += (uint64)cur_file->GetFileSize();
-			rui64TotBytesLeftToTransfer += ui64SizeToTransfer;
-			rui64TotNeededSpace += ui64NeededSpace;
-			results[2]++;
+			uint64 ui64LeftToTransfer = 0;
+			uint64 ui64AdditionalNeededSpace = 0;
+			cur_file->GetLeftToTransferAndAdditionalNeededSpace(ui64LeftToTransfer, ui64AdditionalNeededSpace);
+			rui64TotalFileSize += (uint64)cur_file->GetFileSize();
+			rui64TotalLeftToTransfer += ui64LeftToTransfer;
+			rui64TotalAdditionalNeededSpace += ui64AdditionalNeededSpace;
+			iActiveFiles++;
 		}
-		results[0] += cur_file->GetSourceCount();
-		results[1] += cur_file->GetTransferringSrcCount();
 	}
+	return iActiveFiles;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -2335,7 +2302,7 @@ void CDownloadQueue::KademliaSearchFile(uint32 searchID, const Kademlia::CUInt12
 
 void CDownloadQueue::ExportPartMetFilesOverview() const
 {
-	CString strFileListPath = thePrefs.GetAppDir() + _T("downloads.txt");
+	CString strFileListPath = thePrefs.GetMuleDirectory(EMULE_DATABASEDIR) + _T("downloads.txt");
 
 	CString strTmpFileListPath = strFileListPath;
 	PathRenameExtension(strTmpFileListPath.GetBuffer(MAX_PATH), _T(".tmp"));
@@ -2568,8 +2535,7 @@ void CDownloadQueue::PrintStatistic()
 	AddLogLine(false, _T("internal global sources: %u"), GetGlobalSources());
 	AddLogLine(false, _T("---------------------------------------"));
 }
-#endif
-// ==> file settings - Stulle
+#endif// ==> file settings - Stulle
 void CDownloadQueue::InitTempVariables(CPartFile* file)
 {
 	thePrefs.SetTakeOverFileSettings(false);
@@ -2773,19 +2739,6 @@ uint16 CDownloadQueue::GetGlobalSourceCount()
 }
 // <== Show sources on title - Stulle
 
-// ==> WebCache [WC team/MorphXT] - Stulle/Max
-bool CDownloadQueue::ContainsUnstoppedFiles()
-{
-	bool returnval = false;
-	for (POSITION pos = filelist.GetHeadPosition(); pos != 0; )
-	{
-		CPartFile* pPartFile = filelist.GetNext(pos);
-		if (pPartFile->IsPartFile() && !pPartFile->IsStopped())
-			returnval = true;
-	}
-	return returnval;
-}// <== WebCache [WC team/MorphXT] - Stulle/Max
-
 // ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 // This function is used for the category commands Stop Last and Pause Last.
 // This is a new function.
@@ -2897,7 +2850,7 @@ bool CDownloadQueue::PurgeED2KLinkQueue()
 		if (partfile)
 		{
 			if (pLink->HasValidSources())
-				partfile->AddClientSources(pLink->SourcesList,1);
+			partfile->AddClientSources(pLink->SourcesList,1,false);
 			if (pLink->HasValidAICHHash() ){
 				if ( !(partfile->GetAICHHashset()->HasValidMasterHash() && partfile->GetAICHHashset()->GetMasterHash() == pLink->GetAICHHash())){
 					partfile->GetAICHHashset()->SetMasterHash(pLink->GetAICHHash(), AICH_VERIFIED);
@@ -2905,17 +2858,6 @@ bool CDownloadQueue::PurgeED2KLinkQueue()
 				}
 			}
 		}
-	    // ==> WebCache [WC team/MorphXT] - Stulle/Max
-		if (!theApp.sharedfiles->GetFileByID(pLink->GetHashKey())	// not already in the shared files list
-			&& partfile							// valid pointer
-			&& !partfile->hashsetneeded			// hash set not needed
-			&& thePrefs.IsWebCacheDownloadEnabled()			// webcache downloading on
-			&& partfile->GetStatus() == PS_EMPTY)	// file not stopped or paused
-		{
-				partfile->SetStatus(PS_READY);
-			theApp.sharedfiles->SafeAddKFile(partfile);
-		}
-		// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 		if(pLink->HasHostnameSources())
 		{
@@ -3119,7 +3061,7 @@ bool CDownloadQueue::ApplyFilterMask(CString sFullName, UINT nCat)
 
 				if (iEnd == -1 || (iLT != -1 && iLT < iEnd) || iGT < iEnd)
 				{
-				AddDebugLogLine(false, _T("Category '%s' has invalid Category Mask String."), thePrefs.GetCategory(nCat)->title);
+				AddDebugLogLine(false, _T("Category '%s' has invalid Category Mask String."), thePrefs.GetCategory(nCat)->strTitle);
 					break; // Move on to next category.
 				}
 				if (iStart == iEnd)

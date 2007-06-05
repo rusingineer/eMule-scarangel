@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -87,30 +87,26 @@ void CDirectDownloadDlg::OnOK()
 	GetDlgItem(IDC_ELINK)->GetWindowText(strLinks);
 
 	int curPos = 0;
-	CString strTok = strLinks.Tokenize(_T("\t\n\r"), curPos);
+	CString strTok = strLinks.Tokenize(_T(" \t\r\n"), curPos); // tokenize by whitespaces
 	while (!strTok.IsEmpty())
 	{
-		strTok.Trim();
-		if (!strTok.IsEmpty()) {
-
-			if (strTok.Right(1) != _T("/"))
-				strTok += _T("/");
-			try
+		if (strTok.Right(1) != _T("/"))
+			strTok += _T("/");
+		try
+		{
+			CED2KLink* pLink = CED2KLink::CreateLinkFromUrl(strTok);
+			if (pLink)
 			{
-				CED2KLink* pLink = CED2KLink::CreateLinkFromUrl(strTok);
-				if (pLink)
+				if (pLink->GetKind() == CED2KLink::kFile)
 				{
-					if (pLink->GetKind() == CED2KLink::kFile)
-					{
 					// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 					/*
-						//Xman [MoNKi: -Check already downloaded files-]
-						if(theApp.knownfiles->CheckAlreadyDownloadedFileQuestion(pLink->GetFileLink()->GetHashKey(),pLink->GetFileLink()->GetName()))
-						{
-							theApp.downloadqueue->AddFileLinkToDownload(pLink->GetFileLink(), 
-								(thePrefs.GetCatCount()==0)?0 : m_cattabs.GetCurSel() );
-						}
-						//Xman end
+					//Xman [MoNKi: -Check already downloaded files-]
+					if(theApp.knownfiles->CheckAlreadyDownloadedFileQuestion(pLink->GetFileLink()->GetHashKey(),pLink->GetFileLink()->GetName()))
+					{
+						theApp.downloadqueue->AddFileLinkToDownload(pLink->GetFileLink(), (thePrefs.GetCatCount() == 0) ? 0 : m_cattabs.GetCurSel());
+					}
+					//Xman end
 					*/
 					CED2KFileLink* pFileLink = (CED2KFileLink*)CED2KLink::CreateLinkFromUrl(strTok.Trim());
 					if(theApp.knownfiles->CheckAlreadyDownloadedFileQuestion(pLink->GetFileLink()->GetHashKey(),pLink->GetFileLink()->GetName()))
@@ -119,26 +115,26 @@ void CDirectDownloadDlg::OnOK()
 							(thePrefs.GetCatCount()==0)?-1 : m_cattabs.GetCurSel(), true);
 					}
 					// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
-					}
-					else
-					{
-						delete pLink;
-						throw CString(_T("bad link"));
-					}
-					delete pLink;
 				}
-			}
-			catch(CString error)
-			{
-				TCHAR szBuffer[200];
-				_sntprintf(szBuffer, ARRSIZE(szBuffer), GetResString(IDS_ERR_INVALIDLINK), error);
-				CString strError;
-				strError.Format(GetResString(IDS_ERR_LINKERROR), szBuffer);
-				AfxMessageBox(strError);
-				return;
+				else
+				{
+					delete pLink;
+					throw CString(_T("bad link"));
+				}
+				delete pLink;
 			}
 		}
-		strTok = strLinks.Tokenize(_T("\t\n\r"), curPos);
+		catch(CString error)
+		{
+			TCHAR szBuffer[200];
+			_sntprintf(szBuffer, _countof(szBuffer), GetResString(IDS_ERR_INVALIDLINK), error);
+			szBuffer[_countof(szBuffer) - 1] = _T('\0');
+			CString strError;
+			strError.Format(GetResString(IDS_ERR_LINKERROR), szBuffer);
+			AfxMessageBox(strError);
+			return;
+		}
+		strTok = strLinks.Tokenize(_T(" \t\r\n"), curPos); // tokenize by whitespaces
 	}
 
 	CResizableDialog::OnOK();
@@ -195,14 +191,14 @@ void CDirectDownloadDlg::UpdateCatTabs() {
 	for (int ix=0;ix<thePrefs.GetCatCount();ix++) {
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	/*
-		CString label=(ix==0)?GetResString(IDS_ALL):thePrefs.GetCategory(ix)->title;
+		CString label=(ix==0)?GetResString(IDS_ALL):thePrefs.GetCategory(ix)->strTitle;
 		label.Replace(_T("&"),_T("&&"));
 		m_cattabs.InsertItem(ix,label);
 	}
 	if (oldsel>=m_cattabs.GetItemCount() || oldsel==-1)
 		oldsel=0;
 	*/
-		CString label=thePrefs.GetCategory(ix)->title;
+		CString label=thePrefs.GetCategory(ix)->strTitle;
 		label.Replace(_T("&"),_T("&&"));
 		m_cattabs.InsertItem(ix,label);
 	}
@@ -211,8 +207,7 @@ void CDirectDownloadDlg::UpdateCatTabs() {
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	m_cattabs.SetCurSel(oldsel);
-}
-// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+}// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 void CDirectDownloadDlg::OnNMClickCats(NMHDR* /*pNMHDR*/, LRESULT *pResult)
 {
 	POINT point;

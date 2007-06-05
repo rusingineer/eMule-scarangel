@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -32,13 +32,8 @@
 #include "ListenSocket.h"
 #include "ClientUDPSocket.h"
 #include "Log.h"
+//#include "UPnPFinder.h" //Xman official UPNP removed
 #include "DownloadQueue.h" // Global Source Limit [Max/Stulle] - Stulle
-// ==> WebCache [WC team/MorphXT] - Stulle/Max
-//#include "WebCache\PPgWebcachesettings.h" //jp
-#include "PPgScar.h"
-#include "PreferencesDlg.h" //jp
-// <== WebCache [WC team/MorphXT] - Stulle/Max
-
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -78,6 +73,7 @@ BEGIN_MESSAGE_MAP(CPPgConnection, CPropertyPage)
 	ON_BN_CLICKED(IDC_NETWORK_KADEMLIA, OnSettingsChange)
 	ON_WM_HELPINFO()
 	ON_BN_CLICKED(IDC_OPENPORTS, OnBnClickedOpenports)
+	//ON_BN_CLICKED(IDC_PREF_UPNPONSTART, OnSettingsChange) //Xman official UPNP removed
 END_MESSAGE_MAP()
 
 CPPgConnection::CPPgConnection()
@@ -155,7 +151,9 @@ void CPPgConnection::OnEnChangeUDPDisable()
 		GetDlgItem(IDC_UDPPORT)->GetWindowText(buffer, 20);
 		tempVal = (uint16)_tstoi(buffer);
 	}
-	
+	else
+		buffer[0] = _T('\0');
+
 	if (IsDlgButtonChecked(IDC_UDPDISABLE) || (!IsDlgButtonChecked(IDC_UDPDISABLE) && tempVal == 0))
 	{
 		tempVal = (uint16)_tstoi(buffer) ? (uint16)(_tstoi(buffer)+10) : (uint16)(thePrefs.port+10);
@@ -164,6 +162,12 @@ void CPPgConnection::OnEnChangeUDPDisable()
 		strBuffer.Format(_T("%d"), tempVal);
 		GetDlgItem(IDC_UDPPORT)->SetWindowText(strBuffer);
 	}
+
+	if (thePrefs.networkkademlia && !IsDlgButtonChecked(IDC_UDPDISABLE) != 0) // don't use GetNetworkKademlia here
+		CheckDlgButton(IDC_NETWORK_KADEMLIA, 1);
+	else
+		CheckDlgButton(IDC_NETWORK_KADEMLIA, 0);
+	GetDlgItem(IDC_NETWORK_KADEMLIA)->EnableWindow(IsDlgButtonChecked(IDC_UDPDISABLE) == 0);
 
 	guardian = false;
 }
@@ -266,10 +270,11 @@ void CPPgConnection::LoadSettings(void)
 		else
 			CheckDlgButton(IDC_AUTOCONNECT, 0);
 
-		if (thePrefs.networkkademlia)
+		if (thePrefs.GetNetworkKademlia())
 			CheckDlgButton(IDC_NETWORK_KADEMLIA, 1);
 		else
 			CheckDlgButton(IDC_NETWORK_KADEMLIA, 0);
+		GetDlgItem(IDC_NETWORK_KADEMLIA)->EnableWindow(thePrefs.GetUDPPort() > 0);
 
 		if (thePrefs.networked2k)
 			CheckDlgButton(IDC_NETWORK_ED2K, 1);
@@ -277,12 +282,24 @@ void CPPgConnection::LoadSettings(void)
 			CheckDlgButton(IDC_NETWORK_ED2K, 0);
 
 		// don't try on XP SP2 or higher, not needed there anymore
-		if (IsRunningXPSP2() == 0 && theApp.m_pFirewallOpener->DoesFWConnectionExist())
-			GetDlgItem(IDC_OPENPORTS)->EnableWindow(true);
+		if (thePrefs.GetWindowsVersion() == _WINVER_XP_ && IsRunningXPSP2() == 0 && theApp.m_pFirewallOpener->DoesFWConnectionExist())
+			GetDlgItem(IDC_OPENPORTS)->ShowWindow(SW_SHOW);
 		else
-			GetDlgItem(IDC_OPENPORTS)->EnableWindow(false);
+			GetDlgItem(IDC_OPENPORTS)->ShowWindow(SW_HIDE);
 		
-		
+		//Xman official UPNP removed
+		/*
+		if (thePrefs.GetWindowsVersion() != _WINVER_95_ && thePrefs.GetWindowsVersion() != _WINVER_98_ && thePrefs.GetWindowsVersion() != _WINVER_NT4_)
+			GetDlgItem(IDC_PREF_UPNPONSTART)->EnableWindow(true);
+		else
+			GetDlgItem(IDC_PREF_UPNPONSTART)->EnableWindow(false);
+
+		if (thePrefs.IsUPnPEnabled())
+			CheckDlgButton(IDC_PREF_UPNPONSTART, 1);
+		else
+			CheckDlgButton(IDC_PREF_UPNPONSTART, 0);
+		*/
+
 		//Xman Xtreme Upload
 		CalculateMaxUpSlotSpeed();
 		m_ctlMaxUp.SetPos((int)(thePrefs.m_slotspeed*10.0f +0.5f));		
@@ -311,25 +328,43 @@ BOOL CPPgConnection::OnApply()
 	float lastMaxGraphUploadRate = thePrefs.GetMaxGraphUploadRate();
 	float lastMaxGraphDownloadRate = thePrefs.GetMaxGraphDownloadRate();
 
+	//Xman after changing capacity the sysmenu must be updated
+	bool caphaschanged = false;
+	//Xman end
+
 	// Upload rate max, Upload rate graph
 	if(GetDlgItem(IDC_UPLOAD_CAP)->GetWindowTextLength() > 0)
 	{ 
 		GetDlgItem(IDC_UPLOAD_CAP)->GetWindowText(buffer, 20);
-		double upload = _tstof(buffer);
+		float upload = (float)_tstof(buffer);
+		//Xman after changing capacity the sysmenu must be updated
+		if(upload != lastMaxGraphUploadRate)
+			caphaschanged = true;
+		//Xman end
 		if(upload<= 0.0f || upload >= UNLIMITED)
 			thePrefs.SetMaxGraphUploadRate(16.0f);
 		else if(upload<5.0f)
 			thePrefs.SetMaxGraphUploadRate(5.0f);
 		else
-			thePrefs.SetMaxGraphUploadRate((float)upload);
+			thePrefs.SetMaxGraphUploadRate(upload);
 	}
 	// Download rate max, Download rate graph
 	if(GetDlgItem(IDC_DOWNLOAD_CAP)->GetWindowTextLength() > 0)
 	{
 		GetDlgItem(IDC_DOWNLOAD_CAP)->GetWindowText(buffer, 20);
-		double download = _tstof(buffer);
-		thePrefs.SetMaxGraphDownloadRate((download <= 0) ? 96.0f : (float)download);
+		float download = (float)_tstof(buffer);
+		//Xman after changing capacity the sysmenu must be updated
+		if(download != lastMaxGraphDownloadRate)
+			caphaschanged = true;
+		//Xman end
+		thePrefs.SetMaxGraphDownloadRate((download <= 0) ? 96.0f : download);
 	}
+
+	//Xman after changing capacity the sysmenu must be updated
+	if(caphaschanged==true)
+		theApp.emuledlg->Localize(); //dirty hack which updated the sysmenu
+	//Xman end
+
 	// Upload rate
 	if(GetDlgItem(IDC_MAXUP)->GetWindowTextLength())
 	{
@@ -340,7 +375,7 @@ BOOL CPPgConnection::OnApply()
 		else if(upload<3.0f)
 			thePrefs.SetMaxUpload(3.0f);
 		else
-			thePrefs.SetMaxUpload((float)upload);
+			thePrefs.SetMaxUpload(upload);
 		
 	}
 	// Download rate
@@ -369,22 +404,6 @@ BOOL CPPgConnection::OnApply()
 				theApp.listensocket->Rebind();
 			else
 				bRestartApp = true;
-
-			// ==> WebCache [WC team/MorphXT] - Stulle/Max
-			// yonatan WC-TODO: check out Rebind()
-			// this part crashes if Webcachesettings has not been active page at least once see PreferencesDlg.cpp (103)
-			if	(((!thePrefs.UsesCachedTCPPort())	// not a good port for webcace
-			&& thePrefs.IsWebCacheDownloadEnabled()		// webcache enabled
-			&& theApp.emuledlg->preferenceswnd->m_wndScar.GetWcDlCheckBox()) //webcache enabled but not yet saved to thePrefs. would be saved now but shouldn't
-			|| (!thePrefs.UsesCachedTCPPort()		// not a good port for webcache
-				&& theApp.emuledlg->preferenceswnd->m_wndScar.GetWcDlCheckBox())) //webcache enabled but not yet saved to thePrefs. would be saved now but shouldn't
-			{
-				AfxMessageBox(GetResString(IDS_WrongPortforWebcache),MB_OK | MB_ICONINFORMATION,0);
-				thePrefs.webcacheEnabled=false;			// disable webcache
-			}
-			
-			theApp.emuledlg->preferenceswnd->m_wndScar.UpdateEnableWC();
-			// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 			// ==> Improved ICS-Firewall support [MoNKi] - Max
 			theApp.m_pFirewallOpener->ClearMappingsAtEnd();
@@ -496,6 +515,28 @@ BOOL CPPgConnection::OnApply()
 		}
 	}
 	thePrefs.maxconnections = tempcon;
+
+
+	//Xman official UPNP removed
+	/*
+	if (IsDlgButtonChecked(IDC_PREF_UPNPONSTART) != 0){
+		if (!thePrefs.IsUPnPEnabled()){
+			thePrefs.m_bEnableUPnP = true;
+			if (theApp.m_pUPnPFinder != NULL && thePrefs.IsUPnPEnabled()){
+				try
+				{
+					if (theApp.m_pUPnPFinder->AreServicesHealthy())
+						theApp.m_pUPnPFinder->StartDiscovery(thePrefs.GetPort(), thePrefs.GetUDPPort());
+				}
+				catch ( CUPnPFinder::UPnPError& ) {}
+				catch ( CException* e ) { e->Delete(); }
+			}
+		}
+	}
+	else
+		thePrefs.m_bEnableUPnP = false;
+	*/
+
 	theApp.scheduler->SaveOriginals();
 
 	// ==> TBH: minimule - Max
@@ -560,6 +601,9 @@ void CPPgConnection::Localize(void)
 		GetDlgItem(IDC_UDPDISABLE)->SetWindowText(GetResString(IDS_UDPDISABLED));
 		GetDlgItem(IDC_OPENPORTS)->SetWindowText(GetResString(IDS_FO_PREFBUTTON));
 		SetDlgItemText(IDC_STARTTEST, GetResString(IDS_STARTTEST) );
+		//Xman official UPNP removed
+		//GetDlgItem(IDC_PREF_UPNPONSTART)->SetWindowText(GetResString(IDS_UPNPSTART));
+		
 		//Xman GlobalMaxHarlimit for fairness
 		GetDlgItem(IDC_STATIC_MAXGLOBALSOURCES)->SetWindowText(GetResString(IDS_MAXGLOBALSOURCES));
 		GetDlgItem(IDC_ACCEPTSOURCES)->SetWindowText(GetResString(IDS_ACCEPTSOURCES));

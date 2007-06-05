@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -193,8 +193,8 @@ CUpDownClient* CUploadQueue::FindBestClientInQueue()
             } 
 		}
 		// <== Superior Client Handling [Stulle] - Stulle		
-		else
-		{
+        else
+        {
 		    // finished clearing
 		    uint32 cur_score = cur_client->GetScore(false);
 
@@ -656,7 +656,7 @@ bool CUploadQueue::AcceptNewClient(bool addOnNextConnect)
 	
 	if(addOnNextConnect 
 		&& ((thePrefs.m_openmoreslots //if openmoreslots, then it is allowed if only one trickle
-		&& (curUpSlots-theApp.uploadBandwidthThrottler->GetNumberOfFullyActivatedSlots()<=1) )
+		&& (curUpSlots-theApp.uploadBandwidthThrottler->GetNumberOfFullyActivatedSlots()<=1) )  
 		|| (thePrefs.m_openmoreslots==false && curUpSlots<=MinSlots) //else it is allowed if only minslots
 		|| lastupslotHighID == true)) //or last client was highid
 		return true;
@@ -716,16 +716,16 @@ bool CUploadQueue::ForceNewClient(bool allowEmptyWaitingQueue) {
 	uint32 eMuleOut; uint32 eMuleOutOverall;
 	uint32 networkIn; uint32 networkOut;
 
-		theApp.pBandWidthControl->GetDatarates(thePrefs.m_internetdownreactiontime, // 2 seconds
-			eMuleIn, eMuleInOverall,
-			eMuleOut, eMuleOutOverall,
-			networkIn, networkOut);
+	theApp.pBandWidthControl->GetDatarates(thePrefs.m_internetdownreactiontime, // 2 seconds
+		eMuleIn, eMuleInOverall,
+		eMuleOut, eMuleOutOverall,
+		networkIn, networkOut);
 
 	
-		//Xman check out if eventually we don't have an internet-connection
+	//Xman check out if eventually we don't have an internet-connection
 	if(eMuleOut==0 && (thisTick - theApp.last_traffic_reception) > (uint32)SEC2MS(thePrefs.m_internetdownreactiontime))
 			theApp.internetmaybedown=1;
-		else
+	else
 		if(theApp.internetmaybedown) //don't full open here.. it will be done when new IP received
 			theApp.internetmaybedown=2; //but open the upload (because it could be a wrong detection)
 
@@ -853,13 +853,6 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 		return; //no answer... a ban would also be not to bad
 	}
 	//Xman end
-
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	// this file is shared but not a single chunk is complete, so don't enqueue the clients asking for it
-	CKnownFile* uploadReqfile = theApp.sharedfiles->GetFileByID(client->requpfileid);
-	if (uploadReqfile && uploadReqfile->IsPartFile() && ((CPartFile*)uploadReqfile)->GetAvailablePartCount() == 0 && !(((CPartFile*)uploadReqfile)->GetStatus(true)==PS_ERROR && ((CPartFile*)uploadReqfile)->GetCompletionError()))
-		return;
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	uint16 cSameIP = 0;
 	// check for double
@@ -1136,10 +1129,8 @@ bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReaso
 
             bool removed = theApp.uploadBandwidthThrottler->RemoveFromStandardList(client->socket);
             bool pcRemoved = theApp.uploadBandwidthThrottler->RemoveFromStandardList((CClientReqSocket*)client->m_pPCUpSocket);
-            bool wcRemoved = theApp.uploadBandwidthThrottler->RemoveFromStandardList((CClientReqSocket*)client->m_pWCUpSocket); // WebCache [WC team/MorphXT] - Stulle/Max
 			(void)removed;
 			(void)pcRemoved;
-			(void)wcRemoved; // WebCache [WC team/MorphXT] - Stulle/Max
             //if(thePrefs.GetLogUlDlEvents() && !(removed || pcRemoved)) {
             //    AddDebugLogLine(false, _T("UploadQueue: Didn't find socket to delete. Adress: 0x%x"), client->socket);
             //}
@@ -1161,7 +1152,7 @@ bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReaso
 			client->SetCollectionUploadSlot(false);
 			// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 
-			CKnownFile* requestedFile = theApp.sharedfiles->GetFileByID(client->GetUploadFileID());
+            CKnownFile* requestedFile = theApp.sharedfiles->GetFileByID(client->GetUploadFileID());
             if(requestedFile != NULL) {
                 requestedFile->UpdatePartsInfo();
             }
@@ -1318,38 +1309,38 @@ bool CUploadQueue::CheckForTimeOver(CUpDownClient* client){
 		// <== Superior Client Handling [Stulle] - Stulle
 		)
 	{
-	//Xman: we allow a min of 1.8 MB
-		if( client->GetSessionUp() >= 1887437
+		//Xman: we allow a min of 2.0 MB
+		if( client->GetSessionUp() >= 2097152
 		&& m_dwnextallowedscoreremove < ::GetTickCount() //Xman avoid to short upload-periods
 		)
-	{
-
-		// Cache current client score
-		const uint32 score = client->GetScore(true, true);
-
-		// Check if another client has a bigger score
-		//Xman max allowed are 10 MB
-		if ((score < GetMaxClientScore() || client->GetSessionUp() >= 10485760) && m_dwRemovedClientByScore < GetTickCount()) 
 		{
-			if (thePrefs.GetLogUlDlEvents())
-				AddDebugLogLine(DLP_VERYLOW, false, _T("%s: Upload session will end soon due to score."), client->GetUserName());
-			//Set timer to prevent to many uploadslot getting kick do to score.
-			//Upload slots are delayed by a min of 1 sec and the maxscore is reset every 5 sec.
-			//So, I choose 6 secs to make sure the maxscore it updated before doing this again.
-			m_dwRemovedClientByScore = GetTickCount()+SEC2MS(6);
-			m_dwnextallowedscoreremove = ::GetTickCount() + MIN2MS(1);
-			//Xman remark:
-			//now we have 2 values. This is to avoid one special situation:
-			//one client at waitingqueue get a very high score, because long waiting-time and now he is uploading to us.
-			//because the client with lowest score is only kicked after he has completed it's emblock
-			//this can need too long time, and a second or third client will also be kicked
-			//now we wait, until the lowest score client has finish it's emblock, but max 1 minute 
-			//you can see m_dwRemovedClientByScore as the minimum time and
-			//m_dwnextallowedscoreremove as the maximum time
 
-			returnvalue=true;
+			// Cache current client score
+			const uint32 score = client->GetScore(true, true);
+
+			// Check if another client has a bigger score
+			//Xman max allowed are 10 MB
+			if ((score < GetMaxClientScore() || client->GetSessionUp() >= 10485760) && m_dwRemovedClientByScore < GetTickCount()) 
+			{
+				if (thePrefs.GetLogUlDlEvents())
+					AddDebugLogLine(DLP_VERYLOW, false, _T("%s: Upload session will end soon due to score."), client->GetUserName());
+				//Set timer to prevent to many uploadslot getting kick do to score.
+				//Upload slots are delayed by a min of 1 sec and the maxscore is reset every 5 sec.
+				//So, I choose 6 secs to make sure the maxscore it updated before doing this again.
+				m_dwRemovedClientByScore = GetTickCount()+SEC2MS(6);
+				m_dwnextallowedscoreremove = ::GetTickCount() + MIN2MS(1);
+				//Xman remark:
+				//now we have 2 values. This is to avoid one special situation:
+				//one client at waitingqueue get a very high score, because long waiting-time and now he is uploading to us.
+				//because the client with lowest score is only kicked after he has completed it's emblock
+				//this can need too long time, and a second or third client will also be kicked
+				//now we wait, until the lowest score client has finish it's emblock, but max 1 minute 
+				//you can see m_dwRemovedClientByScore as the minimum time and
+				//m_dwnextallowedscoreremove as the maximum time
+
+				returnvalue=true;
+			}
 		}
-	}
 	}
 	else //full chunk method
 	if( (client->IsDifferentPartBlock() || client->GetQueueSessionPayloadUp() > SESSIONMAXTRANS))
@@ -1422,11 +1413,12 @@ UINT CUploadQueue::GetWaitingPosition(CUpDownClient* client){
 VOID CALLBACK CUploadQueue::UploadTimer(HWND /*hwnd*/, UINT /*uMsg*/, UINT_PTR /*idEvent*/, DWORD /*dwTime*/)
 {
 	// NOTE: Always handle all type of MFC exceptions in TimerProcs - otherwise we'll get mem leaks
-	try
+	//Xman unreachable
+	//try
 	{
 		theApp.emuledlg->PostMessage(TM_DOTIMER, NULL, NULL); //Xman process timer code via messages (Xanatos)
 	}
-    CATCH_DFLT_EXCEPTIONS(_T("CUploadQueue::UploadTimer"))
+    //CATCH_DFLT_EXCEPTIONS(_T("CUploadQueue::UploadTimer"))
 }
 
 void CUploadQueue::UploadTimer() 
@@ -1511,7 +1503,11 @@ void CUploadQueue::UploadTimer()
 
 			theApp.listensocket->UpdateConnectionsStatus();
 			if (thePrefs.WatchClipboard4ED2KLinks())
+			{
+				// TODO: Remove this from here. This has to be done with a clipboard chain
+				// and *not* with a timer!!
 				theApp.SearchClipboard();		
+			}
 
 			if (theApp.serverconnect->IsConnecting())
 				theApp.serverconnect->CheckForTimeout();
@@ -1667,9 +1663,6 @@ void CUploadQueue::ReSortUploadSlots(bool force) {
             ret=theApp.uploadBandwidthThrottler->RemoveFromStandardList((CClientReqSocket*)cur_client->m_pPCUpSocket);
 			if(ret && cur_client->HasPeerCacheState())
 				DEBUG_ONLY( Debug( _T("removed m_pPCUpSocket from uploadbandwidththrottler")));
-			// ==> WebCache [WC team/MorphXT] - Stulle/Max
-			(void) theApp.uploadBandwidthThrottler->RemoveFromStandardList((CClientReqSocket*)cur_client->m_pWCUpSocket);
-			// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 
             tempUploadinglist.AddTail(cur_client);
@@ -1759,15 +1752,4 @@ void CUploadQueue::ChangeSendBufferSize(int newValue)
 			//AddDebugLogLine(false,_T("new socketbuffer: %u "), setValue);
 		}
 	}
-}// ==> WebCache [WC team/MorphXT] - Stulle/Max
-CUpDownClient*	CUploadQueue::FindClientByWebCacheUploadId(const uint32 id) // Superlexx - webcache - can be made more efficient
-{
-	for (POSITION pos = uploadinglist.GetHeadPosition(); pos != NULL;)
-	{
-		CUpDownClient* cur_client = uploadinglist.GetNext(pos);
-		if ( cur_client->m_uWebCacheUploadId == id )
-			return cur_client;
-	}
-	return 0;
 }
-// <== WebCache [WC team/MorphXT] - Stulle/Max

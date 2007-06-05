@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -63,16 +63,15 @@ CServerListCtrl::CServerListCtrl()
 bool CServerListCtrl::Init()
 {
 	SetName(_T("ServerListCtrl"));
-	ModifyStyle(0,LVS_SINGLESEL|LVS_REPORT);
-	ModifyStyle(LVS_SINGLESEL|LVS_LIST|LVS_ICON|LVS_SMALLICON,LVS_REPORT); //here the CListCtrl is set to report-style
-	SetExtendedStyle(GetExtendedStyle() | LVS_EX_INFOTIP);
+
+	SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_INFOTIP);
 
 	CToolTipCtrl* tooltip = GetToolTips();
 	if (tooltip) {
 		m_tooltip->SubclassWindow(*tooltip);
 		tooltip->ModifyStyle(0, TTS_NOPREFIX);
 		tooltip->SetDelayTime(TTDT_AUTOPOP, 20000);
-		tooltip->SetDelayTime(TTDT_INITIAL, thePrefs.GetToolTipDelay()*1000);
+		//tooltip->SetDelayTime(TTDT_INITIAL, thePrefs.GetToolTipDelay()*1000);
 	}
 
 	InsertColumn(0, GetResString(IDS_SL_SERVERNAME),LVCFMT_LEFT, 150);
@@ -853,7 +852,7 @@ bool CServerListCtrl::StaticServerFileAppend(CServer *server)
 		// Remove any entry before writing to avoid duplicates
 		StaticServerFileRemove(server);
 
-		FILE* staticservers = _tfsopen(thePrefs.GetConfigDir() + _T("staticservers.dat"), _T("a"), _SH_DENYWR);
+		FILE* staticservers = _tfsopen(thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + _T("staticservers.dat"), _T("a"), _SH_DENYWR);
 		if (staticservers==NULL) 
 		{
 			LogError(LOG_STATUSBAR, GetResString(IDS_ERROR_SSF));
@@ -896,8 +895,8 @@ bool CServerListCtrl::StaticServerFileRemove(CServer *server)
 		TCHAR buffer[1024];
 		int lenBuf = 1024;
 		int pos;
-		CString StaticFilePath = thePrefs.GetConfigDir() + _T("staticservers.dat");
-		CString StaticTempPath = thePrefs.GetConfigDir() + _T("statictemp.dat");
+		CString StaticFilePath = thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + _T("staticservers.dat");
+		CString StaticTempPath = thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + _T("statictemp.dat");
 		FILE* staticservers = _tfsopen(StaticFilePath , _T("r"), _SH_DENYWR);
 		FILE* statictemp = _tfsopen(StaticTempPath , _T("w"), _SH_DENYWR);
 
@@ -935,7 +934,7 @@ bool CServerListCtrl::StaticServerFileRemove(CServer *server)
 
 			// Compare, if not the same server write original line to temp file
 			if (strLine.Compare(strTest) != 0)
-				_ftprintf(statictemp, buffer);
+				_ftprintf(statictemp, _T("%s"), buffer);
 			else {
 				server->SetIsStaticMember(false);
 				removed=true;
@@ -968,6 +967,7 @@ void CServerListCtrl::ShowServerCount()
 void CServerListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMLVGETINFOTIP pGetInfoTip = reinterpret_cast<LPNMLVGETINFOTIP>(pNMHDR);
+
 	if (pGetInfoTip->iSubItem == 0)
 	{
 		LVHITTESTINFO hti = {0};
@@ -979,11 +979,11 @@ void CServerListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 		// enable tooltips only if Shift+Ctrl is currently pressed
 		bool bShowInfoTip = GetSelectedCount() > 1 || ((GetKeyState(VK_SHIFT) & 0x8000) && (GetKeyState(VK_CONTROL) & 0x8000));
 
-		if (!bShowInfoTip){
+		if (!bShowInfoTip) {
 			if (!bOverMainItem){
 				// don' show the default label tip for the main item, if the mouse is not over the main item
-				if ((pGetInfoTip->dwFlags & LVGIT_UNFOLDED) == 0 && pGetInfoTip->cchTextMax > 0 && pGetInfoTip->pszText[0] != '\0')
-					pGetInfoTip->pszText[0] = '\0';
+				if ((pGetInfoTip->dwFlags & LVGIT_UNFOLDED) == 0 && pGetInfoTip->cchTextMax > 0 && pGetInfoTip->pszText[0] != _T('\0'))
+					pGetInfoTip->pszText[0] = _T('\0');
 			}
 			return;
 		}

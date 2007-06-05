@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -596,14 +596,6 @@ bool CUpDownClient::SendHttpBlockRequests()
 	USES_CONVERSION;
 	ASSERT( GetDownloadState() == DS_DOWNLOADING );
 	ASSERT( m_ePeerCacheDownState == PCDS_WAIT_CLIENT_REPLY || m_ePeerCacheDownState == PCDS_DOWNLOADING );
-
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	ASSERT( m_ePeerCacheDownState == PCDS_WAIT_CLIENT_REPLY
-		|| m_ePeerCacheDownState == PCDS_DOWNLOADING
-		|| m_eWebCacheDownState == WCDS_WAIT_CLIENT_REPLY // yonatan http
-		|| m_eWebCacheDownState == WCDS_DOWNLOADINGVIA // JP  http
-		|| m_eWebCacheDownState == WCDS_DOWNLOADINGFROM ); // JP  http); 
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	m_bPeerCacheDownHit = false;
 	m_dwLastBlockReceived = ::GetTickCount();

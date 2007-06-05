@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -20,16 +20,17 @@
 /*
 //Xman
 //ModID
-#define MOD_VERSION		_T("Xtreme 5.4.2") 
+#define MOD_VERSION		_T("Xtreme 6.0") 
 */
+
 //Xman versions check
-#define MOD_MAIN_VER	5
-#define MOD_MIN_VER		4
-#define	MOD_BUILD_VER	3 //1=Xtreme x.x 2=Xtreme x.x.1
+#define MOD_MAIN_VER	6
+#define MOD_MIN_VER		0
+#define	MOD_BUILD_VER	1 //1=Xtreme x.x 2=Xtreme x.x.1
 /*
 
 //Xman Anti-Leecher: simple Anti-Thief
-#define MOD_MAJOR_VERSION _T("eMule v0.47c") 
+#define MOD_MAJOR_VERSION _T("eMule v0.48a") 
 //const float MOD_FLOAT_VERSION= (float)_tstof(CString(MOD_VERSION).Mid(7)) ;
 #define MOD_NICK_ADD _T(" «") + MOD_VERSION + _T("»")
 */
@@ -47,11 +48,12 @@
 #define KADEMLIA_VERSION1_46c			0x01 /*45b - 46c*/
 #define KADEMLIA_VERSION2_47a			0x02 /*47a*/
 #define KADEMLIA_VERSION3_47b			0x03 /*47b*/
-#define KADEMLIA_VERSION				0x04 /*47c*/
+#define KADEMLIA_VERSION				0x05
 #define PREFFILE_VERSION				0x14	//<<-- last change: reduced .dat, by using .ini
 #define PARTFILE_VERSION				0xe0
 #define PARTFILE_SPLITTEDVERSION		0xe1
 #define PARTFILE_VERSION_LARGEFILE		0xe2
+#define SOURCEEXCHANGE2_VERSION			4		// replaces the version sent in MISC_OPTIONS flag fro SX1
 
 // ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 /*
@@ -155,6 +157,7 @@
 #define DISKSPACERECHECKTIME	MIN2MS(15)
 #define CLIENTLIST_CLEANUP_TIME	MIN2MS(21)	// //Xman changed to 10, because of extended cleanup  //34 min
 #define MAXPRIORITYCOLL_SIZE	10*1024		// max file size for collection file which are allowed to bypass the queue
+#define SEARCH_SPAM_THRESHOLD	60
 
 // you shouldn't change anything here if you are not really sure, or emule will probaly not work
 #define	MAXFRAGSIZE				1300
@@ -168,11 +171,6 @@
 #define OP_UDPRESERVEDPROT1		0xA3	// reserved for later UDP headers (important for EncryptedDatagramSocket)
 #define OP_UDPRESERVEDPROT2		0xB2	// reserved for later UDP headers (important for EncryptedDatagramSocket)
 #define OP_MLDONKEYPROT			0x00
-// ==> WebCache [WC team/MorphXT] - Stulle/Max
-#define OP_WEBCACHEPROT			0x57 
-#define	OP_WEBCACHEPACKEDPROT	0x58
-#define OP_THE_LETTER_G			0x47	// yonatan http - first byte in an http GET header
-// <== WebCache [WC team/MorphXT] - Stulle/Max
 #define	MET_HEADER				0x0E
 #define	MET_HEADER_I64TAGS		0x0F
 	
@@ -283,6 +281,8 @@
 #define OP_FILEDESC				0x61	// <len 2><NAME len>
 #define OP_REQUESTSOURCES		0x81	// <HASH 16>
 #define OP_ANSWERSOURCES		0x82	//
+#define OP_REQUESTSOURCES2		0x83	// <HASH 16><Version 1><Options 2>
+#define OP_ANSWERSOURCES2		0x84	// <Version 1>[content]
 #define OP_PUBLICKEY			0x85	// <len 1><pubkey len>
 #define OP_SIGNATURE			0x86	// v1: <len 1><signature len>  v2:<len 1><signature len><sigIPused 1>
 #define OP_SECIDENTSTATE		0x87	// <state 1><rndchallenge 4>
@@ -307,16 +307,6 @@
 #define OP_SENDINGPART_I64		0xA2	// <HASH 16><von 8><bis 8><Daten len:(von-bis)>
 #define	OP_REQUESTPARTS_I64		0xA3	// <HASH 16><von[3] 8*3><bis[3] 8*3>
 #define OP_MULTIPACKET_EXT		0xA4		
-
-// ==> WebCache [WC team/MorphXT] - Stulle/Max
-#define OP_HTTP_CACHED_BLOCK		0xFF	// <Proxy-ip 4><IP 4><PORT 2><filehash 16><startoffset 4><endoffset 4><key 16>
-#define OP_DONT_SEND_OHCBS			0xFE	// protocol == OP_WEBCACHEPROT
-#define	OP_RESUME_SEND_OHCBS		0xFD	// protocol == OP_WEBCACHEPROT
-#define	OP_MULTI_HTTP_CACHED_BLOCKS	0xFC	// <downloadID 4><nrOfBlocks 4><Proxy-ip 4><IP 4><PORT 2><filehash 16><startoffset 4><endoffset 4><key 16>... ; protocol == OP_WEBCACHEPROT or OP_WEBCACHEPACKEDPROT
-#define OP_XPRESS_MULTI_HTTP_CACHED_BLOCKS	0xFB	// same as OP_MULTI_HTTP_CACHED_BLOCKS, but the first OHCB must be added to the queue head (downloaded ASAP)
-#define	OP_MULTI_FILE_REQ			0xFA	// TCP only, protocol == OP_WEBCACHEPROT or OP_WEBCACHEPACKEDPROT
-#define	OP_MULTI_FILE_REASK			0xF9	// UDP/TCP, protocol == OP_WEBCACHEPROT or OP_WEBCACHEPACKEDPROT
-// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 // extened prot client <-> extened prot client UDP
 #define OP_REASKFILEPING		0x90	// <HASH 16>
@@ -654,10 +644,25 @@
 #define KADEMLIA_FIREWALLED_ACK_RES		0x59	// (null)
 #define KADEMLIA_FINDBUDDY_RES			0x5A	// <TCPPORT (sender) [2]>
 
+#define KADEMLIA2_PING					0x60	// (null)
+#define KADEMLIA2_PONG					0x61	// (null)
+
 // KADEMLIA (parameter)
 #define KADEMLIA_FIND_VALUE				0x02
 #define KADEMLIA_STORE					0x04
-#define KADEMLIA_FIND_NODE				0x0B// ==> file settings - Stulle
+#define KADEMLIA_FIND_NODE				0x0B
+
+// searchspam.met Tags
+#define SP_FILEFULLNAME					0x01
+#define SP_FILEHASHSPAM					0x02
+#define SP_FILEHASHNOSPAM				0x03
+#define SP_FILESOURCEIP					0x04
+#define SP_FILESERVERIP					0x05
+#define SP_FILESIMILARNAME				0x06
+#define SP_FILESIZE						0x07
+#define SP_UDPSERVERSPAMRATIO			0x08
+
+// ==> file settings - Stulle
 #define ENABLE_AUTO_DROP_NNS            true
 #define AUTO_NNS_TIMER                  35000 // 35 sec
 #define MAX_REMOVE_NNS_LIMIT            80

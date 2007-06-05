@@ -1,4 +1,4 @@
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -44,7 +44,8 @@ enum EPartFileStatus{
 
 
 //#define BUFFER_SIZE_LIMIT 500000 // Max bytes before forcing a flush
-#define BUFFER_TIME_LIMIT	60000	// Max milliseconds before forcing a flush
+//#define BUFFER_TIME_LIMIT	60000	// Max milliseconds before forcing a flush
+#define BUFFER_TIME_LIMIT	80000 //Xman increased to 8 sec
 
 #define	PARTMET_BAK_EXT	_T(".bak")
 #define	PARTMET_TMP_EXT	_T(".backup")
@@ -167,7 +168,7 @@ public:
 	bool	IsNormalFile() const { return (m_dwFileAttributes & (FILE_ATTRIBUTE_COMPRESSED | FILE_ATTRIBUTE_SPARSE_FILE)) == 0; }
 	const bool	IsAllocating() const { return m_AllocateThread != NULL; }
 	EMFileSize	GetRealFileSize() const;
-	void	GetSizeToTransferAndNeededSpace(uint64& pui64SizeToTransfer, uint64& pui32NeededSpace) const;
+	void	GetLeftToTransferAndAdditionalNeededSpace(uint64 &ui64LeftToTransfer, uint64 &pui32AdditionalNeededSpace) const;
 	uint64	GetNeededSpace() const;
 
 	// last file modification time (NT's version of UTC), to be used for stats only!
@@ -298,8 +299,8 @@ public:
 	void	ResumeFile(bool resort = true);
 	void	ResumeFileInsufficient();
 
-	virtual Packet* CreateSrcInfoPacket(const CUpDownClient* forClient) const;
-	void	AddClientSources(CSafeMemFile* sources, uint8 sourceexchangeversion, const CUpDownClient* pClient = NULL);
+	virtual Packet* CreateSrcInfoPacket(const CUpDownClient* forClient, uint8 byRequestedVersion, uint16 nRequestedOptions) const;
+	void	AddClientSources(CSafeMemFile* sources, uint8 sourceexchangeversion, bool bSourceExchange2, const CUpDownClient* pClient = NULL);
 
 	UINT	GetAvailablePartCount() const { return availablePartsCount; }
 	void	UpdateAvailablePartsCount();
@@ -619,44 +620,6 @@ public:
 	void	RemoveHighQRSourcesManualXman();
 	void	CleanUp_NNS_FQS_NONE_ERROR_BANNED_LOWTOLOWIP_Sources();
 	// <== advanced manual dropping - Stulle
-
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-private:
-	// JP added handling of proxy-sources on pause/cancel/resume START
-	public:
-	void CancelProxyDownloads();
-	void PauseProxyDownloads();
-	void ResumeProxyDownloads();
-	// JP added handling of proxy-sources on pause/cancel/resume END
-	
-	//JP webcache column START
-	//JP added stuff from Gnaddelwarz
-	uint16	GetWebcacheSourceCount() const; //JP webcache column
-	UINT GetWebcacheSourceOurProxyCount() const;
-	uint16 GetWebcacheSourceNotOurProxyCount() const;
-	void	CountWebcacheSources() const;
-	uint16	WebcacheSources;
-	uint16 WebcacheSourcesOurProxy;
-	uint16 WebcacheSourcesNotOurProxy;
-	uint32  LastWebcacheSourceCountTime; //JP speed up webcache column
-	//JP webcache column END
-
-	//JP webcache file detail dialogue START
-	uint64  WebCacheDownDataThisFile;
-	uint32	Webcacherequests;
-	uint32	SuccessfulWebcacherequests;
-	void	AddWebCachedBlockToStats( bool IsGood, uint64 bytes );
-	//JP webcache file detail dialogue END
-
-	//JP Throttle OHCB-production START
-	UINT GetNumberOfBlocksForThisFile();
-	UINT GetMaxNumberOfWebcacheConnectionsForThisFile();
-	UINT GetNumberOfCurrentWebcacheConnectionsForThisFile();
-	//JP Throttle OHCB-production END
-
-public:
-	void	AddRequestedBlock(Requested_Block_Struct* block);
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	// ==> Source Counts Are Cached derivated from Khaos [SiRoB] - Stulle
 	UINT	GetAvailableSrcCount() const;

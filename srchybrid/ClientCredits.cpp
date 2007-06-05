@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -93,7 +93,7 @@ CClientCredits::~CClientCredits()
 void CClientCredits::AddDownloaded(uint32 bytes, uint32 dwForIP) {
 	// ==> Code Optimization [SiRoB] - Stulle
 	/*
-	if ( ( GetCurrentIdentState(dwForIP) == IS_IDFAILED || GetCurrentIdentState(dwForIP) == IS_IDBADGUY || GetCurrentIdentState(dwForIP) == IS_IDNEEDED) && theApp.clientcredits->CryptoAvailable() ){
+	if ((GetCurrentIdentState(dwForIP) == IS_IDFAILED || GetCurrentIdentState(dwForIP) == IS_IDBADGUY || GetCurrentIdentState(dwForIP) == IS_IDNEEDED) && theApp.clientcredits->CryptoAvailable()) {
 	*/
 	if ( GetCurrentIdentState(dwForIP) != IS_IDENTIFIED  && GetCurrentIdentState(dwForIP) != IS_NOTAVAILABLE && theApp.clientcredits->CryptoAvailable() ){
 	// <== Code Optimization [SiRoB] - Stulle
@@ -104,8 +104,8 @@ void CClientCredits::AddDownloaded(uint32 bytes, uint32 dwForIP) {
 	uint64 current = (((uint64)m_pCredits->nDownloadedHi << 32) | m_pCredits->nDownloadedLo) + bytes;
 
 	//recode
-	m_pCredits->nDownloadedLo=(uint32)current;
-	m_pCredits->nDownloadedHi=(uint32)(current>>32);
+	m_pCredits->nDownloadedLo = (uint32)current;
+	m_pCredits->nDownloadedHi = (uint32)(current >> 32);
 
 	m_bCheckScoreRatio = true; // CreditSystems [EastShare/ MorphXT] - Stulle
 }
@@ -113,7 +113,7 @@ void CClientCredits::AddDownloaded(uint32 bytes, uint32 dwForIP) {
 void CClientCredits::AddUploaded(uint32 bytes, uint32 dwForIP) {
 	// ==> Code Optimization [SiRoB] - Stulle
 	/*
-	if ( ( GetCurrentIdentState(dwForIP) == IS_IDFAILED || GetCurrentIdentState(dwForIP) == IS_IDBADGUY || GetCurrentIdentState(dwForIP) == IS_IDNEEDED) && theApp.clientcredits->CryptoAvailable() ){
+	if ((GetCurrentIdentState(dwForIP) == IS_IDFAILED || GetCurrentIdentState(dwForIP) == IS_IDBADGUY || GetCurrentIdentState(dwForIP) == IS_IDNEEDED) && theApp.clientcredits->CryptoAvailable()) {
 	*/
 	if ( GetCurrentIdentState(dwForIP) != IS_IDENTIFIED  && GetCurrentIdentState(dwForIP) != IS_NOTAVAILABLE && theApp.clientcredits->CryptoAvailable() ){
 	// <== Code Optimization [SiRoB] - Stulle
@@ -140,6 +140,7 @@ uint64 CClientCredits::GetDownloadedTotal() const {
 
 // ==> CreditSystems [EastShare/ MorphXT] - Stulle
 /*
+//Xman Credit System
 const float CClientCredits::GetScoreRatio(const CUpDownClient* client) const
 */
 float CClientCredits::GetScoreRatio(const CUpDownClient* client)
@@ -383,6 +384,7 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 		// Cache value
 		const uint64 uploadTotal = GetUploadedTotal();
 
+
 		// Bonus Faktor calculation
 		float difference = (float)downloadTotal - uploadTotal;
 		if (difference>=0)
@@ -406,13 +408,13 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 			10.0f : (float)(2*downloadTotal)/(float)uploadTotal;
 
 		// Factor 2
-		//Xman slightly changed to use linear function until half of chunk is transferred
+		// linear calcualtion of the max multiplicator based on uploaded data for the first chunk (1MB = 1.01, 9.2MB = 3.34)
 		float trunk;
-		if(downloadTotal < 4718592)  //half of a chunk and a good point to keep the function consistent
-			 trunk = (float)(1.0 + (double)downloadTotal/(1048576.0*3.0));
+		if(downloadTotal < 9646899) 
+			trunk = (((float)(downloadTotal - 1048576) / 8598323.0F) * 2.34F) + 1.0F;
 		else
 			trunk = (float)sqrt(2.0 + (double)downloadTotal/1048576.0);
-		//Xman end
+
 
 		if(result>10.0f)
 		{
@@ -448,21 +450,29 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 				break;
 			}
 
-			if (GetDownloadedTotal() < 1000000){
+			if (GetDownloadedTotal() < 1048576){
 				result = 1.0F;
 				break;
 			}
 			if (!GetUploadedTotal())
 				result = 10.0F;
-		else
+			else
 				result = (float)(((double)GetDownloadedTotal()*2.0)/(double)GetUploadedTotal());
+	
+			// exponential calcualtion of the max multiplicator based on uploaded data (9.2MB = 3.34, 100MB = 10.0)
 			float result2 = 0.0F;
 			result2 = (float)(GetDownloadedTotal()/1048576.0);
 			result2 += 2.0F;
 			result2 = (float)sqrt(result2);
 
-			if (result > result2)
-				result = result2;
+			// linear calcualtion of the max multiplicator based on uploaded data for the first chunk (1MB = 1.01, 9.2MB = 3.34)
+			float result3 = 10.0F;
+			if (GetDownloadedTotal() < 9646899){
+				result3 = (((float)(GetDownloadedTotal() - 1048576) / 8598323.0F) * 2.34F) + 1.0F;
+			}
+
+			// take the smallest result
+			result = min(result, min(result2, result3));
 
 			if (result < 1.0F){
 				result = 1.0F;
@@ -555,13 +565,12 @@ const float CClientCredits::GetBonusFaktor(const CUpDownClient* client) const
 			10.0f : (float)(2*downloadTotal)/(float)uploadTotal;
 
 		// Factor 2
-		//Xman slightly changed to use linear function until half of chunk is transferred
+		// linear calcualtion of the max multiplicator based on uploaded data for the first chunk (1MB = 1.01, 9.2MB = 3.34)
 		float trunk;
-		if(downloadTotal < 4718592)  //half of a chunk and a good point to keep the function consistent
-			trunk = (float)(1.0 + (double)downloadTotal/(1048576.0*3.0));
+		if(downloadTotal < 9646899) 
+			trunk = (((float)(downloadTotal - 1048576) / 8598323.0F) * 2.34F) + 1.0F;
 		else
 			trunk = (float)sqrt(2.0 + (double)downloadTotal/1048576.0);
-		//Xman end
 
 		if(result>10.0f)
 		{
@@ -585,6 +594,9 @@ const float CClientCredits::GetBonusFaktor(const CUpDownClient* client) const
 		return m_bonusfaktor;
 }
 
+// Xman Credit System end
+
+
 //Xman
 // See own credits - VQB
 const float CClientCredits::GetMyScoreRatio(uint32 dwForIP) const
@@ -600,7 +612,7 @@ const float CClientCredits::GetMyScoreRatio(uint32 dwForIP) const
 		return 1.0f;
 	}
 
-	if (GetUploadedTotal() < 1000000)
+	if (GetUploadedTotal() < 1048576)
 		return 1.0f;
 	float result = 0;
 	if (!GetDownloadedTotal())
@@ -612,8 +624,14 @@ const float CClientCredits::GetMyScoreRatio(uint32 dwForIP) const
 	result2 += 2.0f;
 	result2 = (float)sqrt(result2);
 
-	if (result > result2)
-		result = result2;
+	// linear calcualtion of the max multiplicator based on uploaded data for the first chunk (1MB = 1.01, 9.2MB = 3.34)
+	float result3 = 10.0F;
+	if (GetUploadedTotal() < 9646899){
+		result3 = (((float)(GetUploadedTotal() - 1048576) / 8598323.0F) * 2.34F) + 1.0F;
+	}
+
+	// take the smallest result
+	result = min(result, min(result2, result3));
 
 	if (result < 1.0f)
 		return 1.0f;
@@ -658,7 +676,7 @@ CClientCreditsList::~CClientCreditsList()
 // Moonlight: SUQWT: Change the file import 0.30c format.
 void CClientCreditsList::LoadList()
 {
-	CString strFileName = thePrefs.GetConfigDir() + CLIENTS_MET_FILENAME;
+	CString strFileName = thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + CLIENTS_MET_FILENAME;
 	const int iOpenFlags = CFile::modeRead|CFile::osSequentialScan|CFile::typeBinary|CFile::shareDenyWrite;
 	CSafeBufferedFile file;
 	CFileException fexp;
@@ -677,20 +695,20 @@ void CClientCreditsList::LoadList()
 	int	countFile = 0;
 
 	//SUQWTv2.met must have bigger number than original clients.met to have higher prio
-	loadFileName[countFile++].Format(_T("%s") CLIENTS_MET_FILENAME, thePrefs.GetConfigDir());
-	loadFileName[countFile++].Format(_T("%s") CLIENTS_MET_FILENAME _T(".bak"), thePrefs.GetConfigDir());
-	loadFileName[countFile++].Format(_T("%s") CLIENTS_MET_FILENAME _T(".MSUQWT"), thePrefs.GetConfigDir());//Pawcio
-	loadFileName[countFile++].Format(_T("%s") CLIENTS_MET_FILENAME _T(".SUQWTv2.met"), thePrefs.GetConfigDir());
-	loadFileName[countFile++].Format(_T("%s") CLIENTS_MET_FILENAME _T(".SUQWTv2.met.bak"), thePrefs.GetConfigDir());
-	loadFileName[countFile++].Format(_T("%s") CLIENTS_MET_FILENAME, thePrefs.GetConfigDir()+_T("Backup\\"));
-	loadFileName[countFile++].Format(_T("%s") CLIENTS_MET_FILENAME _T(".SUQWTv2.met"), thePrefs.GetConfigDir()+_T("Backup\\"));
-	loadFileName[countFile++].Format(_T("%s") CLIENTS_MET_FILENAME, thePrefs.GetConfigDir()+_T("Backup2\\"));
-	loadFileName[countFile++].Format(_T("%s") CLIENTS_MET_FILENAME _T(".SUQWTv2.met"), thePrefs.GetConfigDir()+_T("Backup2\\"));
+	loadFileName[countFile++].Format(_T("%s") CLIENTS_MET_FILENAME, thePrefs.GetMuleDirectory(EMULE_CONFIGDIR));
+	loadFileName[countFile++].Format(_T("%s") CLIENTS_MET_FILENAME _T(".bak"), thePrefs.GetMuleDirectory(EMULE_CONFIGDIR));
+	loadFileName[countFile++].Format(_T("%s") CLIENTS_MET_FILENAME _T(".MSUQWT"), thePrefs.GetMuleDirectory(EMULE_CONFIGDIR));//Pawcio
+	loadFileName[countFile++].Format(_T("%s") CLIENTS_MET_FILENAME _T(".SUQWTv2.met"), thePrefs.GetMuleDirectory(EMULE_CONFIGDIR));
+	loadFileName[countFile++].Format(_T("%s") CLIENTS_MET_FILENAME _T(".SUQWTv2.met.bak"), thePrefs.GetMuleDirectory(EMULE_CONFIGDIR));
+	loadFileName[countFile++].Format(_T("%s") CLIENTS_MET_FILENAME, thePrefs.GetMuleDirectory(EMULE_CONFIGDIR)+_T("Backup\\"));
+	loadFileName[countFile++].Format(_T("%s") CLIENTS_MET_FILENAME _T(".SUQWTv2.met"), thePrefs.GetMuleDirectory(EMULE_CONFIGDIR)+_T("Backup\\"));
+	loadFileName[countFile++].Format(_T("%s") CLIENTS_MET_FILENAME, thePrefs.GetMuleDirectory(EMULE_CONFIGDIR)+_T("Backup2\\"));
+	loadFileName[countFile++].Format(_T("%s") CLIENTS_MET_FILENAME _T(".SUQWTv2.met"), thePrefs.GetMuleDirectory(EMULE_CONFIGDIR)+_T("Backup2\\"));
 	//totalLoadFile = 9;
 	uint8 prioOrderfile[totalLoadFile];
 
 	int	index = 0;
-	for(int curFile = 0; curFile < totalLoadFile; curFile++){
+	for(int curFile = 0; curFile < totalLoadFile && (curFile < 255); curFile++){
 		//check clients.met status
 		successLoadFile[curFile] = loadFile.Open(loadFileName[curFile], iOpenFlags, &fexp)!=0;
 		if (successLoadFile[curFile]){
@@ -759,7 +777,7 @@ void CClientCreditsList::LoadList()
 			CString strBakFileName;
 			//Morph start - modify by AndCycle, backup loaded file
 			/*
-			strBakFileName.Format(_T("%s") CLIENTS_MET_FILENAME _T(".bak"), thePrefs.GetConfigDir());
+			strBakFileName.Format(_T("%s") CLIENTS_MET_FILENAME _T(".bak"), thePrefs.GetMuleDirectory(EMULE_CONFIGDIR));
 			*/
 			strBakFileName.Format(_T("%s") _T(".bak"), strFileName);
 			//Morph end - modify by AndCycle, backup loaded file
@@ -783,17 +801,17 @@ void CClientCreditsList::LoadList()
 			}
 			//else: the backup doesn't exist, create it
 
-			if (bCreateBackup)
+			if (bCreateBackup ) 
 			{
 				file.Close(); // close the file before copying
 
-			//Xman don't overwrite bak files if last sessions crashed
-			if(thePrefs.eMuleChrashedLastSession())
-				::CopyFile(strFileName, strBakFileName, TRUE); //allow one copy
-			else
-			//Xman end
-				if (!::CopyFile(strFileName, strBakFileName, FALSE))
-					LogError(GetResString(IDS_ERR_MAKEBAKCREDITFILE));
+				//Xman don't overwrite bak files if last sessions crashed
+				if(thePrefs.eMuleChrashedLastSession())
+					::CopyFile(strFileName, strBakFileName, TRUE); //allow one copy
+				else
+				//Xman end
+					if (!::CopyFile(strFileName, strBakFileName, FALSE))
+						LogError(GetResString(IDS_ERR_MAKEBAKCREDITFILE));
 
 				// reopen file
 				CFileException fexp;
@@ -805,7 +823,7 @@ void CClientCreditsList::LoadList()
 						strError += szError;
 					}
 					LogError(LOG_STATUSBAR, _T("%s"), strError);
-					continue; //MORPH - Continue loading files
+						continue; //MORPH - Continue loading files
 				}
 				setvbuf(file.m_pStream, NULL, _IOFBF, 16384);
 				file.Seek(1, CFile::begin); //set filepointer behind file version byte
@@ -926,7 +944,7 @@ void CClientCreditsList::SaveList()
 		AddDebugLogLine(false, _T("Saving clients credit list file \"%s\""), CLIENTS_MET_FILENAME);
 	m_nLastSaved = ::GetTickCount();
 
-	CString name = thePrefs.GetConfigDir() + CLIENTS_MET_FILENAME;
+	CString name = thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + CLIENTS_MET_FILENAME;
 	CFile file;// no buffering needed here since we swap out the entire array
 	CFileException fexp;
 	if (!file.Open(name, CFile::modeWrite|CFile::modeCreate|CFile::typeBinary|CFile::shareDenyWrite, &fexp)){
@@ -943,7 +961,7 @@ void CClientCreditsList::SaveList()
 	uint32 count = m_mapClients.GetCount();
 	BYTE* pBuffer = NULL;
 	pBuffer = new BYTE[count*sizeof(CreditStruct_30c)]; //Morph - modified by AndCycle, original 30c file format
-	BYTE* pBufferSUQWT;
+	BYTE* pBufferSUQWT=NULL;
 	if (m_bSaveUploadQueueWaitTime)
 		pBufferSUQWT = new BYTE[count*sizeof(CreditStruct)];
 	const uint32 dwExpired = time(NULL) - 12960000; // today - 150 day
@@ -963,7 +981,7 @@ void CClientCreditsList::SaveList()
 				count++; 
 			}
 		}else 
-		if (cur_credit->GetUploadedTotal() || cur_credit->GetDownloadedTotal())
+			if (cur_credit->GetUploadedTotal() || cur_credit->GetDownloadedTotal())
 		{
 			/*// Moonlight: SUQWT - Save 0.30c CreditStruct
 			memcpy(pBuffer+(count*sizeof(CreditStruct)), cur_credit->GetDataStruct(), sizeof(CreditStruct));
@@ -984,7 +1002,7 @@ void CClientCreditsList::SaveList()
 
 		if (m_bSaveUploadQueueWaitTime)
 		{
-			CString nameSUQWT = thePrefs.GetConfigDir() + CString(CLIENTS_MET_FILENAME) + _T(".SUQWTv2.met"); 
+			CString nameSUQWT = thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + CString(CLIENTS_MET_FILENAME) + _T(".SUQWTv2.met"); 
 			if (!file.Open(nameSUQWT, CFile::modeWrite|CFile::modeCreate|CFile::typeBinary|CFile::shareDenyWrite, &fexp)){
 				CString strError(GetResString(IDS_ERR_FAILED_CREDITSAVE));
 				TCHAR szError[MAX_CFEXP_ERRORMSG];
@@ -1000,7 +1018,7 @@ void CClientCreditsList::SaveList()
 			file.Write(&count, 4);
 			file.Write(pBufferSUQWT, count*sizeof(CreditStruct)); //save SUQWT buffer
 			if (thePrefs.GetCommitFiles() >= 2 || (thePrefs.GetCommitFiles() >= 1 && !theApp.emuledlg->IsRunning()))
-			file.Flush();
+				file.Flush();
 			file.Close();
 		}
 	}
@@ -1072,7 +1090,7 @@ void CClientCreditsList::Process()
 		}
 		//Xman end
 		SaveList();
-}
+	}
 }
 
 #ifdef PRINT_STATISTIC
@@ -1158,7 +1176,7 @@ void CClientCreditsList::InitalizeCrypting()
 		return;
 	// check if keyfile is there
 	bool bCreateNewKey = false;
-	HANDLE hKeyFile = ::CreateFile(thePrefs.GetConfigDir() + _T("cryptkey.dat"), GENERIC_READ, FILE_SHARE_READ, NULL,
+	HANDLE hKeyFile = ::CreateFile(thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + _T("cryptkey.dat"), GENERIC_READ, FILE_SHARE_READ, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hKeyFile != INVALID_HANDLE_VALUE)
 	{
@@ -1174,7 +1192,7 @@ void CClientCreditsList::InitalizeCrypting()
 	// load key
 	try{
 		// load private key
-		FileSource filesource(CStringA(thePrefs.GetConfigDir() + _T("cryptkey.dat")), true,new Base64Decoder);
+		FileSource filesource(CStringA(thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + _T("cryptkey.dat")), true,new Base64Decoder);
 		m_pSignkey = new RSASSA_PKCS1v15_SHA_Signer(filesource);
 		// calculate and store public key
 		RSASSA_PKCS1v15_SHA_Verifier pubkey(*m_pSignkey);
@@ -1185,10 +1203,8 @@ void CClientCreditsList::InitalizeCrypting()
 	}
 	catch(...)
 	{
-		if (m_pSignkey){
-			delete m_pSignkey;
-			m_pSignkey = NULL;
-		}
+		delete m_pSignkey;
+		m_pSignkey = NULL;
 		LogError(LOG_STATUSBAR, GetResString(IDS_CRYPT_INITFAILED));
 		ASSERT(0);
 	}
@@ -1202,7 +1218,7 @@ bool CClientCreditsList::CreateKeyPair()
 		InvertibleRSAFunction privkey;
 		privkey.Initialize(rng,RSAKEYSIZE);
 
-		Base64Encoder privkeysink(new FileSink(CStringA(thePrefs.GetConfigDir() + _T("cryptkey.dat"))));
+		Base64Encoder privkeysink(new FileSink(CStringA(thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + _T("cryptkey.dat"))));
 		privkey.DEREncode(privkeysink);
 		privkeysink.MessageEnd();
 
@@ -1499,7 +1515,6 @@ void CClientCredits::SetWaitStartTimeBonus(uint32 dwForIP, uint32 timestamp)
 	m_dwWaitTimeIP = dwForIP;
 }
 //Xman end
-
 // ==> CreditSystems [EastShare/ MorphXT] - Stulle
 void CClientCreditsList::ResetCheckScoreRatio(){
 	CClientCredits* cur_credit;

@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -21,29 +21,6 @@
 #include <map>
 #include "IP2Country.h" //EastShare - added by AndCycle, IP to Country
 #include "Preferences.h" //Xman Funny-Nick (Stulle/Morph)
-// ==> WebCache [WC team/MorphXT] - Stulle/Max
-#include "WebCache/WebCache.h"
-#include "WebCache/WebCacheCryptography.h"
-#include "WebCache/WebCacheMFRList.h"
-
-// USING_NAMESPACE(CryptoPP)
-
-enum EWebCacheDownState{
-	WCDS_NONE = 0,
-	WCDS_WAIT_CLIENT_REPLY,
-	WCDS_WAIT_CACHE_REPLY,
-	WCDS_DOWNLOADINGVIA,
-	WCDS_DOWNLOADINGFROM
-};
-
-enum EWebCacheUpState{
-	WCUS_NONE = 0,
-	WCUS_UPLOADING
-};
-
-class CWebCacheDownSocket;
-class CWebCacheUpSocket;
-// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 class CTag; //Xman Anti-Leecher
 class CClientReqSocket;
@@ -191,7 +168,6 @@ enum EClientSoftware{
 	SO_OLD_MLDONKEY,
 	// <== Enhanced Client Recognition [Spike] - Stulle
 	SO_URL,
-	SO_WEBCACHE, // WebCache [WC team/MorphXT] - Stulle/Max
 	SO_UNKNOWN
 };
 
@@ -353,7 +329,7 @@ public:
 	void			SetUserHash(const uchar* pUserHash);
 	bool			HasValidHash() const
 						{
-							return ((const int*)m_achUserHash[0]) != 0 || ((const int*)m_achUserHash[1]) != 0 || ((const int*)m_achUserHash[2]) != 0 || ((const int*)m_achUserHash[3]) != 0;
+							return ((const int*)m_achUserHash)[0] != 0 || ((const int*)m_achUserHash)[1] != 0 || ((const int*)m_achUserHash)[2] != 0 || ((const int*)m_achUserHash)[3] != 0; //Xman Bugfix by ilmira
 						}
 	int				GetHashType() const;
 	const uchar*	GetBuddyID() const								{ return (uchar*)m_achBuddyID; }
@@ -375,7 +351,8 @@ public:
 	bool			SupportPeerCache() const						{ return m_fPeerCache; }
 	bool			SupportsLargeFiles() const						{ return m_fSupportsLargeFiles; }
 	bool			IsEmuleClient() const							{ return m_byEmuleVersion!=0; }
-	uint8			GetSourceExchangeVersion() const				{ return m_bySourceExchangeVer; }
+	uint8			GetSourceExchange1Version() const				{ return m_bySourceExchange1Ver; }
+	bool			SupportsSourceExchange2() const					{ return m_fSupportsSourceEx2; }
 	CClientCredits* Credits() const									{ return credits; }
 	bool			IsBanned() const;
 	const CString&	GetClientFilename() const						{ return m_strClientFilename; }
@@ -548,12 +525,7 @@ public:
 	void			ProcessAcceptUpload();
 	bool			AddRequestForAnotherFile(CPartFile* file);
 	void			CreateBlockRequests(int iMaxBlocks);
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	/*
 	virtual void	SendBlockRequests();
-	*/
-	virtual void	SendBlockRequests(bool ed2k = false);
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	virtual bool	SendHttpBlockRequests();
 	virtual void	ProcessBlockPacket(const uchar* packet, UINT size, bool packed, bool bI64Offsets);
 	virtual void	ProcessHttpBlockPacket(const BYTE* pucData, UINT uSize);
@@ -826,7 +798,7 @@ public:
 #ifdef PRINT_STATISTIC
 	uint32 GetPartStatusMapCount()	{return m_partStatusMap.size();}
 	uint32 GetupHistoryCount()		{return m_upHistory_list.GetSize();}
-	uint32 GetdownHistoryCount()	{return m_DownloadBlocks_list.GetSize();}
+	uint32 GetdownHistoryCount()	{return m_downHistory_list.GetSize();}
 	uint32 GetDontSwapListCount()	{return m_DontSwap_list.GetSize();}
 	uint32 GetBlockRequestedCount() {return m_BlockRequests_queue.GetSize();}
 	uint32 GetDoneBlocksCount()		{return m_DoneBlocks_list.GetSize();}
@@ -985,7 +957,7 @@ protected:
 	uint16	m_nKadPort;
 	//--group to aligned int32
 	uint8	m_byUDPVer;
-	uint8	m_bySourceExchangeVer;
+	uint8	m_bySourceExchange1Ver;
 	uint8	m_byAcceptCommentVer;
 	uint8	m_byExtendedRequestsVer;
 	//--group to aligned int32
@@ -1126,7 +1098,8 @@ protected: // file settings - Stulle
 		 m_fExtMultiPacket	  : 1,
 		m_fRequestsCryptLayer: 1,
 		m_fSupportsCryptLayer: 1,
-		m_fRequiresCryptLayer: 1;
+		m_fRequiresCryptLayer: 1,
+		 m_fSupportsSourceEx2 : 1;
 
 
 	CTypedPtrList<CPtrList, Pending_Block_Struct*>	 m_PendingBlocks_list;
@@ -1151,106 +1124,6 @@ public:
 	// ==> Mod Icons - Stulle
 	EModClient	GetModClient() const	{ return (EModClient)m_uModClient; }
 	// <== Mod Icons - Stulle
-
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-private:
-	bool m_bIsTrustedOHCBSender;
-	bool m_bIsAllowedToSendOHCBs;
-	uint32 m_uWebCacheFlags;
-	EWebCacheDownState m_eWebCacheDownState;
-	EWebCacheUpState m_eWebCacheUpState;
-	bool b_webcacheInfoNeeded;
-protected:
-	bool m_bProxy;
-public:
-	bool m_bIsAcceptingOurOhcbs; // default - true, set to false on OP_DONT_SEND_OHCBS
-	CWebCacheDownSocket* m_pWCDownSocket;
-	CWebCacheUpSocket* m_pWCUpSocket;
-
-	bool SupportsWebCacheUDP() const {return (m_uWebCacheFlags & WC_FLAGS_UDP) && SupportsUDP();}
-	bool SupportsOhcbSuppression() const {return (m_uWebCacheFlags & WC_FLAGS_NO_OHCBS)!=0;}
-	bool SupportsWebCacheProtocol() const {return SupportsOhcbSuppression();} // this is the first version that supports that
-	bool IsProxy() const {return m_bProxy;}
-	bool IsUploadingToWebCache() const;
-	bool IsDownloadingFromWebCache() const;
-	bool ProcessWebCacheDownHttpResponse(const CStringAArray& astrHeaders);
-	bool ProcessWebCacheDownHttpResponseBody(const BYTE* pucData, UINT uSize);
-	bool ProcessWebCacheUpHttpResponse(const CStringAArray& astrHeaders);
-	UINT ProcessWebCacheUpHttpRequest(const CStringAArray& astrHeaders);
-	void OnWebCacheDownSocketClosed(int nErrorCode);
-	void OnWebCacheDownSocketTimeout();
-	void SetWebCacheDownState(EWebCacheDownState eState);
-	EWebCacheDownState CUpDownClient::GetWebCacheDownState() const {return m_eWebCacheDownState;}
-	void SetWebCacheUpState(EWebCacheUpState eState);
-	EWebCacheUpState CUpDownClient::GetWebCacheUpState() const {return m_eWebCacheUpState;}
-	virtual bool SendWebCacheBlockRequests();
-	void PublishWebCachedBlock( const Requested_Block_Struct* block );
-	bool IsWebCacheUpSocketConnected() const;
-	bool IsWebCacheDownSocketConnected() const;
-//	uint16 blocksLoaded;	// Superlexx - block transfer limiter //JP blocks are counted in the socket code now
-	uint16 GetNumberOfClientsBehindOurWebCacheAskingForSameFile();	// what a name ;)
-	UINT GetNumberOfClientsBehindOurWebCacheHavingSameFileAndNeedingThisBlock(Pending_Block_Struct* pending); // Superlexx - COtN - it's getting better all the time...
-	bool WebCacheInfoNeeded() {return b_webcacheInfoNeeded;}
-	void SetWebCacheInfoNeeded(bool value) {b_webcacheInfoNeeded = value;}
-//JP trusted-OHCB-senders START
-	uint32 WebCachedBlockRequests;
-	uint32 SuccessfulWebCachedBlockDownloads;
-	bool IsTrustedOHCBSender() const {return m_bIsTrustedOHCBSender;}
-	void AddWebCachedBlockToStats( bool IsGood );
-//JP trusted-OHCB-senders END
-//JP stop sendig OHCBs START
-	void SendStopOHCBSending();
-	void SendResumeOHCBSendingTCP();
-	void SendResumeOHCBSendingUDP();
-//JP stop sendig OHCBs END
-	CWebCacheCryptography Crypt; // Superlexx - encryption
-	uint32 lastMultiOHCBPacketSent;
-	void SendOHCBsNow();
-	bool a(uint32 a) {return a <= WC_MAX_OHCBS_IN_UDP_PACKET;}
-	bool b(uint32 a, uint32 b) { return (a * 100.0 / (b + 1) < 0,2)!=0; }
-	bool c(uint32 a, uint32 b) { return a > 4 && (b * 100) / a < 20; }
-	// Squid defaults..
-	bool			UsesCachedTCPPort() { return ( (GetUserPort()==80)
-													|| (GetUserPort()==21)
-													|| (GetUserPort()==443)
-													|| (GetUserPort()==563)
-													|| (GetUserPort()==70)
-													|| (GetUserPort()==210)
-													|| ((GetUserPort()>=1025) && (GetUserPort()<=65535)));}
-	bool			SupportsWebCache() const { return m_bWebCacheSupport; }
-	bool			SupportsMultiOHCBs() const {return m_bWebCacheSupportsMultiOHCBs;}
-	bool			IsBehindOurWebCache() const
-					{
-						// WC-TODO: make this more efficient
-						return( thePrefs.webcacheName == GetWebCacheName() );
-					}
-// jp webcache
-	CString			GetWebCacheName() const 
-					{ 
-						if (SupportsWebCache())
-							return WebCacheIndex2Name(m_WA_webCacheIndex);
-						else
-							return _T("");
-					}
-	bool			m_bWebcacheFailedTry; //MORPH - Added by SiRoB, New ResolveWebCachename
-	bool			m_bWebCacheSupport;
-	bool			m_bWebCacheSupportsMultiOHCBs;
-	// Superlexx - webcache
-	int		m_WA_webCacheIndex;	// index of the webcache name
-	uint16	m_WA_HTTPPort;		// remote webserver port
-	uint32	m_uWebCacheDownloadId;	// we must attach this ID when sending HTTP download request to the remote client.
-	uint32	m_uWebCacheUploadId;	// incoming HTTP requests are identified as WC-requests,
-									// if the header contains this ID and there is a known client with same ID in downloading state.
-									// used for client authorization, should be substituted by a HttpIdList? later
-									// for efficiency reasons.
-// Superlexx - MFR
-	CWebCacheMFRList	requestedFiles; // the files this client requested from us
-	Packet*	CreateMFRPacket();		// builds a separate MFR-packet
-	bool	AttachMultiOHCBsRequest(CSafeMemFile &data); // Superlexx - attaches a multiple files request
-	bool	IsPartAvailable(UINT iPart, const byte* fileHash) {return requestedFiles.IsPartAvailable(iPart, fileHash);}
-
-	bool HasWebCacheState() {return m_eWebCacheUpState == WCUS_UPLOADING;} 
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 	uint32			m_nSelectedChunk;

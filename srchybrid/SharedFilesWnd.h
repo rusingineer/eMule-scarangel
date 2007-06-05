@@ -60,12 +60,12 @@ protected:
 	virtual LRESULT DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
 	DECLARE_MESSAGE_MAP()
-	afx_msg void OnBnClickedReloadsharedfiles();
-	afx_msg void OnLvnItemActivateSflist(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void OnNMClickSflist(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnBnClickedReloadSharedFiles();
+	afx_msg void OnLvnItemActivateSharedFiles(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnNMClickSharedFiles(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnSysColorChange();
-	afx_msg void OnStnDblclickFilesIco();
-	afx_msg void OnTvnSelchangedShareddirstree(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnStnDblClickFilesIco();
+	afx_msg void OnTvnSelChangedSharedDirsTree(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnShowWindow( BOOL bShow,UINT nStatus  ); //Xman [MoNKi: -Downloaded History-]
 	//Xman [MoNKi: -Downloaded History-]

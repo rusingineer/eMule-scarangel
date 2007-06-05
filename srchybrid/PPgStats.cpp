@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -36,12 +36,13 @@ IMPLEMENT_DYNAMIC(CPPgStats, CPropertyPage)
 
 BEGIN_MESSAGE_MAP(CPPgStats, CPropertyPage)
 	ON_WM_HSCROLL()
-	ON_CBN_SELCHANGE(IDC_COLORSELECTOR, OnCbnSelchangeColorselector)
+	ON_CBN_SELCHANGE(IDC_COLORSELECTOR, OnCbnSelChangeColorSelector)
     ON_MESSAGE(UM_CPN_SELCHANGE, OnColorPopupSelChange)
-	ON_CBN_SELCHANGE(IDC_CRATIO, OnCbnSelchangeCRatio)
+	ON_CBN_SELCHANGE(IDC_CRATIO, OnCbnSelChangeCRatio)
 	ON_EN_CHANGE(IDC_CGRAPHSCALE, OnEnChangeCGraphScale)
 	ON_WM_HELPINFO()
 	ON_WM_DESTROY()
+	ON_BN_CLICKED(IDC_FILL_GRAPHS, OnBnClickedFillGraphs)
 	ON_BN_CLICKED(IDC_ACCURATE_RADIO, OnBnClickedSmoothAccurateRadio) //Xman smooth-accurate-graph
 	ON_BN_CLICKED(IDC_SMOOTH_RADIO, OnBnClickedSmoothAccurateRadio) //Xman smooth-accurate-graph
 	// ==> Source Graph - Stulle
@@ -60,6 +61,7 @@ CPPgStats::CPPgStats()
 	m_iStatsColors = 0;
 	m_pdwStatsColors = NULL;
 	m_bModified = FALSE;
+	m_bFillGraphs = false;
 }
 
 CPPgStats::~CPPgStats()
@@ -126,6 +128,8 @@ BOOL CPPgStats::OnInitDialog()
 	m_iGraphsUpdate = thePrefs.GetTrafficOMeterInterval();
 	m_iGraphsAvgTime = thePrefs.GetStatsInterval();
 	m_iStatsUpdate = thePrefs.GetStatsAverageMinutes();
+
+	CheckDlgButton(IDC_FILL_GRAPHS, thePrefs.GetFillGraphs());
 
 	// Set the Connections Statistics Y-Axis Scale
 	SetDlgItemInt(IDC_CGRAPHSCALE, thePrefs.GetStatsMax(), FALSE);
@@ -197,7 +201,7 @@ BOOL CPPgStats::OnApply()
 		//Xman end
 
 		TCHAR buffer[20];
-		GetDlgItem(IDC_CGRAPHSCALE)->GetWindowText(buffer, ARRSIZE(buffer));
+		GetDlgItem(IDC_CGRAPHSCALE)->GetWindowText(buffer, _countof(buffer));
 		UINT statsMax = _tstoi(buffer);
 		if (statsMax > thePrefs.GetMaxConnections() + 5)
 		{
@@ -205,7 +209,8 @@ BOOL CPPgStats::OnApply()
 				thePrefs.SetStatsMax(thePrefs.GetMaxConnections() + 5);
 				bInvalidateGraphs = true;
 			}
-			_sntprintf(buffer, ARRSIZE(buffer), _T("%d"), thePrefs.GetStatsMax());
+			_sntprintf(buffer, _countof(buffer), _T("%d"), thePrefs.GetStatsMax());
+			buffer[_countof(buffer) - 1] = _T('\0');
 			GetDlgItem(IDC_CGRAPHSCALE)->SetWindowText(buffer);
 		}
 		else
@@ -220,6 +225,11 @@ BOOL CPPgStats::OnApply()
 		UINT uRatio = (n == 5) ? 10 : ((n == 6) ? 20 : n + 1); // Index 5 = 1:10 and 6 = 1:20
 		if (thePrefs.GetStatsConnectionsGraphRatio() != uRatio){
 			thePrefs.SetStatsConnectionsGraphRatio(uRatio); 
+			bInvalidateGraphs = true;
+		}
+
+		if (thePrefs.GetFillGraphs() != (IsDlgButtonChecked(IDC_FILL_GRAPHS) == BST_CHECKED)){
+			thePrefs.SetFillGraphs(!thePrefs.GetFillGraphs());
 			bInvalidateGraphs = true;
 		}
 
@@ -264,6 +274,7 @@ void CPPgStats::Localize(void)
 		GetDlgItem(IDC_STATIC_CGRAPHRATIO)->SetWindowText(GetResString(IDS_PPGSTATS_ACRATIO));
 		SetWindowText(GetResString(IDS_STATSSETUPINFO));
 		GetDlgItem(IDC_PREFCOLORS)->SetWindowText(GetResString(IDS_COLORS));
+		SetDlgItemText(IDC_FILL_GRAPHS, GetResString(IDS_FILLGRAPHS) );
 
 		//Xman smooth-accurate-graph
 		GetDlgItem(IDC_SMOOTH_RADIO)->SetWindowText(GetResString(IDS_SMOOTHGRAPH));
@@ -305,7 +316,7 @@ void CPPgStats::Localize(void)
 		m_ctlColor.DefaultText = NULL;
 
 		m_colors.SetCurSel(0);
-		OnCbnSelchangeColorselector();
+		OnCbnSelChangeColorSelector();
 		ShowInterval();
 	}
 }
@@ -375,7 +386,7 @@ void CPPgStats::ShowInterval()
 	//Xman end
 }
 
-void CPPgStats::OnCbnSelchangeColorselector()
+void CPPgStats::OnCbnSelChangeColorSelector()
 {
 	int iSel = m_colors.GetCurSel();
 	if (iSel >= 0)
@@ -403,6 +414,11 @@ LONG CPPgStats::OnColorPopupSelChange(UINT /*lParam*/, LONG /*wParam*/)
 		}
 	}
 	return TRUE;
+}
+
+void CPPgStats::OnBnClickedFillGraphs()
+{
+	SetModified();
 }
 
 void CPPgStats::OnHelp()

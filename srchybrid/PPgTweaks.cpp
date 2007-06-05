@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -73,10 +73,6 @@ CPPgTweaks::CPPgTweaks()
 	m_bLogDrop = 0; //Xman Xtreme Downloadmanager
 	m_bLogpartmismatch = 0; //Xman Log part/size-mismatch
 	m_bLogUlDlEvents = false;
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	m_bLogWebCacheEvents = false; //JP log webcache events
-	m_bLogICHEvents = false; //JP log ICH events
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 	/*
 	m_bCreditSystem = false;
@@ -112,8 +108,17 @@ CPPgTweaks::CPPgTweaks()
 	m_bA4AFSaveCpu = false;
 	*/
 	m_iExtractMetaData = 0;
-	m_bAutoArchDisable=true;
+	m_bAutoArchDisable = true;
+	//Xman official UPNP removed
+	/*
+	m_bCloseUPnPOnExit = true;
+	m_bSkipWANIPSetup = false;
+	m_bSkipWANPPPSetup = false;
+	*/
+	m_iShareeMule = 0;
+	m_iCryptTCPPaddingLength = 128; //Xman Added PaddingLength to Extended preferences
 
+	bShowedWarning = false;
 	m_bInitializedTreeOpts = false;
 	m_htiTCPGroup = NULL;
 	m_htiMaxCon5Sec = NULL;
@@ -129,10 +134,6 @@ CPPgTweaks::CPPgTweaks()
 	m_htiLogFilteredIPs = NULL;
 	m_htiLogFileSaving = NULL;
 	m_htiLogUlDlEvents = NULL;
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	m_htiLogWebCacheEvents = NULL; //jp log webcache events
-	m_htiLogICHEvents = NULL; //JP log ICH events
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 	/*
 	m_htiCreditSystem = NULL;
@@ -185,6 +186,18 @@ CPPgTweaks::CPPgTweaks()
 
 	m_htiExtractMetaData = NULL;
 	m_htiAutoArch = NULL;
+	//Xman official UPNP removed
+	/*
+	m_htiUPnP = NULL;
+	m_htiCloseUPnPPorts = NULL;
+	m_htiSkipWANIPSetup = NULL;
+	m_htiSkipWANPPPSetup = NULL;
+	*/
+	m_htiShareeMule = NULL;
+	m_htiShareeMuleMultiUser = NULL;
+	m_htiShareeMulePublicUser = NULL;
+	m_htiShareeMuleOldStyle = NULL;
+	m_htiCryptTCPPaddingLength=NULL; //Xman Added PaddingLength to Extended preferences
 }
 
 CPPgTweaks::~CPPgTweaks()
@@ -207,6 +220,8 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 		int iImgConnection = 8;
 		//int iImgA4AF = 8; // ZZ:DownloadManager
 		int iImgMetaData = 8;
+		//int iImgUPnP = 8; //Xman official UPNP removed
+		int iImgShareeMule = 8;
         CImageList* piml = m_ctrlTreeOptions.GetImageList(TVSIL_NORMAL);
 		if (piml){
 			iImgBackup =	piml->Add(CTempIconLoader(_T("Harddisk")));
@@ -217,6 +232,8 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 			iImgConnection=	piml->Add(CTempIconLoader(_T("connection")));
             //iImgA4AF =		piml->Add(CTempIconLoader(_T("Download"))); // ZZ:DownloadManager
             iImgMetaData =	piml->Add(CTempIconLoader(_T("MediaInfo")));
+			//iImgUPnP =		piml->Add(CTempIconLoader(_T("connectedhighhigh"))); //Xman official UPNP removed
+			iImgShareeMule =piml->Add(CTempIconLoader(_T("viewfiles")));
 		}
 
 		/////////////////////////////////////////////////////////////////////////////
@@ -291,14 +308,10 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 			m_htiLogDrop = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOGDROP), m_htiVerboseGroup, m_bLogDrop); //Xman Xtreme Downloadmanager
 			m_htiLogpartmismtach = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOGPARTMISMATCH), m_htiVerboseGroup, m_bLogpartmismatch); //Xman Log part/size-mismatch
 			m_htiLogUlDlEvents = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOG_ULDL_EVENTS), m_htiVerboseGroup, m_bLogUlDlEvents);
-			// ==> WebCache [WC team/MorphXT] - Stulle/Max
-			m_htiLogWebCacheEvents = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOG_WCEVENTS), m_htiVerboseGroup, m_bLogWebCacheEvents); //JP log webcache events
-			m_htiLogICHEvents = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOG_IACH), m_htiVerboseGroup, m_bLogICHEvents); //JP log ICH events
-			// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 			// ==> UPnP support [MoNKi] - leuk_he  verbose log
 			m_htiLogUPnP = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_UPNP_VERBOSELOG), m_htiVerboseGroup, m_bLogUPnP); //JP log webcache events
 			// <== UPnP support [MoNKi] - leuk_he verbose log
-
 		}
 
 		/////////////////////////////////////////////////////////////////////////////
@@ -326,6 +339,28 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 		// ZZ:UploadSpeedSense <--
 		*/
 
+		//Xman official UPNP removed
+		/*
+		/////////////////////////////////////////////////////////////////////////////
+		// UPnP group
+		//
+		m_htiUPnP = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_UPNP), iImgUPnP, TVI_ROOT);
+		m_htiCloseUPnPPorts = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_UPNPCLOSEONEXIT), m_htiUPnP, m_bCloseUPnPOnExit);
+		m_htiSkipWANIPSetup = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_UPNPSKIPWANIP), m_htiUPnP, m_bSkipWANIPSetup);
+		m_htiSkipWANPPPSetup = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_UPNPSKIPWANPPP), m_htiUPnP, m_bSkipWANPPPSetup);
+		*/
+		/////////////////////////////////////////////////////////////////////////////
+		// eMule Shared User
+		//
+		m_htiShareeMule = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_SHAREEMULELABEL), iImgShareeMule, TVI_ROOT);
+		m_htiShareeMuleMultiUser = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_SHAREEMULEMULTI), m_htiShareeMule, m_iCommitFiles == 0);
+		m_htiShareeMulePublicUser = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_SHAREEMULEPUBLIC), m_htiShareeMule, m_iCommitFiles == 1);
+		m_htiShareeMuleOldStyle = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_SHAREEMULEOLD), m_htiShareeMule, m_iCommitFiles == 2);
+
+		//Xman Added PaddingLength to Extended preferences
+		m_htiCryptTCPPaddingLength=m_ctrlTreeOptions.InsertItem(_T("Obfuscation-Padding-Length"),TREEOPTSCTRLIMG_EDIT,TREEOPTSCTRLIMG_EDIT,TVI_ROOT);
+		m_ctrlTreeOptions.AddEditBox(m_htiCryptTCPPaddingLength, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		//Xman end
 
 	    m_ctrlTreeOptions.Expand(m_htiTCPGroup, TVE_EXPAND);
         if (m_htiVerboseGroup)
@@ -348,6 +383,8 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
         //m_ctrlTreeOptions.Expand(m_htiDynUpPingToleranceGroup, TVE_EXPAND);
 		// ZZ:UploadSpeedSense <--
 		m_ctrlTreeOptions.Expand(m_htiExtractMetaData, TVE_EXPAND);
+		//m_ctrlTreeOptions.Expand(m_htiUPnP, TVE_EXPAND); //Xman official UPNP removed
+		m_ctrlTreeOptions.Expand(m_htiShareeMule, TVE_EXPAND);
         m_ctrlTreeOptions.SendMessage(WM_VSCROLL, SB_TOP);
         m_bInitializedTreeOpts = true;
 	}
@@ -375,7 +412,7 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	// ==> Improved ICS-Firewall support [MoNKi] - Max
 	/*
 	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiFirewallStartup, m_bFirewallStartup);
-	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiFirewallStartup, thePrefs.GetWindowsVersion() == _WINVER_XP_);
+	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiFirewallStartup, thePrefs.GetWindowsVersion() == _WINVER_XP_ && IsRunningXPSP2() == 0);
 	*/
 	// <== Improved ICS-Firewall support [MoNKi] - Max
 	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiFilterLANIPs, m_bFilterLANIPs);
@@ -389,6 +426,7 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	// File related group
 	//
 	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiSparsePartFiles, m_bSparsePartFiles);
+	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiSparsePartFiles, thePrefs.GetWindowsVersion() != _WINVER_VISTA_);
 	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiFullAlloc, m_bFullAlloc);
 	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiCheckDiskspace, m_bCheckDiskspace);
 	DDX_Text(pDX, IDC_EXT_OPTS, m_htiMinFreeDiskSpace, m_fMinFreeDiskSpaceMB);
@@ -427,12 +465,6 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	if (m_htiLogpartmismtach)		m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogpartmismtach, m_bVerbose); //Xman Log part/size-mismatch
 	if (m_htiLogUlDlEvents)			DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiLogUlDlEvents, m_bLogUlDlEvents);
 	if (m_htiLogUlDlEvents)         m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogUlDlEvents, m_bVerbose);
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	if (m_htiLogWebCacheEvents)		DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiLogWebCacheEvents, m_bLogWebCacheEvents);//jp log webcache events
-	if (m_htiLogWebCacheEvents)     m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogWebCacheEvents, m_bVerbose);//jp log webcache events
-	if (m_htiLogICHEvents)			DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiLogICHEvents, m_bLogICHEvents);//JP log ICH events
-	if (m_htiLogICHEvents)			m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogICHEvents, m_bVerbose);//JP log ICH events
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	// ==> UPnP support [MoNKi] - leuk_he 
 	if (m_htiLogUPnP)				DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiLogUPnP, m_bLogUPnP);
 	if (m_htiLogUPnP)				m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogUPnP, m_bVerbose);
@@ -459,6 +491,28 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxInt(pDX, m_iDynUpNumberOfPings, 1, INT_MAX);
 	// ZZ:UploadSpeedSense <--
 	*/
+
+	//Xman official UPNP removed
+	/*
+	/////////////////////////////////////////////////////////////////////////////
+	// UPnP group
+	//
+	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiCloseUPnPPorts, m_bCloseUPnPOnExit);
+	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiSkipWANIPSetup, m_bSkipWANIPSetup);
+	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiSkipWANPPPSetup, m_bSkipWANPPPSetup);
+	*/
+	/////////////////////////////////////////////////////////////////////////////
+	// eMule Shared User
+	//
+	DDX_TreeRadio(pDX, IDC_EXT_OPTS, m_htiShareeMule, m_iShareeMule);
+	m_ctrlTreeOptions.SetRadioButtonEnable(m_htiShareeMulePublicUser, thePrefs.GetWindowsVersion() == _WINVER_VISTA_);
+	m_ctrlTreeOptions.SetRadioButtonEnable(m_htiShareeMuleMultiUser, thePrefs.GetWindowsVersion() != _WINVER_95_ 
+		&&thePrefs.GetWindowsVersion() != _WINVER_NT4_);
+
+	//Xman Added PaddingLength to Extended preferences
+	DDX_TreeEdit(pDX,IDC_EXT_OPTS,m_htiCryptTCPPaddingLength,m_iCryptTCPPaddingLength );
+	DDV_MinMaxInt(pDX, m_iCryptTCPPaddingLength , 10,254);
+	//Xman end
 
 	// ==> UPnP support [MoNKi] - leuk_he
 	/*
@@ -492,15 +546,9 @@ BOOL CPPgTweaks::OnInitDialog()
 		m_bLogDrop = thePrefs.m_bLogDrop; //Xman Xtreme Downloadmanager
 		m_bLogpartmismatch = thePrefs.m_bLogpartmismatch; //Xman Log part/size-mismatch
 		m_bLogUlDlEvents = thePrefs.m_bLogUlDlEvents;
-		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		m_bLogWebCacheEvents = thePrefs.m_bLogWebCacheEvents;//JP log webcache events
-		m_bLogICHEvents = thePrefs.m_bLogICHEvents;//JP log ICH events
-		// <== WebCache [WC team/MorphXT] - Stulle/Max
 		// ==> UPnP support [MoNKi] - leuk_he 
 		m_bLogUPnP = thePrefs.GetUPnPVerboseLog();
 		// <== UPnP support [MoNKi] - leuk_he 
-
-
 		m_iLogLevel = 5 - thePrefs.m_byLogLevel;
 	}
 	m_bLog2Disk = thePrefs.log2disk;
@@ -514,7 +562,7 @@ BOOL CPPgTweaks::OnInitDialog()
 	m_bFilterLANIPs = thePrefs.filterLANIPs;
 	m_bExtControls = thePrefs.m_bExtControls;
 	m_uServerKeepAliveTimeout = thePrefs.m_dwServerKeepAliveTimeout / 60000;
-	m_bSparsePartFiles = thePrefs.m_bSparsePartFiles;
+	m_bSparsePartFiles = thePrefs.GetSparsePartFiles();
 	m_bFullAlloc= thePrefs.m_bAllocFull;
 	m_bCheckDiskspace = thePrefs.checkDiskspace;
 	m_fMinFreeDiskSpaceMB = (float)(thePrefs.m_uMinFreeDiskSpace / (1024.0 * 1024.0));
@@ -538,6 +586,19 @@ BOOL CPPgTweaks::OnInitDialog()
     m_iDynUpGoingDownDivider = thePrefs.GetDynUpGoingDownDivider();
     m_iDynUpNumberOfPings = thePrefs.GetDynUpNumberOfPings();
 	*/
+
+	//Xman official UPNP removed
+	/*
+	m_bCloseUPnPOnExit = thePrefs.CloseUPnPOnExit();
+	m_bSkipWANIPSetup = thePrefs.GetSkipWANIPSetup();
+	m_bSkipWANPPPSetup = thePrefs.GetSkipWANPPPSetup();
+	*/
+	m_iShareeMule = thePrefs.m_nCurrentUserDirMode;
+
+	//Xman Added PaddingLength to Extended preferences
+	m_iCryptTCPPaddingLength  = thePrefs.GetCryptTCPPaddingLength(); 
+	//Xman end
+
     //m_bA4AFSaveCpu = thePrefs.GetA4AFSaveCpu(); // ZZ:DownloadManager
 
 	// ==> UPnP support [MoNKi] - leuk_he
@@ -556,7 +617,7 @@ BOOL CPPgTweaks::OnInitDialog()
 	m_ctrlTreeOptions.SetItemHeight(m_ctrlTreeOptions.GetItemHeight() + 2);
 
 	m_iFileBufferSize = thePrefs.m_iFileBufferSize;
-	m_ctlFileBuffSize.SetRange(16, 1024+512, TRUE);
+	m_ctlFileBuffSize.SetRange(16, 2048 /*1024+512*/, TRUE); //Xman increased to 2 MB
 	int iMin, iMax;
 	m_ctlFileBuffSize.GetRange(iMin, iMax);
 	m_ctlFileBuffSize.SetPos(m_iFileBufferSize/1024);
@@ -632,14 +693,9 @@ BOOL CPPgTweaks::OnApply()
 		thePrefs.m_bLogDrop = m_bLogDrop; //Xman Xtreme Downloadmanager
 		thePrefs.m_bLogpartmismatch = m_bLogpartmismatch; //Xman Log part/size-mismatch
 		thePrefs.m_bLogUlDlEvents = m_bLogUlDlEvents;
-		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		thePrefs.m_bLogWebCacheEvents = m_bLogWebCacheEvents;//JP log webcache events
-		thePrefs.m_bLogICHEvents = m_bLogICHEvents;//JP log ICH events
-		// <== WebCache [WC team/MorphXT] - Stulle/Max
 		// ==> UPnP support [MoNKi] - leuk_he 
 		thePrefs.SetUPnPVerboseLog(m_bLogUPnP);
 		// <== UPnP support [MoNKi] - leuk_he 
-
 		thePrefs.m_byLogLevel = 5 - m_iLogLevel;
 
 		thePrefs.m_bVerbose = m_bVerbose; // store after related options were stored!
@@ -690,6 +746,19 @@ BOOL CPPgTweaks::OnApply()
 	// ZZ:UploadSpeedSense <--
 	*/
 	thePrefs.m_bAutomaticArcPreviewStart = !m_bAutoArchDisable;
+
+	//Xman official UPNP removed
+	/*
+	thePrefs.m_bCloseUPnPOnExit = m_bCloseUPnPOnExit;
+	thePrefs.SetSkipWANIPSetup(m_bSkipWANIPSetup);
+	thePrefs.SetSkipWANPPPSetup(m_bSkipWANPPPSetup);
+	*/
+	thePrefs.ChangeUserDirMode(m_iShareeMule);
+
+	//Xman Added PaddingLength to Extended preferences
+	thePrefs.m_byCryptTCPPaddingLength=(uint8)m_iCryptTCPPaddingLength;
+	//Xman end
+
     //thePrefs.m_bA4AFSaveCpu = m_bA4AFSaveCpu; // ZZ:DownloadManager
 
 	// ==> UPnP support [MoNKi] - leuk_he
@@ -767,10 +836,6 @@ void CPPgTweaks::Localize(void)
 		if (m_htiLogDrop) m_ctrlTreeOptions.SetItemText(m_htiLogDrop, GetResString(IDS_LOGDROP)); //Xman Xtreme Downloadmanager
 		if (m_htiLogpartmismtach) m_ctrlTreeOptions.SetItemText(m_htiLogpartmismtach, GetResString(IDS_LOGPARTMISMATCH)); //Xman Log part/size-mismatch
 		if (m_htiLogUlDlEvents) m_ctrlTreeOptions.SetItemText(m_htiLogUlDlEvents, GetResString(IDS_LOG_ULDL_EVENTS));
-		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		if (m_htiLogWebCacheEvents) m_ctrlTreeOptions.SetItemText(m_htiLogWebCacheEvents, GetResString(IDS_LOG_WCEVENTS));//jp log webcache events
-		if (m_htiLogICHEvents) m_ctrlTreeOptions.SetItemText(m_htiLogICHEvents, GetResString(IDS_LOG_IACH));//JP log ICH events
-		// <== WebCache [WC team/MorphXT] - Stulle/Max
 		if (m_htiCommit) m_ctrlTreeOptions.SetItemText(m_htiCommit, GetResString(IDS_COMMITFILES));
 		if (m_htiCommitNever) m_ctrlTreeOptions.SetItemText(m_htiCommitNever, GetResString(IDS_NEVER));
 		if (m_htiCommitOnShutdown) m_ctrlTreeOptions.SetItemText(m_htiCommitOnShutdown, GetResString(IDS_ONSHUTDOWN));
@@ -817,7 +882,18 @@ void CPPgTweaks::Localize(void)
 		//if (m_htiA4AFSaveCpu) m_ctrlTreeOptions.SetItemText(m_htiA4AFSaveCpu, GetResString(IDS_A4AF_SAVE_CPU)); // ZZ:DownloadManager
 		if (m_htiFullAlloc) m_ctrlTreeOptions.SetItemText(m_htiFullAlloc, GetResString(IDS_FULLALLOC));
 		if (m_htiAutoArch) m_ctrlTreeOptions.SetItemText(m_htiAutoArch, GetResString(IDS_DISABLE_AUTOARCHPREV));
-        
+		//Xman official UPNP removed
+		/*
+		if (m_htiUPnP) m_ctrlTreeOptions.SetItemText(m_htiUPnP, GetResString(IDS_UPNP));
+		if (m_htiCloseUPnPPorts) m_ctrlTreeOptions.SetItemText(m_htiCloseUPnPPorts, GetResString(IDS_UPNPCLOSEONEXIT));
+		if (m_htiSkipWANIPSetup) m_ctrlTreeOptions.SetItemText(m_htiSkipWANIPSetup, GetResString(IDS_UPNPSKIPWANIP));
+		if (m_htiSkipWANPPPSetup) m_ctrlTreeOptions.SetItemText(m_htiSkipWANPPPSetup, GetResString(IDS_UPNPSKIPWANPPP));
+		*/
+		if (m_htiShareeMule) m_ctrlTreeOptions.SetItemText(m_htiShareeMule, GetResString(IDS_SHAREEMULELABEL));
+		if (m_htiShareeMuleMultiUser) m_ctrlTreeOptions.SetItemText(m_htiShareeMuleMultiUser, GetResString(IDS_SHAREEMULEMULTI));
+		if (m_htiShareeMulePublicUser) m_ctrlTreeOptions.SetItemText(m_htiShareeMulePublicUser, GetResString(IDS_SHAREEMULEPUBLIC));
+		if (m_htiShareeMuleOldStyle) m_ctrlTreeOptions.SetItemText(m_htiShareeMuleOldStyle, GetResString(IDS_SHAREEMULEOLD));
+
 		CString temp;
 		temp.Format(_T("%s: %s"), GetResString(IDS_FILEBUFFERSIZE), CastItoXBytes(m_iFileBufferSize, false, false));
 		GetDlgItem(IDC_FILEBUFFERSIZE_STATIC)->SetWindowText(temp);
@@ -849,10 +925,6 @@ void CPPgTweaks::OnDestroy()
 	m_htiLogpartmismtach = NULL; //Xman Log part/size-mismatch
 	m_htiLogLevel = NULL;
 	m_htiLogUlDlEvents = NULL;
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	m_htiLogWebCacheEvents = NULL;//jp log webcache events
-	m_htiLogICHEvents = NULL;//JP log ICH events
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 	/*
 	m_htiCreditSystem = NULL;
@@ -901,8 +973,21 @@ void CPPgTweaks::OnDestroy()
 	m_htiExtractMetaDataNever = NULL;
 	m_htiExtractMetaDataID3Lib = NULL;
 	m_htiAutoArch = NULL;
+	//Xman official UPNP removed
+	/*
+	m_htiUPnP = NULL;
+	m_htiCloseUPnPPorts = NULL;
+	m_htiSkipWANIPSetup = NULL;
+	m_htiSkipWANPPPSetup = NULL;
+	*/
+	m_htiShareeMule = NULL;
+	m_htiShareeMuleMultiUser = NULL;
+	m_htiShareeMulePublicUser = NULL;
+	m_htiShareeMuleOldStyle = NULL;
 	//m_htiExtractMetaDataMediaDet = NULL;
     
+	m_htiCryptTCPPaddingLength = NULL; //Xman Added PaddingLength to Extended preferences
+
 	// ==> UPnP support [MoNKi] - leuk_he
 	/*
 	//Xman
@@ -939,12 +1024,24 @@ LRESULT CPPgTweaks::OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam)
 				if (m_htiLogDrop)			    m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogDrop, bCheck); //Xman Xtreme Downloadmanager
 				if (m_htiLogpartmismtach)		m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogpartmismtach, bCheck); //Xman Log part/size-mismatch
 				if (m_htiLogUlDlEvents)			m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogUlDlEvents, bCheck);
-				// ==> WebCache [WC team/MorphXT] - Stulle/Max
-				if (m_htiLogWebCacheEvents)		m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogWebCacheEvents, bCheck);//jp log webcache events
-				if (m_htiLogICHEvents)			m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogICHEvents, bCheck);//JP log ICH events
-				// <== WebCache [WC team/MorphXT] - Stulle/Max
 			}
 		}
+		else if ((m_htiShareeMuleMultiUser && pton->hItem == m_htiShareeMuleMultiUser)
+			|| (m_htiShareeMulePublicUser && pton->hItem == m_htiShareeMulePublicUser)
+			|| (m_htiShareeMuleOldStyle && pton->hItem == m_htiShareeMuleOldStyle))
+		{
+			if (m_htiShareeMule && !bShowedWarning){
+				HTREEITEM tmp;
+				int nIndex;
+				m_ctrlTreeOptions.GetRadioButton(m_htiShareeMule, nIndex, tmp);
+				if (nIndex != thePrefs.m_nCurrentUserDirMode){
+					// TODO offer cancel option
+					AfxMessageBox(GetResString(IDS_SHAREEMULEWARNING), MB_ICONINFORMATION | MB_OK);
+					bShowedWarning = true;
+				}
+			}
+		}
+
 		// ==> UPnP support [MoNKi] - leuk_he
 		/*
 		//Xman

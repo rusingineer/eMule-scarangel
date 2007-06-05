@@ -94,12 +94,8 @@ protected:
 	CRect	m_rectPlot;
 	CDC     m_dcGrid;
 	CDC     m_dcPlot;
-	//CBitmap*m_pbitmapOldGrid;
-	//CBitmap*m_pbitmapOldPlot;
-	//Xman Code Fix
-	HBITMAP m_pbitmapOldGrid;
-	HBITMAP m_pbitmapOldPlot;
-	//Xman end
+	CBitmap m_bitmapOldGrid;
+	CBitmap m_bitmapOldPlot;
 	CBitmap m_bitmapGrid;
 	CBitmap m_bitmapPlot;
 

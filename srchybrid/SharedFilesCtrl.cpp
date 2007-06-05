@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -49,6 +49,7 @@
 #include "SearchParams.h"
 #include "SearchDlg.h"
 #include "SearchResultsWnd.h"
+#include "ToolTipCtrlX.h"
 #include "MassRename.h" //Xman Mass Rename (Morph)
 #include "Log.h" //Xman Mass Rename (Morph)
 
@@ -225,6 +226,7 @@ BEGIN_MESSAGE_MAP(CSharedFilesCtrl, CMuleListCtrl)
 	ON_NOTIFY_REFLECT(LVN_COLUMNCLICK, OnColumnClick)
 	ON_NOTIFY_REFLECT(NM_DBLCLK, OnNMDblclk)
 	ON_NOTIFY_REFLECT(LVN_GETDISPINFO, OnGetDispInfo)
+	ON_NOTIFY_REFLECT(LVN_GETINFOTIP, OnLvnGetInfoTip)
 	ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 
@@ -235,23 +237,26 @@ CSharedFilesCtrl::CSharedFilesCtrl()
 	nAICHHashing = 0;
 	m_pDirectoryFilter = NULL;
 	SetGeneralPurposeFind(true, false);
+	m_pToolTip = new CToolTipCtrlX;
 }
 
 CSharedFilesCtrl::~CSharedFilesCtrl()
 {
+	delete m_pToolTip;
 }
 
 void CSharedFilesCtrl::Init()
 {
 	SetName(_T("SharedFilesCtrl"));
+
 	CImageList ilDummyImageList; //dummy list for getting the proper height of listview entries
 	ilDummyImageList.Create(1, theApp.GetSmallSytemIconSize().cy,theApp.m_iDfltImageListColorFlags|ILC_MASK, 1, 1); 
 	SetImageList(&ilDummyImageList, LVSIL_SMALL);
 	ASSERT( (GetStyle() & LVS_SHAREIMAGELISTS) == 0 );
 	ilDummyImageList.Detach();
 
-	SetExtendedStyle(LVS_EX_FULLROWSELECT);
-	ModifyStyle(LVS_SINGLESEL,0);
+	SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_INFOTIP);
+	ASSERT( (GetStyle() & LVS_SINGLESEL) == 0 );
 
 	InsertColumn(0, GetResString(IDS_DL_FILENAME) ,LVCFMT_LEFT,250,0);
 	InsertColumn(1,GetResString(IDS_DL_SIZE),LVCFMT_LEFT,100,1);
@@ -288,10 +293,19 @@ void CSharedFilesCtrl::Init()
 	SetSortArrow();
 	// ==> PowerShare [ZZ/MorphXT] - Stulle
 	/*
-	SortItems(SortProc, GetSortItem() + (GetSortAscending() ? 0:20));
+	SortItems(SortProc, GetSortItem() + (GetSortAscending() ? 0 : 20)  + (GetSortSecondValue() ? 100 : 0));
 	*/
-	SortItems(SortProc, GetSortItem() + (GetSortAscending() ? 0:30));
+	SortItems(SortProc, GetSortItem() + (GetSortAscending() ? 0 : 30)  + (GetSortSecondValue() ? 100 : 0));
 	// <== PowerShare [ZZ/MorphXT] - Stulle
+
+	CToolTipCtrl* tooltip = GetToolTips();
+	if (tooltip){
+		m_pToolTip->SetFileIconToolTip(true);
+		m_pToolTip->SubclassWindow(*tooltip);
+		tooltip->ModifyStyle(0, TTS_NOPREFIX);
+		tooltip->SetDelayTime(TTDT_AUTOPOP, 20000);
+		tooltip->SetDelayTime(TTDT_INITIAL, thePrefs.GetToolTipDelay()*1000);
+	}
 }
 
 void CSharedFilesCtrl::OnSysColorChange()
@@ -482,12 +496,12 @@ void CSharedFilesCtrl::AddFile(const CKnownFile* file)
 				// any userselected shared dir but not incoming or temp
 				if (file->IsPartFile())
 					return;
-				if (strFilePath.CompareNoCase(thePrefs.GetIncomingDir()) == 0)
+				if (strFilePath.CompareNoCase(thePrefs.GetMuleDirectory(EMULE_INCOMINGDIR)) == 0)
 					return;
 				break;
 			case SDI_INCOMING:
 				// Main incoming directory
-				if (strFilePath.CompareNoCase(thePrefs.GetIncomingDir()) != 0)
+				if (strFilePath.CompareNoCase(thePrefs.GetMuleDirectory(EMULE_INCOMINGDIR)) != 0)
 					return;
 				// Hmm should we show all incoming files dirs or only those from the main incoming dir here?
 				// hard choice, will only show the main for now
@@ -715,40 +729,7 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					buffer = file->GetFileTypeDisplayStr();
 					break;
 				case 3:{
-					switch (file->GetUpPriority()) {
-						case PR_VERYLOW :
-							buffer = GetResString(IDS_PRIOVERYLOW);
-							break;
-						case PR_LOW :
-							if( file->IsAutoUpPriority() )
-								buffer = GetResString(IDS_PRIOAUTOLOW);
-							else
-								buffer = GetResString(IDS_PRIOLOW);
-							break;
-						case PR_NORMAL :
-							if( file->IsAutoUpPriority() )
-								buffer = GetResString(IDS_PRIOAUTONORMAL);
-							else
-								buffer = GetResString(IDS_PRIONORMAL);
-							break;
-						case PR_HIGH :
-							if( file->IsAutoUpPriority() )
-								buffer = GetResString(IDS_PRIOAUTOHIGH);
-							else
-								buffer = GetResString(IDS_PRIOHIGH);
-							break;
-						case PR_VERYHIGH :
-							buffer = GetResString(IDS_PRIORELEASE);
-							break;
-						//Xman PowerRelease
-						case PR_POWER:
-							buffer = GetResString(IDS_POWERRELEASE);
-							break;
-						//Xman end
-
-						default:
-							buffer.Empty();
-					}
+					buffer = file->GetUpPriorityDisplayString();
 					// ==> PowerShare [ZZ/MorphXT] - Stulle
 					if(file->GetPowerShared()) {
 						CString tempString = GetResString(IDS_POWERSHARE_PREFIX);
@@ -790,7 +771,7 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					//Xman show virtual sources (morph) + virtualUploadsources
 					if(file->IsPartFile()==false || thePrefs.UseAdvancedAutoPtio()==false)
 					{
-  						if (file->m_nCompleteSourcesCountLo == file->m_nCompleteSourcesCountHi)
+						if (file->m_nCompleteSourcesCountLo == file->m_nCompleteSourcesCountHi)
 							buffer.Format(_T("%u (%u)"), file->m_nCompleteSourcesCountLo, file->m_nVirtualCompleteSourcesCount);
 						else if (file->m_nCompleteSourcesCountLo == 0)
 							buffer.Format(_T("< %u (%u)"), file->m_nCompleteSourcesCountHi, file->m_nVirtualCompleteSourcesCount);
@@ -1004,10 +985,7 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	int iSelectedItems = GetSelectedCount();
 	int iCompleteFileSelected = -1;
 	UINT uPrioMenuItem = 0;
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	bool uWCReleaseItem = true; //JP webcache release
-	bool uGreyOutWCRelease = true; //JP webcache release
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
+
 	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 	int iHideOS = -1;
 	UINT uHideOSMenuItem = 0;
@@ -1155,27 +1133,12 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 		}
 		// <== Limit PS by amount of data uploaded [Stulle] - Stulle
 
-		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		if (!pFile->ReleaseViaWebCache)
-			uWCReleaseItem = false;
-		if (!pFile->IsPartFile())
-			uGreyOutWCRelease = false;
-		// <== WebCache [WC team/MorphXT] - Stulle/Max
-
 		bFirstItem = false;
 	}
 
 	m_SharedFilesMenu.EnableMenuItem((UINT_PTR)m_PrioMenu.m_hMenu, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
 	//m_PrioMenu.CheckMenuRadioItem(MP_PRIOVERYLOW, MP_PRIOAUTO, uPrioMenuItem, 0);
 	m_PrioMenu.CheckMenuRadioItem(MP_PRIOVERYLOW, MP_PRIOPOWER, uPrioMenuItem, 0); //Xman PowerRelease 
-
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	m_PrioMenu.EnableMenuItem(MP_PRIOWCRELEASE, (thePrefs.UpdateWebcacheReleaseAllowed() && !uGreyOutWCRelease) ? MF_ENABLED : MF_GRAYED);
-	if (uWCReleaseItem && thePrefs.IsWebcacheReleaseAllowed()) //JP webcache release
-		m_PrioMenu.CheckMenuItem(MP_PRIOWCRELEASE, MF_CHECKED);
-	else
-		m_PrioMenu.CheckMenuItem(MP_PRIOWCRELEASE, MF_UNCHECKED);
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	bool bSingleCompleteFileSelected = (iSelectedItems == 1 && iCompleteFileSelected == 1);
 	m_SharedFilesMenu.EnableMenuItem(MP_OPEN, bSingleCompleteFileSelected ? MF_ENABLED : MF_GRAYED);
@@ -1640,22 +1603,8 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 			case MP_PRIOHIGH:
 			case MP_PRIOVERYHIGH:
 			case MP_PRIOPOWER:  //Xman PowerRelease
-			case MP_PRIOWCRELEASE: // WebCache [WC team/MorphXT] - Stulle/Max
 			case MP_PRIOAUTO:
 				{
-					// ==> WebCache [WC team/MorphXT] - Stulle/Max
-					// check if a click on MP_PRIOWCRELEASE should activate WC-release
-					bool activateWCRelease = false;
-					POSITION pos2 = selectedList.GetHeadPosition();
-					CKnownFile* cur_file = NULL;
-					while (pos2 != NULL)
-					{
-						cur_file = selectedList.GetNext(pos2);
-						if (!cur_file->ReleaseViaWebCache)
-							activateWCRelease = true;
-					}
-					// <== WebCache [WC team/MorphXT] - Stulle/Max
-
 					SetRedraw(FALSE); //Xman Code Improvement
 					POSITION pos = selectedList.GetHeadPosition();
 					while (pos != NULL)
@@ -1706,18 +1655,10 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 									file->CalculateAndSetUploadPriority(); 
 #endif
 								else
-								file->UpdateAutoUpPriority();
+									file->UpdateAutoUpPriority();
 								//Xman end
 								UpdateFile(file); 
 								break;
-							// ==> WebCache [WC team/MorphXT] - Stulle/Max
-							case MP_PRIOWCRELEASE:
-								if (!file->IsPartFile())
-									file->SetReleaseViaWebCache(activateWCRelease);
-								else
-									file->SetReleaseViaWebCache(false);
-								break;
-							// <== WebCache [WC team/MorphXT] - Stulle/Max
 						}
 					}
 					SetRedraw(TRUE); //Xman Code Improvement
@@ -2095,7 +2036,7 @@ int CSharedFilesCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort
 {
 	const CKnownFile* item1 = (CKnownFile*)lParam1;
 	const CKnownFile* item2 = (CKnownFile*)lParam2;
-
+	
 	// ==> PowerShare [ZZ/MorphXT] - Stulle
 
 	// all shifted by 10!!!
@@ -2500,10 +2441,6 @@ void CSharedFilesCtrl::CreateMenues()
 	m_PrioMenu.AppendMenu(MF_STRING,MP_PRIOVERYHIGH, GetResString(IDS_PRIORELEASE));
 	m_PrioMenu.AppendMenu(MF_STRING,MP_PRIOPOWER, GetResString(IDS_POWERRELEASE)); //Xman PowerRelease
 	m_PrioMenu.AppendMenu(MF_STRING,MP_PRIOAUTO, GetResString(IDS_PRIOAUTO));//UAP
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	m_PrioMenu.AppendMenu(MF_STRING|MF_SEPARATOR);//jp webcache release
-	m_PrioMenu.AppendMenu(MF_STRING,MP_PRIOWCRELEASE, _T("WC-Release"));//jp webcache release
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	m_CollectionsMenu.CreateMenu();
 	// ==> XP Style Menu [Xanatos] - Stulle
@@ -2663,4 +2600,30 @@ void CSharedFilesCtrl::SetDirectoryFilter(CDirectoryItem* pNewFilter, bool bRefr
 	m_pDirectoryFilter = pNewFilter;
 	if (bRefresh)
 		ReloadFileList();
+}
+
+void CSharedFilesCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMLVGETINFOTIP pGetInfoTip = reinterpret_cast<LPNMLVGETINFOTIP>(pNMHDR);
+	if (pGetInfoTip->iSubItem == 0)
+	{
+		LVHITTESTINFO hti = {0};
+		::GetCursorPos(&hti.pt);
+		ScreenToClient(&hti.pt);
+		if (SubItemHitTest(&hti) == -1 || hti.iItem != pGetInfoTip->iItem || hti.iSubItem != 0){
+			// don' show the default label tip for the main item, if the mouse is not over the main item
+			if ((pGetInfoTip->dwFlags & LVGIT_UNFOLDED) == 0 && pGetInfoTip->cchTextMax > 0 && pGetInfoTip->pszText[0] != _T('\0'))
+				pGetInfoTip->pszText[0] = _T('\0');
+			return;
+		}
+
+		const CKnownFile* pFile = (CKnownFile*)GetItemData(pGetInfoTip->iItem);
+		if (pFile && pGetInfoTip->pszText && pGetInfoTip->cchTextMax > 0)
+		{
+			CString strInfo = pFile->GetInfoSummary();
+			_tcsncpy(pGetInfoTip->pszText, strInfo, pGetInfoTip->cchTextMax);
+			pGetInfoTip->pszText[pGetInfoTip->cchTextMax-1] = _T('\0');
+		}
+	}
+	*pResult = 0;
 }

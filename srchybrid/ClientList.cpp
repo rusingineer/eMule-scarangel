@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -39,11 +39,6 @@
 #include "Log.h"
 #include "packets.h"
 #include "Statistics.h"
-// ==> WebCache [WC team/MorphXT] - Stulle/Max
-#include "PartFile.h"
-#include "SharedFileList.h"
-#include "WebCache/WebCache.h"
-// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -70,8 +65,6 @@ CClientList::CClientList(){
 	m_trackedClientsList.InitHashTable(4999); //Xman changed, was 2011
 	m_globDeadSourceList.Init(true);
 	m_pBuddy = NULL;
-
-	m_dwLastSendOHCBs = 0; // WebCache [WC team/MorphXT] - Stulle/Max
 }
 
 CClientList::~CClientList(){
@@ -391,7 +384,8 @@ bool CClientList::AttachToAlreadyKnown(CUpDownClient** client, CClientReqSocket*
 		if (sender){
 			if (found_client->socket){
 				if (found_client->socket->IsConnected() 
-					&& (found_client->GetIP() != tocheck->GetIP() || found_client->GetUserPort() != tocheck->GetUserPort() ) )
+					&& (found_client->GetConnectIP() != tocheck->GetConnectIP() //Xman use ConnectIP instead of GetIP()
+					|| found_client->GetUserPort() != tocheck->GetUserPort() ) )
 				{
 					// if found_client is connected and has the IS_IDENTIFIED, it's safe to say that the other one is a bad guy
 					if (found_client->Credits() && found_client->Credits()->GetCurrentIdentState(found_client->GetIP()) == IS_IDENTIFIED){
@@ -865,8 +859,6 @@ void CClientList::Process()
 	// Cleanup client list
 	//
 	//CleanUpClientList(); //Xman moved to uploadqueue
-
-	SendOHCBs(); // WebCache [WC team/MorphXT] - Stulle/Max
 }
 
 #ifdef _DEBUG
@@ -1038,9 +1030,6 @@ void CClientList::CleanUpClientList(){
 				&& pCurClient->GetDownloadState() == DS_NONE
 				&& pCurClient->GetChatState() == MS_NONE
 				&& pCurClient->GetKadState() == KS_NONE
-				// ==> WebCache [WC team/MorphXT] - Stulle/Max
-				&& !pCurClient->IsProxy() //JP don't delete SINGLEProxyClient
-				// <== WebCache [WC team/MorphXT] - Stulle/Max
 				&& pCurClient->socket == NULL)
 			{
 				const DWORD delta = GetTickCount() - pCurClient->m_lastCleanUpCheck;
@@ -1182,97 +1171,6 @@ void CClientList::ResetIP2Country(){
 
 }
 //EastShare End - added by AndCycle, IP to Country
-
-// ==> WebCache [WC team/MorphXT] - Stulle/Max
-// yonatan - not 2 be confused with the one in CUploadQueue!
-CUpDownClient*	CClientList::FindClientByWebCacheUploadId(const uint32 id)
-{
-	for (POSITION pos = list.GetHeadPosition(); pos != NULL;)
-	{
-		CUpDownClient* cur_client = list.GetNext(pos);
-		if ( cur_client->m_uWebCacheUploadId == id )
-			return cur_client;
-	}
-	return 0;
-}
-
-// Superlexx - OHCB manager
-// returns a list of multi-OHCB-supporting clients ( = v1.9a or newer ) that should receive this OHCB immediately
-CUpDownClientPtrList* CClientList::XpressOHCBRecipients(uint32 maxNrOfClients, const Requested_Block_Struct* block)
-{
-	UINT part = (UINT)(block->StartOffset / PARTSIZE);
- 	CUpDownClientPtrList* newClients = new CUpDownClientPtrList;	// supporting multi-OHCB
-
-	for (POSITION pos = list.GetHeadPosition(); pos;)
-	{
-		CUpDownClient* cur_client = list.GetNext(pos);
-		//MORPH - Changed by SiRoB, WebCache Fix
-		/*
-		if ( !(cur_client->HasLowID() || (cur_client->socket && cur_client->socket->IsConnected()))
-		*/
-		if ( (!cur_client->HasLowID() || (cur_client->socket && cur_client->socket->IsConnected()))
-			&& cur_client->SupportsMultiOHCBs()
-			&& !cur_client->IsProxy()	// client isn't a proxy
-			&& cur_client->m_bIsAcceptingOurOhcbs
-			//&& theApp.sharedfiles->GetFileByID(cur_client->GetUploadFileID())	// client has requested a file - obsolete with MFR
-			//&& !md4cmp(cur_client->GetUploadFileID(), block->FileID ) // file hashes do match - obsolete with MFR
-			&& !cur_client->IsPartAvailable(part, block->FileID) // the MFR version
-			&& cur_client->IsBehindOurWebCache())	// inefficient
-			if (cur_client->socket && cur_client->socket->IsConnected())
-				newClients->AddHead(cur_client); // add connected clients to head
-			else
-				newClients->AddTail(cur_client);
-	}
-
-	CUpDownClientPtrList* toReturn = new CUpDownClientPtrList;
-
-	// TODO: optimize this, dependent on further protocol development
-	POSITION pos1 = newClients->GetHeadPosition();
-	while (pos1 != NULL
-		&& (UINT)toReturn->GetCount() <= maxNrOfClients)
-		toReturn->AddTail(newClients->GetNext(pos1));
-
-	delete newClients;
-	return toReturn;
-}
-
-UINT CClientList::GetNumberOfClientsBehindOurWebCacheHavingSameFileAndNeedingThisBlock(Pending_Block_Struct* pending, UINT maxNrOfClients) // Superlexx - COtN
-{
-	UINT toReturn = 0;
-	UINT part = (UINT)(pending->block->StartOffset / PARTSIZE);
-
-	for (POSITION pos = list.GetHeadPosition(); pos && toReturn <= maxNrOfClients; list.GetNext(pos))
-	{
-		CUpDownClient* cur_client = list.GetAt( pos );
-		if( cur_client->m_bIsAcceptingOurOhcbs
-			&& !cur_client->IsProxy()
-//			&& cur_client != this // 'this' is the client we want to download data from - covered by IsPartAvaiable
-			&& cur_client->IsBehindOurWebCache()
-			&& !cur_client->IsPartAvailable(part, pending->block->FileID))
-			toReturn++;
-	}
-	return toReturn;
-}
-
-void CClientList::SendOHCBs()
-{
-	const uint32 now = ::GetTickCount();
-	if (now - m_dwLastSendOHCBs > WC_SENDOHCBS_INTERVAL)
-	{
-		m_dwLastSendOHCBs = now;
-		CUpDownClient* cur_client = NULL;
-		for (POSITION pos = list.GetHeadPosition(); pos;)
-		{
-			cur_client = list.GetNext(pos);
-			if (cur_client->SupportsWebCache()
-				&& cur_client->SupportsMultiOHCBs()
-				&& now - cur_client->lastMultiOHCBPacketSent > WC_MULTI_OHCB_SEND_TIME
-				&& cur_client->IsBehindOurWebCache())
-				cur_client->SendOHCBsNow();
-		}
-	}
-}
-// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 // ==> Compat Client Stats [Stulle] - Stulle
 void CClientList::GetCompatClientsStats(CRBMap<CString, uint32> *compatClients)

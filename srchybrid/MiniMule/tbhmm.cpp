@@ -176,7 +176,7 @@ void CTBHMM::MMUpdate()
 		uint32 downratekb = theApp.downloadqueue->GetDatarate();
 */
 		CDownloadQueue::SDownloadStats myStats;
-		theApp.downloadqueue->GetDownloadStats(myStats);
+		theApp.downloadqueue->GetDownloadSourcesStats(myStats);
 
 		UINT uIconIdx = theApp.emuledlg->GetConnectionStateIconIndex();
 		if (uIconIdx >= ARRSIZE(m_hConState)){
@@ -340,7 +340,7 @@ void CTBHMM::DoMenu(CPoint doWhere)
 
 // ==> added - Stulle
 void CTBHMM::OnIncomingClicked(){ 
-	ShellExecute(NULL, _T("open"), thePrefs.GetIncomingDir(),NULL, NULL, SW_SHOW); 
+	ShellExecute(NULL, _T("open"), thePrefs.GetMuleDirectory(EMULE_INCOMINGDIR),NULL, NULL, SW_SHOW); 
 }
 
 void CTBHMM::OnRestoreClicked(){

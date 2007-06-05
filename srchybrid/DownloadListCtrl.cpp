@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -49,6 +49,7 @@
 #include "MassRename.h" //Xman Mass Rename (Morph)
 #include "Log.h" //Xman Mass Rename (Morph)
 #include "SivkaFileSettings.h" // file settings - Stulle
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -112,6 +113,7 @@ void CDownloadListCtrl::Init()
 	GlobalHardLimit = 0; // show global HL - Stulle
 
 	SetName(_T("DownloadListCtrl"));
+
 	CImageList ilDummyImageList; //dummy list for getting the proper height of listview entries
 	ilDummyImageList.Create(1, theApp.GetSmallSytemIconSize().cy, theApp.m_iDfltImageListColorFlags|ILC_MASK, 1, 1); 
 	SetImageList(&ilDummyImageList, LVSIL_SMALL);
@@ -119,10 +121,11 @@ void CDownloadListCtrl::Init()
 	ilDummyImageList.Detach();
 
 	SetStyle();
-	ModifyStyle(LVS_SINGLESEL,0);
+	ASSERT( (GetStyle() & LVS_SINGLESEL) == 0 );
 	
 	CToolTipCtrl* tooltip = GetToolTips();
 	if (tooltip){
+		m_tooltip->SetFileIconToolTip(true);
 		m_tooltip->SubclassWindow(*tooltip);
 		tooltip->ModifyStyle(0, TTS_NOPREFIX);
 		tooltip->SetDelayTime(TTDT_AUTOPOP, 20000);
@@ -154,8 +157,7 @@ void CDownloadListCtrl::Init()
 	InsertColumn(13,GetResString(IDS_AVGQR),LVCFMT_LEFT, 70); //Xman Xtreme-Downloadmanager AVG-QR
 	
 	InsertColumn(14, GetResString(IDS_CAT_COLORDER),LVCFMT_LEFT,60); // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
-	InsertColumn(15, GetResString(IDS_WC_SOURCES) ,LVCFMT_LEFT, 100); // WebCache [WC team/MorphXT] - Stulle/Max
-	InsertColumn(16, GetResString(IDS_SHOW_DROPPED_SRC) ,LVCFMT_LEFT, 80); // show # of dropped sources - Stulle
+	InsertColumn(15, GetResString(IDS_SHOW_DROPPED_SRC) ,LVCFMT_LEFT, 80); // show # of dropped sources - Stulle
 
 	SetAllIcons();
 	Localize();
@@ -258,18 +260,17 @@ void CDownloadListCtrl::SetAllIcons()
 	m_ImageList.Add(CTempIconLoader(_T("ClientFriendSlotOvl"))); //32
 	//Xman end
 
-	m_ImageList.Add(CTempIconLoader(_T("PREF_WEBCACHE"))); //33 // WebCache [WC team/MorphXT] - Stulle/Max
 	// ==> Mod Icons - Stulle
-	m_ImageList.Add(CTempIconLoader(_T("AAAEMULEAPP"))); //34
-	m_ImageList.Add(CTempIconLoader(_T("STULLE"))); //35
-	m_ImageList.Add(CTempIconLoader(_T("MAXMOD"))); //36
-	m_ImageList.Add(CTempIconLoader(_T("XTREME"))); //37
-	m_ImageList.Add(CTempIconLoader(_T("MORPH"))); //38
-	m_ImageList.Add(CTempIconLoader(_T("EASTSHARE"))); //39
-	m_ImageList.Add(CTempIconLoader(_T("IONIX"))); //40
-	m_ImageList.Add(CTempIconLoader(_T("CYREX"))); //41
-	m_ImageList.Add(CTempIconLoader(_T("NEXTEMF"))); //42
-	m_ImageList.Add(CTempIconLoader(_T("NEO"))); //43
+	m_ImageList.Add(CTempIconLoader(_T("AAAEMULEAPP"))); //33
+	m_ImageList.Add(CTempIconLoader(_T("STULLE"))); //34
+	m_ImageList.Add(CTempIconLoader(_T("MAXMOD"))); //35
+	m_ImageList.Add(CTempIconLoader(_T("XTREME"))); //36
+	m_ImageList.Add(CTempIconLoader(_T("MORPH"))); //37
+	m_ImageList.Add(CTempIconLoader(_T("EASTSHARE"))); //38
+	m_ImageList.Add(CTempIconLoader(_T("IONIX"))); //39
+	m_ImageList.Add(CTempIconLoader(_T("CYREX"))); //40
+	m_ImageList.Add(CTempIconLoader(_T("NEXTEMF"))); //41
+	m_ImageList.Add(CTempIconLoader(_T("NEO"))); //42
 	// <== Mod Icons - Stulle
 
 	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
@@ -366,16 +367,10 @@ void CDownloadListCtrl::Localize()
 	pHeaderCtrl->SetItem(14, &hdi);
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	strRes = GetResString(IDS_WC_SOURCES);
-	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
-	pHeaderCtrl->SetItem(15, &hdi);
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
-
 	// ==> show # of dropped sources - Stulle
 	strRes = GetResString(IDS_SHOW_DROPPED_SRC);
 	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
-	pHeaderCtrl->SetItem(16, &hdi);
+	pHeaderCtrl->SetItem(15, &hdi);
 	// <== show # of dropped sources - Stulle
 
 	CreateMenues();
@@ -767,14 +762,14 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 			/*
 			if (!IsColumnHidden(12)) {
 				buffer=(lpPartFile->GetCategory()!=0)?
-					thePrefs.GetCategory(lpPartFile->GetCategory())->title:_T("");
+					thePrefs.GetCategory(lpPartFile->GetCategory())->strTitle:_T("");
 				dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
 			}
 			*/
 			if (!thePrefs.ShowCatNameInDownList())
 				buffer.Format(_T("%u"), lpPartFile->GetCategory());
 			else
-				buffer.Format(_T("%s"), thePrefs.GetCategory(lpPartFile->GetCategory())->title);
+				buffer.Format(_T("%s"), thePrefs.GetCategory(lpPartFile->GetCategory())->strTitle);
 			dc->DrawText(buffer, buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
 			// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 			break;
@@ -835,39 +830,8 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 			}
 		// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
-		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		case 15:
-			{
-				UINT wcsc = lpPartFile->GetWebcacheSourceCount();
-				UINT wcsc_our = 0;
-				UINT wcsc_not_our = 0;
-				if(thePrefs.IsExtControlsEnabled())
-				{
-				wcsc_our = lpPartFile->GetWebcacheSourceOurProxyCount();
-				wcsc_not_our = lpPartFile->GetWebcacheSourceNotOurProxyCount();
-				}
-
-				UINT sc = lpPartFile->GetSourceCount() + lpPartFile->GetSrcA4AFCount();
-				double PercentWCClients;
-				if (sc !=0)
-					PercentWCClients = (double) 100 * wcsc / sc;
-				else
-					PercentWCClients = 0;
-                if(wcsc > 0 && !(lpPartFile->GetStatus() == PS_PAUSED && wcsc == 0) && lpPartFile->GetStatus() != PS_COMPLETE) {
-					if(thePrefs.IsExtControlsEnabled())
-						buffer.Format(_T("%i/%i/%i (%1.1f%%)"), wcsc, wcsc_our, wcsc_not_our, PercentWCClients);
-					else
-                    buffer.Format(_T("%i (%1.1f%%)"), wcsc, PercentWCClients);
-                } else {
-                    buffer = _T("");
-				}
-				dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT | DT_RIGHT);
-			}
-			break;
-		// <== WebCache [WC team/MorphXT] - Stulle/Max
-
 		// ==> show # of dropped sources - Stulle
-		case 16:
+		case 15:
 			{
 				buffer.Format(_T("%i"),lpPartFile->GetShowDroppedSrc());
 				dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
@@ -965,19 +929,15 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 				else if (lpUpDownClient->GetClientSoft() == SO_LPHANT){
 					image = 30;
 				}
-				// ==> WebCache [WC team/MorphXT] - Stulle/Max
-				else if (lpUpDownClient->GetClientSoft() == SO_WEBCACHE)
-					image = 33;
-				// <== WebCache [WC team/MorphXT] - Stulle/Max
 				else if (lpUpDownClient->ExtProtocolAvailable()){
 					// ==> Mod Icons - Stulle
 					/*
 					image = 18;
 					*/
 					if(lpUpDownClient->GetModClient() == MOD_NONE)
-					image = 18;
+						image = 18;
 					else
-						image = (uint8)(lpUpDownClient->GetModClient() + 33);
+						image = (uint8)(lpUpDownClient->GetModClient() + 32);
 					// <== Mod Icons - Stulle
 				}
 				else{
@@ -1356,26 +1316,6 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 			}
 			break;
 
-		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		case 15: {
-			if (lpUpDownClient->SupportsWebCache())
-			{
-				buffer = lpUpDownClient->GetWebCacheName();
-				if (lpUpDownClient->IsBehindOurWebCache())
-					dc->SetTextColor(RGB(0, 180, 0)); //if is behind our webcache display green
-				else if (buffer != "")
-					dc->SetTextColor(RGB(255, 0, 0)); // if webcache info is there but not our own set red
-				else
-					buffer = GetResString(IDS_WEBCACHE_NOPROXY);	// if no webcache info colour is black
-			}
-			else
-				buffer = "";
-			dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
- 			dc->SetTextColor(RGB(0, 0, 0));
-			break;
-		}
-		// <== WebCache [WC team/MorphXT] - Stulle/Max
-
 		}
 	}
 }
@@ -1490,8 +1430,7 @@ void CDownloadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	int tree_start=0;
 	int tree_end=0;
 
-	//offset was 4, now it's the standard 2 spaces
-	int iTreeOffset = dc.GetTextExtent(_T(" "), 1 ).cx*2;
+	int iTreeOffset = 6;
 	CHeaderCtrl *pHeaderCtrl = GetHeaderCtrl();
 	int iCount = pHeaderCtrl->GetItemCount();
 	cur_rec.right = cur_rec.left;
@@ -1948,7 +1887,7 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			m_FileMenu.EnableMenuItem(thePrefs.GetShowCopyEd2kLinkCmd() ? MP_GETED2KLINK : MP_SHOWED2KLINK, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
 			m_FileMenu.EnableMenuItem(MP_PASTE, theApp.IsEd2kFileLinkInClipboard() ? MF_ENABLED : MF_GRAYED);
 			m_FileMenu.EnableMenuItem(MP_FIND, GetItemCount() > 0 ? MF_ENABLED : MF_GRAYED);
-			m_FileMenu.EnableMenuItem(MP_SEARCHRELATED, iSelectedItems == 1 && theApp.emuledlg->searchwnd->CanSearchRelatedFiles() ? MF_ENABLED : MF_GRAYED);
+			m_FileMenu.EnableMenuItem(MP_SEARCHRELATED, theApp.emuledlg->searchwnd->CanSearchRelatedFiles() ? MF_ENABLED : MF_GRAYED);
 
 			//Xman manual file allocation (Xanatos)
 			bool ispreallomenu=false;
@@ -1990,12 +1929,12 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 					// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 					/*
 					if (i>0) {
-						label=thePrefs.GetCategory(i)->title;
+						label=thePrefs.GetCategory(i)->strTitle;
 						label.Replace(_T("&"), _T("&&") );
 					}
 					CatsMenu.AppendMenu(MF_STRING,MP_ASSIGNCAT+i, (i==0)?GetResString(IDS_CAT_UNASSIGN):label);
 					*/
-					label=thePrefs.GetCategory(i)->title;
+					label=thePrefs.GetCategory(i)->strTitle;
 					label.Replace(_T("&"), _T("&&") );
 					CatsMenu.AppendMenu(MF_STRING,MP_ASSIGNCAT+i,label);
 					// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
@@ -2350,7 +2289,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					}
 					SetRedraw(true);
 					break;
-
+				
 				//Xman Mass Rename (Morph)
 				case MP_MASSRENAME: 
 				{
@@ -2697,9 +2636,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					break;
 				}
 				case MP_SEARCHRELATED:
-					if (selectedCount > 1)
-						break;
-					theApp.emuledlg->searchwnd->SearchRelatedFiles(file);
+					theApp.emuledlg->searchwnd->SearchRelatedFiles(selectedList);
 					theApp.emuledlg->SetActiveDialog(theApp.emuledlg->searchwnd);
 					break;
 				case MP_OPEN:
@@ -2889,7 +2826,6 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 			CPartFile* file = (CPartFile*)content->owner; //Xman Xtreme Downloadmanager
 
 			switch (wParam){
-
 				//Xman Xtreme Downloadmanager
 				case MP_STOP_CLIENT: 
 					StopSingleClient(client);
@@ -3134,7 +3070,7 @@ void CDownloadListCtrl::SetStyle()
 	if (thePrefs.IsDoubleClickEnabled())
 		SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_INFOTIP);
 	else
-		SetExtendedStyle(LVS_EX_ONECLICKACTIVATE | LVS_EX_FULLROWSELECT | LVS_EX_INFOTIP);
+		SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_INFOTIP | LVS_EX_ONECLICKACTIVATE);
 }
 
 void CDownloadListCtrl::OnListModified(NMHDR* pNMHDR, LRESULT* /*pResult*/)
@@ -3235,8 +3171,8 @@ int CDownloadListCtrl::Compare(const CPartFile* file1, const CPartFile* file2, L
 			// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 			/*
 			//TODO: 'GetCategory' SHOULD be a 'const' function and 'GetResString' should NOT be called..
-			comp=CompareLocaleStringNoCase(	(const_cast<CPartFile*>(file1)->GetCategory()!=0)?thePrefs.GetCategory(const_cast<CPartFile*>(file1)->GetCategory())->title:GetResString(IDS_ALL),
-											(const_cast<CPartFile*>(file2)->GetCategory()!=0)?thePrefs.GetCategory(const_cast<CPartFile*>(file2)->GetCategory())->title:GetResString(IDS_ALL) );
+			comp=CompareLocaleStringNoCase(	(const_cast<CPartFile*>(file1)->GetCategory()!=0)?thePrefs.GetCategory(const_cast<CPartFile*>(file1)->GetCategory())->strTitle:GetResString(IDS_ALL),
+											(const_cast<CPartFile*>(file2)->GetCategory()!=0)?thePrefs.GetCategory(const_cast<CPartFile*>(file2)->GetCategory())->strTitle:GetResString(IDS_ALL) );
 			*/
 			if (file1->GetCategory() > file2->GetCategory())
 				comp=1;
@@ -3292,14 +3228,8 @@ int CDownloadListCtrl::Compare(const CPartFile* file1, const CPartFile* file2, L
 			break;
 		// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
-		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		case 15:
-			comp=file1->GetWebcacheSourceCount() - file2->GetWebcacheSourceCount();
-			break;
-		// <== WebCache [WC team/MorphXT] - Stulle/Max
-
 		// ==> show # of dropped sources - Stulle
-		case 16:
+		case 15:
 		{
 			comp=CompareUnsigned(file1->GetShowDroppedSrc(), file2->GetShowDroppedSrc());
 			break;
@@ -3391,14 +3321,6 @@ int CDownloadListCtrl::Compare(const CUpDownClient *client1, const CUpDownClient
 			return -1;
 		return client1->GetDiffQR() - client2->GetDiffQR();
 	//Xman end
-
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	case 15:
-		if (client1->SupportsWebCache() && client2->SupportsWebCache() )
-			return CompareLocaleStringNoCase(client1->GetWebCacheName(),client2->GetWebCacheName());
-		else
-			return client1->SupportsWebCache() - client2->SupportsWebCache();
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 
 	default:
 		return 0;
@@ -3892,8 +3814,8 @@ void CDownloadListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 		ScreenToClient(&hti.pt);
 		if (SubItemHitTest(&hti) == -1 || hti.iItem != pGetInfoTip->iItem || hti.iSubItem != 0){
 			// don' show the default label tip for the main item, if the mouse is not over the main item
-			if ((pGetInfoTip->dwFlags & LVGIT_UNFOLDED) == 0 && pGetInfoTip->cchTextMax > 0 && pGetInfoTip->pszText[0] != '\0')
-				pGetInfoTip->pszText[0] = '\0';
+			if ((pGetInfoTip->dwFlags & LVGIT_UNFOLDED) == 0 && pGetInfoTip->cchTextMax > 0 && pGetInfoTip->pszText[0] != _T('\0'))
+				pGetInfoTip->pszText[0] = _T('\0');
 			return;
 		}
 
@@ -3928,7 +3850,7 @@ void CDownloadListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 							askbuffer=_T(": 0\n");
 						else
 							if(client->GetDownloadState()==DS_NONEEDEDPARTS || uJitteredFileReaskTime+client->GetLastAskedTime() <= client->GetNextTCPAskedTime())
-							askbuffer.Format(_T(": %s\n"),CastSecondsToHM((uJitteredFileReaskTime+client->GetLastAskedTime()-::GetTickCount())/1000));
+								askbuffer.Format(_T(": %s\n"),CastSecondsToHM((uJitteredFileReaskTime+client->GetLastAskedTime()-::GetTickCount())/1000));
 							else
 							{
 								askbuffer.Format(_T(": %s (%s)\n"), CastSecondsToHM((uJitteredFileReaskTime+client->GetLastAskedTime()-::GetTickCount())/1000), CastSecondsToHM((client->GetNextTCPAskedTime()-::GetTickCount())/1000));

@@ -29,6 +29,7 @@ protected:
 	int m_iGraphsAvgTime;
 	int m_iStatsUpdate;
 	BOOL m_bModified;
+	bool m_bFillGraphs;
 
 	void ShowInterval();
 	void SetModified(BOOL bChanged = TRUE);
@@ -40,10 +41,10 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
-	afx_msg void OnCbnSelchangeColorselector();
+	afx_msg void OnCbnSelChangeColorSelector();
 	afx_msg LONG OnColorPopupSelChange(UINT lParam, LONG wParam);
 	afx_msg void OnEnChangeCGraphScale() { SetModified(); }
-	afx_msg void OnCbnSelchangeCRatio()	{ SetModified(); }
+	afx_msg void OnCbnSelChangeCRatio()	{ SetModified(); }
 	// ==> Source Graph - Stulle
 	afx_msg void OnBnClickedSrcGraph()	{ SetModified(); }
 	afx_msg void OnEnChangeStatsHL()	{ SetModified(); }
@@ -51,6 +52,7 @@ protected:
 	afx_msg void OnHelp();
 	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
 	afx_msg void OnDestroy();
+	afx_msg void OnBnClickedFillGraphs();
 	
 public:
 	afx_msg void OnBnClickedSmoothAccurateRadio(); //Xman smooth-accurate-graph

@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -70,6 +70,7 @@ BEGIN_MESSAGE_MAP(CMuleListCtrl, CListCtrl)
 	ON_WM_KEYDOWN()
 	ON_WM_ERASEBKGND()
 	ON_WM_SYSCOLORCHANGE()
+	ON_NOTIFY_REFLECT(LVN_GETINFOTIP, OnLvnGetInfoTip)
 	ON_WM_MEASUREITEM() // XP Style Menu [Xanatos] - Stulle
 END_MESSAGE_MAP()
 
@@ -103,6 +104,7 @@ CMuleListCtrl::CMuleListCtrl(PFNLVCOMPARE pfnCompare, DWORD dwParamSort)
     m_iFindColumn = 0;
 	m_hAccel = NULL;
 	m_uIDAccel = IDR_LISTVIEW;
+	m_eUpdateMode = lazy;
 }
 
 CMuleListCtrl::~CMuleListCtrl() {
@@ -122,8 +124,8 @@ void CMuleListCtrl::PreSubclassWindow()
 {
 	SetColors();
 	CListCtrl::PreSubclassWindow();
+	// Win98: Explicitly set to Unicode to receive Unicode notifications.
 	SendMessage(CCM_SETUNICODEFORMAT, TRUE);
-	ModifyStyle(LVS_SINGLESEL|LVS_LIST|LVS_ICON|LVS_SMALLICON,LVS_REPORT|LVS_SINGLESEL|LVS_REPORT);
 	SetExtendedStyle(LVS_EX_HEADERDRAGDROP);
 
 	// If we want to handle the VK_RETURN key, we have to do that via accelerators!
@@ -285,8 +287,8 @@ void CMuleListCtrl::SaveSettings()
 	ini.SerGet(false, piSortHist, i, m_Name + _T("SortHistory"));
 	*/
 	// store additional settings
-	ini.WriteInt( m_Name + _T("TableSortItem"), GetSortItem() );
-	ini.WriteInt( m_Name + _T("TableSortAscending"), GetSortType( m_atSortArrow ));
+	ini.WriteInt(m_Name + _T("TableSortItem"), GetSortItem());
+	ini.WriteInt(m_Name + _T("TableSortAscending"), GetSortType(m_atSortArrow));
 
 	int* piColWidths = new int[m_iColumnsTracked];
 	int* piColHidden = new int[m_iColumnsTracked];
@@ -368,8 +370,8 @@ void CMuleListCtrl::LoadSettings()
 			break;
 	*/
 
-	m_iCurrentSortItem= ini.GetInt( m_Name + _T("TableSortItem"), 0);
-	m_atSortArrow= GetArrowType(ini.GetInt(m_Name +_T("TableSortAscending"), arrowUp));
+	m_iCurrentSortItem = ini.GetInt( m_Name + _T("TableSortItem"), 0);
+	m_atSortArrow = GetArrowType(ini.GetInt(m_Name + _T("TableSortAscending"), 1));
 	if (m_liSortHistory.IsEmpty())
 		m_liSortHistory.AddTail(m_iCurrentSortItem);
 
@@ -391,17 +393,17 @@ void CMuleListCtrl::LoadSettings()
 			SetColumnWidth(i, piColWidths[i]);
 
 		int iOrder = piColOrders[i];
-		if (i>0 && iOrder > 0 && iOrder < m_iColumnsTracked && iOrder != i)
+		if (i > 0 && iOrder > 0 && iOrder < m_iColumnsTracked && iOrder != i)
 			piArray[i] = iOrder;
 		m_aColumns[i].iLocation = piArray[i];
 	}
 	piArray[0] = 0;
 
-	for(int i = 0; i < m_iColumnsTracked; i++)
+	for (int i = 0; i < m_iColumnsTracked; i++)
 		m_aColumns[piArray[i]].iLocation = i;
 	pHeaderCtrl->SetOrderArray(m_iColumnsTracked, piArray);
 
-	for(int i = 1; i < m_iColumnsTracked; i++) {
+	for (int i = 1; i < m_iColumnsTracked; i++) {
 		if (piColHidden[i])
 			HideColumn(i);
 	}
@@ -475,9 +477,9 @@ void CMuleListCtrl::SetColors(LPCTSTR pszLvKey) {
 		theApp.LoadSkinColorAlt(strKey + _T("Hl"), _T("DefLvHl"), crHighlight);
 
 		TCHAR szColor[MAX_PATH];
-		GetPrivateProfileString(_T("Colors"), strKey + _T("BkImg"), _T(""), szColor, ARRSIZE(szColor), pszSkinProfile);
+		GetPrivateProfileString(_T("Colors"), strKey + _T("BkImg"), _T(""), szColor, _countof(szColor), pszSkinProfile);
 		if (szColor[0] == _T('\0'))
-			GetPrivateProfileString(_T("Colors"), _T("DefLvBkImg"), _T(""), szColor, ARRSIZE(szColor), pszSkinProfile);
+			GetPrivateProfileString(_T("Colors"), _T("DefLvBkImg"), _T(""), szColor, _countof(szColor), pszSkinProfile);
 		if (szColor[0] != _T('\0'))
 			strBkImage = szColor;
 	}
@@ -492,7 +494,7 @@ void CMuleListCtrl::SetColors(LPCTSTR pszLvKey) {
 	{
 		// expand any optional available environment strings
 		TCHAR szExpSkinRes[MAX_PATH];
-		if (ExpandEnvironmentStrings(strBkImage, szExpSkinRes, ARRSIZE(szExpSkinRes)) != 0)
+		if (ExpandEnvironmentStrings(strBkImage, szExpSkinRes, _countof(szExpSkinRes)) != 0)
 			strBkImage = szExpSkinRes;
 
 		// create absolute path to icon resource file
@@ -500,15 +502,15 @@ void CMuleListCtrl::SetColors(LPCTSTR pszLvKey) {
 		if (PathIsRelative(strBkImage))
 		{
 			TCHAR szSkinResFolder[MAX_PATH];
-			_tcsncpy(szSkinResFolder, pszSkinProfile, ARRSIZE(szSkinResFolder));
-			szSkinResFolder[ARRSIZE(szSkinResFolder)-1] = _T('\0');
+			_tcsncpy(szSkinResFolder, pszSkinProfile, _countof(szSkinResFolder));
+			szSkinResFolder[_countof(szSkinResFolder)-1] = _T('\0');
 			PathRemoveFileSpec(szSkinResFolder);
-			_tmakepath(szFullResPath, NULL, szSkinResFolder, strBkImage, NULL);
+			_tmakepathlimit(szFullResPath, NULL, szSkinResFolder, strBkImage, NULL);
 		}
 		else
 		{
-			_tcsncpy(szFullResPath, strBkImage, ARRSIZE(szFullResPath));
-			szFullResPath[ARRSIZE(szFullResPath)-1] = _T('\0');
+			_tcsncpy(szFullResPath, strBkImage, _countof(szFullResPath));
+			szFullResPath[_countof(szFullResPath)-1] = _T('\0');
 		}
 
 		CString strUrl(_T("file://"));
@@ -595,24 +597,45 @@ void CMuleListCtrl::SetSortArrow(int iColumn, ArrowType atType) {
 	}
 }
 
-int CMuleListCtrl::MoveItem(int iOldIndex, int iNewIndex) { //move item in list, returns index of new item
-	if(iNewIndex > iOldIndex)
+// move item in list, returns index of new item
+int CMuleListCtrl::MoveItem(int iOldIndex, int iNewIndex)
+{
+	if (iNewIndex > iOldIndex)
 		iNewIndex--;
 
-	//save substrings
-	CSimpleArray<void*> aSubItems;
+	//Xman
+	// netfinity start: Don't move item if new index is the same as the old one
+	if(iNewIndex == iOldIndex)
+		return iNewIndex;
+	// netf end
+
+	// copy item
+	LVITEM lvi;
+	TCHAR szText[256];
+	lvi.mask = LVIF_TEXT | LVIF_STATE | LVIF_PARAM | LVIF_INDENT | LVIF_IMAGE | LVIF_NORECOMPUTE;
+	lvi.stateMask = (UINT)-1;
+	lvi.iItem = iOldIndex;
+	lvi.iSubItem = 0;
+	lvi.pszText = szText;
+	lvi.cchTextMax = _countof(szText);
+	lvi.iIndent = 0;
+	if (!GetItem(&lvi))
+		return -1;
+
+	// copy strings of sub items
+	CSimpleArray<void *> aSubItems;
 	DWORD Style = GetStyle();
-	if((Style & LVS_OWNERDATA) == 0) {
+	if ((Style & LVS_OWNERDATA) == 0) {
 		TCHAR szText[256];
 		LVITEM lvi;
 		lvi.mask = LVIF_TEXT | LVIF_NORECOMPUTE;
 		lvi.iItem = iOldIndex;
-		for(int i = 1; i < m_iColumnsTracked; i++){
+		for (int i = 1; i < m_iColumnsTracked; i++) {
 			lvi.iSubItem = i;
-			lvi.cchTextMax = ARRSIZE(szText);
+			lvi.cchTextMax = _countof(szText);
 			lvi.pszText = szText;
-			void* pstrSubItem = NULL;
-			if (GetItem(&lvi)){
+			void *pstrSubItem = NULL;
+			if (GetItem(&lvi)) {
 				if (lvi.pszText == LPSTR_TEXTCALLBACK)
 					pstrSubItem = LPSTR_TEXTCALLBACK;
 				else
@@ -622,44 +645,31 @@ int CMuleListCtrl::MoveItem(int iOldIndex, int iNewIndex) { //move item in list,
 		}
 	}
 
-	//copy item
-	LVITEM lvi;
-	TCHAR szText[256];
-	lvi.mask = LVIF_TEXT | LVIF_STATE | LVIF_PARAM | LVIF_INDENT | LVIF_IMAGE | LVIF_NORECOMPUTE;
-	lvi.stateMask = (UINT)-1;
-	lvi.iItem = iOldIndex;
-	lvi.iSubItem = 0;
-	lvi.pszText = szText;
-	lvi.cchTextMax = sizeof(szText) / sizeof(szText[0]);
-	lvi.iIndent = 0;
-	if(GetItem(&lvi) == 0)
-		return -1;
-	lvi.iItem = iNewIndex;
-
-	//do the move
+	// do the move
 	SetRedraw(FALSE);
-	//SetItemData(iOldIndex, 0);  //should do this to be safe?
 	DeleteItem(iOldIndex);
+	lvi.iItem = iNewIndex;
 	iNewIndex = InsertItem(&lvi);
-	SetRedraw(TRUE);
 
-	//restore substrings
-	if((Style & LVS_OWNERDATA) == 0) {
-		for(int i = 1; i < m_iColumnsTracked; i++) {
+	// restore strings of sub items
+	if ((Style & LVS_OWNERDATA) == 0) {
+		for (int i = 1; i < m_iColumnsTracked; i++) {
 			LVITEM lvi;
 			lvi.iSubItem = i;
-			void* pstrSubItem = aSubItems[i-1];
-			if (pstrSubItem != NULL){
+			void *pstrSubItem = aSubItems[i-1];
+			if (pstrSubItem != NULL) {
 				if (pstrSubItem == LPSTR_TEXTCALLBACK)
 					lvi.pszText = LPSTR_TEXTCALLBACK;
 				else
-					lvi.pszText = (LPTSTR)((LPCTSTR)*((CString*)pstrSubItem));
+					lvi.pszText = const_cast<LPTSTR>((LPCTSTR)*((CString *)pstrSubItem));
 				DefWindowProc(LVM_SETITEMTEXT, iNewIndex, (LPARAM)&lvi);
 				if (pstrSubItem != LPSTR_TEXTCALLBACK)
-					delete (CString*)pstrSubItem;
+					delete (CString *)pstrSubItem;
 			}
 		}
 	}
+
+	SetRedraw(TRUE);
 
 	return iNewIndex;
 }
@@ -766,7 +776,6 @@ BOOL CMuleListCtrl::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT
 
 				CTitleMenu tmColumnMenu;
 				tmColumnMenu.CreatePopupMenu();
-				tmColumnMenu.AddMenuTitle(NULL); // XP Style Menu [Xanatos] - Stulle
 
 				CHeaderCtrl *pHeaderCtrl = GetHeaderCtrl();
 				int iCount = pHeaderCtrl->GetItemCount();
@@ -775,10 +784,10 @@ BOOL CMuleListCtrl::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT
 					TCHAR text[255];
 					item.pszText = text;
 					item.mask = HDI_TEXT;
-					item.cchTextMax = ARRSIZE(text);
+					item.cchTextMax = _countof(text);
 					pHeaderCtrl->GetItem(iCurrent, &item);
 
-					tmColumnMenu.AppendMenu(MF_STRING | m_aColumns[iCurrent].bHidden ? 0 : MF_CHECKED,
+					tmColumnMenu.AppendMenu(MF_STRING | (m_aColumns[iCurrent].bHidden ? 0 : MF_CHECKED),
 						MLC_IDC_MENU + iCurrent, item.pszText);
 				}
 				tmColumnMenu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
@@ -1149,7 +1158,6 @@ BOOL CMuleListCtrl::OnChildNotify(UINT message, WPARAM wParam, LPARAM lParam, LR
 	}
 
 	ASSERT(pResult == NULL); // no return value expected
-	UNUSED(pResult);         // unused in release builds
 
 	DrawItem((LPDRAWITEMSTRUCT)lParam);
 	return TRUE;
@@ -1163,7 +1171,7 @@ void CMuleListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct) {
 	CMemDC pDC(oDC, &rcItem);
 	CFont *pOldFont = pDC->SelectObject(GetFont());
 
-	int iOffset = pDC->GetTextExtent(_T(" "), 1 ).cx*2;
+	int iOffset = 6;
 	int iItem = lpDrawItemStruct->itemID;
 	CImageList* pImageList;
 	CHeaderCtrl *pHeaderCtrl = GetHeaderCtrl();
@@ -1622,6 +1630,46 @@ CMuleListCtrl::EUpdateMode CMuleListCtrl::SetUpdateMode(EUpdateMode eUpdateMode)
 	EUpdateMode eCurUpdateMode = m_eUpdateMode;
 	m_eUpdateMode = eUpdateMode;
 	return eCurUpdateMode;
+}
+
+void CMuleListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	// NOTE: Using 'Info Tips' for owner drawn list view controls (like almost all instances
+	// of the CMuleListCtrl) gives potentially *wrong* results. One may and will experience
+	// several situations where a tooltip should be shown and none will be shown. This is
+	// because the Windows list view control code does not know anything about what the
+	// owner drawn list view control was actually drawing. So, the Windows list view control
+	// code is just *assuming* that the owner drawn list view control instance is using the
+	// same drawing metrics as the Windows control. Because our owner drawn list view controls
+	// almost always draw an additional icon before the actual item text and because the
+	// Windows control does not know that, the calculations performed by the Windows control
+	// regarding folded/unfolded items are in couple of cases wrong. E.g. because the Windows
+	// control does not know about the additional icon and thus about the reduced space used
+	// for drawing the item text, we may show folded item texts while the Windows control is
+	// still assuming that we show the full text -> thus we will not receive a precomputed
+	// info tip which contains the unfolded item text. Result: We would have to implement
+	// our own info tip processing.
+	LPNMLVGETINFOTIP pGetInfoTip = reinterpret_cast<LPNMLVGETINFOTIP>(pNMHDR);
+	if (pGetInfoTip->iSubItem == 0)
+	{
+		LVHITTESTINFO hti = {0};
+		::GetCursorPos(&hti.pt);
+		ScreenToClient(&hti.pt);
+		if (SubItemHitTest(&hti) == -1 || hti.iItem != pGetInfoTip->iItem || hti.iSubItem != 0)
+		{
+			// Don't show the default label tip for the main item, if the mouse is not over 
+			// the main item.
+			if ((pGetInfoTip->dwFlags & LVGIT_UNFOLDED) == 0 && pGetInfoTip->cchTextMax > 0 && pGetInfoTip->pszText[0] != _T('\0'))
+			{
+				// For any reason this does not work with Win98 (COMCTL32 v5.8). Even when 
+				// the info tip text is explicitly set to empty, the list view control may 
+				// display the unfolded text for the 1st item. It though works for WinXP.
+				pGetInfoTip->pszText[0] = _T('\0');
+			}
+			return;
+		}
+	}
+	*pResult = 0;
 }
 
 // ==> XP Style Menu [Xanatos] - Stulle

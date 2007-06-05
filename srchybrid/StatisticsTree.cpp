@@ -128,7 +128,7 @@ void CStatisticsTree::DoMenu(CPoint doWhere, UINT nFlags)
 	CString		myBuffer;
 	int			myFlags;
 
-	myBuffer.Format(_T("%sstatbkup.ini"),thePrefs.GetConfigDir());
+	myBuffer.Format(_T("%sstatbkup.ini"),thePrefs.GetMuleDirectory(EMULE_CONFIGDIR));
 	if (!findBackUp.FindFile(myBuffer)) myFlags = MF_GRAYED;
 		else myFlags = MF_STRING;
 
@@ -596,10 +596,13 @@ void CStatisticsTree::ExportHTML()
 {
 	CFile htmlFile;
 
-	TCHAR szDir[MAX_PATH];
-	GetCurrentDirectory(MAX_PATH, szDir);
+	// Save/Restore the current directory
+	TCHAR szCurDir[MAX_PATH];
+	DWORD dwCurDirLen = GetCurrentDirectory(_countof(szCurDir), szCurDir);
+	if (dwCurDirLen == 0 || dwCurDirLen >= _countof(szCurDir))
+		szCurDir[0] = _T('\0');
 
-	CFileDialog saveAsDlg (false, _T("html"), _T("eMule Statistics.html"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_EXPLORER, _T("HTML Files (*.html)|*.html|All Files (*.*)|*.*||"), this, 0);
+	CFileDialog saveAsDlg(false, _T("html"), _T("eMule Statistics.html"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_EXPLORER, _T("HTML Files (*.html)|*.html|All Files (*.*)|*.*||"), this, 0);
 	if (saveAsDlg.DoModal() == IDOK)
 	{
 		CString		strHTML;
@@ -658,14 +661,14 @@ void CStatisticsTree::ExportHTML()
 			_T("stats_hidden.gif"), _T("stats_space.gif"), _T("stats_visible.gif")
 		};
 		CString		strDst = saveAsDlg.GetPathName().Left(saveAsDlg.GetPathName().GetLength() - saveAsDlg.GetFileName().GetLength());// EC - what if directory name == filename? this should fix this
-		CString		strSrc = thePrefs.GetAppDir();
+		CString		strSrc = thePrefs.GetMuleDirectory(EMULE_WEBSERVERDIR);
 
-		strSrc += _T("\\WebServer\\");
 		for (unsigned ui = 0; ui < ARRSIZE(s_apcFileNames); ui++)
 			::CopyFile(strSrc + s_apcFileNames[ui], strDst + s_apcFileNames[ui], false);
 	}
 
-	SetCurrentDirectory(szDir);
+	if (szCurDir[0] != _T('\0'))
+		VERIFY( SetCurrentDirectory(szCurDir) );
 }
 
 // Expand all the tree sections.  Recursive.
@@ -795,7 +798,6 @@ void CStatisticsTree::DeleteChildItems (HTREEITEM parentItem)
 	}
 }
 //Xman end
-
 // ==> XP Style Menu [Xanatos] - Stulle
 void CStatisticsTree::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct) 
 {

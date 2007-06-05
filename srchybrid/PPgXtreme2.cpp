@@ -334,12 +334,12 @@ void CPPgXtreme2::OnBnClickedDlpreload()
 //Xman Xtreme Links
 void CPPgXtreme2::OnBnClickedHplink()
 {
-	ShellExecute(NULL, NULL, MOD_HPLINK, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
+	ShellExecute(NULL, NULL, MOD_HPLINK, NULL, thePrefs.GetMuleDirectory(EMULE_EXECUTEABLEDIR), SW_SHOWDEFAULT);
 }
 
 void CPPgXtreme2::OnBnClickedForumlink()
 {
-	ShellExecute(NULL, NULL, MOD_FORUMLINK, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
+	ShellExecute(NULL, NULL, MOD_FORUMLINK, NULL, thePrefs.GetMuleDirectory(EMULE_EXECUTEABLEDIR), SW_SHOWDEFAULT);
 }
 
 void CPPgXtreme2::OnBnClickedVotelink()
@@ -355,7 +355,7 @@ void CPPgXtreme2::OnBnClickedVotelink()
 	theApp.downloadqueue->PrintStatistic();
 	AddLogLine(false,_T("############################################"));
 #else
-	ShellExecute(NULL, NULL, MOD_VOTELINK, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
+	ShellExecute(NULL, NULL, MOD_VOTELINK, NULL, thePrefs.GetMuleDirectory(EMULE_EXECUTEABLEDIR), SW_SHOWDEFAULT);
 #endif
 }
 */

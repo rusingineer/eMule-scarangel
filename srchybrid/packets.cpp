@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -205,25 +205,10 @@ void Packet::PackPacket(){
 		delete[] output;
 		return;
 	}
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	/*
 	if( prot == OP_KADEMLIAHEADER )
 		prot = OP_KADEMLIAPACKEDPROT;
 	else
 		prot = OP_PACKEDPROT;
-	*/
-	switch (prot)
-	{
-		case OP_KADEMLIAHEADER:
-		prot = OP_KADEMLIAPACKEDPROT;
-			break;
-		case OP_WEBCACHEPROT:
-			prot = OP_WEBCACHEPACKEDPROT;
-			break;
-		default:
-		prot = OP_PACKEDPROT;
-	}
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	memcpy(pBuffer,output,newsize);
 	size = newsize;
 	delete[] output;
@@ -231,47 +216,33 @@ void Packet::PackPacket(){
 }
 
 bool Packet::UnPackPacket(UINT uMaxDecompressedSize){
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-	/*
 	ASSERT ( prot == OP_PACKEDPROT || prot == OP_KADEMLIAPACKEDPROT); 
-	*/
-	ASSERT ( prot == OP_PACKEDPROT
-		|| prot == OP_KADEMLIAPACKEDPROT
-		|| prot == OP_WEBCACHEPACKEDPROT); 
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 	uint32 nNewSize = size*10+300;
 	if (nNewSize > uMaxDecompressedSize){
 		//ASSERT(0);
 		nNewSize = uMaxDecompressedSize;
 	}
-	BYTE* unpack = new BYTE[nNewSize];
-	uLongf unpackedsize = nNewSize;
-	UINT result = uncompress(unpack,&unpackedsize,(BYTE*)pBuffer,size);
+	BYTE* unpack = NULL;
+	uLongf unpackedsize = 0;
+	UINT result = 0;
+	do {
+		delete[] unpack;
+		unpack = new BYTE[nNewSize];
+		unpackedsize = nNewSize;
+		result = uncompress(unpack,&unpackedsize,(BYTE*)pBuffer,size);
+		nNewSize *= 2; // size for the next try if needed
+	} while (result == Z_BUF_ERROR && nNewSize < uMaxDecompressedSize);
+	
 	if (result == Z_OK){
 		ASSERT ( completebuffer == NULL );
 		ASSERT ( pBuffer != NULL );
 		size = unpackedsize;
 		delete[] pBuffer;
 		pBuffer = (char*)unpack;
-		// ==> WebCache [WC team/MorphXT] - Stulle/Max
-		/*
 		if( prot == OP_KADEMLIAPACKEDPROT )
 			prot = OP_KADEMLIAHEADER;
 		else
 			prot =  OP_EMULEPROT;
-		*/
-		switch (prot)
-		{
-			case OP_KADEMLIAPACKEDPROT:
-				prot = OP_KADEMLIAHEADER;
-				break;
-			case OP_WEBCACHEPACKEDPROT:
-				prot = OP_WEBCACHEPROT;
-				break;
-			default:
-			prot =  OP_EMULEPROT;
-		}
-		// <== WebCache [WC team/MorphXT] - Stulle/Max
 		return true;
 	}
 	delete[] unpack;

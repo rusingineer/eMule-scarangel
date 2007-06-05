@@ -32,7 +32,7 @@ static char THIS_FILE[] = __FILE__;
 #define	SPLITTER_RANGE_MIN		100
 #define	SPLITTER_RANGE_MAX		350
 
-#define	SPLITTER_MARGIN			1
+#define	SPLITTER_MARGIN			0
 #define	SPLITTER_WIDTH			4
 
 
@@ -41,12 +41,12 @@ static char THIS_FILE[] = __FILE__;
 IMPLEMENT_DYNAMIC(CSharedFilesWnd, CDialog)
 
 BEGIN_MESSAGE_MAP(CSharedFilesWnd, CResizableDialog)
-	ON_BN_CLICKED(IDC_RELOADSHAREDFILES, OnBnClickedReloadsharedfiles)
-	ON_NOTIFY(LVN_ITEMACTIVATE, IDC_SFLIST, OnLvnItemActivateSflist)
-	ON_NOTIFY(NM_CLICK, IDC_SFLIST, OnNMClickSflist)
+	ON_BN_CLICKED(IDC_RELOADSHAREDFILES, OnBnClickedReloadSharedFiles)
+	ON_NOTIFY(LVN_ITEMACTIVATE, IDC_SFLIST, OnLvnItemActivateSharedFiles)
+	ON_NOTIFY(NM_CLICK, IDC_SFLIST, OnNMClickSharedFiles)
 	ON_WM_SYSCOLORCHANGE()
-	ON_STN_DBLCLK(IDC_FILES_ICO, OnStnDblclickFilesIco)
-	ON_NOTIFY(TVN_SELCHANGED, IDC_SHAREDDIRSTREE, OnTvnSelchangedShareddirstree)
+	ON_STN_DBLCLK(IDC_FILES_ICO, OnStnDblClickFilesIco)
+	ON_NOTIFY(TVN_SELCHANGED, IDC_SHAREDDIRSTREE, OnTvnSelChangedSharedDirsTree)
 	ON_WM_SIZE()
 	//Xman [MoNKi: -Downloaded History-]
 	ON_NOTIFY(LVN_ITEMACTIVATE, IDC_DOWNHISTORYLIST, OnLvnItemActivateHistorylist)
@@ -257,18 +257,18 @@ void CSharedFilesWnd::Reload()
 	ShowSelectedFilesSummary();
 }
 
-void CSharedFilesWnd::OnStnDblclickFilesIco()
+void CSharedFilesWnd::OnStnDblClickFilesIco()
 {
 	theApp.emuledlg->ShowPreferences(IDD_PPG_DIRECTORIES);
 }
 
-void CSharedFilesWnd::OnBnClickedReloadsharedfiles()
+void CSharedFilesWnd::OnBnClickedReloadSharedFiles()
 {
 	CWaitCursor curWait;
 	Reload();
 }
 
-void CSharedFilesWnd::OnLvnItemActivateSflist(NMHDR* /*pNMHDR*/, LRESULT* /*pResult*/)
+void CSharedFilesWnd::OnLvnItemActivateSharedFiles(NMHDR* /*pNMHDR*/, LRESULT* /*pResult*/)
 {
 	ShowSelectedFilesSummary();
 }
@@ -382,9 +382,9 @@ void CSharedFilesWnd::ShowSelectedFilesSummary(bool bHistory /*=false*/) //Xman 
 	}
 }
 
-void CSharedFilesWnd::OnNMClickSflist(NMHDR *pNMHDR, LRESULT *pResult)
+void CSharedFilesWnd::OnNMClickSharedFiles(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	OnLvnItemActivateSflist(pNMHDR,pResult);
+	OnLvnItemActivateSharedFiles(pNMHDR, pResult);
 	*pResult = 0;
 }
 
@@ -400,9 +400,9 @@ BOOL CSharedFilesWnd::PreTranslateMessage(MSG* pMsg)
 	{
 
 	   if (pMsg->hwnd == GetDlgItem(IDC_SFLIST)->m_hWnd)
-			OnLvnItemActivateSflist(0, 0);
+			OnLvnItemActivateSharedFiles(0, 0);
    }
-	else if (pMsg->message == WM_MBUTTONUP)
+	else if (!thePrefs.GetStraightWindowStyles() && pMsg->message == WM_MBUTTONUP)
 	{
 		POINT point;
 		::GetCursorPos(&point);
@@ -495,7 +495,7 @@ void CSharedFilesWnd::Localize()
 	*/
 }
 
-void CSharedFilesWnd::OnTvnSelchangedShareddirstree(NMHDR* /*pNMHDR*/, LRESULT* pResult)
+void CSharedFilesWnd::OnTvnSelChangedSharedDirsTree(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	//Xman [MoNKi: -Downloaded History-]
 	if(m_ctlSharedDirTree.GetSelectedFilter() == m_ctlSharedDirTree.pHistory)

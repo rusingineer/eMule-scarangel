@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -180,16 +180,17 @@ BOOL CArchivePreviewDlg::OnInitDialog()
 	AddAnchor(IDC_INFO_STATUS, TOP_LEFT, TOP_RIGHT);
 	AddAnchor(IDC_ARCHPROGRESS, BOTTOM_LEFT, BOTTOM_RIGHT);
 
+	// Win98: Explicitly set to Unicode to receive Unicode notifications.
 	m_ContentList.SendMessage(CCM_SETUNICODEFORMAT, TRUE);
 	// To support full sorting of the archive entries list we'd need a seperate list which
 	// is holding the unified archive entries for all different supported archive formats so
 	// that the ListView's sortproc can get valid 'lParam' values which are pointing to those
 	// entries. This could be done, but for now we just let the default ListView sort
 	// functionality sort the archive entries by filename (the content of the first column).
-	m_ContentList.ModifyStyle(0, LVS_SORTASCENDING);
+	ASSERT( m_ContentList.GetStyle() & LVS_SORTASCENDING );
 	ASSERT( m_ContentList.GetStyle() & LVS_SHAREIMAGELISTS );
 	m_ContentList.SendMessage(LVM_SETIMAGELIST, LVSIL_SMALL, (LPARAM)theApp.GetSystemImageList());
-	m_ContentList.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+	m_ContentList.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_INFOTIP);
 	m_ContentList.EnableHdrCtrlSortBitmaps();
 	m_ContentList.ReadColumnStats(_countof(_aColumns), _aColumns);
 	m_ContentList.CreateColumns(_countof(_aColumns), _aColumns);
@@ -338,7 +339,7 @@ int CArchivePreviewDlg::ShowAceResults(int succ, archiveScannerThreadParams_s* t
 
 			// file/folder name
 			temp = CString(block->FNAME);
-			int iSystemImage = theApp.GetFileTypeSystemImageIdx(temp, temp.GetLength());
+			int iSystemImage = bIsDirectory ? theApp.GetFileTypeSystemImageIdx(_T("\\"), 1) : theApp.GetFileTypeSystemImageIdx(temp, temp.GetLength());
 			iItem = m_ContentList.InsertItem(LVIF_TEXT | LVIF_PARAM | (iSystemImage > 0 ? LVIF_IMAGE : 0),
 											 INT_MAX, temp, 0, 0, iSystemImage, 
 											 !bCompleteEntry ? 0x00000001 : 0x00000000);

@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -70,6 +70,7 @@ CUploadListCtrl::CUploadListCtrl()
 void CUploadListCtrl::Init()
 {
 	SetName(_T("UploadListCtrl"));
+
 	CImageList ilDummyImageList; //dummy list for getting the proper height of listview entries
 	ilDummyImageList.Create(1, theApp.GetSmallSytemIconSize().cy,theApp.m_iDfltImageListColorFlags|ILC_MASK, 1, 1); 
 	SetImageList(&ilDummyImageList, LVSIL_SMALL);
@@ -348,7 +349,6 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 		dc.SetTextColor(RGB(255,0,0));
 	//Xman end
 	*/
-	theApp.emuledlg->transferwnd->SetBackgroundColor(style_b_uploadlist);
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
 	int iClientStyle = client->GetClientStyle(true,false,true,true);
 	StylesStruct style;
@@ -428,7 +428,7 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					image = 4;
 					*/
 					if(client->GetModClient() == MOD_NONE)
-						image = 4;
+					image = 4;
 					else
 						image = (uint8)(client->GetModClient() + 19);
 					// <== Mod Icons - Stulle
@@ -568,37 +568,37 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					cur_rec.top++;
 					client->DrawUpStatusBar(dc, &cur_rec, false, thePrefs.UseFlatBar());
 					//Xman client percentage (font idea by morph)
-						CString buffer;
+					CString buffer;
 					// ==> Show Client Percentage optional [Stulle] - Stulle
 					/*
 					if (thePrefs.GetUseDwlPercentage())
 					*/
 					if (thePrefs.GetShowClientPercentage())
 					// <== Show Client Percentage optional [Stulle] - Stulle
-						{
+					{
 						if(client->GetHisCompletedPartsPercent_UP() >=0)
-							{
-								COLORREF oldclr = dc.SetTextColor(RGB(0,0,0));
-								int iOMode = dc.SetBkMode(TRANSPARENT);
+						{
+							COLORREF oldclr = dc.SetTextColor(RGB(0,0,0));
+							int iOMode = dc.SetBkMode(TRANSPARENT);
 							buffer.Format(_T("%i%%"), client->GetHisCompletedPartsPercent_UP());
 							CFont *pOldFont = dc.SelectObject(&m_fontBoldSmaller);
 #define	DrawClientPercentText	dc.DrawText(buffer, buffer.GetLength(),&cur_rec, ((DLC_DT_TEXT | DT_RIGHT) & ~DT_LEFT) | DT_CENTER)
-								cur_rec.top-=1;cur_rec.bottom-=1;
-								DrawClientPercentText;cur_rec.left+=1;cur_rec.right+=1;
-								DrawClientPercentText;cur_rec.left+=1;cur_rec.right+=1;
-								DrawClientPercentText;cur_rec.top+=1;cur_rec.bottom+=1;
-								DrawClientPercentText;cur_rec.top+=1;cur_rec.bottom+=1;
-								DrawClientPercentText;cur_rec.left-=1;cur_rec.right-=1;
-								DrawClientPercentText;cur_rec.left-=1;cur_rec.right-=1;
-								DrawClientPercentText;cur_rec.top-=1;cur_rec.bottom-=1;
-								DrawClientPercentText;cur_rec.left++;cur_rec.right++;
-								dc.SetTextColor(RGB(255,255,255));
-								DrawClientPercentText;
-								dc.SelectObject(pOldFont);
-								dc.SetBkMode(iOMode);
-								dc.SetTextColor(oldclr);
-							}
+							cur_rec.top-=1;cur_rec.bottom-=1;
+							DrawClientPercentText;cur_rec.left+=1;cur_rec.right+=1;
+							DrawClientPercentText;cur_rec.left+=1;cur_rec.right+=1;
+							DrawClientPercentText;cur_rec.top+=1;cur_rec.bottom+=1;
+							DrawClientPercentText;cur_rec.top+=1;cur_rec.bottom+=1;
+							DrawClientPercentText;cur_rec.left-=1;cur_rec.right-=1;
+							DrawClientPercentText;cur_rec.left-=1;cur_rec.right-=1;
+							DrawClientPercentText;cur_rec.top-=1;cur_rec.bottom-=1;
+							DrawClientPercentText;cur_rec.left++;cur_rec.right++;
+							dc.SetTextColor(RGB(255,255,255));
+							DrawClientPercentText;
+							dc.SelectObject(pOldFont);
+							dc.SetBkMode(iOMode);
+							dc.SetTextColor(oldclr);
 						}
+					}
 					//Xman end
 
 					cur_rec.bottom++;
@@ -1026,8 +1026,8 @@ void CUploadListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 		ScreenToClient(&hti.pt);
 		if (SubItemHitTest(&hti) == -1 || hti.iItem != pGetInfoTip->iItem || hti.iSubItem != 0){
 			// don' show the default label tip for the main item, if the mouse is not over the main item
-			if ((pGetInfoTip->dwFlags & LVGIT_UNFOLDED) == 0 && pGetInfoTip->cchTextMax > 0 && pGetInfoTip->pszText[0] != '\0')
-				pGetInfoTip->pszText[0] = '\0';
+			if ((pGetInfoTip->dwFlags & LVGIT_UNFOLDED) == 0 && pGetInfoTip->cchTextMax > 0 && pGetInfoTip->pszText[0] != _T('\0'))
+				pGetInfoTip->pszText[0] = _T('\0');
 			return;
 		}
 

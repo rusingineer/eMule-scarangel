@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -88,7 +88,7 @@ void CIPFilter::AddIPTemporary(uint32 addip)
 
 CString CIPFilter::GetDefaultFilePath() const
 {
-	return thePrefs.GetConfigDir() + DFLT_IPFILTER_FILENAME;
+	return thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + DFLT_IPFILTER_FILENAME;
 }
 
 int CIPFilter::LoadFromDefaultFile(bool bShowResponse)
@@ -125,7 +125,7 @@ int CIPFilter::AddFromFile(LPCTSTR pszFilePath, bool bShowResponse)
 			eFileType = FilterDat;
 		else
 		{
-			_setmode(fileno(readFile), _O_BINARY);
+			VERIFY( _setmode(fileno(readFile), _O_BINARY) != -1 );
 			static const BYTE _aucP2Bheader[] = "\xFF\xFF\xFF\xFFP2B";
 			BYTE aucHeader[sizeof _aucP2Bheader - 1];
 			if (fread(aucHeader, sizeof aucHeader, 1, readFile) == 1)
@@ -134,8 +134,8 @@ int CIPFilter::AddFromFile(LPCTSTR pszFilePath, bool bShowResponse)
 					eFileType = PeerGuardian2;
 				else
 				{
-					fseek(readFile, 0, SEEK_SET);
-					_setmode(fileno(readFile), _O_TEXT); // ugly!
+					(void)fseek(readFile, 0, SEEK_SET);
+					VERIFY( _setmode(fileno(readFile), _O_TEXT) != -1 ); // ugly!
 				}
 			}
 		}
@@ -339,7 +339,7 @@ int CIPFilter::AddFromFile(LPCTSTR pszFilePath, bool bShowResponse)
 
 void CIPFilter::SaveToDefaultFile()
 {
-	CString strFilePath = thePrefs.GetConfigDir() + DFLT_IPFILTER_FILENAME;
+	CString strFilePath = thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + DFLT_IPFILTER_FILENAME;
 	FILE* fp = _tfsopen(strFilePath, _T("wt"), _SH_DENYWR);
 	if (fp != NULL)
 	{
@@ -487,7 +487,7 @@ void CIPFilter::Process()
 				//Xman Code Fix: deleting the description-String can throw an exception
 				try 
 				{
-				delete m_iplist[i];
+					delete m_iplist[i];
 				}
 				catch(...)
 				{
@@ -571,7 +571,7 @@ bool CIPFilter::RemoveIPFilter(const SIPFilter* pFilter)
 			//Xman Code Fix: deleting the description-String can throw an exception
 			try 
 			{
-			delete m_iplist[i];
+				delete m_iplist[i];
 			}
 			catch(...)
 			{
@@ -592,7 +592,7 @@ void CIPFilter::UpdateIPFilterURL()
 	if (!url.IsEmpty())
 	{
 		CString strTempFilePath;
-		_tmakepath(strTempFilePath.GetBuffer(MAX_PATH), NULL, thePrefs.GetConfigDir(), DFLT_IPFILTER_FILENAME, _T("tmp"));
+		_tmakepathlimit(strTempFilePath.GetBuffer(MAX_PATH), NULL, thePrefs.GetMuleDirectory(EMULE_CONFIGDIR), DFLT_IPFILTER_FILENAME, _T("tmp"));
 		strTempFilePath.ReleaseBuffer();
 
 		CHttpDownloadDlg dlgDownload;
@@ -608,7 +608,7 @@ void CIPFilter::UpdateIPFilterURL()
 
 		if (dlgDownload.DoModal() != IDOK)
 		{
-			_tremove(strTempFilePath);
+			(void)_tremove(strTempFilePath);
 			CString strError = GetResString(IDS_DWLIPFILTERFAILED);
 			if (!dlgDownload.GetError().IsEmpty())
 				strError += _T("\r\n\r\n") + dlgDownload.GetError();
@@ -634,7 +634,7 @@ void CIPFilter::UpdateIPFilterURL()
 			if (zfile)
 			{
 				CString strTempUnzipFilePath;
-				_tmakepath(strTempUnzipFilePath.GetBuffer(_MAX_PATH), NULL, thePrefs.GetConfigDir(), DFLT_IPFILTER_FILENAME, _T(".unzip.tmp"));
+				_tmakepathlimit(strTempUnzipFilePath.GetBuffer(_MAX_PATH), NULL, thePrefs.GetMuleDirectory(EMULE_CONFIGDIR), DFLT_IPFILTER_FILENAME, _T(".unzip.tmp"));
 				strTempUnzipFilePath.ReleaseBuffer();
 
 				if (zfile->Extract(strTempUnzipFilePath))
@@ -677,7 +677,7 @@ void CIPFilter::UpdateIPFilterURL()
 					&& (strFile.CompareNoCase(_T("ipfilter.dat")) == 0 || strFile.CompareNoCase(_T("guarding.p2p")) == 0))
 				{
 					CString strTempUnzipFilePath;
-					_tmakepath(strTempUnzipFilePath.GetBuffer(MAX_PATH), NULL, thePrefs.GetConfigDir(), DFLT_IPFILTER_FILENAME, _T(".unzip.tmp"));
+					_tmakepathlimit(strTempUnzipFilePath.GetBuffer(MAX_PATH), NULL, thePrefs.GetMuleDirectory(EMULE_CONFIGDIR), DFLT_IPFILTER_FILENAME, _T(".unzip.tmp"));
 					strTempUnzipFilePath.ReleaseBuffer();
 					if (rar.Extract(strTempUnzipFilePath))
 					{
@@ -722,7 +722,7 @@ void CIPFilter::UpdateIPFilterURL()
 				bIsArchiveFile = true;
 
 				CString strTempUnzipFilePath;
-				_tmakepath(strTempUnzipFilePath.GetBuffer(_MAX_PATH), NULL, thePrefs.GetConfigDir(), DFLT_IPFILTER_FILENAME, _T(".unzip.tmp"));
+				_tmakepathlimit(strTempUnzipFilePath.GetBuffer(_MAX_PATH), NULL, thePrefs.GetMuleDirectory(EMULE_CONFIGDIR), DFLT_IPFILTER_FILENAME, _T(".unzip.tmp"));
 				strTempUnzipFilePath.ReleaseBuffer();
 
 				// add filename and extension of uncompressed file to temporary file
@@ -785,8 +785,8 @@ void CIPFilter::UpdateIPFilterURL()
 
 			if (bValidIPFilterFile)
 			{
-				_tremove(theApp.ipfilter->GetDefaultFilePath());
-				_trename(strTempFilePath, theApp.ipfilter->GetDefaultFilePath());
+				(void)_tremove(theApp.ipfilter->GetDefaultFilePath());
+				VERIFY( _trename(strTempFilePath, theApp.ipfilter->GetDefaultFilePath()) == 0 );
 				bHaveNewFilterFile = true;
 			}
 			else
@@ -828,7 +828,6 @@ void CIPFilter::UpdateIPFilterURL()
 		memcpy(&thePrefs.m_IPfilterVersion, &SysTime, sizeof SysTime); 
 }
 //Xman end
-
 // ==> Static IP Filter [Stulle] - Stulle
 void CIPFilter::AddFromFile2(LPCTSTR pszFilePath)
 {
@@ -1053,6 +1052,6 @@ void CIPFilter::AddFromFile2(LPCTSTR pszFilePath)
 
 CString CIPFilter::GetDefaultStaticFilePath() const
 {
-	return thePrefs.GetConfigDir() + DFLT_STATIC_IPFILTER_FILENAME;
+	return thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + DFLT_STATIC_IPFILTER_FILENAME;
 }
 // <== Static IP Filter [Stulle] - Stulle

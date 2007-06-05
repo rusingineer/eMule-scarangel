@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -28,7 +28,9 @@ struct UDPPack
 	uint16 nPort;
 	uint32 dwTime;
 	bool	bEncrypt;
-	uchar	achTargetClientHash[16];
+	bool	bKad;
+	uint16  nReceiverVerifyKey;
+	uchar	pachTargetClientHashORKadID[16];
 	//uint16 nPriority; We could add a priority system here to force some packets.
 };
 #pragma pack()
@@ -44,7 +46,7 @@ public:
 	bool	Create();
 	bool	Rebind();
 	uint16	GetConnectedPort()			{ return m_port; }
-	bool	SendPacket(Packet* packet, uint32 dwIP, uint16 nPort, bool bEncrypt, const uchar* pachTargetClientHash);
+	bool	SendPacket(Packet* packet, uint32 dwIP, uint16 nPort, bool bEncrypt, const uchar* pachTargetClientHashORKadID, bool bKad, uint16 nReceiverVerifyKey);
     SocketSentBytes  SendControlData(uint32 maxNumberOfBytesToSend, uint32 minFragSize); // ZZ:UploadBandWithThrottler (UDP)
 
 protected:
@@ -62,9 +64,4 @@ private:
 	CTypedPtrList<CPtrList, UDPPack*> controlpacket_queue;
 
     CCriticalSection sendLocker; // ZZ:UploadBandWithThrottler (UDP)
-
-	// ==> WebCache [WC team/MorphXT] - Stulle/Max
-protected:
-	bool	ProcessWebCachePacket(const BYTE* packet, uint32 size, uint8 opcode, uint32 ip, uint16 port); //JP WEBCACHE
-	// <== WebCache [WC team/MorphXT] - Stulle/Max
 };

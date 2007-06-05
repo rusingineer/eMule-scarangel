@@ -171,6 +171,7 @@ bool CIP2Country::LoadFromFile(){
 				if (*szbuffer != _T('"'))
 					continue;
 				szIPStart=++szbuffer;
+				#pragma warning(disable:4555) //Xman
 				for ( szbuffer ; *szbuffer != 0 && *szbuffer != '"'; szbuffer++ );
 				*szbuffer = '\0';
 				szIPEnd=szbuffer+=3;
@@ -194,6 +195,7 @@ bool CIP2Country::LoadFromFile(){
 				szbuffer=szIPStart-1;
 				++iCount;
 				#pragma warning(default:4245)
+				#pragma warning(default:4555)
 				AddIPRange((uint32)_tstoi(szIPStart),(uint32)_tstoi(szIPEnd), sz2L, sz3L, szCountry);
 			}
 			fclose(readFile);
@@ -265,13 +267,13 @@ bool CIP2Country::LoadCountryFlagLib(){
 	try{
 
 		//detect windows version
-		if(thePrefs.GetWindowsVersion() == _WINVER_XP_){
+		if(thePrefs.GetWindowsVersion() == _WINVER_XP_ || thePrefs.GetWindowsVersion() == _WINVER_2003_ || thePrefs.GetWindowsVersion() == _WINVER_VISTA_){
 			//it's XP, we can use beautiful 32bits flags with alpha channel :)
-			ip2countryCountryFlag = thePrefs.GetConfigDir()+_T("countryflag32.dll");
+			ip2countryCountryFlag = thePrefs.GetMuleDirectory(EMULE_CONFIGDIR)+_T("countryflag32.dll");
 		}
 		else{
 			//oh~ it's not XP, but we still can load the 24bits flags
-			ip2countryCountryFlag = thePrefs.GetConfigDir()+_T("countryflag.dll");
+			ip2countryCountryFlag = thePrefs.GetMuleDirectory(EMULE_CONFIGDIR)+_T("countryflag.dll");
 		}
 
 		_hCountryFlagDll = LoadLibrary(ip2countryCountryFlag); 
@@ -653,5 +655,5 @@ void CIP2Country::UpdateIP2CountryURL()
 */
 CString CIP2Country::GetDefaultFilePath() const
 {
-	return thePrefs.GetConfigDir() + DFLT_IP2COUNTRY_FILENAME;
+	return thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + DFLT_IP2COUNTRY_FILENAME;
 }

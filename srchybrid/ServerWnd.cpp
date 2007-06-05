@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -35,6 +35,7 @@
 #include "NetworkInfoDlg.h"
 #include "Log.h"
 #include "UserMsgs.h"
+#include "opcodes.h" //Xman ModID
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -42,8 +43,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-#define	SVWND_SPLITTER_YOFF		10
-#define	SVWND_SPLITTER_HEIGHT	5
+#define	SVWND_SPLITTER_YOFF		6
+#define	SVWND_SPLITTER_HEIGHT	4
 
 #define	SERVERMET_STRINGS_PROFILE	_T("AC_ServerMetURLs.dat")
 #define SZ_DEBUG_LOG_TITLE			_T("Verbose")
@@ -79,7 +80,6 @@ CServerWnd::CServerWnd(CWnd* pParent /*=NULL*/)
 	debuglog = new CHTRichEditCtrl;
 	leecherlog = new CHTRichEditCtrl; //Xman Anti-Leecher-Log
 	m_pacServerMetURL=NULL;
-	m_uLangID = MAKELANGID(LANG_ENGLISH,SUBLANG_DEFAULT);
 	icon_srvlist = NULL;
 	memset(&m_cfDef, 0, sizeof m_cfDef);
 	memset(&m_cfBold, 0, sizeof m_cfBold);
@@ -114,6 +114,7 @@ BOOL CServerWnd::OnInitDialog()
 	CResizableDialog::OnInitDialog();
 
 	// using ES_NOHIDESEL is actually not needed, but it helps to get around a tricky window update problem!
+	// If that style is not specified there are troubles with right clicking into the control for the very first time!?
 #define	LOG_PANE_RICHEDIT_STYLES WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_HSCROLL | ES_MULTILINE | ES_READONLY | ES_NOHIDESEL
 	CRect rect;
 
@@ -310,7 +311,7 @@ BOOL CServerWnd::OnInitDialog()
 		m_pacServerMetURL = new CCustomAutoComplete();
 		m_pacServerMetURL->AddRef();
 		if (m_pacServerMetURL->Bind(::GetDlgItem(m_hWnd, IDC_SERVERMETURL), ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST | ACO_FILTERPREFIXES ))
-			m_pacServerMetURL->LoadList(thePrefs.GetConfigDir() + SERVERMET_STRINGS_PROFILE);
+			m_pacServerMetURL->LoadList(thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + SERVERMET_STRINGS_PROFILE);
 		if (theApp.m_fontSymbol.m_hObject){
 			GetDlgItem(IDC_DD)->SetFont(&theApp.m_fontSymbol);
 			GetDlgItem(IDC_DD)->SetWindowText(_T("6")); // show a down-arrow
@@ -328,6 +329,7 @@ BOOL CServerWnd::OnInitDialog()
 	rcSpl.top = 55;
 	rcSpl.bottom = rcSpl.top + SVWND_SPLITTER_HEIGHT;
 	m_wndSplitter.Create(WS_CHILD | WS_VISIBLE, rcSpl, this, IDC_SPLITTER_SERVER);
+	m_wndSplitter.SetDrawBorder(true);
 	InitSplitter();
 
 	return true;
@@ -357,7 +359,7 @@ bool CServerWnd::UpdateServerMetFromURL(CString strURL)
 		m_pacServerMetURL->AddItem(strURL, 0);
 
 	CString strTempFilename;
-	strTempFilename.Format(_T("%stemp-%d-server.met"), thePrefs.GetConfigDir(), ::GetTickCount());
+	strTempFilename.Format(_T("%stemp-%d-server.met"), thePrefs.GetMuleDirectory(EMULE_CONFIGDIR), ::GetTickCount());
 
 	// try to download server.met
 	Log(GetResString(IDS_DOWNLOADING_SERVERMET_FROM), strURL);
@@ -374,7 +376,7 @@ bool CServerWnd::UpdateServerMetFromURL(CString strURL)
 	serverlistctrl.Hide();
 	serverlistctrl.AddServerMetToList(strTempFilename);
 	serverlistctrl.Visable();
-	_tremove(strTempFilename);
+	(void)_tremove(strTempFilename);
 	return true;
 }
 
@@ -415,8 +417,6 @@ void CServerWnd::Localize()
 {
 	serverlistctrl.Localize();
 
-	if (thePrefs.GetLanguageID() != m_uLangID){
-		m_uLangID = thePrefs.GetLanguageID();
 	    GetDlgItem(IDC_SERVLIST_TEXT)->SetWindowText(GetResString(IDS_SV_SERVERLIST));
 		// ==> Design Settings [eWombat/Stulle] - Max
 		/*
@@ -432,7 +432,7 @@ void CServerWnd::Localize()
 		/*
 	    m_ctrlUpdateServerFrm.SetWindowText(GetResString(IDS_SV_MET));
 		*/
-	    m_ctrlUpdateServerFrm.SetWindowText(GetResString(IDS_SV_NEWSERVER),clrSrvColor);
+	    m_ctrlUpdateServerFrm.SetWindowText(GetResString(IDS_SV_MET),clrSrvColor);
 		// <== Design Settings [eWombat/Stulle] - Max
 	    GetDlgItem(IDC_UPDATESERVERMETFROMURL)->SetWindowText(GetResString(IDS_SV_UPDATE));
 	    GetDlgItem(IDC_LOGRESET)->SetWindowText(GetResString(IDS_PW_RESET));
@@ -440,7 +440,7 @@ void CServerWnd::Localize()
 		/*
 	    m_ctrlMyInfoFrm.SetWindowText(GetResString(IDS_MYINFO));
 		*/
-	    m_ctrlMyInfoFrm.SetWindowText(GetResString(IDS_SV_NEWSERVER),clrSrvColor);
+	    m_ctrlMyInfoFrm.SetWindowText(GetResString(IDS_MYINFO),clrSrvColor);
 		// <== Design Settings [eWombat/Stulle] - Max
     
 	    TCITEM item;
@@ -466,7 +466,6 @@ void CServerWnd::Localize()
 		item.pszText = const_cast<LPTSTR>((LPCTSTR)name);
 		StatusSelector.SetItem(PaneLeecherLog, &item);
 		//Xman end
-	}
 
 	UpdateLogTabSelection();
 	UpdateControlsState();
@@ -475,12 +474,12 @@ void CServerWnd::Localize()
 void CServerWnd::OnBnClickedAddserver()
 {
 	CString serveraddr;
-	if (!GetDlgItem(IDC_IPADDRESS)->GetWindowTextLength()){
+	GetDlgItem(IDC_IPADDRESS)->GetWindowText(serveraddr);
+	serveraddr.Trim();
+	if (serveraddr.IsEmpty()) {
 		AfxMessageBox(GetResString(IDS_SRV_ADDR));
 		return;
 	}
-	else
-		GetDlgItem(IDC_IPADDRESS)->GetWindowText(serveraddr);
 
 	uint16 uPort = 0;
 	if (_tcsncmp(serveraddr, _T("ed2k://"), 7) == 0){
@@ -611,6 +610,7 @@ void CServerWnd::OnBnClickedUpdateServerMetFromUrl()
 {
 	CString strURL;
 	GetDlgItem(IDC_SERVERMETURL)->GetWindowText(strURL);
+	strURL.Trim();
 	if (strURL.IsEmpty())
 	{
 		if (thePrefs.addresses_list.IsEmpty())
@@ -824,7 +824,7 @@ BOOL CServerWnd::SaveServerMetStrings()
 {
 	if (m_pacServerMetURL== NULL)
 		return FALSE;
-	return m_pacServerMetURL->SaveList(thePrefs.GetConfigDir() + SERVERMET_STRINGS_PROFILE);
+	return m_pacServerMetURL->SaveList(thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + SERVERMET_STRINGS_PROFILE);
 }
 
 void CServerWnd::ShowNetworkInfo()

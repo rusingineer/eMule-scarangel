@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -173,7 +173,7 @@ LRESULT CSearchParamsWnd::OnInitDialog(WPARAM /*wParam*/, LPARAM /*lParam*/)
 		m_pacSearchString = new CCustomAutoComplete();
 		m_pacSearchString->AddRef();
 		if (m_pacSearchString->Bind(m_ctlName, ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST))
-			m_pacSearchString->LoadList(thePrefs.GetConfigDir() + SEARCH_STRINGS_PROFILE);
+			m_pacSearchString->LoadList(thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + SEARCH_STRINGS_PROFILE);
 		if (theApp.m_fontSymbol.m_hObject)
 		{
 			GetDlgItem(IDC_DD)->SetFont(&theApp.m_fontSymbol);
@@ -201,8 +201,8 @@ LRESULT CSearchParamsWnd::OnInitDialog(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	ilDummyImageList.Detach();
 
 	m_ctlOpts.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-	m_ctlOpts.InsertColumn(0, _T("Parameter"));
-	m_ctlOpts.InsertColumn(1, _T("Value"));
+	m_ctlOpts.InsertColumn(0, GetResString(IDS_PARAMETER) );
+	m_ctlOpts.InsertColumn(1, GetResString(IDS_VALUE) );
 
 	m_ctlOpts.InsertItem(orMinSize, GetResString(IDS_SEARCHMINSIZE));
 	m_ctlOpts.InsertItem(orMaxSize, GetResString(IDS_SEARCHMAXSIZE));
@@ -359,11 +359,12 @@ void CSearchParamsWnd::OnSize(UINT nType, int cx, int cy)
 
 		int iWidthOpts = rcClient.right - (rcClient.left + m_rcOpts.left);
 		m_ctlOpts.MoveWindow(rcClient.left + m_rcOpts.left, rcClient.top + m_rcOpts.top, iWidthOpts, m_rcOpts.Height());
+		m_ctlOpts.ModifyStyle(0, LVS_NOCOLUMNHEADER);
 		CRect rcOptsClnt;
 		m_ctlOpts.GetClientRect(&rcOptsClnt);
 		m_ctlOpts.SetColumnWidth(0, LVSCW_AUTOSIZE);
-		m_ctlOpts.SetColumnWidth(1, rcOptsClnt.Width() - m_ctlOpts.GetColumnWidth(0));
-		m_ctlOpts.ModifyStyle(0, LVS_NOCOLUMNHEADER);
+		// (**1) Adjust for Windows Classic Theme and Flat Style control
+		m_ctlOpts.SetColumnWidth(1, rcOptsClnt.Width() - m_ctlOpts.GetColumnWidth(0) - 2/*(**1)*/);
 	}
 	else if (cx < MIN_HORZ_WIDTH)
 	{
@@ -630,6 +631,19 @@ void CSearchParamsWnd::Localize()
 	m_ctlOpts.SetItemText(orTitle, 0, GetResString(IDS_TITLE));
 	m_ctlOpts.SetItemText(orAlbum, 0, GetResString(IDS_ALBUM));
 	m_ctlOpts.SetItemText(orArtist, 0, GetResString(IDS_ARTIST));
+
+	CHeaderCtrl* pHeaderCtrl = m_ctlOpts.GetHeaderCtrl();
+	HDITEM hdi;
+	hdi.mask = HDI_TEXT;
+	CString strRes;
+
+	strRes = GetResString(IDS_PARAMETER);
+	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
+	pHeaderCtrl->SetItem(0, &hdi);
+
+	strRes = GetResString(IDS_VALUE);
+	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
+	pHeaderCtrl->SetItem(1, &hdi);
 }
 
 BOOL CSearchParamsWnd::PreTranslateMessage(MSG* pMsg)
@@ -740,7 +754,7 @@ BOOL CSearchParamsWnd::SaveSearchStrings()
 {
 	if (m_pacSearchString == NULL)
 		return FALSE;
-	return m_pacSearchString->SaveList(thePrefs.GetConfigDir() + SEARCH_STRINGS_PROFILE);
+	return m_pacSearchString->SaveList(thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + SEARCH_STRINGS_PROFILE);
 }
 
 void CSearchParamsWnd::SaveSettings()
@@ -861,7 +875,7 @@ uint64 CSearchParamsWnd::GetSearchAttrSize(const CString& rstrExpr)
 		while (*endptr == _T(' '))
 			endptr++;
 
-		TCHAR chModifier = _totlower(*endptr);
+		TCHAR chModifier = _totlower((_TUCHAR)*endptr);
 		if (chModifier == _T('b'))
 			return (uint64)(dbl + 0.5);
 		else if (chModifier == _T('k'))
@@ -887,7 +901,7 @@ ULONG CSearchParamsWnd::GetSearchAttrNumber(const CString& rstrExpr)
 		while (*endptr == _T(' '))
 			endptr++;
 
-		TCHAR chModifier = _totlower(*endptr);
+		TCHAR chModifier = _totlower((_TUCHAR)*endptr);
 		if (chModifier == _T('\0'))
 			;
 		else if (chModifier == _T('k'))
@@ -920,7 +934,7 @@ ULONG CSearchParamsWnd::GetSearchAttrLength(const CString& rstrExpr)
 		while (*endptr == _T(' '))
 			endptr++;
 
-		TCHAR chModifier = _totlower(*endptr);
+		TCHAR chModifier = _totlower((_TUCHAR)*endptr);
 		if (chModifier == _T('\0') || chModifier == _T('s'))
 			;
 		else if (chModifier == _T('m'))

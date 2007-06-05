@@ -300,7 +300,7 @@ void CCollection::WriteToFileAddShared(CryptoPP::RSASSA_PKCS1v15_SHA_Signer* pSi
 	sFileName.Format(_T("%s%s"), m_sCollectionName, COLLECTION_FILEEXTENSION);
 	
 	CString sFilePath;
-	sFilePath.Format(_T("%s\\%s"), thePrefs.GetIncomingDir(), sFileName);
+	sFilePath.Format(_T("%s\\%s"), thePrefs.GetMuleDirectory(EMULE_INCOMINGDIR), sFileName);
 
 	if(m_bTextFormat)
 	{
@@ -418,7 +418,7 @@ void CCollection::WriteToFileAddShared(CryptoPP::RSASSA_PKCS1v15_SHA_Signer* pSi
 		}
 	}
 
-	theApp.sharedfiles->AddFileFromNewlyCreatedCollection(thePrefs.GetIncomingDir(), sFileName);
+	theApp.sharedfiles->AddFileFromNewlyCreatedCollection(thePrefs.GetMuleDirectory(EMULE_INCOMINGDIR), sFileName);
 }
 
 bool CCollection::HasCollectionExtention(const CString& sFileName)

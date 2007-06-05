@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2006 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -14,15 +14,15 @@
 //You should have received a copy of the GNU General Public License
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
 #include "stdafx.h"
-#include "./IrcSocket.h"
-#include "./AsyncProxySocketLayer.h"
-#include "./IrcMain.h"
-#include "./Preferences.h"
-#include "./otherfunctions.h"
-#include "./Statistics.h"
-#include "./Log.h"
+#include "IrcSocket.h"
+#include "AsyncProxySocketLayer.h"
+#include "IrcMain.h"
+#include "Preferences.h"
+#include "OtherFunctions.h"
+#include "Statistics.h"
+#include "Log.h"
+#include "Exceptions.h"
 //Xman
 #include "BandWidthControl.h" // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 #include "emule.h"
@@ -34,7 +34,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-CIrcSocket::CIrcSocket(CIrcMain* pIrcMain) : CAsyncSocketEx()
+
+CIrcSocket::CIrcSocket(CIrcMain* pIrcMain) 
 {
 	m_pIrcMain = pIrcMain;
 	m_pProxyLayer = NULL;
@@ -103,7 +104,17 @@ BOOL CIrcSocket::Create(UINT uSocketPort, int uSocketType, long lEvent, LPCSTR l
 
 void CIrcSocket::Connect()
 {
-	CAsyncSocketEx::Connect(CStringA(thePrefs.GetIRCServer()), 6667);
+	int iPort = 6667;
+	int iIndex;
+	CString strServer = thePrefs.GetIRCServer();
+	if ((iIndex = strServer.Find(_T(':'))) != -1)
+	{
+		iPort = _tstoi(strServer.Mid(iIndex + 1));
+		if (iPort <= 0)
+			iPort = 6667;
+		strServer = strServer.Left(iIndex);
+	}
+	CAsyncSocketEx::Connect(CStringA(strServer), iPort);
 }
 
 void CIrcSocket::OnReceive(int iErrorCode)
@@ -115,13 +126,15 @@ void CIrcSocket::OnReceive(int iErrorCode)
 		return;
 	}
 
-	int iLength;
-	char cBuffer[1024];
+	TRACE("CIrcSocket::OnReceive\n");
 	try
 	{
+		int iLength;
 		do
 		{
+			char cBuffer[1024];
 			iLength = Receive(cBuffer, sizeof(cBuffer)-1);
+			TRACE("iLength=%d\n", iLength);
 			if (iLength < 0)
 			{
 				if (thePrefs.GetVerbose())
@@ -140,12 +153,21 @@ void CIrcSocket::OnReceive(int iErrorCode)
 				m_pIrcMain->PreParseMessage(cBuffer);
 			}
 		}
-		while( iLength > 1022 );
+		while (iLength > 1022);
 	}
-	catch(...)
+	CATCH_DFLT_EXCEPTIONS(_T(__FUNCTION__))
+	CATCH_DFLT_ALL(_T(__FUNCTION__))
+}
+
+void CIrcSocket::OnSend(int iErrorCode)
+{
+	if (iErrorCode)
 	{
-		AddDebugLogLine(false, _T("IRC socket: Exception in OnReceive."), GetErrorMessage(iErrorCode, 1));
+		if (thePrefs.GetVerbose())
+			AddDebugLogLine(false, _T("IRC socket: Failed to send - %s"), GetErrorMessage(iErrorCode, 1));
+		return;
 	}
+	TRACE("CIrcSocket::OnSend\n");
 }
 
 void CIrcSocket::OnConnect(int iErrorCode)
@@ -166,22 +188,26 @@ void CIrcSocket::OnClose(int iErrorCode)
 	{
 		if (thePrefs.GetVerbose())
 			AddDebugLogLine(false, _T("IRC socket: Failed to close - %s"), GetErrorMessage(iErrorCode, 1));
+		m_pIrcMain->Disconnect();
 		return;
 	}
 	m_pIrcMain->Disconnect();
 }
 
-int CIrcSocket::SendString(CString sMessage)
+int CIrcSocket::SendString(const CString& sMessage)
 {
-	sMessage += _T("\r\n");
 	CStringA sMessageA(sMessage);
+	TRACE("CIrcSocket::SendString: %s\n", sMessageA);
+	sMessageA += "\r\n";
 	int iSize = sMessageA.GetLength();
 	theStats.AddUpDataOverheadOther(iSize);
 	//Xman not too accurate but enough for the few IRC-strings
 	// - Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 	theApp.pBandWidthControl->AddeMuleOutTCPOverall(iSize);
 	//Maella end
-	return Send(sMessageA, iSize);
+	int iResult = Send(sMessageA, iSize);
+	ASSERT( iResult == iSize );
+	return iResult;
 }
 
 void CIrcSocket::RemoveAllLayers()
@@ -201,20 +227,23 @@ int CIrcSocket::OnLayerCallback(const CAsyncSocketExLayer* pLayer, int nType, in
 			switch (nCode)
 			{
 				case PROXYERROR_NOCONN:
-				case PROXYERROR_REQUESTFAILED: {
-					CString strError(GetProxyError(nCode));
-					if (lParam) {
-						strError += _T(" - ");
-						strError += (LPCSTR)lParam;
+				case PROXYERROR_REQUESTFAILED:
+					{
+						CString strError(GetProxyError(nCode));
+						if (lParam)
+						{
+							strError += _T(" - ");
+							strError += (LPCSTR)lParam;
+						}
+						if (wParam)
+						{
+							CString strErrInf;
+							if (GetErrorMessage(wParam, strErrInf, 1))
+								strError += _T(" - ") + strErrInf;
+						}
+						LogWarning(LOG_STATUSBAR, _T("IRC socket: %s"), strError);
+						break;
 					}
-					if (wParam) {
-						CString strErrInf;
-						if (GetErrorMessage(wParam, strErrInf, 1))
-							strError += _T(" - ") + strErrInf;
-					}
-					LogWarning(LOG_STATUSBAR, _T("IRC socket: %s"), strError);
-					break;
-				}
 				default:
 					LogWarning(LOG_STATUSBAR, _T("IRC socket: %s"), GetProxyError(nCode));
 			}

@@ -139,6 +139,7 @@
 #define	MP_SHOW_FILESIZE_DFLT	10356
 #define	MP_SHOW_FILESIZE_KBYTE	10357
 #define	MP_SHOW_FILESIZE_MBYTE	10358
+#define MP_MARKASSPAM			10359
 
 // quick-speed changer
 #define MP_QS_U10				10501
@@ -179,7 +180,6 @@
 #define	MP_PREVIEW_APP_MAX		(MP_PREVIEW_APP_MIN+49)
 #define MP_FILTERCOLUMNS		11300	// reserve 50 entries for filter columsn
 
-#define Irc_Version				"(SMIRCv00.69)"
 #define Irc_Join				10240
 #define Irc_Close				10241
 #define Irc_Priv				10242
@@ -232,7 +232,6 @@
 #define MP_CLEANUP_NNS_FQS_NONE_ERROR_BANNED_LOWTOLOWIP 20005
 // <== advanced manual dropping - Stulle
 
-#define MP_PRIOWCRELEASE		20010 // WebCache [WC team/MorphXT] - Stulle/Max
 // ==> Copy feedback feature [MorphXT] - Stulle
 #define	MP_COPYFEEDBACK			20020
 #define MP_COPYFEEDBACK_US		20021

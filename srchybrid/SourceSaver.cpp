@@ -195,6 +195,10 @@ void CSourceSaver::SaveSources(const CString& slsfile)
 		if (cur_src->HasLowID())
 			continue;
 
+		// Skip also Required Obfuscation, because we don't save the userhash (and we don't know if all settings are still valid on next restart)
+		if (cur_src->RequiresCryptLayer())
+			continue;
+
 		CSourceData sourceData(cur_src, expiration90mins, expiration3days);
 
 		// Update or add a source

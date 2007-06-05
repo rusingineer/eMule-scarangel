@@ -23,6 +23,7 @@
 #include <Iphlpapi.h>
 #include <afxtempl.h>
 
+
 // This class has two purposes:
 //
 // Collect all statistics relevant to the upload/download bandwidth

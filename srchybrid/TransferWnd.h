@@ -46,6 +46,13 @@ public:
 		w1iClientsKnown
 	};
 
+	enum EWnd2Icon {
+		w2iUploading = 0,
+		w2iDownloading,
+		w2iOnQueue,
+		w2iClientsKnown
+	};
+
 	enum EWnd2 {
 		wnd2Downloading = 0,
 		wnd2Uploading = 1,
@@ -68,8 +75,8 @@ public:
 	int	 AddCategory(CString newtitle,CString newincoming,CString newcomment,CString newautocat,bool addTab=true);
 	void SwitchUploadList();
 	void ResetTransToolbar(bool bShowToolbar, bool bResetLists = true);
-	void ResetTransToolbar2(bool bShowToolbar, bool bResetLists = true); //Xman uploadtoolbar
 	void SetToolTipsDelay(DWORD dwDelay);
+	void OnDisableList();
 
 	// ==> CPU/MEM usage [$ick$/Stulle] - Max
 	void ShowRessources();
@@ -100,7 +107,7 @@ protected:
 	bool		m_bIsDragging;
 	CImageList* m_pDragImage;
 	POINT		m_pLastMousePoint;
-	uint32		m_dwShowListIDC;	
+	uint32		m_dwShowListIDC;
 	CToolTipCtrlX* m_tooltipCats;
 	// ==> Client queue progress bar [Commander] - Stulle
 	CProgressCtrlX queueBar;
@@ -108,7 +115,7 @@ protected:
 	CFont bold;
 	// <== Client queue progress bar [Commander] - Stulle
 
-	
+
 	void	ShowWnd2(EWnd2 uList);
 	void	SetWnd2(EWnd2 uWnd2);
 	void	DoResize(int delta);
@@ -116,7 +123,7 @@ protected:
 	void	DoSplitResize(int delta);
 	void	SetAllIcons();
 	void	SetWnd1Icons();
-	void	SetWnd2Icons(); //Xman uploadtoolbar
+	void	SetWnd2Icons();
 	void	UpdateTabToolTips() {UpdateTabToolTips(-1);}
 	void	UpdateTabToolTips(int tab);
 	CString	GetTabStatistic(int tab);
@@ -130,8 +137,8 @@ protected:
 	void	EditCatTabLabel(int index,CString newlabel);
 	void	EditCatTabLabel(int index);
 	void	ShowList(uint32 dwListIDC);
-	void	ChangeDlIcon(EWnd1Icon iIcon);
-	void	ChangeUlIcon(EWnd2 iIcon); //Xman uploadtoolbar
+	void	SetWnd1Icon(EWnd1Icon iIcon);
+	void	SetWnd2Icon(EWnd2Icon iIcon);
 	void	ShowSplitWindow(bool bReDraw = false);
 
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
