@@ -1,6 +1,51 @@
 CHANGELOG FOR EMULE ScarAngel MOD
 
 
+eMule v0.48a ScarAngel v2.0:
+------------------------
+- XX.XX.2007 -
+-------------------------------------------------------------------------------
+based on eMule 0.48a Xtreme 6.0 compiled with vs2003 SP1
+
+Removed: WebCache [WC team/MorphXT] - Stulle/Max
+
+
+eMule v0.47c ScarAngel v1.9:
+------------------------
+- 25.03.2007 -
+-------------------------------------------------------------------------------
+based on eMule 0.47c Xtreme 5.4.2 compiled with vs2003 SP1
+
+Added: More icons in context menus [various] - Stulle
+Added: Improved ICS-Firewall support [MoNKi] - Max
+Added: Invisible Mode [TPT/MoNKi/SiRoB] - Stulle
+Added: UPnP support [MoNKi/leuk_he] - leuk_he
+Added: Random Ports [MoNKi] - Stulle
+Added: Select window background color [MaxUpload] - Max
+Added: Simple cleanup [MorphXT] - Stulle
+	remark: This is not in the Xtremes implementation, stick to older versions
+Added: Support page in preferences [Stulle] - Stulle
+Added: Default value for background colors [Stulle] - Stulle
+Added: Design settings save version number (now v2) [Stulle] - Stulle
+
+Changed: Superior clients inserted at first position in UL [Stulle] - Stulle
+Changed: Various things around XP-Style menus [Stulle] - Stulle
+Changed: Reworked "give waiting time back"-code for SUQWT [Stulle] - Stulle
+Changed: Rewrote Design settings (one enum per master item) [Stulle] - Stulle
+Changed: List backgrounds unrelated to items in list (instant change) [Stulle] - Stulle
+
+Updated: Webcache [MorphXT] - Stulle
+
+Fixed: Columns with wrong background in DlClients and QueueList [Stulle] - Stulle
+Fixed: Webcache information drawn in wrong column [Stulle] - Stulle
+Fixed: Sometimes client's credits are not updated though they should [Stulle] - Stulle
+Fixed: ScarAngel horizontally truncated in Splash [Stulle] - Stulle
+
+Removed: Unnecessary log line on Design settings changed [Stulle] - Stulle
+Removed: UPnP support [Xtreme] - Stulle
+Removed: Unused code of TBH: MiniMule implementation [Stulle] - Stulle
+
+
 eMule v0.47c ScarAngel v1.8:
 ------------------------
 - 04.01.2007 -

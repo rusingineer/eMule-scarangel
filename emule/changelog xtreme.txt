@@ -1,4 +1,4 @@
-Xtreme 5.4
+Xtreme 6.0
 ----------------
 
 Main Features:
@@ -12,21 +12,88 @@ Main Features:
 - IP to country - show country-flags
 - Dynamic Leecher Protection (DLP)
 - Multi-threaded disc access with threading-queue
-- Universal plug and play support (UPNP) for routers
 - hundrets of code improvements
-- emule is now full translated to chinese language (mod + emule 0.47c) (thx welldl)
+
 
 supported languages:
 german, english, spanish,  french, italian, chinese, turkish, czech
 
 
-based on emule 0.47c
+based on emule 0.48a
 compiled with:
 libpng 1.2.12
 zlib 1.2.3
 crypto 52.1
 CxImage version 5.99c
 
+
+Xtreme 6.0
+- updated to 0.48a codebase
+- made the NAFC-adapter-selection-code vista-compatible
+- replaced official UPNP withXtreme UPNP (still at extended preferences)
+- added: Obfuscation-PaddingLength to Extended preferences
+
+- changed Xtreme Creditsystem: linier calculatio from 4.5 MB to 9.3 MB like official
+- changed: remote credits are also calculated with 0.48a methode
+- changed sourcesaver: don't save obfuscation required sources (would need to also store the userhash)
+- changed: increased possible filebuffersize to 2 MB
+
+- improved: iptocountry shows now 32 Bits flags for windows >= XP
+- improved some code for closing sockets
+- improved code that was responsable for creating two clients instances for one client
+- improved: moveitem in mulelistcontrol (netfinity)
+
+- fixed official bug when dis/enabling Queuelist/Clientslist
+- fixed official bug when checking for empty userhash (ilmira)
+- fixed official bug: update system-menu after changing bandwidth-capacity
+- adjusted some parameters
+
+- updated all languagefiles
+
+
+Xtreme 5.4.2
+- added: resizable massrename (Morph)
+- reworked reask sources after IP-change (new v4)
+- improved the internal connection checker
+- changed some code around DBR
+- imroved advanced auto uploadpriority: the longer a file wasn't uploaded the less "old" upload is counted
+- imroved auto uploadpriority: option "share files with auto upload-priority" is now applied when a file is shared the first time
+- improved: a bit faster switching from trickle to full when filling the uploadqueue
+- changed Xtreme Icon: now it is high resolution (emule-web.de)
+
+- fixed a bug with sourcesaver when multi temp dirs was used
+- fix a bug when a file is hashed sooner than AICH-Syncthread got the mutex
+- fixed/improved official code for calculating complete sources
+- fixed an official bug showing wrong Kad-Id at networkinfodialog
+- many more minor fixes
+
+- updated languagefiles: german, spain, turkish, french, italian, cinese (thx unomas, Alpin, gigatoaster, LorenzoC, welldl)
+
+
+
+Xtreme 5.4.1
+- improved dynamic block request
+- improved safehash: Complete pending hashing at shutdown to prevent rehash (Morph)
+- improved new advanced auto-upload-priority (but still beta / experimental)
+new (advanced) auto-upload-priority-system is taking into account:
++ how many complete sources are reported
++ how many requesters on your uploadqueue
++ how rare the chunks are from the requesters
++ how much you have uploaded and downloaded of a file
+
+- added more infos to uploadfeedback
+- added flexible splittingsize of uploadpackets
+- added find menu to historylist
+- added new column to shared files: sharefactor. 
++ first value is the value which the new auto-upload-priority oriented towards (only visable when advanced auto-prio is used)
++ second value is the relationship between transferred data and file-size
+
+- changed: 1 minute waitingtime after downloadtimeout to prevent source to stack in asking
+- changed: the reduced half open connection is now also detected for win 2003 SP1 and vista (leuk_he)
+- changed: increased reask-time for some LowID-sources
+- fixed: destroy splashscreen when you close emule right after start
+
+- more minor improvements and fixes
 
 
 Xtreme 5.4
