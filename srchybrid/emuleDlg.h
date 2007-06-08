@@ -268,6 +268,7 @@ protected:
 	// ==> XP Style Menu [Xanatos] - Stulle
 	afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
 	// <== XP Style Menu [Xanatos] - Stulle
+	afx_msg BOOL OnDeviceChange(UINT nEventType, DWORD_PTR dwData); // Automatic shared files updater [MoNKi] - Stulle
 
 	// quick-speed changer -- based on xrmb
 	afx_msg void QuickSpeedUpload(UINT nID);

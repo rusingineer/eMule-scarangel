@@ -355,6 +355,18 @@ public:
 protected:
 	CFont			m_ExtraFonts[7];
 	// <== Design Settings [eWombat/Stulle] - Stulle
+
+	// ==> Automatic shared files updater [MoNKi] - Stulle
+private:
+	static CEvent*				m_directoryWatcherCloseEvent;
+	static CEvent*				m_directoryWatcherReloadEvent;
+	static CCriticalSection		m_directoryWatcherCS;
+	static UINT					CheckDirectoryForChangesThread(LPVOID pParam);
+public:
+	void ResetDirectoryWatcher();
+	void EndDirectoryWatcher();
+	void DirectoryWatcherExternalReload();
+	// <== Automatic shared files updater [MoNKi] - Stulle
 };
 
 extern CemuleApp theApp;

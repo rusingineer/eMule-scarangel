@@ -847,6 +847,22 @@ uint16	CPreferences::m_iCurrentTCPRndPort;
 uint16	CPreferences::m_iCurrentUDPRndPort;
 // <== Random Ports [MoNKi] - Stulle
 
+bool	CPreferences::m_bDirectoryWatcher; // Automatic shared files updater [MoNKi] - Stulle
+
+// ==> Anti Uploader Ban [Stulle] - Stulle
+uint16  CPreferences::m_iAntiUploaderBanLimit;
+uint8	CPreferences::AntiUploaderBanCaseMode;
+// <== Anti Uploader Ban [Stulle] - Stulle
+
+// ==> Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+bool	CPreferences::m_bEmuMLDonkey;
+bool	CPreferences::m_bEmueDonkey;
+bool	CPreferences::m_bEmueDonkeyHybrid;
+bool	CPreferences::m_bEmuShareaza;
+bool    CPreferences::m_bEmuLphant;
+bool	CPreferences::m_bLogEmulator;
+// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+
 CPreferences::CPreferences()
 {
 #ifdef _DEBUG
@@ -2617,6 +2633,22 @@ void CPreferences::SavePreferences()
 	ini.WriteUInt64(_T("RandomPortsLastRun"), CTime::GetCurrentTime().GetTime());
 	// <== Random Ports [MoNKi] - Stulle
 
+	ini.WriteBool(_T("AutoReloadSharedFiles"), GetDirectoryWatcher()); // Automatic shared files updater [MoNKi] - Stulle
+
+	// ==> Anti Uploader Ban [Stulle] - Stulle
+	ini.WriteInt(_T("AntiUploaderBanLimit"), m_iAntiUploaderBanLimit);
+	ini.WriteInt(_T("AntiUploaderBanCaseMode"), AntiUploaderBanCaseMode);
+	// <== Anti Uploader Ban [Stulle] - Stulle
+
+	// ==> Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	ini.WriteBool(_T("EmuMLDonkey"), m_bEmuMLDonkey);
+	ini.WriteBool(_T("EmueDonkey"), m_bEmueDonkey);
+	ini.WriteBool(_T("EmueDonkeyHybrid"), m_bEmueDonkeyHybrid);
+	ini.WriteBool(_T("EmuShareaza"), m_bEmuShareaza);
+	ini.WriteBool(_T("EmuLphant"), m_bEmuLphant);
+	ini.WriteBool(_T("LogEmulator"), m_bLogEmulator);
+	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+
 	SaveStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
 
@@ -3765,6 +3797,22 @@ void CPreferences::LoadPreferences()
 	}
 	m_bRndPortsResetOnRestart = false;
 	// <== Random Ports [MoNKi] - Stulle
+
+	SetDirectoryWatcher(ini.GetBool(_T("AutoReloadSharedFiles"), true)); // Automatic shared files updater [MoNKi] - Stulle
+
+	// ==> Anti Uploader Ban [Stulle] - Stulle
+	m_iAntiUploaderBanLimit = (uint16)ini.GetInt(_T("AntiUploaderBanLimit"), 0);
+	AntiUploaderBanCaseMode = (uint8)ini.GetInt(_T("AntiUploaderBanCaseMode"), 1);
+	// <== Anti Uploader Ban [Stulle] - Stulle
+
+	// ==> Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	m_bEmuMLDonkey = ini.GetBool(_T("EmuMLDonkey"), false);
+	m_bEmueDonkey= ini.GetBool(_T("EmueDonkey"), false);
+	m_bEmueDonkeyHybrid= ini.GetBool(_T("EmueDonkeyHybrid"), false);
+	m_bEmuShareaza= ini.GetBool(_T("EmuShareaza"), false);
+	m_bEmuLphant= ini.GetBool(_T("EmuLphant"), false);
+	m_bLogEmulator= ini.GetBool(_T("LogEmulator"), false);
+	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
 
 	LoadStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }

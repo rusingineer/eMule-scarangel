@@ -258,6 +258,14 @@ enum FnTagSelection {
 };
 // <== FunnyNick [SiRoB/Stulle] - Stulle
 
+// ==> Anti Uploader Ban [Stulle] - Stulle
+enum AntiUploaderBanCaseSelection {
+	CS_1 = 0,
+	CS_2,
+	CS_3
+};
+// <== Anti Uploader Ban [Stulle] - Stulle
+
 struct PartFileStamp{
 	CPartFile*	file;
 	DWORD		timestamp;
@@ -1143,12 +1151,22 @@ public:
 	bool	GetPowerReleased() const;
 	// <== Design Settings [eWombat/Stulle] - Stulle
 
+	CString GetZeroScoreString() const; // Display reason for zero score [Stulle] - Stulle
+
 	// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	void	SetGiveWaittimeBack(bool in)		{m_bGiveWaittimeBack = in;}
 	bool	GetGiveWaittimeBack() const			{return m_bGiveWaittimeBack;}
 protected:
 	bool	m_bGiveWaittimeBack;
 	// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
+
+     // ==> Anti Uploader Ban [Stulle] - Stulle
+private:
+	bool	m_bAntiUploaderCaseThree;
+public:
+	bool	AntiUploaderBanActive();
+	bool	GetAntiUploaderCaseThree()	{return m_bAntiUploaderCaseThree;}
+     // <== Anti Uploader Ban [Stulle] - Stulle
 };
 //#pragma pack()
 

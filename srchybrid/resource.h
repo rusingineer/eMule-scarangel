@@ -3043,6 +3043,28 @@
 #define IDS_RATE                        61089
 #define IDS_XTREME                      61090
 // <== Support page in preferences [Stulle] - Stulle
+// ==> Automatic shared files updater [MoNKi] - Stulle
+#define IDS_AUTO_SHARED_UPDATER         61100
+#define IDS_ASFU_RELOADTIME             61101
+#define IDS_ASFU_DELAY                  61102
+#define IDS_ASFU_RELOAD                 61103
+#define IDS_ASFU_RELOADING              61104
+// <== Automatic shared files updater [MoNKi] - Stulle
+// ==> Anti Uploader Ban [Stulle] - Stulle
+#define IDS_UNBAN_UPLOADER              61110
+#define IDS_ANTI_CASE_1                 61111
+#define IDS_ANTI_CASE_2                 61112
+#define IDS_ANTI_CASE_3                 61113
+// <== Anti Uploader Ban [Stulle] - Stulle
+// ==> Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+#define IDS_EMULATOR_GROUP              61120
+#define IDS_EMULATE_ML                  61121
+#define IDS_EMULATE_DONK                61122
+#define IDS_EMULATE_DONK_HYB            61123
+#define IDS_EMULATE_SHA                 61124
+#define IDS_EMULATE_PHANT               61125
+#define IDS_EMULATE_LOG                 61126
+// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
 
 // Next default values for new objects
 // 

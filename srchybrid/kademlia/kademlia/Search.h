@@ -42,6 +42,8 @@ namespace Kademlia
 	{
 			friend class CSearchManager;
 		public:
+			// ==> Safe KAD [netfinity] - Stulle
+			/*
 			uint32 GetSearchID() const;
 			uint32 GetSearchTypes() const;
 			void SetSearchTypes( uint32 uVal );
@@ -59,6 +61,25 @@ namespace Kademlia
 			uint32 GetNodeLoad() const;
 			uint32 GetNodeLoadResonse() const;
 			uint32 GetNodeLoadTotal() const;
+			*/
+			uint32 GetSearchID() const {return m_uSearchID;}
+			uint32 GetSearchTypes() const {return m_uType;}
+			void SetSearchTypes( uint32 uVal ) {m_uType = uVal;}
+			void SetTargetID( CUInt128 uVal ) {m_uTarget = uVal;}
+			uint32 GetAnswers() const;
+			uint32 GetKadPacketSent() const {return m_uKadPacketSent;}
+			uint32 GetRequestAnswer() const {return m_uTotalRequestAnswers;}
+			void StorePacket();
+			const CString& GetFileName() const {return m_sFileName;}
+			void SetFileName(const CString& sFileName) {m_sFileName = sFileName;}
+			CUInt128 GetTarget() const {return m_uTarget;}
+			void AddFileID(const CUInt128& uID);
+			void PreparePacketForTags( CByteIO* pbyPacket, CKnownFile* pFile );
+			bool Stoping() const {return m_bStoping;}
+			uint32 GetNodeLoad() const;
+			uint32 GetNodeLoadResonse() const {return m_uTotalLoadResponses;}
+			uint32 GetNodeLoadTotal() const {return m_uTotalLoad;}
+			// <== Safe KAD [netfinity] - Stulle
 			void UpdateNodeLoad( uint8 uLoad );
 			void SetSearchTermData( uint32 uSearchTermDataSize, LPBYTE pucSearchTermsData );
 			enum

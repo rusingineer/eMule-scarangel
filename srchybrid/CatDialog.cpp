@@ -284,6 +284,8 @@ void CCatDialog::OnBnClickedOk()
 	if (m_myCat->strIncomingPath.CompareNoCase(oldpath)!=0)
 		theApp.sharedfiles->Reload();
 
+	theApp.ResetDirectoryWatcher(); // Automatic shared files updater [MoNKi] - Stulle
+
 	m_myCat->color=newcolor;
     m_myCat->prio=m_prio.GetCurSel();
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle

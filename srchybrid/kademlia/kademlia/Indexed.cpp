@@ -58,6 +58,8 @@ CIndexed::CIndexed()
 	m_mapNotes.InitHashTable(1031);
 	m_mapLoad.InitHashTable(1031);
 	m_mapSources.InitHashTable(1031);
+	// ==> KAD vista fix [godlaugh2007] - Stulle
+	/*
 	m_sSourceFileName = CMiscUtils::GetAppDir();
 	m_sSourceFileName.Append(CONFIGFOLDER);
 	m_sSourceFileName.Append(_T("src_index.dat"));
@@ -67,6 +69,11 @@ CIndexed::CIndexed()
 	m_sLoadFileName = CMiscUtils::GetAppDir();
 	m_sLoadFileName.Append(CONFIGFOLDER);
 	m_sLoadFileName.Append(_T("load_index.dat"));
+	*/
+	m_sSourceFileName =thePrefs.GetMuleDirectory(EMULE_CONFIGDIR)  + _T("src_index.dat");
+	m_sKeyFileName =thePrefs.GetMuleDirectory(EMULE_CONFIGDIR)  + _T("key_index.dat");
+	m_sLoadFileName =thePrefs.GetMuleDirectory(EMULE_CONFIGDIR)  + _T("load_index.dat");
+	// <== KAD vista fix [godlaugh2007] - Stulle
 	m_tLastClean = time(NULL) + (60*30);
 	m_uTotalIndexSource = 0;
 	m_uTotalIndexKeyword = 0;
@@ -960,6 +967,7 @@ void CIndexed::SendValidKeywordResult(const CUInt128& uKeyID, const SSearchTerm*
 		byIO.WriteUInt16(50);
 		uint16 uMaxResults = 300;
 		int iCount = 0-uStartPosition;
+		int iSrcCount = 0; // Anti fragmenting [netfinity] - Stulle
 		POSITION pos1 = pCurrKeyHash->mapSource.GetStartPosition();
 		while( pos1 != NULL )
 		{
@@ -980,9 +988,19 @@ void CIndexed::SendValidKeywordResult(const CUInt128& uKeyID, const SSearchTerm*
 							iCount++;
 							byIO.WriteUInt128(pCurrName->m_uSourceID);
 							byIO.WriteTagList(pCurrName->m_listTag);
+							// ==> Anti fragmenting [netfinity] - Stulle
+							/*
 							if( iCount % 50 == 0 )
 							{
 								uint32 uLen = sizeof(byPacket)-byIO.GetAvailable();
+							*/
+							iSrcCount++;
+							uint32 uLen = sizeof(byPacket)-byIO.GetAvailable();
+							if( uLen + 100 > 2000 )
+							{
+								byIO.Seek((bKad2 ? (18 + 16) : 18));
+								byIO.WriteByte((byte) iSrcCount);
+							// <== Anti fragmenting [netfinity] - Stulle
 								CKademlia::GetUDPListener()->SendPacket(byPacket, uLen, uIP, uPort);
 								byIO.Reset();
 								byIO.WriteByte(OP_KADEMLIAHEADER);
@@ -1001,6 +1019,7 @@ void CIndexed::SendValidKeywordResult(const CUInt128& uKeyID, const SSearchTerm*
 								}
 								byIO.WriteUInt128(uKeyID);
 								byIO.WriteUInt16(50);
+								iSrcCount = 0; // Anti fragmenting [netfinity] - Stulle
 							}
 						}
 					}
@@ -1014,19 +1033,35 @@ void CIndexed::SendValidKeywordResult(const CUInt128& uKeyID, const SSearchTerm*
 		}
 		if(iCount > 0)
 		{
+			// ==> Anti fragmenting [netfinity] - Stulle
+			/*
 			uint16 uCountLeft = (uint16)iCount % 50;
 			if( uCountLeft )
+			*/
+			int iCountLeft = iSrcCount;
+			if( iCountLeft )
+			// <== Anti fragmenting [netfinity] - Stulle
 			{
 				uint32 uLen = sizeof(byPacket)-byIO.GetAvailable();
 				if(bKad2)
 				{
+					// ==> Anti fragmenting [netfinity] - Stulle
+					/*
 					memcpy(byPacket+18+16, &uCountLeft, 2);
+					*/
+					memcpy(byPacket+18+16, &iCountLeft, 2);
+					// <== Anti fragmenting [netfinity] - Stulle
 					if (thePrefs.GetDebugClientKadUDPLevel() > 0)
 						DebugSend("KADEMLIA2_SEARCH_RES", uIP, uPort);
 				}
 				else
 				{
+					// ==> Anti fragmenting [netfinity] - Stulle
+					/*
 					memcpy(byPacket+18, &uCountLeft, 2);
+					*/
+					memcpy(byPacket+18, &iCountLeft, 2);
+					// <== Anti fragmenting [netfinity] - Stulle
 					if (thePrefs.GetDebugClientKadUDPLevel() > 0)
 						DebugSend("KADEMLIA_SEARCH_RES", uIP, uPort);
 				}
@@ -1056,6 +1091,7 @@ void CIndexed::SendValidSourceResult(const CUInt128& uKeyID, uint32 uIP, uint16 
 		byIO.WriteUInt16(50);
 		uint16 uMaxResults = 300;
 		int iCount = 0-uStartPosition;
+		int iSrcCount = 0; // Anti fragmenting [netfinity] - Stulle
 		for(POSITION pos1 = pCurrSrcHash->ptrlistSource.GetHeadPosition(); pos1 != NULL; )
 		{
 			Source* pCurrSource = pCurrSrcHash->ptrlistSource.GetNext(pos1);
@@ -1071,9 +1107,19 @@ void CIndexed::SendValidSourceResult(const CUInt128& uKeyID, uint32 uIP, uint16 
 						byIO.WriteUInt128(pCurrName->m_uSourceID);
 						byIO.WriteTagList(pCurrName->m_listTag);
 						iCount++;
+						// ==> Anti fragmenting [netfinity] - Stulle
+						/*
 						if( iCount % 50 == 0 )
 						{
 							uint32 uLen = sizeof(byPacket)-byIO.GetAvailable();
+						*/
+						iSrcCount++;
+						uint32 uLen = sizeof(byPacket)-byIO.GetAvailable();
+						if( uLen + 100 > 2000 )
+						{
+							byIO.Seek((bKad2 ? (18 + 16) : 18));
+							byIO.WriteByte((byte) iSrcCount);
+						// <== Anti fragmenting [netfinity] - Stulle
 							CKademlia::GetUDPListener()->SendPacket(byPacket, uLen, uIP, uPort);
 							byIO.Reset();
 							byIO.WriteByte(OP_KADEMLIAHEADER);
@@ -1092,6 +1138,7 @@ void CIndexed::SendValidSourceResult(const CUInt128& uKeyID, uint32 uIP, uint16 
 							}
 							byIO.WriteUInt128(uKeyID);
 							byIO.WriteUInt16(50);
+							iSrcCount = 0; // Anti fragmenting [netfinity] - Stulle
 						}
 					}
 				}
@@ -1103,19 +1150,35 @@ void CIndexed::SendValidSourceResult(const CUInt128& uKeyID, uint32 uIP, uint16 
 		}
 		if( iCount > 0 )
 		{
+			// ==> Anti fragmenting [netfinity] - Stulle
+			/*
 			uint16 uCountLeft = (uint16)iCount % 50;
 			if( uCountLeft )
+			*/
+			int iCountLeft = iSrcCount;
+			if( iCountLeft )
+			// <== Anti fragmenting [netfinity] - Stulle
 			{
 				uint32 uLen = sizeof(byPacket)-byIO.GetAvailable();
 				if(bKad2)
 				{
+					// ==> Anti fragmenting [netfinity] - Stulle
+					/*
 					memcpy(byPacket+18+16, &uCountLeft, 2);
+					*/
+					memcpy(byPacket+18+16, &iCountLeft, 2);
+					// <== Anti fragmenting [netfinity] - Stulle
 					if (thePrefs.GetDebugClientKadUDPLevel() > 0)
 						DebugSend("KADEMLIA2_SEARCH_RES", uIP, uPort);
 				}
 				else
 				{
+					// ==> Anti fragmenting [netfinity] - Stulle
+					/*
 					memcpy(byPacket+18, &uCountLeft, 2);
+					*/
+					memcpy(byPacket+18, &iCountLeft, 2);
+					// <== Anti fragmenting [netfinity] - Stulle
 					if (thePrefs.GetDebugClientKadUDPLevel() > 0)
 						DebugSend("KADEMLIA_SEARCH_RES", uIP, uPort);
 				}
@@ -1146,7 +1209,13 @@ void CIndexed::SendValidNoteResult(const CUInt128& uKeyID, uint32 uIP, uint16 uP
 			byIO.WriteUInt128(uKeyID);
 			byIO.WriteUInt16(50);
 			uint16 uMaxResults = 150;
+			// ==> Anti fragmenting [netfinity] - Stulle
+			/*
 			uint16 uCount = 0;
+			*/
+			int uCount = 0;
+			int iSrcCount = 0;
+			// <== Anti fragmenting [netfinity] - Stulle
 			for(POSITION pos1 = pCurrNoteHash->ptrlistSource.GetHeadPosition(); pos1 != NULL; )
 			{
 				Source* pCurrNote = pCurrNoteHash->ptrlistSource.GetNext(pos1);
@@ -1160,9 +1229,19 @@ void CIndexed::SendValidNoteResult(const CUInt128& uKeyID, uint32 uIP, uint16 uP
 							byIO.WriteUInt128(pCurrName->m_uSourceID);
 							byIO.WriteTagList(pCurrName->m_listTag);
 							uCount++;
+							// ==> Anti fragmenting [netfinity] - Stulle
+							/*
 							if( uCount % 50 == 0 )
 							{
 								uint32 uLen = sizeof(byPacket)-byIO.GetAvailable();
+							*/
+							iSrcCount++;
+							uint32 uLen = sizeof(byPacket)-byIO.GetAvailable();
+							if( uLen + 100 > 2000 )
+							{
+								byIO.Seek((bKad2 ? (18 + 16) : 18));
+								byIO.WriteByte((byte) iSrcCount);
+							// <== Anti fragmenting [netfinity] - Stulle
 								CKademlia::GetUDPListener()->SendPacket(byPacket, uLen, uIP, uPort);
 								byIO.Reset();
 								byIO.WriteByte(OP_KADEMLIAHEADER);
@@ -1181,6 +1260,7 @@ void CIndexed::SendValidNoteResult(const CUInt128& uKeyID, uint32 uIP, uint16 uP
 								}
 								byIO.WriteUInt128(uKeyID);
 								byIO.WriteUInt16(50);
+								iSrcCount = 0; // Anti fragmenting [netfinity] - Stulle
 							}
 						}
 					}
@@ -1190,19 +1270,35 @@ void CIndexed::SendValidNoteResult(const CUInt128& uKeyID, uint32 uIP, uint16 uP
 					}
 				}
 			}
+			// ==> Anti fragmenting [netfinity] - Stulle
+			/*
 			uint16 uCountLeft = uCount % 50;
 			if( uCountLeft )
+			*/
+			int iCountLeft = iSrcCount;
+			if( iCountLeft )
+			// <== Anti fragmenting [netfinity] - Stulle
 			{
 				uint32 uLen = sizeof(byPacket)-byIO.GetAvailable();
 				if(bKad2)
 				{
+					// ==> Anti fragmenting [netfinity] - Stulle
+					/*
 					memcpy(byPacket+18+16, &uCountLeft, 2);
+					*/
+					memcpy(byPacket+18+16, &iCountLeft, 2);
+					// <== Anti fragmenting [netfinity] - Stulle
 					if (thePrefs.GetDebugClientKadUDPLevel() > 0)
 						DebugSend("KADEMLIA2_SEARCH_RES", uIP, uPort);
 				}
 				else
 				{
+					// ==> Anti fragmenting [netfinity] - Stulle
+					/*
 					memcpy(byPacket+18, &uCountLeft, 2);
+					*/
+					memcpy(byPacket+18, &iCountLeft, 2);
+					// <== Anti fragmenting [netfinity] - Stulle
 					if (thePrefs.GetDebugClientKadUDPLevel() > 0)
 						DebugSend("KADEMLIA_SEARCH_NOTES_RES", uIP, uPort);
 				}

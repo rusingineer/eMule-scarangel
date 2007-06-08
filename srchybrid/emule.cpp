@@ -79,6 +79,12 @@
 //Xman new slpash-screen arrangement
 #include "SplashScreenEx.h"
 
+// ==> Automatic shared files updater [MoNKi] - Stulle
+CEvent* CemuleApp::m_directoryWatcherCloseEvent;
+CEvent* CemuleApp::m_directoryWatcherReloadEvent;
+CCriticalSection CemuleApp::m_directoryWatcherCS;
+// <== Automatic shared files updater [MoNKi] - Stulle
+
 CLogFile theLog;
 CLogFile theVerboseLog;
 bool g_bLowColorDesktop = false;
@@ -735,6 +741,12 @@ BOOL CemuleApp::InitInstance()
 	thePrefs.m_this_session_aborted_in_an_unnormal_way=true;
 	thePrefs.Save();
 	//Xman end
+
+	// ==> Automatic shared files updater [MoNKi] - Stulle
+	m_directoryWatcherCloseEvent = NULL;
+	m_directoryWatcherReloadEvent = NULL;
+	theApp.ResetDirectoryWatcher();
+	// <== Automatic shared files updater [MoNKi] - Stulle
 
 	UpdateSplash(_T("initializing  main-window ...")); //Xman new slpash-screen arrangement
 	dlg.DoModal();
@@ -2534,3 +2546,347 @@ CFont* CemuleApp::GetFontByStyle(DWORD nStyle,bool bNarrow)
 	return emuledlg->GetFont();
 }
 // <== Design Settings [eWombat/Stulle] - Stulle
+
+// ==> Automatic shared files updater [MoNKi] - Stulle
+#define SAFE_DELETE(p)       { if(p) { delete (p);     (p)=NULL; } } 
+
+// This thread will check if the user made changes on shared
+// directories, reloading it if size/name/date/attributes has
+// changed on files/directories inside a shared dir or on the
+// shared dir itself.
+UINT CemuleApp::CheckDirectoryForChangesThread(LPVOID /*pParam*/)
+{
+	m_directoryWatcherCS.Lock();
+
+	DWORD lastReloadTime = ::GetTickCount()-SEC2MS(10); //Forces first reload
+	DWORD reloadSleepTime = 5;
+
+	// Sets the minimun time between reloads.
+	// To set an fixed time between reloads change
+	// minSecondsBetweenReloads to a value greater
+	// than 0, for example 600 for 10 minutes (600 seconds)
+	const DWORD minSecondsBetweenReloads = 120; //Variable time
+
+	// We use this event when FindFirstChangeNotification fails
+	CEvent nullEvent(FALSE,TRUE); 
+
+	// Get all shared directories
+	CStringList dirList;
+	CString curDir;
+	
+	// Incoming Dir
+	curDir=thePrefs.GetMuleDirectory(EMULE_INCOMINGDIR);
+	if (curDir.Right(1)==_T("\\"))
+		curDir = curDir.Left(curDir.GetLength() - 1);
+
+	dirList.AddTail( curDir );
+
+	// Categories dirs
+	for (int i=1; i < thePrefs.GetCatCount(); i++)
+	{
+		curDir=CString( thePrefs.GetCatPath(i) );
+		if (curDir.Right(1)==_T("\\"))
+			curDir = curDir.Left(curDir.GetLength() - 1);
+
+		if( dirList.Find( curDir ) == NULL ) {
+			dirList.AddTail( curDir );
+		}
+	}
+
+	// The other shared dirs
+	POSITION pos = thePrefs.shareddir_list.GetHeadPosition();
+	while(pos){
+		curDir = thePrefs.shareddir_list.GetNext(pos);
+		if (curDir.Right(1)==_T("\\"))
+			curDir = curDir.Left(curDir.GetLength() - 1);
+
+		if( dirList.Find( curDir ) == NULL ) {
+			dirList.AddTail( curDir );
+		}
+	}
+
+	// dirList now contains all shared dirs.
+	// Now we get the parent dirs of shared dirs,
+	// Why? To check if the user renames or removes a shared dir,
+	// because FindFirstChangeNotification don't notifies this changes
+	// on the own directory.
+	
+	// Save the start position of parents
+	int parentsStartPosition = dirList.GetCount();
+	int curPos = 0;
+	
+	pos = dirList.GetHeadPosition();
+	while(pos && curPos != parentsStartPosition){
+		curDir = dirList.GetNext(pos); 
+		curPos++;
+
+		int findPos = curDir.ReverseFind(_T('\\'));
+		if(findPos != -1)
+			curDir = curDir.Left(findPos);
+
+		if( dirList.Find( curDir ) == NULL ) {
+			dirList.AddTail( curDir );
+		}
+	}
+
+	// Save the position of the first parent in the list
+	POSITION parentListPos = dirList.FindIndex(parentsStartPosition);
+
+	HANDLE *dwChangeHandles = NULL;
+	int nChangeHandles = dirList.GetCount() + 2; // We have 2 additional events
+	dwChangeHandles = new HANDLE[nChangeHandles];
+	
+	if(!m_directoryWatcherCloseEvent)
+	{
+		ASSERT(0);
+		DebugLogError(_T("ASFU: Crashed. Will be disabled now")); // it would crash ;)
+		thePrefs.SetDirectoryWatcher(false);
+	}
+	else if(dwChangeHandles){
+		// dwChangeHandles[0] will be an event handler to finish the thread 
+		dwChangeHandles[0] = m_directoryWatcherCloseEvent->m_hObject;
+
+		// dwChangeHandles[1] will be an event handler to reload the files
+		dwChangeHandles[1] = m_directoryWatcherReloadEvent->m_hObject;
+
+		// Generate shared/parents directories handlers
+		curPos = 2; // Start at pos 2, because the pos 0 and 1 for the events.
+		pos = dirList.GetHeadPosition();
+		while(pos){
+			curDir = dirList.GetNext(pos); 
+			dwChangeHandles[curPos] = FindFirstChangeNotification(
+				curDir, FALSE,
+				FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME |
+				FILE_NOTIFY_CHANGE_SIZE | FILE_NOTIFY_CHANGE_LAST_WRITE |
+				FILE_NOTIFY_CHANGE_ATTRIBUTES);
+			
+			if(dwChangeHandles[curPos] == INVALID_HANDLE_VALUE){
+				dwChangeHandles[curPos] = nullEvent.m_hObject;
+			}
+			curPos++; 
+		}
+	
+		// Waits for an event
+		DWORD dwWaitStatus;
+		DWORD dwWaitStatusClose;
+
+		while(m_directoryWatcherCloseEvent /*true*/){ 
+			dwWaitStatus = WaitForMultipleObjects(nChangeHandles, dwChangeHandles, 
+				FALSE, INFINITE); 
+	 
+			// Maybe more than one object has been released,
+			// check if the Close Event has been signaled
+			// because it has precedence.
+			dwWaitStatusClose = WaitForSingleObject(m_directoryWatcherCloseEvent->m_hObject, 0);
+			if(dwWaitStatusClose == WAIT_OBJECT_0){
+				// We want to finalize the thread
+				dwWaitStatus = WAIT_OBJECT_0;
+			}
+
+			if(dwWaitStatus > WAIT_OBJECT_0 &&
+				dwWaitStatus < WAIT_OBJECT_0  + nChangeHandles)
+			{
+				bool reloadShared = true;
+
+				if(dwWaitStatus > (WAIT_OBJECT_0 + 1) + parentsStartPosition){
+					// A parent of a shared dir has been modified.
+					// Search changes in shared dirs and reload
+					// it only if needed.
+					reloadShared = false;
+
+					pos = dirList.GetHeadPosition();
+					while(pos && pos != parentListPos){
+						curDir = dirList.GetNext(pos); 
+						if (curDir.Right(1) != _T(":")){
+							if(CFileFind().FindFile(curDir) == FALSE){
+								// Reload shared files
+								reloadShared = true;
+								pos = NULL; // Force end of loop
+							}
+						}
+					}
+				}
+
+				if(reloadShared){
+					// Here we have a problem, if more than one file
+					// has changed (for example when the user deletes or moves
+					// a list of files), there will be a lot of notifications and
+					// the shared file list will be reloaded multiple times.
+					// The next code tries to minimize the number of reloads.
+
+					// Stop all pending notifications
+					// (we are going to reload ALL files, no more notifications needed)
+					for(int i=2; i<nChangeHandles; i++){
+						if(dwChangeHandles[i] != nullEvent.m_hObject)
+							FindCloseChangeNotification(dwChangeHandles[i]);
+					}
+
+					// Wait a few seconds. Should be sufficient to skip
+					// a lot of notifications generated by multiple files
+					const DWORD curTime = ::GetTickCount();
+					const DWORD ts = curTime - lastReloadTime;
+					const uint32 seconds = ts/1000;
+					
+					if(minSecondsBetweenReloads == 0)
+					{
+						if(seconds < reloadSleepTime)
+						{
+							if(reloadSleepTime < 1280) //Max 21 minutes between reloads (aprox)
+								reloadSleepTime *= 2;
+						}
+						else
+							reloadSleepTime = 5;
+					}
+					else
+					{
+						if(seconds < minSecondsBetweenReloads)
+							reloadSleepTime  = minSecondsBetweenReloads - seconds;
+						else
+							reloadSleepTime  = 5;
+					}
+						
+					AddDebugLogLine(false, GetResString(IDS_ASFU_RELOADTIME), reloadSleepTime);
+					
+					// Waits reloadSleepTime seconds or until the close event is set
+					dwWaitStatus = WaitForSingleObject(
+						m_directoryWatcherCloseEvent->m_hObject,
+						reloadSleepTime * 1000);
+
+					// Checks if a part file is completing
+					// and delay the reload in this case
+					reloadShared = false;
+					bool firstTime = true;
+					while(!reloadShared){
+						reloadShared = true;
+						for(int i=0; i < theApp.downloadqueue->GetFileCount() && reloadShared; i++){
+							CPartFile *pFile = theApp.downloadqueue->GetFileByIndex(i);
+							if(pFile && pFile->GetStatus() == PS_COMPLETING){
+								if(firstTime){
+									AddDebugLogLine(false, GetResString(IDS_ASFU_DELAY));
+									firstTime = false;
+								}
+								reloadShared = false;
+							}
+						}
+						if(!reloadShared){
+							// Waits 10 seconds or until the close event is set
+							dwWaitStatus = WaitForSingleObject(
+								m_directoryWatcherCloseEvent->m_hObject, 10000);
+
+							if(dwWaitStatus != WAIT_TIMEOUT){
+								// We want to close eMule
+								// this forces the 'while' end
+								reloadShared = true;
+							}
+						}
+					}
+
+					// Reload
+					if(dwWaitStatus == WAIT_TIMEOUT){
+						//Restart all notifications again
+						curPos = 2; // Start at pos 2, because the pos 0 and 1 is for the events.
+						pos = dirList.GetHeadPosition();
+						while(pos){
+							curDir = dirList.GetNext(pos); 
+							dwChangeHandles[curPos] = FindFirstChangeNotification(
+								curDir, FALSE,
+								FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME |
+								FILE_NOTIFY_CHANGE_SIZE | FILE_NOTIFY_CHANGE_LAST_WRITE |
+								FILE_NOTIFY_CHANGE_ATTRIBUTES);
+							
+							if(dwChangeHandles[curPos] == INVALID_HANDLE_VALUE){
+								dwChangeHandles[curPos] = nullEvent.m_hObject;
+							}
+							curPos++;
+						}
+					
+						// Reload shared files
+						if(theApp.emuledlg->IsRunning()){
+							AddDebugLogLine(false, GetResString(IDS_ASFU_RELOADING));
+							AddLogLine(false, GetResString(IDS_ASFU_RELOAD));
+
+							m_directoryWatcherReloadEvent->ResetEvent();
+							theApp.sharedfiles->Reload();
+							lastReloadTime = ::GetTickCount();
+						}
+					}
+					else{
+						delete[] dwChangeHandles;
+						m_directoryWatcherCS.Unlock();
+						return 1;
+					}
+				}
+				else{
+					// Get new changes
+					FindNextChangeNotification(dwChangeHandles[dwWaitStatus - WAIT_OBJECT_0]);
+				}
+			}
+			else{
+				// End the thread
+				for(int i=2; i<nChangeHandles; i++){
+					if(dwChangeHandles[i] != nullEvent.m_hObject)
+						FindCloseChangeNotification(dwChangeHandles[i]);
+				}
+				delete[] dwChangeHandles;
+				m_directoryWatcherCloseEvent->ResetEvent();
+				m_directoryWatcherCS.Unlock();
+				return 1;
+			}
+		}
+	}
+
+	//This shouldn't execute never, but...
+	m_directoryWatcherCS.Unlock();
+	return 1;
+}
+
+void CemuleApp::ResetDirectoryWatcher(){
+	// End previous thread (if exists)
+	EndDirectoryWatcher();
+
+	if(thePrefs.GetDirectoryWatcher()){
+		if(m_directoryWatcherCloseEvent == NULL)
+			m_directoryWatcherCloseEvent = new CEvent(FALSE, TRUE);
+
+		if(m_directoryWatcherReloadEvent == NULL)
+			m_directoryWatcherReloadEvent = new CEvent(FALSE, TRUE);
+
+		if(m_directoryWatcherCloseEvent != NULL &&
+			m_directoryWatcherReloadEvent != NULL)
+		{
+			AddDebugLogLine(false, _T("ASFU: Starting v3.2"));
+
+			// Starts new thread
+			AfxBeginThread(CheckDirectoryForChangesThread, this);
+		}
+	}
+}
+
+void CemuleApp::EndDirectoryWatcher() 
+ { 
+      if(m_directoryWatcherCloseEvent != NULL) 
+      { 
+           // Notifies the thread to finalize 
+           m_directoryWatcherCloseEvent->SetEvent(); 
+  
+           // Waits until the thread ends 
+           m_directoryWatcherCS.Lock(); 
+           m_directoryWatcherCS.Unlock(); 
+  
+           SAFE_DELETE(m_directoryWatcherCloseEvent); 
+           AddDebugLogLine(false, _T("ASFU: Closed"));
+      } 
+  
+      SAFE_DELETE(m_directoryWatcherReloadEvent);
+ }
+
+void CemuleApp::DirectoryWatcherExternalReload(){
+	if(m_directoryWatcherCloseEvent != NULL &&
+		m_directoryWatcherReloadEvent != NULL){
+		AddDebugLogLine(false, _T("ASFU: Forcing reload"));
+
+		// Notifies the thread to reload
+		m_directoryWatcherReloadEvent->SetEvent();
+	}
+}
+// <== Automatic shared files updater [MoNKi] - Stulle

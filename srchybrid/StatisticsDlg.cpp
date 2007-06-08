@@ -680,10 +680,7 @@ void CStatisticsDlg::RepaintMeters()
 	m_DownloadOMeter.SetBarsPlot(thePrefs.GetFillGraphs() && !thePrefs.GetNAFCFullControl(), OVERALL);
 	m_DownloadOMeter.SetBarsPlot(thePrefs.GetFillGraphs() && thePrefs.GetNAFCFullControl(), ADAPTER);
 	// ==> Source Graph - Stulle
-	if (thePrefs.GetSrcGraph())
-		m_DownloadOMeter.SetPlotColor(thePrefs.GetStatsColor(15) ,5) ;
-	else
-		m_DownloadOMeter.SetPlotColor(thePrefs.GetStatsColor(0) ,5) ;
+	m_DownloadOMeter.SetPlotColor(thePrefs.GetStatsColor(15) ,5) ;
 	// <== Source Graph - Stulle
 
 	m_UploadOMeter.SetBackgroundColor(thePrefs.GetStatsColor(0)) ;
@@ -721,7 +718,10 @@ void CStatisticsDlg::RepaintMeters()
 		m_DownloadOMeter.SetLegendLabel(GetResString(IDS_SP_SRCGRAPH)+Buffer,5);
 	}
 	else
-		m_DownloadOMeter.SetLegendLabel(_T(""),5);
+	{
+		Buffer.Format(_T(" (%s)"),GetResString(IDS_DISABLED));
+		m_DownloadOMeter.SetLegendLabel(GetResString(IDS_SP_SRCGRAPH)+Buffer,3);
+	}
 	// <== Source Graph - Stulle
 
 

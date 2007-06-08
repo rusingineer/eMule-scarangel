@@ -1661,6 +1661,15 @@ void CUpDownClient::BanLeecher(LPCTSTR pszReason, uint8 leechercategory){
 
 	m_strBanMessage.Empty();
 	bool reducescore=false;
+
+	// ==> Anti Uploader Ban [Stulle] - Stulle
+	if (AntiUploaderBanActive())
+	{
+		m_bLeecher = 0; // no leecher
+		return;
+	}
+	// <== Anti Uploader Ban [Stulle] - Stulle
+
 	switch(leechercategory) 
 	{
 	case 1:

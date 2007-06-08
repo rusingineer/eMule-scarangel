@@ -45,6 +45,7 @@
 #define	EMULE_PROTOCOL					0x01
 // MOD Note: end
 #define	EDONKEYVERSION					0x3C
+#define SHAREAZAEMUVERSION		0x3D // Emulate others [WiZaRd/Spike/shadow2004] - Stulle
 #define KADEMLIA_VERSION1_46c			0x01 /*45b - 46c*/
 #define KADEMLIA_VERSION2_47a			0x02 /*47a*/
 #define KADEMLIA_VERSION3_47b			0x03 /*47b*/

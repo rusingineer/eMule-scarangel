@@ -61,12 +61,12 @@ protected:
 	// <== Random Ports [MoNKi] - Stulle
 //	int m_iReAskFileSrc; // Timer for ReAsk File Sources - Stulle
 	bool m_bACC; // ACC [Max/WiZaRd] - Max
-/*
-	// ==> Anti Uploader Ban - Stulle
+
+	// ==> Anti Uploader Ban [Stulle] - Stulle
 	int m_iAntiUploaderBanLimit;
 	int m_iAntiUploaderBanCase;
-	// <== Anti Uploader Ban - Stulle
-*/
+	// <== Anti Uploader Ban [Stulle] - Stulle
+
 
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 	int m_iCreditSystem;
@@ -154,8 +154,17 @@ protected:
 	int m_iGlobalHL;
 	bool m_bGlobalHlAll;
 	// <== Global Source Limit [Max/Stulle] - Stulle
+	// ==> Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	bool m_bEmuMLDonkey;
+	bool m_bEmueDonkey;
+	bool m_bEmueDonkeyHybrid;
+	bool m_bEmuShareaza;
+	bool m_bEmuLphant;
+	bool m_bLogEmulator;
+	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
 	bool m_bStartupSound; // Startupsound [Commander] - mav744
 	int m_iCompressLevel; // Adjust Compress Level [Stulle] - Stulle
+	bool m_bAutoSharedUpdater; // Automatic shared files updater [MoNKi] - Stulle
 
 	CTreeOptionsCtrlEx m_ctrlTreeOptions;
 	bool m_bInitializedTreeOpts;
@@ -216,14 +225,14 @@ protected:
 	// <== Random Ports [MoNKi] - Stulle
 //	HTREEITEM m_htiReAskFileSrc; // Timer for ReAsk File Sources - Stulle
 	HTREEITEM m_htiACC; // ACC [Max/WiZaRd] - Max
-/*
-	// ==> Anti Uploader Ban - Stulle
+
+	// ==> Anti Uploader Ban [Stulle] - Stulle
 	HTREEITEM m_htiAntiUploaderBanLimit;
 	HTREEITEM m_htiAntiCase1;
 	HTREEITEM m_htiAntiCase2;
 	HTREEITEM m_htiAntiCase3;
-	// <== Anti Uploader Ban - Stulle
-*/
+	// <== Anti Uploader Ban [Stulle] - Stulle
+
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 	HTREEITEM m_htiCreditSystem;
 	HTREEITEM m_htiOfficialCredit;
@@ -339,8 +348,18 @@ protected:
 	HTREEITEM m_htiGlobalHlAll;
 	HTREEITEM m_htiGlobalHlAggro;
 	// <== Global Source Limit [Max/Stulle] - Stulle
+	// ==> Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	HTREEITEM m_htiEmulatorGroup;
+	HTREEITEM m_htiEmuMLDonkey;
+	HTREEITEM m_htiEmueDonkey;
+	HTREEITEM m_htiEmueDonkeyHybrid;
+	HTREEITEM m_htiEmuShareaza;
+	HTREEITEM m_htiEmuLphant;
+	HTREEITEM m_htiLogEmulator;
+	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
 	HTREEITEM m_htiStartupSound; // Startupsound [Commander] - mav744
 	HTREEITEM m_htiCompressLevel; // Adjust Compress Level [Stulle] - Stulle
+	HTREEITEM m_htiAutoSharedUpdater; // Automatic shared files updater [MoNKi] - Stulle
 
 	// ==> push small files [sivka] - Stulle
 	uint32 m_iPushSmallFiles;

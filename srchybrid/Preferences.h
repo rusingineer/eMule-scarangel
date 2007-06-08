@@ -1015,6 +1015,22 @@ public:
 	static uint16	m_iCurrentUDPRndPort;
 	// <== Random Ports [MoNKi] - Stulle
 
+	static bool		m_bDirectoryWatcher; // Automatic shared files updater [MoNKi] - Stulle
+
+	// ==> Anti Uploader Ban [Stulle] - Stulle
+	static uint16 m_iAntiUploaderBanLimit;
+	static uint8 AntiUploaderBanCaseMode;
+	// <== Anti Uploader Ban [Stulle] - Stulle
+
+	// ==> Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	static	bool	m_bEmuMLDonkey;
+	static	bool	m_bEmueDonkey;
+	static	bool	m_bEmueDonkeyHybrid;
+	static	bool	m_bEmuShareaza;
+	static  bool    m_bEmuLphant;
+	static	bool	m_bLogEmulator;
+	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+
 	enum Table
 	{
 		tableDownload, 
@@ -2304,6 +2320,25 @@ public:
 	static	uint16	GetRandomPortsSafeResetOnRestartTime(){ return m_iRndPortsSafeResetOnRestartTime; }
 	static	void	SetRandomPortsSafeResetOnRestartTime(uint16 time){ m_iRndPortsSafeResetOnRestartTime = time; }
 	// <== Random Ports [MoNKi] - Stulle
+
+	// ==> Automatic shared files updater [MoNKi] - Stulle
+	static	bool	GetDirectoryWatcher()				{ return m_bDirectoryWatcher; }
+	static	void	SetDirectoryWatcher(bool on)		{ m_bDirectoryWatcher = on; }
+	// <== Automatic shared files updater [MoNKi] - Stulle
+
+	// ==> Anti Uploader Ban [Stulle] - Stulle
+	static	uint16	GetAntiUploaderBanLimit()	{return m_iAntiUploaderBanLimit;}
+	static	uint8	GetAntiUploaderBanCase()	{return AntiUploaderBanCaseMode;}
+	// <== Anti Uploader Ban [Stulle] - Stulle
+
+	// ==> Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	static	bool	IsEmuMLDonkey()			    {return m_bEmuMLDonkey;}
+	static	bool	IsEmueDonkey()			    {return m_bEmueDonkey;}
+	static	bool	IsEmueDonkeyHybrid()		{return m_bEmueDonkeyHybrid;}
+	static	bool	IsEmuShareaza()				{return m_bEmuShareaza;}
+	static  bool    IsEmuLphant()				{return m_bEmuLphant;}
+	static	bool	IsEmuLog()					{return m_bLogEmulator;}
+	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
 
 protected:
 	static	CString m_strFileCommentsFilePath;

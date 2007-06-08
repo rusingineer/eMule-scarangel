@@ -3230,6 +3230,7 @@ INVMODE                 ICON                    "res\\InvMode.ico"
 UPNP                    ICON                    "res\\UPnP.ico"
 PORTS                   ICON                    "res\\Ports.ico"
 SUPPORT                 ICON                    "res\\Support.ico"
+EMULATEICON             ICON                    "res\\Emulator.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -5814,6 +5815,28 @@ BEGIN
     IDS_RATE                "Rate ScarAngel"
     IDS_XTREME              "Xtreme Mod Homepage"
     // <== Support page in preferences [Stulle] - Stulle
+    // ==> Automatic shared files updater [MoNKi] - Stulle
+    IDS_AUTO_SHARED_UPDATER "Automatic reload of shared files"
+    IDS_ASFU_RELOADTIME     "ASFU: Detected change on shared folders, reload of shared files in %d seconds..."
+    IDS_ASFU_DELAY          "ASFU: Detected a file in completing status, delaying reload..."
+    IDS_ASFU_RELOAD         "Detected change on shared folders. Reloading shared files..."
+    IDS_ASFU_RELOADING      "ASFU: Reloading..."
+    // <== Automatic shared files updater [MoNKi] - Stulle
+    // ==> Anti Uploader Ban [Stulle] - Stulle
+    IDS_UNBAN_UPLOADER      "Limit for Ban-prevention in MB [0=disabled]"
+    IDS_ANTI_CASE_1         "UL >= Limit"
+    IDS_ANTI_CASE_2         "UL-DL >= Limit"
+    IDS_ANTI_CASE_3         "UL-DL >= Limit till 1:1"
+    // <== Anti Uploader Ban [Stulle] - Stulle
+    // ==> Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+    IDS_EMULATOR_GROUP      "Emulate other clients"
+    IDS_EMULATE_ML          "Emulate MLDonkeys"
+    IDS_EMULATE_DONK        "Emulate eDonkeys"
+    IDS_EMULATE_DONK_HYB    "Emulate eDonkey-hybrids"
+    IDS_EMULATE_SHA         "Emulate Sharezas"
+    IDS_EMULATE_PHANT       "Emulate lPhants"
+    IDS_EMULATE_LOG         "Log emulations"
+    // <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
 END
 
 #endif    // Englisch (USA) resources

@@ -82,9 +82,14 @@ CRoutingZone::CRoutingZone()
 	// Set our KadID for creating the contact tree
 	CKademlia::GetPrefs()->GetKadID(&uMe);
 	// Set the preference file name.
+	// ==> KAD vista fix [godlaugh2007] - Stulle
+	/*
 	m_sFilename = CMiscUtils::GetAppDir();
 	m_sFilename.Append(CONFIGFOLDER);
 	m_sFilename.Append(_T("nodes.dat"));
+	*/
+	m_sFilename =thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + _T("nodes.dat");
+	// <== KAD vista fix [godlaugh2007] - Stulle
 	// Init our root node.
 	Init(NULL, 0, CUInt128((ULONG)0));
 }
@@ -289,13 +294,23 @@ bool CRoutingZone::CanSplit() const
 	return false;
 }
 
+// ==> Safe KAD [netfinity] - Stulle
+/*
 bool CRoutingZone::Add(const CUInt128 &uID, uint32 uIP, uint16 uUDPPort, uint16 uTCPPort, uint8 uVersion, bool bUpdate)
+*/
+bool CRoutingZone::Add(const CUInt128 &uID, uint32 uIP, uint16 uUDPPort, uint16 uTCPPort, uint8 uVersion, bool bUpdate, bool bAdd)
+// <== Safe KAD [netfinity] - Stulle
 {
 	uint32 uhostIP = ntohl(uIP);
 	if (::IsGoodIPPort(uhostIP, uUDPPort))
 	{
 		if (!::theApp.ipfilter->IsFiltered(uhostIP)) {
+			// ==> Safe KAD [netfinity] - Stulle
+			/*
 			return AddUnfiltered(uID, uIP, uUDPPort, uTCPPort, uVersion, bUpdate);
+			*/
+			return AddUnfiltered(uID, uIP, uUDPPort, uTCPPort, uVersion, bUpdate, bAdd);
+			// <== Safe KAD [netfinity] - Stulle
 		}
 		else if (::thePrefs.GetLogFilteredIPs())
 			AddDebugLogLine(false, _T("Ignored kad contact (IP=%s) - IP filter (%s)"), ipstr(uhostIP), ::theApp.ipfilter->GetLastHit());
@@ -305,20 +320,35 @@ bool CRoutingZone::Add(const CUInt128 &uID, uint32 uIP, uint16 uUDPPort, uint16 
 	return false;
 }
 
+// ==> Safe KAD [netfinity] - Stulle
+/*
 bool CRoutingZone::AddUnfiltered(const CUInt128 &uID, uint32 uIP, uint16 uUDPPort, uint16 uTCPPort, uint8 uVersion, bool bUpdate)
+*/
+bool CRoutingZone::AddUnfiltered(const CUInt128 &uID, uint32 uIP, uint16 uUDPPort, uint16 uTCPPort, uint8 uVersion, bool bUpdate, bool bAdd)
+// <== Safe KAD [netfinity] - Stulle
 {
 	if (uID != uMe)
 	{
 		// JOHNTODO -- How do these end up leaking at times?
 		CContact* pContact = new CContact(uID, uIP, uUDPPort, uTCPPort, uVersion);
+		// ==> Safe KAD [netfinity] - Stulle
+		/*
 		if (Add(pContact, bUpdate))
+		*/
+		if (Add(pContact, bUpdate, bAdd))
+		// <== Safe KAD [netfinity] - Stulle
 			return true;
 		delete pContact;
 	}
 	return false;
 }
 
+// ==> Safe KAD [netfinity] - Stulle
+/*
 bool CRoutingZone::Add(CContact* pContact, bool bUpdate)
+*/
+bool CRoutingZone::Add(CContact* pContact, bool bUpdate, bool bAdd)
+// <== Safe KAD [netfinity] - Stulle
 {
 	// If we are not a leaf, call add on the correct branch.
 	if (!IsLeaf())
@@ -340,7 +370,12 @@ bool CRoutingZone::Add(CContact* pContact, bool bUpdate)
 			}
 			return false;
 		}
+		// ==> Safe KAD [netfinity] - Stulle
+		/*
 		else if (m_pBin->GetRemaining())
+		*/
+		else if (m_pBin->GetRemaining() && bAdd)
+		// <== Safe KAD [netfinity] - Stulle
 		{
 			// This bin is not full, so add the new contact.
 			if(m_pBin->AddContact(pContact))
@@ -352,11 +387,21 @@ bool CRoutingZone::Add(CContact* pContact, bool bUpdate)
 			}
 			return false;
 		}
+		// ==> Safe KAD [netfinity] - Stulle
+		/*
 		else if (CanSplit())
+		*/
+		else if (CanSplit() && bAdd)
+		// <== Safe KAD [netfinity] - Stulle
 		{
 			// This bin was full and split, call add on the correct branch.
 			Split();
+			// ==> Safe KAD [netfinity] - Stulle
+			/*
 			return m_pSubZones[pContact->GetDistance().GetBitNumber(m_uLevel)]->Add(pContact, bUpdate);
+			*/
+			return m_pSubZones[pContact->GetDistance().GetBitNumber(m_uLevel)]->Add(pContact, bUpdate, bAdd);
+			// <== Safe KAD [netfinity] - Stulle
 		}
 		else
 			return false;

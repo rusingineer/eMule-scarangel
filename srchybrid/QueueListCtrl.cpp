@@ -582,6 +582,8 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					Sbuffer.Format(_T("%i"),client->GetScore(false,false,true));
 					break;
 				case 4:
+					// ==> Display reason for zero score [Stulle] - Stulle
+					/*
 					if (client->HasLowID()){
 						if (client->m_bAddNextConnect)
 							Sbuffer.Format(_T("%i ****"),client->GetScore(false));
@@ -599,6 +601,31 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					//Xman end
 					else
 						Sbuffer.Format(_T("%i"),client->GetScore(false));
+					*/
+					{
+						uint32 uScore = client->GetScore(false);
+						if (client->HasLowID()){
+							if (client->m_bAddNextConnect)
+								Sbuffer.Format(_T("%i ****"),uScore);
+							else
+								Sbuffer.Format(_T("%i (%s)"),uScore, GetResString(IDS_IDLOW));
+						}
+						//Xman uploading problem client
+						else if(client->isupprob && client->m_bAddNextConnect)
+						{
+							if(client->socket && client->socket->IsConnected())
+								Sbuffer.Format(_T("%i #~~"),uScore);
+							else
+								Sbuffer.Format(_T("%i ~~~"),uScore);
+						}
+						//Xman end
+						else
+							Sbuffer.Format(_T("%i"),uScore);
+
+						if(uScore == 0)
+							Sbuffer.AppendFormat(_T(" (%s)"),client->GetZeroScoreString());
+					}
+					// <== Display reason for zero score [Stulle] - Stulle
 					break;
 				case 5:
 					Sbuffer.Format(_T("%i"),client->GetAskedCount());

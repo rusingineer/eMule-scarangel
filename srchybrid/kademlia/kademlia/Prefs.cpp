@@ -52,9 +52,14 @@ using namespace Kademlia;
 
 CPrefs::CPrefs()
 {
+	// ==> KAD vista fix [godlaugh2007] - Stulle
+	/*
 	CString sFilename = CMiscUtils::GetAppDir();
 	sFilename.Append(CONFIGFOLDER);
 	sFilename.Append(_T("preferencesKad.dat"));
+	*/
+	CString sFilename =thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + _T("preferencesKad.dat");
+	// <== KAD vista fix [godlaugh2007] - Stulle
 	Init(sFilename);
 }
 
@@ -86,6 +91,10 @@ void CPrefs::Init(LPCTSTR szFilename)
 	m_sFilename = szFilename;
 	m_bLastFirewallState = true;
 	ReadFile();
+	// ==> Safe KAD [netfinity] - Stulle
+	if (!m_uClientID.IsGoodRandom())
+		m_uClientID.SetValueRandom();
+	// <== Safe KAD [netfinity] - Stulle
 }
 
 void CPrefs::ReadFile()
@@ -96,6 +105,8 @@ void CPrefs::ReadFile()
 		CFileException fexp;
 		if (file.Open(m_sFilename, CFile::modeRead | CFile::osSequentialScan | CFile::typeBinary | CFile::shareDenyWrite, &fexp))
 		{
+			// ==> Safe KAD [netfinity] - Stulle
+			/*
 			setvbuf(file.m_pStream, NULL, _IOFBF, 16384);
 			m_uIP = file.ReadUInt32();
 			file.ReadUInt16();
@@ -104,6 +115,20 @@ void CPrefs::ReadFile()
 			if (m_uClientID == 0)
 				m_uClientID.SetValueRandom();
 			file.Close();
+			*/
+			uint32				uIP;
+			Kademlia::CUInt128	uClientID;
+
+			setvbuf(file.m_pStream, NULL, _IOFBF, 16384);
+			uIP = file.ReadUInt32();
+			file.ReadUInt16();
+			file.ReadUInt128(&uClientID);
+			file.ReadUInt8();
+			file.Close();
+
+			m_uIP = m_uIPLast = uIP;
+			m_uClientID = uClientID;
+			// <== Safe KAD [netfinity] - Stulle
 		}
 	}
 	catch (CException *ex)
@@ -123,7 +148,12 @@ void CPrefs::WriteFile()
 	{
 		CSafeBufferedFile file;
 		CFileException fexp;
+		// ==> Safe KAD [netfinity] - Stulle
+		/*
 		if (file.Open(m_sFilename, CFile::modeWrite | CFile::modeCreate | CFile::typeBinary | CFile::shareDenyWrite, &fexp))
+		*/
+		if (file.Open(m_sFilename, CFile::modeWrite | CFile::modeCreate | CFile::typeBinary | CFile::shareExclusive, &fexp))
+		// <== Safe KAD [netfinity] - Stulle
 		{
 			setvbuf(file.m_pStream, NULL, _IOFBF, 16384);
 			file.WriteUInt32(m_uIP);

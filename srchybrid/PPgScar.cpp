@@ -156,14 +156,14 @@ CPPgScar::CPPgScar()
 	// <== Random Ports [MoNKi] - Stulle
 //	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources - Stulle
 	m_htiACC = NULL; // ACC [Max/WiZaRd] - Max
-/*
-	// ==> Anti Uploader Ban - Stulle
+
+	// ==> Anti Uploader Ban [Stulle] - Stulle
 	m_htiAntiUploaderBanLimit = NULL;
 	m_htiAntiCase1 = NULL;
 	m_htiAntiCase2 = NULL;
 	m_htiAntiCase3 = NULL;
-	// <== Anti Uploader Ban - Stulle
-*/
+	// <== Anti Uploader Ban [Stulle] - Stulle
+
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 	m_iCreditSystem = thePrefs.GetCreditSystem();
 	m_htiCreditSystem = NULL;
@@ -284,8 +284,18 @@ CPPgScar::CPPgScar()
 	m_htiGlobalHlAll = NULL;
 	m_htiGlobalHlDefault = NULL;
 	// <== Global Source Limit [Max/Stulle] - Stulle
+	// ==> Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	m_htiEmulatorGroup = NULL;
+	m_htiEmuMLDonkey = NULL;
+	m_htiEmueDonkey = NULL;
+	m_htiEmueDonkeyHybrid = NULL;
+	m_htiEmuShareaza = NULL;
+	m_htiEmuLphant = NULL;
+	m_htiLogEmulator = NULL;
+	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
 	m_htiStartupSound = NULL; // Startupsound [Commander] - mav744
 	m_htiCompressLevel = NULL; // Adjust Compress Level [Stulle] - Stulle
+	m_htiAutoSharedUpdater = NULL; // Automatic shared files updater [MoNKi] - Stulle
 }
 
 CPPgScar::~CPPgScar()
@@ -320,6 +330,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		int iImgReleaseBonus = 8;
 		int iImgMisc = 8;
 		int iImgGlobal = 8;
+		int iImgEmulate = 8;
 
 		CImageList* piml = m_ctrlTreeOptions.GetImageList(TVSIL_NORMAL);
 		if (piml){
@@ -344,6 +355,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 			iImgReleaseBonus = piml->Add(CTempIconLoader(_T("RELEASEBONUS")));
 			iImgMisc = piml->Add(CTempIconLoader(_T("SRCUNKNOWN")));
 			iImgGlobal = piml->Add(CTempIconLoader(_T("SEARCHMETHOD_GLOBAL")));
+			iImgEmulate = piml->Add(CTempIconLoader(_T("EMULATEICON")));
 		}
 		
 		CString Buffer;
@@ -421,15 +433,15 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.AddEditBox(m_htiReAskFileSrc, RUNTIME_CLASS(CNumTreeOptionsEdit));
 */		// <== Timer for ReAsk File Sources - Stulle
 		m_htiACC = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ACC), m_htiConTweaks, m_bACC); // ACC [Max/WiZaRd] - Max
-/*
-		// ==> Anti Uploader Ban - Stulle
+
+		// ==> Anti Uploader Ban [Stulle] - Stulle
 		m_htiAntiUploaderBanLimit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_UNBAN_UPLOADER), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, TVI_ROOT);
 		m_ctrlTreeOptions.AddEditBox(m_htiAntiUploaderBanLimit, RUNTIME_CLASS(CNumTreeOptionsEdit));
 		m_htiAntiCase1 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_ANTI_CASE_1), m_htiAntiUploaderBanLimit, m_iAntiUploaderBanCase == 0);
 		m_htiAntiCase2 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_ANTI_CASE_2), m_htiAntiUploaderBanLimit, m_iAntiUploaderBanCase == 1);
 		m_htiAntiCase3 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_ANTI_CASE_3), m_htiAntiUploaderBanLimit, m_iAntiUploaderBanCase == 2);
-		// <== Anti Uploader Ban - Stulle
-*/
+		// <== Anti Uploader Ban [Stulle] - Stulle
+
 		// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 		m_htiCreditSystem = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_CREDIT_SYSTEM), iImgCS, TVI_ROOT);
 		m_htiOfficialCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_OFFICIAL_CREDIT), m_htiCreditSystem, m_iCreditSystem == 0);
@@ -572,11 +584,21 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiGlobalHlDefault = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_GLOBAL_HL_DEFAULT), m_htiGlobalHlGroup, m_bGlobalHlDefault);
 		m_ctrlTreeOptions.Expand(m_htiGlobalHlGroup, TVE_EXPAND);
 		// <== Global Source Limit [Max/Stulle] - Stulle
+		// ==> Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+		m_htiEmulatorGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_EMULATOR_GROUP), iImgEmulate, m_htiMisc);
+		m_htiEmuMLDonkey = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_EMULATE_ML), m_htiEmulatorGroup, m_bEmuMLDonkey);
+		m_htiEmueDonkey = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_EMULATE_DONK), m_htiEmulatorGroup, m_bEmueDonkey);
+		m_htiEmueDonkeyHybrid = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_EMULATE_DONK_HYB), m_htiEmulatorGroup, m_bEmueDonkeyHybrid);
+		m_htiEmuShareaza = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_EMULATE_SHA), m_htiEmulatorGroup, m_bEmuShareaza);
+		m_htiEmuLphant = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_EMULATE_PHANT), m_htiEmulatorGroup, m_bEmuLphant);
+		m_htiLogEmulator = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_EMULATE_LOG), m_htiEmulatorGroup, m_bLogEmulator);
+		// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
 		m_htiStartupSound = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_STARTUPSOUND), m_htiMisc, m_bStartupSound); // Startupsound [Commander] - mav744
 		// ==> Adjust Compress Level [Stulle] - Stulle
 		m_htiCompressLevel = m_ctrlTreeOptions.InsertItem(GetResString(IDS_COMPRESS_LVL), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiMisc);
 		m_ctrlTreeOptions.AddEditBox(m_htiCompressLevel, RUNTIME_CLASS(CNumTreeOptionsEdit));
 		// <== Adjust Compress Level [Stulle] - Stulle
+		m_htiAutoSharedUpdater = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_AUTO_SHARED_UPDATER), m_htiMisc, m_bAutoSharedUpdater); // Automatic shared files updater [MoNKi] - Stulle
 
 		m_ctrlTreeOptions.SendMessage(WM_VSCROLL, SB_TOP);
 		m_bInitializedTreeOpts = true;
@@ -638,13 +660,13 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxInt(pDX, m_iReAskFileSrc, 29, 55);
 */	// <== Timer for ReAsk File Sources - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiACC, m_bACC); // ACC [Max/WiZaRd] - Max
-/*
-	// ==> Anti Uploader Ban - Stulle
+
+	// ==> Anti Uploader Ban [Stulle] - Stulle
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiAntiUploaderBanLimit, m_iAntiUploaderBanLimit);
 	DDV_MinMaxInt(pDX, m_iAntiUploaderBanLimit, 0, 20);
 	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiAntiUploaderBanLimit, (int &)m_iAntiUploaderBanCase);
-	// <== Anti Uploader Ban - Stulle
-*/
+	// <== Anti Uploader Ban [Stulle] - Stulle
+
 	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiCreditSystem, (int &)m_iCreditSystem); // CreditSystems [EastShare/ MorphXT] - Stulle
 
 	// ==> CPU/MEM usage [$ick$/Stulle] - Max
@@ -744,11 +766,20 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiGlobalHlAll, m_bGlobalHlAll);
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiGlobalHlDefault, m_bGlobalHlDefault);
 	// <== Global Source Limit [Max/Stulle] - Stulle
+	// ==> Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiEmuMLDonkey, m_bEmuMLDonkey);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiEmueDonkey, m_bEmueDonkey);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiEmueDonkeyHybrid, m_bEmueDonkeyHybrid);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiEmuShareaza, m_bEmuShareaza);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiEmuLphant, m_bEmuLphant);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiLogEmulator, m_bLogEmulator);
+	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiStartupSound, m_bStartupSound); // Startupsound [Commander] - mav744
 	// ==> Adjust Compress Level [Stulle] - Stulle
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiCompressLevel, m_iCompressLevel);
 	DDV_MinMaxInt(pDX, m_iCompressLevel, 0, 9);
 	// <== Adjust Compress Level [Stulle] - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiAutoSharedUpdater, m_bAutoSharedUpdater); // Automatic shared files updater [MoNKi] - Stulle
 
 	// ==> FunnyNick [SiRoB/Stulle] - Stulle
 	if(m_htiFnTagMode)	m_ctrlTreeOptions.SetGroupEnable(m_htiFnTagMode, m_bFnActive);
@@ -811,12 +842,12 @@ BOOL CPPgScar::OnInitDialog()
 	// <== Random Ports [MoNKi] - Stulle
 //	m_iReAskFileSrc = (thePrefs.GetReAskTimeDif() + FILEREASKTIME)/60000; // Timer for ReAsk File Sources - Stulle
 	m_bACC = thePrefs.GetACC(); // ACC [Max/WiZaRd] - Max
-/*
-	// ==> Anti Uploader Ban - Stulle
+
+	// ==> Anti Uploader Ban [Stulle] - Stulle
 	m_iAntiUploaderBanLimit = thePrefs.GetAntiUploaderBanLimit();
 	m_iAntiUploaderBanCase = thePrefs.GetAntiUploaderBanCase();
-	// <== Anti Uploader Ban - Stulle
-*/
+	// <== Anti Uploader Ban [Stulle] - Stulle
+
 	// ==> CPU/MEM usage [$ick$/Stulle] - Max
 	m_bSysInfo = thePrefs.GetSysInfo();
 	m_bSysInfoGlobal = thePrefs.GetSysInfoGlobal();
@@ -916,8 +947,17 @@ BOOL CPPgScar::OnInitDialog()
 	m_bGlobalHlAll = thePrefs.GetGlobalHlAll();
 	m_bGlobalHlDefault = thePrefs.GetGlobalHlDefault();
 	// <== Global Source Limit [Max/Stulle] - Stulle
+	// ==> Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	m_bEmuMLDonkey = thePrefs.IsEmuMLDonkey();
+	m_bEmueDonkey = thePrefs.IsEmueDonkey();
+	m_bEmueDonkeyHybrid = thePrefs.IsEmueDonkeyHybrid();
+	m_bEmuShareaza = thePrefs.IsEmuShareaza();
+	m_bEmuLphant = thePrefs.IsEmuLphant();
+	m_bLogEmulator = thePrefs.IsEmuLog();
+	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
 	m_bStartupSound = thePrefs.UseStartupSound(); // Startupsound [Commander] - mav744
 	m_iCompressLevel = thePrefs.GetCompressLevel(); // Adjust Compress Level [Stulle] - Stulle
+	m_bAutoSharedUpdater = thePrefs.GetDirectoryWatcher(); // Automatic shared files updater [MoNKi] - Stulle
 
 	CPropertyPage::OnInitDialog();
 
@@ -1129,12 +1169,12 @@ BOOL CPPgScar::OnApply()
 	// <== Random Ports [MoNKi] - Stulle
 //	thePrefs.m_uReAskTimeDif = (m_iReAskFileSrc-29)*60000; // Timer for ReAsk File Sources - Stulle
 	thePrefs.m_bACC = m_bACC; // ACC [Max/WiZaRd] - Max
-/*
-	// ==> Anti Uploader Ban - Stulle
+
+	// ==> Anti Uploader Ban [Stulle] - Stulle
 	thePrefs.m_iAntiUploaderBanLimit = m_iAntiUploaderBanLimit;
 	thePrefs.AntiUploaderBanCaseMode = m_iAntiUploaderBanCase;
-	// <== Anti Uploader Ban - Stulle
-*/
+	// <== Anti Uploader Ban [Stulle] - Stulle
+
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 	if(thePrefs.creditSystemMode != m_iCreditSystem){
 		thePrefs.creditSystemMode = (uint8)m_iCreditSystem;
@@ -1246,12 +1286,21 @@ BOOL CPPgScar::OnApply()
 	}
 	thePrefs.m_bGlobalHlDefault = m_bGlobalHlDefault;
 	// <== Global Source Limit [Max/Stulle] - Stulle
+	// ==> Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	thePrefs.m_bEmuMLDonkey = m_bEmuMLDonkey;
+	thePrefs.m_bEmueDonkey = m_bEmueDonkey;
+	thePrefs.m_bEmueDonkeyHybrid = m_bEmueDonkeyHybrid;
+	thePrefs.m_bEmuShareaza = m_bEmuShareaza;
+	thePrefs.m_bEmuLphant = m_bEmuLphant;
+	thePrefs.m_bLogEmulator = m_bLogEmulator;
+	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
 	thePrefs.startupsound = m_bStartupSound; // Startupsound [Commander] - mav744
 	// ==> Adjust Compress Level [Stulle] - Stulle
 	thePrefs.m_uCompressLevel = (uint8)m_iCompressLevel;
 	if(m_iCompressLevel == 0)
 		thePrefs.m_bUseCompression = false;
 	// <=== Adjust Compress Level [Stulle] - Stulle
+	thePrefs.m_bDirectoryWatcher = m_bAutoSharedUpdater; // Automatic shared files updater [MoNKi] - Stulle
 
 	// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 	thePrefs.m_bAutoBackup = m_AutoBackup.GetCheck() == BST_CHECKED;
@@ -1395,11 +1444,11 @@ void CPPgScar::Localize(void)
 		// <== Random Ports [MoNKi] - Stulle
 //		if (m_htiReAskFileSrc) m_ctrlTreeOptions.SetEditLabel(m_htiReAskFileSrc, GetResString(IDS_REASK_FILE_SRC)); // Timer for ReAsk File Sources - Stulle
 		if (m_htiACC) m_ctrlTreeOptions.SetItemText(m_htiACC, GetResString(IDS_ACC)); // ACC [Max/WiZaRd] - Max
-/*
-		// ==> Anti Uploader Ban - Stulle
+
+		// ==> Anti Uploader Ban [Stulle] - Stulle
 		if (m_htiAntiUploaderBanLimit) m_ctrlTreeOptions.SetEditLabel(m_htiAntiUploaderBanLimit, GetResString(IDS_UNBAN_UPLOADER));
-		// <== Anti Uploader Ban - Stulle
-*/
+		// <== Anti Uploader Ban [Stulle] - Stulle
+
 		// ==> CPU/MEM usage [$ick$/Stulle] - Max
 		if (m_htiSysInfo) m_ctrlTreeOptions.SetItemText(m_htiSysInfo, GetResString(IDS_ENABLED));
 		if (m_htiSysInfoGlobal) m_ctrlTreeOptions.SetItemText(m_htiSysInfoGlobal, GetResString(IDS_SYS_INFO_GLOBAL));
@@ -1509,8 +1558,17 @@ void CPPgScar::Localize(void)
 		if (m_htiGlobalHlAll) m_ctrlTreeOptions.SetItemText(m_htiGlobalHlAll, GetResString(IDS_GLOBAL_HL_ALL));
 		if (m_htiGlobalHlDefault) m_ctrlTreeOptions.SetItemText(m_htiGlobalHlDefault, GetResString(IDS_GLOBAL_HL_DEFAULT));
 		// <== Global Source Limit [Max/Stulle] - Stulle
+		// ==> Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+		if (m_htiEmuMLDonkey) m_ctrlTreeOptions.SetItemText(m_htiEmuMLDonkey, GetResString(IDS_EMULATE_ML));
+		if (m_htiEmueDonkey) m_ctrlTreeOptions.SetItemText(m_htiEmueDonkey, GetResString(IDS_EMULATE_DONK));
+		if (m_htiEmueDonkeyHybrid) m_ctrlTreeOptions.SetItemText(m_htiEmueDonkeyHybrid, GetResString(IDS_EMULATE_DONK_HYB));
+		if (m_htiEmuShareaza) m_ctrlTreeOptions.SetItemText(m_htiEmuShareaza, GetResString(IDS_EMULATE_SHA));
+		if (m_htiEmuLphant) m_ctrlTreeOptions.SetItemText(m_htiEmuLphant, GetResString(IDS_EMULATE_PHANT));
+		if (m_htiLogEmulator) m_ctrlTreeOptions.SetItemText(m_htiLogEmulator, GetResString(IDS_EMULATE_LOG));
+		// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
 		if (m_htiStartupSound) m_ctrlTreeOptions.SetItemText(m_htiStartupSound, GetResString(IDS_STARTUPSOUND)); // Startupsound [Commander] - mav744
 		if (m_htiCompressLevel) m_ctrlTreeOptions.SetEditLabel(m_htiCompressLevel, GetResString(IDS_COMPRESS_LVL)); // Adjust Compress Level [Stulle] - Stulle
+		if (m_htiAutoSharedUpdater) m_ctrlTreeOptions.SetEditLabel(m_htiAutoSharedUpdater, GetResString(IDS_AUTO_SHARED_UPDATER)); // Automatic shared files updater [MoNKi] - Stulle
 
 		// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 		m_BackupBox.SetWindowText( GetResString(IDS_BACKUP_FILEFRAME) );
@@ -1629,14 +1687,14 @@ void CPPgScar::OnDestroy()
 	// <== Random Ports [MoNKi] - Stulle
 //	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources - Stulle
 	m_htiACC = NULL; // ACC [Max/WiZaRd] - Max
-/*
-	// ==> Anti Uploader Ban - Stulle
+
+	// ==> Anti Uploader Ban [Stulle] - Stulle
 	m_htiAntiUploaderBanLimit = NULL;
 	m_htiAntiCase1 = NULL;
 	m_htiAntiCase2 = NULL;
 	m_htiAntiCase3 = NULL;
-	// <== Anti Uploader Ban - Stulle
-*/
+	// <== Anti Uploader Ban [Stulle] - Stulle
+
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 	m_htiCreditSystem = NULL;
 	m_htiOfficialCredit = NULL;
@@ -1750,8 +1808,18 @@ void CPPgScar::OnDestroy()
 	m_htiGlobalHlAll = NULL;
 	m_htiGlobalHlDefault = NULL;
 	// <== Global Source Limit [Max/Stulle] - Stulle
+	// ==> Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	m_htiEmulatorGroup = NULL;
+	m_htiEmuMLDonkey = NULL;
+	m_htiEmueDonkey = NULL;
+	m_htiEmueDonkeyHybrid = NULL;
+	m_htiEmuShareaza = NULL;
+	m_htiEmuLphant = NULL;
+	m_htiLogEmulator = NULL;
+	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
 	m_htiStartupSound = NULL; // Startupsound [Commander] - mav744
 	m_htiCompressLevel = NULL; // Adjust Compress Level [Stulle] - Stulle
+	m_htiAutoSharedUpdater = NULL; // Automatic shared files updater [MoNKi] - Stulle
 
 	CPropertyPage::OnDestroy();
 }

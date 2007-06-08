@@ -1084,6 +1084,9 @@ void CSharedDirsTreeCtrl::EditSharedDirectories(CDirectoryItem* pDir, bool bAdd,
 
 	//  update the sharedfiles list
 	theApp.emuledlg->sharedfileswnd->Reload();
+
+	theApp.ResetDirectoryWatcher(); // Automatic shared files updater [MoNKi] - Stulle
+
 	thePrefs.Save();
 }
 

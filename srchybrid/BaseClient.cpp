@@ -346,6 +346,8 @@ void CUpDownClient::Init()
 	m_uModClient = MOD_NONE; // Mod Icons - Stulle
 
 	m_bGiveWaittimeBack = false; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
+
+	m_bAntiUploaderCaseThree = false; // Anti Uploader Ban [Stulle] - Stulle
 }
 
 CUpDownClient::~CUpDownClient(){
@@ -451,6 +453,14 @@ void CUpDownClient::TestLeecher(){
 	if(theApp.dlp->IsDLPavailable()==false)
 		return;
 	//Xman end
+
+	// ==> Anti Uploader Ban [Stulle] - Stulle
+	if (AntiUploaderBanActive())
+	{
+		m_bLeecher = 0; // no leecher
+		return;
+	}
+	// <== Anti Uploader Ban [Stulle] - Stulle
 
 	if (thePrefs.GetAntiLeecherMod())
 	{
@@ -1645,7 +1655,39 @@ void CUpDownClient::SendHelloAnswer(){
 
 void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 {
+	// ==> Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	/*
 	data->WriteHash16(thePrefs.GetUserHash());
+	*/
+	uchar hash[16];
+	memcpy(hash,thePrefs.GetUserHash(), 16);
+	if (thePrefs.IsEmuMLDonkey() && GetClientSoft() == SO_MLDONKEY)
+	{
+		if(GetHashType() == SO_OLD_MLDONKEY)
+		{
+			hash[5] = 'M'; //WiZaRd::Proper Hash Fake :P
+			hash[14] = 'L'; //WiZaRd::Proper Hash Fake :P
+			if (thePrefs.IsEmuLog())
+				AddDebugLogLine(false,_T("[EMULATE] Emulate MLDonkey(old) (%s)"),DbgGetClientInfo());
+		}
+	}
+	else if ((thePrefs.IsEmueDonkey() && GetClientSoft() == SO_EDONKEY)
+		|| (thePrefs.IsEmueDonkeyHybrid() && GetClientSoft() == SO_EDONKEYHYBRID))
+	{
+		uint8 random = (uint8)(rand()%_UI8_MAX); //Spike2, avoid C4244
+		hash[5] = random == 14 ? random+1 : random; //WiZaRd::Avoid eMule Hash
+		random = (uint8)(rand()%_UI8_MAX); //Spike2, avoid C4244
+		hash[14] = random == 111 ? random+1 : random; //WiZaRd::Avoid eMule Hash
+		if (thePrefs.IsEmuLog())
+		{
+			if(GetClientSoft() == SO_EDONKEY)
+				AddDebugLogLine(false,_T("[EMULATE] Emulate eDonkey (%s)"),DbgGetClientInfo());
+			else if(GetClientSoft() == SO_EDONKEYHYBRID)
+				AddDebugLogLine(false,_T("[EMULATE] Emulate eDonkeyHybrid (%s)"),DbgGetClientInfo());
+		}
+	}
+	data->WriteHash16(hash);
+	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
 	uint32 clientid;
 	clientid = theApp.GetID();
 
@@ -1699,9 +1741,26 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 	}
 	//Xman end
 
+	// ==> Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	/*
 	// eD2K Version
 	CTag tagVersion(CT_VERSION,EDONKEYVERSION);
 	tagVersion.WriteTagToFile(data);
+	*/
+	if (thePrefs.IsEmuShareaza() && GetClientSoft() == SO_SHAREAZA)
+	{
+		CTag tagVersion(CT_VERSION,	SHAREAZAEMUVERSION);
+		tagVersion.WriteTagToFile(data);
+		if (thePrefs.IsEmuLog())
+			AddDebugLogLine(false,_T("[EMULATE] Emulate Shareaza (%s)"),DbgGetClientInfo());
+	}
+	else
+	{
+	// eD2K Version
+	CTag tagVersion(CT_VERSION,EDONKEYVERSION);
+	tagVersion.WriteTagToFile(data);
+	}
+	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
 
 	// eMule UDP Ports
 	uint32 kadUDPPort = 0;
@@ -1784,6 +1843,8 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 		);
 	tagMisOptions2.WriteTagToFile(data);
 
+	// ==> Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	/*
 	// eMule Version
 	CTag tagMuleVersion(CT_EMULE_VERSION, 
 		//(uCompatibleClientID		<< 24) |
@@ -1793,6 +1854,77 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 		//				(RESERVED			     ) 
 		);
 	tagMuleVersion.WriteTagToFile(data);
+	*/
+	if (thePrefs.IsEmuShareaza() && GetClientSoft() == SO_SHAREAZA)
+	{
+		CTag tagMuleVersion(CT_EMULE_VERSION,
+				(SO_SHAREAZA				<< 24) |
+				(2							<< 17) |
+				(2							<< 10) |
+				(1 							<<  7) |
+				(0								 )
+				);
+		tagMuleVersion.WriteTagToFile(data);
+		if (thePrefs.IsEmuLog())
+			AddDebugLogLine(false,_T("[EMULATE] Emulate Shareaza (%s)"),DbgGetClientInfo());
+	} 
+	else if (thePrefs.IsEmuLphant() && GetClientSoft() == SO_LPHANT)
+	{
+		CTag tagMuleVersion(CT_EMULE_VERSION,
+				(SO_LPHANT					<< 24) |
+				(2							<< 17) |
+				(9							<< 10) |
+				(0							<<  7)
+				);
+		tagMuleVersion.WriteTagToFile(data);
+		if (thePrefs.IsEmuLog())
+			AddDebugLogLine(false,_T("[EMULATE] Emulate Lphant (%s)"),DbgGetClientInfo());
+	}
+	else if (thePrefs.IsEmuMLDonkey() && GetClientSoft() == SO_MLDONKEY)
+	{
+		CTag tagMuleVersion(CT_EMULE_VERSION,
+				(SO_MLDONKEY				<< 24) |
+				(2							<< 17) |
+				(7							<< 10) |
+				(3							<<  7)
+				);
+		tagMuleVersion.WriteTagToFile(data);
+		if (thePrefs.IsEmuLog())
+			AddDebugLogLine(false,_T("[EMULATE] Emulate MLDonkey (%s)"),DbgGetClientInfo());
+	}
+	else if (thePrefs.IsEmueDonkey() && GetClientSoft() == SO_EDONKEY)
+	{
+		CTag tagMuleVersion(CT_EMULE_VERSION,
+				(SO_EDONKEY					<< 24) |
+				(10405						<< 17)
+				);
+		tagMuleVersion.WriteTagToFile(data);
+		if (thePrefs.IsEmuLog())
+			AddDebugLogLine(false,_T("[EMULATE] Emulate eDonkey (%s)"),DbgGetClientInfo());
+	}
+	else if (thePrefs.IsEmueDonkeyHybrid() && GetClientSoft() == SO_EDONKEYHYBRID)
+	{
+		CTag tagMuleVersion(CT_EMULE_VERSION,
+				(SO_EDONKEYHYBRID			<< 24) |
+				(10405						<< 17)
+				);
+		tagMuleVersion.WriteTagToFile(data);
+		if (thePrefs.IsEmuLog())
+			AddDebugLogLine(false,_T("[EMULATE] Emulate eDonkeyHybrid (%s)"),DbgGetClientInfo());
+	}
+	else
+	{
+	// eMule Version
+	CTag tagMuleVersion(CT_EMULE_VERSION, 
+				//(uCompatibleClientID		<< 24) |
+				(CemuleApp::m_nVersionMjr	<< 17) |
+				(CemuleApp::m_nVersionMin	<< 10) |
+				(CemuleApp::m_nVersionUpd	<<  7) 
+//				(RESERVED			     ) 
+				);
+	tagMuleVersion.WriteTagToFile(data);
+	}
+	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
 
 	//Xman - modID
 	if (bSendModVersion) {
@@ -3377,6 +3509,7 @@ void CUpDownClient::AssertValid() const
 	(void)m_strFileComment;
 	(void)m_uFileRating;
 	CHECK_BOOL(m_bCollectionUploadSlot);
+	CHECK_BOOL(m_bAntiUploaderCaseThree); // Anti Uploader Ban [Stulle] - Stulle
 #undef CHECK_PTR
 #undef CHECK_BOOL
 }
@@ -3727,6 +3860,13 @@ void CUpDownClient::ProcessPublicIPAnswer(const BYTE* pbyData, UINT uSize){
 				}
 				else
 				{
+					// ==> Quick start [TPT] - Max
+					if(thePrefs.GetQuickStart() && thePrefs.GetQuickStartAfterIPChange())
+					{
+						theApp.downloadqueue->quickflag = 0;
+						theApp.downloadqueue->quickflags = 0;
+					}
+					// <== Quick start [TPT] - Max
 					if(GetTickCount() - theApp.last_ip_change > FILEREASKTIME + 60000)
 					{
 						theApp.clientlist->TrigReaskForDownload(true);
@@ -4276,3 +4416,79 @@ int CUpDownClient::GetClientStyle(bool bDl, bool bUl, bool bShare, bool bOwnCred
 	return iClientStyle;
 }
 // <== Design Settings [eWombat/Stulle] - Stulle
+
+// ==> Display reason for zero score [Stulle] - Stulle
+CString CUpDownClient::GetZeroScoreString() const
+{
+	if (!m_pszUsername)
+		return _T("NULL Username");
+
+	if(GetUploadFileID() == NULL)
+		return _T("NULL UploadFileID");
+
+	if (credits == 0){
+		return _T("NULL credits");
+	}
+	CKnownFile* currequpfile = theApp.sharedfiles->GetFileByID(requpfileid);
+	if(!currequpfile)
+		return _T("NULL reqfile");
+
+	if (credits->GetCurrentIdentState(GetIP()) == IS_IDBADGUY)
+		return _T("Bad guy");
+
+	if (m_nUploadState==US_BANNED)
+		return _T("Banned");
+
+	if (m_bGPLEvildoer)
+		return _T("GPL evildoer");
+
+	return _T("Unknown");
+}
+// <== Display reason for zero score [Stulle] - Stulle
+
+// ==> Anti Uploader Ban [Stulle] - Stulle
+bool CUpDownClient::AntiUploaderBanActive()
+{
+// credits->GetDownloadedTotal() <== data amount the other client gave us
+// credits->GetUploadedTotal() <== data amount the other client got from us
+
+
+	if (thePrefs.GetAntiUploaderBanLimit() != 0 && 
+		credits != NULL &&
+		credits->GetDownloadedTotal() != NULL)
+	{
+		switch (thePrefs.GetAntiUploaderBanCase())
+		{
+			case CS_1:{
+				return (credits->GetDownloadedTotal() >= (uint64)thePrefs.GetAntiUploaderBanLimit()<<20);
+					  } break;
+
+			case CS_2:{
+				if(credits->GetUploadedTotal() != NULL &&
+					credits->GetUploadedTotal() > credits->GetDownloadedTotal())
+					return (credits->GetDownloadedTotal() - credits->GetUploadedTotal() >= (uint64)thePrefs.GetAntiUploaderBanLimit()<<20);
+				else
+					return false;
+					  } break;
+
+			case CS_3:{
+				if(credits->GetUploadedTotal() != NULL &&
+					credits->GetUploadedTotal() > credits->GetDownloadedTotal())
+				{
+					if (GetAntiUploaderCaseThree())
+						return true;
+					else if (credits->GetDownloadedTotal() - credits->GetUploadedTotal() >= (uint64)thePrefs.GetAntiUploaderBanLimit()<<20)
+					{
+						m_bAntiUploaderCaseThree = true;
+						return true;
+					}
+					else
+						return false;
+				}
+					  } break;
+			}
+	}
+
+	return false;
+}
+// <== Anti Uploader Ban [Stulle] - Stulle

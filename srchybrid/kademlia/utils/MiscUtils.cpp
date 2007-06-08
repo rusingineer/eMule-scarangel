@@ -51,6 +51,8 @@ void CMiscUtils::IPAddressToString(uint32 uIP, CString *pString)
 	                ((uIP      ) & 0xFF) );
 }
 
+// ==> KAD vista fix [godlaugh2007] - Stulle
+/*
 LPCTSTR CMiscUtils::GetAppDir()
 {
 	if (m_sAppDirectory.GetLength() == 0)
@@ -64,6 +66,8 @@ LPCTSTR CMiscUtils::GetAppDir()
 	}
 	return m_sAppDirectory;
 }
+*/
+// <== KAD vista fix [godlaugh2007] - Stulle
 
 void CMiscUtils::DebugHexDump(const byte *pbyData, uint32 uLenData)
 {

@@ -235,6 +235,8 @@ BOOL CPPgDirectories::OnApply()
 
 	theApp.emuledlg->sharedfileswnd->Reload();
 	
+	theApp.ResetDirectoryWatcher(); // Automatic shared files updater [MoNKi] - Stulle
+
 	SetModified(0);
 	return CPropertyPage::OnApply();
 }

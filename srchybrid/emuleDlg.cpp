@@ -110,6 +110,7 @@
 #include "CollectionViewDialog.h"
 #include "VisualStylesXP.h"
 //#include "UPnPFinder.h" //Xman official UPNP removed
+#include "Dbt.h" // Automatic shared files updater [MoNKi] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -4697,3 +4698,85 @@ HBRUSH CemuleDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return m_hbrWndClr;
 }
 // <== Design Settings [eWombat/Stulle] - Max
+
+// ==> Automatic shared files updater [MoNKi] - Stulle
+BOOL CemuleDlg::OnDeviceChange(UINT nEventType, DWORD_PTR dwData){
+	PDEV_BROADCAST_HDR hdr = (PDEV_BROADCAST_HDR)dwData;
+
+	if(nEventType == DBT_DEVICEARRIVAL || nEventType == DBT_DEVICEREMOVECOMPLETE){
+		if(hdr->dbch_devicetype == DBT_DEVTYP_VOLUME){
+			PDEV_BROADCAST_VOLUME vol = (PDEV_BROADCAST_VOLUME)hdr;
+
+			// Get the drive char
+			char drive;
+			ULONG umask = vol->dbcv_unitmask;
+			for (drive = 'a'; drive <= 'z'; drive++) {
+				if (umask & 0x1) break;
+				umask = umask >> 1;
+			}
+
+			// Check if there are shared folders in this drive
+
+			// Get all shared directories
+			CStringList dirList;
+			CString curDir;
+			
+			// Incoming Dir
+			curDir=thePrefs.GetMuleDirectory(EMULE_INCOMINGDIR);
+			dirList.AddTail( curDir );
+
+			// Categories dirs
+			for (int i=1; i < thePrefs.GetCatCount(); i++)
+			{
+				curDir=CString( thePrefs.GetCatPath(i) );
+
+				if( dirList.Find( curDir ) == NULL ) {
+					dirList.AddTail( curDir );
+				}
+			}
+
+			// The other shared dirs
+			POSITION pos = thePrefs.shareddir_list.GetHeadPosition();
+			while(pos){
+				curDir = thePrefs.shareddir_list.GetNext(pos);
+
+				if( dirList.Find( curDir ) == NULL ) {
+					dirList.AddTail( curDir );
+				}
+			}
+
+			bool reload = false;
+
+			// Checks if a shared drive is in this volume
+			// or if it don't exits
+			pos = dirList.GetHeadPosition();
+			while(pos){
+				curDir = dirList.GetNext(pos);
+				if (curDir.Right(1)==_T("\\"))
+					curDir = curDir.Left(curDir.GetLength() - 1);
+
+				if (curDir.Right(1) != _T(":")){
+					if(CFileFind().FindFile(curDir) == FALSE){
+						reload = true;
+						pos = NULL;
+					}
+				}
+
+				if(curDir.MakeLower().GetAt(0) == _TCHAR(drive)){
+					reload = true;
+					pos = NULL;
+				}
+			}
+
+			if(reload){
+				// Reload shared files
+				if(theApp.emuledlg->IsRunning()){
+					theApp.DirectoryWatcherExternalReload();
+				}
+			}
+		}
+	}
+
+	return TRUE;
+}
+// <== Automatic shared files updater [MoNKi] - Stulle
