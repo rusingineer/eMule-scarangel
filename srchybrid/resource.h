@@ -3065,6 +3065,16 @@
 #define IDS_EMULATE_PHANT               61125
 #define IDS_EMULATE_LOG                 61126
 // <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+// ==> Spread Credits Slot [Stulle] - Stulle
+#define IDS_SPREAD_CREDITS_SLOT         61130
+#define IDS_SPREAD_CREDITS_SLOT_COUNTER 61131
+// <== Spread Credits Slot [Stulle] - Stulle
+// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+#define IDS_PAYBACKFIRST                61140
+#define IDS_PAYBACKFIRSTLIMIT           61141
+#define IDS_PAYBACKFIRST2               61142
+#define IDS_PAYBACKFIRSTLIMIT2          61143
+// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 
 // Next default values for new objects
 // 

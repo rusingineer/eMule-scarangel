@@ -1153,6 +1153,11 @@ public:
 
 	CString GetZeroScoreString() const; // Display reason for zero score [Stulle] - Stulle
 
+	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+	bool	IsPBFClient() const;
+	bool	IsSecure() const;
+	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+
 	// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	void	SetGiveWaittimeBack(bool in)		{m_bGiveWaittimeBack = in;}
 	bool	GetGiveWaittimeBack() const			{return m_bGiveWaittimeBack;}
@@ -1167,6 +1172,13 @@ public:
 	bool	AntiUploaderBanActive();
 	bool	GetAntiUploaderCaseThree()	{return m_bAntiUploaderCaseThree;}
      // <== Anti Uploader Ban [Stulle] - Stulle
+
+	// ==> Spread Credits Slot [Stulle] - Stulle
+	uint8 m_uSpreadClient;
+public:
+	uint8 GetSpreadClient() const	{return m_uSpreadClient;}
+	void SetSpreadClient(uint8 in){m_uSpreadClient = in;};
+	// <== Spread Credits Slot [Stulle] - Stulle
 };
 //#pragma pack()
 

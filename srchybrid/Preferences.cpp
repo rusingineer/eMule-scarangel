@@ -850,7 +850,7 @@ uint16	CPreferences::m_iCurrentUDPRndPort;
 bool	CPreferences::m_bDirectoryWatcher; // Automatic shared files updater [MoNKi] - Stulle
 
 // ==> Anti Uploader Ban [Stulle] - Stulle
-uint16  CPreferences::m_iAntiUploaderBanLimit;
+uint16  CPreferences::m_uAntiUploaderBanLimit;
 uint8	CPreferences::AntiUploaderBanCaseMode;
 // <== Anti Uploader Ban [Stulle] - Stulle
 
@@ -862,6 +862,18 @@ bool	CPreferences::m_bEmuShareaza;
 bool    CPreferences::m_bEmuLphant;
 bool	CPreferences::m_bLogEmulator;
 // <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+
+// ==> Spread Credits Slot [Stulle] - Stulle
+bool	CPreferences::SpreadCreditsSlot;
+uint16  CPreferences::SpreadCreditsSlotCounter;
+// <== Spread Credits Slot [Stulle] - Stulle
+
+// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+bool	CPreferences::m_bPayBackFirst;
+uint8	CPreferences::m_iPayBackFirstLimit;
+bool	CPreferences::m_bPayBackFirst2;
+uint16	CPreferences::m_iPayBackFirstLimit2;
+// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 
 CPreferences::CPreferences()
 {
@@ -2636,7 +2648,7 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("AutoReloadSharedFiles"), GetDirectoryWatcher()); // Automatic shared files updater [MoNKi] - Stulle
 
 	// ==> Anti Uploader Ban [Stulle] - Stulle
-	ini.WriteInt(_T("AntiUploaderBanLimit"), m_iAntiUploaderBanLimit);
+	ini.WriteInt(_T("AntiUploaderBanLimit"), m_uAntiUploaderBanLimit);
 	ini.WriteInt(_T("AntiUploaderBanCaseMode"), AntiUploaderBanCaseMode);
 	// <== Anti Uploader Ban [Stulle] - Stulle
 
@@ -2648,6 +2660,18 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("EmuLphant"), m_bEmuLphant);
 	ini.WriteBool(_T("LogEmulator"), m_bLogEmulator);
 	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+
+	// ==> Spread Credits Slot [Stulle] - Stulle
+	ini.WriteBool(_T("SpreadCreditsSlot"), SpreadCreditsSlot);
+	ini.WriteInt(_T("SpreadCreditsSlotCounter"), SpreadCreditsSlotCounter);
+	// <== Spread Credits Slot [Stulle] - Stulle
+
+	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+	ini.WriteBool(_T("IsPayBackFirst"),m_bPayBackFirst);
+	ini.WriteInt(_T("PayBackFirstLimit"),m_iPayBackFirstLimit);
+	ini.WriteBool(_T("IsPayBackFirst2"),m_bPayBackFirst2);
+	ini.WriteInt(_T("PayBackFirstLimit2"),m_iPayBackFirstLimit2);
+	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 
 	SaveStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
@@ -3801,7 +3825,7 @@ void CPreferences::LoadPreferences()
 	SetDirectoryWatcher(ini.GetBool(_T("AutoReloadSharedFiles"), true)); // Automatic shared files updater [MoNKi] - Stulle
 
 	// ==> Anti Uploader Ban [Stulle] - Stulle
-	m_iAntiUploaderBanLimit = (uint16)ini.GetInt(_T("AntiUploaderBanLimit"), 0);
+	m_uAntiUploaderBanLimit = (uint16)ini.GetInt(_T("AntiUploaderBanLimit"), 0);
 	AntiUploaderBanCaseMode = (uint8)ini.GetInt(_T("AntiUploaderBanCaseMode"), 1);
 	// <== Anti Uploader Ban [Stulle] - Stulle
 
@@ -3813,6 +3837,22 @@ void CPreferences::LoadPreferences()
 	m_bEmuLphant= ini.GetBool(_T("EmuLphant"), false);
 	m_bLogEmulator= ini.GetBool(_T("LogEmulator"), false);
 	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+
+	// ==> Spread Credits Slot [Stulle] - Stulle
+	SpreadCreditsSlot = ini.GetBool(_T("SpreadCreditsSlot"), false);
+	SpreadCreditsSlotCounter = (uint16)ini.GetInt(_T("SpreadCreditsSlotCounter"));
+	if (SpreadCreditsSlotCounter < 3)
+		SpreadCreditsSlotCounter = 3;
+	// <== Spread Credits Slot [Stulle] - Stulle
+
+	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+	m_bPayBackFirst=ini.GetBool(_T("IsPayBackFirst"),false);
+	temp = ini.GetInt(_T("PayBackFirstLimit"), 10);
+	m_iPayBackFirstLimit = (uint8)((temp >= 5 && temp <=255) ? temp : 10);
+	m_bPayBackFirst2=ini.GetBool(_T("IsPayBackFirst2"),false);
+	temp = ini.GetInt(_T("PayBackFirstLimit2"), 50);
+	m_iPayBackFirstLimit2 = (uint16)((temp >= 5 && temp <=1024) ? temp : 50);
+	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 
 	LoadStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }

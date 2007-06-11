@@ -3231,6 +3231,7 @@ UPNP                    ICON                    "res\\UPnP.ico"
 PORTS                   ICON                    "res\\Ports.ico"
 SUPPORT                 ICON                    "res\\Support.ico"
 EMULATEICON             ICON                    "res\\Emulator.ico"
+SPREADCREDITS           ICON                    "res\\SpreadCredits.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -5837,6 +5838,16 @@ BEGIN
     IDS_EMULATE_PHANT       "Emulate lPhants"
     IDS_EMULATE_LOG         "Log emulations"
     // <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+    // ==> Spread Credits Slot [Stulle] - Stulle
+    IDS_SPREAD_CREDITS_SLOT "Spread Credits Slot (SCS)"
+    IDS_SPREAD_CREDITS_SLOT_COUNTER "Spread Credits Slot every X slots"
+    // <== Spread Credits Slot [Stulle] - Stulle
+    // ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+    IDS_PAYBACKFIRST        "Pay Back First"
+    IDS_PAYBACKFIRSTLIMIT   "Amount before triggering (Default 10MB)"
+    IDS_PAYBACKFIRST2       "PBF for clients without SUI"
+    IDS_PAYBACKFIRSTLIMIT2  "Amount before triggering (Default 50MB)"
+    // <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 END
 
 #endif    // Englisch (USA) resources

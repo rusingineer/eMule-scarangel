@@ -71,6 +71,12 @@ protected:
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 	int m_iCreditSystem;
 	// <== CreditSystems [EastShare/ MorphXT] - Stulle
+	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+	bool m_bIsPayBackFirst;
+	int m_iPayBackFirstLimit;
+	bool m_bIsPayBackFirst2;
+	int m_iPayBackFirstLimit2;
+	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 
 	// ==> CPU/MEM usage [$ick$/Stulle] - Max
 	bool m_bSysInfo;
@@ -132,24 +138,24 @@ protected:
 	int m_iPowerShareLimit;
 	// <== PowerShare [ZZ/MorphXT] - Stulle
 	int m_iPsAmountLimit; // Limit PS by amount of data uploaded [Stulle] - Stulle
-	// ==> Release Bonus [sivka] - Stulle
-	int m_iReleaseBonus;
-	int m_iReleaseBonusDays;
-	// <== Release Bonus [sivka] - Stulle
+	// ==> Spread Credits Slot [Stulle] - Stulle
+	bool m_bSpreadCreditsSlot;
+	int m_iSpreadCreditsSlotCounter;
+	// <== Spread Credits Slot [Stulle] - Stulle
 	bool m_bSpreadBars; // Spread bars [Slugfiller/MorphXT] - Stulle
 	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 	int m_iHideOS;
 	bool m_bSelectiveShare;
 	int m_iShareOnlyTheNeed;
 	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+
+	// ==> Release Bonus [sivka] - Stulle
+	int m_iReleaseBonus;
+	int m_iReleaseBonusDays;
+	// <== Release Bonus [sivka] - Stulle
 	bool m_bReleaseScoreAssurance; // Release Score Assurance [Stulle] - Stulle
 
-	bool m_bSUQWT; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-/*	// ==> Spread Credits Slot - Stulle
-	bool m_bSpreadCreditsSlot;
-	int m_iSpreadCreditsSlotCounter;
-	// <== Spread Credits Slot - Stulle
-*/	// ==> Global Source Limit [Max/Stulle] - Stulle
+	// ==> Global Source Limit [Max/Stulle] - Stulle
 	bool m_bGlobalHL;
 	int m_iGlobalHL;
 	bool m_bGlobalHlAll;
@@ -162,6 +168,7 @@ protected:
 	bool m_bEmuLphant;
 	bool m_bLogEmulator;
 	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	bool m_bSUQWT; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	bool m_bStartupSound; // Startupsound [Commander] - mav744
 	int m_iCompressLevel; // Adjust Compress Level [Stulle] - Stulle
 	bool m_bAutoSharedUpdater; // Automatic shared files updater [MoNKi] - Stulle
@@ -244,6 +251,12 @@ protected:
 	HTREEITEM m_htiSwatCredit;
 	HTREEITEM m_htiXmanCredit;
 	// <== CreditSystems [EastShare/ MorphXT] - Stulle
+	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+	HTREEITEM m_htiIsPayBackFirst;
+	HTREEITEM m_htiPayBackFirstLimit;
+	HTREEITEM m_htiIsPayBackFirst2;
+	HTREEITEM m_htiPayBackFirstLimit2;
+	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 
 	HTREEITEM m_htiDisplay;
 	// ==> CPU/MEM usage [$ick$/Stulle] - Max
@@ -320,6 +333,18 @@ protected:
 	HTREEITEM m_htiPowershareLimited;
 	// <== PowerShare [ZZ/MorphXT] - Stulle
 	HTREEITEM m_htiPsAmountLimit; // Limit PS by amount of data uploaded [Stulle] - Stulle
+	// ==> Spread Credits Slot [Stulle] - Stulle
+	HTREEITEM m_htiSpreadCreditsSlotGroup;
+	HTREEITEM m_htiSpreadCreditsSlot;
+	HTREEITEM m_htiSpreadCreditsSlotCounter;
+	// <== Spread Credits Slot [Stulle] - Stulle,
+	HTREEITEM m_htiSpreadBars; // Spread bars [Slugfiller/MorphXT] - Stulle
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	HTREEITEM m_htiHideOS;
+	HTREEITEM m_htiSelectiveShare;
+	HTREEITEM m_htiShareOnlyTheNeed;
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+
 	// ==> Release Bonus [sivka] - Stulle
 	HTREEITEM m_htiReleaseBonusGroup;
 	HTREEITEM m_htiReleaseBonus0;
@@ -327,21 +352,10 @@ protected:
 	HTREEITEM m_htiReleaseBonusDays;
 	HTREEITEM m_htiReleaseBonusDaysEdit;
 	// <== Release Bonus [sivka] - Stulle
-	HTREEITEM m_htiSpreadBars; // Spread bars [Slugfiller/MorphXT] - Stulle
-	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
-	HTREEITEM m_htiHideOS;
-	HTREEITEM m_htiSelectiveShare;
-	HTREEITEM m_htiShareOnlyTheNeed;
-	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 	HTREEITEM m_htiReleaseScoreAssurance; // Release Score Assurance [Stulle] - Stulle
 
 	HTREEITEM m_htiMisc;
-	HTREEITEM m_htiSUQWT; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-/*	// ==> Spread Credits Slot - Stulle
-	HTREEITEM m_htiSpreadCreditsSlot;
-	HTREEITEM m_htiSpreadCreditsSlotCounter;
-	// <== Spread Credits Slot - Stulle,
-*/	// ==> Global Source Limit [Max/Stulle] - Stulle
+	// ==> Global Source Limit [Max/Stulle] - Stulle
 	HTREEITEM m_htiGlobalHlGroup;
 	HTREEITEM m_htiGlobalHL;
 	HTREEITEM m_htiGlobalHlLimit;
@@ -357,6 +371,7 @@ protected:
 	HTREEITEM m_htiEmuLphant;
 	HTREEITEM m_htiLogEmulator;
 	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	HTREEITEM m_htiSUQWT; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	HTREEITEM m_htiStartupSound; // Startupsound [Commander] - mav744
 	HTREEITEM m_htiCompressLevel; // Adjust Compress Level [Stulle] - Stulle
 	HTREEITEM m_htiAutoSharedUpdater; // Automatic shared files updater [MoNKi] - Stulle

@@ -2243,7 +2243,7 @@ void CKademliaUDPListener::Process_KADEMLIA2_SEARCH_NOTES_REQ (const byte *pbyPa
 /*
 void CKademliaUDPListener::Process_KADEMLIA_SEARCH_NOTES_RES (const byte *pbyPacketData, uint32 uLenPacket, uint32 uIP)
 */
-void CKademliaUDPListener::Process_KADEMLIA_SEARCH_NOTES_RES (const byte *pbyPacketData, uint32 uLenPacket, uint32 uIP, uint16 uUDPPort) // netf
+void CKademliaUDPListener::Process_KADEMLIA_SEARCH_NOTES_RES (const byte *pbyPacketData, uint32 uLenPacket, uint32 uIP, uint16 /*uUDPPort*/) // netf
 // <== Safe KAD [netfinity] - Stulle
 {
 	// Verify packet is expected size
@@ -2544,7 +2544,7 @@ void CKademliaUDPListener::Process_KADEMLIA_FIREWALLED_REQ (const byte *pbyPacke
 /*
 void CKademliaUDPListener::Process_KADEMLIA_FIREWALLED_RES (const byte *pbyPacketData, uint32 uLenPacket, uint32 uIP)
 */
-void CKademliaUDPListener::Process_KADEMLIA_FIREWALLED_RES (const byte *pbyPacketData, uint32 uLenPacket, uint32 uIP, uint16 uUDPPort)
+void CKademliaUDPListener::Process_KADEMLIA_FIREWALLED_RES (const byte *pbyPacketData, uint32 uLenPacket, uint32 uIP, uint16 /*uUDPPort*/)
 // <== Safe KAD [netfinity] - Stulle
 {
 	// Verify packet is expected size
@@ -2674,7 +2674,7 @@ void CKademliaUDPListener::Process_KADEMLIA_FINDBUDDY_RES (const byte *pbyPacket
 /*
 void CKademliaUDPListener::Process_KADEMLIA_CALLBACK_REQ (const byte *pbyPacketData, uint32 uLenPacket, uint32 uIP)
 */
-void CKademliaUDPListener::Process_KADEMLIA_CALLBACK_REQ (const byte *pbyPacketData, uint32 uLenPacket, uint32 uIP, uint16 uUDPPort)
+void CKademliaUDPListener::Process_KADEMLIA_CALLBACK_REQ (const byte *pbyPacketData, uint32 uLenPacket, uint32 uIP, uint16 /*uUDPPort*/)
 // <== Safe KAD [netfinity] - Stulle
 {
 	// Verify packet is expected size

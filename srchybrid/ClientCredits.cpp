@@ -107,6 +107,8 @@ void CClientCredits::AddDownloaded(uint32 bytes, uint32 dwForIP) {
 	m_pCredits->nDownloadedLo = (uint32)current;
 	m_pCredits->nDownloadedHi = (uint32)(current >> 32);
 
+	TestPayBackFirstStatus(); // Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+
 	m_bCheckScoreRatio = true; // CreditSystems [EastShare/ MorphXT] - Stulle
 }
 
@@ -126,6 +128,8 @@ void CClientCredits::AddUploaded(uint32 bytes, uint32 dwForIP) {
 	//recode
 	m_pCredits->nUploadedLo = (uint32)current;
 	m_pCredits->nUploadedHi = (uint32)(current >> 32);
+
+	TestPayBackFirstStatus(); // Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 
 	m_bCheckScoreRatio = true; // CreditSystems [EastShare/ MorphXT] - Stulle
 }
@@ -1527,3 +1531,34 @@ void CClientCreditsList::ResetCheckScoreRatio(){
 	}
 }
 // <== CreditSystems [EastShare/ MorphXT] - Stulle
+
+// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+//init will be triggered at 
+//1. client credit create, 
+//2. when reach 10MB Transferred, between first time remove check and second time remove check
+//anyway, this just make a check at "check point" :p
+
+void CClientCredits::InitPayBackFirstStatus(){
+	m_bPayBackFirst2 = false;
+	m_bPayBackFirst = false;
+	TestPayBackFirstStatus();
+}
+
+//test will be triggered at client have up/down Transferred
+void CClientCredits::TestPayBackFirstStatus(){
+
+	uint64 clientUpload = GetDownloadedTotal();
+	uint64 clientDownload = GetUploadedTotal();
+	if(clientUpload > clientDownload+((uint64)thePrefs.GetPayBackFirstLimit()<<20)){
+		m_bPayBackFirst = true;
+	}
+	else if(clientUpload < clientDownload){
+		m_bPayBackFirst = false;
+	}
+
+	if(clientUpload > clientDownload+((uint64)thePrefs.GetPayBackFirstLimit2()<<20))
+		m_bPayBackFirst2 = true;
+	else if(clientUpload < clientDownload)
+		m_bPayBackFirst2 = false;
+}
+// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle

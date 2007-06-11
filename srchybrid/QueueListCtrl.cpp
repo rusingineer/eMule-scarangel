@@ -624,6 +624,18 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 						if(uScore == 0)
 							Sbuffer.AppendFormat(_T(" (%s)"),client->GetZeroScoreString());
+
+						// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+						if (client->IsPBFClient())
+						{
+							CString tempStr;
+							if (client->IsSecure())
+								tempStr.Format(_T("%s %s"), _T("PBF"), Sbuffer);
+							else
+								tempStr.Format(_T("%s %s"), _T("PBF II"), Sbuffer);
+							Sbuffer = tempStr;
+						}
+						// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 					}
 					// <== Display reason for zero score [Stulle] - Stulle
 					break;

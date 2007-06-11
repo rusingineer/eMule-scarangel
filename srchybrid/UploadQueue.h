@@ -128,4 +128,11 @@ private:
     float   m_fAverageCombinedFilePrioAndCredit;
 
     DWORD   m_dwLastResortedUploadSlots;
+
+	// ==> Spread Credits Slot [Stulle] - Stulle
+public:
+	int		m_slotcounter;
+	bool	m_bSpreadCreditsSlotActive;
+	CUpDownClient* FindBestSpreadClientInQueue();
+	// <== Spread Credits Slot [Stulle] - Stulle
 };

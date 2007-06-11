@@ -1162,6 +1162,13 @@ uint32 CUpDownClient::SendBlockData(){
 		//in CreateNextBlockPackage we saw this upload end soon,
 		//after all packets are send, we cancel this upload
 		if (upendsoon && s->StandardPacketQueueIsEmpty()) {
+			credits->InitPayBackFirstStatus(); // Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+
+			// ==> Spread Credits Slot [Stulle] - Stulle
+			if(GetSpreadClient()>0)
+				SetSpreadClient(0);
+			// <== Spread Credits Slot [Stulle] - Stulle
+
 			theApp.uploadqueue->RemoveFromUploadQueue(this, _T("Completed transfer"),CUpDownClient::USR_COMPLETEDRANSFER ,true ); // Maella -Upload Stop Reason-
 			SendOutOfPartReqsAndAddToWaitingQueue(thePrefs.TransferFullChunks() ? true:false); //Xman Full Chunk
         } 
@@ -1948,12 +1955,13 @@ void CUpDownClient::GetUploadingAndUploadedPart(uint8* m_abyUpPartUploadingAndUp
 // ==> Superior Client Handling [Stulle] - Stulle
 /* This function ist meant to keep full compatibility for further cases */
 /* that could make a client superior to others. This includes features  */
-/* like PBF, Spread Credits Slot or similar.                            */
+/* like PBF or similar.                                                 */
 /* Friends have 0x0FFFFFFF as the score they will exceed the score of   */
 /* other superior clients, so they will get the upload slot.            */
 /* No bad guys will ever get this status!                               */
 /* So far included are the following features:                          */
 /* PowerShare                                                           */
+/* Pay Back First (for insecure clients)                                */
 bool CUpDownClient::IsSuperiorClient() const
 {
 	CKnownFile* currentReqFile = theApp.sharedfiles->GetFileByID(GetUploadFileID());
@@ -1976,6 +1984,18 @@ bool CUpDownClient::IsSuperiorClient() const
 		return true;
 	// <== PowerShare [ZZ/MorphXT] - Stulle
 
+	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+	if(credits)
+	{
+		bool bIsSecure = theApp.clientcredits->CryptoAvailable() && credits->GetCurrentIdentState(GetIP()) == IS_IDENTIFIED;
+
+		if(credits->GetPayBackFirstStatus() && thePrefs.IsPayBackFirst() && bIsSecure)
+			return true;
+		if(credits->GetPayBackFirstStatus2() && thePrefs.IsPayBackFirst2())
+			return true;
+	}
+	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+
 	return false;
 }
 // <== Superior Client Handling [Stulle] - Stulle
@@ -1997,3 +2017,35 @@ bool CUpDownClient::GetPowerReleased() const {
 	return currentReqFile && currentReqFile->GetUpPriority()==PR_POWER;
 }
 // <== Design Settings [eWombat/Stulle] - Stulle
+
+// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+bool CUpDownClient::IsPBFClient() const
+{
+	CKnownFile* currentReqFile = theApp.sharedfiles->GetFileByID(GetUploadFileID());
+
+	// only clients requesting a valid file, which is not PartFile can be superior
+	if(currentReqFile == NULL || currentReqFile->IsPartFile())
+		return false;
+
+	// no bad guys!
+	if(GetUploadState()==US_BANNED || m_bGPLEvildoer || IsLeecher())
+		return false;
+
+	if(credits)
+	{
+		bool bIsSecure = theApp.clientcredits->CryptoAvailable() && credits->GetCurrentIdentState(GetIP()) == IS_IDENTIFIED;
+
+		if(credits->GetPayBackFirstStatus() && thePrefs.IsPayBackFirst() && bIsSecure)
+			return true;
+		if(credits->GetPayBackFirstStatus2() && thePrefs.IsPayBackFirst2())
+			return true;
+	}
+
+	return false;
+}
+
+bool CUpDownClient::IsSecure() const
+{
+	return credits && theApp.clientcredits->CryptoAvailable() && credits->GetCurrentIdentState(GetIP()) == IS_IDENTIFIED;
+}
+// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle

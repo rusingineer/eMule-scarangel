@@ -702,3 +702,7 @@
 #define FT_PS_AMOUNT_LIMIT		"PS_AMOUNT_LIMIT"
 #define MAX_PS_AMOUNT_LIMIT             10000
 // <== Limit PS by amount of data uploaded [Stulle] - Stulle
+
+// ==> Recognize MlDonkey XS Answer [Spike2/ideas by Wiz] - Stulle
+#define OP_XSMLDONKEY			0xFA // <2 bytes: no. of sources><HASH 16><sources: IP port IP>
+// <== Recognize MlDonkey XS Answer [Spike2/ideas by Wiz] - Stulle

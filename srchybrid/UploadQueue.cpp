@@ -105,6 +105,11 @@ CUploadQueue::CUploadQueue()
 	releaseslotclient=NULL;
 	*/
 	// <== Superior Client Handling [Stulle] - Stulle
+
+	// ==> Spread Credits Slot [Stulle] - Stulle
+	m_bSpreadCreditsSlotActive = false;
+	m_slotcounter = 1;
+	// <== Spread Credits Slot [Stulle] - Stulle
 }
 
 /**
@@ -351,6 +356,13 @@ bool CUploadQueue::AddUpNextClient(LPCTSTR pszReason, CUpDownClient* directadd){
 	// select next client or use given client
 	if (!directadd)
 	{
+
+		// ==> Spread Credits Slot [Stulle] - Stulle
+		if(	thePrefs.GetSpreadCreditsSlot() && thePrefs.TransferFullChunks() && m_bSpreadCreditsSlotActive)
+	        newclient = FindBestSpreadClientInQueue();
+
+		if(newclient != NULL)
+		// <== Spread Credits Slot [Stulle] - Stulle
         newclient = FindBestClientInQueue();
 
         if(newclient)
@@ -425,6 +437,26 @@ bool CUploadQueue::AddUpNextClient(LPCTSTR pszReason, CUpDownClient* directadd){
 	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 
     InsertInUploadingList(newclient);
+
+	// ==> Spread Credits Slot [Stulle] - Stulle
+	if(m_bSpreadCreditsSlotActive && newclient->GetSpreadClient())
+		AddDebugLogLine(false, _T("Added Spread Credits Slot --> Client: %s"),newclient->DbgGetClientInfo());
+
+	if(thePrefs.GetSpreadCreditsSlot() && thePrefs.TransferFullChunks())
+	{
+		m_slotcounter++;
+
+		if(m_slotcounter >= thePrefs.GetSpreadCreditsSlotCounter()) 
+			m_bSpreadCreditsSlotActive = true;
+		else
+			m_bSpreadCreditsSlotActive = false;
+
+		if(m_bSpreadCreditsSlotActive)
+			m_slotcounter = 0;
+	}
+	else
+		m_bSpreadCreditsSlotActive = false;
+	// <== Spread Credits Slot [Stulle] - Stulle
 
     m_nLastStartUpload = ::GetTickCount();
 	
@@ -846,6 +878,11 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 	if (client->IsBanned())
 		return;
 
+	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+	if (client->Credits() != NULL)
+		client->Credits()->InitPayBackFirstStatus();
+	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+
 	//check completed sources which want to download their "complete" file
 	if(client->GetRequestFile()==reqfile && client->HasFileComplete())
 	{
@@ -1135,6 +1172,14 @@ bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReaso
             //    AddDebugLogLine(false, _T("UploadQueue: Didn't find socket to delete. Adress: 0x%x"), client->socket);
             //}
 
+			// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+			//client normal leave the upload queue, check does client still satisfy requirement
+			if(earlyabort == false){
+				if (client->Credits() != NULL)
+					client->Credits()->InitPayBackFirstStatus();
+			}
+			// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+
 			if(client->GetSessionUp() > 0) {
 				++successfullupcount;
 				totaluploadtime += client->GetUpStartTimeDelay()/1000;
@@ -1300,6 +1345,14 @@ bool CUploadQueue::CheckForTimeOver(CUpDownClient* client){
     }
 
 
+	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+	if(client->IsPBFClient())
+	{
+		// still pay back first
+		// do nothing
+	}
+	else
+	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 	//not full chunk method:
 	if (!thePrefs.TransferFullChunks() 
 		// ==> Superior Client Handling [Stulle] - Stulle
@@ -1753,3 +1806,92 @@ void CUploadQueue::ChangeSendBufferSize(int newValue)
 		}
 	}
 }
+
+// ==> Spread Credits Slot [Stulle] - Stulle
+CUpDownClient* CUploadQueue::FindBestSpreadClientInQueue()
+{
+	POSITION toadd = 0;
+	uint32	bestscore = 0;
+	uint32  bestlowscore = 0;
+    CUpDownClient* lowclient = NULL;
+	uint32 thisTick = ::GetTickCount(); //cache the value
+
+	POSITION pos1, pos2;
+	for (pos1 = waitinglist.GetHeadPosition();( pos2 = pos1 ) != NULL;)
+	{
+		waitinglist.GetNext(pos1);
+		CUpDownClient* cur_client =	waitinglist.GetAt(pos2);
+		CKnownFile* queueNewReqfile = theApp.sharedfiles->GetFileByID(cur_client->GetUploadFileID());
+		//While we are going through this list.. Lets check if a client appears to have left the network..
+		ASSERT ( cur_client->GetLastUpRequest() );
+		if ((::GetTickCount() - cur_client->GetLastUpRequest() > MAX_PURGEQUEUETIME) || !queueNewReqfile )
+		{
+			//This client has either not been seen in a long time, or we no longer share the file he wanted anymore..
+			cur_client->ClearWaitStartTime();
+			cur_client->isupprob=false;	//Xman uploading problem client
+			RemoveFromWaitingQueue(pos2,true);
+			continue;
+		}
+        else
+        {
+			if(	cur_client->credits != NULL && // credits exists
+				cur_client->GetSpreadClient() != 0 && // not old
+				( // and
+					cur_client->credits->GetDownloadedTotal() != 0 || // had download
+					cur_client->credits->GetUploadedTotal() != 0 || // or upload
+					queueNewReqfile->GetPowerShared() == true || // or request PS file
+					cur_client->GetSmallFilePush() == true || // or is small file pushed
+					cur_client->IsLeecher() != 0 // or is an arse
+					)
+				)
+					continue; // ignore
+
+		    // finished clearing
+		    uint32 cur_score = cur_client->GetScore(false);
+
+		    if ( cur_score > bestscore)
+		    {
+                // cur_client is more worthy than current best client that is ready to go (connected).
+                if((!cur_client->HasLowID() && cur_client->isupprob==false) || (cur_client->socket && cur_client->socket->IsConnected())) //Xman uploading problem client
+				{
+                    // this client is a HighID or a lowID client that is ready to go (connected)
+                    // and it is more worthy
+					if ((thisTick - cur_client->GetLastUpRequest()< 1800000) //Xman accept only clients which asked the last 30 minutes:
+						&& cur_client->GetLastAction()==OP_STARTUPLOADREQ) //Xman fix for startupload
+					{
+						bestscore = cur_score;
+				        toadd = pos2;
+					}
+                } 
+				else if(!cur_client->m_bAddNextConnect) 
+				{
+                    // this client is a lowID client that is not ready to go (not connected)
+    
+                    // now that we know this client is not ready to go, compare it to the best not ready client
+                    // the best not ready client may be better than the best ready client, so we need to check
+                    // against that client
+			        if (cur_score > bestlowscore)
+			        {
+                        // it is more worthy, keep it
+				        bestlowscore = cur_score;
+                        lowclient = waitinglist.GetAt(pos2);
+			        }
+                }
+            } 
+		}
+	}
+	if (bestlowscore > bestscore && lowclient)
+		lowclient->m_bAddNextConnect = true;
+
+    if (!toadd)
+		return NULL;
+
+    CUpDownClient* ToAddClient = waitinglist.GetAt(toadd);
+	if(ToAddClient->GetSpreadClient()>0)
+		ToAddClient->SetSpreadClient(2); // already had Spread Slot
+	else
+		ToAddClient->SetSpreadClient(1); // just got Spread Slot
+
+	return ToAddClient;
+}
+// <== Spread Credits Slot [Stulle] - Stulle

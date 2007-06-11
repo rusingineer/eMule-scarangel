@@ -1018,7 +1018,7 @@ public:
 	static bool		m_bDirectoryWatcher; // Automatic shared files updater [MoNKi] - Stulle
 
 	// ==> Anti Uploader Ban [Stulle] - Stulle
-	static uint16 m_iAntiUploaderBanLimit;
+	static uint16 m_uAntiUploaderBanLimit;
 	static uint8 AntiUploaderBanCaseMode;
 	// <== Anti Uploader Ban [Stulle] - Stulle
 
@@ -1030,6 +1030,18 @@ public:
 	static  bool    m_bEmuLphant;
 	static	bool	m_bLogEmulator;
 	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+
+	// ==> Spread Credits Slot [Stulle] - Stulle
+	static bool	SpreadCreditsSlot;
+	static uint16 SpreadCreditsSlotCounter;
+	// <== Spread Credits Slot [Stulle] - Stulle
+
+	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+	static bool		m_bPayBackFirst;
+	static uint8	m_iPayBackFirstLimit;
+	static bool		m_bPayBackFirst2;
+	static uint16	m_iPayBackFirstLimit2;
+	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 
 	enum Table
 	{
@@ -2327,7 +2339,7 @@ public:
 	// <== Automatic shared files updater [MoNKi] - Stulle
 
 	// ==> Anti Uploader Ban [Stulle] - Stulle
-	static	uint16	GetAntiUploaderBanLimit()	{return m_iAntiUploaderBanLimit;}
+	static	uint16	GetAntiUploaderBanLimit()	{return m_uAntiUploaderBanLimit;}
 	static	uint8	GetAntiUploaderBanCase()	{return AntiUploaderBanCaseMode;}
 	// <== Anti Uploader Ban [Stulle] - Stulle
 
@@ -2339,6 +2351,19 @@ public:
 	static  bool    IsEmuLphant()				{return m_bEmuLphant;}
 	static	bool	IsEmuLog()					{return m_bLogEmulator;}
 	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+
+	// ==> Spread Credits Slot [Stulle] - Stulle
+	static	bool	GetSpreadCreditsSlot()			{return SpreadCreditsSlot;}
+	static  void    SetSpreadCreditsSlotCounter		(uint16 in) { SpreadCreditsSlotCounter = in; }
+	static	uint16	GetSpreadCreditsSlotCounter()	{return SpreadCreditsSlotCounter;}
+	// <== Spread Credits Slot [Stulle] - Stulle
+
+	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+	static	bool	IsPayBackFirst()		{return m_bPayBackFirst;}
+	static	uint8	GetPayBackFirstLimit()	{return m_iPayBackFirstLimit;}
+	static	bool	IsPayBackFirst2()		{return m_bPayBackFirst2;}
+	static	uint16	GetPayBackFirstLimit2()	{return m_iPayBackFirstLimit2;}
+	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 
 protected:
 	static	CString m_strFileCommentsFilePath;

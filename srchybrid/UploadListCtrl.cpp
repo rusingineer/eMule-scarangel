@@ -561,6 +561,15 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						Sbuffer.Append(_T(",PS"));
 					}
 					// <== PowerShare [ZZ/MorphXT] - Stulle
+					// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+					if(client->IsPBFClient())
+					{
+						if (client->IsSecure())
+							Sbuffer.Append(_T(",PBF"));
+						else
+							Sbuffer.Append(_T(",PBF II"));
+					}
+					// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 					break;
 				case 7:
 				{

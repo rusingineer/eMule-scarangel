@@ -176,6 +176,12 @@ CPPgScar::CPPgScar()
 	m_htiSwatCredit = NULL;
 	m_htiXmanCredit = NULL;
 	// <== CreditSystems [EastShare/ MorphXT] - Stulle
+	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+	m_htiIsPayBackFirst = NULL;
+	m_htiPayBackFirstLimit = NULL;
+	m_htiIsPayBackFirst2 = NULL;
+	m_htiPayBackFirstLimit2 = NULL;
+	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 
 	m_htiDisplay = NULL;
 	// ==> CPU/MEM usage [$ick$/Stulle] - Max
@@ -256,6 +262,18 @@ CPPgScar::CPPgScar()
 	m_htiPowerShareLimit = NULL;
 	// <== PowerShare [ZZ/MorphXT] - Stulle
 	m_htiPsAmountLimit = NULL; // Limit PS by amount of data uploaded [Stulle] - Stulle
+	// ==> Spread Credits Slot [Stulle] - Stulle
+	m_htiSpreadCreditsSlotGroup = NULL;
+	m_htiSpreadCreditsSlot = NULL;
+	m_htiSpreadCreditsSlotCounter = NULL;
+	// <== Spread Credits Slot [Stulle] - Stulle
+	m_htiSpreadBars = NULL; // Spread bars [Slugfiller/MorphXT] - Stulle
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	m_htiHideOS = NULL;
+	m_htiSelectiveShare = NULL;
+	m_htiShareOnlyTheNeed = NULL;
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+
 	// ==> Release Bonus [sivka] - Stulle
 	m_htiReleaseBonusGroup = NULL;
 	m_htiReleaseBonus0 = NULL;
@@ -264,20 +282,9 @@ CPPgScar::CPPgScar()
 	m_htiReleaseBonusDaysEdit = NULL;
 	// <== Release Bonus [sivka] - Stulle
 	m_htiReleaseScoreAssurance = NULL; // Release Score Assurance [Stulle] - Stulle
-	m_htiSpreadBars = NULL; // Spread bars [Slugfiller/MorphXT] - Stulle
-	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
-	m_htiHideOS = NULL;
-	m_htiSelectiveShare = NULL;
-	m_htiShareOnlyTheNeed = NULL;
-	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 
 	m_htiMisc = NULL;
-	m_htiSUQWT = NULL; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-/*	// ==> Spread Credits Slot - Stulle
-	m_htiSpreadCreditsSlot = NULL;
-	m_htiSpreadCreditsSlotCounter = NULL;
-	// <== Spread Credits Slot - Stulle
-*/	// ==> Global Source Limit [Max/Stulle] - Stulle
+	// ==> Global Source Limit [Max/Stulle] - Stulle
 	m_htiGlobalHlGroup = NULL;
 	m_htiGlobalHL = NULL;
 	m_htiGlobalHlLimit = NULL;
@@ -293,6 +300,7 @@ CPPgScar::CPPgScar()
 	m_htiEmuLphant = NULL;
 	m_htiLogEmulator = NULL;
 	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	m_htiSUQWT = NULL; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	m_htiStartupSound = NULL; // Startupsound [Commander] - mav744
 	m_htiCompressLevel = NULL; // Adjust Compress Level [Stulle] - Stulle
 	m_htiAutoSharedUpdater = NULL; // Automatic shared files updater [MoNKi] - Stulle
@@ -327,6 +335,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		int iImgDlMode = 8;
 		int iImgSharedPrefs = 8;
 		int iImgPS = 8;
+		int iImgSpreadCredits = 8;
 		int iImgReleaseBonus = 8;
 		int iImgMisc = 8;
 		int iImgGlobal = 8;
@@ -352,6 +361,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 			iImgDlMode = piml->Add(CTempIconLoader(_T("DLMODE")));
 			iImgSharedPrefs = piml->Add(CTempIconLoader(_T("SHAREDFILESMANAGEMENT")));
 			iImgPS = piml->Add(CTempIconLoader(_T("FILEPOWERSHARE")));
+			iImgSpreadCredits = piml->Add(CTempIconLoader(_T("SPREADCREDITS")));
 			iImgReleaseBonus = piml->Add(CTempIconLoader(_T("RELEASEBONUS")));
 			iImgMisc = piml->Add(CTempIconLoader(_T("SRCUNKNOWN")));
 			iImgGlobal = piml->Add(CTempIconLoader(_T("SEARCHMETHOD_GLOBAL")));
@@ -444,15 +454,25 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 
 		// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 		m_htiCreditSystem = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_CREDIT_SYSTEM), iImgCS, TVI_ROOT);
-		m_htiOfficialCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_OFFICIAL_CREDIT), m_htiCreditSystem, m_iCreditSystem == 0);
-		m_htiLovelaceCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_LOVELACE_CREDIT), m_htiCreditSystem, m_iCreditSystem == 1);
-		m_htiRatioCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_RATIO_CREDIT), m_htiCreditSystem, m_iCreditSystem == 2);
-		m_htiPawcioCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_PAWCIO_CREDIT), m_htiCreditSystem, m_iCreditSystem == 3);
-		m_htiESCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_EASTSHARE_CREDIT), m_htiCreditSystem, m_iCreditSystem == 4);
-		m_htiSivkaCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_SIVKA_CREDIT), m_htiCreditSystem, m_iCreditSystem == 5);
-		m_htiSwatCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_SWAT_CREDIT), m_htiCreditSystem, m_iCreditSystem == 6);
-		m_htiXmanCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_XMAN_CREDIT), m_htiCreditSystem, m_iCreditSystem == 7);
+		m_htiOfficialCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_OFFICIAL_CREDIT), m_htiCreditSystem, m_iCreditSystem == CS_OFFICIAL);
+		m_htiLovelaceCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_LOVELACE_CREDIT), m_htiCreditSystem, m_iCreditSystem == CS_LOVELACE);
+		m_htiRatioCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_RATIO_CREDIT), m_htiCreditSystem, m_iCreditSystem == CS_RATIO);
+		m_htiPawcioCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_PAWCIO_CREDIT), m_htiCreditSystem, m_iCreditSystem == CS_PAWCIO);
+		m_htiESCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_EASTSHARE_CREDIT), m_htiCreditSystem, m_iCreditSystem == CS_EASTSHARE);
+		m_htiSivkaCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_SIVKA_CREDIT), m_htiCreditSystem, m_iCreditSystem == CS_SIVKA);
+		m_htiSwatCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_SWAT_CREDIT), m_htiCreditSystem, m_iCreditSystem == CS_SWAT);
+		m_htiXmanCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_XMAN_CREDIT), m_htiCreditSystem, m_iCreditSystem == CS_XMAN);
 		// <== CreditSystems [EastShare/ MorphXT] - Stulle
+		// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+		m_htiIsPayBackFirst = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PAYBACKFIRST), m_htiCreditSystem, m_bIsPayBackFirst);
+		m_htiPayBackFirstLimit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_PAYBACKFIRSTLIMIT),TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT,m_htiIsPayBackFirst);
+		m_ctrlTreeOptions.AddEditBox(m_htiPayBackFirstLimit, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_ctrlTreeOptions.Expand(m_htiIsPayBackFirst, TVE_EXPAND);
+		m_htiIsPayBackFirst2 = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PAYBACKFIRST2), m_htiCreditSystem, m_bIsPayBackFirst2);
+		m_htiPayBackFirstLimit2 = m_ctrlTreeOptions.InsertItem(GetResString(IDS_PAYBACKFIRSTLIMIT2),TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT,m_htiIsPayBackFirst2);
+		m_ctrlTreeOptions.AddEditBox(m_htiPayBackFirstLimit2, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_ctrlTreeOptions.Expand(m_htiIsPayBackFirst2, TVE_EXPAND);
+		// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 
 		m_htiDisplay = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_PW_DISPLAY), iImgDisplay, TVI_ROOT);
 		// ==> CPU/MEM usage [$ick$/Stulle] - Max
@@ -548,15 +568,12 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiPsAmountLimit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_PS_AMOUNT_LIMIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiPowershareLimited );
 		m_ctrlTreeOptions.AddEditBox(m_htiPsAmountLimit, RUNTIME_CLASS(CNumTreeOptionsEdit));
 		// <== Limit PS by amount of data uploaded [Stulle] - Stulle
-		// ==> Release Bonus [sivka] - Stulle
-		m_htiReleaseBonusGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_RELEASE_BONUS_GROUP), iImgReleaseBonus, m_htiMisc);
-		m_htiReleaseBonus0 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_POWERSHARE_DISABLED), m_htiReleaseBonusGroup, m_iReleaseBonus == 0);
-		m_htiReleaseBonus1 = m_ctrlTreeOptions.InsertRadioButton(_T("12h"), m_htiReleaseBonusGroup, m_iReleaseBonus == 1);
-		m_htiReleaseBonusDays = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_DAYS2), m_htiReleaseBonusGroup, m_iReleaseBonus == 2);
-		m_htiReleaseBonusDaysEdit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_RELEASE_BONUS_EDIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiReleaseBonusDays);
-		m_ctrlTreeOptions.AddEditBox(m_htiReleaseBonusDaysEdit, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		m_ctrlTreeOptions.Expand(m_htiReleaseBonusDays, TVE_EXPAND);
-		// <== Release Bonus [sivka] - Stulle
+		// ==> Spread Credits Slot [Stulle] - Stulle
+		m_htiSpreadCreditsSlotGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_SPREAD_CREDITS_SLOT), iImgSpreadCredits, m_htiSharedPrefs);
+		m_htiSpreadCreditsSlot = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SPREAD_CREDITS_SLOT), m_htiSpreadCreditsSlotGroup, m_bSpreadCreditsSlot);
+		m_htiSpreadCreditsSlotCounter = m_ctrlTreeOptions.InsertItem(GetResString(IDS_SPREAD_CREDITS_SLOT_COUNTER), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiSpreadCreditsSlotGroup);
+		m_ctrlTreeOptions.AddEditBox(m_htiSpreadCreditsSlotCounter, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		// <== Spread Credits Slot [Stulle] - Stulle
 		m_htiSpreadBars = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SPREAD_BARS), m_htiSharedPrefs, m_bSpreadBars); // Spread bars [Slugfiller/MorphXT] - Stulle
 		// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 		m_htiHideOS = m_ctrlTreeOptions.InsertItem(GetResString(IDS_HIDEOVERSHARES), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiSpreadBars);
@@ -566,16 +583,20 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.Expand(m_htiHideOS, TVE_EXPAND);
 		m_htiShareOnlyTheNeed = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHAREONLYTHENEED), m_htiSharedPrefs, m_iShareOnlyTheNeed);
 		// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+
+		// ==> Release Bonus [sivka] - Stulle
+		m_htiReleaseBonusGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_RELEASE_BONUS_GROUP), iImgReleaseBonus, m_htiMisc);
+		m_htiReleaseBonus0 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_POWERSHARE_DISABLED), m_htiReleaseBonusGroup, m_iReleaseBonus == 0);
+		m_htiReleaseBonus1 = m_ctrlTreeOptions.InsertRadioButton(_T("12h"), m_htiReleaseBonusGroup, m_iReleaseBonus == 1);
+		m_htiReleaseBonusDays = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_DAYS2), m_htiReleaseBonusGroup, m_iReleaseBonus == 2);
+		m_htiReleaseBonusDaysEdit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_RELEASE_BONUS_EDIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiReleaseBonusDays);
+		m_ctrlTreeOptions.AddEditBox(m_htiReleaseBonusDaysEdit, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_ctrlTreeOptions.Expand(m_htiReleaseBonusDays, TVE_EXPAND);
+		// <== Release Bonus [sivka] - Stulle
 		m_htiReleaseScoreAssurance = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_RELEASE_SCORE_ASSURANCE), m_htiReleaseBonusGroup, m_bReleaseScoreAssurance); // Release Score Assurance [Stulle] - Stulle
 
 		m_htiMisc = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_MISC), iImgMisc, TVI_ROOT);
-		m_htiSUQWT = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SUQWT), m_htiMisc, m_bSUQWT); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-/*		// ==> Spread Credits Slot - Stulle
-		m_htiSpreadCreditsSlot = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SPREAD_CREDITS_SLOT), m_htiMisc, m_bSpreadCreditsSlot);
-		m_htiSpreadCreditsSlotCounter = m_ctrlTreeOptions.InsertItem(GetResString(IDS_SPREAD_CREDITS_SLOT_COUNTER), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiMisc);
-		m_ctrlTreeOptions.AddEditBox(m_htiSpreadCreditsSlotCounter, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		// <== Spread Credits Slot - Stulle
-*/		// ==> Global Source Limit [Max/Stulle] - Stulle
+		// ==> Global Source Limit [Max/Stulle] - Stulle
 		m_htiGlobalHlGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_GLOBAL_HL), iImgGlobal, m_htiMisc);
 		m_htiGlobalHL = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ENABLE), m_htiGlobalHlGroup, m_bGlobalHL);
 		m_htiGlobalHlLimit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_GLOBAL_HL_LIMIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiGlobalHlGroup);
@@ -593,6 +614,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiEmuLphant = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_EMULATE_PHANT), m_htiEmulatorGroup, m_bEmuLphant);
 		m_htiLogEmulator = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_EMULATE_LOG), m_htiEmulatorGroup, m_bLogEmulator);
 		// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+		m_htiSUQWT = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SUQWT), m_htiMisc, m_bSUQWT); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 		m_htiStartupSound = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_STARTUPSOUND), m_htiMisc, m_bStartupSound); // Startupsound [Commander] - mav744
 		// ==> Adjust Compress Level [Stulle] - Stulle
 		m_htiCompressLevel = m_ctrlTreeOptions.InsertItem(GetResString(IDS_COMPRESS_LVL), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiMisc);
@@ -668,6 +690,14 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	// <== Anti Uploader Ban [Stulle] - Stulle
 
 	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiCreditSystem, (int &)m_iCreditSystem); // CreditSystems [EastShare/ MorphXT] - Stulle
+	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiIsPayBackFirst, m_bIsPayBackFirst);
+	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiPayBackFirstLimit, m_iPayBackFirstLimit);
+	DDV_MinMaxInt(pDX, m_iPayBackFirstLimit, 5, 255);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiIsPayBackFirst2, m_bIsPayBackFirst2);
+	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiPayBackFirstLimit2, m_iPayBackFirstLimit2);
+	DDV_MinMaxInt(pDX, m_iPayBackFirstLimit2, 5, 1024);
+	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 
 	// ==> CPU/MEM usage [$ick$/Stulle] - Max
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSysInfo, m_bSysInfo);
@@ -739,11 +769,11 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiPsAmountLimit, m_iPsAmountLimit);
 	DDV_MinMaxInt(pDX, m_iPsAmountLimit, 0, MAX_PS_AMOUNT_LIMIT);
 	// <== Limit PS by amount of data uploaded [Stulle] - Stulle
-	// ==> Release Bonus [sivka] - Stulle
-	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiReleaseBonusGroup, m_iReleaseBonus);
-	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiReleaseBonusDaysEdit, m_iReleaseBonusDays);
-	DDV_MinMaxInt(pDX, m_iReleaseBonusDays, 1, 16);
-	// <== Release Bonus [sivka] - Stulle
+	// ==> Spread Credits Slot [Stulle] - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSpreadCreditsSlot, m_bSpreadCreditsSlot);
+	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiSpreadCreditsSlotCounter, m_iSpreadCreditsSlotCounter);
+	DDV_MinMaxInt(pDX, m_iSpreadCreditsSlotCounter, 3, 20);
+	// <== Spread Credits Slot [Stulle] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSpreadBars, m_bSpreadBars); // Spread bars [Slugfiller/MorphXT] - Stulle
 	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiHideOS, m_iHideOS);
@@ -751,15 +781,15 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSelectiveShare, m_bSelectiveShare);
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShareOnlyTheNeed, m_iShareOnlyTheNeed);
 	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+
+	// ==> Release Bonus [sivka] - Stulle
+	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiReleaseBonusGroup, m_iReleaseBonus);
+	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiReleaseBonusDaysEdit, m_iReleaseBonusDays);
+	DDV_MinMaxInt(pDX, m_iReleaseBonusDays, 1, 16);
+	// <== Release Bonus [sivka] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiReleaseScoreAssurance, m_bReleaseScoreAssurance); // Release Score Assurance [Stulle] - Stulle
 
-	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSUQWT, m_bSUQWT); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-/*	// ==> Spread Credits Slot - Stulle
-	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSpreadCreditsSlot, m_bSpreadCreditsSlot);
-	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiSpreadCreditsSlotCounter, m_iSpreadCreditsSlotCounter);
-	DDV_MinMaxInt(pDX, m_iSpreadCreditsSlotCounter, 3, 20);
-	// <== Spread Credits Slot - Stulle
-*/	// ==> Global Source Limit [Max/Stulle] - Stulle
+	// ==> Global Source Limit [Max/Stulle] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiGlobalHL, m_bGlobalHL);
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiGlobalHlLimit, m_iGlobalHL);
 	DDV_MinMaxInt(pDX, m_iGlobalHL, 1000, MAX_GSL);
@@ -774,6 +804,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiEmuLphant, m_bEmuLphant);
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiLogEmulator, m_bLogEmulator);
 	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSUQWT, m_bSUQWT); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiStartupSound, m_bStartupSound); // Startupsound [Commander] - mav744
 	// ==> Adjust Compress Level [Stulle] - Stulle
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiCompressLevel, m_iCompressLevel);
@@ -848,6 +879,13 @@ BOOL CPPgScar::OnInitDialog()
 	m_iAntiUploaderBanCase = thePrefs.GetAntiUploaderBanCase();
 	// <== Anti Uploader Ban [Stulle] - Stulle
 
+	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+	m_bIsPayBackFirst = thePrefs.m_bPayBackFirst;
+	m_iPayBackFirstLimit = thePrefs.m_iPayBackFirstLimit;
+	m_bIsPayBackFirst2 = thePrefs.m_bPayBackFirst2;
+	m_iPayBackFirstLimit2 = thePrefs.m_iPayBackFirstLimit2;
+	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+
 	// ==> CPU/MEM usage [$ick$/Stulle] - Max
 	m_bSysInfo = thePrefs.GetSysInfo();
 	m_bSysInfoGlobal = thePrefs.GetSysInfoGlobal();
@@ -916,6 +954,17 @@ BOOL CPPgScar::OnInitDialog()
 	m_iPowerShareLimit = thePrefs.PowerShareLimit;
 	// <== PowerShare [ZZ/MorphXT] - Stulle
 	m_iPsAmountLimit = thePrefs.GetPsAmountLimit(); // Limit PS by amount of data uploaded [Stulle] - Stulle
+	// ==> Spread Credits Slot [Stulle] - Stulle
+	m_bSpreadCreditsSlot = thePrefs.GetSpreadCreditsSlot();
+	m_iSpreadCreditsSlotCounter = (int)(thePrefs.GetSpreadCreditsSlotCounter());
+	// <== Spread Credits Slot [Stulle] - Stulle
+	m_bSpreadBars = thePrefs.GetSpreadbarSetStatus(); // Spread bars [Slugfiller/MorphXT] - Stulle
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	m_iHideOS = thePrefs.hideOS;
+	m_bSelectiveShare = thePrefs.selectiveShare;
+	m_iShareOnlyTheNeed = thePrefs.ShareOnlyTheNeed;
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+
 	// ==> Release Bonus [sivka] - Stulle
 	if (thePrefs.GetReleaseBonus() <= 1)
 	{
@@ -928,20 +977,9 @@ BOOL CPPgScar::OnInitDialog()
 		m_iReleaseBonusDays = (int)(thePrefs.GetReleaseBonus()/2);
 	}
 	// <== Release Bonus [sivka] - Stulle
-	m_bSpreadBars = thePrefs.GetSpreadbarSetStatus(); // Spread bars [Slugfiller/MorphXT] - Stulle
-	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
-	m_iHideOS = thePrefs.hideOS;
-	m_bSelectiveShare = thePrefs.selectiveShare;
-	m_iShareOnlyTheNeed = thePrefs.ShareOnlyTheNeed;
-	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 	m_bReleaseScoreAssurance = thePrefs.GetReleaseScoreAssurance(); // Release Score Assurance [Stulle] - Stulle
 
-	m_bSUQWT = thePrefs.SaveUploadQueueWaitTime(); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-/*	// ==> Spread Credits Slot - Stulle
-	m_bSpreadCreditsSlot = thePrefs.SpreadCreditsSlot;
-	m_iSpreadCreditsSlotCounter = (int)(thePrefs.SpreadCreditsSlotCounter);
-	// <== Spread Credits Slot - Stulle
-*/	// ==> Global Source Limit [Max/Stulle] - Stulle
+	// ==> Global Source Limit [Max/Stulle] - Stulle
 	m_bGlobalHL = thePrefs.IsUseGlobalHL();
 	m_iGlobalHL = thePrefs.GetGlobalHL();
 	m_bGlobalHlAll = thePrefs.GetGlobalHlAll();
@@ -955,6 +993,7 @@ BOOL CPPgScar::OnInitDialog()
 	m_bEmuLphant = thePrefs.IsEmuLphant();
 	m_bLogEmulator = thePrefs.IsEmuLog();
 	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	m_bSUQWT = thePrefs.SaveUploadQueueWaitTime(); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	m_bStartupSound = thePrefs.UseStartupSound(); // Startupsound [Commander] - mav744
 	m_iCompressLevel = thePrefs.GetCompressLevel(); // Adjust Compress Level [Stulle] - Stulle
 	m_bAutoSharedUpdater = thePrefs.GetDirectoryWatcher(); // Automatic shared files updater [MoNKi] - Stulle
@@ -1171,8 +1210,8 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_bACC = m_bACC; // ACC [Max/WiZaRd] - Max
 
 	// ==> Anti Uploader Ban [Stulle] - Stulle
-	thePrefs.m_iAntiUploaderBanLimit = m_iAntiUploaderBanLimit;
-	thePrefs.AntiUploaderBanCaseMode = m_iAntiUploaderBanCase;
+	thePrefs.m_uAntiUploaderBanLimit = (uint16)m_iAntiUploaderBanLimit;
+	thePrefs.AntiUploaderBanCaseMode = (uint8)m_iAntiUploaderBanCase;
 	// <== Anti Uploader Ban [Stulle] - Stulle
 
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
@@ -1181,6 +1220,12 @@ BOOL CPPgScar::OnApply()
 		theApp.clientcredits->ResetCheckScoreRatio();
 	}
 	// <== CreditSystems [EastShare/ MorphXT] - Stulle
+	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+	thePrefs.m_bPayBackFirst = m_bIsPayBackFirst;
+	thePrefs.m_iPayBackFirstLimit = (uint8)m_iPayBackFirstLimit;
+	thePrefs.m_bPayBackFirst2 = m_bIsPayBackFirst2;
+	thePrefs.m_iPayBackFirstLimit2 = (uint16)m_iPayBackFirstLimit2;
+	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 
 	// ==> CPU/MEM usage [$ick$/Stulle] - Max
 	if(thePrefs.m_bSysInfo != m_bSysInfo)
@@ -1244,32 +1289,26 @@ BOOL CPPgScar::OnApply()
 	// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
 	thePrefs.PsAmountLimit = m_iPsAmountLimit;
 	// <== Limit PS by amount of data uploaded [Stulle] - Stulle
-	// ==> Release Bonus [sivka] - Stulle
-	if (m_iReleaseBonus <= 1)
-        thePrefs.m_uReleaseBonus = (uint8)m_iReleaseBonus;
-	else
-		thePrefs.m_uReleaseBonus = (uint8)(m_iReleaseBonusDays*2);
-	// <== Release Bonus [sivka] - Stulle
+	// ==> Spread Credits Slot [Stulle] - Stulle
+	thePrefs.SpreadCreditsSlot = m_bSpreadCreditsSlot;
+	thePrefs.SpreadCreditsSlotCounter = (uint16)m_iSpreadCreditsSlotCounter;
+	// <== Spread Credits Slot [Stulle] - Stulle
 	thePrefs.m_bSpreadbarSetStatus = m_bSpreadBars; // Spread bars [Slugfiller/MorphXT] - Stulle
 	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 	thePrefs.hideOS = m_iHideOS;
 	thePrefs.selectiveShare = m_bSelectiveShare;
 	thePrefs.ShareOnlyTheNeed = m_iShareOnlyTheNeed!=0;
 	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+
+	// ==> Release Bonus [sivka] - Stulle
+	if (m_iReleaseBonus <= 1)
+        thePrefs.m_uReleaseBonus = (uint8)m_iReleaseBonus;
+	else
+		thePrefs.m_uReleaseBonus = (uint8)(m_iReleaseBonusDays*2);
+	// <== Release Bonus [sivka] - Stulle
 	thePrefs.m_bReleaseScoreAssurance = m_bReleaseScoreAssurance; // Release Score Assurance [Stulle] - Stulle
 
-	// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-	if(thePrefs.m_bSaveUploadQueueWaitTime != m_bSUQWT)
-	{
-		thePrefs.m_bSaveUploadQueueWaitTime = m_bSUQWT;
-		bRestartApp = true;
-	}
-	// <<== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-/*	// ==> Spread Credits Slot - Stulle
-	thePrefs.SpreadCreditsSlot = m_bSpreadCreditsSlot;
-	thePrefs.SpreadCreditsSlotCounter = m_iSpreadCreditsSlotCounter;
-	// <== Spread Credits Slot - Stulle
-*/	// ==> Global Source Limit [Max/Stulle] - Stulle
+	// ==> Global Source Limit [Max/Stulle] - Stulle
 	if (thePrefs.GetGlobalHL() != (UINT)m_iGlobalHL ||
 		thePrefs.IsUseGlobalHL() != m_bGlobalHL ||
 		thePrefs.m_bGlobalHlAll != m_bGlobalHlAll)
@@ -1294,6 +1333,13 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_bEmuLphant = m_bEmuLphant;
 	thePrefs.m_bLogEmulator = m_bLogEmulator;
 	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
+	if(thePrefs.m_bSaveUploadQueueWaitTime != m_bSUQWT)
+	{
+		thePrefs.m_bSaveUploadQueueWaitTime = m_bSUQWT;
+		bRestartApp = true;
+	}
+	// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	thePrefs.startupsound = m_bStartupSound; // Startupsound [Commander] - mav744
 	// ==> Adjust Compress Level [Stulle] - Stulle
 	thePrefs.m_uCompressLevel = (uint8)m_iCompressLevel;
@@ -1449,6 +1495,13 @@ void CPPgScar::Localize(void)
 		if (m_htiAntiUploaderBanLimit) m_ctrlTreeOptions.SetEditLabel(m_htiAntiUploaderBanLimit, GetResString(IDS_UNBAN_UPLOADER));
 		// <== Anti Uploader Ban [Stulle] - Stulle
 
+		// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+		if (m_htiIsPayBackFirst) m_ctrlTreeOptions.SetItemText(m_htiIsPayBackFirst, GetResString(IDS_PAYBACKFIRST));
+		if (m_htiPayBackFirstLimit) m_ctrlTreeOptions.SetEditLabel(m_htiPayBackFirstLimit, GetResString(IDS_PAYBACKFIRSTLIMIT));
+		if (m_htiIsPayBackFirst2) m_ctrlTreeOptions.SetItemText(m_htiIsPayBackFirst2, GetResString(IDS_PAYBACKFIRST2));
+		if (m_htiPayBackFirstLimit2) m_ctrlTreeOptions.SetEditLabel(m_htiPayBackFirstLimit2, GetResString(IDS_PAYBACKFIRSTLIMIT2));
+		// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+
 		// ==> CPU/MEM usage [$ick$/Stulle] - Max
 		if (m_htiSysInfo) m_ctrlTreeOptions.SetItemText(m_htiSysInfo, GetResString(IDS_ENABLED));
 		if (m_htiSysInfoGlobal) m_ctrlTreeOptions.SetItemText(m_htiSysInfoGlobal, GetResString(IDS_SYS_INFO_GLOBAL));
@@ -1539,6 +1592,10 @@ void CPPgScar::Localize(void)
 		// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
 		if (m_htiPsAmountLimit) m_ctrlTreeOptions.SetEditLabel(m_htiPsAmountLimit, GetResString(IDS_PS_AMOUNT_LIMIT));
 		// <== Limit PS by amount of data uploaded [Stulle] - Stulle
+		// ==> Spread Credits Slot [Stulle] - Stulle
+		if (m_htiSpreadCreditsSlot) m_ctrlTreeOptions.SetItemText(m_htiSpreadCreditsSlot, GetResString(IDS_SPREAD_CREDITS_SLOT));
+		if (m_htiSpreadCreditsSlotCounter) m_ctrlTreeOptions.SetEditLabel(m_htiSpreadCreditsSlotCounter, GetResString(IDS_SPREAD_CREDITS_SLOT_COUNTER));
+		// <== Spread Credits Slot [Stulle] - Stulle
 		if (m_htiSpreadBars) m_ctrlTreeOptions.SetItemText(m_htiSpreadBars, GetResString(IDS_SPREAD_BARS)); // Spread bars [Slugfiller/MorphXT] - Stulle
 		// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 		if (m_htiHideOS) m_ctrlTreeOptions.SetEditLabel(m_htiHideOS, GetResString(IDS_HIDEOVERSHARES));
@@ -1547,12 +1604,7 @@ void CPPgScar::Localize(void)
 		// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 		if (m_htiReleaseScoreAssurance) m_ctrlTreeOptions.SetItemText(m_htiReleaseScoreAssurance, GetResString(IDS_RELEASE_SCORE_ASSURANCE)); // Release Score Assurance [Stulle] - Stulle
 
-		if (m_htiSUQWT) m_ctrlTreeOptions.SetItemText(m_htiSUQWT, GetResString(IDS_SUQWT)); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-/*		// ==> Spread Credits Slot - Stulle
-		if (m_htiSpreadCreditsSlot) m_ctrlTreeOptions.SetItemText(m_htiSpreadCreditsSlot, GetResString(IDS_SPREAD_CREDITS_SLOT));
-		if (m_htiSpreadCreditsSlotCounter) m_ctrlTreeOptions.SetEditLabel(m_htiSpreadCreditsSlotCounter, GetResString(IDS_SPREAD_CREDITS_SLOT_COUNTER));
-		// <== Spread Credits Slot - Stulle
-*/		// ==> Global Source Limit [Max/Stulle] - Stulle
+		// ==> Global Source Limit [Max/Stulle] - Stulle
 		if (m_htiGlobalHL) m_ctrlTreeOptions.SetItemText(m_htiGlobalHL, GetResString(IDS_ENABLE));
 		if (m_htiGlobalHlLimit) m_ctrlTreeOptions.SetEditLabel(m_htiGlobalHlLimit, GetResString(IDS_GLOBAL_HL_LIMIT));
 		if (m_htiGlobalHlAll) m_ctrlTreeOptions.SetItemText(m_htiGlobalHlAll, GetResString(IDS_GLOBAL_HL_ALL));
@@ -1566,9 +1618,10 @@ void CPPgScar::Localize(void)
 		if (m_htiEmuLphant) m_ctrlTreeOptions.SetItemText(m_htiEmuLphant, GetResString(IDS_EMULATE_PHANT));
 		if (m_htiLogEmulator) m_ctrlTreeOptions.SetItemText(m_htiLogEmulator, GetResString(IDS_EMULATE_LOG));
 		// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+		if (m_htiSUQWT) m_ctrlTreeOptions.SetItemText(m_htiSUQWT, GetResString(IDS_SUQWT)); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 		if (m_htiStartupSound) m_ctrlTreeOptions.SetItemText(m_htiStartupSound, GetResString(IDS_STARTUPSOUND)); // Startupsound [Commander] - mav744
 		if (m_htiCompressLevel) m_ctrlTreeOptions.SetEditLabel(m_htiCompressLevel, GetResString(IDS_COMPRESS_LVL)); // Adjust Compress Level [Stulle] - Stulle
-		if (m_htiAutoSharedUpdater) m_ctrlTreeOptions.SetEditLabel(m_htiAutoSharedUpdater, GetResString(IDS_AUTO_SHARED_UPDATER)); // Automatic shared files updater [MoNKi] - Stulle
+		if (m_htiAutoSharedUpdater) m_ctrlTreeOptions.SetItemText(m_htiAutoSharedUpdater, GetResString(IDS_AUTO_SHARED_UPDATER)); // Automatic shared files updater [MoNKi] - Stulle
 
 		// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 		m_BackupBox.SetWindowText( GetResString(IDS_BACKUP_FILEFRAME) );
@@ -1706,6 +1759,12 @@ void CPPgScar::OnDestroy()
 	m_htiSwatCredit = NULL;
 	m_htiXmanCredit = NULL;
 	// <== CreditSystems [EastShare/ MorphXT] - Stulle
+	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+	m_htiIsPayBackFirst = NULL;
+	m_htiPayBackFirstLimit = NULL;
+	m_htiIsPayBackFirst2 = NULL;
+	m_htiPayBackFirstLimit2 = NULL;
+	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 
 	m_htiDisplay = NULL;
 	// ==> CPU/MEM usage [$ick$/Stulle] - Max
@@ -1780,6 +1839,18 @@ void CPPgScar::OnDestroy()
 	m_htiPowerShareLimit = NULL;
 	// <== PowerShare [ZZ/MorphXT] - Stulle
 	m_htiPsAmountLimit = NULL; // Limit PS by amount of data uploaded [Stulle] - Stulle
+	// ==> Spread Credits Slot [Stulle] - Stulle
+	m_htiSpreadCreditsSlotGroup = NULL;
+	m_htiSpreadCreditsSlot = NULL;
+	m_htiSpreadCreditsSlotCounter = NULL;
+	// <== Spread Credits Slot [Stulle] - Stulle
+	m_htiSpreadBars = NULL; // Spread bars [Slugfiller/MorphXT] - Stulle
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	m_htiHideOS = NULL;
+	m_htiSelectiveShare = NULL;
+	m_htiShareOnlyTheNeed = NULL;
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+
 	// ==> Release Bonus [sivka] - Stulle
 	m_htiReleaseBonusGroup = NULL;
 	m_htiReleaseBonus0 = NULL;
@@ -1787,21 +1858,10 @@ void CPPgScar::OnDestroy()
 	m_htiReleaseBonusDays = NULL;
 	m_htiReleaseBonusDaysEdit = NULL;
 	// <== Release Bonus [sivka] - Stulle
-	m_htiSpreadBars = NULL; // Spread bars [Slugfiller/MorphXT] - Stulle
-	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
-	m_htiHideOS = NULL;
-	m_htiSelectiveShare = NULL;
-	m_htiShareOnlyTheNeed = NULL;
-	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 	m_htiReleaseScoreAssurance = NULL; // Release Score Assurance [Stulle] - Stulle
 
 	m_htiMisc = NULL;
-	m_htiSUQWT = NULL; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-/*	// ==> Spread Credits Slot - Stulle
-	m_htiSpreadCreditsSlot = NULL;
-	m_htiSpreadCreditsSlotCounter = NULL;
-	// <== Spread Credits Slot - Stulle
-*/	// ==> Global Source Limit [Max/Stulle] - Stulle
+	// ==> Global Source Limit [Max/Stulle] - Stulle
 	m_htiGlobalHlGroup = NULL;
 	m_htiGlobalHL = NULL;
 	m_htiGlobalHlLimit = NULL;
@@ -1817,6 +1877,7 @@ void CPPgScar::OnDestroy()
 	m_htiEmuLphant = NULL;
 	m_htiLogEmulator = NULL;
 	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	m_htiSUQWT = NULL; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	m_htiStartupSound = NULL; // Startupsound [Commander] - mav744
 	m_htiCompressLevel = NULL; // Adjust Compress Level [Stulle] - Stulle
 	m_htiAutoSharedUpdater = NULL; // Automatic shared files updater [MoNKi] - Stulle

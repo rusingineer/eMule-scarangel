@@ -220,6 +220,16 @@ private:
 public:
 	bool			GetHasScore(const CUpDownClient* client);
 	// <== CreditSystems [EastShare/ MorphXT] - Stulle
+
+	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+	void	InitPayBackFirstStatus();
+	bool	GetPayBackFirstStatus()			{return m_bPayBackFirst;}
+	bool	GetPayBackFirstStatus2()		{return m_bPayBackFirst2;}
+private:
+	void	TestPayBackFirstStatus();
+	bool	m_bPayBackFirst;
+	bool	m_bPayBackFirst2;
+	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 };
 
 class CClientCreditsList

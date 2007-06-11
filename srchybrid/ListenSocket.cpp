@@ -2440,6 +2440,18 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 					}
 					break;
 				}
+				// ==> Recognize MlDonkey XS Answer [Spike2/ideas by Wiz] - Stulle
+				case OP_XSMLDONKEY:
+				{
+					if (thePrefs.GetDebugClientTCPLevel() > 0)
+						DebugRecv("OP_XSmlDonkey", client);
+					theStats.AddDownDataOverheadOther(size);
+
+					client->CheckHandshakeFinished();
+
+					break;
+				}
+				// <== Recognize MlDonkey XS Answer [Spike2/ideas by Wiz] - Stulle
 				default:
 					theStats.AddDownDataOverheadOther(uRawSize);
 					//Xman final version: don't log too much

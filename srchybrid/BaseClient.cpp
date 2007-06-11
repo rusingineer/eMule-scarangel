@@ -348,6 +348,8 @@ void CUpDownClient::Init()
 	m_bGiveWaittimeBack = false; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 
 	m_bAntiUploaderCaseThree = false; // Anti Uploader Ban [Stulle] - Stulle
+
+	m_uSpreadClient = 0; // Spread Credits Slot [Stulle] - Stulle
 }
 
 CUpDownClient::~CUpDownClient(){
@@ -3809,6 +3811,24 @@ CString CUpDownClient::GetUploadStateDisplayString() const
 			strState += _T(" Hit");
 	//}
 
+	// ==> Spread Credits Slot [Stulle] - Stulle
+	if( thePrefs.GetSpreadCreditsSlot() && thePrefs.TransferFullChunks() )
+	{
+		switch(GetSpreadClient())
+		{
+			case 1:
+				strState += _T(" @Spr N");
+				break;
+			case 2:
+				strState += _T(" @Spr O");
+				break;
+			case 0:
+			default:
+				break;
+		}
+	}
+	// <== Spread Credits Slot [Stulle] - Stulle
+
 	//Xman 4.2
 	if(GetDownloadState()==DS_DOWNLOADING)
 		strState = _T("<<") + strState;
@@ -4124,6 +4144,17 @@ float CUpDownClient::GetXtremeVersion(CString modversion) const
 // Maella -Unnecessary Protocol Overload-
 void CUpDownClient::CalculateJitteredFileReaskTime(bool longer)
 {
+	// ==> Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	//seeing that MLDonkey has a reask which is ~3 times as fast as eMules and MLDonkey downloads ~3 times as much from each other as an eMule client
+	//this seems to be a sensible approach, though hammering is NOT a good solution... 
+	if (GetClientSoft() == SO_MLDONKEY && thePrefs.IsEmuMLDonkey())
+		m_jitteredFileReaskTime = MIN_REQUESTTIME;
+	// Shareaza allows its users to lower the ReaskTime down to 20 Minutes !! Okay, so do we.... but hardcoded.
+	else if (GetClientSoft() == SO_SHAREAZA && thePrefs.IsEmuShareaza())
+		m_jitteredFileReaskTime = MIN_REQUESTTIME*2;
+	// no change for eMule Plus as they do use the same system like eMule
+	else
+	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
 	if(longer==false)
 	{
 		// Maella -Unnecessary Protocol Overload-
