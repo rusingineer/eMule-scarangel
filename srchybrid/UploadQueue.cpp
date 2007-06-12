@@ -361,7 +361,7 @@ bool CUploadQueue::AddUpNextClient(LPCTSTR pszReason, CUpDownClient* directadd){
 		if(	thePrefs.GetSpreadCreditsSlot() && thePrefs.TransferFullChunks() && m_bSpreadCreditsSlotActive)
 	        newclient = FindBestSpreadClientInQueue();
 
-		if(newclient != NULL)
+		if(newclient == NULL)
 		// <== Spread Credits Slot [Stulle] - Stulle
         newclient = FindBestClientInQueue();
 
