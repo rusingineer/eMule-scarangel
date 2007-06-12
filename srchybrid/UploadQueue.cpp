@@ -1834,17 +1834,19 @@ CUpDownClient* CUploadQueue::FindBestSpreadClientInQueue()
 		}
         else
         {
-			if(	cur_client->credits != NULL && // credits exists
-				cur_client->GetSpreadClient() != 0 && // not old
-				( // and
-					cur_client->credits->GetDownloadedTotal() != 0 || // had download
-					cur_client->credits->GetUploadedTotal() != 0 || // or upload
-					queueNewReqfile->GetPowerShared() == true || // or request PS file
-					cur_client->GetSmallFilePush() == true || // or is small file pushed
-					cur_client->IsLeecher() != 0 // or is an arse
-					)
-				)
-					continue; // ignore
+			if(cur_client->credits == NULL ||
+				(cur_client->credits != NULL &&
+					cur_client->credits->GetDownloadedTotal() == 0 &&
+					cur_client->credits->GetUploadedTotal() == 0 &&
+					queueNewReqfile->GetPowerShared() == false &&
+					cur_client->GetSmallFilePush() == false && // don't allow pushed clients to get a Spread Credits Slot
+					cur_client->IsLeecher() == 0) || // nor a bad ass
+				cur_client->GetSpreadClient() > 0)
+			{
+				// do nothing
+			}
+			else
+				continue; // ignore
 
 		    // finished clearing
 		    uint32 cur_score = cur_client->GetScore(false);
