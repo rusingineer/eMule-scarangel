@@ -216,6 +216,8 @@ void CMenuXP::DrawItem( LPDRAWITEMSTRUCT lpds )
 		{
 			DrawButton(&dc, rcButton, bSelected, bDisabled, bChecked);
 		}
+		// ==> check mark superior to icon [fafner] - Stulle
+		/*
 		//draw the icon actually
 		if (pItem->m_hIcon)
 		{
@@ -230,6 +232,22 @@ void CMenuXP::DrawItem( LPDRAWITEMSTRUCT lpds )
 			rcCheck.DeflateRect(2, 2);
 			DrawCheckMark(&dc, rcCheck, bSelected);
 		}
+		*/
+		if (bChecked)	
+		{
+			//draw the check mark
+			CRect	rcCheck = rcButton;
+			rcCheck.DeflateRect(2, 2);
+			DrawCheckMark(&dc, rcCheck, bSelected);
+		}
+		//draw the icon actually
+		else if (pItem->m_hIcon)
+		{
+			CRect	rcIcon = rcButton;
+			rcIcon.DeflateRect(2, 2);
+			DrawIcon(&dc, rcIcon, pItem->m_hIcon, bSelected, bDisabled, bChecked);
+		}
+		// <== check mark superior to icon [fafner] - Stulle
 
 		//draw text finally
 		if (!pItem->m_bButtonOnly)

@@ -213,7 +213,8 @@ BOOL CPPgGeneral::OnApply()
 		GetDlgItem(IDC_NICK)->SetWindowText(strNick);
 	}
 	//Xman DLP check the nick
-	if(theApp.dlp->IsDLPavailable() && (theApp.dlp->DLPCheckUsername_Hard(strNick) || theApp.dlp->DLPCheckUsername_Soft(strNick)))
+	CString strNicktocheck=strNick + _T(" [xxx]");
+	if(theApp.dlp->IsDLPavailable() && (theApp.dlp->DLPCheckUsername_Hard(strNicktocheck) || theApp.dlp->DLPCheckUsername_Soft(strNicktocheck)))
 	{
 		AfxMessageBox(_T("This nick is not allowed"));
 		strNick = DEFAULT_NICK;

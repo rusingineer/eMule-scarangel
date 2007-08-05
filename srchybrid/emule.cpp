@@ -226,6 +226,7 @@ CemuleApp::CemuleApp(LPCTSTR lpszAppName)
 	last_ip_change = 0;
 	last_valid_serverid = 0;
 	last_valid_ip = 0;
+	recheck_ip = 0;
 	last_traffic_reception = 0;
 	internetmaybedown=1;
 	//Xman end
@@ -418,6 +419,18 @@ BOOL CemuleApp::InitInstance()
 	//_tsetlocale(LC_CTYPE, _T("C"));		// set character types category to 'C' (VERY IMPORTANT, we need binary string compares!)
 
 	AfxOleInit();
+
+	//Xman
+	// leuk_he: prevent switch to ... busy popup during windows startup. see kb 248019
+	if (AfxOleGetMessageFilter()) {
+		AfxOleGetMessageFilter()->EnableBusyDialog(false);
+		AfxOleGetMessageFilter()->EnableNotRespondingDialog(false);
+		AfxOleGetMessageFilter()->SetMessagePendingDelay(60 * 1000); // 60 secs instead of 5
+	}
+	else {
+		ASSERT(0);  // dll not loaded?
+	}
+	// leuk_he: end prevent switch
 
 	pstrPendingLink = NULL;
 

@@ -312,7 +312,12 @@ public:
 	/*
 	LPCTSTR			GetUserName() const								{ return m_pszUsername; }
 	*/
+	// ==> No FunnyNick for bad guys [Stulle] - Stulle
+	/*
 	LPCTSTR			GetUserName() const								{ return (thePrefs.DisplayFunnyNick() && m_pszFunnyNick)?m_pszFunnyNick:m_pszUsername; }
+	*/
+	LPCTSTR			GetUserName() const								{ return (thePrefs.DisplayFunnyNick() && m_bLeecher==0 && m_pszFunnyNick)?m_pszFunnyNick:m_pszUsername; }
+	// <== No FunnyNick for bad guys [Stulle] - Stulle
 	//Xman end
 
 	void			SetUserName(LPCTSTR pszNewName);

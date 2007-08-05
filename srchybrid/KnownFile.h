@@ -124,6 +124,7 @@ public:
 	uint16 GetOnUploadqueue() const		{return onuploadqueue;}
 	//Xman end
 
+
 	virtual void	UpdatePartsInfo();
 	virtual	void	DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool bFlat) const;
 

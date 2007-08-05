@@ -337,15 +337,7 @@ uint32 CUpDownClient::GetScore(bool sysvalue, bool isdownloading, bool onlybasev
 		// the first 15 min downloadtime counts as 15 min waitingtime and you get a 15 min bonus while you are in the first 15 min :)
 		// (to avoid 20 sec downloads) after this the score won't raise anymore 
 		fBaseValue = (float)(m_dwUploadTime-GetWaitStartTime());
-
-		// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-		// Moonlight: SUQWT - I'm exploiting negative overflows to adjust wait start times. Overflows should not be an issue as long
-		// as queue turnover rate is faster than 49 days.
-		/*
-		ASSERT ( m_dwUploadTime-GetWaitStartTime() >= 0 ); //oct 28, 02: changed this from "> 0" to ">= 0"
-		*/
-		// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-
+		//ASSERT ( m_dwUploadTime-GetWaitStartTime() >= 0 ); //oct 28, 02: changed this from "> 0" to ">= 0" -> // 02-Okt-2006 []: ">=0" is always true!
 		//fBaseValue += (float)(::GetTickCount() - m_dwUploadTime > 900000)? 900000:1800000;
 		//Xman Xtreme Upload
 		//we can not give a high bonus during the first 15 minutes, because of varying slotspeed
@@ -1399,7 +1391,7 @@ void CUpDownClient::Ban(LPCTSTR pszReason)
 			AddLeecherLogLine(false,_T("Banned: (refreshed): %s; %s"), pszReason==NULL ? _T("Aggressive behaviour") : pszReason, DbgGetClientInfo());
 	}
 #endif
-	theApp.clientlist->AddBannedClient(GetIP());
+	theApp.clientlist->AddBannedClient(GetConnectIP());
 	SetUploadState(US_BANNED);
 	theApp.emuledlg->transferwnd->ShowQueueCount(theApp.uploadqueue->GetWaitingUserCount());
 	theApp.emuledlg->transferwnd->queuelistctrl.RefreshClient(this);
@@ -1506,9 +1498,10 @@ bool CUpDownClient::IsDifferentPartBlock()
 	
 	bool different = false;
 	
-	try {
+	//try {
 		// Check if we have good lists and proceed to check for different chunks
-		if (!m_BlockRequests_queue.IsEmpty() && !m_DoneBlocks_list.IsEmpty())
+		if (GetSessionUp() >= 3145728 //Xman-Full-Chunk: Client is allowed to get min 3.0 MB
+			&& !m_BlockRequests_queue.IsEmpty() && !m_DoneBlocks_list.IsEmpty())
 		{
 			// Calculate corresponding parts to blocks
 			//lastBlock = m_DoneBlocks_list.GetTail(); //Xman: with this method we give 1 chunk min and 2.8MB max if chunk border was reached
@@ -1519,7 +1512,7 @@ bool CUpDownClient::IsDifferentPartBlock()
              
 			// Test is we are asking same file and same part
 			//
-			if ( lastDone != currRequested && GetSessionUp() >= 3145728 )  //Xman-Full-Chunk: Client is allowed to get min 3.0 MB
+			if ( lastDone != currRequested )  
 			{ 
 				different = true;
 				
@@ -1527,7 +1520,7 @@ bool CUpDownClient::IsDifferentPartBlock()
 					AddDebugLogLine(false, _T("%s: Upload session will end soon due to new chunk."), this->GetUserName());
 				}				
 			}
-			if (md4cmp(lastBlock->FileID, currBlock->FileID) != 0 && GetSessionUp() >= 3145728 )  //Xman-Full-Chunk: Client is allowed to get min 3.0 MB
+			if (md4cmp(lastBlock->FileID, currBlock->FileID) != 0 ) 
 			{ 
 				different = true;
 				
@@ -1536,12 +1529,14 @@ bool CUpDownClient::IsDifferentPartBlock()
 				}
 			}
 		} 
+   /*
    	}
    	catch(...)
    	{ 
 			AddDebugLogLine(false, _T("%s: Upload session ended due to error."), this->GetUserName());
       		different = true; 
    	} 
+	*/
 
 	return different; 
 }
@@ -1665,6 +1660,8 @@ void CUpDownClient::BanLeecher(LPCTSTR pszReason, uint8 leechercategory){
 	//15 = snafu = m4 string
 	//16 = wrong Startuploadrequest (bionic community)
 	//17 = wrong m_fSupportsAICH (applejuice )
+	//18 = detected by userhash (AJ) (ban)
+	//19 = filefaker (in deadsourcelist but still requesting the file)
 
 	m_strBanMessage.Empty();
 	bool reducescore=false;
@@ -1729,7 +1726,7 @@ void CUpDownClient::BanLeecher(LPCTSTR pszReason, uint8 leechercategory){
 
 	SetChatState(MS_NONE);
 	theApp.clientlist->AddTrackClient(this);
-	theApp.clientlist->AddBannedClient( GetIP() );
+	theApp.clientlist->AddBannedClient( GetConnectIP() );
 	SetUploadState(US_BANNED);
 	theApp.emuledlg->transferwnd->ShowQueueCount(theApp.uploadqueue->GetWaitingUserCount());
 	theApp.emuledlg->transferwnd->queuelistctrl.RefreshClient(this);

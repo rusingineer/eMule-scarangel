@@ -58,7 +58,7 @@ CIndexed::CIndexed()
 	m_mapNotes.InitHashTable(1031);
 	m_mapLoad.InitHashTable(1031);
 	m_mapSources.InitHashTable(1031);
-	// ==> KAD vista fix [godlaugh2007] - Stulle
+	//Xman fixed official kad bug under vista (leuk_he/godlaugh2007)
 	/*
 	m_sSourceFileName = CMiscUtils::GetAppDir();
 	m_sSourceFileName.Append(CONFIGFOLDER);
@@ -73,7 +73,8 @@ CIndexed::CIndexed()
 	m_sSourceFileName =thePrefs.GetMuleDirectory(EMULE_CONFIGDIR)  + _T("src_index.dat");
 	m_sKeyFileName =thePrefs.GetMuleDirectory(EMULE_CONFIGDIR)  + _T("key_index.dat");
 	m_sLoadFileName =thePrefs.GetMuleDirectory(EMULE_CONFIGDIR)  + _T("load_index.dat");
-	// <== KAD vista fix [godlaugh2007] - Stulle
+	//Xman end
+
 	m_tLastClean = time(NULL) + (60*30);
 	m_uTotalIndexSource = 0;
 	m_uTotalIndexKeyword = 0;

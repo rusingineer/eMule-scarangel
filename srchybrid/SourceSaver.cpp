@@ -44,6 +44,9 @@ bool CSourceSaver::Process() // return false if sources not saved
 		m_dwLastTimeLoaded = ::GetTickCount();
 		m_dwLastTimeSaved = ::GetTickCount() + (rand() * 30000 / RAND_MAX) - 15000; // Don't save all files at the same time
 
+		//Xman 6.0.1 skip loading if obfuscation only
+		if(!thePrefs.IsClientCryptLayerRequired())
+		{
 		// Load sources from the file
 		CString slsfilepath;
 		slsfilepath.Format(_T("%s\\%s.txtsrc"), m_pFile->GetTempPath(), m_pFile->GetPartMetFileName());
@@ -51,6 +54,7 @@ bool CSourceSaver::Process() // return false if sources not saved
 
 		// Try to add the sources
 		AddSourcesToDownload();
+		}
 	}
 	// Save the list every n minutes (default 10 minutes)
 	else if ((int)(::GetTickCount() - m_dwLastTimeSaved) > RESAVETIME) {

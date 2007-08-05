@@ -116,7 +116,10 @@ BOOL CSharedFilesWnd::OnInitDialog()
 	m_wndSplitter.Create(WS_CHILD | WS_VISIBLE, rcSpl, this, IDC_SPLITTER_SHAREDFILES);
 
 	int PosStatVinit = rcSpl.left;
-	int PosStatVnew = rc.left + thePrefs.GetSplitterbarPositionShared() + 2;
+	//Xman fixed sharedfilesplitterbar
+	//int PosStatVnew = rc.left + thePrefs.GetSplitterbarPositionShared() + 2;
+	int PosStatVnew = rc.left + thePrefs.GetSplitterbarPositionShared() + SPLITTER_WIDTH;
+	//Xman end
 
 	if (thePrefs.GetSplitterbarPositionShared() > SPLITTER_RANGE_MAX)
 		PosStatVnew = SPLITTER_RANGE_MAX;

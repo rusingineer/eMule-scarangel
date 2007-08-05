@@ -224,7 +224,9 @@ protected:
 	void AddSpeedSelectorMenus(CMenu* addToMenu);
 	//Xman
 	// Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+public:
 	float  GetRecMaxUpload();
+protected:
 	//Xman end
 	void LoadNotifier(CString configuration);
 	bool notifierenabled;

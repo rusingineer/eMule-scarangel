@@ -649,7 +649,8 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					Sbuffer = CastSecondsToHM((::GetTickCount() - client->GetWaitStartTime())/1000);
 					break;
 				case 8:
-					if(client->IsBanned())
+					//if(client->IsBanned())
+					if(client->GetUploadState()==US_BANNED) //Xman Code Improvement
 						Sbuffer = GetResString(IDS_YES);
 					else
 						Sbuffer = GetResString(IDS_NO);

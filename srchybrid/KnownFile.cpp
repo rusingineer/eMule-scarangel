@@ -2901,6 +2901,7 @@ void CKnownFile::CheckAUPFilestats(bool allowUpdatePrio)
 		statistic.UpdateCountedTransferred();
 	}
 }
+
 // ==> push rare file - Stulle
 float CKnownFile::GetFileRatio() const
 {

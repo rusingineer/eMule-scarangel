@@ -702,12 +702,12 @@ bool CClientUDPSocket::Rebind()
 	//upnp_start
 	if(thePrefs.GetUPnPNat())
 	{
-		if(theApp.m_UPnPNat.RemoveSpecifiedPort(m_port, MyUPnP::UNAT_UDP))
-			AddLogLine(false, _T("UPNP: removed UDP-port %u"), m_port);
+		if(theApp.m_UPnPNat.RemoveSpecifiedPort(thePrefs.m_iUPnPUDPExternal, MyUPnP::UNAT_UDP))
+			AddLogLine(false, _T("UPNP: removed UDP-port %u"), thePrefs.m_iUPnPUDPExternal);
 		else
-			AddLogLine(false, _T("UPNP: failed to remove UDP-port %u"), m_port);
-		thePrefs.m_iUPnPUDPExternal=0;
+			AddLogLine(false, _T("UPNP: failed to remove UDP-port %u"), thePrefs.m_iUPnPUDPExternal);
 	}
+	thePrefs.m_iUPnPUDPExternal=0;
 	//upnp_end
 	*/
 	// ==> Random Ports [MoNKi] - Stulle

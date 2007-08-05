@@ -174,7 +174,12 @@ CUpDownClient* CUploadQueue::FindBestClientInQueue()
 				{
                     // this client is a HighID or a lowID client that is ready to go (connected)
                     // and it is more worthy
+					// ==> Disable accepting only clients who asked within last 30min [Stulle] - Stulle
+					/*
 					if ((thisTick - cur_client->GetLastUpRequest()< 1800000) //Xman accept only clients which asked the last 30 minutes:
+					*/
+					if ((thePrefs.GetDisableUlThres() || (thisTick - cur_client->GetLastUpRequest()< 1800000)) //Xman accept only clients which asked the last 30 minutes:
+					// <== Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 						&& cur_client->GetLastAction()==OP_STARTUPLOADREQ) //Xman fix for startupload
 					{
 						bestscoreSup = cur_score;
@@ -236,7 +241,12 @@ CUpDownClient* CUploadQueue::FindBestClientInQueue()
 				{
                     // this client is a HighID or a lowID client that is ready to go (connected)
                     // and it is more worthy
+					// ==> Disable accepting only clients who asked within last 30min [Stulle] - Stulle
+					/*
 					if ((thisTick - cur_client->GetLastUpRequest()< 1800000) //Xman accept only clients which asked the last 30 minutes:
+					*/
+					if ((thePrefs.GetDisableUlThres() || (thisTick - cur_client->GetLastUpRequest()< 1800000)) //Xman accept only clients which asked the last 30 minutes:
+					// <== Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 						&& cur_client->GetLastAction()==OP_STARTUPLOADREQ) //Xman fix for startupload
 					{
 					bestscore = cur_score;
@@ -662,7 +672,7 @@ bool CUploadQueue::AcceptNewClient(bool addOnNextConnect)
 			{
 				CUpDownClient* cur_client=uploadinglist.GetNext(pos);
 				if(cur_client->GetUpStartTimeDelay()>MIN2MS(3) //this client is already 5 minutes uploading. 
-					&& cur_client->GetFileUploadSocket()->GetBlockRatio_overall() >= 95.0f //95% of all send were blocked
+					&& cur_client->GetFileUploadSocket()->GetBlockRatio_overall() >= 94.0f //95% of all send were blocked
 					&& cur_client->GetFileUploadSocket()->GetBlockRatio() >= ratioreference //96% the last 20 seconds
 					)
 				{
@@ -685,7 +695,16 @@ bool CUploadQueue::AcceptNewClient(bool addOnNextConnect)
 	else if(curUpSlots < MinSlots/2)
 		return true;
 
+	if(thePrefs.GetMaxUpload() > 16)
+		if(addOnNextConnect 
+			&& ((thePrefs.m_openmoreslots //if openmoreslots, then it is allowed if only one trickle
+			&& (curUpSlots-theApp.uploadBandwidthThrottler->GetNumberOfFullyActivatedSlots()<=2) )  
+			|| (thePrefs.m_openmoreslots==false 
+			&& (curUpSlots<=MinSlots //else it is allowed if only minslots
+			|| lastupslotHighID == true)))) //or last client was highid
+			return true;
 	
+	else
 	if(addOnNextConnect 
 		&& ((thePrefs.m_openmoreslots //if openmoreslots, then it is allowed if only one trickle
 		&& (curUpSlots-theApp.uploadBandwidthThrottler->GetNumberOfFullyActivatedSlots()<=1) )  
@@ -1115,6 +1134,8 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 		reqfile->AddOnUploadqueue(); //Do this only if requfile!!! (is asked above)	
 		client->SetOldUploadFileID();
 		//Xman end
+
+
 	}
 }
 //Xman end
@@ -1307,7 +1328,12 @@ void CUploadQueue::UpdateMaxClientScore()
 	for(POSITION pos = waitinglist.GetHeadPosition(); pos != 0; ) {
 		CUpDownClient* cur_client =	waitinglist.GetNext(pos);
 		uint32 score = cur_client->GetScore(true, false);
+		// ==> Disable accepting only clients who asked within last 30min [Stulle] - Stulle
+		/*
 		if((thisTick - cur_client->GetLastUpRequest()< 1800000) //Xman accept only clients which asked the last 30 minutes:
+		*/
+		if((thePrefs.GetDisableUlThres() || (thisTick - cur_client->GetLastUpRequest()< 1800000)) //Xman accept only clients which asked the last 30 minutes:
+		// <== Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 			&& ((cur_client->isupprob==false) || (cur_client->socket && cur_client->socket->IsConnected())) //Xman uploading problem client
 			&& cur_client->GetLastAction()==OP_STARTUPLOADREQ && //Xman fix for startupload
 			score > m_imaxscore )
@@ -1858,7 +1884,12 @@ CUpDownClient* CUploadQueue::FindBestSpreadClientInQueue()
 				{
                     // this client is a HighID or a lowID client that is ready to go (connected)
                     // and it is more worthy
+					// ==> Disable accepting only clients who asked within last 30min [Stulle] - Stulle
+					/*
 					if ((thisTick - cur_client->GetLastUpRequest()< 1800000) //Xman accept only clients which asked the last 30 minutes:
+					*/
+					if ((thePrefs.GetDisableUlThres() || (thisTick - cur_client->GetLastUpRequest()< 1800000)) //Xman accept only clients which asked the last 30 minutes:
+					// <== Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 						&& cur_client->GetLastAction()==OP_STARTUPLOADREQ) //Xman fix for startupload
 					{
 						bestscore = cur_score;

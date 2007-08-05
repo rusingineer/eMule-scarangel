@@ -128,6 +128,10 @@ public:
 	uint32	GetTotalHalfCon()			{ return m_nHalfOpen; }
 	uint32	GetTotalComp()				{ return m_nComp; }
 
+	//Xman NAFC
+	bool boundcheck;
+	//Xman end
+
 private:
 	bool bListening;
 	CTypedPtrList<CPtrList, CClientReqSocket*> socket_list;

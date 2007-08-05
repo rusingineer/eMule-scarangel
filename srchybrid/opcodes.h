@@ -20,12 +20,12 @@
 /*
 //Xman
 //ModID
-#define MOD_VERSION		_T("Xtreme 6.0") 
+#define MOD_VERSION		_T("Xtreme 6.1") 
 */
 
 //Xman versions check
 #define MOD_MAIN_VER	6
-#define MOD_MIN_VER		0
+#define MOD_MIN_VER		1
 #define	MOD_BUILD_VER	1 //1=Xtreme x.x 2=Xtreme x.x.1
 /*
 

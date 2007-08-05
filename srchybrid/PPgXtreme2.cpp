@@ -53,6 +53,7 @@ BEGIN_MESSAGE_MAP(CPPgXtreme2, CPropertyPage)
 	ON_BN_CLICKED(IDC_ANTILEECHERSPAMMER_CHECK, OnSettingsChange) //Xman Anti-Leecher
 	ON_BN_CLICKED(IDC_ANTILEECHERXSEXPLOITER_CHECK, OnSettingsChange) //Xman Anti-Leecher
 	ON_BN_CLICKED(IDC_ANTILEECHEREMCRYPT_CHECK, OnSettingsChange) //Xman Anti-Leecher
+	ON_BN_CLICKED(IDC_ANTILEECHERUSERHASH_CHECK, OnSettingsChange) //Xman Anti-Leecher
 	ON_BN_CLICKED(IDC_RADIO_LEECHERCOMMUNITY_1, OnSettingsChange) //Xman Anti-Leecher
 	ON_BN_CLICKED(IDC_RADIO_LEECHERCOMMUNITY_2, OnSettingsChange) //Xman Anti-Leecher
 	ON_BN_CLICKED(IDC_RADIO_LEECHERGHOST_1, OnSettingsChange) //Xman Anti-Leecher
@@ -105,6 +106,7 @@ void CPPgXtreme2::LoadSettings(void)
 		CheckDlgButton(IDC_ANTILEECHERSPAMMER_CHECK, thePrefs.m_antileecherspammer);
 		CheckDlgButton(IDC_ANTILEECHERXSEXPLOITER_CHECK, thePrefs.m_antileecherxsexploiter);
 		CheckDlgButton(IDC_ANTILEECHEREMCRYPT_CHECK, thePrefs.m_antileecheremcrypt);
+		CheckDlgButton(IDC_ANTILEECHERUSERHASH_CHECK, thePrefs.m_antileecheruserhash);
 		if(thePrefs.m_antileechercommunity_action)
 			CheckDlgButton(IDC_RADIO_LEECHERCOMMUNITY_2, TRUE);
 		else
@@ -144,6 +146,7 @@ void CPPgXtreme2::LoadSettings(void)
 			GetDlgItem(IDC_ANTILEECHERSPAMMER_CHECK)->EnableWindow(false);
 			GetDlgItem(IDC_ANTILEECHERXSEXPLOITER_CHECK)->EnableWindow(false);
 			GetDlgItem(IDC_ANTILEECHEREMCRYPT_CHECK)->EnableWindow(false);
+			GetDlgItem(IDC_ANTILEECHERFILENAME_CHECK)->EnableWindow(false);
 			GetDlgItem(IDC_STATIC_LEECHERCOMMUNITY)->EnableWindow(false);
 			GetDlgItem(IDC_STATIC_LEECHERGHOST)->EnableWindow(false);
 			GetDlgItem(IDC_STATIC_LEECHERTHIEF)->EnableWindow(false);
@@ -183,6 +186,7 @@ BOOL CPPgXtreme2::OnApply()
 	thePrefs.SetAntiLeecherSpammer(IsDlgButtonChecked(IDC_ANTILEECHERSPAMMER_CHECK)!=0);
 	thePrefs.SetAntiLeecherXSExploiter(IsDlgButtonChecked(IDC_ANTILEECHERXSEXPLOITER_CHECK)!=0);
 	thePrefs.SetAntiLeecheremcrypt(IsDlgButtonChecked(IDC_ANTILEECHEREMCRYPT_CHECK)!=0);
+	thePrefs.SetAntiLeecheruserhash(IsDlgButtonChecked(IDC_ANTILEECHERUSERHASH_CHECK)!=0);
 	thePrefs.SetAntiLeecherCommunity_Action(IsDlgButtonChecked(IDC_RADIO_LEECHERCOMMUNITY_2)!=0);
 	thePrefs.SetAntiLeecherGhost_Action(IsDlgButtonChecked(IDC_RADIO_LEECHERGHOST_2)!=0);
 	thePrefs.SetAntiLeecherThief_Action(IsDlgButtonChecked(IDC_RADIO_LEECHERTHIEF_2)!=0);
@@ -231,6 +235,7 @@ void CPPgXtreme2::Localize(void)
 		GetDlgItem(IDC_ANTILEECHERSPAMMER_CHECK)->SetWindowText(GetResString(IDS_ANTILEECHERSPAMMER_CHECK));
 		GetDlgItem(IDC_ANTILEECHERXSEXPLOITER_CHECK)->SetWindowText(GetResString(IDS_ANTILEECHERXSEXPLOITER_CHECK));
 		GetDlgItem(IDC_ANTILEECHEREMCRYPT_CHECK)->SetWindowText(GetResString(IDS_ANTILEECHEREMCRYPT_CHECK));
+		GetDlgItem(IDC_ANTILEECHERUSERHASH_CHECK)->SetWindowText(GetResString(IDS_ANTILEECHERUSERHASH_CHECK));
 		GetDlgItem(IDC_STATIC_LEECHERCOMMUNITY)->SetWindowText(GetResString(IDS_STATIC_LEECHERCOMMUNITY));
 		GetDlgItem(IDC_STATIC_LEECHERGHOST)->SetWindowText(GetResString(IDS_STATIC_LEECHERGHOST));
 		GetDlgItem(IDC_STATIC_LEECHERTHIEF)->SetWindowText(GetResString(IDS_STATIC_LEECHERTHIEF));
@@ -286,6 +291,7 @@ void CPPgXtreme2::OnBnClickedAntiLeecher()
 		GetDlgItem(IDC_ANTILEECHERSPAMMER_CHECK)->EnableWindow(false);
 		GetDlgItem(IDC_ANTILEECHERXSEXPLOITER_CHECK)->EnableWindow(false);
 		GetDlgItem(IDC_ANTILEECHEREMCRYPT_CHECK)->EnableWindow(false);
+		GetDlgItem(IDC_ANTILEECHERUSERHASH_CHECK)->EnableWindow(false);
 		GetDlgItem(IDC_STATIC_LEECHERCOMMUNITY)->EnableWindow(false);
 		GetDlgItem(IDC_STATIC_LEECHERGHOST)->EnableWindow(false);
 		GetDlgItem(IDC_STATIC_LEECHERTHIEF)->EnableWindow(false);
@@ -307,6 +313,7 @@ void CPPgXtreme2::OnBnClickedAntiLeecher()
 		GetDlgItem(IDC_ANTILEECHERSPAMMER_CHECK)->EnableWindow(true);
 		GetDlgItem(IDC_ANTILEECHERXSEXPLOITER_CHECK)->EnableWindow(true);
 		GetDlgItem(IDC_ANTILEECHEREMCRYPT_CHECK)->EnableWindow(true);
+		GetDlgItem(IDC_ANTILEECHERUSERHASH_CHECK)->EnableWindow(true);
 		GetDlgItem(IDC_STATIC_LEECHERCOMMUNITY)->EnableWindow(true);
 		GetDlgItem(IDC_STATIC_LEECHERGHOST)->EnableWindow(true);
 		GetDlgItem(IDC_STATIC_LEECHERTHIEF)->EnableWindow(true);

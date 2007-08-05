@@ -156,6 +156,8 @@ CPPgScar::CPPgScar()
 	// <== Random Ports [MoNKi] - Stulle
 //	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources - Stulle
 	m_htiACC = NULL; // ACC [Max/WiZaRd] - Max
+	m_htiIgnoreThird = NULL; // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
+	m_htiUlThres = NULL; // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 
 	// ==> Anti Uploader Ban [Stulle] - Stulle
 	m_htiAntiUploaderBanLimit = NULL;
@@ -443,6 +445,8 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.AddEditBox(m_htiReAskFileSrc, RUNTIME_CLASS(CNumTreeOptionsEdit));
 */		// <== Timer for ReAsk File Sources - Stulle
 		m_htiACC = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ACC), m_htiConTweaks, m_bACC); // ACC [Max/WiZaRd] - Max
+		m_htiIgnoreThird = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_IGNORE_THIRD), m_htiConTweaks, m_bIgnoreThird); // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
+		m_htiUlThres = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_UL_THRES), m_htiConTweaks, m_bUlThres); // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 
 		// ==> Anti Uploader Ban [Stulle] - Stulle
 		m_htiAntiUploaderBanLimit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_UNBAN_UPLOADER), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, TVI_ROOT);
@@ -682,6 +686,8 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxInt(pDX, m_iReAskFileSrc, 29, 55);
 */	// <== Timer for ReAsk File Sources - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiACC, m_bACC); // ACC [Max/WiZaRd] - Max
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiIgnoreThird, m_bIgnoreThird); // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiUlThres, m_bUlThres); // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 
 	// ==> Anti Uploader Ban [Stulle] - Stulle
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiAntiUploaderBanLimit, m_iAntiUploaderBanLimit);
@@ -873,6 +879,8 @@ BOOL CPPgScar::OnInitDialog()
 	// <== Random Ports [MoNKi] - Stulle
 //	m_iReAskFileSrc = (thePrefs.GetReAskTimeDif() + FILEREASKTIME)/60000; // Timer for ReAsk File Sources - Stulle
 	m_bACC = thePrefs.GetACC(); // ACC [Max/WiZaRd] - Max
+	m_bIgnoreThird = thePrefs.GetIgnoreThird(); // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
+	m_bUlThres = !(thePrefs.GetDisableUlThres()); // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 
 	// ==> Anti Uploader Ban [Stulle] - Stulle
 	m_iAntiUploaderBanLimit = thePrefs.GetAntiUploaderBanLimit();
@@ -1208,6 +1216,8 @@ BOOL CPPgScar::OnApply()
 	// <== Random Ports [MoNKi] - Stulle
 //	thePrefs.m_uReAskTimeDif = (m_iReAskFileSrc-29)*60000; // Timer for ReAsk File Sources - Stulle
 	thePrefs.m_bACC = m_bACC; // ACC [Max/WiZaRd] - Max
+	thePrefs.m_bIgnoreThird = m_bIgnoreThird; // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
+	thePrefs.m_bDisableUlThres = !m_bUlThres; // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 
 	// ==> Anti Uploader Ban [Stulle] - Stulle
 	thePrefs.m_uAntiUploaderBanLimit = (uint16)m_iAntiUploaderBanLimit;
@@ -1490,6 +1500,8 @@ void CPPgScar::Localize(void)
 		// <== Random Ports [MoNKi] - Stulle
 //		if (m_htiReAskFileSrc) m_ctrlTreeOptions.SetEditLabel(m_htiReAskFileSrc, GetResString(IDS_REASK_FILE_SRC)); // Timer for ReAsk File Sources - Stulle
 		if (m_htiACC) m_ctrlTreeOptions.SetItemText(m_htiACC, GetResString(IDS_ACC)); // ACC [Max/WiZaRd] - Max
+		if (m_htiIgnoreThird) m_ctrlTreeOptions.SetItemText(m_htiIgnoreThird, GetResString(IDS_IGNORE_THIRD)); // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
+		if (m_htiUlThres) m_ctrlTreeOptions.SetItemText(m_htiUlThres, GetResString(IDS_UL_THRES)); // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 
 		// ==> Anti Uploader Ban [Stulle] - Stulle
 		if (m_htiAntiUploaderBanLimit) m_ctrlTreeOptions.SetEditLabel(m_htiAntiUploaderBanLimit, GetResString(IDS_UNBAN_UPLOADER));
@@ -1740,6 +1752,8 @@ void CPPgScar::OnDestroy()
 	// <== Random Ports [MoNKi] - Stulle
 //	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources - Stulle
 	m_htiACC = NULL; // ACC [Max/WiZaRd] - Max
+	m_htiIgnoreThird = NULL; // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
+	m_htiUlThres = NULL; // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 
 	// ==> Anti Uploader Ban [Stulle] - Stulle
 	m_htiAntiUploaderBanLimit = NULL;

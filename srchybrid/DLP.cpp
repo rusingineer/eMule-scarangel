@@ -1,7 +1,9 @@
-//DLP = Dynamic Leecher Protection
-//this code is part of Xtreme-Mod
-//author: Xman
+//this file is part of eMule Xtreme-Mod (http://www.xtreme-mod.net)
+//Copyright (C)2002-2007 Xtreme-Mod (emulextreme@yahoo.de)
 
+//emule Xtreme is a modification of eMule
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
 //as published by the Free Software Foundation; either
@@ -15,6 +17,13 @@
 //You should have received a copy of the GNU General Public License
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+//
+//
+//	Author: Xman 
+//  
+
+
 
 
 
@@ -100,6 +109,7 @@ void CDLP::Reload()
 			DLPCheckNameAndHashAndMod = (DLPCHECKNAMEANDHASHANDMOD)GetProcAddress(dlpInstance,("DLPCheckNameAndHashAndMod"));
 
 			DLPCheckMessageSpam = (DLPCHECKMESSAGESPAM)GetProcAddress(dlpInstance,("DLPCheckMessageSpam"));
+			DLPCheckUserhash = (DLPCHECKUSERHASH)GetProcAddress(dlpInstance,("DLPCheckUserhash"));
 
 			DLPCheckHelloTag = (DLPCHECKHELLOTAG)GetProcAddress(dlpInstance,("DLPCheckHelloTag"));
 			DLPCheckInfoTag = (DLPCHECKINFOTAG)GetProcAddress(dlpInstance,("DLPCheckInfoTag"));
@@ -111,7 +121,8 @@ void CDLP::Reload()
 				DLPCheckNameAndHashAndMod &&
 				DLPCheckHelloTag &&
 				DLPCheckInfoTag &&
-				DLPCheckMessageSpam
+				DLPCheckMessageSpam &&
+				DLPCheckUserhash
 				)
 			{
 				dlpavailable=true;
@@ -119,7 +130,7 @@ void CDLP::Reload()
 			}
 			else
 			{
-				LogError(_T("failed to initialize the antiLeech.dll"));
+				LogError(_T("failed to initialize the antiLeech.dll, please use an up tp date version of DLP"));
 				::FreeLibrary(dlpInstance);
 				dlpInstance=NULL;
 			}

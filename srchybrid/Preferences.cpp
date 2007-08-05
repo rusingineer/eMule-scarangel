@@ -89,6 +89,7 @@ bool CPreferences::m_antileecherthief;
 bool CPreferences::m_antileecherspammer;
 bool CPreferences::m_antileecherxsexploiter;
 bool CPreferences::m_antileecheremcrypt;
+bool CPreferences::m_antileecheruserhash;
 bool CPreferences::m_antileechercommunity_action;
 bool CPreferences::m_antileecherghost_action;
 bool CPreferences::m_antileecherthief_action;
@@ -874,6 +875,10 @@ uint8	CPreferences::m_iPayBackFirstLimit;
 bool	CPreferences::m_bPayBackFirst2;
 uint16	CPreferences::m_iPayBackFirstLimit2;
 // <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+
+bool	CPreferences::m_bIgnoreThird; // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
+
+bool	CPreferences::m_bDisableUlThres; // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 
 CPreferences::CPreferences()
 {
@@ -2379,6 +2384,7 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(L"AntiLeecherSpammer", m_antileecherspammer);
 	ini.WriteBool(L"AntiLeecherXSExploiter", m_antileecherxsexploiter);
 	ini.WriteBool(L"AntiLeecheremcrypt", m_antileecheremcrypt);
+	ini.WriteBool(L"AntiLeecherUserhash", m_antileecheruserhash);
 	ini.WriteBool(L"AntiLeecherCommunity_Action", m_antileechercommunity_action);
 	ini.WriteBool(L"AntiLeecherGhost_Action", m_antileecherghost_action);
 	ini.WriteBool(L"AntiLeecherThief_Action", m_antileecherthief_action);
@@ -2672,6 +2678,10 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("IsPayBackFirst2"),m_bPayBackFirst2);
 	ini.WriteInt(_T("PayBackFirstLimit2"),m_iPayBackFirstLimit2);
 	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+
+	ini.WriteBool(_T("IgnoreThird"), m_bIgnoreThird); // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
+
+	ini.WriteBool(_T("DisableUlThreshold"),m_bDisableUlThres); // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 
 	SaveStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
@@ -3522,6 +3532,7 @@ void CPreferences::LoadPreferences()
 	m_antileecherspammer= ini.GetBool(L"AntiLeecherSpammer", true);
 	m_antileecherxsexploiter= ini.GetBool(L"AntiLeecherXSExploiter", true);
 	m_antileecheremcrypt= ini.GetBool(L"AntiLeecheremcrypt", true);
+	m_antileecheruserhash= ini.GetBool(L"AntiLeecherUserhash", true);
 	m_antileechercommunity_action= ini.GetBool(L"AntiLeecherCommunity_Action", true);
 	m_antileecherghost_action= ini.GetBool(L"AntiLeecherGhost_Action", true);
 	m_antileecherthief_action= ini.GetBool(L"AntiLeecherThief_Action", true);
@@ -3854,6 +3865,10 @@ void CPreferences::LoadPreferences()
 	m_iPayBackFirstLimit2 = (uint16)((temp >= 5 && temp <=1024) ? temp : 50);
 	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 
+	m_bIgnoreThird = ini.GetBool(_T("IgnoreThird"),false); // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
+
+	m_bDisableUlThres = ini.GetBool(_T("DisableUlThreshold"),false); // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
+
 	LoadStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
 
@@ -3914,10 +3929,11 @@ void CPreferences::SaveCats()
 	(void)_tremove(strCatIniFilePath);
 	CIni ini(strCatIniFilePath);
 	ini.WriteInt(L"Count", catMap.GetCount() - 1, L"General");
-	for (int i = 0; i < catMap.GetCount(); i++)
-	{
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	/*
+	ini.WriteInt(_T("CategoryVersion"), 2, _T("General")); // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	for (int i = 0; i < catMap.GetCount(); i++)
+	{
 		CString strSection;
 		strSection.Format(L"Cat#%i", i);
 		ini.SetSection(strSection);
@@ -3935,6 +3951,9 @@ void CPreferences::SaveCats()
         ini.WriteBool(L"downloadInAlphabeticalOrder", catMap.GetAt(i)->downloadInAlphabeticalOrder!=FALSE);
 		ini.WriteBool(L"Care4All", catMap.GetAt(i)->care4all);
 	*/
+	ini.WriteInt(_T("CategoryVersion"), 2, _T("General"));
+	for (int i = 0; i < catMap.GetCount(); i++)
+	{
 		CString strSection;
 		strSection.Format(L"Cat#%i", i);
 		ini.SetSection(strSection);
@@ -4034,7 +4053,7 @@ void CPreferences::LoadCats() {
 	else
 	{
 		//ini.SetFileName(strCatIniFilePath);
-		if (ini.GetInt(_T("CategoryVersion"), 0, L"General") == 0)
+		if (ini.GetInt(_T("CategoryVersion"), 0, L"Default") == 0)
 			bCreateDefault = true;
 	}
 

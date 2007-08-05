@@ -61,6 +61,8 @@ protected:
 	// <== Random Ports [MoNKi] - Stulle
 //	int m_iReAskFileSrc; // Timer for ReAsk File Sources - Stulle
 	bool m_bACC; // ACC [Max/WiZaRd] - Max
+	bool m_bIgnoreThird; // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
+	bool m_bUlThres; // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 
 	// ==> Anti Uploader Ban [Stulle] - Stulle
 	int m_iAntiUploaderBanLimit;
@@ -232,6 +234,8 @@ protected:
 	// <== Random Ports [MoNKi] - Stulle
 //	HTREEITEM m_htiReAskFileSrc; // Timer for ReAsk File Sources - Stulle
 	HTREEITEM m_htiACC; // ACC [Max/WiZaRd] - Max
+	HTREEITEM m_htiIgnoreThird; // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
+	HTREEITEM m_htiUlThres; // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 
 	// ==> Anti Uploader Ban [Stulle] - Stulle
 	HTREEITEM m_htiAntiUploaderBanLimit;

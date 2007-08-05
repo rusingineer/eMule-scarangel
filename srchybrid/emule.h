@@ -299,6 +299,7 @@ public:
 	uint32 last_ip_change;
 	uint32 last_valid_serverid;
 	uint32 last_valid_ip;
+	uint32 recheck_ip;
 	uint32	last_traffic_reception;
 	uint8	internetmaybedown;
 //Xman end

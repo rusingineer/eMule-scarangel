@@ -2385,6 +2385,8 @@
 #define IDS_MASSRENAME_TITLE            3199
 #define IDS_STATIC_DOWNINFO             3200
 #define IDI_ICONMR                      3201
+#define IDS_ANTILEECHERFILENAME_CHECK   3201
+#define IDS_ANTILEECHERUSERHASH_CHECK   3201
 #define IDD_PPG_Xtreme                  4000
 #define IDC_13RATIO                     4001
 #define IDC_UPREDUCTION                 4002
@@ -2464,6 +2466,8 @@
 #define IDC_ANTILEECHEREMCRYPT_CHECK    4075
 #define IDC_FUNNYNICK                   4076
 #define IDC_DROPBLOCKINGSOCKETS         4077
+#define IDC_ANTILEECHERFILENAME_CHECK   4077
+#define IDC_ANTILEECHERUSERHASH_CHECK   4077
 #define IDC_SHOWBLOCKINGRATIO           4078
 #define IDC_LEECHERINFO                 4079
 #define IDC_ONERELEASESLOT              4079
@@ -3075,6 +3079,8 @@
 #define IDS_PAYBACKFIRST2               61142
 #define IDS_PAYBACKFIRSTLIMIT2          61143
 // <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+#define IDS_IGNORE_THIRD                61150 // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
+#define IDS_UL_THRES                    61160 // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 
 // Next default values for new objects
 // 

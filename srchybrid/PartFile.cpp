@@ -552,7 +552,7 @@ void CPartFile::CreatePartFile(UINT cat)
 
 	CString partfull(RemoveFileExtension(m_fullname));
 	SetFilePath(partfull);
-	if (!m_hpartfile.Open(partfull,CFile::modeCreate|CFile::modeReadWrite|CFile::shareDenyWrite|CFile::osRandomAccess)){ //Xman Code-improvement: changed to osRandomAccess - no caching needed (idea morph)
+	if (!m_hpartfile.Open(partfull,CFile::modeCreate|CFile::modeReadWrite|CFile::shareDenyWrite|CFile::osSequentialScan)){ 
 		LogError(LOG_STATUSBAR, GetResString(IDS_ERR_CREATEPARTFILE));
 		SetStatus(PS_ERROR);
 	}
@@ -3381,6 +3381,9 @@ uint32 CPartFile::Process(uint32 maxammount, bool isLimited, bool fullProcess)
 					Kademlia::CSearch* pSearch = Kademlia::CSearchManager::PrepareLookup(Kademlia::CSearch::FILE, true, Kademlia::CUInt128(GetFileHash()));
 					if (pSearch)
 					{
+						//Xman Code-Improvement: show filename immediately
+						pSearch->SetFileName(GetFileName());
+						//Xman end
 						if(m_TotalSearchesKad < 7)
 							m_TotalSearchesKad++;
 						m_LastSearchTimeKad = dwCurTick + (KADEMLIAREASKTIME*m_TotalSearchesKad);
@@ -7317,7 +7320,7 @@ void CPartFile::GrabbingFinished(CxImage** imgResults, uint8 nFramesGrabbed, voi
 	// unlock and reopen the file
 	if (IsPartFile()){
 		CString strFileName = RemoveFileExtension(GetFullName());
-		if (!m_hpartfile.Open(strFileName, CFile::modeReadWrite|CFile::shareDenyWrite|CFile::osRandomAccess)){ //Xman Code-improvement: changed to osRandomAccess - no caching needed (idea morph)
+		if (!m_hpartfile.Open(strFileName, CFile::modeReadWrite|CFile::shareDenyWrite|CFile::osSequentialScan)){ 
 			// uhuh, that's really bad
 			LogError(LOG_STATUSBAR, GetResString(IDS_FAILEDREOPEN), RemoveFileExtension(GetPartMetFileName()), GetFileName());
 			SetStatus(PS_ERROR);

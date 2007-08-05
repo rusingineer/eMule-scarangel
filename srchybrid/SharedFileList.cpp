@@ -1491,8 +1491,15 @@ void CSharedFileList::Publish()
 				{
 					if(pCurKnownFile->PublishSrc())
 					{
-						if(Kademlia::CSearchManager::PrepareLookup(Kademlia::CSearch::STOREFILE, true, Kademlia::CUInt128(pCurKnownFile->GetFileHash()))==NULL)
+						//Xman Code-Improvement: show filename immediately
+						Kademlia::CSearch* pSearch = Kademlia::CSearchManager::PrepareLookup(Kademlia::CSearch::STOREFILE, true, Kademlia::CUInt128(pCurKnownFile->GetFileHash()));
+						if(pSearch==NULL)
+						{
 							pCurKnownFile->SetLastPublishTimeKadSrc(0,0);
+						}	
+						else
+							pSearch->SetFileName(pCurKnownFile->GetFileName());
+						//Xman end
 					}	
 				}
 				m_currFileSrc++;

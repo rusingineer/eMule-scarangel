@@ -743,9 +743,19 @@ UINT UploadBandwidthThrottler::RunInternal() {
 		else if(uSlopehelp_minUpload < -(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.25f)) 
 			uSlopehelp_minUpload=-((sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.25f));
 
-		
+
 		if(thePrefs.GetNAFCFullControl()==true && uSlopehelp_minUpload>uSlopehelp)
+		// ==> Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
+		/*
 			uSlope=uSlopehelp_minUpload;
+		*/
+		{
+			if(thePrefs.GetIgnoreThird() && theApp.pBandWidthControl->GeteMuleIn() > theApp.pBandWidthControl->GeteMuleOut())
+				uSlope=uSlopehelp;
+			else
+				uSlope=uSlopehelp_minUpload;
+		}
+		// <== Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
 		else
 			uSlope=uSlopehelp;
 

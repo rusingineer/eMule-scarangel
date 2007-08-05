@@ -541,6 +541,9 @@ void CTaskbarNotifier::Show(LPCTSTR pszCaption, int nMsgType, LPCTSTR pszLink, B
 	DWORD dwTimeToShow = m_bBitmapAlpha ? 0 : m_dwTimeToShow;
 	if (dwTimeToShow > m_dwTimerPrecision) {
 		nEvents = min((dwTimeToShow / m_dwTimerPrecision) / 2, nBitmapSize); //<<-- enkeyDEV(Ottavio84) -Reduced frames of a half-
+		//Xman quick fix: division by zero
+		if(nEvents<1) nEvents=1;
+		//Xman end
 		m_dwShowEvents = dwTimeToShow / nEvents;
 		m_nIncrementShow = nBitmapSize / nEvents;
 	}
@@ -554,6 +557,9 @@ void CTaskbarNotifier::Show(LPCTSTR pszCaption, int nMsgType, LPCTSTR pszLink, B
 	DWORD dwTimeToHide = m_bBitmapAlpha ? 0 : m_dwTimeToHide;
 	if (dwTimeToHide > m_dwTimerPrecision) {
 		nEvents = min((dwTimeToHide / m_dwTimerPrecision / 2), nBitmapSize); //<<-- enkeyDEV(Ottavio84) -Reduced frames of a half-
+		//Xman quick fix: division by zero
+		if(nEvents<1) nEvents=1;
+		//Xman end
 		m_dwHideEvents = dwTimeToHide / nEvents;
 		m_nIncrementHide = nBitmapSize / nEvents;
 	}

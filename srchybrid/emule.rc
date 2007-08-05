@@ -94,25 +94,29 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Anti-Leecher",IDC_ANTILEECHER_GROUP,7,2,212,168
     CONTROL         "Enable Anti-Leecher-Feature",IDC_ANTILEECHER_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,26,197,12
-    CONTROL         "Detect Leecher by UserName",IDC_ANTILEECHERNAME_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,86,188,12
-    CONTROL         "Anti-Ghost-Mod",IDC_ANTIGHOST_CHECK,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,23,62,188,12
-    PUSHBUTTON      "Reload",IDC_DLPRELOAD,152,10,59,11
-    LTEXT           "version",IDC_DLP_STATIC,14,13,106,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,20,197,12
     CONTROL         "Detect Wrong Hello-Tag",IDC_ANTILEECHERBADHELLO_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,38,188,12
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,32,188,12
     CONTROL         "Detect Bad Tags",IDC_ANTILEECHERSNAFU_CHECK,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,23,50,188,12
+                    BS_AUTOCHECKBOX | WS_TABSTOP,23,43,188,12
+    CONTROL         "Anti-Ghost-Mod",IDC_ANTIGHOST_CHECK,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,23,54,188,12
     CONTROL         "Detect Leecher by Modstring",IDC_ANTILEECHERMOD_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,74,188,12
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,65,188,12
+    CONTROL         "Detect Leecher by UserName",IDC_ANTILEECHERNAME_CHECK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,76,188,12
     CONTROL         "Detect Nick / Modthiefs",IDC_ANTILEECHERTHIEF_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,98,188,12
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,87,188,12
     CONTROL         "Detect Spammers",IDC_ANTILEECHERSPAMMER_CHECK,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,23,110,188,12
+                    BS_AUTOCHECKBOX | WS_TABSTOP,23,98,188,12
     CONTROL         "Detect XS-Exploiter",IDC_ANTILEECHERXSEXPLOITER_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,122,188,12
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,109,188,12
+    CONTROL         "Detect emcrypt",IDC_ANTILEECHEREMCRYPT_CHECK,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,23,120,188,12
+    CONTROL         "Detect bad userhashes",IDC_ANTILEECHERUSERHASH_CHECK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,131,188,12
+    PUSHBUTTON      "Reload",IDC_DLPRELOAD,152,10,59,11
+    LTEXT           "version",IDC_DLP_STATIC,14,12,106,10
     LTEXT           "Community Mods:",IDC_STATIC_LEECHERCOMMUNITY,14,146,84,
                     10,SS_WORDELLIPSIS
     CONTROL         "ban",IDC_RADIO_LEECHERCOMMUNITY_1,"Button",
@@ -137,8 +141,6 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,174,197,10
     CONTROL         "Show additional graph-lines",IDC_SHOWADDITIONALGRAPH,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,194,197,10
-    CONTROL         "Detect emcrypt",IDC_ANTILEECHEREMCRYPT_CHECK,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,23,133,188,12
     CONTROL         "Use narrow font in transfer window",IDC_USENARROWFONT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,184,197,10
 END
@@ -5420,6 +5422,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_STATIC_DOWNINFO     "Download 0 = unlimited"
+    IDS_ANTILEECHERUSERHASH_CHECK "Detect bad userhashes"
 END
 
 STRINGTABLE 
@@ -5848,6 +5851,8 @@ BEGIN
     IDS_PAYBACKFIRST2       "PBF for clients without SUI"
     IDS_PAYBACKFIRSTLIMIT2  "Amount before triggering (Default 50MB)"
     // <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+    IDS_IGNORE_THIRD        "Don't reserve 1/3 of your uploadlimit for emule" // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
+    IDS_UL_THRES            "Accept only clients who asked within last 30min" // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 END
 
 #endif    // Englisch (USA) resources

@@ -42,6 +42,7 @@
 #include "Log.h"
 #include "UploadQueue.h" //Xman UDPReaskFNF-Fix against Leechers (idea by WiZaRd)		
 #include "Sockets.h" //Xman spread reask
+#include "DLP.h" //Xman DLP
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -671,6 +672,7 @@ void CUpDownClient::ProcessFileInfo(CSafeMemFile* data, CPartFile* file)
 	if (file != reqfile)
 		throw GetResString(IDS_ERR_WRONGFILEID) + _T(" (ProcessFileInfo; reqfile!=file)");
 	m_strClientFilename = data->ReadString(GetUnicodeSupport()!=utf8strNone);
+
 	if (thePrefs.GetDebugClientTCPLevel() > 0)
 		Debug(_T("  Filename=\"%s\"\n"), m_strClientFilename);
 	// 26-Jul-2003: removed requesting the file status for files <= PARTSIZE for better compatibility with ed2k protocol (eDonkeyHybrid).
@@ -1837,7 +1839,7 @@ void CUpDownClient::UDPReaskFNF()
 			CKnownFile* upfile = theApp.sharedfiles->GetFileByID(GetUploadFileID());
 			if(upfile && upfile == reqfile) //we speak about the same file
 			{
-				AddDebugLogLine(false,_T("Dropped src: (%s) does not seem to have own reqfile!"), DbgGetClientInfo());
+				AddDebugLogLine(false,_T("Dropped src: (%s) does not seem to have own reqfile!(UDP)"), DbgGetClientInfo()); 
 				theApp.uploadqueue->RemoveFromUploadQueue(this, _T("Src says he does not have the file he's dl'ing"));
 				theApp.uploadqueue->RemoveFromWaitingQueue(this);
 			}

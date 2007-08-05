@@ -3215,7 +3215,7 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		stattree.SetItemText(cligen[2], cbuffer);
 	
 		//Xman Anti-Leecher
-		cbuffer.Format(_T("Leecher: %u"), theStats.leecherclients);
+		cbuffer.Format(_T("Leecher-Hits: %u"), theStats.leecherclients);
 		stattree.SetItemText(cligen[6], cbuffer);
 		//Xman end
 

@@ -1043,6 +1043,10 @@ public:
 	static uint16	m_iPayBackFirstLimit2;
 	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 
+	static bool		m_bIgnoreThird; // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
+
+	static bool		m_bDisableUlThres; // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
+
 	enum Table
 	{
 		tableDownload, 
@@ -1196,6 +1200,7 @@ public:
 	static bool	m_antileecherspammer;
 	static bool	m_antileecherxsexploiter;
 	static bool m_antileecheremcrypt;
+	static bool m_antileecheruserhash;
 	static bool	m_antileechercommunity_action;
 	static bool	m_antileecherghost_action;
 	static bool	m_antileecherthief_action;
@@ -1209,6 +1214,7 @@ public:
 	static bool GetAntiLeecherspammer() {return m_antileecher && m_antileecherspammer;}
 	static bool GetAntiLeecherXSExploiter() {return m_antileecher && m_antileecherxsexploiter;}
 	static bool GetAntiLeecheremcrypt() {return m_antileecher && m_antileecheremcrypt;}
+	static bool GeTAntiLeecheruserhash(){return m_antileecher && m_antileecheruserhash;}
 	static bool GetAntiLeecherCommunity_Action() {return m_antileechercommunity_action;}
 	static bool GetAntiLeecherGhost_Action() {return m_antileecherghost_action;}
 	static bool GetAntiLeecherThief_Action() {return m_antileecherthief_action;}
@@ -1222,6 +1228,7 @@ public:
 	static void SetAntiLeecherSpammer(bool in) {m_antileecherspammer=in;}
 	static void SetAntiLeecherXSExploiter(bool in) {m_antileecherxsexploiter=in;}
 	static void SetAntiLeecheremcrypt(bool in) {m_antileecheremcrypt=in;}
+	static void SetAntiLeecheruserhash(bool in) {m_antileecheruserhash=in;}
 	static void SetAntiLeecherCommunity_Action(bool in) {m_antileechercommunity_action=in;}
 	static void SetAntiLeecherGhost_Action(bool in) {m_antileecherghost_action=in;}
 	static void SetAntiLeecherThief_Action(bool in) {m_antileecherthief_action=in;}
@@ -2364,6 +2371,10 @@ public:
 	static	bool	IsPayBackFirst2()		{return m_bPayBackFirst2;}
 	static	uint16	GetPayBackFirstLimit2()	{return m_iPayBackFirstLimit2;}
 	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+
+	static	bool	GetIgnoreThird()		{return m_bIgnoreThird;} // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
+
+	static	bool	GetDisableUlThres()		{return m_bDisableUlThres;} // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 
 protected:
 	static	CString m_strFileCommentsFilePath;

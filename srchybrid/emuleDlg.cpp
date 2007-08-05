@@ -1856,7 +1856,7 @@ LRESULT CemuleDlg::OnWMData(WPARAM /*wParam*/, LPARAM lParam)
 		if (clcommand==_T("connect")) {StartConnection(); return true;}
 		if (clcommand==_T("disconnect")) {theApp.serverconnect->Disconnect(); return true;}
 		if (clcommand==_T("resume")) {theApp.downloadqueue->StartNextFile(); return true;}
-		if (clcommand==_T("exit")) {OnClose(); return true;}
+		if (clcommand==_T("exit")) {theApp.m_app_state = APP_STATE_SHUTTINGDOWN;OnClose(); return true;} //Xman do not ask exit from command prompt (leuk_he)
 		if (clcommand==_T("restore")) {RestoreWindow();return true;}
 		if (clcommand==_T("reloadipf")) {theApp.ipfilter->LoadFromDefaultFile(); return true;}
 		if (clcommand.Left(7).MakeLower()==_T("limits=") && clcommand.GetLength()>8) {
@@ -2684,17 +2684,13 @@ void CemuleDlg::AddSpeedSelectorMenus(CMenu* addToMenu)
 		text.Format(_T("90%%\t%i %s"),  (uint16)(thePrefs.GetMaxGraphUploadRate()*0.9),GetResString(IDS_KBYTESPERSEC));	m_menuUploadCtrl.AppendMenu(MF_STRING, MP_QS_U100, text);
 		//Xman end
 		
-		//Xman 6.0 this makes no sense at all. recommended are 90%
-		//Xman removed
-		/*
 		m_menuUploadCtrl.AppendMenu(MF_SEPARATOR);
 
 		if (GetRecMaxUpload() > 0) {
 			text.Format(GetResString(IDS_PW_MINREC) + GetResString(IDS_KBYTESPERSEC), (uint16)GetRecMaxUpload());
 			m_menuUploadCtrl.AppendMenu(MF_STRING, MP_QS_UP10, text);
 		}
-		*/
-		//Xman end
+		
 
 		text.Format(_T("%s:"), GetResString(IDS_PW_UPL));
 		addToMenu->AppendMenu(MF_STRING|MF_POPUP, (UINT_PTR)m_menuUploadCtrl.m_hMenu, text);
@@ -3261,10 +3257,16 @@ void CemuleDlg::QuickSpeedDownload(UINT nID)
 //Xman
 // Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 float CemuleDlg::GetRecMaxUpload() {
-	
+	/*
 	if (thePrefs.GetMaxGraphUploadRate()<7) return 0;
 	if (thePrefs.GetMaxGraphUploadRate()<15) return thePrefs.GetMaxGraphUploadRate()-1.5f;
 	return (thePrefs.GetMaxGraphUploadRate()-2.5f);
+	*/
+	//Xman changed 6.0.1
+	if (thePrefs.GetMaxGraphUploadRate()<10) return thePrefs.GetMaxGraphUploadRate()-1.5f;
+	if (thePrefs.GetMaxGraphUploadRate()<20) return thePrefs.GetMaxGraphUploadRate()-2.5f;
+	if (thePrefs.GetMaxGraphUploadRate()<26) return thePrefs.GetMaxGraphUploadRate()-3.0f;
+	return (thePrefs.GetMaxGraphUploadRate()*0.9f);
 
 }
 //Xman end

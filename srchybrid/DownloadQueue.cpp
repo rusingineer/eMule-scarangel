@@ -569,7 +569,7 @@ void CDownloadQueue::Process(){
 
 	// ==> Quick start [TPT] - Max
 	static DWORD QuickStartEndTime=0;
-	if(thePrefs.GetQuickStart() && theApp.serverconnect->IsConnected() && quickflag == 0)
+	if(thePrefs.GetQuickStart() && theApp.IsConnected() && quickflag == 0)
 	{
 		if(quickflags == 0)
 		{
@@ -1030,6 +1030,7 @@ bool CDownloadQueue::CheckAndAddSource(CPartFile* sender,CUpDownClient* source){
 	IncGlobSources();
 	//Xman end
 
+
 	return true;
 }
 
@@ -1130,6 +1131,8 @@ bool CDownloadQueue::CheckAndAddKnownSource(CPartFile* sender,CUpDownClient* sou
 	//Xman GlobalMaxHarlimit for fairness
 	IncGlobSources();
 	//Xman end
+
+
 	return true;
 }
 //Xman end

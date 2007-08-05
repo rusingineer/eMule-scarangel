@@ -2826,6 +2826,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 			CPartFile* file = (CPartFile*)content->owner; //Xman Xtreme Downloadmanager
 
 			switch (wParam){
+
 				//Xman Xtreme Downloadmanager
 				case MP_STOP_CLIENT: 
 					StopSingleClient(client);

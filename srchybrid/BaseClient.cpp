@@ -325,6 +325,7 @@ void CUpDownClient::Init()
 	m_ulastNickChage=0; //no need to initalize
 	//Xman end
 
+
 	//>>> Anti-XS-Exploit (Xman)
 	m_uiXSReqs = 0;
 	m_uiXSAnswer = 0;
@@ -499,6 +500,17 @@ void CUpDownClient::TestLeecher(){
 		old_m_strClientSoftwareFULL.Empty(); //force recheck if user re enable function
 	}
 
+
+	if(thePrefs.GeTAntiLeecheruserhash() && HasValidHash())
+	{
+		PBYTE uhash=(PBYTE)GetUserHash();
+		LPCTSTR reason=theApp.dlp->DLPCheckUserhash(uhash);
+		if(reason)
+		{
+			BanLeecher(_T("*AJ*"),18);
+			return;
+		}
+	}
 
 	if (thePrefs.GetAntiLeecherName())
 	{
@@ -2126,6 +2138,8 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket, UpStopReas
 	//
 	bool bAddDeadSource = true;
 
+	
+	if(m_nUploadState!=US_BANNED) //Xman DLP - Anti-Leecher / Code-Improvement
 	switch(m_nDownloadState){
 		case DS_CONNECTING:
 			{
@@ -3855,8 +3869,21 @@ void CUpDownClient::ProcessPublicIPAnswer(const BYTE* pbyData, UINT uSize){
 	if (m_fNeedOurPublicIP == 1){ // did we?
 		m_fNeedOurPublicIP = 0;
 
+		//Xman: we have a problem if our IP ends with 0. The Check for IsLowID() would be true and
+		//the code can't work (also official part)
+		//Fix: if we receive a LowID we do a recheck
+		if(dwIP==0) return; //thats wrong in every case
+		if(IsLowID(dwIP) && dwIP!=theApp.recheck_ip)
+		{
+			//check if still needed:
+			if(theApp.m_bneedpublicIP
+				|| theApp.serverconnect->IsConnected() && theApp.GetPublicIP() == 0)
+				theApp.recheck_ip=dwIP;
+			return; //will force a new request
+		}
+
 		//Xman -Reask sources after IP change- v4 
-		if(theApp.m_bneedpublicIP && !::IsLowID(dwIP)) //this is the case we have kad-only but no upload->inet down ?
+		if(theApp.m_bneedpublicIP /*&& !::IsLowID(dwIP)*/) //this is the case we have kad-only but no upload->inet down ?
 		{
 
 			//Xman new adapter selection 
@@ -3932,12 +3959,15 @@ void CUpDownClient::ProcessPublicIPAnswer(const BYTE* pbyData, UINT uSize){
 
 		}
 		if(theApp.serverconnect->IsConnected())//remark: this is the case we have a lowid-server-connect
-			if (theApp.GetPublicIP() == 0 && !::IsLowID(dwIP) )
+			if (theApp.GetPublicIP() == 0 /*&& !::IsLowID(dwIP)*/ )
 			{
 				theApp.SetPublicIP(dwIP); 
 				theApp.last_valid_ip=dwIP;
 			}
 		//Xman end
+
+		//Xman fix
+		theApp.recheck_ip=0;
 	}	
 }
 
@@ -3951,12 +3981,15 @@ void CUpDownClient::CheckFailedFileIdReqs(const uchar* aucFileHash)
 			m_fFailedFileIdReqs++;
 		if (m_fFailedFileIdReqs == 6)
 		{
+			//Xman we filter not ban!
+			/*
 			if (theApp.clientlist->GetBadRequests(this) < 2)
 				theApp.clientlist->TrackBadRequest(this, 1);
 			if (theApp.clientlist->GetBadRequests(this) == 2){
 				theApp.clientlist->TrackBadRequest(this, -2); // reset so the client will not be rebanned right after the ban is lifted
 				//Ban(_T("FileReq flood")); //Xman we filter not ban!
 			}
+			*/
 			throw CString(/*thePrefs.GetLogBannedClients() ?*/ _T("FileReq flood") /*: _T("")*/); //Xman
 		}
 	}
@@ -4136,6 +4169,7 @@ float CUpDownClient::GetXtremeVersion(CString modversion) const
 
 	return (float)_tstof(modversion.Mid(theApp.m_uModLength));
 	// <== ModID [itsonlyme/SiRoB] - Stulle
+
 }
 //Xman end
 

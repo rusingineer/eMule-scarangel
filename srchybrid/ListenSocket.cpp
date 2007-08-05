@@ -50,6 +50,7 @@
 #include "BandWidthControl.h" // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 #include "FirewallOpener.h" // Improved ICS-Firewall support [MoNKi] - Max
 
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -580,6 +581,14 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 						if (md4cmp(client->GetUploadFileID(), packet) != 0)
 							client->SetCommentDirty();
 
+						//Xman FileFaker detection
+						if(reqfile->IsPartFile() && ((CPartFile*)reqfile)->m_DeadSourceList.IsDeadSource(client))
+						{
+							client->BanLeecher(_T("FileFaker"),19);
+							client->ProcessBanMessage();
+							break;
+						}
+
 						client->SetUploadFileID(reqfile);
 						client->SetLastAction(OP_SETREQFILEID);	//Xman fix for startupload
 						// send filestatus
@@ -607,6 +616,7 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 					theStats.AddDownDataOverheadFileRequest(size);
 					if (size == 16)
 					{
+
 						CPartFile* reqfile = theApp.downloadqueue->GetFileByID(packet);
 						if (!reqfile){
 							client->CheckFailedFileIdReqs(packet);
@@ -614,6 +624,20 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 						}
 						else
 							reqfile->m_DeadSourceList.AddDeadSource(client);
+
+						//Xman Filefaker Detection		
+						if(client->GetUploadState()!=US_NONE && reqfile->GetFileSize()>PARTSIZE)
+						{
+							CKnownFile* upfile = theApp.sharedfiles->GetFileByID(client->GetUploadFileID());
+							if(upfile && upfile == reqfile) //we speak about the same file
+							{
+								AddDebugLogLine(false,_T("Dropped src: (%s) does not seem to have own reqfile!(TCP)"), DbgGetClientInfo()); 
+								theApp.uploadqueue->RemoveFromUploadQueue(client, _T("Src says he does not have the file he's dl'ing"));
+								theApp.uploadqueue->RemoveFromWaitingQueue(client);
+							}
+						}
+						//Xman end
+
 						// if that client does not have my file maybe has another different
 						// we try to swap to another file ignoring no needed parts files
 						if (client->GetRequestFile()==reqfile) //Xman just to be sure
@@ -640,9 +664,11 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 					if (thePrefs.GetDebugClientTCPLevel() > 0)
 						DebugRecv("OP_FileReqAnswer", client, (size >= 16) ? packet : NULL);
 					theStats.AddDownDataOverheadFileRequest(size);
+
 					CSafeMemFile data(packet,size);
 					uchar cfilehash[16];
 					data.ReadHash16(cfilehash);
+
 					CPartFile* file = theApp.downloadqueue->GetFileByID(cfilehash);
 					if (file == NULL)
 						client->CheckFailedFileIdReqs(cfilehash);
@@ -1548,6 +1574,15 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 							{
 								if (thePrefs.GetDebugClientTCPLevel() > 0)
 									DebugRecv("OP_MPSetReqFileID", client, packet);
+
+								//Xman FileFaker detection
+								if(reqfile->IsPartFile() && ((CPartFile*)reqfile)->m_DeadSourceList.IsDeadSource(client))
+								{
+									client->BanLeecher(_T("FileFaker"),19);
+									client->ProcessBanMessage();
+									bAnswerFNF=true; //will skip to answer
+									break;
+								}
 
 								data_out.WriteUInt8(OP_FILESTATUS);
 								if (reqfile->IsPartFile())
@@ -2715,12 +2750,28 @@ void CClientReqSocket::OnConnect(int nErrorCode)
 		//This socket may have been delayed by SP2 protection, lets make sure it doesn't time out instantly.
 		ResetTimeOutTimer();
 	}
+
 }
 
 void CClientReqSocket::OnSend(int nErrorCode)
 {
 	ResetTimeOutTimer();
 	CEMSocket::OnSend(nErrorCode);
+
+	//Xman NAFC
+	//after any socket is connected we have the only change to find out which IP emule was bound
+	if(theApp.listensocket->boundcheck)
+	{
+		theApp.listensocket->boundcheck=false;
+		sockaddr_in socketcheck;
+		int length= sizeof(socketcheck);
+		if(getsockname(m_SocketData.hSocket, (SOCKADDR*)&socketcheck, &length)==0)
+		{
+			theApp.pBandWidthControl->SetBoundIP(socketcheck.sin_addr.S_un.S_addr);
+		}
+
+	}
+
 }
 
 void CClientReqSocket::OnError(int nErrorCode)
@@ -2934,6 +2985,8 @@ CListenSocket::CListenSocket()
 	m_port=0;
 	m_nHalfOpen = 0;
 	m_nComp = 0;
+	//Xman NAFC
+	boundcheck=true;
 }
 
 CListenSocket::~CListenSocket()
@@ -2957,13 +3010,17 @@ bool CListenSocket::Rebind()
 	//upnp_start
 	if(thePrefs.GetUPnPNat())
 	{
-		if(theApp.m_UPnPNat.RemoveSpecifiedPort(m_port, MyUPnP::UNAT_TCP))
-			AddLogLine(false, _T("UPNP: removed TCP-port %u"), m_port);
+		if(theApp.m_UPnPNat.RemoveSpecifiedPort(thePrefs.m_iUPnPTCPExternal, MyUPnP::UNAT_TCP))
+			AddLogLine(false, _T("UPNP: removed TCP-port %u"),thePrefs.m_iUPnPTCPExternal);
 		else
-			AddLogLine(false, _T("UPNP: failed to remove TCP-port %u"), m_port);
+			AddLogLine(false, _T("UPNP: failed to remove TCP-port %u"), thePrefs.m_iUPnPTCPExternal);
+	}
 		thePrefs.m_iUPnPTCPExternal=0;
 	}
 	//upnp_end
+
+	//Xman NAFC
+	boundcheck=true;
 
 	return StartListening();
 }
@@ -2978,7 +3035,7 @@ bool CListenSocket::StartListening(){
 	}
 	//Xman Info about binding
 
-	bool ret=Create(thePrefs.GetPort(), SOCK_STREAM, FD_ACCEPT, thePrefs.GetBindAddrA(), FALSE/*bReuseAddr*//*) && Listen();
+	bool ret=Create(thePrefs.GetPort(), SOCK_STREAM, FD_ACCEPT, thePrefs.GetBindAddrA(), FALSE/*bReuseAddr*/) && Listen();
 
 	//Xman Info about binding
 	if(thePrefs.GetBindAddrW()!=NULL && ret)

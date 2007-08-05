@@ -1,5 +1,8 @@
-//this file is part of eMule
-//Copyright (C)2002 Merkur ( merkur-@users.sourceforge.net / http://www.emule-project.net )
+//this file is part of eMule Xtreme-Mod (http://www.xtreme-mod.net)
+//Copyright (C)2002-2007 Xtreme-Mod (emulextreme@yahoo.de)
+
+//emule Xtreme is a modification of eMule
+//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -15,12 +18,19 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+//
+//
+//	Author: Xman / Maella
+//  
+
+
 #include "StdAfx.h"
 #include "BandWidthControl.h"
 #include "Emule.h"
 #include "Log.h"
 #include "Preferences.h"
 #include "opcodes.h"
+#include "otherfunctions.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -74,6 +84,7 @@ CBandWidthControl::CBandWidthControl()
    }
    //Xman new adapter selection
    wasNAFCLastActive=thePrefs.GetNAFCFullControl();
+   boundIP=0;
 }
 
 CBandWidthControl::~CBandWidthControl(){
@@ -134,8 +145,13 @@ void CBandWidthControl::checkAdapterIndex(uint32 highid)
 							mibIPAddrTable = (MIB_IPADDRTABLE *) malloc ( dwSize );
 						}
 
+						theApp.QueueDebugLogLine(false,_T("NAFC: your hostIP is %s"), ipstr(dwAddr));
+						theApp.QueueDebugLogLine(false,_T("NAFC: emule is bound to %s"), ipstr(boundIP));
+						theApp.QueueDebugLogLine(false,_T("NAFC: your public IP is %s"), ipstr(highid));
+
 						if(m_fGetIpAddrTable(mibIPAddrTable, &dwSize, FALSE) == NO_ERROR){
 							//Xman: first we seek the highid from the server
+							theApp.QueueDebugLogLine(false,_T("NAFC: searching an adapter matching your public ip"));
 							for(DWORD i = 0; i < mibIPAddrTable->dwNumEntries; i++){
 								if(mibIPAddrTable->table[i].dwAddr == highid){
 									//const MIB_IPADDRROW& row = mibIPAddrTable.table[i];
@@ -152,7 +168,27 @@ void CBandWidthControl::checkAdapterIndex(uint32 highid)
 									return;
 								}
 							}
-							//Xman: if highid not found, search the hostip
+							//if not found search for bound ip
+							theApp.QueueDebugLogLine(false,_T("NAFC: searching an adapter matching your bound ip"));
+							for(DWORD i = 0; i < mibIPAddrTable->dwNumEntries; i++){
+								if(mibIPAddrTable->table[i].dwAddr == boundIP){
+									//const MIB_IPADDRROW& row = mibIPAddrTable.table[i];
+									m_errorTraced = false;
+									theApp.QueueDebugLogLine(false, _T("NAFC found by IP: Select adapter with index %u"), mibIPAddrTable->table[i].dwIndex);
+									m_currentAdapterIndex= mibIPAddrTable->table[i].dwIndex;
+									//reactivate NAFC	
+									if(wasNAFCLastActive)
+										thePrefs.SetNAFCFullControl(true);
+									free(mibIfTable);
+									mibIfTable=NULL;
+									free( mibIPAddrTable );
+									mibIPAddrTable=NULL;
+									return;
+								}
+							}
+
+							//if not found it's strange.. use the default = host ip
+							theApp.QueueDebugLogLine(false,_T("NAFC: searching an adapter matching your host ip"));
 							for(DWORD i = 0; i < mibIPAddrTable->dwNumEntries; i++){
 								if(mibIPAddrTable->table[i].dwAddr == dwAddr){
 									//const MIB_IPADDRROW& row = mibIPAddrTable.table[i];

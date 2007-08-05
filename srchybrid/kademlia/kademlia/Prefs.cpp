@@ -52,14 +52,13 @@ using namespace Kademlia;
 
 CPrefs::CPrefs()
 {
-	// ==> KAD vista fix [godlaugh2007] - Stulle
+	//Xman fixed official kad bug under vista (leuk_he/godlaugh2007)
 	/*
 	CString sFilename = CMiscUtils::GetAppDir();
 	sFilename.Append(CONFIGFOLDER);
 	sFilename.Append(_T("preferencesKad.dat"));
 	*/
 	CString sFilename =thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + _T("preferencesKad.dat");
-	// <== KAD vista fix [godlaugh2007] - Stulle
 	Init(sFilename);
 }
 

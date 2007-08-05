@@ -158,8 +158,15 @@ void CConnectionWizardDlg::OnBnClickedApply()
 		thePrefs.m_uGlobalHL = m_uGlobalHlStandard;
 		// <== Global Source Limit [Max/Stulle] - Stulle
 
+		/*
 		thePrefs.SetMaxUpload(upload * 0.9f);
 		thePrefs.SetMaxDownload(download); 
+		*/
+		//Xman 6.0.1 better newbie settings:
+		thePrefs.SetMaxUpload(theApp.emuledlg->GetRecMaxUpload());
+		if(thePrefs.GetMaxUpload() >= 11.0f) //Xman changed to 11
+			thePrefs.SetMaxDownload(UNLIMITED);
+		else
 		thePrefs.SetMaxDownload(thePrefs.GetMaxDownload()); //check for limit
 		//Xman end
 
@@ -260,9 +267,16 @@ void CConnectionWizardDlg::OnBnClickedApply()
 			}
 		}
 	}
-	thePrefs.m_slotspeed=3.0f; //Xman Xtreme Upload: set it to default
-	thePrefs.CheckSlotSpeed(); //Xman Xtreme Upload
+	//Xman Xtreme Upload: set default values
+	if(thePrefs.GetMaxUpload() > 32.0f)
+		thePrefs.m_slotspeed=4.8f;
+	else if(thePrefs.GetMaxUpload() < 10.0f)
+		thePrefs.m_slotspeed=2.5f;
+	else
+		thePrefs.m_slotspeed=3.4f; 
+	thePrefs.CheckSlotSpeed(); // validate + update max allowed sources
 	theApp.emuledlg->preferenceswnd->m_wndConnection.LoadSettings();
+	theApp.emuledlg->Localize(); //Xman dirty hack to update systemmenu
 	CDialog::OnOK();
 }
 
@@ -344,7 +358,7 @@ BOOL CConnectionWizardDlg::OnInitDialog()
 	//Xman no support for unlimited
 	//m_provider.InsertItem(0, GetResString(IDS_UNKNOWN));m_provider.SetItemText(0,1,_T(""));m_provider.SetItemText(0,2,_T(""));  
 	m_provider.InsertItem(0, GetResString(IDS_WIZARD_CUSTOM));m_provider.SetItemText(0,1,GetResString(IDS_WIZARD_ENTERBELOW));m_provider.SetItemText(0,2,GetResString(IDS_WIZARD_ENTERBELOW));
-	m_provider.InsertItem(1,_T("DSL (DSL, 768/128"));m_provider.SetItemText(1,1,_T("768"));m_provider.SetItemText(1,2,_T("128")); //Xman dummy
+	m_provider.InsertItem(1,_T("T-DSL 16000"));m_provider.SetItemText(1,1,_T("16000"));m_provider.SetItemText(1,2,_T("1024")); //Xman 
 	//Xman end
 	m_provider.InsertItem(2,_T("56-k Modem"));m_provider.SetItemText(2,1,_T("56"));m_provider.SetItemText(2,2,_T("56"));
 	m_provider.InsertItem(3,_T("ISDN"));m_provider.SetItemText(3,1,_T("64"));m_provider.SetItemText(3,2,_T("64"));
@@ -387,7 +401,7 @@ void CConnectionWizardDlg::OnNMClickProviders(NMHDR* /*pNMHDR*/, LRESULT* pResul
 	//Xman changed
 	//case  0: down= ((thePrefs.maxGraphDownloadRate * 1024) + 500) / 1000 * 8; up= ((thePrefs.GetMaxGraphUploadRate() * 1024) + 500) / 1000 * 8; break;
 	case  0: down= (UINT)thePrefs.GetMaxGraphDownloadRate()*8 ; up= (UINT)thePrefs.GetMaxGraphUploadRate()*8; break;
-	case  1: down=  768;	up=  128; break; //Xman dummy
+	case  1: down=  16000;	up=  1024; break; //Xman 
 	case  2: down=   56;	up=   33; break;
 	case  3: down=   64;	up=   64; break;
 	case  4: down=  128;	up=  128; break;

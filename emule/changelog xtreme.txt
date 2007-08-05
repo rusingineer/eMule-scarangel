@@ -1,4 +1,4 @@
-Xtreme 6.0
+Xtreme 6.1
 ----------------
 
 Main Features:
@@ -25,6 +25,31 @@ libpng 1.2.12
 zlib 1.2.3
 crypto 52.1
 CxImage version 5.99c
+
+
+Xtreme 6.1
+- added AJ-community-detection by userhash* (by anonymous anti-leecher)
+* this option will detect and ban really a lot of bad mods!
+- added filefaker check
+- added T-DSL 16000 to the wizard
+
+- improved NAFC adapter finding: find the right adapter even with exotic network configurations
+- improved wizard to choose better download / uploadlimits 
+- improved: prevent busy popup during windows startup (leuk_he)
+- improved: kadliscontrol: show the filename immedately
+- a lot of other small improvements
+
+- changed: skip loading of saved sources if you only allow obfuscated connections
+- changed: for uploadlimit > 16 one more Low-ID client is allowed to enter the upload
+- changed: do not ask exit from command prompt (leuk_he)
+
+- fixed official kad bug under vista (leuk_he/godlaugh2007)
+- fixed an official crashbug when shutting down while AICH-Syncthread is running
+- fixed an official crashbug: reapplied division by zero fix at taskbarnotifier 
+- fixed a bug when changing ports but don't restart emule
+- fixed an UPNP bug
+- fixed an official bug: sometimes banning didn't work properly 
+- fixed a bug if you got a IP with ends with 0
 
 
 Xtreme 6.0
