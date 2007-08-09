@@ -3081,6 +3081,10 @@
 // <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 #define IDS_IGNORE_THIRD                61150 // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
 #define IDS_UL_THRES                    61160 // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
+#define IDS_FOLLOWTHEMAJORITY           61170 // Follow The Majority [AndCycle/Stulle] - Stulle
+#define IDS_FAIR_PLAY                   61180 // Fair Play [AndCycle/Stulle] - Stulle
+#define IDS_MAX_SLOTSPEED               61190 // Alwasy maximize slot speed [Stulle] - Stulle
+#define IDS_REASK_FILE_SRC              61200 // Timer for ReAsk File Sources [Stulle] - Stulle
 
 // Next default values for new objects
 // 

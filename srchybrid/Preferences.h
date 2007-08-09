@@ -1047,6 +1047,14 @@ public:
 
 	static bool		m_bDisableUlThres; // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 
+	static bool		m_bFollowTheMajority; // Follow The Majority [AndCycle/Stulle] - Stulle
+
+	static int		m_iFairPlay; // Fair Play [AndCycle/Stulle] - Stulle
+
+	static bool		m_bMaxSlotSpeed; // Alwasy maximize slot speed [Stulle] - Stulle
+
+	static uint32	m_uReAskTimeDif; // Timer for ReAsk File Sources [Stulle] - Stulle
+
 	enum Table
 	{
 		tableDownload, 
@@ -2375,6 +2383,14 @@ public:
 	static	bool	GetIgnoreThird()		{return m_bIgnoreThird;} // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
 
 	static	bool	GetDisableUlThres()		{return m_bDisableUlThres;} // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
+
+	static	bool	IsFollowTheMajorityEnabled() { return m_bFollowTheMajority;} // Follow The Majority [AndCycle/Stulle] - Stulle
+
+	static	int		GetFairPlay()			{ return m_iFairPlay; } //Fair Play [AndCycle/Stulle] - Stulle
+
+	static	bool	GetMaxSlotSpeed()		{ return m_bMaxSlotSpeed; } // Alwasy maximize slot speed [Stulle] - Stulle
+
+	static uint32	GetReAskTimeDif()		{return m_uReAskTimeDif;} // Timer for ReAsk File Sources [Stulle] - Stulle
 
 protected:
 	static	CString m_strFileCommentsFilePath;

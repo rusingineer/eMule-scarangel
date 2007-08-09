@@ -792,6 +792,7 @@ void CDownloadClientsCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 
 	GetPopupMenuPos(*this, point);
 	ClientMenu.TrackPopupMenu(TPM_LEFTALIGN |TPM_RIGHTBUTTON, point.x, point.y, this);
+	VERIFY( ClientMenu.DestroyMenu() ); // XP Style Menu [Xanatos] - Stulle
 }
 
 void CDownloadClientsCtrl::ShowSelectedUserDetails(){

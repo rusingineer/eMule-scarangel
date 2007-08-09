@@ -348,6 +348,7 @@ void CFileDetailDialogName::RenameFile()
 			return;
 		CPartFile* file = STATIC_DOWNCAST(CPartFile, (*m_paFiles)[0]);
 		file->SetFileName(strNewFileName, true);
+		file->SetFollowTheMajority(false); // Follow The Majority [AndCycle/Stulle] - Stulle
 		file->UpdateDisplayedInfo();
 		file->SavePartFile();
 	}

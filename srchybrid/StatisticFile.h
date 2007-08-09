@@ -129,4 +129,6 @@ public:
 	float	GetFullSpreadCount() /*const*/;
 	void	ResetSpreadBar(); //MORPH	- Added by AndCycle, SLUGFILLER: Spreadbars - per file
 	// <== Spread bars [Slugfiller/MorphXT] - Stulle
+
+	bool	GetFairPlay(); // Fair Play [AndCycle/Stulle] - Stulle
 };

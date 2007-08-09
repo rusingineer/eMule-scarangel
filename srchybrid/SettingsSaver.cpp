@@ -157,6 +157,22 @@ void CSettingsSaver::LoadSettings(CPartFile* file)
 	{
 			file->SetHQRXman(thePrefs.GetHQRXmanDefault());
 	}
+	// ==> Follow The Majority [AndCycle/Stulle] - Stulle
+	if(daten.GetCount() > 12)
+	{
+		daten.GetNext(pos);
+		if( ((CSettingsData*)daten.GetAt(pos))->dwData >= 0 && ((CSettingsData*)daten.GetAt(pos))->dwData <= 2)
+		{
+			file->SetFollowTheMajority((((CSettingsData*)daten.GetAt(pos))->dwData)-1);
+		}
+		else
+			file->SetFollowTheMajority(-1);
+	}
+	else
+	{
+			file->SetFollowTheMajority(-1);
+	}
+	// <== Follow The Majority [AndCycle/Stulle] - Stulle
 
 	while (!daten.IsEmpty()) 
 		delete daten.RemoveHead();
@@ -200,6 +216,11 @@ void CSettingsSaver::SaveSettings(CPartFile* file)
 	// <== Global Source Limit (customize for files) - Stulle
 	strLine.Format(_T("%ld\n"), file->GetHQRXman());
 	f.WriteString(strLine);
+	// ==> Follow The Majority [AndCycle/Stulle] - Stulle
+	// note: we increase the value by 1 on saving to avoid a negative value to be saved.
+	strLine.Format(_T("%ld\n"), (file->GetFollowTheMajority()+1));
+	f.WriteString(strLine);
+	// <== Follow The Majority [AndCycle/Stulle] - Stulle
 
 	f.Close();
 }

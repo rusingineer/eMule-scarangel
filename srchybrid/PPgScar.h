@@ -59,10 +59,11 @@ protected:
 	int m_iRandomLastPort;
 	int m_iRandomPortsResetTime;
 	// <== Random Ports [MoNKi] - Stulle
-//	int m_iReAskFileSrc; // Timer for ReAsk File Sources - Stulle
+	int m_iReAskFileSrc; // Timer for ReAsk File Sources [Stulle] - Stulle
 	bool m_bACC; // ACC [Max/WiZaRd] - Max
 	bool m_bIgnoreThird; // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
 	bool m_bUlThres; // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
+	bool m_bMaxSlotSpeed; // Alwasy maximize slot speed [Stulle] - Stulle
 
 	// ==> Anti Uploader Ban [Stulle] - Stulle
 	int m_iAntiUploaderBanLimit;
@@ -98,6 +99,7 @@ protected:
 	bool m_bQueueProgressBar; // Client queue progress bar [Commander] - Stulle
 //	bool m_bTrayComplete; // Completed in Tray - Stulle
 	bool m_bShowClientPercentage; // Show Client Percentage optional [Stulle] - Stulle
+	bool m_bFollowTheMajority; // Follow The Majority [AndCycle/Stulle] - Stulle
 
 	// ==> file settings - Stulle
 	bool m_bEnableAutoDropNNSDefault;
@@ -150,6 +152,7 @@ protected:
 	bool m_bSelectiveShare;
 	int m_iShareOnlyTheNeed;
 	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	int m_iFairPlay; // Fair Play [AndCycle/Stulle] - Stulle
 
 	// ==> Release Bonus [sivka] - Stulle
 	int m_iReleaseBonus;
@@ -232,10 +235,11 @@ protected:
 	HTREEITEM m_htiRandomLastPort;
 	HTREEITEM m_htiRandomPortsResetTime;
 	// <== Random Ports [MoNKi] - Stulle
-//	HTREEITEM m_htiReAskFileSrc; // Timer for ReAsk File Sources - Stulle
+	HTREEITEM m_htiReAskFileSrc; // Timer for ReAsk File Sources [Stulle] - Stulle
 	HTREEITEM m_htiACC; // ACC [Max/WiZaRd] - Max
 	HTREEITEM m_htiIgnoreThird; // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
 	HTREEITEM m_htiUlThres; // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
+	HTREEITEM m_htiMaxSlotSpeed; // Alwasy maximize slot speed [Stulle] - Stulle
 
 	// ==> Anti Uploader Ban [Stulle] - Stulle
 	HTREEITEM m_htiAntiUploaderBanLimit;
@@ -282,6 +286,7 @@ protected:
 	HTREEITEM m_htiQueueProgressBar; // Client queue progress bar [Commander] - Stulle
 //	HTREEITEM m_htiTrayComplete; // Completed in Tray - Stulle
 	HTREEITEM m_htiShowClientPercentage; // Show Client Percentage optional [Stulle] - Stulle
+	HTREEITEM m_htiFollowTheMajority; // Follow The Majority [AndCycle/Stulle] - Stulle
 
 	// ==> file settings - Stulle
 	HTREEITEM m_htiFileDefaults;
@@ -348,6 +353,7 @@ protected:
 	HTREEITEM m_htiSelectiveShare;
 	HTREEITEM m_htiShareOnlyTheNeed;
 	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	HTREEITEM m_htiFairPlay; // Fair Play [AndCycle/Stulle] - Stulle
 
 	// ==> Release Bonus [sivka] - Stulle
 	HTREEITEM m_htiReleaseBonusGroup;

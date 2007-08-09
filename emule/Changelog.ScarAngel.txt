@@ -8,15 +8,24 @@ eMule v0.48a ScarAngel v2.1:
 based on eMule 0.48a Xtreme 6.1 compiled with vs2003 SP1
 
 Added: Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
-	+ Upload all has to be smaller Download all per session!
 Added: Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 	+ Xtreme only grants upload to clients that asked within the last 30min
+Added: Follow The Majority [AndCycle/Stulle] - Stulle
+Added: Fair Play [AndCycle/Stulle] - Stulle
+Added: Alwasy maximize slot speed [Stulle] - Stulle
+Added: Timer for ReAsk File Sources [Stulle/ idea from sivka] - Stulle
+	+ Due to Spread Reasks the actual ReAsk time is: [SetTime]+{-3...0.5 minutes}
 
 Changed: check mark superior to icon (MenuXP) [fafner] - Stulle
 Changed: Quickstart for KAD-only connection [Stulle] - Stulle
 Changed: No FunnyNick for bad guys [Stulle] - Stulle
 
 Fixed: Saving of Cat version (save default Cat viewfilters) [Stulle] - Stulle
+Fixed: GDI-Leaks around the context menus [Stulle] - Stulle
+
+Do not reserve 1/3 of your uploadlimit for emule:
++ Only active if you upload more than download in this session.
++ Reserves only a minimum of 2 kB/s for eMule.
 
 
 eMule v0.48a ScarAngel v2.0:

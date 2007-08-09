@@ -2273,6 +2273,7 @@ void CTransferWnd::OnWnd1BtnDropDown(NMHDR* /*pNMHDR*/, LRESULT* /*pResult*/)
 	CRect rc;
 	m_btnWnd1->GetWindowRect(&rc);
 	menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, rc.left, rc.bottom, this);
+	VERIFY( menu.DestroyMenu() ); // XP Style Menu [Xanatos] - Stulle
 }
 
 void CTransferWnd::OnWnd2BtnDropDown(NMHDR* /*pNMHDR*/, LRESULT* /*pResult*/)
@@ -2292,6 +2293,7 @@ void CTransferWnd::OnWnd2BtnDropDown(NMHDR* /*pNMHDR*/, LRESULT* /*pResult*/)
 	CRect rc;
 	m_btnWnd2->GetWindowRect(&rc);
 	menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, rc.left, rc.bottom, this);
+	VERIFY( menu.DestroyMenu() ); // XP Style Menu [Xanatos] - Stulle
 }
 
 void CTransferWnd::ResetTransToolbar(bool bShowToolbar, bool bResetLists)

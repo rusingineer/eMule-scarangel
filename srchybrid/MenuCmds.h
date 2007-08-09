@@ -275,3 +275,8 @@
 #define MP_PS_AMOUNT_LIMIT      20150
 #define MP_PS_AMOUNT_LIMIT_SET  20151
 // <== Limit PS by amount of data uploaded [Stulle] - Stulle
+// ==> Follow The Majority [AndCycle/Stulle] - Stulle
+#define MP_FOLLOWTHEMAJORITY     20160
+#define MP_FOLLOWTHEMAJORITY_0   20161
+#define MP_FOLLOWTHEMAJORITY_1   20162
+// <== Follow The Majority [AndCycle/Stulle] - Stulle

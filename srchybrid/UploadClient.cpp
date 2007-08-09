@@ -1959,6 +1959,7 @@ void CUpDownClient::GetUploadingAndUploadedPart(uint8* m_abyUpPartUploadingAndUp
 /* So far included are the following features:                          */
 /* PowerShare                                                           */
 /* Pay Back First (for insecure clients)                                */
+/* FairPlay                                                             */
 bool CUpDownClient::IsSuperiorClient() const
 {
 	CKnownFile* currentReqFile = theApp.sharedfiles->GetFileByID(GetUploadFileID());
@@ -1992,6 +1993,11 @@ bool CUpDownClient::IsSuperiorClient() const
 			return true;
 	}
 	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+
+	// ==> Fair Play [AndCycle/Stulle] - Stulle
+	if(currentReqFile->statistic.GetFairPlay())
+		return true;
+	// <== Fair Play [AndCycle/Stulle] - Stulle
 
 	return false;
 }

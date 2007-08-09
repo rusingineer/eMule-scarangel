@@ -1802,6 +1802,7 @@ void CSearchResultsSelector::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	menu.AppendMenu(MF_STRING, MP_REMOVE, GetResString(IDS_FD_CLOSE));
 	menu.SetDefaultItem(MP_RESTORESEARCHPARAMS);
 	menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
+	VERIFY( menu.DestroyMenu() ); // XP Style Menu [Xanatos] - Stulle
 }
 
 LRESULT CSearchResultsWnd::OnChangeFilter(WPARAM wParam, LPARAM lParam)
@@ -1872,6 +1873,11 @@ void CSearchResultsWnd::OnSearchListMenuBtnDropDown(NMHDR* /*pNMHDR*/, LRESULT* 
 	CRect rc;
 	m_btnSearchListMenu->GetWindowRect(&rc);
 	menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, rc.left, rc.bottom, this);
+
+	// ==> XP Style Menu [Xanatos] - Stulle
+	VERIFY( menuFileSizeFormat.DestroyMenu() );
+	VERIFY( menu.DestroyMenu() );
+	// <== XP Style Menu [Xanatos] - Stulle
 }
 
 BOOL CSearchResultsWnd::OnCommand(WPARAM wParam, LPARAM lParam)

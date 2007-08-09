@@ -4209,6 +4209,7 @@ BOOL CemuleDlg::OnChevronPushed(UINT id, NMHDR* pNMHDR, LRESULT* plResult)
 	ClientToScreen(&ptMenu);
 	ptMenu.y += rcVisibleButtons.Height();
 	menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_TOPALIGN | TPM_LEFTBUTTON | TPM_RIGHTBUTTON, ptMenu.x, ptMenu.y, this);
+	VERIFY( menu.DestroyMenu() ); // XP Style Menu [Xanatos] - Stulle
 	*plResult = 1;
 	return FALSE;
 }

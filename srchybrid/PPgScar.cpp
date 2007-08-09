@@ -1,6 +1,7 @@
 // PpgStulle.cpp : implementation file
 //
 
+/* guess what is included already... LOL */
 #include "stdafx.h"
 #include "emule.h"
 #include "PPgScar.h"
@@ -38,6 +39,8 @@
 #include "ChatWnd.h"
 #include "StatisticsDlg.h"
 // <== Design Settings [eWombat/Stulle] - Max
+#include "PreferencesDlg.h" // Alwasy maximize slot speed [Stulle] - Stulle
+#include "ClientList.h" // Timer for ReAsk File Sources [Stulle] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -154,10 +157,11 @@ CPPgScar::CPPgScar()
 	m_htiRandomLastPort = NULL;
 	m_htiRandomPortsResetTime = NULL;
 	// <== Random Ports [MoNKi] - Stulle
-//	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources - Stulle
+//	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources [Stulle] - Stulle
 	m_htiACC = NULL; // ACC [Max/WiZaRd] - Max
 	m_htiIgnoreThird = NULL; // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
 	m_htiUlThres = NULL; // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
+	m_htiMaxSlotSpeed = NULL; // Alwasy maximize slot speed [Stulle] - Stulle
 
 	// ==> Anti Uploader Ban [Stulle] - Stulle
 	m_htiAntiUploaderBanLimit = NULL;
@@ -210,6 +214,7 @@ CPPgScar::CPPgScar()
 	m_htiQueueProgressBar = NULL; // Client queue progress bar [Commander] - Stulle
 //	m_htiTrayComplete = NULL; // Completed in Tray - Stulle
 	m_htiShowClientPercentage = NULL; // Show Client Percentage optional [Stulle] - Stulle
+	m_htiFollowTheMajority = NULL; // Follow The Majority [AndCycle/Stulle] - Stulle
 
 	// ==> file settings - Stulle
 	m_htiFileDefaults = NULL;
@@ -275,6 +280,7 @@ CPPgScar::CPPgScar()
 	m_htiSelectiveShare = NULL;
 	m_htiShareOnlyTheNeed = NULL;
 	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	m_htiFairPlay = NULL; // Fair Play [AndCycle/Stulle] - Stulle
 
 	// ==> Release Bonus [sivka] - Stulle
 	m_htiReleaseBonusGroup = NULL;
@@ -440,13 +446,14 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiRandomPortsResetTime = m_ctrlTreeOptions.InsertItem(GetResString(IDS_RND_PORT_RESET), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiRndGrp);
 		m_ctrlTreeOptions.AddEditBox(m_htiRandomPortsResetTime, RUNTIME_CLASS(CNumTreeOptionsEdit));
 		// <== Random Ports [MoNKi] - Stulle
-/*		// ==> Timer for ReAsk File Sources - Stulle
+		// ==> Timer for ReAsk File Sources [Stulle] - Stulle
 		m_htiReAskFileSrc = m_ctrlTreeOptions.InsertItem(GetResString(IDS_REASK_FILE_SRC), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiConTweaks);
 		m_ctrlTreeOptions.AddEditBox(m_htiReAskFileSrc, RUNTIME_CLASS(CNumTreeOptionsEdit));
-*/		// <== Timer for ReAsk File Sources - Stulle
+		// <== Timer for ReAsk File Sources [Stulle] - Stulle
 		m_htiACC = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ACC), m_htiConTweaks, m_bACC); // ACC [Max/WiZaRd] - Max
 		m_htiIgnoreThird = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_IGNORE_THIRD), m_htiConTweaks, m_bIgnoreThird); // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
 		m_htiUlThres = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_UL_THRES), m_htiConTweaks, m_bUlThres); // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
+		m_htiMaxSlotSpeed = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_MAX_SLOTSPEED), m_htiConTweaks, m_bMaxSlotSpeed); // Alwasy maximize slot speed [Stulle] - Stulle
 
 		// ==> Anti Uploader Ban [Stulle] - Stulle
 		m_htiAntiUploaderBanLimit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_UNBAN_UPLOADER), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, TVI_ROOT);
@@ -500,6 +507,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiQueueProgressBar = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CLIENTQUEUEPROGRESSBAR), m_htiDisplay, m_bQueueProgressBar); // Client queue progress bar [Commander] - Stulle
 //		m_htiTrayComplete = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_TRAY_COMPLETE), m_htiDisplay, m_bTrayComplete); // Completed in Tray - Stulle
 		m_htiShowClientPercentage = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CLIENTPERCENTAGE), m_htiDisplay, m_bShowClientPercentage); // Show Client Percentage optional [Stulle] - Stulle
+		m_htiFollowTheMajority = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_FOLLOWTHEMAJORITY), m_htiDisplay, m_bFollowTheMajority); // Follow The Majority [AndCycle/Stulle] - Stulle
 
 		// ==> file settings - Stulle
 		m_htiFileDefaults = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_FILE_DEFAULTS), iImgDropDefaults, TVI_ROOT);
@@ -587,6 +595,10 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.Expand(m_htiHideOS, TVE_EXPAND);
 		m_htiShareOnlyTheNeed = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHAREONLYTHENEED), m_htiSharedPrefs, m_iShareOnlyTheNeed);
 		// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+		// ==> Fair Play [AndCycle/Stulle] - Stulle
+		m_htiFairPlay = m_ctrlTreeOptions.InsertItem(GetResString(IDS_FAIR_PLAY), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiSharedPrefs);
+		m_ctrlTreeOptions.AddEditBox(m_htiFairPlay, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		// <== Fair Play [AndCycle/Stulle] - Stulle
 
 		// ==> Release Bonus [sivka] - Stulle
 		m_htiReleaseBonusGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_RELEASE_BONUS_GROUP), iImgReleaseBonus, m_htiMisc);
@@ -681,13 +693,14 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiRandomPortsResetTime, m_iRandomPortsResetTime);
 	DDV_MinMaxInt(pDX, m_iRandomPortsResetTime, 0, 900);
 	// <== Random Ports [MoNKi] - Stulle
-/*	// ==> Timer for ReAsk File Sources - Stulle
+	// ==> Timer for ReAsk File Sources [Stulle] - Stulle
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiReAskFileSrc, m_iReAskFileSrc);
 	DDV_MinMaxInt(pDX, m_iReAskFileSrc, 29, 55);
-*/	// <== Timer for ReAsk File Sources - Stulle
+	// <== Timer for ReAsk File Sources [Stulle] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiACC, m_bACC); // ACC [Max/WiZaRd] - Max
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiIgnoreThird, m_bIgnoreThird); // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiUlThres, m_bUlThres); // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiMaxSlotSpeed, m_bMaxSlotSpeed); // Alwasy maximize slot speed [Stulle] - Stulle
 
 	// ==> Anti Uploader Ban [Stulle] - Stulle
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiAntiUploaderBanLimit, m_iAntiUploaderBanLimit);
@@ -722,6 +735,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiQueueProgressBar, m_bQueueProgressBar); // Client queue progress bar [Commander] - Stulle
 //	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiTrayComplete, m_bTrayComplete); // Completed in Tray - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowClientPercentage, m_bShowClientPercentage); // Show Client Percentage optional [Stulle] - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiFollowTheMajority, m_bFollowTheMajority); // Follow The Majority [AndCycle/Stulle] - Stulle
 
 	// ==> file settings - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiAutoNNS, m_bEnableAutoDropNNSDefault);
@@ -787,6 +801,10 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSelectiveShare, m_bSelectiveShare);
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShareOnlyTheNeed, m_iShareOnlyTheNeed);
 	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	// ==> Fair Play [AndCycle/Stulle] - Stulle
+	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiFairPlay, m_iFairPlay);
+	DDV_MinMaxInt(pDX, m_iFairPlay, 0, 10);
+	// <== Fair Play [AndCycle/Stulle] - Stulle
 
 	// ==> Release Bonus [sivka] - Stulle
 	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiReleaseBonusGroup, m_iReleaseBonus);
@@ -877,10 +895,11 @@ BOOL CPPgScar::OnInitDialog()
 	m_iRandomLastPort = thePrefs.GetMaxRandomPort();
 	m_iRandomPortsResetTime = thePrefs.GetRandomPortsSafeResetOnRestartTime();
 	// <== Random Ports [MoNKi] - Stulle
-//	m_iReAskFileSrc = (thePrefs.GetReAskTimeDif() + FILEREASKTIME)/60000; // Timer for ReAsk File Sources - Stulle
+	m_iReAskFileSrc = (thePrefs.GetReAskTimeDif() + FILEREASKTIME)/60000; // Timer for ReAsk File Sources [Stulle] - Stulle
 	m_bACC = thePrefs.GetACC(); // ACC [Max/WiZaRd] - Max
 	m_bIgnoreThird = thePrefs.GetIgnoreThird(); // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
 	m_bUlThres = !(thePrefs.GetDisableUlThres()); // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
+	m_bMaxSlotSpeed = thePrefs.GetMaxSlotSpeed(); // Alwasy maximize slot speed [Stulle] - Stulle
 
 	// ==> Anti Uploader Ban [Stulle] - Stulle
 	m_iAntiUploaderBanLimit = thePrefs.GetAntiUploaderBanLimit();
@@ -923,6 +942,7 @@ BOOL CPPgScar::OnInitDialog()
 	m_bQueueProgressBar = thePrefs.ShowClientQueueProgressBar(); // Client queue progress bar [Commander] - Stulle
 //	m_bTrayComplete = thePrefs.GetTrayComplete(); // Completed in Tray - Stulle
 	m_bShowClientPercentage = thePrefs.GetShowClientPercentage(); // Show Client Percentage optional [Stulle] - Stulle
+	m_bFollowTheMajority = thePrefs.IsFollowTheMajorityEnabled(); // Follow The Majority [AndCycle/Stulle] - Stulle
 
 	// ==> file settings - Stulle
 	m_bEnableAutoDropNNSDefault = thePrefs.m_EnableAutoDropNNSDefault;
@@ -972,6 +992,7 @@ BOOL CPPgScar::OnInitDialog()
 	m_bSelectiveShare = thePrefs.selectiveShare;
 	m_iShareOnlyTheNeed = thePrefs.ShareOnlyTheNeed;
 	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	m_iFairPlay = thePrefs.GetFairPlay(); // Fair Play [AndCycle/Stulle] - Stulle
 
 	// ==> Release Bonus [sivka] - Stulle
 	if (thePrefs.GetReleaseBonus() <= 1)
@@ -1214,10 +1235,22 @@ BOOL CPPgScar::OnApply()
 		}
 	}
 	// <== Random Ports [MoNKi] - Stulle
-//	thePrefs.m_uReAskTimeDif = (m_iReAskFileSrc-29)*60000; // Timer for ReAsk File Sources - Stulle
+	// ==> Timer for ReAsk File Sources [Stulle] - Stulle
+	uint32 uTemp = (m_iReAskFileSrc-29)*60000;
+	if(uTemp != thePrefs.m_uReAskTimeDif)
+	{
+		thePrefs.m_uReAskTimeDif = uTemp;
+		theApp.clientlist->RecalculateReAskTimes();
+	}
+	// <== Timer for ReAsk File Sources [Stulle] - Stulle
 	thePrefs.m_bACC = m_bACC; // ACC [Max/WiZaRd] - Max
 	thePrefs.m_bIgnoreThird = m_bIgnoreThird; // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
 	thePrefs.m_bDisableUlThres = !m_bUlThres; // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
+	// ==> Alwasy maximize slot speed [Stulle] - Stulle
+	if(m_bMaxSlotSpeed && m_bMaxSlotSpeed != thePrefs.m_bMaxSlotSpeed)
+		thePrefs.CheckSlotSpeed();
+	thePrefs.m_bMaxSlotSpeed = m_bMaxSlotSpeed;
+	// <== Alwasy maximize slot speed [Stulle] - Stulle
 
 	// ==> Anti Uploader Ban [Stulle] - Stulle
 	thePrefs.m_uAntiUploaderBanLimit = (uint16)m_iAntiUploaderBanLimit;
@@ -1256,6 +1289,7 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_bClientQueueProgressBar = m_bQueueProgressBar; // Client queue progress bar [Commander] - Stulle
 //	thePrefs.m_bTrayComplete = m_bTrayComplete; // Completed in Tray - Stulle
 	thePrefs.m_bShowClientPercentage = m_bShowClientPercentage; // Show Client Percentage optional [Stulle] - Stulle
+	thePrefs.m_bFollowTheMajority = m_bFollowTheMajority; // Follow The Majority [AndCycle/Stulle] - Stulle
 
 	// ==> file settings - Stulle
 	thePrefs.m_EnableAutoDropNNSDefault = m_bEnableAutoDropNNSDefault;
@@ -1309,6 +1343,7 @@ BOOL CPPgScar::OnApply()
 	thePrefs.selectiveShare = m_bSelectiveShare;
 	thePrefs.ShareOnlyTheNeed = m_iShareOnlyTheNeed!=0;
 	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	thePrefs.m_iFairPlay = m_iFairPlay; // Fair Play [AndCycle/Stulle] - Stulle
 
 	// ==> Release Bonus [sivka] - Stulle
 	if (m_iReleaseBonus <= 1)
@@ -1498,10 +1533,11 @@ void CPPgScar::Localize(void)
 		if (m_htiRandomLastPort) m_ctrlTreeOptions.SetEditLabel(m_htiRandomLastPort, GetResString(IDS_RND_PORT_LAST));
 		if (m_htiRandomPortsResetTime) m_ctrlTreeOptions.SetEditLabel(m_htiRandomPortsResetTime, GetResString(IDS_RND_PORT_RESET));
 		// <== Random Ports [MoNKi] - Stulle
-//		if (m_htiReAskFileSrc) m_ctrlTreeOptions.SetEditLabel(m_htiReAskFileSrc, GetResString(IDS_REASK_FILE_SRC)); // Timer for ReAsk File Sources - Stulle
+		if (m_htiReAskFileSrc) m_ctrlTreeOptions.SetEditLabel(m_htiReAskFileSrc, GetResString(IDS_REASK_FILE_SRC)); // Timer for ReAsk File Sources [Stulle] - Stulle
 		if (m_htiACC) m_ctrlTreeOptions.SetItemText(m_htiACC, GetResString(IDS_ACC)); // ACC [Max/WiZaRd] - Max
 		if (m_htiIgnoreThird) m_ctrlTreeOptions.SetItemText(m_htiIgnoreThird, GetResString(IDS_IGNORE_THIRD)); // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
 		if (m_htiUlThres) m_ctrlTreeOptions.SetItemText(m_htiUlThres, GetResString(IDS_UL_THRES)); // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
+		if (m_htiMaxSlotSpeed) m_ctrlTreeOptions.SetItemText(m_htiMaxSlotSpeed, GetResString(IDS_MAX_SLOTSPEED)); // Alwasy maximize slot speed [Stulle] - Stulle
 
 		// ==> Anti Uploader Ban [Stulle] - Stulle
 		if (m_htiAntiUploaderBanLimit) m_ctrlTreeOptions.SetEditLabel(m_htiAntiUploaderBanLimit, GetResString(IDS_UNBAN_UPLOADER));
@@ -1558,6 +1594,7 @@ void CPPgScar::Localize(void)
 		if (m_htiQueueProgressBar) m_ctrlTreeOptions.SetItemText(m_htiQueueProgressBar, GetResString(IDS_CLIENTQUEUEPROGRESSBAR)); // Client queue progress bar [Commander] - Stulle
 //		if (m_htiTrayComplete) m_ctrlTreeOptions.SetItemText(m_htiTrayComplete, GetResString(IDS_TRAY_COMPLETE)); // Completed in Tray - Stulle
 		if (m_htiShowClientPercentage) m_ctrlTreeOptions.SetItemText(m_htiShowClientPercentage, GetResString(IDS_CLIENTPERCENTAGE)); // Show Client Percentage optional [Stulle] - Stulle
+		if (m_htiFollowTheMajority) m_ctrlTreeOptions.SetItemText(m_htiFollowTheMajority, GetResString(IDS_FOLLOWTHEMAJORITY)); // Follow The Majority [AndCycle/Stulle] - Stulle
 
 		// ==> file settings - Stulle
 		if (m_htiAutoNNS) m_ctrlTreeOptions.SetItemText(m_htiAutoNNS, GetResString(IDS_AUTO_NNS));
@@ -1614,6 +1651,8 @@ void CPPgScar::Localize(void)
 		if (m_htiSelectiveShare) m_ctrlTreeOptions.SetItemText(m_htiSelectiveShare, GetResString(IDS_SELECTIVESHARE));
 		if (m_htiShareOnlyTheNeed) m_ctrlTreeOptions.SetItemText(m_htiShareOnlyTheNeed, GetResString(IDS_SHAREONLYTHENEED));
 		// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+		if (m_htiFairPlay) m_ctrlTreeOptions.SetEditLabel(m_htiFairPlay, GetResString(IDS_FAIR_PLAY)); // Fair Play [AndCycle/Stulle] - Stulle
+
 		if (m_htiReleaseScoreAssurance) m_ctrlTreeOptions.SetItemText(m_htiReleaseScoreAssurance, GetResString(IDS_RELEASE_SCORE_ASSURANCE)); // Release Score Assurance [Stulle] - Stulle
 
 		// ==> Global Source Limit [Max/Stulle] - Stulle
@@ -1750,10 +1789,11 @@ void CPPgScar::OnDestroy()
 	m_htiRandomLastPort = NULL;
 	m_htiRandomPortsResetTime = NULL;
 	// <== Random Ports [MoNKi] - Stulle
-//	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources - Stulle
+	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources [Stulle] - Stulle
 	m_htiACC = NULL; // ACC [Max/WiZaRd] - Max
 	m_htiIgnoreThird = NULL; // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
 	m_htiUlThres = NULL; // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
+	m_htiMaxSlotSpeed = NULL; // Alwasy maximize slot speed [Stulle] - Stulle
 
 	// ==> Anti Uploader Ban [Stulle] - Stulle
 	m_htiAntiUploaderBanLimit = NULL;
@@ -1800,6 +1840,7 @@ void CPPgScar::OnDestroy()
 	m_htiQueueProgressBar = NULL;
 //	m_htiTrayComplete = NULL; // Completed in Tray - Stulle
 	m_htiShowClientPercentage = NULL; // Show Client Percentage optional [Stulle] - Stulle
+	m_htiFollowTheMajority = NULL; // Follow The Majority [AndCycle/Stulle] - Stulle
 
 	// ==> file settings - Stulle
 	m_htiFileDefaults = NULL;
@@ -1864,6 +1905,7 @@ void CPPgScar::OnDestroy()
 	m_htiSelectiveShare = NULL;
 	m_htiShareOnlyTheNeed = NULL;
 	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	m_htiFairPlay = NULL; // Fair Play [AndCycle/Stulle] - Stulle
 
 	// ==> Release Bonus [sivka] - Stulle
 	m_htiReleaseBonusGroup = NULL;

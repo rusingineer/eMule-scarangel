@@ -374,6 +374,8 @@ void CPartFile::Init(){
 	m_ShowDroppedSrc = 0; // show # of dropped sources - Stulle
 
 	m_catResumeOrder=0; // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+	m_iFollowTheMajority = -1; // Follow The Majority [AndCycle/Stulle] - Stulle
 }
 
 CPartFile::~CPartFile()
@@ -511,6 +513,8 @@ void CPartFile::AssertValid() const
 	// <== customized source dropping - Stulle
 
 	(void)m_ShowDroppedSrc; // show # of dropped sources - Stulle
+
+	(void)m_iFollowTheMajority; // Follow The Majority [AndCycle/Stulle] - Stulle
 }
 
 void CPartFile::Dump(CDumpContext& dc) const
@@ -8676,3 +8680,84 @@ int CPartFile::GetPfStyle() const
 	return iPfStyle;
 }
 // <== Design Settings [eWombat/Stulle] - Stulle
+
+// ==> Follow The Majority [AndCycle/Stulle] - Stulle
+void CPartFile::UpdateSourceFileName(CUpDownClient* src) {
+
+
+	if (status == PS_COMPLETE || status == PS_COMPLETING) {
+		//hold on if file is completing, prevent random choise filename
+		return;
+	}
+
+	//remove from list
+	CString filename;
+	int count;
+	if (m_mapSrcFilename.Lookup(src, filename)) {
+		m_mapFilenameCount.Lookup(filename, count);
+		m_mapFilenameCount.SetAt(filename, count-1);
+		m_mapSrcFilename.RemoveKey(src);
+	}
+
+	//then adding again
+	if (srclist.Find(src)) {
+		CString filename = src->GetClientFilename();
+		int count;
+		m_mapSrcFilename.SetAt(src, filename);
+		if (m_mapFilenameCount.Lookup(filename, count)) {
+			m_mapFilenameCount.SetAt(filename, count+1);
+		} else {
+			m_mapFilenameCount.SetAt(filename, 1);
+		}
+	}
+
+	bool bUseMajority = (m_iFollowTheMajority == 1) || (m_iFollowTheMajority == -1 && thePrefs.IsFollowTheMajorityEnabled());
+	if (bUseMajority) {
+		CString theMajorityFilename, filename;
+		int maxcount = -1, count;
+		for (POSITION pos = m_mapFilenameCount.GetStartPosition(); pos;) {
+			m_mapFilenameCount.GetNextAssoc(pos, filename, count);
+			if (count > maxcount) {
+				maxcount = count;
+				theMajorityFilename = filename;
+			}
+		}
+
+		if (!theMajorityFilename.IsEmpty()) {
+			SetFileName(theMajorityFilename, true);
+		}
+	}
+}
+void CPartFile::RemoveSourceFileName(CUpDownClient* src) {
+
+	if (status == PS_COMPLETE || status == PS_COMPLETING) {
+		//hold on if file is completing, prevent random choise filename
+		return;
+	}
+
+	CString filename;
+	int count;
+	if (m_mapSrcFilename.Lookup(src, filename)) {
+		m_mapFilenameCount.Lookup(filename, count);
+		m_mapFilenameCount.SetAt(filename, count-1);
+		m_mapSrcFilename.RemoveKey(src);
+	}
+
+	bool bUseMajority = (m_iFollowTheMajority == 1) || (m_iFollowTheMajority == -1 && thePrefs.IsFollowTheMajorityEnabled());
+	if (bUseMajority) {
+		CString theMajorityFilename, filename;
+		int maxcount = -1, count;
+		for (POSITION pos = m_mapFilenameCount.GetStartPosition(); pos;) {
+			m_mapFilenameCount.GetNextAssoc(pos, filename, count);
+			if (count > maxcount) {
+				maxcount = count;
+				theMajorityFilename = filename;
+			}
+		}
+
+		if (!theMajorityFilename.IsEmpty()) {
+			SetFileName(theMajorityFilename, true);
+		}
+	}
+}
+// <== Follow The Majority [AndCycle/Stulle] - Stulle

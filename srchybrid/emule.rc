@@ -5853,6 +5853,10 @@ BEGIN
     // <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
     IDS_IGNORE_THIRD        "Don't reserve 1/3 of your uploadlimit for emule" // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
     IDS_UL_THRES            "Accept only clients who asked within last 30min" // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
+    IDS_FOLLOWTHEMAJORITY   "Follow the Majority" // Follow The Majority [AndCycle/Stulle] - Stulle
+    IDS_FAIR_PLAY           "Fair Play - Upload X times(0 = disabled)" // Fair Play [AndCycle/Stulle] - Stulle
+    IDS_MAX_SLOTSPEED       "Always maximize slot speed" // Alwasy maximize slot speed [Stulle] - Stulle
+    IDS_REASK_FILE_SRC      "ReAsk Time for File Sources [29-55 min.]" // Timer for ReAsk File Sources [Stulle] - Stulle
 END
 
 #endif    // Englisch (USA) resources

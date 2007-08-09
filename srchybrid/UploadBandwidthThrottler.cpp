@@ -624,6 +624,7 @@ UINT UploadBandwidthThrottler::RunInternal() {
 	//reason: if you have a big/long ftp-transfer, all bandwidth goes to the ftp-client
 	//and emule times out
 	sint64 uSlopehelp_minUpload=0; 
+	sint64 uSlopehelp_tinyUpload=0; // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
 
 	DWORD lastTickReachedBandwidth = timeGetTime();
 
@@ -716,6 +717,7 @@ UINT UploadBandwidthThrottler::RunInternal() {
 		}
         //*/
 		uSlopehelp_minUpload -= (uint32)(m_currentOverallSentBytes - m_lastOverallSentBytes); //Xman 4.4 Code-Improvement: reserve 1/3 of your uploadlimit for emule
+		uSlopehelp_tinyUpload -= (uint32)(m_currentOverallSentBytes - m_lastOverallSentBytes); // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
 
 		//don't go over limit during the start-phase
 		minslots=(uint16)(allowedDataRate/slotspeed/2);
@@ -725,6 +727,7 @@ UINT UploadBandwidthThrottler::RunInternal() {
 		const uint32 toadd=(uint32)(allowedDataRate*(float)timeSinceLastLoop/1000);
 		uSlopehelp +=toadd;
 		uSlopehelp_minUpload += (uint32)(toadd*0.33f); //Xman 4.4 Code-Improvement: reserve 1/3 of your uploadlimit for emule
+		uSlopehelp_tinyUpload += (uint32)(2048*(float)timeSinceLastLoop/1000); // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
 
 
 		// Keep current value for next processing    
@@ -744,14 +747,25 @@ UINT UploadBandwidthThrottler::RunInternal() {
 			uSlopehelp_minUpload=-((sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.25f));
 
 
-		if(thePrefs.GetNAFCFullControl()==true && uSlopehelp_minUpload>uSlopehelp)
 		// ==> Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
 		/*
+		if(thePrefs.GetNAFCFullControl()==true && uSlopehelp_minUpload>uSlopehelp)
 			uSlope=uSlopehelp_minUpload;
 		*/
+		if(uSlopehelp_tinyUpload > allowedDataRate*MAXSLOPEBUFFERTIME*0.25f) 
+			uSlopehelp_tinyUpload=(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.25f); 
+		else if(uSlopehelp_tinyUpload < -(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.25f)) 
+			uSlopehelp_tinyUpload=-((sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.25f));
+
+		if(thePrefs.GetNAFCFullControl()==true && uSlopehelp_minUpload>uSlopehelp)
 		{
 			if(thePrefs.GetIgnoreThird() && theApp.pBandWidthControl->GeteMuleIn() > theApp.pBandWidthControl->GeteMuleOut())
-				uSlope=uSlopehelp;
+			{
+				if(uSlopehelp>uSlopehelp_tinyUpload)
+					uSlope=uSlopehelp;
+				else
+					uSlope=uSlopehelp_tinyUpload;
+			}
 			else
 				uSlope=uSlopehelp_minUpload;
 		}

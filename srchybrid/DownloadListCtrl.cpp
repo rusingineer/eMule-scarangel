@@ -94,6 +94,10 @@ CDownloadListCtrl::CDownloadListCtrl()
 CDownloadListCtrl::~CDownloadListCtrl()
 {
 	if (m_DropMenu) VERIFY( m_DropMenu.DestroyMenu() ); //Xman Xtreme Downloadmanager
+	// ==> Follow The Majority [AndCycle/Stulle] - Stulle
+	if (m_FollowTheMajorityMenu)
+		VERIFY( m_FollowTheMajorityMenu.DestroyMenu() );
+	// <== Follow The Majority [AndCycle/Stulle] - Stulle
 	if (m_PrioMenu)
 		VERIFY( m_PrioMenu.DestroyMenu() );
     if (m_SourcesMenu)
@@ -1771,6 +1775,10 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			int iFilesToPreview = 0;
 			int iFilesToCancel = 0;
 			int iFilesA4AFAuto = 0; //Xman Xtreme Downloadmanager: Auto-A4AF-check
+			// ==> Follow The Majority [AndCycle/Stulle] - Stulle
+			UINT uFollowTheMajorityMenuItem = 0;
+			CString buffer = NULL;
+			// <== Follow The Majority [AndCycle/Stulle] - Stulle
 			UINT uPrioMenuItem = 0;
 			const CPartFile* file1 = NULL;
 			POSITION pos = GetFirstSelectedItemPosition();
@@ -1812,6 +1820,19 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 					uPrioMenuItem = uCurPrioMenuItem;
                 else if (uPrioMenuItem != uCurPrioMenuItem)
 					uPrioMenuItem = 0;
+
+				// ==> Follow The Majority [AndCycle/Stulle] - Stulle
+				UINT uCurFollowTheMajorityMenuItem = 0;
+				if (pFile->GetFollowTheMajority() == -1)
+					uCurFollowTheMajorityMenuItem = MP_FOLLOWTHEMAJORITY;
+				else
+					uCurFollowTheMajorityMenuItem = MP_FOLLOWTHEMAJORITY+1 + pFile->GetFollowTheMajority();
+
+				if (bFirstItem)
+					uFollowTheMajorityMenuItem = uCurFollowTheMajorityMenuItem ;
+				else if (uFollowTheMajorityMenuItem != uCurFollowTheMajorityMenuItem)
+					uFollowTheMajorityMenuItem = 0;
+				// <== Follow The Majority [AndCycle/Stulle] - Stulle
 
 				bFirstItem = false;
 			}
@@ -1871,6 +1892,14 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 				*/
 				// <== file settings - Stulle
 			}
+
+			// ==> Follow The Majority [AndCycle/Stulle] - Stulle
+			m_FileMenu.EnableMenuItem((UINT_PTR)m_FollowTheMajorityMenu.m_hMenu, (iFilesNotDone > 0) ? MF_ENABLED : MF_GRAYED);
+			buffer.Format(_T(" (%s)"),thePrefs.IsFollowTheMajorityEnabled()?GetResString(IDS_ENABLED):GetResString(IDS_DISABLED));
+			m_FollowTheMajorityMenu.RemoveMenu(MP_FOLLOWTHEMAJORITY,MF_BYCOMMAND);
+			m_FollowTheMajorityMenu.InsertMenu(0,MF_STRING|MF_BYPOSITION,MP_FOLLOWTHEMAJORITY,GetResString(IDS_DEFAULT) + buffer);
+			m_FollowTheMajorityMenu.CheckMenuRadioItem(MP_FOLLOWTHEMAJORITY, MP_FOLLOWTHEMAJORITY_1, uFollowTheMajorityMenuItem, 0);
+			// <== Follow The Majority [AndCycle/Stulle] - Stulle
 
 			// ==> file settings - Stulle
 			if (thePrefs.IsExtControlsEnabled()) {
@@ -2068,6 +2097,10 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 		m_FileMenu.EnableMenuItem(MP_METINFO, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_VIEWFILECOMMENTS, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_CLEARCOMPLETED, GetCompleteDownloads(curTab,total) > 0 ? MF_ENABLED : MF_GRAYED);
+		// ==> Follow The Majority [AndCycle/Stulle] - Stulle
+		if (m_FollowTheMajorityMenu)
+			m_FileMenu.EnableMenuItem((UINT_PTR)m_FollowTheMajorityMenu.m_hMenu, MF_GRAYED);
+		// <== Follow The Majority [AndCycle/Stulle] - Stulle
 		// ==> file settings - Stulle
 		if (thePrefs.IsExtControlsEnabled()) {
 			m_FileMenu.EnableMenuItem(MP_SIVKA_FILE_SETTINGS, MF_GRAYED);
@@ -2798,6 +2831,22 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					break;
 				}
 				// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+				// ==> Follow The Majority [AndCycle/Stulle] - Stulle
+				case MP_FOLLOWTHEMAJORITY:
+				case MP_FOLLOWTHEMAJORITY_0:
+				case MP_FOLLOWTHEMAJORITY_1:
+				{
+					SetRedraw(false);
+					while(!selectedList.IsEmpty())
+					{ 
+						selectedList.GetHead()->SetFollowTheMajority(wParam - MP_FOLLOWTHEMAJORITY_0);
+						m_SettingsSaver.SaveSettings(selectedList.GetHead());
+						selectedList.RemoveHead();
+					}
+					SetRedraw(true);
+					break;
+				}
+				// <== Follow The Majority [AndCycle/Stulle] - Stulle
 				default:
 					if (wParam>=MP_WEBURL && wParam<=MP_WEBURL+99){
 						theWebServices.RunURL(file, wParam);
@@ -3384,6 +3433,10 @@ void CDownloadListCtrl::OnNMDblclkDownloadlist(NMHDR* /*pNMHDR*/, LRESULT* pResu
 void CDownloadListCtrl::CreateMenues()
 {
 	if (m_DropMenu) VERIFY( m_DropMenu.DestroyMenu() ); //Xman Xtreme Downloadmanager
+	// ==> Follow The Majority [AndCycle/Stulle] - Stulle
+	if (m_FollowTheMajorityMenu)
+		VERIFY( m_FollowTheMajorityMenu.DestroyMenu() );
+	// <== Follow The Majority [AndCycle/Stulle] - Stulle
 
 	if (m_PrioMenu)
 		VERIFY( m_PrioMenu.DestroyMenu() );
@@ -3414,6 +3467,14 @@ void CDownloadListCtrl::CreateMenues()
 	m_FileMenu.AppendMenu(MF_SEPARATOR);
 
 	//Xman end
+
+	// ==> Follow The Majority [AndCycle/Stulle] - Stulle
+	m_FollowTheMajorityMenu.CreateMenu();
+	m_FollowTheMajorityMenu.AddMenuTitle(NULL, true, false); // XP Style Menu [Xanatos] - Stulle
+	m_FollowTheMajorityMenu.AppendMenu(MF_STRING,MP_FOLLOWTHEMAJORITY,	GetResString(IDS_DEFAULT));
+	m_FollowTheMajorityMenu.AppendMenu(MF_STRING,MP_FOLLOWTHEMAJORITY_0,	GetResString(IDS_DISABLED));
+	m_FollowTheMajorityMenu.AppendMenu(MF_STRING,MP_FOLLOWTHEMAJORITY_1,	GetResString(IDS_ENABLED));
+	// <== Follow The Majority [AndCycle/Stulle] - Stulle
 
 	// Add 'Download Priority' sub menu
 	//
@@ -3468,12 +3529,16 @@ void CDownloadListCtrl::CreateMenues()
 	}
 	m_FileMenu.AppendMenu(MF_SEPARATOR);
 
+	// ==> Follow The Majority [AndCycle/Stulle] - Stulle
+	m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_FollowTheMajorityMenu.m_hMenu, GetResString(IDS_FOLLOWTHEMAJORITY), _T("RENAME"));
+	// <== Follow The Majority [AndCycle/Stulle] - Stulle
+
 	// ==> file settings - Stulle
 	if (thePrefs.IsExtControlsEnabled()){
 		m_FileMenu.AppendMenu(MF_STRING,MP_SIVKA_FILE_SETTINGS, GetResString(IDS_SIVKAFILESETTINGS),_T("DROPDEFAULTS"));
 //		m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_DropMenu.m_hMenu, _T("Sources Handling (DROP)"));
-		m_FileMenu.AppendMenu(MF_SEPARATOR);
 	}
+		m_FileMenu.AppendMenu(MF_SEPARATOR);
 	// <== file settings - Stulle
 
 	// Add 'Copy & Paste' commands

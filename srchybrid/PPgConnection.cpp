@@ -470,6 +470,7 @@ BOOL CPPgConnection::OnApply()
 	//Xman Xtreme Upload
 	CalculateMaxUpSlotSpeed();
 	thePrefs.m_slotspeed=(float)m_ctlMaxUp.GetPos()/10.0f;
+	thePrefs.CheckSlotSpeed(); // Alwasy maximize slot speed [Stulle] - Stulle
 
 	//Xman GlobalMaxHarlimit for fairness
 	GetDlgItem(IDC_MAXGLOBALSOURCES)->GetWindowText(buffer,20);

@@ -185,6 +185,8 @@ protected:
 	CSettingsSaver m_SettingsSaver;
 	// <== file settings - Stulle
 
+	CTitleMenu m_FollowTheMajorityMenu; // Follow The Majority [AndCycle/Stulle] - Stulle
+
 	// ==> show global HL - Stulle
 public:
 	uint32 GlobalHardLimit;

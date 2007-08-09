@@ -1148,6 +1148,7 @@ bool CDownloadQueue::RemoveSource(CUpDownClient* toremove, bool bDoStatsUpdate)
 		if (pos2 != NULL){
 			cur_file->RemoveDownloadingSource(toremove); //to be sure
 			cur_file->srclist.RemoveAt(pos2);
+			cur_file->RemoveSourceFileName(toremove); // Follow The Majority [AndCycle/Stulle] - Stulle
 
 			bRemovedSrcFromPartFile = true;
 			if ( bDoStatsUpdate ){

@@ -635,6 +635,18 @@ public:
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	int		GetPfStyle() const; // Design Settings [eWombat/Stulle] - Stulle
+
+	// ==> Follow The Majority [AndCycle/Stulle] - Stulle
+private:
+	int	m_iFollowTheMajority;
+	CMap<CUpDownClient*, CUpDownClient*, CString, CString> m_mapSrcFilename;
+	CMap<CString, LPCTSTR, int, int> m_mapFilenameCount;
+public:
+	void	UpdateSourceFileName(CUpDownClient* src);
+	void	RemoveSourceFileName(CUpDownClient* src);
+	int		GetFollowTheMajority() const { return m_iFollowTheMajority; }
+	void	SetFollowTheMajority(int val) { m_iFollowTheMajority = val; }
+	// <== Follow The Majority [AndCycle/Stulle] - Stulle
 };
 
 //Xman

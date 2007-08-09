@@ -1252,3 +1252,16 @@ void CClientList::GetCompatClientsStats(CRBMap<CString, uint32> *compatClients)
 	}
 }
 // <== Compat Client Stats [Stulle] - Stulle
+
+// ==> Timer for ReAsk File Sources [Stulle] - Stulle
+void CClientList::RecalculateReAskTimes(){
+
+	CUpDownClient *cur_client;
+
+	for(POSITION pos = list.GetHeadPosition(); pos != NULL; list.GetNext(pos)) { 
+		cur_client = theApp.clientlist->list.GetAt(pos); 
+		cur_client->CalculateJitteredFileReaskTime(false);
+	}
+
+}
+// <== Timer for ReAsk File Sources [Stulle] - Stulle

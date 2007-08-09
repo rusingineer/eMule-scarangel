@@ -880,6 +880,14 @@ bool	CPreferences::m_bIgnoreThird; // Do not reserve 1/3 of your uploadlimit for
 
 bool	CPreferences::m_bDisableUlThres; // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 
+bool	CPreferences::m_bFollowTheMajority; // Follow The Majority [AndCycle/Stulle] - Stulle
+
+int		CPreferences::m_iFairPlay; // Fair Play [AndCycle/Stulle] - Stulle
+
+bool	CPreferences::m_bMaxSlotSpeed; // Alwasy maximize slot speed [Stulle] - Stulle
+
+uint32	CPreferences::m_uReAskTimeDif; // Timer for ReAsk File Sources [Stulle] - Stulle
+
 CPreferences::CPreferences()
 {
 #ifdef _DEBUG
@@ -2683,6 +2691,17 @@ void CPreferences::SavePreferences()
 
 	ini.WriteBool(_T("DisableUlThreshold"),m_bDisableUlThres); // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 
+	ini.WriteBool(_T("FollowTheMajority"), m_bFollowTheMajority); // Follow The Majority [AndCycle/Stulle] - Stulle
+
+	ini.WriteInt(_T("FairPlay"), m_iFairPlay); // Fair Play [AndCycle/Stulle] - Stulle
+
+	ini.WriteBool(_T("MaxSlotSpeed"), m_bMaxSlotSpeed); // Alwasy maximize slot speed [Stulle] - Stulle
+
+	// ==> Timer for ReAsk File Sources [Stulle] - Stulle
+	uint8 m_uTemp = (uint8)((m_uReAskTimeDif+FILEREASKTIME)/60000);
+	ini.WriteInt(_T("ReAskTime"),m_uTemp);
+	// <== Timer for ReAsk File Sources [Stulle] - Stulle
+
 	SaveStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
 
@@ -3869,6 +3888,21 @@ void CPreferences::LoadPreferences()
 
 	m_bDisableUlThres = ini.GetBool(_T("DisableUlThreshold"),false); // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
 
+	m_bFollowTheMajority = ini.GetBool(_T("FollowTheMajority"), false); // Follow The Majority [AndCycle/Stulle] - Stulle
+
+	m_iFairPlay = ini.GetInt(_T("FairPlay"), 0); // Fair Play [AndCycle/Stulle] - Stulle
+
+	// ==> Alwasy maximize slot speed [Stulle] - Stulle
+	m_bMaxSlotSpeed = ini.GetBool(_T("MaxSlotSpeed"),false);
+	CheckSlotSpeed();
+	// <== Alwasy maximize slot speed [Stulle] - Stulle
+
+	// ==> Timer for ReAsk File Sources [Stulle] - Stulle
+	temp = ini.GetInt(_T("ReAskTime"),29);
+	temp = (temp >= 29 && temp <= 55) ? temp : 29;
+	m_uReAskTimeDif = (temp-29)*60000;
+	// <== Timer for ReAsk File Sources [Stulle] - Stulle
+
 	LoadStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
 
@@ -3885,6 +3919,10 @@ void CPreferences::CheckSlotSpeed()
 		maxSlotSpeed=XTREME_MAX_SLOTSPEED;
 	if(m_slotspeed>maxSlotSpeed)
 		m_slotspeed=maxSlotSpeed;
+	// ==> Alwasy maximize slot speed [Stulle] - Stulle
+	if(GetMaxSlotSpeed())
+		m_slotspeed=maxSlotSpeed;
+	// <== Alwasy maximize slot speed [Stulle] - Stulle
 
 	//Xman GlobalMaxHarlimit for fairness
 	m_uMaxGlobalSources=(uint32)(maxupload*400 - (maxupload-10.0f)*100);

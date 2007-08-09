@@ -197,4 +197,6 @@ protected:
 public:
 	void	GetCompatClientsStats(CRBMap<CString, uint32> *compatClients);
 	// <== Compat Client Stats [Stulle] - Stulle
+
+	void RecalculateReAskTimes(); // Timer for ReAsk File Sources [Stulle] - Stulle
 };

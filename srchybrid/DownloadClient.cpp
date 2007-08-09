@@ -672,6 +672,7 @@ void CUpDownClient::ProcessFileInfo(CSafeMemFile* data, CPartFile* file)
 	if (file != reqfile)
 		throw GetResString(IDS_ERR_WRONGFILEID) + _T(" (ProcessFileInfo; reqfile!=file)");
 	m_strClientFilename = data->ReadString(GetUnicodeSupport()!=utf8strNone);
+	reqfile->UpdateSourceFileName(this); // Follow The Majority [AndCycle/Stulle] - Stulle
 
 	if (thePrefs.GetDebugClientTCPLevel() > 0)
 		Debug(_T("  Filename=\"%s\"\n"), m_strClientFilename);
@@ -2104,6 +2105,7 @@ bool CUpDownClient::DoSwap(CPartFile* SwapTo, bool bRemoveCompletely) {
 
 		reqfile->srclist.RemoveAt(pos);
 		reqfile->RemoveDownloadingSource(this);
+		reqfile->RemoveSourceFileName(reqfile->srclist.GetAt(pos)); // Follow The Majority [AndCycle/Stulle] - Stulle
 
 		if(!bRemoveCompletely)
 		{

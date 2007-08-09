@@ -3035,7 +3035,7 @@ bool CListenSocket::StartListening(){
 	}
 	//Xman Info about binding
 
-	bool ret=Create(thePrefs.GetPort(), SOCK_STREAM, FD_ACCEPT, thePrefs.GetBindAddrA(), FALSE/*bReuseAddr*/) && Listen();
+	bool ret=Create(thePrefs.GetPort(), SOCK_STREAM, FD_ACCEPT, thePrefs.GetBindAddrA(), FALSE/*bReuseAddr*//*) && Listen();
 
 	//Xman Info about binding
 	if(thePrefs.GetBindAddrW()!=NULL && ret)

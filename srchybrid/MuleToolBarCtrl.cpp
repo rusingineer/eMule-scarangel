@@ -603,6 +603,13 @@ void CMuleToolbarCtrl::OnNMRclick(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	GetCursorPos(&point);
 	menuToolbar.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
 
+	// ==> XP Style Menu [Xanatos] - Stulle
+	VERIFY( menuBitmaps.DestroyMenu() );
+	VERIFY( menuSkins.DestroyMenu() );
+	VERIFY( menuTextLabels.DestroyMenu() );
+	VERIFY( menuToolbar.DestroyMenu() );
+	// <== XP Style Menu [Xanatos] - Stulle
+
 	*pResult = TRUE;
 }
 

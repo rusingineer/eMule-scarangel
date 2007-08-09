@@ -511,3 +511,14 @@ void CStatisticFile::ResetSpreadBar()
 	return;
 }
 // <== Spread bars [Slugfiller/MorphXT] - Stulle
+
+// ==> Fair Play [AndCycle/Stulle] - Stulle
+bool	CStatisticFile::GetFairPlay() {
+	//should only judge simple UL or is there any better replacement?
+	//Stulle: rewrote the code to ensure bug free compiling
+	double dShareFactor = ((double)GetAllTimeTransferred())/((double)fileParent->GetFileSize());
+	if(dShareFactor < thePrefs.GetFairPlay())
+		return true;
+	return false;
+}
+// <== Fair Play [AndCycle/Stulle] - Stulle

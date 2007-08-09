@@ -3294,6 +3294,8 @@ void CUpDownClient::ResetFileStatusInfo()
 
 	delete m_pReqFileAICHHash;
 	m_pReqFileAICHHash = NULL;
+
+	if(reqfile != NULL) reqfile->RemoveSourceFileName(this); // Follow The Majority [AndCycle/Stulle] - Stulle
 }
 
 bool CUpDownClient::IsBanned() const
@@ -4198,6 +4200,10 @@ void CUpDownClient::CalculateJitteredFileReaskTime(bool longer)
 		uint32 jitter = rand() * (35*6) / RAND_MAX; // 0..3.5 minutes, keep in mind integer overflow
 		m_jitteredFileReaskTime = FILEREASKTIME - (60*1000) + 1000*jitter - (2*60*1000); // -2..+2 minutes, keep the same average overload
 		//Xman: result between 26 and 29.5 this is useful to use TCP-Connection from older clients
+		// ==> Timer for ReAsk File Sources [Stulle] - Stulle
+		if(GetModClient() != MOD_SCAR && GetModClient() != MOD_XTREME)
+			m_jitteredFileReaskTime += thePrefs.GetReAskTimeDif();
+		// <== Timer for ReAsk File Sources [Stulle] - Stulle
 	}
 	else
 		m_jitteredFileReaskTime = FILEREASKTIME + (3*60*1000); //32 min
