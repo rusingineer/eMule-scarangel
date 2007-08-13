@@ -574,6 +574,11 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 							Sbuffer = tempString;
 						}
 						// <== PowerShare [ZZ/MorphXT] - Stulle
+						// ==> Fair Play [AndCycle/Stulle] - Stulle
+						if (file->statistic.GetFairPlay()) {
+							Sbuffer.Append(_T(",FairPlay"));
+						}
+						// <== Fair Play [AndCycle/Stulle] - Stulle
 					}
 					else
 						Sbuffer = _T("?");
@@ -948,12 +953,14 @@ int CQueueListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 			CKnownFile* file2 = theApp.sharedfiles->GetFileByID(item2->GetUploadFileID());
 			if( (file1 != NULL) && (file2 != NULL))
 			// ==> PowerShare [ZZ/MorphXT] - Stulle
+			// ==> Fair Play [AndCycle/Stulle] - Stulle
 			{
-				if (!file1->GetPowerShared() && file2->GetPowerShared())
+				if (!file1->GetPowerShared() && !file1->statistic.GetFairPlay() && (file2->GetPowerShared() || file2->statistic.GetFairPlay()))
 					iResult=-1;			
-				else if (file1->GetPowerShared() && !file2->GetPowerShared())
+				else if ((file1->GetPowerShared() || file1->statistic.GetFairPlay()) && !file2->GetPowerShared() && !file2->statistic.GetFairPlay())
 					iResult=1;
 				else
+			// <== Fair Play [AndCycle/Stulle] - Stulle
 			// <== PowerShare [ZZ/MorphXT] - Stulle
 				iResult=((file1->GetUpPriority()==PR_VERYLOW) ? -1 : file1->GetUpPriority()) - ((file2->GetUpPriority()==PR_VERYLOW) ? -1 : file2->GetUpPriority());
 			} // PowerShare [ZZ/MorphXT] - Stulle
@@ -968,12 +975,14 @@ int CQueueListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 			CKnownFile* file2 = theApp.sharedfiles->GetFileByID(item2->GetUploadFileID());
 			if( (file1 != NULL) && (file2 != NULL))
 			// ==> PowerShare [ZZ/MorphXT] - Stulle
+			// ==> Fair Play [AndCycle/Stulle] - Stulle
 			{
-				if (!file2->GetPowerShared() && file1->GetPowerShared())
+				if (!file2->GetPowerShared() && !file2->statistic.GetFairPlay() && (file1->GetPowerShared() || file1->statistic.GetFairPlay()))
 					iResult=-1;			
-				else if (file2->GetPowerShared() && !file1->GetPowerShared())
+				else if ((file2->GetPowerShared() || file2->statistic.GetFairPlay()) && !file1->GetPowerShared() && !file1->statistic.GetFairPlay())
 					iResult=1;
 				else
+			// <== Fair Play [AndCycle/Stulle] - Stulle
 			// <== PowerShare [ZZ/MorphXT] - Stulle
 				iResult=((file2->GetUpPriority()==PR_VERYLOW) ? -1 : file2->GetUpPriority()) - ((file1->GetUpPriority()==PR_VERYLOW) ? -1 : file1->GetUpPriority());
 			} // PowerShare [ZZ/MorphXT] - Stulle

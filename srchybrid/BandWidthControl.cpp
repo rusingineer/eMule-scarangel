@@ -85,6 +85,8 @@ CBandWidthControl::CBandWidthControl()
    //Xman new adapter selection
    wasNAFCLastActive=thePrefs.GetNAFCFullControl();
    boundIP=0;
+
+	m_maxforcedDownloadlimitEnforced=0; // m000h
 }
 
 CBandWidthControl::~CBandWidthControl(){
@@ -423,6 +425,7 @@ void CBandWidthControl::Process()
 		/*
 		if(thePrefs.m_bAcceptsourcelimit==false) //only if user doesn't accept it
 		*/
+		m_maxforcedDownloadlimitEnforced=m_maxDownloadLimit; //initialize with the standard
 		if(thePrefs.m_bAcceptsourcelimit==false || thePrefs.GetEnforceRatio())
 		// <== Enforce Ratio [Stulle] - Stulle
 		{
@@ -437,21 +440,20 @@ void CBandWidthControl::Process()
 				}
 				const uint32 eMuleOut = (1000 * (uint32)(newestSample.eMuleOutOctets - oldestSample.eMuleOutOctets) / deltaTime); // in [Bytes/s]
 				//remark: this is always a 1:4 Ratio-Limit
-				// ==> Enforce Ratio [Stulle] - Stulle
-				/*
 				float maxDownloadLimit = (float)(4*eMuleOut) / 1024.0f; // [KB/s]
-				*/
-				float maxDownloadLimit = 0.0f;
-				if(thePrefs.GetEnforceRatio())
-					maxDownloadLimit = (float)(thePrefs.GetRatioValue()*eMuleOut) / 1024.0f; // [KB/s]
-				else
-					maxDownloadLimit = (float)(4*eMuleOut) / 1024.0f; // [KB/s]
-				// <== Enforce Ratio [Stulle] - Stulle
 				if(maxDownloadLimit < m_maxforcedDownloadlimit){
 					m_maxforcedDownloadlimit = maxDownloadLimit;
 				}
 				if(m_maxforcedDownloadlimit<1.0f)
 					m_maxforcedDownloadlimit=1.0f;
+				// ==> Enforce Ratio [Stulle] - Stulle
+				float maxDownloadLimitEnforced = (float)(thePrefs.GetRatioValue()*eMuleOut) / 1024.0f; // [KB/s]
+				if(maxDownloadLimitEnforced < m_maxforcedDownloadlimitEnforced){
+					m_maxforcedDownloadlimitEnforced = maxDownloadLimitEnforced;
+				}
+				if(m_maxforcedDownloadlimitEnforced<1.0f)
+					m_maxforcedDownloadlimitEnforced=1.0f;
+				// <== Enforce Ratio [Stulle] - Stulle
 			}
 		}
 		//Xman end GlobalMaxHarlimit for fairness
@@ -607,7 +609,7 @@ float CBandWidthControl::GetMaxDownloadEx(uint8 force)
 	{
 		int eMuleOut = (int)(GeteMuleOut()*((float)(thePrefs.GetRatioValue()*.8f)));
 		if(GeteMuleIn() > eMuleOut)
-			return GetForcedDownloadlimit();
+			return GetForcedDownloadlimitEnforced();
 	}
 	else if(force == 1 && GeteMuleIn()>GeteMuleOut()*3) //session/amount based ratio
 		return GetForcedDownloadlimit();

@@ -626,7 +626,17 @@ void CDownloadQueue::Process(){
 		*/
 		uint8 limitbysources = 0;
 		if(thePrefs.GetEnforceRatio())
-			limitbysources = 2;
+		{
+			if(GetGlobalSources() > thePrefs.m_uMaxGlobalSources && thePrefs.m_bAcceptsourcelimit == false)
+			{
+				if(thePrefs.GetRatioValue() < 4)
+					limitbysources = 2;
+				else 
+					limitbysources = 1;
+			}
+			else
+				limitbysources = 2;
+		}
 		else if(GetGlobalSources() > thePrefs.m_uMaxGlobalSources && thePrefs.m_bAcceptsourcelimit == false)
 			limitbysources = 1;
 		const float maxDownload = theApp.pBandWidthControl->GetMaxDownloadEx(limitbysources); //in [kb/s]

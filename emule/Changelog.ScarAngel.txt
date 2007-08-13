@@ -3,7 +3,7 @@ CHANGELOG FOR EMULE ScarAngel MOD
 
 eMule v0.48a ScarAngel v2.1:
 ------------------------
-- XX.XX.2007 -
+- 13.08.2007 -
 -------------------------------------------------------------------------------
 based on eMule 0.48a Xtreme 6.1 compiled with vs2003 SP1
 
@@ -19,6 +19,7 @@ Added: Timer for ReAsk File Sources [Stulle/ idea from sivka] - Stulle
 Changed: check mark superior to icon (MenuXP) [fafner] - Stulle
 Changed: Quickstart for KAD-only connection [Stulle] - Stulle
 Changed: No FunnyNick for bad guys [Stulle] - Stulle
+Changed: Max enforced ratio to 1:10 [Stulle] - Stulle
 
 Fixed: Saving of Cat version (save default Cat viewfilters) [Stulle] - Stulle
 Fixed: GDI-Leaks around the context menus [Stulle] - Stulle

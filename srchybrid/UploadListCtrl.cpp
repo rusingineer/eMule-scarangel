@@ -561,6 +561,11 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						Sbuffer.Append(_T(",PS"));
 					}
 					// <== PowerShare [ZZ/MorphXT] - Stulle
+					// ==> Fair Play [AndCycle/Stulle] - Stulle
+					if (file->statistic.GetFairPlay()) {
+						Sbuffer.Append(_T(",FairPlay"));
+					}
+					// <== Fair Play [AndCycle/Stulle] - Stulle
 					// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 					if(client->IsPBFClient())
 					{

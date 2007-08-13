@@ -3794,7 +3794,7 @@ void CPreferences::LoadPreferences()
 	// ==> Enforce Ratio [Stulle] - Stulle
 	m_bEnforceRatio = ini.GetBool(_T("EnforceRatio"),false);
 	temp = ini.GetInt(_T("RatioValue"),3);
-	m_uRatioValue = (uint8)((temp > 0 && temp <= 4)?temp:3);
+	m_uRatioValue = (uint8)((temp > 0 && temp <= 10)?temp:3);
 	// <== Enforce Ratio [Stulle] - Stulle
 
 	// ==> Improved ICS-Firewall support [MoNKi]-Max

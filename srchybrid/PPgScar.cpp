@@ -672,7 +672,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	// ==> Enforce Ratio [Stulle] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiEnforceRatio, m_bEnforceRatio);
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiRatioValue, m_iRatioValue);
-	DDV_MinMaxInt(pDX, m_iRatioValue, 1, 4);
+	DDV_MinMaxInt(pDX, m_iRatioValue, 1, 10);
 	// <== Enforce Ratio [Stulle] - Stulle
 	// ==> Improved ICS-Firewall support [MoNKi] - Max
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiICFSupport, m_bICFSupport);
