@@ -86,7 +86,7 @@ CBandWidthControl::CBandWidthControl()
    wasNAFCLastActive=thePrefs.GetNAFCFullControl();
    boundIP=0;
 
-	m_maxforcedDownloadlimitEnforced=0; // m000h
+	m_maxforcedDownloadlimitEnforced=0; // Enforce Ratio [Stulle] - Stulle
 }
 
 CBandWidthControl::~CBandWidthControl(){

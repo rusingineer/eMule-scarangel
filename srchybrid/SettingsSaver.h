@@ -25,9 +25,12 @@ public:
 	CSettingsSaver(void);
 	~CSettingsSaver(void);
 	
-	void DeleteFile(CPartFile* file);
-	void SaveSettings(CPartFile* file);
-	void LoadSettings(CPartFile* file);
+	void SaveSettings();
+	void LoadSettings();
+
+	/* IMPORT OLD */
+	void ImportOldSettings(CPartFile* file);
+	void DeleteOldSettings(CPartFile* file);
 
 protected:
 	class CSettingsData

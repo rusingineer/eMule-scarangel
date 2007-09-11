@@ -111,6 +111,7 @@
 #include "VisualStylesXP.h"
 //#include "UPnPFinder.h" //Xman official UPNP removed
 #include "Dbt.h" // Automatic shared files updater [MoNKi] - Stulle
+#include "HttpDownloadDlg.h" // Advanced Updates [MorphXT/Stulle] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -210,6 +211,8 @@ BEGIN_MESSAGE_MAP(CemuleDlg, CTrayDialog)
 
 	// ScarAngel Version Check - Stulle
 	ON_MESSAGE(UM_SVERSIONCHECK_RESPONSE, OnSVersionCheckResponse)
+	// Advanced Updates [MorphXT/Stulle] - Stulle
+	ON_MESSAGE(UM_DLPUTOVERCHECK_RESPONSE, OnDLPAutoVerCheckResponse)
 
 	// PeerCache DNS
 	ON_MESSAGE(UM_PEERCHACHE_RESPONSE, OnPeerCacheResponse)
@@ -2269,6 +2272,8 @@ void CemuleDlg::OnClose()
 	if(thePrefs.GetShowMSN7())
 		UpdateMSN(0,0,0,0, true);
 	// <== Show in MSN7 [TPT] - Stulle
+
+	theApp.EndDirectoryWatcher(); // Automatic shared files updater [MoNKi] - Stulle
 
 	theApp.m_app_state = APP_STATE_SHUTTINGDOWN;
 
@@ -4783,3 +4788,69 @@ BOOL CemuleDlg::OnDeviceChange(UINT nEventType, DWORD_PTR dwData){
 	return TRUE;
 }
 // <== Automatic shared files updater [MoNKi] - Stulle
+
+// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+void CemuleDlg::DoDLPVersioncheck()
+{
+	if (WSAAsyncGetHostByName(m_hWnd, UM_DLPUTOVERCHECK_RESPONSE, "dlp.dyndns.info", m_acDLPAutoBuffer, sizeof(m_acDLPAutoBuffer)) == 0){
+		AddLogLine(true,GetResString(IDS_AUTODLPFAILED));
+	}
+}
+
+LRESULT CemuleDlg::OnDLPAutoVerCheckResponse(WPARAM /*wParam*/, LPARAM lParam)
+{
+	//Xman Info:
+	//IP-samples:
+	//5.0.0.99 --> DLP version 5
+	//105.0.0.99 --> DLP version 105
+	//0.1.0.99 --> DLP version 256 not allowed!
+	//1.1.0.99 --> DLP version 257
+
+
+	if (WSAGETASYNCERROR(lParam) == 0)
+	{
+		int iBufLen = WSAGETASYNCBUFLEN(lParam);
+		if (iBufLen >= sizeof(HOSTENT))
+		{
+			LPHOSTENT pHost = (LPHOSTENT)m_acDLPAutoBuffer;
+			if (pHost->h_length == 4 && pHost->h_addr_list && pHost->h_addr_list[0])
+			{
+				uint32 dwResult = ((LPIN_ADDR)(pHost->h_addr_list[0]))->s_addr;
+				dwResult &= 0x00FFFFFF;
+//				uint8 uTest1 = (uint8)(dwResult >> 0);
+				if (theApp.dlp->IsDLPavailable())
+				{
+					if(dwResult > theApp.dlp->GetDLPVersion())
+						DownloadDLP();
+				}
+				else
+					DownloadDLP();
+				return 0;
+			}
+		}
+	}
+	LogWarning(LOG_STATUSBAR,GetResString(IDS_AUTODLPFAILED));
+	return 0;
+
+}
+
+void CemuleDlg::DownloadDLP()
+{
+	CString sbuffer;
+	CString strURL = thePrefs.GetAntiLeechURL();
+	TCHAR szTempFilePath[_MAX_PATH];
+	_tmakepath(szTempFilePath, NULL, thePrefs.GetMuleDirectory(EMULE_EXECUTEABLEDIR), _T("antiLeech.dll"), _T("new"));
+
+	CHttpDownloadDlg dlgDownload;
+	dlgDownload.m_strTitle = GetResString(IDS_ANTILEECH_DWNFILE);
+	dlgDownload.m_sURLToDownload = strURL;
+	dlgDownload.m_sFileToDownloadInto = szTempFilePath;
+
+	if (dlgDownload.DoModal() != IDOK)
+	{
+		LogError(LOG_STATUSBAR, GetResString(IDS_LOG_ERRDWN), strURL);
+		return;
+	}
+	theApp.dlp->Reload();
+}
+// <== Advanced Updates [MorphXT/Stulle] - Stulle

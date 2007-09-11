@@ -212,12 +212,14 @@ void CDownloadQueue::Init(){
 		SortByPriority();
 		CheckDiskspace();
 	}
+	m_SettingsSaver.LoadSettings(); // file settings - Stulle
 	VERIFY( m_srcwnd.CreateEx(0, AfxRegisterWndClass(0), _T("eMule Async DNS Resolve Socket Wnd #2"), WS_OVERLAPPED, 0, 0, 0, 0, NULL, NULL));
 
 	ExportPartMetFilesOverview();
 }
 
 CDownloadQueue::~CDownloadQueue(){
+	SaveFileSettings(); // file settings - Stulle
 	for (POSITION pos = filelist.GetHeadPosition();pos != 0;)
 		delete filelist.GetNext(pos);
 	m_srcwnd.DestroyWindow(); // just to avoid a MFC warning
@@ -2549,7 +2551,9 @@ void CDownloadQueue::PrintStatistic()
 	AddLogLine(false, _T("internal global sources: %u"), GetGlobalSources());
 	AddLogLine(false, _T("---------------------------------------"));
 }
-#endif// ==> file settings - Stulle
+#endif
+
+// ==> file settings - Stulle
 void CDownloadQueue::InitTempVariables(CPartFile* file)
 {
 	thePrefs.SetTakeOverFileSettings(false);
@@ -2599,6 +2603,11 @@ void CDownloadQueue::UpdateFileSettings(CPartFile* file)
 	// <== Global Source Limit (customize for files) - Stulle
 	if(thePrefs.GetHQRXmanTakeOver())
 		file->SetHQRXman(thePrefs.GetHQRXmanTemp());
+}
+
+void CDownloadQueue::SaveFileSettings()
+{
+	m_SettingsSaver.SaveSettings();
 }
 // <== file settings - Stulle
 

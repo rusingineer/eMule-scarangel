@@ -31,6 +31,10 @@ the IP to country data is provided by http://ip-to-country.webhosting.info/
 
 //#include "HttpDownloadDlg.h"//MORPH - Added by SiRoB, IP2Country auto-updating
 //#include "ZipFile.h"//MORPH - Added by SiRoB, ZIP File download decompress
+// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+#include "HttpDownloadDlg.h"
+#include "ZipFile.h"
+// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -657,3 +661,88 @@ CString CIP2Country::GetDefaultFilePath() const
 {
 	return thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + DFLT_IP2COUNTRY_FILENAME;
 }
+
+// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+void CIP2Country::UpdateIP2CountryURL()
+{   
+	CString sbuffer;
+	CString strURL = thePrefs.GetUpdateURLIP2Country();
+	TCHAR szTempFilePath[_MAX_PATH];
+	_tmakepath(szTempFilePath, NULL, thePrefs.GetMuleDirectory(EMULE_CONFIGDIR), DFLT_IP2COUNTRY_FILENAME, _T("tmp"));
+
+	CHttpDownloadDlg dlgDownload;
+	dlgDownload.m_strTitle = GetResString(IDS_IP2COUNTRY_DWNFILE);
+	dlgDownload.m_sURLToDownload = strURL;
+	dlgDownload.m_sFileToDownloadInto = szTempFilePath;
+	SYSTEMTIME SysTime;
+	if (PathFileExists(GetDefaultFilePath()))
+		memcpy(&SysTime, thePrefs.GetIP2CountryVersion(), sizeof(SYSTEMTIME));
+	else
+		memset(&SysTime, 0, sizeof(SYSTEMTIME));
+	dlgDownload.m_pLastModifiedTime = &SysTime;
+
+	if (dlgDownload.DoModal() != IDOK)
+	{
+		LogError(LOG_STATUSBAR, GetResString(IDS_LOG_ERRDWN), strURL);
+		return;
+	}
+    if (dlgDownload.m_pLastModifiedTime == NULL)
+		return;
+
+	bool bIsZipFile = false;
+	bool bUnzipped = false;
+	CZIPFile zip;
+	if (zip.Open(szTempFilePath))
+	{
+		bIsZipFile = true;
+
+		CZIPFile::File* zfile = zip.GetFile(DFLT_IP2COUNTRY_FILENAME); // It has to be a zip-file which includes a file called: ip-to-country.csv
+		if (zfile)
+		{
+			CString strTempUnzipFilePath;
+			_tmakepath(strTempUnzipFilePath.GetBuffer(_MAX_PATH), NULL, thePrefs.GetMuleDirectory(EMULE_CONFIGDIR), DFLT_IP2COUNTRY_FILENAME, _T(".unzip.tmp"));
+			strTempUnzipFilePath.ReleaseBuffer();
+			if (zfile->Extract(strTempUnzipFilePath))
+			{
+				zip.Close();
+				zfile = NULL;
+
+				if (_tremove(GetDefaultFilePath()) != 0)
+					TRACE("*** Error: Failed to remove default IP to Country file \"%s\" - %s\n", GetDefaultFilePath(), _tcserror(errno));
+				if (_trename(strTempUnzipFilePath, GetDefaultFilePath()) != 0)
+					TRACE("*** Error: Failed to rename uncompressed IP to Country file \"%s\" to default IP to Country file \"%s\" - %s\n", strTempUnzipFilePath, GetDefaultFilePath(), _tcserror(errno));
+				if (_tremove(szTempFilePath) != 0)
+					TRACE("*** Error: Failed to remove temporary IP to Country file \"%s\" - %s\n", szTempFilePath, _tcserror(errno));
+				bUnzipped = true;
+			}
+			else
+				LogError(LOG_STATUSBAR, GetResString(IDS_IP2COUNTRY_ERROR7), szTempFilePath);
+		}
+		else
+			LogError(LOG_STATUSBAR, GetResString(IDS_IP2COUNTRY_ERROR8), szTempFilePath); //File not found inside the zip-file
+
+		zip.Close();
+	}
+
+	if (!bIsZipFile && !bUnzipped)
+	{
+		_tremove(GetDefaultFilePath());
+		_trename(szTempFilePath, GetDefaultFilePath());
+	}
+
+	//Moved up to not retry if archive don't contain the awaited file
+	memcpy(thePrefs.GetIP2CountryVersion(), &SysTime, sizeof SysTime);
+	thePrefs.Save();
+
+	if(bIsZipFile && !bUnzipped){
+		return;
+	}
+
+//	if(thePrefs.GetIP2CountryNameMode() != IP2CountryName_DISABLE || thePrefs.IsIP2CountryShowFlag()){
+		theApp.ip2country->Unload();
+		AddLogLine(false,GetResString(IDS_IP2COUNTRY_UPUNLOAD));
+		theApp.ip2country->Load();
+		AddLogLine(false,GetResString(IDS_IP2COUNTRY_UPLOAD));
+//	}
+}
+// <== Advanced Updates [MorphXT/Stulle] - Stulle

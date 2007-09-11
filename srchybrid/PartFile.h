@@ -19,8 +19,6 @@
 #include "CorruptionBlackBox.h"
 #include "SourceSaver.h"	// Xman -New Save/load Sources- enkeyDEV(Ottavio84)
 
-#include "SettingsSaver.h" // file settings - Stulle
-
 enum EPartFileStatus{
 	PS_READY			= 0,
 	PS_EMPTY			= 1,
@@ -447,7 +445,6 @@ protected:
 	void	CompleteFile(bool hashingdone);
 	void	CreatePartFile(UINT cat = 0);
 	void	Init();
-	CSettingsSaver m_SettingsSaver; // file settings - Stulle
 
 private:
 	//Xman Xtreme Downloadmanager

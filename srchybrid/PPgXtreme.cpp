@@ -107,7 +107,11 @@ void CPPgXtreme::LoadSettings(void)
 		//Xman end
 
 		//Xman auto update IPFilter
+		// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+		/*
 		CheckDlgButton(IDC_AUTOUPDATEIPFILTER, thePrefs.AutoUpdateIPFilter());
+		*/
+		// <== Advanced Updates [MorphXT/Stulle] - Stulle
 		//Xman end
 
 		CheckDlgButton(IDC_OPENMORESLOTS, thePrefs.m_openmoreslots);
@@ -239,7 +243,11 @@ BOOL CPPgXtreme::OnApply()
 	//Xman end
 
 	//Xman auto update IPFilter
+	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+	/*
 	thePrefs.SetAutoUpdateIPFilter(IsDlgButtonChecked(IDC_AUTOUPDATEIPFILTER)!=0);
+	*/
+	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 	//Xman end
 
 	//Xman count block/success send
@@ -305,7 +313,13 @@ void CPPgXtreme::Localize(void)
 		GetDlgItem(IDC_DROPBLOCKINGSOCKETS)->SetWindowText(GetResString(IDS_DROPBLOCKINGSOCKETS));
 
 		//Xman auto update IPFilter
+		// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+		/*
 		GetDlgItem(IDC_AUTOUPDATEIPFILTER)->SetWindowText(GetResString(IDS_AUTOUPDATEIPFILTER));
+		*/
+		GetDlgItem(IDC_AUTOUPDATEIPFILTER)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_AUTOUPDATEIPFILTER)->EnableWindow(FALSE);
+		// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 
 		GetDlgItem(IDC_RETRYCONNECTIONATTEMPTS)->SetWindowText(GetResString(IDS_RETRYCONNECTIONATTEMPTS)); //Xman 

@@ -1002,7 +1002,12 @@ BOOL CMenuXP::RemoveMenu(UINT nPosition, UINT nFlags)
 	ZeroMemory(&info, sizeof(MENUITEMINFO));
 	info.cbSize = sizeof(MENUITEMINFO);
 	info.fMask = MIIM_DATA | MIIM_TYPE;
+	// ==> mem leak fix [fafner] - Stulle
+	/*
 	GetMenuItemInfo(nPosition, &info, TRUE);
+	*/
+	GetMenuItemInfo(nPosition, &info, nFlags & MF_BYPOSITION);
+	// <== mem leak fix [fafner] - Stulle
 	
 	CMenuXPItem *pData = (CMenuXPItem *)info.dwItemData;
 	if ((info.fType & MFT_OWNERDRAW) && pData && pData->IsMyData())

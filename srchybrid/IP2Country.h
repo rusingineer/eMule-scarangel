@@ -74,5 +74,10 @@ class CIP2Country
 		CIP2CountryArray m_iplist;
 		CRBMap<CString, Country_Struct*> countryList;
 		CRBMap<CString, uint16>	CountryIDtoFlagIndex;
+
+		// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+	public:
+		void    UpdateIP2CountryURL();
+		// <== Advanced Updates [MorphXT/Stulle] - Stulle
 };
 

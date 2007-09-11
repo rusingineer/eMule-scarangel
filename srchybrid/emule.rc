@@ -2134,6 +2134,9 @@ BEGIN
     CONTROL         "",IDC_SCAR_OPTS,"SysTreeView32",TVS_HASBUTTONS | 
                     TVS_HASLINES | TVS_LINESATROOT | TVS_DISABLEDRAGDROP | 
                     WS_BORDER | WS_TABSTOP,7,46,216,158
+    CONTROL         "",IDC_ADVANCED_OPTS,"SysTreeView32",TVS_HASBUTTONS | 
+                    TVS_HASLINES | TVS_LINESATROOT | TVS_DISABLEDRAGDROP | 
+                    WS_BORDER | WS_TABSTOP,7,46,216,158
     CONTROL         "",IDC_PPG_SCAR_TAB,"SysTabControl32",TCS_HOTTRACK,6,
                     5,218,249
 // <== Tabbed Preferences [TPT] - Stulle
@@ -5470,7 +5473,7 @@ BEGIN
     IDS_SUQWT_LOAD          "Load %s"
     IDS_SUQWT               "Enable SaveUploadQueueWaitingTime (SUQWT)"
     // <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-    IDS_SHOW_FILE_HL_CONST  "Show HL per file constantaniously" // show HL per file constantaniously - Stulle
+    IDS_SHOW_FILE_HL_CONST  "Show HL per file constantly" // show HL per file constantly - Stulle
     IDS_SHOW_GLOBAL_HL      "Show Global Hardlimit" // show global HL - Stulle
     // ==> file settings - Stulle
     IDS_NNS_TIMERLABEL      "AutoNNS Timer 0...60 sec"
@@ -5857,6 +5860,69 @@ BEGIN
     IDS_FAIR_PLAY           "Fair Play - Upload X times(0 = disabled)" // Fair Play [AndCycle/Stulle] - Stulle
     IDS_MAX_SLOTSPEED       "Always maximize slot speed" // Alwasy maximize slot speed [Stulle] - Stulle
     IDS_REASK_FILE_SRC      "ReAsk Time for File Sources [29-55 min.]" // Timer for ReAsk File Sources [Stulle] - Stulle
+    // ==> Advanced Options [Official/MorphXT] - Stulle
+    IDS_MINIMULEAUTOCLOSE   "MiniMuleAutoClose"
+    IDS_MINIMULETRANSPARENCY "MiniMuleTransparency"
+    IDS_CHECKCOMCTL32       "CheckComctl32 "
+    IDS_CHECKSHELL32        "CheckShell32"
+    IDS_IGNOREINSTANCES     "IgnoreInstances"
+    IDS_NOTIFIERMAILENCRYPTCERTNAME "NotifierMailEncryptCertName"
+    IDS_MEDIAINFO_MEDIAINFODLLPATH "MediaInfo_MediaInfoDllPath"
+    IDS_MEDIAINFO_RIFF      "MediaInfo_RIFF"
+    IDS_MEDIAINFO_ID3LIB    "MediaInfo_ID3LIB"
+    IDS_MAXLOGBUFF          "MaxLogBuff"
+    IDS_MAXCHATHISTORY      "MaxChatHistory"
+    IDS_PREVIEWSMALLBLOCKS  "PreviewSmallBlocks"
+    IDS_RESTORELASTMAINWNDDLG "RestoreLastMainWndDlg"
+    IDS_RESTORELASTLOGPANE  "RestoreLastLogPane"
+    IDS_PREVIEWCOPIEDARCHIVES "PreviewCopiedArchives"
+    IDS_STRAIGHTWINDOWSTYLES "StraightWindowStyles"
+    IDS_LOGFILEFORMAT       "LogFileFormat"
+    IDS_RTLWINDOWSLAYOUT    "RTLWindowsLayout"
+    IDS_PREVIEWONICONDBLCLK "PreviewOnIconDblClk"
+    IDS_INTERNETSECURITYZONE "InternetSecurityZone"
+    IDS_TXTEDITOR           "TxtEditor"
+    IDS_DATETIMEFORMAT      "datetimeformat"
+    IDS_SERVERUDPPORT       "ServerUDPPort"
+    IDS_MAXMSGSESSIONS      "maxmsgsessions(Chat sessions)"
+    IDS_PREFERRESTRICTEDOVERUSER "PreferRestrictedOverUser"
+    IDS_WEBFILEUPLOADSIZELIMITMB "WebFileUploadSizeLimitMB(default 5,0=all)"
+    IDS_HIGHRESTIMER        "HighresTimer"
+    IDS_ALLOWEDIPS          "AllowedIPs webserver (seperated by ;)"
+    IDS_REMOVEFILESTOBIN    "RemoveFilesToBin"
+    IDS_DEBUGSEARCHDETAILLEVEL "DebugSearchDetailLevel"
+    IDS_CRYPTTCPPADDINGLENGTH "CryptTCPPaddingLength=[1-254]"
+    IDS_USEUSERSORTEDSERVERLIST "UserSortedServerList"
+    IDS_MINIMULE            "MiniMule"
+    IDS_TRUSTEVERYHASH      "aichTrustEveryHash(current session)"
+    IDS_INSPECTALLFILETYPES "InspectAllFileTypes"
+    // <== Advanced Options [Official/MorphXT] - Stulle
+    // ==> Advanced Updates [MorphXT/Stulle] - Stulle
+    IDS_UPDATEANTILEECHERONSTART "Update antiLeech.dll on startup"
+    IDS_AUTOUPWEEK          "Update weekly"
+    IDS_URL_FOR_UPDATING    "URL for updating"
+    IDS_UPDATEIPCURL        "Update"
+    IDS_UPDATEIPFILTERONSTART "Update ipfilter.dat on startup"
+    IDS_RESET               "Reset"
+    IDS_COUNTRY             "Country"
+    IDS_AUTOUPIP2COUNTRY    "Update Ip-to-country.csv on startup"
+    IDS_SCHED_UPDATE_IPCONFIG_LOG "Scheduled IPFILTER.DAT-update initiated."
+    IDS_SCHED_UPDATE_ANTILEECH_LOG "Scheduled antiLeech.dll-update initiated."
+    IDS_SCHEDTEXT           "Added by ScarAngel AutoUpdate"
+    IDS_SCHED_UPDATE_IPCONFIG "Update IPFILTER.DAT-file"
+    IDS_SCHED_UPDATE_ANTILEECH "Update antiLeech.dll-file"
+    IDS_SCHED_UPDATE_WARNING 
+                            "Don't schedule automatic update-events too often to keep network traffic low!\r\nOnce per week should be enough!"
+    IDS_SCHED_WARNENDTIME   "End time should be equal to start time for one time events"
+    IDS_IP2COUNTRY_DWNFILE  "Downloading IP2Country file"
+    IDS_IP2COUNTRY_UPUNLOAD "IP2Country.csv unloaded due to update in progress"
+    IDS_IP2COUNTRY_UPLOAD   "IP2Country.csv loaded after successful update"
+    IDS_LOG_ERRDWN          "Error downloading %s"
+    IDS_IP2COUNTRY_ERROR7   "Failed to extract IP to Country file from downloaded IP to Country ZIP file ""%s""."
+    IDS_IP2COUNTRY_ERROR8   "Downloaded IP to Country file ""%s"" is a ZIP file with unexpected content."
+    IDS_AUTODLPFAILED       "Failed to check DLP version."
+    IDS_ANTILEECH_DWNFILE   "Downloading DLP file"
+    // <== Advanced Updates [MorphXT/Stulle] - Stulle
 END
 
 #endif    // Englisch (USA) resources

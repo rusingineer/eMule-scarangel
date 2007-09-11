@@ -674,10 +674,10 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 				*/
 				if (thePrefs.IsUseGlobalHL())
 					buffer.AppendFormat(_T(" [%i]"), lpPartFile->GetMaxSources());
-				// ==> show HL per file constantaniously - Stulle
+				// ==> show HL per file constantly - Stulle
 				else if (thePrefs.GetShowFileHLconst())
 					buffer.AppendFormat(_T(" [%i]"), lpPartFile->GetMaxSources());
-				// <== show HL per file constantaniously - Stulle
+				// <== show HL per file constantly - Stulle
 				else if (thePrefs.IsExtControlsEnabled() && lpPartFile->GetPrivateMaxSources() != 0)
 					buffer.AppendFormat(_T(" [%i]"), lpPartFile->GetPrivateMaxSources());
 				// <== Global Source Limit [Max/Stulle] - Stulle
@@ -2394,11 +2394,12 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 							if(thePrefs.GetTakeOverFileSettings())
 							{
 								theApp.downloadqueue->UpdateFileSettings(selectedList.GetHead());
-								m_SettingsSaver.SaveSettings(selectedList.GetHead());
 								UpdateItem(selectedList.GetHead());
 							}
 							selectedList.RemoveHead();
 						}
+						if(thePrefs.GetTakeOverFileSettings())
+							theApp.downloadqueue->SaveFileSettings();
 					}
 					break;
 				// <== file settings - Stulle
@@ -2840,7 +2841,6 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					while(!selectedList.IsEmpty())
 					{ 
 						selectedList.GetHead()->SetFollowTheMajority(wParam - MP_FOLLOWTHEMAJORITY_0);
-						m_SettingsSaver.SaveSettings(selectedList.GetHead());
 						selectedList.RemoveHead();
 					}
 					SetRedraw(true);

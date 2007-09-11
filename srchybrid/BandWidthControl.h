@@ -193,9 +193,9 @@ private:
    CBandWidthControl(const CBandWidthControl&);
    CBandWidthControl& operator=(const CBandWidthControl&);
 
-   // ==> m000h
+   // ==> Enforce Ratio [Stulle] - Stulle
 	float m_maxforcedDownloadlimitEnforced;
 public:
 	float GetForcedDownloadlimitEnforced() const {return m_maxforcedDownloadlimitEnforced;}
-   // <== m000h
+   // <== Enforce Ratio [Stulle] - Stulle
 };

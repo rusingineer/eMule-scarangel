@@ -801,8 +801,12 @@ void CIPFilter::UpdateIPFilterURL()
 		return;
 	}
 
+	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+	/*
 	struct tm tmTemp;
 	thePrefs.m_last_ipfilter_check = safe_mktime(CTime::GetCurrentTime().GetLocalTm(&tmTemp));
+	*/
+	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 	if (bHaveNewFilterFile)
 	{
@@ -828,6 +832,7 @@ void CIPFilter::UpdateIPFilterURL()
 		memcpy(&thePrefs.m_IPfilterVersion, &SysTime, sizeof SysTime); 
 }
 //Xman end
+
 // ==> Static IP Filter [Stulle] - Stulle
 void CIPFilter::AddFromFile2(LPCTSTR pszFilePath)
 {

@@ -34,6 +34,7 @@ namespace Kademlia
 #include "SelCategoryDlg.h"
 #include "MenuCmds.h"
 // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+#include "SettingsSaver.h" // file settings - Stulle
 
 class CSourceHostnameResolveWnd : public CWnd
 {
@@ -271,9 +272,13 @@ private:
 public:
 	void InitTempVariables(CPartFile* file);
 	void UpdateFileSettings(CPartFile* file);
+	void SaveFileSettings();
+protected:
+	CSettingsSaver m_SettingsSaver;
 	// <== file settings - Stulle
 
 	// ==> Global Source Limit [Max/Stulle] - Stulle
+public:
 	void SetHardLimits();
 	void SetUpdateHlTime(DWORD in){m_dwUpdateHlTime = in;}
 	bool GetPassiveMode() const {return m_bPassiveMode;}

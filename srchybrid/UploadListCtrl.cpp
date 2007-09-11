@@ -562,7 +562,7 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					}
 					// <== PowerShare [ZZ/MorphXT] - Stulle
 					// ==> Fair Play [AndCycle/Stulle] - Stulle
-					if (file->statistic.GetFairPlay()) {
+					if (file && file->statistic.GetFairPlay()) {
 						Sbuffer.Append(_T(",FairPlay"));
 					}
 					// <== Fair Play [AndCycle/Stulle] - Stulle

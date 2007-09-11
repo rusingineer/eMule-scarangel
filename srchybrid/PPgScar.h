@@ -94,7 +94,7 @@ protected:
 	// <== Invisible Mode [TPT/MoNKi] - Stulle
 	bool showSrcInTitle; // Show sources on title - Stulle
 	bool m_bShowGlobalHL; // show global HL - Stulle
-	bool m_bShowFileHLconst; // show HL per file constantaniously - Stulle
+	bool m_bShowFileHLconst; // show HL per file constantly - Stulle
 	bool m_bShowInMSN7; // Show in MSN7 [TPT] - Stulle
 	bool m_bQueueProgressBar; // Client queue progress bar [Commander] - Stulle
 //	bool m_bTrayComplete; // Completed in Tray - Stulle
@@ -281,7 +281,7 @@ protected:
 	// <== Invisible Mode [TPT/MoNKi] - Stulle
 	HTREEITEM m_htiShowSrcOnTitle; // Show sources on title - Stulle
 	HTREEITEM m_htiShowGlobalHL; // show global HL - Stulle
-	HTREEITEM m_htiShowFileHLconst; // show HL per file constantaniously - Stulle
+	HTREEITEM m_htiShowFileHLconst; // show HL per file constantly - Stulle
 	HTREEITEM m_htiShowInMSN7; // Show in MSN7 [TPT] - Stulle
 	HTREEITEM m_htiQueueProgressBar; // Client queue progress bar [Commander] - Stulle
 //	HTREEITEM m_htiTrayComplete; // Completed in Tray - Stulle
@@ -417,7 +417,8 @@ private:
 	SCAR,
 	BACKUP,
 	COLOR,
-//	UPDATE,
+	ADVANCED,
+	UPDATE,
 	SUPPORT
 	};
 	void SetTab(eTab tab);
@@ -464,6 +465,31 @@ private:
 	CButton		m_BackColorLabel;
 	CColorButton	m_BackColor;
 	CStatic		m_ColorWarning;
+
+	// Advanced
+	CButton		m_AntiLeechBox;
+	CButton		m_AntiLeechStart;
+	CButton		m_AntiLeechWeek;
+	CButton		m_AntiLeechURLStatic;
+	CEdit		m_AntiLeechURL;
+	CButton		m_AntiLeechVersion;
+	CButton		m_AntiLeechReset;
+	CButton		m_AntiLeechUpdate;
+	CButton		m_IpFilterBox;
+	CButton		m_IpFilterStart;
+	CButton		m_IpFilterWeek;
+	CButton		m_IpFilterURLStatic;
+	CEdit		m_IpFilterURL;
+	CButton		m_IpFilterTime;
+	CButton		m_IpFilterReset;
+	CButton		m_IpFilterUpdate;
+	CButton		m_CountryBox;
+	CButton		m_CountryStart;
+	CButton		m_CountryURLStatic;
+	CEdit		m_CountryURL;
+	CButton		m_CountryTime;
+	CButton		m_CountryReset;
+	CButton		m_CountryUpdate;
 
 	// Support
 	CHyperTextCtrl	m_HpLink;
@@ -519,4 +545,96 @@ public:
 	afx_msg void OnEnKillfocusMasterCombo();
 	afx_msg void OnEnKillfocusSubCombo();
 	// <== Design Settings [eWombat/Stulle] - Stulle
+
+	// ==> Advanced Options [Official/MorphXT] - Stulle
+protected:
+	bool bMiniMuleAutoClose;
+	int iMiniMuleTransparency;
+	bool bCheckComctl32 ;
+	bool bCheckShell32;
+	bool bIgnoreInstances;
+	CString sNotifierMailEncryptCertName;
+	CString  sMediaInfo_MediaInfoDllPath;
+	bool bMediaInfo_RIFF;
+	bool bMediaInfo_ID3LIB;
+	int iMaxLogBuff;
+	int m_iMaxChatHistory;
+	int m_iPreviewSmallBlocks;
+	bool m_bRestoreLastMainWndDlg;
+	bool m_bRestoreLastLogPane;
+	bool m_bPreviewCopiedArchives;
+	int m_iStraightWindowStyles;
+	int m_iLogFileFormat;
+	bool m_bRTLWindowsLayout;
+	bool m_bPreviewOnIconDblClk;
+	CString sInternetSecurityZone;
+	CString sTxtEditor;
+	CString sdatetimeformat;
+	int iServerUDPPort; // really a unsigned int 16
+	bool m_bRemoveFilesToBin;
+    bool m_bHighresTimer;
+	bool m_bTrustEveryHash;
+    int m_iInspectAllFileTypes;
+    int  m_umaxmsgsessions;
+    bool m_bPreferRestrictedOverUser;
+	bool m_bUseUserSortedServerList;
+    int m_iWebFileUploadSizeLimitMB;
+    CString m_sAllowedIPs;
+	int m_iDebugSearchResultDetailLevel;
+	int m_iCryptTCPPaddingLength ;
+
+	CTreeOptionsCtrlEx m_ctrlAdvTreeOptions;
+	bool m_bInitializedAdvTreeOpts;
+
+	HTREEITEM m_hti_AdvMiniMule;
+    HTREEITEM m_hti_bMiniMuleAutoClose;
+	HTREEITEM m_hti_iMiniMuleTransparency;
+
+	HTREEITEM m_hti_MediaInfo;
+	HTREEITEM m_hti_sMediaInfo_MediaInfoDllPath;
+	HTREEITEM m_hti_bMediaInfo_RIFF;
+	HTREEITEM m_hti_bMediaInfo_ID3LIB;
+
+	HTREEITEM m_hti_AdvDisplay;
+	HTREEITEM m_hti_iMaxLogBuff;
+	HTREEITEM m_hti_m_iMaxChatHistory;
+	HTREEITEM m_hti_m_bRestoreLastMainWndDlg;
+	HTREEITEM m_hti_m_bRestoreLastLogPane;
+	HTREEITEM m_hti_m_iStraightWindowStyles;
+	HTREEITEM m_hti_m_bRTLWindowsLayout;
+	HTREEITEM m_hti_maxmsgsessions;
+
+	HTREEITEM m_hti_bCheckComctl32 ;
+	HTREEITEM m_hti_bCheckShell32;
+	HTREEITEM m_hti_bIgnoreInstances;
+	HTREEITEM m_hti_sNotifierMailEncryptCertName;
+	HTREEITEM m_hti_m_iPreviewSmallBlocks;
+	HTREEITEM m_hti_m_bPreviewCopiedArchives;
+	HTREEITEM m_hti_m_iLogFileFormat;
+	HTREEITEM m_hti_m_bPreviewOnIconDblClk;
+	HTREEITEM m_hti_sInternetSecurityZone;
+	HTREEITEM m_hti_sTxtEditor;
+	HTREEITEM m_hti_sdatetimeformat;
+	HTREEITEM m_hti_iServerUDPPort;
+	HTREEITEM m_hti_m_bRemoveFilesToBin;
+	HTREEITEM m_hti_HighresTimer;
+	HTREEITEM m_hti_TrustEveryHash;
+	HTREEITEM m_hti_InspectAllFileTypes;
+	HTREEITEM m_hti_PreferRestrictedOverUser;
+	HTREEITEM m_hti_WebFileUploadSizeLimitMB ;
+	HTREEITEM m_hti_AllowedIPs;
+	HTREEITEM m_hti_UseUserSortedServerList;
+	HTREEITEM m_hti_DebugSearchResultDetailLevel;
+	HTREEITEM m_htiCryptTCPPaddingLength;
+	// <== Advanced Options [Official/MorphXT] - Stulle
+
+	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+public:
+	afx_msg void OnBnClickedUpdateALUrl();
+	afx_msg void OnBnClickedResetALUrl();
+	afx_msg void OnBnClickedUpdateipfurl();
+	afx_msg void OnBnClickedResetipfurl();
+	afx_msg void OnBnClickedUpdateipcurl();
+	afx_msg void OnBnClickedResetipcurl();
+	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 };

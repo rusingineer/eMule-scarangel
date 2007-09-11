@@ -224,6 +224,7 @@ void CRichEditCtrlX::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	m_bForceArrowCursor = true;
 	menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
 	m_bForceArrowCursor = false;
+	VERIFY( menu.DestroyMenu() ); // XP Style Menu [Xanatos] - Stulle
 }
 
 BOOL CRichEditCtrlX::OnCommand(WPARAM wParam, LPARAM /*lParam*/)

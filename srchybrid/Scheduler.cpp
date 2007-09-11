@@ -23,6 +23,10 @@
 #include "DownloadQueue.h"
 #include "emuledlg.h"
 #include "MenuCmds.h"
+// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+#include "ipfilter.h"
+#include "log.h"
+// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -174,6 +178,15 @@ int CScheduler::Check(bool forcecheck){
 		int it1,it2, itn;
 		it1=h1*60 + m1;
 		it2=h2*60 + m2;
+
+		// ==> handling of one-time-events [Mighty Knife] - Stulle
+		// if start-time=end-time, this is an event that should
+		// occur once in that minute. In that case we add 1 to it2 to make sure
+		// it happens (because of the timespan-comparison below, which happens
+		// once per minute, too...)
+		if (it2==it1) it2++;
+		// <== handling of one-time-events [Mighty Knife] - Stulle
+
 		itn=tNow.GetHour()*60 + tNow.GetMinute();
 		if (it1<=it2) { // normal timespan
 			if ( !(itn>=it1 && itn<it2) ) continue;
@@ -247,6 +260,80 @@ void CScheduler::ActivateSchedule(int index,bool makedefault) {
 			case 7 :
 				theApp.downloadqueue->SetCatStatus(_tstoi(schedule->values[ai]),MP_RESUME);
 				break;
+			// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+			case ACTION_UPDIPCONF : {
+					AddLogLine (false,GetResString (IDS_SCHED_UPDATE_IPCONFIG_LOG));
+					theApp.ipfilter->UpdateIPFilterURL();
+				} break;
+			case ACTION_UPDANTILEECH : {
+					AddLogLine (false,GetResString (IDS_SCHED_UPDATE_ANTILEECH_LOG));
+//					theApp.FakeCheck->DownloadFakeList();
+				} break;
+			// <== Advanced Updates [MorphXT/Stulle] - Stulle
 		}
 	}
 }
+
+// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+bool CScheduler::HasWeekly(int par_action)
+{
+	if (theApp.scheduler->GetCount()==0) return false; 
+	Schedule_Struct* curschedule;
+
+	for (uint8 si=0;si< theApp.scheduler->GetCount();si++) {
+		curschedule=  GetSchedule(si);
+		if (curschedule->actions[0]==0 || !curschedule->enabled) continue;
+		if (curschedule->day!=DAY_DAYLY) { // not daily, so must be weekly ( or montly, good also) 
+			for (int ai=0;ai<16;ai++) {
+				if (curschedule->actions[ai]==par_action) 
+					return true;
+			}
+		}
+	}
+	// not found? then schedule does not exit.
+    return false;
+}
+
+
+void CScheduler::SetWeekly(int action,bool activate)
+{
+	bool Currentactivated = HasWeekly(action);
+    if (  Currentactivated == activate) 
+		 return; // nothing to do. 
+
+	if ( ( Currentactivated == false )&& (activate == true)) { // must we insert a new? 
+     	Schedule_Struct* newschedule=new Schedule_Struct();
+		struct tm tmTemp;
+	    CTime tNow = CTime(safe_mktime(CTime::GetCurrentTime().GetLocalTm(&tmTemp)));
+	
+	    newschedule->day=tNow.GetDayOfWeek();
+	    newschedule->enabled=true;
+	    newschedule->time=time(NULL);
+	    newschedule->time2=time(NULL);
+	    newschedule->title=GetResString(IDS_SCHEDTEXT);
+	    newschedule->ResetActions();
+		newschedule->actions[0]=action;
+		newschedule->values[0]=L"update";
+		AddSchedule(newschedule);
+		thePrefs.scheduler=true; // enable scheduler
+	}
+	if ((Currentactivated == true )&& (activate == false)) { // we must delete
+
+		Schedule_Struct* curschedule;
+		for (uint8 si=0;si< GetCount();si++) {
+			curschedule=  GetSchedule(si);
+			if (curschedule->actions[0]==0 || !curschedule->enabled) continue;
+			if (curschedule->day!=DAY_DAYLY) { // not daily, so must be weekly ( or montly, good also) 
+				for (int ai=0;ai<16;ai++) {
+					if (curschedule->actions[ai]==action) {
+						RemoveSchedule(si);
+						return ;
+					}
+				}
+			}
+		}
+		// not found? then schedule does not exist. ASSERT()?;
+		return ;
+	}
+};
+// <== Advanced Updates [MorphXT/Stulle] - Stulle

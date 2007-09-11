@@ -50,8 +50,11 @@ enum EUserWndMessages
 	UM_DLPVERSIONCHECK_RESPONSE, //Xman DLP
 	//Xman end
 	// ==> ScarAngel Version Check - Stulle
-	UM_SVERSIONCHECK_RESPONSE
+	UM_SVERSIONCHECK_RESPONSE,
 	// <== ScarAngel Version Check - Stulle
+	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+	UM_DLPUTOVERCHECK_RESPONSE
+	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 	//Xman official UPNP removed
 	// UPnP

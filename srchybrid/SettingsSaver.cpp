@@ -22,20 +22,112 @@
 #include "Preferences.h" // for thePrefs
 #include "emuledlg.h" // for theApp.emuledlg
 #include "log.h" // for log
+#include "Ini2.h"
+#include "DownloadQueue.h"
 
+/* This class has been rewritten by Stulle */
 
 CSettingsSaver::CSettingsSaver(void){}
 CSettingsSaver::~CSettingsSaver(void){}
 
-void CSettingsSaver::DeleteFile(CPartFile* file)
+void CSettingsSaver::LoadSettings()
 {
-	CString datafilepath;
-	datafilepath.Format(_T("%s\\%s\\%s.sivka"), file->GetTempPath(), _T("Extra Lists"), file->GetPartMetFileName());
-	if (_tremove(datafilepath)) if (errno != ENOENT)
-		AddLogLine(true, _T("Failed to delete %s, you will need to do this by hand"), datafilepath);
+	CPartFile* cur_file ;
+	int iTryImport = 0; // 0 = no; 1 = import; 2 = delete
+
+	CString IniFilePath;
+	IniFilePath.Format(L"%sFileSettings.ini", thePrefs.GetMuleDirectory(EMULE_CONFIGDIR));
+	CIni ini(IniFilePath);
+
+	CString OldFilePath;
+	OldFilePath.Format(_T("%s\\%s\\"), thePrefs.GetTempDir(), _T("Extra Lists"));
+
+	if(!PathFileExists(IniFilePath))
+		iTryImport = 1;
+	else if(PathFileExists(OldFilePath)) // we assume if the default contains this all else do.
+		iTryImport = 2;
+
+	for (POSITION pos = theApp.downloadqueue->filelist.GetHeadPosition();pos != 0;){
+		cur_file = theApp.downloadqueue->filelist.GetNext(pos);
+		if(iTryImport == 1)
+		{
+			ImportOldSettings(cur_file);
+			continue; // next item
+		}
+		else if(iTryImport == 2)
+		{
+			DeleteOldSettings(cur_file);
+		}
+
+		ini.SetSection(cur_file->GetPartMetFileName());
+
+		cur_file->SetEnableAutoDropNNS(ini.GetBool(L"NNS",thePrefs.GetEnableAutoDropNNSDefault()));
+		cur_file->SetAutoNNS_Timer(ini.GetInt(L"NNSTimer",thePrefs.GetAutoNNS_TimerDefault()));
+		cur_file->SetMaxRemoveNNSLimit((uint16)ini.GetInt(L"NNSLimit",thePrefs.GetMaxRemoveNNSLimitDefault()));
+
+		cur_file->SetEnableAutoDropFQS(ini.GetBool(L"FQS",thePrefs.GetEnableAutoDropFQSDefault()));
+		cur_file->SetAutoFQS_Timer(ini.GetInt(L"FQSTimer",thePrefs.GetAutoFQS_TimerDefault()));
+		cur_file->SetMaxRemoveFQSLimit((uint16)ini.GetInt(L"FQSLimit",thePrefs.GetMaxRemoveFQSLimitDefault()));
+
+		cur_file->SetEnableAutoDropQRS(ini.GetBool(L"QRS",thePrefs.GetEnableAutoDropQRSDefault()));
+		cur_file->SetAutoHQRS_Timer(ini.GetInt(L"QRSTimer",thePrefs.GetAutoHQRS_TimerDefault()));
+		cur_file->SetMaxRemoveQRS((uint16)ini.GetInt(L"MaxQRS",thePrefs.GetMaxRemoveQRSDefault()));
+		cur_file->SetMaxRemoveQRSLimit((uint16)ini.GetInt(L"QRSLimit",thePrefs.GetMaxRemoveQRSLimitDefault()));
+
+		cur_file->SetGlobalHL(ini.GetBool(L"GlobalHL",thePrefs.GetGlobalHlDefault()));
+		cur_file->SetHQRXman(ini.GetBool(L"XmanHQR",thePrefs.GetHQRXmanDefault()));
+		cur_file->SetFollowTheMajority(ini.GetInt(L"FTM",-1));
+	}
+
+	if(iTryImport > 0)
+	{
+		for (int i=0;i<thePrefs.tempdir.GetCount();i++) {
+			CString sSivkaFileSettingsPath = CString(thePrefs.GetTempDir(i)) + _T("\\") + SIVKAFOLDER;
+			if (PathFileExists(sSivkaFileSettingsPath.GetBuffer()) && !::RemoveDirectory(sSivkaFileSettingsPath.GetBuffer())) {
+				CString strError;
+				strError.Format(_T("Failed to delete sivka extra lists directory \"%s\" - %s"), sSivkaFileSettingsPath, GetErrorMessage(GetLastError()));
+				AfxMessageBox(strError, MB_ICONERROR);
+			}
+		}
+	}
 }
 
-void CSettingsSaver::LoadSettings(CPartFile* file)
+void CSettingsSaver::SaveSettings()
+{
+	CPartFile* cur_file ;
+
+	CString strCatIniFilePath;
+	strCatIniFilePath.Format(L"%sFileSettings.ini", thePrefs.GetMuleDirectory(EMULE_CONFIGDIR));
+	(void)_tremove(strCatIniFilePath);
+	CIni ini(strCatIniFilePath);
+	ini.WriteInt(_T("FileSettingsVersion"), 1, _T("General")); // just in case...
+
+	for (POSITION pos = theApp.downloadqueue->filelist.GetHeadPosition();pos != 0;){
+		cur_file = theApp.downloadqueue->filelist.GetNext(pos);
+
+		ini.SetSection(cur_file->GetPartMetFileName());
+
+		ini.WriteBool(L"NNS",cur_file->GetEnableAutoDropNNS());
+		ini.WriteInt(L"NNSTimer",cur_file->GetAutoNNS_Timer());
+		ini.WriteInt(L"NNSLimit",cur_file->GetMaxRemoveNNSLimit());
+
+		ini.WriteBool(L"FQS",cur_file->GetEnableAutoDropFQS());
+		ini.WriteInt(L"FQSTimer",cur_file->GetAutoFQS_Timer());
+		ini.WriteInt(L"FQSLimit",cur_file->GetMaxRemoveFQSLimit());
+
+		ini.WriteBool(L"QRS",cur_file->GetEnableAutoDropQRS());
+		ini.WriteInt(L"QRSTimer",cur_file->GetAutoHQRS_Timer());
+		ini.WriteInt(L"MaxQRS",cur_file->GetMaxRemoveQRS());
+		ini.WriteInt(L"QRSLimit",cur_file->GetMaxRemoveQRSLimit());
+
+		ini.WriteBool(L"GlobalHL",cur_file->GetGlobalHL());
+		ini.WriteBool(L"XmanHQR",cur_file->GetHQRXman());
+		ini.WriteInt(L"FTM",cur_file->GetFollowTheMajority());
+	}
+}
+
+/* IMPORT OLD */
+void CSettingsSaver::ImportOldSettings(CPartFile* file)
 {
 	SettingsList daten;
 	CString datafilepath;
@@ -77,7 +169,7 @@ void CSettingsSaver::LoadSettings(CPartFile* file)
 
 	daten.GetNext(pos);
 	if( ((CSettingsData*)daten.GetAt(pos))->dwData >= 50 && ((CSettingsData*)daten.GetAt(pos))->dwData <= 100)
-		file->SetMaxRemoveNNSLimit((uint16)(((CSettingsData*)daten.GetAt(pos))->dwData));
+		file->SetMaxRemoveNNSLimit((uint16)((CSettingsData*)daten.GetAt(pos))->dwData);
 	else
 		file->SetMaxRemoveNNSLimit(thePrefs.GetMaxRemoveNNSLimitDefault());
 
@@ -97,7 +189,7 @@ void CSettingsSaver::LoadSettings(CPartFile* file)
 
 	daten.GetNext(pos);
 	if( ((CSettingsData*)daten.GetAt(pos))->dwData >= 50 && ((CSettingsData*)daten.GetAt(pos))->dwData <= 100)
-		file->SetMaxRemoveFQSLimit((uint16)(((CSettingsData*)daten.GetAt(pos))->dwData));
+		file->SetMaxRemoveFQSLimit((uint16)((CSettingsData*)daten.GetAt(pos))->dwData);
 	else
 		file->SetMaxRemoveFQSLimit(thePrefs.GetMaxRemoveFQSLimitDefault());
 
@@ -110,24 +202,24 @@ void CSettingsSaver::LoadSettings(CPartFile* file)
 		file->SetEnableAutoDropQRS(thePrefs.GetEnableAutoDropQRSDefault());
 
 	daten.GetNext(pos);
-	if( ((CSettingsData*)daten.GetAt(pos))->dwData >= 0 && ((CSettingsData*)daten.GetAt(pos))->dwData <= 12000)
+	if( ((CSettingsData*)daten.GetAt(pos))->dwData >= 0 && ((CSettingsData*)daten.GetAt(pos))->dwData <= 60000)
 		file->SetAutoHQRS_Timer(((CSettingsData*)daten.GetAt(pos))->dwData);
 	else
 		file->SetAutoHQRS_Timer(thePrefs.GetAutoHQRS_TimerDefault());
 
 	daten.GetNext(pos);
 	if( ((CSettingsData*)daten.GetAt(pos))->dwData >= 1000 && ((CSettingsData*)daten.GetAt(pos))->dwData <= 10000)
-		file->SetMaxRemoveQRS((uint16)(((CSettingsData*)daten.GetAt(pos))->dwData));
+		file->SetMaxRemoveQRS((uint16)((CSettingsData*)daten.GetAt(pos))->dwData);
 	else
 		file->SetMaxRemoveQRS(thePrefs.GetMaxRemoveQRSDefault());
 
 	daten.GetNext(pos);
 	if( ((CSettingsData*)daten.GetAt(pos))->dwData >= 50 && ((CSettingsData*)daten.GetAt(pos))->dwData <= 100)
-		file->SetMaxRemoveQRSLimit((uint16)(((CSettingsData*)daten.GetAt(pos))->dwData));
+		file->SetMaxRemoveQRSLimit((uint16)((CSettingsData*)daten.GetAt(pos))->dwData);
 	else
 		file->SetMaxRemoveQRSLimit(thePrefs.GetMaxRemoveQRSLimitDefault());
-	// emulate StulleMule <= v2.2 files
-	if(daten.GetCount() > 10)
+
+	if(daten.GetCount() > 10) // emulate StulleMule <= v2.2 files
 	{
 		// ==> Global Source Limit (customize for files) - Stulle
 		daten.GetNext(pos);
@@ -140,87 +232,20 @@ void CSettingsSaver::LoadSettings(CPartFile* file)
 		// <== Global Source Limit (customize for files) - Stulle
 	}
 	else
-	{
-			file->SetGlobalHL(thePrefs.GetGlobalHlDefault());
-	}
-	if(daten.GetCount() > 11)
-	{
-		daten.GetNext(pos);
-		if( ((CSettingsData*)daten.GetAt(pos))->dwData == 0 || ((CSettingsData*)daten.GetAt(pos))->dwData == 1)
-		{
-			file->SetHQRXman((((CSettingsData*)daten.GetAt(pos))->dwData)!=0);
-		}
-		else
-			file->SetHQRXman(thePrefs.GetHQRXmanDefault());
-	}
-	else
-	{
-			file->SetHQRXman(thePrefs.GetHQRXmanDefault());
-	}
-	// ==> Follow The Majority [AndCycle/Stulle] - Stulle
-	if(daten.GetCount() > 12)
-	{
-		daten.GetNext(pos);
-		if( ((CSettingsData*)daten.GetAt(pos))->dwData >= 0 && ((CSettingsData*)daten.GetAt(pos))->dwData <= 2)
-		{
-			file->SetFollowTheMajority((((CSettingsData*)daten.GetAt(pos))->dwData)-1);
-		}
-		else
-			file->SetFollowTheMajority(-1);
-	}
-	else
-	{
-			file->SetFollowTheMajority(-1);
-	}
-	// <== Follow The Majority [AndCycle/Stulle] - Stulle
+		file->SetGlobalHL(thePrefs.GetGlobalHlDefault());
 
 	while (!daten.IsEmpty()) 
 		delete daten.RemoveHead();
+
+	if (_tremove(datafilepath)) if (errno != ENOENT)
+		AddLogLine(true, _T("Failed to delete %s, you will need to do this manually"), datafilepath);
 }
 
-void CSettingsSaver::SaveSettings(CPartFile* file)
+void CSettingsSaver::DeleteOldSettings(CPartFile* file)
 {
 	CString datafilepath;
 	datafilepath.Format(_T("%s\\%s\\%s.sivka"), file->GetTempPath(), _T("Extra Lists"), file->GetPartMetFileName());
-	
-	CString strLine;
-	CStdioFile f;
 
-	if (!f.Open(datafilepath, CFile::modeCreate | CFile::modeWrite | CFile::typeText))
-		return;
-
-	f.WriteString(_T("#Sivka File Settings:\n"));
-	strLine.Format(_T("%ld\n"), file->GetEnableAutoDropNNS());
-	f.WriteString(strLine);
-	strLine.Format(_T("%ld\n"), file->GetAutoNNS_Timer());
-	f.WriteString(strLine);
-	strLine.Format(_T("%ld\n"), file->GetMaxRemoveNNSLimit());
-	f.WriteString(strLine);
-	strLine.Format(_T("%ld\n"), file->GetEnableAutoDropFQS());
-	f.WriteString(strLine);
-	strLine.Format(_T("%ld\n"), file->GetAutoFQS_Timer());
-	f.WriteString(strLine);
-	strLine.Format(_T("%ld\n"), file->GetMaxRemoveFQSLimit());
-	f.WriteString(strLine);
-	strLine.Format(_T("%ld\n"), file->GetEnableAutoDropQRS());
-	f.WriteString(strLine);
-	strLine.Format(_T("%ld\n"), file->GetAutoHQRS_Timer());
-	f.WriteString(strLine);
-	strLine.Format(_T("%ld\n"), file->GetMaxRemoveQRS());
-	f.WriteString(strLine);
-	strLine.Format(_T("%ld\n"), file->GetMaxRemoveQRSLimit());
-	f.WriteString(strLine);
-	// ==> Global Source Limit (customize for files) - Stulle
-	strLine.Format(_T("%ld\n"), file->GetGlobalHL());
-	f.WriteString(strLine);
-	// <== Global Source Limit (customize for files) - Stulle
-	strLine.Format(_T("%ld\n"), file->GetHQRXman());
-	f.WriteString(strLine);
-	// ==> Follow The Majority [AndCycle/Stulle] - Stulle
-	// note: we increase the value by 1 on saving to avoid a negative value to be saved.
-	strLine.Format(_T("%ld\n"), (file->GetFollowTheMajority()+1));
-	f.WriteString(strLine);
-	// <== Follow The Majority [AndCycle/Stulle] - Stulle
-
-	f.Close();
+	if (_tremove(datafilepath)) if (errno != ENOENT)
+		AddLogLine(true, _T("Failed to delete %s, you will need to do this manually"), datafilepath);
 }

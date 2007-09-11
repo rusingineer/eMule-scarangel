@@ -135,6 +135,8 @@ bool CServerList::Init()
 	//Xman auto update IPFilter
 	if(thePrefs.AutoUpdateIPFilter())
 	{
+		// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+		/*
 		bool update=false;
 		if (thePrefs.m_last_ipfilter_check!=0) {
 			CTime last(thePrefs.m_last_ipfilter_check);
@@ -150,11 +152,22 @@ bool CServerList::Init()
 			update=true;
 		if(update)
 		{
+		*/
+		// <== Advanced Updates [MorphXT/Stulle] - Stulle
 			if(theApp.IsSplash()) theApp.DestroySplash(); //Xman new slpash-screen arrangement
 			theApp.ipfilter->UpdateIPFilterURL();
+		// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+		/*
 		}
+		*/
+		// <== Advanced Updates [MorphXT/Stulle] - Stulle
 	}
 	//Xman end
+
+	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+	if(thePrefs.IsAutoUpdateAntiLeech())
+		theApp.emuledlg->DoDLPVersioncheck();
+	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 	// ZZ:UploadSpeedSense -->
     theApp.serverlist->GiveServersForTraceRoute();

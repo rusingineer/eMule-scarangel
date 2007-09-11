@@ -109,6 +109,9 @@ public:
 	// ==> ScarAngel Version Check - Stulle
 	void DoSVersioncheck(bool manual);
 	// <== ScarAngel Version Check - Stulle
+	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+	void DoDLPVersioncheck();
+	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 	void ApplyHyperTextFont(LPLOGFONT pFont);
 	void ApplyLogFont(LPLOGFONT pFont);
 	void ProcessED2KLink(LPCTSTR pszData);
@@ -184,6 +187,9 @@ protected:
 	// ==> ScarAngel Version Check - Stulle
 	char			m_acSVCDNSBuffer[MAXGETHOSTSTRUCT];
 	// <== ScarAngel Version Check - Stulle
+	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+	char			m_acDLPAutoBuffer[MAXGETHOSTSTRUCT];
+	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 	// Splash screen
 	//Xman new slpash-screen arrangement
@@ -325,6 +331,8 @@ protected:
 
 	// ScarAngel Version Check - Stulle
 	afx_msg	LRESULT	OnSVersionCheckResponse(WPARAM wParam, LPARAM lParam);
+	// Advanced Updates [MorphXT/Stulle] - Stulle
+	afx_msg LRESULT OnDLPAutoVerCheckResponse(WPARAM wParam, LPARAM lParam);
 
 	// Peercache DNS
 	afx_msg LRESULT OnPeerCacheResponse(WPARAM wParam, LPARAM lParam);
@@ -376,6 +384,11 @@ public:
 protected:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	// <== Design Settings [eWombat/Stulle] - Max
+
+	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+public:
+	void	DownloadDLP();
+	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 };
 
 

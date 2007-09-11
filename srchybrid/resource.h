@@ -2542,7 +2542,7 @@
 #define IDS_SUQWT_LOAD                  60070
 #define IDS_SUQWT                       60071
 // <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-#define IDS_SHOW_FILE_HL_CONST          60090 // show HL per file constantaniously - Stulle
+#define IDS_SHOW_FILE_HL_CONST          60090 // show HL per file constantly - Stulle
 #define IDS_SHOW_GLOBAL_HL              60260 // show global HL - Stulle
 // ==> file settings - Stulle
 #define IDC_DEFAULT_BUTTON              60270
@@ -3085,6 +3085,92 @@
 #define IDS_FAIR_PLAY                   61180 // Fair Play [AndCycle/Stulle] - Stulle
 #define IDS_MAX_SLOTSPEED               61190 // Alwasy maximize slot speed [Stulle] - Stulle
 #define IDS_REASK_FILE_SRC              61200 // Timer for ReAsk File Sources [Stulle] - Stulle
+// ==> Advanced Options [Official/MorphXT] - Stulle
+#define IDC_ADVANCED_OPTS               61210
+#define IDS_MINIMULEAUTOCLOSE           61211
+#define IDS_MINIMULETRANSPARENCY        61212
+#define IDS_CHECKCOMCTL32               61213
+#define IDS_CHECKSHELL32                61214
+#define IDS_IGNOREINSTANCES             61215
+#define IDS_NOTIFIERMAILENCRYPTCERTNAME 61216
+#define IDS_MEDIAINFO_MEDIAINFODLLPATH  61217
+#define IDS_MEDIAINFO_RIFF              61218
+#define IDS_MEDIAINFO_ID3LIB            61219
+#define IDS_MAXLOGBUFF                  61220
+#define IDS_MAXCHATHISTORY              61221
+#define IDS_PREVIEWSMALLBLOCKS          61222
+#define IDS_RESTORELASTMAINWNDDLG       61223
+#define IDS_RESTORELASTLOGPANE          61224
+#define IDS_PREVIEWCOPIEDARCHIVES       61225
+#define IDS_STRAIGHTWINDOWSTYLES        61226
+#define IDS_LOGFILEFORMAT               61227
+#define IDS_RTLWINDOWSLAYOUT            61228
+#define IDS_PREVIEWONICONDBLCLK         61229
+#define IDS_INTERNETSECURITYZONE        61230
+#define IDS_TXTEDITOR                   61231
+#define IDS_DATETIMEFORMAT              61232
+#define IDS_SERVERUDPPORT               61233
+#define IDS_MAXMSGSESSIONS              61234
+#define IDS_PREFERRESTRICTEDOVERUSER    61235
+#define IDS_WEBFILEUPLOADSIZELIMITMB    61236
+#define IDS_HIGHRESTIMER                61237
+#define IDS_ALLOWEDIPS                  61238
+#define IDS_REMOVEFILESTOBIN            61239
+#define IDS_DEBUGSEARCHDETAILLEVEL      61240
+#define IDS_CRYPTTCPPADDINGLENGTH       61241
+#define IDS_USEUSERSORTEDSERVERLIST     61242
+#define IDS_MINIMULE                    61243
+#define IDS_TRUSTEVERYHASH              61244
+#define IDS_INSPECTALLFILETYPES         61245
+// <== Advanced Options [Official/MorphXT] - Stulle
+// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+#define IDC_ANTI_LEECH_BOX              61250
+#define IDC_ANTI_LEECH_STARTUP          61251
+#define IDC_ANTI_LEECH_WEEK             61252
+#define IDC_ANTI_LEECH_URL_STATIC       61253
+#define IDC_ANTI_LEECH_URL              61254
+#define IDC_ANTI_LEECH_VERSION          61255
+#define IDC_ANTI_LEECH_RESET            61256
+#define IDC_ANTI_LEECH_UPDATE           61257
+#define IDC_IPFILTER_BOX                61258
+#define IDC_IPFILTER_STARTUP            61259
+#define IDC_IPFILTER_WEEK               61260
+#define IDC_IPFILTER_URL_STATIC         61261
+#define IDC_IPFILTER_URL                61262
+#define IDC_IPFILTER_TIME               61263
+#define IDC_IPFILTER_RESET              61264
+#define IDC_IPFILTER_UPDATE             61265
+#define IDC_COUNTRY_BOX                 61266
+#define IDC_COUNTRY_STARTUP             61267
+#define IDC_COUNTRY_URL_STATIC          61268
+#define IDC_COUNTRY_URL                 61269
+#define IDC_COUNTRY_TIME                61270
+#define IDC_COUNTRY_RESET               61271
+#define IDC_COUNTRY_UPDATE              61272
+#define IDS_UPDATEANTILEECHERONSTART    61273
+#define IDS_AUTOUPWEEK                  61274
+#define IDS_URL_FOR_UPDATING            61275
+#define IDS_UPDATEIPCURL                61276
+#define IDS_UPDATEIPFILTERONSTART       61277
+#define IDS_RESET                       61278
+#define IDS_COUNTRY                     61279
+#define IDS_AUTOUPIP2COUNTRY            61280
+#define IDS_SCHED_UPDATE_IPCONFIG_LOG   61281
+#define IDS_SCHED_UPDATE_ANTILEECH_LOG  61282
+#define IDS_SCHEDTEXT                   61283
+#define IDS_SCHED_UPDATE_IPCONFIG       61284
+#define IDS_SCHED_UPDATE_ANTILEECH      61285
+#define IDS_SCHED_UPDATE_WARNING        61286
+#define IDS_SCHED_WARNENDTIME           61287
+#define IDS_IP2COUNTRY_DWNFILE          61288
+#define IDS_IP2COUNTRY_UPUNLOAD         61289
+#define IDS_IP2COUNTRY_UPLOAD           61290
+#define IDS_LOG_ERRDWN                  61291
+#define IDS_IP2COUNTRY_ERROR7           61292
+#define IDS_IP2COUNTRY_ERROR8           61293
+#define IDS_AUTODLPFAILED               61294
+#define IDS_ANTILEECH_DWNFILE           61295
+// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 // Next default values for new objects
 // 

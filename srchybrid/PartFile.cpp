@@ -908,7 +908,6 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 	m_partmetfilename = in_filename;
 	SetPath(in_directory);
 	m_fullname.Format(_T("%s\\%s"), GetPath(), m_partmetfilename);
-	m_SettingsSaver.LoadSettings(this); // file settings - Stulle
 
 	// readfile data form part.met file
 	CSafeBufferedFile metFile;
@@ -1586,7 +1585,6 @@ bool CPartFile::SavePartFile()
 		case PS_HASHING:
 			return false;
 	}
-	m_SettingsSaver.SaveSettings(this); // file settings - Stulle
 
 	// search part file
 	CFileFind ff;
@@ -4086,8 +4084,6 @@ BOOL CPartFile::PerformFileComplete()
 	}
 	free(newfilename);
 
-	m_SettingsSaver.DeleteFile(this); // file settings - Stulle
-
 	// Xman -New Save/load Sources- enkeyDEV(Ottavio84)
 	m_sourcesaver.DeleteFile();
 	// Xman end
@@ -4324,8 +4320,6 @@ void CPartFile::DeleteFile(){
 		AddDebugLogLine(true,_T("{GSL} File deleted! Disabled PassiveMode!"));
 	}
 	// <== Global Source Limit [Max/Stulle] - Stulle
-
-	m_SettingsSaver.DeleteFile(this); // file settings - Stulle
 
 	// Xman -New Save/load Sources- enkeyDEV(Ottavio84)
 	m_sourcesaver.DeleteFile();

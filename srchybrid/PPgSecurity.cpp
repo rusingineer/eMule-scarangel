@@ -500,8 +500,12 @@ void CPPgSecurity::OnLoadIPFFromURL()
 	}
 
 	//Xman auto update IPFilter
+	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+	/*
 	struct tm tmTemp;
 	thePrefs.m_last_ipfilter_check = safe_mktime(CTime::GetCurrentTime().GetLocalTm(&tmTemp));
+	*/
+	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 	//Xman end
 
 	if (url.IsEmpty() || bHaveNewFilterFile)

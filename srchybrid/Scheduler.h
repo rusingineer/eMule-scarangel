@@ -23,6 +23,10 @@
 #define ACTION_CONS			5
 #define ACTION_CATSTOP		6
 #define ACTION_CATRESUME	7
+// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+#define ACTION_UPDIPCONF    8
+#define ACTION_UPDANTILEECH 9
+// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 #define DAY_DAYLY		0
 #define DAY_MO			1
@@ -79,4 +83,10 @@ public:
 private:
 	CArray<Schedule_Struct*,Schedule_Struct*> schedulelist;
 	int		m_iLastCheckedMinute;
+
+	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+public:
+	bool	HasWeekly(int action);
+	void 	SetWeekly(int action,bool activate);
+	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 };

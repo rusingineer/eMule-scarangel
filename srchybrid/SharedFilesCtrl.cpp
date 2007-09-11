@@ -243,6 +243,23 @@ CSharedFilesCtrl::CSharedFilesCtrl()
 CSharedFilesCtrl::~CSharedFilesCtrl()
 {
 	delete m_pToolTip;
+	// ==> PowerShare [ZZ/MorphXT] - Stulle
+	if (m_PowershareMenu) VERIFY( m_PowershareMenu.DestroyMenu() );
+	if (m_PowerShareLimitMenu) VERIFY( m_PowerShareLimitMenu.DestroyMenu() );
+	// <== PowerShare [ZZ/MorphXT] - Stulle
+	// ==> Limit PS by amount of data uploaded [Stulle] - Stulle
+	if (m_PsAmountLimitMenu) VERIFY( m_PsAmountLimitMenu.DestroyMenu() );
+	// <== Limit PS by amount of data uploaded [Stulle] - Stulle
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	if (m_HideOSMenu) VERIFY( m_HideOSMenu.DestroyMenu() );
+	if (m_SelectiveChunkMenu) VERIFY( m_SelectiveChunkMenu.DestroyMenu() );
+	if (m_ShareOnlyTheNeedMenu) VERIFY( m_ShareOnlyTheNeedMenu.DestroyMenu() );
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	// ==> mem leak fix [fafner] - Stulle
+	if (m_PrioMenu) VERIFY( m_PrioMenu.DestroyMenu() );
+	if (m_CollectionsMenu) VERIFY( m_CollectionsMenu.DestroyMenu() );
+	if (m_SharedFilesMenu) VERIFY( m_SharedFilesMenu.DestroyMenu() );
+	// <== mem leak fix [fafner] - Stulle
 }
 
 void CSharedFilesCtrl::Init()

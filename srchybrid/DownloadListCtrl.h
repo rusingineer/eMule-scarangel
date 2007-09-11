@@ -181,10 +181,6 @@ protected:
 	afx_msg void OnGetDispInfo(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult);
 
-	// ==> file settings - Stulle
-	CSettingsSaver m_SettingsSaver;
-	// <== file settings - Stulle
-
 	CTitleMenu m_FollowTheMajorityMenu; // Follow The Majority [AndCycle/Stulle] - Stulle
 
 	// ==> show global HL - Stulle

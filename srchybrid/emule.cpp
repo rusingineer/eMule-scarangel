@@ -80,6 +80,7 @@
 #include "SplashScreenEx.h"
 
 // ==> Automatic shared files updater [MoNKi] - Stulle
+#include "SharedFilesWnd.h"
 CEvent* CemuleApp::m_directoryWatcherCloseEvent;
 CEvent* CemuleApp::m_directoryWatcherReloadEvent;
 CCriticalSection CemuleApp::m_directoryWatcherCS;
@@ -2819,7 +2820,8 @@ UINT CemuleApp::CheckDirectoryForChangesThread(LPVOID /*pParam*/)
 							AddLogLine(false, GetResString(IDS_ASFU_RELOAD));
 
 							m_directoryWatcherReloadEvent->ResetEvent();
-							theApp.sharedfiles->Reload();
+//							theApp.sharedfiles->Reload();
+							theApp.emuledlg->sharedfileswnd->Reload();
 							lastReloadTime = ::GetTickCount();
 						}
 					}

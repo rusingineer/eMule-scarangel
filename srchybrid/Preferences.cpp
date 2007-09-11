@@ -125,7 +125,11 @@ bool CPreferences::m_bUseCompression;
 bool CPreferences::m_bautoupdateipfilter;
 CString CPreferences::m_strautoupdateipfilter_url;
 SYSTEMTIME CPreferences::m_IPfilterVersion;
+// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+/*
 uint32 CPreferences::m_last_ipfilter_check;
+*/
+// <== Advanced Updates [MorphXT/Stulle] - Stulle
 //Xman end
 
 //Xman Funny-Nick (Stulle/Morph)
@@ -612,6 +616,19 @@ bool	CPreferences::m_bMessageEnableSmileys;
 
 BOOL	CPreferences::m_bIsRunningAeroGlass;
 
+// ==> Advanced Options [Official/MorphXT] - Stulle
+bool CPreferences::bMiniMuleAutoClose;
+int  CPreferences::iMiniMuleTransparency; 
+bool CPreferences::bCheckComctl32 ;
+bool CPreferences::bCheckShell32;
+bool CPreferences::bIgnoreInstances;
+CString CPreferences::sNotifierMailEncryptCertName;
+CString CPreferences::sMediaInfo_MediaInfoDllPath ;
+bool CPreferences::bMediaInfo_RIFF;
+bool CPreferences::bMediaInfo_ID3LIB ;
+CString CPreferences::sInternetSecurityZone;
+// <== Advanced Options [Official/MorphXT] - Stulle
+
 // ==> Global Source Limit [Max/Stulle] - Stulle
 bool    CPreferences::m_bGlobalHlDefault; 
 UINT	CPreferences::m_uGlobalHL; 
@@ -629,7 +646,7 @@ bool	CPreferences::enablePushRareFile; // push rare file - Stulle
 bool	CPreferences::showSrcInTitle; // Show sources on title - Stulle
 bool	CPreferences::showOverheadInTitle; // show overhead on title - Stulle
 bool	CPreferences::ShowGlobalHL; // show global HL - Stulle
-bool	CPreferences::ShowFileHLconst; // show HL per file constantaniously - Stulle
+bool	CPreferences::ShowFileHLconst; // show HL per file constantly - Stulle
 bool	CPreferences::m_bShowInMSN7; //Show in MSN7 [TPT] - Stulle
 bool CPreferences::m_bClientQueueProgressBar; // Client queue progress bar [Commander] - Stulle
 bool	CPreferences::m_bShowClientPercentage; // Show Client Percentage optional [Stulle] - Stulle
@@ -887,6 +904,14 @@ int		CPreferences::m_iFairPlay; // Fair Play [AndCycle/Stulle] - Stulle
 bool	CPreferences::m_bMaxSlotSpeed; // Alwasy maximize slot speed [Stulle] - Stulle
 
 uint32	CPreferences::m_uReAskTimeDif; // Timer for ReAsk File Sources [Stulle] - Stulle
+
+// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+bool	CPreferences::m_bAutoUpdateAntiLeech;
+CString CPreferences::m_strAntiLeechURL;
+bool	CPreferences::AutoUpdateIP2Country;
+CString CPreferences::UpdateURLIP2Country;
+SYSTEMTIME	CPreferences::m_IP2CountryVersion;
+// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 CPreferences::CPreferences()
 {
@@ -2425,7 +2450,11 @@ void CPreferences::SavePreferences()
 	ini.WriteString(L"AutoUpdateIPFilter_URL", m_strautoupdateipfilter_url);
 	ini.WriteBool(L"AutoUpdateIPFilter", m_bautoupdateipfilter);
 	ini.WriteBinary(_T("IPfilterVersion"), (LPBYTE)&m_IPfilterVersion, sizeof(m_IPfilterVersion)); 
+	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+	/*
 	ini.WriteInt(_T("lastipfiltercheck"),m_last_ipfilter_check);
+	*/
+	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 	//Xman end
 
 	//Xman count block/success send
@@ -2487,6 +2516,45 @@ void CPreferences::SavePreferences()
 	//Xman end
 	//--------------------------------------------------------------------------
 
+	// ==> Advanced Options [Official/MorphXT] - Stulle
+	ini.WriteBool(_T("MiniMuleAutoClose"),bMiniMuleAutoClose);
+	ini.WriteInt(_T("MiniMuleTransparency"),iMiniMuleTransparency);
+	ini.WriteBool(_T("CheckComctl32"),bCheckComctl32 );
+	ini.WriteBool(_T("CheckShell32"),bCheckShell32);
+	ini.WriteBool(_T("IgnoreInstance"),bIgnoreInstances);
+	ini.WriteString(_T("NotifierMailEncryptCertName"),sNotifierMailEncryptCertName);
+	ini.WriteString(_T("MediaInfo_MediaInfoDllPath"),sMediaInfo_MediaInfoDllPath);
+	if (theApp.GetProfileInt(_T("eMule"), _T("MediaInfo_RIFF_FIX"), 1)==1){ // fix morph 9.3 bad default once.
+		bMediaInfo_RIFF=true;
+		bMediaInfo_ID3LIB=true;
+		ini.WriteInt(_T("MediaInfo_RIFF_FIX"),0); //once
+	}
+	ini.WriteBool(_T("MediaInfo_RIFF"),bMediaInfo_RIFF);
+	ini.WriteBool(_T("MediaInfo_ID3LIB"),bMediaInfo_ID3LIB);
+	ini.WriteInt(_T("MaxLogBuff"),iMaxLogBuff/1024);
+	ini.WriteInt(_T("MaxChatHistoryLines"),m_iMaxChatHistory);
+	ini.WriteInt(_T("PreviewSmallBlocks"),m_iPreviewSmallBlocks);
+	ini.WriteBool(_T("RestoreLastMainWndDlg"),m_bRestoreLastMainWndDlg);
+	ini.WriteBool(_T("RestoreLastLogPane"),m_bRestoreLastLogPane);
+	ini.WriteBool(_T("PreviewCopiedArchives"),m_bPreviewCopiedArchives);
+	ini.WriteInt(_T("StraightWindowStyles"),m_iStraightWindowStyles);
+	ini.WriteInt(_T("LogFileFormat"),m_iLogFileFormat);
+	ini.WriteBool(_T("RTLWindowsLayout"),m_bRTLWindowsLayout);
+	ini.WriteBool(_T("PreviewOnIconDblClk"),m_bPreviewOnIconDblClk);
+	ini.WriteString(_T("InternetSecurityZone"),sInternetSecurityZone);
+	ini.WriteInt(L"InspectAllFileTypes",m_iInspectAllFileTypes);
+    ini.WriteInt(L"MaxMessageSessions",maxmsgsessions);
+    ini.WriteBool(L"PreferRestrictedOverUser",m_bPreferRestrictedOverUser);
+	ini.WriteBool(L"UserSortedServerList",m_bUseUserSortedServerList);
+	ini.WriteInt(L"CryptTCPPaddingLength",m_byCryptTCPPaddingLength);
+	ini.WriteInt(L"MaxFileUploadSizeMB",m_iWebFileUploadSizeLimitMB, L"WebServer" );//section WEBSERVER start
+	CString WriteAllowedIPs ;
+	if (GetAllowedRemoteAccessIPs().GetCount() > 0)
+		for (int i = 0; i <  GetAllowedRemoteAccessIPs().GetCount(); i++)
+           WriteAllowedIPs = WriteAllowedIPs  + _T(";") + ipstr(GetAllowedRemoteAccessIPs()[i]);
+    ini.WriteString(L"AllowedIPs",WriteAllowedIPs);  // End Seciotn Webserver
+	// <== Advanced Options [Official/MorphXT] - Stulle
+
 	// ==> Global Source Limit [Max/Stulle] - Stulle
 	ini.WriteBool(_T("GlobalHL"), m_bGlobalHL,_T("ScarAngel"));
 	ini.WriteInt(_T("GlobalHLvalue"), m_uGlobalHL);
@@ -2504,7 +2572,7 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("ShowSrcOnTitle"),showSrcInTitle); // Show sources on title - Stulle
 	ini.WriteBool(_T("ShowOverheadOnTitle"),showOverheadInTitle); // show overhead on title - Stulle
 	ini.WriteBool(_T("ShowGlobalHL"),ShowGlobalHL); // show global HL - Stulle
-	ini.WriteBool(_T("ShowFileHLconst"),ShowFileHLconst); // show HL per file constantaniously - Stulle
+	ini.WriteBool(_T("ShowFileHLconst"),ShowFileHLconst); // show HL per file constantly - Stulle
 	ini.WriteBool(_T("ShowInMSN7"), m_bShowInMSN7); //Show in MSN7 [TPT] - Stulle
 	ini.WriteBool(_T("ClientQueueProgressBar"),m_bClientQueueProgressBar); // Client queue progress bar [Commander] - Stulle
 	ini.WriteBool(_T("ShowClientPercentage"),m_bShowClientPercentage); // Show Client Percentage optional [Stulle] - Stulle
@@ -2701,6 +2769,14 @@ void CPreferences::SavePreferences()
 	uint8 m_uTemp = (uint8)((m_uReAskTimeDif+FILEREASKTIME)/60000);
 	ini.WriteInt(_T("ReAskTime"),m_uTemp);
 	// <== Timer for ReAsk File Sources [Stulle] - Stulle
+
+	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+	ini.WriteBool(L"AutoUpdateAntiLeech", m_bAutoUpdateAntiLeech);
+	ini.WriteString(L"AntiLeechURL", m_strAntiLeechURL);
+	ini.WriteBool(L"AutoUpdateIP2Country", AutoUpdateIP2Country);
+	ini.WriteString(L"UpdateURLIP2Country", UpdateURLIP2Country);
+	ini.WriteBinary(_T("IP2CountryVersion"), (LPBYTE)&m_IP2CountryVersion, sizeof(m_IP2CountryVersion)); 
+	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 	SaveStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
@@ -3127,6 +3203,10 @@ void CPreferences::LoadPreferences()
 	log2disk = ini.GetBool(L"SaveLogToDisk",false);
 	uMaxLogFileSize = ini.GetInt(L"MaxLogFileSize", 1024*1024);
 	iMaxLogBuff = ini.GetInt(L"MaxLogBuff",64) * 1024;
+	// ==> Advanced Options [Official/MorphXT] - Stulle
+	if (iMaxLogBuff  < 64*1024)  iMaxLogBuff =  64*1024;
+	if (iMaxLogBuff  > 512*1024) iMaxLogBuff =512*1024;
+	// <== Advanced Options [Official/MorphXT] - Stulle
 	m_iLogFileFormat = (ELogFileFormat)ini.GetInt(L"LogFileFormat", Unicode, 0);
 	m_bEnableVerboseOptions=ini.GetBool(L"VerboseOptions", true);
 	if (m_bEnableVerboseOptions)
@@ -3241,6 +3321,11 @@ void CPreferences::LoadPreferences()
 	if (m_iMaxChatHistory < 1)
 		m_iMaxChatHistory = 100;
 	maxmsgsessions=ini.GetInt(L"MaxMessageSessions",50);
+	// ==> Advanced Options [Official/MorphXT] - Stulle
+	if (m_iMaxChatHistory > 2048)  m_iMaxChatHistory = 2048;
+	if (maxmsgsessions > 6000)  maxmsgsessions = 6000;
+	if (maxmsgsessions < 0 )  maxmsgsessions = 0;
+	// <== Advanced Options [Official/MorphXT] - Stulle
 	m_bShowActiveDownloadsBold = ini.GetBool(L"ShowActiveDownloadsBold", false);
 
 	m_strTxtEditor = ini.GetString(L"TxtEditor", L"notepad.exe");
@@ -3597,7 +3682,11 @@ void CPreferences::LoadPreferences()
 	else
 		memset(&m_IPfilterVersion, 0, sizeof m_IPfilterVersion);
 	delete[] pst;
+	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+	/*
 	m_last_ipfilter_check= ini.GetInt(L"lastipfiltercheck", 0);
+	*/
+	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 	//Xman end
 
 	//Xman count block/success send
@@ -3633,6 +3722,20 @@ void CPreferences::LoadPreferences()
 	//Xman end
 	//--------------------------------------------------------------------------
 
+	// ==> Advanced Options [Official/MorphXT] - Stulle
+	bMiniMuleAutoClose=ini.GetBool(_T("MiniMuleAutoClose"),0,_T("eMule"));
+	iMiniMuleTransparency=min(ini.GetInt(_T("MiniMuleTransparency"),0),100); // range 0..100
+	bCheckComctl32 =ini.GetBool(_T("CheckComctl32"),true);
+	bCheckShell32=ini.GetBool(_T("CheckShell32"),true);
+	bIgnoreInstances=ini.GetBool(_T("IgnoreInstance"),false);
+	sNotifierMailEncryptCertName=ini.GetString(_T("NotifierMailEncryptCertName"),L"");
+	sMediaInfo_MediaInfoDllPath=ini.GetString(L"MediaInfo_MediaInfoDllPath",_T("MEDIAINFO.DLL")) ;
+	bMediaInfo_RIFF=ini.GetBool(_T("MediaInfo_RIFF"),true);
+	bMediaInfo_ID3LIB =ini.GetBool(_T("MediaInfo_ID3LIB"),true);
+	sInternetSecurityZone=ini.GetString(_T("InternetSecurityZone"),_T("Untrusted"));
+    m_iDebugSearchResultDetailLevel = ini.GetInt(L"DebugSearchResultDetailLevel", 0); // NOTE: this variable is also initialized to 0 above! 
+	// <== Advanced Options [Official/MorphXT] - Stulle
+
 	uint32 temp;
 	// ==> Global Source Limit [Max/Stulle] - Stulle
 	m_bGlobalHL = ini.GetBool(_T("GlobalHL"), false,_T("ScarAngel"));
@@ -3657,7 +3760,7 @@ void CPreferences::LoadPreferences()
 	showSrcInTitle = ini.GetBool(_T("ShowSrcOnTitle"),false); // Show sources on title - Stulle
 	showOverheadInTitle=ini.GetBool(_T("ShowOverheadOnTitle"),false); // show overhead on title - Stulle
 	ShowGlobalHL = ini.GetBool(_T("ShowGlobalHL"),false); // show global HL - Stulle
-	ShowFileHLconst = ini.GetBool(_T("ShowFileHLconst"),true); // show HL per file constantaniously - Stulle
+	ShowFileHLconst = ini.GetBool(_T("ShowFileHLconst"),true); // show HL per file constantly - Stulle
 	m_bShowInMSN7 = ini.GetBool(_T("ShowInMSN7"), false); //Show in MSN7 [TPT] - Stulle
 	m_bClientQueueProgressBar=ini.GetBool(_T("ClientQueueProgressBar"),true); // Client queue progress bar [Commander] - Stulle
 	m_bShowClientPercentage=ini.GetBool(_T("ShowClientPercentage"),false); // Show Client Percentage optional [Stulle] - Stulle
@@ -3902,6 +4005,20 @@ void CPreferences::LoadPreferences()
 	temp = (temp >= 29 && temp <= 55) ? temp : 29;
 	m_uReAskTimeDif = (temp-29)*60000;
 	// <== Timer for ReAsk File Sources [Stulle] - Stulle
+
+	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+	m_bAutoUpdateAntiLeech=ini.GetBool(_T("AutoUpdateAntiLeech"),false);
+	m_strAntiLeechURL=ini.GetString(L"AntiLeechURL", _T("http://downloads.sourceforge.net/emulextreme/antiLeech.dll.new"));
+	pst = NULL;
+	usize = sizeof m_IP2CountryVersion;
+	if (ini.GetBinary(_T("IP2CountryVersion"), &pst, &usize) && usize == sizeof m_IP2CountryVersion)
+		memcpy(&m_IP2CountryVersion, pst, sizeof m_IP2CountryVersion);
+	else
+		memset(&m_IP2CountryVersion, 0, sizeof m_IP2CountryVersion);
+	delete[] pst;
+	AutoUpdateIP2Country=ini.GetBool(_T("AutoUPdateIP2Country"),false);
+	UpdateURLIP2Country=ini.GetString(L"UpdateURLIP2Country", _T("http://ip-to-country.webhosting.info/downloads/ip-to-country.csv.zip"));
+	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 	LoadStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }

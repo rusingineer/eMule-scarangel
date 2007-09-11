@@ -1,6 +1,43 @@
 CHANGELOG FOR EMULE ScarAngel MOD
 
 
+eMule v0.48a ScarAngel v2.3:
+------------------------
+- XX.XX.2007 -
+-------------------------------------------------------------------------------
+based on eMule 0.48a Xtreme 6.1 compiled with vs2003 SP1
+
+Added: Advanced Options [Official/leuk_he] - Stulle
+Added: handling of one-time-events for Scheduler [Mighty Knife] - Stulle
+Added: Weekly IPFilter update [leuk_he] - Stulle
+Added: IP2Country update [MorphXT] - Stulle
+Added: One click update for antiLeech.dll [Stulle] - Stulle
+Added: Auto update antiLeech.dll [Stulle] - Stulle
+
+Changed: ASFU: Moved EndCall [Stulle] - Stulle
+Changed: AFSU: Reset when en-/disabled [Stulle] - Stulle
+Changed: Update IPFilter on every startup if enabled [Stulle] - Stulle
+
+
+eMule v0.48a ScarAngel v2.2:
+------------------------
+- 08.09.2007 -
+-------------------------------------------------------------------------------
+based on eMule 0.48a Xtreme 6.1 compiled with vs2003 SP1
+
+Changed: Recode of the file settings [Stulle]
+
+Fixed: Crashfix in Upload list (FairPlay code) [Stulle] - Stulle
+Fixed: Odd word invention "constantinously" to "constantly" [LorenzC]- Stulle
+Fixed: Some more mem leaks [fafner] - Stulle
+
+File Settings:
++ all .sivka files will be deleted
++ all settings will be stored in the FileSettings.ini
++ supports all current settings by StulleMule and ScarAngel
++ settings are saved on taking over SivkaFileSettings and on closing eMule
+
+
 eMule v0.48a ScarAngel v2.1:
 ------------------------
 - 13.08.2007 -

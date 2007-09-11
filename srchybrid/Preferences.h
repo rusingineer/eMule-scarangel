@@ -779,6 +779,19 @@ public:
 
 	static BOOL		m_bIsRunningAeroGlass;
 
+	// ==> Advanced Options [Official/MorphXT] - Stulle
+	static bool bMiniMuleAutoClose;
+	static int  iMiniMuleTransparency ;
+	static bool bCheckComctl32 ;
+	static bool bCheckShell32;
+	static bool bIgnoreInstances;
+	static CString sNotifierMailEncryptCertName;
+	static CString sMediaInfo_MediaInfoDllPath ;
+	static bool bMediaInfo_RIFF ;
+	static bool bMediaInfo_ID3LIB; 
+	static CString sInternetSecurityZone;
+	// <== Advanced Options [Official/MorphXT] - Stulle
+
 	// ==> Global Source Limit [Max/Stulle] - Stulle
     static  UINT	m_uGlobalHL;
 	static	bool	m_bGlobalHL;
@@ -796,7 +809,7 @@ public:
 	static bool	showSrcInTitle; // Show sources on title - Stulle
 	static bool	showOverheadInTitle; // show overhead on title - Stulle
 	static bool ShowGlobalHL; // show global HL - Stulle
-	static bool ShowFileHLconst; // show HL per file constantaniously - Stulle
+	static bool ShowFileHLconst; // show HL per file constantly - Stulle
 	static bool m_bShowInMSN7; //Show in MSN7 [TPT] - Stulle
     static bool m_bClientQueueProgressBar; // Client queue progress bar [Commander] - Stulle
 	static bool m_bShowClientPercentage; // Show Client Percentage optional [Stulle] - Stulle
@@ -1055,6 +1068,14 @@ public:
 
 	static uint32	m_uReAskTimeDif; // Timer for ReAsk File Sources [Stulle] - Stulle
 
+	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+	static bool			m_bAutoUpdateAntiLeech;
+	static CString		m_strAntiLeechURL;
+	static SYSTEMTIME	m_IP2CountryVersion;
+	static bool			AutoUpdateIP2Country;
+	static CString		UpdateURLIP2Country;
+	// <== Advanced Updates [MorphXT/Stulle] - Stulle
+
 	enum Table
 	{
 		tableDownload, 
@@ -1286,7 +1307,11 @@ public:
 	static CString GetAutoUpdateIPFilter_URL() {return m_strautoupdateipfilter_url;}
 	static SetAutoUpdateIPFilter_URL(CString in) {m_strautoupdateipfilter_url=in;}
 	static SYSTEMTIME		m_IPfilterVersion;
+	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+	/*
 	static uint32 m_last_ipfilter_check;
+	*/
+	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 	//Xman end
 
 	//Xman count block/success send
@@ -2099,7 +2124,7 @@ public:
 	static	bool	ShowSrcOnTitle()		{ return showSrcInTitle;} // Show sources on title - Stulle
 	static	bool	ShowOverheadOnTitle()	{ return showOverheadInTitle;} // show overhead on title - Stulle
 	static	bool	GetShowGlobalHL()		{ return ShowGlobalHL; } // show global HL - Stulle
-	static	bool	GetShowFileHLconst()	{ return ShowFileHLconst; } // show HL per file constantaniously - Stulle
+	static	bool	GetShowFileHLconst()	{ return ShowFileHLconst; } // show HL per file constantly - Stulle
 	static	bool	GetShowMSN7()			{ return m_bShowInMSN7;} // Show in MSN7 [TPT] - Stulle
 	static	bool	ShowClientQueueProgressBar()	{ return m_bClientQueueProgressBar;} // Client queue progress bar [Commander] - Stulle
 	static	bool	GetShowClientPercentage()	{ return m_bShowClientPercentage;}  // Show Client Percentage optional [Stulle] - Stulle
@@ -2391,6 +2416,15 @@ public:
 	static	bool	GetMaxSlotSpeed()		{ return m_bMaxSlotSpeed; } // Alwasy maximize slot speed [Stulle] - Stulle
 
 	static uint32	GetReAskTimeDif()		{return m_uReAskTimeDif;} // Timer for ReAsk File Sources [Stulle] - Stulle
+
+	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+	static bool			IsAutoUpdateAntiLeech()			{return m_bAutoUpdateAntiLeech;}
+	static CString		GetAntiLeechURL()				{return m_strAntiLeechURL;}
+	static LPSYSTEMTIME	GetIPfilterVersion()			{return &m_IPfilterVersion;}
+	static LPSYSTEMTIME	GetIP2CountryVersion()			{return &m_IP2CountryVersion;}
+	static bool			IsAutoUPdateIP2CountryEnabled()	{return AutoUpdateIP2Country;}
+	static CString		GetUpdateURLIP2Country()		{return UpdateURLIP2Country;}
+	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 protected:
 	static	CString m_strFileCommentsFilePath;
