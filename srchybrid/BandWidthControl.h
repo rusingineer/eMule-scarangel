@@ -195,7 +195,9 @@ private:
 
    // ==> Enforce Ratio [Stulle] - Stulle
 	float m_maxforcedDownloadlimitEnforced;
+	float m_fMaxDownloadEqualUploadLimit;
 public:
 	float GetForcedDownloadlimitEnforced() const {return m_maxforcedDownloadlimitEnforced;}
+	float GetMaxDownloadEqualUploadLimit() const {return m_fMaxDownloadEqualUploadLimit;}
    // <== Enforce Ratio [Stulle] - Stulle
 };

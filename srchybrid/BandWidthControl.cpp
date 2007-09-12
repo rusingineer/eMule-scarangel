@@ -86,7 +86,10 @@ CBandWidthControl::CBandWidthControl()
    wasNAFCLastActive=thePrefs.GetNAFCFullControl();
    boundIP=0;
 
-	m_maxforcedDownloadlimitEnforced=0; // Enforce Ratio [Stulle] - Stulle
+   // ==> Enforce Ratio [Stulle] - Stulle
+	m_maxforcedDownloadlimitEnforced=0;
+	m_fMaxDownloadEqualUploadLimit=0.0f;
+	// <== Enforce Ratio [Stulle] - Stulle
 }
 
 CBandWidthControl::~CBandWidthControl(){
@@ -426,6 +429,7 @@ void CBandWidthControl::Process()
 		if(thePrefs.m_bAcceptsourcelimit==false) //only if user doesn't accept it
 		*/
 		m_maxforcedDownloadlimitEnforced=m_maxDownloadLimit; //initialize with the standard
+		m_fMaxDownloadEqualUploadLimit=m_maxDownloadLimit; //initialize with the standard
 		if(thePrefs.m_bAcceptsourcelimit==false || thePrefs.GetEnforceRatio())
 		// <== Enforce Ratio [Stulle] - Stulle
 		{
@@ -453,6 +457,13 @@ void CBandWidthControl::Process()
 				}
 				if(m_maxforcedDownloadlimitEnforced<1.0f)
 					m_maxforcedDownloadlimitEnforced=1.0f;
+
+				float fMaxDownloadEqualUploadLimit = (float)eMuleOut / 1024.0f; // [KB/s]
+				if(fMaxDownloadEqualUploadLimit < m_fMaxDownloadEqualUploadLimit){
+					m_fMaxDownloadEqualUploadLimit = fMaxDownloadEqualUploadLimit;
+				}
+				if(m_fMaxDownloadEqualUploadLimit<1.0f)
+					m_fMaxDownloadEqualUploadLimit=1.0f;
 				// <== Enforce Ratio [Stulle] - Stulle
 			}
 		}
@@ -607,8 +618,11 @@ float CBandWidthControl::GetMaxDownloadEx(uint8 force)
 {
 	if(force == 2)
 	{
-		int eMuleOut = (int)(GeteMuleOut()*((float)(thePrefs.GetRatioValue()*.8f)));
-		if(GeteMuleIn() > eMuleOut)
+		int eMuleOutMax = (int)(GeteMuleOut()*thePrefs.GetRatioValue());
+		int eMuleOutThres = (int)(GeteMuleOut()*((float)(thePrefs.GetRatioValue()-0.1f)));
+		if(GeteMuleIn() > eMuleOutMax)
+			return GetMaxDownloadEqualUploadLimit();
+		else if(GeteMuleIn() > eMuleOutThres)
 			return GetForcedDownloadlimitEnforced();
 	}
 	else if(force == 1 && GeteMuleIn()>GeteMuleOut()*3) //session/amount based ratio

@@ -4007,7 +4007,7 @@ void CPreferences::LoadPreferences()
 	// <== Timer for ReAsk File Sources [Stulle] - Stulle
 
 	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
-	m_bAutoUpdateAntiLeech=ini.GetBool(_T("AutoUpdateAntiLeech"),false);
+	m_bAutoUpdateAntiLeech=ini.GetBool(_T("AutoUpdateAntiLeech"),true);
 	m_strAntiLeechURL=ini.GetString(L"AntiLeechURL", _T("http://downloads.sourceforge.net/emulextreme/antiLeech.dll.new"));
 	pst = NULL;
 	usize = sizeof m_IP2CountryVersion;
@@ -4016,7 +4016,7 @@ void CPreferences::LoadPreferences()
 	else
 		memset(&m_IP2CountryVersion, 0, sizeof m_IP2CountryVersion);
 	delete[] pst;
-	AutoUpdateIP2Country=ini.GetBool(_T("AutoUPdateIP2Country"),false);
+	AutoUpdateIP2Country=ini.GetBool(_T("AutoUPdateIP2Country"),true);
 	UpdateURLIP2Country=ini.GetString(L"UpdateURLIP2Country", _T("http://ip-to-country.webhosting.info/downloads/ip-to-country.csv.zip"));
 	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
@@ -4034,6 +4034,7 @@ void CPreferences::CheckSlotSpeed()
 		maxSlotSpeed=maxupload/(3+(maxupload-10)/20);
 	if (maxSlotSpeed>XTREME_MAX_SLOTSPEED)
 		maxSlotSpeed=XTREME_MAX_SLOTSPEED;
+	maxSlotSpeed*=1.25f; // m000h
 	if(m_slotspeed>maxSlotSpeed)
 		m_slotspeed=maxSlotSpeed;
 	// ==> Alwasy maximize slot speed [Stulle] - Stulle
@@ -4208,7 +4209,7 @@ void CPreferences::LoadCats() {
 	else
 	{
 		//ini.SetFileName(strCatIniFilePath);
-		if (ini.GetInt(_T("CategoryVersion"), 0, L"Default") == 0)
+		if (ini.GetInt(_T("CategoryVersion"), 0, L"General") == 0)
 			bCreateDefault = true;
 	}
 

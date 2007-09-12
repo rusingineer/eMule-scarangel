@@ -34,6 +34,8 @@ the IP to country data is provided by http://ip-to-country.webhosting.info/
 // ==> Advanced Updates [MorphXT/Stulle] - Stulle
 #include "HttpDownloadDlg.h"
 #include "ZipFile.h"
+#include "serverlist.h"
+#include "clientlist.h"
 // <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 #ifdef _DEBUG
@@ -101,6 +103,7 @@ void CIP2Country::Load(){
 	EnableIP2Country = LoadFromFile();
 
 	//if(m_bRunning) Reset(); //Xman not needed
+	if(m_bRunning) Reset(); // Advanced Updates [MorphXT/Stulle] - Stulle
 	CountryIDtoFlagIndex.RemoveAll(); //Xman after loading /mapping we don't need it anymore
 
 	AddLogLine(false, GetResString(IDS_IP2COUNTRY_LOADED));
@@ -112,6 +115,7 @@ void CIP2Country::Unload(){
 	EnableCountryFlag = false;
 
 	//if(m_bRunning) Reset(); //Xman not needed
+	if(m_bRunning) Reset(); // Advanced Updates [MorphXT/Stulle] - Stulle
 
 	RemoveAllIPs();
 	RemoveAllFlags();
@@ -120,11 +124,12 @@ void CIP2Country::Unload(){
 }
 
 /* //Xman not needed
+Advanced Updates [MorphXT/Stulle] - Stulle */
 void CIP2Country::Reset(){
 	theApp.serverlist->ResetIP2Country();
 	theApp.clientlist->ResetIP2Country();
 }
-
+/* Advanced Updates [MorphXT/Stulle] - Stulle
 void CIP2Country::Refresh(){
 	theApp.emuledlg->serverwnd->serverlistctrl.RefreshAllServer();
 }

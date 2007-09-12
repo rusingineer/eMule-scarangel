@@ -17,6 +17,16 @@ Added: Auto update antiLeech.dll [Stulle] - Stulle
 Changed: ASFU: Moved EndCall [Stulle] - Stulle
 Changed: AFSU: Reset when en-/disabled [Stulle] - Stulle
 Changed: Update IPFilter on every startup if enabled [Stulle] - Stulle
+Changed: antiLeech.dll, ip-to-country.csv & ipfilter.dat not in BIN pack [Stulle] - Stulle
+	+ files will be updated/ downloaded on startup by default
+Changed: Auto update IPFilter migrated to Update tab [Stulle] - Stulle
+Changed: Enforce Ratio will start when configured ratio-0.1 reached [Stulle] - Stulle
+	+ Examples: 1:1 -> 1:0.9 ; 1:3 -> 1:2.9 ; 1:5 -> 1:4.9 ; ...
+Changed: Enforce 1:1 ratio when configured enforce ratio exceeded [Stulle] - Stulle
+Changed: Increased max slotspeed by 25% [Stulle] - Stulle
+	+ WARNING: If your upload is less stable decrease your slotspeed!
+
+Fixed: Loading of Cat version (fix default cat settings) [Stulle] - Stulle
 
 
 eMule v0.48a ScarAngel v2.2:

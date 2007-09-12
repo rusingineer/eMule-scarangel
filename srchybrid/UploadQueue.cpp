@@ -587,13 +587,29 @@ bool CUploadQueue::AcceptNewClient(bool addOnNextConnect)
 	//Xman Xtreme Upload
 
 	uint16 MinSlots=(uint16)ceil(thePrefs.GetMaxUpload()/thePrefs.m_slotspeed  );
+	// ==> m000h
+	/*
 	if(MinSlots<3) MinSlots=3; 
+	*/
+	MinSlots--; // MinSlots is min 1 and gets no lower than 0 here
+	if(MinSlots<2) MinSlots=2; 
+	// <== m000h
 	uint16 MaxSlots=0;
 	
 	if(thePrefs.m_slotspeed>6)
+		// ==> m000h
+		/*
 		MaxSlots=max(MaxSlots,(uint16)ceil(thePrefs.GetMaxUpload()/4));
+		*/
+		MaxSlots=max(1,(uint16)ceil(thePrefs.GetMaxUpload()/4)-1);
+		// <== m000h
 	else 	if(thePrefs.m_slotspeed>4)
+		// ==> m000h
+		/*
 		MaxSlots=max(MaxSlots,(uint16)ceil(thePrefs.GetMaxUpload()/3));
+		*/
+		MaxSlots=max(1,(uint16)ceil(thePrefs.GetMaxUpload()/3)-1);
+		// <== m000h
 	else
 		MaxSlots=max((uint16)ceil(MinSlots*1.33),(uint16)ceil(thePrefs.m_slotspeed) + MinSlots);
 

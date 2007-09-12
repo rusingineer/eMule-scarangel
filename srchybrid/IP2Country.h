@@ -36,6 +36,7 @@ class CIP2Country
 
 		//reset ip2country referense
 		//void	Reset();
+		void	Reset(); // Advanced Updates [MorphXT/Stulle] - Stulle
 
 		//refresh passive windows
 		void	Refresh();
