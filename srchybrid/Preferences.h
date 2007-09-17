@@ -2424,6 +2424,7 @@ public:
 	static LPSYSTEMTIME	GetIP2CountryVersion()			{return &m_IP2CountryVersion;}
 	static bool			IsAutoUPdateIP2CountryEnabled()	{return AutoUpdateIP2Country;}
 	static CString		GetUpdateURLIP2Country()		{return UpdateURLIP2Country;}
+    static void			SetBindAddr(CStringW bindip);
 	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 protected:

@@ -567,12 +567,14 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					}
 					// <== Fair Play [AndCycle/Stulle] - Stulle
 					// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
-					if(client->IsPBFClient())
+					if(client->IsPBFClient()) // client->credits != NULL here
 					{
 						if (client->IsSecure())
 							Sbuffer.Append(_T(",PBF"));
 						else
 							Sbuffer.Append(_T(",PBF II"));
+
+						Sbuffer.AppendFormat(_T(" (%s)"),CastItoXBytes(client->credits->GetDownloadedTotal()-client->credits->GetUploadedTotal()));
 					}
 					// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 					break;

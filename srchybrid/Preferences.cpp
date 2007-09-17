@@ -2517,7 +2517,7 @@ void CPreferences::SavePreferences()
 	//--------------------------------------------------------------------------
 
 	// ==> Advanced Options [Official/MorphXT] - Stulle
-	ini.WriteBool(_T("MiniMuleAutoClose"),bMiniMuleAutoClose);
+	ini.WriteBool(_T("MiniMuleAutoClose"),bMiniMuleAutoClose,L"eMule");
 	ini.WriteInt(_T("MiniMuleTransparency"),iMiniMuleTransparency);
 	ini.WriteBool(_T("CheckComctl32"),bCheckComctl32 );
 	ini.WriteBool(_T("CheckShell32"),bCheckShell32);
@@ -2547,12 +2547,18 @@ void CPreferences::SavePreferences()
     ini.WriteBool(L"PreferRestrictedOverUser",m_bPreferRestrictedOverUser);
 	ini.WriteBool(L"UserSortedServerList",m_bUseUserSortedServerList);
 	ini.WriteInt(L"CryptTCPPaddingLength",m_byCryptTCPPaddingLength);
+    ini.WriteBool(L"DontCompressAvi",dontcompressavi);
+    ini.WriteBool(L"ShowCopyEd2kLinkCmd",m_bShowCopyEd2kLinkCmd);
+    ini.WriteBool(L"IconflashOnNewMessage",m_bIconflashOnNewMessage);
+    ini.WriteBool(L"ReBarToolbar",m_bReBarToolbar);
+	ini.WriteString(L"BindAddr",m_pszBindAddrW);
 	ini.WriteInt(L"MaxFileUploadSizeMB",m_iWebFileUploadSizeLimitMB, L"WebServer" );//section WEBSERVER start
 	CString WriteAllowedIPs ;
 	if (GetAllowedRemoteAccessIPs().GetCount() > 0)
 		for (int i = 0; i <  GetAllowedRemoteAccessIPs().GetCount(); i++)
            WriteAllowedIPs = WriteAllowedIPs  + _T(";") + ipstr(GetAllowedRemoteAccessIPs()[i]);
     ini.WriteString(L"AllowedIPs",WriteAllowedIPs);  // End Seciotn Webserver
+    ini.WriteBool(L"ShowVerticalHourMarkers",m_bShowVerticalHourMarkers,L"Statistics");
 	// <== Advanced Options [Official/MorphXT] - Stulle
 
 	// ==> Global Source Limit [Max/Stulle] - Stulle
@@ -4034,7 +4040,7 @@ void CPreferences::CheckSlotSpeed()
 		maxSlotSpeed=maxupload/(3+(maxupload-10)/20);
 	if (maxSlotSpeed>XTREME_MAX_SLOTSPEED)
 		maxSlotSpeed=XTREME_MAX_SLOTSPEED;
-	maxSlotSpeed*=1.25f; // m000h
+	maxSlotSpeed*=1.25f; // Increase Slotspeed [Stulle] - Stulle
 	if(m_slotspeed>maxSlotSpeed)
 		m_slotspeed=maxSlotSpeed;
 	// ==> Alwasy maximize slot speed [Stulle] - Stulle
@@ -5782,3 +5788,14 @@ uint16	CPreferences::GetUDPPort(bool newPort, bool original, bool reset){
 	return m_iCurrentUDPRndPort;
 }
 // <== Random Ports [MoNKi] - Stulle
+
+// ==> Advanced Options [Official/MorphXT] - Stulle
+void CPreferences::SetBindAddr(CStringW bindip)
+{
+	m_strBindAddrW = bindip;
+	m_strBindAddrW.Trim();
+	m_pszBindAddrW = m_strBindAddrW.IsEmpty() ? NULL : (LPCWSTR)m_strBindAddrW;
+	m_strBindAddrA = m_strBindAddrW;
+	m_pszBindAddrA = m_strBindAddrA.IsEmpty() ? NULL : (LPCSTR)m_strBindAddrA;
+}
+// <== Advanced Options [Official/MorphXT] - Stulle

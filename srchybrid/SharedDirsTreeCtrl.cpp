@@ -447,8 +447,8 @@ void CSharedDirsTreeCtrl::CreateMenues()
 	m_ShareDirsMenu.AppendMenu(MF_STRING|MF_SEPARATOR);	
 	m_ShareDirsMenu.AppendMenu(MF_STRING,MP_OPENFOLDER,GetResString(IDS_OPENFOLDER));
 	*/
-	m_ShareDirsMenu.AppendMenu(MF_STRING,MP_SHAREDIR,GetResString(IDS_SHAREDIR), _T("SHAREDFILES"));
-	m_ShareDirsMenu.AppendMenu(MF_STRING,MP_SHAREDIRSUB,GetResString(IDS_SHAREDIRSUB), _T("SHAREDFILES"));
+	m_ShareDirsMenu.AppendMenu(MF_STRING,MP_SHAREDIR,GetResString(IDS_SHAREDIR), _T("SHAREDIR"));
+	m_ShareDirsMenu.AppendMenu(MF_STRING,MP_SHAREDIRSUB,GetResString(IDS_SHAREDIRSUB), _T("SHAREDIR"));
 	m_ShareDirsMenu.AppendMenu(MF_STRING|MF_SEPARATOR);	
 	m_ShareDirsMenu.AppendMenu(MF_STRING,MP_UNSHAREDIR,GetResString(IDS_UNSHAREDIR), _T("NOTSHARED"));
 	m_ShareDirsMenu.AppendMenu(MF_STRING,MP_UNSHAREDIRSUB,GetResString(IDS_UNSHAREDIRSUB), _T("NOTSHARED"));

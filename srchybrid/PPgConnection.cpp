@@ -783,7 +783,7 @@ void CPPgConnection::CalculateMaxUpSlotSpeed()
 	if (maxUp<6) maxSlotSpeed=2.0f;
 	if (maxUp>=10)
 		maxSlotSpeed=maxUp/(3+(maxUp-10)/20.0f);
-	maxSlotSpeed*=1.25f; // m000h
+	maxSlotSpeed*=1.25f; // Increase Slotspeed [Stulle] - Stulle
 	if (maxSlotSpeed>XTREME_MAX_SLOTSPEED)
 		maxSlotSpeed=XTREME_MAX_SLOTSPEED;
 	float a=ceil(maxSlotSpeed*10.0f);

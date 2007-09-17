@@ -569,7 +569,6 @@ protected:
 	bool m_bPreviewOnIconDblClk;
 	CString sInternetSecurityZone;
 	CString sTxtEditor;
-	CString sdatetimeformat;
 	int iServerUDPPort; // really a unsigned int 16
 	bool m_bRemoveFilesToBin;
     bool m_bHighresTimer;
@@ -582,6 +581,19 @@ protected:
     CString m_sAllowedIPs;
 	int m_iDebugSearchResultDetailLevel;
 	int m_iCryptTCPPaddingLength ;
+	bool m_bAdjustNTFSDaylightFileTime;
+	CString m_strDateTimeFormat;
+	CString m_strDateTimeFormat4Log;
+	COLORREF m_crLogError;
+	COLORREF m_crLogWarning;
+	COLORREF m_crLogSuccess;
+	bool m_bShowVerticalHourMarkers;
+	bool m_bReBarToolbar;
+	bool m_bIconflashOnNewMessage;
+	bool m_bShowCopyEd2kLinkCmd;
+	bool m_dontcompressavi;
+	bool m_ICH;
+	DWORD m_dwBindAddr;
 
 	CTreeOptionsCtrlEx m_ctrlAdvTreeOptions;
 	bool m_bInitializedAdvTreeOpts;
@@ -596,13 +608,20 @@ protected:
 	HTREEITEM m_hti_bMediaInfo_ID3LIB;
 
 	HTREEITEM m_hti_AdvDisplay;
-	HTREEITEM m_hti_iMaxLogBuff;
 	HTREEITEM m_hti_m_iMaxChatHistory;
 	HTREEITEM m_hti_m_bRestoreLastMainWndDlg;
 	HTREEITEM m_hti_m_bRestoreLastLogPane;
 	HTREEITEM m_hti_m_iStraightWindowStyles;
 	HTREEITEM m_hti_m_bRTLWindowsLayout;
 	HTREEITEM m_hti_maxmsgsessions;
+
+	HTREEITEM m_hti_Log;
+	HTREEITEM m_hti_iMaxLogBuff;
+	HTREEITEM m_htidatetimeformat;
+	HTREEITEM m_htidatetimeformat4log;
+	HTREEITEM m_htiLogError;
+	HTREEITEM m_htiLogWarning;
+	HTREEITEM m_htiLogSuccess;
 
 	HTREEITEM m_hti_bCheckComctl32 ;
 	HTREEITEM m_hti_bCheckShell32;
@@ -614,7 +633,6 @@ protected:
 	HTREEITEM m_hti_m_bPreviewOnIconDblClk;
 	HTREEITEM m_hti_sInternetSecurityZone;
 	HTREEITEM m_hti_sTxtEditor;
-	HTREEITEM m_hti_sdatetimeformat;
 	HTREEITEM m_hti_iServerUDPPort;
 	HTREEITEM m_hti_m_bRemoveFilesToBin;
 	HTREEITEM m_hti_HighresTimer;
@@ -626,6 +644,14 @@ protected:
 	HTREEITEM m_hti_UseUserSortedServerList;
 	HTREEITEM m_hti_DebugSearchResultDetailLevel;
 	HTREEITEM m_htiCryptTCPPaddingLength;
+	HTREEITEM m_htiAdjustNTFSDaylightFileTime;
+	HTREEITEM m_htiShowVerticalHourMarkers;
+	HTREEITEM m_htiReBarToolbar;
+	HTREEITEM m_htiIconflashOnNewMessage;
+	HTREEITEM m_htiShowCopyEd2kLinkCmd;
+	HTREEITEM m_htidontcompressavi;
+	HTREEITEM m_htiICH;
+	HTREEITEM  m_htiBindAddr;
 	// <== Advanced Options [Official/MorphXT] - Stulle
 
 	// ==> Advanced Updates [MorphXT/Stulle] - Stulle

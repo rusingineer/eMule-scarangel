@@ -572,7 +572,12 @@
 #endif
 #define DISPLAY_REFRESH			1			// GUI refresh rate in [s] (emule default is 3 [s])
 #define DISPLAY_REFRESH_CLIENTLIST			3*DISPLAY_REFRESH //GUI clientlist refresh
+// ==> Increase Slotspeed [Stulle] - Stulle
+/*
 #define XTREME_MAX_SLOTSPEED	15
+*/
+#define XTREME_MAX_SLOTSPEED	19 // increased by 26.6666% to get int value
+// <== Increase Slotspeed [Stulle] - Stulle
 // Maella end
 
 
