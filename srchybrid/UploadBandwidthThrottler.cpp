@@ -759,7 +759,7 @@ UINT UploadBandwidthThrottler::RunInternal() {
 
 		if(thePrefs.GetNAFCFullControl()==true && uSlopehelp_minUpload>uSlopehelp)
 		{
-			if(thePrefs.GetIgnoreThird() && theApp.pBandWidthControl->GeteMuleIn() > theApp.pBandWidthControl->GeteMuleOut())
+			if(thePrefs.GetIgnoreThird() && theApp.pBandWidthControl->GeteMuleIn() < (theApp.pBandWidthControl->GeteMuleOut()*2))
 			{
 				if(uSlopehelp>uSlopehelp_tinyUpload)
 					uSlope=uSlopehelp;

@@ -1265,7 +1265,9 @@ bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReaso
 				{
 					//client->Credits()->SaveUploadQueueWaitTime();
 				}
-				else if(client->GetSessionUp() < PARTSIZE)
+				else if(client->GetSessionUp() < 9437184 && // 9MB
+					(theApp.clientcredits->IsSaveUploadQueueWaitTime() || thePrefs.TransferFullChunks()) && // always for SUQWT, else only if full chunk
+					reason == CUpDownClient::USR_COMPLETEDRANSFER) // only if completed end
 				{
 					uint32 waitingtime= (uint32)(client->GetWaitTime() );
 					int keeppct = (int)(100 * client->GetSessionUp()/PARTSIZE);
@@ -1274,8 +1276,16 @@ bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReaso
 					keeppct = 100 - keeppct;
 					client->Credits()->SaveUploadQueueWaitTime(keeppct);
 					client->Credits()->SetSecWaitStartTime(keeppct);
-					client->SetGiveWaittimeBack(true);
-					AddDebugLogLine(false, _T("giving client bonus. old waitingtime: %s, new waitingtime: %s, client: %s"), CastSecondsToHM(waitingtime/1000), CastSecondsToHM((::GetTickCount() - client->GetWaitStartTime())/1000),client->DbgGetClientInfo()); 
+					if((::GetTickCount() - client->GetWaitStartTime())<waitingtime)
+					{
+						client->SetGiveWaittimeBack(true);
+						AddDebugLogLine(false, _T("giving client bonus. old waitingtime: %s, new waitingtime: %s, client: %s"), CastSecondsToHM(waitingtime/1000), CastSecondsToHM((::GetTickCount() - client->GetWaitStartTime())/1000),client->DbgGetClientInfo()); 
+					}
+					else
+					{
+						client->Credits()->ClearUploadQueueWaitTime();
+						client->Credits()->ClearWaitStartTime();
+					}
 				}
 				else
 				{
@@ -1389,15 +1399,19 @@ bool CUploadQueue::CheckForTimeOver(CUpDownClient* client){
 
 	bool returnvalue=false;
 
-    if( client->GetUpStartTimeDelay() > SESSIONMAXTIME){ // Try to keep the clients from downloading for ever
-	    if (thePrefs.GetLogUlDlEvents())
-		    AddDebugLogLine(DLP_LOW, false, _T("%s: Upload session will end soon due to max time %s."), client->GetUserName(), CastSecondsToHM(SESSIONMAXTIME/1000));
-	    returnvalue=true;
-    }
+	if(client->IsPBFClient()==false && // Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+		!(client->IsFriend() && client->GetFriendSlot())){ // Override max upload session time for friends [Stulle] - Stulle
+		if( client->GetUpStartTimeDelay() > SESSIONMAXTIME){ // Try to keep the clients from downloading for ever
+			if (thePrefs.GetLogUlDlEvents())
+				AddDebugLogLine(DLP_LOW, false, _T("%s: Upload session will end soon due to max time %s."), client->GetUserName(), CastSecondsToHM(SESSIONMAXTIME/1000));
+			returnvalue=true;
+		}
+	} // Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 
 
 	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
-	if(client->IsPBFClient())
+	if(client->IsPBFClient() ||
+		(client->IsFriend() && client->GetFriendSlot())) // Keep friends in upload like PBF clients [Stulle] - Stulle
 	{
 		// still pay back first
 		// do nothing

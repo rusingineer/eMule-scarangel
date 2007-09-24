@@ -613,23 +613,25 @@ float CBandWidthControl::GetMaxDownloadEx(bool force)
 	if(force && GeteMuleIn()>GeteMuleOut()*3) //session/amount based ratio
 		return GetForcedDownloadlimit();
 	//Xman end
+
+   if(thePrefs.Is13Ratio() && GeteMuleIn()<=GeteMuleOut()*3) 
 */
 float CBandWidthControl::GetMaxDownloadEx(uint8 force)
 {
+	uint64 ueMuleOut = GeteMuleOut();
+	uint64 ueMuleIn = GeteMuleIn();
 	if(force == 2)
 	{
-		int eMuleOutMax = (int)(GeteMuleOut()*thePrefs.GetRatioValue());
-		int eMuleOutThres = (int)(GeteMuleOut()*((float)(thePrefs.GetRatioValue()-0.1f)));
-		if(GeteMuleIn() > eMuleOutMax)
+		if(ueMuleIn > (ueMuleOut*thePrefs.GetRatioValue()))
 			return GetMaxDownloadEqualUploadLimit();
-		else if(GeteMuleIn() > eMuleOutThres)
+		else if(ueMuleIn > (ueMuleOut*((float)(thePrefs.GetRatioValue()-0.1f))))
 			return GetForcedDownloadlimitEnforced();
 	}
-	else if(force == 1 && GeteMuleIn()>GeteMuleOut()*3) //session/amount based ratio
+	else if(force == 1 && ueMuleIn>ueMuleOut*3) //session/amount based ratio
 		return GetForcedDownloadlimit();
-// <== Enforce Ratio [Stulle] - Stulle
 
-   if(thePrefs.Is13Ratio() && GeteMuleIn()<=GeteMuleOut()*3) 
+   if(thePrefs.Is13Ratio() && ueMuleIn<=ueMuleOut*3) 
+// <== Enforce Ratio [Stulle] - Stulle
        return UNLIMITED;
    else
       if(thePrefs.GetNAFCFullControl()==true)
