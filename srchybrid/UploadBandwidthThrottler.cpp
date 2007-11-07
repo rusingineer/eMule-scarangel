@@ -754,10 +754,10 @@ UINT UploadBandwidthThrottler::RunInternal() {
 		if(thePrefs.GetNAFCFullControl()==true && uSlopehelp_minUpload>uSlopehelp)
 			uSlope=uSlopehelp_minUpload;
 		*/
-		if(uSlopehelp_tinyUpload > allowedDataRate*MAXSLOPEBUFFERTIME*0.25f) 
-			uSlopehelp_tinyUpload=(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.25f); 
-		else if(uSlopehelp_tinyUpload < -(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.25f)) 
-			uSlopehelp_tinyUpload=-((sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.25f));
+		if(uSlopehelp_tinyUpload > 2048*MAXSLOPEBUFFERTIME*0.25f) 
+			uSlopehelp_tinyUpload=(sint64)(2048*MAXSLOPEBUFFERTIME*0.25f); 
+		else if(uSlopehelp_tinyUpload < -(sint64)(2048*MAXSLOPEBUFFERTIME*0.25f)) 
+			uSlopehelp_tinyUpload=-((sint64)(2048*MAXSLOPEBUFFERTIME*0.25f));
 
 		if(thePrefs.GetNAFCFullControl()==true && // NAFC enabled
 			thePrefs.GetIgnoreThird() && // ignore the third
