@@ -727,7 +727,9 @@ UINT UploadBandwidthThrottler::RunInternal() {
 		const uint32 toadd=(uint32)(allowedDataRate*(float)timeSinceLastLoop/1000);
 		uSlopehelp +=toadd;
 		uSlopehelp_minUpload += (uint32)(toadd*0.33f); //Xman 4.4 Code-Improvement: reserve 1/3 of your uploadlimit for emule
-		uSlopehelp_tinyUpload += (uint32)(2048*(float)timeSinceLastLoop/1000); // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
+		// ==> Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
+		uSlopehelp_tinyUpload += (uint32)(2048*(float)timeSinceLastLoop/1000);
+		// <== Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
 
 
 		// Keep current value for next processing    
@@ -757,18 +759,13 @@ UINT UploadBandwidthThrottler::RunInternal() {
 		else if(uSlopehelp_tinyUpload < -(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.25f)) 
 			uSlopehelp_tinyUpload=-((sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.25f));
 
-		if(thePrefs.GetNAFCFullControl()==true && uSlopehelp_minUpload>uSlopehelp)
-		{
-			if(thePrefs.GetIgnoreThird() && theApp.pBandWidthControl->GeteMuleIn() < (theApp.pBandWidthControl->GeteMuleOut()*2))
-			{
-				if(uSlopehelp>uSlopehelp_tinyUpload)
-					uSlope=uSlopehelp;
-				else
-					uSlope=uSlopehelp_tinyUpload;
-			}
-			else
-				uSlope=uSlopehelp_minUpload;
-		}
+		if(thePrefs.GetNAFCFullControl()==true && // NAFC enabled
+			thePrefs.GetIgnoreThird() && // ignore the third
+			theApp.pBandWidthControl->GeteMuleIn() <= (theApp.pBandWidthControl->GeteMuleOut()*2) && // ratio max 1:2
+			uSlopehelp_tinyUpload>uSlopehelp)
+			uSlope=uSlopehelp_tinyUpload;
+		else if(thePrefs.GetNAFCFullControl()==true && uSlopehelp_minUpload>uSlopehelp)
+			uSlope=uSlopehelp_minUpload;
 		// <== Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
 		else
 			uSlope=uSlopehelp;

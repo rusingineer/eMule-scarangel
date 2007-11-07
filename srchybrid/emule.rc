@@ -304,6 +304,9 @@ BEGIN
     GROUPBOX        "Update server.met from URL",IDC_SSTATIC6,367,117,139,46
     EDITTEXT        IDC_SERVERMETURL,372,129,119,12,ES_AUTOHSCROLL
     PUSHBUTTON      "v",IDC_DD,491,129,11,12,BS_CENTER
+    // ==> Links for Server list and nodes file [Stulle] - Stulle
+    PUSHBUTTON      "Server lists",IDC_SERVER_LISTS,373,145,66,13
+    // <== Links for Server list and nodes file [Stulle] - Stulle
     PUSHBUTTON      "Update",IDC_UPDATESERVERMETFROMURL,445,145,57,13
     GROUPBOX        "My Info",IDC_MYINFO,367,164,139,122
     CONTROL         "",IDC_MYINFOLIST,"RichEdit20A",ES_MULTILINE | 
@@ -1584,7 +1587,13 @@ BEGIN
                     ES_NUMBER
     CONTROL         "from connected clients",IDC_RADCLIENTS,"Button",
                     BS_AUTORADIOBUTTON,364,79,134,8
+// ==> Links for Server list and nodes file [Stulle] - Stulle
+/*
     PUSHBUTTON      "BootStrap",IDC_BOOTSTRAPBUTTON,376,92,68,13
+*/
+    PUSHBUTTON      "BootStrap",IDC_BOOTSTRAPBUTTON,364,92,68,13
+    PUSHBUTTON      "Nodes File",IDC_NODESFILEBUTTON,438,92,62,13
+// <== Links for Server list and nodes file [Stulle] - Stulle
     CONTROL         "",IDC_SEARCHLIST,"SysListView32",LVS_REPORT | 
                     LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | WS_BORDER | 
                     WS_TABSTOP,5,182,501,104
@@ -3182,14 +3191,14 @@ XTREME                  ICON                    "res\\Mule.ico"
 DROPDEFAULTS            ICON                    "res\\DropDefaults.ico"
 CLIENTCREDITOVL         ICON                    "res\\CreditOvl.ico"
 CLIENTCREDITSECUREOVL   ICON                    "res\\CreditSecureOvl.ico"
-MAXMOD                  ICON                    "res\\iconmax.ico"
 STULLE                  ICON                    "res\\iconstulle.ico"
 MORPH                   ICON                    "res\\Morph.ico"
 EASTSHARE               ICON                    "res\\EastShare.ico"
-IONIX                   ICON                    "res\\ionix.ico"
-CYREX                   ICON                    "res\\Cyrex2001.ico"
-NEXTEMF                 ICON                    "res\\nextEMF.ico"
+EMF                     ICON                    "res\\emulefuture.ico"
 NEO                     ICON                    "res\\Client-Neo.ico"
+MEPHISTO                ICON                    "res\\mephisto.ico"
+XRAY                    ICON                    "res\\Xray.ico"
+MAGIC                   ICON                    "res\\MagicAngel.ico"
 FUNNYNICK               ICON                    "res\\FunnyNick.ico"
 QUICKSTART              ICON                    "res\\quickstart.ico"
 SYSINFO                 ICON                    "res\\SysInfo.ico"
@@ -5936,6 +5945,10 @@ BEGIN
     IDS_AUTODLPFAILED       "Failed to check DLP version."
     IDS_ANTILEECH_DWNFILE   "Downloading DLP file"
     // <== Advanced Updates [MorphXT/Stulle] - Stulle
+    // ==> Links for Server list and nodes file [Stulle] - Stulle
+    IDS_NODESFILEBUTTON     "Nodes File"
+    IDS_SERVER_LISTS        "Server lists"
+    // <== Links for Server list and nodes file [Stulle] - Stulle
 END
 
 #endif    // Englisch (USA) resources

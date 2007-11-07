@@ -167,6 +167,8 @@ bool CServerList::Init()
 	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
 	if(thePrefs.IsAutoUpdateAntiLeech())
 		theApp.emuledlg->DoDLPVersioncheck();
+	if(thePrefs.IsAutoUPdateIP2CountryEnabled())
+		theApp.ip2country->UpdateIP2CountryURL();
 	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 	// ZZ:UploadSpeedSense -->

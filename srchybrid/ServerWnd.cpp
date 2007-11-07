@@ -70,6 +70,7 @@ BEGIN_MESSAGE_MAP(CServerWnd, CResizableDialog)
 	ON_STN_DBLCLK(IDC_SERVLST_ICO, OnStnDblclickServlstIco)
 	ON_NOTIFY(UM_SPN_SIZED, IDC_SPLITTER_SERVER, OnSplitterMoved)
 	ON_WM_CTLCOLOR() // Design Settings [eWombat/Stulle] - Max
+	ON_BN_CLICKED(IDC_SERVER_LISTS, OnBnClickedServerLists) // Links for Server list and nodes file [Stulle] - Stulle
 END_MESSAGE_MAP()
 
 CServerWnd::CServerWnd(CWnd* pParent /*=NULL*/)
@@ -248,6 +249,7 @@ BOOL CServerWnd::OnInitDialog()
 	AddAnchor(m_ctrlUpdateServerFrm, TOP_RIGHT);
 	AddAnchor(IDC_SERVERMETURL, TOP_RIGHT);
 	AddAnchor(IDC_UPDATESERVERMETFROMURL, TOP_RIGHT);
+	AddAnchor(IDC_SERVER_LISTS, TOP_RIGHT); // Links for Server list and nodes file [Stulle] - Stulle
 	AddAnchor(StatusSelector, MIDDLE_LEFT, BOTTOM_RIGHT);
 	AddAnchor(IDC_LOGRESET, MIDDLE_RIGHT); // avoid resizing GUI glitches with the tab control by adding this control as the last one (Z-order)
 	AddAnchor(IDC_ED2KCONNECT, TOP_RIGHT);
@@ -424,6 +426,7 @@ void CServerWnd::Localize()
 		*/
 	    m_ctrlNewServerFrm.SetWindowText(GetResString(IDS_SV_NEWSERVER),clrSrvColor);
 		// <== Design Settings [eWombat/Stulle] - Max
+		GetDlgItem(IDC_SERVER_LISTS)->SetWindowText(GetResString(IDS_SERVER_LISTS)); // Links for Server list and nodes file [Stulle] - Stulle
 	    GetDlgItem(IDC_SSTATIC4)->SetWindowText(GetResString(IDS_SV_ADDRESS));
 	    GetDlgItem(IDC_SSTATIC7)->SetWindowText(GetResString(IDS_SV_PORT));
 	    GetDlgItem(IDC_SSTATIC3)->SetWindowText(GetResString(IDS_SW_NAME));
@@ -1136,3 +1139,9 @@ HBRUSH CServerWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return hbr;
 }
 // <== Design Settings [eWombat/Stulle] - Max
+// ==> Links for Server list and nodes file [Stulle] - Stulle
+void CServerWnd::OnBnClickedServerLists()
+{
+	ShellExecute(NULL, NULL, _T("http://www.server-met.de/"), NULL, thePrefs.GetMuleDirectory(EMULE_EXECUTEABLEDIR), SW_SHOWDEFAULT);
+}
+// <== Links for Server list and nodes file [Stulle] - Stulle

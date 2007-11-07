@@ -235,17 +235,17 @@ enum EChunkStatus{
 
 // ==> Mod Icons - Stulle
 enum EModClient{
-	MOD_NONE			= 0,
-	MOD_SCAR			= 1,
-	MOD_STULLE			= 2,
-	MOD_MAXMOD			= 3,
-	MOD_XTREME			= 4,
-	MOD_MORPH			= 5,
-	MOD_EASTSHARE		= 6,
-	MOD_IONIX			= 7,
-	MOD_CYREX			= 8,
-	MOD_NEXTEMF			= 9,
-	MOD_NEO				= 10
+	MOD_NONE,
+	MOD_SCAR,
+	MOD_STULLE,
+	MOD_XTREME,
+	MOD_MORPH,
+	MOD_EASTSHARE,
+	MOD_EMF,
+	MOD_NEO,
+	MOD_MEPHISTO,
+	MOD_XRAY,
+	MOD_MAGIC
 };
 // <== Mod Icons - Stulle
 

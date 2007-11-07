@@ -58,6 +58,8 @@ protected:
 	afx_msg void OnSysColorChange();
 	afx_msg void OnEnSetfocusBootstrapip();
 
+	afx_msg void OnBnClickedNodesFileButton(); // Links for Server list and nodes file [Stulle] - Stulle
+
 	// ==> Design Settings [eWombat/Stulle] - Max
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	CBrush m_brMyBrush;

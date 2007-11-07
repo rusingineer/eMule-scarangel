@@ -137,14 +137,14 @@ void CDownloadClientsCtrl::SetAllIcons()
 	// ==> Mod Icons - Stulle
 	m_ImageList.Add(CTempIconLoader(_T("AAAEMULEAPP"))); //20
 	m_ImageList.Add(CTempIconLoader(_T("STULLE"))); //21
-	m_ImageList.Add(CTempIconLoader(_T("MAXMOD"))); //22
-	m_ImageList.Add(CTempIconLoader(_T("XTREME"))); //23
-	m_ImageList.Add(CTempIconLoader(_T("MORPH"))); //24
-	m_ImageList.Add(CTempIconLoader(_T("EASTSHARE"))); //25
-	m_ImageList.Add(CTempIconLoader(_T("IONIX"))); //26
-	m_ImageList.Add(CTempIconLoader(_T("CYREX"))); //27
-	m_ImageList.Add(CTempIconLoader(_T("NEXTEMF"))); //28
-	m_ImageList.Add(CTempIconLoader(_T("NEO"))); //29
+	m_ImageList.Add(CTempIconLoader(_T("XTREME"))); //22
+	m_ImageList.Add(CTempIconLoader(_T("MORPH"))); //23
+	m_ImageList.Add(CTempIconLoader(_T("EASTSHARE"))); //24
+	m_ImageList.Add(CTempIconLoader(_T("EMF"))); //25
+	m_ImageList.Add(CTempIconLoader(_T("NEO"))); //26
+	m_ImageList.Add(CTempIconLoader(_T("MEPHISTO"))); //27
+	m_ImageList.Add(CTempIconLoader(_T("XRAY"))); //28
+	m_ImageList.Add(CTempIconLoader(_T("MAGIC"))); //29
 	// <== Mod Icons - Stulle
 	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
 	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("OverlayObfu"))), 2);

@@ -3680,7 +3680,7 @@ void CPreferences::LoadPreferences()
 
 	//Xman auto update IPFilter
 	m_strautoupdateipfilter_url= ini.GetString(L"AutoUpdateIPFilter_URL", _T("http://emulepawcio.sourceforge.net/nieuwe_site/Ipfilter_fakes/ipfilter.zip"));
-	m_bautoupdateipfilter= ini.GetBool(L"AutoUpdateIPFilter", false);
+	m_bautoupdateipfilter= ini.GetBool(L"AutoUpdateIPFilter", true); // Stulle
 	LPBYTE pst = NULL;
 	UINT usize = sizeof m_IPfilterVersion;
 	if (ini.GetBinary(L"IPfilterVersion", &pst, &usize) && usize == sizeof m_IPfilterVersion)

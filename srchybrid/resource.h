@@ -3183,6 +3183,12 @@
 #define IDS_AUTODLPFAILED               61344
 #define IDS_ANTILEECH_DWNFILE           61345
 // <== Advanced Updates [MorphXT/Stulle] - Stulle
+// ==> Links for Server list and nodes file [Stulle] - Stulle
+#define IDC_NODESFILEBUTTON             61350
+#define IDS_NODESFILEBUTTON             61351
+#define IDC_SERVER_LISTS                61352
+#define IDS_SERVER_LISTS                61353
+// <== Links for Server list and nodes file [Stulle] - Stulle
 
 // Next default values for new objects
 // 

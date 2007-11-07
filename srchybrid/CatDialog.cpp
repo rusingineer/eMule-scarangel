@@ -144,7 +144,7 @@ void CCatDialog::UpdateData()
 	m_prio.SetCurSel(m_myCat->prio);
 
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
-	if (m_comboDlMode.IsWindowEnabled())
+//	if (m_comboDlMode.IsWindowEnabled())
 	m_comboDlMode.SetCurSel(m_myCat->m_iDlMode);
 
 	CString buffer;
@@ -177,6 +177,7 @@ void CCatDialog::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_CATCOLOR, m_ctlColor);
 	DDX_Control(pDX, IDC_PRIOCOMBO, m_prio);
+	DDX_Control(pDX, IDC_COMBO_DL, m_comboDlMode); // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 }
 
 void CCatDialog::Localize()
@@ -195,7 +196,7 @@ void CCatDialog::Localize()
 	GetDlgItem(IDC_STATIC_DL)->SetWindowText(GetResString(IDS_DL_MODE));
 
 //	m_comboDlMode.EnableWindow(true);
-//	while (m_comboDlMode.GetCount()>0) m_comboDlMode.DeleteString(0);
+	while (m_comboDlMode.GetCount()>0) m_comboDlMode.DeleteString(0);
 	m_comboDlMode.AddString(GetResString(IDS_DEFAULT));
 	m_comboDlMode.AddString(GetResString(IDS_DOWNLOAD_ALPHABETICAL));
 	m_comboDlMode.AddString(GetResString(IDS_LP));

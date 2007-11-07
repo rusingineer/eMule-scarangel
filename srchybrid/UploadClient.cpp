@@ -1955,6 +1955,7 @@ void CUpDownClient::GetUploadingAndUploadedPart(uint8* m_abyUpPartUploadingAndUp
 /* like PBF or similar.                                                 */
 /* Friends have 0x0FFFFFFF as the score they will exceed the score of   */
 /* other superior clients, so they will get the upload slot.            */
+/* Only restriction for friends is an existing reqfile.                 */
 /* No bad guys will ever get this status!                               */
 /* So far included are the following features:                          */
 /* PowerShare                                                           */
@@ -1964,17 +1965,21 @@ bool CUpDownClient::IsSuperiorClient() const
 {
 	CKnownFile* currentReqFile = theApp.sharedfiles->GetFileByID(GetUploadFileID());
 
-	// only clients requesting a valid file, which is not PartFile can be superior
-	if(currentReqFile == NULL || currentReqFile->IsPartFile())
-		return false;
-
-	// no bad guys!
-	if(GetUploadState()==US_BANNED || m_bGPLEvildoer || IsLeecher())
+	// only clients requesting a valid file can be superior
+	if(currentReqFile == NULL)
 		return false;
 
 	// friend with friendslot
 	if(IsFriend() && GetFriendSlot() && !HasLowID())
 		return true;
+
+	// no bad guys!
+	if(GetUploadState()==US_BANNED || m_bGPLEvildoer || IsLeecher())
+		return false;
+
+	// no thing else is allowed if the requested file is incomplete
+	if(currentReqFile->IsPartFile())
+		return false;
 
 	// ==> PowerShare [ZZ/MorphXT] - Stulle
 	// powershared
