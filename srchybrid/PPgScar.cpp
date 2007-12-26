@@ -180,7 +180,7 @@ CPPgScar::CPPgScar()
 	m_htiRandomLastPort = NULL;
 	m_htiRandomPortsResetTime = NULL;
 	// <== Random Ports [MoNKi] - Stulle
-//	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources [Stulle] - Stulle
+	m_htiReAskFileSrc = NULL; // Timer for ReAsk File Sources [Stulle] - Stulle
 	m_htiACC = NULL; // ACC [Max/WiZaRd] - Max
 	m_htiIgnoreThird = NULL; // Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
 	m_htiUlThres = NULL; // Disable accepting only clients who asked within last 30min [Stulle] - Stulle
@@ -238,6 +238,7 @@ CPPgScar::CPPgScar()
 //	m_htiTrayComplete = NULL; // Completed in Tray - Stulle
 	m_htiShowClientPercentage = NULL; // Show Client Percentage optional [Stulle] - Stulle
 	m_htiFollowTheMajority = NULL; // Follow The Majority [AndCycle/Stulle] - Stulle
+	m_htiShowSpeedMeter = NULL; // High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 	// ==> file settings - Stulle
 	m_htiFileDefaults = NULL;
@@ -602,6 +603,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 //		m_htiTrayComplete = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_TRAY_COMPLETE), m_htiDisplay, m_bTrayComplete); // Completed in Tray - Stulle
 		m_htiShowClientPercentage = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CLIENTPERCENTAGE), m_htiDisplay, m_bShowClientPercentage); // Show Client Percentage optional [Stulle] - Stulle
 		m_htiFollowTheMajority = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_FOLLOWTHEMAJORITY), m_htiDisplay, m_bFollowTheMajority); // Follow The Majority [AndCycle/Stulle] - Stulle
+		m_htiShowSpeedMeter = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOW_SPEED_METER), m_htiDisplay, m_bShowSpeedMeter); // High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 		// ==> file settings - Stulle
 		m_htiFileDefaults = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_FILE_DEFAULTS), iImgDropDefaults, TVI_ROOT);
@@ -830,6 +832,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 //	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiTrayComplete, m_bTrayComplete); // Completed in Tray - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowClientPercentage, m_bShowClientPercentage); // Show Client Percentage optional [Stulle] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiFollowTheMajority, m_bFollowTheMajority); // Follow The Majority [AndCycle/Stulle] - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowSpeedMeter, m_bShowSpeedMeter); // High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 	// ==> file settings - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiAutoNNS, m_bEnableAutoDropNNSDefault);
@@ -1192,6 +1195,7 @@ BOOL CPPgScar::OnInitDialog()
 //	m_bTrayComplete = thePrefs.GetTrayComplete(); // Completed in Tray - Stulle
 	m_bShowClientPercentage = thePrefs.GetShowClientPercentage(); // Show Client Percentage optional [Stulle] - Stulle
 	m_bFollowTheMajority = thePrefs.IsFollowTheMajorityEnabled(); // Follow The Majority [AndCycle/Stulle] - Stulle
+	m_bShowSpeedMeter = thePrefs.GetShowSpeedMeter(); // High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 	// ==> file settings - Stulle
 	m_bEnableAutoDropNNSDefault = thePrefs.m_EnableAutoDropNNSDefault;
@@ -1617,6 +1621,13 @@ BOOL CPPgScar::OnApply()
 //	thePrefs.m_bTrayComplete = m_bTrayComplete; // Completed in Tray - Stulle
 	thePrefs.m_bShowClientPercentage = m_bShowClientPercentage; // Show Client Percentage optional [Stulle] - Stulle
 	thePrefs.m_bFollowTheMajority = m_bFollowTheMajority; // Follow The Majority [AndCycle/Stulle] - Stulle
+	// ==> High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+	if(m_bShowSpeedMeter != thePrefs.GetShowSpeedMeter())
+	{
+		thePrefs.m_bShowSpeedMeter = m_bShowSpeedMeter;
+		theApp.emuledlg->toolbar->ShowSpeedMeter(m_bShowSpeedMeter);
+	}
+	// <== High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 	// ==> file settings - Stulle
 	thePrefs.m_EnableAutoDropNNSDefault = m_bEnableAutoDropNNSDefault;
@@ -2001,6 +2012,7 @@ void CPPgScar::Localize(void)
 //		if (m_htiTrayComplete) m_ctrlTreeOptions.SetItemText(m_htiTrayComplete, GetResString(IDS_TRAY_COMPLETE)); // Completed in Tray - Stulle
 		if (m_htiShowClientPercentage) m_ctrlTreeOptions.SetItemText(m_htiShowClientPercentage, GetResString(IDS_CLIENTPERCENTAGE)); // Show Client Percentage optional [Stulle] - Stulle
 		if (m_htiFollowTheMajority) m_ctrlTreeOptions.SetItemText(m_htiFollowTheMajority, GetResString(IDS_FOLLOWTHEMAJORITY)); // Follow The Majority [AndCycle/Stulle] - Stulle
+		if (m_htiShowSpeedMeter) m_ctrlTreeOptions.SetItemText(m_htiShowSpeedMeter, GetResString(IDS_SHOW_SPEED_METER)); // High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 		// ==> file settings - Stulle
 		if (m_htiAutoNNS) m_ctrlTreeOptions.SetItemText(m_htiAutoNNS, GetResString(IDS_AUTO_NNS));
@@ -2332,6 +2344,7 @@ void CPPgScar::OnDestroy()
 //	m_htiTrayComplete = NULL; // Completed in Tray - Stulle
 	m_htiShowClientPercentage = NULL; // Show Client Percentage optional [Stulle] - Stulle
 	m_htiFollowTheMajority = NULL; // Follow The Majority [AndCycle/Stulle] - Stulle
+	m_htiShowSpeedMeter = NULL; // High resulution speedmeter on toolbar [eFMod/Stulle] - Stulle
 
 	// ==> file settings - Stulle
 	m_htiFileDefaults = NULL;

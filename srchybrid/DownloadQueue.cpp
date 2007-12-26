@@ -45,6 +45,7 @@
 #include "ListenSocket.h"
 
 #include ".\MiniMule\SystemInfo.h" // CPU/MEM usage [$ick$/Stulle] - Max 
+#include "UploadQueue.h" // Do not restrict download if no upload possible [Stulle] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -641,6 +642,11 @@ void CDownloadQueue::Process(){
 		}
 		else if(GetGlobalSources() > thePrefs.m_uMaxGlobalSources && thePrefs.m_bAcceptsourcelimit == false)
 			limitbysources = 1;
+		// ==> Do not restrict download if no upload possible [Stulle] - Stulle
+		if(theApp.uploadqueue->GetUploadQueueLength() <= 2 && // yeah, it should be two at the least
+			theApp.uploadqueue->GetWaitingUserCount() <= 0) // nobody in queue
+			limitbysources = 0;
+		// <== Do not restrict download if no upload possible [Stulle] - Stulle
 		const float maxDownload = theApp.pBandWidthControl->GetMaxDownloadEx(limitbysources); //in [kb/s]
 		if(limitbysources > 0)
 		// <== Enforce Ratio [Stulle] - Stulle

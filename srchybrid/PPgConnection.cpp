@@ -555,6 +555,11 @@ BOOL CPPgConnection::OnApply()
 	}
 	// <== TBH: minimule - Max
 
+	// ==> High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+	theApp.emuledlg->m_co_UpTrafficGraph.Init_Graph(_T("Up"),(UINT)thePrefs.GetMaxGraphUploadRate());
+	theApp.emuledlg->m_co_DownTrafficGraph.Init_Graph(_T("Down"),(UINT)thePrefs.GetMaxGraphDownloadRate());
+	// <== High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+
 	SetModified(FALSE);
 	LoadSettings();
 

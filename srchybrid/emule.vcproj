@@ -1487,6 +1487,9 @@
 				RelativePath="SmileySelector.cpp">
 			</File>
 			<File
+				RelativePath=".\SpeedGraph.cpp">
+			</File>
+			<File
 				RelativePath="SplashScreen.cpp">
 			</File>
 			<File
@@ -1944,6 +1947,9 @@
 				RelativePath="SmileySelector.h">
 			</File>
 			<File
+				RelativePath=".\SpeedGraph.h">
+			</File>
+			<File
 				RelativePath="SplashScreen.h">
 			</File>
 			<File
@@ -2095,13 +2101,40 @@
 				RelativePath="res\ArchivePreview.ico">
 			</File>
 			<File
+				RelativePath=".\res\Backup.ico">
+			</File>
+			<File
 				RelativePath="res\bold.ico">
+			</File>
+			<File
+				RelativePath=".\res\boldFont.ico">
 			</File>
 			<File
 				RelativePath="res\Cancel.ico">
 			</File>
 			<File
+				RelativePath=".\res\catadd.ico">
+			</File>
+			<File
+				RelativePath=".\res\catedit.ico">
+			</File>
+			<File
 				RelativePath="res\Category.ico">
+			</File>
+			<File
+				RelativePath=".\res\catmerge.ico">
+			</File>
+			<File
+				RelativePath=".\res\catPauseLast.ico">
+			</File>
+			<File
+				RelativePath=".\res\catremove.ico">
+			</File>
+			<File
+				RelativePath=".\res\catResumeNext.ico">
+			</File>
+			<File
+				RelativePath=".\res\catStopLast.ico">
 			</File>
 			<File
 				RelativePath="res\Chat.ico">
@@ -2111,6 +2144,9 @@
 			</File>
 			<File
 				RelativePath="res\clear2.ico">
+			</File>
+			<File
+				RelativePath=".\res\Client-Neo.ico">
 			</File>
 			<File
 				RelativePath="res\Client0.ico">
@@ -2308,6 +2344,15 @@
 				RelativePath="res\CopyVisible.ico">
 			</File>
 			<File
+				RelativePath=".\res\CreditOvl.ico">
+			</File>
+			<File
+				RelativePath=".\res\CreditSecureOvl.ico">
+			</File>
+			<File
+				RelativePath=".\res\Cut.ico">
+			</File>
+			<File
 				RelativePath="res\CycleView.ico">
 			</File>
 			<File
@@ -2326,6 +2371,9 @@
 				RelativePath="res\Display.ico">
 			</File>
 			<File
+				RelativePath=".\res\DlMode.ico">
+			</File>
+			<File
 				RelativePath="res\Download.gif">
 			</File>
 			<File
@@ -2335,7 +2383,13 @@
 				RelativePath="res\DownloadFiles.ico">
 			</File>
 			<File
+				RelativePath=".\res\DropDefaults.ico">
+			</File>
+			<File
 				RelativePath=".\res\Dropicon.ico">
+			</File>
+			<File
+				RelativePath=".\res\EastShare.ico">
 			</File>
 			<File
 				RelativePath="res\eD2kLink.ico">
@@ -2345,6 +2399,9 @@
 			</File>
 			<File
 				RelativePath="res\Empty.ico">
+			</File>
+			<File
+				RelativePath=".\res\Emulator.ico">
 			</File>
 			<File
 				RelativePath="res\emule.manifest">
@@ -2374,6 +2431,9 @@
 				RelativePath="res\emuleCollView.ico">
 			</File>
 			<File
+				RelativePath=".\res\emulefuture.ico">
+			</File>
+			<File
 				RelativePath="res\Exit.ico">
 			</File>
 			<File
@@ -2398,16 +2458,25 @@
 				RelativePath="res\FileDonkey.ico">
 			</File>
 			<File
+				RelativePath=".\res\FileHideOS.ico">
+			</File>
+			<File
 				RelativePath="res\FileInfo.gif">
 			</File>
 			<File
 				RelativePath="res\FileInfo.ico">
 			</File>
 			<File
+				RelativePath=".\res\FileLinearPrio.ico">
+			</File>
+			<File
 				RelativePath=".\res\FileMassRename.ico">
 			</File>
 			<File
 				RelativePath="res\FileOpen.ico">
+			</File>
+			<File
+				RelativePath=".\res\FilePowerShare.ico">
 			</File>
 			<File
 				RelativePath="res\FilePriority.ico">
@@ -2441,6 +2510,9 @@
 			</File>
 			<File
 				RelativePath="res\FileSharedServer.ico">
+			</File>
+			<File
+				RelativePath=".\res\FileShareONlyTheNeed.ico">
 			</File>
 			<File
 				RelativePath="res\FileTypeAny.ico">
@@ -2506,6 +2578,9 @@
 				RelativePath=".\res\FriendSlotOvl.ico">
 			</File>
 			<File
+				RelativePath=".\res\FunnyNick.ico">
+			</File>
+			<File
 				RelativePath="res\Global.ico">
 			</File>
 			<File
@@ -2519,6 +2594,9 @@
 			</File>
 			<File
 				RelativePath=".\res\iconmax.ico">
+			</File>
+			<File
+				RelativePath=".\res\iconstulle.ico">
 			</File>
 			<File
 				RelativePath="res\Import.ico">
@@ -2536,6 +2614,9 @@
 				RelativePath="res\Info.ico">
 			</File>
 			<File
+				RelativePath=".\res\InvMode.ico">
+			</File>
+			<File
 				RelativePath="res\IPFilter.ico">
 			</File>
 			<File
@@ -2543,6 +2624,9 @@
 			</File>
 			<File
 				RelativePath="res\IRCClipboard.ico">
+			</File>
+			<File
+				RelativePath=".\res\italicFont.ico">
 			</File>
 			<File
 				RelativePath="res\Kad.ico">
@@ -2599,6 +2683,9 @@
 				RelativePath=".\res\Logo.jpg">
 			</File>
 			<File
+				RelativePath=".\res\MagicAngel.ico">
+			</File>
+			<File
 				RelativePath="res\MediaInfo.ico">
 			</File>
 			<File
@@ -2618,7 +2705,40 @@
 				DeploymentContent="TRUE">
 			</File>
 			<File
+				RelativePath=".\res\MiniMule.ICO">
+			</File>
+			<File
 				RelativePath="res\MiniMuleBack.gif">
+			</File>
+			<File
+				RelativePath=".\res\MM_ConCon.ico">
+			</File>
+			<File
+				RelativePath=".\res\MM_ConDis.ico">
+			</File>
+			<File
+				RelativePath=".\res\MM_ConLow.ico">
+			</File>
+			<File
+				RelativePath=".\res\MM_DisCon.ico">
+			</File>
+			<File
+				RelativePath=".\res\MM_DisDis.ico">
+			</File>
+			<File
+				RelativePath=".\res\MM_DisLow.ico">
+			</File>
+			<File
+				RelativePath=".\res\MM_LowCon.ico">
+			</File>
+			<File
+				RelativePath=".\res\MM_LowDis.ico">
+			</File>
+			<File
+				RelativePath=".\res\MM_LowLow.ico">
+			</File>
+			<File
+				RelativePath=".\res\Morph.ico">
 			</File>
 			<File
 				RelativePath="res\Mule.ico">
@@ -2639,7 +2759,16 @@
 				RelativePath="res\Notifications.ico">
 			</File>
 			<File
+				RelativePath=".\res\NotShared.ico">
+			</File>
+			<File
+				RelativePath=".\res\Paste.ico">
+			</File>
+			<File
 				RelativePath="res\Pause.ico">
+			</File>
+			<File
+				RelativePath=".\res\Ports.ico">
 			</File>
 			<File
 				RelativePath="res\Preferences.gif">
@@ -2675,6 +2804,9 @@
 				RelativePath="res\queue.ico">
 			</File>
 			<File
+				RelativePath=".\res\quickstart.ico">
+			</File>
+			<File
 				RelativePath="res\Rating.ico">
 			</File>
 			<File
@@ -2684,10 +2816,16 @@
 				RelativePath="res\Records.ico">
 			</File>
 			<File
+				RelativePath=".\res\ReleaseBonus.ico">
+			</File>
+			<File
 				RelativePath="res\Rename.ico">
 			</File>
 			<File
 				RelativePath="res\resetformat.ico">
+			</File>
+			<File
+				RelativePath=".\res\ResetSpreadBar.ico">
 			</File>
 			<File
 				RelativePath="res\Restore.ico">
@@ -2699,7 +2837,22 @@
 				RelativePath="res\RestoreWindow.ico">
 			</File>
 			<File
+				RelativePath=".\res\Save.ico">
+			</File>
+			<File
+				RelativePath=".\res\ScarAngel.ico">
+			</File>
+			<File
 				RelativePath="res\Scheduler.ico">
+			</File>
+			<File
+				RelativePath=".\res\SchedulerAdd.ico">
+			</File>
+			<File
+				RelativePath=".\res\SchedulerEdit.ico">
+			</File>
+			<File
+				RelativePath=".\res\SchedulerRemove.ico">
 			</File>
 			<File
 				RelativePath="res\Search.ico">
@@ -2751,6 +2904,12 @@
 			</File>
 			<File
 				RelativePath="res\SharedFilesList.ico">
+			</File>
+			<File
+				RelativePath=".\res\SharedFilesManagement.ico">
+			</File>
+			<File
+				RelativePath=".\res\ShareDir.ico">
 			</File>
 			<File
 				RelativePath=".\res\sidebanner.jpg">
@@ -2825,6 +2984,9 @@
 				RelativePath="res\SplitWindow.ico">
 			</File>
 			<File
+				RelativePath=".\res\SpreadCredits.ico">
+			</File>
+			<File
 				RelativePath="res\Start.ico">
 			</File>
 			<File
@@ -2856,6 +3018,12 @@
 			</File>
 			<File
 				RelativePath="res\Stop.ico">
+			</File>
+			<File
+				RelativePath=".\res\Support.ico">
+			</File>
+			<File
+				RelativePath=".\res\SysInfo.ico">
 			</File>
 			<File
 				RelativePath="res\TaskbarNotifier.gif">
@@ -2891,7 +3059,13 @@
 				RelativePath="res\Tweak.ico">
 			</File>
 			<File
+				RelativePath=".\res\ulFont.ico">
+			</File>
+			<File
 				RelativePath="res\underline.ico">
+			</File>
+			<File
+				RelativePath=".\res\Undo.ico">
 			</File>
 			<File
 				RelativePath="res\Up0down0.ico">
@@ -2906,10 +3080,16 @@
 				RelativePath="res\Up1down1.ico">
 			</File>
 			<File
+				RelativePath=".\res\Update.ico">
+			</File>
+			<File
 				RelativePath="res\Upload.gif">
 			</File>
 			<File
 				RelativePath="res\Upload.ico">
+			</File>
+			<File
+				RelativePath=".\res\UPnP.ico">
 			</File>
 			<File
 				RelativePath="res\User.ico">
@@ -2949,6 +3129,9 @@
 			</File>
 			<File
 				RelativePath="res\Wizzard.ico">
+			</File>
+			<File
+				RelativePath=".\res\Xray.ico">
 			</File>
 		</Filter>
 		<Filter

@@ -100,6 +100,7 @@ protected:
 //	bool m_bTrayComplete; // Completed in Tray - Stulle
 	bool m_bShowClientPercentage; // Show Client Percentage optional [Stulle] - Stulle
 	bool m_bFollowTheMajority; // Follow The Majority [AndCycle/Stulle] - Stulle
+	bool m_bShowSpeedMeter; // High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 	// ==> file settings - Stulle
 	bool m_bEnableAutoDropNNSDefault;
@@ -287,6 +288,7 @@ protected:
 //	HTREEITEM m_htiTrayComplete; // Completed in Tray - Stulle
 	HTREEITEM m_htiShowClientPercentage; // Show Client Percentage optional [Stulle] - Stulle
 	HTREEITEM m_htiFollowTheMajority; // Follow The Majority [AndCycle/Stulle] - Stulle
+	HTREEITEM m_htiShowSpeedMeter; // High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 	// ==> file settings - Stulle
 	HTREEITEM m_htiFileDefaults;

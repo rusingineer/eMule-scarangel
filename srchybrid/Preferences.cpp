@@ -654,6 +654,8 @@ bool	CPreferences::m_bShowClientPercentage; // Show Client Percentage optional [
 bool	CPreferences::m_bSysInfo;
 bool	CPreferences::m_bSysInfoGlobal;
 // <== CPU/MEM usage [$ick$/Stulle] - Max
+bool	CPreferences::m_bShowSpeedMeter; // High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+
 
 uint8	CPreferences::creditSystemMode; // CreditSystems [EastShare/ MorphXT] - Stulle
 
@@ -739,7 +741,6 @@ bool    CPreferences::m_bMiniMule;
 uint32  CPreferences::m_iMiniMuleUpdate;
 bool    CPreferences::m_bMiniMuleLives;
 uint8   CPreferences::m_iMiniMuleTransparency;
-bool	CPreferences::m_bShowSpeedMeter;
 bool	CPreferences::m_bMMCompl;
 bool	CPreferences::m_bMMOpen;
 // <== TBH: minimule - Max
@@ -2586,6 +2587,8 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("SysInfos"),m_bSysInfo);
 	ini.WriteBool(_T("SysInfosGlobal"),m_bSysInfoGlobal);
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
+	ini.WriteBool(_T("ShowSpeedMeter"),m_bShowSpeedMeter); // High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+
 
 	ini.WriteInt(_T("CreditSystemMode"), creditSystemMode); // CreditSystems [EastShare/ MorphXT] - Stulle
 
@@ -2643,7 +2646,6 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("MiniMuleUpdate"),m_iMiniMuleUpdate);
 	ini.WriteBool(_T("MiniMuleLives"),m_bMiniMuleLives);
 	ini.WriteInt(_T("MiniMuleTransparency"),m_iMiniMuleTransparency);
-	ini.WriteBool(_T("ShowSpeedMeter"),m_bShowSpeedMeter);
 	ini.WriteBool(_T("MiniMuleCompl"),m_bMMCompl);
 	ini.WriteBool(_T("MiniMuleOpen"),m_bMMOpen);
 	// <== TBH: minimule - Max
@@ -2772,8 +2774,8 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("MaxSlotSpeed"), m_bMaxSlotSpeed); // Alwasy maximize slot speed [Stulle] - Stulle
 
 	// ==> Timer for ReAsk File Sources [Stulle] - Stulle
-	uint8 m_uTemp = (uint8)((m_uReAskTimeDif+FILEREASKTIME)/60000);
-	ini.WriteInt(_T("ReAskTime"),m_uTemp);
+	uint8 uTemp = (uint8)((m_uReAskTimeDif+FILEREASKTIME)/60000);
+	ini.WriteInt(_T("ReAskTime"),uTemp);
 	// <== Timer for ReAsk File Sources [Stulle] - Stulle
 
 	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
@@ -3774,6 +3776,8 @@ void CPreferences::LoadPreferences()
 	m_bSysInfo = ini.GetBool(_T("SysInfos"),false);
 	m_bSysInfoGlobal = ini.GetBool(_T("SysInfosGlobal"),false);
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
+	m_bShowSpeedMeter=ini.GetBool(_T("ShowSpeedMeter"),false); // High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+
 
 	creditSystemMode = (uint8)ini.GetInt(_T("CreditSystemMode"), 1/*lovelace*/); // CreditSystems [EastShare/ MorphXT] - Stulle
 
@@ -3841,7 +3845,6 @@ void CPreferences::LoadPreferences()
 	m_iMiniMuleUpdate = ini.GetInt(_T("MiniMuleUpdate"), 2);
 	m_bMiniMuleLives = ini.GetBool(_T("MiniMuleLives"), true);
 	m_iMiniMuleTransparency = (uint8)ini.GetInt(_T("MiniMuleTransparency"), 255);
-	m_bShowSpeedMeter=ini.GetBool(_T("ShowSpeedMeter"),false);
 	m_bMMCompl = ini.GetBool(_T("MiniMuleCompl"),false);
 	m_bMMOpen = ini.GetBool(_T("MiniMuleOpen"),true);
 	// <== TBH: minimule - Max

@@ -2276,6 +2276,14 @@ BEGIN
 END
 // <== Simple cleanup [MorphXT] - Stulle
 
+// ==> High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+IDD_SPEEDGRAPH DIALOGEX 0, 0, 118, 39
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_VISIBLE
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+END
+// <== High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // DESIGNINFO
@@ -5949,6 +5957,7 @@ BEGIN
     IDS_NODESFILEBUTTON     "Nodes File"
     IDS_SERVER_LISTS        "Server lists"
     // <== Links for Server list and nodes file [Stulle] - Stulle
+    IDS_SHOW_SPEED_METER    "Show speed graph in toolbar" // High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
 END
 
 #endif    // Englisch (USA) resources

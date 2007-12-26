@@ -77,8 +77,23 @@ END_MESSAGE_MAP()
 
 CMuleToolbarCtrl::CMuleToolbarCtrl()
 {
+	// ==> High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+	/*
 	m_sizBtnBmp.cx = thePrefs.GetToolbarIconSize().cx;
 	m_sizBtnBmp.cy = thePrefs.GetToolbarIconSize().cy;
+	*/
+	// always show big icons when speedmeter enabled!
+	if(thePrefs.GetShowSpeedMeter())
+	{
+		m_sizBtnBmp.cx = 32;
+		m_sizBtnBmp.cy = 32;
+	}
+	else
+	{
+		m_sizBtnBmp.cx = thePrefs.GetToolbarIconSize().cx;
+		m_sizBtnBmp.cy = thePrefs.GetToolbarIconSize().cy;
+	}
+	// <== High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
 	m_iPreviousHeight = 0;
 	m_iLastPressedButton = -1;
 	m_buttoncount = 0;
@@ -288,6 +303,8 @@ void CMuleToolbarCtrl::Localize(void)
 	}
 }
 
+// ==> High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+/*
 void CMuleToolbarCtrl::OnSize(UINT nType, int cx, int cy)
 {
 	CToolBarCtrl::OnSize(nType, cx, cy);
@@ -295,6 +312,52 @@ void CMuleToolbarCtrl::OnSize(UINT nType, int cx, int cy)
 	SetAllButtonsWidth();
 	AutoSize();
 }
+*/
+void CMuleToolbarCtrl::OnSize(UINT nType, int cx, int cy)
+{
+	CToolBarCtrl::OnSize(nType, cx, cy);
+
+	theApp.emuledlg->Resize_TrafficGraph();
+
+	SetAllButtonsWidth();
+	AutoSize();
+}
+
+void CMuleToolbarCtrl::ShowSpeedMeter(bool bShow)
+{
+	if (bShow)
+	{
+		if (theApp.emuledlg->m_co_UpTrafficGraph.IsWindowVisible() == false ||
+			theApp.emuledlg->m_co_DownTrafficGraph.IsWindowVisible() == false)
+		{
+			theApp.emuledlg->m_co_UpTrafficGraph.EnableWindow(true);
+			theApp.emuledlg->m_co_UpTrafficGraph.ShowWindow(SW_SHOW);
+			theApp.emuledlg->m_co_DownTrafficGraph.EnableWindow(true);
+			theApp.emuledlg->m_co_DownTrafficGraph.ShowWindow(SW_SHOW);
+
+			CRect		r;
+
+			GetWindowRect(&r);
+			OnSize(0,r.Width(),r.Height());
+		}
+	}
+	else
+	{
+		theApp.emuledlg->m_co_UpTrafficGraph.EnableWindow(false);
+		theApp.emuledlg->m_co_UpTrafficGraph.ShowWindow(SW_HIDE);
+		theApp.emuledlg->m_co_DownTrafficGraph.EnableWindow(false);
+		theApp.emuledlg->m_co_DownTrafficGraph.ShowWindow(SW_HIDE);
+
+		CRect		rInvalidateUp, rInvalidateDown;
+		theApp.emuledlg->m_co_UpTrafficGraph.GetWindowRect(&rInvalidateUp);
+		ScreenToClient(rInvalidateUp);
+		InvalidateRect(rInvalidateUp);
+		theApp.emuledlg->m_co_DownTrafficGraph.GetWindowRect(&rInvalidateDown);
+		ScreenToClient(rInvalidateDown);
+		InvalidateRect(rInvalidateDown);
+	}
+}
+// <== High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 void CMuleToolbarCtrl::SetAllButtonsWidth()
 {
@@ -774,6 +837,11 @@ BOOL CMuleToolbarCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 			break;
 
        	case MP_SMALLICONS:
+			// ==> High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+			// always show big icons when speedmeter enabled!
+			if(thePrefs.GetShowSpeedMeter())
+				break;
+			// <== High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
 			m_sizBtnBmp.cx = m_sizBtnBmp.cy = 16;
 			ForceRecalcLayout();
 			ChangeToolbarBitmap(thePrefs.GetToolbarBitmapSettings(), true);
@@ -851,6 +919,12 @@ BOOL CMuleToolbarCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 
 void CMuleToolbarCtrl::ChangeTextLabelStyle(EToolbarLabelType eLabelType, bool bRefresh, bool bForceUpdateButtons)
 {
+	// ==> High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+	// always show below when speedmeter enabled!
+	if(thePrefs.GetShowSpeedMeter())
+		eLabelType = LabelsBelow;
+	// <== High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+
 	if (m_eLabelType != eLabelType || bForceUpdateButtons)
 	{
 		switch (eLabelType)

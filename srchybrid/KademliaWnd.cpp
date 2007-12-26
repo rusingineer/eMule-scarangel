@@ -375,6 +375,7 @@ HBRUSH CKademliaWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return hbr;
 }
 // <== Design Settings [eWombat/Stulle] - Max
+
 // ==> Links for Server list and nodes file [Stulle] - Stulle
 void CKademliaWnd::OnBnClickedNodesFileButton()
 {

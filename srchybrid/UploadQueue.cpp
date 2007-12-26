@@ -53,6 +53,7 @@
 #include <math.h>
 #include "IPFilter.h" //Xman dynamic IP-Filters
 #include "PartFile.h"
+#include "MuleToolbarCtrl.h" // High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -1665,6 +1666,10 @@ void CUploadQueue::UploadTimer()
 		}
 		else if (counter >= (1000/TIMER_PERIOD)){
 			counter=0;
+			// ==> High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+			if(thePrefs.GetShowSpeedMeter())
+				theApp.emuledlg->Update_TrafficGraph();
+			// <== High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 
 			// 5 seconds

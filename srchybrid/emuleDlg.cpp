@@ -583,6 +583,41 @@ BOOL CemuleDlg::OnInitDialog()
 	for (int i = 0; i < _countof(apWnds); i++)
 		apWnds[i]->SetWindowPos(NULL, rcClient.left, rcClient.top, rcClient.Width(), rcClient.Height(), SWP_NOZORDER);
 
+	// ==> High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+	CRect		rect;
+	CRect rect1,rect2;
+	toolbar->GetClientRect(&rect);
+
+	// set updateintervall of graphic rate display (in seconds)
+	rect1.top = rect.top+2;
+	rect1.right = rect.right-2;
+	rect1.bottom = rect.top+(rect.Height()/2)-1;
+	rect1.left = rect.right-150;
+
+	rect2.top = rect.top+(rect.Height()/2)+1;
+	rect2.right = rect.right-2;
+	rect2.bottom = rect.bottom-2;
+	rect2.left = rect.right-150;
+
+	CSize	csMaxSize;
+	bool	bTooSmall = false;
+
+	toolbar->GetMaxSize(&csMaxSize);
+	if (rect.left + csMaxSize.cx > rect.right - 150)
+		bTooSmall = true;
+	m_co_UpTrafficGraph.Create(IDD_SPEEDGRAPH,rect1,this);
+	m_co_DownTrafficGraph.Create(IDD_SPEEDGRAPH,rect2,this);
+	if(bTooSmall || thePrefs.GetShowSpeedMeter() == false)
+	{
+		m_co_UpTrafficGraph.ShowWindow(SW_HIDE);
+		m_co_DownTrafficGraph.ShowWindow(SW_HIDE);
+	}
+
+	// Traffic graph
+	m_co_UpTrafficGraph.Init_Graph(_T("Up"),(UINT)thePrefs.GetMaxGraphUploadRate());
+	m_co_DownTrafficGraph.Init_Graph(_T("Down"),(UINT)thePrefs.GetMaxGraphDownloadRate());
+	// <== High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+
 	// anchors
 	AddAnchor(*serverwnd,		TOP_LEFT, BOTTOM_RIGHT);
 	AddAnchor(*kademliawnd,		TOP_LEFT, BOTTOM_RIGHT);
@@ -4854,3 +4889,63 @@ void CemuleDlg::DownloadDLP()
 	theApp.dlp->Reload();
 }
 // <== Advanced Updates [MorphXT/Stulle] - Stulle
+
+// ==> High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+void CemuleDlg::Update_TrafficGraph()
+{
+	//Xman
+	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+	// Retrieve the current datarates
+	uint32 downratekb;	uint32 eMuleInOverall;
+	uint32 upratekb; uint32 eMuleOutOverall;
+	uint32 notUsed;
+	theApp.pBandWidthControl->GetDatarates(thePrefs.GetDatarateSamples(),
+		downratekb, eMuleInOverall,
+		upratekb, eMuleOutOverall,
+		notUsed, notUsed);
+	//Xman end
+
+	m_co_UpTrafficGraph.Set_TrafficValue(upratekb);
+	m_co_DownTrafficGraph.Set_TrafficValue(downratekb);
+}
+
+void CemuleDlg::Resize_TrafficGraph()
+{
+	if (m_co_UpTrafficGraph.m_hWnd &&
+		m_co_DownTrafficGraph.m_hWnd &&
+		thePrefs.GetShowSpeedMeter())
+	{
+		CRect		rect;
+		CRect rect1,rect2;
+		toolbar->GetClientRect(&rect);
+
+		// set updateintervall of graphic rate display (in seconds)
+		rect1.top = rect.top+2;
+		rect1.right = rect.right-2;
+		rect1.bottom = rect.top+(rect.Height()/2)-1;
+		rect1.left = rect.right-150;
+
+		rect2.top = rect.top+(rect.Height()/2)+1;
+		rect2.right = rect.right-2;
+		rect2.bottom = rect.bottom-2;
+		rect2.left = rect.right-150;
+
+		CSize	csMaxSize;
+
+		toolbar->GetMaxSize(&csMaxSize);
+		if (rect.left + csMaxSize.cx > rect.right - 150)
+		{	
+			m_co_UpTrafficGraph.ShowWindow(SW_HIDE);
+			m_co_DownTrafficGraph.ShowWindow(SW_HIDE);
+			return;
+		}
+
+		m_co_UpTrafficGraph.SetWindowPos( NULL, rect1.left, rect1.top,
+			rect1.Width(), rect1.Height(),
+			SWP_NOZORDER | SWP_SHOWWINDOW );
+		m_co_DownTrafficGraph.SetWindowPos( NULL, rect2.left, rect2.top,
+			rect2.Width(), rect2.Height(),
+			SWP_NOZORDER | SWP_SHOWWINDOW );
+	}
+}
+// <== High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88

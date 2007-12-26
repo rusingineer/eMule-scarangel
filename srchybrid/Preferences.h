@@ -817,6 +817,7 @@ public:
 	static bool m_bSysInfo;
 	static bool m_bSysInfoGlobal;
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
+	static bool m_bShowSpeedMeter; // High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 	static uint8 creditSystemMode; // CreditSystems [EastShare/ MorphXT] - Stulle
 
@@ -902,7 +903,6 @@ public:
 	static  uint32	m_iMiniMuleUpdate;
 	static  bool	m_bMiniMuleLives;
 	static  uint8	m_iMiniMuleTransparency;
-	static	bool	m_bShowSpeedMeter;
 	static	bool	m_bMMCompl;
 	static	bool	m_bMMOpen;
 	// <== TBH: minimule - Max
@@ -2132,6 +2132,7 @@ public:
 	static	bool	GetSysInfo()			{ return m_bSysInfo; }
 	static	bool	GetSysInfoGlobal()		{ return m_bSysInfoGlobal; }
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
+	static	bool	GetShowSpeedMeter()		{ return m_bShowSpeedMeter; } // SpeedMeter [Stulle] - Myth88
 
 	static	uint8	GetCreditSystem()		{return creditSystemMode;} // CreditSystems [EastShare/ MorphXT] - Stulle
 
@@ -2243,7 +2244,6 @@ public:
 	static	bool	GetMiniMuleLives()	{return m_bMiniMuleLives;}
 	static	void	SetMiniMuleTransparency(uint8 in) {m_iMiniMuleTransparency = in;}
 	static	uint8	GetMiniMuleTransparency() {return m_iMiniMuleTransparency;}
-	static	bool	GetShowSpeedMeter()		  {return m_bShowSpeedMeter;}
 	static	bool	GetMMCompl()			{ return m_bMMCompl; }
 	static	bool	GetMMOpen()				{ return m_bMMOpen; }
 	// <== TBH: minimule - Max
