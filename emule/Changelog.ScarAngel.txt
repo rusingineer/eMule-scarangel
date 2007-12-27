@@ -3,15 +3,19 @@ CHANGELOG FOR EMULE ScarAngel MOD
 
 eMule v0.48a ScarAngel v2.5:
 ------------------------
-- XX.XX.2007 -
+- 27.12.2007 -
 -------------------------------------------------------------------------------
 based on eMule 0.48a Xtreme 6.1 compiled with vs2003 SP1
 
 Added: Links for Server list and nodes file [Stulle] - Stulle
+Added: High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
+
+Changed: Do not restrict download if no upload possible [Stulle] - Stulle
 
 Fixed: Resume mode combobox in Categorie dialog [Stulle] - Stulle
 Fixed: Auto Update IP2Country on startup [Stulle] - Stulle
 Fixed: Do not reserve 1/3 of your uploadlimit (finally!) [Stulle] - Stulle
+Fixed: URL input for updates [Stulle] - Stulle
 
 
 eMule v0.48a ScarAngel v2.4:

@@ -77,7 +77,7 @@ END_MESSAGE_MAP()
 
 CMuleToolbarCtrl::CMuleToolbarCtrl()
 {
-	// ==> High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+	// ==> High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 	/*
 	m_sizBtnBmp.cx = thePrefs.GetToolbarIconSize().cx;
 	m_sizBtnBmp.cy = thePrefs.GetToolbarIconSize().cy;
@@ -93,7 +93,7 @@ CMuleToolbarCtrl::CMuleToolbarCtrl()
 		m_sizBtnBmp.cx = thePrefs.GetToolbarIconSize().cx;
 		m_sizBtnBmp.cy = thePrefs.GetToolbarIconSize().cy;
 	}
-	// <== High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+	// <== High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 	m_iPreviousHeight = 0;
 	m_iLastPressedButton = -1;
 	m_buttoncount = 0;
@@ -303,7 +303,7 @@ void CMuleToolbarCtrl::Localize(void)
 	}
 }
 
-// ==> High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+// ==> High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 /*
 void CMuleToolbarCtrl::OnSize(UINT nType, int cx, int cy)
 {
@@ -357,7 +357,7 @@ void CMuleToolbarCtrl::ShowSpeedMeter(bool bShow)
 		InvalidateRect(rInvalidateDown);
 	}
 }
-// <== High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+// <== High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 void CMuleToolbarCtrl::SetAllButtonsWidth()
 {
@@ -837,11 +837,11 @@ BOOL CMuleToolbarCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 			break;
 
        	case MP_SMALLICONS:
-			// ==> High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+			// ==> High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 			// always show big icons when speedmeter enabled!
 			if(thePrefs.GetShowSpeedMeter())
 				break;
-			// <== High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+			// <== High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 			m_sizBtnBmp.cx = m_sizBtnBmp.cy = 16;
 			ForceRecalcLayout();
 			ChangeToolbarBitmap(thePrefs.GetToolbarBitmapSettings(), true);
@@ -919,11 +919,11 @@ BOOL CMuleToolbarCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 
 void CMuleToolbarCtrl::ChangeTextLabelStyle(EToolbarLabelType eLabelType, bool bRefresh, bool bForceUpdateButtons)
 {
-	// ==> High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+	// ==> High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 	// always show below when speedmeter enabled!
 	if(thePrefs.GetShowSpeedMeter())
 		eLabelType = LabelsBelow;
-	// <== High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+	// <== High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 	if (m_eLabelType != eLabelType || bForceUpdateButtons)
 	{

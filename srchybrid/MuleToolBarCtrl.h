@@ -80,8 +80,8 @@ protected:
 	afx_msg void OnTbnInitCustomize(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnTbnEndAdjust(NMHDR* pNMHDR, LRESULT* pResult);
 
-	// ==> High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+	// ==> High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 public:
 	void ShowSpeedMeter(bool bShow = true);
-	// <== High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+	// <== High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 };

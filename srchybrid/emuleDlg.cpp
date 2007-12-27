@@ -583,7 +583,7 @@ BOOL CemuleDlg::OnInitDialog()
 	for (int i = 0; i < _countof(apWnds); i++)
 		apWnds[i]->SetWindowPos(NULL, rcClient.left, rcClient.top, rcClient.Width(), rcClient.Height(), SWP_NOZORDER);
 
-	// ==> High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+	// ==> High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 	CRect		rect;
 	CRect rect1,rect2;
 	toolbar->GetClientRect(&rect);
@@ -616,7 +616,7 @@ BOOL CemuleDlg::OnInitDialog()
 	// Traffic graph
 	m_co_UpTrafficGraph.Init_Graph(_T("Up"),(UINT)thePrefs.GetMaxGraphUploadRate());
 	m_co_DownTrafficGraph.Init_Graph(_T("Down"),(UINT)thePrefs.GetMaxGraphDownloadRate());
-	// <== High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+	// <== High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 	// anchors
 	AddAnchor(*serverwnd,		TOP_LEFT, BOTTOM_RIGHT);
@@ -4890,7 +4890,7 @@ void CemuleDlg::DownloadDLP()
 }
 // <== Advanced Updates [MorphXT/Stulle] - Stulle
 
-// ==> High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+// ==> High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 void CemuleDlg::Update_TrafficGraph()
 {
 	//Xman
@@ -4948,4 +4948,4 @@ void CemuleDlg::Resize_TrafficGraph()
 			SWP_NOZORDER | SWP_SHOWWINDOW );
 	}
 }
-// <== High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+// <== High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88

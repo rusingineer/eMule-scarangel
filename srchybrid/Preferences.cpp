@@ -654,7 +654,7 @@ bool	CPreferences::m_bShowClientPercentage; // Show Client Percentage optional [
 bool	CPreferences::m_bSysInfo;
 bool	CPreferences::m_bSysInfoGlobal;
 // <== CPU/MEM usage [$ick$/Stulle] - Max
-bool	CPreferences::m_bShowSpeedMeter; // High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+bool	CPreferences::m_bShowSpeedMeter; // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 
 uint8	CPreferences::creditSystemMode; // CreditSystems [EastShare/ MorphXT] - Stulle
@@ -2587,7 +2587,7 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("SysInfos"),m_bSysInfo);
 	ini.WriteBool(_T("SysInfosGlobal"),m_bSysInfoGlobal);
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
-	ini.WriteBool(_T("ShowSpeedMeter"),m_bShowSpeedMeter); // High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+	ini.WriteBool(_T("ShowSpeedMeter"),m_bShowSpeedMeter); // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 
 	ini.WriteInt(_T("CreditSystemMode"), creditSystemMode); // CreditSystems [EastShare/ MorphXT] - Stulle
@@ -3776,7 +3776,7 @@ void CPreferences::LoadPreferences()
 	m_bSysInfo = ini.GetBool(_T("SysInfos"),false);
 	m_bSysInfoGlobal = ini.GetBool(_T("SysInfosGlobal"),false);
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
-	m_bShowSpeedMeter=ini.GetBool(_T("ShowSpeedMeter"),false); // High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+	m_bShowSpeedMeter=ini.GetBool(_T("ShowSpeedMeter"),false); // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 
 	creditSystemMode = (uint8)ini.GetInt(_T("CreditSystemMode"), 1/*lovelace*/); // CreditSystems [EastShare/ MorphXT] - Stulle

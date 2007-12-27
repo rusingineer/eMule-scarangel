@@ -817,7 +817,7 @@ public:
 	static bool m_bSysInfo;
 	static bool m_bSysInfoGlobal;
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
-	static bool m_bShowSpeedMeter; // High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+	static bool m_bShowSpeedMeter; // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 	static uint8 creditSystemMode; // CreditSystems [EastShare/ MorphXT] - Stulle
 
@@ -2132,7 +2132,7 @@ public:
 	static	bool	GetSysInfo()			{ return m_bSysInfo; }
 	static	bool	GetSysInfoGlobal()		{ return m_bSysInfoGlobal; }
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
-	static	bool	GetShowSpeedMeter()		{ return m_bShowSpeedMeter; } // SpeedMeter [Stulle] - Myth88
+	static	bool	GetShowSpeedMeter()		{ return m_bShowSpeedMeter; } // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 	static	uint8	GetCreditSystem()		{return creditSystemMode;} // CreditSystems [EastShare/ MorphXT] - Stulle
 

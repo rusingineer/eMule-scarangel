@@ -53,7 +53,7 @@
 #include <math.h>
 #include "IPFilter.h" //Xman dynamic IP-Filters
 #include "PartFile.h"
-#include "MuleToolbarCtrl.h" // High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+#include "MuleToolbarCtrl.h" // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -297,27 +297,31 @@ CUpDownClient* CUploadQueue::FindBestClientInQueue()
 		return waitinglist.GetAt(toadd);
 	//Xman end
 	*/
-	if(lowclientSup && toaddSup)
+	if(lowclientSup && toaddSup) // both chosen clients are superior
 	{
+		// only AddNextConnect if the low is more worthy
 		if (bestlowscoreSup > bestscoreSup && lowclientSup)
 			lowclientSup->m_bAddNextConnect = true;
 
+		// we had a good sup so add him at once to fill the need
 	    return waitinglist.GetAt(toaddSup);
 	}
-	else if(toaddSup)
+	else if(toaddSup) // only high superior client found
 	{
 	    return waitinglist.GetAt(toaddSup);
 	}
-	else if(lowclientSup)
+	else if(lowclientSup) // only low
 	{
 			lowclientSup->m_bAddNextConnect = true;
 	}
 
-	if(!toaddSup)
+	if(!toaddSup) // we had no high superior client
 	{
+		// we had no low superior client, proceed with low as usually
 		if (!lowclientSup && bestlowscore > bestscore && lowclient)
 			lowclient->m_bAddNextConnect = true;
 
+		// proceed with normal clients as usually
 		if (!toadd)
 			return NULL;
 		else
@@ -1666,11 +1670,10 @@ void CUploadQueue::UploadTimer()
 		}
 		else if (counter >= (1000/TIMER_PERIOD)){
 			counter=0;
-			// ==> High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+			// ==> High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 			if(thePrefs.GetShowSpeedMeter())
 				theApp.emuledlg->Update_TrafficGraph();
-			// <== High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
-
+			// <== High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 			// 5 seconds
 			static uint16 sec; sec++;

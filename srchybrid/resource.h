@@ -3189,10 +3189,10 @@
 #define IDC_SERVER_LISTS                61352
 #define IDS_SERVER_LISTS                61353
 // <== Links for Server list and nodes file [Stulle] - Stulle
-// ==> High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+// ==> High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 #define IDD_SPEEDGRAPH                  61370
 #define IDS_SHOW_SPEED_METER            61371
-// <== High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+// <== High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 // Next default values for new objects
 // 

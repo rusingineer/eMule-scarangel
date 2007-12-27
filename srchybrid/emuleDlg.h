@@ -23,7 +23,7 @@
 */
 #include "MenuXP.h"
 // <== XP Style Menu [Xanatos] - Stulle
-#include "SpeedGraph.h" // High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+#include "SpeedGraph.h" // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 namespace Kademlia {
 	class CSearch;
@@ -377,14 +377,14 @@ private:
 
 	// <== Invisible Mode [TPT/MoNKi] - Stulle
 
-// ==> High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+// ==> High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 public:
 	CSpeedGraph m_co_UpTrafficGraph;
 	CSpeedGraph m_co_DownTrafficGraph;
 
 	void Update_TrafficGraph();
 	void Resize_TrafficGraph();
-// <== High resulution speedmeter on toolbar [eFMod/Stulle] - Myth88
+// <== High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
 	// ==> Design Settings [eWombat/Stulle] - Max
 private:
