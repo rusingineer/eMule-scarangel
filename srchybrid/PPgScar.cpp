@@ -2917,7 +2917,7 @@ void CPPgScar::InitControl()
 
 	m_IpFilterURL.CreateEx(WS_EX_CLIENTEDGE, _T("EDIT"), _T(""), 
 						WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
-						ES_RIGHT | ES_AUTOHSCROLL | ES_NUMBER, 
+						ES_RIGHT | ES_AUTOHSCROLL, 
 						CRect(left+10, top+160, right-10, top+180), this,  IDC_IPFILTER_URL);
 	m_IpFilterURL.SetFont(GetFont());
 
@@ -3677,13 +3677,14 @@ void CPPgScar::Backup3()
 void CPPgScar::InitMasterStyleCombo()
 {
 	int iSel = m_MasterCombo.GetCurSel();
+	int iItem;
 	m_MasterCombo.ResetContent();
-	m_MasterCombo.AddString(GetResString(IDS_COLOR_MASTER1));
-	m_MasterCombo.AddString(GetResString(IDS_COLOR_MASTER2));
-	m_MasterCombo.AddString(GetResString(IDS_COLOR_MASTER3));
-	m_MasterCombo.AddString(GetResString(IDS_COLOR_MASTER4));
-	m_MasterCombo.AddString(GetResString(IDS_COLOR_MASTER5));
-	m_MasterCombo.AddString(GetResString(IDS_COLOR_MASTER6));
+	iItem = m_MasterCombo.AddString(GetResString(IDS_COLOR_MASTER1));		m_MasterCombo.SetItemData(iItem, client_styles);
+	iItem = m_MasterCombo.AddString(GetResString(IDS_COLOR_MASTER2));		m_MasterCombo.SetItemData(iItem, download_styles);
+	iItem = m_MasterCombo.AddString(GetResString(IDS_COLOR_MASTER3));		m_MasterCombo.SetItemData(iItem, share_styles);
+	iItem = m_MasterCombo.AddString(GetResString(IDS_COLOR_MASTER4));		m_MasterCombo.SetItemData(iItem, server_styles);
+	iItem = m_MasterCombo.AddString(GetResString(IDS_COLOR_MASTER5));		m_MasterCombo.SetItemData(iItem, background_styles);
+	iItem = m_MasterCombo.AddString(GetResString(IDS_COLOR_MASTER6));		m_MasterCombo.SetItemData(iItem, window_styles);
 
 	m_MasterCombo.SetCurSel(iSel != CB_ERR ? iSel : 0);
 
@@ -3696,81 +3697,85 @@ void CPPgScar::InitMasterStyleCombo()
 
 void CPPgScar::InitSubStyleCombo()
 {
-	int iMasterSel = m_MasterCombo.GetCurSel();
+	int iSel = m_MasterCombo.GetCurSel();
+	int iMasterSel = 0;
+	if (iSel >= 0)
+		iMasterSel = m_MasterCombo.GetItemData(iSel);
+	int iItem;
 	m_SubCombo.ResetContent();
 
 	switch(iMasterSel)
 	{
 		case client_styles: // client styles
 		{
-			m_SubCombo.AddString(GetResString(IDS_DEFAULT));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_C1));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_C2));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_C3));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_C4));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_C5));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_C6));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_C7));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_C8));
+			iItem = m_SubCombo.AddString(GetResString(IDS_DEFAULT));		m_SubCombo.SetItemData(iItem, style_c_default);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_C1));		m_SubCombo.SetItemData(iItem, style_c_friend);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_C2));		m_SubCombo.SetItemData(iItem, style_c_powershare);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_C3));		m_SubCombo.SetItemData(iItem, style_c_powerrelease);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_C4));		m_SubCombo.SetItemData(iItem, style_c_downloading);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_C5));		m_SubCombo.SetItemData(iItem, style_c_uploading);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_C6));		m_SubCombo.SetItemData(iItem, style_c_leecher);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_C7));		m_SubCombo.SetItemData(iItem, style_c_lowid);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_C8));		m_SubCombo.SetItemData(iItem, style_c_credits);
 		}break;
 		case download_styles: // download styles
 		{
-			m_SubCombo.AddString(GetResString(IDS_DEFAULT));
-			m_SubCombo.AddString(GetResString(IDS_DOWNLOADING));
-			m_SubCombo.AddString(GetResString(IDS_COMPLETE));
-			m_SubCombo.AddString(GetResString(IDS_COMPLETING));
-			m_SubCombo.AddString(GetResString(IDS_HASHING));
-			m_SubCombo.AddString(GetResString(IDS_PAUSED));
-			m_SubCombo.AddString(GetResString(IDS_STOPPED));
-			m_SubCombo.AddString(GetResString(IDS_ERRORLIKE));
+			iItem = m_SubCombo.AddString(GetResString(IDS_DEFAULT));		m_SubCombo.SetItemData(iItem, style_d_default);
+			iItem = m_SubCombo.AddString(GetResString(IDS_DOWNLOADING));	m_SubCombo.SetItemData(iItem, style_d_downloading);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COMPLETE));		m_SubCombo.SetItemData(iItem, style_d_complete);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COMPLETING));		m_SubCombo.SetItemData(iItem, style_d_completing);
+			iItem = m_SubCombo.AddString(GetResString(IDS_HASHING));		m_SubCombo.SetItemData(iItem, style_d_hashing);
+			iItem = m_SubCombo.AddString(GetResString(IDS_PAUSED));			m_SubCombo.SetItemData(iItem, style_d_paused);
+			iItem = m_SubCombo.AddString(GetResString(IDS_STOPPED));		m_SubCombo.SetItemData(iItem, style_d_stopped);
+			iItem = m_SubCombo.AddString(GetResString(IDS_ERRORLIKE));		m_SubCombo.SetItemData(iItem, style_d_errunk);
 		}break;
 		case share_styles: // share styles
 		{
-			m_SubCombo.AddString(GetResString(IDS_DEFAULT));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_S1));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_S2));
+			iItem = m_SubCombo.AddString(GetResString(IDS_DEFAULT));		m_SubCombo.SetItemData(iItem, style_s_default);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_S1));		m_SubCombo.SetItemData(iItem, style_s_incomplete);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_S2));		m_SubCombo.SetItemData(iItem, style_s_powershare);
 			CString strTemp = GetResString(IDS_PRIORITY) + _T(" (") + GetResString(IDS_PW_CON_UPLBL) + _T("): ");
-			m_SubCombo.AddString(strTemp + GetResString(IDS_PRIOAUTO));
-			m_SubCombo.AddString(strTemp + GetResString(IDS_PRIOVERYLOW));
-			m_SubCombo.AddString(strTemp + GetResString(IDS_PRIOLOW));
-			m_SubCombo.AddString(strTemp + GetResString(IDS_PRIONORMAL));
-			m_SubCombo.AddString(strTemp + GetResString(IDS_PRIOHIGH));
-			m_SubCombo.AddString(strTemp + GetResString(IDS_PRIORELEASE));
-			m_SubCombo.AddString(strTemp + GetResString(IDS_POWERRELEASE));
+			iItem = m_SubCombo.AddString(strTemp + GetResString(IDS_PRIOAUTO));		m_SubCombo.SetItemData(iItem, style_s_auto);
+			iItem = m_SubCombo.AddString(strTemp + GetResString(IDS_PRIOVERYLOW));	m_SubCombo.SetItemData(iItem, style_s_verylow);
+			iItem = m_SubCombo.AddString(strTemp + GetResString(IDS_PRIOLOW));		m_SubCombo.SetItemData(iItem, style_s_low);
+			iItem = m_SubCombo.AddString(strTemp + GetResString(IDS_PRIONORMAL));	m_SubCombo.SetItemData(iItem, style_s_normal);
+			iItem = m_SubCombo.AddString(strTemp + GetResString(IDS_PRIOHIGH));		m_SubCombo.SetItemData(iItem, style_s_high);
+			iItem = m_SubCombo.AddString(strTemp + GetResString(IDS_PRIORELEASE));	m_SubCombo.SetItemData(iItem, style_s_release);
+			iItem = m_SubCombo.AddString(strTemp + GetResString(IDS_POWERRELEASE));	m_SubCombo.SetItemData(iItem, style_s_powerrelease);
 		}break;
 		case server_styles: // server styles
 		{
-			m_SubCombo.AddString(GetResString(IDS_DEFAULT));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_SE1));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_SE2));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_SE3));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_SE4));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_SE5));
+			iItem = m_SubCombo.AddString(GetResString(IDS_DEFAULT));		m_SubCombo.SetItemData(iItem, style_se_default);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_SE1));		m_SubCombo.SetItemData(iItem, style_se_connected);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_SE2));		m_SubCombo.SetItemData(iItem, style_se_static);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_SE3));		m_SubCombo.SetItemData(iItem, style_se_filtered);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_SE4));		m_SubCombo.SetItemData(iItem, style_se_dead);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_SE5));		m_SubCombo.SetItemData(iItem, style_se_unreliable);
 		}break;
 		case background_styles: // background styles
 		{
-			m_SubCombo.AddString(GetResString(IDS_DEFAULT));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_B1));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_B2));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_B3));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_B4));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_B5));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_B6));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_B7));
+			iItem = m_SubCombo.AddString(GetResString(IDS_DEFAULT));		m_SubCombo.SetItemData(iItem, style_b_default);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_B1));		m_SubCombo.SetItemData(iItem, style_b_clientlist);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_B2));		m_SubCombo.SetItemData(iItem, style_b_dlclientlist);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_B3));		m_SubCombo.SetItemData(iItem, style_b_queuelist);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_B4));		m_SubCombo.SetItemData(iItem, style_b_uploadlist);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_B5));		m_SubCombo.SetItemData(iItem, style_b_downloadlist);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_B6));		m_SubCombo.SetItemData(iItem, style_b_sharedlist);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_B7));		m_SubCombo.SetItemData(iItem, style_b_serverwnd);
 		}break;
 		case window_styles: // window styles
 		{
-			m_SubCombo.AddString(GetResString(IDS_DEFAULT));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_W1));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_W2));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_W3));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_W4));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_W5));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_W6));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_W7));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_W8));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_W9));
-			m_SubCombo.AddString(GetResString(IDS_COLOR_W10));
+			iItem = m_SubCombo.AddString(GetResString(IDS_DEFAULT));		m_SubCombo.SetItemData(iItem, style_w_default);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_W1));		m_SubCombo.SetItemData(iItem, style_w_kademlia);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_W2));		m_SubCombo.SetItemData(iItem, style_w_server);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_W3));		m_SubCombo.SetItemData(iItem, style_w_transfer);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_W4));		m_SubCombo.SetItemData(iItem, style_w_search);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_W5));		m_SubCombo.SetItemData(iItem, style_w_shared);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_W6));		m_SubCombo.SetItemData(iItem, style_w_messages);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_W7));		m_SubCombo.SetItemData(iItem, style_w_irc);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_W8));		m_SubCombo.SetItemData(iItem, style_w_statistic);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_W9));		m_SubCombo.SetItemData(iItem, style_w_statusbar);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_W10));		m_SubCombo.SetItemData(iItem, style_w_toolbar);
 		}break;
 		default:
 			break;
@@ -3781,12 +3786,18 @@ void CPPgScar::InitSubStyleCombo()
 
 void CPPgScar::UpdateStyles()
 {
-	int iCurStyle = m_SubCombo.GetCurSel();
-	int iMasterValue = m_MasterCombo.GetCurSel();
+	int iCurStyle = 0;
+	int iMasterValue = 0;
+	int iSel = m_SubCombo.GetCurSel();
+	if (iSel >= 0)
+		iCurStyle = m_SubCombo.GetItemData(iSel);
+	iSel = m_MasterCombo.GetCurSel();
+	if (iSel >= 0)
+		iMasterValue = m_MasterCombo.GetItemData(iSel);
 	StylesStruct styles;
 	styles = GetStyle(iMasterValue, iCurStyle);
 	bool bEnable = false;
-	bool bOnOff = (iCurStyle != style_c_default && iCurStyle != style_d_default && iCurStyle != style_s_default && iCurStyle != style_se_default);
+	bool bOnOff = (iCurStyle != style_c_default);
 
 	if(thePrefs.GetWindowsVersion() == _WINVER_XP_) // using XP
 	{
@@ -3822,46 +3833,41 @@ void CPPgScar::UpdateStyles()
 	else
 		m_BackColor.SetDefaultColor(COLORREF(RGB(255,255,255)));
 
-	m_BackColor.SetColor(styles.nBackColor);
-	if(iMasterValue < background_styles)
+	if(bOnOff && iMasterValue < background_styles)
 	{
-		m_FontColor.SetColor(styles.nFontColor);
-		bEnable = true;
-	}
-
-	if(bOnOff)
-	{
-		m_OnOff.EnableWindow(bEnable);
-
-		if(styles.nOnOff != 0 && bEnable)
+		m_OnOff.EnableWindow(TRUE);
+		if(styles.nOnOff != 0)
 		{
-			m_BackColor.EnableWindow(true);
+			bEnable = true;
 			m_OnOff.SetWindowText( GetResString(IDS_COLOR_OFF) );
 		}
 		else
 		{
 			m_OnOff.SetWindowText( GetResString(IDS_COLOR_ON) );
-			bEnable = false;
-			m_BackColor.EnableWindow(iMasterValue >= background_styles);
 		}
 	}
 	else
 	{
-		m_BackColor.EnableWindow(true);
+		bEnable = true;
 		m_OnOff.EnableWindow(FALSE);
 		m_OnOff.SetWindowText( GetResString(IDS_COLOR_ON) );
 	}
-	m_bold.EnableWindow(bEnable);
-	m_underlined.EnableWindow(bEnable);
-	m_italic.EnableWindow(bEnable);
-	m_FontColor.EnableWindow(bEnable);
 
-	int iStyle = (styles.nFlags & STYLE_FONTMASK);
-	m_bold.SetCheck(iStyle== STYLE_BOLD ? 1:0);
-	m_underlined.SetCheck(iStyle== STYLE_UNDERLINE ? 1:0);
-	m_italic.SetCheck(iStyle== STYLE_ITALIC ? 1:0);
+	m_bold.EnableWindow(bEnable && iMasterValue < background_styles);
+	m_underlined.EnableWindow(bEnable && iMasterValue < background_styles);
+	m_italic.EnableWindow(bEnable && iMasterValue < background_styles);
+	m_FontColor.EnableWindow(bEnable && iMasterValue < background_styles);
+	m_BackColor.EnableWindow(bEnable);
 
-	SetStyle(iMasterValue, iCurStyle, &styles);
+	if(bEnable)
+	{
+		int iStyle = (styles.nFlags & STYLE_FONTMASK);
+		m_bold.SetCheck(iStyle== STYLE_BOLD ? 1:0);
+		m_underlined.SetCheck(iStyle== STYLE_UNDERLINE ? 1:0);
+		m_italic.SetCheck(iStyle== STYLE_ITALIC ? 1:0);
+		m_FontColor.SetColor(styles.nFontColor);
+		m_BackColor.SetColor(styles.nBackColor);
+	}
 
 	RedrawWindow(); // work around all glitches. :D
 }
@@ -3880,8 +3886,14 @@ void CPPgScar::OnFontStyle(int iStyle)
 	else if (m_italic.GetCheck())
 		iStyle = STYLE_ITALIC;
 
-	int iCurStyle = m_SubCombo.GetCurSel();
-	int iMasterValue = m_MasterCombo.GetCurSel();
+	int iCurStyle = 0;
+	int iMasterValue = 0;
+	int iSel = m_SubCombo.GetCurSel();
+	if (iSel >= 0)
+		iCurStyle = m_SubCombo.GetItemData(iSel);
+	iSel = m_MasterCombo.GetCurSel();
+	if (iSel >= 0)
+		iMasterValue = m_MasterCombo.GetItemData(iSel);
 	StylesStruct styles;
 	styles = GetStyle(iMasterValue, iCurStyle);
 
@@ -3898,8 +3910,14 @@ void CPPgScar::OnFontStyle(int iStyle)
 
 LONG CPPgScar::OnColorPopupSelChange(UINT /*lParam*/, LONG /*wParam*/)
 {
-	int iCurStyle = m_SubCombo.GetCurSel();
-	int iMasterValue = m_MasterCombo.GetCurSel();
+	int iCurStyle = 0;
+	int iMasterValue = 0;
+	int iSel = m_SubCombo.GetCurSel();
+	if (iSel >= 0)
+		iCurStyle = m_SubCombo.GetItemData(iSel);
+	iSel = m_MasterCombo.GetCurSel();
+	if (iSel >= 0)
+		iMasterValue = m_MasterCombo.GetItemData(iSel);
 	StylesStruct styles;
 	styles = GetStyle(iMasterValue, iCurStyle);
 
@@ -3967,8 +3985,14 @@ void CPPgScar::OnCbnSelchangeStyleselSub()
 
 void CPPgScar::OnBnClickedOnOff()
 {
-	int iCurStyle = m_SubCombo.GetCurSel();
-	int iMasterValue = m_MasterCombo.GetCurSel();
+	int iCurStyle = 0;
+	int iMasterValue = 0;
+	int iSel = m_SubCombo.GetCurSel();
+	if (iSel >= 0)
+		iCurStyle = m_SubCombo.GetItemData(iSel);
+	iSel = m_MasterCombo.GetCurSel();
+	if (iSel >= 0)
+		iMasterValue = m_MasterCombo.GetItemData(iSel);
 	StylesStruct styles;
 	styles = GetStyle(iMasterValue, iCurStyle);
 
