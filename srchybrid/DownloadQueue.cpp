@@ -643,11 +643,19 @@ void CDownloadQueue::Process(){
 		else if(GetGlobalSources() > thePrefs.m_uMaxGlobalSources && thePrefs.m_bAcceptsourcelimit == false)
 			limitbysources = 1;
 		// ==> Do not restrict download if no upload possible [Stulle] - Stulle
+		/*
+		const float maxDownload = theApp.pBandWidthControl->GetMaxDownloadEx(limitbysources); //in [kb/s]
+		*/
+		float maxDownload = 0; //in [kb/s]
 		if(theApp.uploadqueue->GetUploadQueueLength() <= 2 && // yeah, it should be two at the least
 			theApp.uploadqueue->GetWaitingUserCount() <= 0) // nobody in queue
-			limitbysources = 0;
+		{
+			maxDownload = thePrefs.GetMaxDownload();
+			limitbysources = 0xFF;
+		}
+		else
+			maxDownload = theApp.pBandWidthControl->GetMaxDownloadEx(limitbysources);
 		// <== Do not restrict download if no upload possible [Stulle] - Stulle
-		const float maxDownload = theApp.pBandWidthControl->GetMaxDownloadEx(limitbysources); //in [kb/s]
 		if(limitbysources > 0)
 		// <== Enforce Ratio [Stulle] - Stulle
 			m_limitstate=1; //at least session ratio
@@ -682,7 +690,12 @@ void CDownloadQueue::Process(){
 			// <== Enforce Ratio [Stulle] - Stulle
 			//Xman end
 
+			// ==> Do not restrict download if no upload possible [Stulle] - Stulle
+			/*
 			else if (thePrefs.Is13Ratio()) //downloadlimit although it should be unlimited => we have a ratio
+			*/
+			else if (limitbysources != 0xFF && thePrefs.Is13Ratio()) //downloadlimit although it should be unlimited => we have a ratio
+			// <== Do not restrict download if no upload possible [Stulle] - Stulle
 				m_limitstate=3;
 			else if (maxDownload < thePrefs.GetMaxDownload()) //can only be NAFC
 				m_limitstate=4;

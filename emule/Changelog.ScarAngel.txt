@@ -1,6 +1,16 @@
 CHANGELOG FOR EMULE ScarAngel MOD
 
 
+eMule v0.48a ScarAngel v2.6:
+------------------------
+- XX.XX.2008 -
+-------------------------------------------------------------------------------
+based on eMule 0.48a Xtreme 6.1 compiled with vs2003 SP1
+
+Fixed: Do not restrict download if no upload possible [Stulle] - Stulle
+	+ missed merging the proper version of this code on releasing
+
+
 eMule v0.48a ScarAngel v2.5:
 ------------------------
 - 28.12.2007 -
