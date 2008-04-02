@@ -2825,6 +2825,35 @@ uint32 CPartFile::Process(uint32 maxammount, bool isLimited, bool fullProcess)
 	UINT nOldTransSourceCount = GetSrcStatisticsValue(DS_DOWNLOADING);
 	DWORD dwCurTick = ::GetTickCount();
 
+	// ==> Control download priority [tommy_gun/iONiX] - MyTh88
+	if(GetDownPriority() != thePrefs.GetBowlfishPrioNewValue() ||
+		IsAutoDownPriority())
+	{
+		if((thePrefs.GetBowlfishPrioPercent() && GetPercentCompleted() >= (float)thePrefs.GetBowlfishPrioPercentValue())
+			|| (thePrefs.GetBowlfishPrioSize() && (GetFileSize()-GetCompletedSize()) <= ((uint64)(thePrefs.GetBowlfishPrioSizeValue()<<20))))
+		{
+			//CString newPriority;
+			SetAutoDownPriority(false);
+			switch(thePrefs.GetBowlfishPrioNewValue())
+			{
+				case 0:
+					//newPriority.Format(_T("%s"), GetResString(IDS_PRIOLOW));
+					SetDownPriority(PR_LOW);
+					break;
+				case 1:
+					//newPriority.Format(_T("%s"), GetResString(IDS_PRIONORMAL));
+					SetDownPriority(PR_NORMAL);
+					break;
+				case 2:
+					//newPriority.Format(_T("%s"), GetResString(IDS_PRIOHIGH));
+					SetDownPriority(PR_HIGH);
+					break;
+			}
+			//theApp.emuledlg->AddModLogLine (true,2,GetResString(IDS_BF_PRIO_LOG_PERCENT), this->GetFileName(), newPriority, this->GetPercentCompleted());
+		}
+	}
+	// <== Control download priority [tommy_gun/iONiX] - MyTh88
+
 	// If buffer size exceeds limit, or if not written within time limit, flush data
 	if ((m_nTotalBufferData > thePrefs.GetFileBufferSize()) || (dwCurTick > (m_nLastBufferFlushTime + BUFFER_TIME_LIMIT)))
 	{

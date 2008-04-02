@@ -268,6 +268,19 @@ CPPgScar::CPPgScar()
 	m_htiMMOpen = NULL;
 	// <== TBH: minimule - Max
 
+	// ==> Control download priority [tommy_gun/iONiX] - MyTh88
+	m_htiAutoDownPrioGroup = NULL;
+	m_htiAutoDownPrioOff = NULL;
+	m_htiAutoDownPrioPerc = NULL;
+	m_htiAutoDownPrioPercVal = NULL;
+	m_htiAutoDownPrioSize = NULL;
+	m_htiAutoDownPrioSizeVal = NULL;
+	m_htiAutoDownPrioValGroup = NULL;
+	m_htiAutoDownPrioLow = NULL;
+	m_htiAutoDownPrioNormal = NULL;
+	m_htiAutoDownPrioHigh = NULL;
+	// <== Control download priority [tommy_gun/iONiX] - MyTh88
+
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	m_htiSCC = NULL;
 	m_htiDlMode = NULL;
@@ -434,6 +447,8 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		int iImgInvisibleMode = 8;
 		int iImgDropDefaults = 8;
 		int iImgMinimule = 8;
+		int iImgAutoDownPrio = 8; //MyTh88 auto download priority
+		int iImgPriority = 8; //MyTh88 auto download priority
 		int iImgSCC = 8;
 		int iImgDlMode = 8;
 		int iImgSharedPrefs = 8;
@@ -460,6 +475,8 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 			iImgInvisibleMode = piml->Add(CTempIconLoader(_T("INVMODE")));
 			iImgDropDefaults = piml->Add(CTempIconLoader(_T("DROPDEFAULTS")));
 			iImgMinimule = piml->Add(CTempIconLoader(_T("MINIMULE")));
+			iImgAutoDownPrio = piml->Add(CTempIconLoader(_T("DOWNLOAD"))); //MyTh88 auto download priority
+			iImgPriority = piml->Add(CTempIconLoader(_T("FILEPRIORITY"))); //MyTh88 auto download priority
 			iImgSCC = piml->Add(CTempIconLoader(_T("CATEGORY")));
 			iImgDlMode = piml->Add(CTempIconLoader(_T("DLMODE")));
 			iImgSharedPrefs = piml->Add(CTempIconLoader(_T("SHAREDFILESMANAGEMENT")));
@@ -645,6 +662,24 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiMMCompl = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_MM_COMPL), m_htiMMGroup, m_bMMCompl);
 		m_htiMMOpen = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_MM_OPEN), m_htiMMGroup, m_bMMOpen);
 		// <== TBH: minimule - Max
+
+		// ==> Control download priority [tommy_gun/iONiX] - MyTh88
+		m_htiAutoDownPrioGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_AUTO_DOWN_GROUP), iImgAutoDownPrio, TVI_ROOT);
+		m_htiAutoDownPrioOff = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_POWERSHARE_DISABLED), m_htiAutoDownPrioGroup, m_iAutoDownPrio == 0);
+		m_htiAutoDownPrioPerc = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_AUTO_DOWN_PERC), m_htiAutoDownPrioGroup, m_iAutoDownPrio == 1);
+		m_htiAutoDownPrioPercVal = m_ctrlTreeOptions.InsertItem(GetResString(IDS_AUTO_DOWN_PERC_VAL), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiAutoDownPrioPerc);
+		m_ctrlTreeOptions.AddEditBox(m_htiAutoDownPrioPercVal, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_ctrlTreeOptions.Expand(m_htiAutoDownPrioPerc, TVE_EXPAND);
+		m_htiAutoDownPrioSize = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_AUTO_DOWN_SIZE), m_htiAutoDownPrioGroup, m_iAutoDownPrio == 2);
+		m_htiAutoDownPrioSizeVal = m_ctrlTreeOptions.InsertItem(GetResString(IDS_AUTO_DOWN_SIZE_VAL), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiAutoDownPrioSize);
+		m_ctrlTreeOptions.AddEditBox(m_htiAutoDownPrioSizeVal, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_ctrlTreeOptions.Expand(m_htiAutoDownPrioSize, TVE_EXPAND);
+		m_htiAutoDownPrioValGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_AUTO_DOWN_PRIO), iImgPriority, m_htiAutoDownPrioGroup);
+		m_htiAutoDownPrioLow = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_PRIOLOW), m_htiAutoDownPrioValGroup, m_iAutoDownPrioVal == 0);
+		m_htiAutoDownPrioNormal = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_PRIONORMAL), m_htiAutoDownPrioValGroup, m_iAutoDownPrioVal == 1);
+		m_htiAutoDownPrioHigh = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_PRIOHIGH), m_htiAutoDownPrioValGroup, m_iAutoDownPrioVal == 2);
+		m_ctrlTreeOptions.Expand(m_htiAutoDownPrioValGroup, TVE_EXPAND);
+		// <== Control download priority [tommy_gun/iONiX] - MyTh88
 
 		// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 		m_htiSCC = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_SCC), iImgSCC, TVI_ROOT);
@@ -865,6 +900,15 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiMMCompl, m_bMMCompl);
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiMMOpen, m_bMMOpen);
 	// <== TBH: minimule - Max
+
+	// ==> Control download priority [tommy_gun/iONiX] - MyTh88
+	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiAutoDownPrioGroup, m_iAutoDownPrio);
+	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiAutoDownPrioPercVal, m_iAutoDownPrioPerc);
+	DDV_MinMaxInt(pDX, m_iAutoDownPrioPerc, 1, 100);
+	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiAutoDownPrioSizeVal, m_iAutoDownPrioSize);
+	DDV_MinMaxInt(pDX, m_iAutoDownPrioSize, 1, 1024);
+	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiAutoDownPrioValGroup, m_iAutoDownPrioVal);
+	// <== Control download priority [tommy_gun/iONiX] - MyTh88
 
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiDlMode, (int &)m_iDlMode);
@@ -1218,6 +1262,14 @@ BOOL CPPgScar::OnInitDialog()
 	m_bMMCompl = thePrefs.m_bMMCompl;
 	m_bMMOpen = thePrefs.m_bMMOpen;
 	// <== TBH: minimule - Max
+
+	// ==> Control download priority [tommy_gun/iONiX] - MyTh88
+	m_iAutoDownPrio = thePrefs.GetBowlfishMode();
+	m_iAutoDownPrioPerc = thePrefs.GetBowlfishPrioPercentValue();
+	m_iAutoDownPrioSize = thePrefs.GetBowlfishPrioSizeValue();
+	m_iAutoDownPrioVal = thePrefs.GetBowlfishPrioNewValue();
+	// <== Control download priority [tommy_gun/iONiX] - MyTh88
+
 
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	m_iDlMode = thePrefs.GetDlMode();
@@ -1651,6 +1703,13 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_bMMCompl = m_bMMCompl;
 	thePrefs.m_bMMOpen = m_bMMOpen;
 	// <== TBH: minimule - Max
+
+	// ==> Control download priority [tommy_gun/iONiX] - MyTh88
+	thePrefs.m_uiBowlfishMode = (uint8)m_iAutoDownPrio;
+	thePrefs.m_nBowlfishPrioPercentValue = (uint8)m_iAutoDownPrioPerc;
+	thePrefs.m_nBowlfishPrioSizeValue = (uint16)m_iAutoDownPrioSize;
+	thePrefs.m_nBowlfishPrioNewValue = (uint8)m_iAutoDownPrioVal;
+	// <== Control download priority [tommy_gun/iONiX] - MyTh88
 
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	thePrefs.dlMode = (uint8)m_iDlMode;
@@ -2372,6 +2431,19 @@ void CPPgScar::OnDestroy()
 	m_htiMMCompl = NULL;
 	m_htiMMOpen = NULL;
 	// <== TBH: minimule - Max
+
+	// ==> Control download priority [tommy_gun/iONiX] - MyTh88
+	m_htiAutoDownPrioGroup = NULL;
+	m_htiAutoDownPrioOff = NULL;
+	m_htiAutoDownPrioPerc = NULL;
+	m_htiAutoDownPrioPercVal = NULL;
+	m_htiAutoDownPrioSize = NULL;
+	m_htiAutoDownPrioSizeVal = NULL;
+	m_htiAutoDownPrioValGroup = NULL;
+	m_htiAutoDownPrioLow = NULL;
+	m_htiAutoDownPrioNormal = NULL;
+	m_htiAutoDownPrioHigh = NULL;
+	// <== Control download priority [tommy_gun/iONiX] - MyTh88
 
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	m_htiSCC = NULL;

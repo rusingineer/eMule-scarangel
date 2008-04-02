@@ -127,6 +127,13 @@ protected:
 	bool m_bMMOpen;
 	// <== TBH: minimule - Max
 
+	// ==> Control download priority [tommy_gun/iONiX] - MyTh88
+	int m_iAutoDownPrio;
+	int m_iAutoDownPrioPerc;
+	int m_iAutoDownPrioSize;
+	int m_iAutoDownPrioVal;
+	// <== Control download priority [tommy_gun/iONiX] - MyTh88
+
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	int m_iDlMode;
 	bool m_bShowCatNames;
@@ -318,6 +325,19 @@ protected:
 	HTREEITEM m_htiMMCompl;
 	HTREEITEM m_htiMMOpen;
 	// <== TBH: minimule - Max
+
+	// ==> Control download priority [tommy_gun/iONiX] - MyTh88
+	HTREEITEM m_htiAutoDownPrioGroup;
+	HTREEITEM m_htiAutoDownPrioOff;
+	HTREEITEM m_htiAutoDownPrioPerc;
+	HTREEITEM m_htiAutoDownPrioPercVal;
+	HTREEITEM m_htiAutoDownPrioSize;
+	HTREEITEM m_htiAutoDownPrioSizeVal;
+	HTREEITEM m_htiAutoDownPrioValGroup;
+	HTREEITEM m_htiAutoDownPrioLow;
+	HTREEITEM m_htiAutoDownPrioNormal;
+	HTREEITEM m_htiAutoDownPrioHigh;
+	// <== Control download priority [tommy_gun/iONiX] - MyTh88
 
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	HTREEITEM m_htiSCC;

@@ -3194,6 +3194,15 @@
 #define IDS_SHOW_SPEED_METER            61371
 // <== High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
+// ==> Control download priority [tommy_gun/iONiX] - MyTh88
+#define IDS_AUTO_DOWN_GROUP             62000
+#define IDS_AUTO_DOWN_PERC              62001
+#define IDS_AUTO_DOWN_PERC_VAL          62002
+#define IDS_AUTO_DOWN_SIZE              62003
+#define IDS_AUTO_DOWN_SIZE_VAL          62004
+#define IDS_AUTO_DOWN_PRIO              62005
+// <== Control download priority [tommy_gun/iONiX] - MyTh88
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

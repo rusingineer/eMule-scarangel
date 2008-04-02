@@ -2378,6 +2378,29 @@ public:
 	static	void	SetDirectoryWatcher(bool on)		{ m_bDirectoryWatcher = on; }
 	// <== Automatic shared files updater [MoNKi] - Stulle
 
+	// ==> Control download priority [tommy_gun/iONiX] - MyTh88
+	static	uint8	m_uiBowlfishMode;
+	static	uint8	GetBowlfishMode()					{return m_uiBowlfishMode;}
+
+	static	bool	GetBowlfishPrioPercent()			{return (m_uiBowlfishMode == 1);}
+	static	void	SetBowlfishPrioPercent()			{m_uiBowlfishMode = 1;}
+
+	static	bool	GetBowlfishPrioSize()				{return (m_uiBowlfishMode == 2);}
+	static	void	SetBowlfishPrioSize()				{m_uiBowlfishMode = 2;}
+
+	static	uint8	m_nBowlfishPrioPercentValue;
+	static	uint8	GetBowlfishPrioPercentValue()		{return m_nBowlfishPrioPercentValue;}
+	static	void	SetBowlfishPrioPercentValue(uint8 value)	{m_nBowlfishPrioPercentValue = value;}
+
+	static	uint16	m_nBowlfishPrioSizeValue;
+	static	uint16	GetBowlfishPrioSizeValue()			{return m_nBowlfishPrioSizeValue;}
+	static	void	SetBowlfishPrioSizeValue(uint16 value)	{m_nBowlfishPrioSizeValue = value;}
+
+	static	uint8	m_nBowlfishPrioNewValue;
+	static	uint8	GetBowlfishPrioNewValue()			{return m_nBowlfishPrioNewValue;}
+	static	void	SetBowlfishPrioNewValue(uint8 value)	{m_nBowlfishPrioNewValue = value;}
+	// <== Control download priority [tommy_gun/iONiX] - MyTh88
+
 	// ==> Anti Uploader Ban [Stulle] - Stulle
 	static	uint16	GetAntiUploaderBanLimit()	{return m_uAntiUploaderBanLimit;}
 	static	uint8	GetAntiUploaderBanCase()	{return AntiUploaderBanCaseMode;}

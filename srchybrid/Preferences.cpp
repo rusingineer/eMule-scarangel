@@ -825,6 +825,13 @@ short		CPreferences::nWindowStyleOnOff[style_w_count];
 
 int		CPreferences::PsAmountLimit; // Limit PS by amount of data uploaded [Stulle] - Stulle
 
+// ==> Control download priority [tommy_gun/iONiX] - MyTh88
+uint8	CPreferences::m_nBowlfishPrioPercentValue;
+uint16	CPreferences::m_nBowlfishPrioSizeValue;
+uint8	CPreferences::m_nBowlfishPrioNewValue;
+uint8	CPreferences::m_uiBowlfishMode;
+// <== Control download priority [tommy_gun/iONiX] - MyTh88
+
 // ==> Enforce Ratio [Stulle] - Stulle
 bool	CPreferences::m_bEnforceRatio;
 uint8	CPreferences::m_uRatioValue;
@@ -2773,6 +2780,13 @@ void CPreferences::SavePreferences()
 
 	ini.WriteBool(_T("MaxSlotSpeed"), m_bMaxSlotSpeed); // Alwasy maximize slot speed [Stulle] - Stulle
 
+	// ==> Control download priority [tommy_gun/iONiX] - MyTh88
+	ini.WriteInt(_T("BownfishMode"), m_uiBowlfishMode);
+	ini.WriteInt(_T("AutoBowlfishPrioPercentValue"), m_nBowlfishPrioPercentValue);
+	ini.WriteInt(_T("AutoBowlfishPrioSizeValue"), m_nBowlfishPrioSizeValue);
+	ini.WriteInt(_T("AutoBowlfishPrioNewValue"), m_nBowlfishPrioNewValue);
+	// <== Control download priority [tommy_gun/iONiX] - MyTh88
+
 	// ==> Timer for ReAsk File Sources [Stulle] - Stulle
 	uint8 uTemp = (uint8)((m_uReAskTimeDif+FILEREASKTIME)/60000);
 	ini.WriteInt(_T("ReAskTime"),uTemp);
@@ -4014,6 +4028,17 @@ void CPreferences::LoadPreferences()
 	temp = (temp >= 29 && temp <= 55) ? temp : 29;
 	m_uReAskTimeDif = (temp-29)*60000;
 	// <== Timer for ReAsk File Sources [Stulle] - Stulle
+
+
+	// ==> Control download priority [tommy_gun/iONiX] - MyTh88
+	uint8 m_uTemp;
+	m_uTemp = ini.GetInt(_T("BownfishMode"), 0);
+	m_uiBowlfishMode = (uint8)((m_uTemp >= 0 && m_uTemp <= 2)?m_uTemp:0);
+	m_nBowlfishPrioPercentValue = (uint8)ini.GetInt(_T("AutoBowlfishPrioPercentValue"), 80);
+	m_nBowlfishPrioSizeValue = (uint16)ini.GetInt(_T("AutoBowlfishPrioSizeValue"), 100);
+	m_uTemp = ini.GetInt(_T("AutoBowlfishPrioNewValue"), 2);
+	m_nBowlfishPrioNewValue = (uint8)((m_uTemp >= 0 && m_uTemp <= 2)?m_uTemp:2);
+	// <== Control download priority [tommy_gun/iONiX] - MyTh88
 
 	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
 	m_bAutoUpdateAntiLeech=ini.GetBool(_T("AutoUpdateAntiLeech"),true);

@@ -5847,6 +5847,14 @@ BEGIN
     IDS_ASFU_RELOAD         "Detected change on shared folders. Reloading shared files..."
     IDS_ASFU_RELOADING      "ASFU: Reloading..."
     // <== Automatic shared files updater [MoNKi] - Stulle
+// ==> Control download priority [tommy_gun/iONiX] - MyTh88
+    IDS_AUTO_DOWN_GROUP     "Control Download Priority"
+    IDS_AUTO_DOWN_PERC      "By percent completed"
+    IDS_AUTO_DOWN_PERC_VAL  "Percent completed"
+    IDS_AUTO_DOWN_SIZE      "By remaining size"
+    IDS_AUTO_DOWN_SIZE_VAL  "Remaing size (MB)"
+    IDS_AUTO_DOWN_PRIO      "Change priority to"
+// <== Control download priority [tommy_gun/iONiX] - MyTh88
     // ==> Anti Uploader Ban [Stulle] - Stulle
     IDS_UNBAN_UPLOADER      "Limit for Ban-prevention in MB [0=disabled]"
     IDS_ANTI_CASE_1         "UL >= Limit"
