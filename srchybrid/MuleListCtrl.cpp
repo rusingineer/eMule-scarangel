@@ -776,7 +776,7 @@ BOOL CMuleListCtrl::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT
 
 				CTitleMenu tmColumnMenu;
 				tmColumnMenu.CreatePopupMenu();
-				tmColumnMenu.AddMenuTitle(NULL); // XP Style Menu [Xanatos] - Stulle
+				tmColumnMenu.AddMenuTitle(GetResString(IDS_WEBSERVICES), true, false); // XP Style Menu [Xanatos] - Stulle
 
 				CHeaderCtrl *pHeaderCtrl = GetHeaderCtrl();
 				int iCount = pHeaderCtrl->GetItemCount();

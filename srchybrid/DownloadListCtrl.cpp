@@ -1863,7 +1863,7 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			*/
 			CTitleMenu PreviewMenu;
 			PreviewMenu.CreateMenu();
-			PreviewMenu.AddMenuTitle(NULL, true, false);
+			PreviewMenu.AddMenuTitle(GetResString(IDS_MENU_PREVIEW), true, false);
 			// <== XP Style Menu [Xanatos] - Stulle
 			int iPreviewMenuEntries = thePreviewApps.GetAllMenuEntries(PreviewMenu, (iSelectedItems == 1) ? file1 : NULL);
 			if (iPreviewMenuEntries)
@@ -1897,7 +1897,7 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			m_FileMenu.EnableMenuItem((UINT_PTR)m_FollowTheMajorityMenu.m_hMenu, (iFilesNotDone > 0) ? MF_ENABLED : MF_GRAYED);
 			buffer.Format(_T(" (%s)"),thePrefs.IsFollowTheMajorityEnabled()?GetResString(IDS_ENABLED):GetResString(IDS_DISABLED));
 			m_FollowTheMajorityMenu.RemoveMenu(MP_FOLLOWTHEMAJORITY,MF_BYCOMMAND);
-			m_FollowTheMajorityMenu.InsertMenu(0,MF_STRING|MF_BYPOSITION,MP_FOLLOWTHEMAJORITY,GetResString(IDS_DEFAULT) + buffer);
+			m_FollowTheMajorityMenu.InsertMenu(1,MF_STRING|MF_BYPOSITION,MP_FOLLOWTHEMAJORITY,GetResString(IDS_DEFAULT) + buffer);
 			m_FollowTheMajorityMenu.CheckMenuRadioItem(MP_FOLLOWTHEMAJORITY, MP_FOLLOWTHEMAJORITY_1, uFollowTheMajorityMenuItem, 0);
 			// <== Follow The Majority [AndCycle/Stulle] - Stulle
 
@@ -1935,7 +1935,7 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			/*
 			WebMenu.AddMenuTitle(NULL, true);
 			*/
-			WebMenu.AddMenuTitle(NULL, true, false);
+			WebMenu.AddMenuTitle(GetResString(IDS_WEBSERVICES), true, false);
 			// <== XP Style Menu [Xanatos] - Stulle
 			int iWebMenuEntries = theWebServices.GetFileMenuEntries(&WebMenu);
 			UINT flag = (iWebMenuEntries == 0 || iSelectedItems != 1) ? MF_GRAYED : MF_ENABLED;
@@ -1949,7 +1949,7 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			*/
 			CTitleMenu CatsMenu;
 			CatsMenu.CreateMenu();
-			CatsMenu.AddMenuTitle(NULL, false, false);
+			CatsMenu.AddMenuTitle(GetResString(IDS_CAT), false, false);
 			// <== XP Style Menu [Xanatos] - Stulle
 			flag = (thePrefs.GetCatCount() == 1) ? MF_GRAYED : MF_ENABLED;
 			CString label;
@@ -2048,7 +2048,7 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			*/
 			CTitleMenu A4AFMenu;
 			A4AFMenu.CreateMenu();
-			A4AFMenu.AddMenuTitle(NULL, false, false);
+			A4AFMenu.AddMenuTitle(GetResString(IDS_A4AF), false, false);
 			// <== XP Style Menu [Xanatos] - Stulle
 			if (thePrefs.IsExtControlsEnabled()) {
 				//Xman Xtreme Downloadmanager
@@ -2127,7 +2127,7 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 		/*
 		WebMenu.AddMenuTitle(NULL, true);
 		*/
-		WebMenu.AddMenuTitle(NULL, true, false);
+		WebMenu.AddMenuTitle(GetResString(IDS_WEBSERVICES), true, false);
 		// <== XP Style Menu [Xanatos] - Stulle
 		theWebServices.GetFileMenuEntries(&WebMenu);
 		m_FileMenu.AppendMenu(MF_POPUP | MF_GRAYED, (UINT_PTR)WebMenu.m_hMenu, GetResString(IDS_WEBSERVICES), _T("WEB"));
@@ -3450,7 +3450,7 @@ void CDownloadListCtrl::CreateMenues()
 
 	//Xman Xtreme Downloadmanager
 	m_DropMenu.CreateMenu();
-	m_DropMenu.AddMenuTitle(NULL, true, false); // XP Style Menu [Xanatos] - Stulle
+	m_DropMenu.AddMenuTitle(_T("DROP"), true, false); // XP Style Menu [Xanatos] - Stulle
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPNONEEDEDSRCS, GetResString(IDS_DROPNONEEDEDSRCS)); 
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPQUEUEFULLSRCS, GetResString(IDS_DROPQUEUEFULLSRCS)); 
 	m_DropMenu.AppendMenu(MF_STRING, MP_DROPLEECHER, GetResString(IDS_DROPLEECHER));  //Xman Anti-Leecher
@@ -3470,7 +3470,7 @@ void CDownloadListCtrl::CreateMenues()
 
 	// ==> Follow The Majority [AndCycle/Stulle] - Stulle
 	m_FollowTheMajorityMenu.CreateMenu();
-	m_FollowTheMajorityMenu.AddMenuTitle(NULL, true, false); // XP Style Menu [Xanatos] - Stulle
+	m_FollowTheMajorityMenu.AddMenuTitle(GetResString(IDS_FOLLOW_THE_MAJORITY), true, false); // XP Style Menu [Xanatos] - Stulle
 	m_FollowTheMajorityMenu.AppendMenu(MF_STRING,MP_FOLLOWTHEMAJORITY,	GetResString(IDS_DEFAULT));
 	m_FollowTheMajorityMenu.AppendMenu(MF_STRING,MP_FOLLOWTHEMAJORITY_0,	GetResString(IDS_DISABLED));
 	m_FollowTheMajorityMenu.AppendMenu(MF_STRING,MP_FOLLOWTHEMAJORITY_1,	GetResString(IDS_ENABLED));
@@ -3483,7 +3483,7 @@ void CDownloadListCtrl::CreateMenues()
 	/*
 	m_PrioMenu.AddMenuTitle(NULL, true);
 	*/
-	m_PrioMenu.AddMenuTitle(NULL, true, false);
+	m_PrioMenu.AddMenuTitle(GetResString(IDS_PRIORITY), true, false);
 	// <== XP Style Menu [Xanatos] - Stulle
 	m_PrioMenu.AppendMenu(MF_STRING, MP_PRIOLOW, GetResString(IDS_PRIOLOW));
 	m_PrioMenu.AppendMenu(MF_STRING, MP_PRIONORMAL, GetResString(IDS_PRIONORMAL));
@@ -3513,8 +3513,13 @@ void CDownloadListCtrl::CreateMenues()
 	//
 	if (thePrefs.IsExtControlsEnabled()) {
 		m_SourcesMenu.CreateMenu();
-		m_SourcesMenu.AddMenuTitle(NULL, true, false); // XP Style Menu [Xanatos] - Stulle
-		//Xman Xtreme Downloadmanager
+		// ==> XP Style Menu [Xanatos] - Stulle
+		/*
+		m_SourcesMenu.AddMenuTitle(NULL, true);
+		*/
+		m_SourcesMenu.AddMenuTitle(GetResString(IDS_DL_SOURCES), true, false);
+		// <== XP Style Menu [Xanatos] - Stulle		
+                //Xman Xtreme Downloadmanager
 		m_SourcesMenu.AppendMenu(MF_STRING, MP_ALL_A4AF_AUTO, GetResString(IDS_ALL_A4AF_AUTO)); //Xman Xtreme Downloadmanager: Auto-A4AF-check
 		m_SourcesMenu.AppendMenu(MF_STRING, MP_ALL_A4AF_TO_THIS, GetResString(IDS_ALL_A4AF_TO_THIS)); 
 		m_SourcesMenu.AppendMenu(MF_STRING, MP_ALL_A4AF_TO_OTHER, GetResString(IDS_ALL_A4AF_TO_OTHER)); 

@@ -468,7 +468,7 @@ void CMuleToolbarCtrl::OnNMRclick(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	*/
 	CTitleMenu menuBitmaps;
 	menuBitmaps.CreatePopupMenu();
-	menuBitmaps.AddMenuTitle(NULL, false, false);
+	menuBitmaps.AddMenuTitle(GetResString(IDS_TOOLBARSKINS), false, false);
 	// <== XP Style Menu [Xanatos] - Stulle
 	menuBitmaps.AppendMenu(MF_STRING, MP_SELECTTOOLBARBITMAP, GetResString(IDS_SELECTTOOLBARBITMAP));
 	menuBitmaps.AppendMenu(MF_STRING, MP_SELECTTOOLBARBITMAPDIR, GetResString(IDS_SELECTTOOLBARBITMAPDIR));
@@ -547,7 +547,7 @@ void CMuleToolbarCtrl::OnNMRclick(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	*/
 	CTitleMenu menuSkins;
 	menuSkins.CreatePopupMenu();
-	menuSkins.AddMenuTitle(NULL, false, false);
+	menuSkins.AddMenuTitle(GetResString(IDS_SKIN_PROF), false, false);
 	// <== XP Style Menu [Xanatos] - Stulle
 	menuSkins.AppendMenu(MF_STRING, MP_SELECT_SKIN_FILE, GetResString(IDS_SEL_SKIN));
 	menuSkins.AppendMenu(MF_STRING, MP_SELECT_SKIN_DIR, GetResString(IDS_SEL_SKINDIR));
@@ -626,7 +626,7 @@ void CMuleToolbarCtrl::OnNMRclick(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	*/
 	CTitleMenu menuTextLabels;
 	menuTextLabels.CreatePopupMenu();
-	menuTextLabels.AddMenuTitle(NULL, false, false);
+	menuTextLabels.AddMenuTitle(GetResString(IDS_TEXTLABELS), false, false);
 	// <== XP Style Menu [Xanatos] - Stulle
 	ASSERT( MP_NOTEXTLABELS == MP_TEXTLABELS-1 && MP_NOTEXTLABELS == MP_TEXTLABELSONRIGHT-2 );
 	ASSERT( MP_NOTEXTLABELS + (int)NoLabels == MP_NOTEXTLABELS );
@@ -656,7 +656,7 @@ void CMuleToolbarCtrl::OnNMRclick(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	*/
 	CTitleMenu menuToolbar;
 	menuToolbar.CreatePopupMenu();
-	menuToolbar.AddMenuTitle(NULL);
+	menuToolbar.AddMenuTitle(GetResString(IDS_COLOR_W10));
 	// <== XP Style Menu [Xanatos] - Stulle
 	menuToolbar.AppendMenu(MF_STRING | MF_POPUP, (UINT_PTR)menuBitmaps.m_hMenu, GetResString(IDS_TOOLBARSKINS));
 	menuToolbar.AppendMenu(MF_STRING | MF_POPUP, (UINT_PTR)menuSkins.m_hMenu, GetResString(IDS_SKIN_PROF));

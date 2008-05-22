@@ -45,6 +45,7 @@ public:
 	bool		m_bSeparator;	//Separator
 	bool		m_bSideBar;		//A gradient sidebar
 	bool		m_bButtonOnly;	//Button only style item
+	bool		m_bHeading;		// MenuXP Sub Heading [fafner] - MyTh
 	CString		m_strText;		//Menu item text
 	HICON		m_hIcon;		//Menu icon
 	int			m_nSize;		//Height of the item(Width of the sidebar if m_bSideBar is true)
@@ -57,6 +58,7 @@ public:
 		m_bSeparator = false;
 		m_bSideBar = false;
 		m_bButtonOnly = false;
+		m_bHeading = false;		// MenuXP Sub Heading [fafner] - MyTh
 		m_hIcon = NULL;
 		m_nSize = 16;
 	};
@@ -118,6 +120,18 @@ public:
 	}
 };
 
+// ==> MenuXP Sub Heading [fafner] - MyTh
+class CMenuXPHeading : public CMenuXPItem
+{
+public:
+	CMenuXPHeading(LPCTSTR strText) : CMenuXPItem()
+	{
+		m_bHeading = true;
+		m_strText = strText;
+	}
+};
+// <== MenuXP Sub Heading [fafner] - MyTh
+
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class CMenuXP, an ownerdraw menu
 class CMenuXP : public CMenu  
@@ -148,6 +162,7 @@ public:
 	BOOL	AddSideBar(CMenuXPSideBar *pItem);
 	BOOL	AppendODMenu(UINT nFlags, UINT_PTR nIDNewItem, CMenuXPItem* pItem, UINT nPosition = UINT_MAX, ACCEL *pAccel=0);
 	BOOL	AppendSeparator(void);	
+	BOOL	AppendHeading(LPCTSTR lpszTitle); // MenuXP Sub Heading [fafner] - MyTh
 	//void	AppendODPopup(UINT &nFlags, CMenuXPItem* pItem);
 	void	Break(void);	//change a column(the next item added will be in a new column)
 	void	BreakBar(void);	//change a column with a break line(same as Break, except that a break line is drawn between two columns)
@@ -205,7 +220,7 @@ protected:
 	virtual void DrawButton(CDC *pDC, CRect rect, BOOL bSelected, BOOL bDisabled, BOOL bChecked);
 	virtual void DrawIcon(CDC *pDC, CRect rect, HICON hIcon, BOOL bSelected, BOOL bDisabled, BOOL bChecked);
 	virtual void DrawSideBar(CDC *pDC, CRect rect, HICON hIcon, CString strText);
-	virtual void DrawText(CDC *pDC, CRect rect, CString strText, BOOL bSelected, BOOL bDisabled, BOOL bBold);
+	virtual void DrawText(CDC *pDC, CRect rect, CString strText, BOOL bSelected, BOOL bDisabled, BOOL bBold, bool bHeading = false); // MenuXP Sub Heading [fafner] - MyTh
 	virtual void DrawCheckMark(CDC *pDC, CRect rect, BOOL bSelected);
 	virtual void DrawMenuText(CDC& dc, CRect rc, CString text, COLORREF color);
 	virtual void DrawIconArea(CDC *pDC, CRect rect, BOOL bSelected, BOOL bDisabled, BOOL bChecked);

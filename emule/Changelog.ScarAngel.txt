@@ -10,6 +10,9 @@ based on eMule 0.48a Xtreme 6.1 compiled with vs2003 SP1
 Added: Auto download priority [tommy_gun/iONiX] - MyTh
 Added: MenuXP Sub Heading [fafner] - MyTh
 
+Changed: Context menu Sidebars show mod version [Stulle] - MyTh
+Changed: Context menu title shown as sub heading [Stulle] - MyTh
+
 Fixed: Do not restrict download if no upload possible [Stulle] - Stulle
 	+ missed merging the proper version of this code on releasing
 

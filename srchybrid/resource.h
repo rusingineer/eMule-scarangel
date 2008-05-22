@@ -2387,6 +2387,7 @@
 #define IDI_ICONMR                      3201
 #define IDS_ANTILEECHERFILENAME_CHECK   3201
 #define IDS_ANTILEECHERUSERHASH_CHECK   3201
+#define IDS_FOLLOW_THE_MAJORITY         3533
 #define IDD_PPG_Xtreme                  4000
 #define IDC_13RATIO                     4001
 #define IDC_UPREDUCTION                 4002
@@ -2992,6 +2993,15 @@
 #define IDS_RATIO_ACTIVATION            61018
 #define IDS_RATIO_LIMIT                 61019
 // <== Enforce Ratio [Stulle] - Stulle
+// ==> XP Style Menu [Xanatos] - Stulle
+#define IDS_MENU_PREVIEW                60790
+#define IDS_HISTORY                     60791
+#define IDS_COLUMNS                     60792
+#define IDS_PS_LIMITED_SRC              60793
+#define IDS_PS_LIMITED_AMNT             60794
+#define IDS_FUNCTION                    60795
+#define IDS_RELEASER                    60796
+// <== XP Style Menu [Xanatos] - Stulle
 #define IDS_ERR_HIDDENSOURCE            61020 // Anti Anti HideOS & SOTN [SiRoB] - Stulle
 // ==> Improved ICS-Firewall support [MoNKi]-Max
 #define IDS_ICF 61021

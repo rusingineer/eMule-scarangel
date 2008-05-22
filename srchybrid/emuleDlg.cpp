@@ -3461,7 +3461,7 @@ void CemuleDlg::ShowToolPopup(bool toolsonly)
 
 	CTitleMenu Links;
 	Links.CreateMenu();
-	Links.AddMenuTitle(NULL, true, false); // XP Style Menu [Xanatos] - Stulle
+	Links.AddMenuTitle(GetResString(IDS_LINKS), true, false); // XP Style Menu [Xanatos] - Stulle
 	Links.AppendMenu(MF_STRING, MP_HM_LINK1, GetResString(IDS_HM_LINKHP), _T("WEB"));
 	Links.AppendMenu(MF_STRING, MP_HM_LINK2, GetResString(IDS_HM_LINKFAQ), _T("WEB"));
 	Links.AppendMenu(MF_STRING, MP_HM_LINK3, GetResString(IDS_HM_LINKVC), _T("WEB"));
@@ -3475,8 +3475,8 @@ void CemuleDlg::ShowToolPopup(bool toolsonly)
 	scheduler.CreateMenu();
 	*/
 	CTitleMenu scheduler;
-	scheduler.CreatePopupMenu();
-	scheduler.AddMenuTitle(NULL, false, false);
+	scheduler.CreateMenu();
+	scheduler.AddMenuTitle(GetResString(IDS_SCHEDULER), true, false);
 	// <== XP Style Menu [Xanatos] - Stulle
 	CString schedonoff= (!thePrefs.IsSchedulerEnabled())?GetResString(IDS_HM_SCHED_ON):GetResString(IDS_HM_SCHED_OFF);
 

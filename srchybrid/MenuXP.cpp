@@ -100,6 +100,13 @@ void CMenuXP::MeasureItem( LPMEASUREITEMSTRUCT lpms )
 		CFont	fontBold;
 		LOGFONT	logFont;
 		m_fontMenu.GetLogFont(&logFont);
+		// ==> MenuXP Sub Heading [fafner] - MyTh
+		if (pItem->m_bHeading) {
+			logFont.lfHeight = (LONG)(logFont.lfHeight * 0.8);
+			logFont.lfWeight = FW_SEMIBOLD;
+		}
+		else
+		// <== MenuXP Sub Heading [fafner] - MyTh
 		logFont.lfWeight = FW_BOLD;
 		fontBold.CreateFontIndirect(&logFont);
 		
@@ -110,6 +117,11 @@ void CMenuXP::MeasureItem( LPMEASUREITEMSTRUCT lpms )
 
 		// the height of the item should be the maximun of the text and the button
 		lpms->itemHeight = max(rcText.Height(), pItem->m_nSize + (CYBUTTONMARGIN<<1));
+		
+		// ==> MenuXP Sub Heading [fafner] - MyTh
+		if (pItem->m_bHeading)
+			lpms->itemHeight = (LONG)(lpms->itemHeight * 0.8);
+		// <== MenuXP Sub Heading [fafner] - MyTh
 
 		if (pItem->m_bButtonOnly)
 		{	//for button only style, we set the item's width to be the same as its height
@@ -197,6 +209,28 @@ void CMenuXP::DrawItem( LPDRAWITEMSTRUCT lpds )
 		BOOL bDisabled = lpds->itemState & ODS_GRAYED;
 		BOOL bSelected = lpds->itemState & ODS_SELECTED;
 		BOOL bChecked  = lpds->itemState & ODS_CHECKED;
+		
+		// ==> MenuXP Sub Heading [fafner] - MyTh
+		if (pItem->m_bHeading)
+		{
+			HBITMAP	bmpBar = CreateGradientBMP(
+				dc.m_hDC, m_clrSideBarStart, m_clrSideBarEnd,
+				rcItem.Width(), rcItem.Height(),
+				2, 256);
+			if (bmpBar)
+			{
+				CDC memDC;
+				memDC.CreateCompatibleDC(&dc);
+				HBITMAP hOldBmp = (HBITMAP)::SelectObject(memDC.m_hDC, bmpBar);
+				dc.BitBlt(rcItem.left, rcItem.top,
+					rcItem.Width(), rcItem.Height(),
+					&memDC, 0, 0, SRCCOPY);
+				::SelectObject(memDC, hOldBmp);
+				::DeleteObject(bmpBar);
+			}
+		}
+		else
+		// <== MenuXP Sub Heading [fafner] - MyTh
 
 		//draw the background first
 		DrawBackGround(&dc, rcItem, bSelected, bDisabled);
@@ -254,7 +288,12 @@ void CMenuXP::DrawItem( LPDRAWITEMSTRUCT lpds )
 		{
 			CRect rcText = rcItem;				 // start w/whole item
 			rcText.left += rcButton.Width() + CXGAP + CXTEXTMARGIN; // left margin
-			rcText.right -= pItem->m_nSize;				 // right margin
+			rcText.right -= pItem->m_nSize;				 // right margin		
+			// ==> MenuXP Sub Heading [fafner] - MyTh
+			if (pItem->m_bHeading)
+				DrawText(&dc, rcText, pItem->m_strText, true, false, 0, true);
+			else
+			// <== MenuXP Sub Heading [fafner] - MyTh			
 			DrawText(&dc, rcText, pItem->m_strText, bSelected, bDisabled, lpds->itemState&ODS_DEFAULT ? 1 : 0);
 		}
 
@@ -365,7 +404,7 @@ HICON CreateGrayscaleIcon(CDC *pDC, HICON hIcon)
 		// modify the colour table
 		for (int x = 0; x < nColours; x++)
 		{
-			BYTE nGray = (BYTE)GRAY(pal[x].rgbRed, pal[x].rgbGreen, pal[x].rgbBlue);
+			BYTE nGray = (BYTE)(GRAY(pal[x].rgbRed, pal[x].rgbGreen, pal[x].rgbBlue)); //Fafner: C4333 - 0529 - MyTh
 			pal[x].rgbRed = nGray;
 			pal[x].rgbGreen = nGray;
 			pal[x].rgbBlue = nGray;
@@ -613,10 +652,11 @@ void CMenuXP::DrawCheckMark(CDC *pDC, CRect rect, BOOL /*bSelected*/)
 }
 
 //Draw menu text
-void CMenuXP::DrawText(CDC *pDC, CRect rect, CString strText, BOOL bSelected, BOOL bDisabled, BOOL bBold)
+void CMenuXP::DrawText(CDC *pDC, CRect rect, CString strText, BOOL bSelected, BOOL bDisabled, BOOL bBold, bool bHeading) // MenuXP Sub Heading [fafner] - MyTh
 {
 	CFont*	pOldFont;
 	CFont	fontBold;
+	CFont	fontHead; // MenuXP Sub Heading [fafner] - MyTh
 
 	if (bBold)
 	{
@@ -627,6 +667,18 @@ void CMenuXP::DrawText(CDC *pDC, CRect rect, CString strText, BOOL bSelected, BO
 
 		pOldFont = pDC->SelectObject(&fontBold);
 	}
+	// ==> MenuXP Sub Heading [fafner] - MyTh
+	else if (bHeading)
+	{
+		LOGFONT	logFont;
+		m_fontMenu.GetLogFont(&logFont);
+		logFont.lfHeight = (LONG)(logFont.lfHeight * 0.8);
+		logFont.lfWeight = FW_SEMIBOLD;
+		fontHead.CreateFontIndirect(&logFont);
+
+		pOldFont = pDC->SelectObject(&fontHead);
+	}
+	// <== MenuXP Sub Heading [fafner] - MyTh
 	else
 	{
 		pOldFont = pDC->SelectObject(&m_fontMenu);
@@ -650,6 +702,10 @@ void CMenuXP::DrawText(CDC *pDC, CRect rect, CString strText, BOOL bSelected, BO
 
 	if (bBold)
 		fontBold.DeleteObject();
+	// ==> MenuXP Sub Heading [fafner] - MyTh
+	if (bHeading)
+		fontHead.DeleteObject();
+	// <== MenuXP Sub Heading [fafner] - MyTh
 }
 
 //set menu font
@@ -966,14 +1022,16 @@ void CMenuXP::AddMenuTitle(LPCTSTR lpszTitle, bool /*bIsIconMenu*/, bool bIsSide
 	*/
 	SetMenuStyle(CMenuXP::STYLE_STARTMENU);
 
-	if(bIsSidebar)
-	{
-		AddSideBar(new CMenuXPSideBar(17, lpszTitle));
 		SetSideBarStartColor(RGB(255,194,189));
 		SetSideBarEndColor(RGB(237,237,237));
-	}
 
-	SetBackBitmap(_T("MENUBACK"), _T("JPG"));
+	if(bIsSidebar)
+	
+		AddSideBar(new CMenuXPSideBar(17, lpszTitle));
+        if(lpszTitle)
+		AppendHeading(lpszTitle);
+
+		SetBackBitmap(_T("MENUBACK"), _T("JPG"));
 	SetSelectedBarColor(RGB(252,231,211));
 	SetTextColor(RGB(0,0,0));
 	SetSelectedTextColor(RGB(0,0,0));
@@ -1086,6 +1144,23 @@ BOOL CMenuXP::AppendSeparator(void)
 
 	return CMenu::AppendMenu(MF_OWNERDRAW | MF_SEPARATOR, 0, (LPCTSTR)pItem);
 }
+
+// ==> MenuXP Sub Heading [fafner] - MyTh
+BOOL CMenuXP::AppendHeading(LPCTSTR lpszTitle)	
+{
+	// Note: We need to add a break if we want to add this item on the top! [Stulle]
+	UINT nFlags = MF_OWNERDRAW | MF_DISABLED;
+	if (m_bBreak) 
+		nFlags |= MF_MENUBREAK;
+	if (m_bBreakBar)
+		nFlags |= MF_MENUBARBREAK;
+	m_bBreak = m_bBreakBar = FALSE;
+
+	CMenuXPHeading *pItem = new CMenuXPHeading(lpszTitle);
+
+	return CMenu::AppendMenu(nFlags, 0, (LPCTSTR)pItem);
+}
+// <== MenuXP Sub Heading [fafner] - MyTh
 
 //add a popup menu
 /*void CMenuXP::AppendODPopup(UINT &nFlags, CMenuXPItem* pItem)

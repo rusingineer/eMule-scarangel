@@ -462,7 +462,7 @@ void CServerListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	*/
 	CTitleMenu ServerPrioMenu;
 	ServerPrioMenu.CreateMenu();
-	ServerPrioMenu.AddMenuTitle(NULL, true, false);
+	ServerPrioMenu.AddMenuTitle(GetResString(IDS_PRIORITY), true, false);
 	// <== XP Style Menu [Xanatos] - Stulle
 	if (iSelectedItems > 0){
 		ServerPrioMenu.AppendMenu(MF_STRING, MP_PRIOLOW, GetResString(IDS_PRIOLOW));

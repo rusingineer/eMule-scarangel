@@ -2257,7 +2257,7 @@ void CTransferWnd::OnWnd1BtnDropDown(NMHDR* /*pNMHDR*/, LRESULT* /*pResult*/)
 {
 	CTitleMenu menu;
 	menu.CreatePopupMenu();
-	menu.AddMenuTitle(NULL); // XP Style Menu [Xanatos] - Stulle
+	menu.AddMenuTitle(GetResString(IDS_COLOR_W3)); // XP Style Menu [Xanatos] - Stulle
 	menu.EnableIcons();
 
 	menu.AppendMenu(MF_STRING | (m_dwShowListIDC == IDC_DOWNLOADLIST + IDC_UPLOADLIST ? MF_GRAYED : 0), MP_VIEW1_SPLIT_WINDOW, GetResString(IDS_SPLIT_WINDOW), _T("SplitWindow"));
@@ -2280,7 +2280,7 @@ void CTransferWnd::OnWnd2BtnDropDown(NMHDR* /*pNMHDR*/, LRESULT* /*pResult*/)
 {
 	CTitleMenu menu;
 	menu.CreatePopupMenu();
-	menu.AddMenuTitle(NULL); // XP Style Menu [Xanatos] - Stulle
+	menu.AddMenuTitle(GetResString(IDS_COLOR_W3)); // XP Style Menu [Xanatos] - Stulle
 	menu.EnableIcons();
 
 	menu.AppendMenu(MF_STRING | (m_uWnd2 == wnd2Uploading ? MF_GRAYED : 0), MP_VIEW2_UPLOADING, GetResString(IDS_UPLOADING), _T("Upload"));

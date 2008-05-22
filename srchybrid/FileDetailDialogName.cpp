@@ -299,7 +299,7 @@ void CFileDetailDialogName::OnNMRclickList(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	::GetCursorPos(&point);
 	CTitleMenu popupMenu;
 	popupMenu.CreatePopupMenu();
-	popupMenu.AddMenuTitle(NULL, true, true); // XP Style Menu [Xanatos] - Stulle
+	popupMenu.AddMenuTitle(GetResString(IDS_DL_FILENAME)); // XP Style Menu [Xanatos] - Stulle
 	// ==> more icons - Stulle
 	/*
 	popupMenu.AppendMenu(flag,MP_MESSAGE, GetResString(IDS_TAKEOVER));

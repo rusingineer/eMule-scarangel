@@ -27,6 +27,7 @@
 #include "emule.h"
 #include "MenuCmds.h"
 #include "MenuXP.h" // XP Style Menu [Xanatos] - Stulle
+#include "OtherFunctions.h"  
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -227,7 +228,7 @@ void CEditDelayed::OnLButtonDown(UINT nFlags, CPoint point)
 			*/
 			CTitleMenu menu;
 			menu.CreatePopupMenu();
-			menu.AddMenuTitle(NULL);
+			menu.AddMenuTitle(GetResString(IDS_FILTER));
 			// <== XP Style Menu [Xanatos] - Stulle
 
 			HDITEM hdi;

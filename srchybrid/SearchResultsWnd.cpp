@@ -1851,7 +1851,7 @@ void CSearchResultsWnd::OnSearchListMenuBtnDropDown(NMHDR* /*pNMHDR*/, LRESULT* 
 {
 	CTitleMenu menu;
 	menu.CreatePopupMenu();
-	menu.AddMenuTitle(NULL); // XP Style Menu [Xanatos] - Stulle
+	menu.AddMenuTitle(GetResString(IDS_SW_RESULT)); // XP Style Menu [Xanatos] - Stulle
 
 	menu.AppendMenu(MF_STRING | (searchselect.GetItemCount() > 0 ? MF_ENABLED : MF_GRAYED), MP_REMOVEALL, GetResString(IDS_REMOVEALLSEARCH));
 	menu.AppendMenu(MF_SEPARATOR);
@@ -1862,7 +1862,7 @@ void CSearchResultsWnd::OnSearchListMenuBtnDropDown(NMHDR* /*pNMHDR*/, LRESULT* 
 	*/
 	CTitleMenu menuFileSizeFormat;
 	menuFileSizeFormat.CreateMenu();
-	menuFileSizeFormat.AddMenuTitle(NULL, false, false);
+	menuFileSizeFormat.AddMenuTitle(GetResString(IDS_DL_SIZE), false, false);
 	// <== XP Style Menu [Xanatos] - Stulle
 	menuFileSizeFormat.AppendMenu(MF_STRING, MP_SHOW_FILESIZE_DFLT, GetResString(IDS_DEFAULT));
 	menuFileSizeFormat.AppendMenu(MF_STRING, MP_SHOW_FILESIZE_KBYTE, GetResString(IDS_KBYTES));

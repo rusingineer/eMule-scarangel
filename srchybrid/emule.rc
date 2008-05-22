@@ -5935,6 +5935,12 @@ BEGIN
     IDS_X_REBARTOOLBAR      "* ReBar Toolbar"
     IDS_BINDADDR            "Bind emule to interface"
     // <== Advanced Options [Official/MorphXT] - Stulle
+
+	// ==> XP Style Menu [Xanatos] - Stulle
+    IDS_RELEASER            "Releaser features"
+	IDS_FOLLOW_THE_MAJORITY "Follow the Majority"
+	// <== XP Style Menu [Xanatos] - Stulle
+
     // ==> Advanced Updates [MorphXT/Stulle] - Stulle
     IDS_UPDATEANTILEECHERONSTART "Update antiLeech.dll on startup"
     IDS_AUTOUPWEEK          "Update weekly"
