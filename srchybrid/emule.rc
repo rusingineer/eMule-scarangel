@@ -5847,14 +5847,6 @@ BEGIN
     IDS_ASFU_RELOAD         "Detected change on shared folders. Reloading shared files..."
     IDS_ASFU_RELOADING      "ASFU: Reloading..."
     // <== Automatic shared files updater [MoNKi] - Stulle
-// ==> Control download priority [tommy_gun/iONiX] - MyTh88
-    IDS_AUTO_DOWN_GROUP     "Control Download Priority"
-    IDS_AUTO_DOWN_PERC      "By percent completed"
-    IDS_AUTO_DOWN_PERC_VAL  "Percent completed"
-    IDS_AUTO_DOWN_SIZE      "By remaining size"
-    IDS_AUTO_DOWN_SIZE_VAL  "Remaing size (MB)"
-    IDS_AUTO_DOWN_PRIO      "Change priority to"
-// <== Control download priority [tommy_gun/iONiX] - MyTh88
     // ==> Anti Uploader Ban [Stulle] - Stulle
     IDS_UNBAN_UPLOADER      "Limit for Ban-prevention in MB [0=disabled]"
     IDS_ANTI_CASE_1         "UL >= Limit"
@@ -5935,12 +5927,6 @@ BEGIN
     IDS_X_REBARTOOLBAR      "* ReBar Toolbar"
     IDS_BINDADDR            "Bind emule to interface"
     // <== Advanced Options [Official/MorphXT] - Stulle
-
-	// ==> XP Style Menu [Xanatos] - Stulle
-    IDS_RELEASER            "Releaser features"
-	IDS_FOLLOW_THE_MAJORITY "Follow the Majority"
-	// <== XP Style Menu [Xanatos] - Stulle
-
     // ==> Advanced Updates [MorphXT/Stulle] - Stulle
     IDS_UPDATEANTILEECHERONSTART "Update antiLeech.dll on startup"
     IDS_AUTOUPWEEK          "Update weekly"
@@ -5972,6 +5958,23 @@ BEGIN
     IDS_SERVER_LISTS        "Server lists"
     // <== Links for Server list and nodes file [Stulle] - Stulle
     IDS_SHOW_SPEED_METER    "Show speed graph in toolbar" // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
+    // ==> Control download priority [tommy_gun/iONiX] - MyTh88
+    IDS_AUTO_DOWN_GROUP     "Control Download Priority"
+    IDS_AUTO_DOWN_PERC      "By percent completed"
+    IDS_AUTO_DOWN_PERC_VAL  "Percent completed"
+    IDS_AUTO_DOWN_SIZE      "By remaining size"
+    IDS_AUTO_DOWN_SIZE_VAL  "Remaing size (MB)"
+    IDS_AUTO_DOWN_PRIO      "Change priority to"
+    // <== Control download priority [tommy_gun/iONiX] - MyTh88
+    // ==> XP Style Menu [Xanatos] - Stulle
+    IDS_MENU_PREVIEW        "Preview"
+    IDS_HISTORY             "History Tasks"
+    IDS_COLUMNS             "Columns"
+    IDS_PS_LIMITED_SRC      "Limited by sources"
+    IDS_PS_LIMITED_AMNT     "Limited by Amount"
+    IDS_FUNCTION            "Function"
+    IDS_RELEASER            "Releaser features"
+    // <== XP Style Menu [Xanatos] - Stulle
 END
 
 #endif    // Englisch (USA) resources

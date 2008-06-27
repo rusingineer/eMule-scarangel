@@ -2387,7 +2387,6 @@
 #define IDI_ICONMR                      3201
 #define IDS_ANTILEECHERFILENAME_CHECK   3201
 #define IDS_ANTILEECHERUSERHASH_CHECK   3201
-#define IDS_FOLLOW_THE_MAJORITY         3533
 #define IDD_PPG_Xtreme                  4000
 #define IDC_13RATIO                     4001
 #define IDC_UPREDUCTION                 4002
@@ -2993,15 +2992,6 @@
 #define IDS_RATIO_ACTIVATION            61018
 #define IDS_RATIO_LIMIT                 61019
 // <== Enforce Ratio [Stulle] - Stulle
-// ==> XP Style Menu [Xanatos] - Stulle
-#define IDS_MENU_PREVIEW                60790
-#define IDS_HISTORY                     60791
-#define IDS_COLUMNS                     60792
-#define IDS_PS_LIMITED_SRC              60793
-#define IDS_PS_LIMITED_AMNT             60794
-#define IDS_FUNCTION                    60795
-#define IDS_RELEASER                    60796
-// <== XP Style Menu [Xanatos] - Stulle
 #define IDS_ERR_HIDDENSOURCE            61020 // Anti Anti HideOS & SOTN [SiRoB] - Stulle
 // ==> Improved ICS-Firewall support [MoNKi]-Max
 #define IDS_ICF 61021
@@ -3203,15 +3193,23 @@
 #define IDD_SPEEDGRAPH                  61370
 #define IDS_SHOW_SPEED_METER            61371
 // <== High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
-
 // ==> Control download priority [tommy_gun/iONiX] - MyTh88
-#define IDS_AUTO_DOWN_GROUP             62000
-#define IDS_AUTO_DOWN_PERC              62001
-#define IDS_AUTO_DOWN_PERC_VAL          62002
-#define IDS_AUTO_DOWN_SIZE              62003
-#define IDS_AUTO_DOWN_SIZE_VAL          62004
-#define IDS_AUTO_DOWN_PRIO              62005
+#define IDS_AUTO_DOWN_GROUP             61380
+#define IDS_AUTO_DOWN_PERC              61381
+#define IDS_AUTO_DOWN_PERC_VAL          61382
+#define IDS_AUTO_DOWN_SIZE              61383
+#define IDS_AUTO_DOWN_SIZE_VAL          61384
+#define IDS_AUTO_DOWN_PRIO              61385
 // <== Control download priority [tommy_gun/iONiX] - MyTh88
+// ==> XP Style Menu [Xanatos] - Stulle
+#define IDS_MENU_PREVIEW                61390
+#define IDS_HISTORY                     61391
+#define IDS_COLUMNS                     61392
+#define IDS_PS_LIMITED_SRC              61393
+#define IDS_PS_LIMITED_AMNT             61394
+#define IDS_FUNCTION                    61395
+#define IDS_RELEASER                    61396
+// <== XP Style Menu [Xanatos] - Stulle
 
 // Next default values for new objects
 // 
