@@ -1022,11 +1022,10 @@ void CMenuXP::AddMenuTitle(LPCTSTR lpszTitle, bool /*bIsIconMenu*/, bool bIsSide
 	*/
 	SetMenuStyle(CMenuXP::STYLE_STARTMENU);
 
-		SetSideBarStartColor(RGB(255,194,189));
-		SetSideBarEndColor(RGB(237,237,237));
+	SetSideBarStartColor(RGB(255,194,189));
+	SetSideBarEndColor(RGB(237,237,237));
 
 	if(bIsSidebar)
-	
 		AddSideBar(new CMenuXPSideBar(17, lpszTitle));
         if(lpszTitle)
 		AppendHeading(lpszTitle);
