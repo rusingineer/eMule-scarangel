@@ -4031,13 +4031,12 @@ void CPreferences::LoadPreferences()
 
 
 	// ==> Control download priority [tommy_gun/iONiX] - MyTh88
-	uint8 m_uTemp;
-	m_uTemp = ini.GetInt(_T("BownfishMode"), 0);
-	m_uiBowlfishMode = (uint8)((m_uTemp >= 0 && m_uTemp <= 2)?m_uTemp:0);
+	temp = ini.GetInt(_T("BownfishMode"), 0);
+	m_uiBowlfishMode = (uint8)((temp >= 0 && temp <= 2)?temp:0);
 	m_nBowlfishPrioPercentValue = (uint8)ini.GetInt(_T("AutoBowlfishPrioPercentValue"), 80);
 	m_nBowlfishPrioSizeValue = (uint16)ini.GetInt(_T("AutoBowlfishPrioSizeValue"), 100);
-	m_uTemp = ini.GetInt(_T("AutoBowlfishPrioNewValue"), 2);
-	m_nBowlfishPrioNewValue = (uint8)((m_uTemp >= 0 && m_uTemp <= 2)?m_uTemp:2);
+	temp = ini.GetInt(_T("AutoBowlfishPrioNewValue"), 2);
+	m_nBowlfishPrioNewValue = (uint8)((temp >= 0 && temp <= 2)?temp:2);
 	// <== Control download priority [tommy_gun/iONiX] - MyTh88
 
 	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
