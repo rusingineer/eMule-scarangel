@@ -3470,7 +3470,7 @@ void CDownloadListCtrl::CreateMenues()
 
 	// ==> Follow The Majority [AndCycle/Stulle] - Stulle
 	m_FollowTheMajorityMenu.CreateMenu();
-	m_FollowTheMajorityMenu.AddMenuTitle(GetResString(IDS_FOLLOW_THE_MAJORITY), true, false); // XP Style Menu [Xanatos] - Stulle
+	m_FollowTheMajorityMenu.AddMenuTitle(GetResString(IDS_FOLLOWTHEMAJORITY), true, false); // XP Style Menu [Xanatos] - Stulle
 	m_FollowTheMajorityMenu.AppendMenu(MF_STRING,MP_FOLLOWTHEMAJORITY,	GetResString(IDS_DEFAULT));
 	m_FollowTheMajorityMenu.AppendMenu(MF_STRING,MP_FOLLOWTHEMAJORITY_0,	GetResString(IDS_DISABLED));
 	m_FollowTheMajorityMenu.AppendMenu(MF_STRING,MP_FOLLOWTHEMAJORITY_1,	GetResString(IDS_ENABLED));
