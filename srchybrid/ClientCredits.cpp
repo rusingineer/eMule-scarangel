@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -28,6 +28,12 @@
 #pragma warning(disable:4100) // unreferenced formal parameter
 #pragma warning(disable:4702) // unreachable code
 //Xman
+/*
+#include <crypto51/base64.h>
+#include <crypto51/osrng.h>
+#include <crypto51/files.h>
+#include <crypto51/sha.h>
+*/
 #include <crypto.v52.1/base64.h>
 #include <crypto.v52.1/osrng.h>
 #include <crypto.v52.1/files.h>
@@ -142,9 +148,48 @@ uint64 CClientCredits::GetDownloadedTotal() const {
 	return ((uint64)m_pCredits->nDownloadedHi << 32) | m_pCredits->nDownloadedLo;
 }
 
+//Xman Credit System
+/*
+float CClientCredits::GetScoreRatio(uint32 dwForIP) const
+{
+	// check the client ident status
+	if ( ( GetCurrentIdentState(dwForIP) == IS_IDFAILED || GetCurrentIdentState(dwForIP) == IS_IDBADGUY || GetCurrentIdentState(dwForIP) == IS_IDNEEDED) && theApp.clientcredits->CryptoAvailable() ){
+		// bad guy - no credits for you
+		return 1.0F;
+	}
+
+	if (GetDownloadedTotal() < 1048576)
+		return 1.0F;
+	float result = 0.0F;
+	if (!GetUploadedTotal())
+		result = 10.0F;
+	else
+		result = (float)(((double)GetDownloadedTotal()*2.0)/(double)GetUploadedTotal());
+	
+	// exponential calcualtion of the max multiplicator based on uploaded data (9.2MB = 3.34, 100MB = 10.0)
+	float result2 = 0.0F;
+	result2 = (float)(GetDownloadedTotal()/1048576.0);
+	result2 += 2.0F;
+	result2 = (float)sqrt(result2);
+
+	// linear calcualtion of the max multiplicator based on uploaded data for the first chunk (1MB = 1.01, 9.2MB = 3.34)
+	float result3 = 10.0F;
+	if (GetDownloadedTotal() < 9646899){
+		result3 = (((float)(GetDownloadedTotal() - 1048576) / 8598323.0F) * 2.34F) + 1.0F;
+	}
+
+	// take the smallest result
+	result = min(result, min(result2, result3));
+
+	if (result < 1.0F)
+		return 1.0F;
+	else if (result > 10.0F)
+		return 10.0F;
+	return result;
+}
+*/
 // ==> CreditSystems [EastShare/ MorphXT] - Stulle
 /*
-//Xman Credit System
 const float CClientCredits::GetScoreRatio(const CUpDownClient* client) const
 */
 float CClientCredits::GetScoreRatio(const CUpDownClient* client)
@@ -354,96 +399,96 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 		}break;
 
 		case CS_XMAN:{
-	#define PENALTY_UPSIZE 8388608 //8 MB
+			#define PENALTY_UPSIZE 8388608 //8 MB
 
-	float m_bonusfaktor=0;
+			float m_bonusfaktor=0;
 
-	// Check the client ident status
-	if((currentIDstate == IS_IDFAILED || currentIDstate == IS_IDBADGUY || currentIDstate == IS_IDNEEDED) && 
-		theApp.clientcredits->CryptoAvailable() == true){
-			// bad guy - no credits for you
-			//return 1.0f;
-			result = 0.8f; //Xman 80% for non SUI-clients.. (and also bad guys)
+			// Check the client ident status
+			if((currentIDstate == IS_IDFAILED || currentIDstate == IS_IDBADGUY || currentIDstate == IS_IDNEEDED) && 
+				theApp.clientcredits->CryptoAvailable() == true){
+				// bad guy - no credits for you
+				//return 1.0f;
+				result = 0.8f; //Xman 80% for non SUI-clients.. (and also bad guys)
 				break;
-		}
+			}
 
-		// Cache value
-		const uint64 downloadTotal = GetDownloadedTotal();
+			// Cache value
+			const uint64 downloadTotal = GetDownloadedTotal();
 
-		// Check if this client has any credit (sent >1.65MB)
-		const float difference2=(float)client->GetTransferredUp() - client->GetTransferredDown();	
-		if(downloadTotal < 1650000)
-		{	
-			if ( difference2 > (2*PENALTY_UPSIZE))
-				m_bonusfaktor=(-0.2f);
-			else if (difference2 > PENALTY_UPSIZE)
-				m_bonusfaktor=(-0.1f);
-			else
-				m_bonusfaktor=0;
+			// Check if this client has any credit (sent >1.65MB)
+			const float difference2=(float)client->GetTransferredUp() - client->GetTransferredDown();	
+			if(downloadTotal < 1650000)
+			{	
+				if ( difference2 > (2*PENALTY_UPSIZE))
+					m_bonusfaktor=(-0.2f);
+				else if (difference2 > PENALTY_UPSIZE)
+					m_bonusfaktor=(-0.1f);
+				else
+					m_bonusfaktor=0;
 
 				result = (1.0f + m_bonusfaktor);
 				break;
-		}
+			}
 
-		// Cache value
-		const uint64 uploadTotal = GetUploadedTotal();
+			// Cache value
+			const uint64 uploadTotal = GetUploadedTotal();
 
 
-		// Bonus Faktor calculation
-		float difference = (float)downloadTotal - uploadTotal;
-		if (difference>=0)
-		{
-			m_bonusfaktor=difference/10485760.0f - (1.5f/(downloadTotal/10485760.0f));  //pro MB difference 0.1 - pro MB download 0.1
-			if (m_bonusfaktor<0)
-				m_bonusfaktor=0;
-		}
-		else 
-		{
-			difference=abs(difference);
-			if (difference> (2*PENALTY_UPSIZE) && difference2 > (2*PENALTY_UPSIZE))
-				m_bonusfaktor=(-0.2f);
-			else if (difference>PENALTY_UPSIZE && difference2 > PENALTY_UPSIZE)
-				m_bonusfaktor=(-0.1f);
-			else
-				m_bonusfaktor=0;
-		}
-		// Factor 1
+			// Bonus Faktor calculation
+			float difference = (float)downloadTotal - uploadTotal;
+			if (difference>=0)
+			{
+				m_bonusfaktor=difference/10485760.0f - (1.5f/(downloadTotal/10485760.0f));  //pro MB difference 0.1 - pro MB download 0.1
+				if (m_bonusfaktor<0)
+					m_bonusfaktor=0;
+			}
+			else 
+			{
+				difference=abs(difference);
+				if (difference> (2*PENALTY_UPSIZE) && difference2 > (2*PENALTY_UPSIZE))
+					m_bonusfaktor=(-0.2f);
+				else if (difference>PENALTY_UPSIZE && difference2 > PENALTY_UPSIZE)
+					m_bonusfaktor=(-0.1f);
+				else
+					m_bonusfaktor=0;
+			}
+			// Factor 1
 			result = (uploadTotal == 0) ?
 			10.0f : (float)(2*downloadTotal)/(float)uploadTotal;
 
-		// Factor 2
-		// linear calcualtion of the max multiplicator based on uploaded data for the first chunk (1MB = 1.01, 9.2MB = 3.34)
-		float trunk;
-		if(downloadTotal < 9646899) 
-			trunk = (((float)(downloadTotal - 1048576) / 8598323.0F) * 2.34F) + 1.0F;
-		else
-			trunk = (float)sqrt(2.0 + (double)downloadTotal/1048576.0);
+			// Factor 2
+			// linear calcualtion of the max multiplicator based on uploaded data for the first chunk (1MB = 1.01, 9.2MB = 3.34)
+			float trunk;
+			if(downloadTotal < 9646899) 
+				trunk = (((float)(downloadTotal - 1048576) / 8598323.0F) * 2.34F) + 1.0F;
+			else
+				trunk = (float)sqrt(2.0 + (double)downloadTotal/1048576.0);
 
 
-		if(result>10.0f)
-		{
-			result=10.0f;
-			m_bonusfaktor=0;
-		}
-		else
-			result += m_bonusfaktor;
-		if(result>10.0f)
-		{
-			m_bonusfaktor -= (result-10.0f);
-			result=10.0f;
-		}
+			if(result>10.0f)
+			{
+				result=10.0f;
+				m_bonusfaktor=0;
+			}
+			else
+				result += m_bonusfaktor;
+			if(result>10.0f)
+			{
+				m_bonusfaktor -= (result-10.0f);
+				result=10.0f;
+			}
+	
+			if(result > trunk)
+			{
+				result = trunk;
+				m_bonusfaktor=0;
+			}
 
-		if(result > trunk)
-		{
-			result = trunk;
-			m_bonusfaktor=0;
-		}
-
-		// Trunk final result 1..10
-		if(result < 1.0f)
-				result = (1.0f + m_bonusfaktor );
-		else if (result > 10.0f)
-				result = 10.0f;
+			// Trunk final result 1..10
+			if(result < 1.0f)
+					result = (1.0f + m_bonusfaktor );
+			else if (result > 10.0f)
+					result = 10.0f;
 		 }break;
 
 		case CS_OFFICIAL:
@@ -845,11 +890,12 @@ void CClientCreditsList::LoadList()
 			}
 			UINT count = file.ReadUInt32();
 			//Xman Extened credit- table-arragement
+			/*
+			m_mapClients.InitHashTable(count+5000); // TODO: should be prime number... and 20% larger
+			*/
 			UINT calc=UINT(count*1.2f);
 			calc = calc + calc%2 + 1;
 			m_mapClients.InitHashTable(calc + 20000); //optimized for 20 000 new contacts
-
-			//m_mapClients.InitHashTable(count+5000); // TODO: should be prime number... and 20% larger
 			//Xman end
 
 			const uint32 dwExpired = time(NULL) - 12960000; // today - 150 day
@@ -985,7 +1031,7 @@ void CClientCreditsList::SaveList()
 				count++; 
 			}
 		}else 
-			if (cur_credit->GetUploadedTotal() || cur_credit->GetDownloadedTotal())
+		if (cur_credit->GetUploadedTotal() || cur_credit->GetDownloadedTotal())
 		{
 			/*// Moonlight: SUQWT - Save 0.30c CreditStruct
 			memcpy(pBuffer+(count*sizeof(CreditStruct)), cur_credit->GetDataStruct(), sizeof(CreditStruct));
@@ -1063,8 +1109,8 @@ void CClientCreditsList::Process()
 #define HOURS_KEEP_IN_MEMORY 6	//Xman Extened credit- table-arragement
 
 	if (::GetTickCount() - m_nLastSaved > MIN2MS(13))
+	//Xman Extened credit- table-arragement
 	{
-		//Xman Extened credit- table-arragement
 		CClientCredits* cur_credit;
 		CCKey tmpkey(0);
 		POSITION pos = m_mapClients.GetStartPosition();
@@ -1092,17 +1138,10 @@ void CClientCreditsList::Process()
 					cur_credit->UnMarkToDelete();
 			}
 		}
-		//Xman end
+	//Xman end
 		SaveList();
-	}
+	} //Xman
 }
-
-#ifdef PRINT_STATISTIC
-void	CClientCreditsList::PrintStatistic()
-{
-	AddLogLine(false,_T("used Credit-Objects: %u"), m_mapClients.GetSize());
-}
-#endif
 
 void CClientCredits::InitalizeIdent()
 {
@@ -1378,7 +1417,7 @@ bool CClientCreditsList::Debug_CheckCrypting()
 	newcredits->m_dwCryptRndChallengeFrom = challenge;
 	// create signature with fake priv key
 	uchar pachSignature[200];
-	memset(pachSignature,0,200); // Avi3k: fixed args order
+	memset(pachSignature,0,200);
 	uint8 sigsize = CreateSignature(newcredits,pachSignature,200,0,false, &priv);
 
 
@@ -1519,6 +1558,16 @@ void CClientCredits::SetWaitStartTimeBonus(uint32 dwForIP, uint32 timestamp)
 	m_dwWaitTimeIP = dwForIP;
 }
 //Xman end
+
+//Xman Extened credit- table-arragement
+#ifdef PRINT_STATISTIC
+void	CClientCreditsList::PrintStatistic()
+{
+	AddLogLine(false,_T("used Credit-Objects: %u"), m_mapClients.GetSize());
+}
+#endif
+//Xman end
+
 // ==> CreditSystems [EastShare/ MorphXT] - Stulle
 void CClientCreditsList::ResetCheckScoreRatio(){
 	CClientCredits* cur_credit;

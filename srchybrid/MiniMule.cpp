@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -260,12 +260,17 @@ BOOL CMiniMule::OnInitDialog()
 		m_layeredWnd.SetTransparentPercentage(m_hWnd, m_uWndTransparency);
 	}
 
+	//Xman ModID
+	/*
+	SetWindowText(_T("eMule v") + theApp.m_strCurVersionLong);
+	*/
 	// ==> ModID [itsonlyme/SiRoB] - Stulle
 	/*
-	SetWindowText(_T("eMule v") + theApp.m_strCurVersionLong + _T(" [") + MOD_VERSION + _T("]")); //Xman ModID
+	SetWindowText(_T("eMule v") + theApp.m_strCurVersionLong + _T(" [") + MOD_VERSION + _T("]"));
 	*/
 	SetWindowText(_T("eMule v") + theApp.m_strCurVersionLong + _T(" [") + theApp.m_strModLongVersion + _T("]"));
 	// <== ModID [itsonlyme/SiRoB] - Stulle
+	//Xman end
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }

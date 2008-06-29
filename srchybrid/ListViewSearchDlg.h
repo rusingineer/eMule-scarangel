@@ -19,7 +19,6 @@ public:
 	bool m_bCanSearchInAllColumns;
 	int m_iSearchColumn;
 
-
 protected:
 	HICON m_icnWnd;
 	CComboBox m_ctlSearchCol;

@@ -9,7 +9,6 @@
 #define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
 #endif
 
-
 #ifndef WINVER
 #define WINVER 0x0400			// 0x0400 == Windows 98 and Windows NT 4.0 (because of '_WIN32_WINDOWS=0x0410')
 #endif
@@ -22,14 +21,12 @@
 #define _WIN32_WINDOWS 0x0410   // 0x0410 == Windows 98
 #endif
 
-
 #ifndef _WIN32_IE
 //#define _WIN32_IE 0x0400		// 0x0400 == Internet Explorer 4.0 -> Comctl32.dll v4.71
 #define _WIN32_IE 0x0560		// 0x0560 == Internet Explorer 5.6 -> Comctl32.dll v5.8 (same as MFC internally used)
 #endif
 
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS	// some CString constructors will be explicit
-
 #define _ATL_ALL_WARNINGS
 #define _AFX_ALL_WARNINGS
 // Disable some warnings which get fired with /W4 for Windows/MFC/ATL headers
@@ -83,9 +80,11 @@
 #include <afxole.h>			// MFC OLE support
 
 //<<< eWombat [WINSOCK2]
-//#include <winsock2.h>
-//#define _WINSOCKAPI_
-//#include <afxsock.h>		// MFC support for Windows Sockets
+/*
+#include <winsock2.h>
+#define _WINSOCKAPI_
+#include <afxsock.h>		// MFC support for Windows Sockets
+*/
 #include "afxsock.h"		// MFC-Socket-Erweiterungen
 //>>> eWombat [WINSOCK2]
 
@@ -98,6 +97,7 @@
 #include <afxcoll.h>
 #include <afxtempl.h>
 #include <math.h>
+
 
 #ifndef EWX_FORCEIFHUNG
 #define EWX_FORCEIFHUNG			0x00000010
@@ -138,6 +138,8 @@
 #ifndef COLOR_GRADIENTACTIVECAPTION
 #define COLOR_GRADIENTACTIVECAPTION 27
 #endif
+
+
 
 // Enable warnings which were disabled for Windows/MFC/ATL headers
 #pragma warning(default:4127) // conditional expression is constant

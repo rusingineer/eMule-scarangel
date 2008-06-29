@@ -200,6 +200,8 @@ BEGIN_MESSAGE_MAP(CHttpDownloadDlg, CDialog)
 	ON_MESSAGE(WM_HTTPDOWNLOAD_THREAD_FINISHED, OnThreadFinished)
 END_MESSAGE_MAP()
 
+ULONGLONG CHttpDownloadDlg::sm_ullWinInetVer;
+
 CHttpDownloadDlg::CHttpDownloadDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CHttpDownloadDlg::IDD, pParent)
 {
@@ -211,6 +213,8 @@ CHttpDownloadDlg::CHttpDownloadDlg(CWnd* pParent /*=NULL*/)
 	m_bAbort = FALSE;
 	m_bSafeToClose = FALSE;
 	m_pThread = NULL;
+	if (sm_ullWinInetVer == 0)
+		sm_ullWinInetVer = GetModuleVersion(GetModuleHandle(_T("wininet")));
 	m_pLastModifiedTime = NULL; //Xman auto update IPFilter
 }
 
@@ -300,11 +304,9 @@ BOOL CHttpDownloadDlg::OnInitDialog()
 	//Try and open the file we will download into
 	if (!m_FileToWrite.Open(m_sFileToDownloadInto, CFile::modeCreate | CFile::modeWrite | CFile::shareDenyWrite))
 	{
-		TRACE(_T("Failed to open the file to download into, Error:%d\n"), GetLastError());
-		CString sError;
-		sError.Format(_T("%d"), ::GetLastError());
+		DWORD dwError = GetLastError();
 		CString sMsg;
-		sMsg.Format(GetResString(IDS_HTTPDOWNLOAD_FAIL_FILE_OPEN), sError);
+		sMsg.Format(GetResString(IDS_HTTPDOWNLOAD_FAIL_FILE_OPEN), GetErrorMessage(dwError));
 		AfxMessageBox(sMsg);
 		EndDialog(IDCANCEL);
 		return TRUE;
@@ -398,10 +400,10 @@ void CHttpDownloadDlg::SetStatus(const CString& sCaption)
 	m_ctrlStatus.SetWindowText(sCaption);
 }
 
-void CHttpDownloadDlg::SetStatus(CString nID, const CString& lpsz1)
+void CHttpDownloadDlg::SetStatus(CString strFmt, LPCTSTR lpsz1)
 {
 	CString sStatus;
-	sStatus.Format(nID, lpsz1);
+	sStatus.Format(strFmt, lpsz1);
 	SetStatus(sStatus);
 }
 
@@ -429,7 +431,12 @@ void CHttpDownloadDlg::HandleThreadErrorWithLastError(CString strIDError, DWORD 
 	m_sError.Format(strIDError, _T(" ") + strLastError);
 
 	//Delete the file being downloaded to if it is present
-	m_FileToWrite.Close();
+	try {
+		m_FileToWrite.Close();
+	}
+	catch (CFileException *ex) {
+		ex->Delete();
+	}
 	::DeleteFile(m_sFileToDownloadInto);
 
 	PostMessage(WM_HTTPDOWNLOAD_THREAD_FINISHED, 1);
@@ -446,11 +453,14 @@ void CHttpDownloadDlg::DownloadThread()
 	ENCODING_INIT;
 	//Create the Internet session handle
 	ASSERT(m_hInternetSession == NULL);
+	//Xman Send user agent as firefox for http downloads when obfucscation enabled (leuk_he)
+	/*
+	m_hInternetSession = ::InternetOpen(AfxGetAppName(), INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
+	*/
 	m_hInternetSession = ::InternetOpen(
-		//Xman Send user agent as firefox for http downloads when obfucscation enabled (leuk_he)
 		thePrefs.IsClientCryptLayerRequested()?_T("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;"):AfxGetAppName(),
-		//Xman end
 		INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
+	//Xman end
 	if (m_hInternetSession == NULL)
 	{
 		TRACE(_T("Failed in call to InternetOpen, Error:%d\n"), ::GetLastError());
@@ -613,7 +623,6 @@ resend:
 	}
 	//Xman end
 
-
 	//Update the status control to reflect that we are getting the file information
 	SetStatus(GetResString(IDS_HTTPDOWNLOAD_GETTING_FILE_INFORMATION));
 
@@ -650,16 +659,17 @@ resend:
 		{
 			TRACE(_T("Failed in call to InternetReadFile, Error:%d\n"), ::GetLastError());
 			HandleThreadErrorWithLastError(GetResString(IDS_HTTPDOWNLOAD_ERROR_READFILE));
+			ENCODING_CLEAN_UP;
 			return;
 		}
 		else if (dwBytesRead && !m_bAbort)
 		{
 			//Write the data to file
-			TRY
+			try
 			{
 				DECODE_DATA(m_FileToWrite, szReadBuf, dwBytesRead);
 			}
-			CATCH(CFileException, e);
+			catch(CFileException *e)
 			{
 				TRACE(_T("An exception occured while writing to the download file\n"));
 				HandleThreadErrorWithLastError(GetResString(IDS_HTTPDOWNLOAD_ERROR_READFILE), e->m_lOsError);
@@ -668,7 +678,6 @@ resend:
 				ENCODING_CLEAN_UP;
 				return;
 			}
-			END_CATCH
 
 			//Increment the total number of bytes read
 			dwTotalBytesRead += dwBytesRead;  
@@ -679,13 +688,20 @@ resend:
 	}
 	while (dwBytesRead && !m_bAbort);
 
+	//clean up any encoding data before we return
+	ENCODING_CLEAN_UP;
+
 	//Delete the file being downloaded to if it is present and the download was aborted
+	try {
 	m_FileToWrite.Close();
+	}
+	catch (CFileException *ex) {
+		HandleThreadErrorWithLastError(GetResString(IDS_HTTPDOWNLOAD_ERROR_READFILE), ex->m_lOsError);
+		ex->Delete();
+		return;
+	}
 	if (m_bAbort)
 		::DeleteFile(m_sFileToDownloadInto);
-
-	//clean up any encoding data before we return
-	ENCODING_CLEAN_UP;;
 
 	//We're finished
 	PostMessage(WM_HTTPDOWNLOAD_THREAD_FINISHED);
@@ -736,12 +752,17 @@ void CHttpDownloadDlg::UpdateControlsDuringTransfer(DWORD dwStartTicks, DWORD& d
 void CALLBACK CHttpDownloadDlg::_OnStatusCallBack(HINTERNET hInternet, DWORD dwContext, DWORD dwInternetStatus, 
                                                   LPVOID lpvStatusInformation, DWORD dwStatusInformationLength)
 {
-	//Convert from the SDK C world to the C++ world
-	// Elandal: Assumes sizeof(void*) == sizeof(unsigned long)
 	CHttpDownloadDlg* pDlg = (CHttpDownloadDlg*) dwContext;
 	ASSERT(pDlg);
 	ASSERT(pDlg->IsKindOf(RUNTIME_CLASS(CHttpDownloadDlg)));
 	pDlg->OnStatusCallBack(hInternet, dwInternetStatus, lpvStatusInformation, dwStatusInformationLength);
+}
+
+CString CHttpDownloadDlg::GetStatusInfo(LPVOID lpvStatusInformation)
+{
+	if (sm_ullWinInetVer < MAKEDLLVERULL(7,0,0,0))
+		return CString((LPCTSTR)lpvStatusInformation);	// IE6
+	return CString((LPCSTR)lpvStatusInformation);		// IE7+
 }
 
 void CHttpDownloadDlg::OnStatusCallBack(HINTERNET /*hInternet*/, DWORD dwInternetStatus, 
@@ -750,35 +771,21 @@ void CHttpDownloadDlg::OnStatusCallBack(HINTERNET /*hInternet*/, DWORD dwInterne
 	switch (dwInternetStatus)
 	{
 		case INTERNET_STATUS_RESOLVING_NAME:
-		{
-			SetStatus(GetResString(IDS_HTTPDOWNLOAD_RESOLVING_NAME), (LPCTSTR) lpvStatusInformation);
+			SetStatus(GetResString(IDS_HTTPDOWNLOAD_RESOLVING_NAME), GetStatusInfo(lpvStatusInformation));
 			break;
-		}
 		case INTERNET_STATUS_NAME_RESOLVED:
-		{
-			SetStatus(GetResString(IDS_HTTPDOWNLOAD_RESOLVED_NAME), (LPCTSTR) lpvStatusInformation);
+			SetStatus(GetResString(IDS_HTTPDOWNLOAD_RESOLVED_NAME),	GetStatusInfo(lpvStatusInformation));
 			break;
-		}
 		case INTERNET_STATUS_CONNECTING_TO_SERVER:
-		{
-			SetStatus(GetResString(IDS_HTTPDOWNLOAD_CONNECTING), (LPCTSTR) lpvStatusInformation);
+			SetStatus(GetResString(IDS_HTTPDOWNLOAD_CONNECTING), GetStatusInfo(lpvStatusInformation));
 			break;
-		}
 		case INTERNET_STATUS_CONNECTED_TO_SERVER:
-		{
-			SetStatus(GetResString(IDS_HTTPDOWNLOAD_CONNECTED), (LPCTSTR) lpvStatusInformation);
+			SetStatus(GetResString(IDS_HTTPDOWNLOAD_CONNECTED), GetStatusInfo(lpvStatusInformation));
 			break;
-		}
 		case INTERNET_STATUS_REDIRECT:
-		{
-			SetStatus(GetResString(IDS_HTTPDOWNLOAD_REDIRECTING), (LPCTSTR) lpvStatusInformation);
+			SetStatus(GetResString(IDS_HTTPDOWNLOAD_REDIRECTING), GetStatusInfo(lpvStatusInformation));
 			break;
 		}
-		default:
-		{
-			break;
-		}
-	}
 }
 
 void CHttpDownloadDlg::OnDestroy() 

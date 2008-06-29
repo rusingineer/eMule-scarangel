@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -44,7 +44,6 @@ enum EFileType {
 
 #define ROUND(x) (floor((float)x+0.5f))
 
-
 ///////////////////////////////////////////////////////////////////////////////
 // Low level str
 //
@@ -64,10 +63,20 @@ bool IsHexDigit(TCHAR c);
 ///////////////////////////////////////////////////////////////////////////////
 // String conversion
 //
-// ==> added flag to return US Text [SiRoB] - Stulle
-/*
 //Xman Xtreme Mod
 //default is 99, this means, we use the old method (from 0.30)
+/*
+CString CastItoXBytes(uint16 count, bool isK = false, bool isPerSec = false, uint32 decimal = 2);
+CString CastItoXBytes(uint32 count, bool isK = false, bool isPerSec = false, uint32 decimal = 2);
+CString CastItoXBytes(uint64 count, bool isK = false, bool isPerSec = false, uint32 decimal = 2);
+CString CastItoXBytes(float count, bool isK = false, bool isPerSec = false, uint32 decimal = 2);
+CString CastItoXBytes(double count, bool isK = false, bool isPerSec = false, uint32 decimal = 2);
+#if defined(_DEBUG) && defined(USE_DEBUG_EMFILESIZE)
+CString CastItoXBytes(EMFileSize count, bool isK = false, bool isPerSec = false, uint32 decimal = 2);
+#endif
+*/
+// ==> added flag to return US Text [SiRoB] - Stulle
+/*
 CString CastItoXBytes(uint16 count, bool isK = false, bool isPerSec = false, uint32 decimal = 99);
 CString CastItoXBytes(uint32 count, bool isK = false, bool isPerSec = false, uint32 decimal = 99);
 CString CastItoXBytes(uint64 count, bool isK = false, bool isPerSec = false, uint32 decimal = 99);
@@ -103,7 +112,7 @@ bool RegularExpressionMatch(CString regexpr, CString teststring);
 ///////////////////////////////////////////////////////////////////////////////
 // URL conversion
 //
-CString URLDecode(const CString& sIn);
+CString URLDecode(const CString& sIn, bool bKeepNewLine = false);
 CString URLEncode(const CString& sIn);
 CString EncodeURLQueryParam(const CString& rstrQuery);
 CString MakeStringEscaped(CString in);
@@ -148,7 +157,6 @@ int		GetPathDriveNumber(CString path);
 EFileType	GetFileTypeEx(CKnownFile* kfile, bool checkextention=true, bool checkfileheader=true, bool nocached=false);
 CString		GetFiletypeName(EFileType ftype);
 int			IsExtentionTypeof(EFileType type, CString ext);
-LPCTSTR		_tcsistr(LPCTSTR pszString, LPCTSTR pszPattern);
 uint32		LevenshteinDistance(const CString& str1, const CString& str2);
 bool		_tmakepathlimit(TCHAR *path, const TCHAR *drive, const TCHAR *dir, const TCHAR *fname, const TCHAR *ext);
 
@@ -167,6 +175,8 @@ CString GetRateString(UINT rate);
 HWND GetComboBoxEditCtrl(CComboBox& cb);
 HWND ReplaceRichEditCtrl(CWnd* pwndRE, CWnd* pwndParent, CFont* pFont);
 int  FontPointSizeToLogUnits(int nPointSize);
+bool CreatePointFont(CFont &rFont, int nPointSize, LPCTSTR lpszFaceName);
+bool CreatePointFontIndirect(CFont &rFont, const LOGFONT *lpLogFont);
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -267,6 +277,37 @@ __inline BYTE toHex(const BYTE &x){
 
 //Xman 
 // Maella -Code Improvement-
+/*
+// md4cmp -- replacement for memcmp(hash1,hash2,16)
+// Like 'memcmp' this function returns 0, if hash1==hash2, and !0, if hash1!=hash2.
+// NOTE: Do *NOT* use that function for determining if hash1<hash2 or hash1>hash2.
+__inline int md4cmp(const void* hash1, const void* hash2) {
+	return !(((uint32*)hash1)[0] == ((uint32*)hash2)[0] &&
+		     ((uint32*)hash1)[1] == ((uint32*)hash2)[1] &&
+		     ((uint32*)hash1)[2] == ((uint32*)hash2)[2] &&
+		     ((uint32*)hash1)[3] == ((uint32*)hash2)[3]);
+}
+
+__inline bool isnulmd4(const void* hash) {
+	return  (((uint32*)hash)[0] == 0 &&
+		     ((uint32*)hash)[1] == 0 &&
+		     ((uint32*)hash)[2] == 0 &&
+		     ((uint32*)hash)[3] == 0);
+}
+
+// md4clr -- replacement for memset(hash,0,16)
+__inline void md4clr(const void* hash) {
+	((uint32*)hash)[0] = ((uint32*)hash)[1] = ((uint32*)hash)[2] = ((uint32*)hash)[3] = 0;
+}
+
+// md4cpy -- replacement for memcpy(dst,src,16)
+__inline void md4cpy(void* dst, const void* src) {
+	((uint32*)dst)[0] = ((uint32*)src)[0];
+	((uint32*)dst)[1] = ((uint32*)src)[1];
+	((uint32*)dst)[2] = ((uint32*)src)[2];
+	((uint32*)dst)[3] = ((uint32*)src)[3];
+}
+*/
 // md4cmp -- replacement for memcmp(hash1,hash2,16)
 // Like 'memcmp' this function returns 0, if hash1==hash2, and !0, if hash1!=hash2.
 // NOTE: Do *NOT* use that function for determining if hash1<hash2 or hash1>hash2.
@@ -344,6 +385,7 @@ __inline int CompareOptLocaleStringNoCase(LPCTSTR psz1, LPCTSTR psz2)
 }
 
 
+
 ///////////////////////////////////////////////////////////////////////////////
 // ED2K File Type
 //
@@ -373,6 +415,8 @@ bool gotostring(CFile &file, uchar *find, LONGLONG plen);
 void TriggerPortTest(uint16 tcp, uint16 udp);
 bool IsGoodIP(uint32 nIP, bool forceCheck = false);
 bool IsGoodIPPort(uint32 nIP, uint16 nPort);
+bool IsLANIP(uint32 nIP);
+uint8 GetMyConnectOptions(bool bEncryption = true, bool bCallback = true);
 //No longer need seperate lowID checks as we now know the servers just give *.*.*.0 users a lowID
 __inline bool IsLowID(uint32 id){
 	return (id < 16777216);

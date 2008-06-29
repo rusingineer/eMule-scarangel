@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -149,7 +149,13 @@ bool CUrlClient::SendHttpBlockRequests()
 
 	CreateBlockRequests(PARTSIZE / EMBLOCKSIZE);
 	if (m_PendingBlocks_list.IsEmpty()){
-		SetDownloadState(DS_NONEEDEDPARTS, _T("No needed parts"), CUpDownClient::DSR_NONEEDEDPARTS); // - Maella -Download Stop Reason-
+		// - Maella -Download Stop Reason-
+		/*
+		SetDownloadState(DS_NONEEDEDPARTS);
+        SwapToAnotherFile(_T("A4AF for NNP file. UrlClient::SendHttpBlockRequests()"), true, false, false, NULL, true, true);
+		*/
+		SetDownloadState(DS_NONEEDEDPARTS, _T("No needed parts"), CUpDownClient::DSR_NONEEDEDPARTS);
+		//Xman end
 		return false;
 	}
 	
@@ -228,13 +234,16 @@ void CUrlClient::SendFileRequest()
 
 bool CUrlClient::Disconnected(LPCTSTR pszReason, bool bFromSocket)
 {
-	//CHttpClientDownSocket* s = STATIC_DOWNCAST(CHttpClientDownSocket, socket); //Xman
+	//Xman
+	/*
+	CHttpClientDownSocket* s = STATIC_DOWNCAST(CHttpClientDownSocket, socket);
 
-	//TRACE(_T("%hs: HttpState=%u, Reason=%s\n"), __FUNCTION__, s==NULL ? -1 : s->GetHttpState(), pszReason);
+	TRACE(_T("%hs: HttpState=%u, Reason=%s\n"), __FUNCTION__, s==NULL ? -1 : s->GetHttpState(), pszReason);
 	// TODO: This is a mess..
-	//Xman 
-	//if (s && (s->GetHttpState() == HttpStateRecvExpected || s->GetHttpState() == HttpStateRecvBody))
-	//    m_fileReaskTimes.RemoveKey(reqfile); // ZZ:DownloadManager (one resk timestamp for each file)
+	if (s && (s->GetHttpState() == HttpStateRecvExpected || s->GetHttpState() == HttpStateRecvBody))
+	    m_fileReaskTimes.RemoveKey(reqfile); // ZZ:DownloadManager (one resk timestamp for each file)
+	*/
+	//Xman end
 	return CUpDownClient::Disconnected(CString(_T("CUrlClient::Disconnected")) + pszReason, bFromSocket);
 }
 
@@ -381,6 +390,11 @@ void CUpDownClient::ProcessHttpBlockPacket(const BYTE* pucData, UINT uSize)
 		throw CString(_T("Failed to process HTTP data block - Invalid block start/end offsets"));
 
 	thePrefs.Add2SessionTransferData(GetClientSoft(), (GetClientSoft()==SO_URL) ? (UINT)-2 : (UINT)-1, false, false, uSize);
+	//Xman
+	/*
+	m_nDownDataRateMS += uSize;
+	*/
+	//Xman end
 	if (credits)
 		credits->AddDownloaded(uSize, GetIP());
 	nEndPos--;

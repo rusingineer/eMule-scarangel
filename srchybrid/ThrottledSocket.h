@@ -25,6 +25,11 @@ class ThrottledFileSocket : public ThrottledControlSocket
 public:
     virtual SocketSentBytes SendFileAndControlData(uint32 maxNumberOfBytesToSend, uint32 minFragSize) = 0;
     virtual DWORD GetLastCalledSend() = 0;
+	//Xman
+	/*
+    virtual uint32	GetNeededBytes() = 0;
+	*/
+	//Xman end
 	virtual bool	IsBusy() const = 0;
 	virtual bool    HasQueues() const = 0;
 

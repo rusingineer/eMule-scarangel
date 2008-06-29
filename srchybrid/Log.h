@@ -22,6 +22,7 @@ enum EDebugLogPriority{
 #define	LOG_DONTNOTIFY	0x40
 #define LOG_LEECHER		0x80 //Xman Anti-Leecher-Log
 
+
 void Log(LPCTSTR pszLine, ...);
 void LogError(LPCTSTR pszLine, ...);
 void LogWarning(LPCTSTR pszLine, ...);

@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -86,7 +86,12 @@ private:
 	UINT	m_uStartAutoConnectPos;
 	CServerSocket* connectedsocket;
 	CUDPSocket* udpsocket;
-	CTypedPtrList<CPtrList, CServerSocket*>	m_lstOpenSockets;	// Maella -Code Improvement-
+	// Maella -Code Improvement-
+	/*
+	CPtrList m_lstOpenSockets;	// list of currently opened sockets
+	*/
+	CTypedPtrList<CPtrList, CServerSocket*>	m_lstOpenSockets;
+	//Xman end
 	UINT	m_idRetryTimer;
 	uint32	m_nLocalIP;
 	CMap<ULONG, ULONG, CServerSocket*, CServerSocket*> connectionattemps;

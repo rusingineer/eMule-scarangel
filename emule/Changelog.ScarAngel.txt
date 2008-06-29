@@ -1,20 +1,32 @@
 CHANGELOG FOR EMULE ScarAngel MOD
 
 
-eMule v0.48a ScarAngel v2.6:
+eMule v0.49a ScarAngel v3.0:
 ------------------------
 - XX.XX.2008 -
 -------------------------------------------------------------------------------
 based on eMule 0.48a Xtreme 6.1 compiled with vs2003 SP1
+Merged to eMule v0.49a [Stulle]
+
+- Xtreme's heir -
 
 Added: Auto download priority [tommy_gun/iONiX] - MyTh
 Added: MenuXP Sub Heading [fafner] - MyTh
 
 Changed: Context menu Sidebars show mod version [Stulle] - MyTh
 Changed: Context menu title shown as sub heading [Stulle] - MyTh
+Changed: Localize Source Graph group box [Stulle/thx pennyliu123] - Stulle
+Changed: Localize Push Small Files label above slider [Stulle/thx pennyliu123] - Stulle
+Changed: Localize TBH: MM group item [Stulle/thx pennyliu123] - Stulle
+Changed: Localize "12h" string for Release Bonus [Stulle/thx pennyliu123] - Stulle
+Changed: Updated UPnP implementation, UPnP lib and PThread lib [leuk_he] - Stulle
+Changed: Updated IP2Country implementation [MorphXT] - Stulle
+Changed: Updated libping to 1.28 (which is same source as 1.27) [leuk_he] - Stulle
+Changed: Updated CxImage to 6.00 (we use the rather complete lib) [Stulle] - Stulle
 
 Fixed: Do not restrict download if no upload possible [Stulle] - Stulle
 	+ missed merging the proper version of this code on releasing
+Fixed: Anti-Uploader-Ban case 2 and 3 (horribly old...) [Stulle] - Stulle
 
 
 eMule v0.48a ScarAngel v2.5:

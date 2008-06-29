@@ -32,6 +32,7 @@
 #include "DropDownButton.h"
 #include "ToolTipCtrlX.h"
 #include "SharedFilesWnd.h"
+#include "HelpIDs.h"
 #include "UploadBandwidthThrottler.h" //Xman Xtreme upload
 
 #include ".\MiniMule\SystemInfo.h" // CPU/MEM usage [$ick$/Stulle] - Max
@@ -48,12 +49,22 @@ static char THIS_FILE[] = __FILE__;
 #define	WND_SPLITTER_HEIGHT	4
 
 #define	WND1_BUTTON_XOFF	8
-#define	WND1_BUTTON_WIDTH	230 //170 Xman see all sources
+//Xman see all sources
+/*
+#define	WND1_BUTTON_WIDTH	170
+*/
+#define	WND1_BUTTON_WIDTH	230
+//Xman end
 #define	WND1_BUTTON_HEIGHT	22	// don't set the height to something different than 22 unless you know exactly what you are doing!
 #define	WND1_NUM_BUTTONS	6
 
 #define	WND2_BUTTON_XOFF	8
-#define	WND2_BUTTON_WIDTH	210 //170 //Xman Uploadhealth
+//Xman see all sources
+/*
+#define	WND2_BUTTON_WIDTH	170
+*/
+#define	WND2_BUTTON_WIDTH	230
+//Xman end
 #define	WND2_BUTTON_HEIGHT	22	// don't set the height to something different than 22 unless you know exactly what you are doing!
 #define	WND2_NUM_BUTTONS	4
 
@@ -67,6 +78,7 @@ BEGIN_MESSAGE_MAP(CTransferWnd, CResizableDialog)
 	ON_WM_SYSCOLORCHANGE()
 	ON_WM_SETTINGCHANGE()
 	ON_WM_WINDOWPOSCHANGED()
+	ON_WM_HELPINFO()
 	ON_NOTIFY(TBN_DROPDOWN, IDC_DOWNLOAD_ICO, OnWnd1BtnDropDown)
 	ON_NOTIFY(TBN_DROPDOWN, IDC_UPLOAD_ICO, OnWnd2BtnDropDown)
 	ON_NOTIFY(UM_SPN_SIZED, IDC_SPLITTER, OnSplitterMoved)
@@ -551,6 +563,17 @@ int CTransferWnd::GetItemUnderMouse(CListCtrl* ctrl)
 }
 
 //Xman see all sources
+/*
+void CTransferWnd::UpdateFilesCount(int iCount)
+{
+	if (m_dwShowListIDC == IDC_DOWNLOADLIST || m_dwShowListIDC == IDC_DOWNLOADLIST + IDC_UPLOADLIST)
+	{
+		CString strBuffer;
+		strBuffer.Format(_T("%s (%u)"), GetResString(IDS_TW_DOWNLOADS), iCount);
+		m_btnWnd1->SetWindowText(strBuffer);
+	}
+}
+5t*/
 void CTransferWnd::UpdateFilesCount(UINT iCount, UINT countsources, UINT countreadyfiles) 
 {
 	if (m_dwShowListIDC == IDC_DOWNLOADLIST || m_dwShowListIDC == IDC_DOWNLOADLIST + IDC_UPLOADLIST)
@@ -575,6 +598,13 @@ void CTransferWnd::UpdateListCount(EWnd2 listindex, int iCount /*=-1*/)
 				case wnd2Uploading: {
 					uint32 itemCount = iCount == -1 ? uploadlistctrl.GetItemCount() : iCount;
 					//Xman Xtreme Upload
+					/*
+					uint32 activeCount = theApp.uploadqueue->GetActiveUploadsCount();
+					if (activeCount >= itemCount)
+						strBuffer.Format(_T(" (%i)"), itemCount);
+					else
+						strBuffer.Format(_T(" (%i/%i)"), activeCount, itemCount);
+					*/
 					uint32 activeCount = theApp.uploadBandwidthThrottler->GetNumberOfFullyActivatedSlots();
 					//Xman upload health
 					//Xman count block/success send
@@ -615,6 +645,13 @@ void CTransferWnd::UpdateListCount(EWnd2 listindex, int iCount /*=-1*/)
 				CString strBuffer;
 				uint32 itemCount = iCount == -1 ? uploadlistctrl.GetItemCount() : iCount;
 				//Xman Xtreme Upload
+				/*
+				uint32 activeCount = theApp.uploadqueue->GetActiveUploadsCount();
+				if (activeCount >= itemCount)
+					strBuffer.Format(_T(" (%i)"), itemCount);
+				else
+					strBuffer.Format(_T(" (%i/%i)"), activeCount, itemCount);
+				*/
 				uint32 activeCount = theApp.uploadBandwidthThrottler->GetNumberOfFullyActivatedSlots();
 				//Xman upload health
 				//Xman count block/success send
@@ -662,11 +699,11 @@ void CTransferWnd::UpdateListCount(EWnd2 listindex, int iCount /*=-1*/)
 	}
 }
 
-//Xman Code Improvement
 void CTransferWnd::SwitchUploadList()
 {
 	if (m_uWnd2 == wnd2Uploading)
 	{
+		//Xman Code Improvement
 		/*
 		SetWnd2(wnd2Downloading);
 		queuelistctrl.Hide();
@@ -678,6 +715,7 @@ void CTransferWnd::SwitchUploadList()
 		SetWnd2Icon(w2iDownloading);
 		*/
 		ShowWnd2(wnd2Downloading);
+		//Xman end
 	}
 	else if (m_uWnd2 == wnd2Downloading)
 	{
@@ -686,6 +724,7 @@ void CTransferWnd::SwitchUploadList()
 			SwitchUploadList();
 			return;
 		}
+		//Xman Code Improvement
 		/*
 		uploadlistctrl.Hide();
 		clientlistctrl.Hide();
@@ -696,6 +735,7 @@ void CTransferWnd::SwitchUploadList()
 		SetWnd2Icon(w2iOnQueue);
 		*/
 		ShowWnd2(wnd2OnQueue);
+		//Xman end
 	}
 	else if (m_uWnd2 == wnd2OnQueue)
 	{
@@ -704,6 +744,7 @@ void CTransferWnd::SwitchUploadList()
 			SwitchUploadList();
 			return;
 		}
+		//Xman Code Improvement
 		/*
 		uploadlistctrl.Hide();
 		queuelistctrl.Hide();
@@ -714,9 +755,11 @@ void CTransferWnd::SwitchUploadList()
 		SetWnd2Icon(w2iClientsKnown);
 		*/
 		ShowWnd2(wnd2Clients);
+		//Xman end
 	}
 	else
 	{
+		//Xman Code Improvement
 		/*
 		SetWnd2(wnd2Uploading);
 		queuelistctrl.Hide();
@@ -728,10 +771,14 @@ void CTransferWnd::SwitchUploadList()
 		SetWnd2Icon(w2iUploading);
 		*/
 		ShowWnd2(wnd2Uploading);
+		//Xman end
 	}
-	//UpdateListCount(m_uWnd2);
+	//Xman Code Improvement
+	/*
+	UpdateListCount(m_uWnd2);
+	*/
+	//Xman end
 }
-//Xman end
 
 void CTransferWnd::ShowWnd2(EWnd2 uWnd2)
 {
@@ -846,18 +893,7 @@ void CTransferWnd::SetWnd2Icons()
 
 void CTransferWnd::Localize()
 {
-	m_btnWnd1->SetWindowText(GetResString(IDS_TW_DOWNLOADS));
-	m_btnWnd1->SetBtnText(MP_VIEW1_SPLIT_WINDOW, GetResString(IDS_SPLIT_WINDOW));
-	m_btnWnd1->SetBtnText(MP_VIEW1_DOWNLOADS, GetResString(IDS_TW_DOWNLOADS));
-	m_btnWnd1->SetBtnText(MP_VIEW1_UPLOADING, GetResString(IDS_UPLOADING));
-	m_btnWnd1->SetBtnText(MP_VIEW1_DOWNLOADING, GetResString(IDS_DOWNLOADING));
-	m_btnWnd1->SetBtnText(MP_VIEW1_ONQUEUE, GetResString(IDS_ONQUEUE));
-	m_btnWnd1->SetBtnText(MP_VIEW1_CLIENTS, GetResString(IDS_CLIENTLIST));
-	m_btnWnd2->SetWindowText(GetResString(IDS_UPLOADING));
-	m_btnWnd2->SetBtnText(MP_VIEW2_UPLOADING, GetResString(IDS_UPLOADING));
-	m_btnWnd2->SetBtnText(MP_VIEW2_DOWNLOADING, GetResString(IDS_DOWNLOADING));
-	m_btnWnd2->SetBtnText(MP_VIEW2_ONQUEUE, GetResString(IDS_ONQUEUE));
-	m_btnWnd2->SetBtnText(MP_VIEW2_CLIENTS, GetResString(IDS_CLIENTLIST));
+	LocalizeToolbars();
 	GetDlgItem(IDC_QUEUECOUNT_LABEL)->SetWindowText(GetResString(IDS_TW_QUEUE));
 	GetDlgItem(IDC_QUEUE_REFRESH_BUTTON)->SetWindowText(GetResString(IDS_SV_UPDATE));
 
@@ -876,9 +912,33 @@ void CTransferWnd::Localize()
 	UpdateListCount(m_uWnd2);
 }
 
+void CTransferWnd::LocalizeToolbars()
+{
+	m_btnWnd1->SetWindowText(GetResString(IDS_TW_DOWNLOADS));
+	m_btnWnd1->SetBtnText(MP_VIEW1_SPLIT_WINDOW, GetResString(IDS_SPLIT_WINDOW));
+	m_btnWnd1->SetBtnText(MP_VIEW1_DOWNLOADS, GetResString(IDS_TW_DOWNLOADS));
+	m_btnWnd1->SetBtnText(MP_VIEW1_UPLOADING, GetResString(IDS_UPLOADING));
+	m_btnWnd1->SetBtnText(MP_VIEW1_DOWNLOADING, GetResString(IDS_DOWNLOADING));
+	m_btnWnd1->SetBtnText(MP_VIEW1_ONQUEUE, GetResString(IDS_ONQUEUE));
+	m_btnWnd1->SetBtnText(MP_VIEW1_CLIENTS, GetResString(IDS_CLIENTLIST));
+	m_btnWnd2->SetWindowText(GetResString(IDS_UPLOADING));
+	m_btnWnd2->SetBtnText(MP_VIEW2_UPLOADING, GetResString(IDS_UPLOADING));
+	m_btnWnd2->SetBtnText(MP_VIEW2_DOWNLOADING, GetResString(IDS_DOWNLOADING));
+	m_btnWnd2->SetBtnText(MP_VIEW2_ONQUEUE, GetResString(IDS_ONQUEUE));
+	m_btnWnd2->SetBtnText(MP_VIEW2_CLIENTS, GetResString(IDS_CLIENTLIST));
+}
+
 void CTransferWnd::OnBnClickedQueueRefreshButton()
 {
 	//Xman faster Updating of Queuelist
+	/*
+	CUpDownClient* update = theApp.uploadqueue->GetNextClient(NULL);
+
+	while( update ){
+		theApp.emuledlg->transferwnd->queuelistctrl.RefreshClient( update);
+		update = theApp.uploadqueue->GetNextClient(update);
+	}
+	*/
 	if (queuelistctrl.GetItemCount()>1)
 	{
 		theApp.emuledlg->transferwnd->queuelistctrl.UpdateAll();
@@ -1822,7 +1882,12 @@ CString CTransferWnd::GetTabStatistic(int tab)
 			count++;
 			if (cur_file->GetTransferringSrcCount() > 0)
 				dwl++;
-			speed += cur_file->GetDownloadDatarate() / 1024.0F; //Xman // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+			//Xman // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+			/*
+			speed += cur_file->GetDatarate() / 1024.0F;
+			*/
+			speed += cur_file->GetDownloadDatarate() / 1024.0F;
+			//Xman end
 			size += (uint64)cur_file->GetFileSize();
 			trsize += (uint64)cur_file->GetCompletedSize();
 			if (!cur_file->IsAllocating())
@@ -1862,9 +1927,9 @@ CString CTransferWnd::GetTabStatistic(int tab)
 		GetResString(IDS_DL_SPEED) ,speed, GetResString(IDS_KBYTESPERSEC),
 		GetResString(IDS_DL_SIZE), CastItoXBytes(trsize, false, false), CastItoXBytes(size, false, false),
 		GetResString(IDS_ONDISK), CastItoXBytes(disksize, false, false));
+	title += TOOLTIP_AUTOFORMAT_SUFFIX_CH;
 	return title;
 }
-
 
 void CTransferWnd::OnDblclickDltab()
 {
@@ -2239,15 +2304,17 @@ void CTransferWnd::ShowSplitWindow(bool bReDraw)
 void CTransferWnd::OnDisableList()
 {
 	bool bSwitchList = false;
-	if (thePrefs.m_bDisableKnownClientList && m_uWnd2 == wnd2Clients)
+	if (thePrefs.m_bDisableKnownClientList)
 	{
-		//clientlistctrl.DeleteAllItems(); //Xman Code Fix
-		bSwitchList = true;
+		clientlistctrl.DeleteAllItems();
+		if (m_uWnd2 == wnd2Clients)
+			bSwitchList = true;
 	}
-	if (thePrefs.m_bDisableQueueList && m_uWnd2 == wnd2OnQueue)
+	if (thePrefs.m_bDisableQueueList)
 	{
-		//queuelistctrl.DeleteAllItems(); //Xman Code Fix
-		bSwitchList = true;
+		queuelistctrl.DeleteAllItems();
+		if (m_uWnd2 == wnd2OnQueue)
+			bSwitchList = true;
 	}
 	if (bSwitchList)
 		SwitchUploadList();
@@ -2475,10 +2542,17 @@ void CTransferWnd::ResetTransToolbar(bool bShowToolbar, bool bResetLists)
 
 	if (bResetLists)
 	{
+		LocalizeToolbars();
 		ShowSplitWindow(true);
 		VerifyCatTabSize();
 		ShowWnd2(m_uWnd2);
 	}
+}
+
+BOOL CTransferWnd::OnHelpInfo(HELPINFO* /*pHelpInfo*/)
+{
+	theApp.ShowHelp(eMule_FAQ_GUI_Transfers);
+	return TRUE;
 }
 
 // ==> CPU/MEM usage [$ick$/Stulle] - Max 

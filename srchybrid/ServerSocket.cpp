@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -106,6 +106,9 @@ void CServerSocket::OnConnect(int nErrorCode)
 {
 	//Xman
 	// MAella -QOS-
+	/*
+	CAsyncSocketEx::OnConnect(nErrorCode);
+	*/
 	CEMSocket::OnConnect(nErrorCode);
 	//Xman end
 
@@ -327,6 +330,34 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 
 				//Xman
 				// Maella -Activate Smart Low ID check-
+				/*
+				if (la->clientid == 0){
+					uint8 state = thePrefs.GetSmartIdState();
+					if ( state > 0 ){
+						state++;
+						if( state > 3 )
+							thePrefs.SetSmartIdState(0);
+						else
+							thePrefs.SetSmartIdState(state);
+					}
+					break;
+				}
+				if( thePrefs.GetSmartIdCheck() ){
+					if (!IsLowID(la->clientid))
+						thePrefs.SetSmartIdState(1);
+					else{
+						uint8 state = thePrefs.GetSmartIdState();
+						if ( state > 0 ){
+							state++;
+							if( state > 3 )
+								thePrefs.SetSmartIdState(0);
+							else
+								thePrefs.SetSmartIdState(state);
+							break;
+						}
+					}
+				}
+				*/
 				if(la->clientid == 0){
 					// Reset attempts counter
 					thePrefs.SetSmartIdState(0);
@@ -354,8 +385,6 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 					SetConnectionState(CS_CONNECTED);
 					theApp.OnlineSig();       // Added By Bouc7 
 				}
-
-
 				serverconnect->SetClientID(la->clientid);
 				if (::IsLowID(la->clientid) && dwServerReportedIP != 0)
 					theApp.SetPublicIP(dwServerReportedIP);
@@ -604,7 +633,12 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 					if (theApp.clientlist->IsBannedClient(dwIP)){
 						if (thePrefs.GetLogBannedClients()){
 							CUpDownClient* pClient = theApp.clientlist->FindClientByIP(dwIP);
-							AddDebugLogLine(false, _T("Ignored callback request from banned client %s; %s"), ipstr(dwIP), pClient ? pClient->DbgGetClientInfo() : _T("unknown")); //Xman Code Fix
+							//Xman Code Fix
+							/*
+							AddDebugLogLine(false, _T("Ignored callback request from banned client %s; %s"), ipstr(dwIP), pClient->DbgGetClientInfo());
+							*/
+							AddDebugLogLine(false, _T("Ignored callback request from banned client %s; %s"), ipstr(dwIP), pClient ? pClient->DbgGetClientInfo() : _T("unknown"));
+							//Xman end
 						}
 						break;
 					}
@@ -621,7 +655,12 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 					if (client == NULL)
 					{
 						client = new CUpDownClient(0,nPort,dwIP,0,0,true);
-						theApp.clientlist->AddClient(client, true); //Xman Code Improvement don't search new generated clients in lists
+						//Xman Code Improvement don't search new generated clients in lists
+						/*
+						theApp.clientlist->AddClient(client);
+						*/
+						theApp.clientlist->AddClient(client, true);
+						//Xman end
 					}
 					if (size >= 23 && client->HasValidHash()){
 						if (md4cmp(client->GetUserHash(), achUserHash) != 0){
@@ -632,9 +671,8 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 							client->SetCryptLayerRequires(false);
 						}
 						else{
-							client->SetCryptLayerSupport((byCryptOptions & 0x01) != 0);
-							client->SetCryptLayerRequest((byCryptOptions & 0x02) != 0);
-							client->SetCryptLayerRequires((byCryptOptions & 0x04) != 0);
+							client->SetConnectOptions(byCryptOptions, true, false);
+							client->SetDirectUDPCallbackSupport(false);
 						}
 					}
 					else if (size >= 23){
@@ -642,6 +680,7 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 						client->SetCryptLayerSupport((byCryptOptions & 0x01) != 0);
 						client->SetCryptLayerRequest((byCryptOptions & 0x02) != 0);
 						client->SetCryptLayerRequires((byCryptOptions & 0x04) != 0);
+						client->SetDirectUDPCallbackSupport(false);
 					}
 					client->TryToConnect();
 				}

@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -86,7 +86,7 @@ void CPeerCacheSocket::DetachFromClient()
 
 void CPeerCacheSocket::Safe_Delete()
 {
-	DEBUG_ONLY( Debug(_T("%08x %hs\n"), this, __FUNCTION__) );
+	DEBUG_ONLY( Debug(_T("%08x %hs\n"), this, __FUNCTION__) ); //Xman
 	DetachFromClient();
 	CClientReqSocket::Safe_Delete();
 	m_client = NULL;
@@ -158,7 +158,7 @@ CPeerCacheDownSocket::~CPeerCacheDownSocket()
 
 void CPeerCacheDownSocket::DetachFromClient()
 {
-	DEBUG_ONLY( Debug(_T("%08x %hs\n"), this, __FUNCTION__) );
+	DEBUG_ONLY( Debug(_T("%08x %hs\n"), this, __FUNCTION__) ); //Xman
 	if (GetClient())
 	{
 		if (GetClient()->m_pPCDownSocket == this)
@@ -227,9 +227,15 @@ CPeerCacheUpSocket::CPeerCacheUpSocket(CUpDownClient* pClient)
 CPeerCacheUpSocket::~CPeerCacheUpSocket()
 {
 	DEBUG_ONLY( Debug(_T("%08x %hs\n"), this, __FUNCTION__) );
-	//theApp.uploadBandwidthThrottler->RemoveFromAllQueues(this); //Xman moved down, because of replace method
+	//Xman Xtreme Upload: Peercache-part
+	//Xman moved down, because of replace method
+	/*
+	theApp.uploadBandwidthThrottler->RemoveFromAllQueues(this);
 	DetachFromClient();
-	theApp.uploadBandwidthThrottler->RemoveFromAllQueues(this); //Xman Xtreme Upload: Peercache-part
+	*/
+	DetachFromClient();
+	theApp.uploadBandwidthThrottler->RemoveFromAllQueues(this);
+	//Xman end
 }
 
 void CPeerCacheUpSocket::DetachFromClient()
@@ -264,7 +270,11 @@ void CPeerCacheUpSocket::OnSend(int nErrorCode)
 void CPeerCacheUpSocket::OnClose(int nErrorCode)
 {
 	DEBUG_ONLY( Debug(_T("%08x %hs\n"), this, __FUNCTION__) );
-	//CPeerCacheSocket::OnClose(nErrorCode); //Xman moved down, because of replace method
+	//Xman moved down, because of replace method
+	/*
+	CPeerCacheSocket::OnClose(nErrorCode);
+	*/
+	//Xman end
 	if (GetClient())
 	{
 		if (GetClient()->m_pPCUpSocket == this)
@@ -332,9 +342,9 @@ bool CPeerCacheUpSocket::ProcessHttpRequest()
 	//it can happen, that a client is continuing sending HttpRequests although it isn't uploading
 	//then we set a wrong state here
 	if(GetClient()->GetUploadState()==US_CONNECTING)
+	//Xman end
 		GetClient()->SetUploadState(US_UPLOADING);
 
-	//Xman end
 	return true;
 }
 
@@ -609,7 +619,13 @@ bool CUpDownClient::SendHttpBlockRequests()
 			ASSERT( m_pPCDownSocket == NULL );
 			SetPeerCacheDownState(PCDS_NONE);
 		}
-		SetDownloadState(DS_NONEEDEDPARTS, _T("No needed parts"), CUpDownClient::DSR_NONEEDEDPARTS); // - Maella -Download Stop Reason-
+		// - Maella -Download Stop Reason-
+		/*
+		SetDownloadState(DS_NONEEDEDPARTS);
+        SwapToAnotherFile(_T("A4AF for NNP file. CUpDownClient::SendHttpBlockRequests()"), true, false, false, NULL, true, true);
+		*/
+		SetDownloadState(DS_NONEEDEDPARTS, _T("No needed parts"), CUpDownClient::DSR_NONEEDEDPARTS);
+		//Xman end
 		return false;
 	}
 
@@ -817,7 +833,7 @@ bool CUpDownClient::ProcessPeerCacheQuery(const uchar* packet, UINT size)
 
 	if (m_pPCUpSocket != NULL)
 	{
-		DEBUG_ONLY( Debug(_T("ProcessPeerCacheQuery Deleting socket")));
+		DEBUG_ONLY( Debug(_T("ProcessPeerCacheQuery Deleting socket"))); //Xman
         SetPeerCacheUpState(PCUS_NONE);
 		m_pPCUpSocket->Safe_Delete();
 		ASSERT( m_pPCUpSocket == NULL );
@@ -1098,20 +1114,29 @@ void CUpDownClient::SetPeerCacheUpState(EPeerCacheUpState eState)
 	if (m_ePeerCacheUpState != eState)
 	{
 		//if (thePrefs.GetVerbose())
+		//Xman
+		/*
+			//AddDebugLogLine(false, _T(" %s changed PeercacheState to %i"), DbgGetClientInfo(), eState);
+		*/
 		DEBUG_ONLY( Debug(_T(" %s changed PeercacheState to %i\n"), DbgGetClientInfo(), eState));
+		//Xman end
 
 		m_ePeerCacheUpState = eState;
 		if (m_ePeerCacheUpState == PCUS_NONE)
 			m_bPeerCacheUpHit = false;
 
-
 		//Xman Xtreme Upload: Peercache-part
+		/*
+        theApp.uploadqueue->ReSortUploadSlots(true);
+		*/
 		if(IsDownloading() && m_ePeerCacheUpState!=PCUS_WAIT_CACHE_REPLY) 
 		{
 			//theApp.uploadqueue->ReSortUploadSlots(true);
 			DEBUG_ONLY( Debug(_T("Replacing Slots in setstate")));
 			theApp.uploadqueue->ReplaceSlot(this);
 		}
+		//Xman end
+
 		UpdateDisplayedInfo();
 	}
 }

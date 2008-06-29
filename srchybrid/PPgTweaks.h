@@ -55,8 +55,8 @@ protected:
 	// <== Improved ICS-Firewall support [MoNKi] - Max
 	int m_iLogLevel;
 	bool m_bDisablePeerCache;
-	/* Xman
-	// ZZ:UploadSpeedSense -->
+	//Xman
+	/*
 	bool m_bDynUpEnabled;
     int m_iDynUpMinUpload;
     int m_iDynUpPingTolerance;
@@ -65,9 +65,9 @@ protected:
     int m_iDynUpGoingUpDivider;
     int m_iDynUpGoingDownDivider;
     int m_iDynUpNumberOfPings;
-	// ZZ:UploadSpeedSense <--
-    bool m_bA4AFSaveCpu; // ZZ:DownloadManager
+    bool m_bA4AFSaveCpu;
 	*/
+	//Xman end
 	bool m_bAutoArchDisable;
 	int m_iExtractMetaData;
 	//Xman official UPNP removed
@@ -76,9 +76,11 @@ protected:
 	bool m_bSkipWANIPSetup;
 	bool m_bSkipWANPPPSetup;
 	*/
+	//Xman end
 	int m_iShareeMule;
 	int m_iCryptTCPPaddingLength; //Xman Added PaddingLength to Extended preferences
 	bool bShowedWarning;
+
 
 	CSliderCtrl m_ctlFileBuffSize;
 	CSliderCtrl m_ctlQueueSize;
@@ -127,8 +129,8 @@ protected:
 	// <== Improved ICS-Firewall support [MoNKi] - Max
 	HTREEITEM m_htiLogLevel;
 	HTREEITEM m_htiDisablePeerCache;
-	/* Xman
-	// ZZ:UploadSpeedSense -->
+	//Xman
+	/*
 	HTREEITEM m_htiDynUp;
 	HTREEITEM m_htiDynUpEnabled;
     HTREEITEM m_htiDynUpMinUpload;
@@ -140,11 +142,9 @@ protected:
     HTREEITEM m_htiDynUpGoingUpDivider;
     HTREEITEM m_htiDynUpGoingDownDivider;
     HTREEITEM m_htiDynUpNumberOfPings;
-	// ZZ:UploadSpeedSense <--
-	// ZZ:DownloadManager -->
 	HTREEITEM m_htiA4AFSaveCpu;
-	// ZZ:DownloadManager <--
 	*/
+	//Xman end
 
 	// ==> UPnP support [MoNKi] - leuk_he
 	/*
@@ -174,6 +174,7 @@ protected:
 	HTREEITEM m_htiSkipWANIPSetup;
 	HTREEITEM m_htiSkipWANPPPSetup;
 	*/
+	//Xman end
 	HTREEITEM m_htiShareeMule;
 	HTREEITEM m_htiShareeMuleMultiUser;
 	HTREEITEM m_htiShareeMulePublicUser;

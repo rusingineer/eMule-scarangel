@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -90,8 +90,11 @@ Basic Obfuscated Handshake Protocol Client <-> Server:
 #pragma warning(disable:4516) // access-declarations are deprecated; member using-declarations provide a better alternative
 #pragma warning(disable:4100) // unreferenced formal parameter
 //Xman
+/*
+#include <crypto51/osrng.h>
+*/
 #pragma warning(disable:4702) // unreachable code
-#include <crypto.v52.1/osrng.h> //Xman
+#include <crypto.v52.1/osrng.h>
 #pragma warning(default:4702) // unreachable code
 //Xman end
 #pragma warning(default:4100) // unreferenced formal parameter
@@ -513,7 +516,7 @@ int CEncryptedStreamSocket::Negotiate(const uchar* pBuffer, uint32 nLen){
 					SendNegotiatingData(fileResponse.GetBuffer(), (uint32)fileResponse.GetLength());
 					m_NegotiatingState = ONS_COMPLETE;
 					m_StreamCryptState = ECS_ENCRYPTING;
-					DEBUG_ONLY( DebugLog(_T("CEncryptedStreamSocket: Finished Obufscation handshake with client %s (incoming)"), DbgGetIPString()) );
+					//DEBUG_ONLY( DebugLog(_T("CEncryptedStreamSocket: Finished Obufscation handshake with client %s (incoming)"), DbgGetIPString()) );
 					break;
 				}
 				case ONS_BASIC_CLIENTB_MAGICVALUE:{
@@ -542,7 +545,7 @@ int CEncryptedStreamSocket::Negotiate(const uchar* pBuffer, uint32 nLen){
 					// ignore the random bytes, the handshake is complete
 					m_NegotiatingState = ONS_COMPLETE;
 					m_StreamCryptState = ECS_ENCRYPTING;
-					DEBUG_ONLY( DebugLog(_T("CEncryptedStreamSocket: Finished Obufscation handshake with client %s (outgoing)"), DbgGetIPString()) );
+					//DEBUG_ONLY( DebugLog(_T("CEncryptedStreamSocket: Finished Obufscation handshake with client %s (outgoing)"), DbgGetIPString()) );
 					break;
 				case ONS_BASIC_SERVER_DHANSWER:{
 					ASSERT( !m_cryptDHA.IsZero() );

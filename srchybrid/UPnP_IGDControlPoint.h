@@ -26,12 +26,6 @@
 
 #include "upnplib\upnp\inc\upnp.h"
 
-// Added by MoNKi [MoNKi: -UPnPNAT Support-] 
-// firewallopener
-#define EMULE_DEFAULTRULENAME_UPNP_TCP		_T("UPnP_TCP_Port")
-#define EMULE_DEFAULTRULENAME_UPNP_UDP		_T("UPnP_UDP_Port")
-// End -UPnPNAT Support-
-
 #define IGD_DEVICE_TYPE			_T("urn:schemas-upnp-org:device:InternetGatewayDevice:1")
 #define WAN_DEVICE_TYPE			_T("urn:schemas-upnp-org:device:WANDevice:1")
 #define WANCON_DEVICE_TYPE		_T("urn:schemas-upnp-org:device:WANConnectionDevice:1")
@@ -171,6 +165,7 @@ public:
 	static UINT  RemoveInstance(LPVOID /*pParam*/ );
 private:
 	bool UpnpAcceptsPorts; // Accepts ports, even when upnp is not enabled.  So not restart is required on enableing [leuk_he]
+	static CString StatusString; // string to show in display (for errors) 
 	typedef enum{
 		UPNPNAT_ACTION_ADD,
 		UPNPNAT_ACTION_DELETE

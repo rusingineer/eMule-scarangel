@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -219,6 +219,7 @@ bool CFriendList::AddFriend(CUpDownClient* toadd){
 		m_wndOutput->UpdateList();
 	}
 	SaveList();
+	NewFriend->FindKadID(); // fetch the kadid of this friend if we don't have it already
 	return true;
 }
 
@@ -257,4 +258,13 @@ void CFriendList::Process()
 {
 	if (::GetTickCount() - m_nLastSaved > MIN2MS(19))
 		SaveList();
+}
+bool CFriendList::IsValid(CFriend* pToCheck) const
+{
+	// debug/sanity check function
+	for (POSITION pos = m_listFriends.GetHeadPosition();pos != 0;){
+		if (pToCheck == m_listFriends.GetNext(pos))
+			return true;
+	}
+	return false;
 }

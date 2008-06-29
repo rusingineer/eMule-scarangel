@@ -5,6 +5,10 @@
 #pragma warning(disable:4100) // unreferenced formal parameter
 #pragma warning(disable:4702) // unreachable code
 //Xman
+/*
+#include <crypto51/sha.h>
+#include <crypto51/md4.h>
+*/
 #pragma warning(disable:4516)
 #include <crypto.v52.1/sha.h>
 #include <crypto.v52.1/md4.h>

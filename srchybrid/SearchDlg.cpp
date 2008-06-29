@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -180,9 +180,13 @@ void CSearchDlg::RemoveResult(const CSearchFile* pFile)
 	m_pwndResults->searchlistctrl.RemoveResult(pFile);
 }
 
-bool CSearchDlg::CreateNewTab(SSearchParams* pParams)
+bool CSearchDlg::CreateNewTab(SSearchParams* pParams, bool bActiveIcon)
 {
-	return m_pwndResults->CreateNewTab(pParams);
+	return m_pwndResults->CreateNewTab(pParams, bActiveIcon);
+}
+
+SSearchParams* CSearchDlg::GetSearchParamsBySearchID(uint32 nSearchID){
+	return m_pwndResults->GetSearchResultsParams(nSearchID);
 }
 
 void CSearchDlg::LocalEd2kSearchEnd(UINT nCount, bool bMoreResultsAvailable)
@@ -198,6 +202,11 @@ void CSearchDlg::CancelEd2kSearch()
 void CSearchDlg::CancelKadSearch(UINT uSearchID)
 {
 	m_pwndResults->CancelKadSearch(uSearchID);
+}
+
+void CSearchDlg::SetNextSearchID(uint32 uNextID)
+{ 
+	m_pwndResults->SetNextSearchID(uNextID); 
 }
 
 void CSearchDlg::AddGlobalEd2kSearchResults(UINT nCount)

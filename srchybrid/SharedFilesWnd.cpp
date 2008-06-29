@@ -22,6 +22,8 @@
 #include "SharedFileList.h"
 #include "KnownFileList.h"
 #include "KnownFile.h"
+#include "UserMsgs.h"
+#include "HelpIDs.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -48,6 +50,8 @@ BEGIN_MESSAGE_MAP(CSharedFilesWnd, CResizableDialog)
 	ON_STN_DBLCLK(IDC_FILES_ICO, OnStnDblClickFilesIco)
 	ON_NOTIFY(TVN_SELCHANGED, IDC_SHAREDDIRSTREE, OnTvnSelChangedSharedDirsTree)
 	ON_WM_SIZE()
+	ON_MESSAGE(UM_DELAYED_EVALUATE, OnChangeFilter)
+	ON_WM_HELPINFO()
 	//Xman [MoNKi: -Downloaded History-]
 	ON_NOTIFY(LVN_ITEMACTIVATE, IDC_DOWNHISTORYLIST, OnLvnItemActivateHistorylist)
 	ON_NOTIFY(NM_CLICK, IDC_DOWNHISTORYLIST, OnNMClickHistorylist)
@@ -60,10 +64,12 @@ CSharedFilesWnd::CSharedFilesWnd(CWnd* pParent /*=NULL*/)
 	: CResizableDialog(CSharedFilesWnd::IDD, pParent)
 {
 	icon_files = NULL;
+	m_nFilterColumn = 0;
 }
 
 CSharedFilesWnd::~CSharedFilesWnd()
 {
+	m_ctlSharedListHeader.Detach();
 	if (icon_files)
 		VERIFY( DestroyIcon(icon_files) );
 }
@@ -77,6 +83,7 @@ void CSharedFilesWnd::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_POPBAR3, pop_bartrans);
 	DDX_Control(pDX, IDC_STATISTICS, m_ctrlStatisticsFrm);
 	DDX_Control(pDX, IDC_SHAREDDIRSTREE, m_ctlSharedDirTree);
+	DDX_Control(pDX, IDC_SHAREDFILES_FILTER, m_ctlFilter);
 	//Xman [MoNKi: -Downloaded History-]
 	DDX_Control(pDX, IDC_DOWNHISTORYLIST, historylistctrl);
 	//Xman end
@@ -90,6 +97,14 @@ BOOL CSharedFilesWnd::OnInitDialog()
 	SetAllIcons();
 	sharedfilesctrl.Init();
 	m_ctlSharedDirTree.Initalize(&sharedfilesctrl);
+	if (thePrefs.GetUseSystemFontForMainControls())
+		m_ctlSharedDirTree.SendMessage(WM_SETFONT, NULL, FALSE);
+
+	m_ctlSharedListHeader.Attach(sharedfilesctrl.GetHeaderCtrl()->Detach());
+	CArray<int, int> aIgnore; // ignored no-text columns for filter edit
+	aIgnore.Add(8); // shared parts
+	aIgnore.Add(11); // shared ed2k/kad
+	m_ctlFilter.OnInit(&m_ctlSharedListHeader, &aIgnore);
 	
 	pop_bar.SetGradientColors(RGB(255,255,240),RGB(255,255,0));
 	pop_bar.SetTextColor(RGB(20,70,255));
@@ -111,13 +126,21 @@ BOOL CSharedFilesWnd::OnInitDialog()
 	GetDlgItem(IDC_SHAREDDIRSTREE)->GetWindowRect(rcSpl);
 	ScreenToClient(rcSpl);
 
+	CRect rcTmp;
+	GetDlgItem(IDC_SHAREDFILES_FILTER)->GetWindowRect(rcTmp);
+	ScreenToClient(rcTmp);
+	rcSpl.top = rcTmp.top;
+
 	rcSpl.left = rcSpl.right + SPLITTER_MARGIN;
 	rcSpl.right = rcSpl.left + SPLITTER_WIDTH;
+	rcSpl.top = 1;
 	m_wndSplitter.Create(WS_CHILD | WS_VISIBLE, rcSpl, this, IDC_SPLITTER_SHAREDFILES);
 
 	int PosStatVinit = rcSpl.left;
 	//Xman fixed sharedfilesplitterbar
-	//int PosStatVnew = rc.left + thePrefs.GetSplitterbarPositionShared() + 2;
+	/*
+	int PosStatVnew = rc.left + thePrefs.GetSplitterbarPositionShared() + 2;
+	*/
 	int PosStatVnew = rc.left + thePrefs.GetSplitterbarPositionShared() + SPLITTER_WIDTH;
 	//Xman end
 
@@ -143,7 +166,6 @@ BOOL CSharedFilesWnd::OnInitDialog()
 
 	DoResize(PosStatVnew - PosStatVinit);
 
-    
 	Localize();
 
 	GetDlgItem(IDC_CURSESSION_LBL)->SetFont(&bold);
@@ -159,8 +181,7 @@ BOOL CSharedFilesWnd::OnInitDialog()
 	AddAnchor(IDC_STRANSFERRED2,BOTTOM_RIGHT);
 	AddAnchor(IDC_SACCEPTED2,BOTTOM_RIGHT);
 	AddAnchor(IDC_TRAFFIC_TEXT, TOP_LEFT);
-
-	
+	//AddAnchor(IDC_SHAREDFILES_FILTER,TOP_LEFT);
 	
 	return TRUE;
 }
@@ -170,6 +191,7 @@ void CSharedFilesWnd::DoResize(int delta)
 
 
 	CSplitterControl::ChangeWidth(GetDlgItem(IDC_SHAREDDIRSTREE), delta);
+	CSplitterControl::ChangeWidth(GetDlgItem(IDC_SHAREDFILES_FILTER), delta);
 
 	CSplitterControl::ChangePos(GetDlgItem(IDC_CURSESSION_LBL), -delta, 0);
 	CSplitterControl::ChangePos(GetDlgItem(IDC_FSTATIC4), -delta, 0);
@@ -225,6 +247,8 @@ void CSharedFilesWnd::DoResize(int delta)
 	RemoveAnchor(IDC_STRANSFERRED);
 	RemoveAnchor(IDC_POPBAR3);
 	RemoveAnchor(IDC_SHAREDDIRSTREE);
+	RemoveAnchor(IDC_SHAREDFILES_FILTER);
+
 
 	//Xman [MoNKi: -Downloaded History-]
 	AddAnchor(IDC_DOWNHISTORYLIST,TOP_LEFT,BOTTOM_RIGHT);
@@ -242,6 +266,7 @@ void CSharedFilesWnd::DoResize(int delta)
 	AddAnchor(IDC_POPBAR,BOTTOM_LEFT, BOTTOM_RIGHT);
 	AddAnchor(IDC_POPBAR2,BOTTOM_LEFT, BOTTOM_RIGHT);
 	AddAnchor(IDC_POPBAR3,BOTTOM_LEFT, BOTTOM_RIGHT);
+	AddAnchor(IDC_SHAREDFILES_FILTER,TOP_LEFT);
 
 	m_wndSplitter.SetRange(rcW.left+SPLITTER_RANGE_MIN, rcW.left+SPLITTER_RANGE_MAX);
 
@@ -276,7 +301,12 @@ void CSharedFilesWnd::OnLvnItemActivateSharedFiles(NMHDR* /*pNMHDR*/, LRESULT* /
 	ShowSelectedFilesSummary();
 }
 
-void CSharedFilesWnd::ShowSelectedFilesSummary(bool bHistory /*=false*/) //Xman [MoNKi: -Downloaded History-]
+//Xman [MoNKi: -Downloaded History-]
+/*
+void CSharedFilesWnd::ShowSelectedFilesSummary()
+*/
+void CSharedFilesWnd::ShowSelectedFilesSummary(bool bHistory /*=false*/)
+//Xman end
 {
 	const CKnownFile* pTheFile = NULL;
 	int iFiles = 0;
@@ -287,6 +317,9 @@ void CSharedFilesWnd::ShowSelectedFilesSummary(bool bHistory /*=false*/) //Xman 
 	UINT uAllTimeRequests = 0;
 	UINT uAllTimeAccepted = 0;
 	//Xman [MoNKi: -Downloaded History-]
+	/*
+	POSITION pos = sharedfilesctrl.GetFirstSelectedItemPosition();
+	*/
 	POSITION pos;
 	if(bHistory){
 		pos = historylistctrl.GetFirstSelectedItemPosition();
@@ -298,8 +331,10 @@ void CSharedFilesWnd::ShowSelectedFilesSummary(bool bHistory /*=false*/) //Xman 
 	while (pos)
 	{
 		//Xman [MoNKi: -Downloaded History-]
-		/* int iItem = sharedfilesctrl.GetNextSelectedItem(pos);
-		const CKnownFile* pFile = (CKnownFile*)sharedfilesctrl.GetItemData(iItem); */
+		/*
+		int iItem = sharedfilesctrl.GetNextSelectedItem(pos);
+		const CKnownFile* pFile = (CKnownFile*)sharedfilesctrl.GetItemData(iItem);
+		*/
 		int iItem;
 		const CKnownFile* pFile;
 		if(bHistory){
@@ -401,7 +436,6 @@ BOOL CSharedFilesWnd::PreTranslateMessage(MSG* pMsg)
 	}
 	else if (pMsg->message == WM_KEYUP)
 	{
-
 	   if (pMsg->hwnd == GetDlgItem(IDC_SFLIST)->m_hWnd)
 			OnLvnItemActivateSharedFiles(0, 0);
    }
@@ -466,7 +500,11 @@ void CSharedFilesWnd::Localize()
 	m_ctlSharedDirTree.Localize();
 	sharedfilesctrl.SetDirectoryFilter(NULL,true);
 
-	//GetDlgItem(IDC_TRAFFIC_TEXT)->SetWindowText(GetResString(IDS_SF_FILES)); //Xman [MoNKi: -Downloaded History-]
+	//Xman [MoNKi: -Downloaded History-]
+	/*
+	GetDlgItem(IDC_TRAFFIC_TEXT)->SetWindowText(GetResString(IDS_SF_FILES));
+	*/
+	//Xman end
 	GetDlgItem(IDC_RELOADSHAREDFILES)->SetWindowText(GetResString(IDS_SF_RELOAD));
 	// ==> Design Settings [eWombat/Stulle] - Max
 	/*
@@ -482,20 +520,6 @@ void CSharedFilesWnd::Localize()
 	GetDlgItem(IDC_FSTATIC9)->SetWindowText(GetResString(IDS_SF_TRANS));
 	GetDlgItem(IDC_FSTATIC8)->SetWindowText(GetResString(IDS_SF_ACCEPTED));
 	GetDlgItem(IDC_FSTATIC7)->SetWindowText(GetResString(IDS_SF_REQUESTS)+_T(":"));
-
-	/*
-	//Xman [MoNKi: -Downloaded History-]
-	if(!historylistctrl.IsWindowVisible()){
-		sharedfilesctrl.ShowFilesCount();
-	}
-	else
-	{
-		CString str;
-		str.Format(_T(" (%i)"),historylistctrl.GetItemCount());
-		GetDlgItem(IDC_TRAFFIC_TEXT)->SetWindowText(GetResString(IDS_DOWNHISTORY) + str);
-	}
-	//Xman end
-	*/
 }
 
 void CSharedFilesWnd::OnTvnSelChangedSharedDirsTree(NMHDR* /*pNMHDR*/, LRESULT* pResult)
@@ -524,9 +548,9 @@ void CSharedFilesWnd::OnTvnSelChangedSharedDirsTree(NMHDR* /*pNMHDR*/, LRESULT* 
 			GetDlgItem(IDC_RELOADSHAREDFILES)->ShowWindow(true);
 			sharedfilesctrl.ShowFilesCount(); //Xman Code Improvement for ShowFilesCount
 		}
-		sharedfilesctrl.SetDirectoryFilter(m_ctlSharedDirTree.GetSelectedFilter(), !m_ctlSharedDirTree.IsCreatingTree());
-	}
 	//Xman end
+		sharedfilesctrl.SetDirectoryFilter(m_ctlSharedDirTree.GetSelectedFilter(), !m_ctlSharedDirTree.IsCreatingTree());
+	} //Xman
 	*pResult = 0;
 }
 
@@ -545,6 +569,10 @@ LRESULT CSharedFilesWnd::DefWindowProc(UINT message, WPARAM wParam, LPARAM lPara
 				CRect rctree;
 				GetDlgItem(IDC_SHAREDDIRSTREE)->GetWindowRect(rctree);
 				ScreenToClient(rctree);
+				CRect rcTmp;
+				GetDlgItem(IDC_SHAREDFILES_FILTER)->GetWindowRect(rcTmp);
+				ScreenToClient(rcTmp);
+				rctree.top = rcTmp.top;
 				CRect rcSpl;
 				rcSpl.left = rctree.right + SPLITTER_MARGIN;
 				rcSpl.right = rcSpl.left + SPLITTER_WIDTH;
@@ -588,6 +616,48 @@ LRESULT CSharedFilesWnd::DefWindowProc(UINT message, WPARAM wParam, LPARAM lPara
 
 void CSharedFilesWnd::OnSize(UINT nType, int cx, int cy){
 	CResizableDialog::OnSize(nType, cx, cy);
+}
+
+LRESULT CSharedFilesWnd::OnChangeFilter(WPARAM wParam, LPARAM lParam)
+{
+	CWaitCursor curWait; // this may take a while
+
+	bool bColumnDiff = (m_nFilterColumn != (uint32)wParam);
+	m_nFilterColumn = (uint32)wParam;
+
+	CStringArray astrFilter;
+	CString strFullFilterExpr = (LPCTSTR)lParam;
+	int iPos = 0;
+	CString strFilter(strFullFilterExpr.Tokenize(_T(" "), iPos));
+	while (!strFilter.IsEmpty()) {
+		if (strFilter != _T("-"))
+			astrFilter.Add(strFilter);
+		strFilter = strFullFilterExpr.Tokenize(_T(" "), iPos);
+	}
+
+	bool bFilterDiff = (astrFilter.GetSize() != m_astrFilter.GetSize());
+	if (!bFilterDiff) {
+		for (int i = 0; i < astrFilter.GetSize(); i++) {
+			if (astrFilter[i] != m_astrFilter[i]) {
+				bFilterDiff = true;
+				break;
+			}
+		}
+	}
+
+	if (!bColumnDiff && !bFilterDiff)
+		return 0;
+	m_astrFilter.RemoveAll();
+	m_astrFilter.Append(astrFilter);
+
+	sharedfilesctrl.ReloadFileList();
+	return 0;
+}
+
+BOOL CSharedFilesWnd::OnHelpInfo(HELPINFO* /*pHelpInfo*/)
+{
+	theApp.ShowHelp(eMule_FAQ_GUI_SharedFiles);
+	return TRUE;
 }
 
 //Xman [MoNKi: -Downloaded History-]

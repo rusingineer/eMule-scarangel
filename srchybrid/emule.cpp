@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -36,7 +36,11 @@
 #include "PerfLog.h"
 #include <..\src\mfc\sockimpl.h>
 #include <..\src\mfc\afximpl.h>
-//#include "LastCommonRouteFinder.h" //Xman
+//Xman
+/*
+#include "LastCommonRouteFinder.h"
+*/
+//Xman end
 #include "UploadBandwidthThrottler.h"
 #include "ClientList.h"
 #include "FriendList.h"
@@ -70,7 +74,11 @@
 #include "Collection.h"
 #include "LangIDs.h"
 #include "HelpIDs.h"
-//#include "UPnPFinder.h" //Xman official UPNP removed
+//Xman official UPNP removed
+/*
+#include "UPnPFinder.h"
+*/
+//Xman end
 
 //Xman
 #include "BandWidthControl.h" // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
@@ -213,7 +221,6 @@ BEGIN_MESSAGE_MAP(CemuleApp, CWinApp)
 	ON_COMMAND(ID_HELP, OnHelp)
 END_MESSAGE_MAP()
 
-
 CemuleApp::CemuleApp(LPCTSTR lpszAppName)
 	:CWinApp(lpszAppName)
 {
@@ -255,6 +262,7 @@ CemuleApp::CemuleApp(LPCTSTR lpszAppName)
 
 	//Xman queued disc-access for read/flushing-threads
 	m_uRunningNonBlockedDiscAccessThreads=0;
+	//Xman end
 
 // MOD Note: Do not change this part - Merkur
 
@@ -275,7 +283,12 @@ CemuleApp::CemuleApp(LPCTSTR lpszAppName)
 	m_strCurVersionLong += _T(" DEBUG");
 #endif
 #ifdef _BETA
+	//Xman
+	/*
+	m_strCurVersionLong += _T(" BETA3");
+	*/
 	m_strCurVersionLong += _T(" Testversion");
+	//Xman end
 #endif
 
 	// create the protocol version number
@@ -381,7 +394,6 @@ BOOL CemuleApp::InitInstance()
 	// output all ASSERT messages to debug device
 	_CrtSetReportMode(_CRT_ASSERT, _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_REPORT_MODE) | _CRTDBG_MODE_DEBUG);
 #endif
-
 	free((void*)m_pszProfileName);
 	m_pszProfileName = _tcsdup(thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + _T("preferences.ini"));
 
@@ -398,19 +410,25 @@ BOOL CemuleApp::InitInstance()
 	///////////////////////////////////////////////////////////////////////////
 	// Install crash dump creation
 	//
-// Xman better always enabled, except we don't want
 #ifndef _BETA
-	//if (GetProfileInt(_T("eMule"), _T("CreateCrashDump"), 0))
+	// Xman better always enabled, except we don't want
+	/*
+	if (GetProfileInt(_T("eMule"), _T("CreateCrashDump"), 0))
+	*/
 	if (GetProfileInt(_T("eMule"), _T("NoCrashDump"), 0)==0)
+	//Xman end
 #endif
-
+		//Xman ModId
+		/*
+		theCrashDumper.Enable(_T("eMule ") + m_strCurVersionLongDbg, true);
+		*/
 		// ==> ModID [itsonlyme/SiRoB] - Stulle
 		/*
-		theCrashDumper.Enable(_T("eMule ") + m_strCurVersionLongDbg + _T(" ") + MOD_VERSION, true); //Xman ModId
+		theCrashDumper.Enable(_T("eMule ") + m_strCurVersionLongDbg + _T(" ") + MOD_VERSION, true);
 		*/
 		theCrashDumper.Enable(_T("eMule ") + m_strCurVersionLongDbg + _T(" ") + m_strModLongVersion, true);
 		// <== ModID [itsonlyme/SiRoB] - Stulle
-
+		//Xman end
 
 	///////////////////////////////////////////////////////////////////////////
 	// Locale initialization -- BE VERY CAREFUL HERE!!!
@@ -487,19 +505,19 @@ BOOL CemuleApp::InitInstance()
 
 	m_sizSmallSystemIcon.cx = GetSystemMetrics(SM_CXSMICON);
 	m_sizSmallSystemIcon.cy = GetSystemMetrics(SM_CYSMICON);
-	m_sizBigSystemIcon.cx = GetSystemMetrics(SM_CXICON);
-	m_sizBigSystemIcon.cy = GetSystemMetrics(SM_CYICON);
+	UpdateLargeIconSize();
 	UpdateDesktopColorDepth();
 
 	CWinApp::InitInstance();
 
+	//<<< eWombat [WINSOCK2] 
 	/*
 	if (!AfxSocketInit())
 	{
 		AfxMessageBox(GetResString(IDS_SOCKETS_INIT_FAILED));
 		return FALSE;
-	}*/
-	//<<< eWombat [WINSOCK2] 
+	}
+	*/
 	memset(&m_wsaData,0,sizeof(WSADATA));
 	if (!InitWinsock2(&m_wsaData)) // <<< eWombat first try it with winsock2
 	{
@@ -566,7 +584,6 @@ BOOL CemuleApp::InitInstance()
 	UpdateSplash(_T("Loading ...")); 
 	//Xman end
 
-
 	// check if we have to restart eMule as Secure user
 	if (thePrefs.IsRunAsUserEnabled()){
 		CSecRunAsUser rau;
@@ -584,6 +601,7 @@ BOOL CemuleApp::InitInstance()
 
 	//Xman process prio
 	SetPriorityClass(GetCurrentProcess(), thePrefs.GetMainProcessPriority()); // [TPT] - Select process priority 
+	//Xman end
 
 #ifdef _DEBUG
 	_sntprintf(_szCrtDebugReportFilePath, _countof(_szCrtDebugReportFilePath) - 1, _T("%s%s"), thePrefs.GetMuleDirectory(EMULE_LOGDIR, false), APP_CRT_DEBUG_LOG_FILE);
@@ -673,7 +691,11 @@ BOOL CemuleApp::InitInstance()
 	}
 
 	// UPnP Port forwarding
-	//m_pUPnPFinder = new CUPnPFinder(); //Xman official UPNP removed
+	//Xman official UPNP removed
+	/*
+	m_pUPnPFinder = new CUPnPFinder();
+	*/
+	//Xman end
 
 	// ==> UPnP support [MoNKi] - leuk_he
 	if((m_UPnP_IGDControlPoint != NULL && thePrefs.IsUPnPEnabled()) || thePrefs.GetUpnpDetect()>0){  //leuk_he add startupwizard auto detect
@@ -685,8 +707,7 @@ BOOL CemuleApp::InitInstance()
 
 	// Highres scheduling gives better resolution for Sleep(...) calls, and timeGetTime() calls
 	m_wTimerRes = 0;
-	if(thePrefs.GetHighresTimer())
-	{
+    if(thePrefs.GetHighresTimer()) {
 		TIMECAPS tc;
 		if (timeGetDevCaps(&tc, sizeof(TIMECAPS)) == TIMERR_NOERROR) 
 		{
@@ -710,14 +731,16 @@ BOOL CemuleApp::InitInstance()
 	UpdateSplash(_T("Loading bandwidthcontrol ...")); //Xman new slpash-screen arrangement
 
 	// ZZ:UploadSpeedSense -->
-    //Xman
+	//Xman
 	// - Maella [patch] -Bandwidth: overall bandwidth measure-	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+	/*
+	lastCommonRouteFinder = new LastCommonRouteFinder();
+	*/
 	pBandWidthControl = new CBandWidthControl();
 	// Maella end
-	//lastCommonRouteFinder = new LastCommonRouteFinder();
+	//Xman end
     uploadBandwidthThrottler = new UploadBandwidthThrottler();
 	// ZZ:UploadSpeedSense <--
-	//Xman end
 
 	UpdateSplash(_T("Loading DLP ...")); //Xman new slpash-screen arrangement
 	dlp = new CDLP(thePrefs.GetMuleDirectory(EMULE_EXECUTEABLEDIR)); //Xman DLP
@@ -764,7 +787,6 @@ BOOL CemuleApp::InitInstance()
 
 	UpdateSplash(_T("initializing  main-window ...")); //Xman new slpash-screen arrangement
 	dlg.DoModal();
-
 
 	DisableRTLWindowsLayout();
 
@@ -939,8 +961,15 @@ BOOL CALLBACK CemuleApp::SearchEmuleWindow(HWND hWnd, LPARAM lParam){
 	return TRUE; 
 } 
 
+
 //Xman
 // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+/*
+void CemuleApp::UpdateReceivedBytes(uint32 bytesToAdd) {
+	SetTimeOnTransfer();
+	theStats.sessionReceivedBytes+=bytesToAdd;
+}
+*/
 void CemuleApp::UpdateReceivedBytes(uint32 /*bytesToAdd*/) {
 	SetTimeOnTransfer();
 	//theStats.sessionReceivedBytes+=bytesToAdd; 
@@ -949,7 +978,11 @@ void CemuleApp::UpdateReceivedBytes(uint32 /*bytesToAdd*/) {
 
 void CemuleApp::UpdateSentBytes(uint32 bytesToAdd, bool sentToFriend) {
 	SetTimeOnTransfer();
-	//theStats.sessionSentBytes+=bytesToAdd; // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+	/*
+	theStats.sessionSentBytes+=bytesToAdd;
+	*/
+	//Xman end
 
     if(sentToFriend == true) {
 	    theStats.sessionSentBytesToFriend += bytesToAdd;
@@ -1197,6 +1230,13 @@ void CemuleApp::OnlineSig() // Added By Bouc7
 
 		//Xman
 		// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+		/*
+		file.Write("\n",1); 
+		sprintf(buffer,"%.1f",(float)downloadqueue->GetDatarate()/1024); 
+		file.Write(buffer,strlen(buffer)); 
+		file.Write("|",1); 
+		sprintf(buffer,"%.1f",(float)uploadqueue->GetDatarate()/1024); 
+		*/
 		uint32 eMuleIn;
 		uint32 eMuleOut;
 		uint32 notUsed;
@@ -1300,49 +1340,8 @@ void CemuleApp::ShowHelp(UINT uTopic, UINT uCmd)
 
 bool CemuleApp::ShowWebHelp(UINT uTopic)
 {
-	UINT nWebLanguage;
-	UINT nWebTopic = 0;
-	switch (thePrefs.GetLanguageID())
-	{
-	case LANGID_DE_DE:/*German (Germany)*/			nWebLanguage =  2; break;
-	case LANGID_FR_FR:/*French (France)*/			nWebLanguage = 13; break;
-	case LANGID_ZH_TW:/*Chinese (Traditional)*/		nWebLanguage = 16; break;
-	case LANGID_ES_ES_T:/*Spanish (Castilian)*/		nWebLanguage = 17; break;
-	case LANGID_IT_IT:/*Italian (Italy)*/			nWebLanguage = 18; break;
-	case LANGID_NL_NL:/*Dutch (Netherlands)*/		nWebLanguage = 29; break;
-	case LANGID_PT_BR:/*Portuguese (Brazilian)*/	nWebLanguage = 30; break;
-	default:
-		/*English*/
-		nWebLanguage = 1;
-		switch (uTopic)
-		{
-		case eMule_FAQ_Preferences_General:				nWebTopic = 107; break;
-		case eMule_FAQ_Preferences_Display:				nWebTopic = 108; break;
-		case eMule_FAQ_Preferences_Connection:			nWebTopic = 109; break;
-		case eMule_FAQ_Preferences_Proxy:				nWebTopic = 110; break;
-		case eMule_FAQ_Preferences_Server:				nWebTopic = 111; break;
-		case eMule_FAQ_Preferences_Directories:			nWebTopic = 112; break;
-		case eMule_FAQ_Preferences_Files:				nWebTopic = 113; break;
-		case eMule_FAQ_Preferences_Notifications:		nWebTopic = 114; break;
-		case eMule_FAQ_Preferences_Statistics:			nWebTopic = 115; break;
-		case eMule_FAQ_Preferences_IRC:					nWebTopic = 116; break;
-		case eMule_FAQ_Preferences_Scheduler:			nWebTopic = 117; break;
-		case eMule_FAQ_Preferences_WebInterface:		nWebTopic = 118; break;
-		case eMule_FAQ_Preferences_Security:			nWebTopic = 119; break;
-		case eMule_FAQ_Preferences_Extended_Settings:	nWebTopic = 120; break;
-		case eMule_FAQ_Update_Server:					nWebTopic = 130; break;
-		case eMule_FAQ_Search:							nWebTopic = 133; break;
-		case eMule_FAQ_Friends:							nWebTopic = 141; break;
-		case eMule_FAQ_IRC_Chat:						nWebTopic = 140; break;
-		}
-	}
-
-	// onlinehelp unfortunatly doesnt supports context based help yet, since the topic IDs
-	// differ for each language, maybe improved in later versions
 	CString strHelpURL;
-	strHelpURL.Format(_T("%s/home/perl/help.cgi?l=%u"), thePrefs.GetHomepageBaseURL(), nWebLanguage);
-	if (nWebTopic)
-		strHelpURL.AppendFormat(_T("&topic_id=%u&rm=show_topic"), nWebTopic);
+	strHelpURL.Format(_T("http://onlinehelp.emule-project.net/help.php?language=%u&topic=%u"), thePrefs.GetLanguageID(), uTopic);
 	ShellExecute(NULL, NULL, strHelpURL, NULL, thePrefs.GetMuleDirectory(EMULE_EXECUTEABLEDIR), SW_SHOWDEFAULT);
 	return true;
 }
@@ -1466,6 +1465,9 @@ void CemuleApp::SetPublicIP(const uint32 dwIP){
 			if(ntohl(Kademlia::CKademlia::GetIPAddress()) != dwIP)
 			{
 				// Xman reconnect Kad on IP-change
+				/*
+				AddDebugLogLine(DLP_DEFAULT, false,  _T("Public IP Address reported from Kademlia (%s) differs from new found (%s)"),ipstr(ntohl(Kademlia::CKademlia::GetIPAddress())),ipstr(dwIP));
+				*/
 				AddDebugLogLine(DLP_DEFAULT, false,  _T("Public IP Address reported from Kademlia (%s) differs from new found (%s), restart Kad"),ipstr(ntohl(Kademlia::CKademlia::GetIPAddress())),ipstr(dwIP));
 				Kademlia::CKademlia::Stop();
 				Kademlia::CKademlia::Start();
@@ -1865,7 +1867,12 @@ CTempIconLoader::~CTempIconLoader()
 		VERIFY( DestroyIcon(m_hIcon) );
 }
 
-void CemuleApp::AddEd2kLinksToDownload(CString strLinks, int cat, bool askIfAlreadyDownloaded) //Xman [MoNKi: -Check already downloaded files-]
+//Xman [MoNKi: -Check already downloaded files-]
+/*
+void CemuleApp::AddEd2kLinksToDownload(CString strLinks, int cat)
+*/
+void CemuleApp::AddEd2kLinksToDownload(CString strLinks, int cat, bool askIfAlreadyDownloaded)
+//Xman end
 {
 	int curPos = 0;
 	CString strTok = strLinks.Tokenize(_T(" \t\r\n"), curPos); // tokenize by whitespaces
@@ -1942,7 +1949,7 @@ void CemuleApp::SearchClipboard()
 	LPCTSTR pszTrimmedLinks = strLinks;
 	while (_istspace((_TUCHAR)*pszTrimmedLinks)) // Skip leading whitespaces
 		pszTrimmedLinks++;
-	if (_tcsncmp(pszTrimmedLinks, _T("ed2k://|file|"), 13) == 0)
+	if (_tcsnicmp(pszTrimmedLinks, _T("ed2k://|file|"), 13) == 0)
 	{
 		m_bGuardClipboardPrompt = true;
 
@@ -1953,12 +1960,17 @@ void CemuleApp::SearchClipboard()
 		else
 			strLinksDisplay = strLinks;
 		if (AfxMessageBox(GetResString(IDS_ADDDOWNLOADSFROMCB) + _T("\r\n") + strLinksDisplay, MB_YESNO | MB_TOPMOST) == IDYES)
+			//Xman [MoNKi: -Check already downloaded files-]
+			/*
+			AddEd2kLinksToDownload(pszTrimmedLinks, 0);
+			*/
 			// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 			/*
-			AddEd2kLinksToDownload(pszTrimmedLinks, 0, true); //Xman [MoNKi: -Check already downloaded files-]
+			AddEd2kLinksToDownload(pszTrimmedLinks, 0, true);
 			*/
 			AddEd2kLinksToDownload(strLinks, -1, true);
 			// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+			//Xman end
 	}
 	m_strLastClipboardContents = strLinks; // Save the unmodified(!) clipboard contents
 	m_bGuardClipboardPrompt = false;
@@ -1971,7 +1983,12 @@ void CemuleApp::PasteClipboard(int cat)
 	if (strLinks.IsEmpty())
 		return;
 
-	AddEd2kLinksToDownload(strLinks, cat, true); //Xman [MoNKi: -Check already downloaded files-]
+	//Xman [MoNKi: -Check already downloaded files-]
+	/*
+	AddEd2kLinksToDownload(strLinks, cat);
+	*/
+	AddEd2kLinksToDownload(strLinks, cat, true);
+	//Xman end
 }
 
 bool CemuleApp::IsEd2kLinkInClipboard(LPCSTR pszLinkType, int iLinkTypeLen)
@@ -1990,7 +2007,7 @@ bool CemuleApp::IsEd2kLinkInClipboard(LPCSTR pszLinkType, int iLinkTypeLen)
 				{
 					while (isspace((unsigned char)*pszText))
 						pszText++;
-					bFoundLink = (strncmp(pszText, pszLinkType, iLinkTypeLen) == 0);
+					bFoundLink = (strnicmp(pszText, pszLinkType, iLinkTypeLen) == 0);
 					GlobalUnlock(hText);
 				}
 			}
@@ -2188,7 +2205,7 @@ void CemuleApp::CreateAllFonts()
 	///////////////////////////////////////////////////////////////////////////
 	// Symbol font
 	//
-	//VERIFY( m_fontSymbol.CreatePointFont(10 * 10, _T("Marlett")) );
+	//VERIFY( CreatePointFont(m_fontSymbol, 10 * 10, _T("Marlett")) );
 	// Creating that font with 'SYMBOL_CHARSET' should be safer (seen in ATL/MFC code). Though
 	// it seems that it does not solve the problem with '6' and '9' characters which are
 	// shown for some ppl.
@@ -2197,45 +2214,97 @@ void CemuleApp::CreateAllFonts()
 
 
 	///////////////////////////////////////////////////////////////////////////
-	// Log-, Message- and IRC-Window fonts
+	// Default GUI Font
 	//
-	LPLOGFONT plfHyperText = thePrefs.GetHyperTextLogFont();
-	if (plfHyperText==NULL || plfHyperText->lfFaceName[0]==_T('\0') || !m_fontHyperText.CreateFontIndirect(plfHyperText))
-		m_fontHyperText.CreatePointFont(10 * 10, _T("MS Shell Dlg"));
-
-	LPLOGFONT plfLog = thePrefs.GetLogFont();
-	if (plfLog!=NULL && plfLog->lfFaceName[0]!=_T('\0'))
-		m_fontLog.CreateFontIndirect(plfLog);
-
-	///////////////////////////////////////////////////////////////////////////
-	// Font used for Message and IRC edit control, default font, just a little larger
-	//
-	m_fontChatEdit.CreatePointFont(11 * 10, _T("MS Shell Dlg"));
-
-	// Why can't this font set via the font dialog??
-//	HFONT hFontMono = CreateFont(10, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, _T("Lucida Console"));
-//	m_fontLog.Attach(hFontMono);
-
-
-	///////////////////////////////////////////////////////////////////////////
-	// Default GUI Font (Bold)
-	//
+	// Fonts which are returned by 'GetStockObject'
+	// --------------------------------------------
 	// OEM_FIXED_FONT		Terminal
 	// ANSI_FIXED_FONT		Courier
 	// ANSI_VAR_FONT		MS Sans Serif
 	// SYSTEM_FONT			System
 	// DEVICE_DEFAULT_FONT	System
 	// SYSTEM_FIXED_FONT	Fixedsys
-	// DEFAULT_GUI_FONT		MS Shell Dlg
+	// DEFAULT_GUI_FONT		MS Shell Dlg (*1)
+	//
+	// (*1) Do not use 'GetStockObject(DEFAULT_GUI_FONT)' to get the 'Tahoma' font. It does
+	// not work...
+	//	
+	// The documentation in MSDN states that DEFAULT_GUI_FONT returns 'Tahoma' on 
+	// Win2000/XP systems. Though this is wrong, it may be true for US-English locales, but
+	// it is wrong for other locales. Furthermore it is even documented that "MS Shell Dlg"
+	// gets mapped to "MS Sans Serif" on Windows XP systems. Only "MS Shell Dlg 2" would
+	// get mapped to "Tahoma", but "MS Shell Dlg 2" can not be used on prior Windows
+	// systems.
+	//
+	// The reason why "MS Shell Dlg" is though mapped to "Tahoma" when used within dialog
+	// resources is unclear.
+	//
+	// So, to get the same font which is used within dialogs which were created via dialog
+	// resources which have the "MS Shell Dlg, 8" specified (again, in that special case
+	// "MS Shell Dlg" gets mapped to "Tahoma" and not to "MS Sans Serif"), we just query
+	// the main window (which is also a dialog) for the current font.
+	//
+	LOGFONT lfDefault;
+	AfxGetMainWnd()->GetFont()->GetLogFont(&lfDefault);
+	// It would not be an error if that font name does not match our pre-determined
+	// font name, I just want to know if that ever happens.
+	ASSERT( m_strDefaultFontFaceName == lfDefault.lfFaceName ); // WinXP: "MS Shell Dlg 2" (!)
 
-	CFont* pFont = CFont::FromHandle((HFONT)GetStockObject(DEFAULT_GUI_FONT));
-	if (pFont)
+
+	///////////////////////////////////////////////////////////////////////////
+	// Bold Default GUI Font
+	//
+	LOGFONT lfDefaultBold = lfDefault;
+	lfDefaultBold.lfWeight = FW_BOLD;
+	VERIFY( m_fontDefaultBold.CreateFontIndirect(&lfDefaultBold) );
+
+
+	///////////////////////////////////////////////////////////////////////////
+	// Server Log-, Message- and IRC-Window font
+	//
+	// Since we use "MS Shell Dlg 2" under WinXP (which will give us "Tahoma"),
+	// that font is nevertheless set to "MS Sans Serif" because a scaled up "Tahoma"
+	// font unfortunately does not look as good as a scaled up "MS Sans Serif" font.
+	//
+	LPLOGFONT plfHyperText = thePrefs.GetHyperTextLogFont();
+	if (plfHyperText==NULL || plfHyperText->lfFaceName[0]==_T('\0') || !m_fontHyperText.CreateFontIndirect(plfHyperText))
+		CreatePointFont(m_fontHyperText, 11 * 10, _T("MS Sans Serif")/*lfDefault.lfFaceName*/);
+
+	///////////////////////////////////////////////////////////////////////////
+	// Verbose Log-font
+	//
+	// Why can't this font set via the font dialog??
+//	HFONT hFontMono = CreateFont(10, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, _T("Lucida Console"));
+//	m_fontLog.Attach(hFontMono);
+	LPLOGFONT plfLog = thePrefs.GetLogFont();
+	if (plfLog!=NULL && plfLog->lfFaceName[0]!=_T('\0'))
+		m_fontLog.CreateFontIndirect(plfLog);
+
+	///////////////////////////////////////////////////////////////////////////
+	// Font used for Message and IRC edit control, default font, just a little
+	// larger.
+	//
+	// Since we use "MS Shell Dlg 2" under WinXP (which will give us "Tahoma"),
+	// that font is nevertheless set to "MS Sans Serif" because a scaled up "Tahoma"
+	// font unfortunately does not look as good as a scaled up "MS Sans Serif" font.
+	//
+	CreatePointFont(m_fontChatEdit, 11 * 10, _T("MS Sans Serif")/*lfDefault.lfFaceName*/);
+}
+
+const CString &CemuleApp::GetDefaultFontFaceName()
+{
+	if (m_strDefaultFontFaceName.IsEmpty())
 	{
-		LOGFONT lf;
-		pFont->GetLogFont(&lf);
-		lf.lfWeight = FW_BOLD;
-		VERIFY( m_fontDefaultBold.CreateFontIndirect(&lf) );
+		OSVERSIONINFO osvi;
+		osvi.dwOSVersionInfoSize = sizeof(osvi);
+		if (GetVersionEx(&osvi)
+			&& osvi.dwPlatformId == VER_PLATFORM_WIN32_NT
+			&& osvi.dwMajorVersion >= 5) // Win2000/XP or higher
+			m_strDefaultFontFaceName = _T("MS Shell Dlg 2");
+		else
+			m_strDefaultFontFaceName = _T("MS Shell Dlg");
 	}
+	return m_strDefaultFontFaceName;
 }
 
 void CemuleApp::CreateBackwardDiagonalBrush()
@@ -2370,6 +2439,57 @@ BOOL WINAPI ConsoleCtrlHandler(DWORD dwCtrlType)
 	return FALSE; // FALSE: Let the system kill the process with the default handler.
 }
 
+void CemuleApp::UpdateLargeIconSize()
+{
+	// initialize with system values in case we don't find the Shell's registry key
+	m_sizBigSystemIcon.cx = GetSystemMetrics(SM_CXICON);
+	m_sizBigSystemIcon.cy = GetSystemMetrics(SM_CYICON);
+
+	// get the Shell's registry key for the large icon size - the large icons which are 
+	// returned by the Shell are based on that size rather than on the system icon size
+	CRegKey key;
+	if (key.Open(HKEY_CURRENT_USER, _T("Control Panel\\desktop\\WindowMetrics"), KEY_READ) == ERROR_SUCCESS)
+	{
+		TCHAR szShellLargeIconSize[12];
+		ULONG ulChars = _countof(szShellLargeIconSize);
+		if (key.QueryStringValue(_T("Shell Icon Size"), szShellLargeIconSize, &ulChars) == ERROR_SUCCESS)
+		{
+			UINT uIconSize = 0;
+			if (_stscanf(szShellLargeIconSize, _T("%u"), &uIconSize) == 1 && uIconSize > 0)
+			{
+				m_sizBigSystemIcon.cx = uIconSize;
+				m_sizBigSystemIcon.cy = uIconSize;
+			}
+		}
+	}
+}
+
+void CemuleApp::ResetStandByIdleTimer()
+{
+	// check if anything is going on (ongoing upload, download or connected) and reset the idle timer if so
+	//Xman
+	/*
+	if (IsConnected() || (uploadqueue != NULL && uploadqueue->GetUploadQueueLength() > 0)
+		|| (downloadqueue != NULL && downloadqueue->GetDatarate() > 0))
+	*/
+		uint32 eMuleIn;
+		uint32 notUsed;
+		theApp.pBandWidthControl->GetDatarates(thePrefs.GetDatarateSamples(),
+			eMuleIn, notUsed,
+			notUsed, notUsed,
+			notUsed, notUsed);
+	if (IsConnected() || (uploadqueue != NULL && uploadqueue->GetUploadQueueLength() > 0)
+		|| eMuleIn>0)
+	//Xman end
+	{
+		EXECUTION_STATE (WINAPI *pfnSetThreadExecutionState)(EXECUTION_STATE);
+		(FARPROC&)pfnSetThreadExecutionState = GetProcAddress(GetModuleHandle(_T("kernel32")), "SetThreadExecutionState");
+		if (pfnSetThreadExecutionState)
+			VERIFY( pfnSetThreadExecutionState(ES_SYSTEM_REQUIRED) );
+		else
+			ASSERT( false );
+	}
+}
 
 //Xman new slpash-screen arrangement
 void CemuleApp::ShowSplash(bool start)
@@ -2420,6 +2540,10 @@ void CemuleApp::ShowSplash(bool start)
 			}
 		}
 	}
+#ifdef _BETA
+	if (!thePrefs.IsFirstStart())
+		AfxMessageBox(GetResString(IDS_BETANAG), MB_ICONINFORMATION | MB_OK, 0);
+#endif
 }
 void CemuleApp::DestroySplash()
 {
@@ -2499,8 +2623,7 @@ void CemuleApp::ForeAllDiscAccessThreadsToFinish()
 	}
 
 	threadqueuelock.Unlock();
-}
-// ==> Design Settings [eWombat/Stulle] - Stulle
+}// ==> Design Settings [eWombat/Stulle] - Stulle
 void CemuleApp::CreateExtraFonts(CFont *font)
 {
 	DestroyExtraFonts();

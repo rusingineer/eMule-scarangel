@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -265,11 +265,15 @@ bool CServer::AddTagFromFile(CFileDataIO* servermet)
 void CServer::SetListName(LPCTSTR newname)
 {
 	// Maella -Security fix- (Xman)
+	/*
+	m_strName = newname;
+	*/
 	if (newname){
 		CString filteredName = newname;
 		filteredName.Replace('%', ' ');
 		m_strName = filteredName;
 	}
+	//Xman end
 }
 
 void CServer::SetDescription(LPCTSTR newname)
@@ -327,8 +331,6 @@ void CServer::SetServerKeyUDP(uint32 dwServerKeyUDP){
 	m_dwServerKeyUDP = dwServerKeyUDP;
 	m_dwIPServerKeyUDP = theApp.GetPublicIP();
 }
-
-
 
 //EastShare Start - added by AndCycle, IP to Country
 CString CServer::GetCountryName() const{

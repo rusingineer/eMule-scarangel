@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -49,8 +49,13 @@ BEGIN_MESSAGE_MAP(CPPgFiles, CPropertyPage)
 	ON_EN_CHANGE(IDC_VIDEOPLAYER, OnSettingsChange)
 	ON_EN_CHANGE(IDC_VIDEOPLAYER_ARGS, OnSettingsChange)
 	ON_BN_CLICKED(IDC_VIDEOBACKUP, OnSettingsChange)
-	ON_BN_CLICKED(IDC_REMEMBERDOWNLOADED, OnBnClickedRememberdownloaded) //Xman remove unused AICH-hashes
-	ON_BN_CLICKED(IDC_REMEMBERAICH, OnSettingsChange) //Xman remove unused AICH-hashes
+	//Xman remove unused AICH-hashes
+	/*
+	ON_BN_CLICKED(IDC_REMEMBERDOWNLOADED, OnSettingsChange) 
+	*/
+	ON_BN_CLICKED(IDC_REMEMBERDOWNLOADED, OnBnClickedRememberdownloaded)
+	ON_BN_CLICKED(IDC_REMEMBERAICH, OnSettingsChange)
+	//Xman end
 	ON_BN_CLICKED(IDC_REMEMBERCANCELLED, OnSettingsChange) 
 	ON_BN_CLICKED(IDC_BROWSEV, BrowseVideoplayer)
 	ON_WM_HELPINFO()
@@ -242,7 +247,10 @@ void CPPgFiles::Localize(void)
 	{
 		SetWindowText(GetResString(IDS_PW_FILES));
 		//Xman removed: not enough space
-		//GetDlgItem(IDC_LBL_MISC)->SetWindowText(GetResString(IDS_PW_MISC));
+		/*
+		GetDlgItem(IDC_LBL_MISC)->SetWindowText(GetResString(IDS_PW_MISC));
+		*/
+		//Xman end
 		GetDlgItem(IDC_PF_TIMECALC)->SetWindowText(GetResString(IDS_PF_ADVANCEDCALC));
 		GetDlgItem(IDC_UAP)->SetWindowText(GetResString(IDS_PW_UAP));
 		GetDlgItem(IDC_DAP)->SetWindowText(GetResString(IDS_PW_DAP));
@@ -256,7 +264,6 @@ void CPPgFiles::Localize(void)
 		GetDlgItem(IDC_FNC)->SetWindowText(GetResString(IDS_EDIT));
 		GetDlgItem(IDC_ONND)->SetWindowText(GetResString(IDS_ONNEWDOWNLOAD));
 		GetDlgItem(IDC_FNCLEANUP)->SetWindowText(GetResString(IDS_AUTOCLEANUPFN));
-
 		GetDlgItem(IDC_STATICVIDEOPLAYER)->SetWindowText(GetResString(IDS_PW_VIDEOPLAYER));
 		GetDlgItem(IDC_VIDEOPLAYER_CMD_LBL)->SetWindowText(GetResString(IDS_COMMAND));
 		GetDlgItem(IDC_VIDEOPLAYER_ARGS_LBL)->SetWindowText(GetResString(IDS_ARGUMENTS));

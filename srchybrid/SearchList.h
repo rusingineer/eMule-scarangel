@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -87,10 +87,13 @@ public:
 	void	AddFileToDownloadByHash(const uchar* hash, int cat);
 	bool	AddToList(CSearchFile* toadd, bool bClientResponse = false, uint32 dwFromUDPServerIP = 0);
 	CSearchFile* GetSearchFileByHash(const uchar* hash) const;
-	void	KademliaSearchKeyword(uint32 searchID, const Kademlia::CUInt128* pfileID, LPCTSTR name, uint64 size, LPCTSTR type, UINT numProperties, ...);
+	void	KademliaSearchKeyword(uint32 searchID, const Kademlia::CUInt128* pfileID, LPCTSTR name, uint64 size, LPCTSTR type, UINT uKadPublishInfo, UINT numProperties, ...);
 	bool	AddNotes(Kademlia::CEntry* entry, const uchar* hash);
 	void	SetNotesSearchStatus(const uchar* pFileHash, bool bSearchRunning);
 	void	SentUDPRequestNotification(uint32 nSearchID, uint32 dwServerIP);	
+	
+	void	StoreSearches();
+	void	LoadSearches();
 	
 	void	DoSpamRating(CSearchFile* pSearchFile, bool bIsClientFile = false, bool bMarkAsNoSpam = false, bool bRecalculateAll = false, bool bUpdateAll = false, uint32 dwFromUDPServerIP = 0);
 	void	MarkFileAsSpam(CSearchFile* pSpamFile, bool bRecalculateAll = false, bool bUpdate = false);

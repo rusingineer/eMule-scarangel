@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -109,8 +109,12 @@ BOOL CED2kLinkDlg::OnSetActive()
 		BOOL bShow = FALSE;
 		for (int i = 0; i != m_paFiles->GetSize(); i++){
 			const CKnownFile* file = STATIC_DOWNCAST(CKnownFile, (*m_paFiles)[i]);
-			//Xman
-			if (!(file->GetHashCount() > 0 && file->GetHashCount() == file->GetED2KPartCount())){	// SLUGFILLER: SafeHash - use GetED2KPartCount
+			//Xman // SLUGFILLER: SafeHash - use GetED2KPartCount
+			/*
+			if (!(file->GetHashCount() > 0 && file->GetHashCount() == file->GetED2KPartHashCount())){
+			*/
+			if (!(file->GetHashCount() > 0 && file->GetHashCount() == file->GetED2KPartCount())){
+			//Xman end
 				continue;
 			}
 			bShow = TRUE;
@@ -158,7 +162,6 @@ void CED2kLinkDlg::Localize(void)
 	GetDlgItem(IDC_LD_ADVANCEDGROUP)->SetWindowText(GetResString(IDS_LD_ADVANCEDOPT)); 
 	GetDlgItem(IDC_LD_HTMLCHE)->SetWindowText(GetResString(IDS_LD_ADDHTML)); 
 	GetDlgItem(IDC_LD_HASHSETCHE)->SetWindowText(GetResString(IDS_LD_ADDHASHSET)); 
-	//GetDlgItem(IDC_LD_KADLOWIDCHE)->SetWindowText(GetResString(IDS_LD_PREFERKAD)); 
 	GetDlgItem(IDC_LD_LINKGROUP)->SetWindowText(GetResString(IDS_SW_LINK)); 
 	GetDlgItem(IDC_LD_CLIPBOARDBUT)->SetWindowText(GetResString(IDS_LD_COPYCLIPBOARD));
 	GetDlgItem(IDC_LD_HOSTNAMECHE)->SetWindowText(GetResString(IDS_LD_HOSTNAME)); 
@@ -185,8 +188,12 @@ void CED2kLinkDlg::UpdateLink()
 		const CKnownFile* file = STATIC_DOWNCAST(CKnownFile, (*m_paFiles)[i]);
 		strLinks += CreateED2kLink(file, false);
 
-		//Xman
-		if (bHashset && file->GetHashCount() > 0 && file->GetHashCount() == file->GetED2KPartCount()){	// SLUGFILLER: SafeHash - use GetED2KPartCount
+		//Xman // SLUGFILLER: SafeHash - use GetED2KPartCount
+		/*
+		if (bHashset && file->GetHashCount() > 0 && file->GetHashCount() == file->GetED2KPartHashCount()){
+		*/
+		if (bHashset && file->GetHashCount() > 0 && file->GetHashCount() == file->GetED2KPartCount()){
+		//Xman end
 			strLinks += _T("p=");
 			for (UINT j = 0; j < file->GetHashCount(); j++)
 			{

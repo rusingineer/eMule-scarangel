@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -228,6 +228,16 @@ void CScheduler::ActivateSchedule(int index,bool makedefault) {
 			case 1 :
 				//Xman
 				// Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+				/*
+				thePrefs.SetMaxUpload(_tstoi(schedule->values[ai]));
+				if (makedefault)
+					original_upload=(uint16)_tstoi(schedule->values[ai]); 
+				break;
+			case 2 :
+				thePrefs.SetMaxDownload(_tstoi(schedule->values[ai]));
+				if (makedefault)
+					original_download=(uint16)_tstoi(schedule->values[ai]);
+				*/
 				thePrefs.SetMaxUpload((float)_tstof(schedule->values[ai]));
 				thePrefs.CheckSlotSpeed(); //Xman Xtreme Upload
 				if (makedefault)
@@ -237,8 +247,8 @@ void CScheduler::ActivateSchedule(int index,bool makedefault) {
 				thePrefs.SetMaxDownload((float)_tstof(schedule->values[ai]));
 				if (makedefault)
 					original_download=(float)_tstof(schedule->values[ai]);
-				break;
 				//Xman end
+				break;
 			case 3 :
 				thePrefs.SetMaxSourcesPerFile(_tstoi(schedule->values[ai]));
 				if (makedefault)
@@ -273,7 +283,6 @@ void CScheduler::ActivateSchedule(int index,bool makedefault) {
 		}
 	}
 }
-
 // ==> Advanced Updates [MorphXT/Stulle] - Stulle
 bool CScheduler::HasWeekly(int par_action)
 {

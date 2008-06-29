@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -65,7 +65,6 @@ int CAICHSyncThread::Run()
 	// we need to keep a lock on this file while the thread is running
 	CSingleLock lockKnown2Met(&CAICHHashSet::m_mutKnown2File);
 	lockKnown2Met.Lock();
-
 
 	CSafeFile file;
 	bool bJustCreated = ConvertToKnown2ToKnown264(&file);
@@ -175,11 +174,17 @@ int CAICHSyncThread::Run()
 	}
 	//Xman remove unused AICH-hashes
 	theApp.m_AICH_Is_synchronizing=false;
+	//Xman end
 	sharelock.Unlock();
 
 	// removed all unused AICH hashsets from known2.met
-	if ((thePrefs.IsRememberingDownloadedFiles()==false || thePrefs.GetRememberAICH()==false) //Xman remove unused AICH-hashes
+	//Xman remove unused AICH-hashes
+	/*
+	if (!thePrefs.IsRememberingDownloadedFiles() && liUsedHashs.GetCount() != liKnown2Hashs.GetCount()){
+	*/
+	if ((thePrefs.IsRememberingDownloadedFiles()==false || thePrefs.GetRememberAICH()==false)
 		&& liUsedHashs.GetCount() != liKnown2Hashs.GetCount()){
+	//Xman end
 		file.SeekToBegin();
 		try {
 			uint8 header = file.ReadUInt8();
@@ -323,7 +328,6 @@ int CAICHSyncThread::Run()
 			theApp.emuledlg->sharedfileswnd->sharedfilesctrl.ShowFilesCount();
 		sLock1.Unlock();
 	}
-
 
 	theApp.QueueDebugLogLine(false, _T("AICHSyncThread finished"));
 	return 0;

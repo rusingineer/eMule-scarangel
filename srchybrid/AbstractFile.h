@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -49,7 +49,7 @@ public:
 	virtual ~CAbstractFile();
 
 	const CString& GetFileName() const { return m_strFileName; }
-	virtual void SetFileName(LPCTSTR pszFileName, bool bReplaceInvalidFileSystemChars = false, bool bAutoSetFileType = true); // 'bReplaceInvalidFileSystemChars' is set to 'false' for backward compatibility!
+	virtual void SetFileName(LPCTSTR pszFileName, bool bReplaceInvalidFileSystemChars = false, bool bAutoSetFileType = true, bool bRemoveControlChars = false); // 'bReplaceInvalidFileSystemChars' is set to 'false' for backward compatibility!
 
 	// returns the ED2K file type (an ASCII string)
 	const CString& GetFileType() const { return m_strFileType; }
@@ -94,16 +94,19 @@ public:
 	UINT	UserRating(bool bKadSearchIndicator = false) const { return (bKadSearchIndicator && m_bKadCommentSearchRunning)  ? 6 : m_uUserRating; }
 	bool	HasRating()	const { return m_uUserRating > 0; }
 	//Xman Code Improvement by Avi-3k
-	//bool	HasBadRating()	const { return ( HasRating() && (m_uUserRating < 2)); }
+	/*
+	bool	HasBadRating()	const { return ( HasRating() && (m_uUserRating < 2)); }
+	*/
 	bool	HasBadRating()  const { return (m_uUserRating == 1); }
 	//Xman end
 	void	SetUserRating(UINT in) { m_uUserRating = in; }
 	const CString& GetFileComment() /*const*/;
 	UINT	GetFileRating() /*const*/;
 	void	LoadComment();
-	virtual void	UpdateFileRatingCommentAvail(bool bForceUpdate = false) = 0;
+	virtual void	UpdateFileRatingCommentAvail(bool bForceUpdate = true) = 0;
 
 	bool AddNote(Kademlia::CEntry* pEntry);
+	void	RefilterKadNotes(bool bUpdate = true);
 	const CKadEntryPtrList& getNotes() const { return m_kadNotes; }
 
 	bool			IsKadCommentSearchRunning() const						{ return m_bKadCommentSearchRunning; }
@@ -111,9 +114,10 @@ public:
 
 	//Xman Code Improvement for choosing to use compression
 	bool IsCompressible() const {return compressible;}
+	//Xman end
 	//Xman Code Improvement for HasCollectionExtention
 	bool HasCollectionExtenesion_Xtreme() const {return m_bhasCollectionExtention;}
-
+	//Xman end
 
 #ifdef _DEBUG
 	// Diagnostic Support
@@ -136,7 +140,9 @@ protected:
 	CKadEntryPtrList m_kadNotes;
 	//Xman Code Improvement for choosing to use compression
 	bool compressible;
+	//Xman end
 	//Xman Code Improvement for HasCollectionExtention
 	bool m_bhasCollectionExtention;
+	//Xman end
 
 };

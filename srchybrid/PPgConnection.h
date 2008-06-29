@@ -2,7 +2,6 @@
 
 #include "NumEdit.h" // Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 
-
 class CPPgConnection : public CPropertyPage
 {
 	DECLARE_DYNAMIC(CPPgConnection)
@@ -19,7 +18,11 @@ public:
 
 protected:
 	bool guardian;
-	//CSliderCtrl m_ctlMaxDown; //Xman
+	//Xman
+	/*
+	CSliderCtrl m_ctlMaxDown;
+	*/
+	//Xman end
 	CSliderCtrl m_ctlMaxUp;
 
 	// Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
@@ -34,7 +37,10 @@ protected:
 
 	void ShowLimitValues();
 	//Xman
-	//void SetRateSliderTicks(CSliderCtrl& rRate);
+	/*
+	void SetRateSliderTicks(CSliderCtrl& rRate);
+	*/
+	//Xman end
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual BOOL OnInitDialog();
@@ -45,7 +51,11 @@ protected:
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg void OnSettingsChange()					{ SetModified(); }
 	afx_msg void OnEnChangeUDPDisable();
-	//afx_msg void OnLimiterChange();
+	//Xman
+	/*
+	afx_msg void OnLimiterChange();
+	*/
+	//Xman end
 	afx_msg void OnBnClickedWizard();
 	afx_msg void OnBnClickedNetworkKademlia();
 	afx_msg void OnHelp();

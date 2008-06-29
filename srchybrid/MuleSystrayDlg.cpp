@@ -28,32 +28,35 @@ void CInputBox::OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/)
 /////////////////////////////////////////////////////////////////////////////
 // CMuleSystrayDlg dialog
 
+//Xman
+/*
+CMuleSystrayDlg::CMuleSystrayDlg(CWnd* pParent, CPoint pt, int iMaxUp, int iMaxDown, int iCurUp, int iCurDown)
+*/
 CMuleSystrayDlg::CMuleSystrayDlg(CWnd* pParent, CPoint pt, int /*iMaxUp*/, int /*iMaxDown*/, int /*iCurUp*/, int /*iCurDown*/) //Xman
+//Xman end
 	: CDialog(CMuleSystrayDlg::IDD, pParent)
 {
-	/* //Xman
+	//Xman
+	/*
 	if(iCurDown == UNLIMITED)
 		iCurDown = 0;
 	if(iCurUp == UNLIMITED)
 		iCurUp = 0;
 
-	*/
 	//{{AFX_DATA_INIT(CMuleSystrayDlg)
-	//}}AFX_DATA_INIT
-	/* Xman
 	m_nDownSpeedTxt = iMaxDown < iCurDown ? iMaxDown : iCurDown;
 	m_nUpSpeedTxt = iMaxUp < iCurUp ? iMaxUp : iCurUp;
-
+	//}}AFX_DATA_INIT
 
 	m_iMaxUp = iMaxUp;
 	m_iMaxDown = iMaxDown;
-	*/
 	m_ptInitialPosition = pt;
 
-	/* Xman
 	m_hUpArrow = NULL;
 	m_hDownArrow = NULL;
 	*/
+	m_ptInitialPosition = pt;
+	//Xman end
 
 	m_nExitCode = 0;
 	m_bClosingDown = false;
@@ -61,23 +64,25 @@ CMuleSystrayDlg::CMuleSystrayDlg(CWnd* pParent, CPoint pt, int /*iMaxUp*/, int /
 
 CMuleSystrayDlg::~CMuleSystrayDlg()
 {
-	/* Xman
+	//Xman
+	/*
 	if(m_hUpArrow)
 		DestroyIcon(m_hUpArrow);
 	if(m_hDownArrow)
 		DestroyIcon(m_hDownArrow);
 	*/
+	//Xman end
 }
 
 void CMuleSystrayDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CMuleSystrayDlg)
-	DDX_Control(pDX, IDC_SIDEBAR, m_ctrlSidebar);
-	//}}AFX_DATA_MAP
-	/* //Xman
+	//Xman
+	/*
 	DDX_Control(pDX, IDC_TRAYUP, m_ctrlUpArrow);
 	DDX_Control(pDX, IDC_TRAYDOWN, m_ctrlDownArrow);
+	DDX_Control(pDX, IDC_SIDEBAR, m_ctrlSidebar);
 	DDX_Control(pDX, IDC_UPSLD, m_ctrlUpSpeedSld);
 	DDX_Control(pDX, IDC_DOWNSLD, m_ctrlDownSpeedSld);
 	DDX_Control(pDX, IDC_DOWNTXT, m_DownSpeedInput);
@@ -85,13 +90,21 @@ void CMuleSystrayDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_DOWNTXT, m_nDownSpeedTxt);
 	DDX_Text(pDX, IDC_UPTXT, m_nUpSpeedTxt);
 	*/
-
+	DDX_Control(pDX, IDC_SIDEBAR, m_ctrlSidebar);
+	//Xman end
+	//}}AFX_DATA_MAP
 }
 
 
 BEGIN_MESSAGE_MAP(CMuleSystrayDlg, CDialog)
 	//{{AFX_MSG_MAP(CMuleSystrayDlg)
 	ON_WM_MOUSEMOVE()
+	//Xman
+	/*
+	ON_EN_CHANGE(IDC_DOWNTXT, OnChangeDowntxt)
+	ON_EN_CHANGE(IDC_UPTXT, OnChangeUptxt)
+	*/
+	//Xman end
 	ON_WM_HSCROLL()
 	ON_WM_LBUTTONUP()
 	ON_WM_RBUTTONDOWN()
@@ -99,11 +112,6 @@ BEGIN_MESSAGE_MAP(CMuleSystrayDlg, CDialog)
 	ON_WM_SHOWWINDOW()
 	ON_WM_CAPTURECHANGED()
 	//}}AFX_MSG_MAP
-	/* Xman
-	ON_EN_CHANGE(IDC_DOWNTXT, OnChangeDowntxt)
-	ON_EN_CHANGE(IDC_UPTXT, OnChangeUptxt)
-	*/
-
 END_MESSAGE_MAP()
 
 
@@ -134,17 +142,20 @@ BOOL CMuleSystrayDlg::OnInitDialog()
 	CRect r;
 	CWnd *p;
 
-	/* Xman
+	//Xman
+	/*
 	m_hUpArrow = theApp.LoadIcon(_T("UPLOAD"));
 	m_hDownArrow = theApp.LoadIcon(_T("DOWNLOAD"));
 	m_ctrlUpArrow.SetIcon(m_hUpArrow); 
 	m_ctrlDownArrow.SetIcon(m_hDownArrow); 
-    */	
+	*/
+	//Xman end
 
 	bool	bValidFont = false;
 	LOGFONT lfStaticFont = {0};
 
-	/* Xman
+	//Xman
+	/*
 	p = GetDlgItem(IDC_SPEED);
 	if(p)
 	{
@@ -217,8 +228,8 @@ BOOL CMuleSystrayDlg::OnInitDialog()
 		if(bValidFont)
 			m_ctrlAllToMin.m_cfFont.CreateFontIndirect(&lfStaticFont);
 	}
-
 	*/
+	//Xman end
 
 	p = GetDlgItem(IDC_RESTORE);
 	if(p)
@@ -324,7 +335,8 @@ BOOL CMuleSystrayDlg::OnInitDialog()
 			m_ctrlExit.m_cfFont.CreateFontIndirect(&lfStaticFont);
 	}
 
-	/* Xman
+	//Xman
+	/*
 	if((p = GetDlgItem(IDC_DOWNLBL)) != NULL)
 		p->SetWindowText(GetResString(IDS_PW_CON_DOWNLBL));
 	if((p = GetDlgItem(IDC_UPLBL)) != NULL)
@@ -333,9 +345,7 @@ BOOL CMuleSystrayDlg::OnInitDialog()
 		p->SetWindowText(GetResString(IDS_KBYTESPERSEC));
 	if((p = GetDlgItem(IDC_UPKB)) != NULL)
 		p->SetWindowText(GetResString(IDS_KBYTESPERSEC));
-	*/
 
-	/* Xman
 	m_ctrlDownSpeedSld.SetRange(0,m_iMaxDown);
 	m_ctrlDownSpeedSld.SetPos(m_nDownSpeedTxt);
 
@@ -345,6 +355,7 @@ BOOL CMuleSystrayDlg::OnInitDialog()
 	m_DownSpeedInput.EnableWindow(m_nDownSpeedTxt >0);
 	m_UpSpeedInput.EnableWindow(m_nUpSpeedTxt >0);
 	*/
+	//Xman end
 
 	CFont Font;
 	Font.CreateFont(-16,0,900,0,700,0,0,0,0,3,2,1,34,_T("Tahoma"));
@@ -391,7 +402,8 @@ BOOL CMuleSystrayDlg::OnInitDialog()
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-/* Xman
+//Xman
+/*
 void CMuleSystrayDlg::OnChangeDowntxt() 
 {
 	UpdateData();
@@ -420,13 +432,13 @@ void CMuleSystrayDlg::OnChangeDowntxt()
 void CMuleSystrayDlg::OnChangeUptxt() 
 {
 	UpdateData();
-	if(thePrefs.GetMaxGraphUploadRate() == UNLIMITED)
+	if(thePrefs.GetMaxGraphUploadRate(true) == UNLIMITED)
 	{
 		if(m_nUpSpeedTxt > 16)
 			m_nUpSpeedTxt = 16;
 	} else {
-		if(m_nUpSpeedTxt > thePrefs.GetMaxGraphUploadRate())
-			m_nUpSpeedTxt = thePrefs.GetMaxGraphUploadRate();
+		if(m_nUpSpeedTxt > thePrefs.GetMaxGraphUploadRate(true))
+			m_nUpSpeedTxt = thePrefs.GetMaxGraphUploadRate(true);
 	}
 	m_ctrlUpSpeedSld.SetPos(m_nUpSpeedTxt);
 	
@@ -471,6 +483,8 @@ void CMuleSystrayDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
 }
 */
+//Xman end
+
 void CMuleSystrayDlg::OnLButtonUp(UINT nFlags, CPoint point) 
 {
 	ReleaseCapture();

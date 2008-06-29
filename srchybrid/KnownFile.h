@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -40,7 +40,7 @@ public:
 	CKnownFile();
 	virtual ~CKnownFile();
 
-	virtual void SetFileName(LPCTSTR pszFileName, bool bReplaceInvalidFileSystemChars = false); // 'bReplaceInvalidFileSystemChars' is set to 'false' for backward compatibility!
+	virtual void SetFileName(LPCTSTR pszFileName, bool bReplaceInvalidFileSystemChars = false, bool bRemoveControlChars = false); // 'bReplaceInvalidFileSystemChars' is set to 'false' for backward compatibility!
 
 	const CString& GetPath() const { return m_strDirectory; }
 	void SetPath(LPCTSTR path);
@@ -75,6 +75,7 @@ public:
 	// nr. of part hashs according the file size wrt ED2K protocol
 	uint16	GetED2KPartHashCount() const { return m_iED2KPartHashCount; }
 	*/
+	//Xman end
 
 	// nr. of 9MB parts (file data)
 	__inline uint16 GetPartCount() const { return m_iPartCount; }
@@ -94,7 +95,10 @@ public:
 	// Right now this number is used for auto priorities..
 	// This may be replaced with total complete source known in the network..
 	//Xman see on uploadqueue don't need it:
-	//uint32	GetQueuedCount() { return m_ClientUploadList.GetCount();}
+	/*
+	uint32	GetQueuedCount() { return m_ClientUploadList.GetCount();}
+	*/
+	//Xman end
 
 	bool	LoadHashsetFromFile(CFileDataIO* file, bool checkhash);
 
@@ -123,7 +127,6 @@ public:
 	void RemoveOnUploadqueue()			{if(onuploadqueue!=0) onuploadqueue--;UpdateAutoUpPriority();}
 	uint16 GetOnUploadqueue() const		{return onuploadqueue;}
 	//Xman end
-
 
 	virtual void	UpdatePartsInfo();
 	virtual	void	DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool bFlat) const;
@@ -169,6 +172,8 @@ public:
 	CString			GetInfoSummary() const;
 	CString			GetUpPriorityDisplayString() const;
 
+
+
 	// last file modification time in (DST corrected, if NTFS) real UTC format
 	// NOTE: this value can *not* be compared with NT's version of the UTC time
 	uint32	m_tUtcLastModified;
@@ -193,9 +198,16 @@ protected:
 	bool	GrabImage(CString strFileName, uint8 nFramesToGrab, double dStartTime, bool bReduceColor, uint16 nMaxWidth, void* pSender);
 	bool	LoadTagsFromFile(CFileDataIO* file);
 	bool	LoadDateFromFile(CFileDataIO* file);
-	void	CreateHash(CFile* pFile, uint64 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL, bool slowdown=false) const; //Xman Nice Hash
-	bool	CreateHash(FILE* fp, uint64 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL, bool slowdown=false) const; //Xman Nice Hash
-	bool	CreateHash(const uchar* pucData, uint32 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL, bool slowdown=false) const; //Xman Nice Hash
+	//Xman Nice Hash
+	/*
+	void	CreateHash(CFile* pFile, uint64 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL) const;
+	bool	CreateHash(FILE* fp, uint64 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL) const;
+	bool	CreateHash(const uchar* pucData, uint32 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL) const;
+	*/
+	void	CreateHash(CFile* pFile, uint64 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL, bool slowdown=false) const;
+	bool	CreateHash(FILE* fp, uint64 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL, bool slowdown=false) const;
+	bool	CreateHash(const uchar* pucData, uint32 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL, bool slowdown=false) const;
+	//Xman end
 	virtual void	UpdateFileRatingCommentAvail(bool bForceUpdate = false);
 
 	// ==> Removed Dynamic Hide OS [SlugFiller/Xman] - Stulle

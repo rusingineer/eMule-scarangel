@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -117,16 +117,27 @@ CUDPSocket::~CUDPSocket()
     theApp.uploadBandwidthThrottler->RemoveFromAllQueues(this); // ZZ:UploadBandWithThrottler (UDP)
 
 	//Xman Code Improvement
+	/*
+	POSITION pos = controlpacket_queue.GetHeadPosition();
+	while (pos) {
+		SServerUDPPacket* p = controlpacket_queue.GetNext(pos);
+		delete[] p->packet;
+		delete p;
+	}
+	m_udpwnd.DestroyWindow();
+
+	pos = m_aDNSReqs.GetHeadPosition();
+	*/
 	while (!controlpacket_queue.IsEmpty())
 	{
 		SServerUDPPacket* p = controlpacket_queue.RemoveHead();
 		delete[] p->packet;
 		delete p;
 	}
-	//Xman end
 	m_udpwnd.DestroyWindow();
 
 	POSITION pos = m_aDNSReqs.GetHeadPosition();
+	//Xman end
 	while (pos)
 		delete m_aDNSReqs.GetNext(pos);
 }

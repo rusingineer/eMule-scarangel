@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -20,7 +20,12 @@
 #pragma warning(disable:4244) // conversion from 'type1' to 'type2', possible loss of data
 #pragma warning(disable:4100) // unreferenced formal parameter
 #pragma warning(disable:4702) // unreachable code
-#include <crypto.v52.1/rsa.h> //Xman
+//Xman
+/*
+#include <crypto51/rsa.h>
+*/
+#include <crypto.v52.1/rsa.h>
+//Xman end
 #pragma warning(default:4702) // unreachable code
 #pragma warning(default:4100) // unreferenced formal parameter
 #pragma warning(default:4244) // conversion from 'type1' to 'type2', possible loss of data
@@ -150,8 +155,10 @@ public:
 	void	AddUploaded(uint32 bytes, uint32 dwForIP);
 	uint64	GetUploadedTotal() const;
 	uint64	GetDownloadedTotal() const;
-	//float	GetScoreRatio(uint32 dwForIP) const;
 	//Xman Credit System
+	/*
+	float	GetScoreRatio(uint32 dwForIP) const;
+	*/
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 	/*
 	const float	GetScoreRatio(const CUpDownClient* client) const; //Xman Credit System
@@ -248,9 +255,11 @@ public:
 	byte*	GetPublicKey()					{return m_abyMyPublicKey;}
 	bool	CryptoAvailable();
 
+//Xman Extened credit- table-arragement
 #ifdef PRINT_STATISTIC
 	void	PrintStatistic();
 #endif
+//Xman end
 
 	void	ResetCheckScoreRatio(); // CreditSystems [EastShare/ MorphXT] - Stulle
 

@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -34,9 +34,14 @@ static char THIS_FILE[] = __FILE__;
 
 #define HALF(X) (((X) + 1) / 2)
 
+// Maella -Code Improvement (CPU load)- 
+/*
+CBarShader::CBarShader(uint32 height, uint32 width) {
+*/
 CBarShader::CBarShader(uint32 height, uint32 width) 
-: m_Spans(100) // Maella -Code Improvement (CPU load)- 
+: m_Spans(100)
 {
+//Xman end
 	m_iWidth = width;
 	m_iHeight = height;
 	m_uFileSize = (uint64)1;
@@ -216,8 +221,11 @@ void CBarShader::Draw(CDC* dc, int iLeft, int iTop, bool bFlat) {
 void CBarShader::FillRect(CDC *dc, LPRECT rectSpan, COLORREF color, bool bFlat) {
 	if(!color || bFlat)
 		//Xman Code Improvement: FillSolidRect
-		//dc->FillRect(rectSpan, &CBrush(color));
+		/*
+		dc->FillRect(rectSpan, &CBrush(color));
+		*/
 		dc->FillSolidRect(rectSpan, color);
+		//Xman end
 	else
 		FillRect(dc, rectSpan, GetRValue(color), GetGValue(color), GetBValue(color), false);
 }
@@ -227,7 +235,9 @@ void CBarShader::FillRect(CDC *dc, LPRECT rectSpan, float fRed, float fGreen,
 	if(bFlat) {
 		COLORREF color = RGB((int)(fRed + .5f), (int)(fGreen + .5f), (int)(fBlue + .5f));
 		//Xman Code Improvement: FillSolidRect
-		//dc->FillRect(rectSpan, &CBrush(color));
+		/*
+		dc->FillRect(rectSpan, &CBrush(color));
+		*/
 		dc->FillSolidRect(rectSpan, color);
 		//Xman end
 	} else {
@@ -239,17 +249,27 @@ void CBarShader::FillRect(CDC *dc, LPRECT rectSpan, float fRed, float fGreen,
 		int iMax = HALF(m_iHeight);
 		for(int i = 0; i < iMax; i++) {
 			//Xman Code Improvement: FillSolidRect
-			//CBrush cbNew(RGB((int)(fRed * m_Modifiers[i] + .5f), (int)(fGreen * m_Modifiers[i] + .5f), (int)(fBlue * m_Modifiers[i] + .5f)));
+			/*
+			CBrush cbNew(RGB((int)(fRed * m_Modifiers[i] + .5f), (int)(fGreen * m_Modifiers[i] + .5f), (int)(fBlue * m_Modifiers[i] + .5f)));
+			*/
 			const COLORREF crNew = RGB((int)(fRed * m_Modifiers[i] + .5f), (int)(fGreen * m_Modifiers[i] + .5f), (int)(fBlue * m_Modifiers[i] + .5f));
+			//Xman end
 
 			rect.top = iTop + i;
 			rect.bottom = iTop + i + 1;
-			//dc->FillRect(&rect, &cbNew);
+			//Xman Code Improvement: FillSolidRect
+			/*
+			dc->FillRect(&rect, &cbNew);
+			*/
 			dc->FillSolidRect(&rect, crNew);
+			//Xman end
 
 			rect.top = iBot - i - 1;
 			rect.bottom = iBot - i;
-			//dc->FillRect(&rect, &cbNew);
+			//Xman Code Improvement: FillSolidRect
+			/*
+			dc->FillRect(&rect, &cbNew);
+			*/
 			dc->FillSolidRect(&rect, crNew);
 			//Xman end
 		}

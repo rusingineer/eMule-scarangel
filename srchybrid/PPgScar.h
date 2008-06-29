@@ -52,6 +52,7 @@ protected:
 	bool m_bUPnPNat;
 	bool m_bUpnPNATwebservice;
 	DWORD m_dwUpnpBindAddr;
+    bool m_bUPnPForceUpdate;
 	// <== UPnP support [MoNKi] - leuk_he
 	// ==> Random Ports [MoNKi] - Stulle
 	bool m_bRandomports;
@@ -235,6 +236,7 @@ protected:
 	HTREEITEM m_htiUPnPNat;
 	HTREEITEM m_htiUpnPNATwebservice;
 	HTREEITEM m_htiUpnpBinaddr;
+	HTREEITEM	m_htiUPnPForceUpdate;
 	// <== UPnP support [MoNKi] - leuk_he
 	// ==> Random Ports [MoNKi] - Stulle
 	HTREEITEM m_htiRndGrp;

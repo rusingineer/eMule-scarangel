@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -47,8 +47,12 @@ class CStatisticsDlg;
 class CTaskbarNotifier;
 class CTransferWnd;
 struct Status;
-//class CSplashScreen; //Xman Splashscreen
-class CSplashScreenEx; //Xman Splashscreen
+//Xman Splashscreen
+/*
+class CSplashScreen;
+*/
+class CSplashScreenEx;
+//Xman end
 class CMuleSystrayDlg;
 class CMiniMule;
 
@@ -161,7 +165,6 @@ protected:
 	HICON			m_icoSysTrayLowID;	// do not use those icons for anything else than the traybar!!!
 	int				m_iMsgIcon;
 	UINT			m_uLastSysTrayIconCookie;
-	
 	uint32			m_uUpDatarate;
 	uint32			m_uDownDatarate;
 	//Xman
@@ -178,7 +181,13 @@ protected:
 	CMenu			m_menuDownloadCtrl;
 	char			m_acVCDNSBuffer[MAXGETHOSTSTRUCT];
 	bool			m_iMsgBlinkState;
-	//bool			m_bConnectRequestDelayedForUPnP; //Xman official UPNP removed
+	//Xman official UPNP removed
+	/*
+	bool			m_bConnectRequestDelayedForUPnP;
+	*/
+	//Xman end
+	bool			m_bKadSuspendDisconnect;
+	bool			m_bEd2kSuspendDisconnect;
 
 	//Xman versions check
 	char			m_acMVCDNSBuffer[MAXGETHOSTSTRUCT];
@@ -195,11 +204,12 @@ protected:
 	// Splash screen
 	//Xman new slpash-screen arrangement
 	/*
-	CSplashScreenEx *m_pSplashWnd; //Xman Splashscreen
+	CSplashScreen *m_pSplashWnd;
 	DWORD m_dwSplashTime;
 	void ShowSplash();
 	void DestroySplash();
 	*/
+	//Xman end
 
 	// Mini Mule
 	CMiniMule* m_pMiniMule;
@@ -219,6 +229,7 @@ protected:
 	UINT_PTR m_hUPnPTimeOutTimer;
 	static void CALLBACK UPnPTimeOutTimer(HWND hwnd, UINT uiMsg, UINT idEvent, DWORD dwTime);
 	*/
+	//Xman end
 
 	void StartConnection();
 	void CloseConnection();
@@ -231,6 +242,9 @@ protected:
 	void AddSpeedSelectorMenus(CMenu* addToMenu);
 	//Xman
 	// Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+	/*
+	int  GetRecMaxUpload();
+	*/
 public:
 	float  GetRecMaxUpload();
 protected:
@@ -273,6 +287,7 @@ protected:
 	afx_msg LRESULT OnKickIdle(UINT nWhy, long lIdleCount);
 	afx_msg void OnShowWindow( BOOL bShow, UINT nStatus );
 	afx_msg BOOL OnChevronPushed(UINT id, NMHDR *pnm, LRESULT *pResult);
+	afx_msg LRESULT OnPowerBroadcast(WPARAM wParam, LPARAM lParam);
 
 	// ==> XP Style Menu [Xanatos] - Stulle
 	afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
@@ -345,7 +360,11 @@ protected:
 	afx_msg LRESULT OnConsoleThreadEvent(WPARAM wParam, LPARAM lParam);
 
 	// UPnP
-	//afx_msg LRESULT OnUPnPResult(WPARAM wParam, LPARAM lParam); //Xman official UPNP removed
+	//Xman official UPNP removed
+	/*
+	afx_msg LRESULT OnUPnPResult(WPARAM wParam, LPARAM lParam);
+	*/
+	//Xman end
 
 // ==> Show in MSN7 [TPT] - Stulle
 protected:

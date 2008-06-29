@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -131,13 +131,17 @@ BOOL CServerWnd::OnInitDialog()
 		servermsgbox->ApplySkin();
 		servermsgbox->SetTitle(GetResString(IDS_SV_SERVERINFO));
 
+		//Xman ModID
+		/*
+		servermsgbox->AppendText(_T("eMule v") + theApp.m_strCurVersionLong + _T("\n"));
+		*/
 		// ==> ModID [itsonlyme/SiRoB] - Stulle
 		/*
-		servermsgbox->AppendText(_T("eMule v") + theApp.m_strCurVersionLong + _T(" [") + MOD_VERSION + _T("]") + _T("\n")); //Xman ModID
+		servermsgbox->AppendText(_T("eMule v") + theApp.m_strCurVersionLong + _T(" [") + MOD_VERSION + _T("]") + _T("\n"));
 		*/
 		servermsgbox->AppendText(_T("eMule v") + theApp.m_strCurVersionLong + _T(" [") + theApp.m_strModLongVersion + _T("]\n"));
 		// <== ModID [itsonlyme/SiRoB] - Stulle
-
+		//Xman end
 		// MOD Note: Do not remove this part - Merkur
 		m_strClickNewVersion = GetResString(IDS_EMULEW) + _T(" ") + GetResString(IDS_EMULEW3) + _T(" ") + GetResString(IDS_EMULEW2);
 		servermsgbox->AppendHyperLink(_T(""), _T(""), m_strClickNewVersion, _T(""));
@@ -485,7 +489,7 @@ void CServerWnd::OnBnClickedAddserver()
 	}
 
 	uint16 uPort = 0;
-	if (_tcsncmp(serveraddr, _T("ed2k://"), 7) == 0){
+	if (_tcsnicmp(serveraddr, _T("ed2k://"), 7) == 0){
 		CED2KLink* pLink = NULL;
 		try{
 			pLink = CED2KLink::CreateLinkFromUrl(serveraddr);
@@ -687,11 +691,12 @@ void CServerWnd::UpdateLogTabSelection()
 		leecherlog->Invalidate();
 		StatusSelector.HighlightItem(cur_sel, FALSE);
 	}
+	//Xman end
 	if (cur_sel == PaneVerboseLog)
 	{
 		servermsgbox->ShowWindow(SW_HIDE);
 		logbox->ShowWindow(SW_HIDE);
-		leecherlog->ShowWindow(SW_HIDE);
+		leecherlog->ShowWindow(SW_HIDE);//Xman Anti-Leecher-Log
 		debuglog->ShowWindow(SW_SHOW);
 		if (debuglog->IsAutoScroll() && (StatusSelector.GetItemState(cur_sel, TCIS_HIGHLIGHTED) & TCIS_HIGHLIGHTED))
 			debuglog->ScrollToLastLine(true);
@@ -702,7 +707,7 @@ void CServerWnd::UpdateLogTabSelection()
 	{
 		debuglog->ShowWindow(SW_HIDE);
 		servermsgbox->ShowWindow(SW_HIDE);
-		leecherlog->ShowWindow(SW_HIDE);
+		leecherlog->ShowWindow(SW_HIDE);//Xman Anti-Leecher-Log
 		logbox->ShowWindow(SW_SHOW);
 		if (logbox->IsAutoScroll() && (StatusSelector.GetItemState(cur_sel, TCIS_HIGHLIGHTED) & TCIS_HIGHLIGHTED))
 			logbox->ScrollToLastLine(true);
@@ -713,14 +718,13 @@ void CServerWnd::UpdateLogTabSelection()
 	{
 		debuglog->ShowWindow(SW_HIDE);
 		logbox->ShowWindow(SW_HIDE);
-		leecherlog->ShowWindow(SW_HIDE);
+		leecherlog->ShowWindow(SW_HIDE);//Xman Anti-Leecher-Log
 		servermsgbox->ShowWindow(SW_SHOW);
 		if (servermsgbox->IsAutoScroll() && (StatusSelector.GetItemState(cur_sel, TCIS_HIGHLIGHTED) & TCIS_HIGHLIGHTED))
 			servermsgbox->ScrollToLastLine(true);
 		servermsgbox->Invalidate();
 		StatusSelector.HighlightItem(cur_sel, FALSE);
 	}
-	//Xman end
 }
 
 void CServerWnd::ToggleDebugWindow()
@@ -748,7 +752,12 @@ void CServerWnd::ToggleDebugWindow()
 	}
 	else if (!thePrefs.GetVerbose() && debug)
 	{
-		if (cur_sel == PaneVerboseLog || cur_sel == PaneLeecherLog) //Xman Anti-Leecher-Log
+		//Xman Anti-Leecher-Log
+		/*
+		if (cur_sel == PaneVerboseLog)
+		*/
+		if (cur_sel == PaneVerboseLog || cur_sel == PaneLeecherLog)
+		//Xman end
 		{
 			StatusSelector.SetCurSel(PaneLog);
 			StatusSelector.SetFocus();
@@ -908,7 +917,7 @@ void CServerWnd::ResetHistory()
 
 BOOL CServerWnd::OnHelpInfo(HELPINFO* /*pHelpInfo*/)
 {
-	theApp.ShowHelp(eMule_FAQ_Update_Server);
+	theApp.ShowHelp(eMule_FAQ_GUI_Server);
 	return TRUE;
 }
 
@@ -1081,7 +1090,6 @@ LRESULT CServerWnd::DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 			}
 		}
 		break;
-
 	}
 
 	return CResizableDialog::DefWindowProc(message, wParam, lParam);

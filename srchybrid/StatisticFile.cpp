@@ -1,6 +1,6 @@
 // parts of this file are based on work from pan One (http://home-3.tiscali.nl/~meost/pms/)
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -110,12 +110,17 @@ void CStatisticFile::AddAccepted(){
 	//Xman end
 }
 	
+//Xman PowerRelease
+/*
+void CStatisticFile::AddTransferred(uint64 bytes){
+*/
 // ==> Removed Spreadbars (old version) [SlugFiller] - Stulle
 /*
-void CStatisticFile::AddTransferred(uint64 start, uint32 bytes){ //Xman PowerRelease
+void CStatisticFile::AddTransferred(uint64 start, uint32 bytes){
 */
 // <== Removed Spreadbars (old version) [SlugFiller] - Stulle
 void CStatisticFile::AddTransferred(uint64 start, uint64 bytes){ // Spread bars [Slugfiller/MorphXT] - Stulle
+//Xman end
 	transferred += bytes;
 	alltimetransferred += bytes;
 	theApp.knownfiles->transferred += bytes;
@@ -318,8 +323,7 @@ void CStatisticFile::UpdateCountedTransferred()
 		m_tlastdataupdate=time(NULL);
 	}
 }
-//Xman end
-// ==> Spread bars [Slugfiller/MorphXT] - Stulle
+//Xman end// ==> Spread bars [Slugfiller/MorphXT] - Stulle
 void CStatisticFile::AddBlockTransferred(uint64 start, uint64 end, uint64 count){
 	if (start >= end || !count)
 		return;

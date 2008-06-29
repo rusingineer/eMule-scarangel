@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -55,6 +55,8 @@ public:
 	uint16	GetClientServerPort() const		{ return m_nClientServerPort; }
 	void	SetClientServerPort(uint16 nPort) { m_nClientServerPort = nPort; }
 	int		GetClientsCount() const			{ return ((GetClientID() && GetClientPort()) ? 1 : 0) + m_aClients.GetSize(); }
+	void	SetKadPublishInfo(uint32 dwVal)	{ m_nKadPublishInfo = dwVal; }
+	uint32	GetKadPublishInfo() const		{ return m_nKadPublishInfo; } // == TAG_PUBLISHINFO
 
 	// Spamfilter
 	void	SetNameWithoutKeyword(CString strName)	{ m_strNameWithoutKeywords = strName; }
@@ -73,6 +75,8 @@ public:
 	void		 AddListChildCount(int cnt) { m_list_childcount += cnt; }
 	bool		 IsListExpanded() const		{ return m_list_bExpanded; }
 	void		 SetListExpanded(bool val)	{ m_list_bExpanded = val; }
+
+	void		 StoreToFile(CFileDataIO& rFile) const;
 
 	struct SClient {
 		SClient() {
@@ -143,6 +147,7 @@ private:
 	uint32	m_nSearchID;
 	uint32	m_nClientServerIP;
 	uint16	m_nClientServerPort;
+	uint32	m_nKadPublishInfo;
 	CSimpleArray<SClient> m_aClients;
 	CSimpleArray<SServer> m_aServers;
 	CSimpleArray<CxImage*> m_listImages;

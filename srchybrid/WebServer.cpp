@@ -95,11 +95,11 @@ CWebServer::CWebServer(void)
 	CIni ini( thePrefs.GetConfigFile(),_T("WebServer"));
 
 	ini.SerGet(true, WSdownloadColumnHidden, ARRSIZE(WSdownloadColumnHidden), _T("downloadColumnHidden"));
-	ini.SerGet(true, WSuploadColumnHidden, ARRSIZE(WSdownloadColumnHidden), _T("uploadColumnHidden"));
-	ini.SerGet(true, WSqueueColumnHidden, ARRSIZE(WSdownloadColumnHidden), _T("queueColumnHidden"));
-	ini.SerGet(true, WSsearchColumnHidden, ARRSIZE(WSdownloadColumnHidden), _T("searchColumnHidden"));
-	ini.SerGet(true, WSsharedColumnHidden, ARRSIZE(WSdownloadColumnHidden), _T("sharedColumnHidden"));
-	ini.SerGet(true, WSserverColumnHidden, ARRSIZE(WSdownloadColumnHidden), _T("serverColumnHidden"));
+	ini.SerGet(true, WSuploadColumnHidden, ARRSIZE(WSuploadColumnHidden), _T("uploadColumnHidden"));
+	ini.SerGet(true, WSqueueColumnHidden, ARRSIZE(WSqueueColumnHidden), _T("queueColumnHidden"));
+	ini.SerGet(true, WSsearchColumnHidden, ARRSIZE(WSsearchColumnHidden), _T("searchColumnHidden"));
+	ini.SerGet(true, WSsharedColumnHidden, ARRSIZE(WSsharedColumnHidden), _T("sharedColumnHidden"));
+	ini.SerGet(true, WSserverColumnHidden, ARRSIZE(WSserverColumnHidden), _T("serverColumnHidden"));
 
 	m_Params.bShowUploadQueue =			ini.GetBool(_T("ShowUploadQueue"),false);
 	m_Params.bShowUploadQueueBanned =	ini.GetBool(_T("ShowUploadQueueBanned"),false);
@@ -754,7 +754,7 @@ CString CWebServer::_ParseURL(CString URL, CString fieldname)
 
 			// decode value ...
 			value.Replace(_T("+"), _T(" "));
-			value=URLDecode(value);
+			value=URLDecode(value, true);
 		}
 	}
 
@@ -800,12 +800,17 @@ CString CWebServer::_GetHeader(ThreadData Data, long lSession)
 	Out.Replace(_T("[RefreshVal]"), sRefresh);
 	Out.Replace(_T("[wCommand]"), _ParseURL(Data.sURL, _T("w")) + strCat + _T("&dummy=") + strDummyNumber);
 	Out.Replace(_T("[eMuleAppName]"), _T("eMule"));
+	// Xman // Maella -Support for tag ET_MOD_VERSION 0x55
+	/*
+	Out.Replace(_T("[version]"), theApp.m_strCurVersionLong);
+	*/
 	// ==> ModID [itsonlyme/SiRoB] - Stulle
 	/*
-	Out.Replace(_T("[version]"), theApp.m_strCurVersionLong + _T(" ") + MOD_VERSION); // Xman // Maella -Support for tag ET_MOD_VERSION 0x55
+	Out.Replace(_T("[version]"), theApp.m_strCurVersionLong + _T(" ") + MOD_VERSION);
 	*/
 	Out.Replace(_T("[version]"), theApp.m_strCurVersionLong + _T(" [") + theApp.m_strModLongVersion + _T("]"));
 	// <== ModID [itsonlyme/SiRoB] - Stulle
+	//Xman end
 	Out.Replace(_T("[StyleSheet]"), pThis->m_Templates.sHeaderStylesheet);
 	Out.Replace(_T("[WebControl]"), _GetPlainResString(IDS_WEB_CONTROL));
 	Out.Replace(_T("[Transfer]"), _GetPlainResString(IDS_CD_TRANS));
@@ -824,7 +829,7 @@ CString CWebServer::_GetHeader(ThreadData Data, long lSession)
 	Out.Replace(_T("[Shutdown]"), _GetPlainResString(IDS_WEB_SHUTDOWNSYSTEM));
 	Out.Replace(_T("[WebOptions]"), _GetPlainResString(IDS_WEB_ADMINMENU));
 	Out.Replace(_T("[Logout]"), _GetPlainResString(IDS_WEB_LOGOUT));
-	Out.Replace(_T("[Search]"), _GetPlainResString(IDS_SW_SEARCHBOX));
+	Out.Replace(_T("[Search]"), _GetPlainResString(IDS_EM_SEARCH));
 	Out.Replace(_T("[Download]"), _GetPlainResString(IDS_SW_DOWNLOAD));
 	Out.Replace(_T("[Start]"), _GetPlainResString(IDS_SW_START));
 	Out.Replace(_T("[Version]"), _GetPlainResString(IDS_VERSION));
@@ -948,6 +953,50 @@ CString CWebServer::_GetHeader(ThreadData Data, long lSession)
 	
 	//Xman
 	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+	/*
+	if(thePrefs.GetMaxUpload() == UNLIMITED)
+		_stprintf(HTTPHeader, _T("%.1f"), static_cast<double>(100 * theApp.uploadqueue->GetDatarate()) / 1024 / thePrefs.GetMaxGraphUploadRate(true));
+	else
+		_stprintf(HTTPHeader, _T("%.1f"), static_cast<double>(100 * theApp.uploadqueue->GetDatarate()) / 1024 / thePrefs.GetMaxUpload());
+	Out.Replace(_T("[UploadValue]"), HTTPHeader);
+
+	if(thePrefs.GetMaxDownload() == UNLIMITED)
+		_stprintf(HTTPHeader, _T("%.1f"), static_cast<double>(100 * theApp.downloadqueue->GetDatarate()) / 1024 / thePrefs.GetMaxGraphDownloadRate());
+	else
+		_stprintf(HTTPHeader, _T("%.1f"), static_cast<double>(100 * theApp.downloadqueue->GetDatarate()) / 1024 / thePrefs.GetMaxDownload());
+	Out.Replace(_T("[DownloadValue]"), HTTPHeader);
+
+	_stprintf(HTTPHeader, _T("%.1f"), (static_cast<double>(theApp.listensocket->GetOpenSockets()))/(thePrefs.GetMaxConnections())*100.0);
+	Out.Replace(_T("[ConnectionValue]"), HTTPHeader);
+	_stprintf(HTTPHeader, _T("%.1f"), (static_cast<double>(theApp.uploadqueue->GetDatarate())/1024.0));
+	Out.Replace(_T("[CurUpload]"), HTTPHeader);
+	_stprintf(HTTPHeader, _T("%.1f"), (static_cast<double>(theApp.downloadqueue->GetDatarate())/1024.0));
+	Out.Replace(_T("[CurDownload]"), HTTPHeader);
+	_stprintf(HTTPHeader, _T("%.0f"), (static_cast<double>(theApp.listensocket->GetOpenSockets())));
+	Out.Replace(_T("[CurConnection]"), HTTPHeader);
+
+	uint32		dwMax;
+
+	dwMax = thePrefs.GetMaxUpload();
+	if (dwMax == UNLIMITED)
+		HTTPHelp = GetResString(IDS_PW_UNLIMITED);
+	else
+		HTTPHelp.Format(_T("%u"), dwMax);
+	Out.Replace(_T("[MaxUpload]"), HTTPHelp);
+
+	dwMax = thePrefs.GetMaxDownload();
+	if (dwMax == UNLIMITED)
+		HTTPHelp = GetResString(IDS_PW_UNLIMITED);
+	else
+		HTTPHelp.Format(_T("%u"), dwMax);
+	Out.Replace(_T("[MaxDownload]"), HTTPHelp);
+
+	dwMax = thePrefs.GetMaxConnections();
+	if (dwMax == UNLIMITED)
+		HTTPHelp = GetResString(IDS_PW_UNLIMITED);
+	else
+		HTTPHelp.Format(_T("%u"), dwMax);
+	*/
 	uint32 eMuleIn;
 	uint32 eMuleOut;
 	uint32 notUsed;
@@ -1401,7 +1450,6 @@ CString CWebServer::_GetServerList(ThreadData Data)
 		}
 		else
 			Entry.sServerFullIP = Entry.sServerIP;
-
 		if (cur_file->GetFailedCount() > 0)
 			Entry.sServerState = "failed";
 		else
@@ -2224,7 +2272,12 @@ CString CWebServer::_GetTransferList(ThreadData Data)
 			dFile.m_qwFileSize = pPartFile->GetFileSize();
 			dFile.m_qwFileTransferred = pPartFile->GetCompletedSize();
 			dFile.m_dblCompleted = pPartFile->GetPercentCompleted();
-			dFile.lFileSpeed = pPartFile->GetDownloadDatarate(); //Xman // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+			//Xman // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+			/*
+			dFile.lFileSpeed = pPartFile->GetDatarate();
+			*/
+			dFile.lFileSpeed = pPartFile->GetDownloadDatarate();
+			//Xman end
 			
 			if ( pPartFile->HasComment() || pPartFile->HasRating()) {
 				dFile.iComment= pPartFile->HasBadRating()?2:1;
@@ -2233,7 +2286,12 @@ CString CWebServer::_GetTransferList(ThreadData Data)
 
 			dFile.iFileState=pPartFile->getPartfileStatusRang();
 
-			if(dFile.lFileSpeed > 0) //Xman // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+			//Xman // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+			/*
+			if(pPartFile->GetDatarate() > 0)
+			*/
+			if(dFile.lFileSpeed > 0)
+			//Xman end
 			{
 				dFile.sFileState = _T("downloading");
 			}
@@ -2292,6 +2350,7 @@ CString CWebServer::_GetTransferList(ThreadData Data)
 				dFile.sED2kLink = CreateED2kLink(pPartFile);
 			
 			dFile.sFileInfo = _SpecialChars(pPartFile->GetInfoSummary(),false);
+
 			FilesArray.Add(dFile);
 		}
 	}
@@ -2366,7 +2425,12 @@ CString CWebServer::_GetTransferList(ThreadData Data)
 		UploadUsers dUser;
 		CString sTemp;
 		dUser.sUserHash = md4str(cur_client->GetUserHash());
-		if (cur_client->GetUploadDatarate() > 0) //Xman
+		//Xman
+		/*
+		if (cur_client->GetDatarate() > 0)
+		*/
+		if (cur_client->GetUploadDatarate() > 0)
+		//xman end
 		{
 			dUser.sActive = _T("downloading");
 			dUser.sClientState = _T("uploading");
@@ -2389,12 +2453,17 @@ CString CWebServer::_GetTransferList(ThreadData Data)
 			dUser.sClientExtra = _T("banned");
 		else if (cur_client->IsFriend())
 			dUser.sClientExtra = _T("friend");
+		//Xman Credit System
+		/*
+		else if (cur_client->Credits()->GetScoreRatio(cur_client->GetIP()) > 1)
+		*/
 		// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 		/*
-		else if (cur_client->Credits()->GetScoreRatio(cur_client) > 1) //Xman Credit System
+		else if (cur_client->Credits()->GetScoreRatio(cur_client) > 1)
 		*/
 		else if (cur_client->Credits()->GetHasScore(cur_client))
 		// <== CreditSystems [EastShare/ MorphXT] - Stulle
+		//Xman end
 			dUser.sClientExtra = _T("credit");
 		else
 			dUser.sClientExtra = _T("none");
@@ -2412,7 +2481,12 @@ CString CWebServer::_GetTransferList(ThreadData Data)
 			dUser.sFileName = _GetPlainResString(IDS_REQ_UNKNOWNFILE);
 		dUser.nTransferredDown = cur_client->GetTransferredDown();
 		dUser.nTransferredUp = cur_client->GetTransferredUp();
-		int iDataRate = cur_client->GetUploadDatarate(); //Xman
+		//Xman
+		/*
+		int iDataRate = cur_client->GetDatarate();
+		*/
+		int iDataRate = cur_client->GetUploadDatarate();
+		//Xman end
 		dUser.nDataRate = ((iDataRate == -1) ? 0 : iDataRate);
 		dUser.sClientNameVersion = cur_client->GetClientSoftVer();
 		UploadArray.Add(dUser);
@@ -2609,6 +2683,7 @@ CString CWebServer::_CreateTransferList(CString Out, CWebServer *pThis, ThreadDa
 		//CPartFile *found_file = theApp.downloadqueue->GetFileByID(_GetFileHash(dwnlf.sFileHash, FileHashA4AF));
 
 		dwnlf.sFileInfo.Replace(_T("\\"),_T("\\\\"));
+
 		CString strFInfo = dwnlf.sFileInfo;
 		strFInfo.Replace(_T("'"),_T("&#8217;"));
 		strFInfo.Replace(_T("\n"),_T("\\n"));
@@ -2711,7 +2786,6 @@ CString CWebServer::_CreateTransferList(CString Out, CWebServer *pThis, ThreadDa
 			HTTPProcessData.Replace(_T("[ShortFileName]"), _T(""));
 
 		HTTPProcessData.Replace(_T("[FileInfo]"), dwnlf.sFileInfo);
-
 		fTotalSize += dwnlf.m_qwFileSize;
 
 		if (!WSdownloadColumnHidden[1])
@@ -3209,8 +3283,8 @@ CString CWebServer::_GetSharedFilesList(ThreadData Data)
 					if (thePrefs.UseAdvancedAutoPtio())
 						cur_file->CalculateAndSetUploadPriority();
 					else
-						cur_file->UpdateAutoUpPriority();
 					//Xman end
+						cur_file->UpdateAutoUpPriority();
 				}
 
 				SendMessage(theApp.emuledlg->m_hWnd,WEB_GUI_INTERACTION, WEBGUIIA_UPD_SFUPDATE, (LPARAM)cur_file);
@@ -3796,11 +3870,16 @@ CString CWebServer::_GetGraphs(ThreadData Data)
 	CString s1;
 	//Xman
 	// Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+	/*
+	s1.Format(_T("%u"), thePrefs.GetMaxGraphDownloadRate()+4 );
+	Out.Replace(_T("[MaxDownload]"), s1);
+	s1.Format(_T("%u"), thePrefs.GetMaxGraphUploadRate(true)+4 );
+	*/
 	s1.Format(_T("%u"), (int)thePrefs.GetMaxGraphDownloadRate()+4 );
 	Out.Replace(_T("[MaxDownload]"), s1);
 	s1.Format(_T("%u"), (int)thePrefs.GetMaxGraphUploadRate()+4 );
-	Out.Replace(_T("[MaxUpload]"), s1);
 	//Xman end
+	Out.Replace(_T("[MaxUpload]"), s1);
 	s1.Format(_T("%u"), thePrefs.GetMaxConnections()+20);
 	Out.Replace(_T("[MaxConnections]"), s1);
 
@@ -4099,8 +4178,30 @@ CString CWebServer::_GetPreferences(ThreadData Data)
 		if(!_ParseURL(Data.sURL, _T("refresh")).IsEmpty())
 			thePrefs.SetWebPageRefresh(_tstoi(_ParseURL(Data.sURL, _T("refresh"))));
 
-		//Xman // Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 		CString strTmp = _ParseURL(Data.sURL, _T("maxcapdown"));
+		//Xman // Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+		/*
+		if(!strTmp.IsEmpty())
+			thePrefs.SetMaxGraphDownloadRate(  _tstoi(strTmp));
+		strTmp = _ParseURL(Data.sURL, _T("maxcapup"));
+		if(!strTmp.IsEmpty())
+			thePrefs.SetMaxGraphUploadRate( _tstoi(strTmp));
+
+		uint32	dwSpeed;
+
+		strTmp = _ParseURL(Data.sURL, _T("maxdown"));
+		if (!strTmp.IsEmpty())
+		{
+			dwSpeed = _tstoi(strTmp);
+			thePrefs.SetMaxDownload(dwSpeed>0?dwSpeed:UNLIMITED);
+		}
+		strTmp = _ParseURL(Data.sURL, _T("maxup"));
+		if (!strTmp.IsEmpty())
+		{
+			dwSpeed = _tstoi(strTmp);
+			thePrefs.SetMaxUpload(dwSpeed>0?dwSpeed:UNLIMITED);
+		}
+		*/
 		if(!strTmp.IsEmpty())
 			thePrefs.SetMaxGraphDownloadRate((float)_tstof(strTmp));
 		strTmp = _ParseURL(Data.sURL, _T("maxcapup"));
@@ -4191,6 +4292,18 @@ CString CWebServer::_GetPreferences(ThreadData Data)
 	CString	sT;
 	//Xman
 	// Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+	/*
+	sT.Format(_T("%u"), thePrefs.GetMaxDownload()==UNLIMITED?0:thePrefs.GetMaxDownload());
+	Out.Replace(_T("[MaxDownVal]"), sT);
+
+	sT.Format(_T("%u"), thePrefs.GetMaxUpload()==UNLIMITED?0:thePrefs.GetMaxUpload());
+	Out.Replace(_T("[MaxUpVal]"), sT);
+
+	sT.Format(_T("%u"), thePrefs.GetMaxGraphDownloadRate() );
+	Out.Replace(_T("[MaxCapDownVal]"), sT);
+
+	sT.Format(_T("%u"), thePrefs.GetMaxGraphUploadRate(true) );
+	*/
 	float n = thePrefs.GetMaxDownload();
 	if(n < 0.0f || n >= UNLIMITED) n = 0.0f;
 	sT.Format(_T("%0.1f"), n);
@@ -4202,8 +4315,8 @@ CString CWebServer::_GetPreferences(ThreadData Data)
 	sT.Format(_T("%.1f"), thePrefs.GetMaxGraphDownloadRate());
 	Out.Replace(_T("[MaxCapDownVal]"), sT);
 	sT.Format(_T("%.1f"), thePrefs.GetMaxGraphUploadRate());
-	Out.Replace(_T("[MaxCapUpVal]"), sT);
 	// Maella end
+	Out.Replace(_T("[MaxCapUpVal]"), sT);
 
 	return Out;
 }
@@ -4222,12 +4335,17 @@ CString CWebServer::_GetLoginScreen(ThreadData Data)
 
 	Out.Replace(_T("[CharSet]"), HTTPENCODING );
 	Out.Replace(_T("[eMuleAppName]"), _T("eMule") );
+	// Xman // Maella -Support for tag ET_MOD_VERSION 0x55
+	/*
+	Out.Replace(_T("[version]"), theApp.m_strCurVersionLong );
+	*/
 	// ==> ModID [itsonlyme/SiRoB] - Stulle
 	/*
-	Out.Replace(_T("[version]"), theApp.m_strCurVersionLong + _T(" ") + MOD_VERSION); // Xman // Maella -Support for tag ET_MOD_VERSION 0x55
+	Out.Replace(_T("[version]"), theApp.m_strCurVersionLong + _T(" ") + MOD_VERSION);
 	*/
 	Out.Replace(_T("[version]"), theApp.m_strCurVersionLong + _T(" [") + theApp.m_strModLongVersion + _T("]"));
 	// <== ModID [itsonlyme/SiRoB] - Stulle
+	//Xman end
 	Out.Replace(_T("[Login]"), _GetPlainResString(IDS_WEB_LOGIN));
 	Out.Replace(_T("[EnterPassword]"), _GetPlainResString(IDS_WEB_ENTER_PASSWORD));
 	Out.Replace(_T("[LoginNow]"), _GetPlainResString(IDS_WEB_LOGIN_NOW));
@@ -4715,7 +4833,7 @@ CString	CWebServer::_GetSearch(ThreadData Data)
 	Out.Replace(_T("[CDImage]"), _GetPlainResString(IDS_SEARCH_CDIMG));
 	Out.Replace(_T("[Program]"), _GetPlainResString(IDS_SEARCH_PRG));
 	Out.Replace(_T("[Archive]"), _GetPlainResString(IDS_SEARCH_ARC));
-	Out.Replace(_T("[Search]"), _GetPlainResString(IDS_SW_SEARCHBOX));
+	Out.Replace(_T("[Search]"), _GetPlainResString(IDS_EM_SEARCH));
 	Out.Replace(_T("[Unicode]"), _GetPlainResString(IDS_SEARCH_UNICODE));
 	Out.Replace(_T("[Size]"), _GetPlainResString(IDS_DL_SIZE));
 	Out.Replace(_T("[Start]"), _GetPlainResString(IDS_SW_START));
@@ -5186,7 +5304,7 @@ CString CWebServer::_GetCommentlist(ThreadData Data)
 
 		commentlines.AppendFormat( pThis->m_Templates.sCommentListLine,
 			_T(""),
-			_SpecialChars(entry->m_fileName),
+			_SpecialChars(entry->GetCommonFileName()),
 			_SpecialChars(entry->GetStrTagValue(TAG_DESCRIPTION)),
 			_SpecialChars(GetRateString((UINT)entry->GetIntTagValue(TAG_FILERATING)) )
 			);
@@ -5201,7 +5319,6 @@ CString CWebServer::_GetCommentlist(ThreadData Data)
 	Out.Replace(_T("[RATING]"), GetResString(IDS_QL_RATING));
 	Out.Replace(_T("[CLOSE]"), GetResString(IDS_CW_CLOSE));
 	Out.Replace(_T("[CharSet]"), HTTPENCODING );
-
 
 	return Out;
 }

@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -449,8 +449,12 @@ bool CIPFilter::ParseFilterLine2(const CStringA& sbuffer, uint32& ip1, uint32& i
 void CIPFilter::RemoveAllIPFilters()
 {
 	for (int i = 0; i < m_iplist.GetCount(); i++)
+	//Xman Code Fix: deleting the description-String can throw an exception
+	/*
+		delete m_iplist[i];
+	*/
 	{
-		//Xman Code Fix: deleting the description-String can throw an exception
+		
 		try 
 		{
 			delete m_iplist[i];
@@ -460,6 +464,7 @@ void CIPFilter::RemoveAllIPFilters()
 			//nothing
 		}
 	}
+	//Xman end
 	m_iplist.RemoveAll();
 	m_pLastHit = NULL;
 }
@@ -569,6 +574,9 @@ bool CIPFilter::RemoveIPFilter(const SIPFilter* pFilter)
 		if (m_iplist[i] == pFilter)
 		{
 			//Xman Code Fix: deleting the description-String can throw an exception
+			/*
+			delete m_iplist[i];
+			*/
 			try 
 			{
 				delete m_iplist[i];
@@ -577,6 +585,7 @@ bool CIPFilter::RemoveIPFilter(const SIPFilter* pFilter)
 			{
 				//nothing
 			}
+			//Xman end
 			m_iplist.RemoveAt(i);
 			return true;
 		}
@@ -832,7 +841,6 @@ void CIPFilter::UpdateIPFilterURL()
 		memcpy(&thePrefs.m_IPfilterVersion, &SysTime, sizeof SysTime); 
 }
 //Xman end
-
 // ==> Static IP Filter [Stulle] - Stulle
 void CIPFilter::AddFromFile2(LPCTSTR pszFilePath)
 {

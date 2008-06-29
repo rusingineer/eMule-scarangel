@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -86,13 +86,16 @@ public:
 						  CMap<uint32, uint32, uint32, uint32>& clientVersionEDonkey,
 						  CMap<uint32, uint32, uint32, uint32>& clientVersionEDonkeyHybrid,
 						  CMap<uint32, uint32, uint32, uint32>& clientVersionEMule,
-						  CMap<uint32, uint32, uint32, uint32>& clientVersionAMule,
 						  //Xman extended stats
+						  /*
+						  CMap<uint32, uint32, uint32, uint32>& clientVersionAMule);
+						  */
+						  CMap<uint32, uint32, uint32, uint32>& clientVersionAMule,
 						  CMap<POSITION, POSITION, uint32, uint32>& MODs,
 						  uint32 &totalMODs,
 						  CMap<Country_Struct*, Country_Struct*, uint32, uint32>& pCountries
-						  //Xman end
 						  );
+						  //Xman end
 	//Xman
 	// Slugfiller: modid
 	void	GetModStatistics(CRBMap<uint32, CRBMap<CString, uint32>* > *clientMods);
@@ -103,7 +106,7 @@ public:
 	void	DeleteAll();
 	bool	AttachToAlreadyKnown(CUpDownClient** client, CClientReqSocket* sender);
 	CUpDownClient* FindClientByIP(uint32 clientip, UINT port) const;
-	CUpDownClient* FindClientByUserHash(const uchar* clienthash) const;
+	CUpDownClient* FindClientByUserHash(const uchar* clienthash, uint32 dwIP = 0, uint16 nTCPPort = 0) const;
 	CUpDownClient* FindClientByIP(uint32 clientip) const;
 	CUpDownClient* FindClientByIP_UDP(uint32 clientip, UINT nUDPport) const;
 	CUpDownClient* FindClientByServerID(uint32 uServerIP, uint32 uUserID) const;
@@ -127,29 +130,44 @@ public:
 	void	RemoveAllTrackedClients();
 
 	// Kad client list, buddy handling
-	void	RequestTCP(Kademlia::CContact* contact);
-	void	RequestBuddy(Kademlia::CContact* contact);
-	void	IncomingBuddy(Kademlia::CContact* contact, Kademlia::CUInt128* buddyID);
+	bool	RequestTCP(Kademlia::CContact* contact, uint8 byConnectOptions);
+	void	RequestBuddy(Kademlia::CContact* contact, uint8 byConnectOptions);
+	bool	IncomingBuddy(Kademlia::CContact* contact, Kademlia::CUInt128* buddyID);
 	void	RemoveFromKadList(CUpDownClient* torem);
 	void	AddToKadList(CUpDownClient* toadd);
+	bool	DoRequestFirewallCheckUDP(const Kademlia::CContact& contact);
+	//bool	DebugDoRequestFirewallCheckUDP(uint32 ip, uint16 port);
 	uint8	GetBuddyStatus()			{ return m_nBuddyStatus; }
 	CUpDownClient* GetBuddy()			{ return m_pBuddy; }
 
 	void	AddKadFirewallRequest(uint32 dwIP);
 	bool	IsKadFirewallCheckIP(uint32 dwIP) const;
 
+	// Direct Callback List
+	void	AddDirectCallbackClient(CUpDownClient* pToAdd);
+	void	RemoveDirectCallback(CUpDownClient* pToAdd);
+	void	AddTrackCallbackRequests(uint32 dwIP);
+	bool	AllowCalbackRequest(uint32 dwIP) const;
+
 	void	Process();
 	bool	IsValidClient(CUpDownClient* tocheck) const;
 	void	Debug_SocketDeleted(CClientReqSocket* deleted) const;
 
     // ZZ:UploadSpeedSense -->
-    //bool GiveClientsForTraceRoute(); //Xman
+	//Xman
+	/*
+    bool GiveClientsForTraceRoute();
 	// ZZ:UploadSpeedSense <--
 
-    //void	ProcessA4AFClients() const; // ZZ:DownloadManager //Xman
+    void	ProcessA4AFClients() const; // ZZ:DownloadManager
+	*/
+	//Xman end
 	CDeadSourceList	m_globDeadSourceList;
 
 	// Maella -Extended clean-up II-
+	/*
+protected:
+	*/
 	void CleanUp(CPartFile* pDeletedFile);
 	// Maella end
 
@@ -160,11 +178,14 @@ public:
 	void PrintStatistic();
 #endif
 
-//protected:
-	void	CleanUpClientList(); // Maella -Extended clean-up II-
+	void	CleanUpClientList();
+protected: // Maella -Extended clean-up II-
+	void	ProcessDirectCallbackList();
 
 private:
 	CUpDownClientPtrList list;
+	CUpDownClientPtrList m_KadList;
+	CUpDownClientPtrList m_liCurrentDirectCallbacks;
 	CMap<uint32, uint32, uint32, uint32> m_bannedList;
 	CMap<uint32, uint32, CDeletedClient*, CDeletedClient*> m_trackedClientsList;
 	uint32	m_dwLastBannCleanUp;
@@ -172,8 +193,9 @@ private:
 	uint32 m_dwLastClientCleanUp;
 	CUpDownClient* m_pBuddy;
 	uint8 m_nBuddyStatus;
-	CUpDownClientPtrList m_KadList;
 	CList<IPANDTICS> listFirewallCheckRequests;
+	CList<IPANDTICS> listDirectCallbackRequests;
+
 //EastShare Start - added by AndCycle, IP to Country
 public:
 	void ResetIP2Country();

@@ -21,6 +21,7 @@
 #include "IconStatic.h"
 #include "SharedDirsTreeCtrl.h"
 #include "SplitterControl.h"
+#include "EditDelayed.h"
 #include "HistoryListCtrl.h" //Xman [MoNKi: -Downloaded History-]
 
 class CSharedFilesWnd : public CResizableDialog
@@ -32,13 +33,20 @@ public:
 	virtual ~CSharedFilesWnd();
 
 	void Localize();
-	void ShowSelectedFilesSummary(bool bHistory =false); //Xman [MoNKi: -Downloaded History-]
+	//Xman [MoNKi: -Downloaded History-]
+	/*
+	void ShowSelectedFilesSummary();
+	*/
+	void ShowSelectedFilesSummary(bool bHistory =false);
+	//Xman end
 	void Reload();
+	uint32	GetFilterColumn() const				{ return m_nFilterColumn; }
 
 // Dialog Data
 	enum { IDD = IDD_FILES };
 
 	CSharedFilesCtrl sharedfilesctrl;
+	CStringArray m_astrFilter;
 
 private:
 	CProgressCtrlX pop_bar;
@@ -49,6 +57,9 @@ private:
 	CSharedDirsTreeCtrl m_ctlSharedDirTree;
 	HICON icon_files;
 	CSplitterControl m_wndSplitter;
+	CEditDelayed	m_ctlFilter;
+	CHeaderCtrl		m_ctlSharedListHeader;
+	uint32			m_nFilterColumn;
 
 protected:
 	void SetAllIcons();
@@ -67,6 +78,8 @@ protected:
 	afx_msg void OnStnDblClickFilesIco();
 	afx_msg void OnTvnSelChangedSharedDirsTree(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg LRESULT OnChangeFilter(WPARAM wParam, LPARAM lParam);
+	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
 	afx_msg void OnShowWindow( BOOL bShow,UINT nStatus  ); //Xman [MoNKi: -Downloaded History-]
 	//Xman [MoNKi: -Downloaded History-]
 public:

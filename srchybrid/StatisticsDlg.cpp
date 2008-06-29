@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -34,6 +34,7 @@
 #include <math.h> //Xman 
 
 #include "UserMsgs.h"
+#include "HelpIDs.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -59,16 +60,28 @@ BEGIN_MESSAGE_MAP(CStatisticsDlg, CResizableDialog)
 	ON_STN_DBLCLK(IDC_SCOPE_U, OnStnDblclickScopeU)
 	ON_STN_DBLCLK(IDC_STATSSCOPE, OnStnDblclickStatsscope)
 	ON_MESSAGE(UM_OSCOPEPOSITION, OnOscopePositionMsg)
-	ON_WM_CTLCOLOR() // Design Settings [eWombat/Stulle] - Max
+	ON_WM_HELPINFO()
 END_MESSAGE_MAP()
 
+CStatisticsDlg::CStatisticsDlg(CWnd* pParent /*=NULL*/)
 //Xman
 // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
-CStatisticsDlg::CStatisticsDlg(CWnd* pParent /*=NULL*/)
+/*
+	: CResizableDialog(CStatisticsDlg::IDD, pParent)
+	, m_DownloadOMeter(3)
+	, m_Statistics(4)
+	, m_UploadOMeter(5)
+
+{
+	m_oldcx=0;
+	m_oldcy=0;
+	m_TimeToolTips = NULL;
+}
+*/
 	: CResizableDialog(CStatisticsDlg::IDD, pParent),
    // ==> Source Graph - Stulle
   /*
- m_DownloadOMeter(NUMBEROFLINES+1), 
+  m_DownloadOMeter(NUMBEROFLINES+1), 
   */
   m_DownloadOMeter(NUMBEROFLINES+2), 
   // <== Source Graph - Stulle
@@ -166,6 +179,8 @@ BOOL CStatisticsDlg::OnInitDialog()
 
 	// Win98: Explicitly set to Unicode to receive Unicode notifications.
 	stattree.SendMessage(CCM_SETUNICODEFORMAT, TRUE);
+	if (thePrefs.GetUseSystemFontForMainControls())
+		stattree.SendMessage(WM_SETFONT, NULL, FALSE);
 	CreateMyTree();
 
 	// Setup download-scope
@@ -174,7 +189,12 @@ BOOL CStatisticsDlg::OnInitDialog()
 	GetDlgItem(IDC_SCOPE_D)->DestroyWindow();
 	ScreenToClient(rcDown);
 	m_DownloadOMeter.Create(WS_VISIBLE | WS_CHILD, rcDown, this, IDC_SCOPE_D);
-	SetARange(true, (int)thePrefs.GetMaxGraphDownloadRate()); //Xman
+	//Xman
+	/*
+	SetARange(true, thePrefs.GetMaxGraphDownloadRate());
+	*/
+	SetARange(true, (int)thePrefs.GetMaxGraphDownloadRate());
+	//Xman end
 	m_DownloadOMeter.SetYUnits(GetResString(IDS_KBYTESPERSEC));
 	
 	// Setup upload-scope
@@ -186,7 +206,12 @@ BOOL CStatisticsDlg::OnInitDialog()
 	rcUp.top = rcDown.bottom + 4;
 	rcUp.bottom = rcUp.top + rcDown.Height();
 	m_UploadOMeter.Create(WS_VISIBLE | WS_CHILD, rcUp, this, IDC_SCOPE_U);
+	//Xman
+	/*
+	SetARange(false, thePrefs.GetMaxGraphUploadRate(true));
+	*/
 	SetARange(false, (int)thePrefs.GetMaxGraphUploadRate()); //Xman
+	//Xman end
 	m_UploadOMeter.SetYUnits(GetResString(IDS_KBYTESPERSEC));
 	
 	// Setup additional graph-scope
@@ -242,7 +267,6 @@ BOOL CStatisticsDlg::OnInitDialog()
 	rcSpl.top = rcW.top + 2;
 	rcSpl.bottom = rcW.bottom - 5;
 	m_wndSplitterstat.Create(WS_CHILD | WS_VISIBLE, rcSpl, this, IDC_SPLITTER_STAT);
-
 	int PosStatVinitX = rcSpl.left;
 	int PosStatVnewX = thePrefs.GetSplitterbarPositionStat()*rcW.Width()/100;
 	int maxX = rcW.right-13;
@@ -253,7 +277,6 @@ BOOL CStatisticsDlg::OnInitDialog()
 		PosStatVnewX = minX;
 	rcSpl.left = PosStatVnewX;
 	rcSpl.right = PosStatVnewX + 4;
-
 	m_wndSplitterstat.MoveWindow(rcSpl);
 
 	//HR splitter
@@ -262,8 +285,11 @@ BOOL CStatisticsDlg::OnInitDialog()
 	rcSpl.top = rcDown.bottom;
 	rcSpl.bottom = rcSpl.top + 4; 
 	m_wndSplitterstat_HR.Create(WS_CHILD | WS_VISIBLE, rcSpl, this, IDC_SPLITTER_STAT_HR);
-
-	//int PosStatVinitZ = rcSpl.top;
+	//Xman
+	/*
+	int PosStatVinitZ = rcSpl.top;
+	*/
+	//Xman end
 	int PosStatVnewZ = thePrefs.GetSplitterbarPositionStat_HR()*rcW.Height()/100;
 	int maxZ = rcW.bottom-14;
 	int minZ = 0;
@@ -273,7 +299,6 @@ BOOL CStatisticsDlg::OnInitDialog()
 		PosStatVnewZ = minZ;
 	rcSpl.top = PosStatVnewZ;
 	rcSpl.bottom = PosStatVnewZ+4;
-
 	m_wndSplitterstat_HR.MoveWindow(rcSpl);
 
 	//Xman statistic fix bluesonicboy
@@ -293,8 +318,11 @@ BOOL CStatisticsDlg::OnInitDialog()
 	rcSpl.top = rcUp.bottom;
 	rcSpl.bottom = rcSpl.top + 4;
 	m_wndSplitterstat_HL.Create(WS_CHILD | WS_VISIBLE, rcSpl, this, IDC_SPLITTER_STAT_HL);
-
-	//int PosStatVinitY = rcSpl.top;
+	//Xman
+	/*
+	int PosStatVinitY = rcSpl.top;
+	*/
+	//Xman end
 	int PosStatVnewY = thePrefs.GetSplitterbarPositionStat_HL()*rcW.Height()/100;
 	int maxY = rcW.bottom-9;
 	int minY = 10;
@@ -304,7 +332,6 @@ BOOL CStatisticsDlg::OnInitDialog()
 		PosStatVnewY = minY;
 	rcSpl.top = PosStatVnewY;
 	rcSpl.bottom = PosStatVnewY+4;
-
 	m_wndSplitterstat_HL.MoveWindow(rcSpl);
 
 	//Xman statistic fix bluesonicboy
@@ -323,8 +350,8 @@ BOOL CStatisticsDlg::OnInitDialog()
 	m_Statistics.MoveWindow(rcStat);
 
 	DoResize_V(PosStatVnewX - PosStatVinitX);
+	// Xman statistic fix 
 	/*
-	// statistic fix 
 	DoResize_HL(PosStatVnewY - PosStatVinitY);
 	DoResize_HR(PosStatVnewZ - PosStatVinitZ);
 	*/
@@ -419,7 +446,12 @@ void CStatisticsDlg::DoResize_HL(int delta)
 
 	m_UploadOMeter.GetWindowRect(rcspl);
 	ScreenToClient(rcspl);
-	thePrefs.SetSplitterbarPositionStat_HL((int)floor((float)(rcspl.bottom*100.0f)/(float)rcW.Height())); // Xman
+	//Xman
+	/*
+	thePrefs.SetSplitterbarPositionStat_HL(rcspl.bottom*100/rcW.Height());
+	*/
+	thePrefs.SetSplitterbarPositionStat_HL((int)floor((float)(rcspl.bottom*100.0f)/(float)rcW.Height()));
+	//Xman end
 
 	initCSize();
 
@@ -444,7 +476,12 @@ void CStatisticsDlg::DoResize_HR(int delta)
 
 	m_DownloadOMeter.GetWindowRect(rcspl);
 	ScreenToClient(rcspl);
+	//Xman
+	/*
+	thePrefs.SetSplitterbarPositionStat_HR(rcspl.bottom*100/rcW.Height());
+	*/
 	thePrefs.SetSplitterbarPositionStat_HR((int)floor((float)(rcspl.bottom*100.0f)/(float)(rcW.Height()))); // Xman
+	//Xman end
 
 	initCSize();
 
@@ -472,7 +509,12 @@ void CStatisticsDlg::DoResize_V(int delta)
 
 	GetDlgItem(IDC_STATTREE)->GetWindowRect(rcspl);
 	ScreenToClient(rcspl);
+	//Xman
+	/*
+	thePrefs.SetSplitterbarPositionStat(rcspl.right*100/rcW.Width());
+	*/
 	thePrefs.SetSplitterbarPositionStat((int)floor((float)(rcspl.right*100.0f)/(float)rcW.Width())); // Xman
+	//Xman end
 
 	if (rcspl.left==rcspl.right) {
 		GetDlgItem(IDC_STATTREE)->ShowWindow(SW_HIDE);
@@ -665,6 +707,97 @@ LRESULT CStatisticsDlg::DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam
 //Xman
 //remark: no friendupload, no full activated slots
 // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+/*
+void CStatisticsDlg::RepaintMeters() 
+{
+	CString Buffer;
+	m_DownloadOMeter.SetBackgroundColor(thePrefs.GetStatsColor(0));	// Background
+	m_DownloadOMeter.SetGridColor(thePrefs.GetStatsColor(1));		// Grid
+	m_DownloadOMeter.SetPlotColor(thePrefs.GetStatsColor(4), 0);	// Download session
+	m_DownloadOMeter.SetPlotColor(thePrefs.GetStatsColor(3), 1);	// Download average
+	m_DownloadOMeter.SetPlotColor(thePrefs.GetStatsColor(2), 2);	// Download current
+	m_DownloadOMeter.SetBarsPlot(thePrefs.GetFillGraphs(), 2);
+
+	m_UploadOMeter.SetBackgroundColor(thePrefs.GetStatsColor(0));
+	m_UploadOMeter.SetGridColor(thePrefs.GetStatsColor(1));			// Grid
+	m_UploadOMeter.SetPlotColor(thePrefs.GetStatsColor(7), 0);		// Upload session
+	m_UploadOMeter.SetPlotColor(thePrefs.GetStatsColor(6), 1);		// Upload average
+	m_UploadOMeter.SetPlotColor(thePrefs.GetStatsColor(5), 2);		// Upload current
+	m_UploadOMeter.SetPlotColor(thePrefs.GetStatsColor(14), 3);		// Upload current (excl. overhead)
+	m_UploadOMeter.SetPlotColor(thePrefs.GetStatsColor(13), 4);		// Upload friend slots
+	m_UploadOMeter.SetBarsPlot(thePrefs.GetFillGraphs(), 2);
+
+	m_Statistics.SetBackgroundColor(thePrefs.GetStatsColor(0));
+	m_Statistics.SetGridColor(thePrefs.GetStatsColor(1));
+	m_Statistics.SetPlotColor(thePrefs.GetStatsColor(8), 0);	// Active Connections
+	m_Statistics.SetPlotColor(thePrefs.GetStatsColor(10), 1);	// Active Uploads
+	m_Statistics.SetPlotColor(thePrefs.GetStatsColor(9), 2);	// Total Uploads
+	m_Statistics.SetPlotColor(thePrefs.GetStatsColor(12), 3);	// Active Downloads
+	m_Statistics.SetBarsPlot(thePrefs.GetFillGraphs(), 0);
+
+	m_DownloadOMeter.SetYUnits(GetResString(IDS_ST_DOWNLOAD));
+	m_DownloadOMeter.SetLegendLabel(GetResString(IDS_ST_SESSION), 0);			// Download session
+	Buffer.Format(_T(" (%u %s)"), thePrefs.GetStatsAverageMinutes(), GetResString(IDS_MINS));
+	m_DownloadOMeter.SetLegendLabel(GetResString(IDS_AVG) + Buffer, 1);			// Download average
+	m_DownloadOMeter.SetLegendLabel(GetResString(IDS_ST_CURRENT), 2);			// Download current
+
+	m_UploadOMeter.SetYUnits(GetResString(IDS_ST_UPLOAD));
+	m_UploadOMeter.SetLegendLabel(GetResString(IDS_ST_SESSION), 0);				// Upload session
+	Buffer.Format(_T(" (%u %s)"), thePrefs.GetStatsAverageMinutes(), GetResString(IDS_MINS));
+	m_UploadOMeter.SetLegendLabel(GetResString(IDS_AVG) + Buffer, 1);			// Upload average
+	m_UploadOMeter.SetLegendLabel(GetResString(IDS_ST_ULCURRENT), 2);			// Upload current
+	m_UploadOMeter.SetLegendLabel(GetResString(IDS_ST_ULSLOTSNOOVERHEAD), 3);	// Upload current (excl. overhead)
+	m_UploadOMeter.SetLegendLabel(GetResString(IDS_ST_ULFRIEND), 4);			// Upload friend slots
+
+	m_Statistics.SetYUnits(GetResString(IDS_FSTAT_CONNECTION));
+	Buffer.Format(_T("%s (1:%u)"), GetResString(IDS_ST_ACTIVEC), thePrefs.GetStatsConnectionsGraphRatio());
+	m_Statistics.SetLegendLabel(Buffer, 0);										// Active Connections
+	m_Statistics.SetLegendLabel(GetResString(IDS_ST_ACTIVEU_ZZ), 1);			// Active Uploads
+	m_Statistics.SetLegendLabel(GetResString(IDS_SP_TOTALUL), 2);				// Total Uploads
+	m_Statistics.SetLegendLabel(GetResString(IDS_ST_ACTIVED), 3);				// Active Downloads
+}
+
+void CStatisticsDlg::SetCurrentRate(float uploadrate, float downloadrate)
+{
+	if (!theApp.emuledlg->IsRunning())
+		return;
+
+	// Download
+	double m_dPlotDataDown[3];
+	m_dPlotDataDown[0] = theStats.GetAvgDownloadRate(AVG_SESSION);
+	m_dPlotDataDown[1] = theStats.GetAvgDownloadRate(AVG_TIME);
+	m_dPlotDataDown[2] = downloadrate;
+	m_DownloadOMeter.AppendPoints(m_dPlotDataDown);
+
+	// Upload
+	double m_dPlotDataUp[5];
+	m_dPlotDataUp[0] = theStats.GetAvgUploadRate(AVG_SESSION);
+	m_dPlotDataUp[1] = theStats.GetAvgUploadRate(AVG_TIME);
+	// current rate to network (standardPackets + controlPackets)
+	m_dPlotDataUp[2] = uploadrate;
+	// current rate (excl. overhead)
+	m_dPlotDataUp[3] = uploadrate - (float)theStats.GetUpDatarateOverhead() / 1024;
+	// current rate to friends
+	m_dPlotDataUp[4] = uploadrate - (float)theApp.uploadqueue->GetToNetworkDatarate() / 1024;
+	m_UploadOMeter.AppendPoints(m_dPlotDataUp);
+
+	// Connections
+	CDownloadQueue::SDownloadStats myStats;
+	theApp.downloadqueue->GetDownloadSourcesStats(myStats);
+	m_dPlotDataMore[0] = theApp.listensocket->GetActiveConnections();
+	m_dPlotDataMore[1] = theApp.uploadqueue->GetActiveUploadsCount();
+	m_dPlotDataMore[2] = theApp.uploadqueue->GetUploadQueueLength();
+	m_dPlotDataMore[3] = myStats.a[1];
+	m_Statistics.AppendPoints(m_dPlotDataMore);
+
+	// Websever
+	UpDown updown;
+	updown.upload = uploadrate;
+	updown.download = downloadrate;
+	updown.connections = theApp.listensocket->GetActiveConnections();
+	theApp.webserver->AddStatsLine(updown);
+}
+*/
 void CStatisticsDlg::RepaintMeters() 
 {
 	CString Buffer;
@@ -878,8 +1011,6 @@ void CStatisticsDlg::Process() {
 
 void CStatisticsDlg::ShowStatistics(bool forceUpdate) 
 {
-	
-	
 	stattree.SetRedraw(false);
 	CString	cbuffer;
 	// Set Tree Values
@@ -890,6 +1021,7 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 	//cache needed values
 	uint64 bEmuleIn= theApp.pBandWidthControl->GeteMuleIn();
 	uint64 bEmuleOut= theApp.pBandWidthControl->GeteMuleOut();
+	//Xman end
 
 	// TRANSFER SECTION
 	// If a section is not expanded, don't waste CPU cycles updating it.
@@ -899,6 +1031,64 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		uint32	statBadSessions =				0;
 		double	percentSessions =				0;
 		// Transfer Ratios
+		//Xman
+		// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+		/*
+		if ( theStats.sessionReceivedBytes>0 && theStats.sessionSentBytes>0 ) 
+		{
+			// Session
+			if (theStats.sessionReceivedBytes<theStats.sessionSentBytes) 
+			{
+				cbuffer.Format(_T("%s %.2f : 1"),GetResString(IDS_STATS_SRATIO),(float)theStats.sessionSentBytes/theStats.sessionReceivedBytes);
+				stattree.SetItemText(trans[0], cbuffer);
+			} 
+			else 
+			{
+				cbuffer.Format(_T("%s 1 : %.2f"),GetResString(IDS_STATS_SRATIO),(float)theStats.sessionReceivedBytes/theStats.sessionSentBytes);
+				stattree.SetItemText(trans[0], cbuffer);
+			}
+		}
+		else 
+		{
+			cbuffer.Format(_T("%s %s"), GetResString(IDS_STATS_SRATIO), GetResString(IDS_FSTAT_WAITING)); // Localize
+			stattree.SetItemText(trans[0], cbuffer);
+		}
+
+		if ( theStats.sessionReceivedBytes>0 && theStats.sessionSentBytes>0) 
+		{
+			// Session
+			if (theStats.sessionSentBytes > theStats.sessionSentBytesToFriend && theStats.sessionReceivedBytes<theStats.sessionSentBytes-theStats.sessionSentBytesToFriend) 
+			{
+				cbuffer.Format(_T("%s %.2f : 1"),GetResString(IDS_STATS_FRATIO),(float)(theStats.sessionSentBytes-theStats.sessionSentBytesToFriend)/theStats.sessionReceivedBytes);
+				stattree.SetItemText(trans[1], cbuffer);
+			} 
+			else 
+			{
+				cbuffer.Format(_T("%s 1 : %.2f"),GetResString(IDS_STATS_FRATIO),(float)theStats.sessionReceivedBytes/(theStats.sessionSentBytes-theStats.sessionSentBytesToFriend));
+				stattree.SetItemText(trans[1], cbuffer);
+			}
+		}
+		else 
+		{
+			cbuffer.Format(_T("%s %s"), GetResString(IDS_STATS_FRATIO), GetResString(IDS_FSTAT_WAITING)); // Localize
+			stattree.SetItemText(trans[1], cbuffer);
+		}
+
+		if ( (thePrefs.GetTotalDownloaded()>0 && thePrefs.GetTotalUploaded()>0) || (theStats.sessionReceivedBytes>0 && theStats.sessionSentBytes>0) ) 
+		{
+			// Cumulative
+			if ((theStats.sessionReceivedBytes+thePrefs.GetTotalDownloaded())<(theStats.sessionSentBytes+thePrefs.GetTotalUploaded())) 
+			{
+				cbuffer.Format(_T("%s %.2f : 1"),GetResString(IDS_STATS_CRATIO),(float)(theStats.sessionSentBytes+thePrefs.GetTotalUploaded())/(theStats.sessionReceivedBytes+thePrefs.GetTotalDownloaded()));
+				stattree.SetItemText(trans[2], cbuffer);
+			} 
+			else 
+			{
+				cbuffer.Format(_T("%s 1 : %.2f"),GetResString(IDS_STATS_CRATIO),(float)(theStats.sessionReceivedBytes+thePrefs.GetTotalDownloaded())/(theStats.sessionSentBytes+thePrefs.GetTotalUploaded()));
+				stattree.SetItemText(trans[2], cbuffer);
+			}
+		}
+		*/
 		if ( bEmuleIn>0 && bEmuleOut>0 ) 
 		{
 			// Session
@@ -953,6 +1143,7 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 				stattree.SetItemText(trans[2], cbuffer);
 			}
 		}
+		//Xman end
 		else 
 		{
 			cbuffer.Format(_T("%s %s"), GetResString(IDS_STATS_CRATIO), GetResString(IDS_FSTAT_WAITING)); // Localize
@@ -970,6 +1161,9 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 			{
 				// Downloaded Data
 				//Xman show complete internettraffic
+				/*
+				cbuffer.Format( GetResString( IDS_STATS_DDATA ) , CastItoXBytes( theStats.sessionReceivedBytes, false, false ) );
+				*/
 				cbuffer.Format( GetResString( IDS_STATS_DDATA) + _T(" / %s")   , CastItoXBytes( bEmuleIn, false, false ) , CastItoXBytes( theApp.pBandWidthControl->GetSessionNetworkIn(), false, false ) );
 				//Xman end
 				stattree.SetItemText( down_S[0] , cbuffer );
@@ -1079,7 +1273,12 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 							percentPortTransferred = (double) 100 * PortDataPeerCache / PortDataTotal;
 						else
 							percentPortTransferred = 0;
+						//Xman
+						/*
+						cbuffer.Format( _T("%s: %s (%1.1f%%)") , thePrefs.GetPeerCacheShow() ? _T("PeerCache") : GetResString(IDS_STATS_PRTOTHER) , CastItoXBytes( PortDataPeerCache, false, false ) , percentPortTransferred);
+						*/
 						cbuffer.Format( _T("%s: %s (%1.1f%%)") , _T("PeerCache") , CastItoXBytes( PortDataPeerCache, false, false ) , percentPortTransferred);
+						//Xman end
 						stattree.SetItemText( down_spb[i] , cbuffer );
 						i++;
 					}
@@ -1186,7 +1385,12 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 					if (statGoodSessions > 0) 
 					{
 						percentSessions = (double) 100 * statGoodSessions / (statGoodSessions + statBadSessions);
+						//Xman
+						/*
+						cbuffer.Format( _T("%s: %s") , GetResString(IDS_STATS_AVGDATADLSES) , CastItoXBytes( theStats.sessionReceivedBytes / statGoodSessions, false, false ) ); 
+						*/
 						cbuffer.Format( _T("%s: %s") , GetResString(IDS_STATS_AVGDATADLSES) , CastItoXBytes( bEmuleIn / statGoodSessions, false, false ) ); 
+						//Xman end
 					}
 					else 
 						cbuffer.Format( _T("%s: %s") , GetResString(IDS_STATS_AVGDATADLSES) , CastItoXBytes((uint32)0, false, false) );
@@ -1253,10 +1457,18 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 					stattree.SetItemText( down_ssessions[3] , cbuffer );
 				}
 				// Set Gain Due To Compression
+				//Xman
+				/*
+				cbuffer.Format(GetResString(IDS_STATS_GAINCOMP) + _T(" (%.1f%%)"), CastItoXBytes(thePrefs.GetSesSavedFromCompression(), false, false), theStats.sessionReceivedBytes!=0 ? (thePrefs.GetSesSavedFromCompression() * 100.0 / theStats.sessionReceivedBytes) : 0.0);
+				stattree.SetItemText( down_S[5] , cbuffer );
+				// Set Lost Due To Corruption
+				cbuffer.Format(GetResString(IDS_STATS_LOSTCORRUPT) + _T(" (%.1f%%)"), CastItoXBytes(thePrefs.GetSesLostFromCorruption(), false, false), theStats.sessionReceivedBytes!=0 ? (thePrefs.GetSesLostFromCorruption() * 100.0 / theStats.sessionReceivedBytes) : 0.0);
+				*/
 				cbuffer.Format(GetResString(IDS_STATS_GAINCOMP) + _T(" (%.1f%%)"), CastItoXBytes(thePrefs.GetSesSavedFromCompression(), false, false), bEmuleIn!=0 ? (thePrefs.GetSesSavedFromCompression() * 100.0 / bEmuleIn) : 0.0);
 				stattree.SetItemText( down_S[5] , cbuffer );
 				// Set Lost Due To Corruption
 				cbuffer.Format(GetResString(IDS_STATS_LOSTCORRUPT) + _T(" (%.1f%%)"), CastItoXBytes(thePrefs.GetSesLostFromCorruption(), false, false), bEmuleIn!=0 ? (thePrefs.GetSesLostFromCorruption() * 100.0 / bEmuleIn) : 0.0);
+				//Xman end
 				stattree.SetItemText( down_S[6] , cbuffer );
 				// Set Parts Saved Due To ICH
 				cbuffer.Format(GetResString(IDS_STATS_ICHSAVED), thePrefs.GetSesPartsSavedByICH());
@@ -1312,7 +1524,12 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 			if (forceUpdate || stattree.IsExpanded(h_down_total)) 
 			{
 				// Downloaded Data
+				//Xman
+				/*
+				uint64 ullCumReceived = theStats.sessionReceivedBytes + thePrefs.GetTotalDownloaded();
+				*/
 				uint64 ullCumReceived = bEmuleIn + thePrefs.GetTotalDownloaded();
+				//Xman end
 				cbuffer.Format(GetResString(IDS_STATS_DDATA), CastItoXBytes(ullCumReceived, false, false));
 				stattree.SetItemText(down_T[0], cbuffer);
 				if (forceUpdate || stattree.IsExpanded(down_T[0])) 
@@ -1421,7 +1638,12 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 							percentPortTransferred = (double) 100 * PortDataPeerCache / PortDataTotal;
 						else
 							percentPortTransferred = 0;
-						cbuffer.Format( _T("%s: %s (%1.1f%%)") ,  _T("PeerCache") , CastItoXBytes( PortDataPeerCache, false, false ) , percentPortTransferred); //Xman Bugfix
+						//Xman Bugfix
+						/*
+						cbuffer.Format( _T("%s: %s (%1.1f%%)") , thePrefs.GetPeerCacheShow() ? _T("PeerCache") : GetResString(IDS_STATS_PRTOTHER) , CastItoXBytes( PortDataPeerCache, false, false ) , percentPortTransferred);
+						*/
+						cbuffer.Format( _T("%s: %s (%1.1f%%)") ,  _T("PeerCache") , CastItoXBytes( PortDataPeerCache, false, false ) , percentPortTransferred);
+						//Xman end
 						stattree.SetItemText( down_tpb[i] , cbuffer );
 						i++;
 					}
@@ -1536,6 +1758,9 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 			{
 				// Uploaded Data
 				//Xman show complete internettraffic
+				/*
+				cbuffer.Format(GetResString(IDS_STATS_UDATA),CastItoXBytes(theStats.sessionSentBytes, false, false));
+				*/
 				cbuffer.Format(GetResString(IDS_STATS_UDATA) + _T(" / %s")  ,CastItoXBytes(bEmuleOut, false, false),CastItoXBytes(theApp.pBandWidthControl->GetSessionNetworkOut(), false, false));
 				//Xman end
 				stattree.SetItemText(up_S[0], cbuffer);
@@ -1636,7 +1861,12 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 							percentPortTransferred = (double) 100 * PortDataPeerCache / PortDataTotal;
 						else
 							percentPortTransferred = 0;
-						cbuffer.Format( _T("%s: %s (%1.1f%%)") , _T("PeerCache") , CastItoXBytes( PortDataPeerCache, false, false ) , percentPortTransferred); //Xman Bugfix
+						//Xman Bugfix
+						/*
+						cbuffer.Format( _T("%s: %s (%1.1f%%)") , thePrefs.GetPeerCacheShow() ? _T("PeerCache") : GetResString(IDS_STATS_PRTOTHER) , CastItoXBytes( PortDataPeerCache, false, false ) , percentPortTransferred);
+						*/
+						cbuffer.Format( _T("%s: %s (%1.1f%%)") , _T("PeerCache") , CastItoXBytes( PortDataPeerCache, false, false ) , percentPortTransferred);
+						//Xman end
 						stattree.SetItemText( up_spb[i] , cbuffer );
 						i++;
 					}
@@ -1670,7 +1900,12 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 				stattree.SetItemText(up_S[1], cbuffer);
 
 				// Set fully Active Uploads
+				//Xman
+				/*
+				cbuffer.Format(GetResString(IDS_STATS_ACTUL_ZZ),theApp.uploadqueue->GetActiveUploadsCount()); //theApp.uploadqueue->GetUploadQueueLength()
+				*/
 				cbuffer.Format(GetResString(IDS_STATS_ACTUL_ZZ),theApp.uploadBandwidthThrottler->GetNumberOfFullyActivatedSlots()); //theApp.uploadqueue->GetUploadQueueLength()
+				//Xman end
 				stattree.SetItemText(up_S[2], cbuffer);
 
                 // Set Set Total Uploads                
@@ -1692,7 +1927,11 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 					if (statGoodSessions>0) 
 					{ // Blackholes are when God divided by 0
 						percentSessions = (double) 100*statGoodSessions/(statGoodSessions+statBadSessions);
+						//Xman
+						/*
+						*/
 						cbuffer.Format(_T("%s: %s"), GetResString(IDS_STATS_AVGDATAULSES), CastItoXBytes( bEmuleOut / statGoodSessions, false, false) ); 
+						//Xman end
 					}
 					else 
 					{
@@ -1805,7 +2044,12 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 			if (forceUpdate || stattree.IsExpanded(h_up_total)) 
 			{
 				// Uploaded Data
+				//Xman
+				/*
+				cbuffer.Format(GetResString(IDS_STATS_UDATA),CastItoXBytes( theStats.sessionSentBytes+thePrefs.GetTotalUploaded(), false, false));
+				*/
 				cbuffer.Format(GetResString(IDS_STATS_UDATA),CastItoXBytes( bEmuleOut+thePrefs.GetTotalUploaded(), false, false));
+				//Xman end
 				stattree.SetItemText(up_T[0],cbuffer);
 				if (forceUpdate || stattree.IsExpanded(up_T[0])) 
 				{
@@ -1904,7 +2148,12 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 							percentPortTransferred = (double) 100 * PortDataPeerCache / PortDataTotal;
 						else
 							percentPortTransferred = 0;
-						cbuffer.Format( _T("%s: %s (%1.1f%%)") , _T("PeerCache") , CastItoXBytes( PortDataPeerCache, false, false ) , percentPortTransferred); //Xman Bugfix
+						//Xman Bugfix
+						/*
+						cbuffer.Format( _T("%s: %s (%1.1f%%)") , thePrefs.GetPeerCacheShow() ? _T("PeerCache") : GetResString(IDS_STATS_PRTOTHER) , CastItoXBytes( PortDataPeerCache, false, false ) , percentPortTransferred);
+						*/
+						cbuffer.Format( _T("%s: %s (%1.1f%%)") , _T("PeerCache") , CastItoXBytes( PortDataPeerCache, false, false ) , percentPortTransferred);
+						//Xman end
 						stattree.SetItemText( up_tpb[i] , cbuffer );
 						i++;
 					}
@@ -1943,7 +2192,12 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 					if (statGoodSessions>0) 
 					{ // Blackholes are when God divided by 0
 						percentSessions = (double) 100*statGoodSessions/(statGoodSessions+statBadSessions);
+						//Xman
+						/*
+						cbuffer.Format(_T("%s: %s"), GetResString(IDS_STATS_AVGDATAULSES), CastItoXBytes((theStats.sessionSentBytes + thePrefs.GetTotalUploaded()) / statGoodSessions, false, false) ); 
+						*/
 						cbuffer.Format(_T("%s: %s"), GetResString(IDS_STATS_AVGDATAULSES), CastItoXBytes((bEmuleOut + thePrefs.GetTotalUploaded()) / statGoodSessions, false, false) ); 
+						//Xman end
 					}
 					else 
 					{
@@ -2066,6 +2320,56 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 				i++;
 			} // - End Connection -> Session -> General Section
 			// CONNECTION -> SESSION -> UPLOADS SECTION
+			//Xman
+			/*
+			if (forceUpdate || stattree.IsExpanded(hconn_su)) 
+			{
+				int i = 0;
+				// Upload Rate
+				cbuffer.Format(_T("%s: %s"), GetResString(IDS_ST_UPLOAD),CastItoXBytes(theStats.rateUp, true, true));
+				stattree.SetItemText(conn_su[i], cbuffer);
+				i++;
+				// Average Upload Rate
+				cbuffer.Format(GetResString(IDS_STATS_AVGUL),CastItoXBytes(theStats.GetAvgUploadRate(AVG_SESSION), true, true));
+				stattree.SetItemText(conn_su[i], cbuffer);
+				i++;
+				// Max Upload Rate
+				cbuffer.Format(_T("%s: %s"), GetResString(IDS_STATS_MAXUL), CastItoXBytes(theStats.maxUp, true, true));
+				stattree.SetItemText(conn_su[i], cbuffer);
+				i++;
+				// Max Average Upload Rate
+				float myAverageUpRate = theStats.GetAvgUploadRate(AVG_SESSION);
+				if (myAverageUpRate>theStats.maxUpavg)
+					theStats.maxUpavg = myAverageUpRate;
+				cbuffer.Format(_T("%s: %s"), GetResString(IDS_STATS_MAXAVGUL), CastItoXBytes(theStats.maxUpavg, true, true));
+				stattree.SetItemText(conn_su[i], cbuffer); 
+				i++;
+			} // - End Connection -> Session -> Uploads Section
+			// CONNECTION -> SESSION -> DOWNLOADShead SECTION
+			if (forceUpdate || stattree.IsExpanded(hconn_sd)) 
+			{
+				int i = 0;
+				// Download Rate
+				cbuffer.Format(_T("%s: %s"), GetResString(IDS_ST_DOWNLOAD), CastItoXBytes(theStats.rateDown, true, true));
+				stattree.SetItemText(conn_sd[i], cbuffer); 
+				i++;
+				// Average Download Rate
+				cbuffer.Format(GetResString(IDS_STATS_AVGDL),CastItoXBytes(theStats.GetAvgDownloadRate(AVG_SESSION), true, true));	
+				stattree.SetItemText(conn_sd[i], cbuffer); 
+				i++;
+				// Max Download Rate
+				cbuffer.Format(GetResString(IDS_STATS_MAXDL),CastItoXBytes(theStats.maxDown, true, true));
+				stattree.SetItemText(conn_sd[i], cbuffer); 
+				i++;
+				// Max Average Download Rate
+				float myAverageDownRate = theStats.GetAvgDownloadRate(AVG_SESSION);
+				if (myAverageDownRate>theStats.maxDownavg) 
+					theStats.maxDownavg = myAverageDownRate;
+				cbuffer.Format(GetResString(IDS_STATS_MAXAVGDL), CastItoXBytes(theStats.maxDownavg, true, true));	
+				stattree.SetItemText(conn_sd[i], cbuffer);
+				i++;
+			} // - End Connection -> Session -> Downloads Section		
+			*/
 			if (forceUpdate || stattree.IsExpanded(hconn_su)) 
 			{
 				int i = 0;
@@ -2106,7 +2410,8 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 				cbuffer.Format(GetResString(IDS_STATS_MAXAVGDL), CastItoXBytes(theStats.sessionMaxDownloadRate, true, true));	// Xman
 				stattree.SetItemText(conn_sd[i], cbuffer);
 				i++;
-			} // - End Connection -> Session -> Downloads Section		
+			} // - End Connection -> Session -> Downloads Section	
+			//Xman end	
 		} // - End Connection -> Session Section
 		// CONNECTION -> CUMULATIVE SECTION
 		if (forceUpdate || stattree.IsExpanded(h_conn_total)) 
@@ -2184,7 +2489,6 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		if (thePrefs.GetStatsLastResetLng()) 
 		{
 			time_t	timeNow;
-
 			time(&timeNow);
 			timeDiff = timeNow - thePrefs.GetStatsLastResetLng(); // In seconds
 			cbuffer.Format(GetResString(IDS_STATS_TIMESINCERESET), CastSecondsToLngHM(timeDiff));
@@ -2281,7 +2585,12 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 					if (forceUpdate || stattree.IsExpanded(time_aap_hup[mx])) 
 					{
 						// Uploaded Data
+						//Xman
+						/*
+						cbuffer.Format(GetResString(IDS_STATS_UDATA),CastItoXBytes( ((double)(theStats.sessionSentBytes+thePrefs.GetTotalUploaded()))*avgModifier[mx], false, false));
+						*/
 						cbuffer.Format(GetResString(IDS_STATS_UDATA),CastItoXBytes( ((double)(bEmuleOut+thePrefs.GetTotalUploaded()))*avgModifier[mx], false, false));
+						//Xman end
 						stattree.SetItemText(time_aap_up[mx][0],cbuffer);
 						if (forceUpdate || stattree.IsExpanded(time_aap_up[mx][0])) 
 						{
@@ -2380,7 +2689,12 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 									percentPortTransferred = (double) 100 * PortDataPeerCache / PortDataTotal;
 								else
 									percentPortTransferred = 0;
-								cbuffer.Format( _T("%s: %s (%1.1f%%)") , _T("PeerCache") , CastItoXBytes( PortDataPeerCache, false, false ) , percentPortTransferred); //Xman Bugfix
+								//Xman Bugfix
+								/*
+								cbuffer.Format( _T("%s: %s (%1.1f%%)") , thePrefs.GetPeerCacheShow() ? _T("PeerCache") : GetResString(IDS_STATS_PRTOTHER) , CastItoXBytes( PortDataPeerCache, false, false ) , percentPortTransferred);
+								*/
+								cbuffer.Format( _T("%s: %s (%1.1f%%)") , _T("PeerCache") , CastItoXBytes( PortDataPeerCache, false, false ) , percentPortTransferred);
+								//Xman end
 								stattree.SetItemText( time_aap_up_dp[mx][i] , cbuffer );
 								i++;
 							}
@@ -2449,7 +2763,12 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 														  ) * avgModifier[mx]);
 
 						// Set Cumulative Total Overhead
+						//Xman
+						/*
+						cbuffer.Format(GetResString(IDS_TOVERHEAD),CastItoXBytes(UpOHTotal + ((uint64)thePrefs.GetUpOverheadTotal() * avgModifier[mx]), false, false), CastItoIShort((uint64)(UpOHTotalPackets + ((uint64)thePrefs.GetUpOverheadTotalPackets() * avgModifier[mx]))));
+						*/
 						cbuffer.Format(GetResString(IDS_TOVERHEAD),CastItoXBytes(UpOHTotal + ((uint64)(thePrefs.GetUpOverheadTotal() * avgModifier[mx])), false, false), CastItoIShort((uint64)(UpOHTotalPackets + ((uint64)thePrefs.GetUpOverheadTotalPackets() * avgModifier[mx]))));
+						//Xman end
 						stattree.SetItemText(time_aap_up[mx][2], cbuffer);
 						if (forceUpdate || stattree.IsExpanded(time_aap_up[mx][2])) 
 						{
@@ -2467,19 +2786,37 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 										   CastItoXBytes((theStats.GetUpDataOverheadServer() + 
 														          thePrefs.GetUpOverheadServer()
 																 ) * avgModifier[mx], false, false), 
+										   //Xman
+										   /*
+										   CastItoIShort((uint64)(theStats.GetUpDataOverheadServerPackets() + 
+																  thePrefs.GetUpOverheadServerPackets()
+																 ) * avgModifier[mx]));
+										   */
 										   CastItoIShort((uint64)((theStats.GetUpDataOverheadServerPackets() + 
 																  thePrefs.GetUpOverheadServerPackets()
 																 ) * avgModifier[mx])));
+										   //Xman end
 							stattree.SetItemText(time_aap_up_oh[mx][i], cbuffer);
 							i++;
 							// Set up total Kad OH
 							cbuffer.Format(GetResString(IDS_KADOVERHEAD), 
+										   //Xman
+										   /*
+										   CastItoXBytes((uint64)(theStats.GetUpDataOverheadKad() + 
+																  thePrefs.GetUpOverheadKad()
+																 ) * avgModifier[mx], false, false), 
+										   CastItoIShort((uint64)(theStats.GetUpDataOverheadKadPackets() + 
+																  thePrefs.GetUpOverheadKadPackets()
+																 ) * avgModifier[mx]));
+										   */
 										   CastItoXBytes((uint64)((theStats.GetUpDataOverheadKad() + 
 																  thePrefs.GetUpOverheadKad()
 																 ) * avgModifier[mx]), false, false), 
 										   CastItoIShort((uint64)((theStats.GetUpDataOverheadKadPackets() + 
 																  thePrefs.GetUpOverheadKadPackets()
 																 ) * avgModifier[mx])));
+
+										   //Xman end
 							stattree.SetItemText(time_aap_up_oh[mx][i], cbuffer);
 							i++;
 						}
@@ -2490,7 +2827,12 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 						CDownloadQueue::SDownloadStats myStats;
 						theApp.downloadqueue->GetDownloadSourcesStats(myStats);
 						// Downloaded Data
+						//Xman
+						/*
+						cbuffer.Format(GetResString(IDS_STATS_DDATA),CastItoXBytes( (uint64)(theStats.sessionReceivedBytes+thePrefs.GetTotalDownloaded()) * avgModifier[mx], false, false ));
+						*/
 						cbuffer.Format(GetResString(IDS_STATS_DDATA),CastItoXBytes( (uint64)((bEmuleIn+thePrefs.GetTotalDownloaded()) * avgModifier[mx]), false, false ));
+						//Xman end
 						stattree.SetItemText(time_aap_down[mx][0], cbuffer);
 						if (forceUpdate || stattree.IsExpanded(time_aap_down[mx][0])) 
 						{
@@ -2598,7 +2940,12 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 									percentPortTransferred = (double) 100 * PortDataPeerCache / PortDataTotal;
 								else
 									percentPortTransferred = 0;
+								//Xman
+								/*
+								cbuffer.Format( _T("%s: %s (%1.1f%%)") , thePrefs.GetPeerCacheShow() ? _T("PeerCache") : GetResString(IDS_STATS_PRTOTHER), CastItoXBytes( PortDataPeerCache, false, false ) , percentPortTransferred);
+								*/
 								cbuffer.Format( _T("%s: %s (%1.1f%%)") , _T("PeerCache") , CastItoXBytes( PortDataPeerCache, false, false ) , percentPortTransferred); //Xman Bugfix
+								//Xman end
 								stattree.SetItemText( time_aap_down_dp[mx][i] , cbuffer );
 								i++;
 							}
@@ -2731,13 +3078,24 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		cbuffer.Format(_T("%s: %u "), GetResString(IDS_CLIENTLIST), totalclient);
 		stattree.SetItemText(cligen[5], cbuffer);
 
-		int SIclients=totalclient; //Xman Xtreme Mod
+		//Xman Xtreme Mod
+		/*
+		int SIclients=myStats[12]+myStats[13];
+		*/
+		int SIclients=totalclient;
+		//Xman end
 		cbuffer.Format(_T("%s: %u (%.1f%%) : %u (%.1f%%)"), GetResString(IDS_STATS_SECUREIDENT), myStats[12] , (SIclients>0)?((double)100*myStats[12] / SIclients):0, myStats[13] , (SIclients>0)?((double)100*myStats[13] / SIclients ):0);
 		stattree.SetItemText(cligen[3], cbuffer);
 
 		cbuffer.Format(_T("%s: %u (%.1f%%)"), GetResString(IDS_IDLOW), myStats[14] , (totalclient>0)?((double)100*myStats[14] / totalclient):0);
 		stattree.SetItemText(cligen[4], cbuffer);
 
+		//Xman 
+		/*
+		if( !totalclient )
+			totalclient = 1;
+		*/
+		//Xman end
 
 		// CLIENTS -> CLIENT SOFTWARE SECTION
 		if (forceUpdate || stattree.IsExpanded(hclisoft)) 
@@ -3523,16 +3881,24 @@ void CStatisticsDlg::UpdateConnectionsGraph()
 
 void CStatisticsDlg::OnShowWindow(BOOL /*bShow*/, UINT /*nStatus*/)
 {
-
 }
-//Xman
+
 void CStatisticsDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CResizableDialog::OnSize(nType, cx, cy);
+	//Xman
+	/*
+	if (cx > 0 && cy > 0 && (cx != m_oldcx || cy != m_oldcy))
+	{
+		m_oldcx=cx;
+		m_oldcy=cy;
 		ShowInterval();
+	}
+	*/
+		ShowInterval();
+	//Xman end
 }
-//Xman end
-//Xman
+
 void CStatisticsDlg::ShowInterval()
 {
 	if (!theApp.emuledlg->IsRunning())
@@ -3552,6 +3918,15 @@ void CStatisticsDlg::ShowInterval()
 		m_Statistics.m_nXPartial = m_DownloadOMeter.m_nXPartial = m_UploadOMeter.m_nXPartial = shownSecs % 3600;
 		m_Statistics.m_nXGrids = m_DownloadOMeter.m_nXGrids = m_UploadOMeter.m_nXGrids = shownSecs / 3600;
 		
+		//Xman
+		/*
+		if(shownSecs <= 0)
+		{
+			m_DownloadOMeter.SetXUnits(GetResString(IDS_STOPPED)); 
+			m_UploadOMeter.SetXUnits(GetResString(IDS_STOPPED)); 
+			m_Statistics.SetXUnits(GetResString(IDS_STOPPED)); 
+		} 
+		*/
 		shownSecs /= thePrefs.GetZoomFactor();
 		if(shownSecs <= 0) 
 		{
@@ -3562,6 +3937,7 @@ void CStatisticsDlg::ShowInterval()
 			m_Statistics.Reset();
 			m_Statistics.SetXUnits(GetResString(IDS_STOPPED)); 
 		} 
+		//Xman end
 		else 
 		{
 			const CString buffer = CastSecondsToHM(shownSecs);
@@ -3572,9 +3948,29 @@ void CStatisticsDlg::ShowInterval()
 		UpdateData(FALSE);
 	}
 }
+
 //Xman end
 //Xman
 // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+/*
+void CStatisticsDlg::SetARange(bool SetDownload,int maxValue)
+{
+	if (SetDownload) 
+	{
+		m_DownloadOMeter.SetRange(0, maxValue, 0);
+		m_DownloadOMeter.SetRange(0, maxValue, 1);
+		m_DownloadOMeter.SetRange(0, maxValue, 2);
+	}
+	else
+	{
+		m_UploadOMeter.SetRange(0, maxValue, 0) ;
+		m_UploadOMeter.SetRange(0, maxValue, 1);
+		m_UploadOMeter.SetRange(0, maxValue, 2);
+		m_UploadOMeter.SetRange(0, maxValue, 3);
+		m_UploadOMeter.SetRange(0, maxValue, 4);
+	}
+}
+*/
 void CStatisticsDlg::SetARange(bool SetDownload, int maxValue){
 
 	// Maella -Network Adapter Feedback Control-
@@ -3945,6 +4341,12 @@ BOOL CStatisticsDlg::PreTranslateMessage(MSG* pMsg)
 	}
 
 	return CDialog::PreTranslateMessage(pMsg);
+}
+
+BOOL CStatisticsDlg::OnHelpInfo(HELPINFO* /*pHelpInfo*/)
+{
+	theApp.ShowHelp(eMule_FAQ_GUI_Statistics);
+	return TRUE;
 }
 
 // ==> Design Settings [eWombat/Stulle] - Max

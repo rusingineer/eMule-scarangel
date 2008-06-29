@@ -172,6 +172,7 @@ CPPgScar::CPPgScar()
 	m_htiUPnPNat = NULL;
 	m_htiUpnPNATwebservice = NULL;
 	m_htiUpnpBinaddr = NULL;
+	m_htiUPnPForceUpdate=NULL;
 	// <== UPnP support [MoNKi] - leuk_he 
 	// ==> Random Ports [MoNKi] - Stulle
 	m_htiRndGrp = NULL;
@@ -547,6 +548,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiUpnPNATwebservice = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_UPNP_ENABLE_WEB),m_htiUPnPNatGroup, m_bUpnPNATwebservice);
         m_htiUpnpBinaddr = m_ctrlTreeOptions.InsertItem(GetResString(IDS_UPNPBINDADDR), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiUPnPNatGroup);
 		m_ctrlTreeOptions.AddIPAddress(m_htiUpnpBinaddr , RUNTIME_CLASS(CTreeOptionsIPAddressCtrl));
+		m_htiUPnPForceUpdate= m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_UPNFORCEUPDATE), m_htiUPnPNatGroup, m_bUPnPForceUpdate);
 		// <== UPnP support [MoNKi] - leuk_he
 		// ==> Random Ports [MoNKi] - Stulle
 		m_htiRndGrp = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_RND_PORT_GROUP), iImgRndGrp,  m_htiConTweaks);
@@ -652,7 +654,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		// <== file settings - Stulle
 
 		// ==> TBH: minimule - Max
-		m_htiMMGroup = m_ctrlTreeOptions.InsertGroup(_T("TBH Mini-Mule"), iImgMinimule, TVI_ROOT);
+		m_htiMMGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_MM_GROUP), iImgMinimule, TVI_ROOT);
 		m_htiShowMM = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_MM_SHOW), m_htiMMGroup, m_bShowMM);
 		m_htiMMLives = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_MM_LIVES), m_htiMMGroup, m_bMMLives);
 		m_htiMMUpdateTime = m_ctrlTreeOptions.InsertItem(GetResString(IDS_MM_UPDATE_TIME), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiMMGroup);
@@ -734,7 +736,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		// ==> Release Bonus [sivka] - Stulle
 		m_htiReleaseBonusGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_RELEASE_BONUS_GROUP), iImgReleaseBonus, m_htiMisc);
 		m_htiReleaseBonus0 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_POWERSHARE_DISABLED), m_htiReleaseBonusGroup, m_iReleaseBonus == 0);
-		m_htiReleaseBonus1 = m_ctrlTreeOptions.InsertRadioButton(_T("12h"), m_htiReleaseBonusGroup, m_iReleaseBonus == 1);
+		m_htiReleaseBonus1 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_RELEASE_BONUS_12), m_htiReleaseBonusGroup, m_iReleaseBonus == 1);
 		m_htiReleaseBonusDays = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_DAYS2), m_htiReleaseBonusGroup, m_iReleaseBonus == 2);
 		m_htiReleaseBonusDaysEdit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_RELEASE_BONUS_EDIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiReleaseBonusDays);
 		m_ctrlTreeOptions.AddEditBox(m_htiReleaseBonusDaysEdit, RUNTIME_CLASS(CNumTreeOptionsEdit));
@@ -814,6 +816,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS,m_htiUPnPNat,m_bUPnPNat  )	;
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS,m_htiUpnPNATwebservice,  m_bUpnPNATwebservice);
 	DDX_TreeIPAddress(pDX, IDC_SCAR_OPTS,m_htiUpnpBinaddr  , m_dwUpnpBindAddr);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiUPnPForceUpdate, m_bUPnPForceUpdate);
 	// <== UPnP support [MoNKi] - leuk_he
 	// ==> Random Ports [MoNKi] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS,m_htiRandomports,m_bRandomports);
@@ -1184,6 +1187,7 @@ BOOL CPPgScar::OnInitDialog()
 	m_bUPnPNat = thePrefs.IsUPnPEnabled();
 	m_bUpnPNATwebservice = thePrefs.GetUPnPNatWeb();
 	m_dwUpnpBindAddr = thePrefs.GetUpnpBindAddr();
+	m_bUPnPForceUpdate=thePrefs.m_bUPnPForceUpdate; 
 	//<== UPnP support [MoNKi] - leuk_he
 	// ==> Random Ports [MoNKi] - Stulle
 	m_bRandomports = thePrefs.GetUseRandomPorts();
@@ -1578,6 +1582,7 @@ BOOL CPPgScar::OnApply()
 		thePrefs.SetUPnPNatWeb(m_bUpnPNATwebservice);
 	}
 	thePrefs.SetUpnpBindAddr(m_dwUpnpBindAddr);// Note: read code in thePrefs..
+	thePrefs.m_bUPnPForceUpdate=thePrefs.m_bUPnPForceUpdate;
 	//<== UPnP support [MoNKi] - leuk_he
 	// ==> Random Ports [MoNKi] - Stulle
 	bool oldUseRandom = thePrefs.GetUseRandomPorts();
@@ -1965,6 +1970,7 @@ void CPPgScar::Localize(void)
 		// ==> push small files [sivka] - Stulle
 		if (m_htiEnablePushSmallFile) m_ctrlTreeOptions.SetItemText(m_htiEnablePushSmallFile, GetResString(IDS_PUSH_SMALL));
 		if (m_htiPushSmallFileBoost) m_ctrlTreeOptions.SetEditLabel(m_htiPushSmallFileBoost, GetResString(IDS_PUSH_SMALL_BOOST));
+		GetDlgItem(IDC_PUSHSMALL_LABEL)->SetWindowText(GetResString(IDS_PUSH_SMALL));
 		// <== push small files [sivka] - Stulle
 		if (m_htiEnablePushRareFile) m_ctrlTreeOptions.SetItemText(m_htiEnablePushRareFile, GetResString(IDS_PUSH_RARE)); // push rare file - Stulle
 
@@ -2343,6 +2349,7 @@ void CPPgScar::OnDestroy()
 	m_htiUPnPNat = NULL;
 	m_htiUpnPNATwebservice = NULL;
 	m_htiUpnpBinaddr = NULL;
+	m_htiUPnPForceUpdate=NULL;
 	// <== UPnP support [MoNKi] - leuk_he 
 	// ==> Random Ports [MoNKi] - Stulle
 	m_htiRndGrp = NULL;

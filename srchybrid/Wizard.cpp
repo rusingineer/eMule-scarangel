@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -65,6 +65,7 @@ void CConnectionWizardDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Radio(pDX, IDC_WIZ_XP_RADIO, m_iOS);
 	DDX_Radio(pDX, IDC_WIZ_LOWDOWN_RADIO, m_iTotalDownload);
 }
+
 //Xman Xtreme Mod:
 //I did some changes here, but didn't implement the possibility to set decimals
 //because the wizard is for newbies... the profis change their settings in preferences itself
@@ -74,19 +75,39 @@ void CConnectionWizardDlg::OnBnClickedApply()
 	/*
 	if (m_provider.GetSelectionMark() == 0){
 		// change the upload/download to unlimited and dont touch other stuff, keep the default values
-		thePrefs.maxGraphUploadRate = 16; //Xman no support for unlimited
+		thePrefs.maxGraphUploadRate = UNLIMITED;
 		thePrefs.maxGraphDownloadRate = 96;
-		thePrefs.maxupload = 13; //Xman no support for unlimited
+		thePrefs.maxupload = UNLIMITED;
 		thePrefs.maxdownload = UNLIMITED;
 		theApp.emuledlg->statisticswnd->SetARange(false, thePrefs.GetMaxGraphUploadRate());
 		theApp.emuledlg->statisticswnd->SetARange(true, thePrefs.maxGraphDownloadRate);
 		theApp.emuledlg->preferenceswnd->m_wndConnection.LoadSettings();
 		CDialog::OnOK();
 		return;
-	}*/
+	}
+	*/
+	//Xman end
 
 	TCHAR buffer[510];
 	//Xman
+	/*
+	int upload, download;
+	if (GetDlgItem(IDC_WIZ_TRUEDOWNLOAD_BOX)->GetWindowTextLength())
+	{ 
+		GetDlgItem(IDC_WIZ_TRUEDOWNLOAD_BOX)->GetWindowText(buffer, 20);
+		download = _tstoi(buffer);
+	}
+	else
+	{
+		download = 0;
+ 	}
+
+	if (GetDlgItem(IDC_WIZ_TRUEUPLOAD_BOX)->GetWindowTextLength())
+	{ 
+		GetDlgItem(IDC_WIZ_TRUEUPLOAD_BOX)->GetWindowText(buffer, 20);
+		upload = _tstoi(buffer);
+	}
+	*/
 	float upload, download;
 	if (GetDlgItem(IDC_WIZ_TRUEDOWNLOAD_BOX)->GetWindowTextLength())
 	{ 
@@ -103,6 +124,7 @@ void CConnectionWizardDlg::OnBnClickedApply()
 		GetDlgItem(IDC_WIZ_TRUEUPLOAD_BOX)->GetWindowText(buffer, 20);
 		upload = (float)_tstof(buffer);
 	}
+	//Xman end
 	else
 	{
 		upload = 0;
@@ -121,8 +143,13 @@ void CConnectionWizardDlg::OnBnClickedApply()
 		download = ((download * 1000) + 512) / 1024;
 	}
 	*/
+	//Xman end
 
 	//Xman
+	/*
+	thePrefs.maxGraphDownloadRate = download;
+	thePrefs.maxGraphUploadRate = upload;
+	*/
 	// Check for Kbits/s or KBytes/s
 	if(IsDlgButtonChecked(IDC_KBITS) == BST_CHECKED){
 		upload /= 8.0f; 
@@ -134,7 +161,7 @@ void CConnectionWizardDlg::OnBnClickedApply()
 	{
 		//Xman changed
 		/*
-		thePrefs.maxupload = (float)((upload * 4L) / 5);
+		thePrefs.maxupload = (uint16)((upload * 4L) / 5);
 		if (upload < 4 && download > upload*3) {
 			thePrefs.maxdownload = thePrefs.maxupload * 3;
 			download = upload * 3;
@@ -145,11 +172,19 @@ void CConnectionWizardDlg::OnBnClickedApply()
 			download = upload * 4;
 		}
 		else
-			thePrefs.maxdownload = (float)((download * 9L) / 10);
-		*/
+			thePrefs.maxdownload = (uint16)((download * 9L) / 10);
 
+		theApp.emuledlg->statisticswnd->SetARange(false, thePrefs.maxGraphUploadRate);
+		theApp.emuledlg->statisticswnd->SetARange(true, thePrefs.maxGraphDownloadRate);
+		*/
 		thePrefs.maxGraphDownloadRate = download;
 		thePrefs.maxGraphUploadRate = upload;
+		//Xman 6.0.1 better newbie settings:
+		thePrefs.SetMaxUpload(theApp.emuledlg->GetRecMaxUpload());
+		if(thePrefs.GetMaxUpload() >= 11.0f) //Xman changed to 11
+			thePrefs.SetMaxDownload(UNLIMITED);
+		else
+			thePrefs.SetMaxDownload(thePrefs.GetMaxDownload()); //check for limit
 
 		// ==> Global Source Limit [Max/Stulle] - Stulle
 		uint32 m_uGlobalHlStandard = (uint32)(upload*0.9f);
@@ -158,20 +193,9 @@ void CConnectionWizardDlg::OnBnClickedApply()
 		thePrefs.m_uGlobalHL = m_uGlobalHlStandard;
 		// <== Global Source Limit [Max/Stulle] - Stulle
 
-		/*
-		thePrefs.SetMaxUpload(upload * 0.9f);
-		thePrefs.SetMaxDownload(download); 
-		*/
-		//Xman 6.0.1 better newbie settings:
-		thePrefs.SetMaxUpload(theApp.emuledlg->GetRecMaxUpload());
-		if(thePrefs.GetMaxUpload() >= 11.0f) //Xman changed to 11
-			thePrefs.SetMaxDownload(UNLIMITED);
-		else
-		thePrefs.SetMaxDownload(thePrefs.GetMaxDownload()); //check for limit
-		//Xman end
-
 		theApp.emuledlg->statisticswnd->SetARange(false, (int)thePrefs.maxGraphUploadRate);
 		theApp.emuledlg->statisticswnd->SetARange(true, (int)thePrefs.maxGraphDownloadRate);
+		//Xman end
 
 		if (m_iOS == 1)
 			thePrefs.maxconnections = 50;
@@ -337,7 +361,7 @@ BOOL CConnectionWizardDlg::OnInitDialog()
 	//Xman changed
 	/*
 	SetDlgItemInt(IDC_WIZ_TRUEDOWNLOAD_BOX, 0, FALSE);
-	SetDlgItemInt(IDC_WIZ_TRUEUPLOAD_BOX, ((thePrefs.maxGraphUploadRate * 1024) + 500) / 1000 * 8, FALSE); //Xman no support for unlimited
+	SetDlgItemInt(IDC_WIZ_TRUEUPLOAD_BOX, 0, FALSE);
 	*/
 
 
@@ -356,7 +380,10 @@ BOOL CConnectionWizardDlg::OnInitDialog()
 	m_provider.SetExtendedStyle(LVS_EX_FULLROWSELECT  | LVS_EX_INFOTIP);
 
 	//Xman no support for unlimited
-	//m_provider.InsertItem(0, GetResString(IDS_UNKNOWN));m_provider.SetItemText(0,1,_T(""));m_provider.SetItemText(0,2,_T(""));  
+	/*
+	m_provider.InsertItem(0, GetResString(IDS_UNKNOWN));m_provider.SetItemText(0,1,_T(""));m_provider.SetItemText(0,2,_T(""));
+	m_provider.InsertItem(1, GetResString(IDS_WIZARD_CUSTOM));m_provider.SetItemText(1,1,GetResString(IDS_WIZARD_ENTERBELOW));m_provider.SetItemText(1,2,GetResString(IDS_WIZARD_ENTERBELOW));
+	*/
 	m_provider.InsertItem(0, GetResString(IDS_WIZARD_CUSTOM));m_provider.SetItemText(0,1,GetResString(IDS_WIZARD_ENTERBELOW));m_provider.SetItemText(0,2,GetResString(IDS_WIZARD_ENTERBELOW));
 	m_provider.InsertItem(1,_T("T-DSL 16000"));m_provider.SetItemText(1,1,_T("16000"));m_provider.SetItemText(1,2,_T("1024")); //Xman 
 	//Xman end
@@ -380,7 +407,6 @@ BOOL CConnectionWizardDlg::OnInitDialog()
 	m_provider.InsertItem(16,_T("T1"));m_provider.SetItemText(16,1,_T("1500"));m_provider.SetItemText(16,2,_T("1500"));
 	m_provider.InsertItem(17,_T("T3+"));m_provider.SetItemText(17,1,_T("44 Mbps"));m_provider.SetItemText(17,2,_T("44 Mbps"));
 
-
 	m_provider.SetSelectionMark(0);
 	m_provider.SetItemState(0, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
 	SetCustomItemsActivation();
@@ -397,11 +423,14 @@ void CConnectionWizardDlg::OnNMClickProviders(NMHDR* /*pNMHDR*/, LRESULT* pResul
 	UINT up, down;
 	switch (m_provider.GetSelectionMark())
 	{
-	//case  0: down=   0;up=   13; break; //Xman no support for unlimited
 	//Xman changed
-	//case  0: down= ((thePrefs.maxGraphDownloadRate * 1024) + 500) / 1000 * 8; up= ((thePrefs.GetMaxGraphUploadRate() * 1024) + 500) / 1000 * 8; break;
+	/*
+		case  0: down=   0;up=   0; break;
+		case  1: down= ((thePrefs.maxGraphDownloadRate * 1024) + 500) / 1000 * 8; up= ((thePrefs.GetMaxGraphUploadRate(true) * 1024) + 500) / 1000 * 8; break;
+	*/
 	case  0: down= (UINT)thePrefs.GetMaxGraphDownloadRate()*8 ; up= (UINT)thePrefs.GetMaxGraphUploadRate()*8; break;
 	case  1: down=  16000;	up=  1024; break; //Xman 
+	//Xman end
 	case  2: down=   56;	up=   33; break;
 	case  3: down=   64;	up=   64; break;
 	case  4: down=  128;	up=  128; break;
@@ -444,9 +473,15 @@ void CConnectionWizardDlg::Localize()
 
 void CConnectionWizardDlg::SetCustomItemsActivation()
 {
-	BOOL bActive = m_provider.GetSelectionMark() == 0; //Xman no support for unlimited
+	//Xman no support for unlimited
+	/*
+	BOOL bActive = m_provider.GetSelectionMark() == 1;
+	*/
+	BOOL bActive = m_provider.GetSelectionMark() == 0;
+	//Xman end
 	GetDlgItem(IDC_WIZ_TRUEUPLOAD_BOX)->EnableWindow(bActive);
 	GetDlgItem(IDC_WIZ_TRUEDOWNLOAD_BOX)->EnableWindow(bActive);
 	GetDlgItem(IDC_KBITS)->EnableWindow(bActive);
 	GetDlgItem(IDC_KBYTES)->EnableWindow(bActive);
 }
+

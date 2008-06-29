@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -43,7 +43,12 @@ public:
 	void	ReloadFileList();
 	void	AddFile(const CKnownFile* file);
 	void	RemoveFile(const CKnownFile* file);
-	void	UpdateFile(const CKnownFile* file, bool force=false); //Xman advanced upload-priority
+	//Xman advanced upload-priority
+	/*
+	void	UpdateFile(const CKnownFile* file);
+	*/
+	void	UpdateFile(const CKnownFile* file, bool force=false);
+	//Xman end
 	void	Localize();
 	void	ShowFilesCount();
 	void	ShowComments(CKnownFile* file);
@@ -82,6 +87,8 @@ protected:
 	void ShowFileDialog(CTypedPtrList<CPtrList, CKnownFile*>& aFiles, UINT uPshInvokePage = 0);
 	void SetAllIcons();
 	int FindFile(const CKnownFile* pFile);
+	void GetItemDisplayText(const CKnownFile* file, int iSubItem, LPTSTR pszText, int cchTextMax) const;
+	bool IsFilteredItem(const CKnownFile* pKnownFile) const;
 
 	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct);

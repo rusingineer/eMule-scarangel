@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -16,7 +16,6 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "stdafx.h"
 #include <afxinet.h>
-
 #include "emule.h"
 #include "enbitmap.h"
 #include "OtherFunctions.h"
@@ -26,7 +25,10 @@
 #include "ListenSocket.h"
 #include "ClientUDPSocket.h"
 //Xman official UPNP removed
-//#include "UPnPFinder.h"
+/*
+#include "UPnPFinder.h"
+*/
+//Xman end
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -73,7 +75,6 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
-
 };
 
 IMPLEMENT_DYNCREATE(CDlgPageWizard, CPropertyPageEx)
@@ -163,7 +164,7 @@ void CPPgWiz1Welcome::DoDataExchange(CDataExchange* pDX)
 BOOL CPPgWiz1Welcome::OnInitDialog()
 {
 	CFont fontVerdanaBold;
-	fontVerdanaBold.CreatePointFont(120, _T("Verdana Bold"));
+	CreatePointFont(fontVerdanaBold, 12*10, _T("Verdana Bold"));
 	LOGFONT lf;
 	fontVerdanaBold.GetLogFont(&lf);
 	lf.lfWeight = FW_BOLD;
@@ -265,7 +266,11 @@ public:
 	virtual ~CPPgWiz1Ports();
 	virtual BOOL OnInitDialog();
 	afx_msg void OnStartConTest();
-	//afx_msg void OnStartUPnP(); //Xman official UPNP removed
+	//Xman official UPNP removed
+	/*
+	afx_msg void OnStartUPnP();
+	*/
+	//Xman end
 	afx_msg void OnEnChangeUDPDisable();
 
 	afx_msg void OnEnChangeUDP();
@@ -278,6 +283,8 @@ public:
 	void	OnOK();
 	void	OnCancel();
 	*/
+	//Xman end
+
 	void OnPortChange();
 
 	CString m_sTestURL,m_sUDP,m_sTCP;
@@ -296,12 +303,18 @@ protected:
 	CString lastudp;
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//Xman official UPNP removed
-	//void			ResetUPnPProgress();
+	/*
+	void			ResetUPnPProgress();
+	*/
+	//Xman end
 
 	DECLARE_MESSAGE_MAP()
 
 	//Xman official UPNP removed
-	//int m_nUPnPTicks;
+	/*
+	int m_nUPnPTicks;
+	*/
+	//Xman end
 };
 
 IMPLEMENT_DYNAMIC(CPPgWiz1Ports, CDlgPageWizard)
@@ -309,10 +322,18 @@ IMPLEMENT_DYNAMIC(CPPgWiz1Ports, CDlgPageWizard)
 BEGIN_MESSAGE_MAP(CPPgWiz1Ports, CDlgPageWizard)
 	ON_BN_CLICKED(IDC_STARTTEST, OnStartConTest)
 	ON_BN_CLICKED(IDC_UDPDISABLE, OnEnChangeUDPDisable)
-	//ON_BN_CLICKED(IDC_UPNPSTART, OnStartUPnP) //Xman official UPNP removed
+	//Xman official UPNP removed
+	/*
+	ON_BN_CLICKED(IDC_UPNPSTART, OnStartUPnP)
+	*/
+	//Xman end
 	ON_EN_CHANGE(IDC_TCP, OnEnChangeTCP)
 	ON_EN_CHANGE(IDC_UDP, OnEnChangeUDP)
-	//ON_WM_TIMER() //Xman official UPNP removed
+	//Xman official UPNP removed
+	/*
+	ON_WM_TIMER()
+	*/
+	//Xman end
 END_MESSAGE_MAP()
 
 CPPgWiz1Ports::CPPgWiz1Ports()
@@ -348,7 +369,6 @@ uint16 CPPgWiz1Ports::GetTCPPort() {
 
 uint16 CPPgWiz1Ports::GetUDPPort() {
 	uint16 udp = 0;
-
 	if (IsDlgButtonChecked(IDC_UDPDISABLE)==0) {
 		CString buffer;
 		GetDlgItem(IDC_UDP)->GetWindowText(buffer);
@@ -371,70 +391,72 @@ void CPPgWiz1Ports::OnPortChange() {
 }
 
 //Xman official UPNP removed
-//
-//BOOL CPPgWiz1Ports::OnKillActive(){
-//	ResetUPnPProgress();
-//	return CDlgPageWizard::OnKillActive();
-//}
-//
-//void CPPgWiz1Ports::OnOK(){
-//	ResetUPnPProgress();
-//	CDlgPageWizard::OnOK();
-//}
-//
-//void CPPgWiz1Ports::OnCancel(){
-//	ResetUPnPProgress();
-//	CDlgPageWizard::OnCancel();
-//}
-//
-//// ** UPnP Button stuff
-//void CPPgWiz1Ports::OnStartUPnP() {
-//	CDlgPageWizard::OnApply();
-//	try
-//	{
-//		if ( theApp.m_pUPnPFinder->AreServicesHealthy() )
-//			theApp.m_pUPnPFinder->StartDiscovery(GetTCPPort(), GetUDPPort());
-//	}
-//	catch ( CUPnPFinder::UPnPError& ) {}
-//	catch ( CException* e ) { e->Delete(); }
-//
-//	GetDlgItem(IDC_UPNPSTATUS)->SetWindowText(GetResString(IDS_UPNPSETUP));
-//	GetDlgItem(IDC_UPNPSTART)->EnableWindow(FALSE);
-//	m_nUPnPTicks = 0;
-//	((CProgressCtrl*)GetDlgItem(IDC_UPNPPROGRESS))->SetPos(0);
-//	VERIFY( SetTimer(1, 1000, NULL) );
-//}
-//
-//void CPPgWiz1Ports::OnTimer(UINT /*nIDEvent*/){
-//	m_nUPnPTicks++;
-//	if (theApp.m_pUPnPFinder && theApp.m_pUPnPFinder->m_bUPnPPortsForwarded == TRIS_UNKNOWN)
-//	{
-//		if (m_nUPnPTicks < 40){
-//			((CProgressCtrl*)GetDlgItem(IDC_UPNPPROGRESS))->SetPos(m_nUPnPTicks);
-//			return;
-//		}
-//	}
-//	if (theApp.m_pUPnPFinder && theApp.m_pUPnPFinder->m_bUPnPPortsForwarded == TRIS_TRUE){
-//		((CProgressCtrl*)GetDlgItem(IDC_UPNPPROGRESS))->SetPos(40);
-//		CString strMessage;
-//		strMessage.Format(GetResString(IDS_UPNPSUCCESS), GetTCPPort(), GetUDPPort());
-//		GetDlgItem(IDC_UPNPSTATUS)->SetWindowText(strMessage);
-//		// enable UPnP in the preferences after the successful try
-//		thePrefs.m_bEnableUPnP = true;
-//	}
-//	else{
-//		((CProgressCtrl*)GetDlgItem(IDC_UPNPPROGRESS))->SetPos(0);
-//		GetDlgItem(IDC_UPNPSTATUS)->SetWindowText(GetResString(IDS_UPNPFAILED));
-//	}
-//	GetDlgItem(IDC_UPNPSTART)->EnableWindow(TRUE);
-//	VERIFY( KillTimer(1));
-//}
-//
-//void CPPgWiz1Ports::ResetUPnPProgress(){
-//	KillTimer(1);
-//	((CProgressCtrl*)GetDlgItem(IDC_UPNPPROGRESS))->SetPos(0);
-//	GetDlgItem(IDC_UPNPSTART)->EnableWindow(TRUE);
-//}
+/*
+BOOL CPPgWiz1Ports::OnKillActive(){
+	ResetUPnPProgress();
+	return CDlgPageWizard::OnKillActive();
+}
+
+void CPPgWiz1Ports::OnOK(){
+	ResetUPnPProgress();
+	CDlgPageWizard::OnOK();
+}
+
+void CPPgWiz1Ports::OnCancel(){
+	ResetUPnPProgress();
+	CDlgPageWizard::OnCancel();
+}
+
+// ** UPnP Button stuff
+void CPPgWiz1Ports::OnStartUPnP() {
+	CDlgPageWizard::OnApply();
+	try
+	{
+		if ( theApp.m_pUPnPFinder->AreServicesHealthy() )
+			theApp.m_pUPnPFinder->StartDiscovery(GetTCPPort(), GetUDPPort());
+	}
+	catch ( CUPnPFinder::UPnPError& ) {}
+	catch ( CException* e ) { e->Delete(); }
+
+	GetDlgItem(IDC_UPNPSTATUS)->SetWindowText(GetResString(IDS_UPNPSETUP));
+	GetDlgItem(IDC_UPNPSTART)->EnableWindow(FALSE);
+	m_nUPnPTicks = 0;
+	((CProgressCtrl*)GetDlgItem(IDC_UPNPPROGRESS))->SetPos(0);
+	VERIFY( SetTimer(1, 1000, NULL) );
+}
+
+void CPPgWiz1Ports::OnTimer(UINT /*nIDEvent*//*){
+	m_nUPnPTicks++;
+	if (theApp.m_pUPnPFinder && theApp.m_pUPnPFinder->m_bUPnPPortsForwarded == TRIS_UNKNOWN)
+	{
+		if (m_nUPnPTicks < 40){
+			((CProgressCtrl*)GetDlgItem(IDC_UPNPPROGRESS))->SetPos(m_nUPnPTicks);
+			return;
+		}
+	}
+	if (theApp.m_pUPnPFinder && theApp.m_pUPnPFinder->m_bUPnPPortsForwarded == TRIS_TRUE){
+		((CProgressCtrl*)GetDlgItem(IDC_UPNPPROGRESS))->SetPos(40);
+		CString strMessage;
+		strMessage.Format(GetResString(IDS_UPNPSUCCESS), GetTCPPort(), GetUDPPort());
+		GetDlgItem(IDC_UPNPSTATUS)->SetWindowText(strMessage);
+		// enable UPnP in the preferences after the successful try
+		thePrefs.m_bEnableUPnP = true;
+	}
+	else{
+		((CProgressCtrl*)GetDlgItem(IDC_UPNPPROGRESS))->SetPos(0);
+		GetDlgItem(IDC_UPNPSTATUS)->SetWindowText(GetResString(IDS_UPNPFAILED));
+	}
+	GetDlgItem(IDC_UPNPSTART)->EnableWindow(TRUE);
+	VERIFY( KillTimer(1));
+}
+
+void CPPgWiz1Ports::ResetUPnPProgress(){
+	KillTimer(1);
+	((CProgressCtrl*)GetDlgItem(IDC_UPNPPROGRESS))->SetPos(0);
+	GetDlgItem(IDC_UPNPSTART)->EnableWindow(TRUE);
+}
+*/
+//Xman end
 
 // **
 
@@ -467,14 +489,16 @@ void CPPgWiz1Ports::OnStartConTest() {
 	TriggerPortTest(tcp,udp);
 }
 
-
 BOOL CPPgWiz1Ports::OnInitDialog()
 {
 	CDlgPageWizard::OnInitDialog();
 	CheckDlgButton(IDC_UDPDISABLE, m_sUDP.IsEmpty() || m_sUDP == _T("0"));
 	GetDlgItem(IDC_UDP)->EnableWindow(IsDlgButtonChecked(IDC_UDPDISABLE) == 0);
 	//Xman official UPNP removed
-	//((CProgressCtrl*)GetDlgItem(IDC_UPNPPROGRESS))->SetRange(0, 40);
+	/*
+	((CProgressCtrl*)GetDlgItem(IDC_UPNPPROGRESS))->SetRange(0, 40);
+	*/
+	//Xman end
 	InitWindowStyles(this);
 	
 	lastudp = m_sUDP;
@@ -492,6 +516,7 @@ BOOL CPPgWiz1Ports::OnInitDialog()
 	SetDlgItemText(IDC_UPNPSTART, GetResString(IDS_UPNPSTART));
 	SetDlgItemText(IDC_UPNPSTATUS, _T(""));
 	*/
+	//Xman end
 	SetDlgItemText(IDC_ENABLE_PNP, GetResString(IDS_CN_UPNPNAT)); // enable upnpnat
 
 	switch(thePrefs.GetUpnpDetect()) {
@@ -608,7 +633,7 @@ public:
 	CPPgWiz1Upload(UINT nIDTemplate, LPCTSTR pszCaption = NULL, LPCTSTR pszHeaderTitle = NULL, LPCTSTR pszHeaderSubTitle = NULL)
 		: CDlgPageWizard(nIDTemplate, pszCaption, pszHeaderTitle, pszHeaderSubTitle)
 	{
-		m_iULFullChunks = 1;
+		m_iObfuscation = 0;
 	}
 	virtual ~CPPgWiz1Upload();
 	virtual BOOL OnInitDialog();
@@ -616,7 +641,7 @@ public:
 // Dialog Data
 	enum { IDD = IDD_WIZ1_UPLOAD };
 
-	int m_iULFullChunks;
+	int m_iObfuscation;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -632,7 +657,7 @@ END_MESSAGE_MAP()
 CPPgWiz1Upload::CPPgWiz1Upload()
 	: CDlgPageWizard(CPPgWiz1Upload::IDD)
 {
-	m_iULFullChunks = 1;
+	m_iObfuscation = 0;
 }
 
 CPPgWiz1Upload::~CPPgWiz1Upload()
@@ -642,14 +667,14 @@ CPPgWiz1Upload::~CPPgWiz1Upload()
 void CPPgWiz1Upload::DoDataExchange(CDataExchange* pDX)
 {
 	CDlgPageWizard::DoDataExchange(pDX);
-	DDX_Check(pDX, IDC_FULLCHUNKTRANS, m_iULFullChunks);
+	DDX_Check(pDX, IDC_WIZZARDOBFUSCATION, m_iObfuscation);
 }
 
 BOOL CPPgWiz1Upload::OnInitDialog()
 {
 	CDlgPageWizard::OnInitDialog();
 	InitWindowStyles(this);
-	GetDlgItem(IDC_FULLCHUNKTRANS)->SetWindowText(GetResString(IDS_FIRSTFULLCHUNK));
+	GetDlgItem(IDC_WIZZARDOBFUSCATION)->SetWindowText(GetResString(IDS_WIZZARDOBFUSCATION));
 	return TRUE;
 }
 
@@ -741,6 +766,7 @@ BOOL CPPgWiz1Server::OnSetActive(){
 	return CDlgPageWizard::OnSetActive();
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 // CPPgWiz1End dialog
 
@@ -789,7 +815,7 @@ void CPPgWiz1End::DoDataExchange(CDataExchange* pDX)
 BOOL CPPgWiz1End::OnInitDialog()
 {
 	CFont fontVerdanaBold;
-	fontVerdanaBold.CreatePointFont(120, _T("Verdana Bold"));
+	CreatePointFont(fontVerdanaBold, 12*10, _T("Verdana Bold"));
 	LOGFONT lf;
 	fontVerdanaBold.GetLogFont(&lf);
 	lf.lfWeight = FW_BOLD;
@@ -863,7 +889,7 @@ BOOL FirstTimeWizard()
 	CPPgWiz1UlPrio page4(IDD_WIZ1_ULDL_PRIO, GetResString(IDS_WIZ1), GetResString(IDS_PW_CON_DOWNLBL) + _T(" / ") + GetResString(IDS_PW_CON_UPLBL), GetResString(IDS_PRIORITY));
 	sheet.AddPage(&page4);
 	
-	CPPgWiz1Upload page5(IDD_WIZ1_UPLOAD, GetResString(IDS_WIZ1), GetResString(IDS_PW_CON_UPLBL), GetResString(IDS_WIZ1_UPLOAD_SUBTITLE));
+	CPPgWiz1Upload page5(IDD_WIZ1_UPLOAD, GetResString(IDS_WIZ1), GetResString(IDS_SECURITY), GetResString(IDS_OBFUSCATION));
 	sheet.AddPage(&page5);
 	
 	CPPgWiz1Server page6(IDD_WIZ1_SERVER, GetResString(IDS_WIZ1), GetResString(IDS_PW_SERVER), GetResString(IDS_NETWORK));
@@ -881,7 +907,7 @@ BOOL FirstTimeWizard()
 	page3.m_sUDP.Format(_T("%u"), thePrefs.GetUDPPort());
 	page4.m_iDAP = 1;
 	page4.m_iUAP = 1;
-	page5.m_iULFullChunks = 1;
+	page5.m_iObfuscation = thePrefs.IsClientCryptLayerRequested() ? 1 : 0;
 	page6.m_iSafeServerConnect = 0;
 	page6.m_iKademlia = 1;
 	page6.m_iED2K = 1;
@@ -918,7 +944,9 @@ BOOL FirstTimeWizard()
 		RemAutoStart();
 	thePrefs.SetNewAutoDown(page4.m_iDAP!=0);
 	thePrefs.SetNewAutoUp(page4.m_iUAP!=0);
-	thePrefs.SetTransferFullChunks(page5.m_iULFullChunks!=0);
+	thePrefs.m_bCryptLayerRequested = page5.m_iObfuscation != 0;
+	if (page5.m_iObfuscation != 0)
+		thePrefs.m_bCryptLayerSupported = true;
 	thePrefs.SetSafeServerConnectEnabled(page6.m_iSafeServerConnect!=0);
 	thePrefs.SetNetworkKademlia(page6.m_iKademlia!=0);
 	thePrefs.SetNetworkED2K(page6.m_iED2K!=0);
@@ -945,3 +973,4 @@ BOOL FirstTimeWizard()
 	
 	return TRUE;
 }
+

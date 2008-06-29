@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -358,16 +358,16 @@ void CPPgScheduler::OnNMRclickActionlist(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	// <== more icons - Stulle
 
 	if (!isParameterless) { // Advanced Updates [MorphXT/Stulle] - Stulle
-		if (isCatAction) {
-			if (thePrefs.GetCatCount()>1) m_CatActionSel.AppendMenu(MF_STRING,MP_SCHACTIONS+20,GetResString(IDS_ALLUNASSIGNED));
-			m_CatActionSel.AppendMenu(MF_STRING,MP_SCHACTIONS+21,GetResString(IDS_ALL));
-			for (int i=1;i<thePrefs.GetCatCount();i++)
-				m_CatActionSel.AppendMenu(MF_STRING,MP_SCHACTIONS+22+i,thePrefs.GetCategory(i)->strTitle);
+	if (isCatAction) {
+		if (thePrefs.GetCatCount()>1) m_CatActionSel.AppendMenu(MF_STRING,MP_SCHACTIONS+20,GetResString(IDS_ALLUNASSIGNED));
+		m_CatActionSel.AppendMenu(MF_STRING,MP_SCHACTIONS+21,GetResString(IDS_ALL));
+		for (int i=1;i<thePrefs.GetCatCount();i++)
+			m_CatActionSel.AppendMenu(MF_STRING,MP_SCHACTIONS+22+i,thePrefs.GetCategory(i)->strTitle);
 			// ==> more icons - Stulle
 			/*
-			m_ActionMenu.AppendMenu(MF_POPUP,(UINT_PTR)m_CatActionSel.m_hMenu,	GetResString(IDS_SELECTCAT));
-		} else
-			m_ActionMenu.AppendMenu(nFlag,MP_CAT_EDIT,	GetResString(IDS_EDIT));
+		m_ActionMenu.AppendMenu(MF_POPUP,(UINT_PTR)m_CatActionSel.m_hMenu,	GetResString(IDS_SELECTCAT));
+	} else
+		m_ActionMenu.AppendMenu(nFlag,MP_CAT_EDIT,	GetResString(IDS_EDIT));
 			*/
 			m_ActionMenu.AppendMenu(MF_POPUP,(UINT_PTR)m_CatActionSel.m_hMenu,	GetResString(IDS_SELECTCAT), _T("CATEDIT"));
 		} else

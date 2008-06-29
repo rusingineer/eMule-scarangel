@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -169,6 +169,9 @@ void CDownloadListCtrl::Init()
 	curTab=0;
 
 	//Xman Show active downloads bold
+	/*
+	if (thePrefs.GetShowActiveDownloadsBold())
+	*/
 	{
 		CFont* pFont = GetFont();
 		LOGFONT lfFont = {0};
@@ -221,18 +224,35 @@ void CDownloadListCtrl::OnSysColorChange()
 	CreateMenues();
 }
 
-//Xman Show correct Icons
 void CDownloadListCtrl::SetAllIcons()
 {
 	m_ImageList.DeleteImageList();
 	m_ImageList.Create(16,16,theApp.m_iDfltImageListColorFlags|ILC_MASK,0,1);
 	m_ImageList.SetBkColor(CLR_NONE);
-			
 	m_ImageList.Add(CTempIconLoader(_T("SrcDownloading")));
 	m_ImageList.Add(CTempIconLoader(_T("SrcOnQueue")));
 	m_ImageList.Add(CTempIconLoader(_T("SrcConnecting")));
 	m_ImageList.Add(CTempIconLoader(_T("SrcNNPQF")));
 	m_ImageList.Add(CTempIconLoader(_T("SrcUnknown")));
+	//Xman Show correct Icons
+	/*
+	m_ImageList.Add(CTempIconLoader(_T("ClientCompatible")));
+	m_ImageList.Add(CTempIconLoader(_T("Friend")));
+	m_ImageList.Add(CTempIconLoader(_T("ClientEDonkey")));
+	m_ImageList.Add(CTempIconLoader(_T("ClientMLDonkey")));
+	m_ImageList.Add(CTempIconLoader(_T("ClientEDonkeyHybrid")));
+	m_ImageList.Add(CTempIconLoader(_T("ClientShareaza")));
+	m_ImageList.Add(CTempIconLoader(_T("Server")));
+	m_ImageList.Add(CTempIconLoader(_T("ClientAMule")));
+	m_ImageList.Add(CTempIconLoader(_T("ClientLPhant")));
+	m_ImageList.Add(CTempIconLoader(_T("Rating_NotRated")));
+	m_ImageList.Add(CTempIconLoader(_T("Rating_Fake")));
+	m_ImageList.Add(CTempIconLoader(_T("Rating_Poor")));
+	m_ImageList.Add(CTempIconLoader(_T("Rating_Fair")));
+	m_ImageList.Add(CTempIconLoader(_T("Rating_Good")));
+	m_ImageList.Add(CTempIconLoader(_T("Rating_Excellent")));
+	m_ImageList.Add(CTempIconLoader(_T("Collection_Search"))); // rating for comments are searched on kad
+	*/
 	m_ImageList.Add(CTempIconLoader(_T("Rating_NotRated")));	//5
 	m_ImageList.Add(CTempIconLoader(_T("Rating_Fake")));		//6
 	m_ImageList.Add(CTempIconLoader(_T("Rating_Poor")));		//7
@@ -263,6 +283,7 @@ void CDownloadListCtrl::SetAllIcons()
 	//Xman friend visualization
 	m_ImageList.Add(CTempIconLoader(_T("ClientFriendSlotOvl"))); //32
 	//Xman end
+	//Xman end
 
 	// ==> Mod Icons - Stulle
 	m_ImageList.Add(CTempIconLoader(_T("AAAEMULEAPP"))); //33
@@ -288,7 +309,6 @@ void CDownloadListCtrl::SetAllIcons()
 	m_overlayimages.Add(CTempIconLoader(_T("ClientCreditSecureOvl")));
 	// <== Mod Icons - Stulle
 }
-//Xman end
 
 void CDownloadListCtrl::Localize()
 {
@@ -378,7 +398,6 @@ void CDownloadListCtrl::Localize()
 	// <== show # of dropped sources - Stulle
 
 	CreateMenues();
-
 	ShowFilesCount();
 
 	// ==> Design Settings [eWombat/Stulle] - Stulle
@@ -556,7 +575,12 @@ void CDownloadListCtrl::UpdateItem(void* toupdate)
 
 void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlItem_Struct *lpCtrlItem)
 {
-	if(lpRect->left < lpRect->right && !IsColumnHidden(nColumn))  //Xman Code-Improvement: Don't draw hidden
+	//Xman Code-Improvement: Don't draw hidden
+	/*
+	if(lpRect->left < lpRect->right)
+	*/
+	if(lpRect->left < lpRect->right && !IsColumnHidden(nColumn))
+	//Xman end
 	{
 		CString buffer;
 		/*const*/ CPartFile *lpPartFile = (CPartFile*)lpCtrlItem->value;
@@ -564,13 +588,19 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 		{
 		case 0:{	// file name
 			CRect rcDraw(lpRect);
+			int iIconPosY = (rcDraw.Height() > theApp.GetSmallSytemIconSize().cy) ? ((rcDraw.Height() - theApp.GetSmallSytemIconSize().cy) / 2) : 0;
 			int iImage = theApp.GetFileTypeSystemImageIdx(lpPartFile->GetFileName());
 			if (theApp.GetSystemImageList() != NULL)
-				::ImageList_Draw(theApp.GetSystemImageList(), iImage, dc->GetSafeHdc(), rcDraw.left, rcDraw.top, ILD_NORMAL|ILD_TRANSPARENT);
+				::ImageList_Draw(theApp.GetSystemImageList(), iImage, dc->GetSafeHdc(), rcDraw.left, rcDraw.top + iIconPosY, ILD_NORMAL | ILD_TRANSPARENT);
 			rcDraw.left += theApp.GetSmallSytemIconSize().cx;
 
 			if (thePrefs.ShowRatingIndicator() && (lpPartFile->HasComment() || lpPartFile->HasRating() || lpPartFile->IsKadCommentSearchRunning())){
-				m_ImageList.Draw(dc, lpPartFile->UserRating(true)+5, rcDraw.TopLeft(), ILD_NORMAL); //Xman Show correct Icons
+				//Xman Show correct Icons
+				/*
+				m_ImageList.Draw(dc, lpPartFile->UserRating(true) + 14, CPoint(rcDraw.left, rcDraw.top + iIconPosY), ILD_NORMAL);
+				*/
+				m_ImageList.Draw(dc, lpPartFile->UserRating(true) + 5, CPoint(rcDraw.left, rcDraw.top + iIconPosY), ILD_NORMAL);
+				//Xman end
 				rcDraw.left += RATING_ICON_WIDTH;
 			}
 
@@ -596,7 +626,12 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 
 		case 4:		// speed
 			if (lpPartFile->GetTransferringSrcCount())
-				buffer.Format(_T("%s"), CastItoXBytes(lpPartFile->GetDownloadDatarate() , false, true)); //Xman // Maella -Accurate measure of bandwidth: IP, TCP or UDP, eDonkey protocol, etc-
+				//Xman // Maella -Accurate measure of bandwidth: IP, TCP or UDP, eDonkey protocol, etc-
+				/*
+				buffer.Format(_T("%s"), CastItoXBytes(lpPartFile->GetDatarate(), false, true));
+				*/
+				buffer.Format(_T("%s"), CastItoXBytes(lpPartFile->GetDownloadDatarate() , false, true));
+				//Xman end
 			dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT | DT_RIGHT);
 			break;
 
@@ -608,12 +643,40 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 
 				// added
 				//Xman Code Improvement
+				/*
 				int iWidth = rcDraw.Width();
 				int iHeight = rcDraw.Height();
-				//if (lpCtrlItem->status == (HBITMAP)NULL)
-				//	VERIFY(lpCtrlItem->status.CreateBitmap(1, 1, 1, 8, NULL));
+				if (lpCtrlItem->status == (HBITMAP)NULL)
+					VERIFY(lpCtrlItem->status.CreateBitmap(1, 1, 1, 8, NULL));
 				CDC cdcStatus;
-				//HGDIOBJ hOldBitmap;
+				HGDIOBJ hOldBitmap;
+				cdcStatus.CreateCompatibleDC(dc);
+				int cx = lpCtrlItem->status.GetBitmapDimension().cx; 
+				DWORD dwTicks = GetTickCount();
+				if(lpCtrlItem->dwUpdated + DLC_BARUPDATE < dwTicks || cx !=  iWidth || !lpCtrlItem->dwUpdated) {
+					lpCtrlItem->status.DeleteObject(); 
+					lpCtrlItem->status.CreateCompatibleBitmap(dc,  iWidth, iHeight); 
+					lpCtrlItem->status.SetBitmapDimension(iWidth,  iHeight); 
+					hOldBitmap = cdcStatus.SelectObject(lpCtrlItem->status); 
+
+					RECT rec_status; 
+					rec_status.left = 0; 
+					rec_status.top = 0; 
+					rec_status.bottom = iHeight; 
+					rec_status.right = iWidth; 
+					lpPartFile->DrawStatusBar(&cdcStatus,  &rec_status, thePrefs.UseFlatBar()); 
+
+					lpCtrlItem->dwUpdated = dwTicks + (rand() % 128); 
+				} else 
+					hOldBitmap = cdcStatus.SelectObject(lpCtrlItem->status); 
+
+				dc->BitBlt(rcDraw.left, rcDraw.top, iWidth, iHeight,  &cdcStatus, 0, 0, SRCCOPY); 
+				cdcStatus.SelectObject(hOldBitmap);
+				//added end
+				*/
+				int iWidth = rcDraw.Width();
+				int iHeight = rcDraw.Height();
+				CDC cdcStatus;
 				cdcStatus.CreateCompatibleDC(dc);
 				int cx = 0;
 				if (lpCtrlItem->status != (HBITMAP)NULL)
@@ -637,7 +700,6 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 					cdcStatus.SelectObject(lpCtrlItem->status);
 
 				dc->BitBlt(rcDraw.left, rcDraw.top, iWidth, iHeight,  &cdcStatus, 0, 0, SRCCOPY); 
-				//cdcStatus.SelectObject(hOldBitmap);
 				//Xman end
 
 				if (thePrefs.GetUseDwlPercentage()) {
@@ -717,18 +779,17 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 			{
 				if (lpPartFile->GetStatus()!=PS_COMPLETING && lpPartFile->GetStatus()!=PS_COMPLETE ){
 					// time 
-
 					time_t restTime;
 					if (!thePrefs.UseSimpleTimeRemainingComputation())
 						restTime = lpPartFile->getTimeRemaining();
 					else
 						restTime = lpPartFile->getTimeRemainingSimple();
+
 					buffer.Format(_T("%s (%s)"), CastSecondsToHM(restTime), CastItoXBytes((lpPartFile->GetFileSize() - lpPartFile->GetCompletedSize()), false, false));
 				}
 				dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
 			}
 			break;
-
 		case 10: // last seen complete
 			{
 				CString tempbuffer;
@@ -777,8 +838,9 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 			dc->DrawText(buffer, buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
 			// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 			break;
-		
-		case 13:		// Xman Xtreme Downloadmanager: AVG-QR
+
+		// Xman Xtreme Downloadmanager: AVG-QR
+		case 13:
 		{
 			if (lpPartFile->GetStatus()!=PS_COMPLETING && lpPartFile->GetStatus()!=PS_COMPLETE )
 			{
@@ -789,6 +851,7 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 			dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
 			break;
 		}
+		//Xman end
 
 		// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 		case 14: // Resume Mod
@@ -847,16 +910,22 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 }
 
 void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlItem_Struct *lpCtrlItem) {
-	if(lpRect->left < lpRect->right && !IsColumnHidden(nColumn))  //Xman Code-Improvement: Don't draw hidden
-	{
+	//Xman Code-Improvement: Don't draw hidden
+	/*
+	if(lpRect->left < lpRect->right) { 
+	*/
+	if(lpRect->left < lpRect->right && !IsColumnHidden(nColumn)) {
+	//Xman end
+
 		CString buffer;
 		CUpDownClient *lpUpDownClient = (CUpDownClient*)lpCtrlItem->value;
 		switch(nColumn) {
 
 		case 0:		// icon, name, status
 			{
-				RECT cur_rec = *lpRect;
-				POINT point = {cur_rec.left, cur_rec.top+1};
+				CRect cur_rec(*lpRect);
+				int iIconPosY = (cur_rec.Height() > 16) ? ((cur_rec.Height() - 16) / 2) : 1;
+				POINT point = {cur_rec.left, cur_rec.top + iIconPosY};
 				if (lpCtrlItem->type == AVAILABLE_SOURCE){
 					switch (lpUpDownClient->GetDownloadState()) {
 					case DS_CONNECTING:
@@ -896,22 +965,46 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 					}
 				}
 				else {
-
 					m_ImageList.Draw(dc, 3, point, ILD_NORMAL);
 				}
 				cur_rec.left += 20;
+
 				UINT uOvlImg = 0;
 				if ((lpUpDownClient->Credits() && lpUpDownClient->Credits()->GetCurrentIdentState(lpUpDownClient->GetIP()) == IS_IDENTIFIED))
 					uOvlImg |= 1;
 				//Xman changed: display the obfuscation icon for all clients which enabled it
+				/*
+				if (lpUpDownClient->IsObfuscatedConnectionEstablished())
+				*/
 				if(lpUpDownClient->IsObfuscatedConnectionEstablished() 
 					|| (!(lpUpDownClient->socket != NULL && lpUpDownClient->socket->IsConnected())
 					&& (lpUpDownClient->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (lpUpDownClient->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()))))
+				//Xman end
 					uOvlImg |= 2;
 
-				POINT point2= {cur_rec.left,cur_rec.top+1};
+				POINT point2 = {cur_rec.left, cur_rec.top + iIconPosY};
 				
-////Xman Show correct Icons
+				//Xman Show correct Icons
+				/*
+				if (lpUpDownClient->IsFriend())
+					m_ImageList.Draw(dc, 6, point2, ILD_NORMAL | INDEXTOOVERLAYMASK(uOvlImg));
+				else if (lpUpDownClient->GetClientSoft() == SO_EDONKEYHYBRID)
+					m_ImageList.Draw(dc, 9, point2, ILD_NORMAL | INDEXTOOVERLAYMASK(uOvlImg));
+				else if (lpUpDownClient->GetClientSoft() == SO_MLDONKEY)
+					m_ImageList.Draw(dc, 8, point2, ILD_NORMAL | INDEXTOOVERLAYMASK(uOvlImg));
+				else if (lpUpDownClient->GetClientSoft() == SO_SHAREAZA)
+					m_ImageList.Draw(dc, 10, point2, ILD_NORMAL | INDEXTOOVERLAYMASK(uOvlImg));
+				else if (lpUpDownClient->GetClientSoft() == SO_URL)
+					m_ImageList.Draw(dc, 11, point2, ILD_NORMAL | INDEXTOOVERLAYMASK(uOvlImg));
+				else if (lpUpDownClient->GetClientSoft() == SO_AMULE)
+					m_ImageList.Draw(dc, 12, point2, ILD_NORMAL | INDEXTOOVERLAYMASK(uOvlImg));
+				else if (lpUpDownClient->GetClientSoft() == SO_LPHANT)
+					m_ImageList.Draw(dc, 13, point2, ILD_NORMAL | INDEXTOOVERLAYMASK(uOvlImg));
+				else if (lpUpDownClient->ExtProtocolAvailable())
+					m_ImageList.Draw(dc, 5, point2, ILD_NORMAL | INDEXTOOVERLAYMASK(uOvlImg));
+				else
+					m_ImageList.Draw(dc, 7, point2, ILD_NORMAL | INDEXTOOVERLAYMASK(uOvlImg));
+				*/
 				uint8 image;
 				if (lpUpDownClient->IsFriend())
 					image = 20;
@@ -1052,12 +1145,39 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 				rcDraw.top++; 
 
 				//Xman Code Improvement
+				/*
 				int iWidth = rcDraw.Width();
 				int iHeight = rcDraw.Height();
-				//if (lpCtrlItem->status == (HBITMAP)NULL)
-					//VERIFY(lpCtrlItem->status.CreateBitmap(1, 1, 1, 8, NULL)); 
+				if (lpCtrlItem->status == (HBITMAP)NULL)
+					VERIFY(lpCtrlItem->status.CreateBitmap(1, 1, 1, 8, NULL)); 
 				CDC cdcStatus;
-				//HGDIOBJ hOldBitmap;
+				HGDIOBJ hOldBitmap;
+				cdcStatus.CreateCompatibleDC(dc);
+				int cx = lpCtrlItem->status.GetBitmapDimension().cx;
+				DWORD dwTicks = GetTickCount();
+				if(lpCtrlItem->dwUpdated + DLC_BARUPDATE < dwTicks || cx !=  iWidth  || !lpCtrlItem->dwUpdated) { 
+					lpCtrlItem->status.DeleteObject(); 
+					lpCtrlItem->status.CreateCompatibleBitmap(dc,  iWidth, iHeight); 
+					lpCtrlItem->status.SetBitmapDimension(iWidth,  iHeight); 
+					hOldBitmap = cdcStatus.SelectObject(lpCtrlItem->status); 
+
+					RECT rec_status; 
+					rec_status.left = 0; 
+					rec_status.top = 0; 
+					rec_status.bottom = iHeight; 
+					rec_status.right = iWidth; 
+					lpUpDownClient->DrawStatusBar(&cdcStatus,  &rec_status,(lpCtrlItem->type == UNAVAILABLE_SOURCE), thePrefs.UseFlatBar()); 
+
+					lpCtrlItem->dwUpdated = dwTicks + (rand() % 128); 
+				} else 
+					hOldBitmap = cdcStatus.SelectObject(lpCtrlItem->status); 
+
+				dc->BitBlt(rcDraw.left, rcDraw.top, iWidth, iHeight,  &cdcStatus, 0, 0, SRCCOPY); 
+				cdcStatus.SelectObject(hOldBitmap);
+				*/
+				int iWidth = rcDraw.Width();
+				int iHeight = rcDraw.Height();
+				CDC cdcStatus;
 				cdcStatus.CreateCompatibleDC(dc);
 				int cx = 0;
 				if (lpCtrlItem->status != (HBITMAP)NULL)
@@ -1115,14 +1235,18 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 					cdcStatus.SelectObject(lpCtrlItem->status); 
 
 				dc->BitBlt(rcDraw.left, rcDraw.top, iWidth, iHeight,  &cdcStatus, 0, 0, SRCCOPY); 
-				//cdcStatus.SelectObject(hOldBitmap);
 				//Xman end
 			}
 			break;
 
 		case 6:		// sources
 		{
-			buffer = lpUpDownClient->DbgGetFullClientSoftVer(); //Xman // Maella -Support for tag ET_MOD_VERSION 0x55
+			//Xman // Maella -Support for tag ET_MOD_VERSION 0x55
+			/*
+			buffer = lpUpDownClient->GetClientSoftVer();
+			*/
+			buffer = lpUpDownClient->DbgGetFullClientSoftVer();
+			//Xman end
 			if (buffer.IsEmpty())
 				buffer = GetResString(IDS_UNKNOWN);
 			CRect rc(lpRect);
@@ -1195,15 +1319,20 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 				//Xman only intern
 				//if(lpUpDownClient->GetDownloadState()==DS_TOOMANYCONNS)
 				//	buffer.Format(_T("P:%u,M:%u,Q:%u, %s"), lpUpDownClient->m_downloadpriority, theApp.downloadqueue->GetMaxDownPrio(),lpUpDownClient->GetRemoteQueueRank() ,GetResString(IDS_TOOMANYCONNS));
-			//Xman Xtreme Downloadmanager
+				//Xman Xtreme Downloadmanager
 				if(thePrefs.IsExtControlsEnabled() && !(lpUpDownClient->m_OtherRequests_list.IsEmpty() && lpUpDownClient->m_OtherNoNeeded_list.IsEmpty())) { //Xman Xtreme Downloadmanager
 					buffer.Append(_T("*"));
 				}
+				//Xman end
 
 			}
 			else {
+				//Xman Xtreme Downloadmanager
+				/*
+				buffer = GetResString(IDS_ASKED4ANOTHERFILE);
+				*/
 				buffer.Format(_T("A4AF")); //= GetResString(IDS_ASKED4ANOTHERFILE);
-			//Xman end
+				//Xman end
 
 // ZZ:DownloadManager -->
                 if(thePrefs.IsExtControlsEnabled()) {
@@ -1211,7 +1340,12 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
                         buffer += _T(" (") + GetResString(IDS_NONEEDEDPARTS) + _T(")");
                     } else if(lpUpDownClient->GetDownloadState() == DS_DOWNLOADING) {
                         buffer += _T(" (") + GetResString(IDS_TRANSFERRING) + _T(")");
-                    } else if(lpUpDownClient->IsSwapSuspended(lpCtrlItem->owner)) { //Xman 0.46b Bugfix
+                    //Xman 0.46b Bugfix
+                    /*
+                    } else if(lpUpDownClient->IsSwapSuspended(lpUpDownClient->GetRequestFile())) {
+                    */
+                    } else if(lpUpDownClient->IsSwapSuspended(lpCtrlItem->owner)) {
+                    //Xman end
                         buffer += _T(" (") + GetResString(IDS_SOURCESWAPBLOCKED) + _T(")");
                     }
 
@@ -1221,6 +1355,13 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
                 }
 			}
 
+            //Xman Xtreme Downloadmanager
+            /*
+            if(thePrefs.IsExtControlsEnabled() && !lpUpDownClient->m_OtherRequests_list.IsEmpty()) {
+                buffer.Append(_T("*"));
+            }
+            */
+            //Xman end
 // ZZ:DownloadManager <--
 
 // ==> {Color} [Max] 
@@ -1280,8 +1421,6 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 			else {
 				crOldTxtColor = dc->SetTextColor((COLORREF)RGB(200,80,200));
 			}
-			
-
 
 			dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
 			
@@ -1319,6 +1458,7 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 				dc->DrawText(buffer, buffer.GetLength(), const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
 			}
 			break;
+			//Xman end
 
 		}
 	}
@@ -1356,6 +1496,26 @@ void CDownloadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	CFont* pOldFont;
 	//Xman Show active downloads bold
 	//Xman narrow font at transferwindow
+	/*
+	if (m_fontBold.m_hObject){
+		if (content->type == FILE_TYPE){
+			if (((const CPartFile*)content->value)->GetTransferringSrcCount())
+				pOldFont = dc.SelectObject(&m_fontBold);
+			else
+				pOldFont = dc.SelectObject(GetFont());
+		}
+		else if (content->type == UNAVAILABLE_SOURCE || content->type == AVAILABLE_SOURCE){
+			if (((const CUpDownClient*)content->value)->GetDownloadState() == DS_DOWNLOADING)
+				pOldFont = dc.SelectObject(&m_fontBold);
+			else
+				pOldFont = dc.SelectObject(GetFont());
+		}
+		else
+			pOldFont = dc.SelectObject(GetFont());
+	}
+	else
+		pOldFont = dc.SelectObject(GetFont());
+	*//*
 	CFont* pFontToUse = thePrefs.UseNarrowFont() ? &m_fontNarrow : GetFont();
 	if(thePrefs.GetShowActiveDownloadsBold())
 	{
@@ -1379,7 +1539,11 @@ void CDownloadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	//Xman end Show active downloads bold
 	//Xman end narrow font at transferwindow
 
-	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
+	//MORPH - Moved by SiRoB, Don't draw hidden Rect
+	/*
+	CRect cur_rec(lpDrawItemStruct->rcItem);
+	*//*
+	//MORPH - Moved by SiRoB, Don't draw hidden Rect
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
 	*/
 	CtrlItem_Struct* content = (CtrlItem_Struct*)lpDrawItemStruct->itemData;
@@ -1470,9 +1634,7 @@ void CDownloadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				DrawFileItem(dc, iColumn, &cur_rec, content);
 				cur_rec.left += cx;
 			}
-
 		}
-
 	}
 	else if (content->type == UNAVAILABLE_SOURCE || content->type == AVAILABLE_SOURCE)
 	{
@@ -1480,7 +1642,6 @@ void CDownloadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 		{
 			int iColumn = pHeaderCtrl->OrderToIndex(iCurrent);
 			int cx = CListCtrl::GetColumnWidth(iColumn);
-
 			if(iColumn == 5) {
 				int iNextLeft = cur_rec.left + cx;
 				//set up tree vars
@@ -1493,10 +1654,10 @@ void CDownloadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				cur_rec.right = tree_start + cx - iTreeOffset;
 				DrawSourceItem(dc, 5, &cur_rec, content);
 				cur_rec.left = iNextLeft;
-			} 
+			//Xman show LowIDs
 			// ==> Design Settings [eWombat/Stulle] - Stulle
 			/*
-			//Xman show LowIDs
+			} 
 			else if(iColumn==6)
 			{
 				bool haslowid=((CUpDownClient*)content->value)->HasLowID();
@@ -1512,11 +1673,10 @@ void CDownloadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				{
 					dc->SetBkColor(crOldBackColor);
 				}
-			}
 			//Xman end
 			*/
 			// <== Design Settings [eWombat/Stulle] - Stulle
-			else {
+			} else {
 				cur_rec.right += cx;
 				DrawSourceItem(dc, iColumn, &cur_rec, content);
 				cur_rec.left += cx;
@@ -1839,9 +1999,9 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			//Xman from Stulle
 			m_FileMenu.EnableMenuItem((UINT_PTR)m_DropMenu.m_hMenu, (iSelectedItems > 0 && iFilesToStop > 0) ? MF_ENABLED : MF_GRAYED); // enable only when it makes sense - Stulle
 			//Xman end
+
 			m_FileMenu.EnableMenuItem((UINT_PTR)m_PrioMenu.m_hMenu, iFilesNotDone > 0 ? MF_ENABLED : MF_GRAYED);
 			m_PrioMenu.CheckMenuRadioItem(MP_PRIOLOW, MP_PRIOAUTO, uPrioMenuItem, 0);
-
 
 			// enable commands if there is at least one item which can be used for the action
 			m_FileMenu.EnableMenuItem(MP_CANCEL, iFilesToCancel > 0 ? MF_ENABLED : MF_GRAYED);
@@ -1979,7 +2139,6 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 					CatsMenu.CheckMenuItem(MP_ASSIGNCAT+file1->GetCategory(),MF_CHECKED);
 				// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 			}
-
 			m_FileMenu.AppendMenu(MF_POPUP | flag, (UINT_PTR)CatsMenu.m_hMenu, GetResString(IDS_TOCAT), _T("CATEGORY"));
 
 			// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
@@ -2028,7 +2187,9 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			//xman end
 			//Xman friendhandling
 			ClientMenu.AppendMenu(MF_SEPARATOR); 
+			//Xman end
 			ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && !client->IsFriend()) ? MF_ENABLED : MF_GRAYED), MP_ADDFRIEND, GetResString(IDS_ADDFRIEND), _T("ADDFRIEND"));
+			//Xman friendhandling
 			ClientMenu.AppendMenu(MF_STRING | (client && client->IsFriend() ? MF_ENABLED : MF_GRAYED), MP_REMOVEFRIEND, GetResString(IDS_REMOVEFRIEND), _T("DELETEFRIEND"));
 			ClientMenu.AppendMenu(MF_STRING | (client && client->IsFriend() ? MF_ENABLED : MF_GRAYED), MP_FRIENDSLOT, GetResString(IDS_FRIENDSLOT), _T("FRIENDSLOT"));
 			ClientMenu.CheckMenuItem(MP_FRIENDSLOT, (client && client->GetFriendSlot()) ? MF_CHECKED : MF_UNCHECKED);
@@ -2052,14 +2213,19 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			// <== XP Style Menu [Xanatos] - Stulle
 			if (thePrefs.IsExtControlsEnabled()) {
 				//Xman Xtreme Downloadmanager
-				//if (content->type == UNAVAILABLE_SOURCE) {
-				//A4AFMenu.AppendMenu(MF_STRING,MP_A4AF_CHECK_THIS_NOW,GetResString(IDS_A4AF_CHECK_THIS_NOW));
+				/*
+// ZZ:DownloadManager -->
+#ifdef _DEBUG
+                if (content->type == UNAVAILABLE_SOURCE) {
+                    A4AFMenu.AppendMenu(MF_STRING,MP_A4AF_CHECK_THIS_NOW,GetResString(IDS_A4AF_CHECK_THIS_NOW));
+                }
+# endif
+// <-- ZZ:DownloadManager
+				*/
 				if (content->type == UNAVAILABLE_SOURCE)
 					A4AFMenu.AppendMenu(MF_STRING,MP_SWAP_A4AF_TO_THIS,GetResString(IDS_SWAP_A4AF_TO_THIS)); // Added by sivka [Ambdribant]
 				if (content->type == AVAILABLE_SOURCE && !(client->m_OtherNoNeeded_list.IsEmpty() && client->m_OtherRequests_list.IsEmpty()))
 					A4AFMenu.AppendMenu(MF_STRING,MP_SWAP_A4AF_TO_OTHER,GetResString(IDS_SWAP_A4AF_TO_OTHER)); // Added by sivka
-
-				//}
 				//Xman end
 				if (A4AFMenu.GetMenuItemCount()>0)
 					ClientMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)A4AFMenu.m_hMenu, GetResString(IDS_A4AF));
@@ -2191,13 +2357,17 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 						CString fileList;
 						bool validdelete = false;
 						bool removecompl = false;
+						int cFiles = 0;
 						for (pos = selectedList.GetHeadPosition(); pos != 0; )
 						{
 							CPartFile* cur_file = selectedList.GetNext(pos);
 							if (cur_file->GetStatus() != PS_COMPLETING && (cur_file->GetStatus() != PS_COMPLETE || wParam == MP_CANCEL)){
 								validdelete = true;
-								if (selectedCount < 50)
+								cFiles++;
+								if (cFiles < 50)
 									fileList.Append(_T("\n") + CString(cur_file->GetFileName()));
+								else if(cFiles == 50)
+									fileList.Append(_T("\n..."));
 							}
 							else if (cur_file->GetStatus() == PS_COMPLETE)
 								removecompl = true;
@@ -2685,7 +2855,6 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 						break;
                     file->SetPreviewPrio(!file->GetPreviewPrio());
                     break;
-
 				case MP_PREVIEW:
 					if (selectedCount > 1)
 						break;
@@ -2944,9 +3113,12 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					break;
 				  }
 			  //Xman end
+//Xman Xtreme Downloadmanager
 /*
 // ZZ:DownloadManager -->
-				case MP_A4AF_CHECK_THIS_NOW:
+#ifdef _DEBUG
+				case MP_A4AF_CHECK_THIS_NOW: {
+					CPartFile* file = (CPartFile*)content->owner;
 					if (file->GetStatus(false) == PS_READY || file->GetStatus(false) == PS_EMPTY)
 					{
 						if (client->GetDownloadState() != DS_DOWNLOADING)
@@ -2956,7 +3128,11 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 						}
 					}
 					break;
-// <-- ZZ:DownloadManager*/
+				}
+#endif
+// <-- ZZ:DownloadManager
+*/
+//Xman end
 			}
 		}
 	}
@@ -3012,7 +3188,11 @@ int CDownloadListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSor
 	CtrlItem_Struct* item1 = (CtrlItem_Struct*)lParam1;
 	CtrlItem_Struct* item2 = (CtrlItem_Struct*)lParam2;
 
-	//int dwOrgSort = lParamSort; // SLUGFILLER: multiSort remove - handled in parent class
+	// SLUGFILLER: multiSort remove - handled in parent class
+	/*
+	int dwOrgSort = lParamSort;
+	*/
+	//Xman end
 
 	int sortMod = 1;
 	if(lParamSort >= 100) 
@@ -3027,25 +3207,19 @@ int CDownloadListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSor
 	{
 		if(item1->value == item2->parent->value)
 			return -1;
-
 		comp = Compare((CPartFile*)item1->value, (CPartFile*)(item2->parent->value), lParamSort);
-
 	}
 	else if(item2->type == FILE_TYPE && item1->type != FILE_TYPE) 
 	{
 		if(item1->parent->value == item2->value)
 			return 1;
-
 		comp = Compare((CPartFile*)(item1->parent->value), (CPartFile*)item2->value, lParamSort);
-
 	}
 	else if (item1->type == FILE_TYPE) 
 	{
 		CPartFile* file1 = (CPartFile*)item1->value;
 		CPartFile* file2 = (CPartFile*)item2->value;
-
 		comp = Compare(file1, file2, lParamSort);
-
 	}
 	else
 	{
@@ -3071,6 +3245,7 @@ int CDownloadListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSor
 	}
 	else
 	*/
+	//Xman end
 		return sortMod * comp;
 }
 
@@ -3151,7 +3326,12 @@ int CDownloadListCtrl::Compare(const CPartFile* file1, const CPartFile* file2, L
 			comp=CompareUnsigned64(file1->GetCompletedSize(), file2->GetCompletedSize());
 			break;
 		case 4: //speed asc
-			comp= CompareUnsigned(file1->GetDownloadDatarate(), file2->GetDownloadDatarate()); //Xman // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+			//Xman // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+			/*
+			comp=CompareUnsigned(file1->GetDatarate(), file2->GetDatarate());
+			*/
+			comp= CompareUnsigned(file1->GetDownloadDatarate(), file2->GetDownloadDatarate());
+			//Xman end
 			break;
 		case 5: //progress asc
 			comp = CompareFloat(file1->GetPercentCompleted(), file2->GetPercentCompleted());
@@ -3165,7 +3345,6 @@ int CDownloadListCtrl::Compare(const CPartFile* file1, const CPartFile* file2, L
 		case 8: //Status asc 
 			comp=CompareUnsigned(file1->getPartfileStatusRang(),file2->getPartfileStatusRang());
 			break;
-
 		case 9: //Remaining Time asc
 		{
 			//Make ascending sort so we can have the smaller remaining time on the top 
@@ -3197,7 +3376,6 @@ int CDownloadListCtrl::Compare(const CPartFile* file1, const CPartFile* file2, L
 			comp = CompareUnsigned(f1, f2);
 			break;
 		}
-
 		case 90: //Remaining SIZE asc
 			comp=CompareUnsigned64(file1->GetFileSize()-file1->GetCompletedSize(), file2->GetFileSize()-file2->GetCompletedSize());
 			break;
@@ -3318,10 +3496,14 @@ int CDownloadListCtrl::Compare(const CUpDownClient *client1, const CUpDownClient
 	case 5: //progress asc
 		return CompareUnsigned(client1->GetAvailablePartCount(), client2->GetAvailablePartCount());
 
-	//Xman
-	// Maella -Support for tag ET_MOD_VERSION 0x55-
 	case 6:
 		if( client1->GetClientSoft() == client2->GetClientSoft() )
+			//Xman
+			// Maella -Support for tag ET_MOD_VERSION 0x55-
+			/*
+			return CompareUnsigned(client2->GetVersion(), client1->GetVersion());
+		return CompareUnsigned(client1->GetClientSoft(), client2->GetClientSoft());
+			*/
 			if(client2->GetVersion() == client1->GetVersion() && client1->GetClientSoft() == SO_EMULE){
 				return client2->DbgGetFullClientSoftVer().CompareNoCase( client1->DbgGetFullClientSoftVer());
 			}
@@ -3330,7 +3512,7 @@ int CDownloadListCtrl::Compare(const CUpDownClient *client1, const CUpDownClient
 			}
 		else
 			return client1->GetClientSoft() - client2->GetClientSoft();
-	// Maella end
+			// Maella end
 	case 7: //qr asc
 		if (client1->GetDownloadState() == DS_DOWNLOADING){
 			if (client2->GetDownloadState() == DS_DOWNLOADING)
@@ -3465,7 +3647,6 @@ void CDownloadListCtrl::CreateMenues()
 
 	m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_DropMenu.m_hMenu, GetResString(IDS_SubMenu_Drop),_T("DROPICON") );
 	m_FileMenu.AppendMenu(MF_SEPARATOR);
-
 	//Xman end
 
 	// ==> Follow The Majority [AndCycle/Stulle] - Stulle
@@ -3508,7 +3689,6 @@ void CDownloadListCtrl::CreateMenues()
 	m_FileMenu.AppendMenu(MF_SEPARATOR);
 	m_FileMenu.AppendMenu(MF_STRING, MP_CLEARCOMPLETED, GetResString(IDS_DL_CLEAR), _T("CLEARCOMPLETE"));
 
-
 	// Add (extended user mode) 'Source Handling' sub menu
 	//
 	if (thePrefs.IsExtControlsEnabled()) {
@@ -3519,7 +3699,7 @@ void CDownloadListCtrl::CreateMenues()
 		*/
 		m_SourcesMenu.AddMenuTitle(GetResString(IDS_DL_SOURCES), true, false);
 		// <== XP Style Menu [Xanatos] - Stulle		
-                //Xman Xtreme Downloadmanager
+		//Xman Xtreme Downloadmanager
 		m_SourcesMenu.AppendMenu(MF_STRING, MP_ALL_A4AF_AUTO, GetResString(IDS_ALL_A4AF_AUTO)); //Xman Xtreme Downloadmanager: Auto-A4AF-check
 		m_SourcesMenu.AppendMenu(MF_STRING, MP_ALL_A4AF_TO_THIS, GetResString(IDS_ALL_A4AF_TO_THIS)); 
 		m_SourcesMenu.AppendMenu(MF_STRING, MP_ALL_A4AF_TO_OTHER, GetResString(IDS_ALL_A4AF_TO_OTHER)); 
@@ -3593,43 +3773,34 @@ CString CDownloadListCtrl::getTextList()
 
 	return out;
 }
-//Xman see all sources
 
+//Xman see all sources
 /* //Xman no need for an additional function
 int CDownloadListCtrl::GetFilesCountInCurCat()
 {
-int iCount = 0;
-for (ListItems::const_iterator it = m_ListItems.begin(); it != m_ListItems.end(); it++)
+	int iCount = 0;
+	for (ListItems::const_iterator it = m_ListItems.begin(); it != m_ListItems.end(); it++)
+	{
+		CtrlItem_Struct* cur_item = it->second;
+		if (cur_item->type == FILE_TYPE)
+		{
+			CPartFile* file = (CPartFile*)cur_item->value;
+			if (file->CheckShowItemInGivenCat(curTab))
+				iCount++;
+		}
+	}
+	return iCount;
+}
+
+void CDownloadListCtrl::ShowFilesCount()
 {
-CtrlItem_Struct* cur_item = it->second;
-if (cur_item->type == FILE_TYPE)
-{
-CPartFile* file = (CPartFile*)cur_item->value;
-if (file->CheckShowItemInGivenCat(curTab))
-iCount++;
-}
-}
-return iCount;
-}
+	theApp.emuledlg->transferwnd->UpdateFilesCount(GetFilesCountInCurCat());
 */
 void CDownloadListCtrl::ShowFilesCount()
 {
 	UINT iCount = 0;
 	UINT	countsources=0; 
 	UINT  countreadyfiles=0;
-	/* Xman Slow method, repaced with a faster one
-	for (ListItems::const_iterator it = m_ListItems.begin(); it != m_ListItems.end(); it++)
-	{
-	CtrlItem_Struct* cur_item = it->second;
-	if (cur_item->type == FILE_TYPE)
-	{
-	CPartFile* file = (CPartFile*)cur_item->value;
-	if (file->CheckShowItemInGivenCat(curTab))
-	iCount++;
-	}
-	}
-	*/
-
 	for (POSITION pos = theApp.downloadqueue->filelist.GetHeadPosition();pos != 0; theApp.downloadqueue->filelist.GetNext(pos)){
 		CPartFile* cur_file = theApp.downloadqueue->filelist.GetAt(pos);
 		if (cur_file->CheckShowItemInGivenCat(curTab))
@@ -3643,8 +3814,8 @@ void CDownloadListCtrl::ShowFilesCount()
 	}
 
 	theApp.emuledlg->transferwnd->UpdateFilesCount(iCount, countsources, countreadyfiles);
-}
 //Xman end see all sources
+}
 
 void CDownloadListCtrl::ShowSelectedFileDetails()
 {
@@ -3884,7 +4055,7 @@ void CDownloadListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 		::GetCursorPos(&hti.pt);
 		ScreenToClient(&hti.pt);
 		if (SubItemHitTest(&hti) == -1 || hti.iItem != pGetInfoTip->iItem || hti.iSubItem != 0){
-			// don' show the default label tip for the main item, if the mouse is not over the main item
+			// don't show the default label tip for the main item, if the mouse is not over the main item
 			if ((pGetInfoTip->dwFlags & LVGIT_UNFOLDED) == 0 && pGetInfoTip->cchTextMax > 0 && pGetInfoTip->pszText[0] != _T('\0'))
 				pGetInfoTip->pszText[0] = _T('\0');
 			return;
@@ -3938,9 +4109,19 @@ void CDownloadListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 
 					info.Format(GetResString(IDS_USERINFO)
 								+ GetResString(IDS_SERVER) + _T(":%s:%u\n\n")
-								+ GetResString(IDS_NEXT_REASK) + askbuffer, //Xman Xtreme Downloadmanager
+								//Xman Xtreme Downloadmanager
+								/*
+								+ GetResString(IDS_NEXT_REASK) + _T(":%s"),
 								client->GetUserName() ? client->GetUserName() : _T("?"),
-								ipstr(server), client->GetServerPort()); //Xman Xtreme Downloadmanager
+								ipstr(server), client->GetServerPort(),
+								CastSecondsToHM(client->GetTimeUntilReask(client->GetRequestFile()) / 1000));
+					if (thePrefs.IsExtControlsEnabled())
+						info.AppendFormat(_T(" (%s)"), CastSecondsToHM(client->GetTimeUntilReask(content->owner) / 1000));
+								*/
+								+ GetResString(IDS_NEXT_REASK) + askbuffer,
+								client->GetUserName() ? client->GetUserName() : _T("?"),
+								ipstr(server), client->GetServerPort());
+								//Xman end
 					info += _T('\n');
 					info.AppendFormat(GetResString(IDS_SOURCEINFO), client->GetAskedCountDown(), client->GetAvailablePartCount());
 					//Xman Xtreme Downloadmanager
@@ -4010,6 +4191,7 @@ void CDownloadListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 				}
 			}
 
+			info += TOOLTIP_AUTOFORMAT_SUFFIX_CH;
 			_tcsncpy(pGetInfoTip->pszText, info, pGetInfoTip->cchTextMax);
 			pGetInfoTip->pszText[pGetInfoTip->cchTextMax-1] = _T('\0');
 		}

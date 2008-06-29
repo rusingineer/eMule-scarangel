@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -34,10 +34,17 @@ class CClientReqSocket : public CEMSocket
 {
 	friend class CListenSocket;
 	DECLARE_DYNCREATE(CClientReqSocket)
+
 public:
 	CClientReqSocket(CUpDownClient* in_client = NULL);	
+
 	void	SetClient(CUpDownClient* pClient);
-	void	Disconnect(LPCTSTR pszReason, CUpDownClient::UpStopReason reason = CUpDownClient::USR_NONE); // Maella -Upload Stop Reason-
+	// Maella -Upload Stop Reason-
+	/*
+	void	Disconnect(LPCTSTR pszReason);
+	*/
+	void	Disconnect(LPCTSTR pszReason, CUpDownClient::UpStopReason reason = CUpDownClient::USR_NONE);
+	//Xman end
 	void	WaitForOnConnect();
 	void	ResetTimeOutTimer();
 	bool	CheckTimeOut();
@@ -54,9 +61,10 @@ public:
 
 	//Xman Xtreme Upload
 	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
-	//CUpDownClient*	client; //declare this in emsocket
-
-
+	//declare this in emsocket
+	/*
+	CUpDownClient*	client;
+	*/
 	//Xman improved socket closing
 	void	CloseSocket();
 
@@ -65,20 +73,24 @@ protected:
 	virtual ~CClientReqSocket();
 	virtual void Close()	{CAsyncSocketEx::Close();}
 	void	Delete_Timed();
+
 	virtual void OnConnect(int nErrorCode);
 	void		 OnClose(int nErrorCode);
 	void		 OnSend(int nErrorCode);
 	void		 OnReceive(int nErrorCode);
 	void		 OnError(int nErrorCode);
+
 	virtual bool PacketReceived(Packet* packet);
 	int			 PacketReceivedSEH(Packet* packet);
 	bool		 PacketReceivedCppEH(Packet* packet);
 
-		
 	bool	ProcessPacket(const BYTE* packet, uint32 size, UINT opcode);
 	bool	ProcessExtPacket(const BYTE* packet, uint32 size, UINT opcode, UINT uRawSize);
 	//Xman
 	// Maella -Dump information of unknown packet in debug tab-
+	/*
+	void	PacketToDebugLogLine(LPCTSTR protocol, const uchar* packet, uint32 size, UINT opcode);
+	*/
 	void    PacketToDebugLogLine(bool isOpcodeKnown, const uchar* packet, uint32 size, UINT opcode);
 	// Maella end
 

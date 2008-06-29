@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -133,6 +133,23 @@ void CUploadListCtrl::SetAllIcons()
 	imagelist.Create(16,16,theApp.m_iDfltImageListColorFlags|ILC_MASK,0,1);
 	imagelist.SetBkColor(CLR_NONE);
 	//Xman Show correct Icons	
+	/*
+	imagelist.Add(CTempIconLoader(_T("ClientEDonkey")));
+	imagelist.Add(CTempIconLoader(_T("ClientCompatible")));
+	imagelist.Add(CTempIconLoader(_T("ClientEDonkeyPlus")));
+	imagelist.Add(CTempIconLoader(_T("ClientCompatiblePlus")));
+	imagelist.Add(CTempIconLoader(_T("Friend")));
+	imagelist.Add(CTempIconLoader(_T("ClientMLDonkey")));
+	imagelist.Add(CTempIconLoader(_T("ClientMLDonkeyPlus")));
+	imagelist.Add(CTempIconLoader(_T("ClientEDonkeyHybrid")));
+	imagelist.Add(CTempIconLoader(_T("ClientEDonkeyHybridPlus")));
+	imagelist.Add(CTempIconLoader(_T("ClientShareaza")));
+	imagelist.Add(CTempIconLoader(_T("ClientShareazaPlus")));
+	imagelist.Add(CTempIconLoader(_T("ClientAMule")));
+	imagelist.Add(CTempIconLoader(_T("ClientAMulePlus")));
+	imagelist.Add(CTempIconLoader(_T("ClientLPhant")));
+	imagelist.Add(CTempIconLoader(_T("ClientLPhantPlus")));
+	*/
 	imagelist.Add(CTempIconLoader(_T("ClientDefault")));		//0
 	imagelist.Add(CTempIconLoader(_T("ClientDefaultPlus")));	//1
 	imagelist.Add(CTempIconLoader(_T("ClientEDonkey")));		//2
@@ -300,7 +317,7 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	//MORPH START - Added by SiRoB, Don't draw hidden Rect
 	RECT clientRect;
 	GetClientRect(&clientRect);
-	RECT cur_rec = lpDrawItemStruct->rcItem;
+	CRect cur_rec(lpDrawItemStruct->rcItem);
 	if (cur_rec.top >= clientRect.bottom || cur_rec.bottom <= clientRect.top)
 		return;
 	//MORPH END   - Added by SiRoB, Don't draw hidden Rect
@@ -322,11 +339,25 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
 	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
-	CFont* pOldFont = dc.SelectObject(thePrefs.UseNarrowFont() ? &m_fontNarrow : GetFont()); //Xman narrow font at transferwindow
-	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
+	//Xman narrow font at transferwindow
+	/*
+	CFont* pOldFont = dc.SelectObject(GetFont());
+	*//*
+	CFont* pOldFont = dc.SelectObject(thePrefs.UseNarrowFont() ? &m_fontNarrow : GetFont());
+	//Xman end
+	//MORPH - Moved by SiRoB, Don't draw hidden Rect
+	/*
+	CRect cur_rec(lpDrawItemStruct->rcItem);
+	*//*
+	//Xman end
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
 
 	//Xman Xtreme Upload 
+	/*
+    if (client->GetSlotNumber() > theApp.uploadqueue->GetActiveUploadsCount()) {
+        dc.SetTextColor(::GetSysColor(COLOR_GRAYTEXT));
+    }
+	*//*
 	const ThrottledFileSocket* socket=(client->GetFileUploadSocket());
 	if( socket!=NULL)
 	{
@@ -400,7 +431,54 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			switch (iColumn)
 			{
 				case 0:{
-				////Xman Show correct Icons
+				//Xman Show correct Icons
+				/*
+					uint8 image;
+					if (client->IsFriend())
+						image = 4;
+					else if (client->GetClientSoft() == SO_EDONKEYHYBRID){
+						if (client->credits->GetScoreRatio(client->GetIP()) > 1)
+							image = 8;
+						else
+							image = 7;
+					}
+					else if (client->GetClientSoft() == SO_MLDONKEY){
+						if (client->credits->GetScoreRatio(client->GetIP()) > 1)
+							image = 6;
+						else
+							image = 5;
+					}
+					else if (client->GetClientSoft() == SO_SHAREAZA){
+						if(client->credits->GetScoreRatio(client->GetIP()) > 1)
+							image = 10;
+						else
+							image = 9;
+					}
+					else if (client->GetClientSoft() == SO_AMULE){
+						if(client->credits->GetScoreRatio(client->GetIP()) > 1)
+							image = 12;
+						else
+							image = 11;
+					}
+					else if (client->GetClientSoft() == SO_LPHANT){
+						if(client->credits->GetScoreRatio(client->GetIP()) > 1)
+							image = 14;
+						else
+							image = 13;
+					}
+					else if (client->ExtProtocolAvailable()){
+						if(client->credits->GetScoreRatio(client->GetIP()) > 1)
+							image = 3;
+						else
+							image = 1;
+					}
+					else{
+						if (client->credits->GetScoreRatio(client->GetIP()) > 1)
+							image = 2;
+						else
+							image = 0;
+					}
+				*/
 				uint8 image;
 				if (client->IsFriend())
 					image = 6;
@@ -428,7 +506,7 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					image = 4;
 					*/
 					if(client->GetModClient() == MOD_NONE)
-					image = 4;
+						image = 4;
 					else
 						image = (uint8)(client->GetModClient() + 19);
 					// <== Mod Icons - Stulle
@@ -459,12 +537,16 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				if ((client->Credits() && client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED))
 					nOverlayImage |= 1;
 				//Xman changed: display the obfuscation icon for all clients which enabled it
+				/*
+					if (client->IsObfuscatedConnectionEstablished())
+				*/
 				if(client->IsObfuscatedConnectionEstablished() 
 					|| (!(client->socket != NULL && client->socket->IsConnected())
 					&& (client->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (client->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()))))
+				//Xman end
 					nOverlayImage |= 2;
-
-					POINT point = {cur_rec.left, cur_rec.top+1};
+					int iIconPosY = (cur_rec.Height() > 16) ? ((cur_rec.Height() - 16) / 2) : 1;
+					POINT point = {cur_rec.left, cur_rec.top + iIconPosY};
 					imagelist.Draw(dc,image, point, ILD_NORMAL | INDEXTOOVERLAYMASK(nOverlayImage));
 
 					// ==> Mod Icons - Stulle
@@ -521,12 +603,16 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						Sbuffer = _T("?");
 					break;
 				case 2:
-					//Sbuffer = CastItoXBytes(client->GetUploadDatarate(), false, true); //Xman // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 					//Xman count block/success send
+					//Xman // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+					/*
+					Sbuffer = CastItoXBytes(client->GetDatarate(), false, true);
+					*/
 					if(thePrefs.ShowBlockRatio())
 						Sbuffer.Format(_T("%s, %0.0f%%"),CastItoXBytes(client->GetUploadDatarate(), false, true), client->GetFileUploadSocket()->GetBlockRatio());
 					else
 						Sbuffer = CastItoXBytes(client->GetUploadDatarate(), false, true);
+					//Xman end
 					break;
 				case 3:
 					{
@@ -537,11 +623,15 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						Sbuffer = CastItoXBytes(client->GetSessionUp(), false, false); 
 
 
-						//this is something which does not make sense in the context it's shown, but may be useful for debugging..
-						/*if(thePrefs.m_bExtControls)
-						Sbuffer.Format( _T("%s (%s)"), CastItoXBytes(client->GetQueueSessionPayloadUp(), false, false), CastItoXBytes(client->GetSessionUp(), false, false));
+					// NOTE: If you change (add/remove) anything which is displayed here, update also the sorting part..
+						//Xman
+						/*
+						if(thePrefs.m_bExtControls)
+						Sbuffer.Format( _T("%s (%s)"), CastItoXBytes(client->GetSessionUp(), false, false), CastItoXBytes(client->GetQueueSessionPayloadUp(), false, false));
 						else
-						Sbuffer = CastItoXBytes(client->GetSessionUp(), false, false);*/
+						Sbuffer = CastItoXBytes(client->GetSessionUp(), false, false);
+						*/
+						//Xman end
 						break;
 					}
 				case 4:
@@ -686,7 +776,9 @@ void CUploadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	ClientMenu.SetDefaultItem(MP_DETAIL);
 	//Xman friendhandling
 	ClientMenu.AppendMenu(MF_SEPARATOR); 
+	//Xman end
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && !client->IsFriend()) ? MF_ENABLED : MF_GRAYED), MP_ADDFRIEND, GetResString(IDS_ADDFRIEND), _T("ADDFRIEND"));
+	//Xman friendhandling
 	ClientMenu.AppendMenu(MF_STRING | (client && client->IsFriend() ? MF_ENABLED : MF_GRAYED), MP_REMOVEFRIEND, GetResString(IDS_REMOVEFRIEND), _T("DELETEFRIEND"));
 	ClientMenu.AppendMenu(MF_STRING | (client && client->IsFriend() ? MF_ENABLED : MF_GRAYED), MP_FRIENDSLOT, GetResString(IDS_FRIENDSLOT), _T("FRIENDSLOT"));
 	ClientMenu.CheckMenuItem(MP_FRIENDSLOT, (client && client->GetFriendSlot()) ? MF_CHECKED : MF_UNCHECKED);
@@ -703,7 +795,6 @@ void CUploadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	ClientMenu.AppendMenu(MF_SEPARATOR); 
 	ClientMenu.AppendMenu(MF_STRING,MP_LIST_REQUESTED_FILES, GetResString(IDS_LISTREQUESTED), _T("FILEREQUESTED")); 
 	//Xman end
-
 
 	GetPopupMenuPos(*this, point);
 	ClientMenu.TrackPopupMenu(TPM_LEFTALIGN |TPM_RIGHTBUTTON, point.x, point.y, this);
@@ -763,7 +854,6 @@ BOOL CUploadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 				dialog.DoModal();
 				break;
 			}
-
 			case MP_BOOT:
 				if (client->GetKadPort())
 					Kademlia::CKademlia::Bootstrap(ntohl(client->GetIP()), client->GetKadPort(), (client->GetKadVersion() > 1));
@@ -848,6 +938,14 @@ int CUploadListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 			break;
 		}
 		// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+		/*
+		case 2: 
+			iResult=CompareUnsigned(item1->GetDatarate(), item2->GetDatarate());
+			break;
+		case 102:
+			iResult=CompareUnsigned(item2->GetDatarate(), item1->GetDatarate());
+			break;
+		*/
 		case 2: 
 			iResult= item1->GetUploadDatarate() - item2->GetUploadDatarate();
 			break;
@@ -856,22 +954,27 @@ int CUploadListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 			break;
 		// Maella end
 
-		//Xman don't show too many values
 		case 3: 
 			iResult=CompareUnsigned(item1->GetSessionUp(), item2->GetSessionUp());
+			//Xman don't show too many values
 			/*
 			if (iResult == 0 && thePrefs.m_bExtControls) {
 				iResult = CompareUnsigned(item1->GetQueueSessionPayloadUp(), item2->GetQueueSessionPayloadUp());
-			}*/
+			}
+			*/
+			//Xman end
 			break;
 		case 103: 
 			iResult=CompareUnsigned(item2->GetSessionUp(), item1->GetSessionUp());
+			//Xman don't show too many values
 			/*
 			if (iResult == 0 && thePrefs.m_bExtControls) {
 				iResult = CompareUnsigned(item2->GetQueueSessionPayloadUp(), item1->GetQueueSessionPayloadUp());
-			}*/
+			}
+			*/
+			//Xman end
 			break;
-		//Xman end
+
 		case 4: 
 			iResult=item1->GetWaitTime() - item2->GetWaitTime();
 			break;
@@ -959,6 +1062,8 @@ int CUploadListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 		iResult= SortProc(lParam1, lParam2, dwNextSort);
 	}
 	*/
+	//Xman end
+
 	return iResult;
 
 }
@@ -1035,14 +1140,13 @@ void CUploadListCtrl::OnGetDispInfo(NMHDR *pNMHDR, LRESULT *pResult)
 void CUploadListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMLVGETINFOTIP pGetInfoTip = reinterpret_cast<LPNMLVGETINFOTIP>(pNMHDR);
-
 	if (pGetInfoTip->iSubItem == 0)
 	{
 		LVHITTESTINFO hti = {0};
 		::GetCursorPos(&hti.pt);
 		ScreenToClient(&hti.pt);
 		if (SubItemHitTest(&hti) == -1 || hti.iItem != pGetInfoTip->iItem || hti.iSubItem != 0){
-			// don' show the default label tip for the main item, if the mouse is not over the main item
+			// don't show the default label tip for the main item, if the mouse is not over the main item
 			if ((pGetInfoTip->dwFlags & LVGIT_UNFOLDED) == 0 && pGetInfoTip->cchTextMax > 0 && pGetInfoTip->pszText[0] != _T('\0'))
 				pGetInfoTip->pszText[0] = _T('\0');
 			return;
@@ -1051,26 +1155,22 @@ void CUploadListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 		const CUpDownClient* client = (CUpDownClient*)GetItemData(pGetInfoTip->iItem);
 		if (client && pGetInfoTip->pszText && pGetInfoTip->cchTextMax > 0)
 		{
-			CString info;
-
-			CKnownFile* file = theApp.sharedfiles->GetFileByID(client->GetUploadFileID());
-			// build info text and display it
-			info.Format(GetResString(IDS_USERINFO), client->GetUserName());
+			CString strInfo;
+			strInfo.Format(GetResString(IDS_USERINFO), client->GetUserName());
+			const CKnownFile* file = theApp.sharedfiles->GetFileByID(client->GetUploadFileID());
 			if (file)
 			{
-				info += GetResString(IDS_SF_REQUESTED) + _T(" ") + CString(file->GetFileName()) + _T("\n");
-				CString stat;
-				stat.Format(GetResString(IDS_FILESTATS_SESSION)+GetResString(IDS_FILESTATS_TOTAL),
-							file->statistic.GetAccepts(), file->statistic.GetRequests(), CastItoXBytes(file->statistic.GetTransferred(), false, false),
-							file->statistic.GetAllTimeAccepts(), file->statistic.GetAllTimeRequests(), CastItoXBytes(file->statistic.GetAllTimeTransferred(), false, false) );
-				info += stat;
+				strInfo += GetResString(IDS_SF_REQUESTED) + _T(' ') + file->GetFileName() + _T('\n');
+				strInfo.AppendFormat(GetResString(IDS_FILESTATS_SESSION) + GetResString(IDS_FILESTATS_TOTAL),
+					file->statistic.GetAccepts(), file->statistic.GetRequests(), CastItoXBytes(file->statistic.GetTransferred(), false, false),
+					file->statistic.GetAllTimeAccepts(), file->statistic.GetAllTimeRequests(), CastItoXBytes(file->statistic.GetAllTimeTransferred(), false, false) );
 			}
 			else
 			{
-				info += GetResString(IDS_REQ_UNKNOWNFILE);
+				strInfo += GetResString(IDS_REQ_UNKNOWNFILE);
 			}
-
-			_tcsncpy(pGetInfoTip->pszText, info, pGetInfoTip->cchTextMax);
+			strInfo += TOOLTIP_AUTOFORMAT_SUFFIX_CH;
+			_tcsncpy(pGetInfoTip->pszText, strInfo, pGetInfoTip->cchTextMax);
 			pGetInfoTip->pszText[pGetInfoTip->cchTextMax-1] = _T('\0');
 		}
 	}

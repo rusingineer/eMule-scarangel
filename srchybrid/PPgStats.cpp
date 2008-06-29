@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -23,7 +23,6 @@
 #include "StatisticsDlg.h"
 #include "HelpIDs.h"
 #include "UserMsgs.h"
-#include ".\ppgstats.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -285,6 +284,7 @@ void CPPgStats::Localize(void)
 		GetDlgItem(IDC_SRCGRAPH_GRP)->SetWindowText(GetResString(IDS_SP_SRCGRAPH));
 		GetDlgItem(IDC_SRCGRAPH)->SetWindowText(GetResString(IDS_SRCGRAPH));
 		GetDlgItem(IDC_STATIC_STATSHL)->SetWindowText(GetResString(IDS_STATIC_STATSHL));
+		GetDlgItem(IDC_SRCGRAPH_GRP)->SetWindowText(GetResString(IDS_SP_SRCGRAPH));
 		// <== Source Graph - Stulle
 
 		m_colors.ResetContent();
@@ -300,15 +300,25 @@ void CPPgStats::Localize(void)
 		iItem = m_colors.AddString(GetResString(IDS_SP_UL2));				m_colors.SetItemData(iItem, 6);
 		iItem = m_colors.AddString(GetResString(IDS_SP_UL1));				m_colors.SetItemData(iItem, 5);
 		//Xman Xtreme Upload: this graph isn't shown at xtreme
-		//iItem = m_colors.AddString(GetResString(IDS_SP_ULSLOTSNOOVERHEAD));	m_colors.SetItemData(iItem, 14);
-		//iItem = m_colors.AddString(GetResString(IDS_SP_ULFRIENDS));			m_colors.SetItemData(iItem, 13);
+		//Maella Bandwidth control
+		/*
+		iItem = m_colors.AddString(GetResString(IDS_SP_ULSLOTSNOOVERHEAD));	m_colors.SetItemData(iItem, 14);
+		iItem = m_colors.AddString(GetResString(IDS_SP_ULFRIENDS));			m_colors.SetItemData(iItem, 13);
+		*/
+		//Xman end
 
 		iItem = m_colors.AddString(GetResString(IDS_SP_ACTCON));			m_colors.SetItemData(iItem, 8);
-		iItem = m_colors.AddString(GetResString(IDS_SP_ACTUL) + _T(" + Network"));				m_colors.SetItemData(iItem, 10); //Maella Bandwidth control
-		iItem = m_colors.AddString(GetResString(IDS_SP_ACTDL));			m_colors.SetItemData(iItem, 9);
-		//iItem = m_colors.AddString(GetResString(IDS_SP_TOTALUL));			m_colors.SetItemData(iItem, 9);
-		iItem = m_colors.AddString(_T("eMule control + data"));				m_colors.SetItemData(iItem, 12); //Maella Bandwidth control
-		//iItem = m_colors.AddString(GetResString(IDS_SP_ACTDL));				m_colors.SetItemData(iItem, 12);
+		//Xman Xtreme Upload: this graph isn't shown at xtreme
+		//Maella Bandwidth control
+		/*
+		iItem = m_colors.AddString(GetResString(IDS_SP_ACTUL));				m_colors.SetItemData(iItem, 10);
+		iItem = m_colors.AddString(GetResString(IDS_SP_TOTALUL));			m_colors.SetItemData(iItem, 9);
+		iItem = m_colors.AddString(GetResString(IDS_SP_ACTDL));				m_colors.SetItemData(iItem, 12);
+		*/
+		iItem = m_colors.AddString(GetResString(IDS_SP_ACTUL) + _T(" + Network"));	m_colors.SetItemData(iItem, 10);
+		iItem = m_colors.AddString(GetResString(IDS_SP_ACTDL));				m_colors.SetItemData(iItem, 9);
+		iItem = m_colors.AddString(_T("eMule control + data"));				m_colors.SetItemData(iItem, 12);
+		//Xman end
 		iItem = m_colors.AddString(GetResString(IDS_SP_ICONBAR));			m_colors.SetItemData(iItem, 11);
 		iItem = m_colors.AddString(GetResString(IDS_SP_SRCGRAPH));			m_colors.SetItemData(iItem, 15); // Source Graph - Stulle
 

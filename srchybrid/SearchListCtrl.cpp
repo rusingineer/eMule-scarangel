@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -589,7 +589,11 @@ int CSearchListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 	const CSearchFile* item1 = (CSearchFile*)lParam1;
 	const CSearchFile* item2 = (CSearchFile*)lParam2;
 	//Xman
-	//int orgSort=lParamSort; // SLUGFILLER: multiSort remove - handled in parent class
+	// SLUGFILLER: multiSort remove - handled in parent class
+	/*
+	int orgSort=lParamSort;
+	*/
+	//Xman end
 
 	int sortMod = 1;
 	if(lParamSort >= 100) {
@@ -636,6 +640,7 @@ int CSearchListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 		comp= SortProc(lParam1, lParam2, dwNextSort);
 	}
 	*/
+	// SLUGFILLER: multiSort remove - handled in parent class
 
 	return comp;
 }
@@ -732,8 +737,6 @@ void CSearchListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 				iToDownload++;
 			if (!pFile->IsConsideredSpam())
 				bContainsNotSpamFile = true;
-
-				
 		}
 	}
 
@@ -751,7 +754,7 @@ void CSearchListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	m_SearchFileMenu.EnableMenuItem(MP_REMOVESELECTED, iSelected > 0 ? MF_ENABLED : MF_GRAYED);
 	m_SearchFileMenu.EnableMenuItem(MP_REMOVE, theApp.emuledlg->searchwnd->CanDeleteSearch(m_nResultsID) ? MF_ENABLED : MF_GRAYED);
 	m_SearchFileMenu.EnableMenuItem(MP_REMOVEALL, theApp.emuledlg->searchwnd->CanDeleteAllSearches() ? MF_ENABLED : MF_GRAYED);
-	m_SearchFileMenu.EnableMenuItem(MP_SEARCHRELATED, theApp.emuledlg->searchwnd->CanSearchRelatedFiles() ? MF_ENABLED : MF_GRAYED);
+	m_SearchFileMenu.EnableMenuItem(MP_SEARCHRELATED, iSelected > 0 && theApp.emuledlg->searchwnd->CanSearchRelatedFiles() ? MF_ENABLED : MF_GRAYED);
 	UINT uInsertedMenuItem = 0;
 	if (iToPreview == 1) {
 		if (m_SearchFileMenu.InsertMenu(MP_FIND, MF_STRING | MF_ENABLED, MP_PREVIEW, GetResString(IDS_DL_PREVIEW), _T("Preview")))
@@ -904,7 +907,12 @@ BOOL CSearchListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					else{
 						CUpDownClient* newclient = new CUpDownClient(NULL, file->GetClientPort(),file->GetClientID(),file->GetClientServerIP(),file->GetClientServerPort(), true);
 						if (!theApp.clientlist->AttachToAlreadyKnown(&newclient,NULL)){
-							theApp.clientlist->AddClient(newclient, true); //Xman Code Improvement don't search new generated clients in lists
+							//Xman Code Improvement don't search new generated clients in lists
+							/*
+							theApp.clientlist->AddClient(newclient);
+							*/
+							theApp.clientlist->AddClient(newclient, true);
+							//Xman end
 						}
 						newclient->SendPreviewRequest(file);
 						// add to res - later
@@ -1024,7 +1032,7 @@ void CSearchListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 
 		if (!bShowInfoTip){
 			if (!bOverMainItem){
-				// don' show the default label tip for the main item, if the mouse is not over the main item
+				// don't show the default label tip for the main item, if the mouse is not over the main item
 				if ((pGetInfoTip->dwFlags & LVGIT_UNFOLDED) == 0 && pGetInfoTip->cchTextMax > 0 && pGetInfoTip->pszText[0] != _T('\0'))
 					pGetInfoTip->pszText[0] = _T('\0');
 			}
@@ -1196,7 +1204,7 @@ void CSearchListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 				    }
 			    }
     #endif
-				strInfo = strHead + strInfo;
+				strInfo = strHead + strInfo + TOOLTIP_AUTOFORMAT_SUFFIX_CH;
 			    _tcsncpy(pGetInfoTip->pszText, strInfo, pGetInfoTip->cchTextMax);
 			    pGetInfoTip->pszText[pGetInfoTip->cchTextMax-1] = _T('\0');
 		    }
@@ -1220,7 +1228,7 @@ void CSearchListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 			{
 				CString strInfo;
 				strInfo.Format(_T("%s: %u\r\n%s: %s"), GetResString(IDS_FILES), iSelected, GetResString(IDS_DL_SIZE), FormatFileSize(ulTotalSize));
-
+				strInfo += TOOLTIP_AUTOFORMAT_SUFFIX_CH;
 				_tcsncpy(pGetInfoTip->pszText, strInfo, pGetInfoTip->cchTextMax);
 				pGetInfoTip->pszText[pGetInfoTip->cchTextMax-1] = _T('\0');
 			}
@@ -1357,7 +1365,7 @@ void CSearchListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	//MORPH START - Added by SiRoB, Don't draw hidden Rect
 	RECT clientRect;
 	GetClientRect(&clientRect);
-	RECT cur_rec = lpDrawItemStruct->rcItem;
+	CRect cur_rec(lpDrawItemStruct->rcItem);
 	if (cur_rec.top >= clientRect.bottom || cur_rec.bottom <= clientRect.top)
 		return;
 	//MORPH END   - Added by SiRoB, Don't draw hidden Rect
@@ -1376,7 +1384,11 @@ void CSearchListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
 	CFont* pOldFont = dc.SelectObject(GetFont());
 	//Xman
-	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
+	//MORPH - Moved by SiRoB, Don't draw hidden Rect
+	/*
+	CRect cur_rec(lpDrawItemStruct->rcItem);
+	*/
+	//Xman end
 	COLORREF crOldTextColor = dc.SetTextColor((!g_bLowColorDesktop || (lpDrawItemStruct->itemState & ODS_SELECTED) == 0) ? GetSearchItemColor(content) : m_crHighlightText);
 
 	int iOldBkMode;
@@ -1405,20 +1417,20 @@ void CSearchListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 		ofs = 14; // indent child items
 	else
 		ofs = 6;
+	int iIconPosY = (cur_rec.Height() > theApp.GetSmallSytemIconSize().cy) ? ((cur_rec.Height() - theApp.GetSmallSytemIconSize().cy) / 2) : 0;
 
 	// spam indicator takes the place of commentsrating icon
 	if (thePrefs.IsSearchSpamFilterEnabled() && content->IsConsideredSpam()){
-		m_ImageList.Draw(dc, 8, CPoint(cur_rec.left+ofs+18, cur_rec.top), ILD_NORMAL);
+		m_ImageList.Draw(dc, 8, CPoint(cur_rec.left + ofs + 18, cur_rec.top + iIconPosY), ILD_NORMAL);
 	}
 	else if (thePrefs.ShowRatingIndicator() 
 		&& (content->HasComment() || content->HasRating() || content->IsKadCommentSearchRunning()))
 	{
-		m_ImageList.Draw(dc, (content->UserRating(true)+1), CPoint(cur_rec.left+ofs+18, cur_rec.top), ILD_NORMAL);
+		m_ImageList.Draw(dc, content->UserRating(true) + 1, CPoint(cur_rec.left + ofs + 18, cur_rec.top + iIconPosY), ILD_NORMAL);
 	}
 	
-
 	int iImage = theApp.GetFileTypeSystemImageIdx(content->GetFileName());
-	ImageList_Draw(theApp.GetSystemImageList(), iImage, dc, cur_rec.left+ofs, cur_rec.top, ILD_NORMAL|ILD_TRANSPARENT);
+	ImageList_Draw(theApp.GetSystemImageList(), iImage, dc, cur_rec.left + ofs, cur_rec.top + iIconPosY, ILD_NORMAL | ILD_TRANSPARENT);
 
 	// Parent entries
 	if (content->GetListParent() == NULL)
@@ -1798,10 +1810,25 @@ void CSearchListCtrl::DrawSourceParent(CDC *dc, int nColumn, LPRECT lpRect, /*co
 			case 2:			// avail
 				buffer.Format(_T("%u"), src->GetSourceCount());
 				if (thePrefs.IsExtControlsEnabled()){
-					int iClients = src->GetClientsCount();
-					if (iClients > 0)
-						buffer.AppendFormat(_T(" (%u)"), iClients);
+					if (src->IsKademlia()){
+						uint32 nKnownPublisher = (src->GetKadPublishInfo() & 0x00FF0000) >> 16;
+						if (nKnownPublisher > 0)
+							buffer.AppendFormat(_T(" (%u)"), nKnownPublisher);
+					}
+					else
+					{
+						int iClients = src->GetClientsCount();
+						if (iClients > 0)
+							buffer.AppendFormat(_T(" (%u)"), iClients);
+					}
 				}
+#ifdef _DEBUG
+				if (src->GetKadPublishInfo() == 0)
+					buffer += _T(" | -");
+				else
+					buffer.AppendFormat(_T(" | Names:%u, Pubs:%u, Trust:%0.2f"), (src->GetKadPublishInfo() & 0xFF000000) >> 24
+					, (src->GetKadPublishInfo() & 0x00FF0000) >> 16, (float)(src->GetKadPublishInfo() & 0x0000FFFF) / 100.0f);
+#endif
 				dc->DrawText(buffer, buffer.GetLength(), lpRect, DLC_DT_TEXT | DT_RIGHT);
 				break;
 			case 3:{		// complete sources
@@ -1905,7 +1932,12 @@ void CSearchListCtrl::SetHighlightColors()
 	m_crSearchResultDownloadStopped = RGB(255,0,0);
 	m_crSearchResultShareing		= RGB(255,0,0);
 	m_crSearchResultKnown			= RGB(0,128,0);
-	m_crSearchResultCancelled		= RGB(190,130,0); //Xman changed to brown
+	//Xman changed to brown
+	/*
+	m_crSearchResultCancelled		= RGB(0,128,0);
+	*/
+	m_crSearchResultCancelled		= RGB(190,130,0);
+	//Xman end
 
 	theApp.LoadSkinColor(_T("SearchResultsLvFg_Downloading"), m_crSearchResultDownloading);
 	if (!theApp.LoadSkinColor(_T("SearchResultsLvFg_DownloadStopped"), m_crSearchResultDownloadStopped))

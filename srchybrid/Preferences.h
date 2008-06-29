@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -282,6 +282,12 @@ public:
 	// ZZ:UploadSpeedSense -->
 	static	uint16	minupload;
 	// ZZ:UploadSpeedSense <--
+	//Xman
+	/*
+	static	uint16	maxupload;
+	static	uint16	maxdownload;
+	*/
+	//Xman end
 	static	LPCSTR	m_pszBindAddrA;
 	static	CStringA m_strBindAddrA;
 	static	LPCWSTR	m_pszBindAddrW;
@@ -308,6 +314,7 @@ public:
 	static	UINT	depth3D;			   // Barry
 	static	bool	m_bEnableMiniMule;
 	static	int		m_iStraightWindowStyles;
+	static  bool	m_bUseSystemFontForMainControls;
 	static	bool	m_bRTLWindowsLayout;
 	static	CString	m_strSkinProfile;
 	static	CString	m_strSkinProfileDir;
@@ -319,6 +326,13 @@ public:
 	static	bool	m_bFillGraphs;
 	static	uchar	userhash[16];
 	static	WINDOWPLACEMENT EmuleWindowPlacement;
+	//Xman
+	/*
+	static	int		maxGraphDownloadRate;
+	static	int		maxGraphUploadRate;
+	static	uint32	maxGraphUploadRateEstimated;
+	*/
+	//Xman end
 	static	bool	beepOnError;
 	static	bool	confirmExit;
 
@@ -632,6 +646,7 @@ public:
 	static	bool	dontcompressavi;
 	static	bool	msgonlyfriends;
 	static	bool	msgsecure;
+	static	bool	m_bUseChatCaptchas;
 
 	static	UINT	filterlevel;
 	static	UINT	m_iFileBufferSize;
@@ -720,7 +735,11 @@ public:
 	static  bool	m_bDynUpUseMillisecondPingTolerance;
 	// ZZ:UploadSpeedSense <--
 
-    //static bool     m_bA4AFSaveCpu; // ZZ:DownloadManager
+	//Xman
+	/*
+    static bool     m_bA4AFSaveCpu; // ZZ:DownloadManager
+	*/
+	//Xman end
 
     static bool     m_bHighresTimer;
 
@@ -778,6 +797,8 @@ public:
 	static bool		m_bEnableSearchResultFilter;
 
 	static BOOL		m_bIsRunningAeroGlass;
+	static bool		m_bPreventStandby;
+	static bool		m_bStoreSearches;
 
 	// ==> Advanced Options [Official/MorphXT] - Stulle
 	static bool bMiniMuleAutoClose;
@@ -1016,6 +1037,7 @@ public:
 	static int    m_iDetectuPnP; //leuk_he autodetect in startup wizard
 	static DWORD	 m_dwUpnpBindAddr;
 	static bool      m_bBindAddrIsDhcp;
+	static bool     m_bUPnPForceUpdate;
 	//<== UPnP support [MoNKi] - leuk_he
 
 	// ==> Random Ports [MoNKi] - Stulle
@@ -1142,20 +1164,29 @@ public:
 
 	static	LPCSTR	GetBindAddrA()						{return m_pszBindAddrA; }
 	static	LPCWSTR	GetBindAddrW()						{return m_pszBindAddrW; }
-	// ==> UPnP support [MoNKi] - leuk_he
-	/*
 	//Xman
 	//upnp_start
-	static	uint16	GetPort();//							{return port;}
-	static	uint16	GetUDPPort();//						{return udpport;}
-	//upnp_end
+	/*
+	static	uint16	GetPort()							{return port;}
+	static	uint16	GetUDPPort()						{return udpport;}
+	*/
+	// ==> UPnP support [MoNKi] - leuk_he
+	/*
+	static	uint16	GetPort();
+	static	uint16	GetUDPPort();
 	*/
 	// <== UPnP support [MoNKi] - leuk_he
+	//upnp_end
 	static	uint16	GetServerUDPPort()					{return nServerUDPPort;}
 	static	uchar*	GetUserHash()						{return userhash;}
 	// ZZ:UploadSpeedSense -->
 	static	uint16	GetMinUpload()						{return minupload;}
 	// ZZ:UploadSpeedSense <--
+	//Xman
+	/*
+	static	uint16	GetMaxUpload()						{return maxupload;}
+	*/
+	//Xman end
 	static	bool	IsICHEnabled()						{return ICH;}
 	static	bool	GetAutoUpdateServerList()			{return m_bAutoUpdateServerList;}
 	static	bool	UpdateNotify()						{return updatenotify;}
@@ -1664,8 +1695,18 @@ public:
 	static	bool	FilterLANIPs()						{return filterLANIPs;}
 	static	bool	GetAllowLocalHostIP()				{return m_bAllocLocalHostIP;}
 	static	bool	IsOnlineSignatureEnabled()			{return onlineSig;}
+	//Xman
+	/*
+	static	int		GetMaxGraphUploadRate(bool bEstimateIfUnlimited);
+	static	int		GetMaxGraphDownloadRate()			{return maxGraphDownloadRate;}
+	static	void	SetMaxGraphUploadRate(int in);
+	static	void	SetMaxGraphDownloadRate(int in)		{maxGraphDownloadRate=(in)?in:96;}
 
-	static	uint64	GetMaxDownloadInBytesPerSec(); //Xman Xtreme Mod
+	static	uint16	GetMaxDownload();
+	static	uint64	GetMaxDownloadInBytesPerSec(bool dynamic = false);
+	*/
+	static	uint64	GetMaxDownloadInBytesPerSec();
+	//Xman end
 	static	UINT	GetMaxConnections()					{return maxconnections;}
 	static	UINT	GetMaxHalfConnections()				{return maxhalfconnections;}
 	static	UINT	GetMaxSourcePerFileDefault()		{return maxsourceperfile;}
@@ -1715,6 +1756,7 @@ public:
 	// <-----khaos-
 	static	bool	UseFlatBar()						{return (depth3D==0);}
 	static	int		GetStraightWindowStyles()			{return m_iStraightWindowStyles;}
+	static  bool	GetUseSystemFontForMainControls()	{return m_bUseSystemFontForMainControls;}
 
 	static	const CString& GetSkinProfile()				{return m_strSkinProfile;}
 	static	void	SetSkinProfile(LPCTSTR pszProfile)	{m_strSkinProfile = pszProfile;}
@@ -1854,6 +1896,12 @@ public:
 	static	bool	GetSparsePartFiles();
 	static	void	SetSparsePartFiles(bool bEnable)	{m_bSparsePartFiles = bEnable;}
 
+	//Xman
+	/*
+	static	void	SetMaxUpload(UINT in);
+	static	void	SetMaxDownload(UINT in);
+	*/
+	//Xman end
 
 	static	WINDOWPLACEMENT GetEmuleWindowPlacement()	{return EmuleWindowPlacement;}
 	static	void	SetWindowLayout(WINDOWPLACEMENT in) {EmuleWindowPlacement=in;}
@@ -1869,6 +1917,7 @@ public:
 	static	int		GetIPFilterLevel()					{return filterlevel;}
 	static	const CString& GetMessageFilter()			{return messageFilter;}
 	static	const CString& GetCommentFilter()			{return commentFilter;}
+	static	void	SetCommentFilter(const CString& strFilter) {commentFilter = strFilter;}
 	static	const CString& GetFilenameCleanups()		{return filenameCleanups;}
 
 	static	bool	ShowRatesOnTitle()					{return showRatesInTitle;}
@@ -1937,6 +1986,7 @@ public:
 	static	UINT	GetMsgSessionsMax()					{return maxmsgsessions;}
 	static	bool	IsSecureIdentEnabled()				{return m_bUseSecureIdent;} // use clientcredits->CryptoAvailable() to check if crypting is really available and not this function
 	static	bool	IsAdvSpamfilterEnabled()			{return m_bAdvancedSpamfilter;}
+	static	bool	IsChatCaptchaEnabled()				{return IsAdvSpamfilterEnabled() && m_bUseChatCaptchas;}
 	static	const CString& GetTemplate()				{return m_strTemplateFile;}
 	static	void	SetTemplate(CString in)				{m_strTemplateFile = in;}
 	static	bool	GetNetworkKademlia()				{return networkkademlia && udpport > 0;}
@@ -1993,7 +2043,12 @@ public:
 	static	void	SetSearchMethod(int iMethod)		{m_iSearchMethod = iMethod;}
 
 	// ZZ:UploadSpeedSense -->
-	static	bool	IsDynUpEnabled()					{ return m_bDynUpEnabled; } //Xman
+	//Xman
+	/*
+	static	bool	IsDynUpEnabled();
+	*/
+	static	bool	IsDynUpEnabled()					{ return m_bDynUpEnabled; }
+	//Xman end
 	static	void	SetDynUpEnabled(bool newValue)		{m_bDynUpEnabled = newValue;}
 	static	int		GetDynUpPingTolerance()				{return m_iDynUpPingTolerance;}
 	static	int		GetDynUpGoingUpDivider()			{return m_iDynUpGoingUpDivider;}
@@ -2004,7 +2059,11 @@ public:
 	static  void	SetDynUpPingToleranceMilliseconds(int in){m_iDynUpPingToleranceMilliseconds = in;}
 	// ZZ:UploadSpeedSense <--
 
-    //static bool     GetA4AFSaveCpu()                    {return m_bA4AFSaveCpu;} // ZZ:DownloadManager
+	//Xman
+	/*
+    static bool     GetA4AFSaveCpu()                    {return m_bA4AFSaveCpu;} // ZZ:DownloadManager
+	*/
+	//Xman end
 
     static bool     GetHighresTimer()                   {return m_bHighresTimer;}
 
@@ -2104,7 +2163,8 @@ public:
 	// Spamfilter
 	static bool		IsSearchSpamFilterEnabled()			{return m_bEnableSearchResultFilter;}
 	
-
+	static bool		IsStoringSearchesEnabled()			{return m_bStoreSearches;}
+	static bool		GetPreventStandby()					{return m_bPreventStandby;}
 	static uint16	GetRandomTCPPort();
 	static uint16	GetRandomUDPPort();
 

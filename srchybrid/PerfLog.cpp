@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -25,7 +25,7 @@
 #include "Statistics.h"
 #include "emuledlg.h"
 #include "Log.h"
-#include "Otherfunctions.h"
+#include "otherfunctions.h"
 //Xman
 #include "BandwidthControl.h"	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 
@@ -157,9 +157,34 @@ void CPerfLog::LogSamples()
 	if (dwNow - m_dwLastSampled < m_dwInterval)
 		return;
 
+	// 'data counters' amount of transferred file data
 	//Xman
 	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
-	// 'data counters' amount of transferred file data
+	/*
+	UINT nCurDn = (UINT)(theStats.sessionReceivedBytes - m_nLastSessionRecvBytes);
+	UINT nCurUp = (UINT)(theStats.sessionSentBytes - m_nLastSessionSentBytes);
+
+	// 'overhead counters' amount of total overhead
+	uint64 nDnOHTotal = theStats.GetDownDataOverheadFileRequest() + 
+						theStats.GetDownDataOverheadSourceExchange() + 
+						theStats.GetDownDataOverheadServer() + 
+						theStats.GetDownDataOverheadKad() + 
+						theStats.GetDownDataOverheadOther();
+	uint64 nUpOHTotal = theStats.GetUpDataOverheadFileRequest() + 
+						theStats.GetUpDataOverheadSourceExchange() + 
+						theStats.GetUpDataOverheadServer() + 
+						theStats.GetUpDataOverheadKad() + 
+						theStats.GetUpDataOverheadOther();
+	UINT nCurDnOH = (UINT)(nDnOHTotal - m_nLastDnOH);
+	UINT nCurUpOH = (UINT)(nUpOHTotal - m_nLastUpOH);
+
+	WriteSamples(nCurDn, nCurUp, nCurDnOH, nCurUpOH);
+
+	m_nLastSessionRecvBytes = theStats.sessionReceivedBytes;
+	m_nLastSessionSentBytes = theStats.sessionSentBytes;
+	m_nLastDnOH = nDnOHTotal;
+	m_nLastUpOH = nUpOHTotal;
+	*/
 	UINT nCurDn = (UINT)(theApp.pBandWidthControl->GeteMuleIn() - m_nLastSessionRecvBytes);
 	UINT nCurUp = (UINT)(theApp.pBandWidthControl->GeteMuleOut() - m_nLastSessionSentBytes);
 	UINT nCurDnOH = (UINT)(theApp.pBandWidthControl->GeteMuleInOverall() - m_nLastDnOH);

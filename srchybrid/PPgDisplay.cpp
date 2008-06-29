@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -60,6 +60,7 @@ BEGIN_MESSAGE_MAP(CPPgDisplay, CPropertyPage)
 	ON_BN_CLICKED(IDC_SELECT_HYPERTEXT_FONT, OnBnClickedSelectHypertextFont)
 	ON_BN_CLICKED(IDC_CLEARCOMPL,OnSettingsChange)
 	ON_BN_CLICKED(IDC_SHOWTRANSTOOLBAR,OnSettingsChange)
+	ON_BN_CLICKED(IDC_STORESEARCHES, OnSettingsChange)
 	ON_BN_CLICKED(IDC_RESETHIST, OnBtnClickedResetHist)
 	ON_WM_HELPINFO()
 END_MESSAGE_MAP()
@@ -119,6 +120,11 @@ void CPPgDisplay::LoadSettings(void)
 	else
 		CheckDlgButton(IDC_DISABLEQUEUELIST,0);
 
+	if(thePrefs.IsStoringSearchesEnabled())
+		CheckDlgButton(IDC_STORESEARCHES,1);
+	else
+		CheckDlgButton(IDC_STORESEARCHES,0);
+
 	CheckDlgButton(IDC_SHOWCATINFO,(UINT)thePrefs.ShowCatTabInfos());
 	CheckDlgButton(IDC_REPAINT,(UINT)thePrefs.IsGraphRecreateDisabled() );
 	CheckDlgButton(IDC_SHOWDWLPERCENT,(UINT)thePrefs.GetUseDwlPercentage() );
@@ -158,24 +164,25 @@ BOOL CPPgDisplay::OnApply()
 	TCHAR buffer[510];
 	
 	if(m_bModified){ // show overhead on title - Stulle
-		bool mintotray_old = thePrefs.mintotray;
-		thePrefs.mintotray = IsDlgButtonChecked(IDC_MINTRAY)!=0;
-		thePrefs.transferDoubleclick = IsDlgButtonChecked(IDC_DBLCLICK)!=0;
-		thePrefs.depth3D = ((CSliderCtrl*)GetDlgItem(IDC_3DDEPTH))->GetPos();
-		thePrefs.dontRecreateGraphs = IsDlgButtonChecked(IDC_REPAINT)!=0;
-		thePrefs.m_bShowDwlPercentage = IsDlgButtonChecked(IDC_SHOWDWLPERCENT)!=0;
-		thePrefs.m_bRemoveFinishedDownloads = IsDlgButtonChecked(IDC_CLEARCOMPL)!=0;
-		thePrefs.m_bUseAutocompl = IsDlgButtonChecked(IDC_DISABLEHIST)!=0;
+	bool mintotray_old = thePrefs.mintotray;
+	thePrefs.mintotray = IsDlgButtonChecked(IDC_MINTRAY)!=0;
+	thePrefs.transferDoubleclick = IsDlgButtonChecked(IDC_DBLCLICK)!=0;
+	thePrefs.depth3D = ((CSliderCtrl*)GetDlgItem(IDC_3DDEPTH))->GetPos();
+	thePrefs.dontRecreateGraphs = IsDlgButtonChecked(IDC_REPAINT)!=0;
+	thePrefs.m_bShowDwlPercentage = IsDlgButtonChecked(IDC_SHOWDWLPERCENT)!=0;
+	thePrefs.m_bRemoveFinishedDownloads = IsDlgButtonChecked(IDC_CLEARCOMPL)!=0;
+	thePrefs.m_bUseAutocompl = IsDlgButtonChecked(IDC_DISABLEHIST)!=0;
+	thePrefs.m_bStoreSearches = IsDlgButtonChecked(IDC_STORESEARCHES) != 0;
 
-		if (IsDlgButtonChecked(IDC_UPDATEQUEUE))
-			thePrefs.m_bupdatequeuelist = false;
-		else
-			thePrefs.m_bupdatequeuelist = true;
+	if (IsDlgButtonChecked(IDC_UPDATEQUEUE))
+		thePrefs.m_bupdatequeuelist = false;
+	else
+		thePrefs.m_bupdatequeuelist = true;
 
-		if (IsDlgButtonChecked(IDC_SHOWRATEONTITLE))
-			thePrefs.showRatesInTitle = true;
-		else
-			thePrefs.showRatesInTitle = false;
+	if (IsDlgButtonChecked(IDC_SHOWRATEONTITLE))
+		thePrefs.showRatesInTitle = true;
+	else
+		thePrefs.showRatesInTitle = false;
 
 		// ==> show overhead on title - Stulle
 		if(IsDlgButtonChecked(IDC_SHOWOVERHEADONTITLE))
@@ -184,80 +191,75 @@ BOOL CPPgDisplay::OnApply()
 			thePrefs.showOverheadInTitle= false;
 		// <== show overhead on title - Stulle
 
-		thePrefs.ShowCatTabInfos(IsDlgButtonChecked(IDC_SHOWCATINFO) != 0);
-		if (!thePrefs.ShowCatTabInfos())
-			theApp.emuledlg->transferwnd->UpdateCatTabTitles();
+	thePrefs.ShowCatTabInfos(IsDlgButtonChecked(IDC_SHOWCATINFO) != 0);
+	if (!thePrefs.ShowCatTabInfos())
+		theApp.emuledlg->transferwnd->UpdateCatTabTitles();
 
-		bool bListDisabled = false;
-		bool bResetToolbar = false;
-		if (thePrefs.m_bDisableKnownClientList != (IsDlgButtonChecked(IDC_DISABLEKNOWNLIST) != 0)) {
-			thePrefs.m_bDisableKnownClientList = (IsDlgButtonChecked(IDC_DISABLEKNOWNLIST) != 0);
-			//Xman Code Fix
-			if (thePrefs.m_bDisableKnownClientList)
-			{
-				bListDisabled = true;
-				theApp.emuledlg->transferwnd->clientlistctrl.DeleteAllItems();
-			}
-			else
-				theApp.emuledlg->transferwnd->clientlistctrl.ShowKnownClients();
-			//Xman end
-			bResetToolbar = true;
-		}
-
-		if (thePrefs.m_bDisableQueueList != (IsDlgButtonChecked(IDC_DISABLEQUEUELIST) != 0)) {
-			thePrefs.m_bDisableQueueList = (IsDlgButtonChecked(IDC_DISABLEQUEUELIST) != 0);
-			//Xman Code Fix
-			if (thePrefs.m_bDisableQueueList)
-			{
-				bListDisabled = true;
-				theApp.emuledlg->transferwnd->queuelistctrl.DeleteAllItems();
-			}
-			else
-				theApp.emuledlg->transferwnd->queuelistctrl.ShowQueueClients();
-			//Xman end
-			bResetToolbar = true;
-		}
-
-		GetDlgItem(IDC_TOOLTIPDELAY)->GetWindowText(buffer,20);
-		if (_tstoi(buffer) > 32)
-			thePrefs.m_iToolDelayTime = 32;
+	bool bListDisabled = false;
+	bool bResetToolbar = false;
+	if (thePrefs.m_bDisableKnownClientList != (IsDlgButtonChecked(IDC_DISABLEKNOWNLIST) != 0)) {
+		thePrefs.m_bDisableKnownClientList = (IsDlgButtonChecked(IDC_DISABLEKNOWNLIST) != 0);
+		if (thePrefs.m_bDisableKnownClientList)
+			bListDisabled = true;
 		else
-			thePrefs.m_iToolDelayTime = _tstoi(buffer);
-		theApp.emuledlg->SetToolTipsDelay(thePrefs.GetToolTipDelay()*1000);
+			theApp.emuledlg->transferwnd->clientlistctrl.ShowKnownClients();
+		bResetToolbar = true;
+	}
 
-		theApp.emuledlg->transferwnd->downloadlistctrl.SetStyle();
+	if (thePrefs.m_bDisableQueueList != (IsDlgButtonChecked(IDC_DISABLEQUEUELIST) != 0)) {
+		thePrefs.m_bDisableQueueList = (IsDlgButtonChecked(IDC_DISABLEQUEUELIST) != 0);
+		if (thePrefs.m_bDisableQueueList)
+			bListDisabled = true;
+		else
+			theApp.emuledlg->transferwnd->queuelistctrl.ShowQueueClients();
+		bResetToolbar = true;
+	}
 
-		if (bListDisabled)
-			theApp.emuledlg->transferwnd->OnDisableList();
-		if ((IsDlgButtonChecked(IDC_SHOWTRANSTOOLBAR) != 0) != thePrefs.IsTransToolbarEnabled()) {
-			thePrefs.m_bWinaTransToolbar = !thePrefs.m_bWinaTransToolbar;
-			theApp.emuledlg->transferwnd->ResetTransToolbar(thePrefs.m_bWinaTransToolbar);
-		}
-		else if ((IsDlgButtonChecked(IDC_SHOWTRANSTOOLBAR) != 0) && bResetToolbar) {
-			theApp.emuledlg->transferwnd->ResetTransToolbar(thePrefs.m_bWinaTransToolbar);
-		}
+	GetDlgItem(IDC_TOOLTIPDELAY)->GetWindowText(buffer,20);
+	if (_tstoi(buffer) > 32)
+		thePrefs.m_iToolDelayTime = 32;
+	else
+		thePrefs.m_iToolDelayTime = _tstoi(buffer);
+	theApp.emuledlg->SetToolTipsDelay(thePrefs.GetToolTipDelay()*1000);
 
-		LoadSettings();
+	theApp.emuledlg->transferwnd->downloadlistctrl.SetStyle();
 
-		if (mintotray_old != thePrefs.mintotray)
-			theApp.emuledlg->TrayMinimizeToTrayChange();
+	if (bListDisabled)
+		theApp.emuledlg->transferwnd->OnDisableList();
+	if ((IsDlgButtonChecked(IDC_SHOWTRANSTOOLBAR) != 0) != thePrefs.IsTransToolbarEnabled()) {
+		thePrefs.m_bWinaTransToolbar = !thePrefs.m_bWinaTransToolbar;
+		theApp.emuledlg->transferwnd->ResetTransToolbar(thePrefs.m_bWinaTransToolbar);
+	}
+	else if ((IsDlgButtonChecked(IDC_SHOWTRANSTOOLBAR) != 0) && bResetToolbar) {
+		theApp.emuledlg->transferwnd->ResetTransToolbar(thePrefs.m_bWinaTransToolbar);
+	}
+
+	LoadSettings();
+
+	if (mintotray_old != thePrefs.mintotray)
+		theApp.emuledlg->TrayMinimizeToTrayChange();
 		// ==> Show sources on title - Stulle
 		/*
-		if (!thePrefs.ShowRatesOnTitle())
+	if (!thePrefs.ShowRatesOnTitle())
 		*/
 		if (!thePrefs.ShowRatesOnTitle() && !thePrefs.ShowSrcOnTitle()) 
 		// <== Show sources on title - Stulle
+		// Xman // Maella -Support for tag ET_MOD_VERSION 0x55
+		/*
+		theApp.emuledlg->SetWindowText(_T("eMule v") + theApp.m_strCurVersionLong);
+		*/
 			// ==> ModID [itsonlyme/SiRoB] - Stulle
 			/*
-			theApp.emuledlg->SetWindowText(_T("eMule v") + theApp.m_strCurVersionLong + _T(" ") + MOD_VERSION); // Xman // Maella -Support for tag ET_MOD_VERSION 0x55
+		theApp.emuledlg->SetWindowText(_T("eMule v") + theApp.m_strCurVersionLong + _T(" ") + MOD_VERSION);
 			*/
 			{
 				_stprintf(buffer,_T("eMule v%s [%s]"),theApp.m_strCurVersionLong,theApp.m_strModLongVersion);
 				theApp.emuledlg->SetWindowText(buffer);
 			}
 			// <== ModID [itsonlyme/SiRoB] - Stulle
+		//Xman end
 
-		SetModified(FALSE);
+	SetModified(FALSE);
 
 	} //show overhead on title - Stulle
 
@@ -287,6 +289,7 @@ void CPPgDisplay::Localize(void)
 		SetDlgItemText(IDC_SELECT_HYPERTEXT_FONT, GetResString(IDS_SELECT_FONT) + _T("..."));
 		SetDlgItemText(IDC_SHOWDWLPERCENT, GetResString(IDS_SHOWDWLPERCENTAGE));
 		GetDlgItem(IDC_CLEARCOMPL)->SetWindowText(GetResString(IDS_AUTOREMOVEFD));
+		GetDlgItem(IDC_STORESEARCHES)->SetWindowText(GetResString(IDS_STORESEARCHES));
 
 		GetDlgItem(IDC_RESETLABEL)->SetWindowText(GetResString(IDS_RESETLABEL));
 		GetDlgItem(IDC_RESETHIST)->SetWindowText(GetResString(IDS_PW_RESET));
@@ -364,7 +367,7 @@ void CPPgDisplay::OnBnClickedSelectHypertextFont()
 	if (pFont != NULL)
 	   pFont->GetObject(sizeof(LOGFONT), &lf);
 	else
-	   ::GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
+		AfxGetMainWnd()->GetFont()->GetLogFont(&lf);
 
 	// Initialize 'CFontDialog'
 	CFontDialog dlg(&lf, CF_SCREENFONTS | CF_INITTOLOGFONTSTRUCT);

@@ -35,13 +35,14 @@ public:
 	static CED2KLink* CreateLinkFromUrl(const TCHAR* url);
 	virtual ~CED2KLink();
 
-	typedef enum { kServerList, kServer , kFile , kInvalid } LinkType;
+	typedef enum { kServerList, kServer , kFile , kNodesList, kInvalid } LinkType;
 
 	virtual LinkType GetKind() const = 0;
 	virtual void GetLink(CString& lnk) const = 0;
 	virtual class CED2KServerListLink* GetServerListLink() = 0;
 	virtual class CED2KServerLink* GetServerLink() = 0;
 	virtual class CED2KFileLink* GetFileLink() = 0;
+	virtual class CED2KNodesListLink* GetNodesListLink() = 0;
 };
 
 
@@ -56,6 +57,7 @@ public:
 	virtual CED2KServerListLink* GetServerListLink();
 	virtual CED2KServerLink* GetServerLink();
 	virtual CED2KFileLink* GetFileLink();
+	virtual CED2KNodesListLink* GetNodesListLink()		{ return NULL; }
 
 	const CString& GetAddress() const { return m_strAddress; }
 	uint16 GetPort() const { return m_port;}
@@ -83,6 +85,7 @@ public:
 	virtual CED2KServerListLink* GetServerListLink();
 	virtual CED2KServerLink* GetServerLink();
 	virtual CED2KFileLink* GetFileLink();
+	virtual CED2KNodesListLink* GetNodesListLink() 		{ return NULL; }
 	
 	const TCHAR* GetName() const			{ return m_name; }
 	const uchar* GetHashKey() const			{ return m_hash;}
@@ -120,6 +123,7 @@ public:
 	virtual CED2KServerListLink* GetServerListLink();
 	virtual CED2KServerLink* GetServerLink();
 	virtual CED2KFileLink* GetFileLink();
+	virtual CED2KNodesListLink* GetNodesListLink()		{ return NULL; }
 
 	const TCHAR* GetAddress() const { return m_address; }
 
@@ -127,6 +131,30 @@ private:
 	CED2KServerListLink();
 	CED2KServerListLink(const CED2KFileLink&);
 	CED2KServerListLink& operator=(const CED2KFileLink&);
+
+	CString m_address;
+};
+
+
+class CED2KNodesListLink : public CED2KLink
+{
+public:
+	CED2KNodesListLink(const TCHAR* pszAddress);
+	virtual ~CED2KNodesListLink();
+
+	virtual LinkType GetKind() const;
+	virtual void GetLink(CString& lnk) const;
+	virtual CED2KServerListLink* GetServerListLink();
+	virtual CED2KServerLink* GetServerLink();
+	virtual CED2KFileLink* GetFileLink();
+	virtual CED2KNodesListLink* GetNodesListLink();
+
+	const TCHAR* GetAddress() const { return m_address; }
+
+private:
+	CED2KNodesListLink();
+	CED2KNodesListLink(const CED2KFileLink&);
+	CED2KNodesListLink& operator=(const CED2KFileLink&);
 
 	CString m_address;
 };

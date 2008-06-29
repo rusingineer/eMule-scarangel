@@ -573,7 +573,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,125,207,10
 END
 
-IDD_PPG_GENERAL DIALOGEX 0, 0, 231, 225
+IDD_PPG_GENERAL DIALOGEX 0, 0, 231, 239
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "General"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
@@ -583,7 +583,7 @@ BEGIN
     GROUPBOX        "Language:",IDC_LANG_FRM,4,32,223,29
     COMBOBOX        IDC_LANGS,11,43,209,310,CBS_DROPDOWNLIST | CBS_SORT | 
                     WS_VSCROLL | WS_TABSTOP
-    GROUPBOX        "Misc:",IDC_MISC_FRM,4,63,223,85
+    GROUPBOX        "Misc:",IDC_MISC_FRM,4,63,223,95
     CONTROL         "Beep on errors",IDC_BEEPER,"Button",BS_AUTOCHECKBOX | 
                     WS_TABSTOP,11,74,202,10
     CONTROL         "Bring to front on link click",IDC_BRINGTOFOREGROUND,
@@ -592,25 +592,28 @@ BEGIN
                     WS_TABSTOP,11,94,202,10
     CONTROL         "Onlinesig",IDC_ONLINESIG,"Button",BS_AUTOCHECKBOX | 
                     WS_TABSTOP,11,104,202,10
-    GROUPBOX        "Startup",IDC_STARTUP,4,149,223,71
+    GROUPBOX        "Startup",IDC_STARTUP,3,160,223,71
     CONTROL         "Check for new version on startup",IDC_CHECK4UPDATE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,165,153,10
-    CONTROL         "",IDC_CHECKDAYS,"msctls_trackbar32",TBS_AUTOTICKS | 
-                    WS_TABSTOP,169,165,53,10
-    LTEXT           "days",IDC_DAYS,171,155,48,9
-    CONTROL         "Show splash screen",IDC_SPLASHON,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,11,185,192,10
-    CONTROL         "Startup Minimized",IDC_STARTMIN,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,11,196,190,10
-    CONTROL         "Start with Windows",IDC_STARTWIN,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,11,206,190,10
-    PUSHBUTTON      "Edit Web Services...",IDC_WEBSVEDIT,11,128,100,14
-    PUSHBUTTON      "Handle eD2K Links",IDC_ED2KFIX,116,128,106,14
-    CONTROL         "Enable Minimule window",IDC_MINIMULE,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,11,114,202,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,176,153,10
     CONTROL         "Check for new Xtreme version on startup",
                     IDC_CHECK4UPDATEMOD,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,11,174,193,10
+                    WS_TABSTOP,11,186,193,10
+    CONTROL         "",IDC_CHECKDAYS,"msctls_trackbar32",TBS_AUTOTICKS | 
+                    WS_TABSTOP,169,176,53,10
+    LTEXT           "days",IDC_DAYS,171,166,48,9
+    CONTROL         "Show splash screen",IDC_SPLASHON,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,11,196,192,10
+    CONTROL         "Startup Minimized",IDC_STARTMIN,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,11,206,190,10
+    CONTROL         "Start with Windows",IDC_STARTWIN,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,11,216,190,10
+    PUSHBUTTON      "Edit Web Services...",IDC_WEBSVEDIT,11,138,100,14
+    PUSHBUTTON      "Handle eD2K Links",IDC_ED2KFIX,116,138,106,14
+    CONTROL         "Enable Minimule window",IDC_MINIMULE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,11,114,202,10
+    CONTROL         "Prevent Standby mode while eMule is running",
+                    IDC_PREVENTSTANDBY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    11,124,212,10
 END
 
 IDD_PPG_FILES DIALOGEX 0, 0, 229, 246
@@ -786,8 +789,8 @@ STYLE DS_LOCALEDIT | DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD |
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "",IDC_SFLIST,"SysListView32",LVS_REPORT | 
-                    LVS_SHOWSELALWAYS | LVS_NOLABELWRAP | LVS_OWNERDRAWFIXED | 
-                    LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,122,17,384,207
+                    LVS_NOLABELWRAP | LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | 
+                    WS_BORDER | WS_TABSTOP,122,17,384,207
     PUSHBUTTON      "Re&load",IDC_RELOADSHAREDFILES,449,2,57,14
     CONTROL         "Current Session",IDC_CURSESSION_LBL,"Static",
                     SS_LEFTNOWORDWRAP | WS_GROUP,131,238,239,8
@@ -828,7 +831,9 @@ BEGIN
     ICON            "",IDC_FILES_ICO,5,5,20,20,SS_NOTIFY
     CONTROL         "",IDC_SHAREDDIRSTREE,"SysTreeView32",TVS_HASBUTTONS | 
                     TVS_HASLINES | TVS_LINESATROOT | TVS_SHOWSELALWAYS | 
-                    WS_BORDER | WS_TABSTOP,5,17,114,268
+                    WS_BORDER | WS_TABSTOP,5,33,114,252
+    EDITTEXT        IDC_SHAREDFILES_FILTER,5,17,114,14,ES_MULTILINE | 
+                    ES_AUTOHSCROLL
     CONTROL         "",IDC_DOWNHISTORYLIST,"SysListView32",LVS_REPORT | 
                     LVS_SHOWSELALWAYS | LVS_NOLABELWRAP | LVS_OWNERDRAWFIXED | 
                     LVS_ALIGNLEFT | WS_TABSTOP,391,221,107,62,
@@ -916,8 +921,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION |
 CAPTION "Wizard"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    CONTROL         "Win2K/XP",IDC_WIZ_XP_RADIO,"Button",BS_AUTORADIOBUTTON | 
-                    WS_GROUP | WS_TABSTOP,14,17,60,10
+    CONTROL         "Win2K/XP/Vista",IDC_WIZ_XP_RADIO,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,17,77,10
     CONTROL         "Win98/ME",IDC_WIZ_ME_RADIO,"Button",BS_AUTORADIOBUTTON | 
                     WS_TABSTOP,107,17,60,10
     CONTROL         "1-5",IDC_WIZ_LOWDOWN_RADIO,"Button",BS_AUTORADIOBUTTON | 
@@ -1015,7 +1020,7 @@ BEGIN
                     WS_TABSTOP,9,225,211,11
 END
 
-IDD_ADDFRIEND DIALOGEX 0, 0, 269, 172
+IDD_ADDFRIEND DIALOGEX 0, 0, 271, 190
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
 CAPTION "Add Friend"
@@ -1028,20 +1033,23 @@ BEGIN
     CONTROL         "Port:",IDC_STATIC35,"Static",SS_LEFTNOWORDWRAP | 
                     WS_GROUP,19,38,50,8,WS_EX_RIGHT
     EDITTEXT        IDC_PORT,72,36,38,12,ES_AUTOHSCROLL
-    GROUPBOX        "Additional Information",IDC_INFO2,7,62,256,49
+    GROUPBOX        "Additional Information",IDC_INFO2,7,62,256,61
     CONTROL         "Name:",IDC_STATIC31,"Static",SS_LEFTNOWORDWRAP | 
                     WS_GROUP,19,77,50,8,WS_EX_RIGHT
     EDITTEXT        IDC_USERNAME,72,75,184,12,ES_AUTOHSCROLL
     CONTROL         "Hash:",IDC_STATIC32,"Static",SS_LEFTNOWORDWRAP | 
                     WS_GROUP,19,93,50,8,WS_EX_RIGHT
     LTEXT           "Static",IDC_USERHASH,72,93,184,10,SS_NOPREFIX
+    CONTROL         "KadID:",IDC_AFKADIDLABEL,"Static",SS_LEFTNOWORDWRAP | 
+                    WS_GROUP,19,107,50,8,WS_EX_RIGHT
+    LTEXT           "Unknown",IDC_AFKADID,72,107,184,10,SS_NOPREFIX
+    GROUPBOX        "",IDC_STATIC,7,127,256,29
     CONTROL         "Last seen:",IDC_LAST_SEEN_LABEL,"Static",
-                    SS_LEFTNOWORDWRAP | WS_GROUP,19,128,69,8,WS_EX_RIGHT
-    EDITTEXT        IDC_EDIT2,91,128,165,12,ES_AUTOHSCROLL | ES_READONLY | 
+                    SS_LEFTNOWORDWRAP | WS_GROUP,19,138,69,8,WS_EX_RIGHT
+    EDITTEXT        IDC_EDIT2,91,138,165,12,ES_AUTOHSCROLL | ES_READONLY | 
                     NOT WS_BORDER | NOT WS_TABSTOP
-    DEFPUSHBUTTON   "&Add",IDC_ADD,156,154,50,14
-    PUSHBUTTON      "&Cancel",IDCANCEL,213,154,50,14
-    GROUPBOX        "",IDC_STATIC,7,116,256,29
+    DEFPUSHBUTTON   "&Add",IDC_ADD,155,167,50,14
+    PUSHBUTTON      "&Cancel",IDCANCEL,213,167,50,14
 END
 
 IDD_COMMENT DIALOGEX 0, 0, 357, 216
@@ -1073,6 +1081,7 @@ BEGIN
                     LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | WS_BORDER | 
                     WS_TABSTOP,4,4,319,109
     PUSHBUTTON      "Search Kad",IDC_SEARCHKAD,195,117,128,14
+    PUSHBUTTON      "Edit spam filter...",IDC_EDITCOMMENTFILTER,4,116,128,14
 END
 
 // ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
@@ -1188,7 +1197,7 @@ END
 
 // ==> Show overhead on title - Stulle
 /*
-IDD_PPG_DISPLAY DIALOGEX 0, 0, 231, 230
+IDD_PPG_DISPLAY DIALOGEX 0, 0, 231, 238
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Display"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
@@ -1220,30 +1229,33 @@ BEGIN
     CONTROL         "Show additional toolbar on Transfers window",
                     IDC_SHOWTRANSTOOLBAR,"Button",BS_AUTOCHECKBOX | 
                     WS_TABSTOP,4,103,216,10
-    GROUPBOX        "Lower CPU- && Memoryusage",IDC_STATIC_CPUMEM,4,115,223,
+    GROUPBOX        "Lower CPU- && Memoryusage",IDC_STATIC_CPUMEM,3,124,223,
                     56
     CONTROL         "Disable Known Clients list",IDC_DISABLEKNOWNLIST,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,11,126,202,10
+                    BS_AUTOCHECKBOX | WS_TABSTOP,11,135,202,10
     CONTROL         "Disable Queue List",IDC_DISABLEQUEUELIST,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,11,136,202,10
+                    BS_AUTOCHECKBOX | WS_TABSTOP,11,145,202,10
     CONTROL         "Keep queue list updated.",IDC_UPDATEQUEUE,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,11,146,202,10
+                    BS_AUTOCHECKBOX | WS_TABSTOP,11,155,202,10
     CONTROL         "Don't repaint graphs",IDC_REPAINT,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,11,156,202,10
-    PUSHBUTTON      "Select Font...",IDC_SELECT_HYPERTEXT_FONT,11,185,86,14
+                    BS_AUTOCHECKBOX | WS_TABSTOP,11,166,202,10
+    PUSHBUTTON      "Select Font...",IDC_SELECT_HYPERTEXT_FONT,11,194,86,14
     CONTROL         "Font for Server-, Message- and IRC-Window",
                     IDC_HYPERTEXT_FONT_HINT,"Static",SS_LEFTNOWORDWRAP | 
-                    WS_GROUP,4,175,216,8
+                    WS_GROUP,3,184,216,8
     CONTROL         "Reset all autocompletion histories (searchname, met-URL,...)",
-                    IDC_RESETLABEL,"Static",SS_LEFTNOWORDWRAP | WS_GROUP,4,
-                    202,216,8
+                    IDC_RESETLABEL,"Static",SS_LEFTNOWORDWRAP | WS_GROUP,3,
+                    211,216,8
     CONTROL         "Check1",IDC_DISABLEHIST,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,11,212,86,11
-    PUSHBUTTON      "Reset",IDC_RESETHIST,106,212,48,14
+                    WS_TABSTOP,11,222,86,11
+    PUSHBUTTON      "Reset",IDC_RESETHIST,105,222,48,14
     LTEXT           "",IDC_PREVIEW,90,5,26,13
+    CONTROL         "Remember open searches between restarts",
+                    IDC_STORESEARCHES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    4,113,216,10
 END
 */
-IDD_PPG_DISPLAY DIALOGEX 0, 0, 230, 249
+IDD_PPG_DISPLAY DIALOGEX 0, 0, 230, 259
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Display"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
@@ -1278,26 +1290,29 @@ BEGIN
     CONTROL         "Show additional toolbar on Transfers window",
                     IDC_SHOWTRANSTOOLBAR,"Button",BS_AUTOCHECKBOX | 
                     WS_TABSTOP,7,111,216,10
-    GROUPBOX        "Lower CPU- && Memoryusage",IDC_STATIC_CPUMEM,7,122,216,
+    CONTROL         "Remember open searches between restarts",
+                    IDC_STORESEARCHES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    7,121,216,10
+    GROUPBOX        "Lower CPU- && Memoryusage",IDC_STATIC_CPUMEM,7,132,216,
                     60,BS_FLAT
     CONTROL         "Disable Known Clients list",IDC_DISABLEKNOWNLIST,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,14,134,202,10
+                    BS_AUTOCHECKBOX | WS_TABSTOP,14,144,202,10
     CONTROL         "Disable Queue List",IDC_DISABLEQUEUELIST,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,14,146,202,10
+                    BS_AUTOCHECKBOX | WS_TABSTOP,14,156,202,10
     CONTROL         "Keep queue list updated.",IDC_UPDATEQUEUE,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,14,158,202,10
+                    BS_AUTOCHECKBOX | WS_TABSTOP,14,168,202,10
     CONTROL         "Don't repaint graphs",IDC_REPAINT,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,14,170,202,10
-    PUSHBUTTON      "Select Font...",IDC_SELECT_HYPERTEXT_FONT,14,196,86,14
+                    BS_AUTOCHECKBOX | WS_TABSTOP,14,180,202,10
+    PUSHBUTTON      "Select Font...",IDC_SELECT_HYPERTEXT_FONT,14,206,86,14
     CONTROL         "Font for Server-, Message- and IRC-Window",
                     IDC_HYPERTEXT_FONT_HINT,"Static",SS_LEFTNOWORDWRAP | 
-                    WS_GROUP,7,186,216,8
+                    WS_GROUP,7,196,216,8
     CONTROL         "Reset all autocompletion histories (searchname, met-URL,...)",
                     IDC_RESETLABEL,"Static",SS_LEFTNOWORDWRAP | WS_GROUP,7,
-                    215,216,8
+                    225,216,8
     CONTROL         "Check1",IDC_DISABLEHIST,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,14,225,86,11
-    PUSHBUTTON      "Reset",IDC_RESETHIST,114,223,48,14,BS_FLAT
+                    WS_TABSTOP,14,235,86,11
+    PUSHBUTTON      "Reset",IDC_RESETHIST,114,233,48,14,BS_FLAT
     LTEXT           "",IDC_PREVIEW,93,5,26,13
 END
 // <== Show overhead on title - Stulle
@@ -1475,19 +1490,19 @@ BEGIN
 /*
     LTEXT           "What is a port...",IDC_PORTINFO,0,0,317,58
     LTEXT           "TCP:",IDC_TCP_LABEL,0,59,60,8
-    EDITTEXT        IDC_TCP,0,69,38,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_TCP,0,68,38,12,ES_AUTOHSCROLL | ES_NUMBER
     LTEXT           "UDP:",IDC_UDP_LABEL,58,59,60,8
-    EDITTEXT        IDC_UDP,58,69,38,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_UDP,58,68,38,12,ES_AUTOHSCROLL | ES_NUMBER
     CONTROL         "Check1",IDC_UDPDISABLE,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,100,71,75,10
-    GROUPBOX        "Connection Test",IDC_TESTFRAME,0,98,317,59
-    LTEXT           "Description of the test...",IDC_TESTINFO,3,108,310,32
-    PUSHBUTTON      "Start test...",IDC_STARTTEST,248,141,67,14
-    CONTROL         "",IDC_UPNPPROGRESS,"msctls_progress32",NOT WS_VISIBLE | 
-                    WS_BORDER,193,76,118,8
+                    WS_TABSTOP,100,70,84,10
+    GROUPBOX        "Connection Test",IDC_TESTFRAME,0,101,317,55
+    LTEXT           "Description of the test...",IDC_TESTINFO,3,111,310,36
+    PUSHBUTTON      "Start test...",IDC_STARTTEST,249,139,67,14
+    CONTROL         "",IDC_UPNPPROGRESS,"msctls_progress32",WS_BORDER | 
+                    NOT WS_VISIBLE,193,76,118,8
     PUSHBUTTON      "Use UPnP to setup ports",IDC_UPNPSTART,192,60,119,14,
                     NOT WS_VISIBLE
-    CTEXT           "UPnP Status",IDC_UPNPSTATUS,0,88,317,11,NOT WS_VISIBLE
+    CTEXT           "UPnP Status",IDC_UPNPSTATUS,0,85,317,17,NOT WS_VISIBLE
 */
     CONTROL         "Enable uPnP on ports",IDC_ENABLE_PNP,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,7,55,98,10
@@ -1520,11 +1535,11 @@ END
 
 IDD_WIZ1_UPLOAD DIALOGEX 0, 0, 317, 134
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
-CAPTION "Upload Settings"
+CAPTION "Security"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    CONTROL         "Do you want to upload full chunks?\n\nUsing full chunk gives the client a better chance to complete a chunk. Turning this off will help rotate your queue faster. If you are a dedicated releaser, you will want to turn this on.",
-                    IDC_FULLCHUNKTRANS,"Button",BS_AUTOCHECKBOX | 
+    CONTROL         "Enable this option if you want to enable protocol obfuscation\n\nIf your ISP tries throttle or block eMule, enabling obfuscation will help to circumvent such restrictions.",
+                    IDC_WIZZARDOBFUSCATION,"Button",BS_AUTOCHECKBOX | 
                     BS_MULTILINE,0,0,317,60
 END
 
@@ -1580,34 +1595,38 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     PUSHBUTTON      "Recheck Firewall",IDC_FIREWALLCHECKBUTTON,358,17,83,14
     PUSHBUTTON      "Connect",IDC_KADCONNECT,446,17,60,14
-    GROUPBOX        "Bootstrap",IDC_BSSTATIC,358,37,148,72
-    CONTROL         "",IDC_RADIP,"Button",BS_AUTORADIOBUTTON,364,61,12,9
-    EDITTEXT        IDC_BOOTSTRAPIP,376,59,78,12,ES_AUTOHSCROLL
-    EDITTEXT        IDC_BOOTSTRAPPORT,458,59,40,12,ES_AUTOHSCROLL | 
+    GROUPBOX        "Bootstrap",IDC_BSSTATIC,358,37,148,86
+    CONTROL         "",IDC_RADIP,"Button",BS_AUTORADIOBUTTON,364,59,12,9
+    EDITTEXT        IDC_BOOTSTRAPIP,376,57,78,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_BOOTSTRAPPORT,458,57,40,12,ES_AUTOHSCROLL | 
                     ES_NUMBER
     CONTROL         "from connected clients",IDC_RADCLIENTS,"Button",
-                    BS_AUTORADIOBUTTON,364,79,134,8
+                    BS_AUTORADIOBUTTON,364,97,134,8
 // ==> Links for Server list and nodes file [Stulle] - Stulle
 /*
-    PUSHBUTTON      "BootStrap",IDC_BOOTSTRAPBUTTON,376,92,68,13
+    PUSHBUTTON      "BootStrap",IDC_BOOTSTRAPBUTTON,430,107,68,13
 */
-    PUSHBUTTON      "BootStrap",IDC_BOOTSTRAPBUTTON,364,92,68,13
-    PUSHBUTTON      "Nodes File",IDC_NODESFILEBUTTON,438,92,62,13
+    PUSHBUTTON      "BootStrap",IDC_BOOTSTRAPBUTTON,433,107,68,13
+    PUSHBUTTON      "Nodes File",IDC_NODESFILEBUTTON,363,107,68,13
 // <== Links for Server list and nodes file [Stulle] - Stulle
     CONTROL         "",IDC_SEARCHLIST,"SysListView32",LVS_REPORT | 
                     LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | WS_BORDER | 
-                    WS_TABSTOP,5,182,501,104
+                    WS_TABSTOP,5,193,501,93
     LTEXT           "Contacts:",IDC_KADCONTACTLAB,18,6,145,8
     CONTROL         "",IDC_CONTACTLIST,"SysListView32",LVS_REPORT | 
                     LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | WS_BORDER | 
-                    WS_TABSTOP,5,17,349,153
-    LTEXT           "IP or Address:",IDC_SSTATIC4,376,49,74,8
-    LTEXT           "Port:",IDC_SSTATIC7,458,49,27,8
-    LTEXT           "Searches:",IDC_KADSEARCHLAB,18,172,340,8
+                    WS_TABSTOP,5,17,349,162
+    LTEXT           "IP or Address:",IDC_SSTATIC4,376,47,74,8
+    LTEXT           "Port:",IDC_SSTATIC7,458,47,27,8
+    LTEXT           "Searches:",IDC_KADSEARCHLAB,18,182,340,8
     ICON            "",IDC_KADICO1,5,5,20,20
-    ICON            "",IDC_KADICO2,5,172,20,20
+    ICON            "",IDC_KADICO2,5,182,20,20
     CONTROL         "",IDC_KAD_HISTOGRAM,"Static",SS_BLACKFRAME | SS_SUNKEN,
-                    358,111,148,59
+                    357,126,148,53
+    EDITTEXT        IDC_BOOTSTRAPURL,376,82,122,12,ES_AUTOHSCROLL
+    LTEXT           "Nodes.dat from URL:",IDC_NODESDATLABEL,376,72,122,8
+    CONTROL         "",IDC_RADNODESURL,"Button",BS_AUTORADIOBUTTON,364,83,10,
+                    8
 END
 
 IDD_SOURCEDETAILWND DIALOGEX 0, 0, 322, 220
@@ -2002,7 +2021,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION |
     WS_SYSMENU
 EXSTYLE WS_EX_TOPMOST | WS_EX_TOOLWINDOW
 CAPTION "eMule"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
 END
 
@@ -2010,7 +2029,7 @@ IDD_COLLECTIONCREATEDIALOG DIALOGEX 0, 0, 402, 207
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | 
     WS_THICKFRAME
 CAPTION "Dialog"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "Save",IDC_CCOLL_SAVE,290,187,50,14
     PUSHBUTTON      "Cancel",IDC_CCOLL_CANCEL,346,187,50,14
@@ -2045,7 +2064,7 @@ IDD_COLLECTIONVIEWDIALOG DIALOGEX 0, 0, 418, 252
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | 
     WS_THICKFRAME
 CAPTION "Dialog"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "Exit",IDC_VCOLL_CLOSE,361,232,50,14
     CONTROL         "",IDC_COLLECTIONVEWLIST,"SysListView32",LVS_REPORT | 
@@ -2093,7 +2112,7 @@ BEGIN
     RTEXT           "1233333",IDC_INFO_FILECOUNT,295,159,105,8
 END
 
-IDD_PPG_MESSAGES DIALOGEX 0, 0, 231, 150
+IDD_PPG_MESSAGES DIALOGEX 0, 0, 231, 158
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Messages and Comments"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
@@ -2107,17 +2126,19 @@ BEGIN
                     BS_AUTOCHECKBOX | WS_TABSTOP,11,48,202,8
     CONTROL         "Advanced spam filter",IDC_ADVSPAMFILTER,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,11,58,202,10
-    GROUPBOX        "Comments",IDC_STATIC_COMMENTS,4,86,223,51
+    GROUPBOX        "Comments",IDC_STATIC_COMMENTS,5,97,223,51
     LTEXT           "Ignore Comments containing: (Separator | )",
-                    IDC_FILTERCOMMENTSLABEL,11,97,205,8
-    EDITTEXT        IDC_COMMENTFILTER,11,107,209,13,ES_MULTILINE | 
+                    IDC_FILTERCOMMENTSLABEL,13,108,205,8
+    EDITTEXT        IDC_COMMENTFILTER,13,118,209,13,ES_MULTILINE | 
                     ES_AUTOHSCROLL
-    GROUPBOX        "Messages",IDC_MSG,4,2,223,81
+    GROUPBOX        "Messages",IDC_MSG,4,2,223,91
     CONTROL         "Indicate downloads with comments/rating by icon",
                     IDC_INDICATERATINGS,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,11,123,203,10
+                    WS_TABSTOP,13,134,203,10
     CONTROL         "Show Smileys",IDC_MSHOWSMILEYS,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,11,68,202,10
+                    WS_TABSTOP,11,79,202,10
+    CONTROL         "Require captcha authentication",IDC_USECAPTCHAS,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,23,68,193,10
 END
 
 // ==> ScarAngel Preferences window - Stulle
@@ -3399,6 +3420,59 @@ BEGIN
     VK_RETURN,      IDA_ENTER,              VIRTKEY, NOINVERT
 END
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_PPG_CONNECTION, DIALOG
+    BEGIN
+        VERTGUIDE, 11
+    END
+
+    IDD_FILES, DIALOG
+    BEGIN
+        HORZGUIDE, 17
+    END
+
+    IDD_ADDFRIEND, DIALOG
+    BEGIN
+        RIGHTMARGIN, 269
+        VERTGUIDE, 69
+        VERTGUIDE, 72
+        BOTTOMMARGIN, 172
+        HORZGUIDE, 115
+    END
+
+    IDD_COMMENTLST, DIALOG
+    BEGIN
+        VERTGUIDE, 4
+        HORZGUIDE, 116
+    END
+
+    IDD_PPG_DISPLAY, DIALOG
+    BEGIN
+        VERTGUIDE, 4
+    END
+
+    IDD_PPG_SECURITY, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 185
+    END
+
+    IDD_KADEMLIAWND, DIALOG
+    BEGIN
+        VERTGUIDE, 364
+        VERTGUIDE, 498
+        HORZGUIDE, 179
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
 #endif    // Neutral resources
 /////////////////////////////////////////////////////////////////////////////
 
@@ -3575,7 +3649,7 @@ BEGIN
     IDS_SE                  "Source Exchange"
     IDS_ERR_WRITEERROR      "Unexpected file error while writing %s : %s"
     IDS_ERR_COMPLETIONFAILED 
-                            "Unexpected file error while completing %s. File paused, restart eMule to start another completing-try"
+                            "Unexpected file error while completing ""%s"". File paused, restart eMule to start another completing-try"
     IDS_ERR_DELETEFAILED    "Failed to delete %s, you will need to do this by hand"
     IDS_DOWNLOADDONE        "Finished downloading %s :-)"
     IDS_ERR_DELETE          "Failed to delete %s"
@@ -4475,7 +4549,6 @@ BEGIN
     IDS_USECREDITSYSTEM     "Use credit system (reward uploaders)"
     IDS_FIRSTAUTODOWN       "Enable this option if you want eMule to manage your download priorities.\n\nTurning this on will allow eMule to make sure downloads with a lot of sources do not interfere with downloads that have few sources. This option will only affect future downloads."
     IDS_FIRSTAUTOUP         "Enable this option if you want eMule to manage your upload priorities.\n\nTurning this on will allow eMule to boost rare files meaning popular files will be harder for other people to get. Turning this off will allow eMule to upload popular files more often meaning rare files will be harder for other people to get. This option will only affect future shared files."
-    IDS_FIRSTFULLCHUNK      "Enable this option if you want to upload full chunks.\n\nUsing full chunk gives the client a better chance to complete a chunk. Turning this off will help rotate your queue faster. If you are a dedicated releaser, you will want to turn this on."
     IDS_FIRSTSAFECON        "Enable this option if you want eMule to connect using Safe Connect.\n\nTurning this feature off allows eMule to connect to servers a little faster, but can cause you to get more false LowID connects."
     IDS_FIRSTAUTOCON        "Enable this option if you want eMule to connect at startup."
     IDS_FIRSTCOMPLETE       "You have now completed the first runtime wizard.\n\nAll these settings and more can be changed by clicking the preferences icon. For explanations and support check out the help by pressing F1 in eMule!"
@@ -4767,7 +4840,7 @@ BEGIN
     IDS_VERSION             "Version"
     IDS_OPTIONS             "Options"
     IDS_PASTE               "Paste"
-    IDS_SEARCHAUTHORCOLLECTION "Search Author's Collections"
+    IDS_SEARCHAUTHORCOLLECTION "Search Author's Collections..."
     IDS_ERR_DUPL_FILES      "Duplicate shared files: ""%s"" and ""%s"""
     IDS_USS_TRACEROUTEOFTENFAILED 
                             "UploadSpeedSense: Trace routing failed too many times. Disabling Upload SpeedSense."
@@ -4817,7 +4890,7 @@ BEGIN
     IDS_FILEINFORMATION     "File Information"
     IDS_STATS_FREESPACE     "Free Space"
     IDS_IRC_HELPCHANNEL     "Connect to help channel"
-    IDS_IRC_HELPCHANNELPERFORM "/join #emule | /join #emule-english"
+    IDS_IRC_HELPCHANNELPERFORM "/join #emule-english"
     IDS_IRC_ACCEPTLINKSFRIENDS "From friends only"
     IDS_COMPLSOURCES        "Complete Sources"
     IDS_CHECKNOENDTIME      "No end time"
@@ -5119,13 +5192,13 @@ BEGIN
     IDS_RELATED             "Related"
     IDS_COLL_REPLACEEXISTING "Do you want to replace existing file?"
     IDS_COLL_ERR_DELETING   "Some Unknown error in deleting old file. Exit without saving?"
-    IDS_CREATECOLLECTION    "Create Collection"
-    IDS_MODIFYCOLLECTION    "Modify Collection"
+    IDS_CREATECOLLECTION    "Create Collection..."
+    IDS_MODIFYCOLLECTION    "Modify Collection..."
     IDS_COLL_SIGN           "Sign collection with name and key"
     IDS_AUTHOR              "Author"
     IDS_AUTHORKEY           "Author Key"
     IDS_COLL_ADDINCAT       "Add new downloads in a collection category"
-    IDS_VIEWCOLLECTION      "View Collection"
+    IDS_VIEWCOLLECTION      "View Collection..."
 END
 
 STRINGTABLE 
@@ -5264,6 +5337,31 @@ BEGIN
     IDS_MARKNOTSPAM         "Mark as not Spam"
     IDS_SEARCHSPAMFILTER    "Enable Spam Filter for search results"
     IDS_SHOWSMILEYS         "Show Smileys"
+    IDS_CAPTCHAREQUEST      "In order to avoid spam messages, this user requires you to solve a captcha before you can send him a message. Please enter the letters you see on this image as response:"
+    IDS_CAPTCHAFAILED       "Your response to the captcha was wrong and your message has been ignored. You can request a new captcha by sending a new message."
+    IDS_CAPTCHASOLVED       "You have passed the captcha check and the user has received your message."
+    IDS_USECAPTCHAS         "Require captcha authentication"
+    IDS_BOOTSRAPNODESDAT    "Nodes.dat from URL:"
+    IDS_DOWNLOADING_NODESDAT_FROM "Downloading nodes.dat from %s"
+    IDS_DOWNLOADING_NODESDAT "Downloading nodes.dat..."
+    IDS_ERR_FAILEDDOWNLOADNODES "Failed to download nodes.dat from %s"
+    IDS_PREVENTSTANDBY      "Prevent Standby mode while eMule is running"
+    IDS_KADID               "KadID"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_SEARCHINGFRIENDKAD  "Searching in Kad Network for friend"
+    IDS_FOUND               "found"
+    IDS_EXTERNUDPPORT       "Extern UDP Port"
+    IDS_STORESEARCHES       "Remember open searches between restarts"
+    IDS_WRN_INCFILE_EXISTS  "You have selected a new directory for your incoming files which is not empty. All existing files in this directory will be automatically shared by eMule."
+    IDS_EDITSPAMFILTER      "Edit spam filter..."
+    IDS_EDITSPAMFILTERCOMMENTS "Edit spam filter for comments"
+    IDS_WIZZARDOBFUSCATION  "Enable this option if you want to use protocol obfuscation\n\nIf your ISP tries throttle or block eMule, enabling obfuscation will help to circumvent such restrictions."
+    IDS_BETANAG             "This is a beta version of eMule. Please report problems and check regulary for updates in our forum (http://forum.emule-project.net)."
+    IDS_CONFIRMNODESDOWNLOAD 
+                            "Do you want to download and use Kad contacts (nodes.dat) from this address:\n%s ?"
 END
 
 STRINGTABLE 
@@ -5587,6 +5685,7 @@ BEGIN
     IDS_MM_COMPL            "Show completed files in session"
     IDS_MM_RATIO            "UL:DL :"
     IDS_MM_OPEN             "Open Mini-Mule on minimize to tray"
+    IDS_MM_GROUP            "TBH Mini-Mule"
     // <== TBH: minimule - Max
     // ==> Copy feedback feature [MorphXT] - Stulle
     IDS_COPYFEEDBACK        "Copy feedback to clipboard"
@@ -5722,6 +5821,7 @@ BEGIN
     // ==> Release Bonus [sivka] - Stulle
     IDS_RELEASE_BONUS_GROUP "Release Bonus"
     IDS_RELEASE_BONUS_EDIT  "Set bonus days"
+    IDS_RELEASE_BONUS_12    "12h"
     // <== Release Bonus [sivka] - Stulle
     IDS_RELEASE_SCORE_ASSURANCE "Assure default score for release files" // Release Score Assurance [Stulle] - Stulle
     // ==> Design Settings [eWombat/Stulle] - Stulle
@@ -5825,6 +5925,7 @@ BEGIN
     IDS_UPNP_INFOENABLED    ",enabled\r\n"
     IDS_UPNP_INFODISABLED   ",disabled\r\n"
     IDS_UPNP_INFOSTANDBY    "No Device detected\r\n"
+    IDS_UPNFORCEUPDATE      "Force periodic updates"
     // <== UPnP support [MoNKi] - leuk_he
     // ==> Random Ports [MoNKi] - Stulle
     IDS_RND_PORT_GROUP      "Random Ports"

@@ -32,6 +32,13 @@
 #pragma warning(disable:4100) // unreferenced formal parameter
 #pragma warning(disable:4702) // unreachable code
 //Xman
+/*
+#include <crypto51/rsa.h>
+#include <crypto51/base64.h>
+#include <crypto51/osrng.h>
+#include <crypto51/files.h>
+#include <crypto51/sha.h>
+*/
 #include <crypto.v52.1/rsa.h>
 #include <crypto.v52.1/base64.h>
 #include <crypto.v52.1/osrng.h>

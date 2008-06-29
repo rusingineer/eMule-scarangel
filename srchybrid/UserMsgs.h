@@ -56,7 +56,10 @@ enum EUserWndMessages
 	UM_DLPUTOVERCHECK_RESPONSE
 	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
-	//Xman official UPNP removed
 	// UPnP
-    //UM_UPNP_RESULT
+	//Xman official UPNP removed
+	/*
+    UM_UPNP_RESULT
+	*/
+	//Xman end
 };

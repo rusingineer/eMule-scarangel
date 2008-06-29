@@ -25,7 +25,7 @@
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories=".,..;..\id3lib\include;..\crypto.v52.1;pthreads\pthreads\inc;upnplib\ixml\inc"
+				AdditionalIncludeDirectories="..\site_config;.;..;..\id3lib\include;..\crypto.v52.1"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_DUMP;ID3LIB_LINKOPTION=1"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="0"
@@ -84,9 +84,10 @@
 			DeleteExtensionsOnClean="*.obj;*.ilk;*.pdb;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.bat;*.asm;$(TargetPath)">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/Wall"
 				Optimization="0"
-				AdditionalIncludeDirectories=".,..;..\id3lib\include;..\crypto.v52.1;.\upnplib\ixml\inc;.\upnplib\threadutil\inc;pthreads\pthreads\inc"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;SUPPORT_LARGE_FILES;PRINT_STATISTIC;PTW32_STATIC_LIB;UPNP_STATIC_LIB"
+				AdditionalIncludeDirectories="..\site_config;.;..;..\id3lib\include;..\crypto.v52.1;upnplib\ixml\src\inc;upnplib\upnp\src\inc;upnplib\upnp\inc;upnplib\build\inc;upnplib\threadutil\inc;upnplib\ixml\inc;pthreads\pthreads\inc"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;SUPPORT_LARGE_FILES;PRINT_STATISTIC;UPNP_STATIC_LIB;_WIN32;PTW32_STATIC_LIB;PNG_DEBUG=1;PNG_USE_PNGVCRD;PNG_LIBPNG_SPECIALBUILD"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -102,7 +103,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="version.lib winmm.lib ws2_32.lib gdiplus.lib ADSIId.lib crypt32.lib"
+				AdditionalDependencies="version.lib winmm.lib ws2_32.lib gdiplus.lib ADSIId.lib crypt32.lib  .\upnplib\win32project\Debug\upnplib.lib .\pthreads\pthreads\Debug\pthread.lib"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				IgnoreDefaultLibraryNames=""
@@ -157,8 +158,8 @@
 				EnableFiberSafeOptimizations="TRUE"
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories=".,..;..\id3lib\include;..\crypto.v52.1;upnplib\build\inc;upnplib\ixml\src\inc;upnplib\upnp\src\inc;upnplib\upnp\inc;upnplib\threadutil\inc;upnplib\ixml\inc;pthreads\pthreads\inc"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;SUPPORT_LARGE_FILES;_WIN32;PTW32_STATIC_LIB;UPNP_STATIC_LIB"
+				AdditionalIncludeDirectories="..\site_config;.;..;..\id3lib\include;..\crypto.v52.1;upnplib\ixml\src\inc;upnplib\upnp\src\inc;upnplib\upnp\inc;upnplib\build\inc;upnplib\threadutil\inc;upnplib\ixml\inc;pthreads\pthreads\inc"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;SUPPORT_LARGE_FILES;UPNP_STATIC_LIB;_WIN32;PTW32_STATIC_LIB"
 				StringPooling="TRUE"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
@@ -231,7 +232,7 @@
 				EnableFiberSafeOptimizations="TRUE"
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories=".,..;..\id3lib\include;..\crypto.v52.1;.\upnplib\ixml\inc;.\upnplib\threadutil\inc;pthreads\pthreads\inc"
+				AdditionalIncludeDirectories="..\site_config;.;..;..\id3lib\include;..\crypto.v52.1;upnplib\ixml\src\inc;upnplib\upnp\src\inc;upnplib\upnp\inc;upnplib\build\inc;upnplib\threadutil\inc;upnplib\ixml\inc;pthreads\pthreads\inc"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;_BETA;SUPPORT_LARGE_FILES;PRINT_STATISTIC;UPNP_STATIC_LIB;PTW32_STATIC_LIB"
 				StringPooling="TRUE"
 				MinimalRebuild="FALSE"
@@ -249,7 +250,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="unicows.lib kernel32.lib advapi32.lib user32.lib gdi32.lib shell32.lib comdlg32.lib version.lib mpr.lib rasapi32.lib winmm.lib winspool.lib vfw32.lib secur32.lib oleacc.lib oledlg.lib sensapi.lib gdiplus.lib ADSIId.lib crypt32.lib ws2_32.lib"
+				AdditionalDependencies="unicows.lib kernel32.lib advapi32.lib user32.lib gdi32.lib shell32.lib comdlg32.lib version.lib mpr.lib rasapi32.lib winmm.lib winspool.lib vfw32.lib secur32.lib oleacc.lib oledlg.lib sensapi.lib gdiplus.lib ADSIId.lib crypt32.lib ws2_32.lib  .\upnplib\win32project\Release\upnplib.lib .\pthreads\pthreads\release\pthread.lib"
 				SuppressStartupBanner="TRUE"
 				IgnoreDefaultLibraryNames="kernel32.lib;advapi32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;version.lib;mpr.lib;rasapi32.lib;winmm.lib;winspool.lib;vfw32.lib;secur32.lib;oleacc.lib;oledlg.lib;sensapi.lib"
 				DelayLoadDLLs="oleacc.dll;gdiplus.dll"
@@ -312,6 +313,9 @@
 			</File>
 			<File
 				RelativePath="BaseClient.cpp">
+			</File>
+			<File
+				RelativePath=".\CaptchaGenerator.cpp">
 			</File>
 			<File
 				RelativePath="CBase64Coding.cpp">
@@ -794,6 +798,9 @@
 					RelativePath="kademlia\utils\MiscUtils.cpp">
 				</File>
 				<File
+					RelativePath=".\kademlia\net\PacketTracking.cpp">
+				</File>
+				<File
 					RelativePath="kademlia\kademlia\Prefs.cpp">
 				</File>
 				<File
@@ -810,6 +817,9 @@
 				</File>
 				<File
 					RelativePath="kademlia\utils\ThreadName.cpp">
+				</File>
+				<File
+					RelativePath=".\kademlia\kademlia\UDPFirewallTester.cpp">
 				</File>
 				<File
 					RelativePath="kademlia\utils\UInt128.cpp">
@@ -848,6 +858,9 @@
 				RelativePath="AsyncSocketExLayer.h">
 			</File>
 			<File
+				RelativePath=".\CaptchaGenerator.h">
+			</File>
+			<File
 				RelativePath="CBase64Coding.hpp">
 			</File>
 			<File
@@ -855,6 +868,9 @@
 			</File>
 			<File
 				RelativePath="ClientList.h">
+			</File>
+			<File
+				RelativePath=".\ClientStateDefs.h">
 			</File>
 			<File
 				RelativePath="ClientUDPSocket.h">
@@ -1145,10 +1161,16 @@
 					RelativePath="kademlia\io\IOException.h">
 				</File>
 				<File
+					RelativePath=".\kademlia\utils\KadClientSearcher.h">
+				</File>
+				<File
 					RelativePath="kademlia\kademlia\Kademlia.h">
 				</File>
 				<File
 					RelativePath="kademlia\net\KademliaUDPListener.h">
+				</File>
+				<File
+					RelativePath=".\kademlia\utils\KadUDPKey.h">
 				</File>
 				<File
 					RelativePath="kademlia\utils\LittleEndian.h">
@@ -1158,6 +1180,9 @@
 				</File>
 				<File
 					RelativePath="kademlia\utils\MiscUtils.h">
+				</File>
+				<File
+					RelativePath=".\kademlia\net\PacketTracking.h">
 				</File>
 				<File
 					RelativePath="kademlia\kademlia\Prefs.h">
@@ -1179,6 +1204,9 @@
 				</File>
 				<File
 					RelativePath="kademlia\utils\ThreadName.h">
+				</File>
+				<File
+					RelativePath=".\kademlia\kademlia\UDPFirewallTester.h">
 				</File>
 				<File
 					RelativePath="kademlia\utils\UInt128.h">

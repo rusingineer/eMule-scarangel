@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -55,7 +55,10 @@ static char THIS_FILE[] = __FILE__;
 CKnownFileList::CKnownFileList()
 {
 	//Xman Init-Hashtable optimization
-	//m_Files_map.InitHashTable(2063); //moved down
+	/*
+	m_Files_map.InitHashTable(2063);
+	*/
+	//Xman end
 	m_mapCancelledFiles.InitHashTable(1031);
 	accepted = 0;
 	requested = 0;
@@ -121,8 +124,12 @@ bool CKnownFileList::LoadKnownFiles()
 			pRecord = new CKnownFile();
 			if (!pRecord->LoadFromFile(&file)){
 				TRACE(_T("*** Failed to load entry %u (name=%s  hash=%s  size=%I64u  parthashs=%u expected parthashs=%u) from known.met\n"), i, 
-					//Xman
-					pRecord->GetFileName(), md4str(pRecord->GetFileHash()), pRecord->GetFileSize(), pRecord->GetHashCount(), pRecord->GetED2KPartCount());	// SLUGFILLER: SafeHash - removed unnececery hash counter
+					//Xman // SLUGFILLER: SafeHash - removed unnececery hash counter
+					/*
+					pRecord->GetFileName(), md4str(pRecord->GetFileHash()), pRecord->GetFileSize(), pRecord->GetHashCount(), pRecord->GetED2KPartHashCount());
+					*/
+					pRecord->GetFileName(), md4str(pRecord->GetFileHash()), pRecord->GetFileSize(), pRecord->GetHashCount(), pRecord->GetED2KPartCount());
+					//Xman end
 				delete pRecord;
 				pRecord = NULL;
 				continue;
@@ -156,12 +163,12 @@ bool CKnownFileList::LoadKnownFiles()
 bool CKnownFileList::LoadCancelledFiles(){
 	// cancelled.met Format: <Header 1 = CANCELLED_HEADER><Version 1 = CANCELLED_VERSION><Seed 4><Count 4>[<HashHash 16><TagCount 1>[Tags TagCount] Count]
 	if (!thePrefs.IsRememberingCancelledFiles())
-	{
+	{ //Xman
 		//Xman Init-Hashtable optimization
 		m_mapCancelledFiles.InitHashTable(209);
 		//Xman end
 		return true;
-	}
+	} //Xman
 	CString fullpath = thePrefs.GetMuleDirectory(EMULE_CONFIGDIR);
 	fullpath.Append(CANCELLED_MET_FILENAME);
 	CSafeBufferedFile file;
@@ -451,10 +458,10 @@ bool CKnownFileList::SafeAddKFile(CKnownFile* toadd)
 		ASSERT( toadd->GetFileSize() == pFileInMap->GetFileSize() );
 		ASSERT( toadd != pFileInMap );
 		if (toadd->GetFileSize() == pFileInMap->GetFileSize())
-		{
+		{ //Xman
 			pFileInMap->CheckAUPFilestats(false); //Xman advanced upload-priority
 			toadd->statistic.MergeFileStats(&pFileInMap->statistic);
-		}
+		} //Xman
 
 		ASSERT( theApp.sharedfiles==NULL || !theApp.sharedfiles->IsFilePtrInList(pFileInMap) );
 		ASSERT( theApp.downloadqueue==NULL || !theApp.downloadqueue->IsPartFile(pFileInMap) );
@@ -469,21 +476,6 @@ bool CKnownFileList::SafeAddKFile(CKnownFile* toadd)
 		//Xman end
 
 		delete pFileInMap;
-
-		//Xman todo: check out if the new official way is working
-		/*
-		//Xman official bugfix for redownloading already downloaded file
-		//Xman 5.1 readded but modified
-		//remark: official emule has a bug at this point. download a shared file and you see:
-		//both files will be unshared. But this patch leads to a crash in an unknown situation
-		if (theApp.sharedfiles && !theApp.sharedfiles->IsFilePtrInList(toadd))
-			theApp.sharedfiles->SafeAddKFileWithOutRemoveHasing(toadd);
-		
-		
-		//Xman [MoNKi: -Downloaded History-]
-		theApp.emuledlg->sharedfileswnd->historylistctrl.AddFile(toadd);
-		*/
-
 	}
 	m_Files_map.SetAt(key, toadd);
 	if (bRemovedDuplicateSharedFile) {

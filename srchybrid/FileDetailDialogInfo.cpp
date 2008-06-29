@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -301,9 +301,19 @@ void CFileDetailDialogInfo::RefreshData()
 		uCorrupted += file->GetCorruptionLoss();
 		uRecoveredParts += file->GetRecoveredPartsByICH();
 		uCompression += file->GetCompressionGain();
-		uDataRate += file->GetDownloadDatarate10(); //Xman // Maella -Accurate measure of bandwidth
+		//Xman // Maella -Accurate measure of bandwidth
+		/*
+		uDataRate += file->GetDatarate();
+		*/
+		uDataRate += file->GetDownloadDatarate10();
+		//Xman end
 		uCompleted += (uint64)file->GetCompletedSize();
-		iHashsetAvailable += (file->GetHashCount() == file->GetED2KPartCount()) ? 1 : 0; //Xman // SLUGFILLER: SafeHash - use GetED2KPartCount
+		//Xman // SLUGFILLER: SafeHash - use GetED2KPartCount
+		/*
+		iHashsetAvailable += (file->GetHashCount() == file->GetED2KPartHashCount()) ? 1 : 0;
+		*/
+		iHashsetAvailable += (file->GetHashCount() == file->GetED2KPartCount()) ? 1 : 0;
+		//Xman end
 
 		// ==> Average download speed - Stulle
 		if(file->GetDlActiveTime() > 0)

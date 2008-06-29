@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -60,6 +60,7 @@ BEGIN_MESSAGE_MAP(CPPgGeneral, CPropertyPage)
 	ON_BN_CLICKED(IDC_CHECK4UPDATE, OnBnClickedCheck4Update)
 	ON_BN_CLICKED(IDC_CHECK4UPDATEMOD, OnSettingsChange) //Xman versions check
 	ON_BN_CLICKED(IDC_MINIMULE, OnSettingsChange)
+	ON_BN_CLICKED(IDC_PREVENTSTANDBY, OnSettingsChange)
 	ON_WM_HSCROLL()
 	ON_WM_HELPINFO()
 END_MESSAGE_MAP()
@@ -132,6 +133,17 @@ void CPPgGeneral::LoadSettings(void)
 	else
 		CheckDlgButton(IDC_MINIMULE,0);
 
+	if (thePrefs.GetWindowsVersion() != _WINVER_95_){
+		if(thePrefs.GetPreventStandby())
+			CheckDlgButton(IDC_PREVENTSTANDBY,1);
+		else
+			CheckDlgButton(IDC_PREVENTSTANDBY,0);
+	}
+	else{
+		CheckDlgButton(IDC_PREVENTSTANDBY,0);
+		GetDlgItem(IDC_PREVENTSTANDBY)->EnableWindow(FALSE);
+	}
+
 	CString strBuffer;
 	strBuffer.Format(_T("%i %s"),thePrefs.versioncheckdays,GetResString(IDS_DAYS2));
 	GetDlgItem(IDC_DAYS)->SetWindowText(strBuffer);
@@ -153,16 +165,30 @@ BOOL CPPgGeneral::OnInitDialog()
 		TCHAR szLang[128];
 		int ret=GetLocaleInfo(aLanguageIDs[i], LOCALE_SLANGUAGE, szLang, ARRSIZE(szLang));
 
-		if (ret==0 && aLanguageIDs[i]== LANGID_GL_ES )
-			_tcscpy(szLang,_T("Galician") );
-		else if (ret==0 && aLanguageIDs[i]==LANGID_FR_BR )
-			_tcscpy(szLang,_T("Breton (Brezhoneg)") );
-		else if (ret==0 && aLanguageIDs[i]==LANGID_MT_MT )
-			_tcscpy(szLang,_T("Maltese") );
-		else if (ret==0 && aLanguageIDs[i]==LANGID_ES_AS )
-			_tcscpy(szLang,_T("Asturian") );
-		else if (ret==0 && aLanguageIDs[i]==LANGID_VA_ES )
-			_tcscpy(szLang,_T("Valencian") );
+		if (ret==0)
+			switch(aLanguageIDs[i]) {
+				case LANGID_UG_CN:
+					_tcscpy(szLang,_T("Uyghur") );
+					break;
+				case LANGID_GL_ES:
+					_tcscpy(szLang,_T("Galician") );
+					break;
+				case LANGID_FR_BR:
+					_tcscpy(szLang,_T("Breton (Brezhoneg)") );
+					break;
+				case LANGID_MT_MT:
+					_tcscpy(szLang,_T("Maltese") );
+					break;
+				case LANGID_ES_AS:
+					_tcscpy(szLang,_T("Asturian") );
+					break;
+				case LANGID_VA_ES:
+					_tcscpy(szLang,_T("Valencian") );
+					break;
+				default:
+					ASSERT(0);
+					_tcscpy(szLang,_T("?(unknown language)?") );
+			}
 
 		m_language.SetItemData(m_language.AddString(szLang), aLanguageIDs[i]);
 	}
@@ -176,9 +202,11 @@ BOOL CPPgGeneral::OnInitDialog()
 	LoadSettings();
 	Localize();
 	//Xman versions check
-	//GetDlgItem(IDC_CHECKDAYS)->ShowWindow( IsDlgButtonChecked(IDC_CHECK4UPDATE) ? SW_SHOW : SW_HIDE );
-	//GetDlgItem(IDC_DAYS)->ShowWindow( IsDlgButtonChecked(IDC_CHECK4UPDATE) ? SW_SHOW : SW_HIDE );
-
+	/*
+	GetDlgItem(IDC_CHECKDAYS)->ShowWindow( IsDlgButtonChecked(IDC_CHECK4UPDATE) ? SW_SHOW : SW_HIDE );
+	GetDlgItem(IDC_DAYS)->ShowWindow( IsDlgButtonChecked(IDC_CHECK4UPDATE) ? SW_SHOW : SW_HIDE );
+	*/
+	//Xman end
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
@@ -274,6 +302,7 @@ BOOL CPPgGeneral::OnApply()
 	thePrefs.onlineSig = IsDlgButtonChecked(IDC_ONLINESIG)!=0;
 	thePrefs.versioncheckdays = ((CSliderCtrl*)GetDlgItem(IDC_CHECKDAYS))->GetPos();
 	thePrefs.m_bEnableMiniMule = IsDlgButtonChecked(IDC_MINIMULE) != 0;
+	thePrefs.m_bPreventStandby = IsDlgButtonChecked(IDC_PREVENTSTANDBY) != 0;
 
 	theApp.emuledlg->transferwnd->downloadlistctrl.SetStyle();
 	LoadSettings();
@@ -319,6 +348,7 @@ void CPPgGeneral::Localize(void)
 		GetDlgItem(IDC_STARTUP)->SetWindowText(GetResString(IDS_STARTUP));
 		GetDlgItem(IDC_STARTWIN)->SetWindowText(GetResString(IDS_STARTWITHWINDOWS));
 		GetDlgItem(IDC_MINIMULE)->SetWindowText(GetResString(IDS_ENABLEMINIMULE));
+		GetDlgItem(IDC_PREVENTSTANDBY)->SetWindowText(GetResString(IDS_PREVENTSTANDBY));
 		//Xman versions check
 		GetDlgItem(IDC_CHECK4UPDATEMOD)->SetWindowText(GetResString(IDS_CHECK4UPDATEMOD));
 	}

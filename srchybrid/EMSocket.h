@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -33,7 +33,6 @@ class Packet;
 class CUpDownClient;
 // Maella end
 
-
 struct StandardPacketQueueEntry {
     uint32 actualPayloadSize;
     Packet* packet;
@@ -61,18 +60,22 @@ public:
 
 	virtual BOOL Connect(LPCSTR lpszHostAddress, UINT nHostPort);
 	virtual BOOL Connect(SOCKADDR* pSockAddr, int iSockAddrLen);
+
 	void InitProxySupport();
 	virtual void RemoveAllLayers();
 	const CString GetLastProxyError() const { return m_strLastProxyError; }
 	bool GetProxyConnectFailed() const { return m_bProxyConnectFailed; }
-
 
 	CString GetFullErrorMessage(DWORD dwError);
 
 	DWORD GetLastCalledSend() { return lastCalledSend; }
     uint64 GetSentBytesCompleteFileSinceLastCallAndReset();
     uint64 GetSentBytesPartFileSinceLastCallAndReset();
-    //uint64 GetSentBytesControlPacketSinceLastCallAndReset(); //Xman unused
+    //Xman unused
+    /*
+    uint64 GetSentBytesControlPacketSinceLastCallAndReset();
+    */
+    //Xman end
     uint64 GetSentPayloadSinceLastCallAndReset();
     void TruncateQueues();
 
@@ -81,7 +84,9 @@ public:
 
 
 	//Xman Xtreme Upload
-    //uint32	GetNeededBytes();
+	/*
+    uint32	GetNeededBytes();
+	*/
 	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 	CUpDownClient*	client; // Quick and dirty
 	// Maella end
@@ -152,7 +157,6 @@ protected:
 
 	uint8	byConnected;
 	UINT	m_uTimeOut;
-
 	bool	m_bProxyConnectFailed;
 	CAsyncProxySocketLayer* m_pProxyLayer;
 	CString m_strLastProxyError;
@@ -167,7 +171,6 @@ private:
 
 	//Xman Code Improvement
 	bool	isreadyforsending;
-
 
 	// Download (pseudo) rate control	
 	uint32	downloadLimit;
@@ -189,24 +192,30 @@ private:
 
 	CTypedPtrList<CPtrList, Packet*> controlpacket_queue;
 	CList<StandardPacketQueueEntry> standartpacket_queue;
-
     bool m_currentPacket_is_controlpacket;
-
     CCriticalSection sendLocker;
-
     uint64 m_numberOfSentBytesCompleteFile;
     uint64 m_numberOfSentBytesPartFile;
-    //uint64 m_numberOfSentBytesControlPacket; //Xman unused
+    //Xman unused
+    /*
+    uint64 m_numberOfSentBytesControlPacket;
+    */
+    //Xman end
     bool m_currentPackageIsFromPartFile;
-
-	//bool	m_bAccelerateUpload; //Xman unused
+	//Xman unused
+	/*
+	bool	m_bAccelerateUpload;
+	*/
+	//Xman end
     DWORD lastCalledSend;
     DWORD lastSent; 
-	//uint32	lastFinishedStandard; //Xman unused
-
+	//Xman unused
+	/*
+	uint32	lastFinishedStandard;
+	*/
+	//Xman end
     uint32 m_actualPayloadSize;
     uint32 m_actualPayloadSizeSent;
-
     bool m_bBusy;
     bool m_hasSent;
 };

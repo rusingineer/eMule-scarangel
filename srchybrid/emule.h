@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -51,7 +51,11 @@ class CListenSocket;
 class CDownloadQueue;
 class CScheduler;
 class UploadBandwidthThrottler;
-//class LastCommonRouteFinder; //Xman
+//Xman
+/*
+class LastCommonRouteFinder;
+*/
+//Xman end
 class CemuleDlg;
 class CClientList;
 class CKnownFileList;
@@ -68,7 +72,11 @@ class CAbstractFile;
 class CUpDownClient;
 class CPeerCacheFinder;
 class CFirewallOpener;
-//class CUPnPFinder; //Xman official UPNP removed
+//Xman official UPNP removed
+/*
+class CUPnPFinder;
+*/
+//Xman end
 
 //Xman
 class CBandWidthControl; // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
@@ -96,8 +104,11 @@ public:
 
 	// ZZ:UploadSpeedSense -->
     UploadBandwidthThrottler* uploadBandwidthThrottler;
-    //Xman
-	//LastCommonRouteFinder* lastCommonRouteFinder;
+	//Xman
+	/*
+	LastCommonRouteFinder* lastCommonRouteFinder;
+	*/
+	//Xman end
 	// ZZ:UploadSpeedSense <--
 	CemuleDlg*			emuledlg;
 	CClientList*		clientlist;
@@ -118,7 +129,12 @@ public:
 	CMMServer*			mmserver;
 	CPeerCacheFinder*	m_pPeerCache;
 	CFirewallOpener*	m_pFirewallOpener;
-	//CUPnPFinder*		m_pUPnPFinder; //Xman official UPNP removed
+	//Xman official UPNP removed
+	/*
+	CUPnPFinder*		m_pUPnPFinder;
+	*/
+	//Xman end
+
 	//Xman
 	// - Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 	CBandWidthControl*	pBandWidthControl;
@@ -132,6 +148,7 @@ public:
 	CIP2Country*		ip2country; //EastShare - added by AndCycle, IP to Country
 
 	CDLP*				dlp;
+	//Xman end
 
 	// ==> TBH: minimule - Max/ leuk_he
 	CTBHMM*				minimule;
@@ -167,7 +184,7 @@ public:
 
 	//Xman remove unused AICH-hashes
 	volatile bool				m_AICH_Is_synchronizing;
-	
+	//Xman end
 
 // Implementierung
 	virtual BOOL InitInstance();
@@ -176,6 +193,9 @@ public:
 
 	// ed2k link functions
 	//Xman [MoNKi: -Check already downloaded files-]
+	/*
+	void		AddEd2kLinksToDownload(CString strLinks, int cat);
+	*/
 	void		AddEd2kLinksToDownload(CString strLinks, int cat, bool askIfAlreadyDownloaded = false);
 	//Xman end
 
@@ -219,6 +239,7 @@ public:
 	CSize		GetBigSytemIconSize() { return m_sizBigSystemIcon; }
 	void		CreateBackwardDiagonalBrush();
 	void		CreateAllFonts();
+	const CString &GetDefaultFontFaceName();
 	bool		IsPortchangeAllowed();
 	bool		IsConnected();
 	bool		IsFirewalled();
@@ -226,6 +247,7 @@ public:
 	uint32		GetID();
 	uint32		GetPublicIP(bool bIgnoreKadIP = false) const;	// return current (valid) public IP or 0 if unknown
 	void		SetPublicIP(const uint32 dwIP);
+	void		ResetStandByIdleTimer();
 
 	// because nearly all icons we are loading are 16x16, the default size is specified as 16 and not as 32 nor LR_DEFAULTSIZE
 	HICON		LoadIcon(LPCTSTR lpszResourceName, int cx = 16, int cy = 16, UINT uFlags = LR_DEFAULTCOLOR) const;
@@ -239,6 +261,7 @@ public:
 	void		EnableRTLWindowsLayout();
 	void		DisableRTLWindowsLayout();
 	void		UpdateDesktopColorDepth();
+	void		UpdateLargeIconSize();
 
 	bool		GetLangHelpFilePath(CString& strResult);
 	void		SetHelpFilePath(LPCTSTR pszHelpFilePath);
@@ -278,6 +301,7 @@ protected:
 	CMapStringToPtr m_aBigExtToSysImgIdx;
 	CSize m_sizBigSystemIcon;
 
+	CString		m_strDefaultFontFaceName;
 	bool		m_bGuardClipboardPrompt;
 	CString		m_strLastClipboardContents;
 

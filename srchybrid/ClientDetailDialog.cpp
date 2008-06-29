@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -31,6 +31,7 @@
 #include "IP2Country.h" //EastShare - added by AndCycle, IP to Country
 #include "UploadQueue.h" //Xman Queuerank at clientdetail
 #include "Preferences.h" // CreditSystems [EastShare/ MorphXT] - Stulle
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -77,7 +78,9 @@ BOOL CClientDetailPage::OnInitDialog()
 	AddAnchor(IDC_STATIC50, TOP_LEFT, TOP_RIGHT);
 	AddAnchor(IDC_DDOWNLOADING, TOP_LEFT, TOP_RIGHT);
 	AddAnchor(IDC_UPLOADING, TOP_LEFT, TOP_RIGHT);
+
 	AddAnchor(IDC_OBFUSCATION_STAT, TOP_LEFT, TOP_RIGHT);
+
 
 	Localize();
 	return TRUE;
@@ -114,7 +117,12 @@ BOOL CClientDetailPage::OnSetActive()
 		else
 			GetDlgItem(IDC_DHASH)->SetWindowText(_T("?"));
 		
-		GetDlgItem(IDC_DSOFT)->SetWindowText(client->DbgGetFullClientSoftVer()); //Xman ModId
+		//Xman ModId
+		/*
+		GetDlgItem(IDC_DSOFT)->SetWindowText(client->GetClientSoftVer());
+		*/
+		GetDlgItem(IDC_DSOFT)->SetWindowText(client->DbgGetFullClientSoftVer());
+		//Xman end
 
 		if (client->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (client->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()) 
 			&& (client->IsObfuscatedConnectionEstablished() || !(client->socket != NULL && client->socket->IsConnected())))
@@ -136,7 +144,6 @@ BOOL CClientDetailPage::OnSetActive()
 		
 		if (client->GetServerIP()){
 			GetDlgItem(IDC_DSIP)->SetWindowText(ipstr(client->GetServerIP()));
-			
 			CServer* cserver = theApp.serverlist->GetServerByIPTCP(client->GetServerIP(), client->GetServerPort());
 			if (cserver)
 				GetDlgItem(IDC_DSNAME)->SetWindowText(cserver->GetListName());
@@ -191,14 +198,21 @@ BOOL CClientDetailPage::OnSetActive()
 		buffer.Format(_T("%s"), CastItoXBytes(client->GetDownloadDatarate(), false, true));
 		GetDlgItem(IDC_DAVUR)->SetWindowText(buffer);
 
-		buffer.Format(_T("%s"),CastItoXBytes(client->GetUploadDatarate(), false, true)); //Xman // Maella -Accurate measure of bandwidth
+		//Xman // Maella -Accurate measure of bandwidth
+		/*
+		buffer.Format(_T("%s"),CastItoXBytes(client->GetDatarate(), false, true));
+		*/
+		buffer.Format(_T("%s"),CastItoXBytes(client->GetUploadDatarate(), false, true));
+		//Xman end
 		GetDlgItem(IDC_DAVDR)->SetWindowText(buffer);
 		
 		if (client->Credits()){
 			GetDlgItem(IDC_DUPTOTAL)->SetWindowText(CastItoXBytes(client->Credits()->GetDownloadedTotal(), false, false));
 			GetDlgItem(IDC_DDOWNTOTAL)->SetWindowText(CastItoXBytes(client->Credits()->GetUploadedTotal(), false, false));
-			//buffer.Format(_T("%.1f"),(float)client->Credits()->GetScoreRatio(client->GetIP()));
 			// Xman Creditsystem
+			/*
+			buffer.Format(_T("%.1f"),(float)client->Credits()->GetScoreRatio(client->GetIP()));
+			*/
 			// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 			if (thePrefs.GetCreditSystem() == 7) // is Xman CS¿
 			buffer.Format(_T("%.1f %+.1f [%.1f]"),(float)client->Credits()->GetScoreRatio(client)- (float)client->Credits()->GetBonusFaktor(client),(float)client->Credits()->GetBonusFaktor(client),(float)client->Credits()->GetMyScoreRatio(client->GetIP()));	//  See own credits VQB

@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -150,7 +150,12 @@ void CServerConnect::ConnectToServer(CServer* server, bool multiconnect, bool bN
 	theApp.emuledlg->ShowConnectionState();
 
 	CServerSocket* newsocket = new CServerSocket(this);
-	m_lstOpenSockets.AddTail(/*(void*&)*/newsocket); //Xman
+	//Xman
+	/*
+	m_lstOpenSockets.AddTail((void*&)newsocket);
+	*/
+	m_lstOpenSockets.AddTail(newsocket);
+	//Xman end
 	newsocket->Create(0, SOCK_STREAM, FD_READ | FD_WRITE | FD_CLOSE | FD_CONNECT, thePrefs.GetBindAddrA());
 	newsocket->ConnectTo(server, bNoCrypt);
 	connectionattemps.SetAt(GetTickCount(), newsocket);
@@ -172,7 +177,12 @@ void CServerConnect::StopConnectionTry()
 	// close all currenty opened sockets except the one which is connected to our current server
 	for( POSITION pos = m_lstOpenSockets.GetHeadPosition(); pos != NULL; )
 	{
-		CServerSocket* pSck = /*(CServerSocket*)*/m_lstOpenSockets.GetNext(pos); //Xman
+		//Xman
+		/*
+		CServerSocket* pSck = (CServerSocket*)m_lstOpenSockets.GetNext(pos);
+		*/
+		CServerSocket* pSck = /*(CServerSocket*)*/m_lstOpenSockets.GetNext(pos);
+		//Xman end
 		if (pSck == connectedsocket)		// don't destroy socket which is connected to server
 			continue;
 		if (pSck->m_bIsDeleting == false)	// don't destroy socket if it is going to destroy itself later on
@@ -565,6 +575,29 @@ void CServerConnect::SetClientID(uint32 newid){
 // Maella -Code Fix-
 // Remark: One user had a crash here, so this method was rewritten.
 //         => A multiple calls of this method is safe now.
+/*
+void CServerConnect::DestroySocket(CServerSocket* pSck){
+	if (pSck == NULL)
+		return;
+	// remove socket from list of opened sockets
+	for( POSITION pos = m_lstOpenSockets.GetHeadPosition(); pos != NULL; )
+	{
+		POSITION posDel = pos;
+		CServerSocket* pTestSck = (CServerSocket*)m_lstOpenSockets.GetNext(pos);
+		if (pTestSck == pSck)
+		{
+			m_lstOpenSockets.RemoveAt(posDel);
+			break;
+		}
+	}
+	if (pSck->m_SocketData.hSocket != INVALID_SOCKET){ // deadlake PROXYSUPPORT - changed to AsyncSocketEx
+		pSck->AsyncSelect(0);
+		pSck->Close();
+	}
+
+	delete pSck;
+}
+*/
 void CServerConnect::DestroySocket(CServerSocket* pSck){
 	if(pSck != NULL){
 		//Xman make sure this socket is also removed from connection-attemps
@@ -610,6 +643,23 @@ bool CServerConnect::IsLocalServer(uint32 dwIP, uint16 nPort){
 void CServerConnect::InitLocalIP()
 {
 	m_nLocalIP = 0;
+
+	// Using 'gethostname/gethostbyname' does not solve the problem when we have more than 
+	// one IP address. Using 'gethostname/gethostbyname' even seems to return the last IP 
+	// address which we got. e.g. if we already got an IP from our ISP, 
+	// 'gethostname/gethostbyname' will returned that (primary) IP, but if we add another
+	// IP by opening a VPN connection, 'gethostname' will still return the same hostname, 
+	// but 'gethostbyname' will return the 2nd IP.
+	// To weaken that problem at least for users which are binding eMule to a certain IP,
+	// we use the explicitly specified bind address as our local IP address.
+	if (thePrefs.GetBindAddrA() != NULL) {
+		unsigned long ulBindAddr = inet_addr(thePrefs.GetBindAddrA());
+		if (ulBindAddr != INADDR_ANY && ulBindAddr != INADDR_NONE) {
+			m_nLocalIP = ulBindAddr;
+			return;
+		}
+	}
+
 	// Don't use 'gethostbyname(NULL)'. The winsock DLL may be replaced by a DLL from a third party
 	// which is not fully compatible to the original winsock DLL. ppl reported crash with SCORSOCK.DLL
 	// when using 'gethostbyname(NULL)'.

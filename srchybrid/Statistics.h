@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -29,9 +29,15 @@ public:
 
 	void	Init();
 	// Xman
-	//void RecordRate();
-	//float	GetAvgDownloadRate(int averageType);
-	//float	GetAvgUploadRate(int averageType);
+	/*
+	void RecordRate();
+	float	GetAvgDownloadRate(int averageType);
+	float	GetAvgUploadRate(int averageType);
+	*/
+	void	RecordRate();
+	float	GetAvgDownloadRate(int averageType);
+	float	GetAvgUploadRate(int averageType);
+	//Xman end
 
 	// -khaos--+++> (2-11-03)
 	float GetSessionAvgUploadRate() const {return cumUpavg;} // Xman
@@ -42,12 +48,39 @@ public:
 	uint32	GetServerDuration()			{ return timeServerDuration + time_thisServerDuration; }
 	void	Add2TotalServerDuration()	{ timeServerDuration += time_thisServerDuration;
 										  time_thisServerDuration = 0; }
-	void	UpdateConnectionStats(); // Xman
+	// Xman
+	/*
+	void	UpdateConnectionStats(float uploadrate, float downloadrate);
+	*/
+	void	UpdateConnectionStats();
+	//Xman end
 
 
 	///////////////////////////////////////////////////////////////////////////
 	// Down Overhead
 	//	
+	// Xman
+	/*
+	void	CompDownDatarateOverhead();
+	void	ResetDownDatarateOverhead();
+	void	AddDownDataOverheadSourceExchange(uint32 data)	{ m_nDownDataRateMSOverhead += data;
+															  m_nDownDataOverheadSourceExchange += data;
+															  m_nDownDataOverheadSourceExchangePackets++;}
+	void	AddDownDataOverheadFileRequest(uint32 data)		{ m_nDownDataRateMSOverhead += data;
+															  m_nDownDataOverheadFileRequest += data;
+															  m_nDownDataOverheadFileRequestPackets++;}
+	void	AddDownDataOverheadServer(uint32 data)			{ m_nDownDataRateMSOverhead += data;
+															  m_nDownDataOverheadServer += data;
+															  m_nDownDataOverheadServerPackets++;}
+	void	AddDownDataOverheadOther(uint32 data)			{ m_nDownDataRateMSOverhead += data;
+															  m_nDownDataOverheadOther += data;
+															  m_nDownDataOverheadOtherPackets++;}
+	void	AddDownDataOverheadKad(uint32 data)				{ m_nDownDataRateMSOverhead += data;
+															  m_nDownDataOverheadKad += data;
+															  m_nDownDataOverheadKadPackets++;}
+	void	AddDownDataOverheadCrypt(uint32 /*data*//*)			{;}
+	uint32	GetDownDatarateOverhead()					{return m_nDownDatarateOverhead;}
+	*/
 	void	AddDownDataOverheadSourceExchange(uint32 data)	{  m_nDownDataOverheadSourceExchange += data;
 															  m_nDownDataOverheadSourceExchangePackets++;}
 	void	AddDownDataOverheadFileRequest(uint32 data)		{ m_nDownDataOverheadFileRequest += data;
@@ -58,10 +91,7 @@ public:
 															  m_nDownDataOverheadOtherPackets++;}
 	void	AddDownDataOverheadKad(uint32 data)				{ m_nDownDataOverheadKad += data;
 															  m_nDownDataOverheadKadPackets++;}
-	
-	//Xman not used
-	//void	AddDownDataOverheadCrypt(uint32 /*data*/)			{;}
-
+	//Xman end
 	uint64	GetDownDataOverheadSourceExchange()			{return m_nDownDataOverheadSourceExchange;}
 	uint64	GetDownDataOverheadFileRequest()			{return m_nDownDataOverheadFileRequest;}
 	uint64	GetDownDataOverheadServer()					{return m_nDownDataOverheadServer;}
@@ -77,6 +107,29 @@ public:
 	///////////////////////////////////////////////////////////////////////////
 	// Up Overhead
 	//	
+	//Xman
+	/*
+	void	CompUpDatarateOverhead();
+	void	ResetUpDatarateOverhead();
+	void	AddUpDataOverheadSourceExchange(uint32 data)	{ m_nUpDataRateMSOverhead += data;
+															  m_nUpDataOverheadSourceExchange += data;
+															  m_nUpDataOverheadSourceExchangePackets++;}
+	void	AddUpDataOverheadFileRequest(uint32 data)		{ m_nUpDataRateMSOverhead += data;
+															  m_nUpDataOverheadFileRequest += data;
+															  m_nUpDataOverheadFileRequestPackets++;}
+	void	AddUpDataOverheadServer(uint32 data)			{ m_nUpDataRateMSOverhead += data;
+															  m_nUpDataOverheadServer += data;
+															  m_nUpDataOverheadServerPackets++;}
+	void	AddUpDataOverheadKad(uint32 data)				{ m_nUpDataRateMSOverhead += data;
+															  m_nUpDataOverheadKad += data;
+															  m_nUpDataOverheadKadPackets++;}
+	void	AddUpDataOverheadOther(uint32 data)				{ m_nUpDataRateMSOverhead += data;
+															  m_nUpDataOverheadOther += data;
+															  m_nUpDataOverheadOtherPackets++;}
+	void	AddUpDataOverheadCrypt(uint32 /*data*//*)				{ ;}
+
+	uint32	GetUpDatarateOverhead()						{return m_nUpDatarateOverhead;}
+	*/
 	void	AddUpDataOverheadSourceExchange(uint32 data)	{ m_nUpDataOverheadSourceExchange += data;
 															  m_nUpDataOverheadSourceExchangePackets++;}
 	void	AddUpDataOverheadFileRequest(uint32 data)		{ m_nUpDataOverheadFileRequest += data;
@@ -88,9 +141,7 @@ public:
 	void	AddUpDataOverheadOther(uint32 data)				{ m_nUpDataOverheadOther += data;
 															  m_nUpDataOverheadOtherPackets++;}
 
-	//Xman not used
-	//void	AddUpDataOverheadCrypt(uint32 /*data*/)				{ ;}
-
+	//Xman end
 	uint64	GetUpDataOverheadSourceExchange()			{return m_nUpDataOverheadSourceExchange;}
 	uint64	GetUpDataOverheadFileRequest()				{return m_nUpDataOverheadFileRequest;}
 	uint64	GetUpDataOverheadServer()					{return m_nUpDataOverheadServer;}
@@ -105,18 +156,24 @@ public:
 public:
 	//	Cumulative Stats
 	// Xman
-	//static float	maxDown;
-	//static float	maxDownavg;
+	/*
+	static float	maxDown;
+	static float	maxDownavg;
+	*/
+	// Xman end
 	static float	cumDownavg;
 	static float	maxcumDownavg;
 	static float	maxcumDown;
 	static float	cumUpavg;
 	static float	maxcumUpavg;
 	static float	maxcumUp;
-	//static float	maxUp;
-	//static float	maxUpavg;
-	//static float	rateDown;
-	//static float	rateUp;
+	// Xman
+	/*
+	static float	maxUp;
+	static float	maxUpavg;
+	static float	rateDown;
+	static float	rateUp;
+	*/
 	// Xman end
 	static float	currentUploadRate;
 	static float	currentMaxUploadRate;
@@ -156,15 +213,17 @@ private:
 	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 	enum Curve {CURRENT = 0, MINUTE = 1, SESSION = 2, OVERALL = 3, ADAPTER = 4};
 
-	/*typedef struct TransferredData {
+	/*
+	typedef struct TransferredData {
 		uint32	datalen;
 		DWORD	timestamp;
-	};*/
-	//std::list<TransferredData> uprateHistory; 
-	//std::list<TransferredData> downrateHistory;
+	};
+	std::list<TransferredData> uprateHistory; 
+	std::list<TransferredData> downrateHistory;
 
-	//static uint32	m_nDownDatarateOverhead;
-	//static uint32	m_nDownDataRateMSOverhead;
+	static uint32	m_nDownDatarateOverhead;
+	static uint32	m_nDownDataRateMSOverhead;
+	*/
 	//Xman end
 	static uint64	m_nDownDataOverheadSourceExchange;
 	static uint64	m_nDownDataOverheadSourceExchangePackets;
@@ -178,8 +237,11 @@ private:
 	static uint64	m_nDownDataOverheadOtherPackets;
 
 	// Xman
-	//static uint32	m_nUpDatarateOverhead;
-	//static uint32	m_nUpDataRateMSOverhead;
+	/*
+	static uint32	m_nUpDatarateOverhead;
+	static uint32	m_nUpDataRateMSOverhead;
+	*/
+	//Xman end
 	static uint64	m_nUpDataOverheadSourceExchange;
 	static uint64	m_nUpDataOverheadSourceExchangePackets;
 	static uint64	m_nUpDataOverheadFileRequest;
@@ -194,8 +256,9 @@ private:
 	/* Xman
 	static uint32	m_sumavgDDRO;
 	static uint32	m_sumavgUDRO;
-	CList<TransferredData,TransferredData>	m_AvarageDDRO_list;
-	CList<TransferredData,TransferredData>	m_AvarageUDRO_list;*/	
+	CList<TransferredData> m_AvarageDDRO_list;
+	CList<TransferredData> m_AvarageUDRO_list;
+	*/	
 };
 
 extern CStatistics theStats;

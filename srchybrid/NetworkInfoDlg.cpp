@@ -8,6 +8,7 @@
 #include "ServerList.h"
 #include "Server.h"
 #include "kademlia/kademlia/kademlia.h"
+#include "kademlia/kademlia/UDPFirewallTester.h"
 #include "kademlia/kademlia/prefs.h"
 #include "kademlia/kademlia/indexed.h"
 #include "WebServer.h"
@@ -54,6 +55,8 @@ BOOL CNetworkInfoDlg::OnInitDialog()
 	EnableSaveRestore(PREF_INI_SECTION);
 
 	SetWindowText(GetResString(IDS_NETWORK_INFO));
+	GetDlgItem(IDOK)->SetWindowText(GetResString(IDS_TREEOPTIONS_OK));
+
 	SetDlgItemText(IDC_NETWORK_INFO_LABEL, GetResString(IDS_NETWORK_INFO));
 
 	m_info.SendMessage(EM_SETMARGINS, EC_LEFTMARGIN | EC_RIGHTMARGIN, MAKELONG(3, 3));
@@ -283,29 +286,53 @@ void CreateNetworkInfo(CRichEditCtrlX& rCtrl, CHARFORMAT& rcfDef, CHARFORMAT& rc
 		else
 			rCtrl << GetResString(IDS_KADOPEN);
 		rCtrl << _T("\r\n");
+		rCtrl << _T("UDP ") + GetResString(IDS_STATUS) << _T(":\t");
+		if(Kademlia::CUDPFirewallTester::IsFirewalledUDP(true))
+			rCtrl << GetResString(IDS_FIREWALLED);
+		else if (Kademlia::CUDPFirewallTester::IsVerified())
+			rCtrl << GetResString(IDS_KADOPEN);
+		else{
+			CString strTmp = GetResString(IDS_UNVERIFIED);
+			strTmp.MakeLower();
+			rCtrl << GetResString(IDS_KADOPEN) + _T(" (") + strTmp + _T(")");
+		}
+		rCtrl << _T("\r\n");
 
 		CString IP;
 		IP = ipstr(ntohl(Kademlia::CKademlia::GetPrefs()->GetIPAddress()));
 		buffer.Format(_T("%s:%i"), IP, thePrefs.GetUDPPort());
 		rCtrl << GetResString(IDS_IP) << _T(":") << GetResString(IDS_PORT) << _T(":\t") << buffer << _T("\r\n");
 
-		buffer.Format(_T("%u"),ntohl(Kademlia::CKademlia::GetPrefs()->GetIPAddress())); //Xman Bugfix
+		//Xman Bugfix
+		/*
+		buffer.Format(_T("%u"),Kademlia::CKademlia::GetPrefs()->GetIPAddress());
+		*/
+		buffer.Format(_T("%u"),ntohl(Kademlia::CKademlia::GetPrefs()->GetIPAddress()));
+		//Xman end
 		rCtrl << GetResString(IDS_ID) << _T(":\t") << buffer << _T("\r\n");
-
-		rCtrl << GetResString(IDS_BUDDY) << _T(":\t");
-		switch ( theApp.clientlist->GetBuddyStatus() )
+		if (Kademlia::CKademlia::GetPrefs()->GetUseExternKadPort() && Kademlia::CKademlia::GetPrefs()->GetExternalKadPort() != 0
+			&& Kademlia::CKademlia::GetPrefs()->GetInternKadPort() != Kademlia::CKademlia::GetPrefs()->GetExternalKadPort())
 		{
-			case Disconnected:
-				rCtrl << GetResString(IDS_BUDDYNONE);
-				break;
-			case Connecting:
-				rCtrl << GetResString(IDS_CONNECTING);
-				break;
-			case Connected:
-				rCtrl << GetResString(IDS_CONNECTED);
-				break;
+			buffer.Format(_T("%u"), Kademlia::CKademlia::GetPrefs()->GetExternalKadPort());
+			rCtrl << GetResString(IDS_EXTERNUDPPORT) << _T(":\t") << buffer << _T("\r\n");
 		}
-		rCtrl << _T("\r\n");
+
+		if (Kademlia::CUDPFirewallTester::IsFirewalledUDP(true)) {
+			rCtrl << GetResString(IDS_BUDDY) << _T(":\t");
+			switch ( theApp.clientlist->GetBuddyStatus() )
+			{
+				case Disconnected:
+					rCtrl << GetResString(IDS_BUDDYNONE);
+					break;
+				case Connecting:
+					rCtrl << GetResString(IDS_CONNECTING);
+					break;
+				case Connected:
+					rCtrl << GetResString(IDS_CONNECTED);
+					break;
+			}
+			rCtrl << _T("\r\n");
+		}
 
 		if (bFullInfo)
 		{

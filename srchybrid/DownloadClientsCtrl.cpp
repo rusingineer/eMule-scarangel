@@ -30,7 +30,11 @@
 #include "TransferWnd.h"
 #include "ChatWnd.h"
 #include "UpDownClient.h"
-//#include "UploadQueue.h" not needed
+//Xman
+/*
+#include "UploadQueue.h"
+*/
+//Xman end
 #include "ClientCredits.h"
 #include "PartFile.h"
 #include "Kademlia/Kademlia/Kademlia.h"
@@ -42,6 +46,7 @@
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
 #endif
+
 
 IMPLEMENT_DYNAMIC(CDownloadClientsCtrl, CMuleListCtrl)
 
@@ -80,7 +85,6 @@ void CDownloadClientsCtrl::Init()
 	InsertColumn(6,	GetResString(IDS_CL_TRANSFUP), LVCFMT_LEFT, 115);
 	InsertColumn(7,	GetResString(IDS_META_SRCTYPE), LVCFMT_LEFT, 60);
 
-
 	SetAllIcons();
 	Localize();
 	LoadSettings();
@@ -107,7 +111,24 @@ void CDownloadClientsCtrl::SetAllIcons()
 	m_ImageList.DeleteImageList();
 	m_ImageList.Create(16,16,theApp.m_iDfltImageListColorFlags|ILC_MASK,0,1);
 	m_ImageList.SetBkColor(CLR_NONE);
-	//Xman Show correct Icons	
+	//Xman Show correct Icons
+	/*
+	m_ImageList.Add(CTempIconLoader(_T("ClientEDonkey")));
+	m_ImageList.Add(CTempIconLoader(_T("ClientCompatible")));
+	m_ImageList.Add(CTempIconLoader(_T("ClientEDonkeyPlus")));
+	m_ImageList.Add(CTempIconLoader(_T("ClientCompatiblePlus")));
+	m_ImageList.Add(CTempIconLoader(_T("Friend")));
+	m_ImageList.Add(CTempIconLoader(_T("ClientMLDonkey")));
+	m_ImageList.Add(CTempIconLoader(_T("ClientMLDonkeyPlus")));
+	m_ImageList.Add(CTempIconLoader(_T("ClientEDonkeyHybrid")));
+	m_ImageList.Add(CTempIconLoader(_T("ClientEDonkeyHybridPlus")));
+	m_ImageList.Add(CTempIconLoader(_T("ClientShareaza")));
+	m_ImageList.Add(CTempIconLoader(_T("ClientShareazaPlus")));
+	m_ImageList.Add(CTempIconLoader(_T("ClientAMule")));
+	m_ImageList.Add(CTempIconLoader(_T("ClientAMulePlus")));
+	m_ImageList.Add(CTempIconLoader(_T("ClientLPhant")));
+	m_ImageList.Add(CTempIconLoader(_T("ClientLPhantPlus")));
+	*/
 	m_ImageList.Add(CTempIconLoader(_T("ClientDefault")));		//0
 	m_ImageList.Add(CTempIconLoader(_T("ClientDefaultPlus")));	//1
 	m_ImageList.Add(CTempIconLoader(_T("ClientEDonkey")));		//2
@@ -208,9 +229,13 @@ void CDownloadClientsCtrl::AddClient(CUpDownClient* client)
 		return;
        
 	//Xman Code Improvement
+	/*
+	InsertItem(LVIF_TEXT|LVIF_PARAM, GetItemCount(), client->GetUserName(), 0, 0, 1, (LPARAM)client);
+	RefreshClient(client);
+	*/
 	int iItem = InsertItem(LVIF_TEXT|LVIF_PARAM, GetItemCount(), client->GetUserName(), 0, 0, 1, (LPARAM)client);
 	Update(iItem);
-	//RefreshClient(client);
+	//Xman end
 	theApp.emuledlg->transferwnd->UpdateListCount(CTransferWnd::wnd2Downloading, GetItemCount()); 
 }
 
@@ -232,6 +257,7 @@ void CDownloadClientsCtrl::RefreshClient(CUpDownClient* client)
 {
 	if( !theApp.emuledlg->IsRunning() )
 		return;
+	
 	//MORPH START - SiRoB, Don't Refresh item if not needed 
 	if( theApp.emuledlg->activewnd != theApp.emuledlg->transferwnd  || theApp.emuledlg->transferwnd->downloadclientsctrl.IsWindowVisible() == false ) 
 		return; 
@@ -258,7 +284,7 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	//MORPH START - Added by SiRoB, Don't draw hidden Rect
 	RECT clientRect;
 	GetClientRect(&clientRect);
-	RECT cur_rec = lpDrawItemStruct->rcItem;
+	CRect cur_rec(lpDrawItemStruct->rcItem);
 	if (cur_rec.top >= clientRect.bottom || cur_rec.bottom <= clientRect.top)
 		return;
 	//MORPH END   - Added by SiRoB, Don't draw hidden Rect
@@ -278,8 +304,17 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	COLORREF crOldBackColor = odc->GetBkColor();  //Xman show LowIDs
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
 	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
-	CFont* pOldFont = dc.SelectObject(thePrefs.UseNarrowFont() ? &m_fontNarrow : GetFont()); //Xman narrow font at transferwindow
-	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
+	//Xman narrow font at transferwindow
+	/*
+	CFont* pOldFont = dc.SelectObject(GetFont());
+	*//*
+	CFont* pOldFont = dc.SelectObject(thePrefs.UseNarrowFont() ? &m_fontNarrow : GetFont());
+	//Xman end
+	//MORPH - Moved by SiRoB, Don't draw hidden Rect
+	/*
+	CRect cur_rec(lpDrawItemStruct->rcItem);
+	*//*
+	//MORPH - Moved by SiRoB, Don't draw hidden Rect
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
 	*/
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
@@ -309,10 +344,6 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	CFont* pOldFont = dc.SelectObject(theApp.GetFontByStyle(style.nFlags,thePrefs.UseNarrowFont()));
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : crTempColor);
 	// <== Design Settings [eWombat/Stulle] - Stulle
-	/* Xman what is this doing at downloadclients ?
-	if(client->GetSlotNumber() > theApp.uploadqueue->GetActiveUploadsCount()) {
-        dc.SetTextColor(::GetSysColor(COLOR_GRAYTEXT));
-    }*/
 
 	int iOldBkMode;
 	if (m_crWindowTextBk == CLR_NONE){
@@ -333,7 +364,57 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			cur_rec.right += GetColumnWidth(iColumn);
 			switch(iColumn){
 				case 0:{
-					////Xman Show correct Icons
+					//Xman Show correct Icons
+					/*
+					if (client->credits != NULL){
+						if (client->IsFriend())
+							image = 4;
+						else if (client->GetClientSoft() == SO_EDONKEYHYBRID){
+							if (client->credits->GetScoreRatio(client->GetIP()) > 1)
+								image = 8;
+							else
+								image = 7;
+						}
+						else if (client->GetClientSoft() == SO_MLDONKEY){
+							if (client->credits->GetScoreRatio(client->GetIP()) > 1)
+								image = 6;
+							else
+								image = 5;
+						}
+						else if (client->GetClientSoft() == SO_SHAREAZA){
+							if(client->credits->GetScoreRatio(client->GetIP()) > 1)
+								image = 10;
+							else
+								image = 9;
+						}
+						else if (client->GetClientSoft() == SO_AMULE){
+							if(client->credits->GetScoreRatio(client->GetIP()) > 1)
+								image = 12;
+							else
+								image = 11;
+						}
+						else if (client->GetClientSoft() == SO_LPHANT){
+							if(client->credits->GetScoreRatio(client->GetIP()) > 1)
+								image = 14;
+							else
+								image = 13;
+						}
+						else if (client->ExtProtocolAvailable()){
+							if(client->credits->GetScoreRatio(client->GetIP()) > 1)
+								image = 3;
+							else
+								image = 1;
+						}
+						else{
+							if (client->credits->GetScoreRatio(client->GetIP()) > 1)
+								image = 2;
+							else
+								image = 0;
+						}
+					}
+					else
+						image = 0;
+					*/
 					uint8 image;
 					if (client->IsFriend())
 						image = 6;
@@ -380,7 +461,7 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						image++;
 					*/
 					if (client->GetModClient() == MOD_NONE){
-						if(((client->credits)?client->credits->GetMyScoreRatio(client->GetIP()):0) > 1)
+						if (((client->credits)?client->credits->GetMyScoreRatio(client->GetIP()):0) > 1)
 							image++;
 					}
 					// <== Mod Icons - Stulle
@@ -390,13 +471,18 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					if ((client->Credits() && client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED))
 						nOverlayImage |= 1;
 					//Xman changed: display the obfuscation icon for all clients which enabled it
+					/*
+					if (client->IsObfuscatedConnectionEstablished())
+					*/
 					if(client->IsObfuscatedConnectionEstablished() 
 						|| (!(client->socket != NULL && client->socket->IsConnected())
 						&& (client->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (client->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()))))
+					//Xman end
 						nOverlayImage |= 2;
-					POINT point = {cur_rec.left, cur_rec.top+1};
+					int iIconPosY = (cur_rec.Height() > 16) ? ((cur_rec.Height() - 16) / 2) : 1;
+					POINT point = {cur_rec.left, cur_rec.top + iIconPosY};
 					m_ImageList.Draw(dc,image, point, ILD_NORMAL | INDEXTOOVERLAYMASK(nOverlayImage));
-
+					
 					// ==> Mod Icons - Stulle
 					if(client->Credits() && client->Credits()->GetMyScoreRatio(client->GetIP()) > 1)
 					{
@@ -436,7 +522,12 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					break;
 					}
 				case 1:
-					Sbuffer.Format(_T("%s"), client->DbgGetFullClientSoftVer()); //Xman // Maella -Support for tag ET_MOD_VERSION 0x55
+					//Xman // Maella -Support for tag ET_MOD_VERSION 0x55
+					/*
+					Sbuffer.Format(_T("%s"), client->GetClientSoftVer());
+					*/
+					Sbuffer.Format(_T("%s"), client->DbgGetFullClientSoftVer());
+					//Xman end
 					// ==> Design Settings [eWombat/Stulle] - Stulle
 					/*
 					if(client->HasLowID()) dc.SetBkColor(RGB(255,250,200)); //Xman show LowIDs
@@ -451,7 +542,7 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					dc.DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec, DLC_DT_TEXT | DT_RIGHT);
 					break;
 				case 4:
-				{
+				{ //Xman
 					cur_rec.bottom--;
 					cur_rec.top++;
 					client->DrawStatusBar(dc, &cur_rec, false, thePrefs.UseFlatBar());
@@ -491,7 +582,7 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					cur_rec.bottom++;
 					cur_rec.top--;
 					break;
-				}
+				} //Xman
 				case 5:
 					if(client->Credits() && client->GetSessionDown() < client->credits->GetDownloadedTotal())
 						Sbuffer.Format(_T("%s (%s)"), CastItoXBytes(client->GetSessionDown()), CastItoXBytes(client->credits->GetDownloadedTotal()));
@@ -631,7 +722,7 @@ BOOL CDownloadClientsCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 			case MP_STOP_CLIENT: 
 				StopSingleClient(client);
 				break;		
-
+			//Xman end
 			case MP_DETAIL:
 			case MPG_ALTENTER:
 			case IDA_ENTER:
@@ -687,19 +778,6 @@ int CDownloadClientsCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParam
 			else
 				iResult= item1->GetClientSoft() - item2->GetClientSoft();
 			break;
-		/*
-		case 101:
-			if( item1->GetClientSoft() == item2->GetClientSoft() )
-				if(item2->GetVersion() == item1->GetVersion() && item2->GetClientSoft() == SO_EMULE){
-					iResult= item1->DbgGetFullClientSoftVer().CompareNoCase( item2->DbgGetFullClientSoftVer());
-				}
-				else {
-					iResult= item1->GetVersion() - item2->GetVersion();
-				}
-			else
-				iResult= item2->GetClientSoft() - item1->GetClientSoft();
-			break;
-		*/
 		//Xman end
 		case 2: 
 		case 102:
@@ -751,6 +829,7 @@ int CDownloadClientsCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParam
 		iResult= SortProc(lParam1, lParam2, dwNextSort);
 	}
 	*/
+
 	return iResult;
 }
 
@@ -772,7 +851,9 @@ void CDownloadClientsCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 
 	//Xman friendhandling
 	ClientMenu.AppendMenu(MF_SEPARATOR); 
+	//Xman end
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && !client->IsFriend()) ? MF_ENABLED : MF_GRAYED), MP_ADDFRIEND, GetResString(IDS_ADDFRIEND), _T("ADDFRIEND"));
+	//Xman friendhandling
 	ClientMenu.AppendMenu(MF_STRING | (client && client->IsFriend() ? MF_ENABLED : MF_GRAYED), MP_REMOVEFRIEND, GetResString(IDS_REMOVEFRIEND), _T("DELETEFRIEND"));
 	ClientMenu.AppendMenu(MF_STRING | (client && client->IsFriend() ? MF_ENABLED : MF_GRAYED), MP_FRIENDSLOT, GetResString(IDS_FRIENDSLOT), _T("FRIENDSLOT"));
 	ClientMenu.CheckMenuItem(MP_FRIENDSLOT, (client && client->GetFriendSlot()) ? MF_CHECKED : MF_UNCHECKED);

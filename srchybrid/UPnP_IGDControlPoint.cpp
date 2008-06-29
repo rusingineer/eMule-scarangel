@@ -18,7 +18,6 @@
 // ----------------------------------------------------------------------
 //
 // emulEspaña. Added by MoNKi [MoNKi: -UPnPNAT Support-]
-// modified by leuk_he for morph /scarangel for gui integration 
 
 #include "StdAfx.h"
 #include "emule.h"
@@ -52,6 +51,7 @@ CCriticalSection						CUPnP_IGDControlPoint::m_ActionThreadCS;
 bool									CUPnP_IGDControlPoint::m_bStopAtFirstService;
 bool									CUPnP_IGDControlPoint::m_bClearOnClose;
 CEvent *								CUPnP_IGDControlPoint::InitializingEvent;
+CString                                 CUPnP_IGDControlPoint::StatusString;
 
 CUPnP_IGDControlPoint::CUPnP_IGDControlPoint(void)
 {
@@ -69,11 +69,11 @@ CUPnP_IGDControlPoint::~CUPnP_IGDControlPoint(void)
 {
 	if(m_bClearOnClose)
 		DeleteAllPortMappings();
-
+    
 	//Unregister control point and finish UPnP
 	if(m_ctrlPoint){
 		UpnpUnRegisterClient(m_ctrlPoint);
-		UpnpFinish();
+        UpnpFinish();
 	}
 
     if (InitializingEvent)
@@ -132,12 +132,15 @@ bool CUPnP_IGDControlPoint::Init(bool bStopAtFirstConnFound){
 	// Init UPnP
 	int rc;
 	//MORPH START leuk_he upnp bindaddr
+	StatusString=L"Starting";
     LPCSTR HostIp=NULL;
-	if (   (thePrefs.GetBindAddrA()!=NULL) 
+	if (   (thePrefs.GetBindAddrA()!=NULL)
 		&& IsLANIP((char *) thePrefs.GetBindAddrA()) )
 		HostIp=thePrefs.GetBindAddrA();
 	else if  ( thePrefs.GetUpnpBindAddr()!= 0 )
 		HostIp=strdup(ipstrA(htonl(thePrefs.GetUpnpBindAddr())));
+	 if ((HostIp!= NULL) && (inet_addr(HostIp)==INADDR_NONE))
+		 HostIp=NULL; // prevent failing if in prev version there was no valid interface. 
 	rc = UpnpInit( HostIp, thePrefs.GetUPnPPort() );
     /*
 	rc = UpnpInit( NULL, thePrefs.GetUPnPPort() );
@@ -145,6 +148,7 @@ bool CUPnP_IGDControlPoint::Init(bool bStopAtFirstConnFound){
 	// MORPH END leuk_he upnp bindaddr 
 	if (UPNP_E_SUCCESS != rc) {
 		AddLogLine(false, GetResString(IDS_UPNP_FAILEDINIT), thePrefs.GetUPnPPort(), GetErrDescription(rc) );
+		StatusString.Format(GetResString(IDS_UPNP_FAILEDINIT), thePrefs.GetUPnPPort(), GetErrDescription(rc) );
 		UpnpFinish();
 		thePrefs.SetUpnpDetect(UPNP_NOT_DETECTED);//leuk_he autodetect upnp in wizard
 		
@@ -154,6 +158,7 @@ bool CUPnP_IGDControlPoint::Init(bool bStopAtFirstConnFound){
 	// Check if you are in a LAN or directly connected to Internet
 	if(!IsLANIP(UpnpGetServerIpAddress())){
 		AddLogLine(false, GetResString(IDS_UPNP_PUBLICIP));
+		StatusString=GetResString(IDS_UPNP_PUBLICIP);
 		UpnpFinish();
 		thePrefs.SetUpnpDetect(UPNP_NOT_NEEDED)	;//leuk_he autodetect upnp in wizard
 		UpnpAcceptsPorts=false; 
@@ -164,6 +169,7 @@ bool CUPnP_IGDControlPoint::Init(bool bStopAtFirstConnFound){
 	rc = UpnpRegisterClient( (Upnp_FunPtr)IGD_Callback, &m_ctrlPoint, &m_ctrlPoint );
 	if (UPNP_E_SUCCESS != rc) {
 		AddLogLine(false, GetResString(IDS_UPNP_FAILEDREGISTER), GetErrDescription(rc) );
+		StatusString.Format(GetResString(IDS_UPNP_FAILEDREGISTER), GetErrDescription(rc));
 		UpnpFinish();
 		thePrefs.SetUpnpDetect(UPNP_NOT_DETECTED);//leuk_he autodetect upnp in wizard
 		return false;
@@ -216,7 +222,7 @@ if(thePrefs.GetUPnPVerboseLog())
 	AddDebugLogLine(false, _T("Waiting short for upnp to complete registration.") );
 
 if (InitializingEvent) 
-         return (bool)InitializingEvent->Lock((MINIMUM_DELAY*1000)+1) ; // 10 secs...  (should be UPNPTIMEOUT, btu 40 seconds is too long....)
+       return (InitializingEvent->Lock((MINIMUM_DELAY*1000)+1)==S_OK) ; // 10 secs...  (should be UPNPTIMEOUT, btu 40 seconds is too long....)
 
 return 0;
 }
@@ -274,7 +280,8 @@ int CUPnP_IGDControlPoint::IGD_Callback( Upnp_EventType EventType, void* Event, 
 		}
 		case UPNP_DISCOVERY_SEARCH_TIMEOUT:
 			if (thePrefs.GetUpnpDetect() != UPNP_DETECTED) {	  	 //leuk_he autodetect upnp in wizard
-		 		thePrefs.SetUpnpDetect(UPNP_NOT_DETECTED);//leuk_he autodetect upnp in wizard
+					StatusString=L"DeviceNotAutodetect";
+				 	thePrefs.SetUpnpDetect(UPNP_NOT_DETECTED);//leuk_he autodetect upnp in wizard
 			}
 			InitializingEvent->SetEvent();
 			break;
@@ -990,7 +997,7 @@ UINT CUPnP_IGDControlPoint::TimerThreadFunc( LPVOID /*pParam*/ ){
 
 	static long int testTime = sleepTime; //SiRoB
 
-	while(m_IGDControlPoint  ){
+	while(m_IGDControlPoint){
 		// SiRoB >>
 		/*
 		Sleep(sleepTime);
@@ -1041,22 +1048,25 @@ CUPnP_IGDControlPoint::UPNPNAT_RETURN CUPnP_IGDControlPoint::AddPortMappingToSer
 
 	//Check if the portmaping already exists
 	UPNPNAT_FULLMAPPING fullMapping;
-	if(GetSpecificPortMappingEntryFromService(srv, mapping, &fullMapping, false) == UNAT_OK){
+	if((thePrefs.m_bUPnPForceUpdate==0) && GetSpecificPortMappingEntryFromService(srv, mapping, &fullMapping, false) == UNAT_OK){
 		if(fullMapping.internalClient == GetLocalIPStr()){
 			if(fullMapping.description.Left(7).MakeLower() != _T("emule (")){
-				if(thePrefs.GetUPnPVerboseLog())
+				if(thePrefs.GetUPnPVerboseLog())  {
 					theApp.QueueDebugLogLine(false,_T("UPnP: Couldn't add mapping: \"%s\". The port %d is already mapped to other application (\"%s\" on %s:%d). [%s]"), desc, mapping->externalPort, fullMapping.description, fullMapping.internalClient, fullMapping.internalPort, srv->ServiceType);
+				};
 				return UNAT_NOT_OWNED_PORTMAPPING;
 			}
 			else{
 				if(fullMapping.enabled == TRUE && fullMapping.leaseDuration == 0){
 					if(bIsUpdating){
-						if(thePrefs.GetUPnPVerboseLog())
-							theApp.QueueDebugLogLine(false, _T("UPnP: The port mapping \"%s\" don't needs an update. [%s]"), desc, srv->ServiceType);
+						if(thePrefs.GetUPnPVerboseLog()) {
+							theApp.QueueDebugLogLine(false, _T("UPnP: The port mapping \"%s\" don't need an update. [%s]"), desc, srv->ServiceType);
+						}
 					}
-					else
-						if(thePrefs.GetUPnPVerboseLog())
-							theApp.QueueDebugLogLine(false,_T("UPnP: The port mapping \"%s\" don't needs an update. [%s]"), desc, srv->ServiceType);
+					else 
+						if(thePrefs.GetUPnPVerboseLog()) {
+							theApp.QueueDebugLogLine(false,_T("UPnP: The port mapping \"%s\" don't need to be recreated. [%s]"), desc, srv->ServiceType);
+						};
 					//Mapping is already OK
 					return UNAT_OK;
 				}
@@ -1067,7 +1077,7 @@ CUPnP_IGDControlPoint::UPNPNAT_RETURN CUPnP_IGDControlPoint::AddPortMappingToSer
 		}
 		else{
 			if(thePrefs.GetUPnPVerboseLog())
-					theApp.QueueDebugLogLine(false, _T("UPnP: Couldn't add mapping: \"%s\". The port %d is already mapped to other application (\"%s\" on %s:%d). [%s]"), desc, mapping->externalPort, fullMapping.description, fullMapping.internalClient, fullMapping.internalPort, srv->ServiceType);
+					theApp.QueueDebugLogLine(false, _T("UPnP: Couldn't add mapping: \"%s\". The port %d is already mapped to other pc/application (\"%s\" on %s:%d). [%s]"), desc, mapping->externalPort, fullMapping.description, fullMapping.internalClient, fullMapping.internalPort, srv->ServiceType);
 			return UNAT_NOT_OWNED_PORTMAPPING;
 		}
 	}
@@ -1128,37 +1138,42 @@ CUPnP_IGDControlPoint::UPNPNAT_RETURN CUPnP_IGDControlPoint::AddPortMappingToSer
 
 			rc = UpnpSendAction( m_ctrlPoint,CT2CA(srv->ControlURL),
 				CT2CA(srv->ServiceType), NULL, actionNode, &RespNode);
-		}
+			}
 
 		//This can be changed if we tried with an static port mapping
 		if(rc == UPNP_E_SUCCESS){
 			Status = UNAT_OK;
-
-
-			if(bUpdate)
+			if(bUpdate)	{
 				if(thePrefs.GetUPnPVerboseLog())
 					theApp.QueueDebugLogLine(false, _T("UPnP: Updated port mapping \"%s\" (%s). [%s]"), desc, _T("Static"), srv->ServiceType);
-			else
-				if(thePrefs.GetUPnPVerboseLog())
+			}
+			else{
+				if(thePrefs.GetUPnPVerboseLog()) {
 					theApp.QueueDebugLogLine(false, _T( "UPnP: Added port mapping \"%s\" (%s). [%s]"), desc, _T("Static"), srv->ServiceType);
+				}
+			}
 		}
 		else{
 			if(bIsUpdating){
 				if(thePrefs.GetUPnPVerboseLog())
-					theApp.QueueDebugLogLine(false, _T("UPnP: Failed to add port mapping \"%s\" [%s] [%s]"), desc, srv->ServiceType, GetErrDescription(RespNode, rc));
+					theApp.QueueDebugLogLine(false, _T("UPnP: Failed to update port mapping \"%s\" [%s] [%s]"), desc, srv->ServiceType, GetErrDescription(RespNode, rc));
 			}
-			else
-				if(thePrefs.GetUPnPVerboseLog())
-					theApp.QueueDebugLogLine(false, _T("UPnP: Failed to add port mapping \"%s\" [%s] [%s]"), desc, srv->ServiceType, GetErrDescription(RespNode, rc));		}
+			else {
+				if(thePrefs.GetUPnPVerboseLog()) 
+					theApp.QueueDebugLogLine(false, _T("UPnP: Failed to add port mapping \"%s\" [%s] [%s]"), desc, srv->ServiceType, GetErrDescription(RespNode, rc));		
+			}
+		}
 	}
 	else{
 		Status = UNAT_OK;
-        if(bUpdate)
+		if(bUpdate)	{
 			if(thePrefs.GetUPnPVerboseLog())
 					theApp.QueueDebugLogLine(false,_T("UPnP: Updated port mapping \"%s\" (%s). [%s]"), desc, _T("Dynamic"), srv->ServiceType);
-		else
+		}
+		else {
 			if(thePrefs.GetUPnPVerboseLog())
 					theApp.QueueDebugLogLine(false,_T( "UPnP: Added port mapping \"%s\" (%s). [%s]"), desc, _T("Dynamic"), srv->ServiceType);
+		}
 	}
 
     if( RespNode )
@@ -1321,6 +1336,58 @@ CUPnP_IGDControlPoint::UPNPNAT_RETURN CUPnP_IGDControlPoint::GetSpecificPortMapp
 
 	return status;
 }
+
+
+
+/* Experimental
+CUPnP_IGDControlPoint::UPNPNAT_RETURN CUPnP_IGDControlPoint::GetExternalIPAddress(CUPnP_IGDControlPoint::UPNP_SERVICE *srv, bool bLog){
+	if(!m_bInit)
+		return UNAT_ERROR;
+
+	UPNPNAT_RETURN status = UNAT_ERROR;
+
+	USES_CONVERSION;
+
+	IXML_Document *actionNode = NULL;
+	char actionName[] = "GetExternalIPAddress";
+	UpnpAddToAction( &actionNode, actionName , CT2CA(srv->ServiceType),		"", "");
+
+	IXML_Document* RespNode = NULL;
+	int rc = UpnpSendAction( m_ctrlPoint,CT2CA(srv->ControlURL),
+		CT2CA(srv->ServiceType), NULL, actionNode, &RespNode);
+	if( rc != UPNP_E_SUCCESS)
+	{
+		if(rc == 714){
+			//NoSuchEntryInArray
+			status = UNAT_NOT_FOUND;
+		}
+		else{
+			//Other error
+			status = UNAT_ERROR;
+		}
+
+		if(bLog && thePrefs.GetUPnPVerboseLog())
+			theApp.QueueDebugLogLine(false, _T("UPnP: Failed to get external ip\"%s\". [%s]"), desc, GetErrDescription(RespNode, rc));
+	}
+	else{
+		Cstring ExternalIp=  GetFirstDocumentItem(RespNode, _T("ExternalIp")));
+		status = UNAT_OK;
+	}
+
+    if( RespNode )
+        ixmlDocument_free( RespNode );
+    if( actionNode )
+        ixmlDocument_free( actionNode );
+
+	return status;
+}
+ Experimental */ 
+
+
+
+
+
+
 
 /////////////////////////////////////////////////////////////////////////////////
 // Returns a CString with the local IP in format xxx.xxx.xxx.xxx
@@ -1539,7 +1606,10 @@ void CUPnP_IGDControlPoint::DeleteAllPortMappingsOnClose(){
 int  CUPnP_IGDControlPoint::GetStatusString(CString & displaystring,bool verbose)
 {
 	if(!m_bInit){
-		displaystring=GetResString(IDS_UPNP_INFO_NONEED);
+		if	(StatusString.IsEmpty()	)
+    		displaystring=GetResString(IDS_UPNP_INFO_NONEED);
+		else 
+			displaystring=StatusString;
 		return (1);
 	}
 

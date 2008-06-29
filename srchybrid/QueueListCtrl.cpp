@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -46,7 +46,6 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 
-
 IMPLEMENT_DYNAMIC(CQueueListCtrl, CMuleListCtrl)
 
 BEGIN_MESSAGE_MAP(CQueueListCtrl, CMuleListCtrl)
@@ -79,6 +78,7 @@ void CQueueListCtrl::Init()
 	ilDummyImageList.Detach();
 
 	SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_INFOTIP);
+
 	InsertColumn(0,GetResString(IDS_QL_USERNAME),LVCFMT_LEFT,150,0);
 	InsertColumn(1,GetResString(IDS_FILE),LVCFMT_LEFT,275,1);
 	InsertColumn(2,GetResString(IDS_FILEPRIO),LVCFMT_LEFT,110,2);
@@ -135,6 +135,23 @@ void CQueueListCtrl::SetAllIcons()
 	imagelist.Create(16,16,theApp.m_iDfltImageListColorFlags|ILC_MASK,0,1);
 	imagelist.SetBkColor(CLR_NONE);
 	//Xman Show correct Icons	
+	/*
+	imagelist.Add(CTempIconLoader(_T("ClientEDonkey")));
+	imagelist.Add(CTempIconLoader(_T("ClientCompatible")));
+	imagelist.Add(CTempIconLoader(_T("ClientEDonkeyPlus")));
+	imagelist.Add(CTempIconLoader(_T("ClientCompatiblePlus")));
+	imagelist.Add(CTempIconLoader(_T("Friend")));
+	imagelist.Add(CTempIconLoader(_T("ClientMLDonkey")));
+	imagelist.Add(CTempIconLoader(_T("ClientMLDonkeyPlus")));
+	imagelist.Add(CTempIconLoader(_T("ClientEDonkeyHybrid")));
+	imagelist.Add(CTempIconLoader(_T("ClientEDonkeyHybridPlus")));
+	imagelist.Add(CTempIconLoader(_T("ClientShareaza")));
+	imagelist.Add(CTempIconLoader(_T("ClientShareazaPlus")));
+	imagelist.Add(CTempIconLoader(_T("ClientAMule")));
+	imagelist.Add(CTempIconLoader(_T("ClientAMulePlus")));
+	imagelist.Add(CTempIconLoader(_T("ClientLPhant")));
+	imagelist.Add(CTempIconLoader(_T("ClientLPhantPlus")));
+	*/
 	imagelist.Add(CTempIconLoader(_T("ClientDefault")));		//0
 	imagelist.Add(CTempIconLoader(_T("ClientDefaultPlus")));	//1
 	imagelist.Add(CTempIconLoader(_T("ClientEDonkey")));		//2
@@ -336,7 +353,7 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	//MORPH START - Added by SiRoB, Don't draw hidden Rect
 	RECT clientRect;
 	GetClientRect(&clientRect);
-	RECT cur_rec = lpDrawItemStruct->rcItem;
+	CRect cur_rec(lpDrawItemStruct->rcItem);
 	if (cur_rec.top >= clientRect.bottom || cur_rec.bottom <= clientRect.top)
 		return;
 	//MORPH END   - Added by SiRoB, Don't draw hidden Rect
@@ -357,8 +374,17 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
 	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
-	CFont* pOldFont = dc.SelectObject(thePrefs.UseNarrowFont() ? &m_fontNarrow : GetFont()); //Xman narrow font at transferwindow
-	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
+	//Xman narrow font at transferwindow
+	/*
+	CFont* pOldFont = dc.SelectObject(GetFont());
+	*//*
+	CFont* pOldFont = dc.SelectObject(thePrefs.UseNarrowFont() ? &m_fontNarrow : GetFont());
+	//Xman end
+	//MORPH - Moved by SiRoB, Don't draw hidden Rect
+	/*
+	CRect cur_rec(lpDrawItemStruct->rcItem);
+	*//*
+	//Xman end
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
 	*/
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
@@ -409,7 +435,54 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			cur_rec.right += GetColumnWidth(iColumn);
 			switch(iColumn){
 				case 0:{
-				////Xman Show correct Icons
+				//Xman Show correct Icons
+				/*
+					uint8 image;
+					if (client->IsFriend())
+						image = 4;
+					else if (client->GetClientSoft() == SO_EDONKEYHYBRID){
+						if (client->credits->GetScoreRatio(client->GetIP()) > 1)
+							image = 8;
+						else
+							image = 7;
+					}
+					else if (client->GetClientSoft() == SO_MLDONKEY){
+						if (client->credits->GetScoreRatio(client->GetIP()) > 1)
+							image = 6;
+						else
+							image = 5;
+					}
+					else if (client->GetClientSoft() == SO_SHAREAZA){
+						if(client->credits->GetScoreRatio(client->GetIP()) > 1)
+							image = 10;
+						else
+							image = 9;
+					}
+					else if (client->GetClientSoft() == SO_AMULE){
+						if(client->credits->GetScoreRatio(client->GetIP()) > 1)
+							image = 12;
+						else
+							image = 11;
+					}
+					else if (client->GetClientSoft() == SO_LPHANT){
+						if(client->credits->GetScoreRatio(client->GetIP()) > 1)
+							image = 14;
+						else
+							image = 13;
+					}
+					else if (client->ExtProtocolAvailable()){
+						if(client->credits->GetScoreRatio(client->GetIP()) > 1)
+							image = 3;
+						else
+							image = 1;
+					}
+					else{
+						if (client->credits->GetScoreRatio(client->GetIP()) > 1)
+							image = 2;
+						else
+							image = 0;
+					}
+				*/
 				uint8 image;
 				if (client->IsFriend())
 					image = 6;
@@ -467,13 +540,16 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				uint32 nOverlayImage = 0;
 				if ((client->Credits() && client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED))
 					nOverlayImage |= 1;
-				//Xman changed: display the obfuscation icon for all clients which enabled it
-				if(client->IsObfuscatedConnectionEstablished() 
-					|| (!(client->socket != NULL && client->socket->IsConnected())
-					&& (client->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (client->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()))))
+					//Xman changed: display the obfuscation icon for all clients which enabled it
+					/*
+					if (client->IsObfuscatedConnectionEstablished())
+					*/
+					if(client->IsObfuscatedConnectionEstablished() 
+						|| (!(client->socket != NULL && client->socket->IsConnected())
+						&& (client->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (client->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()))))
 					nOverlayImage |= 2;
-
-					POINT point = {cur_rec.left, cur_rec.top+1};
+					int iIconPosY = (cur_rec.Height() > 16) ? ((cur_rec.Height() - 16) / 2) : 1;
+					POINT point = {cur_rec.left, cur_rec.top + iIconPosY};
 					imagelist.Draw(dc,image, point, ILD_NORMAL | INDEXTOOVERLAYMASK(nOverlayImage));
 
 					// ==> Mod Icons - Stulle
@@ -654,8 +730,12 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					Sbuffer = CastSecondsToHM((::GetTickCount() - client->GetWaitStartTime())/1000);
 					break;
 				case 8:
-					//if(client->IsBanned())
-					if(client->GetUploadState()==US_BANNED) //Xman Code Improvement
+					//Xman Code Improvement
+					/*
+					if(client->IsBanned())
+					*/
+					if(client->GetUploadState()==US_BANNED)
+					//Xman end
 						Sbuffer = GetResString(IDS_YES);
 					else
 						Sbuffer = GetResString(IDS_NO);
@@ -785,7 +865,9 @@ void CQueueListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	ClientMenu.SetDefaultItem(MP_DETAIL);
 	//Xman friendhandling
 	ClientMenu.AppendMenu(MF_SEPARATOR); 
+	//Xman end
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && !client->IsFriend()) ? MF_ENABLED : MF_GRAYED), MP_ADDFRIEND, GetResString(IDS_ADDFRIEND), _T("ADDFRIEND"));
+	//Xman friendhandling
 	ClientMenu.AppendMenu(MF_STRING | (client && client->IsFriend() ? MF_ENABLED : MF_GRAYED), MP_REMOVEFRIEND, GetResString(IDS_REMOVEFRIEND), _T("DELETEFRIEND"));
 	ClientMenu.AppendMenu(MF_STRING | (client && client->IsFriend() ? MF_ENABLED : MF_GRAYED), MP_FRIENDSLOT, GetResString(IDS_FRIENDSLOT), _T("FRIENDSLOT"));
 	ClientMenu.CheckMenuItem(MP_FRIENDSLOT, (client && client->GetFriendSlot()) ? MF_CHECKED : MF_UNCHECKED);
@@ -794,7 +876,8 @@ void CQueueListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient()) ? MF_ENABLED : MF_GRAYED), MP_MESSAGE, GetResString(IDS_SEND_MSG), _T("SENDMESSAGE"));
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && client->GetViewSharedFilesSupport()) ? MF_ENABLED : MF_GRAYED), MP_SHOWLIST, GetResString(IDS_VIEWFILES), _T("VIEWFILES"));
-	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && client->IsBanned()) ? MF_ENABLED : MF_GRAYED), MP_UNBAN, GetResString(IDS_UNBAN));
+	if (thePrefs.IsExtControlsEnabled())
+		ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && client->IsBanned()) ? MF_ENABLED : MF_GRAYED), MP_UNBAN, GetResString(IDS_UNBAN));
 	if (Kademlia::CKademlia::IsRunning() && !Kademlia::CKademlia::IsConnected())
 		ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && client->GetKadPort()!=0) ? MF_ENABLED : MF_GRAYED), MP_BOOT, GetResString(IDS_BOOTSTRAP));
 	ClientMenu.AppendMenu(MF_STRING | (GetItemCount() > 0 ? MF_ENABLED : MF_GRAYED), MP_FIND, GetResString(IDS_FIND), _T("Search"));
@@ -1163,6 +1246,8 @@ int CQueueListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 		iResult= SortProc(lParam1, lParam2, dwNextSort);
 	}
 	*/
+	// SLUGFILLER: multiSort remove - handled in parent class
+
 	return iResult;
 
 }
@@ -1178,13 +1263,17 @@ void CQueueListCtrl::UpdateAll()
 		SortItems(SortProc, GetSortItem() + (GetSortAscending() ? 0:100));
 	}
 }
+//Xman end
 
 // Barry - Refresh the queue every 10 secs
 void CALLBACK CQueueListCtrl::QueueUpdateTimer(HWND /*hwnd*/, UINT /*uiMsg*/, UINT /*idEvent*/, DWORD /*dwTime*/)
 {
 	// NOTE: Always handle all type of MFC exceptions in TimerProcs - otherwise we'll get mem leaks
 	//Xman unreachable
-	//try
+	/*
+	try
+	*/
+	//Xman end
 	{
 		if (   !theApp.emuledlg->IsRunning() // Don't do anything if the app is shutting down - can cause unhandled exceptions
 			|| !thePrefs.GetUpdateQueueList()
@@ -1193,6 +1282,14 @@ void CALLBACK CQueueListCtrl::QueueUpdateTimer(HWND /*hwnd*/, UINT /*uiMsg*/, UI
 			return;
 
 		//Xman faster Updating of Queuelist
+		/*
+		const CUpDownClient* update = theApp.uploadqueue->GetNextClient(NULL);
+		while( update )
+		{
+			theApp.emuledlg->transferwnd->queuelistctrl.RefreshClient(update);
+			update = theApp.uploadqueue->GetNextClient(update);
+		}
+		*/
 		if (theApp.emuledlg->transferwnd->queuelistctrl.GetItemCount()>1)
 		{
 
@@ -1203,17 +1300,9 @@ void CALLBACK CQueueListCtrl::QueueUpdateTimer(HWND /*hwnd*/, UINT /*uiMsg*/, UI
 	//Xman unreachable
 	/*
 	CATCH_DFLT_EXCEPTIONS(_T("CQueueListCtrl::QueueUpdateTimer"))
-		// Maella -Code Improvement-
-		// Remark: The macro CATCH_DFLT_EXCEPTIONS will not catch all types of exception.
-		//         The exceptions thrown in callback function are not intercepted by the dbghelp.dll (e.g. eMule Dump, crashRpt, etc...)
-		catch(...) {
-			if(theApp.emuledlg != NULL)
-				AddLogLine(true, _T("Unknown exception in %s"), __FUNCTION__);
-		}
-		// Maella end
 	*/
+	//Xman end
 }
-//Xman end
 
 void CQueueListCtrl::ShowQueueClients()
 {

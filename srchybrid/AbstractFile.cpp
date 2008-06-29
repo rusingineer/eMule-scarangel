@@ -1,6 +1,6 @@
 // parts of this file are based on work from pan One (http://home-3.tiscali.nl/~meost/pms/)
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -46,8 +46,10 @@ CAbstractFile::CAbstractFile()
 	m_bKadCommentSearchRunning = false;
 	//Xman Code Improvement for choosing to use compression
 	compressible=false;
+	//Xman end
 	//Xman Code Improvement for HasCollectionExtention
 	m_bhasCollectionExtention=false;
+	//Xman end
 }
 
 CAbstractFile::CAbstractFile(const CAbstractFile* pAbstractFile)
@@ -65,8 +67,10 @@ CAbstractFile::CAbstractFile(const CAbstractFile* pAbstractFile)
 
 	//Xman Code Improvement for choosing to use compression
 	compressible=pAbstractFile->IsCompressible();
+	//Xman end
 	//Xman Code Improvement for HasCollectionExtention
 	m_bhasCollectionExtention=pAbstractFile->HasCollectionExtenesion_Xtreme();
+	//Xman end
 
 
 	const CTypedPtrList<CPtrList, Kademlia::CEntry*>& list = pAbstractFile->getNotes();
@@ -178,7 +182,7 @@ void CAbstractFile::AddTagUnique(CTag* pTag)
 	taglist.Add(pTag);
 }
 
-void CAbstractFile::SetFileName(LPCTSTR pszFileName, bool bReplaceInvalidFileSystemChars, bool bAutoSetFileType)
+void CAbstractFile::SetFileName(LPCTSTR pszFileName, bool bReplaceInvalidFileSystemChars, bool bAutoSetFileType, bool bRemoveControlChars)
 { 
 	m_strFileName = pszFileName;
 	if (bReplaceInvalidFileSystemChars){
@@ -194,6 +198,14 @@ void CAbstractFile::SetFileName(LPCTSTR pszFileName, bool bReplaceInvalidFileSys
 	}
 	if (bAutoSetFileType)
 		SetFileType(GetFileTypeByName(m_strFileName));
+
+	if (bRemoveControlChars){
+		for (int i = 0; i < m_strFileName.GetLength(); )
+			if (m_strFileName.GetAt(i) <= '\x1F')
+				m_strFileName.Delete(i);
+			else
+				i++;
+	}
 
 	//Xman Code Improvement for choosing to use compression
 	// Check extension
@@ -440,3 +452,34 @@ void CAbstractFile::SetKadCommentSearchRunning(bool bVal){
 	}
 }
 
+void CAbstractFile::RefilterKadNotes(bool bUpdate){
+	// check all availabe comments against our filter again
+	if (thePrefs.GetCommentFilter().IsEmpty())
+		return;
+	POSITION pos1, pos2;
+	for (pos1 = m_kadNotes.GetHeadPosition();( pos2 = pos1 ) != NULL;)
+	{
+		m_kadNotes.GetNext(pos1);
+		Kademlia::CEntry* entry = m_kadNotes.GetAt(pos2);
+		if (!entry->GetStrTagValue(TAG_DESCRIPTION).IsEmpty()){
+			CString strCommentLower(entry->GetStrTagValue(TAG_DESCRIPTION));
+			strCommentLower.MakeLower();
+
+			int iPos = 0;
+			CString strFilter(thePrefs.GetCommentFilter().Tokenize(_T("|"), iPos));
+			while (!strFilter.IsEmpty())
+			{
+				// comment filters are already in lowercase, compare with temp. lowercased received comment
+				if (strCommentLower.Find(strFilter) >= 0)
+				{
+					m_kadNotes.RemoveAt(pos2);
+					delete entry;
+					break;
+				}
+				strFilter = thePrefs.GetCommentFilter().Tokenize(_T("|"), iPos);
+			}		
+		}
+	}
+	if (bUpdate) // untill updated rating and m_bHasComment might be wrong
+		UpdateFileRatingCommentAvail();
+}

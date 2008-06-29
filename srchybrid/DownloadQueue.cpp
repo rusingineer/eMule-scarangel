@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -16,7 +16,6 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "stdafx.h"
 #include <io.h>
-
 #include "emule.h"
 #include "DownloadQueue.h"
 #include "UpDownClient.h"
@@ -43,6 +42,7 @@
 //Xman
 #include "BandWidthControl.h"
 #include "ListenSocket.h"
+//Xman end
 
 #include ".\MiniMule\SystemInfo.h" // CPU/MEM usage [$ick$/Stulle] - Max 
 #include "UploadQueue.h" // Do not restrict download if no upload possible [Stulle] - Stulle
@@ -58,15 +58,24 @@ DWORD quicktime; // Quick start [TPT] - Max
 CDownloadQueue::CDownloadQueue()
 {
 	filesrdy = 0;
-	//datarate = 0;
+	//Xman
+	/*
+	datarate = 0;
+	*/
+	//Xman end
 	cur_udpserver = 0;
 	lastfile = 0;
-	lastcheckdiskspacetime = 0;	// SLUGFILLER: checkDiskspace
+	lastcheckdiskspacetime = 0;
 	lastudpsearchtime = 0;
 	lastudpstattime = 0;
 	SetLastKademliaFileRequest();
 	udcounter = 0;
 	m_iSearchedServers = 0;
+	//Xman
+	/*
+	m_datarateMS=0;
+	*/
+	//Xman end
 	m_nUDPFileReasks = 0;
 	m_nFailedUDPFileReasks = 0;
 	m_dwNextTCPSrcReq = 0;
@@ -93,7 +102,11 @@ CDownloadQueue::CDownloadQueue()
 	m_uGlobsources=0;
 	m_limitstate=0;
 
-    //m_dwLastA4AFtime = 0; // ZZ:DownloadManager
+	//Xman
+	/*
+    m_dwLastA4AFtime = 0; // ZZ:DownloadManager
+	*/
+	//Xman end
 
 	// ==> Quick start [TPT] - Max
 	quickflag = 0;
@@ -532,7 +545,7 @@ void CDownloadQueue::AddDownload(CPartFile* newfile,bool paused) {
 
 	filelist.AddTail(newfile);
 	SortByPriority();
-	CheckDiskspace();	// SLUGFILLER: checkDiskspace
+	CheckDiskspace();
 	theApp.emuledlg->transferwnd->downloadlistctrl.AddFile(newfile);
 	AddLogLine(true, GetResString(IDS_NEWDOWNLOAD), newfile->GetFileName());
 	CString msgTemp;
@@ -562,12 +575,82 @@ bool CDownloadQueue::IsFileExisting(const uchar* fileid, bool bLogWarnings) cons
 }
 
 //Xman Xtreme Mod
+/*
+void CDownloadQueue::Process(){
+	
+	ProcessLocalRequests(); // send src requests to local server
+
+	uint32 downspeed = 0;
+    uint64 maxDownload = thePrefs.GetMaxDownloadInBytesPerSec(true);
+	if (maxDownload != UNLIMITED*1024 && datarate > 1500){
+		downspeed = (UINT)((maxDownload*100)/(datarate+1));
+		if (downspeed < 50)
+			downspeed = 50;
+		else if (downspeed > 200)
+			downspeed = 200;
+	}
+
+	while(avarage_dr_list.GetCount()>0 && (GetTickCount() - avarage_dr_list.GetHead().timestamp > 10*1000) )
+		m_datarateMS-=avarage_dr_list.RemoveHead().datalen;
+	
+	if (avarage_dr_list.GetCount()>1){
+		datarate = (UINT)(m_datarateMS / avarage_dr_list.GetCount());
+	} else {
+		datarate = 0;
+	}
+
+	uint32 datarateX=0;
+	udcounter++;
+
+	//filelist is already sorted by prio, therefore I removed all the extra loops..
+	for (POSITION pos = filelist.GetHeadPosition();pos != 0;){
+		CPartFile* cur_file = filelist.GetNext(pos);
+		if (cur_file->GetStatus() == PS_READY || cur_file->GetStatus() == PS_EMPTY){
+			datarateX += cur_file->Process(downspeed, udcounter);
+		}
+		else{
+			//This will make sure we don't keep old sources to paused and stoped files..
+			cur_file->StopPausedFile();
+		}
+	}
+
+	TransferredData newitem = {datarateX, ::GetTickCount()};
+	avarage_dr_list.AddTail(newitem);
+	m_datarateMS+=datarateX;
+
+	if (udcounter == 5){
+		if (theApp.serverconnect->IsUDPSocketAvailable()){
+		    if((!lastudpstattime) || (::GetTickCount() - lastudpstattime) > UDPSERVERSTATTIME){
+			    lastudpstattime = ::GetTickCount();
+			    theApp.serverlist->ServerStats();
+		    }
+	    }
+	}
+
+	if (udcounter == 10){
+		udcounter = 0;
+		if (theApp.serverconnect->IsUDPSocketAvailable()){
+			if ((!lastudpsearchtime) || (::GetTickCount() - lastudpsearchtime) > UDPSERVERREASKTIME)
+				SendNextUDPPacket();
+		}
+	}
+
+	CheckDiskspaceTimed();
+
+// ZZ:DownloadManager -->
+    if((!m_dwLastA4AFtime) || (::GetTickCount() - m_dwLastA4AFtime) > MIN2MS(8)) {
+        theApp.clientlist->ProcessA4AFClients();
+        m_dwLastA4AFtime = ::GetTickCount();
+    }
+// <-- ZZ:DownloadManager
+}
+*/
 void CDownloadQueue::Process(){
 	// ==> Global Source Limit [Max/Stulle] - Stulle
 	if( thePrefs.IsUseGlobalHL() && (::GetTickCount() - m_dwUpdateHL) >= m_dwUpdateHlTime )
 		SetHardLimits();
 	// <== Global Source Limit [Max/Stulle] - Stulle
-	
+
 	ProcessLocalRequests(); // send src requests to local server
 
 	// ==> Quick start [TPT] - Max
@@ -886,6 +969,7 @@ uint16 CDownloadQueue::GetTooManyConnections(bool recalc)
 
 	return m_toomanyconnections;
 }
+//Xman end
 
 CPartFile* CDownloadQueue::GetFileByIndex(int index) const
 {
@@ -916,6 +1000,7 @@ CPartFile* CDownloadQueue::GetFileByKadFileSearchID(uint32 id) const
 	}
 	return NULL;
 }
+
 bool CDownloadQueue::IsPartFile(const CKnownFile* file) const
 {
 	for (POSITION pos = filelist.GetHeadPosition(); pos != 0; )
@@ -943,8 +1028,6 @@ bool CDownloadQueue::IsTempFile(const CString& , const CString& rstrName) const
 }
 // END SLUGFILLER: SafeHash
 
-
-//Xman Xtreme Downloadmanager
 bool CDownloadQueue::CheckAndAddSource(CPartFile* sender,CUpDownClient* source){
 	if (sender->IsStopped()){
 		delete source;
@@ -998,9 +1081,12 @@ bool CDownloadQueue::CheckAndAddSource(CPartFile* sender,CUpDownClient* source){
 					theApp.emuledlg->transferwnd->downloadlistctrl.AddSource(sender,cur_client,true);
 					delete source;
                     //Xman remark: this is done in filerequest
-					//if(cur_client->GetDownloadState() != DS_CONNECTED) {
-                    //    cur_client->SwapToAnotherFile(_T("New A4AF source found. CDownloadQueue::CheckAndAddSource()"), false, false, false, NULL, true, false); // ZZ:DownloadManager
-                    //}
+                    /*
+					if(cur_client->GetDownloadState() != DS_CONNECTED) {
+                        cur_client->SwapToAnotherFile(_T("New A4AF source found. CDownloadQueue::CheckAndAddSource()"), false, false, false, NULL, true, false); // ZZ:DownloadManager
+                    }
+                    */
+                    //Xman end
 					return false;
 				}
 				else{
@@ -1033,6 +1119,7 @@ bool CDownloadQueue::CheckAndAddSource(CPartFile* sender,CUpDownClient* source){
 			//AddDebugLogLine(false, _T("-o- rejected dropped client %s, %s reentering downloadqueue after time: %u min"), source->GetClientVerString(), source->GetUserName(), (::GetTickCount()-source->droptime)/60000);
 			return false;
 		}
+		//Xman end
 
 		source->SetRequestFile(sender);
 	}
@@ -1049,10 +1136,12 @@ bool CDownloadQueue::CheckAndAddSource(CPartFile* sender,CUpDownClient* source){
 	}
 #endif
 
+	//Xman Xtreme Downloadmanager
 	//if(source->droptime>0)
 		//AddDebugLogLine(false, _T("-o- dropped client %s, %s reentered downloadqueue after time: %u min"), source->GetClientVerString(), source->GetUserName(), (::GetTickCount()-source->droptime)/60000);
 	source->droptime=0;
 	source->enterqueuetime=0;
+	//Xman end
 
 	sender->srclist.AddTail(source);
 	theApp.emuledlg->transferwnd->downloadlistctrl.AddSource(sender,source,false);
@@ -1077,10 +1166,15 @@ bool CDownloadQueue::CheckAndAddKnownSource(CPartFile* sender,CUpDownClient* sou
 		//AddDebugLogLine(false, _T("-o- rejected known dropped client %s, %s reentering downloadqueue after time: %u min"), source->GetClientVerString(), source->GetUserName(), (::GetTickCount()-source->droptime)/60000);
 		return false;
 	}
-
+	//Xman end
 
 	// filter sources which are known to be temporarily dead/useless
+	//Xman
+	/*
+	if ( (theApp.clientlist->m_globDeadSourceList.IsDeadSource(source) && !bIgnoreGlobDeadList) || sender->m_DeadSourceList.IsDeadSource(source)){
+	*/
 	if ( (!bIgnoreGlobDeadList && theApp.clientlist->m_globDeadSourceList.IsDeadSource(source)) || sender->m_DeadSourceList.IsDeadSource(source)){
+	//Xman end
 		//if (thePrefs.GetLogFilteredIPs())
 		//	AddDebugLogLine(DLP_DEFAULT, false, _T("Rejected source because it was found on the DeadSourcesList (%s) for file %s : %s")
 		//	,sender->m_DeadSourceList.IsDeadSource(source)? _T("Local") : _T("Global"), sender->GetFileName(), source->DbgGetClientInfo() );
@@ -1120,9 +1214,13 @@ bool CDownloadQueue::CheckAndAddKnownSource(CPartFile* sender,CUpDownClient* sou
 				return false;
 			if (source->AddRequestForAnotherFile(sender))
 				theApp.emuledlg->transferwnd->downloadlistctrl.AddSource(sender,source,true);
-                //if(source->GetDownloadState() != DS_CONNECTED) {
-                //    source->SwapToAnotherFile(_T("New A4AF source found. CDownloadQueue::CheckAndAddKnownSource()"), false, false, false, NULL, true, false); // ZZ:DownloadManager
-                //}
+                //Xman
+                /*
+                if(source->GetDownloadState() != DS_CONNECTED) {
+                    source->SwapToAnotherFile(_T("New A4AF source found. CDownloadQueue::CheckAndAddKnownSource()"), false, false, false, NULL, true, false); // ZZ:DownloadManager
+                }
+                */
+                //Xman end
 			return false;
 		}
 	}
@@ -1151,10 +1249,12 @@ bool CDownloadQueue::CheckAndAddKnownSource(CPartFile* sender,CUpDownClient* sou
 	}
 #endif
 
+	//Xman Xtreme Downloadmanager
 	//if(source->droptime>0)
 		//AddDebugLogLine(false, _T("-o- known dropped client %s, %s reentered downloadqueue after time: %u min"), source->GetClientVerString(), source->GetUserName(), (::GetTickCount()-source->droptime)/60000);
 	source->droptime=0;
 	source->enterqueuetime=0;
+	//Xman end
 
 	theApp.emuledlg->transferwnd->downloadlistctrl.AddSource(sender,source,false);
 	//UpdateDisplayedInfo();
@@ -1171,8 +1271,23 @@ bool CDownloadQueue::CheckAndAddKnownSource(CPartFile* sender,CUpDownClient* sou
 
 bool CDownloadQueue::RemoveSource(CUpDownClient* toremove, bool bDoStatsUpdate)
 {
-	//Xman Code Improvement
 	bool bRemovedSrcFromPartFile = false;
+	//Xman Code Improvement
+	/*
+	for (POSITION pos = filelist.GetHeadPosition();pos != 0;){
+		CPartFile* cur_file = filelist.GetNext(pos);
+		for (POSITION pos2 = cur_file->srclist.GetHeadPosition();pos2 != 0; cur_file->srclist.GetNext(pos2)){
+			if (toremove == cur_file->srclist.GetAt(pos2)){
+				cur_file->srclist.RemoveAt(pos2);
+				bRemovedSrcFromPartFile = true;
+				if ( bDoStatsUpdate ){
+					cur_file->RemoveDownloadingSource(toremove);
+					cur_file->UpdatePartsInfo();
+				}
+				break;
+			}
+		}
+	*/
 	for (POSITION pos = filelist.GetHeadPosition();pos != NULL;){
 		CPartFile* cur_file = filelist.GetNext(pos);
 		POSITION pos2 = cur_file->srclist.Find(toremove);
@@ -1186,11 +1301,11 @@ bool CDownloadQueue::RemoveSource(CUpDownClient* toremove, bool bDoStatsUpdate)
 				cur_file->UpdatePartsInfo();
 			}
 		}
+	//Xman end
 
 		if ( bDoStatsUpdate )
 			cur_file->UpdateAvailablePartsCount();
 	}
-	//Xman end
 	
 	// remove this source on all files in the downloadqueue who link this source
 	// pretty slow but no way arround, maybe using a Map is better, but that's slower on other parts
@@ -1246,6 +1361,14 @@ void CDownloadQueue::RemoveFile(CPartFile* toremove)
 
 	//Xman
 	// Maella -Code Improvement-
+	/*
+	for (POSITION pos = filelist.GetHeadPosition();pos != 0;filelist.GetNext(pos)){
+		if (toremove == filelist.GetAt(pos)){
+			filelist.RemoveAt(pos);
+			break;
+		}
+	}
+	*/
 	POSITION pos = filelist.Find(toremove);
 	if (pos != NULL){
 		ASSERT(filelist.GetAt(pos)->srclist.IsEmpty());
@@ -1255,7 +1378,7 @@ void CDownloadQueue::RemoveFile(CPartFile* toremove)
 	// Maella end
 
 	SortByPriority();
-	CheckDiskspace();	// SLUGFILLER: checkDiskspace
+	CheckDiskspace();
 	ExportPartMetFilesOverview();
 }
 
@@ -1519,7 +1642,6 @@ void CDownloadQueue::StopUDPRequests()
 	m_iSearchedServers = 0;
 }
 
-// SLUGFILLER: checkDiskspace
 bool CDownloadQueue::CompareParts(POSITION pos1, POSITION pos2){
 	CPartFile* file1 = filelist.GetAt(pos1);
 	CPartFile* file2 = filelist.GetAt(pos2);
@@ -1680,7 +1802,6 @@ void CDownloadQueue::CheckDiskspace(bool bNotEnoughSpaceLeft)
 		}
 	}
 }
-// SLUGFILLER: checkDiskspace
 
 void CDownloadQueue::GetDownloadSourcesStats(SDownloadStats& results)
 {
@@ -1836,7 +1957,7 @@ void CDownloadQueue::RemoveAutoPrioInCat(UINT cat, uint8 newprio){
 	}
 
     theApp.downloadqueue->SortByPriority();
-	theApp.downloadqueue->CheckDiskspaceTimed(); // SLUGFILLER: checkDiskspace
+	theApp.downloadqueue->CheckDiskspaceTimed();
 }
 // <-- ZZ:DownloadManager
 
@@ -1892,7 +2013,7 @@ void CDownloadQueue::SetCatStatus(UINT cat, int newstatus)
 
     if(resort) {
 	    theApp.downloadqueue->SortByPriority();
-	    theApp.downloadqueue->CheckDiskspace(); // SLUGFILLER: checkDiskspace
+	    theApp.downloadqueue->CheckDiskspace();
     }
 }
 
@@ -2270,12 +2391,18 @@ void CDownloadQueue::KademliaSearchFile(uint32 searchID, const Kademlia::CUInt12
 	if (theApp.ipfilter->IsFiltered(ED2Kip))
 	{
 		if (thePrefs.GetLogFilteredIPs())
-			AddDebugLogLine(false, _T("IPfiltered source IP=%s (%s) received from Kademlia for File: %s"), ipstr(ED2Kip), theApp.ipfilter->GetLastHit(), temp->GetFileName()); //Xman show filename
+			//Xman show filename
+			/*
+			AddDebugLogLine(false, _T("IPfiltered source IP=%s (%s) received from Kademlia"), ipstr(ED2Kip), theApp.ipfilter->GetLastHit());
+			*/
+			AddDebugLogLine(false, _T("IPfiltered source IP=%s (%s) received from Kademlia for File: %s"), ipstr(ED2Kip), theApp.ipfilter->GetLastHit(), temp->GetFileName());
+			//Xman end
 		return;
 	}
 	if( (ip == Kademlia::CKademlia::GetIPAddress() || ED2Kip == theApp.serverconnect->GetClientID()) && tcp == thePrefs.GetPort())
 		return;
 	CUpDownClient* ctemp = NULL; 
+	DEBUG_ONLY( DebugLog(_T("Kadsource received, type %u, IP %s"), type, ipstr(ED2Kip)) );
 	switch( type )
 	{
 	case 4:
@@ -2307,6 +2434,10 @@ void CDownloadQueue::KademliaSearchFile(uint32 searchID, const Kademlia::CUInt12
 	case 3:
 		{
 			//This will be a firewaled client connected to Kad only.
+			// if we are firewalled ourself, the source is useless to us
+			if (theApp.IsFirewalled())
+				break;
+
 			//We set the clientID to 1 as a Kad user only has 1 buddy.
 			ctemp = new CUpDownClient(temp,tcp,1,0,0,false);
 			//The only reason we set the real IP is for when we get a callback
@@ -2322,15 +2453,31 @@ void CDownloadQueue::KademliaSearchFile(uint32 searchID, const Kademlia::CUInt12
 			ctemp->SetBuddyPort(serverport);
 			break;
 		}
+		case 6:
+		{
+			// firewalled source which supports direct udp callback
+			// if we are firewalled ourself, the source is useless to us
+			if (theApp.IsFirewalled())
+				break;
+
+			if ((byCryptOptions & 0x08) == 0){
+				DebugLogWarning(_T("Received Kad source type 6 (direct callback) which has the direct callback flag not set (%s)"), ipstr(ED2Kip));
+				break;
+			}
+			ctemp = new CUpDownClient(temp, tcp, 1, 0, 0, false);
+			ctemp->SetSourceFrom(SF_KADEMLIA);
+			ctemp->SetKadPort(udp);
+			ctemp->SetIP(ED2Kip); // need to set the Ip address, which cannot be used for TCP but for UDP
+			byte cID[16];
+			pcontactID->ToByteArray(cID);
+			ctemp->SetUserHash(cID);
+			pbuddyID->ToByteArray(cID);
+		}
 	}
 
-	if (ctemp != NULL)
-	{
+	if (ctemp != NULL){
 		// add encryption settings
-		ctemp->SetCryptLayerSupport((byCryptOptions & 0x01) != 0);
-		ctemp->SetCryptLayerRequest((byCryptOptions & 0x02) != 0);
-		ctemp->SetCryptLayerRequires((byCryptOptions & 0x04) != 0);
-
+		ctemp->SetConnectOptions(byCryptOptions);
 		CheckAndAddSource(temp, ctemp);
 	}
 }
@@ -2533,6 +2680,13 @@ CString CDownloadQueue::GetOptimalTempDir(UINT nCat, EMFileSize nFileSize){
 	}
 }
 
+void CDownloadQueue::RefilterAllComments(){
+	for (POSITION pos = filelist.GetHeadPosition();pos != 0;){
+		CPartFile* cur_file = filelist.GetNext(pos);
+		cur_file->RefilterFileComments();
+	}
+}
+
 // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 void CDownloadQueue::CompDownloadRate(){
 	// Compute the download datarate of all clients
@@ -2571,7 +2725,6 @@ void CDownloadQueue::PrintStatistic()
 	AddLogLine(false, _T("---------------------------------------"));
 }
 #endif
-
 // ==> file settings - Stulle
 void CDownloadQueue::InitTempVariables(CPartFile* file)
 {

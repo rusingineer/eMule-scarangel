@@ -44,6 +44,7 @@ public:
 	void	Localize();
 	void	ShowSelectedUserDetails();
 	void	StopSingleClient(CUpDownClient* single);  //Xman Xtreme Downloadmanager
+
 protected:
 	CImageList  m_ImageList;
 	CImageList  m_overlayimages;

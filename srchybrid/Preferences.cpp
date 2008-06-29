@@ -201,6 +201,12 @@ int		CPreferences::m_nCurrentUserDirMode = -1;
 int		CPreferences::m_iDbgHeap;
 CString	CPreferences::strNick;
 uint16	CPreferences::minupload;
+//Xman
+/*
+uint16	CPreferences::maxupload;
+uint16	CPreferences::maxdownload;
+*/
+//Xman end
 LPCSTR	CPreferences::m_pszBindAddrA;
 CStringA CPreferences::m_strBindAddrA;
 LPCWSTR	CPreferences::m_pszBindAddrW;
@@ -227,6 +233,7 @@ bool	CPreferences::addnewfilespaused;
 UINT	CPreferences::depth3D;
 bool	CPreferences::m_bEnableMiniMule;
 int		CPreferences::m_iStraightWindowStyles;
+bool	CPreferences::m_bUseSystemFontForMainControls;
 bool	CPreferences::m_bRTLWindowsLayout;
 CString	CPreferences::m_strSkinProfile;
 CString	CPreferences::m_strSkinProfileDir;
@@ -238,6 +245,13 @@ UINT	CPreferences::statsInterval;
 bool	CPreferences::m_bFillGraphs;
 uchar	CPreferences::userhash[16];
 WINDOWPLACEMENT CPreferences::EmuleWindowPlacement;
+//Xman
+/*
+int		CPreferences::maxGraphDownloadRate;
+int		CPreferences::maxGraphUploadRate;
+uint32	CPreferences::maxGraphUploadRateEstimated = 0;
+*/
+//Xman end
 bool	CPreferences::beepOnError;
 bool	CPreferences::m_bIconflashOnNewMessage;
 bool	CPreferences::confirmExit;
@@ -494,6 +508,7 @@ bool	CPreferences::scheduler;
 bool	CPreferences::dontcompressavi;
 bool	CPreferences::msgonlyfriends;
 bool	CPreferences::msgsecure;
+bool	CPreferences::m_bUseChatCaptchas;
 UINT	CPreferences::filterlevel;
 UINT	CPreferences::m_iFileBufferSize;
 UINT	CPreferences::m_iQueueSize;
@@ -562,7 +577,11 @@ int		CPreferences::m_iDynUpPingToleranceMilliseconds;
 bool	CPreferences::m_bDynUpUseMillisecondPingTolerance;
 bool    CPreferences::m_bAllocFull;
 // ZZ:DownloadManager -->
-//bool    CPreferences::m_bA4AFSaveCpu;
+//Xman
+/*
+bool    CPreferences::m_bA4AFSaveCpu;
+*/
+//Xman end
 // ZZ:DownloadManager <--
 bool    CPreferences::m_bHighresTimer;
 CStringList CPreferences::shareddir_list;
@@ -615,6 +634,8 @@ bool	CPreferences::m_bIRCEnableSmileys;
 bool	CPreferences::m_bMessageEnableSmileys;
 
 BOOL	CPreferences::m_bIsRunningAeroGlass;
+bool	CPreferences::m_bPreventStandby;
+bool	CPreferences::m_bStoreSearches;
 
 // ==> Advanced Options [Official/MorphXT] - Stulle
 bool CPreferences::bMiniMuleAutoClose;
@@ -861,6 +882,7 @@ bool	CPreferences::m_bUPnPClearOnClose;
 int     CPreferences::m_iDetectuPnP; //leuk_he autodetect in startup wizard
 DWORD	 CPreferences::m_dwUpnpBindAddr;
 bool     CPreferences::m_bBindAddrIsDhcp;
+bool    CPreferences::m_bUPnPForceUpdate;
 //<== UPnP support [MoNKi] - leuk_he
 
 // ==> Random Ports [MoNKi] - Stulle
@@ -1015,12 +1037,12 @@ void CPreferences::Init()
 					shareddir_list.AddHead(toadd);
 				}
 			}
+			sdirfile->Close();
 		}
 		catch (CFileException* ex) {
 			ASSERT(0);
 			ex->Delete();
 		}
-		sdirfile->Close();
 	}
 	delete sdirfile;
 
@@ -1096,18 +1118,13 @@ void CPreferences::Init()
 		m_sToolbarBitmapFolder = GetDefaultDirectory(EMULE_TOOLBARDIR, true); // will also try to create it if needed;
 	}
 
-	// ==> file settings - Stulle
-	for (int i=0;i<thePrefs.tempdir.GetCount();i++) {
-		CString sSivkaFileSettingsPath = CString(thePrefs.GetTempDir(i)) + _T("\\") + SIVKAFOLDER;
-		if (!PathFileExists(sSivkaFileSettingsPath.GetBuffer()) && !::CreateDirectory(sSivkaFileSettingsPath.GetBuffer(), 0)) {
-			CString strError;
-			strError.Format(_T("Failed to create sivka extra lists directory \"%s\" - %s"), sSivkaFileSettingsPath, GetErrorMessage(GetLastError()));
-			AfxMessageBox(strError, MB_ICONERROR);
-		}
-	}
-	// <== file settings - Stulle
 
-	if (((int*)userhash)[0] == 0 && ((int*)userhash)[1] == 0 && ((int*)userhash)[2] == 0 && ((int*)userhash)[3] == 0) //Xman Bugfix by ilmira
+	//Xman Bugfix by ilmira
+	/*
+	if (((int*)userhash[0]) == 0 && ((int*)userhash[1]) == 0 && ((int*)userhash[2]) == 0 && ((int*)userhash[3]) == 0)
+	*/
+	if (((int*)userhash)[0] == 0 && ((int*)userhash)[1] == 0 && ((int*)userhash)[2] == 0 && ((int*)userhash)[3] == 0)
+	//Xman end
 		CreateUserHash();
 }
 
@@ -1221,6 +1238,25 @@ bool CPreferences::IsConfigFile(const CString& rstrDirectory, const CString& rst
 
 //Xman Xtreme Mod
 // Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+/*
+uint16 CPreferences::GetMaxDownload(){
+    return (uint16)(GetMaxDownloadInBytesPerSec()/1024);
+}
+
+uint64 CPreferences::GetMaxDownloadInBytesPerSec(bool dynamic){
+	//dont be a Lam3r :)
+	UINT maxup;
+	if (dynamic && thePrefs.IsDynUpEnabled() && theApp.uploadqueue->GetWaitingUserCount() != 0 && theApp.uploadqueue->GetDatarate() != 0) {
+		maxup = theApp.uploadqueue->GetDatarate();
+	} else {
+		maxup = GetMaxUpload()*1024;
+	}
+
+	if (maxup < 4*1024)
+		return (((maxup < 10*1024) && ((uint64)maxup*3 < maxdownload*1024)) ? (uint64)maxup*3 : maxdownload*1024);
+	return (((maxup < 10*1024) && ((uint64)maxup*4 < maxdownload*1024)) ? (uint64)maxup*4 : maxdownload*1024);
+}
+*/
 float CPreferences::GetMaxDownload() {
 	//dont be a Lam3r :)
 	const float maxUpload = (GetMaxUpload() >= UNLIMITED) ? GetMaxGraphUploadRate() : GetMaxUpload();
@@ -1260,7 +1296,12 @@ void CPreferences::SaveStats(int bBackUp){
 	// We do NOT SET the values in prefs struct here.
 
     // Save Cum Down Data
-	ini.WriteUInt64(L"TotalDownloadedBytes", theApp.pBandWidthControl->GeteMuleIn()+GetTotalDownloaded()); // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+	//Xman // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+	/*
+	ini.WriteUInt64(L"TotalDownloadedBytes", theStats.sessionReceivedBytes + GetTotalDownloaded());
+	*/
+	ini.WriteUInt64(L"TotalDownloadedBytes", theApp.pBandWidthControl->GeteMuleIn()+GetTotalDownloaded());
+	//Xman end
 	ini.WriteInt(L"DownSuccessfulSessions", cumDownSuccessfulSessions);
 	ini.WriteInt(L"DownFailedSessions", cumDownFailedSessions);
 	ini.WriteInt(L"DownAvgTime", (GetDownC_AvgTime() + GetDownS_AvgTime()) / 2);
@@ -1303,7 +1344,12 @@ void CPreferences::SaveStats(int bBackUp){
 	ini.WriteUInt64(L"DownOverheadKadPackets", theStats.GetDownDataOverheadKadPackets() + GetDownOverheadKadPackets());
 
 	// Save Cumulative Upline Statistics
+	//Xman // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+	/*
+	ini.WriteUInt64(L"TotalUploadedBytes", theStats.sessionSentBytes + GetTotalUploaded());
+	*/
 	ini.WriteUInt64(L"TotalUploadedBytes", theApp.pBandWidthControl->GeteMuleOut()+GetTotalUploaded()); // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+	//Xman end
 	ini.WriteInt(L"UpSuccessfulSessions", theApp.uploadqueue->GetSuccessfullUpCount() + GetUpSuccessfulSessions());
 	ini.WriteInt(L"UpFailedSessions", theApp.uploadqueue->GetFailedUpCount() + GetUpFailedSessions());
 	ini.WriteInt(L"UpAvgTime", (theApp.uploadqueue->GetAverageUpTime() + GetUpAvgTime())/2);
@@ -1354,9 +1400,15 @@ void CPreferences::SaveStats(int bBackUp){
 		eMuleIn, notUsed,
 		eMuleOut, notUsed,
 		notUsed, notUsed);
+	//Xman end
 
 	// Download Rate Average
+	// Xman
+	/*
+	tempRate = theStats.GetAvgDownloadRate(AVG_TOTAL);
+	*/
 	tempRate = theStats.GetSessionAvgDownloadRate();
+	//Xman end
 	ini.WriteFloat(L"ConnAvgDownRate", tempRate);
 	
 	// Max Download Rate Average
@@ -1365,13 +1417,23 @@ void CPreferences::SaveStats(int bBackUp){
 	ini.WriteFloat(L"ConnMaxAvgDownRate", GetConnMaxAvgDownRate());
 	
 	// Max Download Rate
+	// Xman
+	/*
+	tempRate = (float)theApp.downloadqueue->GetDatarate() / 1024;
+	*/
 	tempRate = (float)eMuleIn / 1024.0f;
+	//Xman end
 	if (tempRate > GetConnMaxDownRate())
 		SetConnMaxDownRate(tempRate);
 	ini.WriteFloat(L"ConnMaxDownRate", GetConnMaxDownRate());
 	
 	// Upload Rate Average
+	// Xman
+	/*
+	tempRate = theStats.GetAvgUploadRate(AVG_TOTAL);
+	*/
 	tempRate = theStats.GetSessionAvgUploadRate();
+	//Xman end
 	ini.WriteFloat(L"ConnAvgUpRate", tempRate);
 	
 	// Max Upload Rate Average
@@ -1380,11 +1442,15 @@ void CPreferences::SaveStats(int bBackUp){
 	ini.WriteFloat(L"ConnMaxAvgUpRate", GetConnMaxAvgUpRate());
 	
 	// Max Upload Rate
+	// Xman
+	/*
+	tempRate = (float)theApp.uploadqueue->GetDatarate() / 1024;
+	*/
 	tempRate = (float)eMuleOut / 1024.0f;
+	//Xman end
 	if (tempRate > GetConnMaxUpRate())
 		SetConnMaxUpRate(tempRate);
 	ini.WriteFloat(L"ConnMaxUpRate", GetConnMaxUpRate());
-	//Xman end
 
 	// Overall Run Time
 	ini.WriteInt(L"ConnRunTime", (UINT)((GetTickCount() - theStats.starttime)/1000 + GetConnRunTime()));
@@ -2063,6 +2129,10 @@ void CPreferences::SavePreferences()
     ini.WriteInt(L"MinUpload", minupload);
 	//Xman
 	// Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+	/*
+	ini.WriteInt(L"MaxUpload",maxupload);
+	ini.WriteInt(L"MaxDownload",maxdownload);
+	*/
 	ini.WriteFloat(L"MaxUpload", maxupload);
 	ini.WriteFloat(L"MaxDownload", maxdownload);
 	ini.WriteFloat(L"DownloadCapacity", maxGraphDownloadRate);
@@ -2081,13 +2151,26 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(L"StatGraphsInterval",trafficOMeterInterval);
 	ini.WriteInt(L"StatsInterval",statsInterval);
 	ini.WriteBool(L"StatsFillGraphs",m_bFillGraphs);
+	//Xman
+	// Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+	/*
+	ini.WriteInt(L"DownloadCapacity",maxGraphDownloadRate);
+	ini.WriteInt(L"UploadCapacityNew",maxGraphUploadRate);
+	*/
+	// Maella end
 	ini.WriteInt(L"DeadServerRetry",m_uDeadServerRetries);
 	ini.WriteInt(L"ServerKeepAliveTimeout",m_dwServerKeepAliveTimeout);
 	ini.WriteInt(L"SplitterbarPosition",splitterbarPosition+2);
 	ini.WriteInt(L"SplitterbarPositionServer",splitterbarPositionSvr);
 	ini.WriteInt(L"SplitterbarPositionStat",splitterbarPositionStat+1);
-	ini.WriteInt(L"SplitterbarPositionStat_HL",splitterbarPositionStat_HL); //Xman BlueSonicBoy-Stats-Fix
-	ini.WriteInt(L"SplitterbarPositionStat_HR",splitterbarPositionStat_HR); //Xman BlueSonicBoy-Stats-Fix
+	//Xman BlueSonicBoy-Stats-Fix
+	/*
+	ini.WriteInt(L"SplitterbarPositionStat_HL",splitterbarPositionStat_HL+1);
+	ini.WriteInt(L"SplitterbarPositionStat_HR",splitterbarPositionStat_HR+1);
+	*/
+	ini.WriteInt(L"SplitterbarPositionStat_HL",splitterbarPositionStat_HL);
+	ini.WriteInt(L"SplitterbarPositionStat_HR",splitterbarPositionStat_HR);
+	//Xman end
 	ini.WriteInt(L"SplitterbarPositionFriend",splitterbarPositionFriend);
 	ini.WriteInt(L"SplitterbarPositionIRC",splitterbarPositionIRC);
 	ini.WriteInt(L"SplitterbarPositionShared",splitterbarPositionShared);
@@ -2106,6 +2189,8 @@ void CPreferences::SavePreferences()
 		ini.WriteBool(L"MinToTray_Aero",mintotray);
 	else
 		ini.WriteBool(L"MinToTray",mintotray);
+	ini.WriteBool(L"PreventStandby", m_bPreventStandby);
+	ini.WriteBool(L"StoreSearches", m_bStoreSearches);
 	ini.WriteBool(L"AddServersFromServer",m_bAddServersFromServer);
 	ini.WriteBool(L"AddServersFromClient",m_bAddServersFromClients);
 	ini.WriteBool(L"Splashscreen",splashscreen);
@@ -2237,6 +2322,7 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(L"EnableScheduler",scheduler);
 	ini.WriteBool(L"MessagesFromFriendsOnly",msgonlyfriends);
 	ini.WriteBool(L"MessageFromValidSourcesOnly",msgsecure);
+	ini.WriteBool(L"MessageUseCaptchas", m_bUseChatCaptchas);
 	ini.WriteBool(L"ShowInfoOnCatTabs",showCatTabInfos);
 	ini.WriteBool(L"DontRecreateStatGraphsOnResize",dontRecreateGraphs);
 	ini.WriteBool(L"AutoFilenameCleanup",autofilenamecleanup);
@@ -2284,7 +2370,11 @@ void CPreferences::SavePreferences()
     ini.WriteInt(L"USSNumberOfPings", m_iDynUpNumberOfPings);
 	// ZZ:UploadSpeedSense <--
 
-    //ini.WriteBool(L"A4AFSaveCpu", m_bA4AFSaveCpu); // ZZ:DownloadManager
+	//Xman
+	/*
+    ini.WriteBool(L"A4AFSaveCpu", m_bA4AFSaveCpu); // ZZ:DownloadManager
+	*/
+	//Xman end
     ini.WriteBool(L"HighresTimer", m_bHighresTimer);
 	ini.WriteInt(L"WebMirrorAlertLevel", m_nWebMirrorAlertLevel);
 	ini.WriteBool(L"RunAsUnprivilegedUser", m_bRunAsUser);
@@ -2369,7 +2459,7 @@ void CPreferences::SavePreferences()
 	//
 	ini.WriteInt(L"LastSearch", m_uPeerCacheLastSearch, L"PeerCache");
 	ini.WriteBool(L"Found", m_bPeerCacheWasFound);
-	ini.WriteBool(L"Enabled", m_bPeerCacheEnabled);
+	ini.WriteBool(L"EnabledDeprecated", m_bPeerCacheEnabled);
 	ini.WriteInt(L"PCPort", m_nPeerCachePort);
 
 	///////////////////////////////////////////////////////////////////////////
@@ -2729,6 +2819,7 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("UPnPDetect"), m_iDetectuPnP);
 	ini.WriteString(L"UpnpBindAddr", ipstr(htonl(GetUpnpBindAddr())));
 	ini.WriteBool(L"UpnpBindAddrDhcp",GetUpnpBindDhcp());
+	ini.WriteBool(_T("UPnPForceUpdate"), m_bUPnPForceUpdate);
 	//<== UPnP support [MoNKi] - leuk_he
 
 	// ==> Random Ports [MoNKi] - Stulle
@@ -3021,6 +3112,36 @@ void CPreferences::LoadPreferences()
 
 
 	//Xman Xtreme Upload
+	/*
+	maxGraphDownloadRate=ini.GetInt(L"DownloadCapacity",96);
+	if (maxGraphDownloadRate==0)
+		maxGraphDownloadRate=96;
+	
+	maxGraphUploadRate = ini.GetInt(L"UploadCapacityNew",-1);
+	if (maxGraphUploadRate == 0)
+		maxGraphUploadRate = UNLIMITED;
+	else if (maxGraphUploadRate == -1){
+		// converting value from prior versions
+		int nOldUploadCapacity = ini.GetInt(L"UploadCapacity", 16);
+		if (nOldUploadCapacity == 16 && ini.GetInt(L"MaxUpload",12) == 12){
+			// either this is a complete new install, or the prior version used the default value
+			// in both cases, set the new default values to unlimited
+			maxGraphUploadRate = UNLIMITED;
+			ini.WriteInt(L"MaxUpload",UNLIMITED, L"eMule");
+		}
+		else
+			maxGraphUploadRate = nOldUploadCapacity; // use old custoum value
+	}
+
+	minupload=(uint16)ini.GetInt(L"MinUpload", 1);
+	maxupload=(uint16)ini.GetInt(L"MaxUpload",UNLIMITED);
+	if (maxupload > maxGraphUploadRate && maxupload != UNLIMITED)
+		maxupload = (uint16)(maxGraphUploadRate * .8);
+	
+	maxdownload=(uint16)ini.GetInt(L"MaxDownload", UNLIMITED);
+	if (maxdownload > maxGraphDownloadRate && maxdownload != UNLIMITED)
+		maxdownload = (uint16)(maxGraphDownloadRate * .8);
+	*/
 	maxGraphDownloadRate=ini.GetFloat(L"DownloadCapacity",96); // Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 	if (maxGraphDownloadRate==0) maxGraphDownloadRate=96;
 	maxGraphUploadRate=ini.GetFloat(L"UploadCapacity",16);// Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
@@ -3094,6 +3215,11 @@ void CPreferences::LoadPreferences()
 
 	nServerUDPPort = (uint16)ini.GetInt(L"ServerUDPPort", -1); // 0 = Don't use UDP port for servers, -1 = use a random port (for backward compatibility)
 	maxsourceperfile=ini.GetInt(L"MaxSourcesPerFile",400 );
+	// [MoNKi: -FIX: ini.GetFloat needs Language- ]
+	/*
+	m_wLanguageID=ini.GetWORD(L"Language",0);
+	*/
+	//Xman end
 	m_iSeeShares=(EViewSharedFilesAccess)ini.GetInt(L"SeeShare",vsfaNobody);
 	m_iToolDelayTime=ini.GetInt(L"ToolTipDelay",1);
 	trafficOMeterInterval=ini.GetInt(L"StatGraphsInterval",5); //Xman
@@ -3144,7 +3270,9 @@ void CPreferences::LoadPreferences()
 	else
 		mintotray=ini.GetBool(L"MinToTray", false);
 
-	m_bAddServersFromServer=ini.GetBool(L"AddServersFromServer",false); //Xman
+	m_bPreventStandby = ini.GetBool(L"PreventStandby", false);
+	m_bStoreSearches = ini.GetBool(L"StoreSearches", true);
+	m_bAddServersFromServer=ini.GetBool(L"AddServersFromServer",false);
 	m_bAddServersFromClients=ini.GetBool(L"AddServersFromClient",false);
 	splashscreen=ini.GetBool(L"Splashscreen",true);
 	bringtoforeground=ini.GetBool(L"BringToFront",true);
@@ -3229,7 +3357,7 @@ void CPreferences::LoadPreferences()
 	if (iMaxLogBuff  < 64*1024)  iMaxLogBuff =  64*1024;
 	if (iMaxLogBuff  > 512*1024) iMaxLogBuff =512*1024;
 	// <== Advanced Options [Official/MorphXT] - Stulle
-	m_iLogFileFormat = (ELogFileFormat)ini.GetInt(L"LogFileFormat", Unicode, 0);
+	m_iLogFileFormat = (ELogFileFormat)ini.GetInt(L"LogFileFormat", Unicode, 0); //Xman
 	m_bEnableVerboseOptions=ini.GetBool(L"VerboseOptions", true);
 	if (m_bEnableVerboseOptions)
 	{
@@ -3331,6 +3459,7 @@ void CPreferences::LoadPreferences()
 	scheduler=ini.GetBool(L"EnableScheduler",false);
 	msgonlyfriends=ini.GetBool(L"MessagesFromFriendsOnly",false);
 	msgsecure=ini.GetBool(L"MessageFromValidSourcesOnly",true);
+	m_bUseChatCaptchas = ini.GetBool(L"MessageUseCaptchas", true);
 	autofilenamecleanup=ini.GetBool(L"AutoFilenameCleanup",false);
 	m_bUseAutocompl=ini.GetBool(L"UseAutocompletion",true);
 	m_bShowDwlPercentage=ini.GetBool(L"ShowDwlPercentage",false);
@@ -3364,7 +3493,7 @@ void CPreferences::LoadPreferences()
 		ff.Close();
 	}
 
-	messageFilter=ini.GetStringLong(L"MessageFilter",L"Your client has an infinite queue|Your client is connecting too fast|fastest download speed");
+	messageFilter=ini.GetStringLong(L"MessageFilter",L"fastest download speed|fastest eMule");
 	commentFilter = ini.GetStringLong(L"CommentFilter",L"http://|https://|ftp://|www.|ftp.");
 	commentFilter.MakeLower();
 	filenameCleanups=ini.GetStringLong(L"FilenameCleanups",L"http|www.|.com|.de|.org|.net|shared|powered|sponsored|sharelive|filedonkey|");
@@ -3388,6 +3517,7 @@ void CPreferences::LoadPreferences()
 	m_bReBarToolbar = ini.GetBool(L"ReBarToolbar", 1);
 	m_sizToolbarIconSize.cx = m_sizToolbarIconSize.cy = ini.GetInt(L"ToolbarIconSize", 32);
 	m_iStraightWindowStyles=ini.GetInt(L"StraightWindowStyles",0);
+	m_bUseSystemFontForMainControls=ini.GetBool(L"UseSystemFontForMainControls",0);
 	m_bRTLWindowsLayout = ini.GetBool(L"RTLWindowsLayout");
 	m_strSkinProfile = ini.GetString(L"SkinProfile", L"");
 	m_strSkinProfileDir = ini.GetString(L"SkinProfileDir", _T(""));
@@ -3430,7 +3560,11 @@ void CPreferences::LoadPreferences()
     m_iDynUpNumberOfPings = ini.GetInt(L"USSNumberOfPings", 1);
 	// ZZ:UploadSpeedSense <--
 
-    //m_bA4AFSaveCpu = ini.GetBool(L"A4AFSaveCpu", false); // ZZ:DownloadManager
+	//Xman
+	/*
+    m_bA4AFSaveCpu = ini.GetBool(L"A4AFSaveCpu", false); // ZZ:DownloadManager
+	*/
+	//Xman end
     m_bHighresTimer = ini.GetBool(L"HighresTimer", false);
 	m_bRunAsUser = ini.GetBool(L"RunAsUnprivilegedUser", false);
 	m_bPreferRestrictedOverUser = ini.GetBool(L"PreferRestrictedOverUser", false);
@@ -3441,12 +3575,14 @@ void CPreferences::LoadPreferences()
 	m_bRememberDownloadedFiles = ini.GetBool(L"RememberDownloadedFiles", true);
 
 	m_bNotifierSendMail = ini.GetBool(L"NotifierSendMail", false);
-/* Xman removed
+//Xman
+/*
 #if _ATL_VER >= 0x0710
-	if (!IsRunningXPSP2())
+	if (!IsRunningXPSP2OrHigher())
 		m_bNotifierSendMail = false;
 #endif
 */
+//Xman end
 	m_strNotifierMailSender = ini.GetString(L"NotifierMailSender", L"");
 	m_strNotifierMailServer = ini.GetString(L"NotifierMailServer", L"");
 	m_strNotifierMailReceiver = ini.GetString(L"NotifierMailRecipient", L"");
@@ -3530,7 +3666,7 @@ void CPreferences::LoadPreferences()
 	//
 	m_uPeerCacheLastSearch = ini.GetInt(L"LastSearch", 0, L"PeerCache");
 	m_bPeerCacheWasFound = ini.GetBool(L"Found", false);
-	m_bPeerCacheEnabled = ini.GetBool(L"Enabled", true);
+	m_bPeerCacheEnabled = ini.GetBool(L"EnabledDeprecated", false);
 	m_nPeerCachePort = (uint16)ini.GetInt(L"PCPort", 0);
 	m_bPeerCacheShow = ini.GetBool(L"Show", false);
 
@@ -3547,7 +3683,11 @@ void CPreferences::LoadPreferences()
 	// <== UPnP support [MoNKi] - leuk_he
 
 	LoadCats();
-	//SetLanguage(); //Xman done above
+	//Xman done above
+	/*
+	SetLanguage();
+	*/
+	//Xman end
 
 	//--------------------------------------------------------------------------
 	//Xman Xtreme Mod:
@@ -3949,6 +4089,7 @@ void CPreferences::LoadPreferences()
 	m_bUPnPLimitToFirstConnection = ini.GetBool(_T("UPnPLimitToFirstConnection"), false);
 	m_bUPnPClearOnClose = ini.GetBool(_T("UPnPClearOnClose"), true);
 	SetUpnpDetect(ini.GetInt(_T("uPnPDetect"), UPNP_DO_AUTODETECT)); //leuk_he autodetect upnp in wizard
+    m_bUPnPForceUpdate=ini.GetBool(_T("UPnPForceUpdate"), false);
 	//<== UPnP support [MoNKi] - leuk_he
 
 	// ==> Random Ports [MoNKi] - Stulle
@@ -4207,7 +4348,9 @@ void CPreferences::LoadCats()
 		newcat->strTitle = ini.GetStringUTF8(L"Title");
 		newcat->strIncomingPath = ini.GetStringUTF8(L"Incoming");
 		MakeFoldername(newcat->strIncomingPath);
-		if (!IsShareableDirectory(newcat->strIncomingPath)) {
+		if (!IsShareableDirectory(newcat->strIncomingPath)
+			|| (!PathFileExists(newcat->strIncomingPath) && !::CreateDirectory(newcat->strIncomingPath, 0)))
+		{
 			newcat->strIncomingPath = GetMuleDirectory(EMULE_INCOMINGDIR);
 			MakeFoldername(newcat->strIncomingPath);
 		}
@@ -4222,8 +4365,6 @@ void CPreferences::LoadCats()
         newcat->downloadInAlphabeticalOrder = ini.GetBool(L"downloadInAlphabeticalOrder", FALSE); // ZZ:DownloadManager
 		newcat->color = ini.GetInt(L"Color", (DWORD)-1 );
 		AddCat(newcat);
-		if (!PathFileExists(newcat->strIncomingPath))
-			::CreateDirectory(newcat->strIncomingPath, 0);
 	}
 }
 */
@@ -4512,6 +4653,7 @@ void CPreferences::SetMaxDownload(UINT in)
 	maxdownload = (oldMaxDownload) ? oldMaxDownload : (uint16)UNLIMITED;
 }
 */
+//Xman end
 
 void CPreferences::SetNetworkKademlia(bool val)
 {
@@ -4629,6 +4771,7 @@ bool CPreferences::IsDynUpEnabled()	{
 	return m_bDynUpEnabled || maxGraphUploadRate == UNLIMITED;
 }
 */
+//Xman end
 
 bool CPreferences::CanFSHandleLargeFiles()	{
 	bool bResult = false;
@@ -4942,7 +5085,7 @@ CString CPreferences::GetDefaultDirectory(EDefaultDirectory eDirectory, bool bCr
 									// strSelectedExpansionBaseDirectory stays default
 								}
 								else if (nRegistrySetting == -1 && !bConfigAvailableExecuteable){
-									if (ff.FindFile(CString(wchAppData) + _T("eMule\\") + CONFIGFOLDER + _T("preferences.ini"), 0)){
+									if (ff.FindFile(strAppData + _T("eMule\\") + CONFIGFOLDER + _T("preferences.ini"), 0)){
 										// preferences.ini found, so we use this as default
 										strSelectedDataBaseDirectory = strPersonal + _T("eMule Downloads\\");
 										strSelectedConfigBaseDirectory = strAppData + _T("eMule\\");

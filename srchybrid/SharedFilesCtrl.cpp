@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -50,6 +50,8 @@
 #include "SearchDlg.h"
 #include "SearchResultsWnd.h"
 #include "ToolTipCtrlX.h"
+#include "kademlia/kademlia/kademlia.h"
+#include "kademlia/kademlia/UDPFirewallTester.h"
 #include "MassRename.h" //Xman Mass Rename (Morph)
 #include "Log.h" //Xman Mass Rename (Morph)
 
@@ -123,7 +125,6 @@ CSharedFileDetailsSheet::CSharedFileDetailsSheet(CTypedPtrList<CPtrList, CKnownF
 	m_wndArchiveInfo.m_psp.dwFlags |= PSP_USEICONID;
 	m_wndArchiveInfo.m_psp.pszIcon = _T("ARCHIVE_PREVIEW");
 	m_wndArchiveInfo.SetFiles(&m_aItems);
-
 	m_wndMediaInfo.m_psp.dwFlags &= ~PSP_HASHELP;
 	m_wndMediaInfo.m_psp.dwFlags |= PSP_USEICONID;
 	m_wndMediaInfo.m_psp.pszIcon = _T("MEDIAINFO");
@@ -214,6 +215,7 @@ BOOL CSharedFileDetailsSheet::OnCommand(WPARAM wParam, LPARAM lParam)
 
 	return CListViewWalkerPropertySheet::OnCommand(wParam, lParam);
 }
+
 
 //////////////////////////////////////////////////////////////////////////////
 // CSharedFilesCtrl
@@ -523,6 +525,7 @@ void CSharedFilesCtrl::AddFile(const CKnownFile* file)
 				// Hmm should we show all incoming files dirs or only those from the main incoming dir here?
 				// hard choice, will only show the main for now
 				break;
+
 			// Avi3k: SharedView Ed2kType
 			case SDI_ED2KFILETYPE:
 				{
@@ -533,6 +536,8 @@ void CSharedFilesCtrl::AddFile(const CKnownFile* file)
 			// end Avi3k: SharedView Ed2kType
 		}
 	}
+	if (IsFilteredItem(file))
+		return;
 	if (FindFile(file) != -1)
 		return;
 	int iItem = InsertItem(LVIF_TEXT|LVIF_PARAM, GetItemCount(), LPSTR_TEXTCALLBACK, 0, 0, 0, (LPARAM)file);
@@ -551,7 +556,12 @@ void CSharedFilesCtrl::RemoveFile(const CKnownFile* file)
 	}
 }
 
-void CSharedFilesCtrl::UpdateFile(const CKnownFile* file, bool force) //Xman advanced upload-priority
+//Xman advanced upload-priority
+/*
+void CSharedFilesCtrl::UpdateFile(const CKnownFile* file)
+*/
+void CSharedFilesCtrl::UpdateFile(const CKnownFile* file, bool force)
+//Xman end
 {
 	if (!file || !theApp.emuledlg->IsRunning())
 		return;
@@ -565,7 +575,12 @@ void CSharedFilesCtrl::UpdateFile(const CKnownFile* file, bool force) //Xman adv
 	if (iItem != -1)
 	{
 		Update(iItem);
-		if (GetItemState(iItem, LVIS_SELECTED) && IsWindowVisible()) //Xman [MoNKi: -Downloaded History-]
+		//Xman [MoNKi: -Downloaded History-]
+		/*
+		if (GetItemState(iItem, LVIS_SELECTED))
+		*/
+		if (GetItemState(iItem, LVIS_SELECTED) && IsWindowVisible())
+		//Xman end
 			theApp.emuledlg->sharedfileswnd->ShowSelectedFilesSummary();
 	}
 }
@@ -616,7 +631,63 @@ void CSharedFilesCtrl::ShowFilesCount()
 	//Xman end
 }
 
-
+void CSharedFilesCtrl::GetItemDisplayText(const CKnownFile* file, int iSubItem, LPTSTR pszText, int cchTextMax) const
+{
+	if (pszText == NULL || cchTextMax <= 0) {
+		ASSERT(0);
+		return;
+	}
+	pszText[0] = _T('\0');
+	CString buffer;
+	switch(iSubItem){
+		case 0:
+			_tcsncpy(pszText, file->GetFileName(), cchTextMax);
+			break;
+		case 1:
+			_tcsncpy(pszText, CastItoXBytes(file->GetFileSize(), false, false), cchTextMax);
+			break;
+		case 2:
+			_tcsncpy(pszText, file->GetFileTypeDisplayStr(), cchTextMax);
+			break;
+		case 3:{
+			_tcsncpy(pszText, file->GetUpPriorityDisplayString(), cchTextMax);
+			break;
+			   }
+		case 4:
+			_tcsncpy(pszText, md4str(file->GetFileHash()), cchTextMax);
+			break;
+		case 5:
+			buffer.Format(_T("%u (%u)"), file->statistic.GetRequests(), file->statistic.GetAllTimeRequests());
+			_tcsncpy(pszText, buffer, cchTextMax);
+			break;
+		case 6:
+			buffer.Format(_T("%u (%u)"), file->statistic.GetAccepts(), file->statistic.GetAllTimeAccepts());
+			_tcsncpy(pszText, buffer, cchTextMax);
+			break;
+		case 7:
+			buffer.Format(_T("%s (%s)"), CastItoXBytes(file->statistic.GetTransferred(), false, false), CastItoXBytes(file->statistic.GetAllTimeTransferred(), false, false));
+			_tcsncpy(pszText, buffer, cchTextMax);
+			break;
+		case 8:
+			break;
+		case 9:
+			_tcsncpy(pszText, file->GetPath(), cchTextMax);
+			PathRemoveBackslash(pszText);
+			break;
+		case 10:
+			if (file->m_nCompleteSourcesCountLo == file->m_nCompleteSourcesCountHi)
+				buffer.Format(_T("%u"), file->m_nCompleteSourcesCountLo);
+			else if (file->m_nCompleteSourcesCountLo == 0)
+				buffer.Format(_T("< %u"), file->m_nCompleteSourcesCountHi);
+			else
+				buffer.Format(_T("%u - %u"), file->m_nCompleteSourcesCountLo, file->m_nCompleteSourcesCountHi);
+			_tcsncpy(pszText, buffer, cchTextMax);
+			break;
+		case 11:
+			break;
+	}
+	pszText[cchTextMax - 1] = _T('\0');
+}
 #define DLC_DT_TEXT (DT_LEFT|DT_SINGLELINE|DT_VCENTER|DT_NOPREFIX|DT_END_ELLIPSIS)
 
 void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
@@ -629,7 +700,7 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	//MORPH START - Added by SiRoB, Don't draw hidden Rect
 	RECT clientRect;
 	GetClientRect(&clientRect);
-	RECT cur_rec = lpDrawItemStruct->rcItem;
+	CRect cur_rec(lpDrawItemStruct->rcItem);
 	if (cur_rec.top >= clientRect.bottom || cur_rec.bottom <= clientRect.top)
 		return;
 	//MORPH END   - Added by SiRoB, Don't draw hidden Rect
@@ -645,21 +716,28 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			odc->SetBkColor(m_crNoHighlight);
 	}
 	else
+	//Xman PowerRelease
+	/*
+		odc->SetBkColor(GetBkColor());
+	*//*
 	{
-		//Xman PowerRelease
 		if(((CKnownFile*)lpDrawItemStruct->itemData)->GetUpPriority()==PR_POWER)
 			odc->SetBkColor(RGB(255,210,210));
 		else
 			odc->SetBkColor(m_crWindow);
-		//Xman end
 	}
+	//Xman end
 
 	COLORREF crOldBackColor = odc->GetBkColor(); //Xman Code Improvement: FillSolidRect
 
 	/*const*//* CKnownFile* file = (CKnownFile*)lpDrawItemStruct->itemData;
 	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
 	CFont* pOldFont = dc.SelectObject(GetFont());
-	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
+	//MORPH - Moved by SiRoB, Don't draw hidden Rect
+	/*
+	CRect cur_rec(lpDrawItemStruct->rcItem);
+	*//*
+	//Xman end
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
 	*/
 	CKnownFile* file = (CKnownFile*)lpDrawItemStruct->itemData;
@@ -719,16 +797,17 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			cur_rec.right += GetColumnWidth(iColumn);
 			switch(iColumn){
 				case 0:{
+					int iIconPosY = (cur_rec.Height() > theApp.GetSmallSytemIconSize().cy) ? ((cur_rec.Height() - theApp.GetSmallSytemIconSize().cy) / 2) : 0;
 					int iImage = theApp.GetFileTypeSystemImageIdx(file->GetFileName());
 					if (theApp.GetSystemImageList() != NULL)
-						::ImageList_Draw(theApp.GetSystemImageList(), iImage, dc.GetSafeHdc(), cur_rec.left, cur_rec.top, ILD_NORMAL|ILD_TRANSPARENT);
+						::ImageList_Draw(theApp.GetSystemImageList(), iImage, dc.GetSafeHdc(), cur_rec.left, cur_rec.top + iIconPosY, ILD_NORMAL|ILD_TRANSPARENT);
 					if (!file->GetFileComment().IsEmpty() || file->GetFileRating())
-						m_ImageList.Draw(dc, 0, CPoint(cur_rec.left, cur_rec.top), ILD_NORMAL | ILD_TRANSPARENT | INDEXTOOVERLAYMASK(1));
+						m_ImageList.Draw(dc, 0, CPoint(cur_rec.left, cur_rec.top + iIconPosY), ILD_NORMAL | ILD_TRANSPARENT | INDEXTOOVERLAYMASK(1));
 					cur_rec.left += (iIconDrawWidth - 3);
 
 					if (thePrefs.ShowRatingIndicator() && (file->HasComment() || file->HasRating() || file->IsKadCommentSearchRunning()))
 					{
-						m_ImageList.Draw(dc, file->UserRating(true)+3, CPoint(cur_rec.left, cur_rec.top), ILD_NORMAL);
+						m_ImageList.Draw(dc, file->UserRating(true)+3, CPoint(cur_rec.left, cur_rec.top + iIconPosY), ILD_NORMAL);
 						cur_rec.left += 16;
 						iIconDrawWidth += 16;
 					}
@@ -786,6 +865,14 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					break;
 				case 10:
 					//Xman show virtual sources (morph) + virtualUploadsources
+					/*
+                    if (file->m_nCompleteSourcesCountLo == file->m_nCompleteSourcesCountHi)
+						buffer.Format(_T("%u"), file->m_nCompleteSourcesCountLo);
+                    else if (file->m_nCompleteSourcesCountLo == 0)
+						buffer.Format(_T("< %u"), file->m_nCompleteSourcesCountHi);
+					else
+						buffer.Format(_T("%u - %u"), file->m_nCompleteSourcesCountLo, file->m_nCompleteSourcesCountHi);
+					*/
 					if(file->IsPartFile()==false || thePrefs.UseAdvancedAutoPtio()==false)
 					{
 						if (file->m_nCompleteSourcesCountLo == file->m_nCompleteSourcesCountHi)
@@ -817,8 +904,11 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					{
 						if (theApp.IsFirewalled() && theApp.IsConnected())
 						{
-							if (theApp.clientlist->GetBuddy() && (file->GetLastPublishBuddy() == theApp.clientlist->GetBuddy()->GetIP()))
+							if ((theApp.clientlist->GetBuddy() && (file->GetLastPublishBuddy() == theApp.clientlist->GetBuddy()->GetIP()))
+								|| (Kademlia::CKademlia::IsRunning() && !Kademlia::CUDPFirewallTester::IsFirewalledUDP(true) && Kademlia::CUDPFirewallTester::IsVerified()))
+							{
 								bSharedInKad = true;
+							}
 							else
 								bSharedInKad = false;
 						}
@@ -965,23 +1055,27 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			cur_rec.left += GetColumnWidth(iColumn);
 		}
 	}
-	//ShowFilesCount(); //Xman Code Improvement for ShowFilesCount
+	//Xman Code Improvement for ShowFilesCount
+	/*
+	ShowFilesCount();
+	*/
+	//Xman end
 	if (lpDrawItemStruct->itemState & ODS_SELECTED)
 	{
 		RECT outline_rec = lpDrawItemStruct->rcItem;
 
 		outline_rec.top--;
 		outline_rec.bottom++;
-		dc.FrameRect(&outline_rec, &CBrush(m_crWindow));
+		dc.FrameRect(&outline_rec, &CBrush(GetBkColor()));
 		outline_rec.top++;
 		outline_rec.bottom--;
 		outline_rec.left++;
 		outline_rec.right--;
 
-		if (lpDrawItemStruct->itemID > 0 && GetItemState(lpDrawItemStruct->itemID - 1, LVIS_SELECTED))
+		if (lpDrawItemStruct->itemID != 0 && GetItemState(lpDrawItemStruct->itemID - 1, LVIS_SELECTED))
 			outline_rec.top--;
 
-		if (lpDrawItemStruct->itemID + 1 < (UINT)GetItemCount() && GetItemState(lpDrawItemStruct->itemID + 1, LVIS_SELECTED))
+		if (lpDrawItemStruct->itemID + 1 != (UINT)GetItemCount() && GetItemState(lpDrawItemStruct->itemID + 1, LVIS_SELECTED))
 			outline_rec.bottom++;
 
 		if(bCtrlFocused)
@@ -989,6 +1083,16 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 		else
 			dc.FrameRect(&outline_rec, &CBrush(m_crNoFocusLine));
 	}
+	else if (((lpDrawItemStruct->itemState & ODS_FOCUS) == ODS_FOCUS) && (GetFocus() == this))
+	{
+		RECT focus_rec;
+		focus_rec.top    = lpDrawItemStruct->rcItem.top;
+		focus_rec.bottom = lpDrawItemStruct->rcItem.bottom;
+		focus_rec.left   = lpDrawItemStruct->rcItem.left + 1;
+		focus_rec.right  = lpDrawItemStruct->rcItem.right - 1;
+		dc.FrameRect(&focus_rec, &CBrush(m_crNoFocusLine));
+	}
+	
 	if (m_crWindowTextBk == CLR_NONE)
 		dc.SetBkMode(iOldBkMode);
 	dc.SelectObject(pOldFont);
@@ -1154,8 +1258,12 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	}
 
 	m_SharedFilesMenu.EnableMenuItem((UINT_PTR)m_PrioMenu.m_hMenu, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
-	//m_PrioMenu.CheckMenuRadioItem(MP_PRIOVERYLOW, MP_PRIOAUTO, uPrioMenuItem, 0);
-	m_PrioMenu.CheckMenuRadioItem(MP_PRIOVERYLOW, MP_PRIOPOWER, uPrioMenuItem, 0); //Xman PowerRelease 
+	//Xman PowerRelease 
+	/*
+	m_PrioMenu.CheckMenuRadioItem(MP_PRIOVERYLOW, MP_PRIOAUTO, uPrioMenuItem, 0);
+	*/
+	m_PrioMenu.CheckMenuRadioItem(MP_PRIOVERYLOW, MP_PRIOPOWER, uPrioMenuItem, 0);
+	//Xman end
 
 	bool bSingleCompleteFileSelected = (iSelectedItems == 1 && iCompleteFileSelected == 1);
 	m_SharedFilesMenu.EnableMenuItem(MP_OPEN, bSingleCompleteFileSelected ? MF_ENABLED : MF_GRAYED);
@@ -1536,8 +1644,7 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					}
 				}
 				SetRedraw(TRUE);
-				if (bRemovedItems)
-				{
+				if (bRemovedItems) {
 					AutoSelectItem();
 					// Depending on <no-idea> this does not always cause a
 					// LVN_ITEMACTIVATE message sent. So, explicitly redraw
@@ -1574,7 +1681,6 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 				break;
 			}
 			case MP_SEARCHAUTHOR:
-			{
 				if (selectedList.GetCount() == 1 && file->m_pCollection)
 				{
 					SSearchParams* pParams = new SSearchParams;
@@ -1588,9 +1694,7 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					theApp.emuledlg->searchwnd->m_pwndResults->StartSearch(pParams);
 				}
 				break;
-			}
 			case MP_VIEWCOLLECTION:
-			{
 				if (selectedList.GetCount() == 1 && file->m_pCollection)
 				{
 					CCollectionViewDialog dialog;
@@ -1598,9 +1702,7 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					dialog.DoModal();
 				}
 				break;
-			}
 			case MP_MODIFYCOLLECTION:
-			{
 				if (selectedList.GetCount() == 1 && file->m_pCollection)
 				{
 					CCollectionCreateDialog dialog;
@@ -1610,7 +1712,6 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					delete pCollection;				
 				}
 				break;
-			}
 			case MP_SHOWED2KLINK:
 				ShowFileDialog(selectedList, IDD_ED2KLINK);
 				break;
@@ -1672,8 +1773,8 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 									file->CalculateAndSetUploadPriority(); 
 #endif
 								else
-									file->UpdateAutoUpPriority();
 								//Xman end
+									file->UpdateAutoUpPriority();
 								UpdateFile(file); 
 								break;
 						}
@@ -2114,13 +2215,13 @@ int CSharedFilesCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort
 			else
 			{
 			// <== PowerShare [ZZ/MorphXT] - Stulle
-			uint8 p1=item1->GetUpPriority() +1;
-			if(p1==5)
-				p1=0;
-			uint8 p2=item2->GetUpPriority() +1;
-			if(p2==5)
-				p2=0;
-			iResult=p2-p1;
+				uint8 p1=item1->GetUpPriority() +1;
+				if(p1==5)
+					p1=0;
+				uint8 p2=item2->GetUpPriority() +1;
+				if(p2==5)
+					p2=0;
+				iResult=p2-p1;
 			} // PowerShare [ZZ/MorphXT] - Stulle
 			break;
 		}
@@ -2354,6 +2455,7 @@ int CSharedFilesCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort
 		iResult= SortProc(lParam1, lParam2, dwNextSort);
 	}
 	*/
+
 	return iResult;
 
 }
@@ -2639,9 +2741,42 @@ void CSharedFilesCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 		if (pFile && pGetInfoTip->pszText && pGetInfoTip->cchTextMax > 0)
 		{
 			CString strInfo = pFile->GetInfoSummary();
+			strInfo += TOOLTIP_AUTOFORMAT_SUFFIX_CH;
 			_tcsncpy(pGetInfoTip->pszText, strInfo, pGetInfoTip->cchTextMax);
 			pGetInfoTip->pszText[pGetInfoTip->cchTextMax-1] = _T('\0');
 		}
 	}
 	*pResult = 0;
+}
+
+bool CSharedFilesCtrl::IsFilteredItem(const CKnownFile* pKnownFile) const
+{
+	const CStringArray& rastrFilter = theApp.emuledlg->sharedfileswnd->m_astrFilter;
+	if (rastrFilter.GetSize() == 0)
+		return false;
+
+	// filtering is done by text only for all colums to keep it consistent and simple for the user even if that
+	// doesn't allows complex filters
+	TCHAR szFilterTarget[256];
+	GetItemDisplayText(pKnownFile, theApp.emuledlg->sharedfileswnd->GetFilterColumn(),
+					   szFilterTarget, _countof(szFilterTarget));
+
+	bool bItemFiltered = false;
+	for (int i = 0; i < rastrFilter.GetSize(); i++)
+	{
+		const CString& rstrExpr = rastrFilter.GetAt(i);
+		bool bAnd = true;
+		LPCTSTR pszText = (LPCTSTR)rstrExpr;
+		if (pszText[0] == _T('-')) {
+			pszText += 1;
+			bAnd = false;
+		}
+
+		bool bFound = (stristr(szFilterTarget, pszText) != NULL);
+		if ((bAnd && !bFound) || (!bAnd && bFound)) {
+			bItemFiltered = true;
+			break;
+		}
+	}
+	return bItemFiltered;
 }

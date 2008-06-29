@@ -1,4 +1,4 @@
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -42,8 +42,12 @@ enum EPartFileStatus{
 
 
 //#define BUFFER_SIZE_LIMIT 500000 // Max bytes before forcing a flush
-//#define BUFFER_TIME_LIMIT	60000	// Max milliseconds before forcing a flush
-#define BUFFER_TIME_LIMIT	80000 //Xman increased to 8 sec
+//Xman increased to 8 sec
+/*
+#define BUFFER_TIME_LIMIT	60000	// Max milliseconds before forcing a flush
+*/
+#define BUFFER_TIME_LIMIT	80000
+//Xman end
 
 #define	PARTMET_BAK_EXT	_T(".bak")
 #define	PARTMET_TMP_EXT	_T(".backup")
@@ -152,7 +156,7 @@ public:
 	bool	IsPartFile() const { return !(status == PS_COMPLETE); }
 
 	// eD2K filename
-	virtual void SetFileName(LPCTSTR pszFileName, bool bReplaceInvalidFileSystemChars = false); // 'bReplaceInvalidFileSystemChars' is set to 'false' for backward compatibility!
+	virtual void SetFileName(LPCTSTR pszFileName, bool bReplaceInvalidFileSystemChars = false, bool bRemoveControlChars = false); // 'bReplaceInvalidFileSystemChars' is set to 'false' for backward compatibility!
 
 	// part.met filename (without path!)
 	const CString& GetPartMetFileName() const { return m_partmetfilename; }
@@ -178,8 +182,10 @@ public:
 	uint32	GetCrFileDate() const { return m_tCreated; }
 
 	void	InitializeFromLink(CED2KFileLink* fileLink, UINT cat = 0);
-	//uint32	Process(uint32 reducedownload, UINT icounter);
 	// Maella -New bandwidth control-
+	/*
+	uint32	Process(uint32 reducedownload, UINT icounter);
+	*/
 	uint32	Process(uint32 maxammount, bool isLimited, bool fullProcess); // in byte, not in percent
 	// Maella end
 	//Xman end	
@@ -189,10 +195,8 @@ public:
 
 	bool	SavePartFile();
 	void	PartFileHashFinished(CKnownFile* result);
-	
-	//Xman Flush Thread/Safehash: need the mono threaded hashing when shutting down
 	bool	HashSinglePart(UINT partnumber); // true = ok , false = corrupted
-	//Xman end
+
 	//Xman
 	// BEGIN SLUGFILLER: SafeHash - replaced old handlers, full hash checker remains for file completion
 	void	PartHashFinished(UINT partnumber, bool corrupt);
@@ -207,7 +211,7 @@ public:
 	virtual void	DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool	 bFlat) const;
 	bool	IsComplete(uint64 start, uint64 end, bool bIgnoreBufferedData) const;
 	bool	IsPureGap(uint64 start, uint64 end) const;
-	bool	IsAlreadyRequested(uint64 start, uint64 end) const;
+	bool	IsAlreadyRequested(uint64 start, uint64 end, bool bCheckBuffers = false) const;
     bool    ShrinkToAvoidAlreadyRequested(uint64& start, uint64& end) const;
 	bool	IsCorruptedPart(UINT partnumber) const;
 	
@@ -224,6 +228,7 @@ public:
 	virtual void	UpdatePartsInfo();
 
 	//Xman chunk chooser
+	//bool	GetNextRequestedBlock(CUpDownClient* sender, Requested_Block_Struct** newblocks, uint16* count) /*const*/;
 	bool	GetNextRequestedBlock_Maella(CUpDownClient* sender, Requested_Block_Struct** newblocks, uint16* count) /*const*/;
 	bool	GetNextRequestedBlock_zz(CUpDownClient* sender, Requested_Block_Struct** newblocks, uint16* count) /*const*/;
 	//Xman end
@@ -255,7 +260,12 @@ public:
 	UINT	GetSrcStatisticsValue(EDownloadState nDLState) const;
 	UINT	GetTransferringSrcCount() const;
 	uint64	GetTransferred() const { return m_uTransferred; }
-	//uint32	GetDatarate() const { return datarate; }
+	//Xman
+	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+	/*
+	uint32	GetDatarate() const { return datarate; }
+	*/
+	//Xman end
 	float	GetPercentCompleted() const { return percentcompleted; }
 	UINT	GetNotCurrentSourcesCount() const;
 	int		GetValidSourcesCount() const;
@@ -312,6 +322,7 @@ public:
 	uint32	GetRecoveredPartsByICH() const { return m_uPartsSavedDueICH; }
 
 	virtual void	UpdateFileRatingCommentAvail(bool bForceUpdate = false);
+	virtual void	RefilterFileComments();
 
 	void	AddDownloadingSource(CUpDownClient* client);
 	void	RemoveDownloadingSource(CUpDownClient* client);
@@ -371,8 +382,12 @@ public:
 	bool	srcarevisible;				// used for downloadlistctrl
 	bool	hashsetneeded;
 	uint8	m_TotalSearchesKad;
-    //bool    AllowSwapForSourceExchange() { return ::GetTickCount()-lastSwapForSourceExchangeTick > 30*1000; } // ZZ:DownloadManager
-    //void    SetSwapForSourceExchangeTick() { lastSwapForSourceExchangeTick = ::GetTickCount(); } // ZZ:DownloadManager
+	//Xman Xtreme Downloadmanager
+	/*
+    bool    AllowSwapForSourceExchange()					{ return ::GetTickCount()-lastSwapForSourceExchangeTick > 30*1000; } // ZZ:DownloadManager
+    void    SetSwapForSourceExchangeTick()					{ lastSwapForSourceExchangeTick = ::GetTickCount(); } // ZZ:DownloadManager
+	*/
+	//Xman end
 	
 	UINT	SetPrivateMaxSources(uint32 in)	{ return m_uMaxSources = in; } 
 	UINT	GetPrivateMaxSources() const	{ return m_uMaxSources; } 
@@ -383,12 +398,17 @@ public:
     bool    GetPreviewPrio() const { return m_bpreviewprio; }
 	void    SetPreviewPrio(bool in) { m_bpreviewprio=in; }
 
+	//Xman Xtreme Downloadmanager
+	/*
+    static bool RightFileHasHigherPrio(CPartFile* left, CPartFile* right);
+	*/
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	/*
-	static bool RightFileHasHigherPrio(CPartFile* left, CPartFile* right, bool allow_go_over_hardlimit=false); //Xman Xtreme Downloadmanager
+	static bool RightFileHasHigherPrio(CPartFile* left, CPartFile* right, bool allow_go_over_hardlimit=false);
 	*/
 	static bool RightFileHasHigherPrio(const CPartFile* left, const CPartFile* right, bool allow_go_over_hardlimit=false);
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	//Xman end
 
 	CDeadSourceList	m_DeadSourceList;
 
@@ -441,7 +461,12 @@ public:
 #endif
 
 protected:
-	bool	GetNextEmptyBlockInPart(UINT partnumber, Requested_Block_Struct* result, uint64 bytesToRequest = EMBLOCKSIZE) const; //Xman Dynamic block request (netfinity/Xman)
+	//Xman Dynamic block request (netfinity/Xman)
+	/*
+	bool	GetNextEmptyBlockInPart(UINT partnumber, Requested_Block_Struct* result) const;
+	*/
+	bool	GetNextEmptyBlockInPart(UINT partnumber, Requested_Block_Struct* result, uint64 bytesToRequest = EMBLOCKSIZE) const;
+	//Xman end
 	void	CompleteFile(bool hashingdone);
 	void	CreatePartFile(UINT cat = 0);
 	void	Init();
@@ -462,14 +487,25 @@ private:
 
 	CCorruptionBlackBox	m_CorruptionBlackBox;
 	static CBarShader s_LoadBar;
-	//static CBarShader s_ChunkBar; //Xman
+	//Xman
+	/*
+	static CBarShader s_ChunkBar;
 	uint32	m_iLastPausePurge;
-	//uint16	count; //Xman not used
+	uint16	count;
+	*/
+	uint32	m_iLastPausePurge;
+	//Xman end
 	UINT	m_anStates[STATES_COUNT];
 	EMFileSize	completedsize;
 	uint64	m_uCorruptionLoss;
 	uint64	m_uCompressionGain;
 	uint32	m_uPartsSavedDueICH;
+	//Xman
+	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+	/*
+	uint32	datarate;
+	*/
+	//Xman end
 	CString m_fullname;
 	CString m_partmetfilename;
 	uint64	m_uTransferred;
@@ -483,7 +519,7 @@ private:
 	EPartFileStatus	status;
 	bool	newdate;	// indicates if there was a writeaccess to the .part file
 	uint32	lastpurgetime;
-	uint32	m_LastNoNeededCheck; //Xman Xtreme Downloadmanager: Auto-A4AF-check
+	uint32	m_LastNoNeededCheck;
 	bool	m_is_A4AF_auto; //Xman Xtreme Downloadmanager: Auto-A4AF-check
 	CTypedPtrList<CPtrList, Gap_Struct*> gaplist;
 	CTypedPtrList<CPtrList, Requested_Block_Struct*> requestedblocks_list;
@@ -519,6 +555,14 @@ private:
 	volatile EPartFileOp m_eFileOp;
 	volatile UINT m_uFileOpProgress;
 
+	//Xman Xtreme Downloadmanager
+	/*
+    DWORD   lastSwapForSourceExchangeTick; // ZZ:DownloadManaager
+
+};
+	*/
+	//Xman end
+
 	//Xman
 	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 	uint32 m_nDownDatarate;
@@ -528,8 +572,6 @@ private:
 	// Xman -New Save/load Sources- enkeyDEV(Ottavio84)
 	CSourceSaver m_sourcesaver; 
 	// Xman end
-
-    //DWORD   lastSwapForSourceExchangeTick; // ZZ:DownloadManaager
 
 	//Xman sourcecache
 	CList<PartfileSourceCache>	m_sourcecache;

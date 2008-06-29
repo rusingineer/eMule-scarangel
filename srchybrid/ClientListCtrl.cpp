@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -33,7 +33,6 @@
 #include "Kademlia/Kademlia/Kademlia.h"
 #include "Kademlia/net/KademliaUDPListener.h"
 
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -62,6 +61,7 @@ CClientListCtrl::CClientListCtrl()
 void CClientListCtrl::Init()
 {
 	SetName(_T("ClientListCtrl"));
+
 	CImageList ilDummyImageList; //dummy list for getting the proper height of listview entries
 	ilDummyImageList.Create(1, theApp.GetSmallSytemIconSize().cy,theApp.m_iDfltImageListColorFlags|ILC_MASK, 1, 1); 
 	SetImageList(&ilDummyImageList, LVSIL_SMALL);
@@ -69,6 +69,7 @@ void CClientListCtrl::Init()
 	ilDummyImageList.Detach();
 
 	SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_INFOTIP);
+
 	InsertColumn(0,GetResString(IDS_QL_USERNAME),LVCFMT_LEFT,150,0);
 	InsertColumn(1,GetResString(IDS_CL_UPLOADSTATUS),LVCFMT_LEFT,150,1);
 	InsertColumn(2,GetResString(IDS_CL_TRANSFUP),LVCFMT_LEFT,150,2);
@@ -108,6 +109,17 @@ void CClientListCtrl::SetAllIcons()
 	imagelist.Create(16,16,theApp.m_iDfltImageListColorFlags|ILC_MASK,0,1);
 	imagelist.SetBkColor(CLR_NONE);
 	//Xman Show correct Icons	
+	/*
+	imagelist.Add(CTempIconLoader(_T("ClientEDonkey")));
+	imagelist.Add(CTempIconLoader(_T("ClientCompatible")));
+	imagelist.Add(CTempIconLoader(_T("Friend")));
+	imagelist.Add(CTempIconLoader(_T("ClientMLDonkey")));
+	imagelist.Add(CTempIconLoader(_T("ClientEDonkeyHybrid")));
+	imagelist.Add(CTempIconLoader(_T("ClientShareaza")));
+	imagelist.Add(CTempIconLoader(_T("Server")));
+	imagelist.Add(CTempIconLoader(_T("ClientAMule")));
+	imagelist.Add(CTempIconLoader(_T("ClientLPhant")));
+	*/
 	imagelist.Add(CTempIconLoader(_T("ClientDefault")));		//0
 	imagelist.Add(CTempIconLoader(_T("ClientDefaultPlus")));	//1
 	imagelist.Add(CTempIconLoader(_T("ClientEDonkey")));		//2
@@ -289,7 +301,7 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	//MORPH START - Added by SiRoB, Don't draw hidden Rect
 	RECT clientRect;
 	GetClientRect(&clientRect);
-	RECT cur_rec = lpDrawItemStruct->rcItem;
+	CRect cur_rec(lpDrawItemStruct->rcItem);
 	if (cur_rec.top >= clientRect.bottom || cur_rec.bottom <= clientRect.top)
 		return;
 	//MORPH END   - Added by SiRoB, Don't draw hidden Rect
@@ -309,8 +321,17 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	COLORREF crOldBackColor = odc->GetBkColor(); //Xman show LowIDs
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
 	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
-	CFont* pOldFont = dc.SelectObject(thePrefs.UseNarrowFont() ? &m_fontNarrow : GetFont()); //Xman narrow font at transferwindow
-	//CRect cur_rec(lpDrawItemStruct->rcItem); //MORPH - Moved by SiRoB, Don't draw hidden Rect
+	//Xman narrow font at transferwindow
+	/*
+	CFont* pOldFont = dc.SelectObject(GetFont());
+	*//*
+	CFont* pOldFont = dc.SelectObject(thePrefs.UseNarrowFont() ? &m_fontNarrow : GetFont());
+	//Xman end
+	//MORPH - Moved by SiRoB, Don't draw hidden Rect
+	/*
+	CRect cur_rec(lpDrawItemStruct->rcItem);
+	*//*
+	//Xman end
 	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
 	*/
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
@@ -359,59 +380,83 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			cur_rec.right += GetColumnWidth(iColumn);
 			switch(iColumn){
 				case 0:{
-				////Xman Show correct Icons
-				uint8 image;
-				//Xman Anti-Leecher
-				if(client->IsLeecher()>0)
-					image=18;
-				//Xman end
-				else if (client->IsFriend())
-					image = 6;
-				else if (client->GetClientSoft() == SO_EDONKEYHYBRID){
-					image = 10;
-				}
-				else if (client->GetClientSoft() == SO_EDONKEY){
-					image = 2;
-				}
-				else if (client->GetClientSoft() == SO_MLDONKEY){
-					image = 8;
-				}
-				else if (client->GetClientSoft() == SO_SHAREAZA){
-					image = 12;
-				}
-				else if (client->GetClientSoft() == SO_AMULE){
-					image = 14;
-				}
-				else if (client->GetClientSoft() == SO_LPHANT){
-					image = 16;
-				}
-				else if (client->ExtProtocolAvailable()){
-					// ==> Mod Icons - Stulle
+					uint8 image;
+					//Xman Show correct Icons
 					/*
-					image = 4;
-					*/
-					if(client->GetModClient() == MOD_NONE)
+					if (client->IsFriend())
+						image = 2;
+					else if (client->GetClientSoft() == SO_EDONKEYHYBRID)
 						image = 4;
+					else if (client->GetClientSoft() == SO_MLDONKEY)
+						image = 3;
+					else if (client->GetClientSoft() == SO_SHAREAZA)
+						image = 5;
+					else if (client->GetClientSoft() == SO_URL)
+						image = 6;
+					else if (client->GetClientSoft() == SO_AMULE)
+						image = 7;
+					else if (client->GetClientSoft() == SO_LPHANT)
+						image = 8;
+					else if (client->ExtProtocolAvailable())
+						image = 1;
 					else
-						image = (uint8)(client->GetModClient() + 19);
-					// <== Mod Icons - Stulle
-				}
-				else{
-					image = 0;
-				}
-				//Xman end
+						image = 0;
+					*/
+					//Xman Anti-Leecher
+					if(client->IsLeecher()>0)
+						image=18;
+					//Xman end
+					else if (client->IsFriend())
+						image = 6;
+					else if (client->GetClientSoft() == SO_EDONKEYHYBRID){
+						image = 10;
+					}
+					else if (client->GetClientSoft() == SO_EDONKEY){
+						image = 2;
+					}
+					else if (client->GetClientSoft() == SO_MLDONKEY){
+						image = 8;
+					}
+					else if (client->GetClientSoft() == SO_SHAREAZA){
+						image = 12;
+					}
+					else if (client->GetClientSoft() == SO_AMULE){
+						image = 14;
+					}
+					else if (client->GetClientSoft() == SO_LPHANT){
+						image = 16;
+					}
+					else if (client->ExtProtocolAvailable()){
+						// ==> Mod Icons - Stulle
+						/*
+						image = 4;
+						*/
+						if(client->GetModClient() == MOD_NONE)
+							image = 4;
+						else
+							image = (uint8)(client->GetModClient() + 19);
+						// <== Mod Icons - Stulle
+					}
+					else{
+						image = 0;
+					}
+					//Xman end
 
-				uint32 nOverlayImage = 0;
-				if ((client->Credits() && client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED))
-					nOverlayImage |= 1;
-				//Xman changed: display the obfuscation icon for all clients which enabled it
-				if(client->IsObfuscatedConnectionEstablished() 
-					|| (!(client->socket != NULL && client->socket->IsConnected())
-					&& (client->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (client->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()))))
-					nOverlayImage |= 2;
-
-					POINT point = {cur_rec.left, cur_rec.top+1};
+					uint32 nOverlayImage = 0;
+					if ((client->Credits() && client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED))
+						nOverlayImage |= 1;
+					//Xman changed: display the obfuscation icon for all clients which enabled it
+					/*
+					if (client->IsObfuscatedConnectionEstablished())
+					*/
+					if(client->IsObfuscatedConnectionEstablished() 
+						|| (!(client->socket != NULL && client->socket->IsConnected())
+						&& (client->SupportsCryptLayer() && thePrefs.IsClientCryptLayerSupported() && (client->RequestsCryptLayer() || thePrefs.IsClientCryptLayerRequested()))))
+						nOverlayImage |= 2;
+					int iIconPosY = (cur_rec.Height() > 16) ? ((cur_rec.Height() - 16) / 2) : 1;
+					POINT point = {cur_rec.left, cur_rec.top + iIconPosY};
 					imagelist.Draw(dc,image, point, ILD_NORMAL | INDEXTOOVERLAYMASK(nOverlayImage));
+
 					//Xman friend visualization
 					if (client->IsFriend() && client->GetFriendSlot())
 						imagelist.Draw(dc,19, point, ILD_NORMAL);
@@ -466,7 +511,12 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					break;
 				}
 				case 5:{
-					Sbuffer = client->DbgGetFullClientSoftVer(); // Maella -Support for tag ET_MOD_VERSION 0x55
+					// Maella -Support for tag ET_MOD_VERSION 0x55
+					/*
+					Sbuffer = client->GetClientSoftVer();
+					*/
+					Sbuffer = client->DbgGetFullClientSoftVer();
+					//Xman end
 					if (Sbuffer.IsEmpty())
 						Sbuffer = GetResString(IDS_UNKNOWN);
 					// ==> Design Settings [eWombat/Stulle] - Stulle
@@ -544,7 +594,9 @@ void CClientListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	ClientMenu.SetDefaultItem(MP_DETAIL);
 	//Xman friendhandling
 	ClientMenu.AppendMenu(MF_SEPARATOR); 
+	//Xman end
 	ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && !client->IsFriend()) ? MF_ENABLED : MF_GRAYED), MP_ADDFRIEND, GetResString(IDS_ADDFRIEND), _T("ADDFRIEND"));
+	//Xman friendhandling
 	ClientMenu.AppendMenu(MF_STRING | (client && client->IsFriend() ? MF_ENABLED : MF_GRAYED), MP_REMOVEFRIEND, GetResString(IDS_REMOVEFRIEND), _T("DELETEFRIEND"));
 	ClientMenu.AppendMenu(MF_STRING | (client && client->IsFriend() ? MF_ENABLED : MF_GRAYED), MP_FRIENDSLOT, GetResString(IDS_FRIENDSLOT), _T("FRIENDSLOT"));
 	ClientMenu.CheckMenuItem(MP_FRIENDSLOT, (client && client->GetFriendSlot()) ? MF_CHECKED : MF_UNCHECKED);
@@ -786,6 +838,7 @@ int CClientListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 				iResult= item2->GetClientSoft() - item1->GetClientSoft();
 			break;
 		// Xman end
+
 		case 6:
 		    if (item1->socket && item2->socket)
 			    iResult=item1->socket->IsConnected() - item2->socket->IsConnected();

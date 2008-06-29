@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -208,9 +208,12 @@ void AddLogTextV(UINT uFlags, EDebugLogPriority dlpPriority, LPCTSTR pszLine, va
 	ASSERT(pszLine != NULL);
 
 	//Xman Anti-Leecher-Log
+	/*
+	if ((uFlags & LOG_DEBUG) && !(thePrefs.GetVerbose() && dlpPriority >= thePrefs.GetVerboseLogPriority()))
+	*/
 	if (((uFlags & LOG_DEBUG) || (uFlags & LOG_LEECHER)) && !(thePrefs.GetVerbose() && dlpPriority >= thePrefs.GetVerboseLogPriority()))
-		return;	
 	//Xman end
+		return;	
 
 	TCHAR szLogLine[1000];
 	_vsntprintf(szLogLine, _countof(szLogLine), pszLine, argptr);
@@ -224,21 +227,31 @@ void AddLogTextV(UINT uFlags, EDebugLogPriority dlpPriority, LPCTSTR pszLine, va
 
 		TCHAR szFullLogLine[1060];
 		int iLen = _sntprintf(szFullLogLine, _countof(szFullLogLine), _T("%s: %s\r\n"), CTime::GetCurrentTime().Format(thePrefs.GetDateTimeFormat4Log()), szLogLine);
+		//Xman Anti-Leecher-Log //Xman Code Improvement
+		/*
+		if (iLen > 0)
+		{
+			if (!(uFlags & LOG_DEBUG))
+			{
+				if (thePrefs.GetLog2Disk())
+					theLog.Log(szFullLogLine, iLen);
+			}
+
+			if (thePrefs.GetVerbose() && ((uFlags & LOG_DEBUG) || thePrefs.GetFullVerbose()))
+		*/
 		if (iLen >= 0)
 		{
-			//Xman Anti-Leecher-Log //Xman Code Improvement
 			if (!((uFlags & LOG_DEBUG) || (uFlags & LOG_LEECHER)))
 			{
 				if (thePrefs.GetLog2Disk())
 					theLog.Log(szFullLogLine, iLen);
 			}
-			else
-			if (thePrefs.GetVerbose()) // && ((uFlags & LOG_DEBUG) || thePrefs.GetFullVerbose()))
+			else if (thePrefs.GetVerbose())
+		//Xman end
 			{
 				if (thePrefs.GetDebug2Disk())
 					theVerboseLog.Log(szFullLogLine, iLen);
 			}
-			//Xman end
 		}
 	}
 }

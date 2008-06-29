@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -25,6 +25,7 @@
 #define	MAX_CLIENTS_WITH_SUB_VERSION	4	// eMule, eDHyb, eD, aMule
 #define	MAX_SUB_CLIENT_VERSIONS			8
 
+
 class CStatisticsDlg : public CResizableDialog
 {
 	DECLARE_DYNAMIC(CStatisticsDlg)
@@ -35,7 +36,10 @@ public:
 
 	void Localize();
 	//Xman
-	//void SetCurrentRate(float uploadrate, float downloadrate);
+	/*
+	void SetCurrentRate(float uploadrate, float downloadrate);
+	*/
+	//Xman end
 	void ShowInterval();
 	// -khaos--+++> Optional force update parameter.
 	void ShowStatistics(bool forceUpdate = false);
@@ -66,7 +70,11 @@ private:
 	enum Curve {ADAPTER = 0, OVERALL = 1, MINUTE = 2, SESSION = 3, CURRENT = 4};
 #define NUMBEROFLINES 4
 
-	//double m_dPlotDataMore[4]; //Xman
+	//Xman
+	/*
+	double m_dPlotDataMore[4];
+	*/
+	//Xman end
 	uint32 m_ilastMaxConnReached;
 
 	uint32		cli_lastCount[MAX_CLIENTS_WITH_SUB_VERSION];
@@ -75,17 +83,33 @@ private:
 	HTREEITEM	h_upload, h_up_session, up_S[6], h_up_total, up_T[2]; // Uploads Session and Total Items and Headers
 	HTREEITEM	hup_scb, up_scb[7], hup_spb, up_spb[3], hup_ssb, up_ssb[2]; // Session Uploaded Byte Breakdowns
 	HTREEITEM	hup_tcb, up_tcb[7], hup_tpb, up_tpb[3], hup_tsb, up_tsb[2]; // Total Uploaded Byte Breakdowns
+	//Xman
+	/*
+	HTREEITEM	hup_soh, up_soh[4], hup_toh, up_toh[4]; // Upline Overhead
+	*/
 	HTREEITEM	hup_soh, up_soh[5 /*Xman +1 count obfuscation data*/], hup_toh, up_toh[4]; // Upline Overhead
+	//Xman end
 	HTREEITEM	up_ssessions[4], up_tsessions[4]; // Breakdown of Upload Sessions
 	HTREEITEM	h_download, h_down_session, down_S[8], h_down_total, down_T[6]; // Downloads Session and Total Items and Headers
 	HTREEITEM	hdown_scb, down_scb[8], hdown_spb, down_spb[3]; // Session Downloaded Byte Breakdowns
 	HTREEITEM	hdown_tcb, down_tcb[8], hdown_tpb, down_tpb[3]; // Total Downloaded Byte Breakdowns
+	//Xman
+	/*
+	HTREEITEM	hdown_soh, down_soh[4], hdown_toh, down_toh[4]; // Downline Overhead
+	HTREEITEM	down_ssessions[4], down_tsessions[4], down_sources[22]; // Breakdown of Download Sessions and Sources
+	*/
 	HTREEITEM	hdown_soh, down_soh[5 /*Xman +1 count obfuscation data*/], hdown_toh, down_toh[4]; // Downline Overhead
 	HTREEITEM	down_ssessions[4], down_tsessions[4], down_sources[23 /*+1 Xman Xtreme Mod: Count failed tcp-connections */]; // Breakdown of Download Sessions and Sources
+	//Xman end
 	HTREEITEM	h_connection, h_conn_session, h_conn_total; // Connection Section Headers
 	HTREEITEM	hconn_sg, conn_sg[5], hconn_su, conn_su[4], hconn_sd, conn_sd[4]; // Connection Session Section Headers and Items
 	HTREEITEM	hconn_tg, conn_tg[4], hconn_tu, conn_tu[3], hconn_td, conn_td[3]; // Connection Total Section Headers and Items
+	//Xman
+	/*
+	HTREEITEM	h_clients, cligen[6], hclisoft, clisoft[8];
+	*/
 	HTREEITEM	h_clients, cligen[9/*6*Official+1*Leecher+1*Mods+1*Country*/], hclisoft, clisoft[8]; //Xman Anti-Leecher //Xman extended stats
+	//Xman end
 	HTREEITEM	cli_versions[MAX_CLIENTS_WITH_SUB_VERSION*MAX_SUB_CLIENT_VERSIONS];
 	HTREEITEM	cli_other[MAX_SUB_CLIENT_VERSIONS/2];
 	HTREEITEM	hclinet, clinet[4]; // Clients Section
@@ -116,6 +140,10 @@ private:
 
 	//Xman
 	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
+	/*
+	int		m_oldcx;
+	int		m_oldcy;
+	*/
 	void ShowGraphs();
 	uint16 m_intervalGraph; // refresh counter for graphs
 	uint16 m_intervalStat;  // refresh counter for statistic
@@ -157,6 +185,7 @@ protected:
 	afx_msg void OnStnDblclickScopeU();
 	afx_msg void OnStnDblclickStatsscope();
 	afx_msg LRESULT OnOscopePositionMsg(WPARAM wParam, LPARAM lParam);
+	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
 
 	//Xman
 	// Maella -Network Adapter Feedback Control-

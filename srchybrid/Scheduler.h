@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -73,6 +73,10 @@ public:
 	
 	//Xman
 	// Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+	/*
+	uint16	original_upload;
+	uint16	original_download;
+	*/
 	float	original_upload;
 	float	original_download;
 	//Xman end

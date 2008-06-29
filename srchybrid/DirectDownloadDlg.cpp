@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -207,7 +207,9 @@ void CDirectDownloadDlg::UpdateCatTabs() {
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	m_cattabs.SetCurSel(oldsel);
-}// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+}
+
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 void CDirectDownloadDlg::OnNMClickCats(NMHDR* /*pNMHDR*/, LRESULT *pResult)
 {
 	POINT point;
@@ -228,5 +230,4 @@ void CDirectDownloadDlg::OnNMClickCats(NMHDR* /*pNMHDR*/, LRESULT *pResult)
 			m_cattabs.DeselectAll(false);
 		}
 	*pResult = 0;
-}
-// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+}// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle

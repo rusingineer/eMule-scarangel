@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -20,12 +20,12 @@
 /*
 //Xman
 //ModID
-#define MOD_VERSION		_T("Xtreme 6.1") 
+#define MOD_VERSION		_T("Xtreme 7.0") 
 */
 
 //Xman versions check
-#define MOD_MAIN_VER	6
-#define MOD_MIN_VER		1
+#define MOD_MAIN_VER	7
+#define MOD_MIN_VER		0
 #define	MOD_BUILD_VER	1 //1=Xtreme x.x 2=Xtreme x.x.1
 /*
 
@@ -38,7 +38,9 @@
 
 
 //Xman Links:
+#define MOD_FORUMLINK _T("http://www.emule-web.de/board/forum34.html")
 #define MOD_HPLINK _T("http://xtreme-mod.net")
+#define MOD_VOTELINK _T("http://www.emule-mods.de/?comment=xtreme#addentry")
 //---------------------------------------
 
 // MOD Note: Do not change this part - Merkur
@@ -49,7 +51,10 @@
 #define KADEMLIA_VERSION1_46c			0x01 /*45b - 46c*/
 #define KADEMLIA_VERSION2_47a			0x02 /*47a*/
 #define KADEMLIA_VERSION3_47b			0x03 /*47b*/
-#define KADEMLIA_VERSION				0x05
+#define KADEMLIA_VERSION5_48a			0x05 // -0.48a
+#define KADEMLIA_VERSION6_49aBETA		0x06 // -0.49aBETA1, needs to support: OP_FWCHECKUDPREQ (!), obfuscation, direct callbacks, source type 6, UDP firewallcheck
+#define KADEMLIA_VERSION7_49a			0x07 // -0.49a needs to support OP_KAD_FWTCPCHECK_ACK, KADEMLIA_FIREWALLED2_REQ
+#define KADEMLIA_VERSION				0x07 // Change CT_EMULE_MISCOPTIONS2 if Kadversion becomes >= 15
 #define PREFFILE_VERSION				0x14	//<<-- last change: reduced .dat, by using .ini
 #define PARTFILE_VERSION				0xe0
 #define PARTFILE_SPLITTEDVERSION		0xe1
@@ -90,7 +95,12 @@
 #define MAX_RESULTS				100			// max global search results
 #define	MAX_MORE_SEARCH_REQ		5			// this gives a max. total search results of (1+5)*201 = 1206 or (1+5)*300 = 1800
 #define MAX_CLIENTCONNECTIONTRY	2
-#define CONNECTION_TIMEOUT		SEC2MS(50)	//Xman changed to 50 //40 secs - set his lower if you want less connections at once, set it higher if you have enough sockets (edonkey has its own timout too, so a very high value won't effect this)
+//Xman changed to 50
+/*
+#define CONNECTION_TIMEOUT		SEC2MS(40)	//40 secs - set his lower if you want less connections at once, set it higher if you have enough sockets (edonkey has its own timout too, so a very high value won't effect this)
+*/
+#define CONNECTION_TIMEOUT		SEC2MS(50)	//50 secs - set his lower if you want less connections at once, set it higher if you have enough sockets (edonkey has its own timout too, so a very high value won't effect this)
+//Xman end
 #define	FILEREASKTIME			MIN2MS(29)	//29 mins
 #define SERVERREASKTIME			MIN2MS(15)	//15 mins - don't set this too low, it wont speed up anything, but it could kill emule or your internetconnection
 #define UDPSERVERREASKTIME		MIN2MS(30)	//30 mins
@@ -114,6 +124,7 @@
 #define KADEMLIAMAXNOTESPERFILE	150			//Max number of notes per entry in index.
 #define KADEMLIAFIREWALLCHECKS	4			//Firewallcheck Request at a time
 
+
 #define ED2KREPUBLISHTIME		MIN2MS(1)	//1 min
 #define MINCOMMONPENALTY		4
 #define UDPSERVERSTATTIME		SEC2MS(5)	//5 secs
@@ -125,7 +136,13 @@
 #define	MAX_SOURCES_FILE_SOFT	750
 #define	MAX_SOURCES_FILE_UDP	50
 #define SESSIONMAXTRANS			(PARTSIZE+20*1024) // "Try to send complete chunks" always sends this amount of data
-#define SESSIONMAXTIME			HR2MS(2)	//Xman Full Chunk, changed from 1 to 2 hours // Xtreme Upload: with the lowest slotspeed (1,5kbs) we need 110 minutes to complete one chunk
+//Xman Full Chunk, changed from 1 to 2 hours
+// Xtreme Upload: with the lowest slotspeed (1,5kbs) we need 110 minutes to complete one chunk
+/*
+#define SESSIONMAXTIME			HR2MS(1)	//1 hour
+*/
+#define SESSIONMAXTIME			HR2MS(2)
+//Xman end
 #define	MAXFILECOMMENTLEN		50
 #define	PARTSIZE				9728000ui64
 #define	MAX_EMULE_FILE_SIZE	0x4000000000ui64 // = 2^38 = 256GB
@@ -140,23 +157,48 @@
 #define	UPLOAD_CLIENT_DATARATE	3072		// uploadspeed per client in bytes - you may want to adjust this if you have a slow connection or T1-T3 ;)
 #define	MAX_UP_CLIENTS_ALLOWED	250			// max. clients allowed regardless UPLOAD_CLIENT_DATARATE or any other factors. Don't set this too low, use DATARATE to adjust uploadspeed per client
 #define	MIN_UP_CLIENTS_ALLOWED	2			// min. clients allowed to download regardless UPLOAD_CLIENT_DATARATE or any other factors. Don't set this too high
-#define DOWNLOADTIMEOUT			SEC2MS(120) //Xman increased from 100
+//Xman increased from 100
+/*
+#define DOWNLOADTIMEOUT			SEC2MS(100)
+*/
+#define DOWNLOADTIMEOUT			SEC2MS(120)
+//Xman end
 #define CONSERVTIMEOUT			SEC2MS(25)	// agelimit for pending connection attempts
 #define RARE_FILE				50
 #define BADCLIENTBAN			4
 #define	MIN_REQUESTTIME			MIN2MS(10) 
-#define	MAX_PURGEQUEUETIME		MIN2MS(80)  //Xman Xtreme Upload
+//Xman Xtreme Upload
+/*
+#define	MAX_PURGEQUEUETIME		HR2MS(1) 
+*/
+#define	MAX_PURGEQUEUETIME		MIN2MS(80)
+//Xman end
 //Xman Xtreme Downloadmanager changed form 15 to 40, important!
-#define PURGESOURCESWAPSTOP		MIN2MS(40)	// (15 mins), how long forbid swapping a source to a certain file (NNP,...)
+/*
+#define PURGESOURCESWAPSTOP		MIN2MS(15)	// (15 mins), how long forbid swapping a source to a certain file (NNP,...)
+*/
+#define PURGESOURCESWAPSTOP		MIN2MS(40)	// (40 mins), how long forbid swapping a source to a certain file (NNP,...)
+//Xman end
 #define CONNECTION_LATENCY		22050		// latency for responces
 #define MINWAIT_BEFORE_DLDISPLAY_WINDOWUPDATE   1000
 #define MINWAIT_BEFORE_ULDISPLAY_WINDOWUPDATE   1000
-#define CLIENTBANTIME			HR2MS(4)	// 2h //Xman changed to 4 hours
-#define TRACKED_CLEANUP_TIME	MIN2MS(30)	// 1 hour //Xman changed to 30 minutes
+//Xman changed
+/*
+#define CLIENTBANTIME			HR2MS(2)	// 2h
+#define TRACKED_CLEANUP_TIME	HR2MS(1)	// 1 hour
+*/
+#define CLIENTBANTIME			HR2MS(4)	// 4h
+#define TRACKED_CLEANUP_TIME	MIN2MS(30)	// 1/2 hour
+//Xman end
 #define KEEPTRACK_TIME			HR2MS(2)	// 2h	//how long to keep track of clients which were once in the uploadqueue
 #define LOCALSERVERREQUESTS		20000		// only one local src request during this timespan (WHERE IS THIS USED?)
 #define DISKSPACERECHECKTIME	MIN2MS(15)
-#define CLIENTLIST_CLEANUP_TIME	MIN2MS(21)	// //Xman changed to 10, because of extended cleanup  //34 min
+//Xman changed to 10, because of extended cleanup
+/*
+#define CLIENTLIST_CLEANUP_TIME	MIN2MS(34)	// 34 min
+*/
+#define CLIENTLIST_CLEANUP_TIME	MIN2MS(21)	//21 min
+//Xman end
 #define MAXPRIORITYCOLL_SIZE	10*1024		// max file size for collection file which are allowed to bypass the queue
 #define SEARCH_SPAM_THRESHOLD	60
 
@@ -308,6 +350,10 @@
 #define OP_SENDINGPART_I64		0xA2	// <HASH 16><von 8><bis 8><Daten len:(von-bis)>
 #define	OP_REQUESTPARTS_I64		0xA3	// <HASH 16><von[3] 8*3><bis[3] 8*3>
 #define OP_MULTIPACKET_EXT		0xA4		
+#define OP_CHATCAPTCHAREQ		0xA5	// <tags 1>[tags]<Captcha BITMAP>
+#define OP_CHATCAPTCHARES		0xA6	// <status 1>
+#define OP_FWCHECKUDPREQ		0xA7	// <Inter_Port 2><Extern_Port 2><KadUDPKey 4> *Support required for Kadversion >= 6
+#define OP_KAD_FWTCPCHECK_ACK	0xA8	// (null/reserved), replaces KADEMLIA_FIREWALLED_ACK_RES, *Support required for Kadversion >= 7
 
 // extened prot client <-> extened prot client UDP
 #define OP_REASKFILEPING		0x90	// <HASH 16>
@@ -315,6 +361,7 @@
 #define OP_FILENOTFOUND			0x92	// (null)
 #define OP_QUEUEFULL			0x93	// (null)
 #define OP_REASKCALLBACKUDP		0x94
+#define OP_DIRECTCALLBACKREQ	0x95	// <TCPPort 2><Userhash 16><ConnectionOptions 1>
 #define OP_PORTTEST				0xFE	// Connection Test
 
 // server.met
@@ -398,6 +445,8 @@
 #define TAG_COMPLETE_SOURCES	"\x30"
 #define  FT_COLLECTIONAUTHOR	 0x31
 #define  FT_COLLECTIONAUTHORKEY  0x32
+#define  FT_PUBLISHINFO			 0x33	// <uint32>
+#define TAG_PUBLISHINFO			"\x33"	// <uint32>
 // statistic
 #define  FT_ATTRANSFERRED		 0x50	// <uint32>
 #define  FT_ATREQUESTED			 0x51	// <uint32>
@@ -645,6 +694,7 @@
 #define KADEMLIA_FIREWALLED_REQ			0x50	// <TCPPORT (sender) [2]>
 #define KADEMLIA_FINDBUDDY_REQ			0x51	// <TCPPORT (sender) [2]>
 #define KADEMLIA_CALLBACK_REQ			0x52	// <TCPPORT (sender) [2]>
+#define KADEMLIA_FIREWALLED2_REQ		0x53	// <TCPPORT (sender) [2]><userhash><connectoptions 1>
 
 #define KADEMLIA_FIREWALLED_RES			0x58	// <IP (sender) [4]>
 #define KADEMLIA_FIREWALLED_ACK_RES		0x59	// (null)
@@ -652,6 +702,8 @@
 
 #define KADEMLIA2_PING					0x60	// (null)
 #define KADEMLIA2_PONG					0x61	// (null)
+
+#define KADEMLIA2_FIREWALLUDP			0x62	// <errorcode [1]><UDPPort_Used [2]>
 
 // KADEMLIA (parameter)
 #define KADEMLIA_FIND_VALUE				0x02

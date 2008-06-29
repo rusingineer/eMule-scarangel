@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -16,6 +16,7 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "stdafx.h"
 #include <share.h>
+#include <io.h>
 #include "emule.h"
 #include "ServerListCtrl.h"
 #include "OtherFunctions.h"
@@ -31,7 +32,7 @@
 #include "Log.h"
 #include "ToolTipCtrlX.h"
 #include "IP2Country.h" //EastShare - added by AndCycle, IP to Country
-#include "MemDC.h" // ""
+#include "MemDC.h" // Xman
 #include "IPFilter.h" 
 
 #ifdef _DEBUG
@@ -50,13 +51,20 @@ BEGIN_MESSAGE_MAP(CServerListCtrl, CMuleListCtrl)
 	ON_WM_CONTEXTMENU()
 	ON_WM_SYSCOLORCHANGE()
 	//Xman no need for this because //EastShare - added by AndCycle, IP to Country
-	//ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, OnNMCustomDraw)
+	/*
+	ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, OnNMCustomDraw)
+	*/
 	//Xman end
 END_MESSAGE_MAP()
 
 CServerListCtrl::CServerListCtrl()
 {
-	SetGeneralPurposeFind(true, false); //Xman IP to country //remark: because of new drawing methodes we can only search first column
+	//Xman IP to country //remark: because of new drawing methodes we can only search first column
+	/*
+	SetGeneralPurposeFind(true);
+	*/
+	SetGeneralPurposeFind(true, false);
+	//Xman end
 	m_tooltip = new CToolTipCtrlX;
 }
 
@@ -231,9 +239,9 @@ void CServerListCtrl::RemoveServer(const CServer* pServer)
 void CServerListCtrl::RemoveAllDeadServers()
 {
 	ShowWindow(SW_HIDE);
-	for(POSITION pos = theApp.serverlist->list.GetHeadPosition(); pos != NULL; theApp.serverlist->list.GetNext(pos))
+	for (POSITION pos = theApp.serverlist->list.GetHeadPosition(); pos != NULL; )
 	{
-		const CServer* cur_server = theApp.serverlist->list.GetAt(pos);
+		const CServer* cur_server = theApp.serverlist->list.GetNext(pos);
 		if (cur_server->GetFailedCount() >= thePrefs.GetDeadServerRetries()) 
 		{
 				//Xman
@@ -242,8 +250,7 @@ void CServerListCtrl::RemoveAllDeadServers()
 				if ((!cur_server->IsStaticMember()) || (!thePrefs.GetDontRemoveStaticServers())) {
 					RemoveServer(cur_server);
 					pos = theApp.serverlist->list.GetHeadPosition();
-				}
-				// [end] Mighty Knife
+				} // [end] Mighty Knife
 		}
 	}
 	ShowWindow(SW_SHOW);
@@ -254,9 +261,9 @@ void CServerListCtrl::RemoveAllFilteredServers()
 	if (!thePrefs.GetFilterServerByIP())
 		return;
 	ShowWindow(SW_HIDE);
-	for (POSITION pos = theApp.serverlist->list.GetHeadPosition(); pos != NULL; theApp.serverlist->list.GetNext(pos))
+	for (POSITION pos = theApp.serverlist->list.GetHeadPosition(); pos != NULL; )
 	{
-		const CServer* cur_server = theApp.serverlist->list.GetAt(pos);
+		const CServer* cur_server = theApp.serverlist->list.GetNext(pos);
 		if (theApp.ipfilter->IsFiltered(cur_server->GetIP()))
 		{
 			if (thePrefs.GetLogFilteredIPs())
@@ -268,13 +275,14 @@ void CServerListCtrl::RemoveAllFilteredServers()
 	ShowWindow(SW_SHOW);
 }
 
-bool CServerListCtrl::AddServer(const CServer* pServer, bool bAddToList)
+bool CServerListCtrl::AddServer(const CServer* pServer, bool bAddToList, bool bRandom)
 {
-	if (!theApp.serverlist->AddServer(pServer))
+	bool bAddTail = !bRandom || ((GetRandomUInt16() % (1 + theApp.serverlist->GetServerCount())) != 0);
+	if (!theApp.serverlist->AddServer(pServer, bAddTail))
 		return false;
 	if (bAddToList)
 	{
-		InsertItem(LVIF_TEXT | LVIF_PARAM, GetItemCount(), pServer->GetListName(), 0, 0, 1, (LPARAM)pServer);
+		InsertItem(LVIF_TEXT | LVIF_PARAM, bAddTail ? GetItemCount() : 0, pServer->GetListName(), 0, 0, 1, (LPARAM)pServer);
 		RefreshServer(pServer);
 	}
 	ShowServerCount();
@@ -298,8 +306,8 @@ void CServerListCtrl::RefreshServer(const CServer* server)
 	return;
 	//MORPH START - Added by SiRoB,  CountryFlag Addon
 
-	/* Xman not used because of morph code
-
+	//Xman not used because of morph code
+	/*
 	CString temp;
 	temp.Format(_T("%s : %i"), server->GetAddress(), server->GetPort());
 	SetItemText(itemnr, 1, temp);
@@ -396,8 +404,8 @@ void CServerListCtrl::RefreshServer(const CServer* server)
 	SetItemText(itemnr, 14, GetResString(IDS_YES));
 	else
 	SetItemText(itemnr, 14, GetResString(IDS_NO));
-
 	*/
+	//Xman end
 }
 
 //EastShare Start - added by AndCycle, IP to Country
@@ -592,7 +600,7 @@ BOOL CServerListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 			CServer* pServer = (CServer*)GetItemData(GetNextSelectedItem(pos));
 			if (!StaticServerFileAppend(pServer))
 				return FALSE;
-			theApp.emuledlg->serverwnd->serverlistctrl.RefreshServer(pServer);
+			RefreshServer(pServer);
 		}
 		return TRUE;
 						 }
@@ -603,7 +611,7 @@ BOOL CServerListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 			CServer* pServer = (CServer*)GetItemData(GetNextSelectedItem(pos));
 			if (!StaticServerFileRemove(pServer))
 				return FALSE;
-			theApp.emuledlg->serverwnd->serverlistctrl.RefreshServer(pServer);
+			RefreshServer(pServer);
 		}
 		return TRUE;
 							  }
@@ -665,7 +673,7 @@ void CServerListCtrl::SetSelectedServersPriority(UINT uPriority)
 			pServer->SetPreference(uPriority);
 			if (pServer->IsStaticMember())
 				bUpdateStaticServersFile = true;
-			theApp.emuledlg->serverwnd->serverlistctrl.RefreshServer(pServer);
+			RefreshServer(pServer);
 		}
 	}
 	if (bUpdateStaticServersFile)
@@ -831,6 +839,7 @@ int CServerListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 	  default: 
 		  iResult = 0;
 	} 
+
 	// SLUGFILLER: multiSort remove - handled in parent class
 	/*
 	int dwNextSort;
@@ -840,6 +849,8 @@ int CServerListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 		iResult= SortProc(lParam1, lParam2, dwNextSort);
 	}
 	*/
+	//Xman end
+
 	if (HIWORD(lParamSort))
 		iResult = -iResult;
 	return iResult;
@@ -847,113 +858,20 @@ int CServerListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 
 bool CServerListCtrl::StaticServerFileAppend(CServer *server)
 {
-	try
-	{
-		// Remove any entry before writing to avoid duplicates
-		StaticServerFileRemove(server);
-
-		FILE* staticservers = _tfsopen(thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + _T("staticservers.dat"), _T("a"), _SH_DENYWR);
-		if (staticservers==NULL) 
-		{
-			LogError(LOG_STATUSBAR, GetResString(IDS_ERROR_SSF));
-			return false;
-		}
-		
-		if (_ftprintf(staticservers,
-					_T("%s:%i,%i,%s\n"),
-					server->GetAddress(),
-					server->GetPort(), 
-					server->GetPreference(),
-					server->GetListName()) != EOF) 
-		{
-			AddLogLine(false, _T("'%s:%i,%s' %s"), server->GetAddress(), server->GetPort(), server->GetListName(), GetResString(IDS_ADDED2SSF));
-			server->SetIsStaticMember(true);
-			theApp.emuledlg->serverwnd->serverlistctrl.RefreshServer(server);
-		}
-
-		fclose(staticservers);
-	}
-	catch (...)
-	{
-		ASSERT(0);
-		return false;
-	}
-	return true;
+	bool bResult;
+	AddLogLine(false, _T("'%s:%i,%s' %s"), server->GetAddress(), server->GetPort(), server->GetListName(), GetResString(IDS_ADDED2SSF));
+	server->SetIsStaticMember(true);
+	bResult = theApp.serverlist->SaveStaticServers();
+	RefreshServer(server);
+	return bResult;
 }
 
 bool CServerListCtrl::StaticServerFileRemove(CServer *server)
 {
-	bool removed=false;
-
-	try
-	{
-		if (!server->IsStaticMember())
-			return true;
-
-		CString strLine;
-		CString strTest;
-		TCHAR buffer[1024];
-		int lenBuf = 1024;
-		int pos;
-		CString StaticFilePath = thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + _T("staticservers.dat");
-		CString StaticTempPath = thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + _T("statictemp.dat");
-		FILE* staticservers = _tfsopen(StaticFilePath , _T("r"), _SH_DENYWR);
-		FILE* statictemp = _tfsopen(StaticTempPath , _T("w"), _SH_DENYWR);
-
-		if ((staticservers == NULL) || (statictemp == NULL))
-		{
-			if (staticservers)
-				fclose(staticservers);
-			if (statictemp)
-				fclose(statictemp);
-			LogError(LOG_STATUSBAR, GetResString(IDS_ERROR_SSF));
-			return false;
-		}
-
-		while (!feof(staticservers))
-		{
-			if (_fgetts(buffer, lenBuf, staticservers) == 0)
-				break;
-
-			strLine = buffer;
-
-			// ignore comments or invalid lines
-			if (strLine.GetAt(0) == _T('#') || strLine.GetAt(0) == _T('/'))
-				continue;
-			if (strLine.GetLength() < 5)
-				continue;
-
-			// Only interested in "host:port"
-			pos = strLine.Find(_T(','));
-			if (pos == -1)
-				continue;
-			strLine = strLine.Left(pos);
-
-			// Get host and port from given server
-			strTest.Format(_T("%s:%i"), server->GetAddress(), server->GetPort());
-
-			// Compare, if not the same server write original line to temp file
-			if (strLine.Compare(strTest) != 0)
-				_ftprintf(statictemp, _T("%s"), buffer);
-			else {
-				server->SetIsStaticMember(false);
-				removed=true;
-			}
-		}
-
-		fclose(staticservers);
-		fclose(statictemp);
-
-		// All ok, remove the existing file and replace with the new one
-		CFile::Remove( StaticFilePath );
-		CFile::Rename( StaticTempPath, StaticFilePath );
-	}
-	catch (...)
-	{
-		ASSERT(0);
-		return false;
-	}
-	return removed;
+	if (!server->IsStaticMember())
+		return true;
+	server->SetIsStaticMember(false);
+	return theApp.serverlist->SaveStaticServers();
 }
 
 void CServerListCtrl::ShowServerCount()
@@ -981,7 +899,7 @@ void CServerListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 
 		if (!bShowInfoTip) {
 			if (!bOverMainItem){
-				// don' show the default label tip for the main item, if the mouse is not over the main item
+				// don't show the default label tip for the main item, if the mouse is not over the main item
 				if ((pGetInfoTip->dwFlags & LVGIT_UNFOLDED) == 0 && pGetInfoTip->cchTextMax > 0 && pGetInfoTip->pszText[0] != _T('\0'))
 					pGetInfoTip->pszText[0] = _T('\0');
 			}
@@ -1019,7 +937,7 @@ void CServerListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 					GetResString(IDS_UUSERS), CastItoIShort(ulTotalUsers),
 					GetResString(IDS_IDLOW), CastItoIShort(ulTotalLowIdUsers),
 					GetResString(IDS_PW_FILES), CastItoIShort(ulTotalFiles));
-
+				strInfo += TOOLTIP_AUTOFORMAT_SUFFIX_CH;
 				_tcsncpy(pGetInfoTip->pszText, strInfo, pGetInfoTip->cchTextMax);
 				pGetInfoTip->pszText[pGetInfoTip->cchTextMax-1] = _T('\0');
 			}
@@ -1028,13 +946,18 @@ void CServerListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 
 	*pResult = 0;
 }
+
 //Xman no need for this because //EastShare - added by AndCycle, IP to Country
+/*
+void CServerListCtrl::OnNMCustomDraw(NMHDR *pNMHDR, LRESULT *plResult)
+*/
 void CServerListCtrl::OnNMCustomDraw(NMHDR* /*pNMHDR*/, LRESULT* /*plResult*/)
 {
 	
 	return; 
 //Xman end
 
+	//Xman no need for this because //EastShare - added by AndCycle, IP to Country
 	/*
 	LPNMLVCUSTOMDRAW pnmlvcd = (LPNMLVCUSTOMDRAW)pNMHDR;
 
@@ -1049,7 +972,7 @@ void CServerListCtrl::OnNMCustomDraw(NMHDR* /*pNMHDR*/, LRESULT* /*plResult*/)
 		const CServer* pServer = (const CServer*)pnmlvcd->nmcd.lItemlParam;
 		const CServer* pConnectedServer = theApp.serverconnect->GetCurrentServer();
 		// the server which we are connected to always has a valid numerical IP member assigned,
-		// therefor we do not need to call CServer::IsEqual which would be little expensive
+		// therefor we do not need to call CServer::IsEqual which would be expensive
 		//if (pConnectedServer && pConnectedServer->IsEqual(pServer))
 		if (pConnectedServer && pConnectedServer->GetIP() == pServer->GetIP() && pConnectedServer->GetPort() == pServer->GetPort())
 			pnmlvcd->clrText = RGB(32,32,255);
@@ -1061,6 +984,7 @@ void CServerListCtrl::OnNMCustomDraw(NMHDR* /*pNMHDR*/, LRESULT* /*plResult*/)
 
 	*plResult = CDRF_DODEFAULT;
 	*/
+	//Xman end
 }
 
 //Commander - Added: CountryFlag - Start IP to Country

@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -96,17 +96,17 @@ CPPgTweaks::CPPgTweaks()
 	// <== Improved ICS-Firewall support [MoNKi] - Max
 	m_iLogLevel = 0;
 	m_bDisablePeerCache = false;
-	/* Xman
-	// ZZ:UploadSpeedSense -->
+	//Xman
+	/*
 	m_bDynUpEnabled = false;
     m_iDynUpMinUpload = 0;
     m_iDynUpPingTolerance = 0;
     m_iDynUpGoingUpDivider = 0;
     m_iDynUpGoingDownDivider = 0;
     m_iDynUpNumberOfPings = 0;
-    // ZZ:DownloadManager
 	m_bA4AFSaveCpu = false;
 	*/
+	//Xman end
 	m_iExtractMetaData = 0;
 	m_bAutoArchDisable = true;
 	//Xman official UPNP removed
@@ -115,6 +115,7 @@ CPPgTweaks::CPPgTweaks()
 	m_bSkipWANIPSetup = false;
 	m_bSkipWANPPPSetup = false;
 	*/
+	//Xman end
 	m_iShareeMule = 0;
 	m_iCryptTCPPaddingLength = 128; //Xman Added PaddingLength to Extended preferences
 
@@ -160,8 +161,8 @@ CPPgTweaks::CPPgTweaks()
 	// <== Improved ICS-Firewall support [MoNKi] - Max
 	m_htiLogLevel = NULL;
 	m_htiDisablePeerCache = NULL;
-	/* Xman
-	// ZZ:UploadSpeedSense -->
+	//Xman
+	/*
 	m_htiDynUp = NULL;
 	m_htiDynUpEnabled = NULL;
     m_htiDynUpMinUpload = NULL;
@@ -173,9 +174,9 @@ CPPgTweaks::CPPgTweaks()
     m_htiDynUpGoingUpDivider = NULL;
     m_htiDynUpGoingDownDivider = NULL;
     m_htiDynUpNumberOfPings = NULL;
-    // ZZ:DownloadManager
 	m_htiA4AFSaveCpu = NULL;
 	*/
+	//Xman end
 	m_htiLogA4AF = NULL;
 	m_htiLogDrop = NULL; //Xman Xtreme Downloadmanager
 	m_htiLogpartmismtach = NULL; //Xman Log part/size-mismatch
@@ -193,11 +194,13 @@ CPPgTweaks::CPPgTweaks()
 	m_htiSkipWANIPSetup = NULL;
 	m_htiSkipWANPPPSetup = NULL;
 	*/
+	//Xman end
 	m_htiShareeMule = NULL;
 	m_htiShareeMuleMultiUser = NULL;
 	m_htiShareeMulePublicUser = NULL;
 	m_htiShareeMuleOldStyle = NULL;
 	m_htiCryptTCPPaddingLength=NULL; //Xman Added PaddingLength to Extended preferences
+
 }
 
 CPPgTweaks::~CPPgTweaks()
@@ -214,25 +217,33 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	{
 		int iImgBackup = 8; // default icon
 		int iImgLog = 8;
-		// ZZ:UploadSpeedSense -->
-		//int iImgDynyp = 8; // default icon
-		// ZZ:UploadSpeedSense <--
+		//Xman
+		/*
+		int iImgDynyp = 8;
 		int iImgConnection = 8;
-		//int iImgA4AF = 8; // ZZ:DownloadManager
+		int iImgA4AF = 8;
 		int iImgMetaData = 8;
-		//int iImgUPnP = 8; //Xman official UPNP removed
+		int iImgUPnP = 8;
+		*/
+		int iImgConnection = 8;
+		int iImgMetaData = 8;
+		//Xman end
 		int iImgShareeMule = 8;
         CImageList* piml = m_ctrlTreeOptions.GetImageList(TVSIL_NORMAL);
 		if (piml){
 			iImgBackup =	piml->Add(CTempIconLoader(_T("Harddisk")));
 			iImgLog =		piml->Add(CTempIconLoader(_T("Log")));
-			// ZZ:UploadSpeedSense -->
-			//iImgDynyp = piml->Add(CTempIconLoader(_T("upload")));
-			// ZZ:UploadSpeedSense <--
+			//Xman
+			/*
+			iImgDynyp =		piml->Add(CTempIconLoader(_T("upload")));
 			iImgConnection=	piml->Add(CTempIconLoader(_T("connection")));
-            //iImgA4AF =		piml->Add(CTempIconLoader(_T("Download"))); // ZZ:DownloadManager
+            iImgA4AF =		piml->Add(CTempIconLoader(_T("Download")));
             iImgMetaData =	piml->Add(CTempIconLoader(_T("MediaInfo")));
-			//iImgUPnP =		piml->Add(CTempIconLoader(_T("connectedhighhigh"))); //Xman official UPNP removed
+			iImgUPnP =		piml->Add(CTempIconLoader(_T("connectedhighhigh")));
+			*/
+			iImgConnection=	piml->Add(CTempIconLoader(_T("connection")));
+            iImgMetaData =	piml->Add(CTempIconLoader(_T("MediaInfo")));
+			//Xman end
 			iImgShareeMule =piml->Add(CTempIconLoader(_T("viewfiles")));
 		}
 
@@ -264,7 +275,11 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 		// <== Improved ICS-Firewall support [MoNKi] - Max
 		m_htiFilterLANIPs = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PW_FILTER), TVI_ROOT, m_bFilterLANIPs);
 		m_htiExtControls = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOWEXTSETTINGS), TVI_ROOT, m_bExtControls);
-        //m_htiA4AFSaveCpu = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_A4AF_SAVE_CPU), TVI_ROOT, m_bA4AFSaveCpu); // ZZ:DownloadManager
+		//Xman
+		/*
+        m_htiA4AFSaveCpu = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_A4AF_SAVE_CPU), TVI_ROOT, m_bA4AFSaveCpu); // ZZ:DownloadManager
+		*/
+		//Xman end
 		m_htiAutoArch  = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_DISABLE_AUTOARCHPREV), TVI_ROOT, m_bAutoArchDisable);
 		m_htiYourHostname = m_ctrlTreeOptions.InsertItem(GetResString(IDS_YOURHOSTNAME), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, TVI_ROOT);
 		m_ctrlTreeOptions.AddEditBox(m_htiYourHostname, RUNTIME_CLASS(CTreeOptionsEditEx));
@@ -317,8 +332,8 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 		/////////////////////////////////////////////////////////////////////////////
 		// USS group
 		//
-		/* Xman
-		// ZZ:UploadSpeedSense -->
+		//Xman
+		/*
         m_htiDynUp = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_DYNUP), iImgDynyp, TVI_ROOT);
 		m_htiDynUpEnabled = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_DYNUPENABLED), m_htiDynUp, m_bDynUpEnabled);
         m_htiDynUpMinUpload = m_ctrlTreeOptions.InsertItem(GetResString(IDS_DYNUP_MINUPLOAD), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiDynUp);
@@ -336,8 +351,8 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.AddEditBox(m_htiDynUpGoingDownDivider, RUNTIME_CLASS(CNumTreeOptionsEdit));
         m_htiDynUpNumberOfPings = m_ctrlTreeOptions.InsertItem(GetResString(IDS_DYNUP_NUMBEROFPINGS), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiDynUp);
 		m_ctrlTreeOptions.AddEditBox(m_htiDynUpNumberOfPings, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		// ZZ:UploadSpeedSense <--
 		*/
+		//Xman end
 
 		//Xman official UPNP removed
 		/*
@@ -349,13 +364,16 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 		m_htiSkipWANIPSetup = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_UPNPSKIPWANIP), m_htiUPnP, m_bSkipWANIPSetup);
 		m_htiSkipWANPPPSetup = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_UPNPSKIPWANPPP), m_htiUPnP, m_bSkipWANPPPSetup);
 		*/
+		//Xman end
+
 		/////////////////////////////////////////////////////////////////////////////
 		// eMule Shared User
 		//
 		m_htiShareeMule = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_SHAREEMULELABEL), iImgShareeMule, TVI_ROOT);
-		m_htiShareeMuleMultiUser = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_SHAREEMULEMULTI), m_htiShareeMule, m_iCommitFiles == 0);
-		m_htiShareeMulePublicUser = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_SHAREEMULEPUBLIC), m_htiShareeMule, m_iCommitFiles == 1);
-		m_htiShareeMuleOldStyle = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_SHAREEMULEOLD), m_htiShareeMule, m_iCommitFiles == 2);
+		m_htiShareeMuleMultiUser = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_SHAREEMULEMULTI), m_htiShareeMule, m_iShareeMule == 0);
+		m_htiShareeMulePublicUser = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_SHAREEMULEPUBLIC), m_htiShareeMule, m_iShareeMule == 1);
+		m_htiShareeMuleOldStyle = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_SHAREEMULEOLD), m_htiShareeMule, m_iShareeMule == 2);
+
 
 		//Xman Added PaddingLength to Extended preferences
 		m_htiCryptTCPPaddingLength=m_ctrlTreeOptions.InsertItem(_T("Obfuscation-Padding-Length"),TREEOPTSCTRLIMG_EDIT,TREEOPTSCTRLIMG_EDIT,TVI_ROOT);
@@ -378,12 +396,18 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 
 		m_ctrlTreeOptions.Expand(m_htiCommit, TVE_EXPAND);
 		m_ctrlTreeOptions.Expand(m_htiCheckDiskspace, TVE_EXPAND);
-		// ZZ:UploadSpeedSense -->
-		//m_ctrlTreeOptions.Expand(m_htiDynUp, TVE_EXPAND);
-        //m_ctrlTreeOptions.Expand(m_htiDynUpPingToleranceGroup, TVE_EXPAND);
-		// ZZ:UploadSpeedSense <--
+		//Xman
+		/*
+		m_ctrlTreeOptions.Expand(m_htiDynUp, TVE_EXPAND);
+        m_ctrlTreeOptions.Expand(m_htiDynUpPingToleranceGroup, TVE_EXPAND);
+		*/
+		//Xman end
 		m_ctrlTreeOptions.Expand(m_htiExtractMetaData, TVE_EXPAND);
-		//m_ctrlTreeOptions.Expand(m_htiUPnP, TVE_EXPAND); //Xman official UPNP removed
+		//Xman official UPNP removed
+		/*
+		m_ctrlTreeOptions.Expand(m_htiUPnP, TVE_EXPAND);
+		*/
+		//Xman end
 		m_ctrlTreeOptions.Expand(m_htiShareeMule, TVE_EXPAND);
         m_ctrlTreeOptions.SendMessage(WM_VSCROLL, SB_TOP);
         m_bInitializedTreeOpts = true;
@@ -417,7 +441,11 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	// <== Improved ICS-Firewall support [MoNKi] - Max
 	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiFilterLANIPs, m_bFilterLANIPs);
 	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiExtControls, m_bExtControls);
-    //DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiA4AFSaveCpu, m_bA4AFSaveCpu); // ZZ:DownloadManager
+	//Xman
+	/*
+    DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiA4AFSaveCpu, m_bA4AFSaveCpu);
+	*/
+	//Xman end
 	DDX_TreeEdit(pDX, IDC_EXT_OPTS, m_htiYourHostname, m_sYourHostname);
 	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiDisablePeerCache, m_bDisablePeerCache);
 	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiAutoArch, m_bAutoArchDisable);
@@ -473,8 +501,8 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	/////////////////////////////////////////////////////////////////////////////
 	// USS group
 	//
-	/* Xman
-	// ZZ:UploadSpeedSense -->
+	//Xman
+	/*
     DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiDynUpEnabled, m_bDynUpEnabled);
     DDX_TreeEdit(pDX, IDC_EXT_OPTS, m_htiDynUpMinUpload, m_iDynUpMinUpload);
 	DDV_MinMaxInt(pDX, m_iDynUpMinUpload, 1, INT_MAX);
@@ -489,8 +517,8 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxInt(pDX, m_iDynUpGoingDownDivider, 1, INT_MAX);
     DDX_TreeEdit(pDX, IDC_EXT_OPTS, m_htiDynUpNumberOfPings, m_iDynUpNumberOfPings);
 	DDV_MinMaxInt(pDX, m_iDynUpNumberOfPings, 1, INT_MAX);
-	// ZZ:UploadSpeedSense <--
 	*/
+	//Xman end
 
 	//Xman official UPNP removed
 	/*
@@ -501,6 +529,8 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiSkipWANIPSetup, m_bSkipWANIPSetup);
 	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiSkipWANPPPSetup, m_bSkipWANPPPSetup);
 	*/
+	//Xman end
+
 	/////////////////////////////////////////////////////////////////////////////
 	// eMule Shared User
 	//
@@ -575,8 +605,8 @@ BOOL CPPgTweaks::OnInitDialog()
 	m_bDisablePeerCache = !thePrefs.m_bPeerCacheEnabled;
 	m_bAutoArchDisable = !thePrefs.m_bAutomaticArcPreviewStart;
 
-	/* Xman
-	// ZZ:UploadSpeedSense -->
+	//Xman
+	/*
     m_bDynUpEnabled = thePrefs.m_bDynUpEnabled;
     m_iDynUpMinUpload = thePrefs.GetMinUpload();
     m_iDynUpPingTolerance = thePrefs.GetDynUpPingTolerance();
@@ -586,6 +616,7 @@ BOOL CPPgTweaks::OnInitDialog()
     m_iDynUpGoingDownDivider = thePrefs.GetDynUpGoingDownDivider();
     m_iDynUpNumberOfPings = thePrefs.GetDynUpNumberOfPings();
 	*/
+	//Xman end
 
 	//Xman official UPNP removed
 	/*
@@ -593,13 +624,19 @@ BOOL CPPgTweaks::OnInitDialog()
 	m_bSkipWANIPSetup = thePrefs.GetSkipWANIPSetup();
 	m_bSkipWANPPPSetup = thePrefs.GetSkipWANPPPSetup();
 	*/
+	//Xman end
+
 	m_iShareeMule = thePrefs.m_nCurrentUserDirMode;
 
 	//Xman Added PaddingLength to Extended preferences
 	m_iCryptTCPPaddingLength  = thePrefs.GetCryptTCPPaddingLength(); 
 	//Xman end
 
-    //m_bA4AFSaveCpu = thePrefs.GetA4AFSaveCpu(); // ZZ:DownloadManager
+	//Xman
+	/*
+    m_bA4AFSaveCpu = thePrefs.GetA4AFSaveCpu();
+	*/
+	//Xman end
 
 	// ==> UPnP support [MoNKi] - leuk_he
 	/*
@@ -617,7 +654,12 @@ BOOL CPPgTweaks::OnInitDialog()
 	m_ctrlTreeOptions.SetItemHeight(m_ctrlTreeOptions.GetItemHeight() + 2);
 
 	m_iFileBufferSize = thePrefs.m_iFileBufferSize;
-	m_ctlFileBuffSize.SetRange(16, 2048 /*1024+512*/, TRUE); //Xman increased to 2 MB
+	//Xman increased to 2 MB
+	/*
+	m_ctlFileBuffSize.SetRange(16, 1024+512, TRUE);
+	*/
+	m_ctlFileBuffSize.SetRange(16, 2048, TRUE);
+	//Xman end
 	int iMin, iMax;
 	m_ctlFileBuffSize.GetRange(iMin, iMax);
 	m_ctlFileBuffSize.SetPos(m_iFileBufferSize/1024);
@@ -733,8 +775,8 @@ BOOL CPPgTweaks::OnApply()
 	// <== Improved ICS-Firewall support [MoNKi] - Max
 	thePrefs.m_bPeerCacheEnabled = !m_bDisablePeerCache;
 
-	/* Xman
-	// ZZ:UploadSpeedSense -->
+	//Xman
+	/*
     thePrefs.m_bDynUpEnabled = m_bDynUpEnabled;
     thePrefs.minupload = (uint16)m_iDynUpMinUpload;
     thePrefs.m_iDynUpPingTolerance = m_iDynUpPingTolerance;
@@ -743,8 +785,8 @@ BOOL CPPgTweaks::OnApply()
     thePrefs.m_iDynUpGoingUpDivider = m_iDynUpGoingUpDivider;
     thePrefs.m_iDynUpGoingDownDivider = m_iDynUpGoingDownDivider;
     thePrefs.m_iDynUpNumberOfPings = m_iDynUpNumberOfPings;
-	// ZZ:UploadSpeedSense <--
 	*/
+	//Xman end
 	thePrefs.m_bAutomaticArcPreviewStart = !m_bAutoArchDisable;
 
 	//Xman official UPNP removed
@@ -753,13 +795,19 @@ BOOL CPPgTweaks::OnApply()
 	thePrefs.SetSkipWANIPSetup(m_bSkipWANIPSetup);
 	thePrefs.SetSkipWANPPPSetup(m_bSkipWANPPPSetup);
 	*/
+	//Xman end
+
 	thePrefs.ChangeUserDirMode(m_iShareeMule);
 
 	//Xman Added PaddingLength to Extended preferences
 	thePrefs.m_byCryptTCPPaddingLength=(uint8)m_iCryptTCPPaddingLength;
 	//Xman end
 
-    //thePrefs.m_bA4AFSaveCpu = m_bA4AFSaveCpu; // ZZ:DownloadManager
+	//Xman
+	/*
+    thePrefs.m_bA4AFSaveCpu = m_bA4AFSaveCpu;
+	*/
+	//Xman end
 
 	// ==> UPnP support [MoNKi] - leuk_he
 	/*
@@ -857,8 +905,8 @@ void CPPgTweaks::Localize(void)
 		*/
 		// <== Improved ICS-Firewall support [MoNKi] - Max
 		if (m_htiDisablePeerCache) m_ctrlTreeOptions.SetItemText(m_htiDisablePeerCache, GetResString(IDS_DISABLEPEERACHE));
-        /* Xman
-		// ZZ:UploadSpeedSense -->
+		//Xman
+		/*
 		if (m_htiDynUp) m_ctrlTreeOptions.SetItemText(m_htiDynUp, GetResString(IDS_DYNUP));
 		if (m_htiDynUpEnabled) m_ctrlTreeOptions.SetItemText(m_htiDynUpEnabled, GetResString(IDS_DYNUPENABLED));
         if (m_htiDynUpMinUpload) m_ctrlTreeOptions.SetEditLabel(m_htiDynUpMinUpload, GetResString(IDS_DYNUP_MINUPLOAD));
@@ -866,8 +914,8 @@ void CPPgTweaks::Localize(void)
         if (m_htiDynUpGoingUpDivider) m_ctrlTreeOptions.SetEditLabel(m_htiDynUpGoingUpDivider, GetResString(IDS_DYNUP_GOINGUPDIVIDER));
         if (m_htiDynUpGoingDownDivider) m_ctrlTreeOptions.SetEditLabel(m_htiDynUpGoingDownDivider, GetResString(IDS_DYNUP_GOINGDOWNDIVIDER));
         if (m_htiDynUpNumberOfPings) m_ctrlTreeOptions.SetEditLabel(m_htiDynUpNumberOfPings, GetResString(IDS_DYNUP_NUMBEROFPINGS));
-		// ZZ:UploadSpeedSense <--
 		*/
+		//Xman end
 		
 		// ==> UPnP support [MoNKi] - leuk_he
 		/*
@@ -879,7 +927,11 @@ void CPPgTweaks::Localize(void)
 		*/
 		// <== UPnP support [MoNKi] - leuk_he
 
-		//if (m_htiA4AFSaveCpu) m_ctrlTreeOptions.SetItemText(m_htiA4AFSaveCpu, GetResString(IDS_A4AF_SAVE_CPU)); // ZZ:DownloadManager
+		//Xman
+		/*
+		if (m_htiA4AFSaveCpu) m_ctrlTreeOptions.SetItemText(m_htiA4AFSaveCpu, GetResString(IDS_A4AF_SAVE_CPU));
+		*/
+		//Xman end
 		if (m_htiFullAlloc) m_ctrlTreeOptions.SetItemText(m_htiFullAlloc, GetResString(IDS_FULLALLOC));
 		if (m_htiAutoArch) m_ctrlTreeOptions.SetItemText(m_htiAutoArch, GetResString(IDS_DISABLE_AUTOARCHPREV));
 		//Xman official UPNP removed
@@ -889,10 +941,12 @@ void CPPgTweaks::Localize(void)
 		if (m_htiSkipWANIPSetup) m_ctrlTreeOptions.SetItemText(m_htiSkipWANIPSetup, GetResString(IDS_UPNPSKIPWANIP));
 		if (m_htiSkipWANPPPSetup) m_ctrlTreeOptions.SetItemText(m_htiSkipWANPPPSetup, GetResString(IDS_UPNPSKIPWANPPP));
 		*/
+		//Xman end
 		if (m_htiShareeMule) m_ctrlTreeOptions.SetItemText(m_htiShareeMule, GetResString(IDS_SHAREEMULELABEL));
 		if (m_htiShareeMuleMultiUser) m_ctrlTreeOptions.SetItemText(m_htiShareeMuleMultiUser, GetResString(IDS_SHAREEMULEMULTI));
 		if (m_htiShareeMulePublicUser) m_ctrlTreeOptions.SetItemText(m_htiShareeMulePublicUser, GetResString(IDS_SHAREEMULEPUBLIC));
 		if (m_htiShareeMuleOldStyle) m_ctrlTreeOptions.SetItemText(m_htiShareeMuleOldStyle, GetResString(IDS_SHAREEMULEOLD));
+
 
 		CString temp;
 		temp.Format(_T("%s: %s"), GetResString(IDS_FILEBUFFERSIZE), CastItoXBytes(m_iFileBufferSize, false, false));
@@ -950,8 +1004,8 @@ void CPPgTweaks::OnDestroy()
 	*/
 	// <== Improved ICS-Firewall support [MoNKi] - Max
 	m_htiDisablePeerCache = NULL;
-    /* Xman
-	// ZZ:UploadSpeedSense -->
+	//Xman
+	/*
 	m_htiDynUp = NULL;
 	m_htiDynUpEnabled = NULL;
     m_htiDynUpMinUpload = NULL;
@@ -963,12 +1017,9 @@ void CPPgTweaks::OnDestroy()
     m_htiDynUpGoingUpDivider = NULL;
     m_htiDynUpGoingDownDivider = NULL;
     m_htiDynUpNumberOfPings = NULL;
-	// ZZ:UploadSpeedSense <--
-	// ZZ:DownloadManager -->
 	m_htiA4AFSaveCpu = NULL;
-	// ZZ:DownloadManager <--
 	*/
-
+	//Xman end
 	m_htiExtractMetaData = NULL;
 	m_htiExtractMetaDataNever = NULL;
 	m_htiExtractMetaDataID3Lib = NULL;
@@ -980,6 +1031,7 @@ void CPPgTweaks::OnDestroy()
 	m_htiSkipWANIPSetup = NULL;
 	m_htiSkipWANPPPSetup = NULL;
 	*/
+	//Xman end
 	m_htiShareeMule = NULL;
 	m_htiShareeMuleMultiUser = NULL;
 	m_htiShareeMulePublicUser = NULL;

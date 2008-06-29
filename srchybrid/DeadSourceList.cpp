@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -29,13 +29,21 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 
-#define	CLEANUPTIME			MIN2MS(30) //Xman changed from 60
+//Xman
+/*
+#define	CLEANUPTIME			MIN2MS(60)
+*/
+#define	CLEANUPTIME			MIN2MS(30)
+//Xman end
 
 //Xman increased:
-//#define BLOCKTIME		(::GetTickCount() + (m_bGlobalList ? MIN2MS(15):MIN2MS(45)))
-//#define BLOCKTIMEFW		(::GetTickCount() + (m_bGlobalList ? MIN2MS(30):MIN2MS(45)))
+/*
+#define BLOCKTIME		(::GetTickCount() + (m_bGlobalList ? MIN2MS(15):MIN2MS(45)))
+#define BLOCKTIMEFW		(::GetTickCount() + (m_bGlobalList ? MIN2MS(30):MIN2MS(45)))
+*/
 #define BLOCKTIME		(::GetTickCount() + (m_bGlobalList ? MIN2MS(32):MIN2MS(60)))
 #define BLOCKTIMEFW		(::GetTickCount() + (m_bGlobalList ? MIN2MS(40):MIN2MS(60)))
+//Xman end
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //// CDeadSource
@@ -109,23 +117,13 @@ bool CDeadSourceList::IsDeadSource(const CUpDownClient* pToCheck) const{
 		}
 		bDbgCheck = true;
 	}
-	//Xman possible crashfix:
-	if (isnulmd4(pToCheck->GetUserHash()) == FALSE && (pToCheck->HasValidBuddyID() || (pToCheck->HasLowID() && pToCheck->GetServerIP() == 0)) ){
+	if (((pToCheck->HasValidBuddyID() || pToCheck->SupportsDirectUDPCallback()) && isnulmd4(pToCheck->GetUserHash()) == FALSE) || (pToCheck->HasLowID() && pToCheck->GetServerIP() == 0) ){
 		if (m_mapDeadSources.Lookup(CDeadSource(pToCheck->GetUserHash()), dwExpTime)){
 			if (dwExpTime > ::GetTickCount())
 				return true;
 		}
 		bDbgCheck = true;
 	}
-	/*
-	if ((pToCheck->HasValidBuddyID() && isnulmd4(pToCheck->GetUserHash()) == FALSE) || (pToCheck->HasLowID() && pToCheck->GetServerIP() == 0) ){
-		if (m_mapDeadSources.Lookup(CDeadSource(pToCheck->GetUserHash()), dwExpTime)){
-			if (dwExpTime > ::GetTickCount())
-				return true;
-		}
-		bDbgCheck = true;
-	}
-	*/
 	//ASSERT ( bDbgCheck );
 	return false;
 }
@@ -143,7 +141,7 @@ void CDeadSourceList::AddDeadSource(const CUpDownClient* pToAdd){
 			bDbgCheck = true;
 			m_mapDeadSources.SetAt(CDeadSource(pToAdd->GetUserIDHybrid(), pToAdd->GetUserPort(), pToAdd->GetServerIP(), 0), BLOCKTIMEFW);
 		}
-		if (pToAdd->HasValidBuddyID()){
+		if (pToAdd->HasValidBuddyID() || pToAdd->SupportsDirectUDPCallback()){
 			bDbgCheck = true;
 			m_mapDeadSources.SetAt(CDeadSource(pToAdd->GetUserHash()), BLOCKTIMEFW);
 		}
@@ -161,7 +159,7 @@ void CDeadSourceList::RemoveDeadSource(const CUpDownClient* client)
 	{
 		if (client->GetServerIP() != 0)
 			m_mapDeadSources.RemoveKey(CDeadSource(client->GetUserIDHybrid(), client->GetUserPort(), client->GetServerIP(), 0));
-		if (client->HasValidBuddyID())
+		if (client->HasValidBuddyID() || client->SupportsDirectUDPCallback())
 			m_mapDeadSources.RemoveKey(CDeadSource(client->GetUserHash()));
 	}
 }

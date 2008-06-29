@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -23,6 +23,7 @@ typedef CTypedPtrList<CPtrList, CUpDownClient*> CUpDownClientPtrList;
 
 class CUploadQueue
 {
+
 public:
 	CUploadQueue();
 	~CUploadQueue();
@@ -30,23 +31,40 @@ public:
 	void	Process();
 	void	AddClientToQueue(CUpDownClient* client,bool bIgnoreTimelimit = false);
 	void	AddClientDirectToQueue(CUpDownClient* client);	//Xman uploading problem client
-	bool	RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReason = NULL,CUpDownClient::UpStopReason reason = CUpDownClient::USR_NONE, bool updatewindow = true, bool earlyabort = false); // Maella -Upload Stop Reason-
+	// Maella -Upload Stop Reason-
+	/*
+	bool	RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReason = NULL, bool updatewindow = true, bool earlyabort = false);
+	*/
+	bool	RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReason = NULL,CUpDownClient::UpStopReason reason = CUpDownClient::USR_NONE, bool updatewindow = true, bool earlyabort = false);
+	//Xman end
 	bool	RemoveFromWaitingQueue(CUpDownClient* client,bool updatewindow = true);
 	bool	IsOnUploadQueue(CUpDownClient* client)	const {return (waitinglist.Find(client) != 0);}
 	bool	IsDownloading(CUpDownClient* client)	const {return (uploadinglist.Find(client) != 0);}
 
+	//Xman
+	/*
+    void    UpdateDatarates();
+	uint32	GetDatarate();
+    uint32  GetToNetworkDatarate();
+	*/
+	//xman end
 
 	bool	CheckForTimeOver(CUpDownClient* client);
+	//Xman Xtreme Upload
+	/*
+	int		GetWaitingUserCount() const				{return waitinglist.GetCount();}
+	int		GetUploadQueueLength() const			{return uploadinglist.GetCount();}
+	uint32	GetActiveUploadsCount()	const			{return m_MaxActiveClientsShortTime;}
+	*/
 	int		GetWaitingUserCount()					{return waitinglist.GetCount();}
 	int		GetUploadQueueLength()					{return uploadinglist.GetCount();}
-	//Xman Xtreme Upload
-	//uint32	GetActiveUploadsCount()					{return m_MaxActiveClientsShortTime;}
 	void	ReplaceSlot(CUpDownClient* client);	//altenative method to Resortuploadslots ////Xman Xtreme Upload: Peercache-part
 	void	ChangeSendBufferSize(int newvalue);
 
 	//Xman
 	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 	void	CompUploadRate();
+	//Xman end
 
 
 	POSITION GetFirstFromUploadList()				{return uploadinglist.GetHeadPosition();}
@@ -84,10 +102,19 @@ public:
 
 protected:
 	void	RemoveFromWaitingQueue(POSITION pos, bool updatewindow);
-	//bool		AcceptNewClient(uint32 curUploadSlots); //Xman Xtreme Upload
+	//Xman Xtreme Upload
+	/*
+	bool		AcceptNewClient(bool addOnNextConnect = false);
+	bool		AcceptNewClient(uint32 curUploadSlots);
+	*/
+	//Xman end
 	bool		ForceNewClient(bool allowEmptyWaitingQueue = false);
 
-
+	//Xman Xtreme Upload
+	/*
+	bool		AddUpNextClient(LPCTSTR pszReason, CUpDownClient* directadd = 0);
+	*/
+	//Xman end
 	
 	static VOID CALLBACK UploadTimer(HWND hWnd, UINT nMsg, UINT nId, DWORD dwTime);
 
@@ -96,6 +123,9 @@ private:
 	uint32	GetMaxClientScore()						{return m_imaxscore;}
     
 	//Xman Xtreme Upload
+	/*
+    void    UpdateActiveClientsInfo(DWORD curTick);
+	*/
 	bool	lastupslotHighID;
 	uint8	waituntilnextlook;
 	sint8	dataratestocheck;
@@ -115,6 +145,24 @@ private:
     float GetAverageCombinedFilePrioAndCredit();
 
 
+	//Xman
+	/*
+	// By BadWolf - Accurate Speed Measurement
+	typedef struct TransferredData {
+		uint32	datalen;
+		DWORD	timestamp;
+	};
+	CList<uint64> avarage_dr_list;
+    CList<uint64> avarage_friend_dr_list;
+	CList<DWORD,DWORD> avarage_tick_list;
+	CList<int,int> activeClients_list;
+    CList<DWORD,DWORD> activeClients_tick_list;
+	uint32	datarate;   //datarate sent to network (including friends)
+    uint32  friendDatarate; // datarate of sent to friends (included in above total)
+	// By BadWolf - Accurate Speed Measurement
+	*/
+	//Xman end
+
 	UINT_PTR h_timer;
 	uint32	successfullupcount;
 	uint32	failedupcount;
@@ -126,6 +174,16 @@ private:
 
     DWORD   m_dwLastCalculatedAverageCombinedFilePrioAndCredit;
     float   m_fAverageCombinedFilePrioAndCredit;
+	//Xman
+	/*
+    uint32  m_iHighestNumberOfFullyActivatedSlotsSinceLastCall;
+    uint32  m_MaxActiveClients;
+    uint32  m_MaxActiveClientsShortTime;
+
+    DWORD   m_lastCalculatedDataRateTick;
+    uint64  m_avarage_dr_sum;
+	*/
+	//Xman end
 
     DWORD   m_dwLastResortedUploadSlots;
 

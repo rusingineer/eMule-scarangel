@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -61,9 +61,10 @@ public:
 	void	MergeFileStats( CStatisticFile* toMerge );
 	void	AddRequest();
 	void	AddAccepted();
-	//void	AddTransferred(uint64 bytes);
-
 	//Xman PowerRelease
+	/*
+	void	AddTransferred(uint64 bytes);
+	*/
 	// ==> Removed Spreadbars (old version) [SlugFiller] - Stulle
 	/*
 	~CStatisticFile();	

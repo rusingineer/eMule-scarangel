@@ -1,6 +1,6 @@
 // parts of this file are based on work from pan One (http://home-3.tiscali.nl/~meost/pms/)
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -40,6 +40,7 @@
 #include "Packets.h"
 #include "Kademlia/Kademlia/SearchManager.h"
 #include "Kademlia/Kademlia/Entry.h"
+#include "kademlia/kademlia/UDPFirewallTester.h"
 #include "SafeFile.h"
 #include "shahashset.h"
 #include "Log.h"
@@ -159,9 +160,18 @@ void CKnownFile::AssertValid() const
 	(void)m_iPartCount;
 	(void)m_iED2KPartCount;
 	(void)m_iED2KPartHashCount;
-	ASSERT( m_iUpPriority == PR_VERYLOW || m_iUpPriority == PR_LOW || m_iUpPriority == PR_NORMAL || m_iUpPriority == PR_HIGH || m_iUpPriority == PR_VERYHIGH || m_iUpPriority == PR_POWER ); //Xman PowerRelease
+	//Xman PowerRelease
+	/*
+	ASSERT( m_iUpPriority == PR_VERYLOW || m_iUpPriority == PR_LOW || m_iUpPriority == PR_NORMAL || m_iUpPriority == PR_HIGH || m_iUpPriority == PR_VERYHIGH );
+	*/
+	ASSERT( m_iUpPriority == PR_VERYLOW || m_iUpPriority == PR_LOW || m_iUpPriority == PR_NORMAL || m_iUpPriority == PR_HIGH || m_iUpPriority == PR_VERYHIGH || m_iUpPriority == PR_POWER );
+	//Xman end
 	CHECK_BOOL(m_bAutoUpPriority);
-	//(void)s_ShareStatusBar; //Xman
+	//Xman
+	/*
+	(void)s_ShareStatusBar;
+	*/
+	//Xman end
 	CHECK_BOOL(m_PublishedED2K);
 	(void)kadFileSearchID;
 	(void)m_lastPublishTimeKadSrc;
@@ -176,39 +186,70 @@ void CKnownFile::Dump(CDumpContext& dc) const
 }
 #endif
 
-//CBarShader CKnownFile::s_ShareStatusBar(16);
 // Xman -Code Improvement-
+/*
+CBarShader CKnownFile::s_ShareStatusBar(16);
+
+void CKnownFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool  bFlat) const
+{
+	s_ShareStatusBar.SetFileSize(GetFileSize());
+	s_ShareStatusBar.SetHeight(rect->bottom - rect->top);
+	s_ShareStatusBar.SetWidth(rect->right - rect->left);
+
+    if(m_ClientUploadList.GetSize() > 0 || m_nCompleteSourcesCountHi > 1) {
+        // We have info about chunk frequency in the net, so we will color the chunks we have after perceived availability.
+    	const COLORREF crMissing = RGB(255, 0, 0);
+	    s_ShareStatusBar.Fill(crMissing);
+
+	    if (!onlygreyrect) {
+		    COLORREF crProgress;
+		    COLORREF crHave;
+		    COLORREF crPending;
+		    if(bFlat) { 
+			    crProgress = RGB(0, 150, 0);
+			    crHave = RGB(0, 0, 0);
+			    crPending = RGB(255,208,0);
+		    } else { 
+			    crProgress = RGB(0, 224, 0);
+			    crHave = RGB(104, 104, 104);
+			    crPending = RGB(255, 208, 0);
+	        }
+
+            uint32 tempCompleteSources = m_nCompleteSourcesCountLo;
+            if(tempCompleteSources > 0) {
+                tempCompleteSources--;
+            }
+
+		    for (UINT i = 0; i < GetPartCount(); i++){
+                uint32 frequency = tempCompleteSources;
+                if(!m_AvailPartFrequency.IsEmpty()) {
+                    frequency = max(m_AvailPartFrequency[i], tempCompleteSources);
+                }
+
+			    if(frequency > 0 ){
+				    COLORREF color = RGB(0, (22*(frequency-1) >= 210)? 0:210-(22*(frequency-1)), 255);
+				    s_ShareStatusBar.FillRange(PARTSIZE*(uint64)(i),PARTSIZE*(uint64)(i+1),color);
+			    }
+	        }
+	    }
+    } else {
+        // We have no info about chunk frequency in the net, so just color the chunk we have as black.
+        COLORREF crNooneAsked;
+		if(bFlat) { 
+		    crNooneAsked = RGB(0, 0, 0);
+		} else { 
+		    crNooneAsked = RGB(104, 104, 104);
+	    }
+		s_ShareStatusBar.Fill(crNooneAsked);
+    }
+
+   	s_ShareStatusBar.Draw(dc, rect->left, rect->top, bFlat); 
+} 
+*/
 void CKnownFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool  bFlat) const
 {
 	CBarShader statusBar(rect->bottom - rect->top, rect->right - rect->left);
 	statusBar.SetFileSize(GetFileSize()); 
-	
-
-	/*
-	if(m_ClientUploadList.GetSize() > 0 || m_nCompleteSourcesCountHi > 1) {
-		// We have info about chunk frequency in the net, so we will color the chunks we have after perceived availability.
-		const COLORREF crMissing = RGB(255, 0, 0);
-		statusBar.Fill(crMissing);
-
-		if (!onlygreyrect) {
-			uint32 tempCompleteSources = m_nCompleteSourcesCountLo;
-			if(tempCompleteSources > 0) {
-				tempCompleteSources--;
-			}
-
-			for (int i = 0; i < GetPartCount(); i++){
-				uint32 frequency = tempCompleteSources;
-				if(!m_AvailPartFrequency.IsEmpty()) {
-					frequency = max(m_AvailPartFrequency[i], tempCompleteSources);
-				}
-
-				if(frequency > 0 ){
-					const COLORREF color = RGB(0, (22*(frequency-1) >= 210)? 0:210-(22*(frequency-1)), 255);
-					statusBar.FillRange(PARTSIZE*(i),PARTSIZE*(i+1),color);
-				}
-			}
-		}
-	}*/
 	//Xman 4.4
 	//the official version is well coded, but most time, there is at least one complete source
 	//and because of this, the really needed parts are never drawn in red
@@ -442,16 +483,6 @@ void CKnownFile::UpdatePartsInfo()
 		}
 		m_nCompleteSourcesTime = time(NULL) + (60);
 	}
-
-	//Xman show virtual sources (morph)
-	/* //Xman 5.4.1 moved up
-	m_nVirtualCompleteSourcesCount = (UINT)-1;
-	for (UINT i = 0; i < partcount; i++){
-		if(m_AvailPartFrequency[i] < m_nVirtualCompleteSourcesCount)
-			m_nVirtualCompleteSourcesCount = m_AvailPartFrequency[i];
-	}
-	*/
-	//Xman end
 	// ==> PowerShare [ZZ/MorphXT] - Stulle
 	/*
 	UpdatePowerShareLimit(m_nVirtualCompleteSourcesCount<=1 || m_nCompleteSourcesCountHi<=GetPartCount(), m_nCompleteSourcesCountHi==1 && m_nVirtualCompleteSourcesCount==0 && iCompleteSourcesCountInfoReceived>1,m_nCompleteSourcesCountHi>((GetPowerShareLimit()>=0)?GetPowerShareLimit():thePrefs.GetPowerShareLimit()));
@@ -468,7 +499,6 @@ void CKnownFile::UpdatePartsInfo()
 		bPowerShareLimit = (m_nCompleteSourcesCountHi > iPowerShareLimit);
 	UpdatePowerShareLimit(m_nVirtualCompleteSourcesCount<=1 || m_nCompleteSourcesCountHi<=GetPartCount(), m_nCompleteSourcesCountHi==1 && m_nVirtualCompleteSourcesCount==0 && iCompleteSourcesCountInfoReceived>1,bPowerShareLimit);
 	// <== PowerShare [ZZ/MorphXT] - Stulle
-
 	if (theApp.emuledlg->sharedfileswnd->m_hWnd)
 		theApp.emuledlg->sharedfileswnd->sharedfilesctrl.UpdateFile(this);
 }
@@ -477,7 +507,11 @@ void CKnownFile::AddUploadingClient(CUpDownClient* client){
 	POSITION pos = m_ClientUploadList.Find(client); // to be sure
 	if(pos == NULL){
 		m_ClientUploadList.AddTail(client);
-		//UpdateAutoUpPriority(); //Xman done by see on uploadqueue
+		//Xman done by see on uploadqueue
+		/*
+		UpdateAutoUpPriority();
+		*/
+		//Xman end
 	}
 }
 
@@ -485,7 +519,11 @@ void CKnownFile::RemoveUploadingClient(CUpDownClient* client){
 	POSITION pos = m_ClientUploadList.Find(client); // to be sure
 	if(pos != NULL){
 		m_ClientUploadList.RemoveAt(pos);
-		//UpdateAutoUpPriority(); //Xman done by see on uploadqueue
+		//Xman done by see on uploadqueue
+		/*
+		UpdateAutoUpPriority();
+		*/
+		//Xman end
 	}
 }
 
@@ -501,7 +539,7 @@ void Dump(const Kademlia::WordList& wordlist)
 }
 #endif
 
-void CKnownFile::SetFileName(LPCTSTR pszFileName, bool bReplaceInvalidFileSystemChars)
+void CKnownFile::SetFileName(LPCTSTR pszFileName, bool bReplaceInvalidFileSystemChars, bool bRemoveControlChars)
 { 
 	CKnownFile* pFile = NULL;
 
@@ -514,7 +552,7 @@ void CKnownFile::SetFileName(LPCTSTR pszFileName, bool bReplaceInvalidFileSystem
 	if (pFile && pFile == this)
 		theApp.sharedfiles->RemoveKeywords(this);
 
-	CAbstractFile::SetFileName(pszFileName, bReplaceInvalidFileSystemChars);
+	CAbstractFile::SetFileName(pszFileName, bReplaceInvalidFileSystemChars, true, bRemoveControlChars);
 
 	wordlist.clear();
 	if(m_pCollection)
@@ -582,7 +620,12 @@ bool CKnownFile::CreateFromFile(LPCTSTR in_directory, LPCTSTR in_filename, LPVOI
 		ASSERT( pBlockAICHHashTree != NULL );
 
 		uchar* newhash = new uchar[16];
-		if (!CreateHash(file, PARTSIZE, newhash, pBlockAICHHashTree, true)) { //Xman Nice Hash
+		//Xman Nice Hash
+		/*
+		if (!CreateHash(file, PARTSIZE, newhash, pBlockAICHHashTree)) {
+		*/
+		if (!CreateHash(file, PARTSIZE, newhash, pBlockAICHHashTree, true)) {
+		//Xman end
 			LogError(_T("Failed to hash file \"%s\" - %s"), strFilePath, _tcserror(errno));
 			fclose(file);
 			delete[] newhash;
@@ -627,7 +670,12 @@ bool CKnownFile::CreateFromFile(LPCTSTR in_directory, LPCTSTR in_filename, LPVOI
 	
 	uchar* lasthash = new uchar[16];
 	md4clr(lasthash);
-	if (!CreateHash(file, togo, lasthash, pBlockAICHHashTree, true)) { //Xman Nice Hash
+	//Xman Nice Hash
+	/*
+	if (!CreateHash(file, togo, lasthash, pBlockAICHHashTree)) {
+	*/
+	if (!CreateHash(file, togo, lasthash, pBlockAICHHashTree, true)) {
+	//Xman end
 		LogError(_T("Failed to hash file \"%s\" - %s"), strFilePath, _tcserror(errno));
 		fclose(file);
 		delete[] lasthash;
@@ -657,16 +705,27 @@ bool CKnownFile::CreateFromFile(LPCTSTR in_directory, LPCTSTR in_filename, LPVOI
 	hashlist.Add(lasthash);		// SLUGFILLER: SafeHash - better handling of single-part files
 	if (!hashcount){
 		md4cpy(m_abyFileHash, lasthash);
-		//delete[] lasthash;
 		// SLUGFILLER: SafeHash remove - removed delete
+		/*
+		delete[] lasthash;
+		*/
+		//Xman end
 	} 
 	else {
-		//hashlist.Add(lasthash);
-		// SLUGFILLER: SafeHash remove - moved up
+		// SLUGFILLER: SafeHash remove - removed delete
+		/*
+		hashlist.Add(lasthash);
+		*/
+		//Xman end
 		uchar* buffer = new uchar[hashlist.GetCount()*16];
 		for (int i = 0; i < hashlist.GetCount(); i++)
 			md4cpy(buffer+(i*16), hashlist[i]);
-		CreateHash(buffer, hashlist.GetCount()*16, m_abyFileHash, NULL, true); //Xman Nice Hash
+		//Xman Nice Hash
+		/*
+		CreateHash(buffer, hashlist.GetCount()*16, m_abyFileHash);
+		*/
+		CreateHash(buffer, hashlist.GetCount()*16, m_abyFileHash, NULL, true);
+		//Xman end
 		delete[] buffer;
 	}
 
@@ -877,8 +936,12 @@ bool CKnownFile::LoadHashsetFromFile(CFileDataIO* file, bool checkhash){
 		return false;	// wrong file?
 	}
 	else{
-		//Xman
-		if (parts != GetED2KPartCount()){	// SLUGFILLER: SafeHash - use GetED2KPartCount
+		//Xman // SLUGFILLER: SafeHash - use GetED2KPartCount
+		/*
+		if (parts != GetED2KPartHashCount()){
+		*/
+		if (parts != GetED2KPartCount()){
+		//Xman end
 			// delete hashset
 			for (int i = 0; i < hashlist.GetSize(); i++)
 				delete[] hashlist[i];
@@ -1014,7 +1077,12 @@ bool CKnownFile::LoadTagsFromFile(CFileDataIO* file)
 						m_bAutoUpPriority = true;
 					}
 					else{
-						if (m_iUpPriority != PR_VERYLOW && m_iUpPriority != PR_LOW && m_iUpPriority != PR_NORMAL && m_iUpPriority != PR_HIGH && m_iUpPriority != PR_VERYHIGH && m_iUpPriority != PR_POWER) //Xman PowerRelease
+						//Xman PowerRelease
+						/*
+						if (m_iUpPriority != PR_VERYLOW && m_iUpPriority != PR_LOW && m_iUpPriority != PR_NORMAL && m_iUpPriority != PR_HIGH && m_iUpPriority != PR_VERYHIGH)
+						*/
+						if (m_iUpPriority != PR_VERYLOW && m_iUpPriority != PR_LOW && m_iUpPriority != PR_NORMAL && m_iUpPriority != PR_HIGH && m_iUpPriority != PR_VERYHIGH && m_iUpPriority != PR_POWER)
+						//Xman end
 							m_iUpPriority = PR_NORMAL;
 						m_bAutoUpPriority = false;
 					}
@@ -1170,8 +1238,12 @@ bool CKnownFile::LoadTagsFromFile(CFileDataIO* file)
 	if (m_uMetaDataVer == 0)
 		RemoveMetaDataTags();
 
-	//Xman
-	return m_nFileSize!=(uint64)0;		// SLUGFILLER: SafeHash - Must have a filesize tag
+	//Xman // SLUGFILLER: SafeHash - Must have a filesize tag
+	/*
+	return true;
+	*/
+	return m_nFileSize!=(uint64)0;
+	//Xman end
 }
 
 bool CKnownFile::LoadDateFromFile(CFileDataIO* file){
@@ -1186,6 +1258,9 @@ bool CKnownFile::LoadFromFile(CFileDataIO* file){
 	bool ret3 = LoadTagsFromFile(file);
 	UpdatePartsInfo();
 	//Xman
+	/*
+	return ret1 && ret2 && ret3 && GetED2KPartHashCount()==GetHashCount();// Final hash-count verification, needs to be done after the tags are loaded.
+	*/
 	if (GetED2KPartCount() <= 1) {	// ignore loaded hash for 1-chunk files
 		for (int i = 0; i < hashlist.GetSize(); i++)
 			delete[] hashlist[i];
@@ -1435,7 +1510,12 @@ bool CKnownFile::WriteToFile(CFileDataIO* file)
 	return true;
 }
 
-void CKnownFile::CreateHash(CFile* pFile, uint64 Length, uchar* pMd4HashOut, CAICHHashTree* pShaHashOut, bool slowdown) const //Xman Nice Hash
+//Xman Nice Hash
+/*
+void CKnownFile::CreateHash(CFile* pFile, uint64 Length, uchar* pMd4HashOut, CAICHHashTree* pShaHashOut) const
+*/
+void CKnownFile::CreateHash(CFile* pFile, uint64 Length, uchar* pMd4HashOut, CAICHHashTree* pShaHashOut, bool slowdown) const
+//Xman end
 {
 	ASSERT( pFile != NULL );
 	ASSERT( pMd4HashOut != NULL || pShaHashOut != NULL );
@@ -1531,13 +1611,23 @@ void CKnownFile::CreateHash(CFile* pFile, uint64 Length, uchar* pMd4HashOut, CAI
 	delete pHashAlg;
 }
 
-bool CKnownFile::CreateHash(FILE* fp, uint64 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut, bool slowdown) const //Xman Nice Hash
+//Xman Nice Hash
+/*
+bool CKnownFile::CreateHash(FILE* fp, uint64 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut) const
+*/
+bool CKnownFile::CreateHash(FILE* fp, uint64 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut, bool slowdown) const
+//Xman end
 {
 	bool bResult = false;
 	CStdioFile file(fp);
 	try
 	{
-		CreateHash(&file, uSize, pucHash, pShaHashOut, slowdown); //Xman Nice Hash
+		//Xman Nice Hash
+		/*
+		CreateHash(&file, uSize, pucHash, pShaHashOut);
+		*/
+		CreateHash(&file, uSize, pucHash, pShaHashOut, slowdown);
+		//Xman end
 		bResult = true;
 	}
 	catch(CFileException* ex)
@@ -1547,13 +1637,23 @@ bool CKnownFile::CreateHash(FILE* fp, uint64 uSize, uchar* pucHash, CAICHHashTre
 	return bResult;
 }
 
-bool CKnownFile::CreateHash(const uchar* pucData, uint32 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut, bool slowdown) const //Xman Nice Hash
+//Xman Nice Hash
+/*
+bool CKnownFile::CreateHash(const uchar* pucData, uint32 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut) const
+*/
+bool CKnownFile::CreateHash(const uchar* pucData, uint32 uSize, uchar* pucHash, CAICHHashTree* pShaHashOut, bool slowdown) const
+//Xman end
 {
 	bool bResult = false;
 	CMemFile file(const_cast<uchar*>(pucData), uSize);
 	try
 	{
-		CreateHash(&file, uSize, pucHash, pShaHashOut, slowdown); //Xman Nice Hash
+		//Xman Nice Hash
+		/*
+		CreateHash(&file, uSize, pucHash, pShaHashOut);
+		*/
+		CreateHash(&file, uSize, pucHash, pShaHashOut, slowdown);
+		//Xman end
 		bResult = true;
 	}
 	catch(CFileException* ex)
@@ -1638,12 +1738,12 @@ Packet*	CKnownFile::CreateSrcInfoPacket(const CUpDownClient* forClient, uint8 by
 					{
 						for (UINT x = 0; x < GetPartCount(); x++)
 						{
-						// ==> See chunk that we hide [SiRoB] - Stulle
-						/*
+							// ==> See chunk that we hide [SiRoB] - Stulle
+							/*
 							if (srcstatus[x] && !rcvstatus[x])
-						*/
-						if (srcstatus[x]&SC_AVAILABLE && !(rcvstatus[x]&SC_AVAILABLE))
-						// <== See chunk that we hide [SiRoB] - Stulle
+							*/
+							if (srcstatus[x]&SC_AVAILABLE && !(rcvstatus[x]&SC_AVAILABLE))
+							// <== See chunk that we hide [SiRoB] - Stulle
 							{
 								// We know the recieving client needs a chunk from this client.
 								bNeeded = true;
@@ -1708,15 +1808,17 @@ Packet*	CKnownFile::CreateSrcInfoPacket(const CUpDownClient* forClient, uint8 by
 				if (byUsedVersion >= 2)
 					data.WriteHash16(cur_src->GetUserHash());
 				if (byUsedVersion >= 4){
-					// CryptSettings - SourceExchange V4
-					// 5 Reserved (!)
+				// ConnectSettings - SourceExchange V4
+				// 4 Reserved (!)
+				// 1 DirectCallback Supported/Available 
 					// 1 CryptLayer Required
 					// 1 CryptLayer Requested
 					// 1 CryptLayer Supported
 					const uint8 uSupportsCryptLayer	= cur_src->SupportsCryptLayer() ? 1 : 0;
 					const uint8 uRequestsCryptLayer	= cur_src->RequestsCryptLayer() ? 1 : 0;
 					const uint8 uRequiresCryptLayer	= cur_src->RequiresCryptLayer() ? 1 : 0;
-					const uint8 byCryptOptions = (uRequiresCryptLayer << 2) | (uRequestsCryptLayer << 1) | (uSupportsCryptLayer << 0);
+				//const uint8 uDirectUDPCallback	= cur_src->SupportsDirectUDPCallback() ? 1 : 0;
+				const uint8 byCryptOptions = /*(uDirectUDPCallback << 3) |*/ (uRequiresCryptLayer << 2) | (uRequestsCryptLayer << 1) | (uSupportsCryptLayer << 0);
 					data.WriteUInt8(byCryptOptions);
 				}
 				if (nCount > 500)
@@ -1769,6 +1871,30 @@ void CKnownFile::SetFileRating(UINT uRating)
 
 //Xman see on uploadqueue does this job now:
 //Xman changed Auto-Prios
+/*
+void CKnownFile::UpdateAutoUpPriority(){
+	if( !IsAutoUpPriority() )
+		return;
+	if ( GetQueuedCount() > 20 ){
+		if( GetUpPriority() != PR_LOW ){
+			SetUpPriority( PR_LOW );
+			theApp.emuledlg->sharedfileswnd->sharedfilesctrl.UpdateFile(this);
+		}
+		return;
+	}
+	if ( GetQueuedCount() > 1 ){
+		if( GetUpPriority() != PR_NORMAL ){
+			SetUpPriority( PR_NORMAL );
+			theApp.emuledlg->sharedfileswnd->sharedfilesctrl.UpdateFile(this);
+		}
+		return;
+	}
+	if( GetUpPriority() != PR_HIGH){
+		SetUpPriority( PR_HIGH );
+		theApp.emuledlg->sharedfileswnd->sharedfilesctrl.UpdateFile(this);
+	}
+}
+*/
 void CKnownFile::UpdateAutoUpPriority(){
 	if( !IsAutoUpPriority() )
 		return;
@@ -1814,6 +1940,10 @@ void CKnownFile::UpdateAutoUpPriority(){
 void CKnownFile::SetUpPriority(uint8 iNewUpPriority, bool bSave)
 {
 	//Xman advanced upload-priority
+	/*
+	m_iUpPriority = iNewUpPriority;
+	ASSERT( m_iUpPriority == PR_VERYLOW || m_iUpPriority == PR_LOW || m_iUpPriority == PR_NORMAL || m_iUpPriority == PR_HIGH || m_iUpPriority == PR_VERYHIGH );
+	*/
 	if(m_iUpPriority!=iNewUpPriority)
 	{
 		m_iUpPriority = iNewUpPriority;
@@ -1821,9 +1951,9 @@ void CKnownFile::SetUpPriority(uint8 iNewUpPriority, bool bSave)
 	}
 	else
 		m_iUpPriority = iNewUpPriority;
-	//Xman end
 
-	ASSERT( m_iUpPriority == PR_VERYLOW || m_iUpPriority == PR_LOW || m_iUpPriority == PR_NORMAL || m_iUpPriority == PR_HIGH || m_iUpPriority == PR_VERYHIGH || m_iUpPriority == PR_POWER ); //Xman PowerRelease
+	ASSERT( m_iUpPriority == PR_VERYLOW || m_iUpPriority == PR_LOW || m_iUpPriority == PR_NORMAL || m_iUpPriority == PR_HIGH || m_iUpPriority == PR_VERYHIGH || m_iUpPriority == PR_POWER );
+	//Xman end
 
 	if( IsPartFile() && bSave )
 		((CPartFile*)this)->SavePartFile();
@@ -2318,7 +2448,6 @@ void CKnownFile::SetPublishedED2K(bool val){
 
 bool CKnownFile::PublishNotes()
 {
-
 	if(m_lastPublishTimeKadNotes > (uint32)time(NULL))
 	{
 		return false;
@@ -2339,10 +2468,9 @@ bool CKnownFile::PublishNotes()
 
 bool CKnownFile::PublishSrc()
 {
-
 	uint32 lastBuddyIP = 0;
-
-	if( theApp.IsFirewalled() )
+	if( theApp.IsFirewalled() && 
+		(Kademlia::CUDPFirewallTester::IsFirewalledUDP(true) || !Kademlia::CUDPFirewallTester::IsVerified()))
 	{
 		CUpDownClient* buddy = theApp.clientlist->GetBuddy();
 		if( buddy )

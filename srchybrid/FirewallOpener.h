@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -48,6 +48,10 @@ enum EFOCAction{
 #define EMULE_DEFAULTRULENAME_SERVERUDP		_T("Server UDP Port")
 #define EMULE_DEFAULTRULEDESCRIPTIONFORMAT 	_T("eMule (%s) [%s: %u]")
 // <== Improved ICS-Firewall support [MoNKi] - Max
+// ==> UPnP support [MoNKi] - leuk_he
+#define EMULE_DEFAULTRULENAME_UPNP_TCP		_T("UPnP_TCP_Port")
+#define EMULE_DEFAULTRULENAME_UPNP_UDP		_T("UPnP_UDP_Port")
+// <== UPnP support [MoNKi] - leuk_he
 
 #define NAT_PROTOCOL_TCP 6
 #define NAT_PROTOCOL_UDP 17

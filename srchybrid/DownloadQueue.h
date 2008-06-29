@@ -1,5 +1,4 @@
-//this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -111,6 +110,8 @@ public:
 	*/
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
+	void	RefilterAllComments();	
+
 	// sources
 	CUpDownClient* GetDownloadClientByIP(uint32 dwIP);
 	CUpDownClient* GetDownloadClientByIP_UDP(uint32 dwIP, uint16 nUDPPort, bool bIgnorePortOnUniqueIP, bool* pbMultipleIPs = NULL);
@@ -126,7 +127,11 @@ public:
 	} SDownloadStats;
 	void	GetDownloadSourcesStats(SDownloadStats& results);
 	int		GetDownloadFilesStats(uint64 &ui64TotalFileSize, uint64 &ui64TotalLeftToTransfer, uint64 &ui64TotalAdditionalNeededSpace);
-
+	//Xman
+	/*
+	uint32	GetDatarate() {return datarate;}
+	*/
+	//Xman end
 
 	void	AddUDPFileReasks()								{m_nUDPFileReasks++;}
 	uint32	GetUDPFileReasks() const						{return m_nUDPFileReasks;}
@@ -170,7 +175,7 @@ public:
 
 	// check diskspace
 	void	SortByPriority();
-	void	CheckDiskspace(bool bNotEnoughSpaceLeft = false); // SLUGFILLER: checkDiskspace
+	void	CheckDiskspace(bool bNotEnoughSpaceLeft = false);
 	void	CheckDiskspaceTimed();
 
 	void	ExportPartMetFilesOverview() const;
@@ -211,11 +216,9 @@ protected:
 	bool	SendGlobGetSourcesUDPPacket(CSafeMemFile* data, bool bExt2Packet, uint32 nFiles, uint32 nIncludedLargeFiles);
 
 private:
-	// SLUGFILLER: checkDiskspace
 	bool	CompareParts(POSITION pos1, POSITION pos2);
 	void	SwapParts(POSITION pos1, POSITION pos2);
 	void	HeapSort(UINT first, UINT last);
-	// SLUGFILLER: checkDiskspace
 
 //Xman see all sources
 public:
@@ -227,6 +230,9 @@ private:
 	uint16	filesrdy;
 	
 	// Maella -Pseudo overhead datarate control-
+	/*
+	uint32	datarate;
+	*/
 	uint32 m_lastProcessTime;
 	uint64 m_lastOverallReceivedBytes;	
 	uint64 m_lastReceivedBytes;	
@@ -242,7 +248,7 @@ private:
 
 
 	CPartFile*	lastfile;
-	uint32		lastcheckdiskspacetime;	// SLUGFILLER: checkDiskspace
+	uint32		lastcheckdiskspacetime;
 	uint32		lastudpsearchtime;
 	uint32		lastudpstattime;
 	UINT		udcounter;
@@ -251,6 +257,11 @@ private:
 	int			m_iSearchedServers;
 	uint32		lastkademliafilerequest;
 
+	//Xman
+	/*
+	uint64		m_datarateMS;
+	*/
+	//Xman end
 	uint32		m_nUDPFileReasks;
 	uint32		m_nFailedUDPFileReasks;
 	//Xman Xtreme Mod
@@ -262,9 +273,25 @@ private:
 	uint32		m_uGlobsources;
 	uint8		m_limitstate;
 
+	//Xman
+	/*
+	// By BadWolf - Accurate Speed Measurement
+	typedef struct TransferredData {
+		uint32	datalen;
+		DWORD	timestamp;
+	};
+	CList<TransferredData> avarage_dr_list;
+	// END By BadWolf - Accurate Speed Measurement
+	*/
+	//Xman end
+
 	CSourceHostnameResolveWnd m_srcwnd;
 
-    //DWORD       m_dwLastA4AFtime; // ZZ:DownloadManager
+    //Xman
+    /*
+    DWORD       m_dwLastA4AFtime; // ZZ:DownloadManager
+    */
+    //Xman end
 
 	uint32 GlobalHardLimitTemp; // show global HL - Stulle
 

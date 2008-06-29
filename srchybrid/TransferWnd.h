@@ -62,8 +62,12 @@ public:
 
 	void ShowQueueCount(uint32 number);
 	void UpdateListCount(EWnd2 listindex, int iCount = -1);
-	void UpdateFilesCount(UINT iCount, UINT countsources, UINT countreadyfiles); //Xman see all sources
-
+	//Xman see all sources
+	/*
+	void UpdateFilesCount(int iCount);
+	*/
+	void UpdateFilesCount(UINT iCount, UINT countsources, UINT countreadyfiles);
+	//Xman end
 	void Localize();
 	void UpdateCatTabTitles(bool force = true);
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
@@ -140,6 +144,7 @@ protected:
 	void	SetWnd1Icon(EWnd1Icon iIcon);
 	void	SetWnd2Icon(EWnd2Icon iIcon);
 	void	ShowSplitWindow(bool bReDraw = false);
+	void	LocalizeToolbars();
 
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -166,6 +171,7 @@ protected:
 	afx_msg void OnWnd2BtnDropDown(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnSplitterMoved(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnWindowPosChanged(WINDOWPOS* lpwndpos);
+	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
 
 	// ==> XP Style Menu [Xanatos] - Stulle
 	afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);

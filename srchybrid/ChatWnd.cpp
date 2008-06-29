@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -96,6 +96,11 @@ void CChatWnd::DoDataExchange(CDataExchange* pDX)
 
 void CChatWnd::OnLvnItemActivateFriendList(NMHDR* /*pNMHDR*/, LRESULT* /*pResult*/)
 {
+	UpdateSelectedFriendMsgDetails();
+}
+
+void CChatWnd::UpdateSelectedFriendMsgDetails()
+{
 	int iSel = m_FriendListCtrl.GetSelectionMark();
 	if (iSel != -1) {
 		CFriend* pFriend = (CFriend*)m_FriendListCtrl.GetItemData(iSel);
@@ -112,7 +117,7 @@ void CChatWnd::ShowFriendMsgDetails(CFriend* pFriend)
 		//Xman quick fix: some leechers(I think) can cause a crash here, a simple try catch should do the job
 		try
 		{
-			//Xman end
+		//Xman end
 
 		CString buffer;
 
@@ -536,7 +541,7 @@ void CChatWnd::UpdateFriendlistCount(UINT count)
 
 BOOL CChatWnd::OnHelpInfo(HELPINFO* /*pHelpInfo*/)
 {
-	theApp.ShowHelp(eMule_FAQ_Friends);
+	theApp.ShowHelp(eMule_FAQ_GUI_Messages);
 	return TRUE;
 }
 
