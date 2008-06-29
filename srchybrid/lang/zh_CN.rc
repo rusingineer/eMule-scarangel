@@ -84,7 +84,7 @@ IDS_13RATIO             "使用1:3的比例限制下载(当上传 < 11KB/s)" //"Use amount b
     IDS_LOGDROP             "记录剔除动作" //"Log Drop actions"
     IDS_ANTILEECHER_GROUP   "Anti-Leecher"
     IDS_ANTILEECHER_CHECK   "启用 Anti-Leecher保护" //"Enable Anti-Leecher-Protection"
-    IDS_ANTILEECHERNAME_CHECK "监控 Leecher by UserName"
+    IDS_ANTILEECHERNAME_CHECK "屏蔽 Leecher by UserName"
     IDS_POWERRELEASE        "强力发布" //"PowerRelease"
     IDS_DONTREMOVESTATICSERVER "禁止自动移除静态服务器" //"Don't remove static server"
 END
@@ -127,11 +127,11 @@ END
 
 STRINGTABLE 
 BEGIN
-	IDS_ACCURATEGRAPH       "精确的" //"accurate"
-    IDS_SMOOTHGRAPH         "平滑的" //"smooth"
+	IDS_ACCURATEGRAPH       "精确显示" //"accurate"
+    IDS_SMOOTHGRAPH         "平滑显示" //"smooth"
     IDS_MULTIQUEUE          "每个文件一个队列 (多队列)" //"One queue per file (Multiqueue)"
     IDS_RETRYCONNECTIONATTEMPTS "尝试重新请求失败的TCP连接" //"Retry failed TCP connection attempts"
-    IDS_ANTIGHOST           "监控 Ghost-Mods"
+    IDS_ANTIGHOST           "屏蔽 Ghost-Mods"
     IDS_REMEMBERAICH        "保留未使用的 AICH-Hashes (known2.met)" //"Remember unused AICH-Hashes (known2.met)"
     IDS_MARKCANCELLED       "标记为""已取消""" //"Mark as Cancelled"
 	IDS_DOWNHISTORY_CHECK1  "eMule发现曾经下载过同样的文件 ID:\n" //"eMule has found a file already downloaded with the same file ID:\n"
@@ -163,16 +163,16 @@ BEGIN
     IDS_ALL_A4AF_AUTO       "自动交换全部(A4AF)来源到此文件" //"Automatically Swap All (A4AF) Sources To This File"
     IDS_LEECHER_ACTION_BAN  "屏蔽" //"Ban"
     IDS_LEECHER_ACTION_REDUCE "减少积分" //"Reduce score"
-    IDS_ANTILEECHERBADHELLO_CHECK "监控 wrong Hello-Tag"
-    IDS_ANTILEECHERSNAFU_CHECK "监控 bad Tags"
+    IDS_ANTILEECHERBADHELLO_CHECK "屏蔽 wrong Hello-Tag"
+    IDS_ANTILEECHERSNAFU_CHECK "屏蔽 bad Tags"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_ANTILEECHERMOD_CHECK "监控 Leecher by Modstring"
-    IDS_ANTILEECHERTHIEF_CHECK "监控 Nick- / Modthiefs"
-    IDS_ANTILEECHERSPAMMER_CHECK "监控 Spammers"
-    IDS_ANTILEECHERXSEXPLOITER_CHECK "监控 XS-Exploiter"
+    IDS_ANTILEECHERMOD_CHECK "屏蔽 Leecher by Modstring"
+    IDS_ANTILEECHERTHIEF_CHECK "屏蔽 Nick- / Modthiefs"
+    IDS_ANTILEECHERSPAMMER_CHECK "屏蔽 Spammers"
+    IDS_ANTILEECHERXSEXPLOITER_CHECK "屏蔽 XS-Exploiter"
     IDS_STATIC_LEECHERCOMMUNITY "Community Mods"
     IDS_STATIC_LEECHERGHOST "Ghost-Mods"
     IDS_STATIC_LEECHERTHIEF "Nick- / Modthiefs"
@@ -191,9 +191,9 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ACCEPTRATIO         "如果找到的源多于源限制时使用1:3的上传/下载限制" //"Accept 1:3 session ratio if found sources > sourcelimit"
-    IDS_SHOWADDITIONALGRAPH "显示附加的统计曲线" //"Show additional graph-lines"
+    IDS_SHOWADDITIONALGRAPH "显示附加统计曲线" //"Show additional graph-lines"
     IDS_CHECK4UPDATEMOD     "启动时检查 Xtreme 的新版本" //"Check for new Xtreme version on startup"
-    IDS_ANTILEECHEREMCRYPT_CHECK "监控 emcrypt"
+    IDS_ANTILEECHEREMCRYPT_CHECK "屏蔽 emcrypt"
     IDS_UPLOADMANAGEMENT_FRAME "上传管理" //"Upload Management"
 	IDS_UPLOADSLOTSPEED_LABEL "   上传槽速度:" //"Upload Slot Speed"
     
@@ -215,7 +215,7 @@ STRINGTABLE
 BEGIN
     IDS_CLIENTPERCENTAGE    "显示客户端百分比" //"Show client percentage"
     IDS_ONERELEASESLOT      "预留上传槽给共享文件" //"Always one release-slot"
-    IDS_A_UPPRIO            "使用全自动上传优先级" //"Use advanced auto-uploadpriority (experimental)"
+    IDS_A_UPPRIO            "使用全自动上传优先级" //"Use advanced auto-uploadpriority"
 	IDS_SHAREFACTOR         "共享系数" //"Sharefactor"
 END
 
@@ -240,11 +240,11 @@ END
 //
 //   Xtreme End
 //
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//   eMule0.47c Start   
+//   eMule0.48a start   
 //
-
 STRINGTABLE 
 BEGIN
     IDS_BOLD                "粗体" //"Toggles bold text"
@@ -263,8 +263,8 @@ BEGIN
     IDS_ARCHIVEDETAILS      "文档详情" //"Archive-Details"
     IDS_ARCHTYPE            "文档类型" // "Archive type"
     IDS_ATTRIBUTES          "属性" // "Attributes"
-    IDS_LASTMODIFIED        "最后改进" //"Last Modified"
-    IDS_RARFULLENCR         "文件头加密(Headers encrypted) - 不能读取文档." //"Headers encrypted - unable to read archive."
+    IDS_LASTMODIFIED        "最后修改" //"Last Modified"
+    IDS_RARFULLENCR         "文件头加密 - 不能读取文档." //"Headers encrypted - unable to read archive."
     IDS_ARCPARSED           "已扫描文档." //"Archive scanned."
     IDS_ARCPREV_LISTMAYBEINCOMPL "文件列表可能不完整." //"File list may be incomplete."
     IDS_ARCPREV_DIRNOTFOUND "未发现目录." //"Table of contents not found."
@@ -315,14 +315,48 @@ BEGIN
     IDS_UNKNOWNFILEEXT      "未知的文件扩展" //"Unknown file extension"
     IDS_ENABLEMINIMULE      "启用迷你骡" //"Enable MiniMule"
     IDS_DISABLE_AUTOARCHPREV 
-                            "禁止在文件详情里自动开始预览文档" //"Disable automatic archive preview start in file details"
+                            "禁止在文件详情里自动开始预览压缩文档内容" //"Disable automatic archive preview start in file details"
     IDS_US_STALLEDW4BR      "延迟! 等待文件块请求." //"Stalled! Waiting for block request."
     IDS_US_STALLEDREADINGFDISK "延迟! 从硬盘读取." //"Stalled! Reading from disk."
     IDS_SERVERFEATURE_INTTYPETAGS "整型标签" //"Integer type tags"
 END
 
+STRINGTABLE 
+BEGIN
+    IDS_FILLGRAPHS          "使用实体统计图" //"Draw filled graphs"
+    IDS_PARAMETER           "参数" //"Parameter"
+    IDS_TEST                "测试" //"Test"
+    IDS_UPNPSTART           "启用UPnP端口映射"  //"Use UPnP to setup ports"
+    IDS_UPNPSETUP           "正在尝试以UPnP进行端口映射..."  //"Trying to setup port forwardings with UPnP..."
+	IDS_UPNPFAILED          "UPnP:初始化映射端口失败,有必要的话请手动进行端口映射!"  //"UPnP failed to setup port forwardings, please forward those ports manually if necessary!"
+	IDS_UPNPSUCCESS         "UPnP:成功映射端口 %u(TCP) 和 %u(UDP)"  //"UPnP successfully set up forwardings for ports %u (TCP) and %u (UDP)"
+    IDS_FO_PREFBUTTON_NEW   "打开 WinXP SP2 防火墙端口"  //"Open ports on WinXP SP1 firewall"
+    IDS_UPNP_NOSERVICE      "主机路由UPnP驱动服务未运行,忽略UPnP初始化"  //"UPnP Device Host service is not running, skipping UPnP setup"
+    IDS_DELAYEDBYUPNP       "UPnP正在初始化端口映射,网络连接被延迟."  //"Connecting to the network is delayed, because UPnP is still busy configuring the port forwardings."
+    IDS_DELAYEDBYUPNP2      "请等稍等,eMule将在UPnP映射完毕时开始连接."  //"Please wait some seconds, eMule will connect as soon as UPnP finished."
+    IDS_UPNP                "UPnP"
+    IDS_UPNPCLOSEONEXIT     "退出时移除UPnP映射端口"  //"Remove UPnP port forwardings on exit"
+    IDS_UPNPSKIPWANIP       "跳过广域网(WAN)IP映射"  //"Skip WAN IP setup"
+    IDS_UPNPSKIPWANPPP      "跳过广域网(WAN)PPP映射"  //"Skip WAN PPP setup"
+    IDS_SHAREEMULELABEL     "多用户本地共享电骡"  //"Sharing eMule with other computer users"
+    IDS_SHAREEMULEMULTI     "每个用户使用独立的配置和下载"  //"Each user has its own configuration and downloads"
+    IDS_SHAREEMULEPUBLIC    "所有用户共享相同的配置和下载"  //"Everyone has the same configuration and downloads"
+    IDS_SHAREEMULEOLD       "在程序目录下保存配置和下载"  //"Store config and downloads in the programm directory"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_SHAREEMULEWARNING   "改变该选项会使eMule启用另一份配置.你的当前设置将会被忽略并且已经开始的下载可能会被取消.\n你可以在任何时候通过再次改变该选项来转回你当前的配置.\n\n你需要重启eMule以使该设置生效."  
+	//"Changing this option will let eMule use another configuration. You current settings will be ignored and already started downloads might not be visible anymore. You can switch back to your current configuration by changing this option again anytime.\n\nYou need to restart eMule for this change to take effect."
+    IDS_SPAM                "垃圾信息"  //"Spam"
+    IDS_MARKSPAM            "标记为垃圾信息"  //"Mark as Spam"
+    IDS_MARKNOTSPAM         "标记为非垃圾信息"  //"Mark as not Spam"
+    IDS_SEARCHSPAMFILTER    "对搜索结果启用垃圾信息过滤"  //"Enable Spam Filter for search results"
+	IDS_SHOWSMILEYS         "显示表情符号"  //"Show Smileys"
+END
+
 //
-// eMule0.47c End
+// 0.48a end 
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -2105,8 +2139,8 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_FSCANTHANDLEFILE 
-                            "You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
+    IDS_ERR_FSCANTHANDLEFILE  "您无法下载此文件,因为您的文件系统不支持大于4GB的文件生成,请考虑转换到NTFS文件系统."
+               //"You cannot download this file because your filesystem doesn't supports files which are larger than 4GB, consider converting it to NTFS"
     IDS_NEWVERSIONAVLBETA   "This Beta version is out of date. Due to the nature of Beta versions, which often contain bugs it is very important that you update to a stable release as soon as possible!"
 END
 
