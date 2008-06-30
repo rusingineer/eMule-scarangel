@@ -32,6 +32,7 @@ Fixed: Do not restrict download if no upload possible [Stulle] - Stulle
 Fixed: Anti-Uploader-Ban case 2 and 3 (horribly old...) [Stulle] - Stulle
 
 Removed: Redundant File Settings code (old) [Stulle] - Stulle
+Removed: Safe KAD code and thelike (for now) [Stulle] - Stulle
 
 
 eMule v0.48a ScarAngel v2.5:
