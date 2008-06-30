@@ -667,9 +667,10 @@ http_Download( IN const char *url_str,
                "HOSTNAME : %s Length : %d\n", hoststr, hostlen );
          )
 
-        ret_code = http_MakeMessage( &request, 1, 1, "QsbcDCUc",
-                                     HTTPMETHOD_GET, url.pathquery.buff,
-                                     url.pathquery.size, "Host: ", hoststr,
+        ret_code = http_MakeMessage( &request, 1, 1, "Qsbcc", // leuk_he: remove user agent. 
+                                     HTTPMETHOD_GET, 
+									 url.pathquery.buff,  url.pathquery.size, 
+									 "Host: ", hoststr,
                                      hostlen );
     if( ret_code != 0 ) {
         DBGONLY( UpnpPrintf
@@ -1862,7 +1863,8 @@ http_MakeMessage( INOUT membuffer * buf,
             // SERVER or USER-AGENT header
 
             temp_str = ( c == 'S' ) ? "Server: " : "User-Agent: ";
-            get_sdk_info( tempbuf, 200 );
+            //get_sdk_info( tempbuf, 200 );
+			strcpy(tempbuf,"Morph"); // shorter is more compatible, leuk_he
             if( http_MakeMessage
                 ( buf, http_major_version, http_minor_version, "ss",
                   temp_str, tempbuf ) != 0 ) {

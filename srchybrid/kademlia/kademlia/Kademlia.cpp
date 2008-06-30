@@ -34,6 +34,7 @@ there client on the eMule forum..
 #include "./Prefs.h"
 #include "./SearchManager.h"
 #include "./Indexed.h"
+#include "./UDPFirewallTester.h"
 #include "../net/KademliaUDPListener.h"
 #include "../routing/RoutingZone.h"
 #include "../routing/contact.h"
@@ -43,6 +44,8 @@ there client on the eMule forum..
 #include "../../Log.h"
 #include "../../MD4.h"
 #include "../../StringConversion.h"
+#include "../utils/KadUDPKey.h"
+#include "../utils/KadClientSearcher.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -62,6 +65,7 @@ time_t		CKademlia::m_tNextFirewallCheck;
 time_t		CKademlia::m_tNextFindBuddy;
 time_t		CKademlia::m_tBootstrap;
 time_t		CKademlia::m_tConsolidate;
+time_t		CKademlia::m_tExternPortLookup;
 bool		CKademlia::m_bRunning = false;
 
 CKademlia::CKademlia()
@@ -107,6 +111,8 @@ void CKademlia::Start(CPrefs *pPrefs)
 		m_tNextFindBuddy = time(NULL) + (MIN2S(5));
 		// Init contact consolidate timer;
 		m_tConsolidate = time(NULL) + (MIN2S(45));
+		// Looking up our extern port
+		m_tExternPortLookup = time(NULL);
 		// Init bootstrap time.
 		m_tBootstrap = 0;
 		// Init our random seed.
@@ -145,6 +151,9 @@ void CKademlia::Stop()
 
 	// Mark Kad as being in the stop state to make sure nothing else is used.
 	m_bRunning = false;
+
+	// Reset Firewallstate
+	CUDPFirewallTester::Reset();
 
 	// Remove all active searches.
 	CSearchManager::StopAllSearches();
@@ -196,7 +205,18 @@ void CKademlia::Process()
 	if (m_tNextFindBuddy <= tNow)
 	{
 		m_pInstance->m_pPrefs->SetFindBuddy();
-		m_tNextFindBuddy = MIN2S(5) + m_tNextFirewallCheck;
+		m_tNextFindBuddy = MIN2S(20) + tNow;
+	}
+	if (m_tExternPortLookup <= tNow && CUDPFirewallTester::IsFWCheckUDPRunning() && GetPrefs()->GetExternalKadPort() == 0){
+		// if our UDP firewallcheck is running and we don't know our external port, we send a request every 15 seconds
+		CContact* pContact = GetRoutingZone()->GetRandomContact(3, KADEMLIA_VERSION6_49aBETA);
+		if (pContact != NULL){
+			DEBUG_ONLY( DebugLog(_T("Requesting our external port from %s"), ipstr(ntohl(pContact->GetIPAddress()))) );
+			GetUDPListener()->SendNullPacket(KADEMLIA2_PING, pContact->GetIPAddress(), pContact->GetUDPPort(), pContact->GetUDPKey(), &pContact->GetClientID());
+		}
+		else
+			DEBUG_ONLY( DebugLogWarning(_T("No valid client for requesting external port available")) );
+		m_tExternPortLookup = 15 + tNow;
 	}
 	for (EventMap::const_iterator itEventMap = m_mapEvents.begin(); itEventMap != m_mapEvents.end(); ++itEventMap)
 	{
@@ -262,6 +282,9 @@ void CKademlia::Process()
 			theApp.emuledlg->ShowUserCount();
 		}
 	}
+
+	if (GetUDPListener() != NULL)
+		GetUDPListener()->ExpireClientSearch(); // function does only one compare in most cases, so no real need for a timer
 }
 
 void CKademlia::AddEvent(CRoutingZone *pZone)
@@ -337,10 +360,10 @@ uint32 CKademlia::GetIPAddress()
 	return 0;
 }
 
-void CKademlia::ProcessPacket(const byte *pbyData, uint32 uLenData, uint32 uIP, uint16 uPort)
+void CKademlia::ProcessPacket(const byte *pbyData, uint32 uLenData, uint32 uIP, uint16 uPort, bool bValidReceiverKey, CKadUDPKey senderUDPKey)
 {
 	if( m_pInstance && m_pInstance->m_pUDPListener )
-		m_pInstance->m_pUDPListener->ProcessPacket( pbyData, uLenData, uIP, uPort);
+		m_pInstance->m_pUDPListener->ProcessPacket( pbyData, uLenData, uIP, uPort, bValidReceiverKey, senderUDPKey);
 }
 
 bool CKademlia::GetPublish()
@@ -371,9 +394,13 @@ void CKademlia::RecheckFirewalled()
 		// to recheck it's IP which in turns rechecks firewall.
 		m_pInstance->m_pPrefs->SetFindBuddy(false);
 		m_pInstance->m_pPrefs->SetRecheckIP();
-		// Always set next buddy check 5 mins after a firewall check.
-		m_tNextFindBuddy = MIN2S(5) + m_tNextFirewallCheck;
-		m_tNextFirewallCheck = HR2S(1) + time(NULL);
+		// also UDP check
+		CUDPFirewallTester::ReCheckFirewallUDP(false);
+		
+		time_t tNow = time(NULL);
+		// Delay the next buddy search to at least 5 minutes after our firewallcheck so we are sure to be still firewalled
+		m_tNextFindBuddy = (m_tNextFindBuddy < MIN2S(5) + tNow) ?  (MIN2S(5) + tNow) : m_tNextFindBuddy;
+		m_tNextFirewallCheck = HR2S(1) + tNow;
 	}
 }
 
@@ -381,7 +408,7 @@ CPrefs *CKademlia::GetPrefs()
 {
 	if (m_pInstance == NULL || m_pInstance->m_pPrefs == NULL)
 	{
-		ASSERT(0);
+		//ASSERT(0);
 		return NULL;
 	}
 	return m_pInstance->m_pPrefs;
@@ -420,6 +447,49 @@ CIndexed *CKademlia::GetIndexed()
 bool CKademlia::IsRunning()
 {
 	return m_bRunning;
+}
+
+bool CKademlia::FindNodeIDByIP(CKadClientSearcher& rRequester, uint32 dwIP, uint16 nTCPPort, uint16 nUDPPort) {
+	if (!IsRunning() || m_pInstance == NULL || GetUDPListener() == NULL || GetRoutingZone() == NULL){
+		ASSERT( false );
+		return false;
+	}
+	// first search our known contacts if we can deliver a result without asking, otherwise forward the request
+	CContact* pContact;
+	if ((pContact = GetRoutingZone()->GetContact(ntohl(dwIP), nTCPPort, true)) != NULL){
+		uchar uchID[16];
+		pContact->GetClientID().ToByteArray(uchID);
+		rRequester.KadSearchNodeIDByIPResult(KCSR_SUCCEEDED, uchID);
+		return true;
+	}
+	else
+		return GetUDPListener()->FindNodeIDByIP(&rRequester, ntohl(dwIP), nTCPPort, nUDPPort);
+}
+
+bool CKademlia::FindIPByNodeID(CKadClientSearcher& rRequester, const uchar* pachNodeID){
+	if (!IsRunning() || m_pInstance == NULL || GetUDPListener() == NULL){
+		ASSERT( false );
+		return false;
+	}
+	// first search our known contacts if we can deliver a result without asking, otherwise forward the request
+	CContact* pContact;
+	if ((pContact = GetRoutingZone()->GetContact(CUInt128(pachNodeID))) != NULL){
+		// make sure that this entry is not too old, otherwise just do a search to be sure
+		if (pContact->GetLastSeen() != 0 && time(NULL) - pContact->GetLastSeen() < 1800){
+			rRequester.KadSearchIPByNodeIDResult(KCSR_SUCCEEDED, ntohl(pContact->GetIPAddress()), pContact->GetTCPPort());
+			return true;
+		}
+	}
+	return CSearchManager::FindNodeSpecial(CUInt128(pachNodeID), &rRequester);
+}
+
+void CKademlia::CancelClientSearch(CKadClientSearcher& rFromRequester){
+	if (m_pInstance == NULL || GetUDPListener() == NULL){
+		ASSERT( false );
+		return;
+	}
+	GetUDPListener()->ExpireClientSearch(&rFromRequester);
+	CSearchManager::CancelNodeSpecial(&rFromRequester);
 }
 
 void KadGetKeywordHash(const CStringA& rstrKeywordA, Kademlia::CUInt128* pKadID)

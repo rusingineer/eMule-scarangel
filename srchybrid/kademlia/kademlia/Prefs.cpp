@@ -41,6 +41,7 @@ there client on the eMule forum..
 #include "../../serverlist.h"
 #include "../../Log.h"
 #include "../../MD5Sum.h"
+#include "../../OtherFunctions.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -52,13 +53,7 @@ using namespace Kademlia;
 
 CPrefs::CPrefs()
 {
-	//Xman fixed official kad bug under vista (leuk_he/godlaugh2007)
-	/*
-	CString sFilename = CMiscUtils::GetAppDir();
-	sFilename.Append(CONFIGFOLDER);
-	sFilename.Append(_T("preferencesKad.dat"));
-	*/
-	CString sFilename =thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + _T("preferencesKad.dat");
+	CString sFilename = thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + _T("preferencesKad.dat");
 	Init(sFilename);
 }
 
@@ -89,11 +84,9 @@ void CPrefs::Init(LPCTSTR szFilename)
 	m_uKademliaFiles = 0;
 	m_sFilename = szFilename;
 	m_bLastFirewallState = true;
+	m_nExternKadPort = 0;
+	m_bUseExternKadPort = true;
 	ReadFile();
-	// ==> Safe KAD [netfinity] - Stulle
-	if (!m_uClientID.IsGoodRandom())
-		m_uClientID.SetValueRandom();
-	// <== Safe KAD [netfinity] - Stulle
 }
 
 void CPrefs::ReadFile()
@@ -104,8 +97,6 @@ void CPrefs::ReadFile()
 		CFileException fexp;
 		if (file.Open(m_sFilename, CFile::modeRead | CFile::osSequentialScan | CFile::typeBinary | CFile::shareDenyWrite, &fexp))
 		{
-			// ==> Safe KAD [netfinity] - Stulle
-			/*
 			setvbuf(file.m_pStream, NULL, _IOFBF, 16384);
 			m_uIP = file.ReadUInt32();
 			file.ReadUInt16();
@@ -114,20 +105,6 @@ void CPrefs::ReadFile()
 			if (m_uClientID == 0)
 				m_uClientID.SetValueRandom();
 			file.Close();
-			*/
-			uint32				uIP;
-			Kademlia::CUInt128	uClientID;
-
-			setvbuf(file.m_pStream, NULL, _IOFBF, 16384);
-			uIP = file.ReadUInt32();
-			file.ReadUInt16();
-			file.ReadUInt128(&uClientID);
-			file.ReadUInt8();
-			file.Close();
-
-			m_uIP = m_uIPLast = uIP;
-			m_uClientID = uClientID;
-			// <== Safe KAD [netfinity] - Stulle
 		}
 	}
 	catch (CException *ex)
@@ -147,12 +124,7 @@ void CPrefs::WriteFile()
 	{
 		CSafeBufferedFile file;
 		CFileException fexp;
-		// ==> Safe KAD [netfinity] - Stulle
-		/*
 		if (file.Open(m_sFilename, CFile::modeWrite | CFile::modeCreate | CFile::typeBinary | CFile::shareDenyWrite, &fexp))
-		*/
-		if (file.Open(m_sFilename, CFile::modeWrite | CFile::modeCreate | CFile::typeBinary | CFile::shareExclusive, &fexp))
-		// <== Safe KAD [netfinity] - Stulle
 		{
 			setvbuf(file.m_pStream, NULL, _IOFBF, 16384);
 			file.WriteUInt32(m_uIP);
@@ -281,7 +253,7 @@ void CPrefs::SetKademliaFiles()
 		nKadAverage = 108;
 	}
 #ifdef _DEBUG
-	AddDebugLogLine(false, method);
+	AddDebugLogLine(DLP_VERYLOW, false, method);
 #endif
 
 	m_uKademliaFiles = nKadAverage*m_uKademliaUsers;
@@ -448,10 +420,37 @@ void CPrefs::SetFindBuddy(bool bVal)
 	m_bFindBuddy = bVal;
 }
 
-uint16 CPrefs::GetUDPVerifyKey(uint32 dwTargetIP) const {
+uint32 CPrefs::GetUDPVerifyKey(uint32 dwTargetIP) {
 	uint64 ui64Buffer = thePrefs.GetKadUDPKey();
 	ui64Buffer <<= 32;
 	ui64Buffer |= dwTargetIP;
 	MD5Sum md5((uchar*)&ui64Buffer, 8);
-	return ((uint16)(PeekUInt32(md5.GetRawHash() + 0) ^ PeekUInt32(md5.GetRawHash() + 4) ^ PeekUInt32(md5.GetRawHash() + 8) ^ PeekUInt32(md5.GetRawHash() + 12)) % 0xFFFE) + 1; 
+	return ((uint32)(PeekUInt32(md5.GetRawHash() + 0) ^ PeekUInt32(md5.GetRawHash() + 4) ^ PeekUInt32(md5.GetRawHash() + 8) ^ PeekUInt32(md5.GetRawHash() + 12)) % 0xFFFFFFFE) + 1; 
+}
+
+bool CPrefs::GetUseExternKadPort() const
+{
+	return m_bUseExternKadPort;
+}
+
+void CPrefs::SetUseExternKadPort(bool bVal){
+	m_bUseExternKadPort = bVal;
+}
+
+uint16 CPrefs::GetExternalKadPort() const
+{
+	return m_nExternKadPort;
+}
+
+void CPrefs::SetExternKadPort(uint16 uVal){
+	m_nExternKadPort = uVal;
+}
+
+uint16 CPrefs::GetInternKadPort() const
+{
+	return thePrefs.GetUDPPort();
+}
+
+uint8 CPrefs::GetMyConnectOptions(bool bEncryption, bool bCallback){
+	return ::GetMyConnectOptions(bEncryption, bCallback);
 }

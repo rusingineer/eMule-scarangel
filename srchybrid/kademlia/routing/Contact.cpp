@@ -65,10 +65,12 @@ CContact::CContact()
 	m_uUdpPort = 0;
 	m_uTcpPort = 0;
 	m_uVersion = 0;
+	m_cUDPKey = CKadUDPKey(0, 0);
+	m_bIPVerified = false;
 	InitContact();
 }
 
-CContact::CContact(const CUInt128 &uClientID, uint32 uIp, uint16 uUdpPort, uint16 uTcpPort, uint8 uVersion)
+CContact::CContact(const CUInt128 &uClientID, uint32 uIp, uint16 uUdpPort, uint16 uTcpPort, uint8 uVersion, CKadUDPKey cUDPKey, bool bIPVerified)
 {
 	m_uClientID = uClientID;
 	CKademlia::GetPrefs()->GetKadID(&m_uDistance);
@@ -77,10 +79,12 @@ CContact::CContact(const CUInt128 &uClientID, uint32 uIp, uint16 uUdpPort, uint1
 	m_uUdpPort = uUdpPort;
 	m_uTcpPort = uTcpPort;
 	m_uVersion = uVersion;
+	m_cUDPKey = cUDPKey;
+	m_bIPVerified = bIPVerified;
 	InitContact();
 }
 
-CContact::CContact(const CUInt128 &uClientID, uint32 uIp, uint16 uUdpPort, uint16 uTcpPort, const CUInt128 &uTarget, uint8 uVersion)
+CContact::CContact(const CUInt128 &uClientID, uint32 uIp, uint16 uUdpPort, uint16 uTcpPort, const CUInt128 &uTarget, uint8 uVersion, CKadUDPKey cUDPKey, bool bIPVerified)
 {
 	m_uClientID = uClientID;
 	m_uDistance.SetValue(uTarget);
@@ -89,7 +93,28 @@ CContact::CContact(const CUInt128 &uClientID, uint32 uIp, uint16 uUdpPort, uint1
 	m_uUdpPort = uUdpPort;
 	m_uTcpPort = uTcpPort;
 	m_uVersion = uVersion;
+	m_cUDPKey = cUDPKey;
+	m_bIPVerified = bIPVerified;
 	InitContact();
+}
+
+void CContact::Copy(const CContact& fromContact){
+	ASSERT( fromContact.m_bGuiRefs == false ); // don't do this, if this is needed at some point, the code has to be adjusted before
+	m_uClientID = fromContact.m_uClientID;
+	m_uDistance = fromContact.m_uDistance;
+	m_uIp = fromContact.m_uIp;
+	m_uTcpPort = fromContact.m_uTcpPort;
+	m_uUdpPort = fromContact.m_uUdpPort;
+	m_uInUse = fromContact.m_uInUse;
+	m_tLastTypeSet = fromContact.m_tLastTypeSet;
+	m_tExpires = fromContact.m_tExpires;
+	m_tCreated = fromContact.m_tCreated;
+	m_byType = fromContact.m_byType;
+	m_uVersion = fromContact.m_uVersion;
+	m_bGuiRefs = false;
+	m_bCheckKad2 = fromContact.m_bCheckKad2;
+	m_bIPVerified = fromContact.m_bIPVerified;
+	m_cUDPKey = fromContact.m_cUDPKey;
 }
 
 void CContact::InitContact()
@@ -147,7 +172,10 @@ void CContact::GetIPAddress(CString *psIp) const
 
 void CContact::SetIPAddress(uint32 uIp)
 {
-	m_uIp = uIp;
+	if (m_uIp != uIp){
+		SetIpVerified(false); // clear the verified flag since it is no longer valid for a different IP
+		m_uIp = uIp;
+	}
 }
 
 uint16 CContact::GetTCPPort() const
@@ -208,13 +236,27 @@ void CContact::UpdateType()
 			break;
 		case 1:
 			m_byType = 1;
-			m_tExpires = (time_t)(time(NULL) + HR2S(1.5));
+			m_tExpires = time(NULL) + (unsigned)HR2S(1.5);
 			break;
 		default:
 			m_byType = 0;
 			m_tExpires = time(NULL) + HR2S(2);
 	}
 	theApp.emuledlg->kademliawnd->ContactRef(this);
+}
+
+time_t CContact::GetLastSeen() const
+{
+	// calculating back from expire time, so we don't need an additional field.
+	// might result in wrong values if doing CheckingType() for example, so don't use for important timing stuff
+	if (m_tExpires != 0) {
+		switch(m_byType) {
+			case 2: return m_tExpires - HR2S(1);
+			case 1: return m_tExpires - (unsigned)HR2S(1.5);
+			case 0: return m_tExpires - HR2S(2);
+		}
+	}
+	return 0;
 }
 
 CUInt128 CContact::GetClientID() const
@@ -283,4 +325,24 @@ bool CContact::CheckIfKad2()
 		return true;
 	}
 	return false;
+}
+
+CKadUDPKey CContact::GetUDPKey()	const
+{
+	return m_cUDPKey;
+}
+
+void CContact::SetUDPKey(CKadUDPKey cUDPKey)
+{
+	m_cUDPKey = cUDPKey;
+}
+
+bool CContact::IsIpVerified()	const
+{
+	return m_bIPVerified;
+}
+
+void CContact::SetIpVerified(bool bIPVerified)
+{
+	 m_bIPVerified =  bIPVerified;
 }

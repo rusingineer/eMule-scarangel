@@ -37,11 +37,6 @@ namespace Kademlia
 		public:
 			static void IPAddressToString(uint32 uIP, CString *pString);
 			static void DebugHexDump(const byte *pbyData, uint32 uLenData);
-			// ==> KAD vista fix [godlaugh2007] - Stulle
-			/*
-			static LPCTSTR GetAppDir();
-			*/
-			// <== KAD vista fix [godlaugh2007] - Stulle
 		private:
 			static CString m_sAppDirectory;
 	};
