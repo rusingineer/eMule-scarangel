@@ -2369,10 +2369,11 @@ bool CUpDownClient::IsSuperiorClient() const
 	if(credits)
 	{
 		bool bIsSecure = theApp.clientcredits->CryptoAvailable() && credits->GetCurrentIdentState(GetIP()) == IS_IDENTIFIED;
+		bool bIsNotAvail = theApp.clientcredits->CryptoAvailable() && credits->GetCurrentIdentState(GetIP()) == IS_NOTAVAILABLE;
 
 		if(credits->GetPayBackFirstStatus() && thePrefs.IsPayBackFirst() && bIsSecure)
 			return true;
-		if(credits->GetPayBackFirstStatus2() && thePrefs.IsPayBackFirst2())
+		if(credits->GetPayBackFirstStatus2() && thePrefs.IsPayBackFirst2() && bIsNotAvail)
 			return true;
 	}
 	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
@@ -2420,10 +2421,11 @@ bool CUpDownClient::IsPBFClient() const
 	if(credits)
 	{
 		bool bIsSecure = theApp.clientcredits->CryptoAvailable() && credits->GetCurrentIdentState(GetIP()) == IS_IDENTIFIED;
+		bool bIsNotAvail = theApp.clientcredits->CryptoAvailable() && credits->GetCurrentIdentState(GetIP()) == IS_NOTAVAILABLE;
 
 		if(credits->GetPayBackFirstStatus() && thePrefs.IsPayBackFirst() && bIsSecure)
 			return true;
-		if(credits->GetPayBackFirstStatus2() && thePrefs.IsPayBackFirst2())
+		if(credits->GetPayBackFirstStatus2() && thePrefs.IsPayBackFirst2() && bIsNotAvail)
 			return true;
 	}
 

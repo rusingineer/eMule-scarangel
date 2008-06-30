@@ -4686,7 +4686,7 @@ void CUpDownClient::CalculateJitteredFileReaskTime(bool longer)
 		m_jitteredFileReaskTime = FILEREASKTIME - (60*1000) + 1000*jitter - (2*60*1000); // -2..+2 minutes, keep the same average overload
 		//Xman: result between 26 and 29.5 this is useful to use TCP-Connection from older clients
 		// ==> Timer for ReAsk File Sources [Stulle] - Stulle
-		if(GetModClient() != MOD_SCAR && GetModClient() != MOD_XTREME)
+		if(GetModClient() != MOD_SCAR && GetModClient() != MOD_MEPHISTO && GetModClient() != MOD_XTREME)
 			m_jitteredFileReaskTime += thePrefs.GetReAskTimeDif();
 		// <== Timer for ReAsk File Sources [Stulle] - Stulle
 	}

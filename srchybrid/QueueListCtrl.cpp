@@ -553,7 +553,7 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					imagelist.Draw(dc,image, point, ILD_NORMAL | INDEXTOOVERLAYMASK(nOverlayImage));
 
 					// ==> Mod Icons - Stulle
-					if(client->Credits() && client->credits->GetHasScore(client))
+					if(client->Credits() && client->credits->GetHasScore(client) && client->GetModClient() != MOD_NONE)
 					{
 						if(client->Credits()->GetCurrentIdentState(client->GetIP()) == IS_IDENTIFIED)
 							m_overlayimages.Draw(dc,1, point, ILD_TRANSPARENT);

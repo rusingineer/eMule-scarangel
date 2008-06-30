@@ -23,10 +23,15 @@ Changed: Updated UPnP implementation, UPnP lib and PThread lib [leuk_he] - Stull
 Changed: Updated IP2Country implementation [MorphXT] - Stulle
 Changed: Updated libping to 1.28 (which is same source as 1.27) [leuk_he] - Stulle
 Changed: Updated CxImage to 6.00 (we use the rather complete lib) [Stulle] - Stulle
+Changed: No increased reask time for Mephisto clients [Stulle] - Stulle
+Changed: No Pay back First for non-SUI clients if client ident failed [Stulle] - Stulle
+Changed: Only draw credits overlay icon for mods [Stulle] - Stulle
 
 Fixed: Do not restrict download if no upload possible [Stulle] - Stulle
 	+ missed merging the proper version of this code on releasing
 Fixed: Anti-Uploader-Ban case 2 and 3 (horribly old...) [Stulle] - Stulle
+
+Removed: Redundant File Settings code (old) [Stulle] - Stulle
 
 
 eMule v0.48a ScarAngel v2.5:
