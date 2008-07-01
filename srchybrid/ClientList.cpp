@@ -1399,80 +1399,40 @@ void CClientList::ResetIP2Country(){
 // ==> Compat Client Stats [Stulle] - Stulle
 void CClientList::GetCompatClientsStats(CRBMap<CString, uint32> *compatClients)
 {
+	CString strClient = _T("");
+	uint32 count = 0;
 	for (POSITION pos = list.GetHeadPosition(); pos != NULL;) {		
 		CUpDownClient* cur_client =	list.GetNext(pos);
 
 		switch (cur_client->GetClientSoft())
 		{
 			case SO_HYDRANODE:
-			{
-				uint32 count;
-
-				if (!compatClients->Lookup(_T("Hydranode"), count))
-					count = 1;
-				else
-					count++;
-
-				compatClients->SetAt(_T("Hydranode"), count);
-			}break;
+				strClient.Format(_T("Hydranode"));
+				break;
 			case SO_EMULEPLUS:
-			{
-				uint32 count;
-
-				if (!compatClients->Lookup(_T("eMule Plus"), count))
-					count = 1;
-				else
-					count++;
-
-				compatClients->SetAt(_T("eMule Plus"), count);
-			}break;
+				strClient.Format(_T("eMule Plus"));
+				break;
 			case SO_TRUSTYFILES:
-			{
-				uint32 count;
-
-				if (!compatClients->Lookup(_T("TrustyFiles"), count))
-					count = 1;
-				else
-					count++;
-
-				compatClients->SetAt(_T("TrustyFiles"), count);
-			}break;
+				strClient.Format(_T("TrustyFiles"));
+				break;
 			case SO_CDONKEY:
-			{
-				uint32 count;
-
-				if (!compatClients->Lookup(_T("cDonkey"), count))
-					count = 1;
-				else
-					count++;
-
-				compatClients->SetAt(_T("cDonkey"), count);
-			}break;
+				strClient.Format(_T("cDonkey"));
+				break;
 			case SO_XMULE:
-			{
-				uint32 count;
-
-				if (!compatClients->Lookup(_T("xMule"), count))
-					count = 1;
-				else
-					count++;
-
-				compatClients->SetAt(_T("xMule"), count);
-			}break;
+				strClient.Format(_T("xMule"));
+				break;
 			case SO_LPHANT:
-			{
-				uint32 count;
-
-				if (!compatClients->Lookup(_T("lphant"), count))
-					count = 1;
-				else
-					count++;
-
-				compatClients->SetAt(_T("lphant"), count);
-			}break;
+				strClient.Format(_T("lphant"));
+				break;
 			default:
 				continue;
 		}
+		if (!compatClients->Lookup(strClient, count))
+			count = 1;
+		else
+			count++;
+
+		compatClients->SetAt(strClient, count);
 	}
 }
 // <== Compat Client Stats [Stulle] - Stulle
@@ -1489,3 +1449,34 @@ void CClientList::RecalculateReAskTimes(){
 
 }
 // <== Timer for ReAsk File Sources [Stulle] - Stulle
+
+// ==> Ban clients with reduced score immediatly on setting changed [Stulle] - Stulle
+void CClientList::BanReducedClients(bool bCommunity, bool bThief)
+{
+	CUpDownClient *cur_client;
+
+	for(POSITION pos = list.GetHeadPosition(); pos != NULL; list.GetNext(pos)) { 
+		cur_client = theApp.clientlist->list.GetAt(pos); 
+		uint8 uLeecherReason = cur_client->IsLeecher();
+		switch(uLeecherReason) 
+		{
+		case 1:
+		case 4:
+		case 10:
+		case 14:
+		case 15:
+		case 17:
+			if(bCommunity)
+				cur_client->BanLeecher(cur_client->GetBanMessageString(), uLeecherReason);
+			break;
+		case 6:
+		case 11:
+			if(bThief)
+				cur_client->BanLeecher(cur_client->GetBanMessageString(), uLeecherReason);
+			break;
+		default:
+			break; // do nothing
+		}
+	}
+
+}// <== Ban clients with reduced score immediatly on setting changed [Stulle] - Stulle

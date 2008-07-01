@@ -13,12 +13,17 @@
 #ifdef PRINT_STATISTIC
 #include "UploadBandwidthThrottler.h"
 #include "ClientCredits.h"
+// ==> Ban clients with reduced score immediatly on setting changed [Stulle] - Stulle
+/*
 #include "ClientList.h"
+*/
+// <== Ban clients with reduced score immediatly on setting changed [Stulle] - Stulle
 #include "TransferWnd.h"
 #include "DownloadQueue.h"
 #include "BandWidthControl.h"
 #endif
 
+#include "ClientList.h" // Ban clients with reduced score immediatly on setting changed [Stulle] - Stulle
 
 // CPPgXtreme dialog
 #ifdef _DEBUG
@@ -174,6 +179,10 @@ void CPPgXtreme2::LoadSettings(void)
 BOOL CPPgXtreme2::OnApply()
 {
 	
+	// ==> Ban clients with reduced score immediatly on setting changed [Stulle] - Stulle
+	bool bWasCommunityReduce = thePrefs.GetAntiLeecherCommunity_Action();
+	bool bWasThiefReduce = thePrefs.GetAntiLeecherThief_Action();
+	// <== Ban clients with reduced score immediatly on setting changed [Stulle] - Stulle
 
 	//Xman Anti-Leecher
 	thePrefs.SetAntiLeecher(IsDlgButtonChecked(IDC_ANTILEECHER_CHECK)!=0);
@@ -192,6 +201,17 @@ BOOL CPPgXtreme2::OnApply()
 	thePrefs.SetAntiLeecherThief_Action(IsDlgButtonChecked(IDC_RADIO_LEECHERTHIEF_2)!=0);
 	//Xman end
 
+	// ==> Ban clients with reduced score immediatly on setting changed [Stulle] - Stulle
+	if(bWasCommunityReduce && !thePrefs.GetAntiLeecherCommunity_Action())
+	{
+		if(bWasThiefReduce && !thePrefs.GetAntiLeecherThief_Action())
+			theApp.clientlist->BanReducedClients(true,true);
+		else
+			theApp.clientlist->BanReducedClients(true,false);
+	}
+	else if(bWasThiefReduce && !thePrefs.GetAntiLeecherThief_Action())
+		theApp.clientlist->BanReducedClients(false,true);
+	// <== Ban clients with reduced score immediatly on setting changed [Stulle] - Stulle
 
 	thePrefs.m_bShowActiveDownloadsBold=(IsDlgButtonChecked(IDC_ACTIVEDOWNLOADSBOLD)!=0); //Xman Show active downloads bold
 

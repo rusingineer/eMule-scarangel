@@ -3878,7 +3878,7 @@ void CPPgScar::UpdateStyles()
 	bool bEnable = false;
 	bool bOnOff = (iCurStyle != style_c_default);
 
-	if(thePrefs.GetWindowsVersion() == _WINVER_XP_) // using XP
+	if(IsRunningXPSP2OrHigher() || thePrefs.GetWindowsVersion() == _WINVER_XP_) // using XP or higher
 	{
 		// Retrieve the bottom of the tab's header
 		RECT rect1;

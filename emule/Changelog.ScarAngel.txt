@@ -26,6 +26,10 @@ Changed: Updated CxImage to 6.00 (we use the rather complete lib) [Stulle] - Stu
 Changed: No increased reask time for Mephisto clients [Stulle] - Stulle
 Changed: No Pay back First for non-SUI clients if client ident failed [Stulle] - Stulle
 Changed: Only draw credits overlay icon for mods [Stulle] - Stulle
+Changed: Creation of TBH: MiniMule (won't show up on startup now) [Stulle] - Stulle
+Changed: Display warning in Design Panel for all Windows > XP [Stulle] - Stulle
+Changed: Made Compat clients stats code prettier [WiZaRd] - Stulle
+Changed: Ban clients with reduced score immediatly on setting changed [Stulle] - Stulle
 
 Fixed: Do not restrict download if no upload possible [Stulle] - Stulle
 	+ missed merging the proper version of this code on releasing
@@ -33,6 +37,7 @@ Fixed: Anti-Uploader-Ban case 2 and 3 (horribly old...) [Stulle] - Stulle
 
 Removed: Redundant File Settings code (old) [Stulle] - Stulle
 Removed: Safe KAD code and thelike (for now) [Stulle] - Stulle
+Removed: Xtreme version check (not working for now) [Stulle] - Stulle
 
 
 eMule v0.48a ScarAngel v2.5:

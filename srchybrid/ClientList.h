@@ -221,4 +221,6 @@ public:
 	// <== Compat Client Stats [Stulle] - Stulle
 
 	void RecalculateReAskTimes(); // Timer for ReAsk File Sources [Stulle] - Stulle
+
+	void BanReducedClients(bool bCommunity, bool bThief); // Ban clients with reduced score immediatly on setting changed [Stulle] - Stulle
 };

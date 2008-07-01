@@ -454,13 +454,22 @@ BOOL CemuleDlg::OnInitDialog()
 		pSysMenu->AppendMenu(MF_STRING, MP_VERSIONCHECK, GetResString(IDS_VERSIONCHECK));
 
 		//Xman versions check
+		// ==> Removed Xtreme version check (not working for now) [Stulle] - Stulle
+		/*
 		ASSERT( (MP_MVERSIONCHECK & 0xFFF0) == MP_MVERSIONCHECK && MP_MVERSIONCHECK < 0xF000);
 		pSysMenu->AppendMenu(MF_STRING, MP_MVERSIONCHECK, _T("Xtreme-Version-Check"));
+		*/
+		// <== Removed Xtreme version check (not working for now) [Stulle] - Stulle
 		//Xman end
 
 		// ==> ScarAngel Version Check - Stulle
 		ASSERT( (MP_SVERSIONCHECK & 0xFFF0) == MP_SVERSIONCHECK && MP_SVERSIONCHECK < 0xF000);
+		// ==> Mephisto mod [Stulle] - Mephisto
+		/*
 		pSysMenu->AppendMenu(MF_STRING, MP_SVERSIONCHECK, GetResString(IDS_SVERSIONCHECK));
+		*/
+		pSysMenu->AppendMenu(MF_STRING, MP_SVERSIONCHECK, GetResString(IDS_MVERSIONCHECK));
+		// <== Mephisto mod [Stulle] - Mephisto
 		// <== ScarAngel Version Check - Stulle
 
 		// remaining system menu entries are created later...
@@ -845,7 +854,7 @@ void CemuleDlg::DoMVersioncheck(bool manual) {
 		if ( (difftime(tNow,tLast) / 86400)<thePrefs.GetUpdateDays() )
 			return;
 	}
-	//Stulle - removed xtreme version check for the time being
+	// ==> Removed Xtreme version check (not working for now) [Stulle] - Stulle
 	/*
 	if (WSAAsyncGetHostByName(m_hWnd, UM_MVERSIONCHECK_RESPONSE, "xtreme.dyndns.info", m_acMVCDNSBuffer, sizeof(m_acMVCDNSBuffer)) == 0){
 		AddLogLine(true,GetResString(IDS_NEWVERSIONFAILED));
@@ -853,9 +862,8 @@ void CemuleDlg::DoMVersioncheck(bool manual) {
 	else
 		WSAAsyncGetHostByName(m_hWnd, UM_DLPVERSIONCHECK_RESPONSE, "dlp.dyndns.info", m_acDLPBuffer, sizeof(m_acDLPBuffer)); //Xman DLP //MOD NOTE: if you are using DLP, don't remove/modify this versions-check
 	*/
-	if (WSAAsyncGetHostByName(m_hWnd, UM_DLPVERSIONCHECK_RESPONSE, "dlp.dyndns.info", m_acMVCDNSBuffer, sizeof(m_acMVCDNSBuffer)) == 0)
-		AddLogLine(true,_T("DLP version check failed"));
-	//Stulle end
+	; // Do nothing
+	// <== Removed Xtreme version check (not working for now) [Stulle] - Stulle
 }
 //Xman end
 
@@ -3310,7 +3318,11 @@ void CemuleDlg::Localize()
 		VERIFY( pSysMenu->ModifyMenu(MP_ABOUTBOX, MF_BYCOMMAND | MF_STRING, MP_ABOUTBOX, GetResString(IDS_ABOUTBOX)) );
 		VERIFY( pSysMenu->ModifyMenu(MP_VERSIONCHECK, MF_BYCOMMAND | MF_STRING, MP_VERSIONCHECK, GetResString(IDS_VERSIONCHECK)) );
 		//Xman versions check
+		// ==> Removed Xtreme version check (not working for now) [Stulle] - Stulle
+		/*
 		VERIFY( pSysMenu->ModifyMenu(MP_MVERSIONCHECK, MF_BYCOMMAND | MF_STRING, MP_MVERSIONCHECK, _T("Xtreme_Version_Check")) );
+		*/
+		// <== Removed Xtreme version check (not working for now) [Stulle] - Stulle
 		//Xman end
 		// ==> ScarAngel Version Check - Stulle
 		VERIFY( pSysMenu->ModifyMenu(MP_SVERSIONCHECK, MF_BYCOMMAND | MF_STRING, MP_SVERSIONCHECK, GetResString(IDS_SVERSIONCHECK)) );
