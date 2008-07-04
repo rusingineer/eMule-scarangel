@@ -174,6 +174,7 @@ protected:
 	COLORREF	m_clrText;			//Text color
 	COLORREF	m_clrSelectedText;	//selected text color
 	COLORREF	m_clrDisabledText;	//disabled text color
+	COLORREF	m_clrHeadingText;	// MenuXP Sub Heading [fafner] - MyTh
 
 	COLORREF	m_clrSideBarStart;	//Start color of the gradient sidebar
 	COLORREF	m_clrSideBarEnd;	//end color of the gradient sidebar
@@ -195,6 +196,7 @@ public:	//User these functions to change the default attribute of the menu
 	void	SetTextColor(COLORREF clr) { m_clrText = clr; }
 	void	SetSelectedTextColor(COLORREF clr) { m_clrSelectedText = clr; }
 	void	SetDisabledTextColor(COLORREF clr) { m_clrDisabledText = clr; }
+	void	SetHeadingTextColor(COLORREF clr) { m_clrHeadingText = clr; } // MenuXP Sub Heading [fafner] - MyTh
 	void	SetSideBarStartColor(COLORREF clr) { m_clrSideBarStart = clr; }
 	void	SetSideBarEndColor(COLORREF clr) { m_clrSideBarEnd = clr; }
 	void	SetIconAreaColor(COLORREF clr) { m_clrIconArea = clr; }

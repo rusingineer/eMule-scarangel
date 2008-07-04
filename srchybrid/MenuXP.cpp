@@ -43,6 +43,7 @@ CMenuXP::CMenuXP()
 	m_clrSelectedText = ::GetSysColor(COLOR_HIGHLIGHTTEXT);
 	m_clrText = ::GetSysColor(COLOR_MENUTEXT);
 	m_clrDisabledText = ::GetSysColor(COLOR_GRAYTEXT);
+	m_clrHeadingText = ::GetSysColor(COLOR_MENUTEXT); // MenuXP Sub Heading [fafner] - MyTh
 	m_clrIconArea = m_clrBackGround;
 
 	//initialize sidebar colors
@@ -695,7 +696,12 @@ void CMenuXP::DrawText(CDC *pDC, CRect rect, CString strText, BOOL bSelected, BO
 	}
 	else
 	{
-		DrawMenuText(*pDC, rect, strText, bSelected? m_clrSelectedText : m_clrText);
+		// ==> MenuXP Sub Heading [fafner] - MyTh
+		if(bHeading)
+			DrawMenuText(*pDC, rect + CPoint(1, 1), strText, m_clrHeadingText);
+		else
+		// <== MenuXP Sub Heading [fafner] - MyTh
+			DrawMenuText(*pDC, rect, strText, bSelected? m_clrSelectedText : m_clrText);
 	}
 
 	pDC->SelectObject(pOldFont);
@@ -1022,18 +1028,18 @@ void CMenuXP::AddMenuTitle(LPCTSTR lpszTitle, bool /*bIsIconMenu*/, bool bIsSide
 	*/
 	SetMenuStyle(CMenuXP::STYLE_STARTMENU);
 
-	SetSideBarStartColor(RGB(255,194,189));
-	SetSideBarEndColor(RGB(237,237,237));
-
 	if(bIsSidebar)
 		AddSideBar(new CMenuXPSideBar(17, lpszTitle));
         if(lpszTitle)
 		AppendHeading(lpszTitle);
 
-		SetBackBitmap(_T("MENUBACK"), _T("JPG"));
+	SetBackBitmap(_T("MENUBACK"), _T("JPG"));
+	SetSideBarStartColor(RGB(255,194,189));
+	SetSideBarEndColor(RGB(237,237,237));
 	SetSelectedBarColor(RGB(252,231,211));
 	SetTextColor(RGB(0,0,0));
 	SetSelectedTextColor(RGB(0,0,0));
+	SetHeadingTextColor(RGB(0,0,0)); // MenuXP Sub Heading [fafner] - MyTh
 	// <== XP Style Menu [Xanatos] - Stulle
 }
 
