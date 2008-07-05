@@ -464,12 +464,7 @@ BOOL CemuleDlg::OnInitDialog()
 
 		// ==> ScarAngel Version Check - Stulle
 		ASSERT( (MP_SVERSIONCHECK & 0xFFF0) == MP_SVERSIONCHECK && MP_SVERSIONCHECK < 0xF000);
-		// ==> Mephisto mod [Stulle] - Mephisto
-		/*
 		pSysMenu->AppendMenu(MF_STRING, MP_SVERSIONCHECK, GetResString(IDS_SVERSIONCHECK));
-		*/
-		pSysMenu->AppendMenu(MF_STRING, MP_SVERSIONCHECK, GetResString(IDS_MVERSIONCHECK));
-		// <== Mephisto mod [Stulle] - Mephisto
 		// <== ScarAngel Version Check - Stulle
 
 		// remaining system menu entries are created later...
