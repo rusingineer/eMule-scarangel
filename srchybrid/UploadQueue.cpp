@@ -151,7 +151,12 @@ CUploadQueue::CUploadQueue()
  *
  * @return address of the highest ranking client.
  */
+// ==> Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
+/*
 CUpDownClient* CUploadQueue::FindBestClientInQueue()
+*/
+CUpDownClient* CUploadQueue::FindBestClientInQueue(bool bCheckOnly)
+// <== Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 {
 	POSITION toadd = 0;
 	//Xman Code Improvement
@@ -357,7 +362,8 @@ CUpDownClient* CUploadQueue::FindBestClientInQueue()
 	if(lowclientSup && toaddSup) // both chosen clients are superior
 	{
 		// only AddNextConnect if the low is more worthy
-		if (bestlowscoreSup > bestscoreSup && lowclientSup)
+		if (bestlowscoreSup > bestscoreSup && lowclientSup &&
+			!bCheckOnly) // Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 			lowclientSup->m_bAddNextConnect = true;
 
 		// we had a good sup so add him at once to fill the need
@@ -369,13 +375,15 @@ CUpDownClient* CUploadQueue::FindBestClientInQueue()
 	}
 	else if(lowclientSup) // only low
 	{
+		if(!bCheckOnly) // Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 			lowclientSup->m_bAddNextConnect = true;
 	}
 
 	if(!toaddSup) // we had no high superior client
 	{
 		// we had no low superior client, proceed with low as usually
-		if (!lowclientSup && bestlowscore > bestscore && lowclient)
+		if (!lowclientSup && bestlowscore > bestscore && lowclient &&
+			!bCheckOnly) // Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 			lowclient->m_bAddNextConnect = true;
 
 		// proceed with normal clients as usually
@@ -1816,25 +1824,40 @@ bool CUploadQueue::CheckForTimeOver(CUpDownClient* client){
 
 	bool returnvalue=false;
 
-	if(client->IsPBFClient()==false && // Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
-		!(client->IsFriend() && client->GetFriendSlot())){ // Override max upload session time for friends [Stulle] - Stulle
+	// ==> Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
+	// ScarAngel always does nothing if uPrevenTimeOver > 0... easier merging. ;)
+	uint8 uPreventTimeOver = 0; // 0 = not prevent; 1 = test move down; 2 = do nothing
+	// ==> Keep friends in upload like PBF clients [Stulle] - Stulle
+	if (client->IsFriend() && client->GetFriendSlot())
+		uPreventTimeOver = 2;
+	// <== Keep friends in upload like PBF clients [Stulle] - Stulle
+	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+	if(client->IsPBFClient())
+		uPreventTimeOver = 1; // PBF should stay in upload no matter what
+	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+	else if(client->IsSuperiorClient())
+	{
+		CUpDownClient* bestClient = FindBestClientInQueue();
+		if(bestClient->IsSuperiorClient()==false)
+			uPreventTimeOver = 1;
+	}
+	if(uPreventTimeOver > 0){
+	// <== Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
    		 if( client->GetUpStartTimeDelay() > SESSIONMAXTIME){ // Try to keep the clients from downloading for ever
 			    if (thePrefs.GetLogUlDlEvents())
 				    AddDebugLogLine(DLP_LOW, false, _T("%s: Upload session will end soon due to max time %s."), client->GetUserName(), CastSecondsToHM(SESSIONMAXTIME/1000));
 			    returnvalue=true;
    		 }
-	} // Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+	} // Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 
 
-	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
-	if(client->IsPBFClient() ||
-		(client->IsFriend() && client->GetFriendSlot())) // Keep friends in upload like PBF clients [Stulle] - Stulle
+	// ==> Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
+	if(uPreventTimeOver > 0)
 	{
-		// still pay back first
-		// do nothing
+		; // do nothing
 	}
 	else
-	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+	// <== Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 	//not full chunk method:
 	if (!thePrefs.TransferFullChunks() 
 		// ==> Superior Client Handling [Stulle] - Stulle

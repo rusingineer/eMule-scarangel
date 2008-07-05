@@ -87,7 +87,12 @@ public:
 	uint32	GetFailedUpCount()						{return failedupcount;}
 	uint32	GetAverageUpTime();
 
+	// ==> Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
+	/*
     CUpDownClient* FindBestClientInQueue();
+	*/
+    CUpDownClient* FindBestClientInQueue(bool bCheckOnly = false);
+	// <== Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
     void ReSortUploadSlots(bool force = false);
 
 	CUpDownClientPtrList waitinglist;
