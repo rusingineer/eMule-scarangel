@@ -1029,7 +1029,7 @@ void CMenuXP::AddMenuTitle(LPCTSTR lpszTitle, bool /*bIsIconMenu*/, bool bIsSide
 	SetMenuStyle(CMenuXP::STYLE_STARTMENU);
 
 	if(bIsSidebar)
-		AddSideBar(new CMenuXPSideBar(17, lpszTitle));
+		AddSideBar(new CMenuXPSideBar(17, theApp.m_strModLongVersion));
         if(lpszTitle)
 		AppendHeading(lpszTitle);
 
