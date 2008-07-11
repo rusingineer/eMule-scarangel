@@ -2227,7 +2227,12 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 				if (content->type == AVAILABLE_SOURCE && !(client->m_OtherNoNeeded_list.IsEmpty() && client->m_OtherRequests_list.IsEmpty()))
 					A4AFMenu.AppendMenu(MF_STRING,MP_SWAP_A4AF_TO_OTHER,GetResString(IDS_SWAP_A4AF_TO_OTHER)); // Added by sivka
 				//Xman end
+				// ==> XP Style Menu [Xanatos] - Stulle
+				/*
 				if (A4AFMenu.GetMenuItemCount()>0)
+				*/
+				if (A4AFMenu.GetMenuItemCount()>1)
+				// <== XP Style Menu [Xanatos] - Stulle
 					ClientMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)A4AFMenu.m_hMenu, GetResString(IDS_A4AF));
 			}
 			// - show requested files (sivka/Xman)
