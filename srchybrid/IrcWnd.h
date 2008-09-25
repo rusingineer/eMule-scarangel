@@ -104,10 +104,8 @@ protected:
 	afx_msg void OnBnClickedSmiley();
 	afx_msg LONG OnSelEndOK(UINT lParam, LONG wParam);
 	afx_msg LONG OnSelEndCancel(UINT lParam, LONG wParam);
-	// ==> Design Settings [eWombat/Stulle] - Max
-	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-	// <== Design Settings [eWombat/Stulle] - Max
 	afx_msg void OnEnRequestResizeTitle(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	// ==> Design Settings [eWombat/Stulle] - Max
 public:
 	void OnBackcolor();

@@ -612,16 +612,24 @@ bool CTag::WriteNewEd2kTag(CFileDataIO* data, EUtf8Str eStrEncode) const
 		}
 		else if (eStrEncode == utf8strOptBOM)
 		{
+			//Borschtsch - we always use Unicode
+			/*
 			if (NeedUTF8String(*m_pstrVal))
 			{
+			*/
+			//Borschtsch - we always use Unicode
 				CUnicodeToBOMUTF8 bomutf8(*m_pstrVal);
 				pstrValA = new CStringA((LPCSTR)bomutf8, bomutf8.GetLength());
+			//Borschtsch - we always use Unicode
+			/*
 			}
 			else
 			{
 				CUnicodeToMultiByte mb(*m_pstrVal);
 				pstrValA = new CStringA((LPCSTR)mb, mb.GetLength());
 			}
+			*/
+			//Borschtsch - we always use Unicode
 		}
 		else
 		{
@@ -873,8 +881,12 @@ void CTag::Dump(CDumpContext& dc) const
 
 bool WriteOptED2KUTF8Tag(CFileDataIO* data, LPCWSTR pwsz, uint8 uTagName)
 {
+	//Borschtsch - we always use Unicode
+	/*
 	if (!NeedUTF8String(pwsz))
 		return false;
+	*/
+	//Borschtsch - we always use Unicode
 	CTag tag(uTagName, pwsz);
 	tag.WriteTagToFile(data, utf8strOptBOM);
 	return true;

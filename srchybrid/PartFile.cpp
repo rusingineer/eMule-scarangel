@@ -366,7 +366,7 @@ void CPartFile::Init(){
 	}
 	// <== Global Source Limit [Max/Stulle] - Stulle
 
-	// ==> file settings - Stulle
+	// ==> File Settings [sivka/Stulle] - Stulle
 	m_EnableAutoDropNNS = 	thePrefs.GetEnableAutoDropNNSDefault();
 	m_AutoNNS_Timer		= 	thePrefs.GetAutoNNS_TimerDefault();
 	m_MaxRemoveNNSLimit = 	thePrefs.GetMaxRemoveNNSLimitDefault();
@@ -379,7 +379,7 @@ void CPartFile::Init(){
 	m_MaxRemoveQRSLimit = 	thePrefs.GetMaxRemoveQRSLimitDefault();
 	m_bHQRXman          =	thePrefs.GetHQRXmanDefault();
 	m_bGlobalHL			=	thePrefs.GetGlobalHlDefault(); // Global Source Limit (customize for files) - Stulle
-	// <== file settings - Stulle
+	// <== File Settings [sivka/Stulle] - Stulle
 
 	// ==> customized source dropping - Stulle
 	m_TimerForAutoNNS = 0;
@@ -519,7 +519,7 @@ void CPartFile::AssertValid() const
 	(void)m_category;
 	(void)m_dwFileAttributes;
 
-	// ==> file settings - Stulle
+	// ==> File Settings [sivka/Stulle] - Stulle
 	CHECK_BOOL(m_EnableAutoDropNNS);
 	(void)m_AutoNNS_Timer;
 	(void)m_MaxRemoveNNSLimit;
@@ -532,7 +532,7 @@ void CPartFile::AssertValid() const
 	(void)m_MaxRemoveQRSLimit;
 	CHECK_BOOL(m_bHQRXman);
 	CHECK_BOOL(m_bGlobalHL); // Global Source Limit (customize for files) - Stulle
-	// <== file settings - Stulle
+	// <== File Settings [sivka/Stulle] - Stulle
 
 	// ==> customized source dropping - Stulle
 	(void)m_TimerForAutoNNS;
@@ -1929,7 +1929,7 @@ bool CPartFile::SavePartFile()
 		for (POSITION pos = gaplist.GetHeadPosition(); pos != 0; )
 		{
 			Gap_Struct* gap = gaplist.GetNext(pos);
-			itoa(i_pos, number, 10);
+			_itoa(i_pos, number, 10);
 			namebuffer[0] = FT_GAPSTART;
 			CTag gapstarttag(namebuffer,gap->start, IsLargeFile());
 			gapstarttag.WriteTagToFile(&file);
@@ -2420,7 +2420,7 @@ bool CPartFile::GetNextEmptyBlockInPart(UINT partNumber, Requested_Block_Struct 
 			if(shrinkSucceeded) {
 				//Xman 
 				/*
-				AddDebugLogLine(false, _T("Shrunk interval to prevent collision with already requested block: Old interval %i-%i. New interval: %i-%i. File %s."), start, end, tempStart, tempEnd, GetFileName());
+                AddDebugLogLine(false, _T("Shrunk interval to prevent collision with already requested block: Old interval %I64u-%I64u. New interval: %I64u-%I64u. File %s."), start, end, tempStart, tempEnd, GetFileName());
 				*/
 				//Xman end
 
@@ -3322,7 +3322,7 @@ uint32 CPartFile::Process(uint32 maxammount, bool isLimited, bool fullProcess)
 					if( cur_src->HasLowID() )
 					{
 						//Make sure we still cannot callback to this Client..
-						if( !theApp.DoCallback( cur_src ) )
+						if( !theApp.CanDoCallback( cur_src ) )
 						{
 							//If we are almost maxed on sources, slowly remove these client to see if we can find a better source.
 							if( ((dwCurTick - lastpurgetime) > SEC2MS(30)) && (this->GetSourceCount() >= (GetMaxSources()*.8 )) )
@@ -5877,6 +5877,21 @@ uint32 CPartFile::WriteToBuffer(uint64 transize, const BYTE *data, uint64 start,
 			AddDebugLogLine(false, _T("PrcBlkPkt: Already written block %s; File=%s; %s"), DbgGetBlockInfo(start, end), GetFileName(), client->DbgGetClientInfo());
 		return 0;
 	}
+	// security sanitize check to make sure we do not write anything into an already hashed complete chunk
+	const uint64 nStartChunk = start / PARTSIZE;
+	const uint64 nEndChunk = end / PARTSIZE;
+	if (IsComplete(PARTSIZE * (uint64)nStartChunk, (PARTSIZE * (uint64)(nStartChunk + 1)) - 1, false)){
+		DebugLogError( _T("PrcBlkPkt: Received data touches already hashed chunk - ignored (start) %s; File=%s; %s"), DbgGetBlockInfo(start, end), GetFileName(), client->DbgGetClientInfo());
+		return 0;
+	}
+	else if (nStartChunk != nEndChunk) {
+		if (IsComplete(PARTSIZE * (uint64)nEndChunk, (PARTSIZE * (uint64)(nEndChunk + 1)) - 1, false)){
+			DebugLogError( _T("PrcBlkPkt: Received data touches already hashed chunk - ignored (end) %s; File=%s; %s"), DbgGetBlockInfo(start, end), GetFileName(), client->DbgGetClientInfo());
+			return 0;
+		}
+		else
+			DEBUG_ONLY( DebugLogWarning(_T("PrcBlkPkt: Received data crosses chunk boundaries %s; File=%s; %s"), DbgGetBlockInfo(start, end), GetFileName(), client->DbgGetClientInfo()) );
+	}
 
 	//Xman
 	// BEGIN SLUGFILLER: SafeHash
@@ -5977,8 +5992,10 @@ uint32 CPartFile::WriteToBuffer(uint64 transize, const BYTE *data, uint64 start,
 	while (pos != NULL)
 	{	
 		// BEGIN SLUGFILLER: SafeHash - clean coding, removed "item->"
-		if (requestedblocks_list.GetNext(pos) == block)
+		if (requestedblocks_list.GetNext(pos) == block){
 			block->transferred += lenData;
+			break; //MORPH - Optimization
+		}
 		// END SLUGFILLER: SafeHash
 	}
 	//Xman end
@@ -6697,7 +6714,7 @@ void CPartFile::FlushBuffersExceptionHandler()
 UINT AFX_CDECL CPartFile::AllocateSpaceThread(LPVOID lpParam)
 {
 	DbgSetThreadName("Partfile-Allocate Space");
-	InitThreadLocale();
+	//InitThreadLocale(); //Performance killer
 
 	//Xman
 	// BEGIN SLUGFILLER: SafeHash
@@ -9318,7 +9335,7 @@ void CPartFile::RemoveLow2LowIPSourcesManual()
 		CUpDownClient* cur_src = srclist.GetNext(pos1);
 		if(cur_src->GetDownloadState() == DS_LOWTOLOWIP &&
 			cur_src->HasLowID() &&
-			!theApp.DoCallback( cur_src ))
+			!theApp.CanDoCallback( cur_src ))
 		{
 			theApp.downloadqueue->RemoveSource(cur_src);
 			m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle
@@ -9432,7 +9449,7 @@ void CPartFile::CleanUp_NNS_FQS_NONE_ERROR_BANNED_LOWTOLOWIP_Sources()
 				break;
 			case DS_LOWTOLOWIP:
 				if(cur_src->HasLowID() &&
-				!theApp.DoCallback( cur_src ))
+				!theApp.CanDoCallback( cur_src ))
 				{
 					theApp.downloadqueue->RemoveSource(cur_src);
 					m_ShowDroppedSrc_Temp++; // show # of dropped sources - Stulle

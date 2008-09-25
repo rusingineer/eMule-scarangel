@@ -39,6 +39,7 @@ InputBox::InputBox(CWnd* pParent /*=NULL*/)
 	m_cancel = true;
 	m_bFilenameMode = false;
 	m_icMain = NULL;
+	isNumber=false; // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 }
 
 InputBox::~InputBox()
@@ -55,6 +56,11 @@ void InputBox::DoDataExchange(CDataExchange* pDX)
 void InputBox::OnOK()
 {
 	m_cancel = false;
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	if (isNumber)
+		GetDlgItemText(IDC_TEXTNUM,m_return);
+	else
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	GetDlgItemText(IDC_TEXT, m_return);
 	m_return.Trim();
 	CDialog::OnOK();
@@ -74,7 +80,19 @@ BOOL InputBox::OnInitDialog()
 	SetIcon( m_icMain = theApp.LoadIcon(_T("RENAME")),FALSE);
 
 	GetDlgItem(IDC_IBLABEL)->SetWindowText(m_label);
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 	GetDlgItem(IDC_TEXT)->SetWindowText(m_default);
+	*/
+	if (!isNumber)
+		GetDlgItem(IDC_TEXT)->SetWindowText(m_default);
+	else {
+		GetDlgItem(IDC_TEXTNUM)->SetWindowText(m_default);
+		GetDlgItem(IDC_TEXT)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_TEXTNUM)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_TEXTNUM)->SetFocus();
+	}
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	SetWindowText(m_title);
 
 	SetDlgItemText(IDOK, GetResString(IDS_TREEOPTIONS_OK) );

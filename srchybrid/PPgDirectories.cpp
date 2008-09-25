@@ -126,10 +126,14 @@ BOOL CPPgDirectories::OnApply()
 		strIncomingDir = thePrefs.GetDefaultDirectory(EMULE_INCOMINGDIR, true); // will create the directory here if it doesnt exists
 		SetDlgItemText(IDC_INCFILES, strIncomingDir);
 	}
+	// SLUGFILLER: SafeHash remove - removed installation dir unsharing
+	/*
 	else if (thePrefs.IsInstallationDirectory(strIncomingDir)){
 		AfxMessageBox(GetResString(IDS_WRN_INCFILE_RESERVED));
 		return FALSE;
 	}
+	*/
+	// SLUGFILLER: SafeHash remove - removed installation dir unsharing
 	else if (strIncomingDir.CompareNoCase(testincdirchanged) != 0 && strIncomingDir.CompareNoCase(thePrefs.GetDefaultDirectory(EMULE_INCOMINGDIR, false)) != 0){
 		// if the user chooses a non-default directory which already contains files, inform him that all those files
 		// will be shared
@@ -195,10 +199,14 @@ BOOL CPPgDirectories::OnApply()
 					AfxMessageBox(GetResString(IDS_WRN_INCTEMP_SAME));
 					return FALSE;
 			}	
+			// SLUGFILLER: SafeHash remove - removed installation dir unsharing
+			/*
 			if (thePrefs.IsInstallationDirectory(atmp)){
 				AfxMessageBox(GetResString(IDS_WRN_TEMPFILES_RESERVED));
 				return FALSE;
 			}
+			*/
+			// SLUGFILLER: SafeHash remove - removed installation dir unsharing
 			bool doubled=false;
 			for (int i=0;i<temptempfolders.GetCount();i++)	// avoid double tempdirs
 				if (temptempfolders.GetAt(i).CompareNoCase(atmp)==0) {
@@ -247,6 +255,8 @@ BOOL CPPgDirectories::OnApply()
 	for (int i = 0; i < m_ctlUncPaths.GetItemCount(); i++)
 		thePrefs.shareddir_list.AddTail(m_ctlUncPaths.GetItemText(i, 0));
 
+	// SLUGFILLER: SafeHash remove - removed installation dir unsharing
+	/*
 	// check shared directories for reserved folder names
 	POSITION pos = thePrefs.shareddir_list.GetHeadPosition();
 	while (pos){
@@ -255,6 +265,8 @@ BOOL CPPgDirectories::OnApply()
 		if (!thePrefs.IsShareableDirectory(rstrDir))
 			thePrefs.shareddir_list.RemoveAt(posLast);
 	}
+	*/
+	// SLUGFILLER: SafeHash remove - removed installation dir unsharing
 
 	if (testtempdirchanged)
 		AfxMessageBox(GetResString(IDS_SETTINGCHANGED_RESTART));

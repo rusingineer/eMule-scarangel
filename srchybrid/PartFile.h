@@ -595,7 +595,7 @@ public:
 	void	InitHL();
 	// <== Global Source Limit [Max/Stulle] - Stulle
 
-	// ==> file settings - Stulle
+	// ==> File Settings [sivka/Stulle] - Stulle
 	bool	GetEnableAutoDropNNS() const {return m_EnableAutoDropNNS;}
 	DWORD	GetAutoNNS_Timer() const {return m_AutoNNS_Timer;}
 	uint16	GetMaxRemoveNNSLimit() const {return m_MaxRemoveNNSLimit;}
@@ -634,7 +634,7 @@ private:
 	uint16	m_MaxRemoveQRSLimit;
 	bool	m_bHQRXman;
 	bool	m_bGlobalHL; // Global Source Limit (customize for files) - Stulle
-	// <== file settings - Stulle
+	// <== File Settings [sivka/Stulle] - Stulle
 
 	// ==> customized source dropping - Stulle
 	DWORD	m_TimerForAutoNNS;

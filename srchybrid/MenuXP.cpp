@@ -23,6 +23,9 @@ const int CYBUTTONMARGIN = 2;	// ditto for height
 // DrawText flags
 const int DT_MYSTANDARD = DT_SINGLELINE|DT_LEFT|DT_VCENTER;
 
+// MenuXP Sub Heading [fafner] - MyTh
+#define SUB_HEAD_MULTI 0.95
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -103,7 +106,7 @@ void CMenuXP::MeasureItem( LPMEASUREITEMSTRUCT lpms )
 		m_fontMenu.GetLogFont(&logFont);
 		// ==> MenuXP Sub Heading [fafner] - MyTh
 		if (pItem->m_bHeading) {
-			logFont.lfHeight = (LONG)(logFont.lfHeight * 0.8);
+			logFont.lfHeight = (LONG)(logFont.lfHeight * SUB_HEAD_MULTI);
 			logFont.lfWeight = FW_SEMIBOLD;
 		}
 		else
@@ -121,7 +124,7 @@ void CMenuXP::MeasureItem( LPMEASUREITEMSTRUCT lpms )
 		
 		// ==> MenuXP Sub Heading [fafner] - MyTh
 		if (pItem->m_bHeading)
-			lpms->itemHeight = (LONG)(lpms->itemHeight * 0.8);
+			lpms->itemHeight = (LONG)(lpms->itemHeight * SUB_HEAD_MULTI);
 		// <== MenuXP Sub Heading [fafner] - MyTh
 
 		if (pItem->m_bButtonOnly)
@@ -673,7 +676,7 @@ void CMenuXP::DrawText(CDC *pDC, CRect rect, CString strText, BOOL bSelected, BO
 	{
 		LOGFONT	logFont;
 		m_fontMenu.GetLogFont(&logFont);
-		logFont.lfHeight = (LONG)(logFont.lfHeight * 0.8);
+		logFont.lfHeight = (LONG)(logFont.lfHeight * SUB_HEAD_MULTI);
 		logFont.lfWeight = FW_SEMIBOLD;
 		fontHead.CreateFontIndirect(&logFont);
 

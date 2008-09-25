@@ -92,38 +92,57 @@ void CSettingsSaver::LoadSettings()
 	}
 }
 
-void CSettingsSaver::SaveSettings()
+bool CSettingsSaver::SaveSettings()
 {
 	CPartFile* cur_file ;
+	bool bAborted = false;
 
 	CString strCatIniFilePath;
 	strCatIniFilePath.Format(L"%sFileSettings.ini", thePrefs.GetMuleDirectory(EMULE_CONFIGDIR));
 	(void)_tremove(strCatIniFilePath);
+	if(theApp.downloadqueue->filelist.GetCount()<=0) // nothing to save here
+		return true; // everything's fine
 	CIni ini(strCatIniFilePath);
 	ini.WriteInt(_T("FileSettingsVersion"), 1, _T("General")); // just in case...
 
 	for (POSITION pos = theApp.downloadqueue->filelist.GetHeadPosition();pos != 0;){
 		cur_file = theApp.downloadqueue->filelist.GetNext(pos);
 
-		ini.SetSection(cur_file->GetPartMetFileName());
+		if(!cur_file) // NULL-pointer? we deleted the file, break
+		{
+			bAborted = true;
+			break;
+		}
 
-		ini.WriteBool(L"NNS",cur_file->GetEnableAutoDropNNS());
-		ini.WriteInt(L"NNSTimer",cur_file->GetAutoNNS_Timer());
-		ini.WriteInt(L"NNSLimit",cur_file->GetMaxRemoveNNSLimit());
+		try // i just hope we don't need this
+		{
+			ini.SetSection(cur_file->GetPartMetFileName());
 
-		ini.WriteBool(L"FQS",cur_file->GetEnableAutoDropFQS());
-		ini.WriteInt(L"FQSTimer",cur_file->GetAutoFQS_Timer());
-		ini.WriteInt(L"FQSLimit",cur_file->GetMaxRemoveFQSLimit());
+			ini.WriteBool(L"NNS",cur_file->GetEnableAutoDropNNS());
+			ini.WriteInt(L"NNSTimer",cur_file->GetAutoNNS_Timer());
+			ini.WriteInt(L"NNSLimit",cur_file->GetMaxRemoveNNSLimit());
 
-		ini.WriteBool(L"QRS",cur_file->GetEnableAutoDropQRS());
-		ini.WriteInt(L"QRSTimer",cur_file->GetAutoHQRS_Timer());
-		ini.WriteInt(L"MaxQRS",cur_file->GetMaxRemoveQRS());
-		ini.WriteInt(L"QRSLimit",cur_file->GetMaxRemoveQRSLimit());
+			ini.WriteBool(L"FQS",cur_file->GetEnableAutoDropFQS());
+			ini.WriteInt(L"FQSTimer",cur_file->GetAutoFQS_Timer());
+			ini.WriteInt(L"FQSLimit",cur_file->GetMaxRemoveFQSLimit());
 
-		ini.WriteBool(L"GlobalHL",cur_file->GetGlobalHL());
-		ini.WriteBool(L"XmanHQR",cur_file->GetHQRXman());
-		ini.WriteInt(L"FTM",cur_file->GetFollowTheMajority());
+			ini.WriteBool(L"QRS",cur_file->GetEnableAutoDropQRS());
+			ini.WriteInt(L"QRSTimer",cur_file->GetAutoHQRS_Timer());
+			ini.WriteInt(L"MaxQRS",cur_file->GetMaxRemoveQRS());
+			ini.WriteInt(L"QRSLimit",cur_file->GetMaxRemoveQRSLimit());
+
+			ini.WriteBool(L"GlobalHL",cur_file->GetGlobalHL());
+			ini.WriteBool(L"XmanHQR",cur_file->GetHQRXman());
+			ini.WriteInt(L"FTM",cur_file->GetFollowTheMajority());
+		}
+		catch(...) // and if we do we break and log
+		{
+			bAborted = true;
+			AddDebugLogLine(true,_T("We had to catch an error in SettingsSaver::SaveSettings()! Report this please!"));
+			break;
+		}
 	}
+	return !bAborted; // report if we had to abort, this is no good
 }
 
 /* IMPORT OLD */

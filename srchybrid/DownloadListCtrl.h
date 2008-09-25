@@ -24,7 +24,7 @@
 // <== XP Style Menu [Xanatos] - Stulle
 #include <map>
 #include "ListCtrlItemWalk.h"
-#include "SettingsSaver.h" // file settings - Stulle
+#include "SettingsSaver.h" // File Settings [sivka/Stulle] - Stulle
 
 #define COLLAPSE_ONLY	0
 #define EXPAND_ONLY		1

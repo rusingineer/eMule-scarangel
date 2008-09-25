@@ -94,9 +94,15 @@ CString CIPFilter::GetDefaultFilePath() const
 int CIPFilter::LoadFromDefaultFile(bool bShowResponse)
 {
 	RemoveAllIPFilters();
+
+	// ==> IP Filter White List [Stulle] - Stulle
+	AddFromFileWhite(GetDefaultWhiteFilePath());
+	// <== IP Filter White List [Stulle] - Stulle
+
 	// ==> Static IP Filter [Stulle] - Stulle
 	AddFromFile2(GetDefaultStaticFilePath());
 	// <== Static IP Filter [Stulle] - Stulle
+
 	return AddFromFile(GetDefaultFilePath(), bShowResponse);
 }
 
@@ -125,7 +131,7 @@ int CIPFilter::AddFromFile(LPCTSTR pszFilePath, bool bShowResponse)
 			eFileType = FilterDat;
 		else
 		{
-			VERIFY( _setmode(fileno(readFile), _O_BINARY) != -1 );
+			VERIFY( _setmode(_fileno(readFile), _O_BINARY) != -1 );
 			static const BYTE _aucP2Bheader[] = "\xFF\xFF\xFF\xFFP2B";
 			BYTE aucHeader[sizeof _aucP2Bheader - 1];
 			if (fread(aucHeader, sizeof aucHeader, 1, readFile) == 1)
@@ -135,7 +141,7 @@ int CIPFilter::AddFromFile(LPCTSTR pszFilePath, bool bShowResponse)
 				else
 				{
 					(void)fseek(readFile, 0, SEEK_SET);
-					VERIFY( _setmode(fileno(readFile), _O_TEXT) != -1 ); // ugly!
+					VERIFY( _setmode(_fileno(readFile), _O_TEXT) != -1 ); // ugly!
 				}
 			}
 		}
@@ -466,6 +472,22 @@ void CIPFilter::RemoveAllIPFilters()
 	}
 	//Xman end
 	m_iplist.RemoveAll();
+	// ==> IP Filter White List [Stulle] - Stulle
+	for (int i = 0; i < m_iplist_White.GetCount(); i++)
+	{
+		
+		try 
+		{
+			delete m_iplist_White[i];
+		}
+		catch(...)
+		{
+			//nothing
+		}
+	}
+	//Xman end
+	m_iplist_White.RemoveAll();
+	// <== IP Filter White List [Stulle] - Stulle
 	m_pLastHit = NULL;
 }
 
@@ -546,6 +568,21 @@ bool CIPFilter::IsFiltered(uint32 ip, UINT level) /*const*/
 	//	*)	use a dumb plain array for storing the IP range structures. this will give more cach hits when processing
 	//		the list. but(!) this would require to also use a dumb SIPFilter structure (don't use data items with ctors).
 	//		otherwise the creation of the array would be rather slow.
+
+	// ==> IP Filter White List [Stulle] - Stulle
+	if(m_iplist_White.GetCount() > 0)
+	{
+		SIPFilter** ppFound_White = (SIPFilter**)bsearch(&ip, m_iplist_White.GetData(), m_iplist_White.GetCount(), sizeof(m_iplist_White[0]), CmpSIPFilterByAddr);
+		if (ppFound_White && (*ppFound_White)->level < level)
+		{
+			(*ppFound_White)->hits++;
+			if(thePrefs.GetVerbose() && thePrefs.GetLogFilteredIPs())
+				AddDebugLogLine(false, _T("Prevented filtering IP %s in range: %s - %s Description: %s Hits: %u"),ipstr_rev(ip),ipstr_rev((*ppFound_White)->start),ipstr_rev((*ppFound_White)->end),CString((*ppFound_White)->desc),(*ppFound_White)->hits);
+			return false;
+		}
+	}
+	// <== IP Filter White List [Stulle] - Stulle
+
 	SIPFilter** ppFound = (SIPFilter**)bsearch(&ip, m_iplist.GetData(), m_iplist.GetCount(), sizeof(m_iplist[0]), CmpSIPFilterByAddr);
 	if (ppFound && (*ppFound)->level < level)
 	{
@@ -841,150 +878,46 @@ void CIPFilter::UpdateIPFilterURL()
 		memcpy(&thePrefs.m_IPfilterVersion, &SysTime, sizeof SysTime); 
 }
 //Xman end
+
 // ==> Static IP Filter [Stulle] - Stulle
 void CIPFilter::AddFromFile2(LPCTSTR pszFilePath)
 {
 	FILE* readFile = _tfsopen(pszFilePath, _T("r"), _SH_DENYWR);
 	if (readFile != NULL)
 	{
-		enum EIPFilterFileType
-		{
-			Unknown = 0,
-			FilterDat = 1,		// ipfilter.dat/ip.prefix format
-			PeerGuardian = 2,	// PeerGuardian text format
-			PeerGuardian2 = 3	// PeerGuardian binary format
-		} eFileType = Unknown;
-
-		setvbuf(readFile, NULL, _IOFBF, 32768);
-
-		TCHAR szNam[_MAX_FNAME];
-		TCHAR szExt[_MAX_EXT];
-		_tsplitpath(pszFilePath, NULL, NULL, szNam, szExt);
-		if (_tcsicmp(szExt, _T(".p2p")) == 0 || (_tcsicmp(szNam, _T("guarding.p2p")) == 0 && _tcsicmp(szExt, _T(".txt")) == 0))
-			eFileType = PeerGuardian;
-		else if (_tcsicmp(szExt, _T(".prefix")) == 0)
-			eFileType = FilterDat;
-		else
-		{
-			_setmode(fileno(readFile), _O_BINARY);
-			static const BYTE _aucP2Bheader[] = "\xFF\xFF\xFF\xFFP2B";
-			BYTE aucHeader[sizeof _aucP2Bheader - 1];
-			if (fread(aucHeader, sizeof aucHeader, 1, readFile) == 1)
-			{
-				if (memcmp(aucHeader, _aucP2Bheader, sizeof _aucP2Bheader - 1)==0)
-					eFileType = PeerGuardian2;
-				else
-				{
-					fseek(readFile, 0, SEEK_SET);
-					_setmode(fileno(readFile), _O_TEXT); // ugly!
-				}
-			}
-		}
+		_setmode(fileno(readFile), _O_TEXT);
 
 		int iLine = 0;
-		if (eFileType == PeerGuardian2)
+		CStringA sbuffer;
+		CHAR szBuffer[1024];
+		while (fgets(szBuffer, _countof(szBuffer), readFile) != NULL)
 		{
-			// Version 1: strings are ISO-8859-1 encoded
-			// Version 2: strings are UTF-8 encoded
-			uint8 nVersion;
-			if (fread(&nVersion, sizeof nVersion, 1, readFile)==1 && (nVersion==1 || nVersion==2))
-			{
-				while (!feof(readFile))
-				{
-					CHAR szName[256];
-					int iLen = 0;
-					for (;;) // read until NUL or EOF
-					{
-						int iChar = getc(readFile);
-						if (iChar == EOF)
-							break;
-						if (iLen < sizeof szName - 1)
-							szName[iLen++] = (CHAR)iChar;
-						if (iChar == '\0')
-							break;
-					}
-					szName[iLen] = '\0';
-					
-					uint32 uStart;
-					if (fread(&uStart, sizeof uStart, 1, readFile) != 1)
-						break;
-					uStart = ntohl(uStart);
-
-					uint32 uEnd;
-					if (fread(&uEnd, sizeof uEnd, 1, readFile) != 1)
-						break;
-					uEnd = ntohl(uEnd);
-
-					iLine++;
-					// (nVersion == 2) ? OptUtf8ToStr(szName, iLen) : 
-					AddIPRange(uStart, uEnd, DFLT_FILTER_LEVEL, CStringA(szName, iLen));
-				}
+			iLine++;
+			sbuffer = szBuffer;
+			
+			// ignore comments & too short lines
+			if (sbuffer.GetAt(0) == '#' || sbuffer.GetAt(0) == '/' || sbuffer.GetLength() < 5) {
+				sbuffer.Trim(" \t\r\n");
+				DEBUG_ONLY( (!sbuffer.IsEmpty()) ? TRACE("IP filter (static): ignored line %u\n", iLine) : 0 );
+				continue;
 			}
-		}
-		else
-		{
-			CStringA sbuffer;
-			CHAR szBuffer[1024];
-			while (fgets(szBuffer, _countof(szBuffer), readFile) != NULL)
+
+			bool bValid = false;
+			uint32 start = 0;
+			uint32 end = 0;
+			UINT level = 0;
+			CStringA desc;
+			bValid = ParseFilterLine1(sbuffer, start, end, level, desc);
+
+			// add a filter
+			if (bValid)
 			{
-				iLine++;
-				sbuffer = szBuffer;
-				
-				// ignore comments & too short lines
-				if (sbuffer.GetAt(0) == '#' || sbuffer.GetAt(0) == '/' || sbuffer.GetLength() < 5) {
-					sbuffer.Trim(" \t\r\n");
-					DEBUG_ONLY( (!sbuffer.IsEmpty()) ? TRACE("IP filter (static): ignored line %u\n", iLine) : 0 );
-					continue;
-				}
-
-				if (eFileType == Unknown)
-				{
-					// looks like html
-					if (sbuffer.Find('>') > -1 && sbuffer.Find('<') > -1)
-						sbuffer.Delete(0, sbuffer.ReverseFind('>') + 1);
-
-					// check for <IP> - <IP> at start of line
-					UINT u1, u2, u3, u4, u5, u6, u7, u8;
-					if (sscanf(sbuffer, "%u.%u.%u.%u - %u.%u.%u.%u", &u1, &u2, &u3, &u4, &u5, &u6, &u7, &u8) == 8)
-					{
-						eFileType = FilterDat;
-					}
-					else
-					{
-						// check for <description> ':' <IP> '-' <IP>
-						int iColon = sbuffer.Find(':');
-						if (iColon > -1)
-						{
-							CStringA strIPRange = sbuffer.Mid(iColon + 1);
-							UINT u1, u2, u3, u4, u5, u6, u7, u8;
-							if (sscanf(strIPRange, "%u.%u.%u.%u - %u.%u.%u.%u", &u1, &u2, &u3, &u4, &u5, &u6, &u7, &u8) == 8)
-							{
-								eFileType = PeerGuardian;
-							}
-						}
-					}
-				}
-
-				bool bValid = false;
-				uint32 start = 0;
-				uint32 end = 0;
-				UINT level = 0;
-				CStringA desc;
-				if (eFileType == FilterDat)
-					bValid = ParseFilterLine1(sbuffer, start, end, level, desc);
-				else if (eFileType == PeerGuardian)
-					bValid = ParseFilterLine2(sbuffer, start, end, level, desc);
-
-				// add a filter
-				if (bValid)
-				{
-					AddIPRange(start, end, level, desc);
-				}
-				else
-				{
-					sbuffer.Trim(" \t\r\n");
-					DEBUG_ONLY( (!sbuffer.IsEmpty()) ? TRACE("IP filter (static): ignored line %u\n", iLine) : 0 );
-				}
+				AddIPRange(start, end, level, desc);
+			}
+			else
+			{
+				sbuffer.Trim(" \t\r\n");
+				DEBUG_ONLY( (!sbuffer.IsEmpty()) ? TRACE("IP filter (static): ignored line %u\n", iLine) : 0 );
 			}
 		}
 		fclose(readFile);
@@ -1068,3 +1001,128 @@ CString CIPFilter::GetDefaultStaticFilePath() const
 	return thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + DFLT_STATIC_IPFILTER_FILENAME;
 }
 // <== Static IP Filter [Stulle] - Stulle
+
+// ==> IP Filter White List [Stulle] - Stulle
+void CIPFilter::AddFromFileWhite(LPCTSTR pszFilePath)
+{
+	FILE* readFile = _tfsopen(pszFilePath, _T("r"), _SH_DENYWR);
+	if (readFile != NULL)
+	{
+		_setmode(fileno(readFile), _O_TEXT);
+
+		int iLine = 0;
+		CStringA sbuffer;
+		CHAR szBuffer[1024];
+		while (fgets(szBuffer, _countof(szBuffer), readFile) != NULL)
+		{
+			iLine++;
+			sbuffer = szBuffer;
+			
+			// ignore comments & too short lines
+			if (sbuffer.GetAt(0) == '#' || sbuffer.GetAt(0) == '/' || sbuffer.GetLength() < 5) {
+				sbuffer.Trim(" \t\r\n");
+				DEBUG_ONLY( (!sbuffer.IsEmpty()) ? TRACE("IP filter (white): ignored line %u\n", iLine) : 0 );
+				continue;
+			}
+
+			bool bValid = false;
+			uint32 start = 0;
+			uint32 end = 0;
+			UINT level = 0;
+			CStringA desc;
+			bValid = ParseFilterLine1(sbuffer, start, end, level, desc);
+
+			// add a filter
+			if (bValid)
+			{
+				AddIPRangeWhite(start, end, level, desc);
+				DEBUG_ONLY( TRACE("Added White Entry - start: %u end: %u level: %u desc: %s\n", start, end, level, desc));
+			}
+			else
+			{
+				sbuffer.Trim(" \t\r\n");
+				DEBUG_ONLY( (!sbuffer.IsEmpty()) ? TRACE("IP filter (white list): ignored line %u\n", iLine) : 0 );
+			}
+		}
+		fclose(readFile);
+
+		// sort the IP filter list by IP range start addresses
+		qsort(m_iplist_White.GetData(), m_iplist_White.GetCount(), sizeof(m_iplist_White[0]), CmpSIPFilterByStartAddr);
+
+		// merge overlapping and adjacent filter ranges
+		if (m_iplist_White.GetCount() >= 2)
+		{
+			// On large IP-filter lists there is a noticeable performance problem when merging the list.
+			// The 'CIPFilterArray::RemoveAt' call is way too expensive to get called during the merging,
+			// thus we use temporary helper arrays to copy only the entries into the final list which
+			// are not get deleted.
+
+			// Reserve a byte array (its used as a boolean array actually) as large as the current 
+			// IP-filter list, so we can set a 'to delete' flag for each entry in the current IP-filter list.
+			char* pcToDelete = new char[m_iplist_White.GetCount()];
+			memset(pcToDelete, 0, m_iplist_White.GetCount());
+			int iNumToDelete = 0;
+
+			SIPFilter* pPrv = m_iplist_White[0];
+			int i = 1;
+			while (i < m_iplist_White.GetCount())
+			{
+				SIPFilter* pCur = m_iplist_White[i];
+				if (   pCur->start >= pPrv->start && pCur->start <= pPrv->end	 // overlapping
+					|| pCur->start == pPrv->end+1 && pCur->level == pPrv->level) // adjacent
+				{
+					if (pCur->start != pPrv->start || pCur->end != pPrv->end) // don't merge identical entries
+					{
+						//TODO: not yet handled, overlapping entries with different 'level'
+						if (pCur->end > pPrv->end)
+							pPrv->end = pCur->end;
+						//pPrv->desc += _T("; ") + pCur->desc; // this may create a very very long description string...
+					}
+					else
+					{
+						// if we have identical entries, use the lowest 'level'
+						if (pCur->level < pPrv->level)
+							pPrv->level = pCur->level;
+					}
+					delete pCur;
+					//m_iplist_White.RemoveAt(i);	// way too expensive (read above)
+					pcToDelete[i] = 1;		// mark this entry as 'to delete'
+					iNumToDelete++;
+					i++;
+					continue;
+				}
+				pPrv = pCur;
+				i++;
+			}
+
+			// Create new IP-filter list which contains only the entries from the original IP-filter list
+			// which are not to be deleted.
+			if (iNumToDelete > 0)
+			{
+				CIPFilterArray newList;
+				newList.SetSize(m_iplist_White.GetCount() - iNumToDelete);
+				int iNewListIndex = 0;
+				for (int i = 0; i < m_iplist_White.GetCount(); i++) {
+					if (!pcToDelete[i])
+						newList[iNewListIndex++] = m_iplist_White[i];
+				}
+				ASSERT( iNewListIndex == newList.GetSize() );
+
+				// Replace current list with new list. Dump, but still fast enough (only 1 memcpy)
+				m_iplist_White.RemoveAll();
+				m_iplist_White.Append(newList);
+				newList.RemoveAll();
+				m_bModified = true;
+			}
+			delete[] pcToDelete;
+		}
+	}
+	AddLogLine(false, GetResString(IDS_IPFILTERWHITELOADED), m_iplist_White.GetCount());
+	return;
+}
+
+CString CIPFilter::GetDefaultWhiteFilePath() const
+{
+	return thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + DFLT_WHITE_IPFILTER_FILENAME;
+}
+// <== IP Filter White List [Stulle] - Stulle

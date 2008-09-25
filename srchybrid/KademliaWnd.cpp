@@ -51,6 +51,7 @@ BEGIN_MESSAGE_MAP(CKademliaWnd, CResizableDialog)
 	ON_BN_CLICKED(IDC_FIREWALLCHECKBUTTON, OnBnClickedFirewallcheckbutton)
 	ON_BN_CLICKED(IDC_KADCONNECT, OnBnConnect)
 	ON_WM_SYSCOLORCHANGE()
+	ON_WM_CTLCOLOR()
 	ON_EN_SETFOCUS(IDC_BOOTSTRAPIP, OnEnSetfocusBootstrapip)
 	ON_EN_SETFOCUS(IDC_BOOTSTRAPURL, OnEnSetfocusBootstrapNodesdat)
 	ON_EN_CHANGE(IDC_BOOTSTRAPIP, UpdateControlsState)
@@ -60,7 +61,6 @@ BEGIN_MESSAGE_MAP(CKademliaWnd, CResizableDialog)
 	ON_BN_CLICKED(IDC_RADIP, UpdateControlsState)
 	ON_BN_CLICKED(IDC_RADNODESURL, UpdateControlsState)
 	ON_WM_HELPINFO()
-	ON_WM_CTLCOLOR() // Design Settings [eWombat/Stulle] - Max
 	ON_BN_CLICKED(IDC_NODESFILEBUTTON, OnBnClickedNodesFileButton) // Links for Server list and nodes file [Stulle] - Stulle
 END_MESSAGE_MAP()
 
@@ -268,12 +268,7 @@ void CKademliaWnd::OnSysColorChange()
 void CKademliaWnd::SetAllIcons()
 {
 	// frames
-	// ==> Design Settings [eWombat/Stulle] - Max
-	/*
 	m_ctrlBootstrap.SetIcon(_T("KadBootstrap"));
-	*/
-	m_ctrlBootstrap.SetIcon(_T("KadBootstrap"),crKadColor);
-	// <== Design Settings [eWombat/Stulle] - Max
 
 	if (icon_kadcont)
 		VERIFY( DestroyIcon(icon_kadcont) );
@@ -288,12 +283,7 @@ void CKademliaWnd::SetAllIcons()
 
 void CKademliaWnd::Localize()
 {
-	// ==> Design Settings [eWombat/Stulle] - Max
-	/*
 	m_ctrlBootstrap.SetWindowText(GetResString(IDS_BOOTSTRAP));
-	*/
-	m_ctrlBootstrap.SetWindowText(GetResString(IDS_BOOTSTRAP),crKadColor);
-	// <== Design Settings [eWombat/Stulle] - Max
 	GetDlgItem(IDC_NODESFILEBUTTON)->SetWindowText(GetResString(IDS_NODESFILEBUTTON)); // Links for Server list and nodes file [Stulle] - Stulle
 	GetDlgItem(IDC_BOOTSTRAPBUTTON)->SetWindowText(GetResString(IDS_BOOTSTRAP));
 	GetDlgItem(IDC_SSTATIC4)->SetWindowText(GetResString(IDS_SV_ADDRESS) + _T(":"));
@@ -408,24 +398,16 @@ BOOL CKademliaWnd::OnHelpInfo(HELPINFO* /*pHelpInfo*/)
 	return TRUE;
 }
 
-// ==> Design Settings [eWombat/Stulle] - Max
-void CKademliaWnd::OnBackcolor() 
-{
-	crKadColor = thePrefs.GetStyleBackColor(window_styles, style_w_kademlia);
-
-	if(crKadColor == CLR_DEFAULT)
-		crKadColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
-
-	m_brMyBrush.DeleteObject();
-
-	if(crKadColor != CLR_DEFAULT)
-		m_brMyBrush.CreateSolidBrush(crKadColor);
-	else
-		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
-}
-
 HBRUSH CKademliaWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
+// ==> Design Settings [eWombat/Stulle] - Max
+/*
+	HBRUSH hbr = theApp.emuledlg->GetCtlColor(pDC, pWnd, nCtlColor);
+	if (hbr)
+		return hbr;
+	return __super::OnCtlColor(pDC, pWnd, nCtlColor);
+}
+*/
 	hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
 	
 	if (nCtlColor == CTLCOLOR_DLG)
@@ -439,6 +421,21 @@ HBRUSH CKademliaWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 		hbr = (HBRUSH) WHITE_BRUSH;
 
 	return hbr;
+}
+
+void CKademliaWnd::OnBackcolor() 
+{
+	crKadColor = thePrefs.GetStyleBackColor(window_styles, style_w_kademlia);
+
+	if(crKadColor == CLR_DEFAULT)
+		crKadColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
+
+	m_brMyBrush.DeleteObject();
+
+	if(crKadColor != CLR_DEFAULT)
+		m_brMyBrush.CreateSolidBrush(crKadColor);
+	else
+		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
 }
 // <== Design Settings [eWombat/Stulle] - Max
 

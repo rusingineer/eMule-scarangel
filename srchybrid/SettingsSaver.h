@@ -25,7 +25,7 @@ public:
 	CSettingsSaver(void);
 	~CSettingsSaver(void);
 	
-	void SaveSettings();
+	bool SaveSettings();
 	void LoadSettings();
 
 	/* IMPORT OLD */

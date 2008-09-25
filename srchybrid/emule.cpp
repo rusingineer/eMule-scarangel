@@ -14,11 +14,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-#ifdef _DEBUG
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-#endif
 #include "stdafx.h"
+//#ifdef _DEBUG
+//#define _CRTDBG_MAP_ALLOC
+//#include <crtdbg.h>
+//#endif
 #include <locale.h>
 #include <io.h>
 #include <share.h>
@@ -76,9 +76,10 @@
 #include "HelpIDs.h"
 //Xman official UPNP removed
 /*
-#include "UPnPFinder.h"
+#include "UPnPImplWrapper.h"
 */
 //Xman end
+#include "VisualStylesXP.h"
 
 //Xman
 #include "BandWidthControl.h" // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
@@ -326,8 +327,8 @@ CemuleApp::CemuleApp(LPCTSTR lpszAppName)
 CemuleApp theApp(_T("eMule"));
 
 
-// Workaround for buggy 'AfxSocketTerm' (needed at least for MFC 7.0)
-#if _MFC_VER==0x0700 || _MFC_VER==0x0710 || _MFC_VER==0x0800
+// Workaround for bugged 'AfxSocketTerm' (needed at least for MFC 7.0, 7.1, 8.0, 9.0)
+#if _MFC_VER==0x0700 || _MFC_VER==0x0710 || _MFC_VER==0x0800 || _MFC_VER==0x0900
 void __cdecl __AfxSocketTerm()
 {
 #if defined(_AFXDLL) && (_MFC_VER==0x0700 || _MFC_VER==0x0710)
@@ -473,6 +474,10 @@ BOOL CemuleApp::InitInstance()
 	///////////////////////////////////////////////////////////////////////////
 	// Common Controls initialization
 	//
+	//          Mjr Min
+	// -------------------------
+	// XP SP3	6   0
+	// Vista    6   16
 	InitCommonControls();
 	DWORD dwComCtrlMjr = 4;
 	DWORD dwComCtrlMin = 0;
@@ -529,7 +534,7 @@ BOOL CemuleApp::InitInstance()
 		}
 	}
 	//>>> eWombat [WINSOCK2]
-#if _MFC_VER==0x0700 || _MFC_VER==0x0710 || _MFC_VER==0x0800
+#if _MFC_VER==0x0700 || _MFC_VER==0x0710 || _MFC_VER==0x0800 || _MFC_VER==0x0900
 	atexit(__AfxSocketTerm);
 #else
 #error "You are using an MFC version which may require a special version of the above function!"
@@ -693,7 +698,7 @@ BOOL CemuleApp::InitInstance()
 	// UPnP Port forwarding
 	//Xman official UPNP removed
 	/*
-	m_pUPnPFinder = new CUPnPFinder();
+	m_pUPnPFinder = new CUPnPImplWrapper();
 	*/
 	//Xman end
 
@@ -1217,7 +1222,7 @@ void CemuleApp::OnlineSig() // Added By Bouc7
 			}
 			file.Write("|",1); 
 			if(serverconnect->IsConnected()){
-				itoa(serverconnect->GetCurrentServer()->GetPort(),buffer,10); 
+				_itoa(serverconnect->GetCurrentServer()->GetPort(),buffer,10); 
 				file.Write(buffer,strlen(buffer));
 			}
 			else{
@@ -1252,7 +1257,7 @@ void CemuleApp::OnlineSig() // Added By Bouc7
 		//Xman end
 		file.Write(buffer,strlen(buffer)); 
 		file.Write("|",1); 
-		itoa(uploadqueue->GetWaitingUserCount(),buffer,10); 
+		_itoa(uploadqueue->GetWaitingUserCount(),buffer,10); 
 		file.Write(buffer,strlen(buffer)); 
 
 		file.Close(); 
@@ -1504,7 +1509,7 @@ bool CemuleApp::IsFirewalled()
 	return true; // firewalled
 }
 
-bool CemuleApp::DoCallback( CUpDownClient *client )
+bool CemuleApp::CanDoCallback( CUpDownClient *client )
 {
 	if(Kademlia::CKademlia::IsConnected())
 	{
@@ -2007,7 +2012,7 @@ bool CemuleApp::IsEd2kLinkInClipboard(LPCSTR pszLinkType, int iLinkTypeLen)
 				{
 					while (isspace((unsigned char)*pszText))
 						pszText++;
-					bFoundLink = (strnicmp(pszText, pszLinkType, iLinkTypeLen) == 0);
+					bFoundLink = (_strnicmp(pszText, pszLinkType, iLinkTypeLen) == 0);
 					GlobalUnlock(hText);
 				}
 			}
@@ -2246,9 +2251,12 @@ void CemuleApp::CreateAllFonts()
 	//
 	LOGFONT lfDefault;
 	AfxGetMainWnd()->GetFont()->GetLogFont(&lfDefault);
+	// WinXP: lfDefault.lfFaceName = "MS Shell Dlg 2" (!)
+	// Vista: lfDefault.lfFaceName = "MS Shell Dlg 2"
+	//
 	// It would not be an error if that font name does not match our pre-determined
 	// font name, I just want to know if that ever happens.
-	ASSERT( m_strDefaultFontFaceName == lfDefault.lfFaceName ); // WinXP: "MS Shell Dlg 2" (!)
+	ASSERT( m_strDefaultFontFaceName == lfDefault.lfFaceName );
 
 
 	///////////////////////////////////////////////////////////////////////////
@@ -2266,9 +2274,14 @@ void CemuleApp::CreateAllFonts()
 	// that font is nevertheless set to "MS Sans Serif" because a scaled up "Tahoma"
 	// font unfortunately does not look as good as a scaled up "MS Sans Serif" font.
 	//
+	// No! Do *not* use "MS Sans Serif" (never!). This will give a very old fashioned
+	// font on certain Asian Windows systems. So, better use "MS Shell Dlg" or 
+	// "MS Shell Dlg 2" to let Windows map that font to the proper font on all Windows
+	// systems.
+	//
 	LPLOGFONT plfHyperText = thePrefs.GetHyperTextLogFont();
 	if (plfHyperText==NULL || plfHyperText->lfFaceName[0]==_T('\0') || !m_fontHyperText.CreateFontIndirect(plfHyperText))
-		CreatePointFont(m_fontHyperText, 11 * 10, _T("MS Sans Serif")/*lfDefault.lfFaceName*/);
+		CreatePointFont(m_fontHyperText, 10 * 10, lfDefault.lfFaceName);
 
 	///////////////////////////////////////////////////////////////////////////
 	// Verbose Log-font
@@ -2288,7 +2301,12 @@ void CemuleApp::CreateAllFonts()
 	// that font is nevertheless set to "MS Sans Serif" because a scaled up "Tahoma"
 	// font unfortunately does not look as good as a scaled up "MS Sans Serif" font.
 	//
-	CreatePointFont(m_fontChatEdit, 11 * 10, _T("MS Sans Serif")/*lfDefault.lfFaceName*/);
+	// No! Do *not* use "MS Sans Serif" (never!). This will give a very old fashioned
+	// font on certain Asian Windows systems. So, better use "MS Shell Dlg" or 
+	// "MS Shell Dlg 2" to let Windows map that font to the proper font on all Windows
+	// systems.
+	//
+	CreatePointFont(m_fontChatEdit, 11 * 10, lfDefault.lfFaceName);
 }
 
 const CString &CemuleApp::GetDefaultFontFaceName()
@@ -2356,7 +2374,7 @@ void CemuleApp::UpdateDesktopColorDepth()
 		}
 
 		// Don't use >8-bit image lists with OSs with restricted memory for GDI resources
-		if (afxData.bWin95) {
+		if (afxIsWin95()) {
 			// NOTE: ILC_COLOR8 leads to converting all icons to the standard windows system
 			// 256 color palette. Thus this option leads to loosing some color resolution.
 			// Though there is no other chance with Win98 because of the 64K GDI limit.
@@ -2491,6 +2509,11 @@ void CemuleApp::ResetStandByIdleTimer()
 	}
 }
 
+bool CemuleApp::IsVistaThemeActive() const
+{
+	return theApp.m_ullComCtrlVer >= MAKEDLLVERULL(6,16,0,0) && g_xpStyle.IsThemeActive() && g_xpStyle.IsAppThemed();
+}
+
 //Xman new slpash-screen arrangement
 void CemuleApp::ShowSplash(bool start)
 {
@@ -2623,7 +2646,9 @@ void CemuleApp::ForeAllDiscAccessThreadsToFinish()
 	}
 
 	threadqueuelock.Unlock();
-}// ==> Design Settings [eWombat/Stulle] - Stulle
+}
+
+// ==> Design Settings [eWombat/Stulle] - Stulle
 void CemuleApp::CreateExtraFonts(CFont *font)
 {
 	DestroyExtraFonts();

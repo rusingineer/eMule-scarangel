@@ -390,6 +390,7 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 		//upnp_start
 		m_htiUPnPNat = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CN_UPNPNAT), TVI_ROOT, m_iUPnPNat);
 		m_htiUPnPTryRandom = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CN_UPNPTRYRANDOM), TVI_ROOT, m_iUPnPTryRandom);
+		m_htiUPnPRebindOnIPChange = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_UPNP_REBINDTEXT), TVI_ROOT, m_iUPnPRebindOnIPChange); //zz_fly :: Rebind UPnP on IP-change
 		//upnp_end
 		*/
 		// <== UPnP support [MoNKi] - leuk_he
@@ -550,7 +551,9 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	//upnp_start
 	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiUPnPNat, m_iUPnPNat);
 	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiUPnPTryRandom, m_iUPnPTryRandom);
+	DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiUPnPRebindOnIPChange, m_iUPnPRebindOnIPChange); //zz_fly :: Rebind UPnP on IP-change
 	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiUPnPTryRandom, m_iUPnPNat);
+	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiUPnPRebindOnIPChange, m_iUPnPNat); //zz_fly :: Rebind UPnP on IP-change
 	//upnp_end
 	*/
 	// <== UPnP support [MoNKi] - leuk_he
@@ -644,6 +647,7 @@ BOOL CPPgTweaks::OnInitDialog()
 	//upnp_start
 	m_iUPnPNat = thePrefs.GetUPnPNat();
 	m_iUPnPTryRandom = thePrefs.GetUPnPNatTryRandom();
+	m_iUPnPRebindOnIPChange = thePrefs.GetUPnPNatRebind(); //zz_fly :: Rebind UPnP on IP-change
 	//upnp_end
 	*/
 	// <== UPnP support [MoNKi] - leuk_he
@@ -817,6 +821,7 @@ BOOL CPPgTweaks::OnApply()
 		AfxMessageBox(_T("You must restart emule to apply this changes"));
 	thePrefs.SetUPnPNat( m_iUPnPNat );
 	thePrefs.SetUPnPNatTryRandom( m_iUPnPTryRandom );
+	thePrefs.SetUPnPNatRebind( m_iUPnPRebindOnIPChange ); //zz_fly :: Rebind UPnP on IP-change
 	//upnp_end
 	*/
 	// <== UPnP support [MoNKi] - leuk_he
@@ -923,6 +928,7 @@ void CPPgTweaks::Localize(void)
 		//upnp_start
 		if (m_htiUPnPNat) m_ctrlTreeOptions.SetItemText(m_htiUPnPNat, GetResString(IDS_CN_UPNPNAT));
 		if (m_htiUPnPTryRandom) m_ctrlTreeOptions.SetItemText(m_htiUPnPTryRandom, GetResString(IDS_CN_UPNPTRYRANDOM));
+		if (m_htiUPnPRebindOnIPChange) m_ctrlTreeOptions.SetItemText(m_htiUPnPRebindOnIPChange, GetResString(IDS_UPNP_REBINDTEXT)); //zz_fly :: Rebind UPnP on IP-change
 		//upnp_end
 		*/
 		// <== UPnP support [MoNKi] - leuk_he
@@ -1046,8 +1052,10 @@ void CPPgTweaks::OnDestroy()
 	//upnp_start
 	m_htiUPnPNat = NULL;
 	m_htiUPnPTryRandom = NULL;
+	m_htiUPnPRebindOnIPChange = NULL; //zz_fly :: Rebind UPnP on IP-change
 	m_iUPnPNat = 0;
 	m_iUPnPTryRandom = 0;
+	m_iUPnPRebindOnIPChange = 0; //zz_fly :: Rebind UPnP on IP-change
 	//upnp_end
 	*/
 	// <== UPnP support [MoNKi] - leuk_he
@@ -1104,6 +1112,7 @@ LRESULT CPPgTweaks::OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam)
 			if (m_ctrlTreeOptions.GetCheckBox(m_htiUPnPNat, bCheck))
 			{
 				if (m_htiUPnPTryRandom)	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiUPnPTryRandom, bCheck);
+				if (m_htiUPnPRebindOnIPChange)	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiUPnPRebindOnIPChange, bCheck); //zz_fly :: Rebind UPnP on IP-change
 			}
 		}
 		//upnp_end

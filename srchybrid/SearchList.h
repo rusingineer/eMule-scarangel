@@ -51,18 +51,6 @@ class CFileDataIO;
 class CAbstractFile;
 
 
-__inline bool __stdcall operator==(const CSearchFile::SServer& s1, const CSearchFile::SServer& s2)
-{
-	return s1.m_nIP==s2.m_nIP && s1.m_nPort==s2.m_nPort;
-}
-
-__inline bool __stdcall operator==(const CSearchFile::SClient& c1, const CSearchFile::SClient& c2)
-{
-	return c1.m_nIP==c2.m_nIP && c1.m_nPort==c2.m_nPort &&
-		   c1.m_nServerIP==c2.m_nServerIP && c1.m_nServerPort==c2.m_nServerPort;
-}
-
-
 class CSearchList
 {
 	friend class CSearchListCtrl;
@@ -90,8 +78,8 @@ public:
 	void	KademliaSearchKeyword(uint32 searchID, const Kademlia::CUInt128* pfileID, LPCTSTR name, uint64 size, LPCTSTR type, UINT uKadPublishInfo, UINT numProperties, ...);
 	bool	AddNotes(Kademlia::CEntry* entry, const uchar* hash);
 	void	SetNotesSearchStatus(const uchar* pFileHash, bool bSearchRunning);
-	void	SentUDPRequestNotification(uint32 nSearchID, uint32 dwServerIP);	
-	
+	void	SentUDPRequestNotification(uint32 nSearchID, uint32 dwServerIP);
+
 	void	StoreSearches();
 	void	LoadSearches();
 	

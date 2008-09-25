@@ -52,6 +52,7 @@ BEGIN_MESSAGE_MAP(CChatWnd, CResizableDialog)
 	ON_WM_SHOWWINDOW()
 	ON_MESSAGE(UM_CLOSETAB, OnCloseTab)
 	ON_WM_SYSCOLORCHANGE()
+	ON_WM_CTLCOLOR()
     ON_WM_CONTEXTMENU()
 	ON_WM_HELPINFO()
 	ON_NOTIFY(LVN_ITEMACTIVATE, IDC_FRIENDS_LIST, OnLvnItemActivateFriendList)
@@ -59,7 +60,6 @@ BEGIN_MESSAGE_MAP(CChatWnd, CResizableDialog)
 	ON_STN_DBLCLK(IDC_FRIENDSICON, OnStnDblClickFriendIcon)
 	ON_BN_CLICKED(IDC_CSEND, OnBnClickedSend)
 	ON_BN_CLICKED(IDC_CCLOSE, OnBnClickedClose)
-	ON_WM_CTLCOLOR() // Design Settings [eWombat/Stulle] - Max
 END_MESSAGE_MAP()
 
 CChatWnd::CChatWnd(CWnd* pParent /*=NULL*/)
@@ -461,12 +461,7 @@ void CChatWnd::SetAllIcons()
 	icon_msg = theApp.LoadIcon(_T("Message"), 16, 16);
 	((CStatic*)GetDlgItem(IDC_MESSAGEICON))->SetIcon(icon_msg);
 	((CStatic*)GetDlgItem(IDC_FRIENDSICON))->SetIcon(icon_friend);
-	// ==> Design Settings [eWombat/Stulle] - Max
-	/*
 	m_cUserInfo.SetIcon(_T("Info"));
-	*/
-	m_cUserInfo.SetIcon(_T("Info"),clrChatColor);
-	// <== Design Settings [eWombat/Stulle] - Max
 
 	CImageList iml;
 	iml.Create(16, 16, theApp.m_iDfltImageListColorFlags | ILC_MASK, 0, 1);
@@ -481,12 +476,7 @@ void CChatWnd::Localize()
 {
 	GetDlgItem(IDC_FRIENDS_LBL)->SetWindowText(GetResString(IDS_CW_FRIENDS));
 	GetDlgItem(IDC_MESSAGES_LBL)->SetWindowText(GetResString(IDS_CW_MESSAGES));
-	// ==> Design Settings [eWombat/Stulle] - Max
-	/*
 	m_cUserInfo.SetWindowText(GetResString(IDS_INFO));
-	*/
-	m_cUserInfo.SetWindowText(GetResString(IDS_INFO),clrChatColor);
-	// <== Design Settings [eWombat/Stulle] - Max
 	GetDlgItem(IDC_FRIENDS_DOWNLOADED)->SetWindowText(GetResString(IDS_CHAT_DOWNLOADED));
 	GetDlgItem(IDC_FRIENDS_UPLOADED)->SetWindowText(GetResString(IDS_CHAT_UPLOADED));
 	GetDlgItem(IDC_FRIENDS_IDENT)->SetWindowText(GetResString(IDS_CHAT_IDENT));
@@ -599,24 +589,16 @@ void CChatWnd::OnBnClickedSend()
 	m_wndMessage.SetFocus();
 }
 
-// ==> Design Settings [eWombat/Stulle] - Max
-void CChatWnd::OnBackcolor() 
-{
-	clrChatColor = thePrefs.GetStyleBackColor(window_styles, style_w_messages);
-
-	if(clrChatColor == CLR_DEFAULT)
-		clrChatColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
-
-	m_brMyBrush.DeleteObject();
-
-	if(clrChatColor != CLR_DEFAULT)
-		m_brMyBrush.CreateSolidBrush(clrChatColor);
-	else
-		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
-}
-
 HBRUSH CChatWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
+// ==> Design Settings [eWombat/Stulle] - Max
+/*
+	HBRUSH hbr = theApp.emuledlg->GetCtlColor(pDC, pWnd, nCtlColor);
+	if (hbr)
+		return hbr;
+	return __super::OnCtlColor(pDC, pWnd, nCtlColor);
+}
+*/
 	hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
 
 	if (nCtlColor == CTLCOLOR_DLG)
@@ -630,5 +612,20 @@ HBRUSH CChatWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 		hbr = (HBRUSH) WHITE_BRUSH;
 
 	return hbr;
+}
+
+void CChatWnd::OnBackcolor() 
+{
+	clrChatColor = thePrefs.GetStyleBackColor(window_styles, style_w_messages);
+
+	if(clrChatColor == CLR_DEFAULT)
+		clrChatColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
+
+	m_brMyBrush.DeleteObject();
+
+	if(clrChatColor != CLR_DEFAULT)
+		m_brMyBrush.CreateSolidBrush(clrChatColor);
+	else
+		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
 }
 // <== Design Settings [eWombat/Stulle] - Max

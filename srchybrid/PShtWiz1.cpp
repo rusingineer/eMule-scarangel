@@ -26,7 +26,8 @@
 #include "ClientUDPSocket.h"
 //Xman official UPNP removed
 /*
-#include "UPnPFinder.h"
+#include "UPnPImpl.h"
+#include "UPnPImplWrapper.h"
 */
 //Xman end
 
@@ -410,13 +411,7 @@ void CPPgWiz1Ports::OnCancel(){
 // ** UPnP Button stuff
 void CPPgWiz1Ports::OnStartUPnP() {
 	CDlgPageWizard::OnApply();
-	try
-	{
-		if ( theApp.m_pUPnPFinder->AreServicesHealthy() )
-			theApp.m_pUPnPFinder->StartDiscovery(GetTCPPort(), GetUDPPort());
-	}
-	catch ( CUPnPFinder::UPnPError& ) {}
-	catch ( CException* e ) { e->Delete(); }
+	theApp.emuledlg->StartUPnP(true, GetTCPPort(), GetUDPPort());
 
 	GetDlgItem(IDC_UPNPSTATUS)->SetWindowText(GetResString(IDS_UPNPSETUP));
 	GetDlgItem(IDC_UPNPSTART)->EnableWindow(FALSE);
@@ -427,14 +422,14 @@ void CPPgWiz1Ports::OnStartUPnP() {
 
 void CPPgWiz1Ports::OnTimer(UINT /*nIDEvent*//*){
 	m_nUPnPTicks++;
-	if (theApp.m_pUPnPFinder && theApp.m_pUPnPFinder->m_bUPnPPortsForwarded == TRIS_UNKNOWN)
+	if (theApp.m_pUPnPFinder && theApp.m_pUPnPFinder->GetImplementation()->ArePortsForwarded() == TRIS_UNKNOWN)
 	{
 		if (m_nUPnPTicks < 40){
 			((CProgressCtrl*)GetDlgItem(IDC_UPNPPROGRESS))->SetPos(m_nUPnPTicks);
 			return;
 		}
 	}
-	if (theApp.m_pUPnPFinder && theApp.m_pUPnPFinder->m_bUPnPPortsForwarded == TRIS_TRUE){
+	if (theApp.m_pUPnPFinder && theApp.m_pUPnPFinder->GetImplementation()->ArePortsForwarded() == TRIS_TRUE){
 		((CProgressCtrl*)GetDlgItem(IDC_UPNPPROGRESS))->SetPos(40);
 		CString strMessage;
 		strMessage.Format(GetResString(IDS_UPNPSUCCESS), GetTCPPort(), GetUDPPort());

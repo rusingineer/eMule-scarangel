@@ -275,6 +275,7 @@ enum eWindowStyles
 };
 // <== Design Settings [eWombat/Stulle] - Stulle
 
+
 class CPreferences
 {
 public:
@@ -790,6 +791,9 @@ public:
 	static bool		m_bSkipWANPPPSetup;
 	static bool		m_bEnableUPnP;
 	static bool		m_bCloseUPnPOnExit;
+	static bool		m_bIsWinServImplDisabled;
+	static bool		m_bIsMinilibImplDisabled;
+	static int		m_nLastWorkingImpl;
 	*/
 	// <== UPnP support [MoNKi] - leuk_he
 
@@ -844,7 +848,7 @@ public:
 
 	static bool	m_bSaveUploadQueueWaitTime; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 
-	// ==> file settings - Stulle
+	// ==> File Settings [sivka/Stulle] - Stulle
 	static	uint16	m_MaxSourcesPerFileTemp;
 	static	bool	m_EnableAutoDropNNSTemp;
 	static	DWORD	m_AutoNNS_TimerTemp;
@@ -883,7 +887,7 @@ public:
 	static	bool	m_bHQRXmanTakeOver;
 	static	bool	m_bGlobalHlTakeOver; // Global Source Limit (customize for files) - Stulle
 	static	bool	m_TakeOverFileSettings;
-	// <== file settings - Stulle
+	// <== File Settings [sivka/Stulle] - Stulle
 
 	// ==> Source Graph - Stulle
 	static bool	m_bSrcGraph;
@@ -1098,6 +1102,12 @@ public:
 	static CString		UpdateURLIP2Country;
 	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
+	static bool	m_bFineCS; // Modified FineCS [CiccioBastardo/Stulle] - Stulle
+
+	static bool m_bTrayComplete; // Completed in Tray [Stulle] - Stulle
+
+	static bool		m_bSplitWindow; // Advanced Transfer Window Layout [Stulle] - Stulle
+
 	enum Table
 	{
 		tableDownload, 
@@ -1130,7 +1140,7 @@ public:
 	friend class CPPgDebug;
 
 	friend class CPPgScar; // ScarAngel Preferences window - Stulle
-	friend class CSivkaFileSettings; // file settings - Stulle
+	friend class CSivkaFileSettings; // File Settings [sivka/Stulle] - Stulle
 
 	CPreferences();
 	~CPreferences();
@@ -1147,10 +1157,15 @@ public:
 	static	void	SetMuleDirectory(EDefaultDirectory eDirectory, CString strNewDir);
 	static	void	ChangeUserDirMode(int nNewMode);
 
+	// SLUGFILLER: SafeHash remove - removed installation dir unsharing
+	/*
 	static	bool	IsTempFile(const CString& rstrDirectory, const CString& rstrName);
 	static	bool	IsConfigFile(const CString& rstrDirectory, const CString& rstrName);
 	static	bool	IsShareableDirectory(const CString& rstrDirectory);
 	static	bool	IsInstallationDirectory(const CString& rstrDir);
+	*/
+	static	bool	IsConfigFile(const CString& rstrDirectory, const CString& rstrName);
+	// SLUGFILLER: SafeHash remove - removed installation dir unsharing
 
 	static	bool	Save();
 	static	void	SaveCats();
@@ -1217,7 +1232,8 @@ public:
 	/*
 	//upnp_start
 	static	bool m_bUPnPNat; // UPnP On/Off
-	static	bool m_bUPnPTryRandom; // Try to use random external port if already in use On/Off
+	static	bool m_bUPnPTryRandom; //UPnP use random ports
+	static  bool m_bUPnPRebindOnIPChange; //zz_fly :: Rebind UPnP on IP-change
 	static	uint16 m_iUPnPTCPExternal; // TCP External Port
 	static	uint16 m_iUPnPUDPExternal; // UDP External Port*//*
 	static	bool GetUPnPNat()    { return m_bUPnPNat; }
@@ -1226,6 +1242,8 @@ public:
 	static	void SetUPnPUDPExternal(uint16 port) { m_iUPnPUDPExternal = port; }
 	static	bool GetUPnPNatTryRandom()  { return m_bUPnPTryRandom; }
 	static	void SetUPnPNatTryRandom(bool on) { m_bUPnPTryRandom = on; }
+	static  bool GetUPnPNatRebind() { return m_bUPnPRebindOnIPChange; } //zz_fly :: Rebind UPnP on IP-change
+	static	void SetUPnPNatRebind(bool on) { m_bUPnPRebindOnIPChange = on; } //zz_fly :: Rebind UPnP on IP-change
 	//upnp_end
 	*/
 	// <== UPnP support [MoNKi] - leuk_he
@@ -2157,6 +2175,10 @@ public:
 	static void		SetSkipWANIPSetup(bool nv)			{m_bSkipWANIPSetup = nv;}
 	static void		SetSkipWANPPPSetup(bool nv)			{m_bSkipWANPPPSetup = nv;}
 	static bool		CloseUPnPOnExit()					{return m_bCloseUPnPOnExit;}
+	static bool		IsWinServUPnPImplDisabled()			{return m_bIsWinServImplDisabled;}
+	static bool		IsMinilibUPnPImplDisabled()			{return m_bIsMinilibImplDisabled;}
+	static int		GetLastWorkingUPnPImpl()			{return m_nLastWorkingImpl;}
+	static void		SetLastWorkingUPnPImpl(int val)		{m_nLastWorkingImpl = val;}
 	*/
 	// <== UPnP support [MoNKi] - leuk_he
 
@@ -2198,7 +2220,7 @@ public:
 
 	static	bool	SaveUploadQueueWaitTime()			{return m_bSaveUploadQueueWaitTime;} // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 
-	// ==> file settings - Stulle
+	// ==> File Settings [sivka/Stulle] - Stulle
 	static uint16	GetMaxSourcesPerFileTemp(){return m_MaxSourcesPerFileTemp;}
 	static bool		GetEnableAutoDropNNSTemp(){return m_EnableAutoDropNNSTemp;}
 	static DWORD	GetAutoNNS_TimerTemp(){return m_AutoNNS_TimerTemp;}
@@ -2252,7 +2274,7 @@ public:
 	static bool		GetHQRXmanTakeOver(){return m_bHQRXmanTakeOver;}
 	static bool		GetGlobalHlTakeOver(){return m_bGlobalHlTakeOver;} // Global Source Limit (customize for files) - Stulle
 	static bool		GetTakeOverFileSettings() {return m_TakeOverFileSettings;}
-	// <== file settings - Stulle
+	// <== File Settings [sivka/Stulle] - Stulle
 
 	// ==> Source Graph - Stulle
 	static	bool GetSrcGraph()			{ return m_bSrcGraph; }
@@ -2509,6 +2531,15 @@ public:
 	static CString		GetUpdateURLIP2Country()		{return UpdateURLIP2Country;}
     static void			SetBindAddr(CStringW bindip);
 	// <== Advanced Updates [MorphXT/Stulle] - Stulle
+
+	static	bool	FineCS()			{return m_bFineCS;} // Modified FineCS [CiccioBastardo/Stulle] - Stulle
+
+	static	bool	GetTrayComplete()		{ return m_bTrayComplete; } // Completed in Tray [Stulle] - Stulle
+
+	// ==> Advanced Transfer Window Layout [Stulle] - Stulle
+	static	bool	GetSplitWindow()		{ return m_bSplitWindow; }
+	static	void	SetSplitWindow(bool in)	{ m_bSplitWindow = in; }
+	// <== Advanced Transfer Window Layout [Stulle] - Stulle
 
 protected:
 	static	CString m_strFileCommentsFilePath;

@@ -495,6 +495,84 @@ uint32 CUpDownClient::GetScore(bool sysvalue, bool isdownloading, bool onlybasev
 	*/
 	float modif = credits->GetScoreRatio(this);
 
+	// ==> Modified FineCS [CiccioBastardo/Stulle] - Stulle
+	if (thePrefs.FineCS() && currequpfile->IsPartFile() && !IsFriend())
+	{ // we have requested file
+		bool FineCS = false;
+		switch (thePrefs.GetCreditSystem())	{
+			case CS_LOVELACE:{
+					if (modif <= 0.984290578f){ // default!
+						FineCS = true;
+						modif = 1.0f;
+					}
+				}break;
+			case CS_PAWCIO:{
+					if (modif <= 3.0f){ // default!
+						FineCS = true;
+						modif = 1.0f;
+					}
+				}break;
+			case CS_EASTSHARE:{
+					if (modif <= 1.0f){ // default!
+						FineCS = true;
+						if (credits->GetCurrentIdentState(GetIP()) != IS_NOTAVAILABLE)
+							modif = 1.0f;
+					}
+				}break;
+			case CS_SIVKA:{
+					if (modif <= 1.0f){ // default!
+						FineCS = true;
+						if (credits->GetCurrentIdentState(GetIP()) != IS_IDNEEDED && theApp.clientcredits->CryptoAvailable() ||
+							credits->GetCurrentIdentState(GetIP()) != IS_IDFAILED ||
+							credits->GetCurrentIdentState(GetIP()) != IS_IDBADGUY)
+							modif = 1.0f;
+					}
+				}break;
+			case CS_TK4:{
+					if (modif <= 10.0f){ // default!
+						FineCS = true;
+						modif = 1.0f;
+					}
+				}break;
+			case CS_XMAN:{
+					if (modif <= 1.0f){ // default!
+						FineCS = true;
+						if((credits->GetCurrentIdentState(GetIP()) != IS_IDFAILED ||
+							credits->GetCurrentIdentState(GetIP()) != IS_IDBADGUY ||
+							credits->GetCurrentIdentState(GetIP()) != IS_IDNEEDED) && theApp.clientcredits->CryptoAvailable())
+							modif = 1.0f;
+					}
+				}break;
+			case CS_RATIO:
+			case CS_SWAT:
+			case CS_ZZUL:
+			case CS_OFFICIAL:
+			default:{
+					if (modif <= 1.0f){ // default!
+						FineCS = true;
+						modif = 1.0f;
+					}
+				}break;
+		} // current modif is smaller but default modif
+		// bad clients will be calculated with their penalty
+
+		if (FineCS)
+		{
+			#define UP_DOWN_GAP_LIMIT (4*PARTSIZE)
+
+			sint64 diff = credits->GetUploadedTotal() - credits->GetDownloadedTotal(); // sint64 handles signed sizes > 2GB (yet, I had a case which was handled wrongly)
+		
+			if (credits->GetDownloadedTotal() < PARTSIZE) // If not received at least a chunk, limit "risk" to 3 chunks instead of 4
+				diff += PARTSIZE;
+
+			if (diff > UP_DOWN_GAP_LIMIT) {
+				modif *= (float)UP_DOWN_GAP_LIMIT/diff; // This is surely smaller than 1
+				modif *= modif;
+			}
+		}
+	}
+	// <== Modified FineCS [CiccioBastardo/Stulle] - Stulle
+
 	// ==> Release Score Assurance [Stulle] - Stulle
 	if((thePrefs.GetReleaseScoreAssurance() &&
 		currequpfile->IsPartFile() == false && // no bonus for partfiles
@@ -511,10 +589,16 @@ uint32 CUpDownClient::GetScore(bool sysvalue, bool isdownloading, bool onlybasev
 					if (modif <= 3.0f)
 						modif = 3.0f;
 				}break;
+			case CS_TK4:{
+				if(modif <= 10.0f)
+					modif = 10.0f;
+			}break;
 			case CS_RATIO:
 			case CS_EASTSHARE:
 			case CS_SIVKA:
 			case CS_SWAT:
+			case CS_XMAN:
+			case CS_ZZUL:
 			case CS_OFFICIAL:
 			default:{
 					if (modif <= 1.0f)

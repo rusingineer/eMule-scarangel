@@ -64,13 +64,13 @@ BEGIN_MESSAGE_MAP(CIrcWnd, CResizableDialog)
 	ON_WM_CREATE()
 	ON_WM_CONTEXTMENU()
 	ON_WM_SYSCOLORCHANGE()
+	ON_WM_CTLCOLOR()
 	ON_WM_HELPINFO()
 	ON_MESSAGE(UM_CLOSETAB, OnCloseTab)
 	ON_MESSAGE(UM_QUERYTAB, OnQueryTab)
 	ON_MESSAGE(UM_CPN_SELENDOK, OnSelEndOK)
 	ON_MESSAGE(UM_CPN_SELENDCANCEL, OnSelEndCancel)
 	ON_NOTIFY(EN_REQUESTRESIZE, IDC_TITLEWINDOW, OnEnRequestResizeTitle)
-	ON_WM_CTLCOLOR() // Design Settings [eWombat/Stulle] - Max
 END_MESSAGE_MAP()
 
 CIrcWnd::CIrcWnd(CWnd* pParent)
@@ -1574,24 +1574,16 @@ void CIrcWnd::OnEnRequestResizeTitle(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 }
 
-// ==> Design Settings [eWombat/Stulle] - Max
-void CIrcWnd::OnBackcolor() 
-{
-	COLORREF crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_irc);
-
-	if(crTempColor == CLR_DEFAULT)
-		crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
-
-	m_brMyBrush.DeleteObject();
-
-	if(crTempColor != CLR_DEFAULT)
-		m_brMyBrush.CreateSolidBrush(crTempColor);
-	else
-		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
-}
-
 HBRUSH CIrcWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
+// ==> Design Settings [eWombat/Stulle] - Max
+/*
+	HBRUSH hbr = theApp.emuledlg->GetCtlColor(pDC, pWnd, nCtlColor);
+	if (hbr)
+		return hbr;
+	return __super::OnCtlColor(pDC, pWnd, nCtlColor);
+}
+*/
 	hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
 
 	if (nCtlColor == CTLCOLOR_DLG)
@@ -1607,4 +1599,18 @@ HBRUSH CIrcWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return hbr;
 }
 
+void CIrcWnd::OnBackcolor() 
+{
+	COLORREF crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_irc);
+
+	if(crTempColor == CLR_DEFAULT)
+		crTempColor = thePrefs.GetStyleBackColor(window_styles, style_w_default);
+
+	m_brMyBrush.DeleteObject();
+
+	if(crTempColor != CLR_DEFAULT)
+		m_brMyBrush.CreateSolidBrush(crTempColor);
+	else
+		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
+}
 // <== Design Settings [eWombat/Stulle] - Max

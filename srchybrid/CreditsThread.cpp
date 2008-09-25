@@ -371,7 +371,7 @@ void CCreditsThread::InitFonts()
 	lf.lfHeight = 16;
 	lf.lfWeight = 700;
 	//lf.lfItalic = TRUE;
-	lf.lfQuality = afxData.bWin95 ? NONANTIALIASED_QUALITY : ANTIALIASED_QUALITY;
+	lf.lfQuality = afxIsWin95() ? NONANTIALIASED_QUALITY : ANTIALIASED_QUALITY;
 	_tcscpy(lf.lfFaceName, _T("Arial"));
 	font2->CreateFontIndirect(&lf);
 	m_arFonts.Add(font2);
@@ -385,7 +385,7 @@ void CCreditsThread::InitFonts()
 	memset((void*)&lf, 0, sizeof(lf));
 	lf.lfHeight = 25;
 	lf.lfWeight = 900;
-	lf.lfQuality = afxData.bWin95 ? NONANTIALIASED_QUALITY : ANTIALIASED_QUALITY;
+	lf.lfQuality = afxIsWin95() ? NONANTIALIASED_QUALITY : ANTIALIASED_QUALITY;
 	_tcscpy(lf.lfFaceName, _T("Arial"));
 	font3->CreateFontIndirect(&lf);
 	m_arFonts.Add(font3);

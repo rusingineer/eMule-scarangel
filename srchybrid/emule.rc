@@ -246,7 +246,7 @@ BEGIN
     CONTROL         "Wnd1Toolbar",IDC_DOWNLOAD_ICO,"ToolbarWindow32",
                     WS_TABSTOP | 0x994e,5,5,129,12
     CONTROL         "",IDC_DLTAB,"SysTabControl32",TCS_RAGGEDRIGHT | 
-                    TCS_TOOLTIPS,239,2,263,17,WS_EX_RIGHT
+                    TCS_TOOLTIPS | WS_TABSTOP,239,2,263,17,WS_EX_RIGHT
     CONTROL         "Wnd2Toolbar",IDC_UPLOAD_ICO,"ToolbarWindow32",
                     WS_TABSTOP | 0x994e,5,99,74,12
     CONTROL         "",IDC_SPLITTER,"Static",SS_BLACKFRAME | NOT WS_VISIBLE,
@@ -339,7 +339,7 @@ BEGIN
     CONTROL         "",IDC_SEARCHLIST,"SysListView32",LVS_REPORT | 
                     LVS_NOLABELWRAP | LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | 
                     WS_BORDER | WS_TABSTOP,5,30,275,82
-    CONTROL         "",IDC_TAB1,"SysTabControl32",0x0,5,17,157,16
+    CONTROL         "",IDC_TAB1,"SysTabControl32",WS_TABSTOP,5,17,157,16
     LTEXT           "Do *NOT* resize this dlg resource!",IDC_STATIC,151,14,
                     55,16,NOT WS_VISIBLE
     PUSHBUTTON      "Search Parameters...",IDC_OPEN_PARAMS_WND,164,1,116,14
@@ -349,7 +349,8 @@ BEGIN
     PUSHBUTTON      "&Download Selected",IDC_SDOWNLOAD,5,120,88,14
     LTEXT           "->",IDC_STATIC_DLTOof,101,123,8,10
     CONTROL         "",IDC_CATTAB2,"SysTabControl32",TCS_BUTTONS | 
-                    TCS_RAGGEDRIGHT | TCS_TOOLTIPS,114,121,55,14
+                    TCS_RAGGEDRIGHT | TCS_TOOLTIPS | WS_TABSTOP,114,121,55,
+                    14
     PUSHBUTTON      "C&lose All Search Results",IDC_CLEARALL,172,120,108,14
     CONTROL         "SearchListToolbar",IDC_SEARCHLST_ICO,"ToolbarWindow32",
                     WS_TABSTOP | 0x994e,5,5,74,12
@@ -360,7 +361,8 @@ STYLE DS_LOCALEDIT | DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD |
     WS_SYSMENU
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    CONTROL         "",IDC_CHATSEL,"SysTabControl32",0x0,140,16,367,255
+    CONTROL         "",IDC_CHATSEL,"SysTabControl32",WS_TABSTOP,140,16,367,
+                    255
     EDITTEXT        IDC_CMESSAGE,158,273,245,12,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "Send",IDC_CSEND,405,272,50,14
     PUSHBUTTON      "Close",IDC_CCLOSE,456,272,50,14
@@ -771,7 +773,7 @@ BEGIN
     CONTROL         "IRCNicksLv",IDC_NICKLIST,"SysListView32",LVS_REPORT | 
                     LVS_SINGLESEL | LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | 
                     WS_BORDER | WS_TABSTOP,5,5,105,264
-    CONTROL         "",IDC_TAB2,"SysTabControl32",0x0,113,4,393,16
+    CONTROL         "",IDC_TAB2,"SysTabControl32",WS_TABSTOP,113,4,393,16
     CONTROL         "IRCChannelsLv",IDC_SERVERCHANNELLIST,"SysListView32",
                     LVS_REPORT | LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | 
                     WS_BORDER | WS_TABSTOP,113,19,393,250
@@ -1106,14 +1108,14 @@ BEGIN
     PUSHBUTTON      "v",IDC_REB,203,184,16,12
     DEFPUSHBUTTON   "OK",IDOK,118,202,50,14
     PUSHBUTTON      "&Cancel",IDCANCEL,173,202,50,14
-    LTEXT           "Title:",IDC_STATIC_TITLE,7,6,216,8
-    LTEXT           "Comment:",IDC_STATIC_COMMENT,7,33,216,8
-    LTEXT           "Color",IDC_STATIC_COLOR,7,110,123,8
-    LTEXT           "Static",IDC_STATIC_PRIO,7,85,216,8
-    LTEXT           "Incoming Dir:",IDC_STATIC_INCOMING,7,59,216,8
-    LTEXT           "Autocat",IDC_STATIC_AUTOCAT,7,139,216,8
+    LTEXT           "Title:",IDC_STATIC_TITLE,7,5,216,8
+    LTEXT           "Comment:",IDC_STATIC_COMMENT,7,32,216,8
+    LTEXT           "Color",IDC_STATIC_COLOR,7,109,123,8
+    LTEXT           "Static",IDC_STATIC_PRIO,7,84,216,8
+    LTEXT           "Incoming Dir:",IDC_STATIC_INCOMING,7,58,216,8
+    LTEXT           "Autocat",IDC_STATIC_AUTOCAT,7,138,216,8
     LTEXT           "Regular expression for view filter:",IDC_STATIC_REGEXP,
-                    7,176,216,8
+                    7,175,216,8
 END
 */
 IDD_CAT DIALOGEX 0, 0, 309, 306
@@ -1364,6 +1366,8 @@ BEGIN
                     WS_TABSTOP,11,180,202,10
 END
 
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+/*
 IDD_INPUTBOX DIALOGEX 0, 0, 256, 65
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
@@ -1376,6 +1380,22 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,147,46,50,14
     PUSHBUTTON      "Abbrechen",IDCANCEL,201,46,50,14
 END
+*/
+IDD_INPUTBOX DIALOGEX 0, 0, 250, 56
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Inputbox"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    LTEXT           "",IDC_IBLABEL,2,2,245,26
+    EDITTEXT        IDC_TEXT,2,25,245,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_TEXTNUM,2,25,245,12,ES_AUTOHSCROLL | ES_NUMBER | NOT 
+                    WS_VISIBLE | WS_TABSTOP
+    PUSHBUTTON      "&Cleanup",IDC_CLEANFILENAME,2,40,59,14
+    DEFPUSHBUTTON   "OK",IDOK,143,40,50,14
+    PUSHBUTTON      "Abbrechen",IDCANCEL,197,40,50,14
+END
+// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 IDD_PPG_WEBSRV DIALOGEX 0, 0, 231, 227
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
@@ -1921,11 +1941,11 @@ BEGIN
                     WS_GROUP,13,16,125,8
     EDITTEXT        IDC_ELINK,13,25,297,70,ES_MULTILINE | ES_AUTOVSCROLL | 
                     ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL
+    LTEXT           "->",IDC_CATLABEL,9,111,11,8
+    CONTROL         "",IDC_CATS,"SysTabControl32",TCS_BUTTONS | TCS_TOOLTIPS | 
+                    WS_TABSTOP,19,109,167,18
     DEFPUSHBUTTON   "OK",IDOK,187,108,74,14
     PUSHBUTTON      "Cancel",IDCANCEL,266,108,50,14
-    LTEXT           "->",IDC_CATLABEL,9,111,11,8
-    CONTROL         "",IDC_CATS,"SysTabControl32",TCS_BUTTONS | TCS_TOOLTIPS,
-                    19,109,167,18
 END
 
 IDD_SEARCH_PARAMS DIALOGEX 0, 0, 478, 55
@@ -2173,7 +2193,7 @@ BEGIN
 END
 // <== ScarAngel Preferences window - Stulle
 
-// ==> file settings - Stulle
+// ==> File Settings [sivka/Stulle] - Stulle
 IDD_SIVKAFILESETTINGS DIALOGEX 0, 0, 225, 192/*225*/
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Sivka - File(s) Settings"
@@ -2222,7 +2242,7 @@ BEGIN
     PUSHBUTTON      "Default",IDC_DEFAULT_BUTTON,80,161/*206*/,66,12,BS_FLAT
     DEFPUSHBUTTON   "Close",IDOK,162,161/*206*/,56,12,BS_FLAT
 END
-// <== file settings - Stulle
+// <== File Settings [sivka/Stulle] - Stulle
 
 // ==> TBH: minimule - Max
 IDD_MINI_MULE DIALOGEX 0, 0, 264, 64
@@ -2986,21 +3006,21 @@ BOLD                    ICON                    "res\\bold.ico"
 UNDERLINE               ICON                    "res\\underline.ico"
 RESETFORMAT             ICON                    "res\\resetformat.ico"
 EMPTY                   ICON                    "res\\Empty.ico"
-CONNECT                 ICON                    "res\\ConnectDo.ico"
-DISCONNECT              ICON                    "res\\ConnectDrop.ico"
-STOPCONNECTING          ICON                    "res\\ConnectStop.ico"
-KADEMLIA                ICON                    "res\\Kad.ico"
-SERVER                  ICON                    "res\\Server.ico"
-SEARCH                  ICON                    "res\\Search.ico"
-TRANSFER                ICON                    "res\\Transfer.ico"
-SHAREDFILES             ICON                    "res\\SharedFiles.ico"
-STATISTICS              ICON                    "res\\Statistics.ico"
-MESSAGES                ICON                    "res\\Messages.ico"
-IRC                     ICON                    "res\\IRC.ico"
+CONNECT                 ICON                    "res\\ScarConnectDo.ico"
+DISCONNECT              ICON                    "res\\ScarConnectDrop.ico"
+STOPCONNECTING          ICON                    "res\\ScarConnectStop.ico"
+KADEMLIA                ICON                    "res\\ScarKad.ico"
+SERVER                  ICON                    "res\\ScarServer.ico"
+SEARCH                  ICON                    "res\\ScarSearch.ico"
+TRANSFER                ICON                    "res\\ScarTransfer.ico"
+SHAREDFILES             ICON                    "res\\ScarSharedFiles.ico"
+STATISTICS              ICON                    "res\\ScarStatistics.ico"
+MESSAGES                ICON                    "res\\ScarMessages.ico"
+IRC                     ICON                    "res\\ScarIRC.ico"
 IRCCLIPBOARD            ICON                    "res\\IRCClipboard.ico"
-PREFERENCES             ICON                    "res\\Preferences.ico"
-TOOLS                   ICON                    "res\\Tools.ico"
-HELP                    ICON                    "res\\Help.ico"
+PREFERENCES             ICON                    "res\\ScarPreferences.ico"
+TOOLS                   ICON                    "res\\ScarTools.ico"
+HELP                    ICON                    "res\\ScarHelp.ico"
 TRAYCONNECTED           ICON                    "res\\TrayConnected.ico"
 TRAYNOTCONNECTED        ICON                    "res\\TrayDisconnected.ico"
 TRAYLOWID               ICON                    "res\\TrayLowID.ico"
@@ -3042,7 +3062,7 @@ UP1DOWN1                ICON                    "res\\Up1down1.ico"
 UP1DOWN0                ICON                    "res\\Up1down0.ico"
 UP0DOWN1                ICON                    "res\\Up0down1.ico"
 TRANSFERUPDOWN          ICON                    "res\\TransferUpDown.ico"
-UPLOAD                  ICON                    "res\\Upload.ico"
+UPLOAD                  ICON                    "res\\ScarUpload.ico"
 CONNECTEDNOTNOT         ICON                    "res\\ConnectedNotNot.ico"
 CONNECTEDNOTLOW         ICON                    "res\\ConnectedNotLow.ico"
 CONNECTEDNOTHIGH        ICON                    "res\\ConnectedNotHigh.ico"
@@ -3057,8 +3077,9 @@ INFO                    ICON                    "res\\Info.ico"
 CANCEL                  ICON                    "res\\Cancel.ico"
 FORWARD                 ICON                    "res\\NavigateForward.ico"
 BACK                    ICON                    "res\\NavigateBack.ico"
-CLOSETAB                ICON                    "res\\Close.ico"
-DOWNLOAD                ICON                    "res\\Download.ico"
+CLOSETAB                ICON                    "res\\CloseTab.ico"
+CLOSETABSELECTED        ICON                    "res\\CloseTabSelected.ico"
+DOWNLOAD                ICON                    "res\\ScarDownload.ico"
 MESSAGE                 ICON                    "res\\Message.ico"
 MESSAGEPENDING          ICON                    "res\\MessagePending.ico"
 CHAT                    ICON                    "res\\Chat.ico"
@@ -3091,8 +3112,8 @@ SPEEDMIN                ICON                    "res\\SpeedMin.ico"
 SPEEDMAX                ICON                    "res\\SpeedMax.ico"
 RESTOREWINDOW           ICON                    "res\\RestoreWindow.ico"
 EXIT                    ICON                    "res\\Exit.ico"
-CLIENTSKNOWN            ICON                    "res\\ClientsKnown.ico"
-CLIENTSONQUEUE          ICON                    "res\\ClientsOnQueue.ico"
+CLIENTSKNOWN            ICON                    "res\\ScarClientsKnown.ico"
+CLIENTSONQUEUE          ICON                    "res\\ScarClientsOnQueue.ico"
 KADCURRENTSEARCHES      ICON                    "res\\KadCurrentSearches.ico"
 KADCONTACTLIST          ICON                    "res\\KadContactList.ico"
 KADBOOTSTRAP            ICON                    "res\\KadBootstrap.ico"
@@ -3157,7 +3178,7 @@ RATING_EXCELLENT        ICON                    "res\\FileRating5.ico"
 FILESHAREDSERVER        ICON                    "res\\FileSharedServer.ico"
 FILESHAREDKAD           ICON                    "res\\FileSharedKad.ico"
 SPLITWINDOW             ICON                    "res\\SplitWindow.ico"
-DOWNLOADFILES           ICON                    "res\\DownloadFiles.ico"
+DOWNLOADFILES           ICON                    "res\\ScarDownloadFiles.ico"
 SEARCHFILETYPE_EMULECOLLECTION ICON                    "res\\FileTypeEmuleCollection.ico"
 COLLECTION_VIEW         ICON                    "res\\emuleCollView.ico"
 COLLECTION_ADD          ICON                    "res\\emuleCollAdd.ico"
@@ -3166,6 +3187,7 @@ COLLECTION_SEARCH       ICON                    "res\\emuleCollSearch.ico"
 COLLECTION              ICON                    "res\\emuleColl.ico"
 ALLFILES                ICON                    "res\\all.ico"
 INCOMPLETE              ICON                    "res\\incomplete.ico"
+INCOMING                ICON                    "res\\Incoming.ico"
 AABCOLLECTIONFILETYPE   ICON                    "res\\emuleCollectionFileType.ico"
 SEARCHEDIT              ICON                    "res\\SearchEdit.ico"
 FILTERCLEAR2            ICON                    "res\\clear2.ico"
@@ -3192,6 +3214,8 @@ SMILEY_OMG              ICON                    "res\\Smiley_omg.ico"
 SMILEY_SADQ             ICON                    "res\\Smiley_sadq.ico"
 SMILEY_SMILEQ           ICON                    "res\\Smiley_smileq.ico"
 SMILEY_LOOKSIDE         ICON                    "res\\Smiley_lookside.ico"
+SHAREDFOLDEROVL         ICON                    "res\\SharedFolderOvl.ico"
+KADSERVER               ICON                    "res\\KadServer.ico"
 CLIENTEDONKEY           ICON                    "res\\ClienteDonkey.ico"
 CLIENTEDONKEYPLUS       ICON                    "res\\ClienteDonkeyPlus.ico"
 CLIENTFRIEND            ICON                    "res\\ClientFriend.ico"
@@ -3276,6 +3300,9 @@ SUPPORT                 ICON                    "res\\Support.ico"
 EMULATEICON             ICON                    "res\\Emulator.ico"
 SPREADCREDITS           ICON                    "res\\SpreadCredits.ico"
 SHAREDIR                ICON                    "res\\ShareDir.ico"
+TRAYCONNECTEDPLUS       ICON                    "res\\ScarTrayConnectedPlus.ico"
+TRAYNOTCONNECTEDPLUS    ICON                    "res\\ScarTrayDisconnectedPlus.ico"
+TRAYLOWIDPLUS           ICON                    "res\\ScarTrayLowIDPlus.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -3405,7 +3432,7 @@ UPLOAD.GIF              HTML                    "res\\Upload.gif"
 DOWNLOAD.GIF            HTML                    "res\\Download.gif"
 COMPLETED.GIF           HTML                    "res\\FileInfo.gif"
 FREESPACE.GIF           HTML                    "res\\HardDisk.gif"
-OPENINCOMING.GIF        HTML                    "res\\FolderOpen.gif"
+OPENINCOMING.GIF        HTML                    "res\\Incoming.gif"
 RESTOREWINDOW.GIF       HTML                    "res\\RestoreWindow.gif"
 TABLEBACKGND.GIF        HTML                    "res\\MiniMuleBack.gif"
 PREFERENCES.GIF         HTML                    "res\\Preferences.gif"
@@ -4549,6 +4576,7 @@ BEGIN
     IDS_USECREDITSYSTEM     "Use credit system (reward uploaders)"
     IDS_FIRSTAUTODOWN       "Enable this option if you want eMule to manage your download priorities.\n\nTurning this on will allow eMule to make sure downloads with a lot of sources do not interfere with downloads that have few sources. This option will only affect future downloads."
     IDS_FIRSTAUTOUP         "Enable this option if you want eMule to manage your upload priorities.\n\nTurning this on will allow eMule to boost rare files meaning popular files will be harder for other people to get. Turning this off will allow eMule to upload popular files more often meaning rare files will be harder for other people to get. This option will only affect future shared files."
+    IDS_AUTOMATIC           "Automatic"
     IDS_FIRSTSAFECON        "Enable this option if you want eMule to connect using Safe Connect.\n\nTurning this feature off allows eMule to connect to servers a little faster, but can cause you to get more false LowID connects."
     IDS_FIRSTAUTOCON        "Enable this option if you want eMule to connect at startup."
     IDS_FIRSTCOMPLETE       "You have now completed the first runtime wizard.\n\nAll these settings and more can be changed by clicking the preferences icon. For explanations and support check out the help by pressing F1 in eMule!"
@@ -5178,14 +5206,14 @@ BEGIN
     IDS_INCOMPLETE_FILES    "Incomplete Files"
     IDS_SHARED_DIRECTORIES  "Shared Directories"
     IDS_COLLECTIONLIST      "Collection List"
-    IDS_SHAREDIR            "Share directory"
+    IDS_SHAREDIR            "Share Directory"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_SHAREDIRSUB         "Share with subdirectories"
-    IDS_UNSHAREDIR          "Unshare directory"
-    IDS_UNSHAREDIRSUB       "Unshare with subdirectories"
+    IDS_SHAREDIRSUB         "Share with Subdirectories"
+    IDS_UNSHAREDIR          "Unshare Directory"
+    IDS_UNSHAREDIRSUB       "Unshare with Subdirectories"
     IDS_ALLSHAREDFILES      "All Shared Files"
     IDS_ALLDIRECTORIES      "All Directories"
     IDS_SEARCHRELATED       "Search Related Files"
@@ -5362,6 +5390,7 @@ BEGIN
     IDS_BETANAG             "This is a beta version of eMule. Please report problems and check regulary for updates in our forum (http://forum.emule-project.net)."
     IDS_CONFIRMNODESDOWNLOAD 
                             "Do you want to download and use Kad contacts (nodes.dat) from this address:\n%s ?"
+    IDS_NOTCONNECTEDANY     "You are not connected to a server or the Kad network!"
 END
 
 STRINGTABLE 
@@ -5546,6 +5575,17 @@ END
 
 STRINGTABLE 
 BEGIN
+    IDS_UPNPSTATUS          "UPnP Status:"
+    IDS_UPNPSTATUS_OK       "OK"
+    IDS_UPNPSTATUS_NOTINLAN "You aren't behind a Hardware Firewall or Router"
+    IDS_UPNPSTATUS_ERROR    "Can not find a UPnP Router"
+    IDS_UPNPSTATUS_PORTINUSE "External NAT port in use"
+    IDS_UPNPSTATUS_PORTINUSE2 "External NAT port in use: Too many retries"
+    IDS_UPNP_REBINDTEXT     "Rebind UPnP On IP-Change"
+END
+
+STRINGTABLE 
+BEGIN
     // ==> ScarAngel Preferences window - Stulle
     IDS_CON_TWEAKS          "Connection Tweaks"
 	IDS_MISC                "Misc. Settings"
@@ -5584,6 +5624,8 @@ BEGIN
     IDS_SIVKA_CREDIT        "Sivka Credit"
     IDS_SWAT_CREDIT         "S.W.A.T. Credit"
     IDS_XMAN_CREDIT         "Xman Credit"
+    IDS_TK4_CREDIT          "TK4 Credit"
+    IDS_ZZUL_CREDIT         "ZZUL Credit"
     // <== CreditSystems [EastShare/ MorphXT] - Stulle
     // ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
     IDS_SUQWT_LOAD          "Load %s"
@@ -5591,7 +5633,7 @@ BEGIN
     // <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
     IDS_SHOW_FILE_HL_CONST  "Show HL per file constantly" // show HL per file constantly - Stulle
     IDS_SHOW_GLOBAL_HL      "Show Global Hardlimit" // show global HL - Stulle
-    // ==> file settings - Stulle
+    // ==> File Settings [sivka/Stulle] - Stulle
     IDS_NNS_TIMERLABEL      "AutoNNS Timer 0...60 sec"
     IDS_REMOVENNSLIMITLABEL "Start droping NNS > X%"
     IDS_FQS_TIMERLABEL      "AutoFQS Timer 0...60 sec"
@@ -5608,7 +5650,7 @@ BEGIN
     IDS_XMAN_DROPPING       "Use Xman dropping method"
     IDS_SIVKA_DROPPING      "Use Sivka dropping method"
     IDS_HQR_WAY             "Dropping method"
-    // <== file settings - Stulle
+    // <== File Settings [sivka/Stulle] - Stulle
     IDS_SHOW_DROPPED_SRC    "Dropped sources" // show # of dropped sources - Stulle
     // ==> Source Graph - Stulle
     IDS_SRCGRAPH            "Draw Source Graph"
@@ -6076,6 +6118,9 @@ BEGIN
     IDS_FUNCTION            "Function"
     IDS_RELEASER            "Releaser features"
     // <== XP Style Menu [Xanatos] - Stulle
+    IDS_FINECS              "Fine Credit System (Threshold: 4 chunks)" // Modified FineCS [CiccioBastardo/Stulle] - Stulle
+    IDS_IPFILTERWHITELOADED "%u IPs loaded to the IP Filter White List"
+    IDS_TRAY_COMPLETE       "Display completed Downloads in Tray" // Completed in Tray [Stulle] - Stulle
 END
 
 #endif    // Englisch (USA) resources

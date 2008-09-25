@@ -80,6 +80,7 @@ protected:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg LRESULT OnChangeFilter(WPARAM wParam, LPARAM lParam);
 	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnShowWindow( BOOL bShow,UINT nStatus  ); //Xman [MoNKi: -Downloaded History-]
 	//Xman [MoNKi: -Downloaded History-]
 public:
@@ -89,7 +90,6 @@ protected:
 	afx_msg void OnNMClickHistorylist(NMHDR *pNMHDR, LRESULT *pResult);
 	//Xman end
 	// ==> Design Settings [eWombat/Stulle] - Max
-	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	CBrush m_brMyBrush;
 	HBRUSH hbr;	
 	COLORREF crSharedColor;

@@ -199,19 +199,21 @@ bool CUrlClient::SendHttpBlockRequests()
 	return true;
 }
 
-bool CUrlClient::TryToConnect(bool bIgnoreMaxCon, CRuntimeClass* /*pClassSocket*/)
+bool CUrlClient::TryToConnect(bool bIgnoreMaxCon, bool bNoCallbacks, CRuntimeClass* /*pClassSocket*/)
 {
-	return CUpDownClient::TryToConnect(bIgnoreMaxCon, RUNTIME_CLASS(CHttpClientDownSocket));
+	return CUpDownClient::TryToConnect(bIgnoreMaxCon, bNoCallbacks, RUNTIME_CLASS(CHttpClientDownSocket));
 }
 
-bool CUrlClient::Connect()
+void CUrlClient::Connect()
 {
-	if (GetConnectIP() != 0 && GetConnectIP() != INADDR_NONE)
-		return CUpDownClient::Connect();
+	if (GetConnectIP() != 0 && GetConnectIP() != INADDR_NONE){
+		CUpDownClient::Connect();
+		return; 
+	}
 	//Try to always tell the socket to WaitForOnConnect before you call Connect.
 	socket->WaitForOnConnect();
 	socket->Connect(m_strHostA, m_nUserPort);
-	return true;
+	return;
 }
 
 void CUrlClient::OnSocketConnected(int nErrorCode)
@@ -220,10 +222,10 @@ void CUrlClient::OnSocketConnected(int nErrorCode)
 		SendHttpBlockRequests();
 }
 
-bool CUrlClient::SendHelloPacket()
+void CUrlClient::SendHelloPacket()
 {
 	//SendHttpBlockRequests();
-	return true;
+	return;
 }
 
 void CUrlClient::SendFileRequest()
@@ -279,7 +281,7 @@ bool CUrlClient::ProcessHttpDownResponse(const CStringAArray& astrHeaders)
 	for (int i = 1; i < astrHeaders.GetCount(); i++)
 	{
 		const CStringA& rstrHdr = astrHeaders.GetAt(i);
-		if (bExpectData && strnicmp(rstrHdr, "Content-Length:", 15) == 0)
+		if (bExpectData && _strnicmp(rstrHdr, "Content-Length:", 15) == 0)
 		{
 			uint64 uContentLength = _atoi64((LPCSTR)rstrHdr + 15);
 			if (uContentLength != m_uReqEnd - m_uReqStart + 1){
@@ -291,7 +293,7 @@ bool CUrlClient::ProcessHttpDownResponse(const CStringAArray& astrHeaders)
 				TRACE("+++ Unexpected HTTP header field \"%s\"\n", rstrHdr);
 			}
 		}
-		else if (bExpectData && strnicmp(rstrHdr, "Content-Range:", 14) == 0)
+		else if (bExpectData && _strnicmp(rstrHdr, "Content-Range:", 14) == 0)
 		{
 			uint64 ui64Start = 0, ui64End = 0, ui64Len = 0;
 			if (sscanf((LPCSTR)rstrHdr + 14," bytes %I64u - %I64u / %I64u", &ui64Start, &ui64End, &ui64Len) != 3){
@@ -307,12 +309,12 @@ bool CUrlClient::ProcessHttpDownResponse(const CStringAArray& astrHeaders)
 			}
 			bValidContentRange = true;
 		}
-		else if (strnicmp(rstrHdr, "Server:", 7) == 0)
+		else if (_strnicmp(rstrHdr, "Server:", 7) == 0)
 		{
 			if (m_strClientSoftware.IsEmpty())
 				m_strClientSoftware = rstrHdr.Mid(7).Trim();
 		}
-		else if (bRedirection && strnicmp(rstrHdr, "Location:", 9) == 0)
+		else if (bRedirection && _strnicmp(rstrHdr, "Location:", 9) == 0)
 		{
 			CString strLocation(rstrHdr.Mid(9).Trim());
 			if (!SetUrl(strLocation)){

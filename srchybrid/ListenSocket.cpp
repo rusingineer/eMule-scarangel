@@ -601,6 +601,7 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 							client->SetWaitStartTime();
 						*/
 						// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
+
 						CKnownFile* reqfile;
 						if ( (reqfile = theApp.sharedfiles->GetFileByID(packet)) == NULL ){
 							if ( !((reqfile = theApp.downloadqueue->GetFileByID(packet)) != NULL
@@ -864,7 +865,7 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 						Packet* packet = new Packet(OP_OUTOFPARTREQS, 0); 
 						theStats.AddUpDataOverheadFileRequest(packet->size);
 						client->socket->SendPacket(packet, true, true);
-						theApp.uploadqueue->RemoveFromUploadQueue(client,_T("client want download unknown file"),CUpDownClient::USR_DIFFERENT_FILE); // Maella -Upload Stop Reason-
+						theApp.uploadqueue->RemoveFromUploadQueue(client,_T("Client requested unknown file"),CUpDownClient::USR_DIFFERENT_FILE); // Maella -Upload Stop Reason-
 						client->SetUploadFileID(NULL); 
 						break;
 					}							
@@ -1875,6 +1876,20 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 				case OP_EMULEINFO:
 				{
 					theStats.AddDownDataOverheadOther(uRawSize);
+					//zz_fly :: Anti-Leecher - Fake Client ban
+					// X-Ray :: Argos :: Start
+					if(client->GetClientSoft() == SO_EMULE){
+						//Enig123 - correct version check [idea from Xtreme] ->
+						// Clients above 0.30 does not send this packet anymore
+						if(client->GetVersion() > MAKE_CLIENT_VERSION(0, 30, 0)) {
+						//Enig123 <<-
+							CString strBanReason = _T("Fake eMule Version");
+							AddLeecherLogLine(false, _T("[%s](ban): %s"), strBanReason, DbgGetClientInfo());
+							client->Ban(strBanReason);
+							break;
+						}
+					}
+					// X-Ray :: Argos :: End
 					client->ProcessMuleInfoPacket(packet,size);
 					client->ProcessBanMessage(); //Xman Anti-Leecher
 					if (thePrefs.GetDebugClientTCPLevel() > 0){
@@ -2492,7 +2507,7 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 						Packet* packet = new Packet(OP_OUTOFPARTREQS, 0); 
 						theStats.AddUpDataOverheadFileRequest(packet->size);
 						client->socket->SendPacket(packet, true, true);
-						theApp.uploadqueue->RemoveFromUploadQueue(client,_T("client want download unknown file"),CUpDownClient::USR_DIFFERENT_FILE); // Maella -Upload Stop Reason-
+						theApp.uploadqueue->RemoveFromUploadQueue(client,_T("Client requested download unknown file"),CUpDownClient::USR_DIFFERENT_FILE); // Maella -Upload Stop Reason-
 						client->SetUploadFileID(NULL); 
 						break;
 					}							
@@ -2821,23 +2836,11 @@ void CClientReqSocket::PacketToDebugLogLine(bool isOpcodeKnown, const uchar* pac
 			case US_ONUPLOADQUEUE:
 				uploadString = GetResString(IDS_ONQUEUE);
 				break;
-			case US_PENDING:
-				uploadString = GetResString(IDS_CL_PENDING);
-				break;
-			case US_LOWTOLOWIP:
-				uploadString = GetResString(IDS_CL_LOW2LOW);
-				break;
 			case US_BANNED:
 				uploadString = GetResString(IDS_BANNED);
 				break;
-			case US_ERROR:
-				uploadString = GetResString(IDS_ERROR);
-				break;
 			case US_CONNECTING:
 				uploadString = GetResString(IDS_CONNECTING);
-				break;
-			case US_WAITCALLBACK:
-				uploadString = GetResString(IDS_CONNVIASERVER);
 				break;
 			case US_UPLOADING:
 				uploadString = GetResString(IDS_TRANSFERRING);
@@ -3735,8 +3738,12 @@ void CListenSocket::Process()
 		if(cur_sock->deletethis == true){
 			//Xman improved socket closing
 			if(cur_sock->m_SocketData.hSocket != NULL && cur_sock->m_SocketData.hSocket != INVALID_SOCKET){
-				//cur_sock->Close();	// calls 'closesocket'
+				// Stulle - We gonna test this again...
+				cur_sock->Close();	// calls 'closesocket'
+				/*
 				cur_sock->CloseSocket();
+				*/
+				// Stulle - We gonna test this again...
 			}
 			//Xman end
 			else {
@@ -3952,3 +3959,30 @@ float CListenSocket::GetMaxConperFiveModifier(){
 	return 1.0f - (SpikeSize/SpikeTolerance);
 }
 //Xman end
+// ==> UPnP support [MoNKi] - leuk_he
+/*
+//zz_fly :: Rebind UPnP on IP-change
+bool CListenSocket::RebindUPnP(){ 
+	if(theApp.m_UPnPNat.RemoveSpecifiedPort(thePrefs.m_iUPnPTCPExternal, MyUPnP::UNAT_TCP))
+	{
+		AddLogLine(false, _T("UPNP: removed TCP-port %u"),thePrefs.m_iUPnPTCPExternal);
+		thePrefs.m_iUPnPTCPExternal=0;
+		MyUPnP::UPNPNAT_MAPPING mapping;
+		mapping.internalPort = mapping.externalPort = thePrefs.GetPort();
+		mapping.protocol = MyUPnP::UNAT_TCP;
+		mapping.description = "TCP Port";
+		if(theApp.AddUPnPNatPort(&mapping, thePrefs.GetUPnPNatTryRandom()))
+		{
+			thePrefs.SetUPnPTCPExternal(mapping.externalPort);
+			return true;
+		}
+		else
+			thePrefs.SetUPnPTCPExternal(thePrefs.GetPort());
+	}
+	else
+		AddLogLine(false, _T("UPNP: failed to remove TCP-port %u"), thePrefs.m_iUPnPTCPExternal);
+	return false;
+}
+//zz_fly :: Rebind UPnP on IP-change end
+*/
+// <== UPnP support [MoNKi] - leuk_he

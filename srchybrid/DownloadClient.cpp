@@ -272,15 +272,6 @@ bool CUpDownClient::Compare(const CUpDownClient* tocomp, bool bIgnoreUserhash) c
 bool CUpDownClient::AskForDownload()
 {
 	//Xman askfordownload priority
-	/*
-	if (theApp.listensocket->TooManySockets() && !(socket && socket->IsConnected()) )
-	{
-		if (GetDownloadState() != DS_TOOMANYCONNS)
-			SetDownloadState(DS_TOOMANYCONNS);
-		return true;
-	}
-
-	*/
 	if(!(socket && socket->IsConnected())) 
 	{
 		if(m_downloadpriority>theApp.downloadqueue->GetMaxDownPrioNew())
@@ -331,7 +322,21 @@ bool CUpDownClient::AskForDownload()
 				SetDownloadState(DS_TOOMANYCONNS);
 			return true;
 		}
-
+		m_dwLastAskedTime = ::GetTickCount(); // Maella -Unnecessary Protocol Overload-
+		// if its a lowid client which is on our queue we may delay the reask up to 20 min, to give the lowid the chance to
+		// connect to us for its own reask
+		if (HasLowID() && GetUploadState() == US_ONUPLOADQUEUE && !m_bReaskPending && GetLastAskedTime() > 0){
+			SetDownloadState(DS_ONQUEUE);
+			m_bReaskPending = true;
+			return true;
+		}
+		// if we are lowid <-> lowid but contacted the source before already, keep it in the hope that we might turn highid again
+		if (HasLowID() && !theApp.CanDoCallback(this) && GetLastAskedTime() > 0){
+			if (GetDownloadState() != DS_LOWTOLOWIP)
+				SetDownloadState(DS_LOWTOLOWIP);
+			m_bReaskPending = true;
+			return true;
+		}
 	}
 	//finaly we allow to connect the highest prios
 	m_downloadpriority=1;
@@ -345,8 +350,44 @@ bool CUpDownClient::AskForDownload()
 		theApp.downloadqueue->AddFailedUDPFileReasks();
 	}
 	m_bUDPPending = false;
+	*/
+	//Xman end
+
+	//Xman moved up
+	/*
+	if (!(socket && socket->IsConnected())) // already connected, skip all the special checks
+	{
+		if (theApp.listensocket->TooManySockets())
+		{
+			if (GetDownloadState() != DS_TOOMANYCONNS)
+				SetDownloadState(DS_TOOMANYCONNS);
+			return true;
+		}
+		m_dwLastTriedToConnect = ::GetTickCount();
+		// if its a lowid client which is on our queue we may delay the reask up to 20 min, to give the lowid the chance to
+		// connect to us for its own reask
+		if (HasLowID() && GetUploadState() == US_ONUPLOADQUEUE && !m_bReaskPending && GetLastAskedTime() > 0){
+			SetDownloadState(DS_ONQUEUE);
+			m_bReaskPending = true;
+			return true;
+		}
+		// if we are lowid <-> lowid but contacted the source before already, keep it in the hope that we might turn highid again
+		if (HasLowID() && !theApp.CanDoCallback(this) && GetLastAskedTime() > 0){
+			if (GetDownloadState() != DS_LOWTOLOWIP)
+				SetDownloadState(DS_LOWTOLOWIP);
+			m_bReaskPending = true;
+			return true;
+		}
+	}
+	*/
+	//Xman end
+
+	//Xman Xtreme Mod moved to ConnectionEsteblished
+	/*
+	m_dwLastTriedToConnect = ::GetTickCount();
     SwapToAnotherFile(_T("A4AF check before tcp file reask. CUpDownClient::AskForDownload()"), true, false, false, NULL, true, true);
 	*/
+	//Xman end
 
 	//Xman Xtreme Mod: count the TCP sucessfull/failed connections
 	if(m_cFailed==0)
@@ -1121,7 +1162,8 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState, LPCTSTR pszReason
                 // If we set this, we will not reask for that file until some time has passed.
                 SetLastAskedTime();
                 //DontSwapTo(reqfile);
-			default:
+
+			/*default:
 				switch( m_nDownloadState )
 				{
 					case DS_WAITCALLBACK:
@@ -1131,9 +1173,8 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState, LPCTSTR pszReason
 						m_dwLastTriedToConnect = ::GetTickCount()-20*60*1000;
 						break;
 				}
-				break;
-		}
-		*/
+				break;*/
+		// end official code
 		if(nNewState==DS_TOOMANYCONNSKAD)
 			//This client had already been set to DS_CONNECTING.
 			//So we reset this time so it isn't stuck at TOOMANYCONNS for 20mins.
@@ -1147,8 +1188,8 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState, LPCTSTR pszReason
 			SetRemoteQueueRank(0,false); //Xman display is updated few lines below
 			oldQR=0; 
 			//Xman end
-		}
 		//Xman end
+		}
 
 		if (reqfile){
 		    if(nNewState == DS_DOWNLOADING){
@@ -1671,6 +1712,13 @@ void CUpDownClient::ProcessBlockPacket(const uchar *packet, uint32 size, bool pa
 			// Handle differently depending on whether packed or not
 			if (!packed)
 			{
+				// security sanitize check
+				if (nEndPos > cur_block->block->EndOffset){
+					DebugLogError(_T("Received Blockpacket exceeds requested boundaries (requested end: %I64u, Part %u, received end  %I64u, Part %u), file %s, client %s"), cur_block->block->EndOffset
+						, (uint32)(cur_block->block->EndOffset / PARTSIZE), nEndPos, (uint32)(nEndPos / PARTSIZE), reqfile->GetFileName(), DbgGetClientInfo());
+					reqfile->RemoveBlockFromList(cur_block->block->StartOffset, cur_block->block->EndOffset);
+					return;
+				}
 				bPacketUsefull = true; //Xman MORPH::Avoid Credits Accumulate Fakers
 				// Write to disk (will be buffered in part file class)
 				lenWritten = reqfile->WriteToBuffer(uTransferredFileDataSize, 
@@ -1704,8 +1752,7 @@ void CUpDownClient::ProcessBlockPacket(const uchar *packet, uint32 size, bool pa
 						nEndPos = cur_block->block->StartOffset + cur_block->totalUnzipped - 1;
 
 						if (nStartPos > cur_block->block->EndOffset || nEndPos > cur_block->block->EndOffset){
-							if (thePrefs.GetVerbose())
-								DebugLogError(_T("PrcBlkPkt: ") + GetResString(IDS_ERR_CORRUPTCOMPRPKG),reqfile->GetFileName(),666);
+							DebugLogError(_T("PrcBlkPkt: ") + GetResString(IDS_ERR_CORRUPTCOMPRPKG),reqfile->GetFileName(),666);
 							reqfile->RemoveBlockFromList(cur_block->block->StartOffset, cur_block->block->EndOffset);
 							// There is no chance to recover from this error
 						}

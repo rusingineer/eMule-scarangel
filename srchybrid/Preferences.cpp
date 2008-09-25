@@ -62,6 +62,7 @@ CPreferences thePrefs;
 //upnp_start
 bool	CPreferences::m_bUPnPNat; // UPnP On/Off
 bool	CPreferences::m_bUPnPTryRandom; // Try to use random external port if already in use On/Off
+bool	CPreferences::m_bUPnPRebindOnIPChange; //zz_fly :: Rebind UPnP on IP-change , On/Off
 uint16	CPreferences::m_iUPnPTCPExternal = 0; // TCP External Port
 uint16	CPreferences::m_iUPnPUDPExternal = 0; // UDP External Port
 //upnp_end
@@ -625,8 +626,11 @@ bool	CPreferences::m_bSkipWANIPSetup;
 bool	CPreferences::m_bSkipWANPPPSetup;
 bool	CPreferences::m_bEnableUPnP;
 bool	CPreferences::m_bCloseUPnPOnExit;
+bool	CPreferences::m_bIsWinServImplDisabled;
+bool	CPreferences::m_bIsMinilibImplDisabled;
+int		CPreferences::m_nLastWorkingImpl;
 */
-// ==> UPnP support [MoNKi] - leuk_he
+// <== UPnP support [MoNKi] - leuk_he
 
 bool	CPreferences::m_bEnableSearchResultFilter;
 
@@ -682,7 +686,7 @@ uint8	CPreferences::creditSystemMode; // CreditSystems [EastShare/ MorphXT] - St
 
 bool	CPreferences::m_bSaveUploadQueueWaitTime; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 
-// ==> file settings - Stulle
+// ==> File Settings [sivka/Stulle] - Stulle
 uint16	CPreferences::m_MaxSourcesPerFileTemp;
 bool	CPreferences::m_EnableAutoDropNNSTemp;
 DWORD	CPreferences::m_AutoNNS_TimerTemp;
@@ -721,7 +725,7 @@ bool	CPreferences::m_MaxRemoveQRSLimitTakeOver;
 bool	CPreferences::m_bHQRXmanTakeOver;
 bool	CPreferences::m_bGlobalHlTakeOver; // Global Source Limit (customize for files) - Stulle
 bool	CPreferences::m_TakeOverFileSettings;
-// <== file settings - Stulle
+// <== File Settings [sivka/Stulle] - Stulle
 
 // ==> Source Graph - Stulle
 bool	CPreferences::m_bSrcGraph;
@@ -943,6 +947,12 @@ CString CPreferences::UpdateURLIP2Country;
 SYSTEMTIME	CPreferences::m_IP2CountryVersion;
 // <== Advanced Updates [MorphXT/Stulle] - Stulle
 
+bool	CPreferences::m_bFineCS; // Modified FineCS [CiccioBastardo/Stulle] - Stulle
+
+bool	CPreferences::m_bTrayComplete; // Completed in Tray [Stulle] - Stulle
+
+bool	CPreferences::m_bSplitWindow; // Advanced Transfer Window Layout [Stulle] - Stulle
+
 CPreferences::CPreferences()
 {
 #ifdef _DEBUG
@@ -1028,8 +1038,12 @@ void CPreferences::Init()
 				if (PathCanonicalize(szFullPath, toadd))
 					toadd = szFullPath;
 
+				// SLUGFILLER: SafeHash remove - removed installation dir unsharing
+				/*
 				if (!IsShareableDirectory(toadd))
 					continue;
+				*/
+				// SLUGFILLER: SafeHash remove - removed installation dir unsharing
 
 				if (_taccess(toadd, 0) == 0) { // only add directories which still exist
 					if (toadd.Right(1) != L'\\')
@@ -1158,6 +1172,8 @@ void CPreferences::SetStandartValues()
 //	Save();
 }
 
+// SLUGFILLER: SafeHash remove - global form of IsTempFile unnececery
+/*
 bool CPreferences::IsTempFile(const CString& rstrDirectory, const CString& rstrName)
 {
 	bool bFound = false;
@@ -1188,6 +1204,8 @@ bool CPreferences::IsTempFile(const CString& rstrDirectory, const CString& rstrN
 
 	return false;
 }
+*/
+// SLUGFILLER: SafeHash remove - global form of IsTempFile unnececery
 
 // SLUGFILLER: SafeHash
 bool CPreferences::IsConfigFile(const CString& rstrDirectory, const CString& rstrName)
@@ -2174,8 +2192,12 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(L"SplitterbarPositionFriend",splitterbarPositionFriend);
 	ini.WriteInt(L"SplitterbarPositionIRC",splitterbarPositionIRC);
 	ini.WriteInt(L"SplitterbarPositionShared",splitterbarPositionShared);
+	// ==> Advanced Transfer Window Layout [Stulle] - Stulle
+	/*
 	ini.WriteInt(L"TransferWnd1",m_uTransferWnd1);
 	ini.WriteInt(L"TransferWnd2",m_uTransferWnd2);
+	*/
+	// <== Advanced Transfer Window Layout [Stulle] - Stulle
 	ini.WriteInt(L"VariousStatisticsMaxValue",statsMax);
 	ini.WriteInt(L"StatsAverageMinutes",statsAverageMinutes);
 	ini.WriteInt(L"MaxConnectionsPerFiveSeconds",MaxConperFive);
@@ -2471,6 +2493,7 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(L"SkipWANIPSetup", m_bSkipWANIPSetup);
 	ini.WriteBool(L"SkipWANPPPSetup", m_bSkipWANPPPSetup);
 	ini.WriteBool(L"CloseUPnPOnExit", m_bCloseUPnPOnExit);
+	ini.WriteInt(L"LastWorkingImplementation", m_nLastWorkingImpl);
 	*/
 	// <== UPnP support [MoNKi] - leuk_he
 	
@@ -2482,6 +2505,7 @@ void CPreferences::SavePreferences()
 	//upnp_start
 	ini.WriteBool(L"UPnPNAT", m_bUPnPNat, L"UPnP");
 	ini.WriteBool(L"UPnPNAT_TryRandom", m_bUPnPTryRandom, L"UPnP");
+	ini.WriteBool(L"UPnPNAT_RebindOnIPChange", m_bUPnPRebindOnIPChange, L"UPnP"); //zz_fly :: rebind UPnP on ip-change
 	//upnp_end
 	*/
 	// <== UPnP support [MoNKi] - leuk_he
@@ -2691,7 +2715,7 @@ void CPreferences::SavePreferences()
 
 	ini.WriteBool(_T("SaveUploadQueueWaitTime"), m_bSaveUploadQueueWaitTime); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 
-	// ==> file settings - Stulle
+	// ==> File Settings [sivka/Stulle] - Stulle
 	ini.WriteBool(_T("EnableAutoDropNNS"), m_EnableAutoDropNNSDefault );
 	ini.WriteInt(_T("AutoNNS_Timer"), m_AutoNNS_TimerDefault );
 	ini.WriteInt(_T("MaxRemoveNNSLimit"), m_MaxRemoveNNSLimitDefault );
@@ -2703,7 +2727,7 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("MaxRemoveQRS"), m_MaxRemoveQRSDefault );
 	ini.WriteInt(_T("MaxRemoveQRSLimit"), m_MaxRemoveQRSLimitDefault );
 	ini.WriteBool(_T("HQRXman"), m_bHQRXmanDefault );
-	// <== file settings - Stulle
+	// <== File Settings [sivka/Stulle] - Stulle
 
 	// ==> Source Graph - Stulle
 	ini.WriteBool(_T("SrcGraph"), m_bSrcGraph);
@@ -2890,6 +2914,16 @@ void CPreferences::SavePreferences()
 	ini.WriteString(L"UpdateURLIP2Country", UpdateURLIP2Country);
 	ini.WriteBinary(_T("IP2CountryVersion"), (LPBYTE)&m_IP2CountryVersion, sizeof(m_IP2CountryVersion)); 
 	// <== Advanced Updates [MorphXT/Stulle] - Stulle
+
+	ini.WriteInt(_T("FineCS"), m_bFineCS); // Modified FineCS [CiccioBastardo/Stulle] - Stulle
+
+	ini.WriteBool(_T("TrayComplete"), m_bTrayComplete); // Completed in Tray [Stulle] - Stulle
+
+	// ==> Advanced Transfer Window Layout [Stulle] - Stulle
+	ini.WriteInt(L"TransferWnd1",m_uTransferWnd1);
+	ini.WriteInt(L"TransferWnd2",m_uTransferWnd2);
+	ini.WriteBool(_T("SplitWindow"), m_bSplitWindow);
+	// <== Advanced Transfer Window Layout [Stulle] - Stulle
 
 	SaveStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
@@ -3250,8 +3284,12 @@ void CPreferences::LoadPreferences()
 	if (splitterbarPositionSvr>90 || splitterbarPositionSvr<10)
 		splitterbarPositionSvr=75;
 
+	// ==> Advanced Transfer Window Layout [Stulle] - Stulle
+	/*
 	m_uTransferWnd1 = ini.GetInt(L"TransferWnd1",0);
 	m_uTransferWnd2 = ini.GetInt(L"TransferWnd2",1);
+	*/
+	// <== Advanced Transfer Window Layout [Stulle] - Stulle
 
 	statsMax=ini.GetInt(L"VariousStatisticsMaxValue",100);
 	statsAverageMinutes=ini.GetInt(L"StatsAverageMinutes",5);
@@ -3463,7 +3501,7 @@ void CPreferences::LoadPreferences()
 	autofilenamecleanup=ini.GetBool(L"AutoFilenameCleanup",false);
 	m_bUseAutocompl=ini.GetBool(L"UseAutocompletion",true);
 	m_bShowDwlPercentage=ini.GetBool(L"ShowDwlPercentage",false);
-	networkkademlia=ini.GetBool(L"NetworkKademlia",false);
+	networkkademlia=ini.GetBool(L"NetworkKademlia",true);
 	networked2k=ini.GetBool(L"NetworkED2K",true);
 	m_bRemove2bin=ini.GetBool(L"RemoveFilesToBin",true);
 	m_bShowCopyEd2kLinkCmd=ini.GetBool(L"ShowCopyEd2kLinkCmd",false);
@@ -3679,6 +3717,9 @@ void CPreferences::LoadPreferences()
 	m_bSkipWANIPSetup = ini.GetBool(L"SkipWANIPSetup", false);
 	m_bSkipWANPPPSetup = ini.GetBool(L"SkipWANPPPSetup", false);
 	m_bCloseUPnPOnExit = ini.GetBool(L"CloseUPnPOnExit", true);
+	m_nLastWorkingImpl = ini.GetInt(L"LastWorkingImplementation", 1 /*MiniUPnPLib*//*);
+	m_bIsMinilibImplDisabled = ini.GetBool(L"DisableMiniUPNPLibImpl", false);
+	m_bIsWinServImplDisabled = ini.GetBool(L"DisableWinServImpl", false);
 	*/
 	// <== UPnP support [MoNKi] - leuk_he
 
@@ -3697,6 +3738,7 @@ void CPreferences::LoadPreferences()
 	//upnp_start
 	m_bUPnPNat = ini.GetBool(L"UPnPNAT", false, L"UPnP");
 	m_bUPnPTryRandom = ini.GetBool(L"UPnPNAT_TryRandom", false, L"UPnP");
+	m_bUPnPRebindOnIPChange = ini.GetBool(L"UPnPNAT_RebindOnIPChange", false, L"UPnP"); //zz_fly :: Rebind UPnP on IP-change
 	//upnp_end
 	*/
 	// <== UPnP support [MoNKi] - leuk_he
@@ -3875,7 +3917,7 @@ void CPreferences::LoadPreferences()
 	//Xman end
 
 	//Xman versions check
-	updatenotifymod = ini.GetBool(L"updatenotifymod",true);
+	updatenotifymod = ini.GetBool(L"updatenotifymod",false); //zz_fly :: no needed, you know why....
 
 
 	//Xman don't overwrite bak files if last sessions crashed
@@ -3937,7 +3979,7 @@ void CPreferences::LoadPreferences()
 
 	m_bSaveUploadQueueWaitTime = ini.GetBool(_T("SaveUploadQueueWaitTime"), true); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 
-	// ==> file settings - Stulle
+	// ==> File Settings [sivka/Stulle] - Stulle
 	m_EnableAutoDropNNSDefault = ini.GetBool(_T("EnableAutoDropNNS"), ENABLE_AUTO_DROP_NNS);
 	temp = ini.GetInt(_T("AutoNNS_Timer"), AUTO_NNS_TIMER);
 	m_AutoNNS_TimerDefault = (temp >= 0 && temp <= 60000) ? temp : AUTO_NNS_TIMER;
@@ -3956,7 +3998,7 @@ void CPreferences::LoadPreferences()
 	temp = ini.GetInt(_T("MaxRemoveQRSLimit"), MAX_REMOVE_QRS_LIMIT);
 	m_MaxRemoveQRSLimitDefault = (uint16)((temp >= 50 && temp <= 100) ? temp : MAX_REMOVE_QRS_LIMIT);
 	m_bHQRXmanDefault = ini.GetBool(_T("HQRXman"), HQR_XMAN);
-	// <== file settings - Stulle
+	// <== File Settings [sivka/Stulle] - Stulle
 
 	// ==> Source Graph - Stulle
 	m_bSrcGraph = ini.GetBool(_T("SrcGraph"), false);
@@ -4194,6 +4236,16 @@ void CPreferences::LoadPreferences()
 	UpdateURLIP2Country=ini.GetString(L"UpdateURLIP2Country", _T("http://ip-to-country.webhosting.info/downloads/ip-to-country.csv.zip"));
 	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
+	m_bFineCS=ini.GetBool(_T("FineCS"), false); // Modified FineCS [CiccioBastardo/Stulle] - Stulle
+
+	m_bTrayComplete = ini.GetBool(_T("TrayComplete"),false); // Completed in Tray [Stulle] - Stulle
+
+	// ==> Advanced Transfer Window Layout [Stulle] - Stulle
+	m_uTransferWnd1 = ini.GetInt(L"TransferWnd1",1);
+	m_uTransferWnd2 = ini.GetInt(L"TransferWnd2",1);
+	m_bSplitWindow = ini.GetBool(_T("SplitWindow"), true);
+	// <== Advanced Transfer Window Layout [Stulle] - Stulle
+
 	LoadStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
 
@@ -4348,12 +4400,16 @@ void CPreferences::LoadCats()
 		newcat->strTitle = ini.GetStringUTF8(L"Title");
 		newcat->strIncomingPath = ini.GetStringUTF8(L"Incoming");
 		MakeFoldername(newcat->strIncomingPath);
+		// SLUGFILLER: SafeHash remove - removed installation dir unsharing
+		/*
 		if (!IsShareableDirectory(newcat->strIncomingPath)
 			|| (!PathFileExists(newcat->strIncomingPath) && !::CreateDirectory(newcat->strIncomingPath, 0)))
 		{
 			newcat->strIncomingPath = GetMuleDirectory(EMULE_INCOMINGDIR);
 			MakeFoldername(newcat->strIncomingPath);
 		}
+		*//*
+		// SLUGFILLER: SafeHash remove - removed installation dir unsharing
 		newcat->strComment = ini.GetStringUTF8(L"Comment");
 		newcat->prio = ini.GetInt(L"a4afPriority", PR_NORMAL); // ZZ:DownloadManager
 		newcat->filter = ini.GetInt(L"Filter", 0);
@@ -4365,6 +4421,8 @@ void CPreferences::LoadCats()
         newcat->downloadInAlphabeticalOrder = ini.GetBool(L"downloadInAlphabeticalOrder", FALSE); // ZZ:DownloadManager
 		newcat->color = ini.GetInt(L"Color", (DWORD)-1 );
 		AddCat(newcat);
+		if (!PathFileExists(newcat->strIncomingPath))
+			::CreateDirectory(newcat->strIncomingPath, 0);
 	}
 }
 */
@@ -4564,12 +4622,13 @@ DWORD CPreferences::GetCatColor(int index) {
 			return catMap.GetAt(index)->color; 
 	}
 
-	return GetSysColor(COLOR_WINDOWTEXT);
+	return GetSysColor(COLOR_BTNTEXT);
 }
 
 
 ///////////////////////////////////////////////////////
-
+// SLUGFILLER: SafeHash remove - global form of IsInstallationDirectory unnececery
+/*
 bool CPreferences::IsInstallationDirectory(const CString& rstrDir)
 {
 	CString strFullPath;
@@ -4590,7 +4649,11 @@ bool CPreferences::IsInstallationDirectory(const CString& rstrDir)
 
 	return false;
 }
+*/
+// SLUGFILLER: SafeHash remove - global form of IsInstallationDirectory unnececery
 
+// SLUGFILLER: SafeHash remove - global form of IsShareableDirectory unnececery
+/*
 bool CPreferences::IsShareableDirectory(const CString& rstrDir)
 {
 	if (IsInstallationDirectory(rstrDir))
@@ -4609,6 +4672,8 @@ bool CPreferences::IsShareableDirectory(const CString& rstrDir)
 
 	return true;
 }
+*/
+// SLUGFILLER: SafeHash remove - global form of IsShareableDirectory unnececery
 
 void CPreferences::UpdateLastVC()
 {

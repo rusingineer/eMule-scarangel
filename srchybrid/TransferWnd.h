@@ -143,7 +143,12 @@ protected:
 	void	ShowList(uint32 dwListIDC);
 	void	SetWnd1Icon(EWnd1Icon iIcon);
 	void	SetWnd2Icon(EWnd2Icon iIcon);
+	// ==> Advanced Transfer Window Layout [Stulle] - Stulle
+	/*
 	void	ShowSplitWindow(bool bReDraw = false);
+	*/
+	void	ShowSplitWindow(bool bReDraw, uint32 dwListIDC, bool bInitSplitted = false);
+	// <== Advanced Transfer Window Layout [Stulle] - Stulle
 	void	LocalizeToolbars();
 
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
@@ -172,14 +177,11 @@ protected:
 	afx_msg void OnSplitterMoved(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnWindowPosChanged(WINDOWPOS* lpwndpos);
 	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 
 	// ==> XP Style Menu [Xanatos] - Stulle
 	afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
 	// <== XP Style Menu [Xanatos] - Stulle
-
-	// ==> Design Settings [eWombat/Stulle] - Max
-	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-	// <== Design Settings [eWombat/Stulle] - Max
 
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	void		CreateCategoryMenus();
@@ -197,4 +199,11 @@ protected:
 	CBrush m_brMyBrush;
 	HBRUSH hbr;
 	// <== Design Settings [eWombat/Stulle] - Stulle
+
+	// ==> Advanced Transfer Window Layout [Stulle] - Stulle
+public:
+	void UpdateListCountTop(EWnd2 listindex);
+protected:
+	uint32		m_dwTopListIDC;
+	// <== Advanced Transfer Window Layout [Stulle] - Stulle
 };

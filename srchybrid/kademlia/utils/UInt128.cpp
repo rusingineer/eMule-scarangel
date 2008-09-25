@@ -203,15 +203,27 @@ CString CUInt128::ToHexString() const
 void CUInt128::ToBinaryString(CString *pstr, bool bTrim) const
 {
 	pstr->SetString(_T(""));
+	//Xman netfinity: Reduced CPU usage
+	/*
 	CString sElement;
+	*/
+	//Xman end
 	int iBit;
 	for (int iIndex=0; iIndex<128; iIndex++)
 	{
 		iBit = GetBitNumber(iIndex);
 		if ((!bTrim) || (iBit != 0))
 		{
+			//Xman netfinity: Reduced CPU usage
+			/*
 			sElement.Format(_T("%d"), iBit);
 			pstr->Append(sElement);
+			*/
+			if (iBit == 1)
+				pstr->Append(_T("1") /*element*/);
+			else
+				pstr->Append(_T("0"));
+			//Xman end
 			bTrim = false;
 		}
 	}

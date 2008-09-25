@@ -351,7 +351,7 @@ BOOL CFileInfoDialog::OnInitDialog()
 	InitWindowStyles(this);
 	AddAnchor(IDC_FULL_FILE_INFO, TOP_LEFT, BOTTOM_RIGHT);
 
-	m_fi.LimitText(afxData.bWin95 ? 0xFFFF : 0x7FFFFFFF);
+	m_fi.LimitText(afxIsWin95() ? 0xFFFF : 0x7FFFFFFF);
 	m_fi.SendMessage(EM_SETMARGINS, EC_LEFTMARGIN | EC_RIGHTMARGIN, MAKELONG(3, 3));
 	m_fi.SetAutoURLDetect();
 	m_fi.SetEventMask(m_fi.GetEventMask() | ENM_LINK);
@@ -439,7 +439,7 @@ int CGetMediaInfoThread::Run()
 	{
 		CRichEditStream re;
 		re.Attach(hwndRE);
-		re.LimitText(afxData.bWin95 ? 0xFFFF : 0x7FFFFFFF);
+		re.LimitText(afxIsWin95() ? 0xFFFF : 0x7FFFFFFF);
 		PARAFORMAT pf = {0};
 		pf.cbSize = sizeof pf;
 		if (re.GetParaFormat(pf)) {
@@ -1882,7 +1882,7 @@ bool CGetMediaInfoThread::GetMediaInfo(HWND hWndOwner, const CKnownFile* pFile, 
 		// Try MediaDet object
 		//
 		// Avoid processing of some file types which are known to crash due to bugged DirectShow filters.
-#if _MSC_VER<1400
+#ifdef HAVE_QEDIT_H
 		if (thePrefs.GetInspectAllFileTypes() 
 			|| (_tcscmp(szExt, _T(".ogm"))!=0 && _tcscmp(szExt, _T(".ogg"))!=0 && _tcscmp(szExt, _T(".mkv"))!=0))
 		{
@@ -2114,7 +2114,9 @@ bool CGetMediaInfoThread::GetMediaInfo(HWND hWndOwner, const CKnownFile* pFile, 
 				ASSERT(0);
 			}
 		}
-#endif
+#else//HAVE_QEDIT_H
+#pragma message("WARNING: Missing 'qedit.h' header file - some features will get disabled. See the file 'emule_site_config.h' for more information.")
+#endif//HAVE_QEDIT_H
 	}
 
 	if (!bFoundHeader && bGiveMediaInfoLibHint)

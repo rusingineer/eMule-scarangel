@@ -48,6 +48,10 @@
 //Xman
 #include "updownclient.h"
 #include "ClientList.h" //Xman Extened credit- table-arragement
+// ==> CreditSystems [EastShare/ MorphXT] - Stulle
+#include "KnownFile.h"
+#include "SharedFileList.h"
+// <== CreditSystems [EastShare/ MorphXT] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -396,6 +400,96 @@ float CClientCredits::GetScoreRatio(const CUpDownClient* client)
 					result = 1;
 				else if (result > 100) //pcsl999
 					result = 100; //pcsl999
+		}break;
+
+		case CS_TK4:
+		{
+
+			result = 10.0F;
+			//if SUI failed then credit starts at 10 as for everyone else but will not go up
+			if((currentIDstate == IS_IDFAILED || currentIDstate == IS_IDBADGUY || currentIDstate == IS_IDNEEDED) && theApp.clientcredits->CryptoAvailable()){
+				//CUpDownClient* pClient = theApp.clientlist->FindClientByIP(dwForIP);//Get 'client' so we can get file info
+				float dOwnloadedSessionTotal = (float)client->GetTransferredDown();
+				float uPloadedSessionTotal = (float)client->GetTransferredUp();
+				float allowance = dOwnloadedSessionTotal/4.0F;
+				if(uPloadedSessionTotal > (float)(dOwnloadedSessionTotal + allowance + 1048576.0F)){
+					CKnownFile* file = theApp.sharedfiles->GetFileByID(client->GetUploadFileID());
+					if(file!=NULL){//Are they requesting a file? NULL can be produced when client details calls getscoreratio() without this line eMule will crash.
+						if(file->IsPartFile()){//It's a file we are trying to obtain so we want to give to givers so we may get the file quicker.
+							float MbSqd =sqrt((float)(uPloadedSessionTotal-(dOwnloadedSessionTotal + allowance))/1048576.0F);
+							if(MbSqd > 9.0F) result = 9.0F / MbSqd;  //above 81mb values 1 - 0 9/(9 - x)
+							else result = 10.0F - MbSqd; //for the first 81Mb (10 -(0-9))
+						}
+
+					}
+				}
+				bBadGuy = true;
+				break; //partfile 10 - 0.14 complete 10
+			}
+			//float is 1e38 it should be sufficient given 1 Gig is 1e9 hence 1000G is 1e12....
+			float dOwnloadedTotal = (float)GetDownloadedTotal();//(Given to us)
+			float uPloadedTotal = (float)GetUploadedTotal(); //(Taken from us)
+			/* Base allowance for a client that has given us nothing is 1Mb
+			But if someone has give us 100Mb and take 130Mb they should not be penalized as someone who has give 0Mb and taken 30Mb?
+			So if you've given 100Mb and taken 130Mb you will only be penalized for 5Mb*/
+			float allowance = dOwnloadedTotal/4.0F; //reward uploaders with 1 Mb allowance for every 4Mb uploaded over what they have uploaded.
+			if(uPloadedTotal>(float)(dOwnloadedTotal + allowance + 1048576.0F)) //If they have taken above (1Mb + 'allowance')
+			{/*They may owe us, is it on a file we want or a completed file we are sharing. If it's a completed file progrssively lowering someone score
+			who cannot pay us back could make it very difficult for them to complete the file esp. if it's rare and we hold one of the few complete copies, better for everyone if
+			we share completed files based on time waited + any credit thay have for giving us stuff.
+			If the files a partfile we are trying to get the modifier will start to get smaller -1 to -90Mb range 9 to 1 beyond that 1 to 0 eg: -400Mb = 0.452839 */
+				//CUpDownClient* pClient = theApp.clientlist->FindClientByIP(dwForIP);//Get 'client' so we can get file info
+				CKnownFile* file = theApp.sharedfiles->GetFileByID(client->GetUploadFileID());
+				if(file!=NULL){//Are they requesting a file? NULL can be produced when client details calls getscoreratio() without this line eMule will crash.
+					if(file->IsPartFile()){//It's a file we are trying to obtain so we want to give to givers so we may get the file quicker.
+						float MbSqd =sqrt((float)(uPloadedTotal-(dOwnloadedTotal + allowance))/1048576.0F);
+						if(MbSqd > 9.0F) result = 9.0F / MbSqd;  //above 81mb values 1 - 0 9/(9 - x)
+						else		 result = 10.0F - MbSqd; //for the first 81Mb (10 -(0-9))
+					}
+				}
+			} else //We may owe them :o) give a small proportional boost to an uploader
+				if(dOwnloadedTotal>uPloadedTotal){ // result =  log(2.72 + (given - taken in Mb * 4)) + given in bytes / 12Mb (eg +1 for every 12Mb +.5  6Mb etc)
+					result+=log(2.72F+(float)(dOwnloadedTotal-uPloadedTotal)/262144.0F)+(float)(dOwnloadedTotal/12582912.0F);
+				}
+		}break;
+
+		case CS_ZZUL:
+		{
+			if(currentIDstate != IS_IDENTIFIED  && currentIDstate != IS_NOTAVAILABLE && theApp.clientcredits->CryptoAvailable())
+			{
+				result = 1.0F;
+				bBadGuy = true;
+				break;
+			}
+
+			if (GetDownloadedTotal() < 1)
+			{
+				result = 1.0F;
+				break;
+			}
+			result = 0.0F;
+			if (!GetUploadedTotal())
+				result = 10.0F;
+			else
+				result = (float)(((double)GetDownloadedTotal()*2.0)/(double)GetUploadedTotal());
+			float result2 = 0.0F;
+			result2 = (float)(GetDownloadedTotal()/1048576.0);
+			result2 += 1.0F;
+			result2 = (float)sqrt(result2);
+
+			if (result > result2)
+				result = result2;
+
+			if (result < 1.0F)
+			{
+				result = 1.0F;
+				break;
+			}
+			else if (result > 10.0F)
+			{
+				result = 10.0F;
+				break;
+			}
 		}break;
 
 		case CS_XMAN:{
@@ -1251,7 +1345,7 @@ void CClientCreditsList::InitalizeCrypting()
 		LogError(LOG_STATUSBAR, GetResString(IDS_CRYPT_INITFAILED));
 		ASSERT(0);
 	}
-	//Debug_CheckCrypting();
+	ASSERT( Debug_CheckCrypting() );
 }
 
 bool CClientCreditsList::CreateKeyPair()

@@ -48,7 +48,7 @@ struct Schedule_Struct{
    uint32			time2;
    CString			values[16];
    int				actions[16];
-   void ResetActions()	{for (uint8 index=0;index<16;index++) {actions[index]=0;values[index]="";}}
+   void ResetActions()	{for (uint8 index=0;index<16;index++) {actions[index]=0;values[index]=_T("");}}
    ~Schedule_Struct() {  }
 };
 

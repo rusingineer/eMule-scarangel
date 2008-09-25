@@ -33,7 +33,7 @@ namespace Kademlia
 #include "SelCategoryDlg.h"
 #include "MenuCmds.h"
 // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
-#include "SettingsSaver.h" // file settings - Stulle
+#include "SettingsSaver.h" // File Settings [sivka/Stulle] - Stulle
 
 class CSourceHostnameResolveWnd : public CWnd
 {
@@ -59,6 +59,26 @@ private:
 	char m_aucHostnameBuffer[MAXGETHOSTSTRUCT];
 };
 
+// ==> File Settings [sivka/Stulle] - Stulle
+class CSaveSettingsThread : public CWinThread
+{
+public:
+    CSaveSettingsThread(void);
+    ~CSaveSettingsThread(void);
+
+    void EndThread();
+    void Pause(bool paused);
+
+private:
+    static UINT RunProc(LPVOID pParam);
+    UINT RunInternal();
+
+	CSettingsSaver m_SettingsSaver;
+    CEvent* threadEndedEvent;
+    CEvent* pauseEvent;
+	volatile bool bDoRun;
+};
+// <== File Settings [sivka/Stulle] - Stulle
 
 class CDownloadQueue
 {
@@ -168,7 +188,7 @@ public:
 	// searching in Kad
 	void	SetLastKademliaFileRequest()				{lastkademliafilerequest = ::GetTickCount();}
 	bool	DoKademliaFileRequest();
-	void	KademliaSearchFile(uint32 searchID, const Kademlia::CUInt128* pcontactID, const Kademlia::CUInt128* pkadID, uint8 type, uint32 ip, uint16 tcp, uint16 udp, uint32 serverip, uint16 serverport, uint8 byCryptOptions);
+	void	KademliaSearchFile(uint32 searchID, const Kademlia::CUInt128* pcontactID, const Kademlia::CUInt128* pkadID, uint8 type, uint32 ip, uint16 tcp, uint16 udp, uint32 dwBuddyIP, uint16 dwBuddyPort, uint8 byCryptOptions);
 
 	// searching on global servers
 	void	StopUDPRequests();
@@ -295,14 +315,17 @@ private:
 
 	uint32 GlobalHardLimitTemp; // show global HL - Stulle
 
-	// ==> file settings - Stulle
+	// ==> File Settings [sivka/Stulle] - Stulle
 public:
 	void InitTempVariables(CPartFile* file);
 	void UpdateFileSettings(CPartFile* file);
-	void SaveFileSettings();
+	void SaveFileSettings(bool bStart = true);
 protected:
 	CSettingsSaver m_SettingsSaver;
-	// <== file settings - Stulle
+	CSaveSettingsThread* m_SaveSettingsThread;
+	bool m_bSaveAgain;
+	DWORD m_dwLastSave;
+	// <== File Settings [sivka/Stulle] - Stulle
 
 	// ==> Global Source Limit [Max/Stulle] - Stulle
 public:

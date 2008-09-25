@@ -66,6 +66,10 @@ CKnownFileList::CKnownFileList()
 	m_dwCancelledFilesSeed = 0;
 	m_nLastSaved = ::GetTickCount();
 	Init();
+	// ==> Threaded Known Files Saving [Stulle] - Stulle
+	m_bSaveAgain = false;
+	m_SaveKnownThread = NULL;
+	// <== Threaded Known Files Saving [Stulle] - Stulle
 }
 
 CKnownFileList::~CKnownFileList()
@@ -404,7 +408,12 @@ void CKnownFileList::Clear()
 void CKnownFileList::Process()
 {
 	if (::GetTickCount() - m_nLastSaved > MIN2MS(11))
+		// ==> Threaded Known Files Saving [Stulle] - Stulle
+		/*
 		Save();
+		*/
+		SaveKnown();
+		// <== Threaded Known Files Saving [Stulle] - Stulle
 }
 
 bool CKnownFileList::SafeAddKFile(CKnownFile* toadd)
@@ -711,6 +720,14 @@ CKnownFilesMap* CKnownFileList::GetDownloadedFiles(){
 }
 
 bool CKnownFileList::RemoveKnownFile(CKnownFile *toRemove){
+	// ==> Threaded Known Files Saving [Stulle] - Stulle
+	if (m_SaveKnownThread) // we just saved the file, better wait
+	{
+		m_SaveKnownThread->EndThread();
+		delete m_SaveKnownThread;
+		m_SaveKnownThread = NULL;
+	}
+	// <== Threaded Known Files Saving [Stulle] - Stulle
 	if (toRemove){
 		POSITION pos = m_Files_map.GetStartPosition();
 		while (pos){
@@ -728,6 +745,14 @@ bool CKnownFileList::RemoveKnownFile(CKnownFile *toRemove){
 }
 
 void CKnownFileList::ClearHistory(){
+	// ==> Threaded Known Files Saving [Stulle] - Stulle
+	if (m_SaveKnownThread) // we just saved the file, better wait
+	{
+		m_SaveKnownThread->EndThread();
+		delete m_SaveKnownThread;
+		m_SaveKnownThread = NULL;
+	}
+	// <== Threaded Known Files Saving [Stulle] - Stulle
 	POSITION pos = m_Files_map.GetStartPosition();					
 	while(pos){
 		CKnownFile* cur_file;
@@ -746,3 +771,87 @@ void CKnownFileList::ClearHistory(){
 //Xman end
 
 
+
+// ==> Threaded Known Files Saving [Stulle] - Stulle
+void CKnownFileList::SaveKnown(bool bStart)
+{
+	if(bStart)
+	{
+		if (m_SaveKnownThread == NULL)
+			m_SaveKnownThread = new CSaveKnownThread();
+		else
+			m_bSaveAgain = true;
+	}
+	else
+	{
+		if(m_bSaveAgain)
+			m_bSaveAgain = false;
+		else if (m_SaveKnownThread) // just in case, should always be true at this point
+		{
+			m_SaveKnownThread->EndThread();
+			delete m_SaveKnownThread;
+			m_SaveKnownThread = NULL;
+		}
+	}
+}
+
+// Save known thread to avoid locking GUI
+CSaveKnownThread::CSaveKnownThread(void) {
+	threadEndedEvent = new CEvent(0, 1);
+	pauseEvent = new CEvent(TRUE, TRUE);
+
+	bDoRun = true;
+	AfxBeginThread(RunProc,(LPVOID)this,THREAD_PRIORITY_LOWEST);
+}
+
+CSaveKnownThread::~CSaveKnownThread(void) {
+	EndThread();
+	delete threadEndedEvent;
+	delete pauseEvent;
+}
+
+void CSaveKnownThread::EndThread() {
+	// signal the thread to stop looping and exit.
+	bDoRun = false;
+
+	Pause(false);
+
+	// wait for the thread to signal that it has stopped looping.
+	threadEndedEvent->Lock();
+}
+
+void CSaveKnownThread::Pause(bool paused) {
+	if(paused) {
+		pauseEvent->ResetEvent();
+	} else {
+		pauseEvent->SetEvent();
+    }
+}
+
+UINT AFX_CDECL CSaveKnownThread::RunProc(LPVOID pParam)
+{
+	DbgSetThreadName("CSaveKnownThread");
+
+	CSaveKnownThread* saveknownthread = (CSaveKnownThread*)pParam;
+
+	return saveknownthread->RunInternal();
+}
+
+UINT CSaveKnownThread::RunInternal()
+{
+	while(bDoRun) 
+	{
+        pauseEvent->Lock();
+
+		if(!bDoRun)
+			break;
+		theApp.knownfiles->Save();
+
+		PostMessage(theApp.emuledlg->m_hWnd,TM_SAVEKNOWNDONE,0,0);
+	}
+
+	threadEndedEvent->SetEvent();
+
+	return 0;
+}
+// <== Threaded Known Files Saving [Stulle] - Stulle

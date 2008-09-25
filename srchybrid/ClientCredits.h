@@ -134,7 +134,9 @@ enum CreditSystemSelection {
 	CS_EASTSHARE,
 	CS_SIVKA,
 	CS_SWAT,
-	CS_XMAN
+	CS_XMAN,
+	CS_TK4,
+	CS_ZZUL
 };
 // <== CreditSystems [EastShare/ MorphXT] - Stulle
 

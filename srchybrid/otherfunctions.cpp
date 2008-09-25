@@ -553,7 +553,7 @@ CString RemoveAmbersand(const CString& rstr)
 bool HaveEd2kRegAccess()
 {
 	CRegKey regkey;
-	DWORD dwRegResult = regkey.Create(HKEY_CLASSES_ROOT, _T("ed2k\\shell\\open\\command"));
+	DWORD dwRegResult = regkey.Create(HKEY_CURRENT_USER, _T("Software\\Classes\\ed2k\\shell\\open\\command"));
 	regkey.Close();
 	return (dwRegResult == ERROR_SUCCESS);
 }
@@ -564,64 +564,83 @@ bool Ask4RegFix(bool checkOnly, bool dontAsk, bool bAutoTakeCollections)
 	if (!checkOnly)
 		BackupReg();
 
-	// check registry if ed2k links is assigned to emule
+	bool bGlobalSet = false;
 	CRegKey regkey;
-	if (regkey.Create(HKEY_CLASSES_ROOT, _T("ed2k\\shell\\open\\command")) == ERROR_SUCCESS)
+	LONG result;
+	TCHAR rbuffer[500];
+	ULONG maxsize = _countof(rbuffer);
+	TCHAR modbuffer[490];
+	
+	::GetModuleFileName(NULL, modbuffer, _countof(modbuffer));
+	CString strCanonFileName = modbuffer;
+	strCanonFileName.Replace(_T("%"), _T("%%"));
+	TCHAR regbuffer[520];
+	_sntprintf(regbuffer, _countof(regbuffer), _T("\"%s\" \"%%1\""), strCanonFileName);
+
+	// first check if the ed2k links are set globally (i.e. by the installer)
+	result = regkey.Open(HKEY_CLASSES_ROOT, _T("ed2k\\shell\\open\\command"), KEY_READ);
+	if (result == ERROR_SUCCESS)
 	{
-		TCHAR rbuffer[500];
-		ULONG maxsize = _countof(rbuffer);
 		regkey.QueryStringValue(NULL, rbuffer, &maxsize);
-
-		TCHAR modbuffer[490];
-		::GetModuleFileName(NULL, modbuffer, _countof(modbuffer));
-		CString strCanonFileName = modbuffer;
-		strCanonFileName.Replace(_T("%"), _T("%%"));
-
-		TCHAR regbuffer[520];
-		_sntprintf(regbuffer, _countof(regbuffer), _T("\"%s\" \"%%1\""), strCanonFileName);
 		regbuffer[_countof(regbuffer) - 1] = _T('\0');
-		if (_tcsicmp(rbuffer, regbuffer) != 0)
-		{
-			if (checkOnly)
-				return true;
+		if (maxsize != 0 && _tcsicmp(rbuffer, regbuffer) == 0)
+			bGlobalSet = true; // yup, globally we have an entrie for this mule
+		regkey.Close();
+	}
 
+	if (!bGlobalSet){
+		// we actually need to change the registry and write an entry for HKCU
+		if (checkOnly)
+			return true;
+		if (regkey.Create(HKEY_CURRENT_USER, _T("Software\\Classes\\ed2k\\shell\\open\\command")) == ERROR_SUCCESS){
 			if (dontAsk || (AfxMessageBox(GetResString(IDS_ASSIGNED2K), MB_ICONQUESTION|MB_YESNO) == IDYES))
 			{
 				regkey.SetStringValue(NULL, regbuffer);
-				
-				regkey.Create(HKEY_CLASSES_ROOT, _T("ed2k\\DefaultIcon"));
+
+				regkey.Create(HKEY_CURRENT_USER, _T("Software\\Classes\\ed2k\\DefaultIcon"));
 				regkey.SetStringValue(NULL, modbuffer);
 
-				regkey.Create(HKEY_CLASSES_ROOT, _T("ed2k"));
+				regkey.Create(HKEY_CURRENT_USER, _T("Software\\Classes\\ed2k"));
 				regkey.SetStringValue(NULL, _T("URL: ed2k Protocol"));
 				regkey.SetStringValue(_T("URL Protocol"), _T(""));
 
-				regkey.Open(HKEY_CLASSES_ROOT, _T("ed2k\\shell\\open"));
+				regkey.Open(HKEY_CURRENT_USER, _T("Software\\Classes\\ed2k\\shell\\open"));
 				regkey.RecurseDeleteKey(_T("ddexec"));
 				regkey.RecurseDeleteKey(_T("ddeexec"));
 			}
+			regkey.Close();
 		}
 		else
-		{
-			regkey.Open(HKEY_CLASSES_ROOT, _T("ed2k\\shell\\open"));
-			regkey.RecurseDeleteKey(_T("ddexec"));
-			regkey.RecurseDeleteKey(_T("ddeexec"));
-		}
-		if (bAutoTakeCollections)
-			DoCollectionRegFix(false);
-		regkey.Close();
+			ASSERT( false );
 	}
-	if (checkOnly)
-		return DoCollectionRegFix(true);
-	else
-		return false;
+	else if (checkOnly)
+		return bAutoTakeCollections && DoCollectionRegFix(true);
+	else if (bAutoTakeCollections)
+		DoCollectionRegFix(false);
+
+	return false;
+}
+
+bool DoRegFixElevated()
+{
+	TCHAR tchFile[490];
+	::GetModuleFileName(0,tchFile, 490);
+	SHELLEXECUTEINFO shex;
+	memset( &shex, 0, sizeof( shex) );
+	shex.cbSize        = sizeof( SHELLEXECUTEINFO );
+	shex.fMask        = 0;
+	shex.lpVerb        = _T("runas");
+	shex.lpFile        = tchFile;
+	shex.lpParameters    = _T("/handleed2klinks");
+	shex.nShow        = SW_NORMAL;
+	return ::ShellExecuteEx(&shex) == TRUE;
 }
 
 void BackupReg(void)
 {
 	// Look for pre-existing old ed2k links
 	CRegKey regkey;
-	if (regkey.Create(HKEY_CLASSES_ROOT, _T("ed2k\\shell\\open\\command")) == ERROR_SUCCESS)
+	if (regkey.Create(HKEY_CURRENT_USER, _T("Software\\Classes\\ed2k\\shell\\open\\command")) == ERROR_SUCCESS)
 	{
 		TCHAR rbuffer[500];
 		ULONG maxsize = _countof(rbuffer);
@@ -632,7 +651,7 @@ void BackupReg(void)
 			if ( regkey.QueryStringValue(NULL, rbuffer, &maxsize) == ERROR_SUCCESS )
 				regkey.SetStringValue(_T("OldDefault"), rbuffer);
 
-			regkey.Create(HKEY_CLASSES_ROOT, _T("ed2k\\DefaultIcon"));
+			regkey.Create(HKEY_CURRENT_USER, _T("Software\\Classes\\ed2k\\DefaultIcon"));
 			maxsize = _countof(rbuffer);
 			if (regkey.QueryStringValue(NULL, rbuffer, &maxsize) == ERROR_SUCCESS)
 				regkey.SetStringValue(_T("OldIcon"), rbuffer);
@@ -646,7 +665,7 @@ void RevertReg(void)
 {
 	// restore previous ed2k links before being assigned to emule
 	CRegKey regkey;
-	if (regkey.Create(HKEY_CLASSES_ROOT, _T("ed2k\\shell\\open\\command")) == ERROR_SUCCESS)
+	if (regkey.Create(HKEY_CURRENT_USER, _T("Software\\Classes\\ed2k\\shell\\open\\command")) == ERROR_SUCCESS)
 	{
 		TCHAR rbuffer[500];
 		ULONG maxsize = _countof(rbuffer);
@@ -654,7 +673,7 @@ void RevertReg(void)
 		{
 			regkey.SetStringValue(NULL, rbuffer);
 			regkey.DeleteValue(_T("OldDefault"));
-			regkey.Create(HKEY_CLASSES_ROOT, _T("ed2k\\DefaultIcon"));
+			regkey.Create(HKEY_CURRENT_USER, _T("Software\\Classes\\ed2k\\DefaultIcon"));
 			maxsize = _countof(rbuffer);
 			if (regkey.QueryStringValue(_T("OldIcon"), rbuffer, &maxsize) == ERROR_SUCCESS)
 			{
@@ -2312,7 +2331,7 @@ void DebugHexDump(const uint8* data, UINT lenData)
 			if (i == 7)
 				line += ' ';
 		}
-		line += CString(' ', 60 - line.GetLength());
+		line += CStringA(' ', 60 - line.GetLength());
 		for (int i=0; i<lenLine; i++)
 		{
 			c = data[pos + i];
@@ -2878,6 +2897,17 @@ CString ipstr(uint32 nIP)
 	strIP.ReleaseBuffer(_stprintf(strIP.GetBuffer(3+1+3+1+3+1+3), _T("%u.%u.%u.%u"), pucIP[0], pucIP[1], pucIP[2], pucIP[3]));
 	return strIP;
 }
+
+// ==> IP Filter White List [Stulle] - Stulle
+CString ipstr_rev(uint32 nIP)
+{
+	// following gives the same string as 'inet_ntoa(*(in_addr*)&nIP)' but is not restricted to ASCII strings
+	const BYTE* pucIP = (BYTE*)&nIP;
+	CString strIP;
+	strIP.ReleaseBuffer(_stprintf(strIP.GetBuffer(3+1+3+1+3+1+3), _T("%u.%u.%u.%u"), pucIP[3], pucIP[2], pucIP[1], pucIP[0]));
+	return strIP;
+}
+// <== IP Filter White List [Stulle] - Stulle
 
 CString ipstr(uint32 nIP, uint16 nPort)
 {
@@ -3520,65 +3550,53 @@ UINT64 GetFreeTempSpace(int tempdirindex){
 
 bool DoCollectionRegFix(bool checkOnly)
 {
-	int iHandled = 0;
+	bool bGlobalSet = false;
 	CRegKey regkey;
-	if (regkey.Create(HKEY_CLASSES_ROOT, COLLECTION_FILEEXTENSION) == ERROR_SUCCESS)
+	LONG result;
+	TCHAR rbuffer[500];
+	ULONG maxsize = _countof(rbuffer);
+	TCHAR modbuffer[490];
+	
+	::GetModuleFileName(NULL, modbuffer, _countof(modbuffer));
+	CString strCanonFileName = modbuffer;
+	strCanonFileName.Replace(_T("%"), _T("%%"));
+	TCHAR regbuffer[520];
+	_sntprintf(regbuffer, _countof(regbuffer), _T("\"%s\" \"%%1\""), strCanonFileName);
+
+	// first check if the ed2k links are set globally (i.e. by the installer)
+	result = regkey.Open(HKEY_CLASSES_ROOT, _T("eMule\\shell\\open\\command"), KEY_READ);
+	if (result == ERROR_SUCCESS)
 	{
-		TCHAR szBuff[MAX_PATH];
-		ULONG nSize = _countof(szBuff);
-		regkey.QueryStringValue(NULL, szBuff, &nSize);
-		if (_tcsicmp(szBuff, _T("emule")) == 0)
-			iHandled++;
+		regkey.QueryStringValue(NULL, rbuffer, &maxsize);
+		regbuffer[_countof(regbuffer) - 1] = _T('\0');
+		if (maxsize != 0 && _tcsicmp(rbuffer, regbuffer) == 0)
+			bGlobalSet = true; // yup, globally we have an entry for this mule
 		regkey.Close();
 	}
 
-	if (checkOnly && iHandled == 0)
-		return true;
-
-	if (regkey.Create(HKEY_CLASSES_ROOT, _T("eMule\\shell\\open\\command")) == ERROR_SUCCESS)
-	{
-		TCHAR rbuffer[500];
-		ULONG maxsize = _countof(rbuffer);
-		regkey.QueryStringValue(NULL, rbuffer, &maxsize);
-
-		TCHAR modbuffer[490];
-		::GetModuleFileName(NULL, modbuffer, _countof(modbuffer));
-		CString strCanonFileName = modbuffer;
-		strCanonFileName.Replace(_T("%"), _T("%%"));
-
-		TCHAR regbuffer[520];
-		_sntprintf(regbuffer, _countof(regbuffer), _T("\"%s\" \"%%1\""), strCanonFileName);
-		regbuffer[_countof(regbuffer) - 1] = _T('\0');
-		if (_tcsicmp(rbuffer, regbuffer) != 0)
-		{
-			if (checkOnly)
-				return true;
-
+	if (!bGlobalSet){
+		// we actually need to change the registry and write an entry for HKCU
+		if (checkOnly)
+			return true;
+		if (regkey.Create(HKEY_CURRENT_USER, _T("Software\\Classes\\eMule\\shell\\open\\command")) == ERROR_SUCCESS){
 			regkey.SetStringValue(NULL, regbuffer);
-				
-			regkey.Create(HKEY_CLASSES_ROOT, _T("eMule\\DefaultIcon"));
+
+			regkey.Create(HKEY_CURRENT_USER, _T("Software\\Classes\\eMule\\DefaultIcon"));
 			regkey.SetStringValue(NULL, CString(modbuffer) + CString(_T(",1")));
 
-			regkey.Create(HKEY_CLASSES_ROOT, _T("eMule"));
+			regkey.Create(HKEY_CURRENT_USER, _T("Software\\Classes\\eMule"));
 			regkey.SetStringValue(NULL, _T("eMule Collection File"));
 
-			regkey.Open(HKEY_CLASSES_ROOT, _T("eMule\\shell\\open"));
+			regkey.Open(HKEY_CURRENT_USER, _T("Software\\Classes\\eMule\\shell\\open"));
 			regkey.RecurseDeleteKey(_T("ddexec"));
 			regkey.RecurseDeleteKey(_T("ddeexec"));
 
-			regkey.Create(HKEY_CLASSES_ROOT, COLLECTION_FILEEXTENSION);
+			regkey.Create(HKEY_CURRENT_USER, CString(_T("Software\\Classes\\")) + COLLECTION_FILEEXTENSION);
 			regkey.SetStringValue(NULL, _T("eMule"));
+			regkey.Close();
 		}
 		else
-		{
-			regkey.Open(HKEY_CLASSES_ROOT, _T("eMule\\shell\\open"));
-			regkey.RecurseDeleteKey(_T("ddexec"));
-			regkey.RecurseDeleteKey(_T("ddeexec"));
-
-			regkey.Create(HKEY_CLASSES_ROOT, COLLECTION_FILEEXTENSION);
-			regkey.SetStringValue(NULL, _T("eMule"));
-		}
-		regkey.Close();
+			ASSERT( false );
 	}
 	return false;
 }
@@ -3892,6 +3910,7 @@ bool _tmakepathlimit(TCHAR *path, const TCHAR *drive, const TCHAR *dir, const TC
 		return true;
 	}
 }
+
 uint8 GetMyConnectOptions(bool bEncryption, bool bCallback){
 	// Connect options Tag
 	// 4 Reserved (!)

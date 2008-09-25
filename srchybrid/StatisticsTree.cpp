@@ -761,9 +761,9 @@ CString CStatisticsTree::GetExpandedMask(HTREEITEM theItem)
 	{
 		if (ItemHasChildren(hCurrent) && IsBold(hCurrent)) {
 			if (IsExpanded(hCurrent))
-				tempMask += "1";
+				tempMask += _T("1");
 			if (!IsExpanded(hCurrent))
-				tempMask += "0";
+				tempMask += _T("0");
 			tempMask += GetExpandedMask(GetChildItem(hCurrent));
 		}
 		hCurrent = GetNextItem(hCurrent, TVGN_NEXT);
@@ -817,7 +817,9 @@ void CStatisticsTree::DeleteChildItems (HTREEITEM parentItem)
 		}
 	}
 }
-//Xman end// ==> XP Style Menu [Xanatos] - Stulle
+//Xman end
+
+// ==> XP Style Menu [Xanatos] - Stulle
 void CStatisticsTree::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct) 
 {
 	HMENU hMenu = AfxGetThreadState()->m_hTrackingMenu;

@@ -86,7 +86,7 @@ CBandWidthControl::CBandWidthControl()
    wasNAFCLastActive=thePrefs.GetNAFCFullControl();
    boundIP=0;
 
-   // ==> Enforce Ratio [Stulle] - Stulle
+	// ==> Enforce Ratio [Stulle] - Stulle
 	m_maxforcedDownloadlimitEnforced=0;
 	m_fMaxDownloadEqualUploadLimit=0.0f;
 	// <== Enforce Ratio [Stulle] - Stulle
@@ -348,6 +348,7 @@ DWORD CBandWidthControl::getAdapterIndex(){
 //
 void CBandWidthControl::Process()
 {
+	bool disableNAFC = false; //zz_fly :: Avoid Deadlock
 	static DWORD processtime;
 	if(::GetTickCount()-processtime >= 1000){
 		processtime = ::GetTickCount();
@@ -390,7 +391,10 @@ void CBandWidthControl::Process()
 		/**/ 			theApp.QueueDebugLogLine(false, _T("NAFC: Failed to retrieve adapter traffic, error=0x%x"), ::GetLastError());
 		/**/			wasNAFCLastActive=thePrefs.GetNAFCFullControl(); //Xman  
 		/**/ 			// Disable NAFC
-		/**/ 			thePrefs.SetNAFCFullControl(false);
+		/**/			//zz_fly :: Avoid Deadlock
+		/**/ 			//note: SetNAFCFullControl() may call RepaintMeters(). it is better to do it out side the lock.
+		/**/			//thePrefs.SetNAFCFullControl(false);
+		/**/			disableNAFC = true; 
 		/**/ 		}
 		/**/ 
 		/**/ 	}
@@ -414,6 +418,7 @@ void CBandWidthControl::Process()
 		#pragma warning(default:4127)
 		/*->*/ m_statisticLocker.Unlock();
 		
+		if(disableNAFC) thePrefs.SetNAFCFullControl(false); //zz_fly :: Avoid Deadlock
 
 		// Calculate the dynamic download limit
 		m_maxDownloadLimit = thePrefs.GetMaxDownload();

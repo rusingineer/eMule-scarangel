@@ -78,10 +78,10 @@ protected:
 	afx_msg void OnBnClickedSmiley();
 	afx_msg void OnBnClickedClose();
 	afx_msg void OnBnClickedSend();
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 
 	// ==> Design Settings [eWombat/Stulle] - Max
 protected:
-	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	CBrush m_brMyBrush;
 	HBRUSH hbr;	
 	COLORREF clrChatColor;

@@ -15,20 +15,11 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "stdafx.h"
-#include <emule_site_config.h>
-
-#if _MSC_VER < 1310 && !defined(NO_VS2002_SDK)	// check for 'Visual Studio .NET 2002'
-#define HAVE_SAPI_H
-#endif
-// if you are missing 'sapi.h', you either need to install the Microsoft Speech SDK or Microsoft Vista SDK
-// or you can use "emule_site_config.h" to define 'VS2003_SDK'
-#ifndef VS2003_SDK
-#define HAVE_SAPI_H
-#endif
 
 #ifdef HAVE_SAPI_H
+// NOTE: If you get a compile error due to missing 'sapi.h', look at "emule_site_config.h" for further information.
 #include <sapi.h>
-#endif
+#endif//HAVE_SAPI_H
 #include "emule.h"
 #include "emuleDlg.h"
 #include "TextToSpeech.h"
@@ -108,7 +99,9 @@ bool CTextToSpeech::Speak(LPCTSTR pwsz)
 CTextToSpeech theTextToSpeech;
 static bool s_bTTSDisabled = false;
 static bool s_bInitialized = false;
-#endif
+#else//HAVE_SAPI_H
+#pragma message("WARNING: Missing 'sapi.h' header file - some features will get disabled. See the file 'emule_site_config.h' for more information.")
+#endif//HAVE_SAPI_H
 
 bool Speak(LPCTSTR pszSay)
 {
@@ -125,10 +118,10 @@ bool Speak(LPCTSTR pszSay)
 			return false;
 	}
 	return theTextToSpeech.Speak(pszSay);
-#else
+#else//HAVE_SAPI_H
 	UNREFERENCED_PARAMETER(pszSay);
 	return false;
-#endif
+#endif//HAVE_SAPI_H
 }
 
 void ReleaseTTS()
@@ -136,7 +129,7 @@ void ReleaseTTS()
 #ifdef HAVE_SAPI_H
 	theTextToSpeech.ReleaseTTS();
 	s_bInitialized = false;
-#endif
+#endif//HAVE_SAPI_H
 }
 
 void CloseTTS()
@@ -144,7 +137,7 @@ void CloseTTS()
 #ifdef HAVE_SAPI_H
 	ReleaseTTS();
 	s_bTTSDisabled = true;
-#endif
+#endif//HAVE_SAPI_H
 }
 
 bool IsSpeechEngineAvailable()
@@ -169,7 +162,7 @@ bool IsSpeechEngineAvailable()
 		}
 	}
 	return _bIsAvailable;
-#else
+#else//HAVE_SAPI_H
 	return false;
-#endif
+#endif//HAVE_SAPI_H
 }

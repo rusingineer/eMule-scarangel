@@ -54,6 +54,11 @@ struct IPANDTICS{
 	uint32 dwIP;
 	uint32 dwInserted;
 };
+struct CONNECTINGCLIENT{
+	CUpDownClient* pClient;
+	uint32 dwInserted;
+};
+
 
 class CDeletedClient{
 public:
@@ -144,10 +149,12 @@ public:
 	bool	IsKadFirewallCheckIP(uint32 dwIP) const;
 
 	// Direct Callback List
-	void	AddDirectCallbackClient(CUpDownClient* pToAdd);
-	void	RemoveDirectCallback(CUpDownClient* pToAdd);
 	void	AddTrackCallbackRequests(uint32 dwIP);
 	bool	AllowCalbackRequest(uint32 dwIP) const;
+
+	// Connecting Clients
+	void	AddConnectingClient(CUpDownClient* pToAdd);
+	void	RemoveConnectingClient(CUpDownClient* pToRemove);
 
 	void	Process();
 	bool	IsValidClient(CUpDownClient* tocheck) const;
@@ -180,12 +187,11 @@ protected:
 
 	void	CleanUpClientList();
 protected: // Maella -Extended clean-up II-
-	void	ProcessDirectCallbackList();
+	void	ProcessConnectingClientsList();
 
 private:
 	CUpDownClientPtrList list;
 	CUpDownClientPtrList m_KadList;
-	CUpDownClientPtrList m_liCurrentDirectCallbacks;
 	CMap<uint32, uint32, uint32, uint32> m_bannedList;
 	CMap<uint32, uint32, CDeletedClient*, CDeletedClient*> m_trackedClientsList;
 	uint32	m_dwLastBannCleanUp;
@@ -195,6 +201,7 @@ private:
 	uint8 m_nBuddyStatus;
 	CList<IPANDTICS> listFirewallCheckRequests;
 	CList<IPANDTICS> listDirectCallbackRequests;
+	CList<CONNECTINGCLIENT> m_liConnectingClients;
 
 //EastShare Start - added by AndCycle, IP to Country
 public:

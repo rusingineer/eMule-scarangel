@@ -345,7 +345,6 @@ HTREEITEM CDirectoryTreeCtrl::AddChildItem(HTREEITEM hRoot, CString strText)
 	HTREEITEM hItem = InsertItem(&itInsert);
 	if (IsShared(strDir))
 		SetCheck(hItem);
-	strText.ReleaseBuffer();
 
 	return hItem;
 }

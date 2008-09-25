@@ -237,6 +237,7 @@ void DebugHttpHeaders(const CStringAArray& astrHeaders);
 // Win32 specifics
 //
 bool HaveEd2kRegAccess();
+bool DoRegFixElevated();
 bool Ask4RegFix(bool checkOnly, bool dontAsk = false, bool bAutoTakeCollections = false); // Barry - Allow forced update without prompt
 void BackupReg(void); // Barry - Store previous values
 void RevertReg(void); // Barry - Restore previous values
@@ -422,6 +423,7 @@ __inline bool IsLowID(uint32 id){
 	return (id < 16777216);
 }
 CString ipstr(uint32 nIP);
+CString ipstr_rev(uint32 nIP); // IP Filter White List [Stulle] - Stulle
 CString ipstr(uint32 nIP, uint16 nPort);
 CString ipstr(LPCTSTR pszAddress, uint16 nPort);
 CStringA ipstrA(uint32 nIP);

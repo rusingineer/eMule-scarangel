@@ -21,6 +21,7 @@
 #include "SearchParamsWnd.h"
 #include "SearchResultsWnd.h"
 #include "OtherFunctions.h"
+#include "HelpIDs.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -40,6 +41,7 @@ BEGIN_MESSAGE_MAP(CSearchDlg, CFrameWnd)
 	ON_WM_SETFOCUS()
 	ON_WM_CLOSE()
 	ON_WM_SYSCOMMAND()
+	ON_WM_HELPINFO()
 END_MESSAGE_MAP()
 
 CSearchDlg::CSearchDlg()
@@ -312,8 +314,18 @@ BOOL CSearchDlg::PreTranslateMessage(MSG* pMsg)
 			theApp.emuledlg->PostMessage(pMsg->message, pMsg->wParam, pMsg->lParam);
 			return TRUE;
 		}
+		else if (pMsg->wParam == 87 && GetAsyncKeyState(VK_CONTROL) < 0)
+		{
+			m_pwndResults->DeleteSelectedSearch();
+		}
 	}
 	return CFrameWnd::PreTranslateMessage(pMsg);
+}
+
+BOOL CSearchDlg::OnHelpInfo(HELPINFO* /*pHelpInfo*/)
+{
+	theApp.ShowHelp(eMule_FAQ_GUI_Search);
+	return TRUE;
 }
 
 // ==> Design Settings [eWombat/Stulle] - Max

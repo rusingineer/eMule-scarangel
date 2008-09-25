@@ -1771,7 +1771,9 @@ void CSharedFileList::CalculateUploadPriority_Standard()
 		pFile->UpdateAutoUpPriority();
 	}
 }
-//Xman end// ==> PowerShare [ZZ/MorphXT] - Stulle
+//Xman end
+
+// ==> PowerShare [ZZ/MorphXT] - Stulle
 void CSharedFileList::UpdatePartsInfo()
 {
 	if (m_Files_map.IsEmpty())

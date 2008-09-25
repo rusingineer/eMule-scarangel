@@ -1,6 +1,52 @@
 CHANGELOG FOR EMULE ScarAngel MOD
 
 
+eMule v0.49b ScarAngel v3.1:
+------------------------
+- XX.XX.2008 -
+-------------------------------------------------------------------------------
+based on eMule 0.49b Xtreme 7.0 compiled with vs2003 SP1
+Merged to eMule v0.49b [Stulle]
+
+Added: IP Filter White list [Stulle] - Stulle
+Added: TK4 CreditSystem [BlueSonicBoy] - Stulle
+Added: ZZUL CreditSystem [ZZ] - Stulle
+Added: Modified FineCS [CiccioBastardo/Stulle] - Stulle
+Added: Advanced Transfer Window Layout [Stulle] - Stulle
+Added: Completed in Tray [Stulle] - Stulle
+Added: Threaded File Settings Saving [Stulle] - Stulle
+	+ keeps the GUI responsive while saving
+Added: Threaded Known Files Saving [Stulle] - Stulle
+	+ keeps the GUI responsive while saving
+
+Changed: Improved resizing of cats tab in SearchResultWnd [Stulle] - Stulle
+Changed: Using official code for proper background of Icons with text [Officials] - Stulle
+Changed: Cleaned up Static IP Filter code [Stulle] - Stulle
+	+ only ipfilter.dat layout allowed!
+Changed: Toolbar icons [Tango/schluepfer] - Stulle
+Changed: Waiting Queue icon [Microsoft] - Stulle
+Changed: Known Clients icon [Aha-Soft] - Stulle
+Changed: Upload and Download icon [Studiomx] - Stulle
+Changed: Downloading Files icon [Fast Icon] - Stulle
+Changed: Increased font size for Sub Heading text in context menu [Stulle] - Stulle
+
+Fixed: InputBox for ResumeOrder [Stulle] - Stulle
+Fixed: Crash when checking if sup client should not be kicked from UL [Stulle] - Stulle
+Fixed: Improper use of FindBestClientInQueue when checking for sup client [Stulle] - Stulle
+Fixed: No max time for clients that should be prevented [Stulle] - Stulle
+
+IP Filter White List:
++ IPs on this list will not be banned
++ use ipfilter_white.dat to add IPs to the White List
+
+Advanced Transfer Window Layout:
++ Any two lists can be viewed at the same time
++ Downloading file list can only be viewed in the upper part
++ If list shown in the upper half is already in the lower half the lower
+list changes to next list
++ To disable/ enable press the split button/ item
+
+
 eMule v0.49a ScarAngel v3.0:
 ------------------------
 - 06.07.2008 -

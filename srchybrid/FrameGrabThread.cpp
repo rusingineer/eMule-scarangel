@@ -20,7 +20,12 @@
 #include "CxImage/xImage.h"
 #include "OtherFunctions.h"
 #include "quantize.h"
-#if _MSC_VER<1400
+#ifndef HAVE_QEDIT_H
+// This is a remote feature and not optional, in order to keep to working properly for other clients who want to use it
+// Check emule_site_config.h to fix it
+#error Missing 'qedit.h', look at "emule_site_config.h" for further information.
+#endif
+
 // DirectShow MediaDet
 #include <strmif.h>
 //#include <uuids.h>
@@ -42,6 +47,7 @@ _DEFINE_GUID(FORMAT_WaveFormatEx,0x05589f81, 0xc356, 0x11ce, 0xbf, 0x01, 0x00, 0
 #define MMNOMCI			// mmsystem: MCI support
 //#define MMNOMMIO		// mmsystem: Multimedia file I/O support
 #define MMNOMMSYSTEM	// mmsystem: General MMSYSTEM functions
+// NOTE: If you get a compile error due to missing 'qedit.h', look at "emule_site_config.h" for further information.
 #include <qedit.h>
 typedef struct tagVIDEOINFOHEADER {
     RECT            rcSource;          // The bit we really want to use
@@ -51,7 +57,6 @@ typedef struct tagVIDEOINFOHEADER {
     REFERENCE_TIME  AvgTimePerFrame;   // Average time per frame (100ns units)
     BITMAPINFOHEADER bmiHeader;
 } VIDEOINFOHEADER;
-#endif
 #include "emuledlg.h"
 
 #ifdef _DEBUG
@@ -100,7 +105,6 @@ UINT CFrameGrabThread::GrabFrames(){
 	#define TIMEBETWEENFRAMES	50.0 // could be a param later, if needed
 	for (int i = 0; i!= nFramesToGrab; i++)
 		imgResults[i] = NULL;
-#if _MSC_VER<1400
 	try{
 		HRESULT hr;
 		CComPtr<IMediaDet> pDet;
@@ -237,9 +241,6 @@ UINT CFrameGrabThread::GrabFrames(){
 		ASSERT(0);
 		return 0;
 	}
-#else
-	return 0;
-#endif
 }
 
 void CFrameGrabThread::SetValues(const CKnownFile* in_pOwner, CString in_strFileName,uint8 in_nFramesToGrab, double in_dStartTime, bool in_bReduceColor, uint16 in_nMaxWidth, void* in_pSender){

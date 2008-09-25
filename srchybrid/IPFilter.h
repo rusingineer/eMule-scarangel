@@ -37,6 +37,7 @@ struct SIPFilter
 
 #define	DFLT_IPFILTER_FILENAME	_T("ipfilter.dat")
 #define	DFLT_STATIC_IPFILTER_FILENAME	_T("ipfilter_static.dat") // Static IP Filter [Stulle] - Stulle
+#define	DFLT_WHITE_IPFILTER_FILENAME	_T("ipfilter_white.dat") // IP Filter White List [Stulle] - Stulle
 
 // 'CArray' would give us more cach hits, but would also be slow in array element creation 
 // (because of the implicit ctor in 'SIPFilter'
@@ -85,4 +86,14 @@ private:
 	void AddFromFile2(LPCTSTR pszFilePath);
 	CString GetDefaultStaticFilePath() const;
 	// <== Static IP Filter [Stulle] - Stulle
+
+	// ==> IP Filter White List [Stulle] - Stulle
+	void AddFromFileWhite(LPCTSTR pszFilePath);
+	CString GetDefaultWhiteFilePath() const;
+
+	void AddIPRangeWhite(uint32 start, uint32 end, UINT level, const CStringA& rstrDesc) {
+		m_iplist_White.Add(new SIPFilter(start, end, level, rstrDesc));
+	}
+	CIPFilterArray m_iplist_White;
+	// <== IP Filter White List [Stulle] - Stulle
 };

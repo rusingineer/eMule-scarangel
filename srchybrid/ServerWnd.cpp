@@ -61,6 +61,7 @@ BEGIN_MESSAGE_MAP(CServerWnd, CResizableDialog)
 	ON_NOTIFY(EN_LINK, IDC_SERVMSG, OnEnLinkServerBox)
 	ON_BN_CLICKED(IDC_ED2KCONNECT, OnBnConnect)
 	ON_WM_SYSCOLORCHANGE()
+	ON_WM_CTLCOLOR()
 	ON_BN_CLICKED(IDC_DD,OnDDClicked)
 	ON_WM_HELPINFO()
 	ON_EN_CHANGE(IDC_IPADDRESS, OnSvrTextChange)
@@ -69,7 +70,6 @@ BEGIN_MESSAGE_MAP(CServerWnd, CResizableDialog)
 	ON_EN_CHANGE(IDC_SERVERMETURL, OnSvrTextChange)
 	ON_STN_DBLCLK(IDC_SERVLST_ICO, OnStnDblclickServlstIco)
 	ON_NOTIFY(UM_SPN_SIZED, IDC_SPLITTER_SERVER, OnSplitterMoved)
-	ON_WM_CTLCOLOR() // Design Settings [eWombat/Stulle] - Max
 	ON_BN_CLICKED(IDC_SERVER_LISTS, OnBnClickedServerLists) // Links for Server list and nodes file [Stulle] - Stulle
 END_MESSAGE_MAP()
 
@@ -211,18 +211,21 @@ BOOL CServerWnd::OnInitDialog()
 	TCITEM newitem;
 	CString name;
 	name = GetResString(IDS_SV_SERVERINFO);
+	name.Replace(_T("&"), _T("&&"));
 	newitem.mask = TCIF_TEXT|TCIF_IMAGE;
 	newitem.pszText = const_cast<LPTSTR>((LPCTSTR)name);
 	newitem.iImage = 1;
 	VERIFY( StatusSelector.InsertItem(StatusSelector.GetItemCount(), &newitem) == PaneServerInfo );
 
 	name = GetResString(IDS_SV_LOG);
+	name.Replace(_T("&"), _T("&&"));
 	newitem.mask = TCIF_TEXT|TCIF_IMAGE;
 	newitem.pszText = const_cast<LPTSTR>((LPCTSTR)name);
 	newitem.iImage = 0;
 	VERIFY( StatusSelector.InsertItem(StatusSelector.GetItemCount(), &newitem) == PaneLog );
 
 	name=SZ_DEBUG_LOG_TITLE;
+	name.Replace(_T("&"), _T("&&"));
 	newitem.mask = TCIF_TEXT|TCIF_IMAGE;
 	newitem.pszText = const_cast<LPTSTR>((LPCTSTR)name);
 	newitem.iImage = 0;
@@ -230,6 +233,7 @@ BOOL CServerWnd::OnInitDialog()
 
 	//Xman Anti-Leecher-Log
 	name=GetResString(IDS_LEERCHERLOGTITLE);
+	name.Replace(_T("&"), _T("&&"));
 	newitem.mask = TCIF_TEXT|TCIF_IMAGE;
 	newitem.pszText = const_cast<LPTSTR>((LPCTSTR)name);
 	newitem.iImage = 0;
@@ -394,16 +398,9 @@ void CServerWnd::OnSysColorChange()
 
 void CServerWnd::SetAllIcons()
 {
-	// ==> Design Settings [eWombat/Stulle] - Max
-	/*
 	m_ctrlNewServerFrm.SetIcon(_T("AddServer"));
 	m_ctrlUpdateServerFrm.SetIcon(_T("ServerUpdateMET"));
 	m_ctrlMyInfoFrm.SetIcon(_T("Info"));
-	*/
-	m_ctrlNewServerFrm.SetIcon(_T("AddServer"),clrSrvColor);
-	m_ctrlUpdateServerFrm.SetIcon(_T("ServerUpdateMET"),clrSrvColor);
-	m_ctrlMyInfoFrm.SetIcon(_T("Info"),clrSrvColor);
-	// <== Design Settings [eWombat/Stulle] - Max
 
 	CImageList iml;
 	iml.Create(16,16,theApp.m_iDfltImageListColorFlags|ILC_MASK,0,1);
@@ -424,51 +421,40 @@ void CServerWnd::Localize()
 	serverlistctrl.Localize();
 
 	    GetDlgItem(IDC_SERVLIST_TEXT)->SetWindowText(GetResString(IDS_SV_SERVERLIST));
-		// ==> Design Settings [eWombat/Stulle] - Max
-		/*
 	    m_ctrlNewServerFrm.SetWindowText(GetResString(IDS_SV_NEWSERVER));
-		*/
-	    m_ctrlNewServerFrm.SetWindowText(GetResString(IDS_SV_NEWSERVER),clrSrvColor);
-		// <== Design Settings [eWombat/Stulle] - Max
 		GetDlgItem(IDC_SERVER_LISTS)->SetWindowText(GetResString(IDS_SERVER_LISTS)); // Links for Server list and nodes file [Stulle] - Stulle
 	    GetDlgItem(IDC_SSTATIC4)->SetWindowText(GetResString(IDS_SV_ADDRESS));
 	    GetDlgItem(IDC_SSTATIC7)->SetWindowText(GetResString(IDS_SV_PORT));
 	    GetDlgItem(IDC_SSTATIC3)->SetWindowText(GetResString(IDS_SW_NAME));
 	    GetDlgItem(IDC_ADDSERVER)->SetWindowText(GetResString(IDS_SV_ADD));
-		// ==> Design Settings [eWombat/Stulle] - Max
-		/*
 	    m_ctrlUpdateServerFrm.SetWindowText(GetResString(IDS_SV_MET));
-		*/
-	    m_ctrlUpdateServerFrm.SetWindowText(GetResString(IDS_SV_MET),clrSrvColor);
-		// <== Design Settings [eWombat/Stulle] - Max
 	    GetDlgItem(IDC_UPDATESERVERMETFROMURL)->SetWindowText(GetResString(IDS_SV_UPDATE));
 	    GetDlgItem(IDC_LOGRESET)->SetWindowText(GetResString(IDS_PW_RESET));
-		// ==> Design Settings [eWombat/Stulle] - Max
-		/*
 	    m_ctrlMyInfoFrm.SetWindowText(GetResString(IDS_MYINFO));
-		*/
-	    m_ctrlMyInfoFrm.SetWindowText(GetResString(IDS_MYINFO),clrSrvColor);
-		// <== Design Settings [eWombat/Stulle] - Max
     
 	    TCITEM item;
 	    CString name;
 	    name = GetResString(IDS_SV_SERVERINFO);
+	name.Replace(_T("&"), _T("&&"));
 	    item.mask = TCIF_TEXT;
 		item.pszText = const_cast<LPTSTR>((LPCTSTR)name);
 		StatusSelector.SetItem(PaneServerInfo, &item);
 
 	    name = GetResString(IDS_SV_LOG);
+	name.Replace(_T("&"), _T("&&"));
 	    item.mask = TCIF_TEXT;
 		item.pszText = const_cast<LPTSTR>((LPCTSTR)name);
 		StatusSelector.SetItem(PaneLog, &item);
 
 	    name = SZ_DEBUG_LOG_TITLE;
+	name.Replace(_T("&"), _T("&&"));
 	    item.mask = TCIF_TEXT;
 		item.pszText = const_cast<LPTSTR>((LPCTSTR)name);
 		StatusSelector.SetItem(PaneVerboseLog, &item);
 
 		//Xman Anti-Leecher-Log
 		name = GetResString(IDS_LEERCHERLOGTITLE);
+	name.Replace(_T("&"), _T("&&"));
 		item.mask = TCIF_TEXT;
 		item.pszText = const_cast<LPTSTR>((LPCTSTR)name);
 		StatusSelector.SetItem(PaneLeecherLog, &item);
@@ -735,6 +721,7 @@ void CServerWnd::ToggleDebugWindow()
 		TCITEM newitem;
 		CString name;
 		name = SZ_DEBUG_LOG_TITLE;
+		name.Replace(_T("&"), _T("&&"));
 		newitem.mask = TCIF_TEXT|TCIF_IMAGE;
 		newitem.pszText = const_cast<LPTSTR>((LPCTSTR)name);
 		newitem.iImage = 0;
@@ -742,6 +729,7 @@ void CServerWnd::ToggleDebugWindow()
 
 		//Xman Anti-Leecher-Log
 		name = GetResString(IDS_LEERCHERLOGTITLE);
+		name.Replace(_T("&"), _T("&&"));
 		newitem.mask = TCIF_TEXT|TCIF_IMAGE;
 		newitem.pszText = const_cast<LPTSTR>((LPCTSTR)name);
 		newitem.iImage = 0;
@@ -798,8 +786,13 @@ BOOL CServerWnd::PreTranslateMessage(MSG* pMsg)
 		if (pMsg->wParam == VK_ESCAPE)
 			return FALSE;
 
-		if (m_pacServerMetURL && m_pacServerMetURL->IsBound() && (pMsg->wParam == VK_DELETE && pMsg->hwnd == GetDlgItem(IDC_SERVERMETURL)->m_hWnd && (GetAsyncKeyState(VK_MENU)<0 || GetAsyncKeyState(VK_CONTROL)<0)))
-			m_pacServerMetURL->Clear();
+		if (pMsg->wParam == VK_DELETE && m_pacServerMetURL && m_pacServerMetURL->IsBound() && pMsg->hwnd == GetDlgItem(IDC_SERVERMETURL)->m_hWnd)
+		{
+			if (GetAsyncKeyState(VK_MENU)<0 || GetAsyncKeyState(VK_CONTROL)<0)
+				m_pacServerMetURL->Clear();
+			else
+				m_pacServerMetURL->RemoveSelectedItem();
+		}
 
 		if (pMsg->wParam == VK_RETURN)
 		{
@@ -1113,7 +1106,31 @@ void CServerWnd::OnSplitterMoved(NMHDR* pNMHDR, LRESULT* /*pResult*/)
 	DoResize(pHdr->delta);
 }
 
+HBRUSH CServerWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
 // ==> Design Settings [eWombat/Stulle] - Max
+/*
+	HBRUSH hbr = theApp.emuledlg->GetCtlColor(pDC, pWnd, nCtlColor);
+	if (hbr)
+		return hbr;
+	return __super::OnCtlColor(pDC, pWnd, nCtlColor);
+}
+*/
+	hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	if (nCtlColor == CTLCOLOR_DLG)
+		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+	else if(nCtlColor != CTLCOLOR_EDIT)
+	{
+		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+		pDC->SetBkMode(TRANSPARENT);
+	}
+	else
+		hbr = (HBRUSH) WHITE_BRUSH;
+
+	return hbr;
+}
+
 void CServerWnd::OnBackcolor() 
 {
 	clrSrvColor = thePrefs.GetStyleBackColor(window_styles, style_w_server);
@@ -1128,23 +1145,6 @@ void CServerWnd::OnBackcolor()
 	else
 		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
 	SetAllIcons();
-}
-
-HBRUSH CServerWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
-{
-	hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
-
-	if (nCtlColor == CTLCOLOR_DLG)
-		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-	else if(nCtlColor != CTLCOLOR_EDIT)
-	{
-		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-		pDC->SetBkMode(TRANSPARENT);
-	}
-	else
-		hbr = (HBRUSH) WHITE_BRUSH;
-
-	return hbr;
 }
 // <== Design Settings [eWombat/Stulle] - Max
 

@@ -21,6 +21,8 @@
 bool IsValidEd2kString(LPCTSTR psz);
 bool IsValidEd2kStringA(LPCSTR psz);
 
+//Borschtsch - we always use Unicode
+/* 
 __inline bool NeedUTF8String(LPCWSTR pwsz)
 {
 	while (*pwsz != L'\0')
@@ -31,6 +33,8 @@ __inline bool NeedUTF8String(LPCWSTR pwsz)
 	}
 	return false;
 }
+*/
+//Borschtsch - we always use Unicode
 
 //#define ED2KCODEPAGE	28591 // ISO 8859-1 Latin I
 //

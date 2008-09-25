@@ -68,6 +68,7 @@ CCatDialog::CCatDialog(int index)
 	m_pacRegExp=NULL;
 	*/
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	newcolor = (DWORD)-1;
 }
 
 CCatDialog::~CCatDialog()
@@ -130,9 +131,8 @@ void CCatDialog::UpdateData()
 	*/
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
-	COLORREF selcolor = m_myCat->color;
 	newcolor = m_myCat->color;
-	m_ctlColor.SetColor(selcolor);
+	m_ctlColor.SetColor(m_myCat->color == -1 ? m_ctlColor.GetDefaultColor() : m_myCat->color);
 	
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	/*
@@ -226,7 +226,6 @@ void CCatDialog::Localize()
 
 	m_ctlColor.CustomText = GetResString(IDS_COL_MORECOLORS);
 	m_ctlColor.DefaultText = GetResString(IDS_DEFAULT);
-	m_ctlColor.SetDefaultColor(NULL);
 
 	SetWindowText(GetResString(IDS_EDITCAT));
 
@@ -270,10 +269,14 @@ void CCatDialog::OnBnClickedOk()
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	MakeFoldername(m_myCat->strIncomingPath);
+	// SLUGFILLER: SafeHash remove - removed installation dir unsharing
+	/*
 	if (!thePrefs.IsShareableDirectory(m_myCat->strIncomingPath)){
 		m_myCat->strIncomingPath = thePrefs.GetMuleDirectory(EMULE_INCOMINGDIR);
 		MakeFoldername(m_myCat->strIncomingPath);
 	}
+	*/
+	// SLUGFILLER: SafeHash remove - removed installation dir unsharing
 
 	if (!PathFileExists(m_myCat->strIncomingPath)){
 		if (!::CreateDirectory(m_myCat->strIncomingPath, 0)){

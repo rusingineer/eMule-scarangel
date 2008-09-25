@@ -205,7 +205,10 @@ CPPgScar::CPPgScar()
 	m_htiSivkaCredit = NULL;
 	m_htiSwatCredit = NULL;
 	m_htiXmanCredit = NULL;
+	m_htiTk4Credit = NULL;
+	m_htiZzulCredit = NULL;
 	// <== CreditSystems [EastShare/ MorphXT] - Stulle
+	m_htiFineCS = NULL; // Modified FineCS [CiccioBastardo/Stulle] - Stulle
 	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 	m_htiIsPayBackFirst = NULL;
 	m_htiPayBackFirstLimit = NULL;
@@ -236,12 +239,12 @@ CPPgScar::CPPgScar()
 	m_htiShowFileHLconst = NULL; // show HL per file constantly - Stulle
 	m_htiShowInMSN7 = NULL; // Show in MSN7 [TPT] - Stulle
 	m_htiQueueProgressBar = NULL; // Client queue progress bar [Commander] - Stulle
-//	m_htiTrayComplete = NULL; // Completed in Tray - Stulle
+	m_htiTrayComplete = NULL; // Completed in Tray [Stulle] - Stulle
 	m_htiShowClientPercentage = NULL; // Show Client Percentage optional [Stulle] - Stulle
 	m_htiFollowTheMajority = NULL; // Follow The Majority [AndCycle/Stulle] - Stulle
 	m_htiShowSpeedMeter = NULL; // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
-	// ==> file settings - Stulle
+	// ==> File Settings [sivka/Stulle] - Stulle
 	m_htiFileDefaults = NULL;
 	m_htiAutoNNS = NULL;
 	m_htiAutoNNSTimer = NULL;
@@ -257,7 +260,7 @@ CPPgScar::CPPgScar()
 	m_htiHQRXman = NULL;
 	m_htiHQRSivka = NULL;
 	m_iHQRXmanDefault = (thePrefs.GetHQRXmanDefault()) ? 1 : 0;
-	// <== file settings - Stulle
+	// <== File Settings [sivka/Stulle] - Stulle
 
 	// ==> TBH: minimule - Max
 	m_htiMMGroup = NULL;
@@ -587,7 +590,13 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiSivkaCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_SIVKA_CREDIT), m_htiCreditSystem, m_iCreditSystem == CS_SIVKA);
 		m_htiSwatCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_SWAT_CREDIT), m_htiCreditSystem, m_iCreditSystem == CS_SWAT);
 		m_htiXmanCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_XMAN_CREDIT), m_htiCreditSystem, m_iCreditSystem == CS_XMAN);
+		m_htiTk4Credit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_TK4_CREDIT), m_htiCreditSystem, m_iCreditSystem == CS_TK4);
+		m_htiZzulCredit = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_ZZUL_CREDIT), m_htiCreditSystem, m_iCreditSystem == CS_ZZUL);
 		// <== CreditSystems [EastShare/ MorphXT] - Stulle
+		// ==> Modified FineCS [CiccioBastardo/Stulle] - Stulle
+		m_htiFineCS = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_FINECS), m_htiCreditSystem, m_bFineCS);
+		m_htiIsPayBackFirst = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PAYBACKFIRST), m_htiCreditSystem, m_bIsPayBackFirst);
+		// <== Modified FineCS [CiccioBastardo/Stulle] - Stulle
 		// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 		m_htiIsPayBackFirst = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PAYBACKFIRST), m_htiCreditSystem, m_bIsPayBackFirst);
 		m_htiPayBackFirstLimit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_PAYBACKFIRSTLIMIT),TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT,m_htiIsPayBackFirst);
@@ -619,12 +628,12 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiShowFileHLconst = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOW_FILE_HL_CONST), m_htiDisplay, m_bShowFileHLconst); // show HL per file constantly - Stulle
 		m_htiShowInMSN7 = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOWINMSN7), m_htiDisplay, m_bShowInMSN7); // Show in MSN7 [TPT] - Stulle
 		m_htiQueueProgressBar = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CLIENTQUEUEPROGRESSBAR), m_htiDisplay, m_bQueueProgressBar); // Client queue progress bar [Commander] - Stulle
-//		m_htiTrayComplete = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_TRAY_COMPLETE), m_htiDisplay, m_bTrayComplete); // Completed in Tray - Stulle
+		m_htiTrayComplete = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_TRAY_COMPLETE), m_htiDisplay, m_bTrayComplete); // Completed in Tray [Stulle] - Stulle
 		m_htiShowClientPercentage = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CLIENTPERCENTAGE), m_htiDisplay, m_bShowClientPercentage); // Show Client Percentage optional [Stulle] - Stulle
 		m_htiFollowTheMajority = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_FOLLOWTHEMAJORITY), m_htiDisplay, m_bFollowTheMajority); // Follow The Majority [AndCycle/Stulle] - Stulle
 		m_htiShowSpeedMeter = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOW_SPEED_METER), m_htiDisplay, m_bShowSpeedMeter); // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
-		// ==> file settings - Stulle
+		// ==> File Settings [sivka/Stulle] - Stulle
 		m_htiFileDefaults = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_FILE_DEFAULTS), iImgDropDefaults, TVI_ROOT);
 		m_htiAutoNNS = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_AUTO_NNS), m_htiFileDefaults, m_bEnableAutoDropNNSDefault);
 		m_htiAutoNNSTimer = m_ctrlTreeOptions.InsertItem(GetResString(IDS_NNS_TIMERLABEL), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiAutoNNS);
@@ -651,7 +660,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiHQRXman = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_XMAN_DROPPING), m_htiAutoQRSWay, m_iHQRXmanDefault == 1);
 		m_ctrlTreeOptions.Expand(m_htiAutoQRSWay, TVE_EXPAND);
 		m_ctrlTreeOptions.Expand(m_htiAutoQRS, TVE_EXPAND);
-		// <== file settings - Stulle
+		// <== File Settings [sivka/Stulle] - Stulle
 
 		// ==> TBH: minimule - Max
 		m_htiMMGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_MM_GROUP), iImgMinimule, TVI_ROOT);
@@ -843,6 +852,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	// <== Anti Uploader Ban [Stulle] - Stulle
 
 	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiCreditSystem, (int &)m_iCreditSystem); // CreditSystems [EastShare/ MorphXT] - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiFineCS, m_bFineCS); // Modified FineCS [CiccioBastardo/Stulle] - Stulle
 	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiIsPayBackFirst, m_bIsPayBackFirst);
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiPayBackFirstLimit, m_iPayBackFirstLimit);
@@ -867,12 +877,12 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowFileHLconst, m_bShowFileHLconst); // show HL per file constantly - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowInMSN7, m_bShowInMSN7); // Show in MSN7 [TPT] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiQueueProgressBar, m_bQueueProgressBar); // Client queue progress bar [Commander] - Stulle
-//	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiTrayComplete, m_bTrayComplete); // Completed in Tray - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiTrayComplete, m_bTrayComplete); // Completed in Tray [Stulle] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowClientPercentage, m_bShowClientPercentage); // Show Client Percentage optional [Stulle] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiFollowTheMajority, m_bFollowTheMajority); // Follow The Majority [AndCycle/Stulle] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowSpeedMeter, m_bShowSpeedMeter); // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
-	// ==> file settings - Stulle
+	// ==> File Settings [sivka/Stulle] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiAutoNNS, m_bEnableAutoDropNNSDefault);
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiAutoNNSTimer, m_iAutoNNS_TimerDefault);
 	DDV_MinMaxInt(pDX, m_iAutoNNS_TimerDefault, 0, 60);
@@ -891,7 +901,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiAutoQRSLimit, m_iMaxRemoveQRSLimitDefault);
 	DDV_MinMaxInt(pDX, m_iMaxRemoveQRSLimitDefault, 50, 100);
 	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiAutoQRSWay, (int &)m_iHQRXmanDefault);
-	// <== file settings - Stulle
+	// <== File Settings [sivka/Stulle] - Stulle
 
 	// ==> TBH: minimule - Max
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowMM, m_bShowMM);
@@ -1206,6 +1216,7 @@ BOOL CPPgScar::OnInitDialog()
 	m_iAntiUploaderBanCase = thePrefs.GetAntiUploaderBanCase();
 	// <== Anti Uploader Ban [Stulle] - Stulle
 
+	m_bFineCS = thePrefs.m_bFineCS; // Modified FineCS [CiccioBastardo/Stulle] - Stulle
 	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 	m_bIsPayBackFirst = thePrefs.m_bPayBackFirst;
 	m_iPayBackFirstLimit = thePrefs.m_iPayBackFirstLimit;
@@ -1240,12 +1251,12 @@ BOOL CPPgScar::OnInitDialog()
 	m_bShowFileHLconst = thePrefs.GetShowFileHLconst(); // show HL per file constantly - Stulle
 	m_bShowInMSN7 = thePrefs.GetShowMSN7(); // Show in MSN7 [TPT] - Stulle
 	m_bQueueProgressBar = thePrefs.ShowClientQueueProgressBar(); // Client queue progress bar [Commander] - Stulle
-//	m_bTrayComplete = thePrefs.GetTrayComplete(); // Completed in Tray - Stulle
+	m_bTrayComplete = thePrefs.GetTrayComplete(); // Completed in Tray [Stulle] - Stulle
 	m_bShowClientPercentage = thePrefs.GetShowClientPercentage(); // Show Client Percentage optional [Stulle] - Stulle
 	m_bFollowTheMajority = thePrefs.IsFollowTheMajorityEnabled(); // Follow The Majority [AndCycle/Stulle] - Stulle
 	m_bShowSpeedMeter = thePrefs.GetShowSpeedMeter(); // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
-	// ==> file settings - Stulle
+	// ==> File Settings [sivka/Stulle] - Stulle
 	m_bEnableAutoDropNNSDefault = thePrefs.m_EnableAutoDropNNSDefault;
 	m_iAutoNNS_TimerDefault = (thePrefs.m_AutoNNS_TimerDefault/1000);
 	m_iMaxRemoveNNSLimitDefault = thePrefs.m_MaxRemoveNNSLimitDefault;
@@ -1256,7 +1267,7 @@ BOOL CPPgScar::OnInitDialog()
 	m_iAutoHQRS_TimerDefault = (thePrefs.m_AutoHQRS_TimerDefault/1000);
 	m_iMaxRemoveQRSDefault = thePrefs.m_MaxRemoveQRSDefault;
 	m_iMaxRemoveQRSLimitDefault = thePrefs.m_MaxRemoveQRSLimitDefault;
-	// <== file settings - Stulle
+	// <== File Settings [sivka/Stulle] - Stulle
 
 	// ==> TBH: minimule - Max
 	m_bShowMM = thePrefs.IsMiniMuleEnabled();
@@ -1651,6 +1662,7 @@ BOOL CPPgScar::OnApply()
 		theApp.clientcredits->ResetCheckScoreRatio();
 	}
 	// <== CreditSystems [EastShare/ MorphXT] - Stulle
+	thePrefs.m_bFineCS = m_bFineCS; // Modified FineCS [CiccioBastardo/Stulle] - Stulle
 	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 	thePrefs.m_bPayBackFirst = m_bIsPayBackFirst;
 	thePrefs.m_iPayBackFirstLimit = (uint8)m_iPayBackFirstLimit;
@@ -1675,7 +1687,7 @@ BOOL CPPgScar::OnApply()
 	thePrefs.ShowFileHLconst = m_bShowFileHLconst; // show HL per file constantly - Stulle
 	thePrefs.m_bShowInMSN7 = m_bShowInMSN7; // Show in MSN7 [TPT] - Stulle
 	thePrefs.m_bClientQueueProgressBar = m_bQueueProgressBar; // Client queue progress bar [Commander] - Stulle
-//	thePrefs.m_bTrayComplete = m_bTrayComplete; // Completed in Tray - Stulle
+	thePrefs.m_bTrayComplete = m_bTrayComplete; // Completed in Tray [Stulle] - Stulle
 	thePrefs.m_bShowClientPercentage = m_bShowClientPercentage; // Show Client Percentage optional [Stulle] - Stulle
 	thePrefs.m_bFollowTheMajority = m_bFollowTheMajority; // Follow The Majority [AndCycle/Stulle] - Stulle
 	// ==> High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
@@ -1686,7 +1698,7 @@ BOOL CPPgScar::OnApply()
 	}
 	// <== High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
-	// ==> file settings - Stulle
+	// ==> File Settings [sivka/Stulle] - Stulle
 	thePrefs.m_EnableAutoDropNNSDefault = m_bEnableAutoDropNNSDefault;
 	thePrefs.m_AutoNNS_TimerDefault = (m_iAutoNNS_TimerDefault*1000);
 	thePrefs.m_MaxRemoveNNSLimitDefault = (uint16)m_iMaxRemoveNNSLimitDefault;
@@ -1698,7 +1710,7 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_MaxRemoveQRSDefault = (uint16)m_iMaxRemoveQRSDefault;
 	thePrefs.m_MaxRemoveQRSLimitDefault = (uint16)m_iMaxRemoveQRSLimitDefault;
 	thePrefs.m_bHQRXmanDefault = m_iHQRXmanDefault == 1;
-	// <== file settings - Stulle
+	// <== File Settings [sivka/Stulle] - Stulle
 
 	// ==> TBH: minimule - Max
 	thePrefs.m_bMiniMule = m_bShowMM;
@@ -2025,6 +2037,7 @@ void CPPgScar::Localize(void)
 		if (m_htiAntiUploaderBanLimit) m_ctrlTreeOptions.SetEditLabel(m_htiAntiUploaderBanLimit, GetResString(IDS_UNBAN_UPLOADER));
 		// <== Anti Uploader Ban [Stulle] - Stulle
 
+		if (m_htiFineCS) m_ctrlTreeOptions.SetItemText(m_htiFineCS, GetResString(IDS_FINECS)); // Modified FineCS [CiccioBastardo/Stulle] - Stulle
 		// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 		if (m_htiIsPayBackFirst) m_ctrlTreeOptions.SetItemText(m_htiIsPayBackFirst, GetResString(IDS_PAYBACKFIRST));
 		if (m_htiPayBackFirstLimit) m_ctrlTreeOptions.SetEditLabel(m_htiPayBackFirstLimit, GetResString(IDS_PAYBACKFIRSTLIMIT));
@@ -2074,12 +2087,12 @@ void CPPgScar::Localize(void)
 		if (m_htiShowFileHLconst) m_ctrlTreeOptions.SetItemText(m_htiShowFileHLconst, GetResString(IDS_SHOW_FILE_HL_CONST)); // show HL per file constantly - Stulle
 		if (m_htiShowInMSN7) m_ctrlTreeOptions.SetItemText(m_htiShowInMSN7, GetResString(IDS_SHOWINMSN7)); // Show in MSN7 [TPT] - Stulle
 		if (m_htiQueueProgressBar) m_ctrlTreeOptions.SetItemText(m_htiQueueProgressBar, GetResString(IDS_CLIENTQUEUEPROGRESSBAR)); // Client queue progress bar [Commander] - Stulle
-//		if (m_htiTrayComplete) m_ctrlTreeOptions.SetItemText(m_htiTrayComplete, GetResString(IDS_TRAY_COMPLETE)); // Completed in Tray - Stulle
+		if (m_htiTrayComplete) m_ctrlTreeOptions.SetItemText(m_htiTrayComplete, GetResString(IDS_TRAY_COMPLETE)); // Completed in Tray [Stulle] - Stulle
 		if (m_htiShowClientPercentage) m_ctrlTreeOptions.SetItemText(m_htiShowClientPercentage, GetResString(IDS_CLIENTPERCENTAGE)); // Show Client Percentage optional [Stulle] - Stulle
 		if (m_htiFollowTheMajority) m_ctrlTreeOptions.SetItemText(m_htiFollowTheMajority, GetResString(IDS_FOLLOWTHEMAJORITY)); // Follow The Majority [AndCycle/Stulle] - Stulle
 		if (m_htiShowSpeedMeter) m_ctrlTreeOptions.SetItemText(m_htiShowSpeedMeter, GetResString(IDS_SHOW_SPEED_METER)); // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
-		// ==> file settings - Stulle
+		// ==> File Settings [sivka/Stulle] - Stulle
 		if (m_htiAutoNNS) m_ctrlTreeOptions.SetItemText(m_htiAutoNNS, GetResString(IDS_AUTO_NNS));
 		if (m_htiAutoNNSTimer) m_ctrlTreeOptions.SetEditLabel(m_htiAutoNNSTimer, GetResString(IDS_NNS_TIMERLABEL));
 		if (m_htiAutoNNSLimit) m_ctrlTreeOptions.SetEditLabel(m_htiAutoNNSLimit, GetResString(IDS_REMOVENNSLIMITLABEL));
@@ -2091,7 +2104,7 @@ void CPPgScar::Localize(void)
 		if (m_htiAutoQRSMax) m_ctrlTreeOptions.SetEditLabel(m_htiAutoQRSMax, GetResString(IDS_REMOVEQRSLABEL));
 		if (m_htiHQRSivka) m_ctrlTreeOptions.SetItemText(m_htiHQRSivka, GetResString(IDS_SIVKA_DROPPING));
 		if (m_htiAutoQRSLimit) m_ctrlTreeOptions.SetEditLabel(m_htiAutoQRSLimit, GetResString(IDS_REMOVEQRSLIMITLABEL));
-		// <== file settings - Stulle
+		// <== File Settings [sivka/Stulle] - Stulle
 
 		// ==> TBH: minimule - Max
 		if (m_htiMMGroup) m_ctrlTreeOptions.SetItemText(m_htiMMGroup, _T("TBH Mini-Mule"));
@@ -2381,7 +2394,10 @@ void CPPgScar::OnDestroy()
 	m_htiSivkaCredit = NULL;
 	m_htiSwatCredit = NULL;
 	m_htiXmanCredit = NULL;
+	m_htiTk4Credit = NULL;
+	m_htiZzulCredit = NULL;
 	// <== CreditSystems [EastShare/ MorphXT] - Stulle
+	m_htiFineCS = NULL; // Modified FineCS [CiccioBastardo/Stulle] - Stulle
 	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 	m_htiIsPayBackFirst = NULL;
 	m_htiPayBackFirstLimit = NULL;
@@ -2407,12 +2423,12 @@ void CPPgScar::OnDestroy()
 	m_htiShowFileHLconst = NULL; // show HL per file constantly - Stulle
 	m_htiShowInMSN7 = NULL; // Show in MSN7 [TPT] - Stulle
 	m_htiQueueProgressBar = NULL;
-//	m_htiTrayComplete = NULL; // Completed in Tray - Stulle
+	m_htiTrayComplete = NULL; // Completed in Tray [Stulle] - Stulle
 	m_htiShowClientPercentage = NULL; // Show Client Percentage optional [Stulle] - Stulle
 	m_htiFollowTheMajority = NULL; // Follow The Majority [AndCycle/Stulle] - Stulle
 	m_htiShowSpeedMeter = NULL; // High resulution speedmeter on toolbar [eFMod/Stulle] - Stulle
 
-	// ==> file settings - Stulle
+	// ==> File Settings [sivka/Stulle] - Stulle
 	m_htiFileDefaults = NULL;
 	m_htiAutoNNS = NULL;
 	m_htiAutoNNSTimer = NULL;
@@ -2427,7 +2443,7 @@ void CPPgScar::OnDestroy()
 	m_htiAutoQRSWay = NULL;
 	m_htiHQRXman = NULL;
 	m_htiHQRSivka = NULL;
-	// <== file settings - Stulle
+	// <== File Settings [sivka/Stulle] - Stulle
 
 	// ==> TBH: minimule - Max
 	m_htiMMGroup = NULL;

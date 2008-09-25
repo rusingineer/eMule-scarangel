@@ -36,6 +36,7 @@ there client on the eMule forum..
 
 #pragma once
 #include "./Maps.h"
+#include "../../SafeFile.h"
 
 namespace Kademlia
 {
@@ -58,30 +59,34 @@ namespace Kademlia
 			CRoutingZone(LPCSTR szFilename);
 			~CRoutingZone();
 
-			uint32 Consolidate();
-			bool OnBigTimer();
-			void OnSmallTimer();
-			bool Add(const CUInt128 &uID, uint32 uIP, uint16 uUDPPort, uint16 uTCPPort, uint8 uVersion, CKadUDPKey cUDPKey, bool bIPVerified, bool bUpdate);
-			bool AddUnfiltered(const CUInt128 &uID, uint32 uIP, uint16 uUDPPort, uint16 uTCPPort, uint8 uVersion, CKadUDPKey cUDPKey, bool bIPVerified, bool bUpdate);
-			bool Add(CContact* pContact, bool bUpdate);
-			void ReadFile(CString strSpecialNodesdate = _T(""));
-			CContact* GetContact(const CUInt128 &uID) const;
-			CContact* GetContact(uint32 uIP, uint16 nPort, bool bTCPPort) const;
-			CContact* GetRandomContact(uint32 nMaxType, uint32 nMinKadVersion) const;
-			UINT GetNumContacts() const;
+			uint32		Consolidate();
+			bool		OnBigTimer();
+			void		OnSmallTimer();
+			bool		Add(const CUInt128 &uID, uint32 uIP, uint16 uUDPPort, uint16 uTCPPort, uint8 uVersion, CKadUDPKey cUDPKey, bool& bIPVerified, bool bUpdate, bool bFromNodesDat, bool bFromHello);
+			bool		AddUnfiltered(const CUInt128 &uID, uint32 uIP, uint16 uUDPPort, uint16 uTCPPort, uint8 uVersion, CKadUDPKey cUDPKey, bool& bIPVerified, bool bUpdate, bool bFromNodesDat, bool bFromHello);
+			bool		Add(CContact* pContact, bool& bUpdate, bool& bOutIPVerified);
+			void		ReadFile(CString strSpecialNodesdate = _T(""));
+			bool		VerifyContact(const CUInt128 &uID, uint32 uIP);
+			CContact*	GetContact(const CUInt128 &uID) const;
+			CContact*	GetContact(uint32 uIP, uint16 nPort, bool bTCPPort) const;
+			CContact*	GetRandomContact(uint32 nMaxType, uint32 nMinKadVersion) const;
+			uint32		GetNumContacts() const;
+			void		GetNumContacts(uint32& nInOutContacts, uint32& nInOutFilteredContacts, uint8 byMinVersion) const;
 			// Returns a list of all contacts in all leafs of this zone.
-			void GetAllEntries(ContactList *plistResult, bool bEmptyFirst = true);
+			void		GetAllEntries(ContactList *plistResult, bool bEmptyFirst = true);
 			// Returns the *maxRequired* tokens that are closest to the target within this zone's subtree.
-			void GetClosestTo(uint32 uMaxType, const CUInt128 &uTarget, const CUInt128 &uDistance, uint32 uMaxRequired, ContactMap *plistResult, bool bEmptyFirst = true, bool bSetInUse = false) const;
+			void		GetClosestTo(uint32 uMaxType, const CUInt128 &uTarget, const CUInt128 &uDistance, uint32 uMaxRequired, ContactMap *plistResult, bool bEmptyFirst = true, bool bSetInUse = false) const;
 			// Ideally: Returns all contacts that are in buckets of common range between us and the asker.
 			// In practice: returns the contacts from the top (2^{logBase+1}) buckets.
-			UINT GetBootstrapContacts(ContactList *plistResult, UINT uMaxRequired);
-			uint32 EstimateCount();
+			UINT		GetBootstrapContacts(ContactList *plistResult, UINT uMaxRequired);
+			uint32		EstimateCount();
 			time_t m_tNextBigTimer;
 			time_t m_tNextSmallTimer;
 		private:
 			CRoutingZone(CRoutingZone *pSuper_zone, int iLevel, const CUInt128 &uZone_index);
 			void Init(CRoutingZone *pSuper_zone, int iLevel, const CUInt128 &uZone_index);
+			void ReadBootstrapNodesDat(CFileDataIO& file);
+			void DbgWriteBootstrapFile();
 			
 			void WriteFile();
 			bool IsLeaf() const;
@@ -95,6 +100,7 @@ namespace Kademlia
 			void StartTimer();
 			void StopTimer();
 			void RandomLookup();
+			void SetAllContactsVerified();
 			/**
 			* Generates a new TokenBin for this zone. Used when the current zone is becoming a leaf zone.
 			* Must be deleted by caller
@@ -106,10 +112,10 @@ namespace Kademlia
 			* that *this* has been split into equally sized finer zones.
 			* The zone with index 0 is the one closer to our *self* token.
 			*/
-			CRoutingZone *m_pSubZones[2];
-			CRoutingZone *m_pSuperZone;
-			static CString m_sFilename;
-			static CUInt128 uMe;
+			CRoutingZone*		m_pSubZones[2];
+			CRoutingZone*		m_pSuperZone;
+			static CString		m_sFilename;
+			static CUInt128		uMe;
 			/**
 			* The level indicates what size chunk of the address space
 			* this zone is representing. Level 0 is the whole space,

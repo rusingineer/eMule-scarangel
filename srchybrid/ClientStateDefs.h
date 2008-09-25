@@ -19,12 +19,8 @@
 enum EUploadState{
 	US_UPLOADING,
 	US_ONUPLOADQUEUE,
-	US_WAITCALLBACK,
 	US_CONNECTING,
-	US_PENDING,
-	US_LOWTOLOWIP,
 	US_BANNED,
-	US_ERROR,
 	US_NONE
 };
 
@@ -129,15 +125,6 @@ enum EInfoPacketState{
 	IP_BOTH				= 3,
 };
 
-//Xman Fix Connection Collision (Sirob)
-enum EHelloPacketState{
-	HP_NONE    = 0,
-	HP_HELLO  = 1,
-	HP_HELLOANSWER  = 2,
-	HP_BOTH    = 3,
-};
-//Xman end
-
 enum ESourceFrom{
 	SF_SERVER			= 0,
 	SF_KADEMLIA			= 1,
@@ -154,6 +141,15 @@ enum EChatCaptchaState{
 	CA_ACCEPTING,
 	CA_CAPTCHARECV,
 	CA_SOLUTIONSENT
+};
+
+enum EConnectingState{
+	CCS_NONE				= 0,
+	CCS_DIRECTTCP,
+	CCS_DIRECTCALLBACK,
+	CCS_KADCALLBACK,
+	CCS_SERVERCALLBACK,
+	CCS_PRECONDITIONS
 };
 
 // ==> See chunk that we hide [SiRoB] - Stulle
@@ -175,6 +171,7 @@ enum EChunkStatus{
 #define _EDownloadState		EDownloadState
 #define _ESourceFrom		ESourceFrom
 #define _EChatCaptchaState  EChatCaptchaState
+#define _EConnectingState	EConnectingState
 #define _EModClient			EModClient // Mod Icons - Stulle
 #else
 #define _EClientSoftware	uint8
@@ -185,6 +182,7 @@ enum EChunkStatus{
 #define _EDownloadState		uint8
 #define _ESourceFrom		uint8
 #define _EChatCaptchaState	uint8
+#define _EConnectingState	uint8
 #define _EModClient			uint8 // Mod Icons - Stulle
 #endif
 

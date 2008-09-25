@@ -1304,10 +1304,17 @@ bool CKnownFile::WriteToFile(CFileDataIO* file)
 	ULONG uTagCountFilePos = (ULONG)file->GetPosition();
 	file->WriteUInt32(uTagCount);
 
+	/* Borschtsch - we always save file name using UTF8
+	 * Helps to eliminate re-hashing of files with
+	 * the "wrong" symbols in their names
 	if (WriteOptED2KUTF8Tag(file, GetFileName(), FT_FILENAME))
 		uTagCount++;
 	CTag nametag(FT_FILENAME, GetFileName());
 	nametag.WriteTagToFile(file);
+	*/
+	CTag nametag(FT_FILENAME, GetFileName());
+	nametag.WriteTagToFile(file, utf8strOptBOM);
+	// Borschtsch - we always save file name using UTF8
 	uTagCount++;
 	
 	CTag sizetag(FT_FILESIZE, m_nFileSize, IsLargeFile());
@@ -1609,6 +1616,7 @@ void CKnownFile::CreateHash(CFile* pFile, uint64 Length, uchar* pMd4HashOut, CAI
 	}
 
 	delete pHashAlg;
+	sLock1.Unlock();// SLUGFILLER: SafeHash - only one chunk-hash at a time
 }
 
 //Xman Nice Hash
@@ -2290,7 +2298,7 @@ void CKnownFile::UpdateMetaDataTags()
 			delete mi;
 		}
 
-#if _MSC_VER<1400
+#ifdef HAVE_QEDIT_H
 		if (thePrefs.GetExtractMetaData() >= 2)
 		{
 			// starting the MediaDet object takes a noticeable amount of time.. avoid starting that object
@@ -2437,7 +2445,9 @@ void CKnownFile::UpdateMetaDataTags()
 				}
 			}
 		}
-#endif
+#else//HAVE_QEDIT_H
+#pragma message("WARNING: Missing 'qedit.h' header file - some features will get disabled. See the file 'emule_site_config.h' for more information.")
+#endif//HAVE_QEDIT_H
 	}
 }
 
@@ -2452,7 +2462,7 @@ bool CKnownFile::PublishNotes()
 	{
 		return false;
 	}
-	if(GetFileComment() != "")
+	if(GetFileComment() != _T(""))
 	{
 		m_lastPublishTimeKadNotes = (uint32)time(NULL)+KADEMLIAREPUBLISHTIMEN;
 		return true;

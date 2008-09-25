@@ -164,6 +164,19 @@ void CClientUDPSocket::OnReceive(int nErrorCode)
 				case OP_KADEMLIAHEADER:
 					{
 						theStats.AddDownDataOverheadKad(nPacketLen);
+						//zz_fly :: Anti-Leecher
+						//note: Clients sending a KAD tag from 0.49a+ but pretending to be 0.48a
+						byte byOpcode = pBuffer[1];
+						if(byOpcode == KADEMLIA_FIREWALLED2_REQ)
+						{
+							CUpDownClient* client = theApp.clientlist->FindClientByIP(sockAddr.sin_addr.S_un.S_addr);
+							if(client != NULL && client->GetClientSoft() == SO_EMULE && client->GetVersion() != 0 && client->GetVersion() < MAKE_CLIENT_VERSION(0, 49, 0))
+							{
+								client->BanLeecher(_T("Detected Vagaa"),5); //Bad Leecher, Hard Ban
+								break;
+							}
+						}
+						//zz_fly :: Anti-Leecher end
 						if (nPacketLen >= 2)
 							Kademlia::CKademlia::ProcessPacket(pBuffer, nPacketLen, ntohl(sockAddr.sin_addr.S_un.S_addr), ntohs(sockAddr.sin_port)
 							, (Kademlia::CPrefs::GetUDPVerifyKey(sockAddr.sin_addr.S_un.S_addr) == nReceiverVerifyKey)
@@ -758,6 +771,9 @@ bool CClientUDPSocket::Rebind()
 	}
 	thePrefs.m_iUPnPUDPExternal=0;
 	//upnp_end
+
+	return Create();
+}
 	*/
 	// ==> Random Ports [MoNKi] - Stulle
 	if (!thePrefs.GetUseRandomPorts() && thePrefs.GetUDPPort(false, true)==m_port)
@@ -769,7 +785,35 @@ bool CClientUDPSocket::Rebind()
 	}
 
 	Close();
-	// <== UPnP support [MoNKi] - leuk_he
 
 	return Create();
 }
+	// <== UPnP support [MoNKi] - leuk_he
+
+// ==> UPnP support [MoNKi] - leuk_he
+/*
+//zz_fly :: Rebind UPnP on IP-change
+bool CClientUDPSocket::RebindUPnP(){ 
+	if(theApp.m_UPnPNat.RemoveSpecifiedPort(thePrefs.m_iUPnPUDPExternal, MyUPnP::UNAT_UDP))
+	{
+		AddLogLine(false, _T("UPNP: removed UDP-port %u"), thePrefs.m_iUPnPUDPExternal);
+		thePrefs.m_iUPnPUDPExternal=0;
+		MyUPnP::UPNPNAT_MAPPING mapping;
+		mapping.internalPort = mapping.externalPort = thePrefs.GetUDPPort();
+		mapping.protocol = MyUPnP::UNAT_UDP;
+		mapping.description = "UDP Port";
+		if (theApp.AddUPnPNatPort(&mapping, thePrefs.GetUPnPNatTryRandom()))
+		{
+			thePrefs.SetUPnPUDPExternal(mapping.externalPort);
+			return true;
+		}
+		else
+			thePrefs.SetUPnPUDPExternal(thePrefs.GetUDPPort());
+	}
+	else
+		AddLogLine(false, _T("UPNP: failed to remove UDP-port %u"), thePrefs.m_iUPnPUDPExternal);
+	return false;
+} 
+//zz_fly :: Rebind UPnP on IP-change end
+*/
+// <== UPnP support [MoNKi] - leuk_he

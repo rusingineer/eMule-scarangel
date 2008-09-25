@@ -761,6 +761,7 @@
 #define IDS_FIRSTAUTODOWN               834
 #define IDS_FIRSTAUTOUP                 835
 #define IDS_FIRSTFULLCHUNK              836
+#define IDS_AUTOMATIC                   836
 #define IDS_FIRSTSAFECON                837
 #define IDS_FIRSTAUTOCON                838
 #define IDS_FIRSTCOMPLETE               839
@@ -1514,6 +1515,7 @@
 #define IDS_WIZZARDOBFUSCATION          1559
 #define IDS_BETANAG                     1560
 #define IDS_CONFIRMNODESDOWNLOAD        1561
+#define IDS_NOTCONNECTEDANY             1562
 #define IDC_ANIMATE1                    2000
 #define IDC_STATUS                      2001
 #define IDC_FILESTATUS                  2002
@@ -2418,6 +2420,15 @@
 #define IDI_ICONMR                      3201
 #define IDS_ANTILEECHERFILENAME_CHECK   3201
 #define IDS_ANTILEECHERUSERHASH_CHECK   3201
+//zz_fly :: show UPnP status
+#define IDS_UPNPSTATUS					3350
+#define IDS_UPNPSTATUS_OK				3351
+#define IDS_UPNPSTATUS_NOTINLAN			3352
+#define IDS_UPNPSTATUS_ERROR			3353
+#define IDS_UPNPSTATUS_PORTINUSE		3354
+#define IDS_UPNPSTATUS_PORTINUSE2		3355
+#define IDS_UPNP_REBINDTEXT				3356
+//zz_fly :: show UPnP status end
 #define IDD_PPG_Xtreme                  4000
 #define IDC_13RATIO                     4001
 #define IDC_UPREDUCTION                 4002
@@ -2568,14 +2579,16 @@
 #define IDS_SIVKA_CREDIT                60066
 #define IDS_SWAT_CREDIT                 60067
 #define IDS_XMAN_CREDIT                 60068
+#define IDS_TK4_CREDIT                  60069
+#define IDS_ZZUL_CREDIT                 60070
 // <== CreditSystems [EastShare/ MorphXT] - Stulle
 // ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-#define IDS_SUQWT_LOAD                  60070
-#define IDS_SUQWT                       60071
+#define IDS_SUQWT_LOAD                  60080
+#define IDS_SUQWT                       60081
 // <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 #define IDS_SHOW_FILE_HL_CONST          60090 // show HL per file constantly - Stulle
 #define IDS_SHOW_GLOBAL_HL              60260 // show global HL - Stulle
-// ==> file settings - Stulle
+// ==> File Settings [sivka/Stulle] - Stulle
 #define IDC_DEFAULT_BUTTON              60270
 #define IDS_HARDLIMIT_LABEL             60271
 #define IDC_HARDLIMIT_TAKEOVER          60272
@@ -2625,7 +2638,7 @@
 #define IDS_XMAN_DROPPING               60316
 #define IDS_SIVKA_DROPPING              60317
 #define IDS_HQR_WAY                     60318
-// <== file settings - Stulle
+// <== File Settings [sivka/Stulle] - Stulle
 #define IDS_SHOW_DROPPED_SRC            60330 // show # of dropped sources - Stulle
 // ==> Source Graph - Stulle
 #define IDC_SRCGRAPH_GRP                60340
@@ -2906,6 +2919,7 @@
 #define IDS_DL_MODE_DEFAULT             60848
 #define IDS_DL_NONE                     60849
 #define IDS_SEARCH_INVALIDMINMAX        60850
+#define IDC_TEXTNUM                     60851
 // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 #define IDS_SHARED_PREFS                60860 // Shared Files Management [Stulle] - Stulle
 // ==> Spread bars [Slugfiller/MorphXT] - Stulle
@@ -3244,6 +3258,9 @@
 #define IDS_FUNCTION                    61395
 #define IDS_RELEASER                    61396
 // <== XP Style Menu [Xanatos] - Stulle
+#define IDS_FINECS                      61400 // Modified FineCS [CiccioBastardo/Stulle] - Stulle
+#define IDS_IPFILTERWHITELOADED         61410 // IP Filter White List [Stulle] - Stulle
+#define IDS_TRAY_COMPLETE               61420 // Completed in Tray [Stulle] - Stulle
 
 // Next default values for new objects
 // 

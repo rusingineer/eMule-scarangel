@@ -47,6 +47,7 @@
 #include "Log.h"
 #include "MenuCmds.h"
 #include "DropDownButton.h"
+#include "ButtonsTabCtrl.h"
 #include "KnownFileList.h" //Xman [MoNKi: -Check already downloaded files-]
 #include "TransferWnd.h" // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
@@ -95,6 +96,7 @@ BEGIN_MESSAGE_MAP(CSearchResultsWnd, CResizableFormView)
 	ON_MESSAGE(UM_DBLCLICKTAB, OnDblClickTab)
 	ON_WM_DESTROY()
 	ON_WM_SYSCOLORCHANGE()
+	ON_WM_CTLCOLOR()
 	ON_WM_SIZE()
 	ON_WM_CLOSE()
 	ON_WM_CREATE()
@@ -105,7 +107,6 @@ BEGIN_MESSAGE_MAP(CSearchResultsWnd, CResizableFormView)
 	ON_MESSAGE(UM_DELAYED_EVALUATE, OnChangeFilter)
 	ON_NOTIFY(TBN_DROPDOWN, IDC_SEARCHLST_ICO, OnSearchListMenuBtnDropDown)
 	ON_NOTIFY(NM_CLICK, IDC_CATTAB2, OnNMClickCattab2) // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
-	ON_WM_CTLCOLOR() // Design Settings [eWombat/Stulle] - Max
 END_MESSAGE_MAP()
 
 CSearchResultsWnd::CSearchResultsWnd(CWnd* /*pParent*/)
@@ -123,10 +124,12 @@ CSearchResultsWnd::CSearchResultsWnd(CWnd* /*pParent*/)
 	searchselect.m_bCloseable = true;
 	m_btnSearchListMenu = new CDropDownButton;
 	m_nFilterColumn = 0;
+	m_cattabs = new CButtonsTabCtrl;
 }
 
 CSearchResultsWnd::~CSearchResultsWnd()
 {
+	delete m_cattabs;
 	m_ctlSearchListHeader.Detach();
 	delete m_btnSearchListMenu;
 	if (globsearch)
@@ -176,7 +179,7 @@ void CSearchResultsWnd::OnInitialUpdate()
 	AddAnchor(IDC_STATIC_DLTOof, BOTTOM_LEFT);
 	// ==> Design Settings [eWombat/Stulle] - Max
 	/*
-	AddAnchor(IDC_CATTAB2, BOTTOM_LEFT, BOTTOM_RIGHT);
+	AddAnchor(*m_cattabs, BOTTOM_LEFT, BOTTOM_RIGHT);
 	*/
 	ResizeTab();
 	// <== Design Settings [eWombat/Stulle] - Max
@@ -195,7 +198,7 @@ void CSearchResultsWnd::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SEARCHLIST, searchlistctrl);
 	DDX_Control(pDX, IDC_PROGRESS1, searchprogress);
 	DDX_Control(pDX, IDC_TAB1, searchselect);
-	DDX_Control(pDX, IDC_CATTAB2, m_cattabs);
+	DDX_Control(pDX, IDC_CATTAB2, *m_cattabs);
 	DDX_Control(pDX, IDC_FILTER, m_ctlFilter);
 	DDX_Control(pDX, IDC_OPEN_PARAMS_WND, m_ctlOpenParamsWnd);
 	DDX_Control(pDX, IDC_SEARCHLST_ICO, *m_btnSearchListMenu);
@@ -205,6 +208,7 @@ void CSearchResultsWnd::StartSearch(SSearchParams* pParams)
 {
 	switch (pParams->eType)
 	{
+		case SearchTypeAutomatic:
 		case SearchTypeEd2kServer:
 		case SearchTypeEd2kGlobal:
 		case SearchTypeKademlia:
@@ -567,7 +571,7 @@ void CSearchResultsWnd::DownloadSelected(bool bPaused)
 	// Category selection stuff...
 	if (!pos) return; // No point in asking for a category if there are no selected files to download.
 
-	int useCat = m_cattabs.GetCurSel();
+	int useCat = GetSelectedCat();
 	bool	bCreatedNewCat = false;
 	if (useCat==-1 && thePrefs.SelectCatForNewDL())
 	{
@@ -620,7 +624,7 @@ void CSearchResultsWnd::DownloadSelected(bool bPaused)
 			//Xman [MoNKi: -Check already downloaded files-]
 			if ( theApp.knownfiles->CheckAlreadyDownloadedFileQuestion(tempFile.GetFileHash(), tempFile.GetFileName()) )
 			{
-				theApp.downloadqueue->AddSearchToDownload(&tempFile, bPaused, m_cattabs.GetCurSel());
+				theApp.downloadqueue->AddSearchToDownload(&tempFile, bPaused, GetSelectedCat());
 			}
 			//Xman end
 			*/
@@ -652,6 +656,13 @@ void CSearchResultsWnd::DownloadSelected(bool bPaused)
 			searchlistctrl.UpdateSources(parent);
 		}
 	}
+
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle	
+	// This bit of code will resume the number of files that the user specifies in preferences (Off by default)
+	if (thePrefs.StartDLInEmptyCats() > 0 && bCreatedNewCat && bPaused)
+		for (int i = 0; i < thePrefs.StartDLInEmptyCats(); i++)
+			if (!theApp.downloadqueue->StartNextFile(useCat)) break;
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 }
 
 void CSearchResultsWnd::OnSysColorChange()
@@ -678,7 +689,7 @@ void CSearchResultsWnd::SetAllIcons()
 	searchselect.SetImageList(&iml);
 	m_imlSearchResults.DeleteImageList();
 	m_imlSearchResults.Attach(iml.Detach());
-	searchselect.SetPadding(CSize(10, 3));
+	searchselect.SetPadding(CSize(12, 3));
 }
 
 void CSearchResultsWnd::Localize()
@@ -1210,8 +1221,40 @@ bool GetSearchPacket(CSafeMemFile* pData, SSearchParams* pParams, bool bTargetSu
 
 bool CSearchResultsWnd::StartNewSearch(SSearchParams* pParams)
 {
-	ESearchType eSearchType = pParams->eType;
+	
+	if (pParams->eType == SearchTypeAutomatic){
+		// select between kad and server
+		// its easy if we are connected to one network only anyway
+		if (!theApp.serverconnect->IsConnected() && Kademlia::CKademlia::IsRunning() && Kademlia::CKademlia::IsConnected())
+			pParams->eType = SearchTypeKademlia;
+		else if (theApp.serverconnect->IsConnected() && (!Kademlia::CKademlia::IsRunning() || !Kademlia::CKademlia::IsConnected()))
+			pParams->eType = SearchTypeEd2kServer;
+		else if (!theApp.serverconnect->IsConnected() && (!Kademlia::CKademlia::IsRunning() || !Kademlia::CKademlia::IsConnected())){
+			AfxMessageBox(GetResString(IDS_NOTCONNECTEDANY), MB_ICONWARNING);
+			delete pParams;
+			return false;
+		}
+		else {
+			// connected to both
+			// We choose Kad, except 
+			// - if we are connected to a static server 
+			// - or a server with more than 40k and less than 2mio users connected, more than 5 mio files and if our serverlist contains less than
+			// 40 servers (otherwise we have assume that its polluted with fake server and we might just as well be connected to one) 
+			// might be further optmized in the future
+			if (theApp.serverconnect->IsConnected() && theApp.serverconnect->GetCurrentServer() != NULL 
+				&& (theApp.serverconnect->GetCurrentServer()->IsStaticMember()
+				|| (theApp.serverconnect->GetCurrentServer()->GetUsers() > 40000 && theApp.serverlist->GetServerCount() < 40
+					&& theApp.serverconnect->GetCurrentServer()->GetUsers() < 5000000 
+					&& theApp.serverconnect->GetCurrentServer()->GetFiles() > 5000000)))
+			{
+				pParams->eType = SearchTypeEd2kServer;
+			}
+			else
+				pParams->eType = SearchTypeKademlia;
+		}
+	}
 
+	ESearchType eSearchType = pParams->eType;
 	if (eSearchType == SearchTypeEd2kServer || eSearchType == SearchTypeEd2kGlobal)
 	{
 		if (!theApp.serverconnect->IsConnected()) {
@@ -1430,7 +1473,9 @@ bool CSearchResultsWnd::CreateNewTab(SSearchParams* pParams, bool bActiveIcon)
 	newitem.mask = TCIF_PARAM | TCIF_TEXT | TCIF_IMAGE;
 	newitem.lParam = (LPARAM)pParams;
 	pParams->strSearchTitle = (pParams->strSpecialTitle.IsEmpty() ? pParams->strExpression : pParams->strSpecialTitle);
-	newitem.pszText = const_cast<LPTSTR>((LPCTSTR)pParams->strSearchTitle);
+	CString strTcLabel(pParams->strSearchTitle);
+	strTcLabel.Replace(_T("&"), _T("&&"));
+	newitem.pszText = const_cast<LPTSTR>((LPCTSTR)strTcLabel);
 	newitem.cchTextMax = 0;
 	if (pParams->bClientSharedFiles)
 		newitem.iImage = sriClient;
@@ -1618,33 +1663,37 @@ LRESULT CSearchResultsWnd::OnDblClickTab(WPARAM wParam, LPARAM /*lParam*/)
 	return TRUE;
 }
 
+int CSearchResultsWnd::GetSelectedCat()
+{
+	return m_cattabs->GetCurSel();
+}
+
 void CSearchResultsWnd::UpdateCatTabs()
 {
-	int oldsel=m_cattabs.GetCurSel();
-	m_cattabs.DeleteAllItems();
+	int oldsel=m_cattabs->GetCurSel();
+	m_cattabs->DeleteAllItems();
 	for (int ix=0;ix<thePrefs.GetCatCount();ix++) {
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	/*
 		CString label=(ix==0)?GetResString(IDS_ALL):thePrefs.GetCategory(ix)->strTitle;
 		label.Replace(_T("&"),_T("&&"));
-		m_cattabs.InsertItem(ix,label);
+		m_cattabs->InsertItem(ix,label);
 	}
-	if (oldsel>=m_cattabs.GetItemCount() || oldsel==-1)
+	if (oldsel>=m_cattabs->GetItemCount() || oldsel==-1)
 		oldsel=0;
 	*/
 		CString label=thePrefs.GetCategory(ix)->strTitle;
 		label.Replace(_T("&"),_T("&&"));
-		m_cattabs.InsertItem(ix,label);
+		m_cattabs->InsertItem(ix,label);
 	}
-	if (oldsel>=m_cattabs.GetItemCount())
+	if (oldsel>=m_cattabs->GetItemCount())
 		oldsel=-1;
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
-	m_cattabs.SetCurSel(oldsel);
+	m_cattabs->SetCurSel(oldsel);
 	int flag;
-	flag=(m_cattabs.GetItemCount()>1) ? SW_SHOW:SW_HIDE;
-	
-	GetDlgItem(IDC_CATTAB2)->ShowWindow(flag);
+	flag=(m_cattabs->GetItemCount()>1) ? SW_SHOW:SW_HIDE;
+	m_cattabs->ShowWindow(flag);
 	GetDlgItem(IDC_STATIC_DLTOof)->ShowWindow(flag);
 
 	ResizeTab(); // Design Settings [eWombat/Stulle] - Max
@@ -1912,6 +1961,34 @@ BOOL CSearchResultsWnd::OnCommand(WPARAM wParam, LPARAM lParam)
 	return CResizableFormView::OnCommand(wParam, lParam);
 }
 
+// ==> Design Settings [eWombat/Stulle] - Max
+/*
+HBRUSH CSearchResultsWnd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = theApp.emuledlg->GetCtlColor(pDC, pWnd, nCtlColor);
+	if (hbr)
+		return hbr;
+	return __super::OnCtlColor(pDC, pWnd, nCtlColor);
+}
+*/
+HBRUSH CSearchResultsWnd::OnCtlColor(CDC* pDC, CWnd* /*pWnd*/, UINT nCtlColor)
+{
+	HBRUSH hbr = theApp.emuledlg->GetWndClr();
+
+	if (nCtlColor == CTLCOLOR_DLG)
+		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+	else if(nCtlColor != CTLCOLOR_EDIT)
+	{
+		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+		pDC->SetBkMode(TRANSPARENT);
+	}
+	else
+		hbr = (HBRUSH) WHITE_BRUSH;
+
+	return hbr;
+}
+// <== Design Settings [eWombat/Stulle] - Max
+
 // ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 void CSearchResultsWnd::OnNMClickCattab2(NMHDR* /*pNMHDR*/, LRESULT *pResult)
 {
@@ -1921,16 +1998,16 @@ void CSearchResultsWnd::OnNMClickCattab2(NMHDR* /*pNMHDR*/, LRESULT *pResult)
 	CPoint pt(point);
 	TCHITTESTINFO hitinfo;
 	CRect rect;
-	m_cattabs.GetWindowRect(&rect);
+	m_cattabs->GetWindowRect(&rect);
 	pt.Offset(0-rect.left,0-rect.top);
 	hitinfo.pt = pt;
 
 	// Find the destination tab...
-	int nTab = m_cattabs.HitTest( &hitinfo );
+	int nTab = m_cattabs->HitTest( &hitinfo );
 	if( hitinfo.flags != TCHT_NOWHERE )
-		if(nTab==m_cattabs.GetCurSel())
+		if(nTab==m_cattabs->GetCurSel())
 		{
-			m_cattabs.DeselectAll(false);
+			m_cattabs->DeselectAll(false);
 		}
 	*pResult = 0;
 }
@@ -1952,39 +2029,21 @@ void CSearchResultsWnd::OnBackcolor()
 		m_brMyBrush.CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
 }
 
-HBRUSH CSearchResultsWnd::OnCtlColor(CDC* pDC, CWnd* /*pWnd*/, UINT nCtlColor)
-{
-	HBRUSH hbr = theApp.emuledlg->GetWndClr();
-
-	if (nCtlColor == CTLCOLOR_DLG)
-		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-	else if(nCtlColor != CTLCOLOR_EDIT)
-	{
-		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-		pDC->SetBkMode(TRANSPARENT);
-	}
-	else
-		hbr = (HBRUSH) WHITE_BRUSH;
-
-	return hbr;
-}
-
 void CSearchResultsWnd::ResizeTab()
 {
-	if (!::IsWindow(m_cattabs.m_hWnd))
+	if (!::IsWindow(m_cattabs->m_hWnd))
 		return;
 
-	int size = 0;
-	for (int i = 0; i < m_cattabs.GetItemCount(); i++)
+	int size = 1;
+	for (int i = 0; i < m_cattabs->GetItemCount(); i++)
 	{
 		CRect rect;
-		m_cattabs.GetItemRect(i, &rect);
-		size += rect.Width();
+		m_cattabs->GetItemRect(i, &rect);
+		size += rect.Width()+3;
 	}
-	size += 4;
 
 	CRect TabRect,leftRect,rightRect;
-	m_cattabs.GetWindowRect(TabRect);
+	m_cattabs->GetWindowRect(TabRect);
 	GetDlgItem(IDC_STATIC_DLTOof)->GetWindowRect(leftRect);
 	GetDlgItem(IDC_CLEARALL)->GetWindowRect(rightRect);
 	ScreenToClient(TabRect);
@@ -1999,6 +2058,6 @@ void CSearchResultsWnd::ResizeTab()
 	TabRect.top = rightRect.top;
 	TabRect.bottom = rightRect.bottom;
 
-	m_cattabs.MoveWindow(TabRect,TRUE);
+	m_cattabs->MoveWindow(TabRect,TRUE);
 }
 // <== Design Settings [eWombat/Stulle] - Max

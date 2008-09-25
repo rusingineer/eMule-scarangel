@@ -71,10 +71,10 @@ protected:
 	int m_iAntiUploaderBanCase;
 	// <== Anti Uploader Ban [Stulle] - Stulle
 
-
 	// ==> CreditSystems [EastShare/ MorphXT] - Stulle
 	int m_iCreditSystem;
 	// <== CreditSystems [EastShare/ MorphXT] - Stulle
+	bool m_bFineCS; // Modified FineCS [CiccioBastardo/Stulle] - Stulle
 	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 	bool m_bIsPayBackFirst;
 	int m_iPayBackFirstLimit;
@@ -98,12 +98,12 @@ protected:
 	bool m_bShowFileHLconst; // show HL per file constantly - Stulle
 	bool m_bShowInMSN7; // Show in MSN7 [TPT] - Stulle
 	bool m_bQueueProgressBar; // Client queue progress bar [Commander] - Stulle
-//	bool m_bTrayComplete; // Completed in Tray - Stulle
+	bool m_bTrayComplete; // Completed in Tray [Stulle] - Stulle
 	bool m_bShowClientPercentage; // Show Client Percentage optional [Stulle] - Stulle
 	bool m_bFollowTheMajority; // Follow The Majority [AndCycle/Stulle] - Stulle
 	bool m_bShowSpeedMeter; // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
-	// ==> file settings - Stulle
+	// ==> File Settings [sivka/Stulle] - Stulle
 	bool m_bEnableAutoDropNNSDefault;
 	int m_iAutoNNS_TimerDefault;
 	int m_iMaxRemoveNNSLimitDefault;
@@ -116,7 +116,7 @@ protected:
 	int m_iMaxRemoveQRSLimitDefault;
 	int m_iHQRXmanDefault;
 	bool m_bGlobalHlDefault;
-	// <== file settings - Stulle
+	// <== File Settings [sivka/Stulle] - Stulle
 
 	// ==> TBH: minimule - Max
 	bool m_bShowMM;
@@ -268,7 +268,10 @@ protected:
 	HTREEITEM m_htiSivkaCredit;
 	HTREEITEM m_htiSwatCredit;
 	HTREEITEM m_htiXmanCredit;
+	HTREEITEM m_htiTk4Credit;
+	HTREEITEM m_htiZzulCredit;
 	// <== CreditSystems [EastShare/ MorphXT] - Stulle
+	HTREEITEM m_htiFineCS; // Modified FineCS [CiccioBastardo/Stulle] - Stulle
 	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 	HTREEITEM m_htiIsPayBackFirst;
 	HTREEITEM m_htiPayBackFirstLimit;
@@ -294,12 +297,12 @@ protected:
 	HTREEITEM m_htiShowFileHLconst; // show HL per file constantly - Stulle
 	HTREEITEM m_htiShowInMSN7; // Show in MSN7 [TPT] - Stulle
 	HTREEITEM m_htiQueueProgressBar; // Client queue progress bar [Commander] - Stulle
-//	HTREEITEM m_htiTrayComplete; // Completed in Tray - Stulle
+	HTREEITEM m_htiTrayComplete; // Completed in Tray [Stulle] - Stulle
 	HTREEITEM m_htiShowClientPercentage; // Show Client Percentage optional [Stulle] - Stulle
 	HTREEITEM m_htiFollowTheMajority; // Follow The Majority [AndCycle/Stulle] - Stulle
 	HTREEITEM m_htiShowSpeedMeter; // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
-	// ==> file settings - Stulle
+	// ==> File Settings [sivka/Stulle] - Stulle
 	HTREEITEM m_htiFileDefaults;
 	HTREEITEM m_htiAutoNNS;
 	HTREEITEM m_htiAutoNNSTimer;
@@ -315,7 +318,7 @@ protected:
 	HTREEITEM m_htiHQRXman;
 	HTREEITEM m_htiHQRSivka;
 	HTREEITEM m_htiGlobalHlDefault;
-	// <== file settings - Stulle
+	// <== File Settings [sivka/Stulle] - Stulle
 
 	// ==> TBH: minimule - Max
 	HTREEITEM m_htiMMGroup;

@@ -474,12 +474,7 @@ bool CUploadQueue::AddUpNextClient(LPCTSTR pszReason, CUpDownClient* directadd){
 	}
 
 	// tell the client that we are now ready to upload
-	//Xman Fix Connection Collision (Sirob)
-	/*
 	if (!newclient->socket || !newclient->socket->IsConnected())
-	*/
-	if (!newclient->socket || !newclient->socket->IsConnected() || !newclient->CheckHandshakeFinished())
-	//Xman end
 	{
 		newclient->SetUploadState(US_CONNECTING);
 		if (!newclient->TryToConnect(true))
@@ -1661,9 +1656,12 @@ bool CUploadQueue::RemoveFromWaitingQueue(CUpDownClient* client, bool updatewind
 	POSITION pos = waitinglist.Find(client);
 	if (pos){
 		RemoveFromWaitingQueue(pos,updatewindow);
-		//Xman Code Fix: wrong place, because some removing is done with position
+		//Xman
+		/*
 		if (updatewindow)
 			theApp.emuledlg->transferwnd->ShowQueueCount(waitinglist.GetCount());
+		*/
+		//Xman end
 		//Xman Code Fix: wrong place, because some removing is done with position
 		//client->m_bAddNextConnect = false;
 		//Xman end
@@ -1837,11 +1835,11 @@ bool CUploadQueue::CheckForTimeOver(CUpDownClient* client){
 	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 	else if(client->IsSuperiorClient())
 	{
-		CUpDownClient* bestClient = FindBestClientInQueue();
-		if(bestClient->IsSuperiorClient()==false)
+		CUpDownClient* bestClient = FindBestClientInQueue(true);
+		if(!bestClient || bestClient->IsSuperiorClient()==false)
 			uPreventTimeOver = 1;
 	}
-	if(uPreventTimeOver > 0){
+	if(uPreventTimeOver == 0){
 	// <== Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
    		 if( client->GetUpStartTimeDelay() > SESSIONMAXTIME){ // Try to keep the clients from downloading for ever
 			    if (thePrefs.GetLogUlDlEvents())
@@ -2183,7 +2181,13 @@ void CUploadQueue::UploadTimer()
 		//Xman 5.1
 		//Xman skip High-CPU-Load
 		static uint32 lastprocesstime;
+		//zz_fly
+		//Enig123 :: CodeFix :: unsigned int can not <0
+		/*
 		if(::GetTickCount() - lastprocesstime <=0)
+		*/
+		if((int)(::GetTickCount() - lastprocesstime) <=0)
+		//zz_fly
 			return;
 		else
 			lastprocesstime=::GetTickCount();
@@ -2341,6 +2345,9 @@ void CUploadQueue::UploadTimer()
 					theApp.webserver->UpdateSessionCount();
 
 				theApp.serverconnect->KeepConnectionAlive();
+
+				if (thePrefs.GetPreventStandby())
+					theApp.ResetStandByIdleTimer(); // Reset Windows idle standby timer if necessary
 			}
 
 			static UINT _uSaveStatistics; _uSaveStatistics++;

@@ -48,7 +48,7 @@
 #include "ListenSocket.h" //Xman changed: display the obfuscation icon for all clients which enabled it
 #include "MassRename.h" //Xman Mass Rename (Morph)
 #include "Log.h" //Xman Mass Rename (Morph)
-#include "SivkaFileSettings.h" // file settings - Stulle
+#include "SivkaFileSettings.h" // File Settings [sivka/Stulle] - Stulle
 
 
 #ifdef _DEBUG
@@ -2046,11 +2046,11 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 				m_FileMenu.EnableMenuItem((UINT_PTR)m_SourcesMenu.m_hMenu, MF_ENABLED);
 				m_SourcesMenu.CheckMenuItem(MP_ALL_A4AF_AUTO, (iSelectedItems == 1 && iFilesNotDone == 1 && iFilesA4AFAuto == 1) ? MF_CHECKED : MF_UNCHECKED); //Xman Xtreme Downloadmanager: Auto-A4AF-check
 				m_SourcesMenu.EnableMenuItem(MP_ADDSOURCE, (iSelectedItems == 1 && iFilesToStop == 1) ? MF_ENABLED : MF_GRAYED);
-				// ==> file settings - Stulle
+				// ==> File Settings [sivka/Stulle] - Stulle
 				/*
 				m_SourcesMenu.EnableMenuItem(MP_SETSOURCELIMIT, (iFilesNotDone == iSelectedItems) ? MF_ENABLED : MF_GRAYED);
 				*/
-				// <== file settings - Stulle
+				// <== File Settings [sivka/Stulle] - Stulle
 			}
 
 			// ==> Follow The Majority [AndCycle/Stulle] - Stulle
@@ -2061,12 +2061,12 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 			m_FollowTheMajorityMenu.CheckMenuRadioItem(MP_FOLLOWTHEMAJORITY, MP_FOLLOWTHEMAJORITY_1, uFollowTheMajorityMenuItem, 0);
 			// <== Follow The Majority [AndCycle/Stulle] - Stulle
 
-			// ==> file settings - Stulle
+			// ==> File Settings [sivka/Stulle] - Stulle
 			if (thePrefs.IsExtControlsEnabled()) {
 				m_FileMenu.EnableMenuItem(MP_SIVKA_FILE_SETTINGS, iFilesNotDone > 0 ? MF_ENABLED : MF_GRAYED);
 //				m_FileMenu.EnableMenuItem((UINT_PTR)m_DropMenu.m_hMenu, (iSelectedItems > 0 && iFilesToStop > 0) ? MF_ENABLED : MF_GRAYED);
 			}
-			// <== file settings - Stulle
+			// <== File Settings [sivka/Stulle] - Stulle
 
 			// ==> Copy feedback feature [MorphXT] - Stulle
 			m_FileMenu.EnableMenuItem(MP_COPYFEEDBACK, iSelectedItems > 0? MF_ENABLED : MF_GRAYED);
@@ -2272,12 +2272,12 @@ void CDownloadListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 		if (m_FollowTheMajorityMenu)
 			m_FileMenu.EnableMenuItem((UINT_PTR)m_FollowTheMajorityMenu.m_hMenu, MF_GRAYED);
 		// <== Follow The Majority [AndCycle/Stulle] - Stulle
-		// ==> file settings - Stulle
+		// ==> File Settings [sivka/Stulle] - Stulle
 		if (thePrefs.IsExtControlsEnabled()) {
 			m_FileMenu.EnableMenuItem(MP_SIVKA_FILE_SETTINGS, MF_GRAYED);
 //			m_FileMenu.EnableMenuItem((UINT_PTR)m_DropMenu.m_hMenu, MF_GRAYED);
 		}
-		// <== file settings - Stulle
+		// <== File Settings [sivka/Stulle] - Stulle
 		m_FileMenu.EnableMenuItem(thePrefs.GetShowCopyEd2kLinkCmd() ? MP_GETED2KLINK : MP_SHOWED2KLINK, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_PASTE, theApp.IsEd2kFileLinkInClipboard() ? MF_ENABLED : MF_GRAYED);
 		m_FileMenu.SetDefaultItem((UINT)-1);
@@ -2363,20 +2363,20 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 						bool validdelete = false;
 						bool removecompl = false;
 						int cFiles = 0;
+						const int iMaxDisplayFiles = 10;
 						for (pos = selectedList.GetHeadPosition(); pos != 0; )
 						{
 							CPartFile* cur_file = selectedList.GetNext(pos);
 							if (cur_file->GetStatus() != PS_COMPLETING && (cur_file->GetStatus() != PS_COMPLETE || wParam == MP_CANCEL)){
 								validdelete = true;
 								cFiles++;
-								if (cFiles < 50)
+								if (cFiles < iMaxDisplayFiles)
 									fileList.Append(_T("\n") + CString(cur_file->GetFileName()));
-								else if(cFiles == 50)
+								else if(cFiles == iMaxDisplayFiles && pos != NULL)
 									fileList.Append(_T("\n..."));
 							}
 							else if (cur_file->GetStatus() == PS_COMPLETE)
 								removecompl = true;
-
 						}
 						CString quest;
 						if (selectedCount == 1)
@@ -2556,7 +2556,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 				}
 				//Xman end
 
-				// ==> file settings - Stulle
+				// ==> File Settings [sivka/Stulle] - Stulle
 				case MP_SIVKA_FILE_SETTINGS:
 					if(selectedCount > 0)
 					{
@@ -2577,7 +2577,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 							theApp.downloadqueue->SaveFileSettings();
 					}
 					break;
-				// <== file settings - Stulle
+				// <== File Settings [sivka/Stulle] - Stulle
 				// ==> advanced manual dropping - Stulle
 				case MP_DROPLOWTOLOWIPSRCS:
 					SetRedraw(false);
@@ -2871,7 +2871,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 				case MP_SHOWED2KLINK:
 					ShowFileDialog(IDD_ED2KLINK);
 					break;
-				// ==> file settings - Stulle
+				// ==> File Settings [sivka/Stulle] - Stulle
 				/*
 				case MP_SETSOURCELIMIT: {
 					CString temp;
@@ -2894,7 +2894,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					break;
 				}
 				*/
-				// <== file settings - Stulle
+				// <== File Settings [sivka/Stulle] - Stulle
 				case MP_ADDSOURCE: {
 					if (selectedCount > 1)
 						break;
@@ -3710,11 +3710,11 @@ void CDownloadListCtrl::CreateMenues()
 		m_SourcesMenu.AppendMenu(MF_STRING, MP_ALL_A4AF_TO_OTHER, GetResString(IDS_ALL_A4AF_TO_OTHER)); 
 		//Xman end
 		m_SourcesMenu.AppendMenu(MF_STRING, MP_ADDSOURCE, GetResString(IDS_ADDSRCMANUALLY));
-		// ==> file settings - Stulle
+		// ==> File Settings [sivka/Stulle] - Stulle
 		/*
 		m_SourcesMenu.AppendMenu(MF_STRING, MP_SETSOURCELIMIT, GetResString(IDS_SETPFSLIMIT));
 		*/
-		// <== file settings - Stulle
+		// <== File Settings [sivka/Stulle] - Stulle
 		m_FileMenu.AppendMenu(MF_STRING|MF_POPUP, (UINT_PTR)m_SourcesMenu.m_hMenu, GetResString(IDS_A4AF));
 	}
 	m_FileMenu.AppendMenu(MF_SEPARATOR);
@@ -3723,13 +3723,13 @@ void CDownloadListCtrl::CreateMenues()
 	m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_FollowTheMajorityMenu.m_hMenu, GetResString(IDS_FOLLOWTHEMAJORITY), _T("RENAME"));
 	// <== Follow The Majority [AndCycle/Stulle] - Stulle
 
-	// ==> file settings - Stulle
+	// ==> File Settings [sivka/Stulle] - Stulle
 	if (thePrefs.IsExtControlsEnabled()){
 		m_FileMenu.AppendMenu(MF_STRING,MP_SIVKA_FILE_SETTINGS, GetResString(IDS_SIVKAFILESETTINGS),_T("DROPDEFAULTS"));
 //		m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_DropMenu.m_hMenu, _T("Sources Handling (DROP)"));
 	}
 		m_FileMenu.AppendMenu(MF_SEPARATOR);
-	// <== file settings - Stulle
+	// <== File Settings [sivka/Stulle] - Stulle
 
 	// Add 'Copy & Paste' commands
 	//

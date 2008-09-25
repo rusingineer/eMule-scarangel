@@ -125,6 +125,12 @@ public:
 	bool IsPreferencesDlgOpen() const;
 	bool IsTrayIconToFlash()	{ return m_iMsgIcon!=0; }
 	void SetToolTipsDelay(UINT uDelay);
+	//Xman official UPNP removed
+	/*
+	void StartUPnP(bool bReset = true, uint16 nForceTCPPort = 0, uint16 nForceUDPPort = 0);
+	*/
+	//Xman end
+	HBRUSH GetCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 
 	void RunMiniMule(); // TBH: minimule (open on tray) - Stulle
 
@@ -280,6 +286,7 @@ protected:
 	afx_msg void OnBnClickedHotmenu();
 	afx_msg LRESULT OnMenuChar(UINT nChar, UINT nFlags, CMenu* pMenu);
 	afx_msg void OnSysColorChange();
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
 	afx_msg BOOL OnQueryEndSession();
 	afx_msg void OnEndSession(BOOL bEnding);
@@ -317,6 +324,8 @@ protected:
 	// END SiRoB: Flush Thread
 	afx_msg LRESULT OnFlushDone(WPARAM wParam,LPARAM lParam);
 	// END SiRoB: Flush Thread
+	afx_msg LRESULT OnSaveDone(WPARAM wParam,LPARAM lParam); // File Settings [sivka/Stulle] - Stulle
+	afx_msg LRESULT OnSaveKnownDone(WPARAM wParam,LPARAM lParam); // Threaded Known Files Saving [Stulle] - Stulle
 
 	afx_msg LRESULT OnFileAllocExc(WPARAM wParam,LPARAM lParam);
 	afx_msg LRESULT OnFileCompleted(WPARAM wParam,LPARAM lParam);
@@ -410,14 +419,21 @@ private:
 	HBRUSH	m_hbrWndClr;
 public:
 	HBRUSH	GetWndClr()	{return m_hbrWndClr;}
-protected:
-	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	// <== Design Settings [eWombat/Stulle] - Max
 
 	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
-public:
 	void	DownloadDLP();
 	// <== Advanced Updates [MorphXT/Stulle] - Stulle
+
+	// ==> Completed in Tray [Stulle] - Stulle
+protected:
+	HICON m_icoSysTrayConnectedPlus;
+	HICON m_icoSysTrayDisconnectedPlus;
+	HICON m_icoSysTrayLowIDPlus;
+	DWORD m_dwTrayTime;
+	bool m_bTrayBool;
+	bool m_bTrayBoolOld;
+	// <== Completed in Tray [Stulle] - Stulle
 };
 
 
@@ -436,6 +452,8 @@ enum EEMuleAppMsgs
 	TM_READBLOCKFROMFILEDONE, // SiRoB: ReadBlockFromFileThread
 	TM_FLUSHDONE, // SiRoB: Flush Thread
 	TM_DOTIMER, //Xman process timer code via messages (Xanatos)
+	TM_SAVEDONE, // File Settings [sivka/Stulle] - Stulle
+	TM_SAVEKNOWNDONE, // Threaded Known Files Saving [Stulle] - Stulle
 	TM_FRAMEGRABFINISHED,
 	TM_FILEALLOCEXC,
 	TM_FILECOMPLETED,

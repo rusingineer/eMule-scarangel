@@ -189,11 +189,17 @@ void CFileDataIO::WriteString(const CString& rstr, EUtf8Str eEncode)
 	}
 	else if (eEncode == utf8strOptBOM)
 	{
+		//Borschtsch - we always use Unicode
+		/*
 		if (NeedUTF8String(rstr))
 		{
+		*/
+		//Borschtsch - we always use Unicode
 			CUnicodeToBOMUTF8 bomutf8(rstr);
 			WRITE_STR_LEN(bomutf8.GetLength());
 			Write((LPCSTR)bomutf8, bomutf8.GetLength());
+		//Borschtsch - we always use Unicode
+		/*
 		}
 		else
 		{
@@ -201,6 +207,8 @@ void CFileDataIO::WriteString(const CString& rstr, EUtf8Str eEncode)
 			WRITE_STR_LEN(mb.GetLength());
 			Write((LPCSTR)mb, mb.GetLength());
 		}
+		*/
+		//Borschtsch - we always use Unicode
 	}
 	else
 	{
@@ -229,11 +237,16 @@ void CFileDataIO::WriteLongString(const CString& rstr, EUtf8Str eEncode)
 	}
 	else if (eEncode == utf8strOptBOM)
 	{
+		//Borschtsch - we always use Unicode
+		/*
 		if (NeedUTF8String(rstr))
 		{
+		*/
 			CUnicodeToBOMUTF8 bomutf8(rstr);
 			WRITE_STR_LEN(bomutf8.GetLength());
 			Write((LPCSTR)bomutf8, bomutf8.GetLength());
+		//Borschtsch - we always use Unicode
+		/*
 		}
 		else
 		{
@@ -241,6 +254,8 @@ void CFileDataIO::WriteLongString(const CString& rstr, EUtf8Str eEncode)
 			WRITE_STR_LEN(mb.GetLength());
 			Write((LPCSTR)mb, mb.GetLength());
 		}
+		*/
+		//Borschtsch - we always use Unicode
 	}
 	else
 	{
@@ -484,7 +499,12 @@ int CSafeBufferedFile::printf(LPCTSTR pszFmt, ...)
 	va_start(args, pszFmt);
 	int iResult = _vftprintf(m_pStream, pszFmt, args);
 	va_end(args);
-	if (iResult < 0)
+	if (iResult < 0) {
+#if _MFC_VER>=0x0800
+		AfxThrowFileException(CFileException::genericException, _doserrno, m_strFileName);
+#else
 		AfxThrowFileException(CFileException::generic, _doserrno, m_strFileName);
+#endif
+	}
 	return iResult;
 }

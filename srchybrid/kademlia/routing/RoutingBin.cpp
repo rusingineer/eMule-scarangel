@@ -203,6 +203,18 @@ UINT CRoutingBin::GetSize() const
 	return (UINT)m_listEntries.size();
 }
 
+void CRoutingBin::GetNumContacts(uint32& nInOutContacts, uint32& nInOutFilteredContacts, uint8 byMinVersion) const
+{
+	// Count all Nodes which meet the search criteria and also report those who don't
+	for (ContactList::const_iterator itContactList = m_listEntries.begin(); itContactList != m_listEntries.end(); ++itContactList)
+	{
+		if ((*itContactList)->GetVersion() >= byMinVersion)
+			nInOutContacts++;
+		else
+			nInOutFilteredContacts++;
+	}
+}
+
 UINT CRoutingBin::GetRemaining() const
 {
 	return (UINT)K - m_listEntries.size();
@@ -240,7 +252,7 @@ void CRoutingBin::GetClosestTo(uint32 uMaxType, const CUInt128 &uTarget, uint32 
 	// We don't care about max results at this time.
 	for (ContactList::const_iterator itContactList = m_listEntries.begin(); itContactList != m_listEntries.end(); ++itContactList)
 	{
-		if((*itContactList)->GetType() <= uMaxType)
+		if((*itContactList)->GetType() <= uMaxType && (*itContactList)->IsIpVerified())
 		{
 			CUInt128 uTargetDistance((*itContactList)->m_uClientID);
 			uTargetDistance.Xor(uTarget);
@@ -394,4 +406,13 @@ CContact* CRoutingBin::GetRandomContact(uint32 nMaxType, uint32 nMinKadVersion)
 		nIndex++;
 	}
 	return pLastFit;
+}
+
+void CRoutingBin::SetAllContactsVerified()
+{
+	// Find contact by ID.
+	for (ContactList::const_iterator itContactList = m_listEntries.begin(); itContactList != m_listEntries.end(); ++itContactList)
+	{
+		(*itContactList)->SetIpVerified(true);
+	}
 }

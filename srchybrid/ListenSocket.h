@@ -128,6 +128,11 @@ public:
 	void	ReStartListening();
 	void	Debug_ClientDeleted(CUpDownClient* deleted);
 	bool	Rebind();
+	// ==> UPnP support [MoNKi] - leuk_he
+	/*
+	bool	RebindUPnP(); //zz_fly :: Rebind UPnP on IP-change
+	*/
+	// <== UPnP support [MoNKi] - leuk_he
 	bool	SendPortTestReply(char result,bool disconnect=false);
 
 	void	UpdateConnectionsStatus();

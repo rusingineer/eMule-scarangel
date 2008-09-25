@@ -152,8 +152,10 @@ protected:
 	//upnp_start
 	HTREEITEM m_htiUPnPNat;
 	HTREEITEM m_htiUPnPTryRandom;
+	HTREEITEM m_htiUPnPRebindOnIPChange; //zz_fly :: Rebind UPnP on IP-change
 	bool m_iUPnPNat;
 	bool m_iUPnPTryRandom;
+	bool m_iUPnPRebindOnIPChange; //zz_fly :: Rebind UPnP on IP-change
 	//upnp_end
 	*/
 	// <== UPnP support [MoNKi] - leuk_he

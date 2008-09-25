@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002-2007 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
+//Copyright (C)2002-2008 Merkur ( strEmail.Format("%s@%s", "devteam", "emule-project.net") / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -562,13 +562,14 @@ void UploadBandwidthThrottler::Pause(bool paused) {
  */
 UINT AFX_CDECL UploadBandwidthThrottler::RunProc(LPVOID pParam) {
 	DbgSetThreadName("UploadBandwidthThrottler");
-	InitThreadLocale();
 	//Xman
 	// BEGIN SLUGFILLER: SafeHash
 	CReadWriteLock lock(&theApp.m_threadlock);
 	if (!lock.ReadLock(0))
 		return 0;
 	// END SLUGFILLER: SafeHash
+
+	InitThreadLocale();
 
 	UploadBandwidthThrottler* uploadBandwidthThrottler = (UploadBandwidthThrottler*)pParam;
 
@@ -748,7 +749,7 @@ UINT UploadBandwidthThrottler::RunInternal() {
 		else if(uSlopehelp_minUpload < -(sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.25f)) 
 			uSlopehelp_minUpload=-((sint64)(allowedDataRate*MAXSLOPEBUFFERTIME*0.25f));
 
-
+		
 		// ==> Do not reserve 1/3 of your uploadlimit for emule [Stulle] - Stulle
 		/*
 		if(thePrefs.GetNAFCFullControl()==true && uSlopehelp_minUpload>uSlopehelp)

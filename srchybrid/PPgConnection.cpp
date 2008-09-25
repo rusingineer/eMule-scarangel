@@ -35,10 +35,6 @@
 /*
 #include "LastCommonRouteFinder.h"
 */
-//Xman official UPNP removed
-/*
-#include "UPnPFinder.h"
-*/
 #include "Log.h" //Xman
 #include "DownloadQueue.h" // Global Source Limit [Max/Stulle] - Stulle
 
@@ -632,15 +628,7 @@ BOOL CPPgConnection::OnApply()
 	if (IsDlgButtonChecked(IDC_PREF_UPNPONSTART) != 0){
 		if (!thePrefs.IsUPnPEnabled()){
 			thePrefs.m_bEnableUPnP = true;
-			if (theApp.m_pUPnPFinder != NULL && thePrefs.IsUPnPEnabled()){
-				try
-				{
-					if (theApp.m_pUPnPFinder->AreServicesHealthy())
-						theApp.m_pUPnPFinder->StartDiscovery(thePrefs.GetPort(), thePrefs.GetUDPPort());
-				}
-				catch ( CUPnPFinder::UPnPError& ) {}
-				catch ( CException* e ) { e->Delete(); }
-			}
+			theApp.emuledlg->StartUPnP();
 		}
 	}
 	else

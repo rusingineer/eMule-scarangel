@@ -118,7 +118,8 @@
 #include "VisualStylesXP.h"
 //Xman official UPNP removed
 /*
-#include "UPnPFinder.h"
+#include "UPnPImpl.h"
+#include "UPnPImplWrapper.h"
 */
 //Xman end
 #include "Dbt.h" // Automatic shared files updater [MoNKi] - Stulle
@@ -166,6 +167,7 @@ BEGIN_MESSAGE_MAP(CemuleDlg, CTrayDialog)
 	ON_WM_MENUCHAR()
 	ON_WM_QUERYENDSESSION()
 	ON_WM_SYSCOLORCHANGE()
+	ON_WM_CTLCOLOR()
 	ON_MESSAGE(WM_COPYDATA, OnWMData)
 	ON_MESSAGE(WM_KICKIDLE, OnKickIdle)
 	ON_MESSAGE(WM_USERCHANGED, OnUserChanged)
@@ -174,7 +176,6 @@ BEGIN_MESSAGE_MAP(CemuleDlg, CTrayDialog)
 	ON_WM_SETTINGCHANGE()
 	ON_MESSAGE(WM_POWERBROADCAST, OnPowerBroadcast)
 	ON_MESSAGE(WM_HOTKEY, OnHotKey)	// Invisible Mode [TPT/MoNKi] - Stulle
-	ON_WM_CTLCOLOR() // Design Settings [eWombat/Stulle] - Max
 
 	ON_WM_MEASUREITEM() // XP Style Menu [Xanatos] - Stulle
 
@@ -253,6 +254,8 @@ BEGIN_MESSAGE_MAP(CemuleDlg, CTrayDialog)
 	ON_MESSAGE(TM_FLUSHDONE, OnFlushDone) // SiRoB: Flush Thread
 	ON_MESSAGE(TM_DOTIMER, DoTimer) //Xman process timer code via messages (Xanatos)
 	//Xman end
+	ON_MESSAGE(TM_SAVEDONE, OnSaveDone) // File Settings [sivka/Stulle] - Stulle
+	ON_MESSAGE(TM_SAVEKNOWNDONE, OnSaveKnownDone) // Threaded Known Files Saving [Stulle] - Stulle
 	ON_MESSAGE(TM_FRAMEGRABFINISHED, OnFrameGrabFinished)
 	ON_MESSAGE(TM_FILEALLOCEXC, OnFileAllocExc)
 	ON_MESSAGE(TM_FILECOMPLETED, OnFileCompleted)
@@ -333,6 +336,15 @@ CemuleDlg::CemuleDlg(CWnd* pParent /*=NULL*/)
 	// <== Show in MSN7 [TPT] - Stulle
 
 	b_HideApp = false; // Invisible Mode [TPT/MoNKi] - Stulle
+
+	// ==> Completed in Tray [Stulle] - Stulle
+	m_icoSysTrayConnectedPlus = NULL;
+	m_icoSysTrayDisconnectedPlus = NULL;
+	m_icoSysTrayLowIDPlus = NULL;
+	m_dwTrayTime = 0;
+	m_bTrayBool = false;
+	m_bTrayBoolOld = false;
+	// <== Completed in Tray [Stulle] - Stulle
 }
 
 CemuleDlg::~CemuleDlg()
@@ -354,6 +366,11 @@ CemuleDlg::~CemuleDlg()
 	if (m_icoSysTrayConnected) VERIFY( ::DestroyIcon(m_icoSysTrayConnected) );
 	if (m_icoSysTrayDisconnected) VERIFY( ::DestroyIcon(m_icoSysTrayDisconnected) );
 	if (m_icoSysTrayLowID) VERIFY( ::DestroyIcon(m_icoSysTrayLowID) );
+	// ==> Completed in Tray [Stulle] - Stulle
+	if (m_icoSysTrayConnectedPlus) VERIFY( ::DestroyIcon(m_icoSysTrayConnectedPlus) );
+	if (m_icoSysTrayDisconnectedPlus) VERIFY( ::DestroyIcon(m_icoSysTrayDisconnectedPlus) );
+	if (m_icoSysTrayLowIDPlus) VERIFY( ::DestroyIcon(m_icoSysTrayLowIDPlus) );
+	// <== Completed in Tray [Stulle] - Stulle
 	if (usericon) VERIFY( ::DestroyIcon(usericon) );
 
 	// already destroyed by windows?
@@ -539,14 +556,34 @@ BOOL CemuleDlg::OnInitDialog()
 	SetStatusBarPartsSize();
 
 	// create main window dialog pages
-	DialogCreateIndirect(serverwnd, IDD_SERVER);
-	DialogCreateIndirect(sharedfileswnd, IDD_FILES);
-	searchwnd->Create(this); // can not use 'DialogCreateIndirect' for the SearchWnd, grrr..
-	DialogCreateIndirect(chatwnd, IDD_CHAT);
-	DialogCreateIndirect(transferwnd, IDD_TRANSFER);
-	DialogCreateIndirect(statisticswnd, IDD_STATISTICS);
-	DialogCreateIndirect(kademliawnd, IDD_KADEMLIAWND);
-	DialogCreateIndirect(ircwnd, IDD_IRC);
+	//zz_fly :: prevent crash on create main window
+	//note: new method (.49b) will crash on winxp, but old method may crash on win2k
+	//		so, win2k use new method , others use old method.
+	if(thePrefs.GetWindowsVersion() == _WINVER_2K_ )
+	{
+		//zz_fly :: prevent crash on create main windows end
+		DialogCreateIndirect(serverwnd, IDD_SERVER);
+		DialogCreateIndirect(sharedfileswnd, IDD_FILES);
+		searchwnd->Create(this); // can not use 'DialogCreateIndirect' for the SearchWnd, grrr..
+		DialogCreateIndirect(chatwnd, IDD_CHAT);
+		DialogCreateIndirect(transferwnd, IDD_TRANSFER);
+		DialogCreateIndirect(statisticswnd, IDD_STATISTICS);
+		DialogCreateIndirect(kademliawnd, IDD_KADEMLIAWND);
+		DialogCreateIndirect(ircwnd, IDD_IRC);
+	//zz_fly :: prevent crash on create main windows end
+	}
+	else
+	{
+		serverwnd->Create(IDD_SERVER);
+		sharedfileswnd->Create(IDD_FILES);
+		searchwnd->Create(this);
+		chatwnd->Create(IDD_CHAT);
+		transferwnd->Create(IDD_TRANSFER);
+		statisticswnd->Create(IDD_STATISTICS);
+		kademliawnd->Create(IDD_KADEMLIAWND);
+		ircwnd->Create(IDD_IRC);
+	}
+	//zz_fly :: prevent crash on create main windows end
 
 	// with the top rebar control, some XP themes look better with some additional lite borders.. some not..
 	//serverwnd->ModifyStyleEx(0, WS_EX_STATICEDGE);
@@ -756,18 +793,8 @@ BOOL CemuleDlg::OnInitDialog()
 	//Xman official UPNP removed
 	/*
 	// Start UPnP prot forwarding
-	if (theApp.m_pUPnPFinder != NULL && thePrefs.IsUPnPEnabled()){
-		try
-		{
-			if (theApp.m_pUPnPFinder->AreServicesHealthy()){
-				theApp.m_pUPnPFinder->SetMessageOnResult(GetSafeHwnd(), UM_UPNP_RESULT);
-				VERIFY( (m_hUPnPTimeOutTimer = ::SetTimer(NULL, NULL, SEC2MS(30), UPnPTimeOutTimer)) != NULL );
-				theApp.m_pUPnPFinder->StartDiscovery(thePrefs.GetPort(), thePrefs.GetUDPPort());
-			}
-		}
-		catch ( CUPnPFinder::UPnPError& ) {}
-		catch ( CException* e ) { e->Delete(); }
-	}
+	if (thePrefs.IsUPnPEnabled())
+		StartUPnP();
 	*/
 	//Xman end
 
@@ -854,8 +881,11 @@ void CemuleDlg::DoMVersioncheck(bool manual) {
 	if (WSAAsyncGetHostByName(m_hWnd, UM_MVERSIONCHECK_RESPONSE, "xtreme.dyndns.info", m_acMVCDNSBuffer, sizeof(m_acMVCDNSBuffer)) == 0){
 		AddLogLine(true,GetResString(IDS_NEWVERSIONFAILED));
 	}
-	else
-		WSAAsyncGetHostByName(m_hWnd, UM_DLPVERSIONCHECK_RESPONSE, "dlp.dyndns.info", m_acDLPBuffer, sizeof(m_acDLPBuffer)); //Xman DLP //MOD NOTE: if you are using DLP, don't remove/modify this versions-check
+	//Xman DLP //MOD NOTE: if you are using DLP, don't remove/modify this versions-check
+	else if (WSAAsyncGetHostByName(m_hWnd, UM_DLPVERSIONCHECK_RESPONSE, "dlp.dyndns.info", m_acDLPBuffer, sizeof(m_acDLPBuffer)) == 0){
+		AddLogLine(true,_T("DLP version check failed"));
+	}
+	//Xman End
 	*/
 	; // Do nothing
 	// <== Removed Xtreme version check (not working for now) [Stulle] - Stulle
@@ -1417,7 +1447,6 @@ void CemuleDlg::ShowConnectionState()
 			tbi.iImage = 2;
 			tbi.pszText = const_cast<LPTSTR>((LPCTSTR)strPane);
 			toolbar->SetButtonInfo(TBBTN_CONNECT, &tbi);
-			ShowUserCount();
 		} 
 		else 
 		{
@@ -1428,10 +1457,9 @@ void CemuleDlg::ShowConnectionState()
 			tbi.iImage = 0;
 			tbi.pszText = const_cast<LPTSTR>((LPCTSTR)strPane);
 			toolbar->SetButtonInfo(TBBTN_CONNECT, &tbi);
-			ShowUserCount();
 		}
-
 	}
+	ShowUserCount();
 }
 
 void CemuleDlg::ShowUserCount()
@@ -1440,7 +1468,14 @@ void CemuleDlg::ShowUserCount()
 	totaluser = totalfile = 0;
 	theApp.serverlist->GetUserFileStatus( totaluser, totalfile );
 	CString buffer;
-	buffer.Format(_T("%s:%s(%s)|%s:%s(%s)"), GetResString(IDS_UUSERS), CastItoIShort(totaluser, false, 1), CastItoIShort(Kademlia::CKademlia::GetKademliaUsers(), false, 1), GetResString(IDS_FILES), CastItoIShort(totalfile, false, 1), CastItoIShort(Kademlia::CKademlia::GetKademliaFiles(), false, 1));
+	if (theApp.serverconnect->IsConnected() && Kademlia::CKademlia::IsRunning() && Kademlia::CKademlia::IsConnected())
+		buffer.Format(_T("%s:%s(%s)|%s:%s(%s)"), GetResString(IDS_UUSERS), CastItoIShort(totaluser, false, 1), CastItoIShort(Kademlia::CKademlia::GetKademliaUsers(), false, 1), GetResString(IDS_FILES), CastItoIShort(totalfile, false, 1), CastItoIShort(Kademlia::CKademlia::GetKademliaFiles(), false, 1));
+	else if (theApp.serverconnect->IsConnected())
+		buffer.Format(_T("%s:%s|%s:%s"), GetResString(IDS_UUSERS), CastItoIShort(totaluser, false, 1), GetResString(IDS_FILES), CastItoIShort(totalfile, false, 1));
+	else if (Kademlia::CKademlia::IsRunning() && Kademlia::CKademlia::IsConnected())
+		buffer.Format(_T("%s:%s|%s:%s"), GetResString(IDS_UUSERS), CastItoIShort(Kademlia::CKademlia::GetKademliaUsers(), false, 1), GetResString(IDS_FILES), CastItoIShort(Kademlia::CKademlia::GetKademliaFiles(), false, 1));
+	else
+		buffer.Format(_T("%s:0|%s:0"), GetResString(IDS_UUSERS), GetResString(IDS_FILES));
 	statusbar->SetText(buffer, SBarUsers, 0);
 }
 
@@ -1576,6 +1611,15 @@ void CemuleDlg::ShowTransferRate(bool bForceAll)
 	const float downloadOverheadRate = (float)m_downloadOverheadRate/1024;
 	// <== Show in MSN7 [TPT] - Stulle
 
+	// ==> Completed in Tray [Stulle] - Stulle
+	int iTotal;
+	if (thePrefs.GetTrayComplete() && ::GetTickCount() - m_dwTrayTime > SEC2MS(10))
+	{
+		m_bTrayBool = (theApp.emuledlg->transferwnd->downloadlistctrl.GetCompleteDownloads(-1, iTotal) > 0);
+		m_dwTrayTime = ::GetTickCount();
+	}
+	// <== Completed in Tray [Stulle] - Stulle
+
 	CString strTransferRate = GetTransferRateString();
 	if (TrayIsVisible() || bForceAll)
 	{
@@ -1596,7 +1640,7 @@ void CemuleDlg::ShowTransferRate(bool bForceAll)
 		}
 
 		// Win98: '\r\n' is not displayed correctly in tooltip
-		if (afxData.bWin95) {
+		if (afxIsWin95()) {
 			LPTSTR psz = buffer2;
 			while (*psz) {
 				if (*psz == _T('\r') || *psz == _T('\n'))
@@ -2505,9 +2549,9 @@ void CemuleDlg::OnClose()
 	//Xman official UPNP removed
 	/*
 	// close uPnP Ports
-	theApp.m_pUPnPFinder->StopAsyncFind();
+	theApp.m_pUPnPFinder->GetImplementation()->StopAsyncFind();
 	if (thePrefs.CloseUPnPOnExit())
-		theApp.m_pUPnPFinder->DeletePorts();
+		theApp.m_pUPnPFinder->GetImplementation()->DeletePorts();
 	*//*
 	//Xman end
 
@@ -2849,7 +2893,7 @@ void CemuleDlg::AddSpeedSelectorMenus(CMenu* addToMenu)
 		text.Format(_T("40%%\t%i %s"),  (uint16)(thePrefs.GetMaxGraphUploadRate()*0.4),GetResString(IDS_KBYTESPERSEC));	m_menuUploadCtrl.AppendMenu(MF_STRING, MP_QS_U40,  text);
 		text.Format(_T("60%%\t%i %s"),  (uint16)(thePrefs.GetMaxGraphUploadRate()*0.6),GetResString(IDS_KBYTESPERSEC));	m_menuUploadCtrl.AppendMenu(MF_STRING, MP_QS_U60,  text);
 		text.Format(_T("80%%\t%i %s"),  (uint16)(thePrefs.GetMaxGraphUploadRate()*0.8),GetResString(IDS_KBYTESPERSEC));	m_menuUploadCtrl.AppendMenu(MF_STRING, MP_QS_U80,  text);
-		text.Format(_T("90%%\t%i %s"),  (uint16)(thePrefs.GetMaxGraphUploadRate()*0.9),GetResString(IDS_KBYTESPERSEC));	m_menuUploadCtrl.AppendMenu(MF_STRING, MP_QS_U100, text);
+		text.Format(_T("90%%\t%i %s"),  (uint16)(thePrefs.GetMaxGraphUploadRate()*0.9),GetResString(IDS_KBYTESPERSEC));	m_menuUploadCtrl.AppendMenu(MF_STRING, MP_QS_U90, text);
 		//Xman end
 		
 		m_menuUploadCtrl.AppendMenu(MF_SEPARATOR);
@@ -2983,8 +3027,15 @@ void CemuleDlg::UpdateTrayIcon(int iPercent)
 		uSysTrayIconCookie += 100;
 
 	// dont update if the same icon as displayed would be generated
+	// ==> Completed in Tray [Stulle] - Stulle
+	/*
 	if (m_uLastSysTrayIconCookie == uSysTrayIconCookie)
 		return;
+	*/
+	if (m_uLastSysTrayIconCookie == uSysTrayIconCookie && m_bTrayBoolOld == m_bTrayBool)
+		return;
+	m_bTrayBoolOld = m_bTrayBool;
+	// <== Completed in Tray [Stulle] - Stulle
 	m_uLastSysTrayIconCookie = uSysTrayIconCookie;
 
 	// prepare it up
@@ -2996,6 +3047,8 @@ void CemuleDlg::UpdateTrayIcon(int iPercent)
 	} else m_iMsgBlinkState=false;
 
 	if (!m_iMsgBlinkState) {
+		// ==> Completed in Tray [Stulle] - Stulle
+		/*
 		if (theApp.IsConnected()) {
 			if (theApp.IsFirewalled())
 				m_TrayIcon.Init(m_icoSysTrayLowID, 100, 1, 1, 16, 16, thePrefs.GetStatsColor(11));
@@ -3004,6 +3057,28 @@ void CemuleDlg::UpdateTrayIcon(int iPercent)
 		}
 		else
 			m_TrayIcon.Init(m_icoSysTrayDisconnected, 100, 1, 1, 16, 16, thePrefs.GetStatsColor(11));
+		*/
+		if (theApp.IsConnected()) {
+			if (thePrefs.GetTrayComplete() && m_bTrayBool)
+			{
+				if (theApp.IsFirewalled())
+					m_TrayIcon.Init(m_icoSysTrayLowIDPlus, 100, 1, 1, 16, 16, thePrefs.GetStatsColor(11));
+				else
+					m_TrayIcon.Init(m_icoSysTrayConnectedPlus, 100, 1, 1, 16, 16, thePrefs.GetStatsColor(11));
+			}
+			else
+			{
+				if (theApp.IsFirewalled())
+					m_TrayIcon.Init(m_icoSysTrayLowID, 100, 1, 1, 16, 16, thePrefs.GetStatsColor(11));
+				else
+					m_TrayIcon.Init(m_icoSysTrayConnected, 100, 1, 1, 16, 16, thePrefs.GetStatsColor(11));
+			}
+		}
+		else if (thePrefs.GetTrayComplete() && m_bTrayBool)
+			m_TrayIcon.Init(m_icoSysTrayDisconnectedPlus, 100, 1, 1, 16, 16, thePrefs.GetStatsColor(11));
+		else
+			m_TrayIcon.Init(m_icoSysTrayDisconnected, 100, 1, 1, 16, 16, thePrefs.GetStatsColor(11));
+		// <== Completed in Tray [Stulle] - Stulle
 	}
 
 	// load our limit and color info
@@ -3244,6 +3319,35 @@ void CemuleDlg::OnSysColorChange()
 	SetAllIcons();
 }
 
+// ==> Design Settings [eWombat/Stulle] - Max
+// See end of file for modded function
+/*
+HBRUSH CemuleDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = GetCtlColor(pDC, pWnd, nCtlColor);
+	if (hbr)
+		return hbr;
+	return __super::OnCtlColor(pDC, pWnd, nCtlColor);
+}
+*/
+// <== Design Settings [eWombat/Stulle] - Max
+
+HBRUSH CemuleDlg::GetCtlColor(CDC* /*pDC*/, CWnd* /*pWnd*/, UINT nCtlColor)
+{
+	UNREFERENCED_PARAMETER(nCtlColor);
+	// This function could be used to give the entire eMule (at least all of the main windows)
+	// a somewhat more Vista like look by giving them all a bright background color.
+	// However, again, the ownerdrawn tab controls are noticeable disturbing that attempt. They
+	// do not change their background color accordingly. They don't use NMCUSTOMDRAW nor to they
+	// use WM_CTLCOLOR...
+	//
+	//if (theApp.m_ullComCtrlVer >= MAKEDLLVERULL(6,16,0,0) && g_xpStyle.IsThemeActive() && g_xpStyle.IsAppThemed()) {
+	//	if (nCtlColor == CTLCOLOR_DLG || nCtlColor == CTLCOLOR_STATIC)
+	//		return GetSysColorBrush(COLOR_WINDOW);
+	//}
+	return NULL;
+}
+
 void CemuleDlg::SetAllIcons()
 {
 	// application icon (although it's not customizable, we may need to load a different color resolution)
@@ -3294,6 +3398,14 @@ void CemuleDlg::SetAllIcons()
 	m_icoSysTrayConnected = theApp.LoadIcon(_T("TrayConnected"), 16, 16);
 	m_icoSysTrayDisconnected = theApp.LoadIcon(_T("TrayNotConnected"), 16, 16);
 	m_icoSysTrayLowID = theApp.LoadIcon(_T("TrayLowID"), 16, 16);
+	// ==> Completed in Tray [Stulle] - Stulle
+	if (m_icoSysTrayConnectedPlus) VERIFY( ::DestroyIcon(m_icoSysTrayConnectedPlus) );
+	if (m_icoSysTrayDisconnectedPlus) VERIFY( ::DestroyIcon(m_icoSysTrayDisconnectedPlus) );
+	if (m_icoSysTrayLowIDPlus) VERIFY( ::DestroyIcon(m_icoSysTrayLowIDPlus) );
+	m_icoSysTrayConnectedPlus = theApp.LoadIcon(_T("TrayConnectedPlus"), 16, 16);
+	m_icoSysTrayDisconnectedPlus = theApp.LoadIcon(_T("TrayNotConnectedPlus"), 16, 16);
+	m_icoSysTrayLowIDPlus = theApp.LoadIcon(_T("TrayLowIDPlus"), 16, 16);
+	// <== Completed in Tray [Stulle] - Stulle
 	ShowTransferRate(true);
 
 	if (imicons[0]) VERIFY( ::DestroyIcon(imicons[0]) );
@@ -3707,7 +3819,7 @@ void CemuleDlg::ShowToolPopup(bool toolsonly)
 		menu.AppendMenu(MF_SEPARATOR);
 	}
 
-	menu.AppendMenu(MF_STRING,MP_HM_OPENINC, GetResString(IDS_OPENINC) + _T("..."), _T("OPENFOLDER"));
+	menu.AppendMenu(MF_STRING,MP_HM_OPENINC, GetResString(IDS_OPENINC) + _T("..."), _T("INCOMING"));
 	menu.AppendMenu(MF_STRING,MP_HM_CONVERTPF, GetResString(IDS_IMPORTSPLPF) + _T("..."), _T("CONVERT"));
 	menu.AppendMenu(MF_STRING,MP_HM_1STSWIZARD, GetResString(IDS_WIZ1) + _T("..."), _T("WIZARD"));
 	menu.AppendMenu(MF_STRING,MP_HM_IPFILTER, GetResString(IDS_IPFILTER) + _T("..."), _T("IPFILTER"));
@@ -3984,7 +4096,7 @@ LRESULT CemuleDlg::OnDLPVersionCheckResponse(WPARAM /*wParam*/, LPARAM lParam)
 					Log(LOG_SUCCESS|LOG_STATUSBAR,GetResString(IDS_NEWDLP));
 					ShowNotifier(GetResString(IDS_NEWDLP), TBN_NEWMVERSION);
 					if (m_bCheckwasDone==false && AfxMessageBox(GetResString(IDS_NEWDLPDOWNLOAD),MB_YESNO)==IDYES) {
-						ShellExecute(NULL, NULL, MOD_HPLINK, NULL, thePrefs.GetMuleDirectory(EMULE_EXECUTEABLEDIR), SW_SHOWDEFAULT);
+						ShellExecute(NULL, NULL, MOD_DLPLINK, NULL, thePrefs.GetMuleDirectory(EMULE_EXECUTEABLEDIR), SW_SHOWDEFAULT); //zz_fly :: update DLP link
 					}
 					m_bCheckwasDone=false;
 				}
@@ -4718,13 +4830,22 @@ void CemuleDlg::SetToolTipsDelay(UINT uMilliseconds)
 //Xman official UPNP removed
 //void CemuleDlg::UPnPTimeOutTimer(HWND /*hwnd*/, UINT /*uiMsg*/, UINT /*idEvent*/, DWORD /*dwTime*/){
 /*
-	::PostMessage(theApp.emuledlg->GetSafeHwnd(), UM_UPNP_RESULT, (WPARAM)CUPnPFinder::UPNP_TIMEOUT, 0);
+	::PostMessage(theApp.emuledlg->GetSafeHwnd(), UM_UPNP_RESULT, (WPARAM)CUPnPImpl::UPNP_TIMEOUT, 0);
 }
 */
 
-//LRESULT CemuleDlg::OnUPnPResult(WPARAM /*wParam*/, LPARAM /*lParam*/){
+//LRESULT CemuleDlg::OnUPnPResult(WPARAM wParam, LPARAM /*lParam*/){
 /*
-	// the actual result if UPnP was successful is delivered in wParam, but we don't really care about this right now
+	if (wParam == CUPnPImpl::UPNP_FAILED){		
+		// UPnP failed, check if we can retry it with another implementation
+		if (theApp.m_pUPnPFinder->SwitchImplentation()){
+			StartUPnP(false);
+			return 0;
+		}
+		else
+			DebugLog(_T("No more available UPnP implementations left"));
+
+	}
 	if (m_hUPnPTimeOutTimer != 0){
 		VERIFY( ::KillTimer(NULL, m_hUPnPTimeOutTimer) );
 		m_hUPnPTimeOutTimer = 0;
@@ -4732,6 +4853,15 @@ void CemuleDlg::SetToolTipsDelay(UINT uMilliseconds)
 	if(IsRunning() && m_bConnectRequestDelayedForUPnP){
 		StartConnection();
 	}
+	if (wParam == CUPnPImpl::UPNP_OK){
+		// remember the last working implementation
+		thePrefs.SetLastWorkingUPnPImpl(theApp.m_pUPnPFinder->GetImplementation()->GetImplementationID());
+		Log(GetResString(IDS_UPNPSUCCESS), theApp.m_pUPnPFinder->GetImplementation()->GetUsedTCPPort()
+			, theApp.m_pUPnPFinder->GetImplementation()->GetUsedUDPPort());
+	}
+	else
+		LogWarning(GetResString(IDS_UPNPFAILED));
+
 	return 0;
 }
 */
@@ -4766,6 +4896,35 @@ LRESULT  CemuleDlg::OnPowerBroadcast(WPARAM wParam, LPARAM lParam)
 	}
 
 }
+
+//Xman official UPNP removed
+/*
+void CemuleDlg::StartUPnP(bool bReset, uint16 nForceTCPPort, uint16 nForceUDPPort) {
+	if (theApp.m_pUPnPFinder != NULL && (m_hUPnPTimeOutTimer == 0 || !bReset)){
+		if (bReset){
+			theApp.m_pUPnPFinder->Reset();
+			Log(GetResString(IDS_UPNPSETUP));
+		}
+		try
+		{
+			if (theApp.m_pUPnPFinder->GetImplementation()->IsReady()){
+				theApp.m_pUPnPFinder->GetImplementation()->SetMessageOnResult(GetSafeHwnd(), UM_UPNP_RESULT);
+				if (bReset)
+					VERIFY( (m_hUPnPTimeOutTimer = ::SetTimer(NULL, NULL, SEC2MS(40), UPnPTimeOutTimer)) != NULL );
+				theApp.m_pUPnPFinder->GetImplementation()->StartDiscovery(((nForceTCPPort != 0) ? nForceTCPPort : thePrefs.GetPort())
+					, ((nForceUDPPort != 0) ? nForceUDPPort :thePrefs.GetUDPPort()));
+			}
+			else
+				::PostMessage(theApp.emuledlg->GetSafeHwnd(), UM_UPNP_RESULT, (WPARAM)CUPnPImpl::UPNP_FAILED, 0);
+		}
+		catch ( CUPnPImpl::UPnPError& ) {}
+		catch ( CException* e ) { e->Delete(); }
+	}
+	else
+		ASSERT( false );
+}
+*/
+//Xman end
 
 //Xman process timer code via messages (Xanatos)
 // Note: the timers does not crash on a exception so I use the messags to call the functions so when an error aprears it will be detected
@@ -4840,7 +4999,16 @@ void CemuleDlg::SaveSettings (bool _shutdown) {
 		theApp.emuledlg->preferenceswnd->m_wndSecurity.DeleteDDB();
 	}
 
-	theApp.knownfiles->Save();
+	// ==> Threaded Known Files Saving [Stulle] - Stulle
+	if (theApp.knownfiles->m_SaveKnownThread) // we just saved something
+	{
+		theApp.knownfiles->m_SaveKnownThread->EndThread();
+		delete theApp.knownfiles->m_SaveKnownThread;
+		theApp.knownfiles->m_SaveKnownThread = NULL;
+	}
+	else // we might have missed something
+	// <== Threaded Known Files Saving [Stulle] - Stulle
+		theApp.knownfiles->Save();
 	//transferwnd->downloadlistctrl.SaveSettings();
 	//transferwnd->downloadclientsctrl.SaveSettings();
 	//transferwnd->uploadlistctrl.SaveSettings();
@@ -5208,3 +5376,27 @@ void CemuleDlg::Resize_TrafficGraph()
 	}
 }
 // <== High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
+
+// ==> File Settings [sivka/Stulle] - Stulle
+LRESULT CemuleDlg::OnSaveDone(WPARAM /*wParam*/,LPARAM /*lParam*/)
+{
+	if (theApp.m_app_state == APP_STATE_SHUTTINGDOWN)
+		return FALSE;
+
+	theApp.downloadqueue->SaveFileSettings(false);
+
+	return 0;
+}
+// <== File Settings [sivka/Stulle] - Stulle
+
+// ==> Threaded Known Files Saving [Stulle] - Stulle
+LRESULT CemuleDlg::OnSaveKnownDone(WPARAM /*wParam*/,LPARAM /*lParam*/)
+{
+	if (theApp.m_app_state == APP_STATE_SHUTTINGDOWN)
+		return FALSE;
+
+	theApp.knownfiles->SaveKnown(false);
+
+	return 0;
+}
+// <== Threaded Known Files Saving [Stulle] - Stulle

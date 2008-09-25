@@ -22,15 +22,17 @@
 //ModID
 #define MOD_VERSION		_T("Xtreme 7.0") 
 */
+// <== ModID [itsonlyme/SiRoB] - Stulle
 
 //Xman versions check
 #define MOD_MAIN_VER	7
 #define MOD_MIN_VER		0
 #define	MOD_BUILD_VER	1 //1=Xtreme x.x 2=Xtreme x.x.1
-/*
 
+// ==> ModID [itsonlyme/SiRoB] - Stulle
+/*
 //Xman Anti-Leecher: simple Anti-Thief
-#define MOD_MAJOR_VERSION _T("eMule v0.48a") 
+#define MOD_MAJOR_VERSION _T("eMule v0.49b") 
 //const float MOD_FLOAT_VERSION= (float)_tstof(CString(MOD_VERSION).Mid(7)) ;
 #define MOD_NICK_ADD _T(" «") + MOD_VERSION + _T("»")
 */
@@ -39,7 +41,8 @@
 
 //Xman Links:
 #define MOD_FORUMLINK _T("http://www.emule-web.de/board/forum34.html")
-#define MOD_HPLINK _T("http://xtreme-mod.net")
+#define MOD_HPLINK _T("http://www.emule-mods.de/?mods=xtreme") //zz_fly :: new homepage
+#define MOD_DLPLINK _T("http://sourceforge.net/project/showfiles.php?group_id=129450&package_id=164798") //zz_fly :: update DLP link
 #define MOD_VOTELINK _T("http://www.emule-mods.de/?comment=xtreme#addentry")
 //---------------------------------------
 
@@ -54,7 +57,8 @@
 #define KADEMLIA_VERSION5_48a			0x05 // -0.48a
 #define KADEMLIA_VERSION6_49aBETA		0x06 // -0.49aBETA1, needs to support: OP_FWCHECKUDPREQ (!), obfuscation, direct callbacks, source type 6, UDP firewallcheck
 #define KADEMLIA_VERSION7_49a			0x07 // -0.49a needs to support OP_KAD_FWTCPCHECK_ACK, KADEMLIA_FIREWALLED2_REQ
-#define KADEMLIA_VERSION				0x07 // Change CT_EMULE_MISCOPTIONS2 if Kadversion becomes >= 15
+#define KADEMLIA_VERSION8_49b			0x08 // TAG_KADMISCOPTIONS, KADEMLIA2_HELLO_RES_ACK
+#define KADEMLIA_VERSION				0x08 // Change CT_EMULE_MISCOPTIONS2 if Kadversion becomes >= 15
 #define PREFFILE_VERSION				0x14	//<<-- last change: reduced .dat, by using .ini
 #define PARTFILE_VERSION				0xe0
 #define PARTFILE_SPLITTEDVERSION		0xe1
@@ -150,7 +154,7 @@
 // MOD Note: end
 
 #define CONFIGFOLDER			_T("config\\")
-#define SIVKAFOLDER				_T("Extra Lists\\") // file settings - Stulle
+#define SIVKAFOLDER				_T("Extra Lists\\") // File Settings [sivka/Stulle] - Stulle
 #define MAXCONPER5SEC			20	
 #define MAXCON5WIN9X			10
 #define	UPLOAD_CHECK_CLIENT_DR	2048
@@ -473,6 +477,7 @@
 #define	TAG_MEDIA_BITRATE		"\xD4"	// <uint32>
 #define	 FT_MEDIA_CODEC			 0xD5	// <string>
 #define	TAG_MEDIA_CODEC			"\xD5"	// <string>
+#define TAG_KADMISCOPTIONS		"\xF2"	// <uint8>
 #define TAG_ENCRYPTION			"\xF3"	// <uint8>
 #define TAG_USER_COUNT			"\xF4"	// <uint32>
 #define TAG_FILE_COUNT			"\xF5"	// <uint32>
@@ -664,6 +669,8 @@
 #define KADEMLIA_REQ		   			0x20	// <TYPE [1]> <HASH (target) [16]> <HASH (receiver) 16>
 #define KADEMLIA2_REQ					0x21	//
 
+#define KADEMLIA2_HELLO_RES_ACK			0x22	// <NodeID><uint8 tags>
+
 #define KADEMLIA_RES					0x28	// <HASH (target) [16]> <CNT> <PEER [25]>*(CNT)
 #define KADEMLIA2_RES					0x29	//
 
@@ -690,6 +697,7 @@
 //#define UNUSED						0x49	// Old Opcode, don't use.
 #define KADEMLIA_PUBLISH_NOTES_RES		0x4A	// <HASH (key) [16]>
 #define	KADEMLIA2_PUBLISH_RES			0x4B	//
+#define	KADEMLIA2_PUBLISH_RES_ACK		0x4C	// null
 
 #define KADEMLIA_FIREWALLED_REQ			0x50	// <TCPPORT (sender) [2]>
 #define KADEMLIA_FINDBUDDY_REQ			0x51	// <TCPPORT (sender) [2]>
@@ -720,7 +728,7 @@
 #define SP_FILESIZE						0x07
 #define SP_UDPSERVERSPAMRATIO			0x08
 
-// ==> file settings - Stulle
+// ==> File Settings [sivka/Stulle] - Stulle
 #define ENABLE_AUTO_DROP_NNS            true
 #define AUTO_NNS_TIMER                  35000 // 35 sec
 #define MAX_REMOVE_NNS_LIMIT            80
@@ -732,7 +740,7 @@
 #define MAX_REMOVE_QRS                  4000
 #define MAX_REMOVE_QRS_LIMIT            90
 #define HQR_XMAN                        true
-// <== file settings - Stulle
+// <== File Settings [sivka/Stulle] - Stulle
 
 #define MAX_GSL                         8000 // Global Source Limit [Max/Stulle] - Stulle
 

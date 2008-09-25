@@ -118,6 +118,12 @@ CDownloadQueue::CDownloadQueue()
 	m_bBusyPurgingLinks = false;
 	m_ED2KLinkQueue.RemoveAll();
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+
+	// ==> File Settings [sivka/Stulle] - Stulle
+	m_SaveSettingsThread = NULL;
+	m_bSaveAgain = false;
+	m_dwLastSave = 0;
+	// <== File Settings [sivka/Stulle] - Stulle
 }
 
 void CDownloadQueue::AddPartFilesToShare()
@@ -165,10 +171,15 @@ void CDownloadQueue::Init(){
 			// BEGIN SLUGFILLER: SafeHash - one is enough
 			if (metsfound.Find(CString(ff.GetFileName()).MakeLower()))
 				continue;
+			//MORPH START - Moved Down, to allow checking for backup met files.
+			/*
 			metsfound.AddTail(CString(ff.GetFileName()).MakeLower());
+			*/
+			//MORPH END   - Moved Down, to allow checking for backup met files.
 			// END SLUGFILLER: SafeHash
 			CPartFile* toadd = new CPartFile();
 			if (toadd->LoadPartFile(thePrefs.GetTempDir(i), ff.GetFileName())){
+				metsfound.AddTail(CString(ff.GetFileName()).MakeLower()); //MORPH - Added, fix SafeHash
 				count++;
 				filelist.AddTail(toadd);			// to downloadqueue
 				//Xman
@@ -195,11 +206,18 @@ void CDownloadQueue::Init(){
 			// BEGIN SLUGFILLER: SafeHash - one is enough
 			if (metsfound.Find(RemoveFileExtension(CString(ff.GetFileName()).MakeLower())))
 				continue;
+			//MORPH START - Moved Down, to allow checking for backup met files.
+			/*
 			metsfound.AddTail(RemoveFileExtension(CString(ff.GetFileName()).MakeLower()));
+			*/
+			//MORPH END   - Moved Down, to allow checking for backup met files.
 			// END SLUGFILLER: SafeHash
 
 			CPartFile* toadd = new CPartFile();
 			if (toadd->LoadPartFile(thePrefs.GetTempDir(i),ff.GetFileName())){
+				//MORPH START - Added, fix SafeHash
+				metsfound.AddTail(RemoveFileExtension(CString(ff.GetFileName()).MakeLower()));
+				//MORPH END   - Added, fix SafeHash
 				toadd->SavePartFile(); // resave backup
 				count++;
 				filelist.AddTail(toadd);			// to downloadqueue
@@ -226,14 +244,23 @@ void CDownloadQueue::Init(){
 		SortByPriority();
 		CheckDiskspace();
 	}
-	m_SettingsSaver.LoadSettings(); // file settings - Stulle
+	m_SettingsSaver.LoadSettings(); // File Settings [sivka/Stulle] - Stulle
 	VERIFY( m_srcwnd.CreateEx(0, AfxRegisterWndClass(0), _T("eMule Async DNS Resolve Socket Wnd #2"), WS_OVERLAPPED, 0, 0, 0, 0, NULL, NULL));
 
 	ExportPartMetFilesOverview();
 }
 
 CDownloadQueue::~CDownloadQueue(){
-	SaveFileSettings(); // file settings - Stulle
+	// ==> File Settings [sivka/Stulle] - Stulle
+	if (m_SaveSettingsThread) // we just saved something
+	{
+		m_SaveSettingsThread->EndThread();
+		delete m_SaveSettingsThread;
+		m_SaveSettingsThread = NULL;
+	}
+	else // we might have missed something
+		(void)m_SettingsSaver.SaveSettings();
+	// <== File Settings [sivka/Stulle] - Stulle
 	for (POSITION pos = filelist.GetHeadPosition();pos != 0;)
 		delete filelist.GetNext(pos);
 	m_srcwnd.DestroyWindow(); // just to avoid a MFC warning
@@ -552,6 +579,7 @@ void CDownloadQueue::AddDownload(CPartFile* newfile,bool paused) {
 	msgTemp.Format(GetResString(IDS_NEWDOWNLOAD) + _T("\n"), newfile->GetFileName());
 	theApp.emuledlg->ShowNotifier(msgTemp, TBN_DOWNLOADADDED);
 	ExportPartMetFilesOverview();
+	SaveFileSettings(); // File Settings [sivka/Stulle] - Stulle
 }
 
 bool CDownloadQueue::IsFileExisting(const uchar* fileid, bool bLogWarnings) const
@@ -1357,6 +1385,14 @@ bool CDownloadQueue::RemoveSource(CUpDownClient* toremove, bool bDoStatsUpdate)
 
 void CDownloadQueue::RemoveFile(CPartFile* toremove)
 {
+	// ==> File Settings [sivka/Stulle] - Stulle
+	if (m_SaveSettingsThread) // we just started saving, we better wait
+	{
+		m_SaveSettingsThread->EndThread();
+		delete m_SaveSettingsThread;
+		m_SaveSettingsThread = NULL;
+	}
+	// <== File Settings [sivka/Stulle] - Stulle
 	RemoveLocalServerRequest(toremove);
 
 	//Xman
@@ -2372,7 +2408,7 @@ bool CDownloadQueue::DoKademliaFileRequest()
 	return ((::GetTickCount() - lastkademliafilerequest) > KADEMLIAASKTIME);
 }
 
-void CDownloadQueue::KademliaSearchFile(uint32 searchID, const Kademlia::CUInt128* pcontactID, const Kademlia::CUInt128* pbuddyID, uint8 type, uint32 ip, uint16 tcp, uint16 udp, uint32 serverip, uint16 serverport, uint8 byCryptOptions)
+void CDownloadQueue::KademliaSearchFile(uint32 searchID, const Kademlia::CUInt128* pcontactID, const Kademlia::CUInt128* pbuddyID, uint8 type, uint32 ip, uint16 tcp, uint16 udp, uint32 dwBuddyIP, uint16 dwBuddyPort, uint8 byCryptOptions)
 {
 	//Safty measure to make sure we are looking for these sources
 	CPartFile* temp = GetFileByKadFileSearchID(searchID);
@@ -2402,7 +2438,7 @@ void CDownloadQueue::KademliaSearchFile(uint32 searchID, const Kademlia::CUInt12
 	if( (ip == Kademlia::CKademlia::GetIPAddress() || ED2Kip == theApp.serverconnect->GetClientID()) && tcp == thePrefs.GetPort())
 		return;
 	CUpDownClient* ctemp = NULL; 
-	DEBUG_ONLY( DebugLog(_T("Kadsource received, type %u, IP %s"), type, ipstr(ED2Kip)) );
+	//DEBUG_ONLY( DebugLog(_T("Kadsource received, type %u, IP %s"), type, ipstr(ED2Kip)) );
 	switch( type )
 	{
 	case 4:
@@ -2417,8 +2453,9 @@ void CDownloadQueue::KademliaSearchFile(uint32 searchID, const Kademlia::CUInt12
 			}
 			ctemp = new CUpDownClient(temp,tcp,ip,0,0,false);
 			ctemp->SetSourceFrom(SF_KADEMLIA);
-			ctemp->SetServerIP(serverip);
-			ctemp->SetServerPort(serverport);
+			// not actually sent or needed for HighID sources
+			//ctemp->SetServerIP(serverip);
+			//ctemp->SetServerPort(serverport);
 			ctemp->SetKadPort(udp);
 			byte cID[16];
 			pcontactID->ToByteArray(cID);
@@ -2449,8 +2486,8 @@ void CDownloadQueue::KademliaSearchFile(uint32 searchID, const Kademlia::CUInt12
 			ctemp->SetUserHash(cID);
 			pbuddyID->ToByteArray(cID);
 			ctemp->SetBuddyID(cID);
-			ctemp->SetBuddyIP(serverip);
-			ctemp->SetBuddyPort(serverport);
+			ctemp->SetBuddyIP(dwBuddyIP);
+			ctemp->SetBuddyPort(dwBuddyPort);
 			break;
 		}
 		case 6:
@@ -2725,7 +2762,8 @@ void CDownloadQueue::PrintStatistic()
 	AddLogLine(false, _T("---------------------------------------"));
 }
 #endif
-// ==> file settings - Stulle
+
+// ==> File Settings [sivka/Stulle] - Stulle
 void CDownloadQueue::InitTempVariables(CPartFile* file)
 {
 	thePrefs.SetTakeOverFileSettings(false);
@@ -2777,11 +2815,94 @@ void CDownloadQueue::UpdateFileSettings(CPartFile* file)
 		file->SetHQRXman(thePrefs.GetHQRXmanTemp());
 }
 
-void CDownloadQueue::SaveFileSettings()
+#define SAVE_WAIT_TIME 5 // time we wait until we actually save
+void CDownloadQueue::SaveFileSettings(bool bStart)
 {
-	m_SettingsSaver.SaveSettings();
+	if(bStart)
+	{
+		if (m_SaveSettingsThread == NULL)
+		{
+			m_SaveSettingsThread = new CSaveSettingsThread();
+			m_dwLastSave = ::GetTickCount();
+		}
+		else if((::GetTickCount() - m_dwLastSave) < SEC2MS(SAVE_WAIT_TIME))
+			m_bSaveAgain = true;
+	}
+	else
+	{
+		if(m_bSaveAgain)
+			m_bSaveAgain = false;
+		else if (m_SaveSettingsThread) // just in case, should always be true at this point
+		{
+			m_SaveSettingsThread->EndThread();
+			delete m_SaveSettingsThread;
+			m_SaveSettingsThread = NULL;
+		}
+	}
 }
-// <== file settings - Stulle
+
+// Save settings thread to avoid locking GUI
+CSaveSettingsThread::CSaveSettingsThread(void) {
+	threadEndedEvent = new CEvent(0, 1);
+	pauseEvent = new CEvent(TRUE, TRUE);
+
+	bDoRun = true;
+	AfxBeginThread(RunProc,(LPVOID)this,THREAD_PRIORITY_LOWEST);
+}
+
+CSaveSettingsThread::~CSaveSettingsThread(void) {
+	EndThread();
+	delete threadEndedEvent;
+	delete pauseEvent;
+}
+
+void CSaveSettingsThread::EndThread() {
+	// signal the thread to stop looping and exit.
+	bDoRun = false;
+
+	Pause(false);
+
+	// wait for the thread to signal that it has stopped looping.
+	threadEndedEvent->Lock();
+}
+
+void CSaveSettingsThread::Pause(bool paused) {
+	if(paused) {
+		pauseEvent->ResetEvent();
+	} else {
+		pauseEvent->SetEvent();
+    }
+}
+
+UINT AFX_CDECL CSaveSettingsThread::RunProc(LPVOID pParam)
+{
+	DbgSetThreadName("CSaveSettingsThread");
+
+	CSaveSettingsThread* savesettingsthread = (CSaveSettingsThread*)pParam;
+
+	return savesettingsthread->RunInternal();
+}
+
+UINT CSaveSettingsThread::RunInternal()
+{
+	bool bWait = true; // only wait on the first run
+	while(bDoRun) 
+	{
+        pauseEvent->Lock();
+
+		if(bWait)
+			Sleep(SEC2MS(SAVE_WAIT_TIME));
+		bWait = false; // no more waiting henceforth
+
+		if(m_SettingsSaver.SaveSettings()) // if this fails we need to run again
+			PostMessage(theApp.emuledlg->m_hWnd,TM_SAVEDONE,0,0);
+	}
+
+	threadEndedEvent->SetEvent();
+
+	return 0;
+}
+// <== File Settings [sivka/Stulle] - Stulle
 
 //==> Global Source Limit [Max/Stulle] - Stulle
 /****************************\

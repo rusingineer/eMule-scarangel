@@ -79,4 +79,5 @@ protected:
 	afx_msg void OnSetFocus(CWnd* pOldWnd);
 	afx_msg void OnClose();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
+	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
 };

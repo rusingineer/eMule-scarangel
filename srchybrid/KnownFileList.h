@@ -21,6 +21,26 @@ class CKnownFile;
 typedef CMap<CCKey,const CCKey&,CKnownFile*,CKnownFile*> CKnownFilesMap;
 typedef CMap<CSKey,const CSKey&,int,int> CancelledFilesMap;
 
+// ==> Threaded Known Files Saving [Stulle] - Stulle
+class CSaveKnownThread : public CWinThread
+{
+public:
+    CSaveKnownThread(void);
+    ~CSaveKnownThread(void);
+
+    void EndThread();
+    void Pause(bool paused);
+
+private:
+    static UINT RunProc(LPVOID pParam);
+    UINT RunInternal();
+
+    CEvent* threadEndedEvent;
+    CEvent* pauseEvent;
+	volatile bool bDoRun;
+};
+// <== Threaded Known Files Saving [Stulle] - Stulle
+
 class CKnownFileList 
 {
 	friend class CSharedFilesWnd;
@@ -73,4 +93,11 @@ private:
 
 public:
 	uint32	GetTotalRequested() {return requested;} // push rare file - Stulle
+
+	// ==> Threaded Known Files Saving [Stulle] - Stulle
+	void SaveKnown(bool bStart = true);
+	CSaveKnownThread* m_SaveKnownThread;
+protected:
+	bool m_bSaveAgain;
+	// <== Threaded Known Files Saving [Stulle] - Stulle
 };

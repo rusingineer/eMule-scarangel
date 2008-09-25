@@ -476,9 +476,9 @@ void CPPgSecurity::OnLoadIPFFromURL()
 					const char* pc = szBuff;
 					while (*pc == ' ' || *pc == '\t' || *pc == '\r' || *pc == '\n')
 						pc++;
-					if (strnicmp(pc, "<html", 5) == 0
-						|| strnicmp(pc, "<xml", 4) == 0
-						|| strnicmp(pc, "<!doc", 5) == 0)
+					if (_strnicmp(pc, "<html", 5) == 0
+						|| _strnicmp(pc, "<xml", 4) == 0
+						|| _strnicmp(pc, "<!doc", 5) == 0)
 					{
 						bValidIPFilterFile = false;
 					}
@@ -551,8 +551,13 @@ BOOL CPPgSecurity::PreTranslateMessage(MSG* pMsg)
 		if (pMsg->wParam == VK_ESCAPE)
 			return FALSE;
 
-		if( m_pacIPFilterURL && m_pacIPFilterURL->IsBound() && ((pMsg->wParam == VK_DELETE) && (pMsg->hwnd == GetDlgItem(IDC_UPDATEURL)->m_hWnd) && (GetAsyncKeyState(VK_MENU)<0 || GetAsyncKeyState(VK_CONTROL)<0)) )
-			m_pacIPFilterURL->Clear();
+		if (pMsg->wParam == VK_DELETE && m_pacIPFilterURL && m_pacIPFilterURL->IsBound() && pMsg->hwnd == GetDlgItem(IDC_UPDATEURL)->m_hWnd)
+		{
+			if (GetAsyncKeyState(VK_MENU)<0 || GetAsyncKeyState(VK_CONTROL)<0)
+				m_pacIPFilterURL->Clear();
+			else
+				m_pacIPFilterURL->RemoveSelectedItem();
+		}
 
 		if (pMsg->wParam == VK_RETURN){
 			if (pMsg->hwnd == GetDlgItem(IDC_UPDATEURL)->m_hWnd){

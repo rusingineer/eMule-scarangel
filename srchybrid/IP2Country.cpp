@@ -129,6 +129,7 @@ void CIP2Country::Reset(){
 	theApp.serverlist->ResetIP2Country();
 	theApp.clientlist->ResetIP2Country();
 }
+
 /* Advanced Updates [MorphXT/Stulle] - Stulle
 void CIP2Country::Refresh(){
 	theApp.emuledlg->serverwnd->serverlistctrl.RefreshAllServer();
@@ -668,6 +669,7 @@ CString CIP2Country::GetDefaultFilePath() const
 {
 	return thePrefs.GetMuleDirectory(EMULE_CONFIGDIR) + DFLT_IP2COUNTRY_FILENAME;
 }
+
 // ==> Advanced Updates [MorphXT/Stulle] - Stulle
 void CIP2Country::UpdateIP2CountryURL()
 {   

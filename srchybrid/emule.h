@@ -74,7 +74,7 @@ class CPeerCacheFinder;
 class CFirewallOpener;
 //Xman official UPNP removed
 /*
-class CUPnPFinder;
+class CUPnPImplWrapper;
 */
 //Xman end
 
@@ -131,7 +131,7 @@ public:
 	CFirewallOpener*	m_pFirewallOpener;
 	//Xman official UPNP removed
 	/*
-	CUPnPFinder*		m_pUPnPFinder;
+	CUPnPImplWrapper*	m_pUPnPFinder;
 	*/
 	//Xman end
 
@@ -243,7 +243,7 @@ public:
 	bool		IsPortchangeAllowed();
 	bool		IsConnected();
 	bool		IsFirewalled();
-	bool		DoCallback( CUpDownClient *client );
+	bool		CanDoCallback( CUpDownClient *client );
 	uint32		GetID();
 	uint32		GetPublicIP(bool bIgnoreKadIP = false) const;	// return current (valid) public IP or 0 if unknown
 	void		SetPublicIP(const uint32 dwIP);
@@ -262,6 +262,7 @@ public:
 	void		DisableRTLWindowsLayout();
 	void		UpdateDesktopColorDepth();
 	void		UpdateLargeIconSize();
+	bool		IsVistaThemeActive() const;
 
 	bool		GetLangHelpFilePath(CString& strResult);
 	void		SetHelpFilePath(LPCTSTR pszHelpFilePath);
