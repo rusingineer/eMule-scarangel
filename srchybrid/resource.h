@@ -2781,6 +2781,7 @@
 #define IDS_FEEDBACK_AVAILABLE          60661
 #define IDS_FEEDBACK_NONEEDPART         60662
 #define IDS_FEEDBACK_COMPLETE           60663
+#define IDS_FEEDBACK_ON_QUEUE           60664
 // <== Copy feedback feature [MorphXT] - Stulle
 // ==> Simple cleanup [MorphXT] - Stulle
 #define IDS_CHECKDOTTOSPACE             60681

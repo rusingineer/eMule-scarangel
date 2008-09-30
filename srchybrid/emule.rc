@@ -5744,6 +5744,7 @@ BEGIN
     IDS_FEEDBACK_AVAILABLE  "Available sources : %i"
     IDS_FEEDBACK_NONEEDPART "No Needed Part sources: %i"
     IDS_FEEDBACK_COMPLETE   "Complete sources: %i"
+    IDS_FEEDBACK_ON_QUEUE   "On Queue: %i"
     // <== Copy feedback feature [MorphXT] - Stulle
     // ==> Simple cleanup [MorphXT] - Stulle
     IDS_CHECKDOTTOSPACE     "Convert ""."" to "" """

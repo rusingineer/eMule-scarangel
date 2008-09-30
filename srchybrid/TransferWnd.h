@@ -181,6 +181,7 @@ protected:
 
 	// ==> XP Style Menu [Xanatos] - Stulle
 	afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
+	afx_msg LRESULT OnMenuChar(UINT nChar, UINT nFlags, CMenu* pMenu);
 	// <== XP Style Menu [Xanatos] - Stulle
 
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle

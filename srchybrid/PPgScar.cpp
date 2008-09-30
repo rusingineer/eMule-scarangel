@@ -400,7 +400,6 @@ CPPgScar::CPPgScar()
 	m_hti_WebFileUploadSizeLimitMB =NULL;
 	m_hti_AllowedIPs=NULL;
 	m_hti_DebugSearchResultDetailLevel=NULL;
-	m_htiCryptTCPPaddingLength=NULL;
 	m_htiAdjustNTFSDaylightFileTime = NULL;
 	m_htidontcompressavi = NULL;
 	m_htiShowCopyEd2kLinkCmd = NULL;
@@ -595,7 +594,6 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		// <== CreditSystems [EastShare/ MorphXT] - Stulle
 		// ==> Modified FineCS [CiccioBastardo/Stulle] - Stulle
 		m_htiFineCS = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_FINECS), m_htiCreditSystem, m_bFineCS);
-		m_htiIsPayBackFirst = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PAYBACKFIRST), m_htiCreditSystem, m_bIsPayBackFirst);
 		// <== Modified FineCS [CiccioBastardo/Stulle] - Stulle
 		// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 		m_htiIsPayBackFirst = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PAYBACKFIRST), m_htiCreditSystem, m_bIsPayBackFirst);
@@ -1082,8 +1080,6 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_ctrlAdvTreeOptions.AddEditBox(m_hti_AllowedIPs, RUNTIME_CLASS(CTreeOptionsEditEx));
 		m_hti_DebugSearchResultDetailLevel=m_ctrlAdvTreeOptions.InsertItem(GetResString(IDS_DEBUGSEARCHDETAILLEVEL),TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT,TVI_ROOT);
 		m_ctrlAdvTreeOptions.AddEditBox(m_hti_DebugSearchResultDetailLevel, RUNTIME_CLASS(CTreeOptionsEditEx));
-		m_htiCryptTCPPaddingLength=m_ctrlAdvTreeOptions.InsertItem(GetResString(IDS_CRYPTTCPPADDINGLENGTH),TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT,TVI_ROOT);
-		m_ctrlAdvTreeOptions.AddEditBox(m_htiCryptTCPPaddingLength, RUNTIME_CLASS(CNumTreeOptionsEdit));													   
 		m_htiAdjustNTFSDaylightFileTime = m_ctrlAdvTreeOptions.InsertCheckBox(GetResString(IDS_X_ADJUSTNTFSDAYLIGHTFILETIME), TVI_ROOT, m_bAdjustNTFSDaylightFileTime);
 		m_htiShowVerticalHourMarkers = m_ctrlAdvTreeOptions.InsertCheckBox(GetResString(IDS_X_SHOWVERTICALHOURMARKERS), TVI_ROOT, m_bShowVerticalHourMarkers);
 		m_htiICH = m_ctrlAdvTreeOptions.InsertCheckBox(GetResString(IDS_X_ICH), TVI_ROOT, m_ICH);
@@ -1145,8 +1141,6 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxInt(pDX, m_iWebFileUploadSizeLimitMB, 0, INT_MAX);
 	DDX_TreeEdit(pDX,IDC_ADVANCED_OPTS,m_hti_AllowedIPs,m_sAllowedIPs);
 	DDX_TreeEdit(pDX,IDC_ADVANCED_OPTS,m_hti_DebugSearchResultDetailLevel,m_iDebugSearchResultDetailLevel); //TODO: check string for ip
-	DDX_TreeEdit(pDX,IDC_ADVANCED_OPTS,m_htiCryptTCPPaddingLength,m_iCryptTCPPaddingLength );
-	DDV_MinMaxInt(pDX, m_iCryptTCPPaddingLength , 1,256);
 	DDX_TreeCheck(pDX, IDC_ADVANCED_OPTS, m_htiAdjustNTFSDaylightFileTime, m_bAdjustNTFSDaylightFileTime);
 	DDX_TreeCheck(pDX, IDC_ADVANCED_OPTS, m_htiShowVerticalHourMarkers, m_bShowVerticalHourMarkers);
 	DDX_TreeCheck(pDX, IDC_ADVANCED_OPTS, m_htiICH, m_ICH);
@@ -1383,7 +1377,6 @@ BOOL CPPgScar::OnInitDialog()
 		for (int i = 0; i <  thePrefs.GetAllowedRemoteAccessIPs().GetCount(); i++)
            m_sAllowedIPs= m_sAllowedIPs+ _T(";") + ipstr(thePrefs.GetAllowedRemoteAccessIPs()[i]);
 	m_iDebugSearchResultDetailLevel=thePrefs.GetDebugSearchResultDetailLevel();
-	m_iCryptTCPPaddingLength  = thePrefs.GetCryptTCPPaddingLength();
 	m_bAdjustNTFSDaylightFileTime = thePrefs.m_bAdjustNTFSDaylightFileTime;
 	m_strDateTimeFormat = thePrefs.m_strDateTimeFormat;
 	m_strDateTimeFormat4Log = thePrefs.m_strDateTimeFormat4Log;
@@ -1908,7 +1901,6 @@ BOOL CPPgScar::OnApply()
 		strIP = m_sAllowedIPs.Tokenize(L";", iPos);
 	}
 	thePrefs.m_iDebugSearchResultDetailLevel=m_iDebugSearchResultDetailLevel;
-	thePrefs.m_byCryptTCPPaddingLength=(uint8)m_iCryptTCPPaddingLength ;
 	thePrefs.m_bAdjustNTFSDaylightFileTime = m_bAdjustNTFSDaylightFileTime;
 	thePrefs.m_strDateTimeFormat = m_strDateTimeFormat;
 	thePrefs.m_strDateTimeFormat4Log = m_strDateTimeFormat4Log;
@@ -2236,7 +2228,6 @@ void CPPgScar::Localize(void)
 		if (m_hti_WebFileUploadSizeLimitMB) m_ctrlAdvTreeOptions.SetEditLabel(m_hti_WebFileUploadSizeLimitMB, GetResString(IDS_WEBFILEUPLOADSIZELIMITMB));
 		if (m_hti_AllowedIPs) m_ctrlAdvTreeOptions.SetEditLabel(m_hti_AllowedIPs, GetResString(IDS_ALLOWEDIPS));
 		if (m_hti_DebugSearchResultDetailLevel) m_ctrlAdvTreeOptions.SetEditLabel(m_hti_DebugSearchResultDetailLevel, GetResString(IDS_DEBUGSEARCHDETAILLEVEL));
-		if (m_htiCryptTCPPaddingLength) m_ctrlAdvTreeOptions.SetEditLabel(m_htiCryptTCPPaddingLength, GetResString(IDS_CRYPTTCPPADDINGLENGTH));
 		if (m_htiAdjustNTFSDaylightFileTime) m_ctrlAdvTreeOptions.SetItemText(m_htiAdjustNTFSDaylightFileTime, GetResString(IDS_X_ADJUSTNTFSDAYLIGHTFILETIME));
 		if (m_htiShowVerticalHourMarkers) m_ctrlAdvTreeOptions.SetItemText(m_htiShowVerticalHourMarkers, GetResString(IDS_X_SHOWVERTICALHOURMARKERS));
 		if (m_htiReBarToolbar) m_ctrlAdvTreeOptions.SetItemText(m_htiReBarToolbar, GetResString(IDS_X_REBARTOOLBAR));
@@ -2582,7 +2573,6 @@ void CPPgScar::OnDestroy()
 	m_hti_WebFileUploadSizeLimitMB =NULL;
 	m_hti_AllowedIPs=NULL;
 	m_hti_DebugSearchResultDetailLevel=NULL;
-	m_htiCryptTCPPaddingLength=NULL;
 	m_htiAdjustNTFSDaylightFileTime = NULL;
 	m_htidontcompressavi = NULL;
 	m_htiShowCopyEd2kLinkCmd = NULL;

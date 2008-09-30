@@ -18,6 +18,7 @@ Added: Threaded File Settings Saving [Stulle] - Stulle
 	+ keeps the GUI responsive while saving
 Added: Threaded Known Files Saving [Stulle] - Stulle
 	+ keeps the GUI responsive while saving
+Added: On Upload Queue in Copy Feedback feature - MyTh88
 
 Changed: Improved resizing of cats tab in SearchResultWnd [Stulle] - Stulle
 Changed: Using official code for proper background of Icons with text [Officials] - Stulle
@@ -29,11 +30,16 @@ Changed: Known Clients icon [Aha-Soft] - Stulle
 Changed: Upload and Download icon [Studiomx] - Stulle
 Changed: Downloading Files icon [Fast Icon] - Stulle
 Changed: Increased font size for Sub Heading text in context menu [Stulle] - Stulle
+Changed: Use proper English in some places ;) [ginger] - Stulle
 
 Fixed: InputBox for ResumeOrder [Stulle] - Stulle
 Fixed: Crash when checking if sup client should not be kicked from UL [Stulle] - Stulle
 Fixed: Improper use of FindBestClientInQueue when checking for sup client [Stulle] - Stulle
 Fixed: No max time for clients that should be prevented [Stulle] - Stulle
+Fixed: Not working chars for context menus [Stulle] - Stulle
+
+Removed: Second CryptTCPPaddingLength option from Advanced Options [Stulle] - Stulle
+Removed: Last renmants of the Xtreme version check [Stulle] - Stulle
 
 IP Filter White List:
 + IPs on this list will not be banned

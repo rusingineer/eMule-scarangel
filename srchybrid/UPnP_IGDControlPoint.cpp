@@ -1060,12 +1060,12 @@ CUPnP_IGDControlPoint::UPNPNAT_RETURN CUPnP_IGDControlPoint::AddPortMappingToSer
 				if(fullMapping.enabled == TRUE && fullMapping.leaseDuration == 0){
 					if(bIsUpdating){
 						if(thePrefs.GetUPnPVerboseLog()) {
-							theApp.QueueDebugLogLine(false, _T("UPnP: The port mapping \"%s\" don't need an update. [%s]"), desc, srv->ServiceType);
+							theApp.QueueDebugLogLine(false, _T("UPnP: The port mapping \"%s\" doesn't need an update. [%s]"), desc, srv->ServiceType);
 						}
 					}
 					else 
 						if(thePrefs.GetUPnPVerboseLog()) {
-							theApp.QueueDebugLogLine(false,_T("UPnP: The port mapping \"%s\" don't need to be recreated. [%s]"), desc, srv->ServiceType);
+							theApp.QueueDebugLogLine(false,_T("UPnP: The port mapping \"%s\" doesn't need to be recreated. [%s]"), desc, srv->ServiceType);
 						};
 					//Mapping is already OK
 					return UNAT_OK;

@@ -607,7 +607,6 @@ protected:
     int m_iWebFileUploadSizeLimitMB;
     CString m_sAllowedIPs;
 	int m_iDebugSearchResultDetailLevel;
-	int m_iCryptTCPPaddingLength ;
 	bool m_bAdjustNTFSDaylightFileTime;
 	CString m_strDateTimeFormat;
 	CString m_strDateTimeFormat4Log;
@@ -670,7 +669,6 @@ protected:
 	HTREEITEM m_hti_AllowedIPs;
 	HTREEITEM m_hti_UseUserSortedServerList;
 	HTREEITEM m_hti_DebugSearchResultDetailLevel;
-	HTREEITEM m_htiCryptTCPPaddingLength;
 	HTREEITEM m_htiAdjustNTFSDaylightFileTime;
 	HTREEITEM m_htiShowVerticalHourMarkers;
 	HTREEITEM m_htiReBarToolbar;

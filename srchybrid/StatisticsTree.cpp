@@ -49,7 +49,10 @@ BEGIN_MESSAGE_MAP(CStatisticsTree, CTreeCtrl)
 	ON_WM_RBUTTONDOWN()
 	ON_WM_CONTEXTMENU()
 	ON_NOTIFY_REFLECT(TVN_ITEMEXPANDED, OnItemExpanded)
-	ON_WM_MEASUREITEM() // XP Style Menu [Xanatos] - Stulle
+	// ==> XP Style Menu [Xanatos] - Stulle
+	ON_WM_MEASUREITEM()
+	ON_WM_MENUCHAR()
+	// <== XP Style Menu [Xanatos] - Stulle
 END_MESSAGE_MAP()
 
 CStatisticsTree::CStatisticsTree()
@@ -827,5 +830,13 @@ void CStatisticsTree::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureIte
 		pMenu->MeasureItem(lpMeasureItemStruct);
 	
 	CTreeCtrl::OnMeasureItem(nIDCtl, lpMeasureItemStruct);
+}
+
+LRESULT CStatisticsTree::OnMenuChar(UINT nChar, UINT nFlags, CMenu* pMenu) 
+{
+	if (pMenu->IsKindOf(RUNTIME_CLASS(CTitleMenu)) )
+		return CTitleMenu::OnMenuChar(nChar, nFlags, pMenu);
+
+	return CTreeCtrl::OnMenuChar(nChar, nFlags, pMenu);
 }
 // <== XP Style Menu [Xanatos] - Stulle

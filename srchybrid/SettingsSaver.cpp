@@ -146,6 +146,7 @@ bool CSettingsSaver::SaveSettings()
 }
 
 /* IMPORT OLD */
+#pragma warning(disable:4296) // expression is always true
 void CSettingsSaver::ImportOldSettings(CPartFile* file)
 {
 	SettingsList daten;
@@ -259,6 +260,7 @@ void CSettingsSaver::ImportOldSettings(CPartFile* file)
 	if (_tremove(datafilepath)) if (errno != ENOENT)
 		AddLogLine(true, _T("Failed to delete %s, you will need to do this manually"), datafilepath);
 }
+#pragma warning(default:4296) // expression is always true
 
 void CSettingsSaver::DeleteOldSettings(CPartFile* file)
 {

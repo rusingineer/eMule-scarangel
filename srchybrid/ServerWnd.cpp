@@ -148,9 +148,13 @@ BOOL CServerWnd::OnInitDialog()
 		// MOD Note: end
 
 		//Xman versions check
+		// ==> Removed Xtreme version check [Stulle] - Stulle
+		/*
 		servermsgbox->AppendText(_T("\n"));
 		m_strClickNewXtremeVersion=_T("Click to check for new Xtreme-Version");
 		servermsgbox->AppendHyperLink(_T(""),_T(""),m_strClickNewXtremeVersion,_T(""));
+		*/
+		// <== Removed Xtreme version check [Stulle] - Stulle
 		//Xman end
 		servermsgbox->AppendText(_T("\n\n"));
 	}

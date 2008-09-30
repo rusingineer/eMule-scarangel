@@ -44,7 +44,10 @@ BEGIN_MESSAGE_MAP(CPPgScheduler, CPropertyPage)
 	ON_BN_CLICKED(IDC_ENABLE, OnEnableChange)
 	ON_BN_CLICKED(IDC_CHECKNOENDTIME, OnDisableTime2)
 	ON_WM_HELPINFO()
-	ON_WM_MEASUREITEM() // XP Style Menu [Xanatos] - Stulle
+	// ==> XP Style Menu [Xanatos] - Stulle
+	ON_WM_MEASUREITEM()
+	ON_WM_MENUCHAR()
+	// <== XP Style Menu [Xanatos] - Stulle
 END_MESSAGE_MAP()
 
 CPPgScheduler::CPPgScheduler()
@@ -505,5 +508,13 @@ void CPPgScheduler::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemS
 		pMenu->MeasureItem(lpMeasureItemStruct);
 	
 	CPropertyPage::OnMeasureItem(nIDCtl, lpMeasureItemStruct);
+}
+
+LRESULT CPPgScheduler::OnMenuChar(UINT nChar, UINT nFlags, CMenu* pMenu) 
+{
+	if (pMenu->IsKindOf(RUNTIME_CLASS(CTitleMenu)) )
+		return CTitleMenu::OnMenuChar(nChar, nFlags, pMenu);
+
+	return CPropertyPage::OnMenuChar(nChar, nFlags, pMenu);
 }
 // <== XP Style Menu [Xanatos] - Stulle

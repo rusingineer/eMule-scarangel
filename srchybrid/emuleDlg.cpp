@@ -471,12 +471,12 @@ BOOL CemuleDlg::OnInitDialog()
 		pSysMenu->AppendMenu(MF_STRING, MP_VERSIONCHECK, GetResString(IDS_VERSIONCHECK));
 
 		//Xman versions check
-		// ==> Removed Xtreme version check (not working for now) [Stulle] - Stulle
+		// ==> Removed Xtreme version check [Stulle] - Stulle
 		/*
 		ASSERT( (MP_MVERSIONCHECK & 0xFFF0) == MP_MVERSIONCHECK && MP_MVERSIONCHECK < 0xF000);
 		pSysMenu->AppendMenu(MF_STRING, MP_MVERSIONCHECK, _T("Xtreme-Version-Check"));
 		*/
-		// <== Removed Xtreme version check (not working for now) [Stulle] - Stulle
+		// <== Removed Xtreme version check [Stulle] - Stulle
 		//Xman end
 
 		// ==> ScarAngel Version Check - Stulle
@@ -876,7 +876,7 @@ void CemuleDlg::DoMVersioncheck(bool manual) {
 		if ( (difftime(tNow,tLast) / 86400)<thePrefs.GetUpdateDays() )
 			return;
 	}
-	// ==> Removed Xtreme version check (not working for now) [Stulle] - Stulle
+	// ==> Removed Xtreme version check [Stulle] - Stulle
 	/*
 	if (WSAAsyncGetHostByName(m_hWnd, UM_MVERSIONCHECK_RESPONSE, "xtreme.dyndns.info", m_acMVCDNSBuffer, sizeof(m_acMVCDNSBuffer)) == 0){
 		AddLogLine(true,GetResString(IDS_NEWVERSIONFAILED));
@@ -888,7 +888,7 @@ void CemuleDlg::DoMVersioncheck(bool manual) {
 	//Xman End
 	*/
 	; // Do nothing
-	// <== Removed Xtreme version check (not working for now) [Stulle] - Stulle
+	// <== Removed Xtreme version check [Stulle] - Stulle
 }
 //Xman end
 
@@ -1086,7 +1086,7 @@ void CemuleDlg::StopTimer()
 	//Xman end
 
 	// ==> ScarAngel Version Check - Stulle
-	if (thePrefs.UpdateNotifyMod())
+	if (thePrefs.UpdateNotify())
 		DoSVersioncheck(false);
 	// <== ScarAngel Version Check - Stulle
 
@@ -3425,11 +3425,11 @@ void CemuleDlg::Localize()
 		VERIFY( pSysMenu->ModifyMenu(MP_ABOUTBOX, MF_BYCOMMAND | MF_STRING, MP_ABOUTBOX, GetResString(IDS_ABOUTBOX)) );
 		VERIFY( pSysMenu->ModifyMenu(MP_VERSIONCHECK, MF_BYCOMMAND | MF_STRING, MP_VERSIONCHECK, GetResString(IDS_VERSIONCHECK)) );
 		//Xman versions check
-		// ==> Removed Xtreme version check (not working for now) [Stulle] - Stulle
+		// ==> Removed Xtreme version check [Stulle] - Stulle
 		/*
 		VERIFY( pSysMenu->ModifyMenu(MP_MVERSIONCHECK, MF_BYCOMMAND | MF_STRING, MP_MVERSIONCHECK, _T("Xtreme_Version_Check")) );
 		*/
-		// <== Removed Xtreme version check (not working for now) [Stulle] - Stulle
+		// <== Removed Xtreme version check [Stulle] - Stulle
 		//Xman end
 		// ==> ScarAngel Version Check - Stulle
 		VERIFY( pSysMenu->ModifyMenu(MP_SVERSIONCHECK, MF_BYCOMMAND | MF_STRING, MP_SVERSIONCHECK, GetResString(IDS_SVERSIONCHECK)) );
@@ -3728,6 +3728,11 @@ BOOL CemuleDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 LRESULT CemuleDlg::OnMenuChar(UINT nChar, UINT nFlags, CMenu* pMenu)
 {
+	// ==> XP Style Menu [Xanatos] - Stulle
+	if (pMenu->IsKindOf(RUNTIME_CLASS(CTitleMenu)) )
+		return CTitleMenu::OnMenuChar(nChar, nFlags, pMenu);
+	// <== XP Style Menu [Xanatos] - Stulle
+
 	UINT nCmdID;
 	if (toolbar->MapAccelerator((TCHAR)nChar, &nCmdID)){
 		OnCommand(nCmdID, 0);
@@ -4884,7 +4889,12 @@ LRESULT  CemuleDlg::OnPowerBroadcast(WPARAM wParam, LPARAM lParam)
 		}
 		case PBT_APMSUSPEND:
 		{		
+			// ==> Proper English [ginger] - Stulle
+			/*
 			DebugLog(_T("System is going is suspending operation, disconnecting. wParam=%d lPararm=%ld"),wParam,lParam);
+			*/
+			DebugLog(_T("System is suspending operation, disconnecting. wParam=%d lPararm=%ld"),wParam,lParam);
+			// <== Proper English [ginger] - Stulle
 			m_bEd2kSuspendDisconnect = theApp.serverconnect->IsConnected();
 			m_bKadSuspendDisconnect = Kademlia::CKademlia::IsConnected();
 			CloseConnection();

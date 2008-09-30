@@ -3061,6 +3061,7 @@ void CPreferences::ImportOldTableSetup() {
 	IniCopy(L"DownloadClientsColumnOrder" ,		L"DownloadClientsCtrlColumnOrders" );
 }
 
+#pragma warning(disable:4296) // expression is always true // Disable Pragma warning [Stulle] - Stulle
 void CPreferences::LoadPreferences()
 {
 	CIni ini(GetConfigFile(), L"eMule");
@@ -4248,6 +4249,7 @@ void CPreferences::LoadPreferences()
 
 	LoadStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
+#pragma warning(default:4296) // expression is always true // Disable Pragma warning [Stulle] - Stulle
 
 //Xman Xtreme Upload
 void CPreferences::CheckSlotSpeed()

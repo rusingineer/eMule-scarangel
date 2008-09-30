@@ -351,9 +351,10 @@ void CPPgGeneral::Localize(void)
 		GetDlgItem(IDC_PREVENTSTANDBY)->SetWindowText(GetResString(IDS_PREVENTSTANDBY));
 		//Xman versions check
 		GetDlgItem(IDC_CHECK4UPDATEMOD)->SetWindowText(GetResString(IDS_CHECK4UPDATEMOD));
-		// ==> Removed Xtreme version check (not working for now) [Stulle] - Stulle
+		// ==> Removed Xtreme version check [Stulle] - Stulle
 		GetDlgItem(IDC_CHECK4UPDATEMOD)->EnableWindow(FALSE);
-		// <== Removed Xtreme version check (not working for now) [Stulle] - Stulle
+		GetDlgItem(IDC_CHECK4UPDATEMOD)->ShowWindow(SW_HIDE);
+		// <== Removed Xtreme version check [Stulle] - Stulle
 	}
 }
 

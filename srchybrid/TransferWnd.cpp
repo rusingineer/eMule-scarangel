@@ -92,7 +92,10 @@ BEGIN_MESSAGE_MAP(CTransferWnd, CResizableDialog)
 	ON_NOTIFY(UM_TABMOVED, IDC_DLTAB, OnTabMovement)
 	ON_NOTIFY(LVN_BEGINDRAG, IDC_DOWNLOADLIST, OnLvnBegindrag)
 	ON_NOTIFY(LVN_KEYDOWN, IDC_DOWNLOADLIST, OnLvnKeydownDownloadlist)
-	ON_WM_MEASUREITEM() // XP Style Menu [Xanatos] - Stulle
+	// ==> XP Style Menu [Xanatos] - Stulle
+	ON_WM_MEASUREITEM()
+	ON_WM_MENUCHAR()
+	// <== XP Style Menu [Xanatos] - Stulle
 END_MESSAGE_MAP()
 
 CTransferWnd::CTransferWnd(CWnd* pParent /*=NULL*/)
@@ -3496,6 +3499,14 @@ void CTransferWnd::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemSt
 		pMenu->MeasureItem(lpMeasureItemStruct);
 	
 	CResizableDialog::OnMeasureItem(nIDCtl, lpMeasureItemStruct);
+}
+
+LRESULT CTransferWnd::OnMenuChar(UINT nChar, UINT nFlags, CMenu* pMenu) 
+{
+	if (pMenu->IsKindOf(RUNTIME_CLASS(CTitleMenu)) )
+		return CTitleMenu::OnMenuChar(nChar, nFlags, pMenu);
+
+	return CResizableDialog::OnMenuChar(nChar, nFlags, pMenu);
 }
 // <== XP Style Menu [Xanatos] - Stulle
 

@@ -2588,7 +2588,7 @@ void CUpDownClient::ConnectionEstablished()
 	{
 		SendPublicIPRequest();
 		lastaskedforip=::GetTickCount();
-		AddDebugLogLine(false, _T("internet-connection was possible down. ask client for ip: %s"), DbgGetClientInfo()); 
+		AddDebugLogLine(false, _T("Internet-connection was possibly down. ask client for ip: %s"), DbgGetClientInfo()); 
 	}
 	//Xman end
 

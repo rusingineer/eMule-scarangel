@@ -3088,6 +3088,7 @@ CString CKnownFile::GetFeedback(bool isUS)
 			feed.AppendFormat(_T("Available sources : %i \r\n"),((CPartFile*)this)->GetAvailableSrcCount());
 			feed.AppendFormat(_T("No Need Part sources: %i \r\n"),((CPartFile*)this)->GetSrcStatisticsValue(DS_NONEEDEDPARTS));
 		}
+		feed.AppendFormat(_T("On Queue: %i \r\n"),onuploadqueue);
 		feed.AppendFormat(_T("Complete sources: %i\r\n"),m_nCompleteSourcesCount);
 	}
 	else
@@ -3114,6 +3115,8 @@ CString CKnownFile::GetFeedback(bool isUS)
 			feed.AppendFormat(GetResString(IDS_FEEDBACK_NONEEDPART), ((CPartFile*)this)->GetSrcStatisticsValue(DS_NONEEDEDPARTS));
 			feed.Append(_T(" \r\n"));
 		}
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_ON_QUEUE), onuploadqueue);
+		feed.Append(_T(" \r\n"));
 		feed.AppendFormat(GetResString(IDS_FEEDBACK_COMPLETE), m_nCompleteSourcesCount);
 		feed.Append(_T(" \r\n"));
 	}
