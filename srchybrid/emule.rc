@@ -5745,6 +5745,7 @@ BEGIN
     IDS_FEEDBACK_NONEEDPART "No Needed Part sources: %i"
     IDS_FEEDBACK_COMPLETE   "Complete sources: %i"
     IDS_FEEDBACK_ON_QUEUE   "On Queue: %i"
+    IDS_FEEDBACK_ALL_TRANSFERRED "Transferred (all files): %s (%s)"
     // <== Copy feedback feature [MorphXT] - Stulle
     // ==> Simple cleanup [MorphXT] - Stulle
     IDS_CHECKDOTTOSPACE     "Convert ""."" to "" """
@@ -6096,6 +6097,7 @@ BEGIN
     IDS_IP2COUNTRY_ERROR8   "Downloaded IP to Country file ""%s"" is a ZIP file with unexpected content."
     IDS_AUTODLPFAILED       "Failed to check DLP version."
     IDS_ANTILEECH_DWNFILE   "Downloading DLP file"
+    IDS_AUTOIPFILTERFAILED  "Failed to check IPFilter version."
     // <== Advanced Updates [MorphXT/Stulle] - Stulle
     // ==> Links for Server list and nodes file [Stulle] - Stulle
     IDS_NODESFILEBUTTON     "Nodes File"

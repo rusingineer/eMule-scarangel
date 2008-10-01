@@ -610,7 +610,7 @@ void CClientListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 
 	// - show requested files (sivka/Xman)
 	ClientMenu.AppendMenu(MF_SEPARATOR); 
-	ClientMenu.AppendMenu(MF_STRING,MP_LIST_REQUESTED_FILES, GetResString(IDS_LISTREQUESTED), _T("FILEREQUESTED")); 
+	ClientMenu.AppendMenu(MF_STRING | (GetItemCount() > 0 ? MF_ENABLED : MF_GRAYED),MP_LIST_REQUESTED_FILES, GetResString(IDS_LISTREQUESTED), _T("FILEREQUESTED")); 
 	//Xman end
 
 	GetPopupMenuPos(*this, point);

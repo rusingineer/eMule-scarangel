@@ -19,6 +19,10 @@ Added: Threaded File Settings Saving [Stulle] - Stulle
 Added: Threaded Known Files Saving [Stulle] - Stulle
 	+ keeps the GUI responsive while saving
 Added: On Upload Queue in Copy Feedback feature - MyTh88
+Added: New IPFilter (Maintained by Ozzy) [Stulle] - Stulle
+	+ uses DynDNS to check version, mirrored at SourceForge, unrar.dll required!
+Added: Show (un-)loading status of IPFilter [Stulle] - Stulle
+Added: Sum up transferred stats on getting Feedback for multiple files [Stulle] - Stulle
 
 Changed: Improved resizing of cats tab in SearchResultWnd [Stulle] - Stulle
 Changed: Using official code for proper background of Icons with text [Officials] - Stulle
@@ -31,12 +35,15 @@ Changed: Upload and Download icon [Studiomx] - Stulle
 Changed: Downloading Files icon [Fast Icon] - Stulle
 Changed: Increased font size for Sub Heading text in context menu [Stulle] - Stulle
 Changed: Use proper English in some places ;) [ginger] - Stulle
+Changed: Reworked the Feedback code a bit [Stulle] - Stulle
+Changed: Enable List requested files only when needed [Stulle] - Stulle
 
 Fixed: InputBox for ResumeOrder [Stulle] - Stulle
 Fixed: Crash when checking if sup client should not be kicked from UL [Stulle] - Stulle
 Fixed: Improper use of FindBestClientInQueue when checking for sup client [Stulle] - Stulle
 Fixed: No max time for clients that should be prevented [Stulle] - Stulle
 Fixed: Not working chars for context menus [Stulle] - Stulle
+Fixed: Scheduled DLP Update not working [Stulle] - Stulle
 
 Removed: Second CryptTCPPaddingLength option from Advanced Options [Stulle] - Stulle
 Removed: Last renmants of the Xtreme version check [Stulle] - Stulle

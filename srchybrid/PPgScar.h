@@ -6,6 +6,8 @@
 #include "ColorButton.h"
 // CPPgScar dialog
 
+void SysTimeToStr(LPSYSTEMTIME st, LPTSTR str); // Advanced Updates [MorphXT/Stulle] - Stulle
+
 class CPPgScar : public CPropertyPage
 {
 	DECLARE_DYNAMIC(CPPgScar)
@@ -507,7 +509,9 @@ private:
 	CButton		m_IpFilterWeek;
 	CButton		m_IpFilterURLStatic;
 	CEdit		m_IpFilterURL;
+public:
 	CButton		m_IpFilterTime;
+private:
 	CButton		m_IpFilterReset;
 	CButton		m_IpFilterUpdate;
 	CButton		m_CountryBox;

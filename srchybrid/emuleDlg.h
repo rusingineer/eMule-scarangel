@@ -116,6 +116,7 @@ public:
 	// <== ScarAngel Version Check - Stulle
 	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
 	void DoDLPVersioncheck();
+	void DoIPFilterVersioncheck();
 	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 	void ApplyHyperTextFont(LPLOGFONT pFont);
 	void ApplyLogFont(LPLOGFONT pFont);
@@ -205,6 +206,7 @@ protected:
 	// <== ScarAngel Version Check - Stulle
 	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
 	char			m_acDLPAutoBuffer[MAXGETHOSTSTRUCT];
+	char			m_acIPFilterAutoBuffer[MAXGETHOSTSTRUCT];
 	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 	// Splash screen
@@ -358,6 +360,7 @@ protected:
 	afx_msg	LRESULT	OnSVersionCheckResponse(WPARAM wParam, LPARAM lParam);
 	// Advanced Updates [MorphXT/Stulle] - Stulle
 	afx_msg LRESULT OnDLPAutoVerCheckResponse(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnIPFilterAutoVerCheckResponse(WPARAM wParam, LPARAM lParam);
 
 	// Peercache DNS
 	afx_msg LRESULT OnPeerCacheResponse(WPARAM wParam, LPARAM lParam);
@@ -423,6 +426,7 @@ public:
 
 	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
 	void	DownloadDLP();
+	void	CheckIPFilter();
 	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 	// ==> Completed in Tray [Stulle] - Stulle

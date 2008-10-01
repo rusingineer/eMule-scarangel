@@ -53,7 +53,8 @@ enum EUserWndMessages
 	UM_SVERSIONCHECK_RESPONSE,
 	// <== ScarAngel Version Check - Stulle
 	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
-	UM_DLPUTOVERCHECK_RESPONSE
+	UM_DLPAUTOVERCHECK_RESPONSE,
+	UM_IPFFILTERAUTOVERCHECK_RESPONSE
 	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 	// UPnP

@@ -942,6 +942,7 @@ uint32	CPreferences::m_uReAskTimeDif; // Timer for ReAsk File Sources [Stulle] -
 // ==> Advanced Updates [MorphXT/Stulle] - Stulle
 bool	CPreferences::m_bAutoUpdateAntiLeech;
 CString CPreferences::m_strAntiLeechURL;
+uint32	CPreferences::m_uIPFilterVersionNum;
 bool	CPreferences::AutoUpdateIP2Country;
 CString CPreferences::UpdateURLIP2Country;
 SYSTEMTIME	CPreferences::m_IP2CountryVersion;
@@ -2569,11 +2570,11 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(L"chunkchooser", m_chunkchooser);
 
 	//Xman auto update IPFilter
+	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+	/*
 	ini.WriteString(L"AutoUpdateIPFilter_URL", m_strautoupdateipfilter_url);
 	ini.WriteBool(L"AutoUpdateIPFilter", m_bautoupdateipfilter);
 	ini.WriteBinary(_T("IPfilterVersion"), (LPBYTE)&m_IPfilterVersion, sizeof(m_IPfilterVersion)); 
-	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
-	/*
 	ini.WriteInt(_T("lastipfiltercheck"),m_last_ipfilter_check);
 	*/
 	// <== Advanced Updates [MorphXT/Stulle] - Stulle
@@ -2910,6 +2911,10 @@ void CPreferences::SavePreferences()
 	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
 	ini.WriteBool(L"AutoUpdateAntiLeech", m_bAutoUpdateAntiLeech);
 	ini.WriteString(L"AntiLeechURL", m_strAntiLeechURL);
+	ini.WriteString(L"AutoUpdateIPFilter_URL", m_strautoupdateipfilter_url);
+	ini.WriteBool(L"AutoUpdateIPFilter", m_bautoupdateipfilter);
+	ini.WriteInt(_T("IPFilterVersionNum"), m_uIPFilterVersionNum);
+	ini.WriteBinary(_T("IPfilterVersion"), (LPBYTE)&m_IPfilterVersion, sizeof(m_IPfilterVersion)); 
 	ini.WriteBool(L"AutoUpdateIP2Country", AutoUpdateIP2Country);
 	ini.WriteString(L"UpdateURLIP2Country", UpdateURLIP2Country);
 	ini.WriteBinary(_T("IP2CountryVersion"), (LPBYTE)&m_IP2CountryVersion, sizeof(m_IP2CountryVersion)); 
@@ -3878,6 +3883,8 @@ void CPreferences::LoadPreferences()
 	m_bUseCompression=ini.GetBool(L"UseCompression",true);
 
 	//Xman auto update IPFilter
+	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+	/*
 	m_strautoupdateipfilter_url= ini.GetString(L"AutoUpdateIPFilter_URL", _T("http://emulepawcio.sourceforge.net/nieuwe_site/Ipfilter_fakes/ipfilter.zip"));
 	m_bautoupdateipfilter= ini.GetBool(L"AutoUpdateIPFilter", true); // Stulle
 	LPBYTE pst = NULL;
@@ -3887,8 +3894,6 @@ void CPreferences::LoadPreferences()
 	else
 		memset(&m_IPfilterVersion, 0, sizeof m_IPfilterVersion);
 	delete[] pst;
-	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
-	/*
 	m_last_ipfilter_check= ini.GetInt(L"lastipfiltercheck", 0);
 	*/
 	// <== Advanced Updates [MorphXT/Stulle] - Stulle
@@ -4226,6 +4231,16 @@ void CPreferences::LoadPreferences()
 	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
 	m_bAutoUpdateAntiLeech=ini.GetBool(_T("AutoUpdateAntiLeech"),true);
 	m_strAntiLeechURL=ini.GetString(L"AntiLeechURL", _T("http://downloads.sourceforge.net/emulextreme/antiLeech.dll.new"));
+	m_strautoupdateipfilter_url= ini.GetString(L"AutoUpdateIPFilter_URL", _T("http://downloads.sourceforge.net/scarangel/ipfilter.rar"));
+	m_bautoupdateipfilter= ini.GetBool(L"AutoUpdateIPFilter", true);
+	m_uIPFilterVersionNum = ini.GetInt(_T("IPFilterVersionNum"),0);
+	LPBYTE pst = NULL;
+	UINT usize = sizeof m_IPfilterVersion;
+	if (ini.GetBinary(L"IPfilterVersion", &pst, &usize) && usize == sizeof m_IPfilterVersion)
+		memcpy(&m_IPfilterVersion, pst, sizeof m_IPfilterVersion);
+	else
+		memset(&m_IPfilterVersion, 0, sizeof m_IPfilterVersion);
+	delete[] pst;
 	pst = NULL;
 	usize = sizeof m_IP2CountryVersion;
 	if (ini.GetBinary(_T("IP2CountryVersion"), &pst, &usize) && usize == sizeof m_IP2CountryVersion)
@@ -6025,6 +6040,18 @@ uint16	CPreferences::GetUDPPort(bool newPort, bool original, bool reset){
 	return m_iCurrentUDPRndPort;
 }
 // <== Random Ports [MoNKi] - Stulle
+
+// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+bool CPreferences::IsIPFilterViaDynDNS(CString strURL)
+{
+	if(strURL.IsEmpty())
+		strURL = _T("http://downloads.sourceforge.net/scarangel/ipfilter.rar");
+
+	if(StrStr(GetAutoUpdateIPFilter_URL(),strURL)!=0)
+		return true;
+	return false;
+}
+// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 // ==> Advanced Options [Official/MorphXT] - Stulle
 void CPreferences::SetBindAddr(CStringW bindip)

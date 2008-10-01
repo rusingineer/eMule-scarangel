@@ -156,14 +156,13 @@ bool CServerList::Init()
 			update=true;
 		if(update)
 		{
-		*/
-		// <== Advanced Updates [MorphXT/Stulle] - Stulle
 			if(theApp.IsSplash()) theApp.DestroySplash(); //Xman new slpash-screen arrangement
 			theApp.ipfilter->UpdateIPFilterURL();
-		// ==> Advanced Updates [MorphXT/Stulle] - Stulle
-		/*
 		}
 		*/
+		if(theApp.IsSplash())
+			theApp.DestroySplash(); //Xman new slpash-screen arrangement
+		theApp.emuledlg->CheckIPFilter();
 		// <== Advanced Updates [MorphXT/Stulle] - Stulle
 	}
 	//Xman end

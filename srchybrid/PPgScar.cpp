@@ -1496,9 +1496,21 @@ void CPPgScar::LoadSettings(void)
 		m_CountryURL.SetWindowText(thePrefs.UpdateURLIP2Country);
 
 		TCHAR sTime[30];
-		sTime[0] = _T('\0');
-		SysTimeToStr(thePrefs.GetIPfilterVersion(), sTime);
-		m_IpFilterTime.SetWindowText(sTime);
+		if(thePrefs.IsIPFilterViaDynDNS())
+		{
+			CString strBuffer=NULL;
+			if(PathFileExists(theApp.ipfilter->GetDefaultFilePath()))
+				strBuffer.Format(_T("v%u"), thePrefs.GetIPFilterVersionNum());
+			else
+				strBuffer=GetResString(IDS_DL_NONE);
+			m_IpFilterTime.SetWindowText(strBuffer);
+		}
+		else
+		{
+			sTime[0] = _T('\0');
+			SysTimeToStr(thePrefs.GetIPfilterVersion(), sTime);
+			m_IpFilterTime.SetWindowText(sTime);
+		}
 
 		sTime[0] = _T('\0');
 		SysTimeToStr(thePrefs.GetIP2CountryVersion(), sTime);
@@ -2252,6 +2264,22 @@ void CPPgScar::Localize(void)
 			strBuffer=GetResString(IDS_DL_NONE);
 			m_AntiLeechVersion.SetWindowText(strBuffer);
 
+		if(thePrefs.IsIPFilterViaDynDNS())
+		{
+			if(PathFileExists(theApp.ipfilter->GetDefaultFilePath()))
+				strBuffer.Format(_T("v%u"), thePrefs.GetIPFilterVersionNum());
+			else
+				strBuffer=GetResString(IDS_DL_NONE);
+			m_IpFilterTime.SetWindowText(strBuffer);
+		}
+		else
+		{
+			TCHAR sTime[30];
+			sTime[0] = _T('\0');
+			SysTimeToStr(thePrefs.GetIPfilterVersion(), sTime);
+			m_IpFilterTime.SetWindowText(sTime);
+		}
+
 		m_IpFilterBox.SetWindowText(GetResString(IDS_IPFILTER));
 		m_IpFilterStart.SetWindowText(GetResString(IDS_UPDATEIPFILTERONSTART));
 		m_IpFilterWeek.SetWindowText(GetResString(IDS_AUTOUPWEEK));
@@ -2956,7 +2984,7 @@ void CPPgScar::InitControl()
 
 	m_AntiLeechURL.CreateEx(WS_EX_CLIENTEDGE, _T("EDIT"), _T(""), 
 						WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
-						ES_RIGHT | ES_AUTOHSCROLL, 
+						ES_LEFT | ES_AUTOHSCROLL, 
 						CRect(left+10, top+50, right-10, top+70), this,  IDC_ANTI_LEECH_URL);
 	m_AntiLeechURL.SetFont(GetFont());
 
@@ -3002,7 +3030,7 @@ void CPPgScar::InitControl()
 
 	m_IpFilterURL.CreateEx(WS_EX_CLIENTEDGE, _T("EDIT"), _T(""), 
 						WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
-						ES_RIGHT | ES_AUTOHSCROLL, 
+						ES_LEFT | ES_AUTOHSCROLL, 
 						CRect(left+10, top+160, right-10, top+180), this,  IDC_IPFILTER_URL);
 	m_IpFilterURL.SetFont(GetFont());
 
@@ -3042,7 +3070,7 @@ void CPPgScar::InitControl()
 
 	m_CountryURL.CreateEx(WS_EX_CLIENTEDGE, _T("EDIT"), _T(""), 
 						WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP |
-						ES_RIGHT | ES_AUTOHSCROLL, 
+						ES_LEFT | ES_AUTOHSCROLL, 
 						CRect(left+10, top+270, right-10, top+290), this,  IDC_COUNTRY_URL);
 	m_CountryURL.SetFont(GetFont());
 
@@ -4184,19 +4212,36 @@ void CPPgScar::OnBnClickedResetALUrl()
 void CPPgScar::OnBnClickedUpdateipfurl()
 {
 	OnApply();
-	theApp.ipfilter->UpdateIPFilterURL();
-	TCHAR sBuffer[30];
-	sBuffer[0] = _T('\0'); 
-	SysTimeToStr(thePrefs.GetIPfilterVersion(), sBuffer);
-	m_IpFilterTime.SetWindowText(sBuffer);
+	theApp.emuledlg->CheckIPFilter();
+	if(thePrefs.IsIPFilterViaDynDNS())
+	{
+		CString strBuffer=NULL;
+		if(PathFileExists(theApp.ipfilter->GetDefaultFilePath()))
+			strBuffer.Format(_T("v%u"), thePrefs.GetIPFilterVersionNum());
+		else
+			strBuffer=GetResString(IDS_DL_NONE);
+		m_IpFilterTime.SetWindowText(strBuffer);
+	}
+	else
+	{
+		TCHAR sTime[30];
+		sTime[0] = _T('\0');
+		SysTimeToStr(thePrefs.GetIPfilterVersion(), sTime);
+		m_IpFilterTime.SetWindowText(sTime);
+	}
 }
 
 void CPPgScar::OnBnClickedResetipfurl()
 {
-	CString strBuffer = _T("http://emulepawcio.sourceforge.net/nieuwe_site/Ipfilter_fakes/ipfilter.zip");
+	CString strBuffer = _T("http://downloads.sourceforge.net/scarangel/ipfilter.rar");
 	m_IpFilterURL.SetWindowText(strBuffer);
 	memset(thePrefs.GetIPfilterVersion(), 0, sizeof(SYSTEMTIME));
-	m_IpFilterTime.SetWindowText(_T(""));
+	thePrefs.m_uIPFilterVersionNum = 0;
+	if(PathFileExists(theApp.ipfilter->GetDefaultFilePath()))
+		strBuffer = _T("v0");
+	else
+		strBuffer = GetResString(IDS_DL_NONE);
+	m_IpFilterTime.SetWindowText(strBuffer);
 }
 
 void CPPgScar::OnBnClickedUpdateipcurl()

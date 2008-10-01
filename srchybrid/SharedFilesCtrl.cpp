@@ -1987,31 +1987,35 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 			//Xman end
 			*/
  			case MP_COPYFEEDBACK:
-			{
-				CString feed;
-				feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM), thePrefs.GetUserNick(), theApp.m_strModLongVersion);
-				feed.AppendFormat(_T(" \r\n"));
-				POSITION pos = selectedList.GetHeadPosition();
-				while (pos != NULL)
-				{
-					CKnownFile* file = selectedList.GetNext(pos);
-					feed.Append(file->GetFeedback());
-					feed.Append(_T(" \r\n"));
-				}
-				//Todo: copy all the comments too
-				theApp.CopyTextToClipboard(feed);
-				break;
-			}
 			case MP_COPYFEEDBACK_US:
 			{
 				CString feed;
-				feed.AppendFormat(_T("Feedback from %s on [%s]\r\n"),thePrefs.GetUserNick(),theApp.m_strModLongVersion);
+				uint64 uTransferredSum = 0;
+				uint64 uTransferredAllSum = 0;
+				int iCount = 0;
 				POSITION pos = selectedList.GetHeadPosition();
+
+				if(wParam == MP_COPYFEEDBACK_US)
+					feed.AppendFormat(_T("Feedback from %s on [%s]\r\n"),thePrefs.GetUserNick(),theApp.m_strModLongVersion);
+				else
+					feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM), thePrefs.GetUserNick(), theApp.m_strModLongVersion);
+				feed.Append(_T(" \r\n"));
+
 				while (pos != NULL)
 				{
 					CKnownFile* file = selectedList.GetNext(pos);
-					feed.Append(file->GetFeedback(true));
-					feed.Append(_T("\r\n"));
+					feed.Append(file->GetFeedback(wParam == MP_COPYFEEDBACK_US));
+					feed.Append(_T(" \r\n"));
+
+					uTransferredSum += file->statistic.GetTransferred();
+					uTransferredAllSum += file->statistic.GetAllTimeTransferred();
+					iCount++;
+				}
+
+				if(iCount>1)
+				{
+					feed.AppendFormat(GetResString(IDS_FEEDBACK_ALL_TRANSFERRED),CastItoXBytes(uTransferredSum,false,false,3,true),CastItoXBytes(uTransferredAllSum,false,false,3,true));
+					feed.AppendFormat(_T(" \r\n"));
 				}
 				//Todo: copy all the comments too
 				theApp.CopyTextToClipboard(feed);

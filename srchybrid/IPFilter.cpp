@@ -32,6 +32,11 @@
 #include "RarFile.h"
 #include "ServerWnd.h"
 //Xman end
+// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+#include "PreferencesDlg.h"
+#include "PPgScar.h"
+// <== Advanced Updates [MorphXT/Stulle] - Stulle
+#include "MuleStatusBarCtrl.h" // Show (un-)loading status of IPFilter [Stulle] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -109,6 +114,18 @@ int CIPFilter::LoadFromDefaultFile(bool bShowResponse)
 int CIPFilter::AddFromFile(LPCTSTR pszFilePath, bool bShowResponse)
 {
 	DWORD dwStart = GetTickCount();
+	// ==> Show (un-)loading status of IPFilter [Stulle] - Stulle
+	int iLineCount = 0;
+	int iLastPercent = 0;
+	CStdioFile countFile;
+	if(countFile.Open(pszFilePath, CFile::modeRead)==TRUE)
+	{
+		CString strBuffer;
+		while(countFile.ReadString(strBuffer)!=FALSE)
+			iLineCount++;
+		countFile.Close();
+	}
+	// <== Show (un-)loading status of IPFilter [Stulle] - Stulle
 	FILE* readFile = _tfsopen(pszFilePath, _T("r"), _SH_DENYWR);
 	if (readFile != NULL)
 	{
@@ -182,6 +199,22 @@ int CIPFilter::AddFromFile(LPCTSTR pszFilePath, bool bShowResponse)
 					uEnd = ntohl(uEnd);
 
 					iLine++;
+					// ==> Show (un-)loading status of IPFilter [Stulle] - Stulle
+					if(iLineCount)
+					{
+						int iPercent = (int)((float(iLine)*100.0f)/float(iLineCount));
+						if(iPercent - iLastPercent > 1)
+						{
+							CString strPercent;
+							strPercent.Format(_T("Loading IPfilter (%i %%) ..."),iPercent);
+							if(theApp.IsSplash())
+								theApp.UpdateSplash(strPercent);
+							else if (theApp.emuledlg->statusbar->m_hWnd)
+								theApp.emuledlg->statusbar->SetText(strPercent,0,0);
+							iLastPercent = iPercent;
+						}
+					}
+					// <== Show (un-)loading status of IPFilter [Stulle] - Stulle
 					// (nVersion == 2) ? OptUtf8ToStr(szName, iLen) : 
 					AddIPRange(uStart, uEnd, DFLT_FILTER_LEVEL, CStringA(szName, iLen));
 					iFoundRanges++;
@@ -195,6 +228,22 @@ int CIPFilter::AddFromFile(LPCTSTR pszFilePath, bool bShowResponse)
 			while (fgets(szBuffer, _countof(szBuffer), readFile) != NULL)
 			{
 				iLine++;
+				// ==> Show (un-)loading status of IPFilter [Stulle] - Stulle
+				if(iLineCount)
+				{
+					int iPercent = (int)((float(iLine)*100.0f)/float(iLineCount));
+					if(iPercent - iLastPercent > 1)
+					{
+						CString strPercent;
+						strPercent.Format(_T("Loading IPfilter (%i %%) ..."),iPercent);
+						if(theApp.IsSplash())
+							theApp.UpdateSplash(strPercent);
+						else if (theApp.emuledlg->statusbar->m_hWnd)
+							theApp.emuledlg->statusbar->SetText(strPercent,0,0);
+						iLastPercent = iPercent;
+					}
+				}
+				// <== Show (un-)loading status of IPFilter [Stulle] - Stulle
 				sbuffer = szBuffer;
 				
 				// ignore comments & too short lines
@@ -454,6 +503,12 @@ bool CIPFilter::ParseFilterLine2(const CStringA& sbuffer, uint32& ip1, uint32& i
 
 void CIPFilter::RemoveAllIPFilters()
 {
+	// ==> Show (un-)loading status of IPFilter [Stulle] - Stulle
+	int iLine = 0;
+	int iLineCount = m_iplist.GetCount();
+	int iLastPercent = 0;
+	// <== Show (un-)loading status of IPFilter [Stulle] - Stulle
+
 	for (int i = 0; i < m_iplist.GetCount(); i++)
 	//Xman Code Fix: deleting the description-String can throw an exception
 	/*
@@ -463,6 +518,23 @@ void CIPFilter::RemoveAllIPFilters()
 		
 		try 
 		{
+			// ==> Show (un-)loading status of IPFilter [Stulle] - Stulle
+			iLine++;
+			if(iLineCount)
+			{
+				int iPercent = (int)((float(iLine)*100.0f)/float(iLineCount));
+				if(iPercent - iLastPercent > 1)
+				{
+					CString strPercent;
+					strPercent.Format(_T("Unloading IPfilter (%i %%) ..."),iPercent);
+					if(theApp.IsSplash())
+						theApp.UpdateSplash(strPercent);
+					else if (theApp.emuledlg->statusbar->m_hWnd)
+						theApp.emuledlg->statusbar->SetText(strPercent,0,0);
+					iLastPercent = iPercent;
+				}
+			}
+			// <== Show (un-)loading status of IPFilter [Stulle] - Stulle
 			delete m_iplist[i];
 		}
 		catch(...)
@@ -630,7 +702,12 @@ bool CIPFilter::RemoveIPFilter(const SIPFilter* pFilter)
 	return false;
 }
 //Xman auto update IPFilter
+// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+/*
 void CIPFilter::UpdateIPFilterURL()
+*/
+void CIPFilter::UpdateIPFilterURL(uint32 uNewVersion)
+// <== Advanced Updates [MorphXT/Stulle] - Stulle
 {
 	bool bHaveNewFilterFile = false;
 	CString url = thePrefs.GetAutoUpdateIPFilter_URL();
@@ -650,7 +727,12 @@ void CIPFilter::UpdateIPFilterURL()
 			memcpy(&SysTime, &thePrefs.m_IPfilterVersion, sizeof(SYSTEMTIME));
 		else
 			memset(&SysTime, 0, sizeof(SYSTEMTIME));
-		dlgDownload.m_pLastModifiedTime = &SysTime; //Xman remark: m_pLastModifiedTime is a pointer which points to the SysTime-struct
+		// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+		if(thePrefs.IsIPFilterViaDynDNS())
+			dlgDownload.m_pLastModifiedTime = NULL;
+		else
+		// <== Advanced Updates [MorphXT/Stulle] - Stulle
+			dlgDownload.m_pLastModifiedTime = &SysTime; //Xman remark: m_pLastModifiedTime is a pointer which points to the SysTime-struct
 
 		if (dlgDownload.DoModal() != IDOK)
 		{
@@ -661,7 +743,12 @@ void CIPFilter::UpdateIPFilterURL()
 			AfxMessageBox(strError, MB_ICONERROR);
 			return;
 		}
+		// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+		/*
 		if (dlgDownload.m_pLastModifiedTime == NULL)
+		*/
+		if (thePrefs.IsIPFilterViaDynDNS() == false && dlgDownload.m_pLastModifiedTime == NULL)
+		// <== Advanced Updates [MorphXT/Stulle] - Stulle
 			return;
 
 		CString strMimeType;
@@ -843,7 +930,7 @@ void CIPFilter::UpdateIPFilterURL()
 	}
 	else
 	{
-		AfxMessageBox(_T("failed to auto-update ipfilter. No URL given"), MB_ICONERROR);
+		AfxMessageBox(_T("Failed to auto-update IPFilter. No URL given"), MB_ICONERROR);
 		return;
 	}
 
@@ -875,7 +962,50 @@ void CIPFilter::UpdateIPFilterURL()
 
 	//everything fine. update the stored version
 	if (bHaveNewFilterFile)
+	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+	/*
 		memcpy(&thePrefs.m_IPfilterVersion, &SysTime, sizeof SysTime); 
+	*/
+	{
+		thePrefs.m_uIPFilterVersionNum = uNewVersion;
+		if(thePrefs.IsIPFilterViaDynDNS())
+		{
+			memset(&SysTime, 0, sizeof(SYSTEMTIME));
+			if(theApp.emuledlg->preferenceswnd &&
+				theApp.emuledlg->preferenceswnd->m_wndScar &&
+				theApp.emuledlg->preferenceswnd->m_wndScar.m_IpFilterTime)
+			{
+				CString strBuffer = NULL;
+				strBuffer.Format(_T("v%u"), thePrefs.GetIPFilterVersionNum());
+				theApp.emuledlg->preferenceswnd->m_wndScar.m_IpFilterTime.SetWindowText(strBuffer);
+			}
+		}
+		else
+			memcpy(&thePrefs.m_IPfilterVersion, &SysTime, sizeof SysTime);
+	}
+	else
+	{
+		thePrefs.m_uIPFilterVersionNum = 0;
+		memset(&SysTime, 0, sizeof(SYSTEMTIME));
+		if(thePrefs.IsIPFilterViaDynDNS())
+		{
+			if(theApp.emuledlg->preferenceswnd &&
+				theApp.emuledlg->preferenceswnd->m_wndScar &&
+				theApp.emuledlg->preferenceswnd->m_wndScar.m_IpFilterTime)
+				theApp.emuledlg->preferenceswnd->m_wndScar.m_IpFilterTime.SetWindowText(GetResString(IDS_DL_NONE));
+		}
+	}
+	if(thePrefs.IsIPFilterViaDynDNS() == false &&
+		theApp.emuledlg->preferenceswnd &&
+		theApp.emuledlg->preferenceswnd->m_wndScar &&
+		theApp.emuledlg->preferenceswnd->m_wndScar.m_IpFilterTime)
+	{
+		TCHAR sTime[30];
+		sTime[0] = _T('\0');
+		SysTimeToStr(thePrefs.GetIPfilterVersion(), sTime);
+		theApp.emuledlg->preferenceswnd->m_wndScar.m_IpFilterTime.SetWindowText(sTime);
+	}
+	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 }
 //Xman end
 
@@ -1117,7 +1247,8 @@ void CIPFilter::AddFromFileWhite(LPCTSTR pszFilePath)
 			delete[] pcToDelete;
 		}
 	}
-	AddLogLine(false, GetResString(IDS_IPFILTERWHITELOADED), m_iplist_White.GetCount());
+	if(m_iplist_White.GetCount()>0)
+		AddLogLine(false, GetResString(IDS_IPFILTERWHITELOADED), m_iplist_White.GetCount());
 	return;
 }
 

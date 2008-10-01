@@ -297,6 +297,14 @@ void CPPgSecurity::OnLoadIPFFromURL()
 		if (m_pacIPFilterURL && m_pacIPFilterURL->IsBound())
 			m_pacIPFilterURL->AddItem(url, 0);
 
+		// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+		if(thePrefs.IsIPFilterViaDynDNS(url))
+		{
+			theApp.emuledlg->CheckIPFilter();
+			return;
+		}
+		// <== Advanced Updates [MorphXT/Stulle] - Stulle
+
 		CString strTempFilePath;
 		_tmakepathlimit(strTempFilePath.GetBuffer(MAX_PATH), NULL, thePrefs.GetMuleDirectory(EMULE_CONFIGDIR), DFLT_IPFILTER_FILENAME, _T("tmp"));
 		strTempFilePath.ReleaseBuffer();

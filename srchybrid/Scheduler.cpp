@@ -24,7 +24,6 @@
 #include "emuledlg.h"
 #include "MenuCmds.h"
 // ==> Advanced Updates [MorphXT/Stulle] - Stulle
-#include "ipfilter.h"
 #include "log.h"
 // <== Advanced Updates [MorphXT/Stulle] - Stulle
 
@@ -273,11 +272,11 @@ void CScheduler::ActivateSchedule(int index,bool makedefault) {
 			// ==> Advanced Updates [MorphXT/Stulle] - Stulle
 			case ACTION_UPDIPCONF : {
 					AddLogLine (false,GetResString (IDS_SCHED_UPDATE_IPCONFIG_LOG));
-					theApp.ipfilter->UpdateIPFilterURL();
+					theApp.emuledlg->CheckIPFilter();
 				} break;
 			case ACTION_UPDANTILEECH : {
 					AddLogLine (false,GetResString (IDS_SCHED_UPDATE_ANTILEECH_LOG));
-//					theApp.FakeCheck->DownloadFakeList();
+					theApp.emuledlg->DoDLPVersioncheck();
 				} break;
 			// <== Advanced Updates [MorphXT/Stulle] - Stulle
 		}

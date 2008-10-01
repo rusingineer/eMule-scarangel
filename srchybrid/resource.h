@@ -2782,6 +2782,7 @@
 #define IDS_FEEDBACK_NONEEDPART         60662
 #define IDS_FEEDBACK_COMPLETE           60663
 #define IDS_FEEDBACK_ON_QUEUE           60664
+#define IDS_FEEDBACK_ALL_TRANSFERRED    60665
 // <== Copy feedback feature [MorphXT] - Stulle
 // ==> Simple cleanup [MorphXT] - Stulle
 #define IDS_CHECKDOTTOSPACE             60681
@@ -3231,6 +3232,7 @@
 #define IDS_IP2COUNTRY_ERROR8           61343
 #define IDS_AUTODLPFAILED               61344
 #define IDS_ANTILEECH_DWNFILE           61345
+#define IDS_AUTOIPFILTERFAILED          61346
 // <== Advanced Updates [MorphXT/Stulle] - Stulle
 // ==> Links for Server list and nodes file [Stulle] - Stulle
 #define IDC_NODESFILEBUTTON             61350

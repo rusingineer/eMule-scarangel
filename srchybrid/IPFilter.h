@@ -72,7 +72,12 @@ public:
 	bool IsFiltered(uint32 IP, UINT level) /*const*/;
 	CString GetLastHit() const;
 	const CIPFilterArray& GetIPFilter() const;
+	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+	/*
 	void    UpdateIPFilterURL(); //Xman auto update IPFilter
+	*/
+	void    UpdateIPFilterURL(uint32 uNewVersion = 0);
+	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 private:
 	const SIPFilter* m_pLastHit;

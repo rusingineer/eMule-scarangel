@@ -225,7 +225,8 @@ BEGIN_MESSAGE_MAP(CemuleDlg, CTrayDialog)
 	// ScarAngel Version Check - Stulle
 	ON_MESSAGE(UM_SVERSIONCHECK_RESPONSE, OnSVersionCheckResponse)
 	// Advanced Updates [MorphXT/Stulle] - Stulle
-	ON_MESSAGE(UM_DLPUTOVERCHECK_RESPONSE, OnDLPAutoVerCheckResponse)
+	ON_MESSAGE(UM_DLPAUTOVERCHECK_RESPONSE, OnDLPAutoVerCheckResponse)
+	ON_MESSAGE(UM_IPFFILTERAUTOVERCHECK_RESPONSE, OnIPFilterAutoVerCheckResponse)
 
 	// PeerCache DNS
 	ON_MESSAGE(UM_PEERCHACHE_RESPONSE, OnPeerCacheResponse)
@@ -2637,7 +2638,7 @@ void CemuleDlg::OnClose()
 	delete theApp.clientlist;		theApp.clientlist = NULL;
 	delete theApp.friendlist;		theApp.friendlist = NULL;		// CFriendList::SaveList
 	delete theApp.scheduler;		theApp.scheduler = NULL;
-	theApp.UpdateSplash(_T("unload IP-Filter ..."));  //Xman new slpash-screen arrangement
+	theApp.UpdateSplash(_T("Unloading IPfilter ..."));  //Xman new slpash-screen arrangement
 	delete theApp.ipfilter;			theApp.ipfilter = NULL;		// CIPFilter::SaveToDefaultFile
 	delete theApp.webserver;		theApp.webserver = NULL;
 	delete theApp.m_pPeerCache;		theApp.m_pPeerCache = NULL;
@@ -5264,7 +5265,7 @@ BOOL CemuleDlg::OnDeviceChange(UINT nEventType, DWORD_PTR dwData){
 // ==> Advanced Updates [MorphXT/Stulle] - Stulle
 void CemuleDlg::DoDLPVersioncheck()
 {
-	if (WSAAsyncGetHostByName(m_hWnd, UM_DLPUTOVERCHECK_RESPONSE, "dlp.dyndns.info", m_acDLPAutoBuffer, sizeof(m_acDLPAutoBuffer)) == 0){
+	if (WSAAsyncGetHostByName(m_hWnd, UM_DLPAUTOVERCHECK_RESPONSE, "dlp.dyndns.info", m_acDLPAutoBuffer, sizeof(m_acDLPAutoBuffer)) == 0){
 		AddLogLine(true,GetResString(IDS_AUTODLPFAILED));
 	}
 }
@@ -5324,6 +5325,57 @@ void CemuleDlg::DownloadDLP()
 		return;
 	}
 	theApp.dlp->Reload();
+}
+
+void CemuleDlg::DoIPFilterVersioncheck()
+{
+	if (WSAAsyncGetHostByName(m_hWnd, UM_IPFFILTERAUTOVERCHECK_RESPONSE, "ipfilter.dyndns.info", m_acIPFilterAutoBuffer, sizeof(m_acIPFilterAutoBuffer)) == 0){
+		AddLogLine(true,GetResString(IDS_AUTOIPFILTERFAILED));
+	}
+}
+
+LRESULT CemuleDlg::OnIPFilterAutoVerCheckResponse(WPARAM /*wParam*/, LPARAM lParam)
+{
+	//Info:
+	//IP-samples:
+	//5.0.0.99 --> IPFilter version 5
+	//105.0.0.99 --> IPFilter version 105
+	//0.1.0.99 --> IPFilter version 256 not allowed!
+	//1.1.0.99 --> IPFilter version 257
+
+
+	if (WSAGETASYNCERROR(lParam) == 0)
+	{
+		int iBufLen = WSAGETASYNCBUFLEN(lParam);
+		if (iBufLen >= sizeof(HOSTENT))
+		{
+			LPHOSTENT pHost = (LPHOSTENT)m_acIPFilterAutoBuffer;
+			if (pHost->h_length == 4 && pHost->h_addr_list && pHost->h_addr_list[0])
+			{
+				uint32 dwResult = ((LPIN_ADDR)(pHost->h_addr_list[0]))->s_addr;
+				dwResult &= 0x00FFFFFF;
+				if (PathFileExists(theApp.ipfilter->GetDefaultFilePath()))
+				{
+					if(dwResult > thePrefs.GetIPFilterVersionNum())
+						theApp.ipfilter->UpdateIPFilterURL(dwResult);
+				}
+				else
+					theApp.ipfilter->UpdateIPFilterURL(dwResult);
+				return 0;
+			}
+		}
+	}
+	LogWarning(LOG_STATUSBAR,GetResString(IDS_AUTOIPFILTERFAILED));
+	return 0;
+
+}
+
+void CemuleDlg::CheckIPFilter()
+{
+	if(thePrefs.IsIPFilterViaDynDNS())
+		DoIPFilterVersioncheck();
+	else
+		theApp.ipfilter->UpdateIPFilterURL();
 }
 // <== Advanced Updates [MorphXT/Stulle] - Stulle
 

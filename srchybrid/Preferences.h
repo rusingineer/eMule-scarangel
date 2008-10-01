@@ -1097,6 +1097,7 @@ public:
 	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
 	static bool			m_bAutoUpdateAntiLeech;
 	static CString		m_strAntiLeechURL;
+	static uint32		m_uIPFilterVersionNum;
 	static SYSTEMTIME	m_IP2CountryVersion;
 	static bool			AutoUpdateIP2Country;
 	static CString		UpdateURLIP2Country;
@@ -2526,11 +2527,14 @@ public:
 	static bool			IsAutoUpdateAntiLeech()			{return m_bAutoUpdateAntiLeech;}
 	static CString		GetAntiLeechURL()				{return m_strAntiLeechURL;}
 	static LPSYSTEMTIME	GetIPfilterVersion()			{return &m_IPfilterVersion;}
+	static uint32		GetIPFilterVersionNum()			{return m_uIPFilterVersionNum;}
 	static LPSYSTEMTIME	GetIP2CountryVersion()			{return &m_IP2CountryVersion;}
 	static bool			IsAutoUPdateIP2CountryEnabled()	{return AutoUpdateIP2Country;}
 	static CString		GetUpdateURLIP2Country()		{return UpdateURLIP2Country;}
-    static void			SetBindAddr(CStringW bindip);
+	static bool			IsIPFilterViaDynDNS(CString strURL = NULL);
 	// <== Advanced Updates [MorphXT/Stulle] - Stulle
+
+	static void			SetBindAddr(CStringW bindip); // Advanced Options [Official/MorphXT] - Stulle
 
 	static	bool	FineCS()			{return m_bFineCS;} // Modified FineCS [CiccioBastardo/Stulle] - Stulle
 
