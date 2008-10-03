@@ -18,11 +18,12 @@ Added: Threaded File Settings Saving [Stulle] - Stulle
 	+ keeps the GUI responsive while saving
 Added: Threaded Known Files Saving [Stulle] - Stulle
 	+ keeps the GUI responsive while saving
-Added: On Upload Queue in Copy Feedback feature - MyTh88
+Added: On Upload Queue in Copy Feedback feature [MyTh88] - MyTh88
 Added: New IPFilter (Maintained by Ozzy) [Stulle] - Stulle
 	+ uses DynDNS to check version, mirrored at SourceForge, unrar.dll required!
 Added: Show (un-)loading status of IPFilter [Stulle] - Stulle
 Added: Sum up transferred stats on getting Feedback for multiple files [Stulle] - Stulle
+Added: Color Upload Feedback [MyTh88]- MyTh88
 
 Changed: Improved resizing of cats tab in SearchResultWnd [Stulle] - Stulle
 Changed: Using official code for proper background of Icons with text [Officials] - Stulle

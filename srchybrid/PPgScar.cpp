@@ -240,6 +240,7 @@ CPPgScar::CPPgScar()
 	m_htiShowInMSN7 = NULL; // Show in MSN7 [TPT] - Stulle
 	m_htiQueueProgressBar = NULL; // Client queue progress bar [Commander] - Stulle
 	m_htiTrayComplete = NULL; // Completed in Tray [Stulle] - Stulle
+	m_htiColorFeedback = NULL; //Colored Feedback - MyTh88
 	m_htiShowClientPercentage = NULL; // Show Client Percentage optional [Stulle] - Stulle
 	m_htiFollowTheMajority = NULL; // Follow The Majority [AndCycle/Stulle] - Stulle
 	m_htiShowSpeedMeter = NULL; // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
@@ -627,6 +628,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiShowInMSN7 = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOWINMSN7), m_htiDisplay, m_bShowInMSN7); // Show in MSN7 [TPT] - Stulle
 		m_htiQueueProgressBar = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CLIENTQUEUEPROGRESSBAR), m_htiDisplay, m_bQueueProgressBar); // Client queue progress bar [Commander] - Stulle
 		m_htiTrayComplete = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_TRAY_COMPLETE), m_htiDisplay, m_bTrayComplete); // Completed in Tray [Stulle] - Stulle
+		m_htiColorFeedback = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_COLOR_FEEDBACK), m_htiDisplay, m_bColorFeedback); // Color Feedback - MyTh88
 		m_htiShowClientPercentage = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CLIENTPERCENTAGE), m_htiDisplay, m_bShowClientPercentage); // Show Client Percentage optional [Stulle] - Stulle
 		m_htiFollowTheMajority = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_FOLLOWTHEMAJORITY), m_htiDisplay, m_bFollowTheMajority); // Follow The Majority [AndCycle/Stulle] - Stulle
 		m_htiShowSpeedMeter = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SHOW_SPEED_METER), m_htiDisplay, m_bShowSpeedMeter); // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
@@ -876,6 +878,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowInMSN7, m_bShowInMSN7); // Show in MSN7 [TPT] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiQueueProgressBar, m_bQueueProgressBar); // Client queue progress bar [Commander] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiTrayComplete, m_bTrayComplete); // Completed in Tray [Stulle] - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiColorFeedback, m_bColorFeedback); // Color Feedback - MyTh88
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowClientPercentage, m_bShowClientPercentage); // Show Client Percentage optional [Stulle] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiFollowTheMajority, m_bFollowTheMajority); // Follow The Majority [AndCycle/Stulle] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiShowSpeedMeter, m_bShowSpeedMeter); // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
@@ -1246,6 +1249,7 @@ BOOL CPPgScar::OnInitDialog()
 	m_bShowInMSN7 = thePrefs.GetShowMSN7(); // Show in MSN7 [TPT] - Stulle
 	m_bQueueProgressBar = thePrefs.ShowClientQueueProgressBar(); // Client queue progress bar [Commander] - Stulle
 	m_bTrayComplete = thePrefs.GetTrayComplete(); // Completed in Tray [Stulle] - Stulle
+	m_bColorFeedback = thePrefs.GetColorFeedback(); // Color Feedback - MyTh88
 	m_bShowClientPercentage = thePrefs.GetShowClientPercentage(); // Show Client Percentage optional [Stulle] - Stulle
 	m_bFollowTheMajority = thePrefs.IsFollowTheMajorityEnabled(); // Follow The Majority [AndCycle/Stulle] - Stulle
 	m_bShowSpeedMeter = thePrefs.GetShowSpeedMeter(); // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
@@ -1693,6 +1697,7 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_bShowInMSN7 = m_bShowInMSN7; // Show in MSN7 [TPT] - Stulle
 	thePrefs.m_bClientQueueProgressBar = m_bQueueProgressBar; // Client queue progress bar [Commander] - Stulle
 	thePrefs.m_bTrayComplete = m_bTrayComplete; // Completed in Tray [Stulle] - Stulle
+	thePrefs.m_bColorFeedback = m_bColorFeedback; // Color Feedback - MyTh88
 	thePrefs.m_bShowClientPercentage = m_bShowClientPercentage; // Show Client Percentage optional [Stulle] - Stulle
 	thePrefs.m_bFollowTheMajority = m_bFollowTheMajority; // Follow The Majority [AndCycle/Stulle] - Stulle
 	// ==> High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
@@ -2092,6 +2097,7 @@ void CPPgScar::Localize(void)
 		if (m_htiShowInMSN7) m_ctrlTreeOptions.SetItemText(m_htiShowInMSN7, GetResString(IDS_SHOWINMSN7)); // Show in MSN7 [TPT] - Stulle
 		if (m_htiQueueProgressBar) m_ctrlTreeOptions.SetItemText(m_htiQueueProgressBar, GetResString(IDS_CLIENTQUEUEPROGRESSBAR)); // Client queue progress bar [Commander] - Stulle
 		if (m_htiTrayComplete) m_ctrlTreeOptions.SetItemText(m_htiTrayComplete, GetResString(IDS_TRAY_COMPLETE)); // Completed in Tray [Stulle] - Stulle
+		if (m_htiColorFeedback) m_ctrlTreeOptions.SetItemText(m_htiColorFeedback, GetResString(IDS_COLOR_FEEDBACK)); // Color Feedback -  MyTh88
 		if (m_htiShowClientPercentage) m_ctrlTreeOptions.SetItemText(m_htiShowClientPercentage, GetResString(IDS_CLIENTPERCENTAGE)); // Show Client Percentage optional [Stulle] - Stulle
 		if (m_htiFollowTheMajority) m_ctrlTreeOptions.SetItemText(m_htiFollowTheMajority, GetResString(IDS_FOLLOWTHEMAJORITY)); // Follow The Majority [AndCycle/Stulle] - Stulle
 		if (m_htiShowSpeedMeter) m_ctrlTreeOptions.SetItemText(m_htiShowSpeedMeter, GetResString(IDS_SHOW_SPEED_METER)); // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
@@ -2443,6 +2449,7 @@ void CPPgScar::OnDestroy()
 	m_htiShowInMSN7 = NULL; // Show in MSN7 [TPT] - Stulle
 	m_htiQueueProgressBar = NULL;
 	m_htiTrayComplete = NULL; // Completed in Tray [Stulle] - Stulle
+	m_htiColorFeedback = NULL; // Color Feedback - MyTh88
 	m_htiShowClientPercentage = NULL; // Show Client Percentage optional [Stulle] - Stulle
 	m_htiFollowTheMajority = NULL; // Follow The Majority [AndCycle/Stulle] - Stulle
 	m_htiShowSpeedMeter = NULL; // High resulution speedmeter on toolbar [eFMod/Stulle] - Stulle

@@ -3076,6 +3076,25 @@ CString CKnownFile::GetFeedback(bool isUS)
 	CString feed;
 	if (isUS)
 	{
+		if (thePrefs.GetColorFeedback())
+		{
+		feed.AppendFormat(_T("[color=orange]File name:[/color] [color=blue]%s[/color]\r\n"),GetFileName());
+		feed.AppendFormat(_T("[color=orange]File type:[/color] [color=#00BF00]%s[/color]\r\n"),GetFileType());
+		feed.AppendFormat(_T("[color=orange]Size:[/color] [color=blue]%s[/color]\r\n"), CastItoXBytes(GetFileSize(),false,false,3,true));
+		feed.AppendFormat(_T("[color=orange]Downloaded:[/color] [color=#00BF00]%s[/color]\r\n"), (IsPartFile()==false)?GetResString(IDS_COMPLETE):CastItoXBytes(((CPartFile*)this)->GetCompletedSize(),false,false,3));
+		feed.AppendFormat(_T("[color=orange]Transferred:[/color] [color=red]%s[/color] ([b][color=red]%s[/color][/b])\r\n"), CastItoXBytes(statistic.GetTransferred(),false,false,3,true), CastItoXBytes(statistic.GetAllTimeTransferred(),false,false,3,true)); 
+		feed.AppendFormat(_T("[color=orange]Requested:[/color] [color=#40BFBF]%i[/color] ([b][color=#40BFBF]%i[/color][/b])\r\n"), statistic.GetRequests(), statistic.GetAllTimeRequests()); 
+		feed.AppendFormat(_T("[color=orange]Accepted Requests:[/color] [color=#40BFBF]%i[/color] ([b][color=#40BFBF]%i[/color][/b])\r\n"), statistic.GetAccepts(),statistic.GetAllTimeAccepts()); 
+			if(IsPartFile()){
+				feed.AppendFormat(_T("[color=orange]Total sources:[/color] [color=blue]%i[/color] \r\n"),((CPartFile*)this)->GetSourceCount());
+				feed.AppendFormat(_T("[color=orange]Available sources:[/color] [color=#00BF00]%i[/color] \r\n"),((CPartFile*)this)->GetAvailableSrcCount());
+				feed.AppendFormat(_T("[color=orange]No Need Part sources:[/color] [color=blue]%i[/color] \r\n"),((CPartFile*)this)->GetSrcStatisticsValue(DS_NONEEDEDPARTS));
+			}
+		feed.AppendFormat(_T("[color=orange]On Queue:[/color] [color=red]%i[/color]\r\n"),onuploadqueue);
+		feed.AppendFormat(_T("[color=orange]Complete sources:[/color] [b][color=red]%i[/color][/b]\r\n"),m_nCompleteSourcesCount);
+		}
+		else
+		{
 		feed.AppendFormat(_T("File name: %s\r\n"),GetFileName());
 		feed.AppendFormat(_T("File type: %s\r\n"),GetFileType());
 		feed.AppendFormat(_T("Size: %s\r\n"), CastItoXBytes(GetFileSize(),false,false,3,true));
@@ -3083,42 +3102,99 @@ CString CKnownFile::GetFeedback(bool isUS)
 		feed.AppendFormat(_T("Transferred: %s (%s)\r\n"), CastItoXBytes(statistic.GetTransferred(),false,false,3,true), CastItoXBytes(statistic.GetAllTimeTransferred(),false,false,3,true)); 
 		feed.AppendFormat(_T("Requested: %i (%i)\r\n"), statistic.GetRequests(), statistic.GetAllTimeRequests()); 
 		feed.AppendFormat(_T("Accepted Requests: %i (%i)\r\n"), statistic.GetAccepts(),statistic.GetAllTimeAccepts()); 
-		if(IsPartFile()){
-			feed.AppendFormat(_T("Total sources: %i \r\n"),((CPartFile*)this)->GetSourceCount());
-			feed.AppendFormat(_T("Available sources : %i \r\n"),((CPartFile*)this)->GetAvailableSrcCount());
-			feed.AppendFormat(_T("No Need Part sources: %i \r\n"),((CPartFile*)this)->GetSrcStatisticsValue(DS_NONEEDEDPARTS));
-		}
+			if(IsPartFile()){
+				feed.AppendFormat(_T("Total sources: %i \r\n"),((CPartFile*)this)->GetSourceCount());
+				feed.AppendFormat(_T("Available sources : %i \r\n"),((CPartFile*)this)->GetAvailableSrcCount());
+				feed.AppendFormat(_T("No Need Part sources: %i \r\n"),((CPartFile*)this)->GetSrcStatisticsValue(DS_NONEEDEDPARTS));
+			}
 		feed.AppendFormat(_T("On Queue: %i \r\n"),onuploadqueue);
 		feed.AppendFormat(_T("Complete sources: %i\r\n"),m_nCompleteSourcesCount);
+		}
 	}
 	else
 	{
-		feed.AppendFormat(GetResString(IDS_FEEDBACK_FILENAME), GetFileName());
-		feed.Append(_T(" \r\n"));
-		feed.AppendFormat(GetResString(IDS_FEEDBACK_FILETYPE), GetFileType());
-		feed.Append(_T(" \r\n"));
-		feed.AppendFormat(GetResString(IDS_FEEDBACK_FILESIZE), CastItoXBytes(GetFileSize(),false,false,3));
-		feed.Append(_T(" \r\n"));
-		feed.AppendFormat(GetResString(IDS_FEEDBACK_DOWNLOADED), (IsPartFile()==false)?GetResString(IDS_COMPLETE):CastItoXBytes(((CPartFile*)this)->GetCompletedSize(),false,false,3));
-		feed.Append(_T(" \r\n"));
-		feed.AppendFormat(GetResString(IDS_FEEDBACK_TRANSFERRED), CastItoXBytes(statistic.GetTransferred(),false,false,3),CastItoXBytes(statistic.GetAllTimeTransferred(),false,false,3));
-		feed.Append(_T(" \r\n"));
-		feed.AppendFormat(GetResString(IDS_FEEDBACK_REQUESTED), statistic.GetRequests(), statistic.GetAllTimeRequests());
-		feed.Append(_T(" \r\n"));
-		feed.AppendFormat(GetResString(IDS_FEEDBACK_ACCEPTED), statistic.GetAccepts() , statistic.GetAllTimeAccepts());
-		feed.Append(_T(" \r\n"));
-		if(IsPartFile()){
-			feed.AppendFormat(GetResString(IDS_FEEDBACK_TOTAL), ((CPartFile*)this)->GetSourceCount());
-			feed.Append(_T(" \r\n"));
-			feed.AppendFormat(GetResString(IDS_FEEDBACK_AVAILABLE), ((CPartFile*)this)->GetAvailableSrcCount());
-			feed.Append(_T(" \r\n"));
-			feed.AppendFormat(GetResString(IDS_FEEDBACK_NONEEDPART), ((CPartFile*)this)->GetSrcStatisticsValue(DS_NONEEDEDPARTS));
-			feed.Append(_T(" \r\n"));
+		if (thePrefs.GetColorFeedback())
+		{
+		feed.Append(_T("[color=orange]"));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_FILENAME));
+		feed.Append(_T("[/color]"));
+		feed.AppendFormat(_T("[color=blue]%s[/color]\r\n"),GetFileName());
+		feed.Append(_T("[color=orange]"));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_FILETYPE));
+		feed.Append(_T("[/color]"));
+		feed.AppendFormat(_T("[color=#00BF00]%s[/color]\r\n"),GetFileType());
+		feed.Append(_T("[color=orange]"));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_FILESIZE));
+		feed.Append(_T("[/color]"));
+		feed.AppendFormat(_T("[color=blue]%s[/color]\r\n"), CastItoXBytes(GetFileSize(),false,false,3,true));
+		feed.Append(_T("[color=orange]"));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_DOWNLOADED));
+		feed.Append(_T("[/color]"));
+		feed.AppendFormat(_T("[color=#00BF00]%s[/color]\r\n"), (IsPartFile()==false)?GetResString(IDS_COMPLETE):CastItoXBytes(((CPartFile*)this)->GetCompletedSize(),false,false,3));
+		feed.Append(_T("[color=orange]"));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_TRANSFERRED));
+		feed.Append(_T("[/color]"));
+		feed.AppendFormat(_T("[color=red]%s[/color] ([b][color=red]%s[/color][/b])\r\n"), CastItoXBytes(statistic.GetTransferred(),false,false,3,true), CastItoXBytes(statistic.GetAllTimeTransferred(),false,false,3,true));
+		feed.Append(_T("[color=orange]"));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_REQUESTED));
+		feed.Append(_T("[/color]"));
+		feed.AppendFormat(_T("[color=#40BFBF]%i[/color] ([b][color=#40BFBF]%i[/color][/b])\r\n"), statistic.GetRequests(), statistic.GetAllTimeRequests());
+		feed.Append(_T("[color=orange]"));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_ACCEPTED));
+		feed.Append(_T("[/color]"));
+		feed.AppendFormat(_T("[color=#40BFBF]%i[/color] ([b][color=#40BFBF]%i[/color][/b])\r\n"), statistic.GetAccepts(),statistic.GetAllTimeAccepts()); 
+			if(IsPartFile()){
+				feed.Append(_T("[color=orange]"));
+				feed.AppendFormat(GetResString(IDS_FEEDBACK_TOTAL));
+				feed.Append(_T("[/color]"));
+				feed.AppendFormat(_T("[color=blue]%i[/color] \r\n"),((CPartFile*)this)->GetSourceCount());
+				feed.Append(_T("[color=orange]"));
+				feed.AppendFormat(GetResString(IDS_FEEDBACK_AVAILABLE));
+				feed.Append(_T("[/color]"));
+				feed.AppendFormat(_T("[color=#00BF00]%i[/color] \r\n"),((CPartFile*)this)->GetAvailableSrcCount());
+				feed.Append(_T("[color=orange]"));
+				feed.AppendFormat(GetResString(IDS_FEEDBACK_NONEEDPART));
+				feed.Append(_T("[/color]"));
+				feed.AppendFormat(_T("[color=blue]%i[/color] \r\n"),((CPartFile*)this)->GetSrcStatisticsValue(DS_NONEEDEDPARTS));
+			}
+		feed.Append(_T("[color=orange]"));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_ON_QUEUE));
+		feed.Append(_T("[/color]"));
+		feed.AppendFormat(_T("[color=red]%i[/color]\r\n"),onuploadqueue);
+		feed.Append(_T("[color=orange]"));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_COMPLETE));
+		feed.Append(_T("[/color]"));
+		feed.AppendFormat(_T("[b][color=red]%i[/color][/b]\r\n"),m_nCompleteSourcesCount);
 		}
-		feed.AppendFormat(GetResString(IDS_FEEDBACK_ON_QUEUE), onuploadqueue);
-		feed.Append(_T(" \r\n"));
-		feed.AppendFormat(GetResString(IDS_FEEDBACK_COMPLETE), m_nCompleteSourcesCount);
-		feed.Append(_T(" \r\n"));
+		else
+		{
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_FILENAME));
+		feed.AppendFormat(_T("%s \r\n"), GetFileName());
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_FILETYPE));
+		feed.AppendFormat(_T("%s \r\n"), GetFileType());
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_FILESIZE));
+		feed.AppendFormat(_T("%s \r\n"), CastItoXBytes(GetFileSize(),false,false,3));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_DOWNLOADED));
+		feed.AppendFormat(_T("%s \r\n"), (IsPartFile()==false)?GetResString(IDS_COMPLETE):CastItoXBytes(((CPartFile*)this)->GetCompletedSize(),false,false,3));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_TRANSFERRED));
+		feed.AppendFormat(_T("%s (%s) \r\n"), CastItoXBytes(statistic.GetTransferred(),false,false,3),CastItoXBytes(statistic.GetAllTimeTransferred(),false,false,3));
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_REQUESTED));
+		feed.AppendFormat(_T("%i (%i) \r\n"), statistic.GetRequests(), statistic.GetAllTimeRequests());
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_ACCEPTED));
+		feed.AppendFormat(_T("%i (%i) \r\n"), statistic.GetAccepts() , statistic.GetAllTimeAccepts());
+		if(IsPartFile()){
+			feed.AppendFormat(GetResString(IDS_FEEDBACK_TOTAL));
+			feed.AppendFormat(_T("%i \r\n"), ((CPartFile*)this)->GetSourceCount());
+			feed.AppendFormat(GetResString(IDS_FEEDBACK_AVAILABLE));
+			feed.AppendFormat(_T("%i \r\n"), ((CPartFile*)this)->GetAvailableSrcCount());
+			feed.AppendFormat(GetResString(IDS_FEEDBACK_NONEEDPART));
+			feed.AppendFormat(_T("%i \r\n"), ((CPartFile*)this)->GetSrcStatisticsValue(DS_NONEEDEDPARTS));
+		}
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_ON_QUEUE));
+		feed.AppendFormat(_T("%i \r\n"), onuploadqueue);
+		feed.AppendFormat(GetResString(IDS_FEEDBACK_COMPLETE));
+		feed.AppendFormat(_T("%i \r\n"), m_nCompleteSourcesCount);
+		}
 	}
 	return feed;
 }

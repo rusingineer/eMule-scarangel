@@ -5732,20 +5732,20 @@ BEGIN
     // ==> Copy feedback feature [MorphXT] - Stulle
     IDS_COPYFEEDBACK        "Copy feedback to clipboard"
     IDS_COPYFEEDBACK_US     "Copy feedback to clipboard (US)"
-    IDS_FEEDBACK_TRANSFERRED "Transferred: %s (%s)"
-    IDS_FEEDBACK_REQUESTED  "Requested: %i (%i)"
-    IDS_FEEDBACK_ACCEPTED   "Accepted Requests: %i (%i)"
-    IDS_FEEDBACK_FROM       "Feedback from %s on [%s]"
-    IDS_FEEDBACK_FILENAME   "File name: %s"
-    IDS_FEEDBACK_FILETYPE   "File type: %s"
-    IDS_FEEDBACK_FILESIZE   "Size: %s"
-    IDS_FEEDBACK_DOWNLOADED "Downloaded: %s"
-    IDS_FEEDBACK_TOTAL      "Total sources: %i"
-    IDS_FEEDBACK_AVAILABLE  "Available sources : %i"
-    IDS_FEEDBACK_NONEEDPART "No Needed Part sources: %i"
-    IDS_FEEDBACK_COMPLETE   "Complete sources: %i"
-    IDS_FEEDBACK_ON_QUEUE   "On Queue: %i"
-    IDS_FEEDBACK_ALL_TRANSFERRED "Transferred (all files): %s (%s)"
+    IDS_FEEDBACK_TRANSFERRED "Transferred: "
+    IDS_FEEDBACK_REQUESTED  "Requested: "
+    IDS_FEEDBACK_ACCEPTED   "Accepted Requests: "
+    IDS_FEEDBACK_FROM       "Feedback from "
+    IDS_FEEDBACK_FILENAME   "File name: "
+    IDS_FEEDBACK_FILETYPE   "File type: "
+    IDS_FEEDBACK_FILESIZE   "Size: "
+    IDS_FEEDBACK_DOWNLOADED "Downloaded: "
+    IDS_FEEDBACK_TOTAL      "Total sources: "
+    IDS_FEEDBACK_AVAILABLE  "Available sources : "
+    IDS_FEEDBACK_NONEEDPART "No Needed Part sources: "
+    IDS_FEEDBACK_COMPLETE   "Complete sources: "
+    IDS_FEEDBACK_ON_QUEUE   "On Queue: "
+    IDS_FEEDBACK_ALL_TRANSFERRED "Transferred (all files): "
     // <== Copy feedback feature [MorphXT] - Stulle
     // ==> Simple cleanup [MorphXT] - Stulle
     IDS_CHECKDOTTOSPACE     "Convert ""."" to "" """
@@ -6124,6 +6124,7 @@ BEGIN
     IDS_FINECS              "Fine Credit System (Threshold: 4 chunks)" // Modified FineCS [CiccioBastardo/Stulle] - Stulle
     IDS_IPFILTERWHITELOADED "%u IPs loaded to the IP Filter White List"
     IDS_TRAY_COMPLETE       "Display completed Downloads in Tray" // Completed in Tray [Stulle] - Stulle
+	IDS_COLOR_FEEDBACK		"Color Upload Feedback" // Color Upload Feedback - MyTh88
 END
 
 #endif    // Englisch (USA) resources

@@ -101,6 +101,7 @@ protected:
 	bool m_bShowInMSN7; // Show in MSN7 [TPT] - Stulle
 	bool m_bQueueProgressBar; // Client queue progress bar [Commander] - Stulle
 	bool m_bTrayComplete; // Completed in Tray [Stulle] - Stulle
+	bool m_bColorFeedback; // Color Feedback - MyTh88
 	bool m_bShowClientPercentage; // Show Client Percentage optional [Stulle] - Stulle
 	bool m_bFollowTheMajority; // Follow The Majority [AndCycle/Stulle] - Stulle
 	bool m_bShowSpeedMeter; // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
@@ -300,6 +301,7 @@ protected:
 	HTREEITEM m_htiShowInMSN7; // Show in MSN7 [TPT] - Stulle
 	HTREEITEM m_htiQueueProgressBar; // Client queue progress bar [Commander] - Stulle
 	HTREEITEM m_htiTrayComplete; // Completed in Tray [Stulle] - Stulle
+	HTREEITEM m_htiColorFeedback; // Color Feedback - MyTh88
 	HTREEITEM m_htiShowClientPercentage; // Show Client Percentage optional [Stulle] - Stulle
 	HTREEITEM m_htiFollowTheMajority; // Follow The Majority [AndCycle/Stulle] - Stulle
 	HTREEITEM m_htiShowSpeedMeter; // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88

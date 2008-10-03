@@ -1996,10 +1996,33 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 				POSITION pos = selectedList.GetHeadPosition();
 
 				if(wParam == MP_COPYFEEDBACK_US)
+				{
+					if (thePrefs.GetColorFeedback())
+					{
+					feed.AppendFormat(_T("[color=green][b]Feedback from %s on [%s][/b][/color]\r\n"),thePrefs.GetUserNick(),theApp.m_strModLongVersion);
+					}
+					else
+					{
 					feed.AppendFormat(_T("Feedback from %s on [%s]\r\n"),thePrefs.GetUserNick(),theApp.m_strModLongVersion);
+					}
+					
+				}
 				else
-					feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM), thePrefs.GetUserNick(), theApp.m_strModLongVersion);
-				feed.Append(_T(" \r\n"));
+				{
+					if (thePrefs.GetColorFeedback())
+					{
+					feed.Append(_T("[color=green][b]"));
+					feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM));
+					feed.AppendFormat(_T("%s on [%s][/b][/color]\r\n"),thePrefs.GetUserNick(),theApp.m_strModLongVersion);
+					
+					}
+					else
+					{
+					feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM));
+					feed.AppendFormat(_T("%s on [%s]"), thePrefs.GetUserNick(), theApp.m_strModLongVersion);
+					feed.Append(_T(" \r\n"));
+					}
+				}
 
 				while (pos != NULL)
 				{
@@ -2014,8 +2037,18 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 
 				if(iCount>1)
 				{
-					feed.AppendFormat(GetResString(IDS_FEEDBACK_ALL_TRANSFERRED),CastItoXBytes(uTransferredSum,false,false,3,true),CastItoXBytes(uTransferredAllSum,false,false,3,true));
-					feed.AppendFormat(_T(" \r\n"));
+					if (thePrefs.GetColorFeedback())
+					{
+					feed.Append(_T("[color=orange]"));
+					feed.AppendFormat(GetResString(IDS_FEEDBACK_ALL_TRANSFERRED));
+					feed.Append(_T("[/color]"));
+					feed.AppendFormat(_T("[color=red]%s (%s)[/color]\r\n"),CastItoXBytes(uTransferredSum,false,false,3,true),CastItoXBytes(uTransferredAllSum,false,false,3,true));
+					}
+					else
+					{
+					feed.AppendFormat(GetResString(IDS_FEEDBACK_ALL_TRANSFERRED));
+					feed.AppendFormat(_T("%s (%s) \r\n"),CastItoXBytes(uTransferredSum,false,false,3,true),CastItoXBytes(uTransferredAllSum,false,false,3,true));
+					}
 				}
 				//Todo: copy all the comments too
 				theApp.CopyTextToClipboard(feed);
