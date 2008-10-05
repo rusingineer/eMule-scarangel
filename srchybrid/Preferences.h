@@ -1107,7 +1107,7 @@ public:
 
 	static bool m_bTrayComplete; // Completed in Tray [Stulle] - Stulle
 	
-	static bool m_bColorFeedback; // Color Feedback - MyTh88
+	static bool m_bColorFeedback; // Color Feedback [Myth88] - MyTh88
 
 	static bool		m_bSplitWindow; // Advanced Transfer Window Layout [Stulle] - Stulle
 
@@ -2542,7 +2542,7 @@ public:
 
 	static	bool	GetTrayComplete()		{ return m_bTrayComplete; } // Completed in Tray [Stulle] - Stulle
 	
-	static	bool	GetColorFeedback()		{ return m_bColorFeedback; } // Color Feedback - MyTh88
+	static	bool	GetColorFeedback()		{ return m_bColorFeedback; } // Color Feedback [Myth88] - MyTh88
 
 	// ==> Advanced Transfer Window Layout [Stulle] - Stulle
 	static	bool	GetSplitWindow()		{ return m_bSplitWindow; }

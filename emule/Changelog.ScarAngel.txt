@@ -38,13 +38,15 @@ Changed: Increased font size for Sub Heading text in context menu [Stulle] - Stu
 Changed: Use proper English in some places ;) [ginger] - Stulle
 Changed: Reworked the Feedback code a bit [Stulle] - Stulle
 Changed: Enable List requested files only when needed [Stulle] - Stulle
+Changed: Rewrote Feedback code [Stulle] - Stulle
 
-Fixed: InputBox for ResumeOrder [Stulle] - Stulle
+Fixed: InputBox for ResumeOrder [Stulle/fafner] - Stulle
 Fixed: Crash when checking if sup client should not be kicked from UL [Stulle] - Stulle
 Fixed: Improper use of FindBestClientInQueue when checking for sup client [Stulle] - Stulle
 Fixed: No max time for clients that should be prevented [Stulle] - Stulle
 Fixed: Not working chars for context menus [Stulle] - Stulle
 Fixed: Scheduled DLP Update not working [Stulle] - Stulle
+Fixed: Memleak FiX in SysInfo [WiZaRd] - Stulle
 
 Removed: Second CryptTCPPaddingLength option from Advanced Options [Stulle] - Stulle
 Removed: Last renmants of the Xtreme version check [Stulle] - Stulle

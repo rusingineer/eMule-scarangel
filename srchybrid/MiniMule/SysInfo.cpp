@@ -413,7 +413,7 @@ void CSysInfo::DetectUserAdmin()
 		do
 		{
 			if( pInfoBuffer )
-				delete pInfoBuffer;
+				delete[] pInfoBuffer; // Memleak FiX [WiZaRd] - Stulle
 			pInfoBuffer = new BYTE[dwInfoBufferSize];
 			if( !pInfoBuffer )
 				__leave;
@@ -445,7 +445,7 @@ void CSysInfo::DetectUserAdmin()
 		if( hAccessToken )
 			CloseHandle( hAccessToken );
 		if( pInfoBuffer )
-			delete pInfoBuffer;
+			delete[] pInfoBuffer; // Memleak FiX [WiZaRd] - Stulle
 		if( psidAdministrators )
 			FreeSid( psidAdministrators );
 	}
@@ -491,11 +491,11 @@ BOOL CSysInfo::GetFileInfo(LPCTSTR lpszFileName, DWORD *v_major, DWORD *v_minor,
 			};
 		};
 		free(lpVoid);
-		delete lpFileName;
+		delete[] lpFileName; // Memleak FiX [WiZaRd] - Stulle
 	}
 	else
 	{
-		delete lpFileName;
+		delete[] lpFileName; // Memleak FiX [WiZaRd] - Stulle
 		return FALSE;
 	};
 

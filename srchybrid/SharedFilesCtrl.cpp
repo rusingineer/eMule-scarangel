@@ -1998,29 +1998,22 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 				if(wParam == MP_COPYFEEDBACK_US)
 				{
 					if (thePrefs.GetColorFeedback())
-					{
-					feed.AppendFormat(_T("[color=green][b]Feedback from %s on [%s][/b][/color]\r\n"),thePrefs.GetUserNick(),theApp.m_strModLongVersion);
-					}
+						feed.AppendFormat(_T("[color=green][b]Feedback from %s on [%s][/b][/color]\r\n"),thePrefs.GetUserNick(),theApp.m_strModLongVersion);
 					else
-					{
-					feed.AppendFormat(_T("Feedback from %s on [%s]\r\n"),thePrefs.GetUserNick(),theApp.m_strModLongVersion);
-					}
-					
+						feed.AppendFormat(_T("Feedback from %s on [%s]\r\n"),thePrefs.GetUserNick(),theApp.m_strModLongVersion);
 				}
 				else
 				{
 					if (thePrefs.GetColorFeedback())
 					{
-					feed.Append(_T("[color=green][b]"));
-					feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM));
-					feed.AppendFormat(_T("%s on [%s][/b][/color]\r\n"),thePrefs.GetUserNick(),theApp.m_strModLongVersion);
-					
+						feed.Append(_T("[color=green][b]"));
+						feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM),thePrefs.GetUserNick(), theApp.m_strModLongVersion);
+						feed.Append(_T("[/b][/color]\r\n"));
 					}
 					else
 					{
-					feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM));
-					feed.AppendFormat(_T("%s on [%s]"), thePrefs.GetUserNick(), theApp.m_strModLongVersion);
-					feed.Append(_T(" \r\n"));
+						feed.AppendFormat(GetResString(IDS_FEEDBACK_FROM),thePrefs.GetUserNick(), theApp.m_strModLongVersion);
+						feed.Append(_T("\r\n"));
 					}
 				}
 
@@ -2037,17 +2030,19 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 
 				if(iCount>1)
 				{
-					if (thePrefs.GetColorFeedback())
+					if(wParam == MP_COPYFEEDBACK_US)
 					{
-					feed.Append(_T("[color=orange]"));
-					feed.AppendFormat(GetResString(IDS_FEEDBACK_ALL_TRANSFERRED));
-					feed.Append(_T("[/color]"));
-					feed.AppendFormat(_T("[color=red]%s (%s)[/color]\r\n"),CastItoXBytes(uTransferredSum,false,false,3,true),CastItoXBytes(uTransferredAllSum,false,false,3,true));
+						if (thePrefs.GetColorFeedback())
+							feed.AppendFormat(_T("[color=orange]Transferred (all files):[/color] [color=red]%s (%s)[/color]\r\n"),CastItoXBytes(uTransferredSum,false,false,3,true),CastItoXBytes(uTransferredAllSum,false,false,3,true));
+						else
+							feed.AppendFormat(_T("Transferred (all files): %s (%s)\r\n"),CastItoXBytes(uTransferredSum,false,false,3,true),CastItoXBytes(uTransferredAllSum,false,false,3,true));
 					}
 					else
 					{
-					feed.AppendFormat(GetResString(IDS_FEEDBACK_ALL_TRANSFERRED));
-					feed.AppendFormat(_T("%s (%s) \r\n"),CastItoXBytes(uTransferredSum,false,false,3,true),CastItoXBytes(uTransferredAllSum,false,false,3,true));
+						if (thePrefs.GetColorFeedback())
+							feed.AppendFormat(_T("[color=orange]%s:[/color] [color=red]%s (%s)[/color]\r\n"),GetResString(IDS_FEEDBACK_ALL_TRANSFERRED),CastItoXBytes(uTransferredSum,false,false,3,true),CastItoXBytes(uTransferredAllSum,false,false,3,true));
+						else
+							feed.AppendFormat(_T("%s: %s (%s)\r\n"),GetResString(IDS_FEEDBACK_ALL_TRANSFERRED),CastItoXBytes(uTransferredSum,false,false,3,true),CastItoXBytes(uTransferredAllSum,false,false,3,true));
 					}
 				}
 				//Todo: copy all the comments too

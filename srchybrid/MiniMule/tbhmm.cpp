@@ -31,6 +31,7 @@ CTBHMM::CTBHMM(CWnd* pParent /*=NULL*/)
 	smmin = thePrefs.GetSpeedMeterMin();
 	smmax = thePrefs.GetSpeedMeterMax();
 	running = false;
+	m_nLastUpdate = ::GetTickCount(); //Fafner: fixed uninitialized memory read (BC) - 1213
 }
 
 CTBHMM::~CTBHMM()

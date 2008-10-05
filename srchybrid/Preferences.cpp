@@ -952,7 +952,7 @@ bool	CPreferences::m_bFineCS; // Modified FineCS [CiccioBastardo/Stulle] - Stull
 
 bool	CPreferences::m_bTrayComplete; // Completed in Tray [Stulle] - Stulle
 
-bool	CPreferences::m_bColorFeedback; // Color Feedback - MyTh88 
+bool	CPreferences::m_bColorFeedback; // Color Feedback [Myth88] - MyTh88 
 
 bool	CPreferences::m_bSplitWindow; // Advanced Transfer Window Layout [Stulle] - Stulle
 
@@ -2926,7 +2926,7 @@ void CPreferences::SavePreferences()
 
 	ini.WriteBool(_T("TrayComplete"), m_bTrayComplete); // Completed in Tray [Stulle] - Stulle
 	
-	ini.WriteBool(_T("ColorFeedback"), m_bColorFeedback); // Color Feedback - MyTh88
+	ini.WriteBool(_T("ColorFeedback"), m_bColorFeedback); // Color Feedback [Myth88] - MyTh88
 
 	// ==> Advanced Transfer Window Layout [Stulle] - Stulle
 	ini.WriteInt(L"TransferWnd1",m_uTransferWnd1);
@@ -4260,7 +4260,7 @@ void CPreferences::LoadPreferences()
 
 	m_bTrayComplete = ini.GetBool(_T("TrayComplete"),false); // Completed in Tray [Stulle] - Stulle
 	
-	m_bColorFeedback = ini.GetBool(_T("ColorFeedback"),false); // Color Feedback - MyTh88
+	m_bColorFeedback = ini.GetBool(_T("ColorFeedback"),false); // Color Feedback [Myth88] - MyTh88
 
 	// ==> Advanced Transfer Window Layout [Stulle] - Stulle
 	m_uTransferWnd1 = ini.GetInt(L"TransferWnd1",1);
