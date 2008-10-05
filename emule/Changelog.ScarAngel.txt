@@ -39,6 +39,7 @@ Changed: Use proper English in some places ;) [ginger] - Stulle
 Changed: Reworked the Feedback code a bit [Stulle] - Stulle
 Changed: Enable List requested files only when needed [Stulle] - Stulle
 Changed: Rewrote Feedback code [Stulle] - Stulle
+Changed: Only identified and not available SUI clients can be superior [Stulle] - Stulle
 
 Fixed: InputBox for ResumeOrder [Stulle/fafner] - Stulle
 Fixed: Crash when checking if sup client should not be kicked from UL [Stulle] - Stulle

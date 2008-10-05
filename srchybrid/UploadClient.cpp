@@ -2439,6 +2439,16 @@ bool CUpDownClient::IsSuperiorClient() const
 	if(GetUploadState()==US_BANNED || m_bGPLEvildoer || IsLeecher())
 		return false;
 
+	// only identified or not available SUI
+	if(credits)
+	{
+		EIdentState currentIDstate =  credits->GetCurrentIdentState(GetIP());
+		if(currentIDstate != IS_IDENTIFIED  &&
+			currentIDstate != IS_NOTAVAILABLE &&
+			theApp.clientcredits->CryptoAvailable())
+			return false;
+	}
+
 	// no thing else is allowed if the requested file is incomplete
 	if(currentReqFile->IsPartFile())
 		return false;
