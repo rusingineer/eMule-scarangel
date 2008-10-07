@@ -2,6 +2,136 @@
         http://emule-project.net
         ========================
 
+eMule 0.49b
+-----------------------
+- Jul, 31. 2008       -
+-----------------------
+.: Einige seltenere mögliche Abstürze wurden behoben
+
+eMule 0.49b BETA2
+-----------------------
+- Jul, 28. 2008       -
+-----------------------
+.: Einzelne Einträge der Autovervollständigungslisten können mit der "Entf"-Taste gelöscht werden
+.: Eine zusätzliche Suchmethodenoption "Automatisch" wurde hinzugefügt, die eMule wählen lässt welche Methode genutzt werden soll. eMule wird zwischen Server (Lokal) und Kad wählen, je nachdem zu welchen Netzwerk es verbunden ist und einige andere Faktoren wenn beide Netzwerke aktiv sind
+.: In den Beta-Versionen wurde ein Ausnahmefehler-Handler entfernt. Die lässt eMule bei unbekannten Fehlern abstürzen statt sie zu ignorieren, was notwendig ist damit wir solche Fehler (falls sie existieren) in den Crashdumps entdecken können.
+
+-----------------------
+- Jul, 26. 2008       -
+-----------------------
+.: Eine Implementierung einer spezielle nodes.dat Version, die sich für die Massenverteilung eignet ohne die Kontakte zu sehr zu belasten, wurde hinzugefügt. Dies wird es uns hoffentlich ermöglichen eine nodes.dat im Installer zu liefern so dass neue Nutzer nicht mehr mit Servern verbunden sein müssen um sich zum ersten mal zu Kad zu verbinden 
+
+-----------------------
+- Jul, 19. 2008       -
+-----------------------
+.: Eine zusätzliche Methode um den Anzahl der Kadbenutzer abzuschätzen, die nicht auf der lokalen Routingtabelle beruht wurde hinzugefügt. Sie ist experimentell und wird nu im Netwerkdialog (Doppelklick auf das Welticon in der Statusbar) gezeigt
+.: Die Anzeige der Benutzerzahlen wurde geändert, so dass nur noch die Zahlen angezeigt werden für das Netzwerk zu dem eMule verbunden ist
+
+-----------------------
+-  14. Jul  2008      -
+-----------------------
+.: Ein kleinerer Bug in Kad beim Antworten auf unobfuskierte Pakete wurde behoben
+.: Kad sendet nun nur ein Testpaket zum verifizieren eines Kontaktes gleichzeitig an die selbe IP
+
+eMule 0.49b BETA1
+-----------------------
+-  11. Jul  2008      -
+-----------------------
+.: MiniUPnPLib wurde als zusätzliche UPnP-Implementierung hinzugefügt, die derzeitige Windowsservice-basierende Implementierung wird nun als Fallback genutzt. Die wird hoffentlich eMules UPnP kompatibel zu fast allen Routern machen [miniupnplib by Thomas Bernard, Test & Idee: leuk_he]
+.: Eine spezielle UPnP-Implementierung kann abgeschaltet werden indem "DisableMiniUPNPLibImpl=1" oder "DisableWinServImpl=1" in die "UPnP"-Sektion der preferences.ini eingefügt wird
+
+-----------------------
+-  5. Jul  2008       -
+-----------------------
+.: Wenn eine nodes.dat ohne verifizierte Kontakte gelesen wird (möglicherweise eine alte Version) nimmt eMule an dass alle Kontakte verifiziert sind um die Verbindungsphase nicht zu verlangsamen
+.: Projektdateien für VS2005 und VS2008 wurden hinzugefügt, die offizielle Version wird jedoch weiterhin auf VS2003 entwickelt und kompiliert
+
+-----------------------
+-  27. Jun  2008      -
+-----------------------
+.: Verschiedene Änderungen wurden in Kad gemacht um Routingangriffe abzuwehren, die von University of Minnesota Angehörigen untersucht wurden [Peng Wang, James Tyra, Eric Chan-Tin, Tyson Malchow, Denis Foo Kune, Nicholas Hopper, Yongdae Kim], im Detail:
+.: Kad Kontakte können sich nun nur in den Routingtabellen von anderen Kontakten aktualisieren wenn sie den passenden Schlüssel (0.49a+) nachweisen um unmöglich zu machen sie zu "hijacken"
+.: Kad nutzt nun einen 3-Wege-Handshake (oder für ältere Versionen etwas ähnliches) für neue Kontakte um sicherzustellen dass sie keine gefälschten IPs nutzen
+.: Nicht verifizierte werden nicht mehr für Routing-Aufgaben genutzt und in der GUI mit einem speziellen Icon gekennzeichnet
+
+-----------------------
+-  22. Jun  2008      -
+-----------------------
+.: Korrigiert: Der Splitter im freigegebene Datei-Fenster speicherte seine Position nicht korrekt
+.: Ein erster kleiner Schritt beim Entfernen des Kad1-Supports: Kad testet unbekannte Kontakte nicht mehr auf Kad1 um Overhead zu sparen, entsprechende Clienten funktionieren trotzdem bisher noch problemlos 
+.: Ein Bug wurde behoben der einen Kad2 manchmal als Kad1-Kontakt ansah, wenn Kad den Kontakt auf beide Versionen testete
+
+-----------------------
+-  10. Jun  2008      -
+-----------------------
+.: Korrigiert: Speicherleck in den Contextmenüs
+.: Hinzugefügt: Contextmenüs unter Vista haben nun das entsprechende Vista-Look&Feel
+
+-----------------------
+-  10. Jun  2008      -
+-----------------------
+.: Korrigiert: Das Drücken von ESC im Freigegebene Dateien-Filter zerstörte das Fenster 
+
+-----------------------
+-  10. Jun  2008      -
+-----------------------
+.: Ein zusätzliche Sicherheitscheck kontrolliert dass eMule niemals geladene Daten in einen bereits kompletten Teil schreibt
+.: Der Kad-Paketverfolgungscode wurde optimiert so dass nur Pakete erfasst werden die später auch kontrolliert werden um Ressourcesn zu sparen
+
+-----------------------
+-  9. Jun  2008       -
+-----------------------
+.: Ein 100% CPU-Last Bug der Tooltips im Statistikgraphen wurde behoben
+.: Der Tooltip im Statistikgraphen zeigt nun auch den Y-Wert
+.: Kad versucht nicht länger UDP Firewalled (und damit größtenteils unerreichbare) Nodes in seine Routingtabellen aufzunehmen, womit der Overhead reduziert und die Zuverlässigkeit gesteigert wird
+.: Kad versucht das Verhältnis von Firewalled Nutzern im Netzwerk festzustellen und zeigt sie im Statistikbaum. Dies funktioniert nur wenn du selbst nicht Firewalled bist und genug 0.49b+ Nodes existieren
+.: Beim Errechnen der Benutzerzahl in Kad wird nun die richtige Nummer (falls bekannt) von Firewalled Nutzern einbezogen, statt einen festen Wert anzunehmen. Dieser Effekt wird stärker wenn 0.49b Nodes zahlreicher werden
+       
+-----------------------
+-  5. Jun  2008       -
+-----------------------
+.: Der "eD2k-Links"-Button in den Optionen funktioniert nun korrekt unter Vistas mit eingeschaltetem UAC
+
+-----------------------
+-  31. Mai  2008      -
+-----------------------
+.: Context-Menüeinträge zum entfernen der Freigabe von Verzeichnissen wurden im virtuellen "Freigegebene Versichnisse"-Ordnder hinzugefügt
+
+-----------------------
+-  28. Mai  2008      -
+-----------------------
+.: Hinzugefügt: Vista-Theme für alle Reiter-Elemente
+.: Hinzugefügt: Vista-Theme für alle Kategorieauswah-Elemente
+        
+-----------------------
+-  25. Mai  2008      -
+-----------------------
+.: Probleme beim Darstellen der Toolbar unter Vista wurden behoben
+.: eMules Verbindungs-Funktion wurde überarbeitet und dabei einige kleinere sowie ein paar größere Bugs behoben, inkl. einer möglichen Endlosschleife bei unerreichbaren DirectCallback-Quellen
+        
+-----------------------
+-  19. Mai  2008      -
+-----------------------
+.: Reiter haben ein neues Schließen-Icon
+.: Kad ignoriert nun Routing-Antworten in den mehrere IDs auf eine IP zeigen 
+
+-----------------------
+-  18. Mai  2008      -
+-----------------------
+.: Korrektur: Reiter hatten nicht immer die korrekte Größe bei einigen Textinhalten     
+
+-----------------------
+-  17. Mai  2008      -
+-----------------------
+.: Korrektur: Kategorie-Reiter im Transfer-Fenster zeigten nicht die korrekte Standard-Textfarbe
+.: Korrektur: Kategorie-Reiter im Details-Dialog zeigten nicht immer die korrekte Kategoriefarbe
+.: Für Vista wurden "Hot Tracking"-Effekte für alle Reiter hinzugefügt  
+
+-----------------------
+-  12. Mai  2008       -
+-----------------------
+.: Korrektur: Tooltips wurden in Vista mit Aero Thema nicht richtig dargestellt
+
 0.49a
 -----------------------
 -  8. Mai  2008       -
