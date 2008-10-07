@@ -480,7 +480,12 @@ int CEncryptedStreamSocket::Negotiate(const uchar* pBuffer, uint32 nLen){
 						m_nReceiveBytesWanted = 3;	
 					}
 					else{
+						// ==> Proper English [ginger] - Stulle
+						/*
 						DebugLogError(_T("CEncryptedStreamSocket: Received wrong magic value from clientIP %s on a supposly encrytped stream / Wrong Header"), DbgGetIPString());
+						*/
+						DebugLogError(_T("CEncryptedStreamSocket: Received wrong magic value from clientIP %s on a supposedly encrypted stream / Wrong Header"), DbgGetIPString());
+						// <== Proper English [ginger] - Stulle
 						OnError(ERR_ENCRYPTION);
 						return (-1);
 					}
