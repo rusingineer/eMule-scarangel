@@ -40,6 +40,8 @@ Changed: Reworked the Feedback code a bit [Stulle] - Stulle
 Changed: Enable List requested files only when needed [Stulle] - Stulle
 Changed: Rewrote Feedback code [Stulle] - Stulle
 Changed: Only identified and not available SUI clients can be superior [Stulle] - Stulle
+Changed: Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+Changed: Some more changes for Advanced Options [MorphXT] - Stulle
 
 Fixed: InputBox for ResumeOrder [Stulle/fafner] - Stulle
 Fixed: Crash when checking if sup client should not be kicked from UL [Stulle] - Stulle
@@ -48,9 +50,12 @@ Fixed: No max time for clients that should be prevented [Stulle] - Stulle
 Fixed: Not working chars for context menus [Stulle] - Stulle
 Fixed: Scheduled DLP Update not working [Stulle] - Stulle
 Fixed: Memleak FiX in SysInfo [WiZaRd] - Stulle
+Fixed: Corrupted BarShaderInfo [fafner] - Stulle
+Fixed: Corrupted SpreadBarInfo [fafner] - Stulle
 
 Removed: Second CryptTCPPaddingLength option from Advanced Options [Stulle] - Stulle
 Removed: Last renmants of the Xtreme version check [Stulle] - Stulle
+Removed: Drop Win95 support (for VS2008 compatibility) [MorphXT] - Stulle
 
 IP Filter White List:
 + IPs on this list will not be banned
