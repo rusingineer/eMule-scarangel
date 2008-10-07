@@ -1,4 +1,4 @@
-Xtreme 7.0 BETA3
+Xtreme 7.0
 ----------------
 
 Main Features:
@@ -23,33 +23,35 @@ based on emule 0.49b
 compiled with:
 libpng 1.2.28
 zlib 1.2.3
-crypto 52.1
+crypto 5.5.2
 CxImage version 6.00
 
-Xtreme 7.0 BETA3
-* this version is moded by zz_fly
-- updated to 0.49b codebase (thanks Stulle, Enig123)
-- updated to DLP v33 + X-RAY DLP v4 (thanks JvA/DLarge/WiZaRd/Stulle/MyTh/...)
-  based on DLP v33, merged X-RAY DLP v4
+Xtreme 7.0
+* this version is modded by Stulle
+- updated to 0.49b codebase
+- updated crypto lib to 5.5.2
+- change: make code VS 2005 and VS 2008 ready (MorphXT)
+- fixed: corrupted BarShaderInfo (fafner)
+- fixed: improper English (ginger)
+- remove: Drop Win95 support (for VS2008 compatibility) (MorphXT)
+Changes by zz_fly:
 - updated UPnP (thanks CN_Mod Team and ACAT)
 - updated simp. chinese language file 
 - adjusted some parameters
-- add: show UPnP status in network info dialog (idear from ScarAngel)
-- add: rebind UPnP on IP-change (idear from X-RAY)
+- add: show UPnP status in network info dialog (idea from ScarAngel)
+- add: rebind UPnP on IP-change (idea from X-RAY)
 - add: Fake Shareaza detection
 - add: open a default website when nodesURL is invalid
-- add: safehash: installation dir unsharing (thanks MorphXT)
+- add: safehash: installation dir unsharing (MorphXT)
 - change: no reserved release-slot for partfiles 
   you can release any files. but reserved release-slot only work for completed files.
 - change: UPnP Internal Search: send more request
-- fixed: stop rehashing of files with foreign language name (thanks Borschtsch)
+- fixed: stop rehashing of files with foreign language name (Borschtsch)
 - fixed: avoid deadlock when disable network adapter
 - remove: Fix Connection Collision (no more needed in .49b codebase)
 - remove: always call setLinked_client (no more needed in .49b codebase)
+- remove: improved socket closing, it would cause high memory usage (thanks Enig123)
 
-BETA3: remove improved socket closing, it would cause high memory usage (thanks Enig123)
-
-- fixed: all confirmed bugs in BETA2
 
 
 Xtreme 6.1
