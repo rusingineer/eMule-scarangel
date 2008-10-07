@@ -1640,6 +1640,8 @@ void CemuleDlg::ShowTransferRate(bool bForceAll)
 			buffer2[_countof(buffer2) - 1] = _T('\0');
 		}
 
+		// ==> Drop Win95 support [MorphXT] - Stulle
+		/*
 		// Win98: '\r\n' is not displayed correctly in tooltip
 		if (afxIsWin95()) {
 			LPTSTR psz = buffer2;
@@ -1649,6 +1651,8 @@ void CemuleDlg::ShowTransferRate(bool bForceAll)
 				psz++;
 			}
 		}
+		*/
+		// <== Drop Win95 support [MorphXT] - Stulle
 		TraySetToolTip(buffer2);
 	}
 
@@ -4959,8 +4963,9 @@ afx_msg LRESULT CemuleDlg::DoTimer(WPARAM wParam, LPARAM /*lParam*/)
 void CemuleDlg::DoSVersioncheck(bool manual) {
 	if (!manual && thePrefs.GetLastSVC()!=0) {
 		CTime last(thePrefs.GetLastSVC());
-		time_t tLast=safe_mktime(last.GetLocalTm());
-		time_t tNow=safe_mktime(CTime::GetCurrentTime().GetLocalTm());
+		struct tm tmTemp;
+		time_t tLast=safe_mktime(last.GetLocalTm(&tmTemp));
+		time_t tNow=safe_mktime(CTime::GetCurrentTime().GetLocalTm(&tmTemp));
 		if ( (difftime(tNow,tLast) / 86400)<thePrefs.GetUpdateDays() )
 			return;
 	}

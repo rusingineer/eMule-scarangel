@@ -28,7 +28,10 @@
 #include "otherfunctions.h"
 #endif
 //Xman end
-#include "Preferences.h" // Spread bars [Slugfiller/MorphXT] - Stulle
+// ==> Spread bars [Slugfiller/MorphXT] - Stulle
+#include "Preferences.h"
+#include "Log.h"
+// <== Spread bars [Slugfiller/MorphXT] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -323,7 +326,9 @@ void CStatisticFile::UpdateCountedTransferred()
 		m_tlastdataupdate=time(NULL);
 	}
 }
-//Xman end// ==> Spread bars [Slugfiller/MorphXT] - Stulle
+//Xman end
+
+// ==> Spread bars [Slugfiller/MorphXT] - Stulle
 void CStatisticFile::AddBlockTransferred(uint64 start, uint64 end, uint64 count){
 	if (start >= end || !count)
 		return;
@@ -346,19 +351,39 @@ void CStatisticFile::AddBlockTransferred(uint64 start, uint64 end, uint64 count)
 		endpos = spreadlist.GetTailPosition();
 
 	ASSERT(endpos != NULL);
+	if (endpos == NULL) { //Fafner: corrupted spreadbarinfo? - 080317
+		AddDebugLogLine(false, _T("AddBlockTransferred: No endpos in spreadbarinfo for file %s - %I64u, %I64u, %I64u"), fileParent->GetFileName(), start, end, count);
+		return;
+	}
 
 	uint64 endcount = spreadlist.GetValueAt(endpos);
 	endpos = spreadlist.SetAt(end, endcount);
 
+	//Fafner: fix vs2005 corrupted spreadbarinfo? - 080317
+	//Fafner: note: FindFirstKeyAfter seems to work differently under vs2005 than under vs2003
+	//Fafner: note: see also similar code in CBarShader::FillRange
+	//Fafner: note: also look for the keywords 'spreadbarinfo', 'barshaderinfo'
+#if _MSC_VER < 1400
 	POSITION startpos = spreadlist.FindFirstKeyAfter(start+1);
+#else
+	POSITION startpos = spreadlist.FindFirstKeyAfter(start);
+#endif
 
-	for (POSITION pos = startpos; pos != endpos; spreadlist.GetNext(pos)) {
+	for (POSITION pos = startpos; pos != endpos && pos != NULL; spreadlist.GetNext(pos)) {
 		spreadlist.SetValueAt(pos, spreadlist.GetValueAt(pos)+count);
 	}
 
 	spreadlist.GetPrev(startpos);
 
 	ASSERT(startpos != NULL);
+	if (startpos == NULL) { //Fafner: corrupted spreadbarinfo? - 080317
+		AddDebugLogLine(false, _T("AddBlockTransferred: No startpos in spreadbarinfo for file %s - %I64u, %I64u, %I64u"), fileParent->GetFileName(), start, end, count);
+		return;
+	}
+	ASSERT(startpos != endpos);
+	if (startpos == endpos) { //Fafner: corrupted spreadbarinfo? - 080317
+		AddDebugLogLine(false, _T("AddBlockTransferred: startpos == endpos in spreadbarinfo for file %s - %I64u, %I64u, %I64u"), fileParent->GetFileName(), start, end, count);
+	}
 
 	uint64 startcount = spreadlist.GetValueAt(startpos)+count;
 	startpos = spreadlist.SetAt(start, startcount);

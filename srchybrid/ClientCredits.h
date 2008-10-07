@@ -24,7 +24,7 @@
 /*
 #include <crypto51/rsa.h>
 */
-#include <crypto.v52.1/rsa.h>
+#include <cryptopp/rsa.h>
 //Xman end
 #pragma warning(default:4702) // unreachable code
 #pragma warning(default:4100) // unreferenced formal parameter
@@ -96,7 +96,12 @@ struct CreditStruct_30c_SUQWTv2{
 	uchar		abyKey[16];
 	uint32		nUploadedLo;	// uploaded TO him
 	uint32		nDownloadedLo;	// downloaded from him
+	// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+	/*
 	uint32		nLastSeen;
+	*/
+	time_t		nLastSeen;
+	// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 	uint32		nUploadedHi;	// upload high 32
 	uint32		nDownloadedHi;	// download high 32
 	uint16		nReserved3;
@@ -199,7 +204,7 @@ public:
 	// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	void    SaveUploadQueueWaitTime(int iKeepPct = 100);
 	void	ClearUploadQueueWaitTime();
-	bool	IsActive(uint32 dwExpire);	// Moonlight: SUQWT, new function to determine if the record has expired.
+	bool	IsActive(time_t dwExpire);	// Moonlight: SUQWT, new function to determine if the record has expired.
 	void	SetSecWaitStartTime(int iKeepPct = 0);
 	// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 

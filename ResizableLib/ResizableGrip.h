@@ -31,6 +31,8 @@ private:
 		{
 			m_bTransparent = FALSE;
 			m_bTriangular = FALSE;
+			m_size.cx = 0;
+			m_size.cy = 0;
 		}
 
 		void SetTriangularShape(BOOL bEnable);

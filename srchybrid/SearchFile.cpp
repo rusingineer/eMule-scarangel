@@ -136,11 +136,23 @@ CSearchFile::CSearchFile(const CSearchFile* copyfrom)
 	m_nSearchID = copyfrom->GetSearchID();
 	m_bKademlia = copyfrom->IsKademlia();
 	
+	// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+	// vs2008 needs a helper to compare Strcuts in simplearray 
+	/*
 	const CSimpleArray<SClient>& clients = copyfrom->GetClients();
+	*/
+	const CSimpleArray<SClient,CSClientEqualHelper>& clients = copyfrom->GetClients();
+	// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 	for (int i = 0; i < clients.GetSize(); i++)
 		AddClient(clients[i]);
 	
+	// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+	// vs2008 needs a helper to compare Strcuts in simplearray 
+	/*
 	const CSimpleArray<SServer>& servers = copyfrom->GetServers();
+	*/
+	const CSimpleArray<SServer,CSServerEqualHelper>& servers = copyfrom->GetServers();
+	// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 	for (int i = 0; i < servers.GetSize(); i++)
 		AddServer(servers[i]);
 

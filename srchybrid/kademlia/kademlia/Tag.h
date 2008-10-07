@@ -156,12 +156,20 @@ namespace Kademlia
 
 			virtual CKadTagValueString GetStr() const
 			{
+				// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+				/*
 				ASSERT(0);
+				*/
+				// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 				return L"";
 			}
 			virtual uint64 GetInt() const
 			{
+				// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+				/*
 				ASSERT(0);
+				*/
+				// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 				return 0;
 			}
 			virtual float GetFloat() const

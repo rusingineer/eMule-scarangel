@@ -57,7 +57,17 @@ protected:
 	
 	public:
 		LayoutInfo() : hWnd(NULL), nCallbackID(0), bMsgSupport(FALSE)
-		{ }
+		{ 
+			sizeTypeTL.cx = 0;
+			sizeTypeTL.cy = 0;
+			sizeMarginTL.cx = 0;
+			sizeMarginTL.cy = 0;
+			sizeTypeBR.cx = 0;
+			sizeTypeBR.cy = 0;
+			sizeMarginBR.cx = 0;
+			sizeMarginBR.cy = 0;
+			memset(&properties, 0, sizeof properties);
+		}
 
 		LayoutInfo(HWND hwnd, SIZE tl_t, SIZE tl_m, 
 			SIZE br_t, SIZE br_m, CString classname)
@@ -65,7 +75,9 @@ protected:
 			sWndClass(classname), bMsgSupport(FALSE),
 			sizeTypeTL(tl_t), sizeMarginTL(tl_m),
 			sizeTypeBR(br_t), sizeMarginBR(br_m)
-		{ }
+		{ 
+			memset(&properties, 0, sizeof properties);
+		}
 	};
 
 private:
@@ -78,6 +90,20 @@ private:
 
 	void CalcNewChildPosition(const CResizableLayout::LayoutInfo &layout,
 		const CRect &rectParent, CRect &rectChild, UINT& uFlags);
+public:
+		// remove an anchored control from the layout, given its HWND
+	BOOL RemoveAnchor(HWND hWnd)
+	{
+		POSITION pos;
+		if (!m_mapLayout.Lookup(hWnd, pos))
+			return FALSE;
+
+		m_listLayout.RemoveAt(pos);
+		return m_mapLayout.RemoveKey(hWnd);
+	}
+
+	// add anchors to a control, given its HWND
+	void AddAnchor(HWND hWnd, CSize sizeTypeTL, CSize sizeTypeBR = NOANCHOR);
 
 protected:
 	// override to initialize resize properties (clipping, refresh)
@@ -101,9 +127,6 @@ protected:
 	
 	// override for scrollable or expanding parent windows
 	virtual void GetTotalClientRect(LPRECT lpRect);
-
-	// add anchors to a control, given its HWND
-	void AddAnchor(HWND hWnd, CSize sizeTypeTL, CSize sizeTypeBR = NOANCHOR);
 
 	// add anchors to a control, given its ID
 	void AddAnchor(UINT nID, CSize sizeTypeTL, CSize sizeTypeBR = NOANCHOR)
@@ -135,17 +158,6 @@ protected:
 	{
 		return GetAnchorPosition(::GetDlgItem(GetResizableWnd()->GetSafeHwnd(), nID),
 			rectParent, rectChild, lpFlags);
-	}
-
-	// remove an anchored control from the layout, given its HWND
-	BOOL RemoveAnchor(HWND hWnd)
-	{
-		POSITION pos;
-		if (!m_mapLayout.Lookup(hWnd, pos))
-			return FALSE;
-
-		m_listLayout.RemoveAt(pos);
-		return m_mapLayout.RemoveKey(hWnd);
 	}
 
 	// remove an anchored control from the layout, given its HWND

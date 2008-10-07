@@ -43,7 +43,7 @@ void CResizableLayout::AddAnchor(HWND hWnd, CSize sizeTypeTL, CSize sizeTypeBR)
 	// child window must be valid
 	ASSERT(::IsWindow(hWnd));
 	// must be child of parent window
-	ASSERT(::IsChild(pParent->GetSafeHwnd(), hWnd));
+//	ASSERT(::IsChild(pParent->GetSafeHwnd(), hWnd));
 	// top-left anchor must be valid
 	ASSERT(sizeTypeTL != NOANCHOR);
 

@@ -37,7 +37,7 @@ there client on the eMule forum..
 /*
 #include <crypto51/osrng.h>
 */
-#include <crypto.v52.1/osrng.h>
+#include <cryptopp/osrng.h>
 //Xman end
 #pragma warning(default:4702) // unreachable code
 #pragma warning(default:4100) // unreferenced formal parameter

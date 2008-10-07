@@ -10,8 +10,8 @@
 #include <crypto51/md4.h>
 */
 #pragma warning(disable:4516)
-#include <crypto.v52.1/sha.h>
-#include <crypto.v52.1/md4.h>
+#include <cryptopp/sha.h>
+#include <cryptopp/md4.h>
 #pragma warning(default:4516)
 //Xman end
 #pragma warning(default:4702) // unreachable code

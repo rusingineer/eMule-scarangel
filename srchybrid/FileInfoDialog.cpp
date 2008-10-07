@@ -149,8 +149,13 @@ public:
 		{
 			m_bInitialized = TRUE;
 
+			// ==> Advanced Options [Official/MorphXT] - Stulle
+			/*
 			CString strPath = theApp.GetProfileString(_T("eMule"), _T("MediaInfo_MediaInfoDllPath"), _T("MEDIAINFO.DLL"));
 			m_hLib = LoadLibrary(strPath);
+			*/
+			m_hLib = LoadLibrary(CPreferences::sMediaInfo_MediaInfoDllPath);
+			// <== Advanced Options [Official/MorphXT] - Stulle
 			if (m_hLib != NULL)
 			{
 				ULONGLONG ullVersion = GetModuleVersion(m_hLib);
@@ -211,6 +216,9 @@ public:
 					(FARPROC &)m_pfnMediaInfo_Open = GetProcAddress(m_hLib, "MediaInfo_Open");
 					(FARPROC &)m_pfnMediaInfo_Close = GetProcAddress(m_hLib, "MediaInfo_Close");
 					(FARPROC &)m_pfnMediaInfo_Get = GetProcAddress(m_hLib, "MediaInfo_Get");
+					// ==> Advanced Options [Official/MorphXT] - Stulle
+					(FARPROC &)m_pfnMediaInfo_inform = GetProcAddress(m_hLib, "MediaInfo_Inform");
+					// <== Advanced Options [Official/MorphXT] - Stulle
 					(FARPROC &)m_pfnMediaInfo_Count_Get = GetProcAddress(m_hLib, "MediaInfo_Count_Get");
 					if (m_pfnMediaInfo_New && m_pfnMediaInfo_Delete && m_pfnMediaInfo_Open && m_pfnMediaInfo_Close && m_pfnMediaInfo_Get) {
 						m_ullVersion = ullVersion;
@@ -283,6 +291,20 @@ public:
 		return _T("");
 	}
 
+
+	// ==> Advanced Options [Official/MorphXT] - Stulle
+	CString Inform(void* Handle,size_t format)
+	{
+		if (m_pfnMediaInfo_inform) 
+			if (m_ullVersion >= MAKEDLLVERULL(0, 7, 0, 0)) {
+			return (*m_pfnMediaInfo_inform)(Handle,format);
+		}
+		return _T("");
+	}
+	// <== Advanced Options [Official/MorphXT] - Stulle
+
+
+
 	int Count_Get(void* Handle, stream_t_C StreamKind, int StreamNumber)
 	{
 		if (m_pfnMediaInfo4_Get)
@@ -313,6 +335,9 @@ protected:
 	int				(__stdcall *m_pfnMediaInfo_Open)(void* Handle, const wchar_t* File) throw(...);
 	void*			(__stdcall *m_pfnMediaInfo_New)() throw(...);
 	void			(__stdcall *m_pfnMediaInfo_Delete)(void* Handle) throw(...);
+	// ==> Advanced Options [Official/MorphXT] - Stulle
+	const wchar_t*  (__stdcall *m_pfnMediaInfo_inform)(void* Handle,size_t reserved) throw(...);
+	// <== Advanced Options [Official/MorphXT] - Stulle
 };
 
 CMediaInfoDLL theMediaInfoDLL;
@@ -351,7 +376,12 @@ BOOL CFileInfoDialog::OnInitDialog()
 	InitWindowStyles(this);
 	AddAnchor(IDC_FULL_FILE_INFO, TOP_LEFT, BOTTOM_RIGHT);
 
+	// ==> Drop Win95 support [MorphXT] - Stulle
+	/*
 	m_fi.LimitText(afxIsWin95() ? 0xFFFF : 0x7FFFFFFF);
+	*/
+	m_fi.LimitText(0x7FFFFFFF);
+	// <== Drop Win95 support [MorphXT] - Stulle
 	m_fi.SendMessage(EM_SETMARGINS, EC_LEFTMARGIN | EC_RIGHTMARGIN, MAKELONG(3, 3));
 	m_fi.SetAutoURLDetect();
 	m_fi.SetEventMask(m_fi.GetEventMask() | ENM_LINK);
@@ -439,7 +469,12 @@ int CGetMediaInfoThread::Run()
 	{
 		CRichEditStream re;
 		re.Attach(hwndRE);
+		// ==> Drop Win95 support [MorphXT] - Stulle
+		/*
 		re.LimitText(afxIsWin95() ? 0xFFFF : 0x7FFFFFFF);
+		*/
+		re.LimitText( 0x7FFFFFFF);
+		// <== Drop Win95 support [MorphXT] - Stulle
 		PARAFORMAT pf = {0};
 		pf.cbSize = sizeof pf;
 		if (re.GetParaFormat(pf)) {
@@ -896,7 +931,11 @@ bool CGetMediaInfoThread::GetMediaInfo(HWND hWndOwner, const CKnownFile* pFile, 
 	// Check for AVI file
 	//
 	bool bIsAVI = false;
+	// ==> Advanced Options [Official/MorphXT] - Stulle
+	/*
 	if (theApp.GetProfileInt(_T("eMule"), _T("MediaInfo_RIFF"), 1))
+	*/
+	// <== Advanced Options [Official/MorphXT] - Stulle
 	{
 		try
 		{
@@ -1474,6 +1513,9 @@ bool CGetMediaInfoThread::GetMediaInfo(HWND hWndOwner, const CKnownFile* pFile, 
 							}
 						}
 
+						// ==> Advanced Options [Official/MorphXT] - Stulle
+						CString strInform = theMediaInfoDLL.Inform(Handle,0);
+						// <== Advanced Options [Official/MorphXT] - Stulle
 						CString strTitle = theMediaInfoDLL.Get(Handle, Stream_General, 0, _T("Title"), Info_Text, Info_Name);
 						CString strTitleMore = theMediaInfoDLL.Get(Handle, Stream_General, 0, _T("Title_More"), Info_Text, Info_Name);
 						if (!strTitleMore.IsEmpty() && !strTitle.IsEmpty() && strTitleMore != strTitle)
@@ -1808,6 +1850,15 @@ bool CGetMediaInfoThread::GetMediaInfo(HWND hWndOwner, const CKnownFile* pFile, 
 							if (!str.IsEmpty())
 								mi->strInfo << _T("   ") << GetResString(IDS_PW_LANG) << _T(":\t") << str << _T("\n");
 						}
+						// ==> Advanced Options [Official/MorphXT] - Stulle
+						if (!strInform.IsEmpty()) {
+								if (!mi->strInfo.IsEmpty()) 
+									 mi->strInfo << _T("\n");
+								mi->strInfo.SetSelectionCharFormat(mi->strInfo.m_cfBold);
+								mi->strInfo<< _T("Verbose   \n");
+             					mi->strInfo << strInform;
+						}
+						// <== Advanced Options [Official/MorphXT] - Stulle
 
 						theMediaInfoDLL.Close(Handle);
 

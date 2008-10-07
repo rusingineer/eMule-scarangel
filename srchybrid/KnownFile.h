@@ -59,7 +59,12 @@ public:
 	// last file modification time in (DST corrected, if NTFS) real UTC format
 	// NOTE: this value can *not* be compared with NT's version of the UTC time
 	CTime	GetUtcCFileDate() const { return CTime(m_tUtcLastModified); }
+	// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+	/*
 	uint32	GetUtcFileDate() const { return m_tUtcLastModified; }
+	*/
+	time_t	GetUtcFileDate() const { return m_tUtcLastModified; }
+	// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 
 	virtual void SetFileSize(EMFileSize nFileSize);
 
@@ -176,7 +181,12 @@ public:
 
 	// last file modification time in (DST corrected, if NTFS) real UTC format
 	// NOTE: this value can *not* be compared with NT's version of the UTC time
+	// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+	/*
 	uint32	m_tUtcLastModified;
+	*/
+	time_t	m_tUtcLastModified;
+	// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 
 	CStatisticFile statistic;
 	time_t m_nCompleteSourcesTime;

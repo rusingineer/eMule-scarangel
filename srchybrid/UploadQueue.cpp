@@ -2259,7 +2259,9 @@ void CUploadQueue::UploadTimer()
 			if (thePrefs.IsMiniMuleEnabled() && theApp.minimule != NULL && (theApp.minimule->IsWindowVisible() || thePrefs.GetMiniMuleLives())) theApp.minimule->RunMiniMule();
 			// <== TBH: minimule - Max
 
-			static showRate; showRate++;
+			// note, this is pretty redundant with DISPLAY_REFRESH being set to 1 but it will make sense once it gets a higher value
+			static int showRate;
+			showRate++;
 			if(showRate >= DISPLAY_REFRESH){
 				showRate = 0;
 				if (!theApp.emuledlg->IsTrayIconToFlash())

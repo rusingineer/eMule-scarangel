@@ -515,7 +515,12 @@ UINT	CPreferences::m_iFileBufferSize;
 UINT	CPreferences::m_iQueueSize;
 int		CPreferences::m_iCommitFiles;
 UINT	CPreferences::maxmsgsessions;
+// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+/*
 uint32	CPreferences::versioncheckLastAutomatic;
+*/
+time_t	CPreferences::versioncheckLastAutomatic;
+// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 //Xman versions check
 uint32	CPreferences::mversioncheckLastAutomatic;
 //Xman end
@@ -5370,7 +5375,8 @@ void CPreferences::SetNAFCFullControl(bool flag)
 // ==> ScarAngel Version Check - Stulle
 void CPreferences::UpdateLastSVC()
 {
-	m_uScarVerCheckLastAutomatic = safe_mktime(CTime::GetCurrentTime().GetLocalTm());
+	struct tm tmTemp;
+	m_uScarVerCheckLastAutomatic = safe_mktime(CTime::GetCurrentTime().GetLocalTm(&tmTemp));
 }
 // <== ScarAngel Version Check - Stulle
 

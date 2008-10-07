@@ -100,8 +100,24 @@ public:
 		uint16 m_nPort;
 		uint16 m_nServerPort;
 	};
+	// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+	class CSClientEqualHelper
+	{
+	public:
+		static bool IsEqual(const SClient & t1, const SClient & t2)
+		{
+			return ((t1.m_nIP == t2.m_nIP) &&
+			t1.m_nServerIP == t2.m_nServerIP );
+		}
+	};
+	// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 	void AddClient(const SClient& client) { m_aClients.Add(client); }
+	// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+	/*
 	const CSimpleArray<SClient>& GetClients() const { return m_aClients; }
+	*/
+	const CSimpleArray<SClient,CSClientEqualHelper>& GetClients() const { return m_aClients; }
+	// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 
 	struct SServer {
 		SServer() {
@@ -124,8 +140,26 @@ public:
 		UINT   m_uAvail;
 		bool   m_bUDPAnswer;
 	};
+	// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+	class CSServerEqualHelper
+	{
+	public:
+		static bool IsEqual(const SServer & t1, const SServer & t2)
+		{
+			return (t1.m_nIP == t2.m_nIP) &&
+			t1.m_nPort == t2.m_nPort &&
+			t1.m_uAvail ==  t2.m_uAvail &&
+			t1.m_bUDPAnswer == t2.m_bUDPAnswer ;
+		}
+	};
+	// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 	void AddServer(const SServer& server) { m_aServers.Add(server); }
+	// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+	/*
 	const CSimpleArray<SServer>& GetServers() const { return m_aServers; }
+	*/
+	const CSimpleArray<SServer,CSServerEqualHelper>& GetServers() const { return m_aServers; }
+	// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 	SServer& GetServerAt(int iServer) { return m_aServers[iServer]; }
 	
 	void	AddPreviewImg(CxImage* img)	{	m_listImages.Add(img); }
@@ -155,8 +189,14 @@ private:
 	uint32	m_nClientServerIP;
 	uint16	m_nClientServerPort;
 	uint32	m_nKadPublishInfo;
+	// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+	/*
 	CSimpleArray<SClient> m_aClients;
 	CSimpleArray<SServer> m_aServers;
+	*/
+	CSimpleArray<SClient,CSClientEqualHelper> m_aClients;
+	CSimpleArray<SServer,CSServerEqualHelper> m_aServers;
+	// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 	CSimpleArray<CxImage*> m_listImages;
 	LPTSTR m_pszDirectory;
 	// spamfilter

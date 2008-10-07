@@ -1,4 +1,4 @@
-// $Id: header_tag.cpp,v 1.1 2006-01-17 21:09:53 stulleamgym Exp $
+// $Id: header_tag.cpp,v 1.2 2008-10-07 17:20:33 stulleamgym Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -110,8 +110,8 @@ bool ID3_TagHeader::Parse(ID3_Reader& reader)
   uchar id[3];
   reader.readChars(id, 3);
   // The spec version is determined with the MAJOR and MINOR OFFSETs
-  uchar major = reader.readChar();
-  uchar minor = reader.readChar();
+  uchar major = static_cast<uchar>(reader.readChar());
+  uchar minor = static_cast<uchar>(reader.readChar());
   this->SetSpec(ID3_VerRevToV2Spec(major, minor));
 
   // Get the flags at the appropriate offset

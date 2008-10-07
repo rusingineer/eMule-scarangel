@@ -56,7 +56,13 @@ namespace Kademlia
 			    iLenBuf += 128;
 			    delete[] pcharBuffer;
 			    pcharBuffer = new char[iLenBuf];
+			    // ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+#if   _MSC_VER  <= 1310 
 			    iLenResult = _vsnprintf(pcharBuffer, iLenBuf, szThreadName, args);
+#else
+			    iLenResult = _vsnprintf_s(pcharBuffer, iLenBuf, iLenBuf, szThreadName, args);
+#endif
+			    // <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 		    }
 		    while (iLenResult == -1);
 		    va_end(args);
@@ -97,7 +103,13 @@ namespace Kademlia
 			    iLenBuf += 128;
 			    delete [] pcharBuffer;
 			    pcharBuffer = new char[iLenBuf];
+			    // ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+#if   _MSC_VER  <= 1310 
 			    iLenResult = _vsnprintf(pcharBuffer, iLenBuf, szThreadName, args);
+#else
+			    iLenResult = _vsnprintf_s(pcharBuffer, iLenBuf, iLenBuf, szThreadName, args);
+#endif
+			    // <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 		    }
 		    while (iLenResult == -1);
 		    va_end(args);
@@ -108,7 +120,12 @@ namespace Kademlia
 		    info.dwFlags = 0;
 		    __try
 		    {
+		        // ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+		        /*
 		        RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (DWORD *)&info);
+		        */
+		        RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (ULONG_PTR*) &info);
+		        // <== m0000h
 		    } __except (EXCEPTION_CONTINUE_EXECUTION)
 	    { }
 	    delete [] pcharBuffer;

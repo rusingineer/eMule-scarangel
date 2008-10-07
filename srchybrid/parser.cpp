@@ -32,6 +32,11 @@
    There are some unavoidable exceptions within include files to
    define necessary library symbols; they are noted "INFRINGES ON
    USER NAME SPACE" below.  */
+// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+// moved
+#include "stdafx.h"
+// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+
 
 /* Identify Bison output.  */
 #define YYBISON 1
@@ -118,7 +123,12 @@
 /* Copy the first part of user declarations.  */
 
 
+// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+// moved up
+/*
 #include "stdafx.h"
+*/
+// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 #include "resource.h"
 #include "OtherFunctions.h"
 #include "SearchExpr.h"
@@ -253,18 +263,22 @@ extern "C" {
 #  endif
 #  ifndef YYMALLOC
 #   define YYMALLOC malloc
+#if _MSC_VER < 1400 // Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 #   if (! defined (malloc) && ! defined (YYINCLUDED_STDLIB_H) \
 	&& (defined (__STDC__) || defined (__cplusplus)))
 //void *malloc (YYSIZE_T); /* INFRINGES ON USER NAME SPACE */
 #   endif
 #  endif
+#  endif // Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 #  ifndef YYFREE
 #   define YYFREE free
+#if _MSC_VER < 1400 // Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 #   if (! defined (free) && ! defined (YYINCLUDED_STDLIB_H) \
 	&& (defined (__STDC__) || defined (__cplusplus)))
 //void free (void *); /* INFRINGES ON USER NAME SPACE */
 #   endif
 #  endif
+#  endif // Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 #  ifdef __cplusplus
 }
 #  endif

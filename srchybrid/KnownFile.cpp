@@ -740,7 +740,12 @@ bool CKnownFile::CreateFromFile(LPCTSTR in_directory, LPCTSTR in_filename, LPVOI
 	// set lastwrite date
 	struct _stat fileinfo;
 	if (_fstat(file->_file, &fileinfo) == 0){
+		// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+		/*
 		m_tUtcLastModified = fileinfo.st_mtime;
+		*/
+		m_tUtcLastModified = (uint32)fileinfo.st_mtime;
+		// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 		AdjustNTFSDaylightFileTime(m_tUtcLastModified, strFilePath);
 	}
 	
@@ -3116,9 +3121,9 @@ CString CKnownFile::GetFeedback(bool isUS)
 	{
 		feed.AppendFormat(_T("[color=orange]%s:[/color] [color=blue]%s[/color]\r\n"),LabelList.GetNext(pos),GetFileName());
 		feed.AppendFormat(_T("[color=orange]%s:[/color] [color=#00BF00]%s[/color]\r\n"),LabelList.GetNext(pos),GetFileType());
-		feed.AppendFormat(_T("[color=orange]%s:[/color] [color=blue]%s[/color]\r\n"),LabelList.GetNext(pos), CastItoXBytes(GetFileSize(),false,false,3,true));
-		feed.AppendFormat(_T("[color=orange]%s:[/color] [color=#00BF00]%s[/color]\r\n"),LabelList.GetNext(pos), (IsPartFile()==false)?GetResString(IDS_COMPLETE):CastItoXBytes(((CPartFile*)this)->GetCompletedSize(),false,false,3));
-		feed.AppendFormat(_T("[color=orange]%s:[/color] [color=red]%s[/color] ([b][color=red]%s[/color][/b])\r\n"),LabelList.GetNext(pos), CastItoXBytes(statistic.GetTransferred(),false,false,3,true), CastItoXBytes(statistic.GetAllTimeTransferred(),false,false,3,true)); 
+		feed.AppendFormat(_T("[color=orange]%s:[/color] [color=blue]%s[/color]\r\n"),LabelList.GetNext(pos), CastItoXBytes(GetFileSize(),false,false,3,isUS));
+		feed.AppendFormat(_T("[color=orange]%s:[/color] [color=#00BF00]%s[/color]\r\n"),LabelList.GetNext(pos), (IsPartFile()==false)?GetResString(IDS_COMPLETE):CastItoXBytes(((CPartFile*)this)->GetCompletedSize(),false,false,3,isUS));
+		feed.AppendFormat(_T("[color=orange]%s:[/color] [color=red]%s[/color] ([b][color=red]%s[/color][/b])\r\n"),LabelList.GetNext(pos), CastItoXBytes(statistic.GetTransferred(),false,false,3,isUS), CastItoXBytes(statistic.GetAllTimeTransferred(),false,false,3,isUS)); 
 		feed.AppendFormat(_T("[color=orange]%s:[/color] [color=#40BFBF]%i[/color] ([b][color=#40BFBF]%i[/color][/b])\r\n"),LabelList.GetNext(pos), statistic.GetRequests(), statistic.GetAllTimeRequests()); 
 		feed.AppendFormat(_T("[color=orange]%s:[/color] [color=#40BFBF]%i[/color] ([b][color=#40BFBF]%i[/color][/b])\r\n"),LabelList.GetNext(pos), statistic.GetAccepts(),statistic.GetAllTimeAccepts()); 
 		if(IsPartFile()){
@@ -3133,9 +3138,9 @@ CString CKnownFile::GetFeedback(bool isUS)
 	{
 		feed.AppendFormat(_T("%s: %s\r\n"),LabelList.GetNext(pos),GetFileName());
 		feed.AppendFormat(_T("%s: %s\r\n"),LabelList.GetNext(pos),GetFileType());
-		feed.AppendFormat(_T("%s: %s\r\n"),LabelList.GetNext(pos), CastItoXBytes(GetFileSize(),false,false,3,true));
-		feed.AppendFormat(_T("%s: %s\r\n"),LabelList.GetNext(pos), (IsPartFile()==false)?GetResString(IDS_COMPLETE):CastItoXBytes(((CPartFile*)this)->GetCompletedSize(),false,false,3));
-		feed.AppendFormat(_T("%s: %s (%s)\r\n"),LabelList.GetNext(pos), CastItoXBytes(statistic.GetTransferred(),false,false,3,true), CastItoXBytes(statistic.GetAllTimeTransferred(),false,false,3,true)); 
+		feed.AppendFormat(_T("%s: %s\r\n"),LabelList.GetNext(pos), CastItoXBytes(GetFileSize(),false,false,3,isUS));
+		feed.AppendFormat(_T("%s: %s\r\n"),LabelList.GetNext(pos), (IsPartFile()==false)?GetResString(IDS_COMPLETE):CastItoXBytes(((CPartFile*)this)->GetCompletedSize(),false,false,3,isUS));
+		feed.AppendFormat(_T("%s: %s (%s)\r\n"),LabelList.GetNext(pos), CastItoXBytes(statistic.GetTransferred(),false,false,3,isUS), CastItoXBytes(statistic.GetAllTimeTransferred(),false,false,3,isUS)); 
 		feed.AppendFormat(_T("%s: %i (%i)\r\n"),LabelList.GetNext(pos), statistic.GetRequests(), statistic.GetAllTimeRequests()); 
 		feed.AppendFormat(_T("%s: %i (%i)\r\n"),LabelList.GetNext(pos), statistic.GetAccepts(),statistic.GetAllTimeAccepts()); 
 		if(IsPartFile()){

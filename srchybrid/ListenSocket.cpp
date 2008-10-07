@@ -419,10 +419,10 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 							newHash = EncodeBase16((const uchar*)&packet[1], 16);
 						}
 						if(oldHash != newHash){
-							AddDebugLogLine(true,  _T("User %s (client=%s) try to send multiple OP_HELLO, old hash=%s, new has=%s"), client->GetUserName, client->GetClientSoftVer(), oldHash, newHash);
+							AddDebugLogLine(true,  _T("User %s (client=%s) try to send multiple OP_HELLO, old hash=%s, new has=%s"), client->GetUserName(), client->GetClientSoftVer(), oldHash, newHash);
 						}
 						else {
-							AddDebugLogLine(true, _T("User %s (client=%s) try to send multiple OP_HELLO"), client->GetUserName, client->GetClientSoftVer());
+							AddDebugLogLine(true, _T("User %s (client=%s) try to send multiple OP_HELLO"), client->GetUserName(), client->GetClientSoftVer());
 						}
 						throw CString(_T("Invalid request received"));
 					}

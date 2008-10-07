@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.1 2006-01-17 21:09:53 stulleamgym Exp $
+// $Id: tag_parse.cpp,v 1.2 2008-10-07 17:20:33 stulleamgym Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -94,7 +94,7 @@ namespace
         if (fld)
         {
           ID3_MemoryReader mr(fld->GetRawBinary(), fld->BinSize());
-          ID3_Reader::char_type ch = mr.readChar();
+          ID3_Reader::char_type ch = static_cast<ID3_Reader::char_type>(mr.readChar());
           if (ch != 'z')
           {
             // unknown compression method
@@ -104,6 +104,12 @@ namespace
           else
           {
             uint32 newSize = io::readBENumber(mr, sizeof(uint32));
+			// allocate 2MB instead 4GB max in the decompressor later on (TODO decompressor should actually do the sanitycheck)
+			if (newSize > 2 * 1024 * 1024){
+				ID3D_WARNING( "id3::v2::parseFrames(): 'newSize' exeeds sanity limit" );
+				delete f;
+				return false;
+			}
             size_t oldSize = f->GetDataSize() - sizeof(uint32) - 1;
             io::CompressedReader cr(mr, newSize);
             parseFrames(tag, cr);

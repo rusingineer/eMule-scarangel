@@ -54,8 +54,10 @@ enum ELogFileFormat;
 
 //Xman process prio
 // [TPT] - Select process priority 
+/*
 #define PROCESSPRIORITYNUMBER 6
 static const PriorityClasses[] = { REALTIME_PRIORITY_CLASS, HIGH_PRIORITY_CLASS, ABOVE_NORMAL_PRIORITY_CLASS, NORMAL_PRIORITY_CLASS, BELOW_NORMAL_PRIORITY_CLASS, IDLE_PRIORITY_CLASS };
+*/
 // [TPT] - Select process priority 
 
 // DO NOT EDIT VALUES like making a uint16 to uint32, or insert any value. ONLY append new vars
@@ -655,7 +657,12 @@ public:
 	static	int		m_iCommitFiles;
 
 	static	UINT	maxmsgsessions;
+	// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+	/*
 	static	uint32	versioncheckLastAutomatic;
+	*/
+	static	time_t	versioncheckLastAutomatic;
+	// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 	//Xman versions check
 	static	uint32	mversioncheckLastAutomatic;
 	//Xman end
@@ -1318,13 +1325,13 @@ public:
 	//Xman narrow font at transferwindow
 	static bool m_bUseNarrowFont;
 	static bool UseNarrowFont() {return m_bUseNarrowFont;}
-	static SetNarrowFont(bool in) {m_bUseNarrowFont=in;}
+	static void SetNarrowFont(bool in) {m_bUseNarrowFont=in;}
 	//Xman end
 
 	//Xman 1:3 Ratio
 	static bool m_13ratio;
 	static bool Is13Ratio() {return m_13ratio;}
-	static Set13Ratio(bool in) {m_13ratio=in;}
+	static void Set13Ratio(bool in) {m_13ratio=in;}
 	//Xman end
 
 	// ==> Superior Client Handling [Stulle] - Stulle
@@ -1340,7 +1347,7 @@ public:
 	//Xman advanced upload-priority
 	static	bool m_AdvancedAutoPrio;
 	static bool UseAdvancedAutoPtio() {return m_AdvancedAutoPrio;}
-	static SetAdvancedAutoPrio(bool in) {m_AdvancedAutoPrio=in;}
+	static void SetAdvancedAutoPrio(bool in) {m_AdvancedAutoPrio=in;}
 	//Xman end
 
 	//Xman chunk chooser
@@ -1354,10 +1361,10 @@ public:
 	//Xman auto update IPFilter
 	static bool	m_bautoupdateipfilter;
 	static bool AutoUpdateIPFilter() {return m_bautoupdateipfilter;}
-	static SetAutoUpdateIPFilter(bool in) {m_bautoupdateipfilter=in;}
+	static void SetAutoUpdateIPFilter(bool in) {m_bautoupdateipfilter=in;}
 	static CString m_strautoupdateipfilter_url;
 	static CString GetAutoUpdateIPFilter_URL() {return m_strautoupdateipfilter_url;}
-	static SetAutoUpdateIPFilter_URL(CString in) {m_strautoupdateipfilter_url=in;}
+	static void SetAutoUpdateIPFilter_URL(CString in) {m_strautoupdateipfilter_url=in;}
 	static SYSTEMTIME		m_IPfilterVersion;
 	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
 	/*
@@ -1369,17 +1376,17 @@ public:
 	//Xman count block/success send
 	static bool m_showblockratio;
 	static bool ShowBlockRatio() {return m_showblockratio;}
-	static SetShowBlockRatio(bool in) {m_showblockratio=in;}
+	static void SetShowBlockRatio(bool in) {m_showblockratio=in;}
 
 	static bool m_dropblockingsockets;
 	static bool DropBlockingSockets() {return m_dropblockingsockets;}
-	static SetDropBlockingSockets(bool in) {m_dropblockingsockets=in;}
+	static void SetDropBlockingSockets(bool in) {m_dropblockingsockets=in;}
 	//Xman end
 
 	//Xman Funny-Nick (Stulle/Morph)
 	static bool	m_bFunnyNick;
 	static bool DisplayFunnyNick() 	{return m_bFunnyNick;}
-	static SetDisplayFunnyNick(bool in) {m_bFunnyNick=in;}
+	static void SetDisplayFunnyNick(bool in) {m_bFunnyNick=in;}
 	//Xman end
 
 	//Xman remove unused AICH-hashes

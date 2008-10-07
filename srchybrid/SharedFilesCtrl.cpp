@@ -2021,7 +2021,7 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 				{
 					CKnownFile* file = selectedList.GetNext(pos);
 					feed.Append(file->GetFeedback(wParam == MP_COPYFEEDBACK_US));
-					feed.Append(_T(" \r\n"));
+					feed.Append(_T("\r\n"));
 
 					uTransferredSum += file->statistic.GetTransferred();
 					uTransferredAllSum += file->statistic.GetAllTimeTransferred();
@@ -2040,9 +2040,9 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					else
 					{
 						if (thePrefs.GetColorFeedback())
-							feed.AppendFormat(_T("[color=orange]%s:[/color] [color=red]%s (%s)[/color]\r\n"),GetResString(IDS_FEEDBACK_ALL_TRANSFERRED),CastItoXBytes(uTransferredSum,false,false,3,true),CastItoXBytes(uTransferredAllSum,false,false,3,true));
+							feed.AppendFormat(_T("[color=orange]%s:[/color] [color=red]%s (%s)[/color]\r\n"),GetResString(IDS_FEEDBACK_ALL_TRANSFERRED),CastItoXBytes(uTransferredSum,false,false,3),CastItoXBytes(uTransferredAllSum,false,false,3));
 						else
-							feed.AppendFormat(_T("%s: %s (%s)\r\n"),GetResString(IDS_FEEDBACK_ALL_TRANSFERRED),CastItoXBytes(uTransferredSum,false,false,3,true),CastItoXBytes(uTransferredAllSum,false,false,3,true));
+							feed.AppendFormat(_T("%s: %s (%s)\r\n"),GetResString(IDS_FEEDBACK_ALL_TRANSFERRED),CastItoXBytes(uTransferredSum,false,false,3),CastItoXBytes(uTransferredAllSum,false,false,3));
 					}
 				}
 				//Todo: copy all the comments too

@@ -44,8 +44,14 @@ struct Schedule_Struct{
    CString			title;
    bool				enabled;
    UINT				day;
+   // ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+   /*
    uint32			time;
    uint32			time2;
+   */
+   time_t			time;
+   time_t			time2;
+   // <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
    CString			values[16];
    int				actions[16];
    void ResetActions()	{for (uint8 index=0;index<16;index++) {actions[index]=0;values[index]=_T("");}}

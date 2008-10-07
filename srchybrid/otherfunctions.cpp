@@ -3007,7 +3007,12 @@ bool IsAutoDaylightTimeSetActive()
 	return true; // default to 'Automatically adjust clock for daylight saving changes'
 }
 
+// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+/*
 bool AdjustNTFSDaylightFileTime(uint32& ruFileDate, LPCTSTR pszFilePath)
+*/
+bool AdjustNTFSDaylightFileTime(time_t& ruFileDate, LPCTSTR pszFilePath)
+// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 {
 	if (!thePrefs.GetAdjustNTFSDaylightFileTime())
 		return false;

@@ -2373,6 +2373,8 @@ void CemuleApp::UpdateDesktopColorDepth()
 			m_iDfltImageListColorFlags = ILC_COLOR16;
 		}
 
+		// ==> Drop Win95 support [MorphXT] - Stulle
+		/*
 		// Don't use >8-bit image lists with OSs with restricted memory for GDI resources
 		if (afxIsWin95()) {
 			// NOTE: ILC_COLOR8 leads to converting all icons to the standard windows system
@@ -2380,6 +2382,8 @@ void CemuleApp::UpdateDesktopColorDepth()
 			// Though there is no other chance with Win98 because of the 64K GDI limit.
 			m_iDfltImageListColorFlags = ILC_COLOR8;
 		}
+		*/
+		// <== Drop Win95 support [MorphXT] - Stulle
 	}
 
 	// Doesn't help..

@@ -273,7 +273,12 @@ public:
     bool    IsPreviewableFileType() const;
 	time_t	getTimeRemaining() const;
 	time_t	getTimeRemainingSimple() const;
+	// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+	/*
 	uint32	GetDlActiveTime() const;
+	*/
+	time_t	GetDlActiveTime() const;
+	// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 
 	// Barry - Added as replacement for BlockReceived to buffer data before writing to disk
 	uint32	WriteToBuffer(uint64 transize, const BYTE *data, uint64 start, uint64 end, Requested_Block_Struct *block, const CUpDownClient* client);
@@ -493,7 +498,12 @@ private:
 	uint32	m_iLastPausePurge;
 	uint16	count;
 	*/
+	// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+	/*
 	uint32	m_iLastPausePurge;
+	*/
+	time_t	m_iLastPausePurge;
+	// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 	//Xman end
 	UINT	m_anStates[STATES_COUNT];
 	EMFileSize	completedsize;
@@ -548,7 +558,12 @@ private:
 	UINT	m_category;
 	DWORD	m_dwFileAttributes;
 	time_t	m_tActivated;
+	// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+	/*
 	uint32	m_nDlActiveTime;
+	*/
+	time_t	m_nDlActiveTime;
+	// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 	uint32	m_tLastModified;	// last file modification time (NT's version of UTC), to be used for stats only!
 	uint32	m_tCreated;			// file creation time (NT's version of UTC), to be used for stats only!
     uint32	m_random_update_wait;	

@@ -569,7 +569,12 @@ void CSharedFileList::AddFilesFromDirectory(const CString& rstrDirectory)
 		catch(CException* ex){
 			ex->Delete();
 		}
+		// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+		/*
 		uint32 fdate = (UINT)lwtime.GetTime();
+		*/
+		time_t fdate = lwtime.GetTime();
+		// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 		if (fdate == 0)
 			fdate = (UINT)-1;
 		if (fdate == -1){
@@ -1474,7 +1479,12 @@ void CSharedFileList::Process()
 void CSharedFileList::Publish()
 {
 	// Variables to save cpu.
+	// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+	/*
 	UINT tNow = time(NULL);
+	*/
+	time_t tNow = time(NULL);
+	// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 	bool isFirewalled = theApp.IsFirewalled();
 	bool bDirectCallback = Kademlia::CKademlia::IsRunning() && !Kademlia::CUDPFirewallTester::IsFirewalledUDP(true) && Kademlia::CUDPFirewallTester::IsVerified();
 

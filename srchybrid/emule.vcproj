@@ -4,6 +4,7 @@
 	Version="7.10"
 	Name="emule"
 	ProjectGUID="{584EA69D-3443-4197-8994-364880FC1B9B}"
+	RootNamespace="emule"
 	Keyword="MFCProj">
 	<Platforms>
 		<Platform
@@ -11,106 +12,42 @@
 	</Platforms>
 	<Configurations>
 		<Configuration
-			Name="Debug_Dump|Win32"
-			OutputDirectory="Debug_Dump"
-			IntermediateDirectory="Debug_Dump"
-			ConfigurationType="1"
-			UseOfMFC="1"
-			CharacterSet="2">
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="3"
-				GlobalOptimizations="TRUE"
-				FavorSizeOrSpeed="1"
-				OmitFramePointers="TRUE"
-				OptimizeForProcessor="2"
-				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\site_config;.;..;..\id3lib\include;..\crypto.v52.1"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_DUMP;ID3LIB_LINKOPTION=1"
-				MinimalRebuild="TRUE"
-				BasicRuntimeChecks="0"
-				RuntimeLibrary="0"
-				StructMemberAlignment="4"
-				BufferSecurityCheck="TRUE"
-				TreatWChar_tAsBuiltInType="TRUE"
-				ForceConformanceInForLoopScope="TRUE"
-				UsePrecompiledHeader="3"
-				WarningLevel="4"
-				DebugInformationFormat="3"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="version.lib winmm.lib ws2_32.lib gdiplus.lib ADSIId.lib ..\zlib\release\zlib.lib ..\crypto51\release\cryptlib.lib ..\id3lib\libprj\id3lib.lib .\CxImage\Release\cximage.lib ..\png\Release\png.lib ..\ResizableLib\Debug\ResizableLib.lib"
-				LinkIncremental="2"
-				SuppressStartupBanner="TRUE"
-				DelayLoadDLLs="oleacc.dll;gdiplus.dll"
-				GenerateDebugInformation="TRUE"
-				SubSystem="2"
-				TargetMachine="1"/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="FALSE"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"
-				AdditionalIncludeDirectories="$(IntDir)"/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
-		</Configuration>
-		<Configuration
-			Name="Unicode_Debug|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			Name="Debug|Win32"
+			OutputDirectory=".\debug"
+			IntermediateDirectory=".\debug"
 			ConfigurationType="1"
 			UseOfMFC="1"
 			CharacterSet="1"
 			DeleteExtensionsOnClean="*.obj;*.ilk;*.pdb;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.bat;*.asm;$(TargetPath)">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/Wall"
+				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\site_config;.;..;..\id3lib\include;..\crypto.v52.1;upnplib\ixml\src\inc;upnplib\upnp\src\inc;upnplib\upnp\inc;upnplib\build\inc;upnplib\threadutil\inc;upnplib\ixml\inc;pthreads\pthreads\inc"
+				AdditionalIncludeDirectories="..\site_config;.;..;..\id3lib\include;upnplib\ixml\src\inc;upnplib\upnp\src\inc;upnplib\upnp\inc;upnplib\build\inc;upnplib\threadutil\inc;upnplib\ixml\inc;pthreads\pthreads\inc"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;SUPPORT_LARGE_FILES;PRINT_STATISTIC;UPNP_STATIC_LIB;_WIN32;PTW32_STATIC_LIB;PNG_DEBUG=1;PNG_USE_PNGVCRD;PNG_LIBPNG_SPECIALBUILD"
 				MinimalRebuild="TRUE"
+				ExceptionHandling="FALSE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				StructMemberAlignment="4"
 				BufferSecurityCheck="TRUE"
 				EnableFunctionLevelLinking="TRUE"
 				TreatWChar_tAsBuiltInType="TRUE"
-				ForceConformanceInForLoopScope="TRUE"
-				UsePrecompiledHeader="3"
+				ForceConformanceInForLoopScope="FALSE"
+				UsePrecompiledHeader="2"
 				WarningLevel="4"
-				DebugInformationFormat="3"/>
+				DebugInformationFormat="4"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="version.lib winmm.lib ws2_32.lib gdiplus.lib ADSIId.lib crypt32.lib Iphlpapi.lib .\upnplib\win32project\Debug\upnplib.lib .\pthreads\pthreads\Debug\pthread.lib"
+				AdditionalDependencies="version.lib winmm.lib ws2_32.lib gdiplus.lib ADSIId.lib crypt32.lib Iphlpapi.lib mpr.lib"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				IgnoreDefaultLibraryNames=""
 				DelayLoadDLLs="oleacc.dll;gdiplus.dll"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
-				OptimizeForWindows98="0"
+				OptimizeForWindows98="2"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -139,36 +76,37 @@
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
-			Name="Unicode_Release|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			Name="Release|Win32"
+			OutputDirectory=".\release"
+			IntermediateDirectory=".\release"
 			ConfigurationType="1"
 			UseOfMFC="1"
+			UseOfATL="0"
 			CharacterSet="1"
 			DeleteExtensionsOnClean="*.obj;*.ilk;*.pdb;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.bat;*.asm;$(TargetPath)"
 			WholeProgramOptimization="TRUE">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHa"
 				Optimization="3"
 				GlobalOptimizations="TRUE"
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="TRUE"
-				FavorSizeOrSpeed="1"
+				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				EnableFiberSafeOptimizations="TRUE"
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\site_config;.;..;..\id3lib\include;..\crypto.v52.1;upnplib\ixml\src\inc;upnplib\upnp\src\inc;upnplib\upnp\inc;upnplib\build\inc;upnplib\threadutil\inc;upnplib\ixml\inc;pthreads\pthreads\inc"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;SUPPORT_LARGE_FILES;UPNP_STATIC_LIB;_WIN32;PTW32_STATIC_LIB"
+				AdditionalIncludeDirectories="..\site_config;.;..;..\id3lib\include;upnplib\ixml\src\inc;upnplib\upnp\src\inc;upnplib\upnp\inc;upnplib\build\inc;upnplib\threadutil\inc;upnplib\ixml\inc;pthreads\pthreads\inc"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;_RELEASE;SUPPORT_LARGE_FILES;UPNP_STATIC_LIB;_WIN32;PTW32_STATIC_LIB"
 				StringPooling="TRUE"
-				MinimalRebuild="FALSE"
-				BasicRuntimeChecks="0"
+				ExceptionHandling="FALSE"
 				RuntimeLibrary="0"
-				StructMemberAlignment="4"
 				BufferSecurityCheck="TRUE"
 				EnableFunctionLevelLinking="TRUE"
+				DefaultCharIsUnsigned="TRUE"
 				TreatWChar_tAsBuiltInType="TRUE"
-				ForceConformanceInForLoopScope="TRUE"
+				ForceConformanceInForLoopScope="FALSE"
 				UsePrecompiledHeader="3"
 				WarningLevel="3"
 				DebugInformationFormat="3"/>
@@ -176,7 +114,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="unicows.lib kernel32.lib advapi32.lib user32.lib gdi32.lib shell32.lib comdlg32.lib version.lib mpr.lib rasapi32.lib winmm.lib winspool.lib vfw32.lib secur32.lib oleacc.lib oledlg.lib sensapi.lib gdiplus.lib ADSIId.lib crypt32.lib ws2_32.lib Iphlpapi.lib .\upnplib\win32project\Release\upnplib.lib .\pthreads\pthreads\release\pthread.lib"
+				AdditionalDependencies="unicows.lib kernel32.lib advapi32.lib user32.lib gdi32.lib shell32.lib comdlg32.lib version.lib mpr.lib rasapi32.lib winmm.lib winspool.lib vfw32.lib secur32.lib oleacc.lib oledlg.lib sensapi.lib ws2_32.lib gdiplus.lib ADSIId.lib crypt32.lib"
 				SuppressStartupBanner="TRUE"
 				IgnoreDefaultLibraryNames="kernel32.lib;advapi32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;version.lib;mpr.lib;rasapi32.lib;winmm.lib;winspool.lib;vfw32.lib;secur32.lib;oleacc.lib;oledlg.lib;sensapi.lib"
 				DelayLoadDLLs="oleacc.dll;gdiplus.dll"
@@ -184,7 +122,6 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				OptimizeForWindows98="0"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -223,34 +160,33 @@
 			WholeProgramOptimization="TRUE">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHa"
 				Optimization="3"
 				GlobalOptimizations="TRUE"
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="TRUE"
-				FavorSizeOrSpeed="1"
+				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				EnableFiberSafeOptimizations="TRUE"
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\site_config;.;..;..\id3lib\include;..\crypto.v52.1;upnplib\ixml\src\inc;upnplib\upnp\src\inc;upnplib\upnp\inc;upnplib\build\inc;upnplib\threadutil\inc;upnplib\ixml\inc;pthreads\pthreads\inc"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;_BETA;SUPPORT_LARGE_FILES;PRINT_STATISTIC;UPNP_STATIC_LIB;PTW32_STATIC_LIB"
+				AdditionalIncludeDirectories="..\site_config;.;..;..\id3lib\include;upnplib\ixml\src\inc;upnplib\upnp\src\inc;upnplib\upnp\inc;upnplib\build\inc;upnplib\threadutil\inc;upnplib\ixml\inc;pthreads\pthreads\inc"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;_BETA;SUPPORT_LARGE_FILES;PRINT_STATISTIC;UPNP_STATIC_LIB;_WIN32;PTW32_STATIC_LIB"
 				StringPooling="TRUE"
-				MinimalRebuild="FALSE"
+				ExceptionHandling="FALSE"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="0"
-				StructMemberAlignment="4"
 				BufferSecurityCheck="TRUE"
 				EnableFunctionLevelLinking="TRUE"
 				TreatWChar_tAsBuiltInType="TRUE"
-				ForceConformanceInForLoopScope="TRUE"
-				UsePrecompiledHeader="3"
+				UsePrecompiledHeader="1"
 				WarningLevel="3"
 				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="unicows.lib kernel32.lib advapi32.lib user32.lib gdi32.lib shell32.lib comdlg32.lib version.lib mpr.lib rasapi32.lib winmm.lib winspool.lib vfw32.lib secur32.lib oleacc.lib oledlg.lib sensapi.lib gdiplus.lib ADSIId.lib crypt32.lib ws2_32.lib Iphlpapi.lib .\upnplib\win32project\Release\upnplib.lib .\pthreads\pthreads\release\pthread.lib"
+				AdditionalDependencies="unicows.lib kernel32.lib advapi32.lib user32.lib gdi32.lib shell32.lib comdlg32.lib version.lib mpr.lib rasapi32.lib winmm.lib winspool.lib vfw32.lib secur32.lib oleacc.lib oledlg.lib sensapi.lib ws2_32.lib gdiplus.lib ADSIId.lib Mpr.lib crypt32.lib"
 				SuppressStartupBanner="TRUE"
 				IgnoreDefaultLibraryNames="kernel32.lib;advapi32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;version.lib;mpr.lib;rasapi32.lib;winmm.lib;winspool.lib;vfw32.lib;secur32.lib;oleacc.lib;oledlg.lib;sensapi.lib"
 				DelayLoadDLLs="oleacc.dll;gdiplus.dll"
@@ -258,7 +194,6 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				OptimizeForWindows98="0"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -403,11 +338,29 @@
 			</File>
 			<File
 				RelativePath="MD4.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="testversion|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="MD4_asm.asm">
 				<FileConfiguration
-					Name="Debug_Dump|Win32">
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
 						CommandLine="ml.exe /c /Cx /coff /Fo $(IntDir)\ &quot;$(InputPath)&quot;
@@ -415,15 +368,7 @@
 						Outputs="$(IntDir)\$(InputName).obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Unicode_Debug|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="ml.exe /c /Cx /coff /Fo $(IntDir)\ &quot;$(InputPath)&quot;
-"
-						Outputs="$(IntDir)\$(InputName).obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Unicode_Release|Win32">
+					Name="Release|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
 						CommandLine="ml.exe /c /Cx /coff /Fo $(IntDir)\ &quot;$(InputPath)&quot;
@@ -451,19 +396,13 @@
 			<File
 				RelativePath="MfcStaticBinaryCompatible.cpp">
 				<FileConfiguration
-					Name="Debug_Dump|Win32">
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Unicode_Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Unicode_Release|Win32">
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"/>
@@ -496,36 +435,24 @@
 			<File
 				RelativePath="Parser.y">
 				<FileConfiguration
-					Name="Debug_Dump|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Performing Custom Build Step"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Unicode_Debug|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="$(InputFileName)"
-						CommandLine="bison --no-lines --defines --output &quot;$(InputDir)$(InputName).cpp&quot; &quot;$(InputFileName)&quot;
-"
-						Outputs="$(ProjectDir)\$(InputName).cpp; $(ProjectDir)\$(InputName).hpp"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Unicode_Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Performing Custom Build Step"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="testversion|Win32"
-					ExcludedFromBuild="TRUE">
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing Custom Build Step"
 						CommandLine=""
 						Outputs=""/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="testversion|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -564,19 +491,13 @@
 			<File
 				RelativePath="Scanner.cpp">
 				<FileConfiguration
-					Name="Debug_Dump|Win32">
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Unicode_Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Unicode_Release|Win32">
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"/>
@@ -591,26 +512,12 @@
 			<File
 				RelativePath="Scanner.l">
 				<FileConfiguration
-					Name="Unicode_Debug|Win32"
-					ExcludedFromBuild="TRUE">
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="$(InputFileName)"
-						CommandLine="flex -L -8 -o&quot;$(ProjectDir)$(InputName).cpp&quot; &quot;-S$(ProjectDir)flex.skl&quot; &quot;$(InputPath)&quot;
-"
-						Outputs="$(ProjectDir)$(InputName).cpp"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Unicode_Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="testversion|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						Outputs=""/>
 				</FileConfiguration>
 			</File>
 			<File
@@ -649,7 +556,7 @@
 			<File
 				RelativePath="SHA_asm.asm">
 				<FileConfiguration
-					Name="Debug_Dump|Win32">
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
 						CommandLine="ml.exe /c /Cx /coff /Fo $(IntDir)\ &quot;$(InputPath)&quot;
@@ -657,18 +564,9 @@
 						Outputs="$(IntDir)\$(InputName).obj"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Unicode_Debug|Win32">
+					Name="Release|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="ml.exe /c /Cx /coff /Fo $(IntDir)\ &quot;$(InputPath)&quot;
-"
-						Outputs="$(IntDir)\$(InputName).obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Unicode_Release|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="-&gt;Ein benutzerdefinierter Buildschritt wird ausgeführt."
 						CommandLine="ml.exe /c /Cx /coff /Fo $(IntDir)\ &quot;$(InputPath)&quot;
 "
 						Outputs="$(IntDir)\$(InputName).obj"/>
@@ -677,7 +575,6 @@
 					Name="testversion|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="-&gt;Ein benutzerdefinierter Buildschritt wird ausgeführt."
 						CommandLine="ml.exe /c /Cx /coff /Fo $(IntDir)\ &quot;$(InputPath)&quot;
 "
 						Outputs="$(IntDir)\$(InputName).obj"/>
@@ -701,19 +598,13 @@
 			<File
 				RelativePath="Stdafx.cpp">
 				<FileConfiguration
-					Name="Debug_Dump|Win32">
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Unicode_Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Unicode_Release|Win32">
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="1"/>

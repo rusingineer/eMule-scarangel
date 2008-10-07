@@ -34,10 +34,10 @@
 #include <crypto51/files.h>
 #include <crypto51/sha.h>
 */
-#include <crypto.v52.1/base64.h>
-#include <crypto.v52.1/osrng.h>
-#include <crypto.v52.1/files.h>
-#include <crypto.v52.1/sha.h>
+#include <cryptopp/base64.h>
+#include <cryptopp/osrng.h>
+#include <cryptopp/files.h>
+#include <cryptopp/sha.h>
 //Xman end
 #pragma warning(default:4702) // unreachable code
 #pragma warning(default:4100) // unreferenced formal parameter
@@ -788,7 +788,7 @@ const float CClientCredits::GetMyScoreRatio(uint32 dwForIP) const
 // ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 // Moonlight: SUQWT - Conditions to determine an active record.
 // Returns true if the client has been seen recently
-bool CClientCredits::IsActive(uint32 dwExpired) {
+bool CClientCredits::IsActive(time_t dwExpired) {
 	return (GetUploadedTotal() || GetDownloadedTotal() || m_pCredits->nSecuredWaitTime || m_pCredits->nUnSecuredWaitTime) &&
 			(m_pCredits->nLastSeen >= dwExpired);
 }
@@ -992,7 +992,12 @@ void CClientCreditsList::LoadList()
 			m_mapClients.InitHashTable(calc + 20000); //optimized for 20 000 new contacts
 			//Xman end
 
+			// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+			/*
 			const uint32 dwExpired = time(NULL) - 12960000; // today - 150 day
+			*/
+			const time_t dwExpired = time(NULL) - 12960000; // today - 150 day
+			// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 			uint32 cDeleted = 0;
 			
 			//MORPH START - Changed by SiRoB, Optimization
@@ -1108,7 +1113,12 @@ void CClientCreditsList::SaveList()
 	BYTE* pBufferSUQWT=NULL;
 	if (m_bSaveUploadQueueWaitTime)
 		pBufferSUQWT = new BYTE[count*sizeof(CreditStruct)];
+	// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+	/*
 	const uint32 dwExpired = time(NULL) - 12960000; // today - 150 day
+	*/
+	const time_t dwExpired = time(NULL) - 12960000; // today - 150 day
+	// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 	CClientCredits* cur_credit;
 	CCKey tempkey(0);
 	POSITION pos = m_mapClients.GetStartPosition();

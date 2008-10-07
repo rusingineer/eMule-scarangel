@@ -440,7 +440,12 @@ __inline CStringA ipstrA(in_addr nIP){
 // Date/Time
 //
 time_t safe_mktime(struct tm* ptm);
+// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+/*
 bool AdjustNTFSDaylightFileTime(uint32& ruFileDate, LPCTSTR pszFilePath);
+*/
+bool AdjustNTFSDaylightFileTime(time_t& ruFileDate, LPCTSTR pszFilePath);
+// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 
 
 ///////////////////////////////////////////////////////////////////////////////

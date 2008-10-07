@@ -263,7 +263,12 @@ void CPartFile::Init(){
 	insufficient = false;
 	m_bCompletionError = false;
 	m_uTransferred = 0;
+	// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+	/*
 	m_iLastPausePurge = time(NULL);
+	*/
+	m_iLastPausePurge = (uint32)time(NULL);
+	// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 	m_AllocateThread=NULL;
 	m_iAllocinfo = 0;
 	if(thePrefs.GetNewAutoDown()){
@@ -606,8 +611,14 @@ void CPartFile::CreatePartFile(UINT cat)
 
 		struct _stat fileinfo;
 		if (_tstat(partfull, &fileinfo) == 0){
+			// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+			/*
 			m_tLastModified = fileinfo.st_mtime;
 			m_tCreated = fileinfo.st_ctime;
+			*/
+			m_tLastModified = (uint32)fileinfo.st_mtime;
+			m_tCreated = (uint32)fileinfo.st_ctime;
+			// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 		}
 		else
 			AddDebugLogLine(false, _T("Failed to get file date for \"%s\" - %s"), partfull, _tcserror(errno));
@@ -1144,7 +1155,12 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 						if (newtag->IsInt())
 						{
 							SetLastPublishTimeKadSrc(newtag->GetInt(), 0);
+							// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+							/*
 							if(GetLastPublishTimeKadSrc() > (uint32)time(NULL)+KADEMLIAREPUBLISHTIMES)
+							*/
+							if(GetLastPublishTimeKadSrc() > time(NULL)+KADEMLIAREPUBLISHTIMES)
+							// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 							{
 								//There may be a posibility of an older client that saved a random number here.. This will check for that..
 								SetLastPublishTimeKadSrc(0,0);
@@ -1469,8 +1485,14 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 	// read part file creation time
 	struct _stat fileinfo;
 	if (_tstat(searchpath, &fileinfo) == 0){
+		// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+		/*
 		m_tLastModified = fileinfo.st_mtime;
 		m_tCreated = fileinfo.st_ctime;
+		*/
+		m_tLastModified = (uint32)fileinfo.st_mtime;
+		m_tCreated = (uint32)fileinfo.st_ctime;
+		// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 	}
 	else
 		AddDebugLogLine(false, _T("Failed to get file date for \"%s\" - %s"), searchpath, _tcserror(errno));
@@ -1549,7 +1571,12 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 			catch(CException* ex){
 				ex->Delete();
 			}
+			// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+			/*
 			uint32 fdate = (UINT)filestatus.m_mtime.GetTime();
+			*/
+			time_t fdate = (UINT)filestatus.m_mtime.GetTime();
+			// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 			if (fdate == 0)
 				fdate = (UINT)-1;
 			if (fdate == -1){
@@ -1840,7 +1867,7 @@ bool CPartFile::SavePartFile()
 					if (end - start < EMBLOCKSIZE && count > hideOS)
 						continue;
 					//MORPH - Smooth sample
-					itoa(i_sbpos,sbnumber,10);
+					_itoa(i_sbpos,sbnumber,10);
 					sbnamebuffer[0] = FT_SPREADSTART;
 					CTag(sbnamebuffer,start,true).WriteTagToFile(&file);
 					uTagCount++;
@@ -1863,12 +1890,17 @@ bool CPartFile::SavePartFile()
 					uint32 start = (uint32)statistic.spreadlist.GetKeyAt(pos);
 					statistic.spreadlist.GetNext(pos);
 					ASSERT(pos != NULL);	// Last value should always be 0
+					if (pos == NULL) {
+						// this should no happen, but abort might prevent a crash?
+						AddDebugLogLine(false, _T("Error in spreadbarinfo for partfile (%s). No matching end to start = %lu"), GetFileName(), start);
+						break;
+					}
 					uint32 end = (uint32)statistic.spreadlist.GetKeyAt(pos);
 					//MORPH - Smooth sample
 					if (end - start < EMBLOCKSIZE && count > hideOS)
 						continue;
 					//MORPH - Smooth sample
-					itoa(i_sbpos,sbnumber,10);
+					_itoa(i_sbpos,sbnumber,10);
 					sbnamebuffer[0] = FT_SPREADSTART;
 					CTag(sbnamebuffer,start).WriteTagToFile(&file);
 					uTagCount++;
@@ -4536,7 +4568,12 @@ BOOL CPartFile::PerformFileComplete()
 	struct _stat st;
 	if (_tstat(strNewname, &st) == 0)
 	{
+		// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+		/*
 		m_tLastModified = st.st_mtime;
+		*/
+		m_tLastModified = (uint32)st.st_mtime;
+		// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 		m_tUtcLastModified = m_tLastModified;
 		AdjustNTFSDaylightFileTime(m_tUtcLastModified, strNewname);
 	}
@@ -4962,7 +4999,12 @@ void CPartFile::PauseFile(bool bInsufficient, bool resort)
 
 	// if file is already in 'paused' or 'insufficient' state, do not refresh the purge time
 	if (!paused && !insufficient)
+		// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+		/*
 		m_iLastPausePurge = time(NULL);
+		*/
+		m_iLastPausePurge = (uint32)time(NULL);
+		// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 	theApp.downloadqueue->RemoveLocalServerRequest(this);
 
 	if(GetKadFileSearchID())
@@ -6667,7 +6709,12 @@ void CPartFile::FlushBuffersExceptionHandler(CFileException* error)
 			SetStatus(PS_ERROR);
 		}
 		paused = true;
+		// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+		/*
 		m_iLastPausePurge = time(NULL);
+		*/
+		m_iLastPausePurge = (uint32)time(NULL);
+		// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 		theApp.downloadqueue->RemoveLocalServerRequest(this);
 		//Xman
 		// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
@@ -6698,7 +6745,12 @@ void CPartFile::FlushBuffersExceptionHandler()
 	m_nDownDatarate10 = 0;
 	// Maella end
 
-	m_iLastPausePurge = time(NULL);
+		// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+		/*
+		m_iLastPausePurge = time(NULL);
+		*/
+		m_iLastPausePurge = (uint32)time(NULL);
+		// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 	theApp.downloadqueue->RemoveLocalServerRequest(this);
 	//Xman
 	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
@@ -8260,9 +8312,16 @@ void CPartFile::SetActive(bool bActive)
 	}
 }
 
+// ==> Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
+/*
 uint32 CPartFile::GetDlActiveTime() const
 {
 	uint32 nDlActiveTime = m_nDlActiveTime;
+*/
+time_t CPartFile::GetDlActiveTime() const
+{
+	time_t nDlActiveTime = m_nDlActiveTime;
+// <== Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 	if (m_tActivated != 0)
 		nDlActiveTime += time(NULL) - m_tActivated;
 	return nDlActiveTime;

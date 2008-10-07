@@ -94,7 +94,7 @@ Basic Obfuscated Handshake Protocol Client <-> Server:
 #include <crypto51/osrng.h>
 */
 #pragma warning(disable:4702) // unreachable code
-#include <crypto.v52.1/osrng.h>
+#include <cryptopp/osrng.h>
 #pragma warning(default:4702) // unreachable code
 //Xman end
 #pragma warning(default:4100) // unreferenced formal parameter

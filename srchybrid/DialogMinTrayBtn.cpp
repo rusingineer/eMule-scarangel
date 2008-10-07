@@ -124,7 +124,12 @@ TEMPLATE void CDialogMinTrayBtn<BASE>::MinTrayBtnInit()
 	BOOL bBmpResult = MinTrayBtnInitBitmap();
 	// - Never use the 'TransparentBlt' function under Win9x (read SDK)
 	// - Load the 'MSIMG32.DLL' only, if it's really needed.
+	// ==> Drop Win95 support [MorphXT] - Stulle
+	/*
 	if (!afxIsWin95() && bBmpResult && !_TransparentBlt)
+	*/
+	if (bBmpResult && !_TransparentBlt)
+	// <== Drop Win95 support [MorphXT] - Stulle
 	{
 		HMODULE hMsImg32 = LoadLibrary(_T("MSIMG32.DLL"));
 		if (hMsImg32)
