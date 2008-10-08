@@ -66,7 +66,11 @@ public:
 	CUpDownClient*	client;
 	*/
 	//Xman improved socket closing
+	// Stulle - We gonna test this again...
+	/*
 	void	CloseSocket();
+	*/
+	// Stulle - We gonna test this again...
 
 
 protected:

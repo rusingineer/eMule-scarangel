@@ -1339,7 +1339,7 @@ public:
 	//Xman always one release-slot
 	static bool m_onerealeseslot;
 	static bool UseReleasseSlot() {return m_onerealeseslot;}
-	static SetUseReleaseSlot(bool in) {m_onerealeseslot=in;}
+	static void SetUseReleaseSlot(bool in) {m_onerealeseslot=in;}
 	//Xman end
 	*/
 	// <== Superior Client Handling [Stulle] - Stulle
