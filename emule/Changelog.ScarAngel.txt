@@ -3,10 +3,10 @@ CHANGELOG FOR EMULE ScarAngel MOD
 
 eMule v0.49b ScarAngel v3.1:
 ------------------------
-- 09.10.2008 -
+- 13.10.2008 -
 -------------------------------------------------------------------------------
 based on eMule 0.49b Xtreme 7.0 compiled with vs2005 SP1
-Merged to eMule v0.49b [Stulle]
+Merged to eMule v0.49b [Stulle]Fz
 
 Added: IP Filter White list [Stulle] - Stulle
 Added: TK4 CreditSystem [BlueSonicBoy] - Stulle
@@ -38,7 +38,6 @@ Changed: Increased font size for Sub Heading text in context menu [Stulle] - Stu
 Changed: Use proper English in some places ;) [ginger] - Stulle
 Changed: Reworked the Feedback code a bit [Stulle] - Stulle
 Changed: Enable List requested files only when needed [Stulle] - Stulle
-Changed: Rewrote Feedback code [Stulle] - Stulle
 Changed: Only identified and not available SUI clients can be superior [Stulle] - Stulle
 Changed: Make code VS 2005 and VS 2008 ready [MorphXT] - Stulle
 Changed: Some more changes for Advanced Options [MorphXT] - Stulle

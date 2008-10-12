@@ -353,7 +353,7 @@ CUPnP_IGDControlPoint::UPNPNAT_RETURN CUPnP_IGDControlPoint::AddPortMapping(CUPn
 			//If we do not have this mapping, add it to our list when enabled
 		   //TODO use getresstring.
 		   if(thePrefs.GetUPnPVerboseLog())
-					theApp.QueueDebugLogLine(false, _T("Upnp:queuing port for when upnpis enabled: %s"), mapping->description);
+					theApp.QueueDebugLogLine(false, _T("Upnp:queuing port for when upnp is enabled: %s"), mapping->description);
 		    m_Mappings.AddTail(*mapping);
 		}
 	   m_MappingsLock.Unlock();
