@@ -2836,7 +2836,10 @@ void CDownloadQueue::SaveFileSettings(bool bStart)
 	else
 	{
 		if(m_bSaveAgain)
+		{
 			m_bSaveAgain = false;
+			m_SaveSettingsThread->Pause(false);
+		}
 		else if (m_SaveSettingsThread) // just in case, should always be true at this point
 		{
 			m_SaveSettingsThread->EndThread();
@@ -2891,16 +2894,19 @@ UINT AFX_CDECL CSaveSettingsThread::RunProc(LPVOID pParam)
 UINT CSaveSettingsThread::RunInternal()
 {
 	bool bWait = true; // only wait on the first run
+	int iCount = 0;
 	while(bDoRun) 
 	{
-        pauseEvent->Lock();
-
 		if(bWait)
 			Sleep(SEC2MS(SAVE_WAIT_TIME));
 		bWait = false; // no more waiting henceforth
 
 		if(m_SettingsSaver.SaveSettings()) // if this fails we need to run again
+		{
 			PostMessage(theApp.emuledlg->m_hWnd,TM_SAVEDONE,0,0);
+			Pause(true);
+		}
+		pauseEvent->Lock();
 	}
 
 	threadEndedEvent->SetEvent();
