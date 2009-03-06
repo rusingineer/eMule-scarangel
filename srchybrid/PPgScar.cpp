@@ -355,6 +355,14 @@ CPPgScar::CPPgScar()
 	m_htiCompressLevel = NULL; // Adjust Compress Level [Stulle] - Stulle
 	m_htiAutoSharedUpdater = NULL; // Automatic shared files updater [MoNKi] - Stulle
 
+	// ==> Static Tray Icon [MorphXT] - MyTh88
+	m_htiStaticIcon = NULL;
+	// <== Static Tray Icon [MorphXT] - MyTh88
+
+	// ==> Static Tray Icon [MorphXT] - MyTh88
+	m_htiStaticIcon = NULL;
+	// <== Static Tray Icon [MorphXT] - MyTh88
+
 	// ==> Advanced Options [Official/MorphXT] - Stulle
 	m_bInitializedAdvTreeOpts = false;
 	m_hti_AdvMiniMule=NULL;
@@ -780,6 +788,10 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		// <== Adjust Compress Level [Stulle] - Stulle
 		m_htiAutoSharedUpdater = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_AUTO_SHARED_UPDATER), m_htiMisc, m_bAutoSharedUpdater); // Automatic shared files updater [MoNKi] - Stulle
 
+		// ==> Static Tray Icon [MorphXT] - MyTh88
+		m_htiStaticIcon = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_STATIC_ICON),m_htiDisplay, m_bStaticIcon);
+		// <== Static Tray Icon [MorphXT] - MyTh88
+
 		m_ctrlTreeOptions.SendMessage(WM_VSCROLL, SB_TOP);
 		m_bInitializedTreeOpts = true;
 	}
@@ -990,6 +1002,10 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxInt(pDX, m_iCompressLevel, 0, 9);
 	// <== Adjust Compress Level [Stulle] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiAutoSharedUpdater, m_bAutoSharedUpdater); // Automatic shared files updater [MoNKi] - Stulle
+
+	// ==> Static Tray Icon [MorphXT] - MyTh88
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiStaticIcon, m_bStaticIcon);
+	// <== Static Tray Icon [MorphXT] - MyTh88
 
 	// ==> FunnyNick [SiRoB/Stulle] - Stulle
 	if(m_htiFnTagMode)	m_ctrlTreeOptions.SetGroupEnable(m_htiFnTagMode, m_bFnActive);
@@ -1344,6 +1360,10 @@ BOOL CPPgScar::OnInitDialog()
 	m_bStartupSound = thePrefs.UseStartupSound(); // Startupsound [Commander] - mav744
 	m_iCompressLevel = thePrefs.GetCompressLevel(); // Adjust Compress Level [Stulle] - Stulle
 	m_bAutoSharedUpdater = thePrefs.GetDirectoryWatcher(); // Automatic shared files updater [MoNKi] - Stulle
+
+	// ==> Static Tray Icon [MorphXT] - MyTh88
+	m_bStaticIcon = thePrefs.GetStaticIcon();
+	// <== Static Tray Icon [MorphXT] - MyTh88
 
 	// ==> Advanced Options [Official/MorphXT] - Stulle
 	bMiniMuleAutoClose=thePrefs.bMiniMuleAutoClose;
@@ -1822,6 +1842,22 @@ BOOL CPPgScar::OnApply()
 	}
 	// <== Automatic shared files updater [MoNKi] - Stulle
 
+	// ==> Static Tray Icon [MorphXT] - MyTh88
+	if(m_bStaticIcon != thePrefs.m_bStaticIcon)
+	{
+		if(m_bStaticIcon)
+			// ==> TBH: minimule - Stulle
+			/*
+			theApp.emuledlg->TrayShow();
+			*/
+			theApp.emuledlg->TrayShow(FALSE);
+			// <== TBH: minimule - Stulle
+		else if(theApp.emuledlg->IsWindowVisible()) //only hide when window visible
+			theApp.emuledlg->TrayHide();
+	}
+	thePrefs.m_bStaticIcon = m_bStaticIcon;
+	// <== Static Tray Icon [MorphXT] - MyTh88
+
 	// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 	thePrefs.m_bAutoBackup = m_AutoBackup.GetCheck() == BST_CHECKED;
 	thePrefs.m_bAutoBackup2 = m_AutoBackup2.GetCheck() == BST_CHECKED;
@@ -2179,6 +2215,10 @@ void CPPgScar::Localize(void)
 		if (m_htiStartupSound) m_ctrlTreeOptions.SetItemText(m_htiStartupSound, GetResString(IDS_STARTUPSOUND)); // Startupsound [Commander] - mav744
 		if (m_htiCompressLevel) m_ctrlTreeOptions.SetEditLabel(m_htiCompressLevel, GetResString(IDS_COMPRESS_LVL)); // Adjust Compress Level [Stulle] - Stulle
 		if (m_htiAutoSharedUpdater) m_ctrlTreeOptions.SetItemText(m_htiAutoSharedUpdater, GetResString(IDS_AUTO_SHARED_UPDATER)); // Automatic shared files updater [MoNKi] - Stulle
+
+		// ==> Static Tray Icon [MorphXT] - MyTh88
+		if (m_htiStaticIcon) m_ctrlTreeOptions.SetItemText(m_htiStaticIcon, GetResString(IDS_STATIC_ICON));
+		// <== Static Tray Icon [MorphXT] - MyTh88
 
 		// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 		m_BackupBox.SetWindowText( GetResString(IDS_BACKUP_FILEFRAME) );

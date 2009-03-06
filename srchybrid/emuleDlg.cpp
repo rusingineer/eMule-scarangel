@@ -461,6 +461,16 @@ BOOL CemuleDlg::OnInitDialog()
 	InitWindowStyles(this);
 	CreateToolbarCmdIconMap();
 
+	// ==> Static Tray Icon [MorphXT] - MyTh88
+	if(thePrefs.GetStaticIcon())
+		// ==> TBH: minimule - Stulle
+		/*
+		TrayShow();
+		*/
+		TrayShow(FALSE);
+		// <== TBH: minimule - Stulle
+	// <== Static Tray Icon [MorphXT] - MyTh88
+
 	CMenu* pSysMenu = GetSystemMenu(FALSE);
 	if (pSysMenu != NULL){
 		pSysMenu->AppendMenu(MF_SEPARATOR);
@@ -1811,6 +1821,9 @@ void CemuleDlg::MinimizeWindow()
 {
 	if (*thePrefs.GetMinTrayPTR())
 	{
+		// ==> Static Tray Icon [MorphXT] - MyTh88
+		m_bMaximized = IsZoomed();
+		// <== Static Tray Icon [MorphXT] - MyTh88
 		TrayShow();
 		ShowWindow(SW_HIDE);
 
@@ -1999,7 +2012,12 @@ LRESULT CemuleDlg::OnWMData(WPARAM /*wParam*/, LPARAM lParam)
 			FlashWindow(TRUE);
 			if (IsIconic())
 				ShowWindow(SW_SHOWNORMAL);
+			// ==> Static Tray Icon [MorphXT] - MyTh88
+			/*
 			else if (TrayHide())
+			*/
+			else if (thePrefs.GetStaticIcon() || TrayHide())
+			// <== Static Tray Icon [MorphXT] - MyTh88
 				RestoreWindow();
 			else
 				SetForegroundWindow();
@@ -2010,7 +2028,12 @@ LRESULT CemuleDlg::OnWMData(WPARAM /*wParam*/, LPARAM lParam)
 		FlashWindow(TRUE);
 		if (IsIconic())
 			ShowWindow(SW_SHOWNORMAL);
+		// ==> Static Tray Icon [MorphXT] - MyTh88
+		/*
 		else if (TrayHide())
+		*/
+		else if (thePrefs.GetStaticIcon() || TrayHide())
+		// <== Static Tray Icon [MorphXT] - MyTh88
 			RestoreWindow();
 		else
 			SetForegroundWindow();
@@ -3004,7 +3027,11 @@ void CemuleDlg::RestoreWindow()
 		preferenceswnd->BringWindowToTop();
 		return;
 	}
+	//MORPH - Changed by SiRoB, Commented due to desynchro between m_bTrayIconVisible and systray state - MyTh88
+	/*
 	if (TrayIsVisible())
+	*/
+	if (thePrefs.GetStaticIcon() == false) // ==> Static Tray Icon [MorphXT] - MyTh88
 		TrayHide();
 
 	DestroyMiniMule();
@@ -5094,6 +5121,9 @@ LRESULT CemuleDlg::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 
 void CemuleDlg::ToggleHide()
 {
+	// ==> Static Tray Icon [MorphXT] - MyTh88
+	m_bMaximized = IsZoomed();
+	// <== Static Tray Icon [MorphXT] - MyTh88
 	b_HideApp = true;
 	b_TrayWasVisible = TrayHide();
 	b_WindowWasVisible = IsWindowVisible();
@@ -5106,7 +5136,17 @@ void CemuleDlg::ToggleShow()
 	if(b_TrayWasVisible)
 		TrayShow();
 	if(b_WindowWasVisible)
+		// ==> Static Tray Icon [MorphXT] - MyTh88
+		/*
 		ShowWindow(SW_SHOW);
+		*/
+		{
+		if(m_bMaximized)
+			ShowWindow(SW_SHOWMAXIMIZED);
+		else
+		ShowWindow(SW_SHOW);
+		}
+		// <== Static Tray Icon [MorphXT] - MyTh88
 }
 
 BOOL CemuleDlg::RegisterInvisibleHotKey()

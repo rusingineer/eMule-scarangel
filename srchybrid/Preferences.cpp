@@ -686,6 +686,10 @@ bool	CPreferences::m_bSysInfoGlobal;
 // <== CPU/MEM usage [$ick$/Stulle] - Max
 bool	CPreferences::m_bShowSpeedMeter; // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 
+// ==> Static Tray Icon [MorphXT] - MyTh88
+bool CPreferences::m_bStaticIcon;
+// <== Static Tray Icon [MorphXT] - MyTh88
+
 
 uint8	CPreferences::creditSystemMode; // CreditSystems [EastShare/ MorphXT] - Stulle
 
@@ -2867,6 +2871,10 @@ void CPreferences::SavePreferences()
 
 	ini.WriteBool(_T("AutoReloadSharedFiles"), GetDirectoryWatcher()); // Automatic shared files updater [MoNKi] - Stulle
 
+	// ==> Static Tray Icon [MorphXT] - MyTh88
+	ini.WriteBool(_T("StaticIcon"),m_bStaticIcon);
+	// <== Static Tray Icon [MorphXT] - MyTh88
+
 	// ==> Anti Uploader Ban [Stulle] - Stulle
 	ini.WriteInt(_T("AntiUploaderBanLimit"), m_uAntiUploaderBanLimit);
 	ini.WriteInt(_T("AntiUploaderBanCaseMode"), AntiUploaderBanCaseMode);
@@ -3890,6 +3898,10 @@ void CPreferences::LoadPreferences()
 
 	//Xman disable compression
 	m_bUseCompression=ini.GetBool(L"UseCompression",true);
+
+	// ==> Static Tray Icon [MorphXT] - MyTh88
+	m_bStaticIcon=ini.GetBool(L"StaticIcon",false);
+	// <== Static Tray Icon [MorphXT] - MyTh88
 
 	//Xman auto update IPFilter
 	// ==> Advanced Updates [MorphXT/Stulle] - Stulle

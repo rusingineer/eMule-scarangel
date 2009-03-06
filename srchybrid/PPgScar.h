@@ -105,6 +105,7 @@ protected:
 	bool m_bShowClientPercentage; // Show Client Percentage optional [Stulle] - Stulle
 	bool m_bFollowTheMajority; // Follow The Majority [AndCycle/Stulle] - Stulle
 	bool m_bShowSpeedMeter; // High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
+	bool m_bStaticIcon; // Static Tray Icon - MyTh88
 
 	// ==> File Settings [sivka/Stulle] - Stulle
 	bool m_bEnableAutoDropNNSDefault;
@@ -416,6 +417,10 @@ protected:
 	HTREEITEM m_htiStartupSound; // Startupsound [Commander] - mav744
 	HTREEITEM m_htiCompressLevel; // Adjust Compress Level [Stulle] - Stulle
 	HTREEITEM m_htiAutoSharedUpdater; // Automatic shared files updater [MoNKi] - Stulle
+
+	// ==> Static Tray Icon [MorphXT] - MyTh88
+	HTREEITEM m_htiStaticIcon;
+	// <== Static Tray Icon [MorphXT] - MyTh88
 
 	// ==> push small files [sivka] - Stulle
 	uint32 m_iPushSmallFiles;

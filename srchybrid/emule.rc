@@ -6051,6 +6051,7 @@ BEGIN
     IDS_WEBFILEUPLOADSIZELIMITMB "Limit for file Upload via Web Interface in MB (0=none)"
     IDS_HIGHRESTIMER        "High resolution timer"
     IDS_ALLOWEDIPS          "AllowedIPs webserver (seperated by ;)"
+	IDS_STATIC_ICON         "Always display Tray Icon"
     IDS_REMOVEFILESTOBIN    "Remove files to bin"
     IDS_DEBUGSEARCHDETAILLEVEL "Debug search detail level"
     IDS_CRYPTTCPPADDINGLENGTH "CryptTCPPaddingLength=[1-254]"

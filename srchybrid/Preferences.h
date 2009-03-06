@@ -831,6 +831,10 @@ public:
     static  bool	m_bGlobalHlDefault;
 	// <== Global Source Limit [Max/Stulle] - Stulle
 
+	// ==> Static Tray Icon [MorphXT] - MyTh88
+	static bool m_bStaticIcon; 
+	// <== Static Tray Icon [MorphXT] - MyTh88
+
 	// ==> push small files [sivka] - Stulle
     static  bool	enablePushSmallFile;
     static	uint32	m_iPushSmallFiles;
@@ -2205,6 +2209,10 @@ public:
 	static bool		IsUseGlobalHL()				{return m_bGlobalHL;} 
 	static bool		GetGlobalHlAll()			{return m_bGlobalHlAll;}
 	// <== Global Source Limit [Max/Stulle] - Stulle
+
+	// ==> Static Tray Icon [MorphXT] - MyTh88
+	static bool		GetStaticIcon()				{return m_bStaticIcon;}
+	// <== Static Tray Icon [MorphXT] - MyTh88
 
 	// ==> push small files [sivka] - Stulle
 	static bool		GetEnablePushSmallFile()	{return enablePushSmallFile;}
