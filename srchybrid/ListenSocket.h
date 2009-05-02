@@ -72,6 +72,7 @@ public:
 	*/
 	// Stulle - We gonna test this again...
 
+	uint32	GetTimeOutTimer()	const	{return timeout_timer;} //zz_fly :: Drop stalled downloads :: netfinity
 
 protected:
 	virtual ~CClientReqSocket();

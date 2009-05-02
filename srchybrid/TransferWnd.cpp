@@ -814,7 +814,7 @@ void CTransferWnd::UpdateFilesCount(int iCount)
 		m_btnWnd1->SetWindowText(strBuffer);
 	}
 }
-5t*/
+*/
 void CTransferWnd::UpdateFilesCount(UINT iCount, UINT countsources, UINT countreadyfiles) 
 {
 	// ==> Advanced Transfer Window Layout [Stulle] - Stulle

@@ -980,7 +980,12 @@ LPCTSTR CPreferences::GetConfigFile()
 
 void CPreferences::Init()
 {
+	//zz_fly :: avoid userhash collision :: start
+	/*
 	srand((uint32)time(0)); // we need random numbers sometimes
+	*/
+	srand((uint32)time(0)+(uint32)(GetFreeDiskSpaceX(GetMuleDirectory(EMULE_CONFIGDIR))%1073741824 /*1G, avoid overflow*/ )); // DreaMule: Users with same userhash !
+	//zz_fly :: avoid userhash collision :: end
 
 	prefsExt = new Preferences_Ext_Struct;
 	memset(prefsExt, 0, sizeof *prefsExt);
@@ -1000,7 +1005,12 @@ void CPreferences::Init()
 	}
 	ff.Close();
 
+	//zz_fly :: userhash initializing :: Enig123 :: start
+	/*
 	CreateUserHash();
+	*/	
+	md4clr(userhash);	//clear userhash
+	//zz_fly :: userhash initializing :: Enig123 :: end
 
 	// load preferences.dat or set standart values
 	CString strFullPath;
@@ -1015,13 +1025,29 @@ void CPreferences::Init()
 	else{
 		if (fread(prefsExt,sizeof(Preferences_Ext_Struct),1,preffile) != 1 || ferror(preffile))
 			SetStandartValues();
-
-		md4cpy(userhash, prefsExt->userhash);
-		EmuleWindowPlacement = prefsExt->EmuleWindowPlacement;
-
+		else { //Enig123 :: Fix
+			md4cpy(userhash, prefsExt->userhash);
+			EmuleWindowPlacement = prefsExt->EmuleWindowPlacement;
+		} //Enig123 :: Fix
 		fclose(preffile);
 		smartidstate = 0;
 	}
+
+	//zz_fly :: check userhash after initialized :: Enig123 :: start
+	userhash[5] = 0;
+	userhash[14] = 0;
+
+	//Xman Bugfix by ilmira, right place
+	/*
+	if (((int*)userhash[0]) == 0 && ((int*)userhash[1]) == 0 && ((int*)userhash[2]) == 0 && ((int*)userhash[3]) == 0)
+	*/
+	if (((int*)userhash)[0] == 0 && ((int*)userhash)[1] == 0 && ((int*)userhash)[2] == 0 && ((int*)userhash)[3] == 0)
+	//Xman end
+		CreateUserHash();
+
+	userhash[5] = 14;
+	userhash[14] = 111;
+	//zz_fly :: check userhash after initialized :: Enig123 :: end
 
 	// shared directories
 	strFullPath = GetMuleDirectory(EMULE_CONFIGDIR) + L"shareddir.dat";
@@ -1102,9 +1128,12 @@ void CPreferences::Init()
 		sdirfile->Close();
 	}
 	delete sdirfile;
-
+	//zz_fly :: move up
+	/*
 	userhash[5] = 14;
 	userhash[14] = 111;
+	*/
+	//zz_fly :: end
 
 	// Explicitly inform the user about errors with incoming/temp folders!
 	if (!PathFileExists(GetMuleDirectory(EMULE_INCOMINGDIR)) && !::CreateDirectory(GetMuleDirectory(EMULE_INCOMINGDIR),0)) {
@@ -1141,13 +1170,12 @@ void CPreferences::Init()
 	}
 
 
-	//Xman Bugfix by ilmira
+	//zz_fly :: move up
 	/*
-	if (((int*)userhash[0]) == 0 && ((int*)userhash[1]) == 0 && ((int*)userhash[2]) == 0 && ((int*)userhash[3]) == 0)
-	*/
 	if (((int*)userhash)[0] == 0 && ((int*)userhash)[1] == 0 && ((int*)userhash)[2] == 0 && ((int*)userhash)[3] == 0)
-	//Xman end
 		CreateUserHash();
+	*/
+	//zz_fly :: end
 }
 
 void CPreferences::Uninit()
@@ -1162,7 +1190,11 @@ void CPreferences::Uninit()
 
 void CPreferences::SetStandartValues()
 {
+	//zz_fly :: userhash initializing :: Enig123 :: start
+	/*
 	CreateUserHash();
+	*/
+	//zz_fly :: userhash initializing :: Enig123 :: end
 
 	WINDOWPLACEMENT defaultWPM;
 	defaultWPM.length = sizeof(WINDOWPLACEMENT);
@@ -2676,7 +2708,6 @@ void CPreferences::SavePreferences()
     ini.WriteInt(L"MaxMessageSessions",maxmsgsessions);
     ini.WriteBool(L"PreferRestrictedOverUser",m_bPreferRestrictedOverUser);
 	ini.WriteBool(L"UserSortedServerList",m_bUseUserSortedServerList);
-	ini.WriteInt(L"CryptTCPPaddingLength",m_byCryptTCPPaddingLength);
     ini.WriteBool(L"DontCompressAvi",dontcompressavi);
     ini.WriteBool(L"ShowCopyEd2kLinkCmd",m_bShowCopyEd2kLinkCmd);
     ini.WriteBool(L"IconflashOnNewMessage",m_bIconflashOnNewMessage);
@@ -2930,7 +2961,7 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("FineCS"), m_bFineCS); // Modified FineCS [CiccioBastardo/Stulle] - Stulle
 
 	ini.WriteBool(_T("TrayComplete"), m_bTrayComplete); // Completed in Tray [Stulle] - Stulle
-	
+
 	ini.WriteBool(_T("ColorFeedback"), m_bColorFeedback); // Color Feedback [Myth88] - MyTh88
 
 	// ==> Advanced Transfer Window Layout [Stulle] - Stulle
@@ -3113,7 +3144,7 @@ void CPreferences::LoadPreferences()
 
 	SetUserNick(ini.GetStringUTF8(L"Nick", DEFAULT_NICK));
 	if (strNick.IsEmpty() || IsDefaultNick(strNick))
-		SetUserNick(_T("DEFAULT_NICK")); //(DEFAULT_NICK); // Max
+		SetUserNick(DEFAULT_NICK); // Max
 
 	m_strIncomingDir = ini.GetString(L"IncomingDir", _T(""));
 	if (m_strIncomingDir.IsEmpty()) // We want GetDefaultDirectory to also create the folder, so we have to know if we use the default or not
@@ -3546,7 +3577,8 @@ void CPreferences::LoadPreferences()
 		ff.Close();
 	}
 
-	messageFilter=ini.GetStringLong(L"MessageFilter",L"fastest download speed|fastest eMule");
+	//messageFilter=ini.GetStringLong(L"MessageFilter",L"fastest download speed|fastest eMule");
+	messageFilter=ini.GetStringLong(L"MessageFilter",L"Your client has an infinite queue|Your client is connecting too fast|fastest download speed");
 	commentFilter = ini.GetStringLong(L"CommentFilter",L"http://|https://|ftp://|www.|ftp.");
 	commentFilter.MakeLower();
 	filenameCleanups=ini.GetStringLong(L"FilenameCleanups",L"http|www.|.com|.de|.org|.net|shared|powered|sponsored|sharelive|filedonkey|");
@@ -3646,7 +3678,12 @@ void CPreferences::LoadPreferences()
 	m_bCryptLayerRequired = ini.GetBool(L"CryptLayerRequired", false);
 	m_bCryptLayerSupported = ini.GetBool(L"CryptLayerSupported", true);
 	m_dwKadUDPKey = ini.GetInt(L"KadUDPKey", GetRandomUInt32());
+	//zz_fly :: hardlimit on CryptTCPPaddingLength
+	/*
 	m_byCryptTCPPaddingLength = (uint8)ini.GetInt(L"CryptTCPPaddingLength", 128);
+	*/
+	SetCryptTCPPaddingLength(ini.GetInt(L"CryptTCPPaddingLength", 128));
+	//zz_fly :: end
 
 	m_bEnableSearchResultFilter = ini.GetBool(L"EnableSearchResultSpamFilter", true);
 
@@ -3769,6 +3806,7 @@ void CPreferences::LoadPreferences()
 	case 6000:
 	case 8192:
 	case 12000:
+	case 24000: //zz_fly :: support 24k send buffer
 		break;
 	default:
 		m_sendbuffersize=8192;
@@ -3895,7 +3933,7 @@ void CPreferences::LoadPreferences()
 	// ==> Advanced Updates [MorphXT/Stulle] - Stulle
 	/*
 	m_strautoupdateipfilter_url= ini.GetString(L"AutoUpdateIPFilter_URL", _T("http://emulepawcio.sourceforge.net/nieuwe_site/Ipfilter_fakes/ipfilter.zip"));
-	m_bautoupdateipfilter= ini.GetBool(L"AutoUpdateIPFilter", true); // Stulle
+	m_bautoupdateipfilter= ini.GetBool(L"AutoUpdateIPFilter", false);
 	LPBYTE pst = NULL;
 	UINT usize = sizeof m_IPfilterVersion;
 	if (ini.GetBinary(L"IPfilterVersion", &pst, &usize) && usize == sizeof m_IPfilterVersion)
@@ -4264,7 +4302,7 @@ void CPreferences::LoadPreferences()
 	m_bFineCS=ini.GetBool(_T("FineCS"), false); // Modified FineCS [CiccioBastardo/Stulle] - Stulle
 
 	m_bTrayComplete = ini.GetBool(_T("TrayComplete"),false); // Completed in Tray [Stulle] - Stulle
-	
+
 	m_bColorFeedback = ini.GetBool(_T("ColorFeedback"),false); // Color Feedback [Myth88] - MyTh88
 
 	// ==> Advanced Transfer Window Layout [Stulle] - Stulle

@@ -2268,7 +2268,7 @@ void CPPgScar::Localize(void)
 			strBuffer.Format(_T("v%u"),theApp.dlp->GetDLPVersion());
 		else
 			strBuffer=GetResString(IDS_DL_NONE);
-			m_AntiLeechVersion.SetWindowText(strBuffer);
+		m_AntiLeechVersion.SetWindowText(strBuffer);
 
 		if(thePrefs.IsIPFilterViaDynDNS())
 		{

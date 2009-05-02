@@ -1113,10 +1113,11 @@ public:
 	static bool	m_bFineCS; // Modified FineCS [CiccioBastardo/Stulle] - Stulle
 
 	static bool m_bTrayComplete; // Completed in Tray [Stulle] - Stulle
-	
+
 	static bool m_bColorFeedback; // Color Feedback [Myth88] - MyTh88
 
 	static bool		m_bSplitWindow; // Advanced Transfer Window Layout [Stulle] - Stulle
+
 
 	enum Table
 	{
@@ -2175,6 +2176,7 @@ public:
 	static bool		IsServerCryptLayerTCPRequested()	{return IsClientCryptLayerRequested();}
 	static uint32	GetKadUDPKey()						{return m_dwKadUDPKey;}
 	static uint8	GetCryptTCPPaddingLength()			{return m_byCryptTCPPaddingLength;}
+	static void		SetCryptTCPPaddingLength(int in)	{m_byCryptTCPPaddingLength = (uint8)((in>=10 && in<=254) ? in : 128);} //zz_fly :: hardlimit on CryptTCPPaddingLength
 
 	// ==> UPnP support [MoNKi] - leuk_he
 	/*
@@ -2548,7 +2550,7 @@ public:
 	static	bool	FineCS()			{return m_bFineCS;} // Modified FineCS [CiccioBastardo/Stulle] - Stulle
 
 	static	bool	GetTrayComplete()		{ return m_bTrayComplete; } // Completed in Tray [Stulle] - Stulle
-	
+
 	static	bool	GetColorFeedback()		{ return m_bColorFeedback; } // Color Feedback [Myth88] - MyTh88
 
 	// ==> Advanced Transfer Window Layout [Stulle] - Stulle

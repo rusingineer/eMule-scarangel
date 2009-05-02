@@ -121,7 +121,7 @@ void CMenuXP::MeasureItem( LPMEASUREITEMSTRUCT lpms )
 
 		// the height of the item should be the maximun of the text and the button
 		lpms->itemHeight = max(rcText.Height(), pItem->m_nSize + (CYBUTTONMARGIN<<1));
-		
+
 		// ==> MenuXP Sub Heading [fafner] - MyTh
 		if (pItem->m_bHeading)
 			lpms->itemHeight = (LONG)(lpms->itemHeight * SUB_HEAD_MULTI);
@@ -213,7 +213,7 @@ void CMenuXP::DrawItem( LPDRAWITEMSTRUCT lpds )
 		BOOL bDisabled = lpds->itemState & ODS_GRAYED;
 		BOOL bSelected = lpds->itemState & ODS_SELECTED;
 		BOOL bChecked  = lpds->itemState & ODS_CHECKED;
-		
+
 		// ==> MenuXP Sub Heading [fafner] - MyTh
 		if (pItem->m_bHeading)
 		{
@@ -292,7 +292,7 @@ void CMenuXP::DrawItem( LPDRAWITEMSTRUCT lpds )
 		{
 			CRect rcText = rcItem;				 // start w/whole item
 			rcText.left += rcButton.Width() + CXGAP + CXTEXTMARGIN; // left margin
-			rcText.right -= pItem->m_nSize;				 // right margin		
+			rcText.right -= pItem->m_nSize;				 // right margin
 			// ==> MenuXP Sub Heading [fafner] - MyTh
 			if (pItem->m_bHeading)
 				DrawText(&dc, rcText, pItem->m_strText, true, false, 0, true);
