@@ -470,6 +470,16 @@ BOOL CemuleDlg::OnInitDialog()
 	InitWindowStyles(this);
 	CreateToolbarCmdIconMap();
 
+	// ==> Static Tray Icon [MorphXT] - MyTh88
+	if(thePrefs.GetStaticIcon())
+		// ==> TBH: minimule - Stulle
+		/*
+		TrayShow();
+		*/
+		TrayShow(FALSE);
+		// <== TBH: minimule - Stulle
+	// <== Static Tray Icon [MorphXT] - MyTh88
+
 	CMenu* pSysMenu = GetSystemMenu(FALSE);
 	if (pSysMenu != NULL){
 		pSysMenu->AppendMenu(MF_SEPARATOR);
@@ -549,10 +559,7 @@ BOOL CemuleDlg::OnInitDialog()
 
 	// ==> TBH: minimule - Max
 	if (theApp.minimule != NULL)
-	{
 		theApp.minimule->Create(IDD_MINI_MULE,this);
-		theApp.minimule->ShowWindow(SW_HIDE);
-	}
 	// <== TBH: minimule - Max
 
 	// set statusbar
@@ -799,6 +806,7 @@ BOOL CemuleDlg::OnInitDialog()
 		AddDebugLogLine(true,_T("Failed to create 'startup' timer - %s"),GetErrorMessage(GetLastError()));
 
 	theStats.starttime = GetTickCount();
+	m_bTbhMiniMuleVis = false; // TBH: minimule - Stulle
 
 	//Xman official UPNP removed
 	/*
@@ -1820,6 +1828,9 @@ void CemuleDlg::MinimizeWindow()
 {
 	if (*thePrefs.GetMinTrayPTR())
 	{
+		// ==> Static Tray Icon [MorphXT] - MyTh88
+		m_bMaximized = IsZoomed();
+		// <== Static Tray Icon [MorphXT] - MyTh88
 		TrayShow();
 		ShowWindow(SW_HIDE);
 
@@ -2036,7 +2047,12 @@ LRESULT CemuleDlg::OnWMData(WPARAM /*wParam*/, LPARAM lParam)
 			FlashWindow(TRUE);
 			if (IsIconic())
 				ShowWindow(SW_SHOWNORMAL);
+			// ==> Static Tray Icon [MorphXT] - MyTh88
+			/*
 			else if (TrayHide())
+			*/
+			else if (thePrefs.GetStaticIcon() || TrayHide())
+			// <== Static Tray Icon [MorphXT] - MyTh88
 				RestoreWindow();
 			else
 				SetForegroundWindow();
@@ -2047,7 +2063,12 @@ LRESULT CemuleDlg::OnWMData(WPARAM /*wParam*/, LPARAM lParam)
 		FlashWindow(TRUE);
 		if (IsIconic())
 			ShowWindow(SW_SHOWNORMAL);
+		// ==> Static Tray Icon [MorphXT] - MyTh88
+		/*
 		else if (TrayHide())
+		*/
+		else if (thePrefs.GetStaticIcon() || TrayHide())
+		// <== Static Tray Icon [MorphXT] - MyTh88
 			RestoreWindow();
 		else
 			SetForegroundWindow();
@@ -3056,7 +3077,12 @@ void CemuleDlg::RestoreWindow()
 		preferenceswnd->BringWindowToTop();
 		return;
 	}
+	// ==> Static Tray Icon [MorphXT] - MyTh88
+	/*
 	if (TrayIsVisible())
+	*/
+	if (thePrefs.GetStaticIcon() == false)
+	// <== Static Tray Icon [MorphXT] - MyTh88
 		TrayHide();
 
 	DestroyMiniMule();
@@ -5146,6 +5172,10 @@ LRESULT CemuleDlg::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 
 void CemuleDlg::ToggleHide()
 {
+	// ==> Static Tray Icon [MorphXT] - MyTh88
+	m_bMaximized = IsZoomed();
+	// <== Static Tray Icon [MorphXT] - MyTh88
+	m_bTbhMiniMuleVis = theApp.minimule->IsWindowVisible(); // TBH: minimule - Stulle
 	b_HideApp = true;
 	b_TrayWasVisible = TrayHide();
 	b_WindowWasVisible = IsWindowVisible();
@@ -5156,9 +5186,24 @@ void CemuleDlg::ToggleShow()
 {
 	b_HideApp = false;
 	if(b_TrayWasVisible)
+		// ==> TBH: minimule - Stulle
+		/*
 		TrayShow();
+		*/
+		TrayShow(m_bTbhMiniMuleVis);
+		// <== TBH: minimule - Stulle
 	if(b_WindowWasVisible)
+	// ==> Static Tray Icon [MorphXT] - MyTh88
+	/*
 		ShowWindow(SW_SHOW);
+	*/
+	{
+		if(m_bMaximized)
+			ShowWindow(SW_SHOWMAXIMIZED);
+		else
+		ShowWindow(SW_SHOW);
+	}
+	// <== Static Tray Icon [MorphXT] - MyTh88
 }
 
 BOOL CemuleDlg::RegisterInvisibleHotKey()

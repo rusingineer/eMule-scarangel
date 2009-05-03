@@ -7,8 +7,11 @@ eMule v0.49b ScarAngel v3.2:
 -------------------------------------------------------------------------------
 based on eMule 0.49b Xtreme 7.1 compiled with vs2005 SP1
 Merged to eMule v0.49c [Stulle]
+Updated with code from zz_fly's Xtreme
 
-Fixed: Save known or FileSettings threads were not terminated properly [Stulle]
+Added: Static Tray Icon [MorphXT] - MyTh88
+
+Fixed: Save known or FileSettings threads were not terminated properly [Stulle] - Stulle
 
 
 eMule v0.49b ScarAngel v3.1:
