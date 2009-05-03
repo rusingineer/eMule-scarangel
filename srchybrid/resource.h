@@ -3295,7 +3295,7 @@
 #define IDS_IPFILTERWHITELOADED         61410 // IP Filter White List [Stulle] - Stulle
 #define IDS_TRAY_COMPLETE               61420 // Completed in Tray [Stulle] - Stulle
 #define IDS_COLOR_FEEDBACK              61430 // Color Upload Feedback - MyTh88
-#define IDS_STATIC_ICON                 61440 // Static Tray Icon - MyTh88
+#define IDS_STATIC_ICON                 61450 // Static Tray Icon - MyTh88
 
 // Next default values for new objects
 // 
