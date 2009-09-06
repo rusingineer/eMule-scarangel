@@ -23,18 +23,10 @@
 #include "ReadWriteLock.h"	// SLUGFILLER: SafeHash
 #include "Version.h"		// netfinity: Mod version
 
-//==> UPnP support [MoNKi] - leuk_he
-#include "UPnP_IGDControlPoint.h" //[MoNKi: -UPnPNAT Support-]
-//<== UPnP support [MoNKi] - leuk_he
-
 // ==> UPnP support [MoNKi] - leuk_he
-/*
-//Xman
-//upnp_start
-#include "UPnP.h"
-//upnp_end
-*/
+#include "UPnP_IGDControlPoint.h" //[MoNKi: -UPnPNAT Support-]
 // <== UPnP support [MoNKi] - leuk_he
+
 
 #include ".\MiniMule\SystemInfo.h" // CPU/MEM usage [$ick$/Stulle] - Max 
 #include ".\MiniMule\TBHMM.h" // TBH: minimule - Max
@@ -72,11 +64,11 @@ class CAbstractFile;
 class CUpDownClient;
 class CPeerCacheFinder;
 class CFirewallOpener;
-//Xman official UPNP removed
+// ==> UPnP support [MoNKi] - leuk_he
 /*
 class CUPnPImplWrapper;
 */
-//Xman end
+// <== UPnP support [MoNKi] - leuk_he
 
 //Xman
 class CBandWidthControl; // Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
@@ -106,7 +98,7 @@ public:
     UploadBandwidthThrottler* uploadBandwidthThrottler;
 	//Xman
 	/*
-	LastCommonRouteFinder* lastCommonRouteFinder;
+    LastCommonRouteFinder* lastCommonRouteFinder;
 	*/
 	//Xman end
 	// ZZ:UploadSpeedSense <--
@@ -129,11 +121,11 @@ public:
 	CMMServer*			mmserver;
 	CPeerCacheFinder*	m_pPeerCache;
 	CFirewallOpener*	m_pFirewallOpener;
-	//Xman official UPNP removed
+	// ==> UPnP support [MoNKi] - leuk_he
 	/*
 	CUPnPImplWrapper*	m_pUPnPFinder;
 	*/
-	//Xman end
+	// <== UPnP support [MoNKi] - leuk_he
 
 	//Xman
 	// - Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
@@ -175,16 +167,17 @@ public:
 	UINT				m_uCurVersionShort;
 	UINT				m_uCurVersionCheck;
 	ULONGLONG			m_ullComCtrlVer;
+	//MORPH
+	/*
 	AppState			m_app_state; // defines application state for shutdown 
+	*/
+	volatile AppState		m_app_state; // defines application state for shutdown 
+	//MORPH END
 	CMutex				hashing_mut;
 	//Xman
 	CReadWriteLock		m_threadlock;	// SLUGFILLER: SafeHash - This will ensure eMule goes last
 	CString*			pstrPendingLink;
 	COPYDATASTRUCT		sendstruct;
-
-	//Xman remove unused AICH-hashes
-	volatile bool				m_AICH_Is_synchronizing;
-	//Xman end
 
 // Implementierung
 	virtual BOOL InitInstance();
@@ -262,6 +255,7 @@ public:
 	void		DisableRTLWindowsLayout();
 	void		UpdateDesktopColorDepth();
 	void		UpdateLargeIconSize();
+	bool		IsXPThemeActive() const;
 	bool		IsVistaThemeActive() const;
 
 	bool		GetLangHelpFilePath(CString& strResult);
@@ -317,7 +311,7 @@ protected:
 	bool m_bAutoStart;
 
 private:
-	UINT     m_wTimerRes;
+    UINT     m_wTimerRes;
 //Xman -Reask sources after IP change- v4 
 public:
 	bool m_bneedpublicIP; 
@@ -328,20 +322,9 @@ public:
 	uint32	last_traffic_reception;
 	uint8	internetmaybedown;
 //Xman end
-	// ==> UPnP support [MoNKi] - leuk_he
-	CUPnP_IGDControlPoint *m_UPnP_IGDControlPoint;
-	// <== UPnP support [MoNKi] - leuk_he
 
 	// ==> UPnP support [MoNKi] - leuk_he
-	/*
-	//Xman
-	//upnp_start
-public:
-	MyUPnP m_UPnPNat;
-	BOOL  AddUPnPNatPort(MyUPnP::UPNPNAT_MAPPING *mapping, bool tryRandom = false);
-	BOOL  RemoveUPnPNatPort(MyUPnP::UPNPNAT_MAPPING *mapping);
-	//upnp_end
-	*/
+	CUPnP_IGDControlPoint *m_UPnP_IGDControlPoint;
 	// <== UPnP support [MoNKi] - leuk_he
 
 	//Xman queued disc-access for read/flushing-threads

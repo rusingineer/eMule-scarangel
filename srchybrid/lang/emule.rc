@@ -1,4 +1,3 @@
-
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
@@ -56,7 +55,7 @@ BEGIN
                             "An error occurred while opening the file to be downloaded, Error: %s"
     IDS_HTTPDOWNLOAD_ABORTING_TRANSFER "Aborting transfer"
     IDS_FD_COMPR            "Compression"
-    IDS_WIZARD_NETWORK      "Choose which network(s) you want to use."
+    IDS_WIZARD_NETWORK      "Choose which Network(s) you want to use"
     IDS_MAIN_READY          "eMule Version %s ready"
     IDS_WIZARD_ED2K         "eD2K Settings"
     IDS_SEL_SKIN            "Select Skin..."
@@ -162,7 +161,7 @@ BEGIN
     IDS_SE                  "Source Exchange"
     IDS_ERR_WRITEERROR      "Unexpected file error while writing %s : %s"
     IDS_ERR_COMPLETIONFAILED 
-                            "Unexpected file error while completing %s. File paused, restart eMule to start another completing-try"
+                            "Unexpected file error while completing ""%s"". File paused, restart eMule to start another completing-try"
     IDS_ERR_DELETEFAILED    "Failed to delete %s, you will need to do this by hand"
     IDS_DOWNLOADDONE        "Finished downloading %s :-)"
     IDS_ERR_DELETE          "Failed to delete %s"
@@ -314,7 +313,7 @@ STRINGTABLE
 BEGIN
     IDS_VERSIONCHECK        "&Version check"
     IDS_VISITVERSIONCHECK   "\n\nDo you want do visit the Information page now?"
-    IDS_PW_VIDEOPLAYER      "Video player"
+    IDS_PW_VIDEOPLAYER      "Video Player"
     IDS_VIDEOBACKUP         "Create backup to preview"
     IDS_MYINFO              "My Info"
     IDS_ID                  "ID"
@@ -435,7 +434,7 @@ STRINGTABLE
 BEGIN
     IDS_WS_PASS             "Password"
     IDS_WS_ERR_LOADTEMPLATE "Can't load templates: replace file %s with a newer version!"
-    IDS_WEB_CONLIMITS       "Connection limits"
+    IDS_WEB_CONLIMITS       "Connection Limits"
     IDS_INFLST_USER_TOTALDOWNLOAD "Downloaded total"
     IDS_INFLST_USER_TOTALUPLOAD "Uploaded total"
     IDS_SPEED_LIMITS        "Speed Limits"
@@ -482,10 +481,10 @@ BEGIN
     IDS_PW_GENERAL          "General"
     IDS_PW_DIR              "Directories"
     IDS_PW_NICK             "Nick"
-    IDS_PW_INCOMING         "Incoming files"
-    IDS_PW_TEMP             "Temporary files"
+    IDS_PW_INCOMING         "Incoming Files"
+    IDS_PW_TEMP             "Temporary Files"
     IDS_PW_BROWSE           "Browse..."
-    IDS_PW_SHARED           "Shared directories (Ctrl-Click includes subdirectories)"
+    IDS_PW_SHARED           "Shared Directories (Ctrl-Click includes subdirectories)"
     IDS_PW_CONNECTION       "Connection"
     IDS_PW_DOWNL            "Download limit"
     IDS_PW_UPL              "Upload limit"
@@ -494,7 +493,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_PW_MAXC             "Max. connections"
-    IDS_PW_CLIENTPORT       "Client port"
+    IDS_PW_CLIENTPORT       "Client Port"
     IDS_PW_AUTOCON          "Autoconnect on startup"
     IDS_PW_RECON            "Reconnect on loss"
     IDS_PW_SERVER           "Server"
@@ -519,7 +518,7 @@ BEGIN
     IDS_PW_FRONT            "Bring to front on link click"
     IDS_PW_LANG             "Language"
     IDS_PW_FILES            "Files"
-    IDS_PW_SHARE            "See my shared files/directories"
+    IDS_PW_SHARE            "See My Shared Files/Directories"
     IDS_PW_EVER             "Everybody"
     IDS_PW_FRIENDS          "Friends"
     IDS_PW_NOONE            "Nobody"
@@ -580,7 +579,7 @@ BEGIN
     IDS_EMULEW              "Click"
     IDS_EMULEW2             "to check if a new version is available"
     IDS_EMULEW3             "here"
-    IDS_PW_MAXSOURCES       "Max sources/file"
+    IDS_PW_MAXSOURCES       "Max. Sources/File"
     IDS_SHAREDFILESCOUNT    "Number of Shared Files: %u"
     IDS_SF_SIZE             "Total size of Shared Files: %s"
     IDS_ERR_BADPORT         "bad port number"
@@ -697,7 +696,7 @@ BEGIN
     IDS_PW_CON_LIMITFRM     "Limits"
     IDS_STATS_AVGLABEL      "Time for average graph: %u mins"
     IDS_GRAPHS              "Graphs"
-    IDS_STREE               "Statistics tree"
+    IDS_STREE               "Statistics Tree"
     IDS_IRC_IGNOREQUITMESSAGE "Ignore Quit info messages"
     IDS_STATSSETUPINFO      "Statistics"
     IDS_IRC_SOUNDEVENTS     "Play sound events"
@@ -739,7 +738,7 @@ BEGIN
     IDS_RAU_FAILED          "Failed to start eMule as unprivileged user ""eMule_Secure"". Keeping the privileges of the current user (""%s"")."
     IDS_KADCONTACTSREAD     "Read %u contacts from file."
     IDS_ERR_KADCONTACTS     "No contacts found, please bootstrap, or download a nodes.dat file."
-    IDS_METATAGS            "Meta Tag Count:"
+    IDS_METATAGS            "Meta tag count:"
     IDS_FILEFORMAT          "Format"
     IDS_UDPREASKS           "UDP File Reasks"
     IDS_DYNUP_PINGTOLERANCE_MS "Ping tolerance (ms)"
@@ -796,8 +795,8 @@ BEGIN
     IDS_PW_TBN_POP_ALWAYS   "Chat message received"
     IDS_PW_TBN_ONDOWNLOAD   "Download finished"
     IDS_PW_EKDEV_OPTIONS    "Notifications"
-    IDS_PW_TASKBARNOTIFIER  "Pop up message"
-    IDS_PW_TBN_OPTIONS      "Pop out when"
+    IDS_PW_TASKBARNOTIFIER  "Pop-up Message"
+    IDS_PW_TBN_OPTIONS      "Pop-up when"
     IDS_TBN_NEWCHATMSG      "Message from"
     IDS_PW_CON_CAPFRM       "Capacities"
     IDS_IRC_PRIVATECHANSTART "* Private chat session started"
@@ -861,7 +860,7 @@ BEGIN
     IDS_PREF_STARTNEXTFILECATONLY "Only in same category"
     IDS_LOG_ULDL_EVENTS     "Log upload/download events"
     IDS_PEERCACHE_ENABLED   "Your ISP supports the PeerCache technology, enabling cache downloads!"
-    IDS_IRC_EMULEPROTO_ALLOWADDFRIEND "Allow user to add you as a friend."
+    IDS_IRC_EMULEPROTO_ALLOWADDFRIEND "Allow others to add you as a friend"
     IDS_SOURCESWAPBLOCKED   "Swap blocked"
     IDS_TRICKLING           "Standby"
     IDS_A4AF_CHECK_THIS_NOW "Check this source now (debug)"
@@ -987,7 +986,7 @@ BEGIN
     IDS_PRIOAUTOLOW         "Auto [Lo]"
     IDS_ERR_CONTIMEOUT      "Connection attempt to ""%s"" (%s:%u) timed out"
     IDS_OUTOFSERVERS        "Failed to connect to all servers listed. Making another pass."
-    IDS_PW_CONLIMITS        "Connection limits"
+    IDS_PW_CONLIMITS        "Connection Limits"
     IDS_MAXCON5SECLABEL     "Max. new connections / 5 secs."
     IDS_PW_UAP              "Add new shared files with auto priority"
     IDS_MAXCLIENT           "Max Users"
@@ -1003,14 +1002,14 @@ BEGIN
     IDS_ERR_NOVALIDFRIENDINFO "You have to enter a valid IP and port!"
     IDS_ADD                 "Add"
     IDS_RECOVERED_PARTMET   "Recovered part.met file for: %s"
-    IDS_CMT_QUEST           "Comment this file! (This text will be shown to all users.)"
+    IDS_CMT_QUEST           "Comment This File! (This text will be shown to all users.)"
     IDS_CMT_AIDE            "For a film, you can say its length, its story, the language... And if it is a fake, you can inform other eMule users..."
     IDS_CMT_ADD             "Comm&ents..."
     IDS_CMT_NONE            "No comments"
     IDS_CMT_READ            "File comment:"
     IDS_CMT_SHOWALL         "Comme&nts..."
     IDS_CMT_READALL         "Comments"
-    IDS_CMT_RATEQUEST       "File quality"
+    IDS_CMT_RATEQUEST       "File Quality"
     IDS_CMT_RATEHELP        "Choose the file rating or advice users if the file is invalid!"
     IDS_CMT_FAKE            "Invalid / Corrupt / Fake"
 END
@@ -1062,12 +1061,12 @@ BEGIN
     IDS_USECREDITSYSTEM     "Use credit system (reward uploaders)"
     IDS_FIRSTAUTODOWN       "Enable this option if you want eMule to manage your download priorities.\n\nTurning this on will allow eMule to make sure downloads with a lot of sources do not interfere with downloads that have few sources. This option will only affect future downloads."
     IDS_FIRSTAUTOUP         "Enable this option if you want eMule to manage your upload priorities.\n\nTurning this on will allow eMule to boost rare files meaning popular files will be harder for other people to get. Turning this off will allow eMule to upload popular files more often meaning rare files will be harder for other people to get. This option will only affect future shared files."
-    IDS_FIRSTFULLCHUNK      "Enable this option if you want to upload full chunks.\n\nUsing full chunk gives the client a better chance to complete a chunk. Turning this off will help rotate your queue faster. If you are a dedicated releaser, you will want to turn this on."
+    IDS_AUTOMATIC           "Automatic"
     IDS_FIRSTSAFECON        "Enable this option if you want eMule to connect using Safe Connect.\n\nTurning this feature off allows eMule to connect to servers a little faster, but can cause you to get more false LowID connects."
     IDS_FIRSTAUTOCON        "Enable this option if you want eMule to connect at startup."
-    IDS_FIRSTCOMPLETE       "You have now completed the first runtime wizard.\n\nAll these settings and more can be changed by clicking the preferences icon. For explanations and support check out the help by pressing F1 in eMule!"
+    IDS_FIRSTCOMPLETE       "You have now completed the first runtime wizard.\n\nAll these settings and more can be changed by clicking the Options icon. For explanations and support check out the help by pressing F1 in eMule!"
     IDS_ENTERUSERNAME       "Please enter your user name:"
-    IDS_STATIC_CPUMEM       "Save CPU && memory usage"
+    IDS_STATIC_CPUMEM       "Save CPU && Memory Usage"
     IDS_KAD_SEARCH_KEYWORD_TOO_SHORT 
                             "Keyword too short.\r\n\r\nThe keyword(s) used in a Kad search expression must have a minimum length of 3 characters."
     IDS_LOG2DISK            "Save log to disk"
@@ -1332,7 +1331,7 @@ BEGIN
     IDS_NEVER               "Never"
     IDS_ALWAYS              "Always"
     IDS_ONSHUTDOWN          "On shutdown"
-    IDS_UNCFOLDERS          "UNC paths"
+    IDS_UNCFOLDERS          "UNC Paths"
     IDS_USESECIDENT         "Use secure identification"
     IDS_ADVSPAMFILTER       "Advanced spam filter"
     IDS_CUT                 "Cut"
@@ -1354,7 +1353,7 @@ BEGIN
     IDS_VERSION             "Version"
     IDS_OPTIONS             "Options"
     IDS_PASTE               "Paste"
-    IDS_SEARCHAUTHORCOLLECTION "Search Author's Collections"
+    IDS_SEARCHAUTHORCOLLECTION "Search Author's Collections..."
     IDS_ERR_DUPL_FILES      "Duplicate shared files: ""%s"" and ""%s"""
     IDS_USS_TRACEROUTEOFTENFAILED 
                             "UploadSpeedSense: Trace routing failed too many times. Disabling Upload SpeedSense."
@@ -1404,7 +1403,7 @@ BEGIN
     IDS_FILEINFORMATION     "File Information"
     IDS_STATS_FREESPACE     "Free Space"
     IDS_IRC_HELPCHANNEL     "Connect to help channel"
-    IDS_IRC_HELPCHANNELPERFORM "/join #emule | /join #emule-english"
+    IDS_IRC_HELPCHANNELPERFORM "/join #emule-english"
     IDS_IRC_ACCEPTLINKSFRIENDS "From friends only"
     IDS_COMPLSOURCES        "Complete Sources"
     IDS_CHECKNOENDTIME      "No end time"
@@ -1459,9 +1458,9 @@ BEGIN
     IDS_IMP_ERR_FAILED      "Error: Failed!"
     IDS_IMP_STATUSQUEUED    "Queued"
     IDS_IMP_ALRDWL          "Already downloading"
-    IDS_IMP_ADDBTN          "&Add imports"
-    IDS_IMP_RETRYBTN        "&Retry selected"
-    IDS_IMP_REMOVEBTN       "Re&move selected"
+    IDS_IMP_ADDBTN          "&Add Imports..."
+    IDS_IMP_RETRYBTN        "&Retry Selected"
+    IDS_IMP_REMOVEBTN       "Re&move Selected"
     IDS_IMP_SELFOLDER       "Please choose a folder to search for temporary downloads! (subfolders will be included)"
     IDS_IMP_DELSRC          "Do you want the source files of successfully imported downloads be deleted?"
     IDS_IMP_SIZE            "%s (Disk:%s)"
@@ -1536,7 +1535,7 @@ STRINGTABLE
 BEGIN
     IDS_RADCLIENTS          "From known clients"
     IDS_KADUDPPORTERR       "Kad's UDP port conflicts with either eMule's Ext UDP port or eMule's Server UDP port. The port has been changed to %u."
-    IDS_CONFIRM_FILEDELETE  "Do you really want to delete all selected files from disk?"
+    IDS_CONFIRM_FILEDELETE  "Do you really want to delete all selected files?"
     IDS_OPENFOLDER          "Open Folder"
     IDS_RUNASUSER           "Run eMule as unprivileged user"
     IDS_DELETE              "Delete From Disk"
@@ -1554,9 +1553,9 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_STARTTEST           "Test ports"
+    IDS_STARTTEST           "Test Ports"
     IDS_TESTINFO            "Here you can test, if your TCP and UDP port can be connected to from remote. This success of this test is required for servers and clients to connect you. The TCP port have to succeed!"
-    IDS_CONNECTIONTEST      "Connection test"
+    IDS_CONNECTIONTEST      "Connection Test"
     IDS_NOPORTCHANGEPOSSIBLE 
                             "The change of ports is not possible after you connected with clients or while connected to a server/Kad!\n\nPlease restart eMule with the changed port settings."
     IDS_NETWORK_INFO        "Network Information"
@@ -1619,12 +1618,12 @@ BEGIN
     IDS_META_SRCUDPPORT     "Source UDP port"
     IDS_META_SRCTCPPORT     "Source TCP port"
     IDS_META_SRCIP          "Source IP"
-    IDS_META_SRCTYPE        "Source type"
+    IDS_META_SRCTYPE        "Source Type"
     IDS_SEARCH_UNICODE      "Search with Unicode"
     IDS_PF_ADVANCEDCALC     "Use advanced calculation method for remaining time"
     IDS_LD_ED2KLINK         "eD2K Link"
     IDS_LD_COPYCLIPBOARD    "Copy"
-    IDS_LD_HOSTNAME         "Use host name (from preferences) instead of IP when creating a source link"
+    IDS_LD_HOSTNAME         "Use host name (from Options) instead of IP when creating a source link"
     IDS_SAVEACFAILED        "Failed to save AICH Hashset!"
     IDS_IACHHASH            "AICH Hash"
     IDS_BYTESPERSEC         "B/s"
@@ -1645,7 +1644,7 @@ BEGIN
     IDS_USERSIP             "Users IP"
     IDS_FEATURES            "Features"
     IDS_IRC_NEWNICK         "Select a IRC nick."
-    IDS_IRC_NEWNICKDESC     "Should be one word less than 20 characters containing (A-Z, 0-9). It can be changed again in Preferences->IRC."
+    IDS_IRC_NEWNICKDESC     "Should be one word less than 20 characters containing (A-Z, 0-9). It can be changed again in Options->IRC."
     IDS_SPARSEPARTFILES     "Create new part files as 'sparse' (NTFS only)"
     IDS_ASPECTRATIO         "Aspect Ratio"
     IDS_NEGATEFILTER        "Negate Filter"
@@ -1678,12 +1677,12 @@ END
 STRINGTABLE 
 BEGIN
     IDS_PW_EMAILNOTIFICATIONS "Email Notifications"
-    IDS_PW_SMTPSERVER       "SMTP-Server:"
+    IDS_PW_SMTPSERVER       "SMTP-server:"
     IDS_PW_SENDERADDRESS    "Sender address:"
     IDS_AVAILABLEPARTS      "Available Parts"
     IDS_NOSOUND             "No sound"
     IDS_PW_RECEIVERADDRESS  "Recipient address:"
-    IDS_PW_ENABLEEMAIL      "Enable Email Notifications"
+    IDS_PW_ENABLEEMAIL      "Enable email notifications"
     IDS_EMULENOTIFICATION   "eMule Notification"
     IDS_PW_SHOWTRANSTOOLBAR "Show additional toolbar on Transfers window"
     IDS_SHARED_STATUS       "Shared parts"
@@ -1692,27 +1691,27 @@ BEGIN
     IDS_INCOMPLETE_FILES    "Incomplete Files"
     IDS_SHARED_DIRECTORIES  "Shared Directories"
     IDS_COLLECTIONLIST      "Collection List"
-    IDS_SHAREDIR            "Share directory"
+    IDS_SHAREDIR            "Share Directory"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_SHAREDIRSUB         "Share with subdirectories"
-    IDS_UNSHAREDIR          "Unshare directory"
-    IDS_UNSHAREDIRSUB       "Unshare with subdirectories"
+    IDS_SHAREDIRSUB         "Share with Subdirectories"
+    IDS_UNSHAREDIR          "Unshare Directory"
+    IDS_UNSHAREDIRSUB       "Unshare with Subdirectories"
     IDS_ALLSHAREDFILES      "All Shared Files"
     IDS_ALLDIRECTORIES      "All Directories"
     IDS_SEARCHRELATED       "Search Related Files"
     IDS_RELATED             "Related"
     IDS_COLL_REPLACEEXISTING "Do you want to replace existing file?"
     IDS_COLL_ERR_DELETING   "Some Unknown error in deleting old file. Exit without saving?"
-    IDS_CREATECOLLECTION    "Create Collection"
-    IDS_MODIFYCOLLECTION    "Modify Collection"
+    IDS_CREATECOLLECTION    "Create Collection..."
+    IDS_MODIFYCOLLECTION    "Modify Collection..."
     IDS_COLL_SIGN           "Sign collection with name and key"
     IDS_AUTHOR              "Author"
     IDS_AUTHORKEY           "Author Key"
     IDS_COLL_ADDINCAT       "Add new downloads in a collection category"
-    IDS_VIEWCOLLECTION      "View Collection"
+    IDS_VIEWCOLLECTION      "View Collection..."
 END
 
 STRINGTABLE 
@@ -1720,7 +1719,7 @@ BEGIN
     IDS_COLL_TEXTFORMAT     "Save collection in a simple text format"
     IDS_RUNNINGRESTRICTED   "eMule is running with reduced privileges"
     IDS_USS_MANUALUPLOADLIMITDETECTED 
-                            "UploadSpeedSense: Raised upload limit in preferences detected. Going into fast reaction mode for 60 seconds."
+                            "UploadSpeedSense: Raised upload limit in Options detected. Going into fast reaction mode for 60 seconds."
     IDS_USS_STATE_PREPARING "Preparing..."
     IDS_USS_STATE_WAITING   "Waiting..."
     IDS_USS_STATE_ERROR     "Error!"
@@ -1803,7 +1802,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ENABLEOBFUSCATION   "Enable Protocol Obfuscation"
+    IDS_ENABLEOBFUSCATION   "Enable protocol obfuscation"
     IDS_CONNECTINGTOOBFUSCATED 
                             "Connecting to %s (%s:%u - using Protocol Obfuscation) ..."
     IDS_CONNECTEDTOOBFUSCATED "Obfuscated connection established on: %s"
@@ -1825,7 +1824,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_UPNPSTART           "Use UPnP to setup ports"
+    IDS_UPNPSTART           "Use UPnP to Setup Ports"
     IDS_UPNPSETUP           "Trying to setup port forwardings with UPnP..."
     IDS_UPNPFAILED          "UPnP failed to setup port forwardings, please foward those ports manually if necessary!"
     IDS_UPNPSUCCESS         "UPnP successfully set up forwardings for ports %u (TCP) and %u (UDP)"
@@ -1833,7 +1832,7 @@ BEGIN
     IDS_UPNP_NOSERVICE      "UPnP Device Host service is not running, skipping UPnP setup"
     IDS_DELAYEDBYUPNP       "Connecting to the network is delayed, because UPnP is still busy configuring the port forwardings."
     IDS_DELAYEDBYUPNP2      "Please wait some seconds, eMule will connect as soon as UPnP finished."
-    IDS_UPnP                "UPnP"
+    IDS_UPNP                "UPnP"
     IDS_UPNPCLOSEONEXIT     "Remove UPnP port forwardings on exit"
     IDS_UPNPSKIPWANIP       "Skip WAN IP setup"
     IDS_UPNPSKIPWANPPP      "Skip WAN PPP setup"
@@ -1845,7 +1844,49 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_SHAREEMULEWARNING   "Changing this option will let eMule use another configuration. You current settings will be ignored and already started downloads might not be visible anymore. You can switch back to your current configuration by changing this option again anytime.\n\nYou need to restart eMule for this change to take effect."
+    IDS_SHAREEMULEWARNING   "Changing this option will let eMule use another configuration. Your current settings will be ignored and already started downloads might not be visible anymore. You can switch back to your current configuration by changing this option again anytime.\n\nYou need to restart eMule for this change to take effect."
+    IDS_SPAM                "Spam"
+    IDS_MARKSPAM            "Mark as Spam"
+    IDS_MARKNOTSPAM         "Mark as not Spam"
+    IDS_SEARCHSPAMFILTER    "Enable spam filter for search results"
+    IDS_SHOWSMILEYS         "Show smileys"
+    IDS_CAPTCHAREQUEST      "In order to avoid spam messages, this user requires you to solve a captcha before you can send him a message. Please enter the letters you see on this image as response:"
+    IDS_CAPTCHAFAILED       "Your response to the captcha was wrong and your message has been ignored. You can request a new captcha by sending a new message."
+    IDS_CAPTCHASOLVED       "You have passed the captcha check and the user has received your message."
+    IDS_USECAPTCHAS         "Require captcha authentication"
+    IDS_BOOTSRAPNODESDAT    "Nodes.dat from URL:"
+    IDS_DOWNLOADING_NODESDAT_FROM "Downloading nodes.dat from %s"
+    IDS_DOWNLOADING_NODESDAT "Downloading nodes.dat..."
+    IDS_ERR_FAILEDDOWNLOADNODES "Failed to download nodes.dat from %s"
+    IDS_PREVENTSTANDBY      "Prevent Standby mode while eMule is running"
+    IDS_KADID               "KadID"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_SEARCHINGFRIENDKAD  "Searching in Kad Network for friend"
+    IDS_FOUND               "found"
+    IDS_EXTERNUDPPORT       "Extern UDP Port"
+    IDS_STORESEARCHES       "Remember open searches between restarts"
+    IDS_WRN_INCFILE_EXISTS  "You have selected a new directory for your incoming files which is not empty. All existing files in this directory will be automatically shared by eMule."
+    IDS_EDITSPAMFILTER      "Edit spam filter..."
+    IDS_EDITSPAMFILTERCOMMENTS "Edit spam filter for comments"
+    IDS_WIZZARDOBFUSCATION  "Enable this option if you want to use protocol obfuscation\n\nIf your ISP tries throttle or block eMule, enabling obfuscation will help to circumvent such restrictions."
+    IDS_BETANAG             "This is a beta version of eMule. Please report problems and check regulary for updates in our forum (http://forum.emule-project.net)."
+    IDS_CONFIRMNODESDOWNLOAD 
+                            "Do you want to download and use Kad contacts (nodes.dat) from this address:\n%s ?"
+    IDS_NOTCONNECTEDANY     "You are not connected to a server or the Kad network!"
+    IDS_ERR_SHARED_DIR      "Failed to read shared directory ""%s"" - %s"
+    IDS_FILE_WARNING_DRM    "The file ""%s"" seems to be protected with Digital Rights Management.\r\n\r\nYou will most likely not be able to use that file without a license from the originator. You should be aware that opening this file will most likely cause your media player to open a web browser which will transfer you automatically to the site of the originator of that file where you will get asked to acquire a license.\r\n\r\nDo you really want to continue opening the file?"
+    IDS_CHECK_FILE_OPEN     "Warn when opening untrusted files"
+    IDS_BOOTABLE            "bootable"
+    IDS_UNSUPPORTEDIMAGE    "unsupported image"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_UNSHARE             "Unshare"
+    IDS_WEBUPNPINCLUDE      "Include port into UPnP setup"
 END
 
 STRINGTABLE 

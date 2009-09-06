@@ -257,8 +257,7 @@ BEGIN
     IDS_USECREDITSYSTEM     "השתמש במערכת הקרדיטים (מדרג מעלים)"
     IDS_FIRSTAUTODOWN       "הפעל אפשרות זו אם ברצונך שאימיול ינהל את עדיפויות ההורדות.\n\nהפעלת האפשרות מאפשרת לאימיול לוודא שקבצים עם מקורות רבים לא יפריעו לקבצים עם מעט מקורות. אפשרות זו תשפיע רק על הורדות עתידיות."
     IDS_FIRSTAUTOUP         "הפעל אפשרות זו אם ברצונך שאימיול ינהל את עדיפויות ההעלאות.\n\nהפעלת האפשרות מאפשרת לאימיול להגביר שיתוף לקבצים נדירים כך שקבצים פופולארים יהיו קשים יותר להשגה. ביטול האפשרות יאפשר לאימיול להעלות יותר קבצים פופלארים כך שיהיה קשה לאחרים להוריד קבצים נדירים. אפשרות זו תשפיע רק על קבצים משותפים עתידיים"
-    IDS_FIRSTFULLCHUNK      "הפעל אפשרות זו אם ברצונך להעלות חלקים שלמים.\n\nשימוש באפשרות נותן למשתמשים סיכוי גבוה יותר להשלים חלק. ביטול האפשרות יאפשר לזרז את המעבר בתור שלך. אם אתה מפיץ ייעודי, אתה תרצה להפעיל את האפשרות הזו."
-    IDS_FIRSTSAFECON        "הפעל אפשרות זו אם ברצונך שאימיול יתחבר באמצעות חיבור בטו.\n\nהפעל האפשרות מאפשרת חיבור מהיר יותר לשרתים אך יכול לגרום ליותר חיבורים שגויים עם מזהה נמוך"
+    IDS_FIRSTSAFECON        "הפעל אפשרות זו אם ברצונך שאימיול יתחבר באמצעות חיבור בטוח.\n\nהפעל האפשרות מאפשרת חיבור מהיר יותר לשרתים אך יכול לגרום ליותר חיבורים שגויים עם מזהה נמוך"
     IDS_FIRSTAUTOCON        "הפעל אפשרות זו אם ברצונך שאימיול יתחבר בעת ההפעלה."
     IDS_FIRSTCOMPLETE       "השלמת את אשף הפעלה הראשונה.\n\nכל ההגדרות הללו ואחרות ניתנות לשינוי ע""י לחיצה על העדפות. להסברים ותמיכה בדוק את העזרה ע""י לחיצה על F1 באימיול!"
 END
@@ -344,7 +343,7 @@ STRINGTABLE
 BEGIN
     IDS_ERR_NOHELP          "אנא בקר בדף ההורדות באתר הבית שלנו כדי להוריד את קובץ העזרה החדש ביותר!\n\nהאם ברצונך לדפדף בעזרה באתר במקום?"
     IDS_SHOWOVERHEAD        "הצג תעבורה כללית (תקורה)"
-    IDS_UPDOWNSMALL         "Up: %.1f | Down: %.1f"
+    IDS_UPDOWNSMALL         "עולה: %.1f | יורד: %.1f"
     IDS_EDITLIST            "רשימה"
     IDS_SP_ICONBAR          "מד-מהירות של סמל מגש מערכת"
     IDS_RATINGRECV          "הקובץ '%s' קיבל דירוג: %u"
@@ -547,6 +546,8 @@ BEGIN
     IDS_IRC_PRIVATECHANSTART "* צ'אט פרטי התחיל"
     IDS_IRC_SLAPMSG         "* %s סטר ל-%s עם דג טונה מסריח!"
     IDS_IRC_PRIVMESSAGE     "הודעה פרטית"
+    IDS_WEB_REMOTE_LINK_ADDED "קישור נוסף: "
+    IDS_WEB_REMOTE_LINK_NOT_ADDED "קישור לא נוסף. סיסמה שגוייה."
     IDS_IRC_KICK            "זרוק"
     IDS_IRC_SLAP            "כפכף"
     IDS_IRC_JOIN            "הצטרף"
@@ -709,7 +710,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_CD_SCORES           "ניקודים"
-    IDS_CD_MOD              "מייחס הורדה/העלאה:"
+    IDS_CD_MOD              "יחס הורדה/העלאה:"
     IDS_CD_RATING           "דירוג (סה""כ):"
     IDS_CD_USCORE           "ניקוד תור העלאה:"
     IDS_CD_TITLE            "פרטי קליינט"
@@ -956,7 +957,7 @@ BEGIN
     IDS_CREDITFILELOADED    "קובץ קרדיט נטען, %u קליינטים ידועים"
     IDS_CREDITFILECORRUPT   "שגיאה: פג תוקף קובץ קרדיט והוא יוחלף!"
     IDS_ERR_CREDITFILEREAD  "שגיאה לא צפוייה בעת קריאת קובץ קרדיט: %s"
-    IDS_ERR_FAILED_CREDITSAVE "נכדל בשמירת קובץ קרדיט"
+    IDS_ERR_FAILED_CREDITSAVE "נכשל בשמירת קובץ קרדיט"
     IDS_NOPARTSFOUND        "לא נמצאו חלקי קובץ"
     IDS_FOUNDPARTS          "נמצאו %u חלקי קובץ"
     IDS_NEWDOWNLOAD         "מוריד %s"
@@ -1008,7 +1009,9 @@ BEGIN
     IDS_SHAREDFILES         "קבצים משותפים"
     IDS_PRIOVERYLOW         "נמוכה מאוד"
     IDS_PRIORELEASE         "שיחרור"
+    IDS_TRAYDLG_SPEED       "מהירות של אימיול"
     IDS_FSTATUS_FRIENDSONLY "חברים בלבד"
+    IDS_VIAPASSIVE          "דרך פאסיבית"
     IDS_ERR_RENAMESF        "נכשל בשינוי שם\r\n    ""%s""\r\nל-\r\n    ""%s""\r\n\r\n%s"
     IDS_AVAILABLE           "זמין"
 END
@@ -1058,6 +1061,8 @@ BEGIN
     IDS_DL_REMAINS          "נותר"
     IDS_UPDATEFROM          "עדכן מכתובת URL: (filter.dat- או PeerGuardian-פורמט)"
     IDS_QL_USERNAME         "שם משתמש"
+    IDS_LOADURL             "טען"
+    IDS_DELETEAFTERALLOC    "הקובץ '%s' מוקצה כרגע בכונן הקשיח והוא ימחק בסיום ההקצאה"
     IDS_QL_RATING           "דירוג"
     IDS_CONNECTINGTO        "מתחבר ל-%s (%s:%u)..."
     IDS_CLIENTS             "קליינטים"
@@ -1117,7 +1122,7 @@ BEGIN
     IDS_NOTCONNECTED        "לא מחובר"
     IDS_DISCONNECTED        "מנותק"
     IDS_USERS               "משתמש: %u"
-    IDS_UPDOWN              "Up: %.1f(%.1f) | Down: %.1f(%.1f)"
+    IDS_UPDOWN              "עולה: %.1f(%.1f) | יורד: %.1f(%.1f)"
     IDS_CONNECTED           "מחובר"
 END
 
@@ -1394,8 +1399,8 @@ END
 STRINGTABLE 
 BEGIN
     IDS_DYNUP_PINGTOLERANCE "סיבולת פינג (אחזור של הפינג הנמוך ביותר)"
-    IDS_DYNUP_GOINGUPDIVIDER "Going up slowness"
-    IDS_DYNUP_GOINGDOWNDIVIDER "Going down slowness"
+    IDS_DYNUP_GOINGUPDIVIDER "Going up slowness"//!
+    IDS_DYNUP_GOINGDOWNDIVIDER "Going down slowness"//!
     IDS_DYNUP_NUMBEROFPINGS "מספר מקסימלי של פינגים לממוצע"
     IDS_DYNUP_MINUPLOAD     "מהירות העלאה מינימלית המותרת"
     IDS_ESTTIMELEFT         "זמן משוער שנותר:"
@@ -1426,7 +1431,7 @@ BEGIN
     IDS_EM_HELP             "עזרה"
     IDS_WRN_FRIENDDUPLIPPORT 
                             "חבר לא נוסף.\r\n\r\nכבר קיים חבר עם כתובת איי פי ופורט דומים."
-    IDS_DYNUP               "Upload SpeedSense"
+    IDS_DYNUP               "Upload SpeedSense"//!
     IDS_KADOVERHEAD         "תקורת רשת קדמליה (מנות): %s (%s)"
     IDS_FIND                "חפש..."
     IDS_LOG_BANNED_CLIENTS  "שמור יומן קליינטים מוחרמים"
@@ -1458,8 +1463,8 @@ BEGIN
     IDS_TEXTLABELSONRIGHT   "מימין לסמל"
     IDS_TEXTLABELS          "תוויות טקסט"
     IDS_ENABLETEXTLABELS    "מתחת לסמל"
-    IDS_CUSTOMIZETOOLBAR    "התאם אישית את סרגל הלים"
-    IDS_MINBITRATE          "קצב סיביות מינימלי [kBit/s]"
+    IDS_CUSTOMIZETOOLBAR    "התאם אישית את סרגל הכלים"
+    IDS_MINBITRATE          "קצב סיביות מינימלי [ב-קסל""ש]"
     IDS_KAD_RECHECKFW       "בדוק חומת אש מחדש"
     IDS_SHAREDTITLE         "משותף שרת|קדמליה"
     IDS_FIREWALLED          "מאחורי חומת אש"
@@ -1543,7 +1548,7 @@ BEGIN
     IDS_FO_TEMPUDP_F        "נכשל בפתיחת פורט %u (UDP) בחומת האש הפנימית של WinXP עבור ההפעלה הנוכחית של אימיול"
     IDS_FO_PREFBUTTON       "פתח פורטים אלה בחומת האש הפנימית של WinXP"
     IDS_FO_PREF_SUCCCEEDED  "פתיחת הפורטים שנבחרו בוצעה בהצלחה בחומת האש הפנימית של WinXP.\nלידיעתך, חומות אש ונתבים של צד שלישי לא מושפעים מפעולה זו!"
-    IDS_SOURCESWAPBLOCKED   "Swap blocked"
+    IDS_SOURCESWAPBLOCKED   "החלף חסום"
     IDS_A4AF_CHECK_THIS_NOW "בדוק מקור זה עכשיו (דיבוג)"
     IDS_NEWMSG              "הודעה חדשה מ-'%s' (איי פי:%s)"
     IDS_PREF_STARTNEXTFILECATONLY "רק מאותה קטגוריה"
@@ -1923,6 +1928,44 @@ BEGIN
     IDS_MARKSPAM            "סמן ספאם"
     IDS_MARKNOTSPAM         "סמן לא ספאם"
     IDS_SEARCHSPAMFILTER    "הפעל מסנן ספאם לתוצאות חיפוש"
+    IDS_SHOWSMILEYS         "הצג סמיילים"
+    IDS_CAPTCHAREQUEST      "כדי למנוע הודעות ספאם, המשתמש דורש ממך לפענח קוד אימות מתמונה לפני שליחת הודעה אליו. אנא הכנס את האותיות שנראות בתמונה כתגובה:"
+    IDS_CAPTCHAFAILED       "תגובתך לקוד אימות מתמונה הייתה שגוייה והמשתמש התעלם מהודעתך. אתה יכול לבקש קוד אימות חדש ע""י שליחת הודעה חדשה."
+    IDS_CAPTCHASOLVED       "עברת את בדיקת קוד אימות מתמונה והמשתמש קיבלת את הודעתך."
+    IDS_USECAPTCHAS         "דורש קוד אימות מתמונה"
+    IDS_BOOTSRAPNODESDAT    "Nodes.dat מכתובת:"
+    IDS_DOWNLOADING_NODESDAT_FROM "מוריד nodes.dat מ-%s"
+    IDS_DOWNLOADING_NODESDAT "מוריד nodes.dat..."
+    IDS_ERR_FAILEDDOWNLOADNODES "נכשל בהורדת nodes.dat מ-%s"
+    IDS_PREVENTSTANDBY      "מנע מצב המתנה בזמן שאימיול פועל"
+    IDS_KADID               "מזהה קדמליה"
+    IDS_SEARCHINGFRIENDKAD  "מחפש ברשת קדמליה אחר חברים"
+    IDS_FOUND               "נמצא"
+    IDS_EXTERNUDPPORT       "ייצא פורט UDP"
+    IDS_STORESEARCHES       "זכור חיפושים פתוחים בין הפעלות מחדש"
+    IDS_WRN_INCFILE_EXISTS  "בחרת תיקייה חדשה לקבצים שהתקבלו שאינה ריקה. כל הקבצים בתיקייה זו עכשיו ישותפו אוטומטית ע""י אימיול."
+    IDS_EDITSPAMFILTER      "ערוך מסנן ספאם..."
+    IDS_EDITSPAMFILTERCOMMENTS "ערוך מסנן ספאם להודעות"
+    IDS_WIZZARDOBFUSCATION  "הפעל אפשרות זו אם ברצונך להשתמש בהצפנת פרוטוקול\n\nאם ספקית האינטרנט שלך מנסה לסנן או לחסום את אימיול, הפעלת הצפנת פרוטוקול תעזור להערים על מגבלות כאלה."
+    IDS_BETANAG             "זוהי גירסת בטה של אימיול. אנא דווח על בעיות ובדוק בקביעות לעדכוני גירסה בפורום שלנו (http://forum.emule-project.net)."
+    IDS_CONFIRMNODESDOWNLOAD 
+                            "האם ברצונך להוריד ולהשתמש באנשי קשר של קדמליה (nodes.dat) מהכתובת הבאה:\n%s ?"
+    IDS_AUTOMATIC           "אוטומטי"
+    IDS_NOTCONNECTEDANY     "אינך מחובר לשרת או לרשת קדמליה!"
+    IDS_ERR_SHARED_DIR      "נכשל בקריאת תיקייה משותפת ""%s"" - %s"
+    IDS_FILE_WARNING_DRM    "נראה שהקובץ ""%s"" מוגן על ידי ניהול זכויות יוצרים דיגיטלי (Digital Rights Management).\r\n\r\nרוב הסיכויים ששימוש בקובץ לא יצליח ללא רכישת רישיון מיוצר הקובץ. פתיחת הקובץ יכולה לגרום לנגן המדיה לפתוח את הדפדפן ולהעביר אותך אוטומטית לאתר של היוצר שם תתבקש לקנות רישיון.\r\n\r\nהאם אתה בטוח שברצונך להמשיך בפתיחת הקובץ?"
+    IDS_CHECK_FILE_OPEN     "הצג אזהרה בעת פתיחת קבצים לא בטוחים"
+    IDS_BOOTABLE            "בר אתחול"
+    IDS_UNSUPPORTEDIMAGE    "פורמט דיסק לא נתמך"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_UNSHARE             "בטל שיתוף"
+    IDS_WEBUPNPINCLUDE      "הוסף פורט בהפעלת UPnP"
+    IDS_ADDEDON             "נוסף בתאריך"
+    IDS_RESOLVELINKS        "Resolve shell links in shared directories"
 END
 
 #endif    // Hebrew resources

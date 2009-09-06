@@ -144,7 +144,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_IP                  "IP"
+    IDS_IP                  "IP" //!
     IDS_DESCRIPTION         "Detalës"
     IDS_PING                "Pingas"
     IDS_FILES               "Failø"
@@ -207,7 +207,7 @@ BEGIN
     IDS_DOWNLOADMENUTITLE   "Gavimas"
     IDS_PRIORITY            "Svarbumas"
     IDS_NEWSERVERS          "Gauta %u naujø serveriø"
-    IDS_DL_STOP             "&Stop"
+    IDS_DL_STOP             "&Stop"//!
     IDS_DL_PAUSE            "&Pauzë"
     IDS_DL_RESUME           "&Tæsti"
     IDS_DL_OPEN             "&Atidaryti failà"
@@ -251,14 +251,14 @@ BEGIN
     IDS_CONNECTINGTO        "Jungiamasi á %s (%s:%u)..."
     IDS_CLIENTS             "Klientai"
     IDS_SEARCH_ANY          "Bet kas"
-    IDS_SEARCH_AUDIO        "Audio"
+    IDS_SEARCH_AUDIO        "Audio"//!
 END
 
 STRINGTABLE 
 BEGIN
     IDS_SEARCH_PICS         "Grafika"
     IDS_SEARCH_PRG          "Programos"
-    IDS_SEARCH_VIDEO        "Video"
+    IDS_SEARCH_VIDEO        "Video"//!
     IDS_SEARCH_CDIMG        "CD-atvaizdai"
     IDS_SEARCH_ARC          "Archyvai"
     IDS_ERR_INVALIDLINK     "Ði eD2k nuoroda neteisinga (%s)"
@@ -391,7 +391,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_IRC                 "&IRC"
+    IDS_IRC                 "&IRC"//!
     IDS_SW_RESULT           "Paieðkos rezultatai"
     IDS_SW_DOWNLOAD         "Gauti pasirinktus"
     IDS_SV_SERVERLIST       "Serveriø sàraðas"
@@ -644,14 +644,14 @@ BEGIN
     IDS_QUEUEFULL           "Eilë pilna"
     IDS_AVG                 "Vidutiniðkai"
     IDS_BYTES               "Baitai"
-    IDS_KBYTES              "KB"
-    IDS_MBYTES              "MB"
+    IDS_KBYTES              "KB"//!
+    IDS_MBYTES              "MB"//!
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_GBYTES              "GB"
-    IDS_TBYTES              "TB"
+    IDS_GBYTES              "GB"//!
+    IDS_TBYTES              "TB"//!
     IDS_SECS                "sek"
     IDS_MINS                "min"
     IDS_HOURS               "val"
@@ -820,8 +820,8 @@ BEGIN
     IDS_REMOVEFRIEND        "Ðalinti draugà"
     IDS_REMOVEFROMSTATIC    "Paðalinti ið statiniø serveriø sàraðo"
     IDS_LENGTH              "Trukmë"
-    IDS_VIDEO               "Video"
-    IDS_AUDIO               "Audio"
+    IDS_VIDEO               "Video"//!
+    IDS_AUDIO               "Audio"//!
     IDS_FILEINFO            "Failo &duomenys"
     IDS_CODEC               "Kodekas"
     IDS_BITRATE             "Bitreitas"
@@ -864,7 +864,7 @@ BEGIN
     IDS_WIZ_UP              "Siunt (kbit/s)"
     IDS_SELECT_INCOMINGDIR  "Pasirinkite katalogà ateinantiems failams"
     IDS_SELECT_TEMPDIR      "Pasirinkite katalogà laikiniems failams"
-    IDS_PRIOAUTO            "Auto"
+    IDS_PRIOAUTO            "Auto" //!
 END
 
 STRINGTABLE 
@@ -911,9 +911,9 @@ BEGIN
     IDS_CMT_EXCELLENT       "Nuostabus"
     IDS_CMT_NOTRATED        "Neávertintas"
     IDS_KILO                "K"
-    IDS_MEGA                "M"
-    IDS_GIGA                "G"
-    IDS_TERRA               "T"
+    IDS_MEGA                "M"//!
+    IDS_GIGA                "G"//!
+    IDS_TERRA               "T"//!
     IDS_IRC_EMULEPROTO_IGNOREINFOMESSAGE 
                             "Ignoruoti eMule protokolo praneðimus."
     IDS_SMARTLOWIDCHECK     "Naudoti gudrø Þemo ID patikrinimà jungiantis"
@@ -952,7 +952,7 @@ BEGIN
     IDS_PW_VIDEOPLAYER      "Video grotuvas"
     IDS_VIDEOBACKUP         "Kurti rezervinæ perþiûros kopijà"
     IDS_MYINFO              "Mano informacija"
-    IDS_ID                  "ID"
+    IDS_ID                  "ID"//!
     IDS_IDLOW               "Þemas ID"
     IDS_IDHIGH              "Aukðtas ID"
     IDS_UPSTATUS            "Turimos dalys"
@@ -1032,7 +1032,6 @@ BEGIN
     IDS_USECREDITSYSTEM     "Naudoti kreditø sistemà (apdovanoti dosniuosius)"
     IDS_FIRSTAUTODOWN       "Ájunkite jei norite, kad eMule tvarkytu jûsø gaunamø failø svarbumus.\n\nTai lems, kad gaunami failai su daug ðaltiniø netrukdys gaunamiems failams su maþai ðaltiniø. Ðis punktas átakos tik bûsimus gavimus."
     IDS_FIRSTAUTOUP         "Ájunkite jei norite, kad eMule tvarkytu jûsø iðsiuntimø svarbumus.\n\nTai leis eMule pagreitinti maþiau paplitusiø failø iðsiuntimà kitiems vartotojams nei failams su dideliu paplitimu. Jei uþdrausti - tai eMule greièiau siøs didesná palitimà turinèius failus kitiems vartotojams, ir kitiems bus sunkiau gauti maþiau paplitusius failus. Ðis punktas átakos tik bûsimus ðarintus failus."
-    IDS_FIRSTFULLCHUNK      "Ájunkite jei norite iðsiøsti pilnas dalis.\n\nPilnø daliø naudojimas suteikia klientui didesná ðansà greièiau uþbaigti dalá. Iðjungus jûsø eilë keisis greièiau. Jei jûs esate didelis failø platintojas, tai jûs tikriausiai norësite tai ájungti."
     IDS_FIRSTSAFECON        "Ájunkite jei norite, kad eMule naudotø saugø prisijungimà.\n\nTai leis eMule jungtis prie serveriø greièiau, bet yra ðansû, kad gausite netikrø Þemas ID susijungimø."
     IDS_FIRSTAUTOCON        "Ájunkite jei norite, kad eMule prisijungtu startuojant."
     IDS_FIRSTCOMPLETE       "Jûs jau praëjote pirmo paleidimo vedlá.\n\nVisi ðitie ir kiti nustatymai gali bûti keièiami Nustatymai skiltyje. Dël paaiðkinimø ir pagalbos kreipkitës á pagalbos failà spausdami F1 eMule'je!"
@@ -1069,7 +1068,7 @@ BEGIN
     IDS_WEB_GZIP_COMMENT    "Taupo jûsø internetà, ypatingai su grafika:"
     IDS_WEB_REFRESH_TIME    "puslapiø atnaujinimo laikas"
     IDS_WEB_REFRESH_COMMENT "Laikas sekundëmis (nulis - iðjungta):"
-    IDS_SV_URL              "URL"
+    IDS_SV_URL              "URL"//!
     IDS_WS_RELOAD_TMPL      "ðablonas"
     IDS_SV_DEBUGLOG         "Debug logas"
     IDS_WS_PASS             "Slaptaþodis"
@@ -1146,7 +1145,7 @@ BEGIN
     IDS_HM_SCHED_ON         "Ájungti planavimà"
     IDS_HM_SCHED_OFF        "Iðjungti planavimà"
     IDS_HM_LINKHP           "eMule puslapis"
-    IDS_HM_LINKFAQ          "eMule FAQ"
+    IDS_HM_LINKFAQ          "eMule FAQ"//!
     IDS_HM_LINKVC           "eMule versijos tikrinimas"
     IDS_DEBUG_SOURCE_EXCHANGE "Rodyti ðaltiniø apsikeitimo praneðimus"
     IDS_SHAREDREQ1          "Vartotojas %s (%u) uþklausë jûsø ðarintø katalogø sàraðà -> %s"
@@ -1298,7 +1297,7 @@ BEGIN
     IDS_SHOWEXTSETTINGS     "Rodyti daugiau valdymø (sudëtingesnis valdymas)"
     IDS_TREEOPTIONS_TRUE    "Tikras"
     IDS_TREEOPTIONS_FALSE   "Netikras"
-    IDS_TREEOPTIONS_OK      "OK"
+    IDS_TREEOPTIONS_OK      "OK"//!
     IDS_HYPERTEXT_FONT_HINT "Ðriftas serverio, þinuèiø ir IRC langams"
 END
 
@@ -1453,9 +1452,9 @@ BEGIN
     IDS_OPENFOLDER          "Atidaryti katalogà"
     IDS_RUNASUSER           "Leisti eMule kaip neprivigilijuotà vartojà"
     IDS_DELETE              "Iðtrinti ið disko"
-    IDS_BOOTSTRAP           "Bootstrap"
+    IDS_BOOTSTRAP           "Bootstrap"//!
     IDS_VIAED2KSQ           "per eD2k serverá/eiles"
-    IDS_EM_KADEMLIA         "&Kad"
+    IDS_EM_KADEMLIA         "&Kad"//!
     IDS_VIAKAD              "per Kad"
     IDS_VIASE               "per ðaltiniø apsikeitimà"
     IDS_SELECTTOOLBARBITMAP "Iðsirinkite BMP skirtà uþduoèiø juostai"
@@ -1474,7 +1473,7 @@ BEGIN
     IDS_KAD_RECHECKFW       "Patikrinti ugniasienæ"
     IDS_SHAREDTITLE         "Ðarinama eD2k|Kad"
     IDS_FIREWALLED          "Uþ ugniasienes"
-    IDS_KADEMLIA            "Kad"
+    IDS_KADEMLIA            "Kad"//!
     IDS_KADCONTACTLAB       "Kontaktai"
     IDS_KADDISTANCE         "Atstumas"
     IDS_KEY                 "Raktas"
@@ -1646,11 +1645,11 @@ BEGIN
     IDS_LD_HOSTNAME         "Naudoti kompiuterio vardà (ið nustatymø) vietoj IP kai kuriama nuoroda su ðaltiniu"
     IDS_SAVEACFAILED        "Nepavyko iðsaugoti PIKT hað rinkinio!"
     IDS_IACHHASH            "PIKT hað"
-    IDS_BYTESPERSEC         "B/s"
-    IDS_KBYTESPERSEC        "KB/s"
-    IDS_MBYTESPERSEC        "MB/s"
-    IDS_GBYTESPERSEC        "GB/s"
-    IDS_TBYTESPERSEC        "TB/s"
+    IDS_BYTESPERSEC         "B/s"//!
+    IDS_KBYTESPERSEC        "KB/s"//!
+    IDS_MBYTESPERSEC        "MB/s"//!
+    IDS_GBYTESPERSEC        "GB/s"//!
+    IDS_TBYTESPERSEC        "TB/s"//!
 END
 
 STRINGTABLE 
@@ -1700,7 +1699,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_COMCTRL32_DLL_TOOOLD 
-                            "Windows Common Controls library (COMCTL32.DLL) is too old!\r\n\r\neMule detected a version of the ""Windows Common Controls library (COMCTL32.DLL)"" which is too old to be properly used by eMule. To ensure full and flawless functionality of eMule we strongly recommend to update the ""Windows Common Controls library (COMCTL32.DLL)"" to at least version 5.8.\r\n\r\nDownload and install an update of the ""Windows Common Controls library (COMCTL32.DLL)"" at Microsoft (R) Download Center. Do you want to visit the corresponding URL?"
+                            "Windows Common Controls library (COMCTL32.DLL) yra per senos!\r\n\r\neMule aptiko ""Windows Common Controls library (COMCTL32.DLL)"" versijà, kuri yra per sena ir netinka eMule eMule. Norëdami uþtikrinti sklandø eMule veikimà, rekomenduojame atnaujinti ""Windows Common Controls library (COMCTL32.DLL)"" nors iji 5.8 versijos.\r\n\r\nAtsisiøskite ir instaliuokite atnaujinimà ""Windows Common Controls library (COMCTL32.DLL)"" ið Microsoft (R) Download Centro. Ar norite ten dabar apsilankyti?"
     IDS_ASREGEXPR           "Reguliarios iðraiðkos"
     IDS_STATIC_REGEXP       "Reguliari iðraiðka vaizdavimo filtrui:"
     IDS_CARE4ALL            "Ávertinti visus failus"
@@ -1920,10 +1919,10 @@ BEGIN
     IDS_UPNPFAILED          "UPnP nepavyko nustatyti portø nukreipimus, nustatykite juos rankiniu bûdu jei reikia!"
     IDS_UPNPSUCCESS         "UPnP sekmingai nustatë nukreipimus ðiem portams %u (TCP) ir %u (UDP)"
     IDS_FO_PREFBUTTON_NEW   "Atidaryti portus WinXP SP1 ugniasienëje"
-    IDS_UPNP_NOSERVICE      "UPnP Device Host service neveikia, praleidþiamas UPnP nustatymas"
+    IDS_UPNP_NOSERVICE      "UPnP árenginys neveikia, praleidþiamas UPnP nustatymas"
     IDS_DELAYEDBYUPNP       "Prisijungimas prie tinklo uþlaikomas, nes UPnP vis dar konfiguruoja portø nukreipimus."
     IDS_DELAYEDBYUPNP2      "Praðom palaukti kelias sekundes, eMule prisijungs kai tik UPnP baigs savo darbà."
-    IDS_UPNP                "UPnP"
+    IDS_UPNP                "UPnP"//!
     IDS_UPNPCLOSEONEXIT     "Paðalinti UPnP portø nukreipimus iðëinant"
     IDS_UPNPSKIPWANIP       "Praleisti WAN IP nustatymus"
     IDS_UPNPSKIPWANPPP      "Praleisti WAN PPP nustatymus"
@@ -1935,11 +1934,49 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_SHAREEMULEWARNING   "Changing this option will let eMule use another configuration. You current settings will be ignored and already started downloads might not be visible anymore. You can switch back to your current configuration by changing this option again anytime.\n\nYou need to restart eMule for this change to take effect."
-    IDS_SPAM                "Spam"
-    IDS_MARKSPAM            "Mark as Spam"
-    IDS_MARKNOTSPAM         "Mark as not Spam"
-    IDS_SEARCHSPAMFILTER    "Enable Spam Filter for search results"
+    IDS_SHAREEMULEWARNING   "Pakeitus ðá nustatymà eMule naudos kità konfiguracijà. Esami nustatymai bus ignoruojami bei jau pradëti krovimai daugiau nebus matomi. Jûs galësit persijungti atgal prie savo nustatymø, pakeisdami ðá nustatymà.\n\nJûs turite perkrauti eMule, kad ásigaliotu pakeitimai."
+    IDS_SPAM                "Spamas"
+    IDS_MARKSPAM            "Þymëti kaip spamas"
+    IDS_MARKNOTSPAM         "Þymëti kaip ne spamas"
+    IDS_SEARCHSPAMFILTER    "Ájungti spam filtrà paieðkos rezultatams"
+    IDS_SHOWSMILEYS         "Rodyti ðypsenëles"
+    IDS_CAPTCHAREQUEST      "Norëdamas iðvengti spamo, ðis vartotojas ið jûsø reikalauja iðspræsti captcha, prieð iðsiunèiant jam þinutæ. Praðom ávesti raides kurias matote paveiksliuke kaip atsakymà:"
+    IDS_CAPTCHAFAILED       "Jûsø atsakymas á captcha neteisingas bei jûsø þinutë ignoruojama. Galite uþklausti naujà captcha siøsdami naujà þinutæ."
+    IDS_CAPTCHASOLVED       "Jûs praëjote captcha patikrinimà ir vartotojas gavo jûsø þinutæ."
+    IDS_USECAPTCHAS         "Reikalinga captcha autorizacija"
+    IDS_BOOTSRAPNODESDAT    "Nodes.dat ið URL:"
+    IDS_DOWNLOADING_NODESDAT_FROM "Gaunamas nodes.dat ið %s"
+    IDS_DOWNLOADING_NODESDAT "Gaunamas nodes.dat..."
+    IDS_ERR_FAILEDDOWNLOADNODES "Nepavyko gauti nodes.dat ið %s"
+    IDS_PREVENTSTANDBY      "Uþdrausti Standby kai veikia eMule"
+    IDS_KADID               "Kad ID"
+    IDS_SEARCHINGFRIENDKAD  "Iðkomas draugas Kad tinkle"
+    IDS_FOUND               "rastas"
+    IDS_EXTERNUDPPORT       "Iðorinis UDP portas"
+    IDS_STORESEARCHES       "Atsiminti atidarytas paieðkas tarp programos perkrovimø"
+    IDS_WRN_INCFILE_EXISTS  "Jûs pasirinkote naujà kataloga gaunamiem failams kuris nëra tuðèias. Visi failai esantys ðiame kataloge bus automatiðkai paðarinti."
+    IDS_EDITSPAMFILTER      "Keisti spam filtrà..."
+    IDS_EDITSPAMFILTERCOMMENTS "Keisti komentarø spam filtrà"
+    IDS_WIZZARDOBFUSCATION  "Ájunkite ðá punktà jei norite ájungti protokolo slëpimà\n\nJei jûsø IPT bando filtruoti ar blokuoti eMule, ðio punkto ájungimas padës apeiti tokius veiksmus."
+    IDS_BETANAG             "Tai yra beta eMule versija. Praðom praneðti apie problemas bei tikrinti ar yra atnaujinimai mûsø forume (http://forum.emule-project.net)."
+    IDS_CONFIRMNODESDOWNLOAD 
+                            "Ar norite gauti ir naudoti Kad kontaktus (nodes.dat) ið ðio adreso:\n%s ?"
+    IDS_AUTOMATIC           "Automatiðkai"
+    IDS_NOTCONNECTEDANY     "Jûs nesate prisijungæ prie serverio ar Kad tinklo!"
+    IDS_ERR_SHARED_DIR      "Nepavyko nuskaityti paðarinto katalogo ""%s"" - %s"
+    IDS_FILE_WARNING_DRM    "Ðis ""%s"" failas gali bûti, kad yra apsaugotas DRM.\r\n\r\nJums greièiausiai nepavyks pasinaudoti ðiuo failu negavus licenzijos ið tiekëjo. Þinokite, kad jei bandysite atidaryti ðá failà, jûs greièiausiai bûsite nukreipti á tiekëjo internetiná puslapá. Kur jûsø papraðys ásigyti licenzijà failui.\r\n\r\nAr tikrai norite tæsti ir atidaryti failà?"
+    IDS_CHECK_FILE_OPEN     "Áspëti prieð atidarant nepatikimus failus"
+    IDS_BOOTABLE            "ákraunamas"
+    IDS_UNSUPPORTEDIMAGE    "nepalaikomas atvaizdas"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_UNSHARE             "Neðarinti"
+    IDS_WEBUPNPINCLUDE      "Naudotá ðá portà UPnP nustatymuose"
+    IDS_ADDEDON             "Pridëta"
+    IDS_RESOLVELINKS        "Resolve shell links in shared directories"
 END
 
 #endif    // Lithuanian resources

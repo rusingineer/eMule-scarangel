@@ -90,7 +90,7 @@ STRINGTABLE
 BEGIN
     IDS_HTTP_CAPTION        "Osveževanje seznama strežnikov"
     IDS_HTTPDOWNLOAD_TIMELEFT "%s (%s kopirano)"
-    IDS_HSAV                "Hashset dosegljiv"
+    IDS_HSAV                "Hashset na voljo"
     IDS_FD_CORR             "Pokvarjeno"
     IDS_HTTPDOWNLOAD_OK_TO_OVERWRITE 
                             "Datoteka '%s' že obstaja.\nAli jo želite prepisati?"
@@ -145,9 +145,9 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_IP                  "IP"
+    IDS_IP                  "IP" //!
     IDS_DESCRIPTION         "Opis"
-    IDS_PING                "Ping"
+    IDS_PING                "Ping" //!
     IDS_FILES               "Datotek"
     IDS_PREFERENCE          "Prioriteta"
     IDS_PRIONOPREF          "Brez prioritete"
@@ -172,7 +172,7 @@ BEGIN
     IDS_ERR_HASHERRORWARNING 
                             "Opozorilo: Ni bilo mogoèe ustvariti hasha prenesenega dela - hashset nepopoln (%s)"
     IDS_ERR_INCOMPLETEHASH  "Napaka: Ni mogoèe hashirati prenesenega dela - hashset nepopoln (%s). To se ne bi smelo zgoditi."
-    IDS_DOWNLOADING         "Prenosi dol"
+    IDS_DOWNLOADING         "Prenašanje"
     IDS_WAITING             "Èakanje"
     IDS_HASHING             "Ustvarjanje hasha"
     IDS_COMPLETING          "Zakljuèevanje"
@@ -251,15 +251,15 @@ BEGIN
     IDS_QL_RATING           "Ocena"
     IDS_CONNECTINGTO        "Povezovanje z %s (%s:%u)..."
     IDS_CLIENTS             "Uporabniki"
-    IDS_SEARCH_ANY          "Ostalo"
+    IDS_SEARCH_ANY          "Vse"
     IDS_SEARCH_AUDIO        "Avdio"
 END
 
 STRINGTABLE 
 BEGIN
     IDS_SEARCH_PICS         "Slike"
-    IDS_SEARCH_PRG          "Program"
-    IDS_SEARCH_VIDEO        "Video"
+    IDS_SEARCH_PRG          "Program" //!
+    IDS_SEARCH_VIDEO        "Video" //!
     IDS_SEARCH_CDIMG        "Slike CD-jev"
     IDS_SEARCH_ARC          "Arhiv"
     IDS_ERR_INVALIDLINK     "Ta povezava eD2K je neveljavna (%s)"
@@ -283,7 +283,7 @@ BEGIN
     IDS_PRIORELEASE         "Najvišja"
     IDS_FSTATUS_FRIENDSONLY "Samo prijateljem"
     IDS_ERR_RENAMESF        "Ni bilo mogoèe preimenovati\r\n    ""%s""\r\nv\r\n    ""%s""\r\n\r\n%s"
-    IDS_AVAILABLE           "dosegljiva"
+    IDS_AVAILABLE           "na voljo"
 END
 
 STRINGTABLE 
@@ -326,7 +326,7 @@ BEGIN
     IDS_NOPARTSFOUND        "Ni najdenih delnih datotek"
     IDS_FOUNDPARTS          "Najdenih %u delnih datotek"
     IDS_NEWDOWNLOAD         "Prenašanje %s"
-    IDS_ERR_ALREADY_DOWNLOADING "Datoteko %s že poizkušate prenesti."
+    IDS_ERR_ALREADY_DOWNLOADING "Datoteko %s že poskušate prenesti."
     IDS_ERR_ALREADY_DOWNLOADED "Datoteko %s že imate."
     IDS_ERR_SERVERMET_BAD   "Napaka: Datoteka known.met je pokvarjena, ni bilo mogoèe naložiti znanih datotek"
     IDS_ERR_SERVERMET_UNKNOWN 
@@ -363,7 +363,7 @@ BEGIN
     IDS_ERR_REHASH          "Opozorilo: Možno, da je %s pokvarjena, ponovno ustvarjanje hasha konèanih delov datoteke"
     IDS_SKIN_PROF           "Profili preoblek"
     IDS_ERR_PART_FNF        "Ni mogoèe najti datoteke .part"
-    IDS_KADOPEN             "Odpri"
+    IDS_KADOPEN             "Povezan"
     IDS_ERR_SAVEMET         "Napaka med shranjevanjem delne datoteke: %s (%s)"
     IDS_ERR_FOUNDCORRUPTION "Najden pokvarjen del (%u) v %s"
     IDS_HASHINGDONE         "Konèano ponovno ustvarjanje hasa za %s, datoteka je brez napak"
@@ -384,7 +384,7 @@ BEGIN
     IDS_SW_SEARCHBOX        "Iskanje"
     IDS_SW_NAME             "Ime"
     IDS_SW_GLOBAL           "Išèi globalno"
-    IDS_SW_DIRECTDOWNLOAD   "Neposredni prenos"
+    IDS_SW_DIRECTDOWNLOAD   "Prilepi povezave eD2K"
     IDS_SW_LINK             "Povezave eD2K"
     IDS_SW_START            "Zaèni"
     IDS_SCHEDULER           "Urnik"
@@ -392,7 +392,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_IRC                 "IRC"
+    IDS_IRC                 "&IRC" //!
     IDS_SW_RESULT           "Rezultati iskanja"
     IDS_SW_DOWNLOAD         "Prenesi izbrane"
     IDS_SV_SERVERLIST       "Seznam strežnikov"
@@ -414,10 +414,10 @@ STRINGTABLE
 BEGIN
     IDS_SPEED_LIMITS        "Omejitve hitrosti"
     IDS_CAPACITY_LIMITS     "Omejitve povezave"
-    IDS_ADMIN               "Administrator"
+    IDS_ADMIN               "Administrator" //!
     IDS_ACCESSDENIED        "Dostop zavrnjen!"
     IDS_WEB_LOWUSER         "Gost"
-    IDS_WEB_ERR_CANTLOAD    "Ni mogoèe naložiti predlog: Datoteke %s ni mogoèe odpreti"
+    IDS_WEB_ERR_CANTLOAD    "Ni mogoèe naložiti predloge: Datoteke %s ni mogoèe odpreti"
     IDS_GLOBALSEARCH        "Globalno (Strežnik)"
     IDS_METHOD              "Naèin"
     IDS_UNDO                "Razveljavi"
@@ -435,8 +435,8 @@ BEGIN
     IDS_FR                  "Petek"
     IDS_SA                  "Sobota"
     IDS_SO                  "Nedelja"
-    IDS_WEB_ADMINLOGIN      "Spletni vmesnik: Prijava za administratorja"
-    IDS_WEB_GUESTLOGIN      "Spletni vmesnik: Prijava za goste"
+    IDS_WEB_ADMINLOGIN      "Spletni vmesnik: Prijava administratorja"
+    IDS_WEB_GUESTLOGIN      "Spletni vmesnik: Prijava gosta"
     IDS_WEB_SESSIONEND      "Spletni vmesnik: Odjava"
     IDS_DETAILS             "Podrobnosti"
     IDS_ACTION              "Dejanje"
@@ -467,7 +467,7 @@ STRINGTABLE
 BEGIN
     IDS_PW_DIR              "Mape"
     IDS_PW_NICK             "Uporabniško ime"
-    IDS_PW_INCOMING         "Prihajajoèe datoteke"
+    IDS_PW_INCOMING         "Celotne datoteke"
     IDS_PW_TEMP             "Zaèasne datoteke"
     IDS_PW_BROWSE           "Prebrskaj..."
     IDS_PW_SHARED           "Deljene mape (ctrl-klik izbere tudi podmape)"
@@ -489,7 +489,7 @@ BEGIN
     IDS_PW_USC              "Posodobi seznam strežnikov ob povezavi s strežnikom"
     IDS_PW_UCC              "Posodobi seznam strežnikov ob povezavi z odjemalcem"
     IDS_PW_FILTER           "Filtriraj LAN IP-je stežnikov in odjemalcev"
-    IDS_PW_USS              "Samodejno posodobi seznam strežnikov ob zagonu"
+    IDS_PW_USS              "Posodobi seznam strežnikov ob zagonu"
     IDS_PW_MISC             "Razno"
     IDS_PW_TRAY             "Pomanjšaj v sistemsko vrstico"
     IDS_PW_BEEP             "Opozorilni zvok ob napakah"
@@ -508,7 +508,7 @@ BEGIN
     IDS_PW_EVER             "Vsem"
     IDS_PW_FRIENDS          "Prijateljem"
     IDS_PW_NOONE            "Nikomur"
-    IDS_PW_RESET            "Ponastavi"
+    IDS_PW_RESET            "Poèisti"
     IDS_PW_APPLY            "Uporabi"
     IDS_EM_TRANS            "&Prenosi"
     IDS_EM_SERVER           "St&režniki"
@@ -524,7 +524,7 @@ STRINGTABLE
 BEGIN
     IDS_FD_GENERAL          "Splošno"
     IDS_FD_MET              "Ime part.met:"
-    IDS_FD_HASH             "Hash:"
+    IDS_FD_HASH             "Hash:" //!
     IDS_FD_SIZE             "Velikost:"
     IDS_FD_TRANSFER         "Prenos"
     IDS_FD_PARTS            "Deli"
@@ -539,8 +539,8 @@ END
 STRINGTABLE 
 BEGIN
     IDS_CD_UNAME            "Ime:"
-    IDS_CD_UHASH            "Hash:"
-    IDS_CD_CSOFT            "Program"
+    IDS_CD_UHASH            "Hash:" //!
+    IDS_CD_CSOFT            "Odjemalec"
     IDS_CD_UIP              "Naslov IP:"
     IDS_CD_SIP              "IP strežnika:"
     IDS_CD_VERSION          "Razlièica:"
@@ -627,7 +627,7 @@ BEGIN
     IDS_NO                  "Ne"
     IDS_UNBAN               "Dovoli nazaj"
     IDS_SF_WORKING          "Delujoèi strežniki"
-    IDS_ADDTOSTATIC         "Dodaj v seznam statiènih strežnikov"
+    IDS_ADDTOSTATIC         "Dodaj na seznam statiènih strežnikov"
 END
 
 STRINGTABLE 
@@ -645,25 +645,25 @@ BEGIN
     IDS_QUEUEFULL           "Vrsta polna"
     IDS_AVG                 "Povpreèje"
     IDS_BYTES               "bajtov"
-    IDS_KBYTES              "kB"
-    IDS_MBYTES              "MB"
+    IDS_KBYTES              "KB" //!
+    IDS_MBYTES              "MB" //!
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_GBYTES              "GB"
-    IDS_TBYTES              "TB"
+    IDS_GBYTES              "GB" //!
+    IDS_TBYTES              "TB" //!
     IDS_SECS                "sek."
     IDS_MINS                "min"
     IDS_HOURS               "ur"
     IDS_DAYS                "dni"
     IDS_ED2KLINKFIX         "Povezave eD2K"
-    IDS_RECONNECT           "Samodejen poizkus povezovanja s strežnikom se bo izvedel èez %u sekund"
+    IDS_RECONNECT           "Samodejen poskus povezovanja s strežnikom se bo izvedel èez %u sekund"
     IDS_SERVERADDED         "Dodan strežnik: %s"
     IDS_IRC_IGNOREJOINMESSAGE "Ignoriraj sporoèila ob prijavi"
-    IDS_STATS_SUCCUPCOUNT   "Skupno št. sej uspelih prenosov gor: %u (%.2f%%)"
+    IDS_STATS_SUCCUPCOUNT   "Skupno št. uspelih prenosov gor: %u (%.2f%%)"
     IDS_IRC_IGNOREPARTMESSAGE "Ignoriraj sporoèila ob odjavi"
-    IDS_STATS_FAILUPCOUNT   "Skupno št. sej neuspelih prenosov gor: %u (%.2f%%)"
+    IDS_STATS_FAILUPCOUNT   "Skupno št. neuspelih prenosov gor: %u (%.2f%%)"
     IDS_STATS_AVEUPTIME     "Povpreèen èas prenosov gor: %s"
     IDS_SEARCHMINSIZE       "Min. velikost [MB]"
     IDS_SEARCHMAXSIZE       "Maks. velikost [MB]"
@@ -729,7 +729,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_PW_CON_CAPFRM       "Zmogljivost povezave"
+    IDS_PW_CON_CAPFRM       "Zmogljivost"
     IDS_IRC_PRIVATECHANSTART "* Zaèetek zasebne pogovorne seje"
     IDS_IRC_SLAPMSG         "* %s udari %s z veliko mastno in debelo ribico!"
     IDS_IRC_PRIVMESSAGE     "Zasebno sporoèilo"
@@ -820,7 +820,7 @@ BEGIN
     IDS_REMOVEFRIEND        "Odstrani prijatelja"
     IDS_REMOVEFROMSTATIC    "Odstrani strežnik iz statiènega seznama"
     IDS_LENGTH              "Dolžina"
-    IDS_VIDEO               "Video"
+    IDS_VIDEO               "Video" //!
     IDS_AUDIO               "Avdio"
     IDS_FILEINFO            "Info. o datoteki"
     IDS_CODEC               "Kodek"
@@ -871,8 +871,8 @@ BEGIN
     IDS_PRIOAUTOHIGH        "Samod. [Vi]"
     IDS_PRIOAUTORELEASE     "Samod. [Na]"
     IDS_PRIOAUTOLOW         "Samod. [Ni]"
-    IDS_ERR_CONTIMEOUT      "Poizkus povezovanja ""%s"" (%s:%u ) je potekel."
-    IDS_OUTOFSERVERS        "Ni se bilo mogoèe povezati na kateregakoli izmed strežnikov na seznamu. Ponoven poizkus."
+    IDS_ERR_CONTIMEOUT      "Poskus povezovanja ""%s"" (%s:%u ) je potekel."
+    IDS_OUTOFSERVERS        "Ni se bilo mogoèe povezati na kateregakoli izmed strežnikov na seznamu. Ponoven poskus."
     IDS_PW_CONLIMITS        "Omejitev povezav"
     IDS_MAXCON5SECLABEL     "Maks. novih povezav / 5 sek"
     IDS_PW_UAP              "Nove deljene datoteke naj imajo avtoprioriteto"
@@ -908,10 +908,10 @@ BEGIN
     IDS_CMT_FAIR            "Povpreèno"
     IDS_CMT_EXCELLENT       "Odlièno"
     IDS_CMT_NOTRATED        "Ni ocenjeno"
-    IDS_KILO                "k"
-    IDS_MEGA                "M"
-    IDS_GIGA                "G"
-    IDS_TERRA               "T"
+    IDS_KILO                "k" //!
+    IDS_MEGA                "M" //!
+    IDS_GIGA                "G" //!
+    IDS_TERRA               "T" //!
     IDS_IRC_EMULEPROTO_IGNOREINFOMESSAGE "Ignoriraj sporoèila protokola eMule"
     IDS_SMARTLOWIDCHECK     "Uporabi preverjanje za Nizek ID ob povezavi"
     IDS_SF_SRVOCC           "Zasedenost strežnika: %.2f%%"
@@ -947,7 +947,7 @@ BEGIN
     IDS_PW_VIDEOPLAYER      "Video predvajalnik"
     IDS_VIDEOBACKUP         "Ustvari varnostno kopijo za predogled"
     IDS_MYINFO              "Moji podatki"
-    IDS_ID                  "ID"
+    IDS_ID                  "ID" //!
     IDS_IDLOW               "Nizek ID"
     IDS_IDHIGH              "Visok ID"
     IDS_UPSTATUS            "Stanje datoteke"
@@ -1026,16 +1026,15 @@ BEGIN
     IDS_USECREDITSYSTEM     "Uporabi sistem kreditov (nagradi uporabnike z velikim prenosom gor)"
     IDS_FIRSTAUTODOWN       "Vklop te možnosti omogoèa eMule, da samodejno doloèa prioriteto prenosov dol.\n\nTa možnost omogoèi eMule rokovanje s prenosi tako, da prenosi z veliko viri niso v konfliktu s prenosi z malo viri. Ta možnost vpliva samo na novo dodane prenose."
     IDS_FIRSTAUTOUP         "Vklop te možnosti omogoèa eMule, da samodejno doloèa prioriteto prenosov gor.\n\nTa možnost omogoèi eMule, da poveèa hitrost prenosa gor redkih datotek in zmanjša hitrost priljubljenih datotek. Èe to možnost onemogoèite, bo eMule bolj pogosto prenašal gor priljubjene datoteke, kar pomeni, da bodo redke datoteke težje dosegljive. Ta možnost vpliva samo na novo deljene datoteke."
-    IDS_FIRSTFULLCHUNK      "Ob vklopu te možnosti, bo eMule vsem odjemalcem poslal celoten del datoteke.\n\nTo daje odjemalcu veèjo možnost da konèata posamezen del datoteke. Onemogoèanje te možnosti bo povzroèilo hitrejše kroženje èakalne vrste. Èe delite nove datoteke, je priporoèljivo, da to možnost omogoèite."
     IDS_FIRSTSAFECON        "Vklop te možnosti povzroèi varno povezovanje na strežnik.\n\nOnemogoèanje te možnosti dovoljuje, da se eMule poveže hitreje, obstaja pa možnost, da boste imeli Nizki ID."
-    IDS_FIRSTAUTOCON        "Odkljukajte tukaj, da se bo eMule ob zagonu samodejno povezal v omrežje."
+    IDS_FIRSTAUTOCON        "Odkljukajte tukaj, èe želite, da se bo eMule ob zagonu samodejno povezal v omrežje."
     IDS_FIRSTCOMPLETE       "Èarovnik ob prvem zagonu je s tem konèan. Vse te možnosti in še veliko veè lahko spremenite v nastavitvah.\n\nProsim, vzamite si èas in jih nastavite po svojih potrebah. Za razlago posameznih možnosti zaženite pomoè s pritiskom na F1."
 END
 
 STRINGTABLE 
 BEGIN
     IDS_ENTERUSERNAME       "Prosim, vnesite uporabniško ime:"
-    IDS_STATIC_CPUMEM       "Shrani porabo CPE && Spomina"
+    IDS_STATIC_CPUMEM       "Varèuj s porabo CPE && Spomina"
     IDS_KAD_SEARCH_KEYWORD_TOO_SHORT 
                             "Iskalni niz je prekratek.\r\n\r\nNiz za iskanje v Kad omrežju mora biti dolg vsaj 3 znake."
     IDS_LOG2DISK            "Shrani dnevnik na disk"
@@ -1045,7 +1044,7 @@ BEGIN
                             "Neveljaven iskalni niz za Kad.\r\n\r\nIskanje po Kad ima sledeèo obliko:\r\n\r\n\t<kad-keyword> [ <ed2k-search-expression> ]\r\n\r\n<kad-keyword> ne sme vsebovati naslednjih znakov:\r\n\r\n\t%s"
     IDS_EDITCAT             "Uredi lastnosti kategorije"
     IDS_PW_WS               "Spletni vmesnik"
-    IDS_ENABLED             "Vklopljeno"
+    IDS_ENABLED             "Vklopljen"
     IDS_WEB_LOGIN           "Uporabniško ime"
     IDS_WEB_ENTER_PASSWORD  "Geslo"
     IDS_WEB_LOGIN_NOW       "Prijava"
@@ -1063,11 +1062,11 @@ BEGIN
     IDS_WEB_GZIP_COMMENT    "Varèevanje pri prenosu, predvsem pri grafih."
     IDS_WEB_REFRESH_TIME    "Osveževanje strani"
     IDS_WEB_REFRESH_COMMENT "Èas med osvežitvami v sek. (0=izklopljeno):"
-    IDS_SV_URL              "URL"
+    IDS_SV_URL              "URL" //!
     IDS_WS_RELOAD_TMPL      "Predloga"
     IDS_SV_DEBUGLOG         "Razhrošèevanje"
     IDS_WS_PASS             "Geslo"
-    IDS_WS_ERR_LOADTEMPLATE "Ni mogoèe naložiti predloge: nadomestite %s z novejšo razlièico!"
+    IDS_WS_ERR_LOADTEMPLATE "Ni mogoèe naložiti predloge: nadomestite novejšo razlièico datoteke %s!"
     IDS_WEB_CONLIMITS       "Omejitve povezav"
     IDS_INFLST_USER_TOTALDOWNLOAD "Skupni prenos dol"
     IDS_INFLST_USER_TOTALUPLOAD "Skupni prenos gor"
@@ -1134,7 +1133,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_HARDFILES           "Trda omejitev datotek"
-    IDS_FILTER              "Filter"
+    IDS_FILTER              "Filter" //!
     IDS_LINKS               "Povezave"
     IDS_HM_SCHED_ON         "Vklopi Urnik"
     IDS_HM_SCHED_OFF        "Izklopi Urnik"
@@ -1182,16 +1181,16 @@ BEGIN
     IDS_SEARCH_NORESULT     "Ni ujemanja z vnosom."
     IDS_STATS_CURRSRVDUR    "Trajanje povezave s strežnikom"
     IDS_LONGSECS            "sekund"
-    IDS_STATS_DLSES         "Sej prenosov dol"
+    IDS_STATS_DLSES         "Prenosov dol"
     IDS_LONGMINS            "min."
-    IDS_STATS_SDLSES        "Št. uspelih sej prenosov dol"
-    IDS_STATS_FDLSES        "Št. neuspelih sej prenosov dol"
+    IDS_STATS_SDLSES        "Št. uspelih prenosov dol"
+    IDS_STATS_FDLSES        "Št. neuspelih prenosov dol"
     IDS_STATS_AVGDATADLSES  "Preneseno dol v povpreèju na sejo"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_STATS_ULSES         "Sej prenosov gor"
+    IDS_STATS_ULSES         "Prenosov gor"
     IDS_STATS_GAINCOMP      "Pridobitev zaradi kompresije: %s"
     IDS_STATS_LOSTCORRUPT   "Izguba zaradi napak: %s"
     IDS_STATS_AVGDATAULSES  "Preneseno gor v povpreèju na sejo"
@@ -1253,9 +1252,9 @@ BEGIN
     IDS_CD_IDENT            "Identifikacija:"
     IDS_IDENTOK             "Uspešna"
     IDS_IDENTFAILED         "Neveljavna"
-    IDS_IDENTNOSUPPORT      "Ni podprta ali onemogoèena"
+    IDS_IDENTNOSUPPORT      "Ni podprto/omogoèeno"
     IDS_COMMITFILES         "Varno zapisovanje datotek .met/.dat"
-    IDS_ERR_BADUNC          "Neveljavno UNC-ime"
+    IDS_ERR_BADUNC          "Neveljavno UNC ime"
     IDS_NEVER               "Nikoli"
     IDS_ALWAYS              "Vedno"
     IDS_ONSHUTDOWN          "Ob izhodu"
@@ -1285,7 +1284,7 @@ BEGIN
     IDS_VERSION             "Razlièica"
     IDS_PASTE               "Prilepi"
     IDS_A4AF                "Upravljanje z viri"
-    IDS_MOBILEMULE          "MobileMule"
+    IDS_MOBILEMULE          "MobileMule" //!
     IDS_ENABLEMM            "Omogoèi MobileMule"
     IDS_AUTOCAT_LABEL       "Samodejna dodelitev kategoriji (vzorec, loèen z |)"
     IDS_SHOWEXTSETTINGS     "Pokaži veè kontrol (napredni naèin)"
@@ -1299,8 +1298,8 @@ STRINGTABLE
 BEGIN
     IDS_SELECT_FONT         "Izberi pisavo"
     IDS_SERVER_LIMITS       "Mehka/Trda omejitev datotek"
-    IDS_KBITSSEC            "kBitov/sek"
-    IDS_KBYTESSEC           "kBajtov/sek"
+    IDS_KBITSSEC            "kBit/s" //!
+    IDS_KBYTESSEC           "kBajt/s"
     IDS_ERR_CREATE_DIR      "Ni bilo mogoèe ustvariti mape %s ""%s"" - %s"
     IDS_WRN_INCFILE_RESERVED 
                             "Mapa za prihajajoèe datoteke ne sme biti nastavljena na inštalacijsko mapo eMule."
@@ -1310,9 +1309,9 @@ BEGIN
     IDS_MMFAILED            "Ni bilo mogoèe ustvariti vtiènice za MobileMule"
     IDS_MMSTARTED           "MobileMule strežnik zagnan na vratih %u. Razlièica protokola: %s"
     IDS_SHOWDWLPERCENTAGE   "Prikaži odstotek dokonèanega prenosa na vrstici napredka"
-    IDS_TBN_ONNEWDOWNLOAD   "Prenos dodan"
+    IDS_TBN_ONNEWDOWNLOAD   "Dodanem prenosu"
     IDS_ARTIST              "Izvajalec"
-    IDS_ALBUM               "Album"
+    IDS_ALBUM               "Album" //!
     IDS_MMGUIDELINK         "Vodiè po MobileMule"
 END
 
@@ -1390,7 +1389,7 @@ BEGIN
     IDS_IMP_REMOVEBTN       "Od&strani izbrane"
     IDS_IMP_SELFOLDER       "Prosim, izberite mapo za iskanje delnih prenosov! (vkljuèene bodo tudi podmape)"
     IDS_IMP_DELSRC          "Ali želite zbrisati izvirne datoteke uspešno uvoženih prenosov?"
-    IDS_IMP_SIZE            "%s (Disk:%s)"
+    IDS_IMP_SIZE            "%s (Disk:%s)" //!
     IDS_IMP_STATUS          "Uvažanje %s: %s"
     IDS_DYNUPENABLED        "Samodejno najdi najprimernejšo omejitev prenosa gor"
 END
@@ -1442,10 +1441,10 @@ BEGIN
     IDS_TEXTLABELS          "Besedilne oznake"
     IDS_ENABLETEXTLABELS    "Pod ikonami"
     IDS_CUSTOMIZETOOLBAR    "Uredi orodjarno..."
-    IDS_MINBITRATE          "Min. hitrost prenosa [kBit/s]"
+    IDS_MINBITRATE          "Min. bitna hitrost [kBit/s]"
     IDS_KAD_RECHECKFW       "Preveri požarni zid"
-    IDS_SHAREDTITLE         "Deljenih ED2k|Kademlia"
-    IDS_FIREWALLED          "za požarnim zidom"
+    IDS_SHAREDTITLE         "Deljeno na eD2K|Kademlia"
+    IDS_FIREWALLED          "Za požarnim zidom"
     IDS_KADEMLIA            "Kademlia"
     IDS_KADCONTACTLAB       "Kontakti"
     IDS_KADDISTANCE         "Oddaljenost"
@@ -1466,7 +1465,7 @@ BEGIN
     IDS_DELETE              "Zbriši z diska"
     IDS_BOOTSTRAP           "Zaèetno nalaganje"
     IDS_VIAED2KSQ           "preko strežnika eD2K"
-    IDS_EM_KADEMLIA         "&Kad"
+    IDS_EM_KADEMLIA         "&Kad" //!
     IDS_VIAKAD              "preko Kad"
     IDS_VIASE               "preko izmenjave virov"
     IDS_SELECTTOOLBARBITMAP "Izberi slike za orodjarno"
@@ -1500,7 +1499,7 @@ BEGIN
     IDS_IRC_NOSFS           "Izbrana ni nobena deljena datoteka"
     IDS_RESETLABEL          "Samodejno dopolnjevanje (funkcija zgodovine)"
     IDS_IRC_IGNOREMISCMESSAGE "Ignoriraj razna info. sporoèila"
-    IDS_KNOWN               "Znan"
+    IDS_KNOWN               "Znano"
     IDS_RAU_RUNNING         "eMule deluje v naèinu za uporabnika z nizkimi pravicami ""%s"""
     IDS_RAU_FAILED          "Neuspel zagon eMule naèinu: nepreviligiran uporabnik ""eMule_Secure"". Privilegiji uporabnika so obdržani (""%s"")."
     IDS_KADCONTACTSREAD     "Prebranih %u kontaktov iz datoteke."
@@ -1529,7 +1528,7 @@ BEGIN
     IDS_INSTALL_SKIN_PKG_ERROR "Ni veljavna datoteka za preobleko eMule."
     IDS_NEXT_REASK          "Nasledje povpraševanje"
     IDS_A4AF_FILES          "Datoteke A4AF"
-    IDS_STATS_FRATIO        "Razmerje gor:dol to sejo (prenosi k prijateljem niso všteti):"
+    IDS_STATS_FRATIO        "Razmerje gor:dol seje (brez prenosov k prijateljem):"
     IDS_STATS_UDATA_FRIENDS "Podatkov prenesenih k prijateljem (to sejo): %s"
 END
 
@@ -1590,7 +1589,7 @@ STRINGTABLE
 BEGIN
     IDS_MAXHALFOPENCONS     "Maks. število polodprtih povezav"
     IDS_WIZ_STARTWITHWINDOWS 
-                            "Odkljukajte, da se bo eMule zagnal ob zagonu Windowsov."
+                            "Odkljukajte tukaj, èe želite, da se bo eMule zagnal ob zagonu Windowsov."
     IDS_KAD_WAITCBK         "Èakanje na povratni klic Kad"
     IDS_KAD_TOOMANDYKADLKPS "Preveè iskanj Kad"
     IDS_PCDS_CLIENTWAIT     "Èakanje odjemalca"
@@ -1599,11 +1598,11 @@ BEGIN
     IDS_INDEXED             "Indeksirano"
     IDS_KADINFO_SRC         "\tVir: %u\r\n"
     IDS_KADINFO_KEYW        "\tKljuèna beseda: %u\r\n"
-    IDS_STARTWITHWINDOWS    "Zaženi z Windows"
+    IDS_STARTWITHWINDOWS    "Zaženi ob zagonu Windowsov"
     IDS_ADDSRCMANUALLY      "Roèno dodaj vir..."
     IDS_BUDDY               "Kolega"
     IDS_BUDDYNONE           "Brez"
-    IDS_INFO                "Info"
+    IDS_INFO                "Info" //!
     IDS_HALF                "Polovièno"
     IDS_CONCOMPL            "Konèano"
     IDS_KADSTATUS_STOPPING  "Ustavljeno"
@@ -1620,14 +1619,14 @@ BEGIN
     IDS_META_GAPEND         "Konec reže"
     IDS_FAIL                "Ni uspelo"
     IDS_META_PREFERENCES    "Nastavitve"
-    IDS_META_VERSION        "Razlišica"
+    IDS_META_VERSION        "Razlièica"
     IDS_META_TEMPFILE       "Zaèasna datoteka"
     IDS_META_SERVERPORT     "Vrata strežnika"
     IDS_META_SERVERIP       "IP strežnika"
     IDS_META_SRCUDPPORT     "Vrata UDP vira"
     IDS_META_SRCTCPPORT     "Vrata TCP vira"
     IDS_META_SRCIP          "IP vira"
-    IDS_META_SRCTYPE        "Vrsta vira"
+    IDS_META_SRCTYPE        "Vir pridobljen"
     IDS_SEARCH_UNICODE      "Išèi v naèinu Unicode"
 END
 
@@ -1638,11 +1637,11 @@ BEGIN
     IDS_LD_HOSTNAME         "Uporabi ime gostitelja (iz nastavitev) namesto iz IP-ja med izdelavo izvirne povezave"
     IDS_SAVEACFAILED        "NI bilo mogoèe shraniti AICH hasha!"
     IDS_IACHHASH            "AICH hash"
-    IDS_BYTESPERSEC         "B/s"
-    IDS_KBYTESPERSEC        "KB/s"
-    IDS_MBYTESPERSEC        "MB/s"
-    IDS_GBYTESPERSEC        "GB/s"
-    IDS_TBYTESPERSEC        "TB/s"
+    IDS_BYTESPERSEC         "B/s" //!
+    IDS_KBYTESPERSEC        "KB/s" //!
+    IDS_MBYTESPERSEC        "MB/s" //!
+    IDS_GBYTESPERSEC        "GB/s" //!
+    IDS_TBYTESPERSEC        "TB/s" //!
 END
 
 STRINGTABLE 
@@ -1692,7 +1691,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_COMCTRL32_DLL_TOOOLD 
-                            "Knjižica 'Windows Common Controls (COMCTL32.DLL)' je prestara!\r\n\r\neMule je zaznal razlièico knjižice ""Windows Common Controls (COMCTL32.DLL)"" ki je prestara, da bi omogoèila korektno delovanje eMule. Za zagotovitev polne in brezhibne funkcionalnosti eMule vam moèno priporoèamo nadgradnjo knjižice ""Windows Common Controls (COMCTL32.DLL)"" vsaj na razlièico 5.8 \r\n\r\nPrenesite in namestite nadgradnjo knjižice ""Windows Common Controls (COMCTL32.DLL)"" iz Microsoftovega(R) centra prenosov. Ali želite obiskati ustrezno spletno stran?"
+                            "Knjižica 'Windows Common Controls (COMCTL32.DLL)' je prestara!\r\n\r\neMule je zaznal razlièico knjižice ""Windows Common Controls (COMCTL32.DLL)"" ki je prestara, da bi omogoèila pravilno delovanje eMule. Za zagotovitev polne in brezhibne funkcionalnosti eMule vam moèno priporoèamo nadgradnjo knjižice ""Windows Common Controls (COMCTL32.DLL)"" vsaj na razlièico 5.8 \r\n\r\nPrenesite in namestite nadgradnjo knjižice ""Windows Common Controls (COMCTL32.DLL)"" iz Microsoftovega(R) centra prenosov. Ali želite obiskati ustrezno spletno stran?"
     IDS_ASREGEXPR           "Kot regularen izraz"
     IDS_STATIC_REGEXP       "Regularen izraz za filtriran prikaz:"
     IDS_CARE4ALL            "Ovrednoti vse datoteke"
@@ -1721,7 +1720,7 @@ BEGIN
     IDS_WEB_MAIN_SHUTDOWN   "Ali ste preprièani, da želite izklopiti sistem?"
     IDS_WEB_SHOW_UPLOAD_QUEUE_BANNED "Prikaži izloèene odjemalce v vrsti"
     IDS_WEB_SHOW_UPLOAD_QUEUE_FRIEND "Prikaži prijatelje v vrsti"
-    IDS_WEB_SESSIONTIMEOUT  "Seja potekla"
+    IDS_WEB_SESSIONTIMEOUT  "Seja poteèe (min.)"
     IDS_WEB_ALLOWHILEVFUNC  "Dovoli izhod iz eMule, ponovni zagon in izklop sistema"
     IDS_SETPFSLIMIT         "Omejitev virov..."
     IDS_SETPFSLIMITEXPLAINED 
@@ -1806,7 +1805,7 @@ BEGIN
     IDS_DOWNLOAD_LANGFILE   "Prenesi datoteko z jezikom"
     IDS_DOWNLOADING_SERVERMET_FROM "Prenašanje server.met iz %s"
     IDS_DOWNLOADING_SERVERMET "Prenašanje server.met..."
-    IDS_FULLALLOC           "Dodeli polno velikost za 'ne-redke' ('non-sparse') delne datoteke"
+    IDS_FULLALLOC           "Dodeli celotno velikost za 'ne-redke' ('non-sparse') delne datoteke"
     IDS_X_SHAREAZA_IMPORT_NO_HASH "Hasha ni mogoèe najti."
     IDS_X_SHAREAZA_IMPORT_GAP_LIST_CORRUPT "Seznam rež je pokvarjen."
     IDS_X_SHAREAZA_IMPORT_NO_GAP_LIST "Seznama rež ni mogoèe najti."
@@ -1824,13 +1823,13 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ERR_FSCANTHANDLEFILE 
-                            "Nemoreš prenesti te datoteke ker tvoj datoteèni sistem ne podpira datotek ki so veèja od 4GB, premisli o preoblikovanju v NFTS"
-    IDS_NEWVERSIONAVLBETA   "Ta beta razlièica je zastarela. Zaradi narave beta razlièic, ki pogosto vsebujejo hrošèe, je zelo pomembno, da èimprej izvedete posodobitev na stabilno razlièico!"
+                            "Te datoteke ne morete prenesti, ker vaš datoteèni sistem ne podpira datotek veèjih od 4GB, premislite o pretvorbi dat. sistema v NTFS"
+    IDS_NEWVERSIONAVLBETA   "Ta beta razlièica je zastarela. Zaradi narave beta razlièic, katere pogosto vsebujejo hrošèe, je zelo pomembno, da èimprej izvedete posodobitev na stabilno razlièico!"
     IDS_KADSEARCHACTIVE     "(Iskanje Kad poteka...)"
     IDS_BOLD                "Preklopi na krepki tekst"
     IDS_UNDERLINE           "Preklopi na podèrtan tekst"
     IDS_COLOUR              "Izberi osprednjo barvo teksta (po izbiri barvo ozadja)"
-    IDS_RESETFORMAT         "Ponastavi vso prejšne formatiranje (pošèje 'reset' znaèko)"
+    IDS_RESETFORMAT         "Odstrani vso prejšne formatiranje (pošlje 'reset' znaèko)"
     IDS_RESTORESEARCHPARAMS "Obnovi iskalne parametre"
     IDS_COMMAND             "Ukaz"
     IDS_ARGUMENTS           "Argumenti"
@@ -1906,8 +1905,8 @@ BEGIN
     IDS_US_STALLEDREADINGFDISK "Zastoj med branjem z diska."
     IDS_SERVERFEATURE_INTTYPETAGS "Celoštevilske znaèke"
     IDS_FILLGRAPHS          "Izriši zapolnjene grafe"
-    IDS_PARAMETER           "Parameter"
-    IDS_TEST                "Test"
+    IDS_PARAMETER           "Parameter" //!
+    IDS_TEST                "Test" //!
 END
 
 
@@ -1921,7 +1920,7 @@ BEGIN
     IDS_UPNP_NOSERVICE      "Storitev UPnP Device Host ne teèe, UPnP ne bo nastavljen"
     IDS_DELAYEDBYUPNP       "Povezovanje z omrežjem je zakasnjeno, ker UPnP še vedno nastavlja preusmerjanje vrat."
     IDS_DELAYEDBYUPNP2      "Prosim, poèakajte nekaj sekund, eMule se bo povezal takoj ko bo UPnP konèal nastavitev."
-    IDS_UPNP                "UPnP"
+    IDS_UPNP                "UPnP" //!
     IDS_UPNPCLOSEONEXIT     "Odstrani preusmeritve vrat UPnP ob izhodu"
     IDS_UPNPSKIPWANIP       "Preskoèi nastavitev WAN IP"
     IDS_UPNPSKIPWANPPP      "Preskoèi nastavitev WAN PPP"
@@ -1934,10 +1933,48 @@ END
 STRINGTABLE 
 BEGIN
     IDS_SHAREEMULEWARNING   "Èe spremenite to nastavitev, bo eMule uporabil drugo konfiguracijo. Vaše trenutne nastavitve bodo ignorirane in trenutni prenosi mogoèe ne bodo veè vidni. Lahko se vrnete k trenutni konfiguraciji tako, da spet spremenite to nastavitev.\n\nZa uveljavitev te nastavitve, je potreben ponoven zagon eMule."
-    IDS_SPAM                "Spam"
-    IDS_MARKSPAM            "Mark as Spam"
-    IDS_MARKNOTSPAM         "Mark as not Spam"
-    IDS_SEARCHSPAMFILTER    "Enable Spam Filter for search results"
+    IDS_SPAM                "Spam" //!
+    IDS_MARKSPAM            "Oznaèi kot spam"
+    IDS_MARKNOTSPAM         "Oznaèi kot 'ni spam'"
+    IDS_SEARCHSPAMFILTER    "Vklopi spam filter za rezultate iskanja"
+    IDS_SHOWSMILEYS         "Prikaži smeškote"
+    IDS_CAPTCHAREQUEST      "Zaradi zašèite pred spam sporoèili, uporabnik zahteva da razrešite CAPTCHA. Vnesite èrke ki jih vidite na sliki:"
+    IDS_CAPTCHAFAILED       "Odziv na CAPTCHA je napaèen, vaše sporoèilo je bilo ignorirano. Zahtevate lahko nov CAPTCHA tako, da pošljete novo sporoèilo."
+    IDS_CAPTCHASOLVED       "Pravlino ste razrešili CAPTCHA, uporabnik je sprejel vaše sporoèilo."
+    IDS_USECAPTCHAS         "Zahtevaj CAPTCHA avtentikacijo"
+    IDS_BOOTSRAPNODESDAT    "Nodes.dat iz URL-ja:"
+    IDS_DOWNLOADING_NODESDAT_FROM "Prenašanje nodes.dat iz URL-ja %s"
+    IDS_DOWNLOADING_NODESDAT "Prenašanje nodes.dat..."
+    IDS_ERR_FAILEDDOWNLOADNODES "Ni bilo mogoèe prenesti nodes.dat iz URL-ja %s"
+    IDS_PREVENTSTANDBY      "Prepreèi prehod v stanje pripravljenosti med delovanjem eMule"
+    IDS_KADID               "KadID" //!
+    IDS_SEARCHINGFRIENDKAD  "Iskanje kolega v omrežju Kad"
+    IDS_FOUND               "najden"
+    IDS_EXTERNUDPPORT       "Zunanja vrata UDP"
+    IDS_STORESEARCHES       "Med ponovnimi zagoni si zapomni iskalne nize"
+    IDS_WRN_INCFILE_EXISTS  "Mapa ki ste jo izbrali za prihajajoèe datoteke ni prazna. Vse obstojeèe datoteke v tej mapi bodo dodane k deljenim datotekam."
+    IDS_EDITSPAMFILTER      "Uredi spam filter..."
+    IDS_EDITSPAMFILTERCOMMENTS "Uredi filtriranje komentarjev"
+    IDS_WIZZARDOBFUSCATION  "Ta možnost aktivira maskiranje protokola.\n\nÈe vaš ponudnik interneta zavira eMule prenose, lahko maskiranje protokola zaobide to omejitev."
+    IDS_BETANAG             "Uporabljate beta razlièico eMule. Prosim, sporoèite morebitne težave in redno preverjajte ali obstaja posodobitev na našem forumu (http://forum.emule-project.net)."
+    IDS_CONFIRMNODESDOWNLOAD 
+                            "Ali želite prenesti in uporabljati kontakte Kad (nodes.dat) iz tega naslova:\n%s ?"
+    IDS_AUTOMATIC           "Samodejno"
+    IDS_NOTCONNECTEDANY     "Niste povezani s strežnikom ali omrežjem Kad!"
+    IDS_ERR_SHARED_DIR      "Ni bilo mogoèe prebrati deljene mape ""%s"" - %s"
+    IDS_FILE_WARNING_DRM    "Zgleda, da je datoteka ""%s"" zašèitena z Digital Rights Management.\r\n\r\nPo vsej verjetnosti si ne boste mogli ogledati datoteke brez veljavne licence od ustvarjalca datoteke. Odpiranje te datoteke bo po vsej verjetnosti povzroèilo, da bo vaš predvajalnik odprl spletni brskalnik, kateri vas bo samodejno premestil na stran ustvarjalca datoteke, kjer boste morali pridobiti veljavno licenco.\r\n\r\nSte preprièani, da želite odpreti to datoteko?"
+    IDS_CHECK_FILE_OPEN     "Opozori ob odpiranju nezaupljivih datotek"
+    IDS_BOOTABLE            "zagonsko"
+    IDS_UNSUPPORTEDIMAGE    "nepodprta slika"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_UNSHARE             "Prenehaj deliti"
+    IDS_WEBUPNPINCLUDE      "Dodaj vrata v UPnP nastavitve"
+    IDS_ADDEDON             "Dodano"
+    IDS_RESOLVELINKS        "Resolve shell links in shared directories"
 END
 
 #endif    // Slovenian resources

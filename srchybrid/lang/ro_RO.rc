@@ -138,7 +138,7 @@ BEGIN
     IDS_ERR_FOUNDCORRUPTION "Am gãsit coruptã partea (%u) în %s"
     IDS_HASHINGDONE         "Re-hash-ul %s terminat. Fiºierul pare OK"
     IDS_ERR_PARTCORRUPT     "Partea %u descãrcatã e coruptã :(  (%s)"
-    IDS_ICHWORKED           "I.C.H.: Recovered corrupted part %u (%s), Saved: %s"
+    IDS_ICHWORKED           "G.I.C.: Am recuperat partea coruptã %u (%s), Salvat: %s"
     IDS_ERR_OUTOFSPACE      "Spaþiu insuficient pentru descãrcarea %s!"
     IDS_SE                  "Schimb surse"
 END
@@ -165,9 +165,9 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_IP                  "IP"
+    IDS_IP                  "IP" //!
     IDS_DESCRIPTION         "Descriere"
-    IDS_PING                "Ping"
+    IDS_PING                "Ping" //!
     IDS_FILES               "Fiºiere"
     IDS_PREFERENCE          "Prioritate"
     IDS_PRIONOPREF          "Fãrã preferinþe"
@@ -275,14 +275,14 @@ BEGIN
     IDS_CONNECTINGTO        "Mã conectez la %s (%s : %u)..."
     IDS_CLIENTS             "Clienþi"
     IDS_SEARCH_ANY          "Oricare"
-    IDS_SEARCH_AUDIO        "Audio"
+    IDS_SEARCH_AUDIO        "Audio" //!
 END
 
 STRINGTABLE 
 BEGIN
     IDS_SEARCH_PICS         "Imagini"
     IDS_SEARCH_PRG          "Programe"
-    IDS_SEARCH_VIDEO        "Video"
+    IDS_SEARCH_VIDEO        "Video" //!
     IDS_SEARCH_CDIMG        "Imagini CD"
     IDS_SEARCH_ARC          "Arhive"
     IDS_ERR_INVALIDLINK     "Acest link eD2k nu e valid (%s)"
@@ -313,7 +313,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_FSTAT_TRANSFER      "Transfer"
+    IDS_FSTAT_TRANSFER      "Transfer" //!
     IDS_FSTAT_CONNECTION    "Conexiune"
     IDS_FSTAT_SERVERS       "Servere"
     IDS_FSTAT_WAITING       "În aºteptare..."
@@ -332,7 +332,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_STATS_UNKNOWNCLIENT "Necunoscuþi: %u"
-    IDS_STATS_TOTAL         "Total: %u"
+    IDS_STATS_TOTAL         "Total: %u" //!
     IDS_DISABLED            "Dezactivat"
     IDS_STOPPED             "Oprit"
     IDS_STATS_UPDATELABEL   "Interval actualizare: %u sec"
@@ -407,7 +407,7 @@ BEGIN
     IDS_ERR_CLIENTERRORED   "Clientul '%s' a cauzat o eroare la crearea pachetului (%s) - client deconectat"
     IDS_ERR_REQ_FNF         "n-am gãsit fiºierul cerut"
     IDS_DESC                "Descriere: %s"
-    IDS_PORT                "Port"
+    IDS_PORT                "Port" //!
     IDS_ERR_NOVALIDSERVERSFOUND "N-am gãsit servere valide în listã"
     IDS_CONNECTEDTOREQ      "M-am conectat la %s (%s:%u), trimit cerere de logare"
     IDS_ERR_FATAL           "Eroare fatalã încercînd conectarea. Conexiunea Internet ar putea fi inactivã"
@@ -429,7 +429,7 @@ BEGIN
     IDS_SW_GLOBAL           "Cautã &global"
     IDS_SW_DIRECTDOWNLOAD   "Adaugã link eD2k"
     IDS_SW_LINK             "link eD2k"
-    IDS_SW_START            "Start"
+    IDS_SW_START            "Start" //!
     IDS_SCHEDULER           "Programare"
 END
 
@@ -440,10 +440,10 @@ BEGIN
     IDS_SW_DOWNLOAD         "Descarcã selecþia"
     IDS_SV_SERVERLIST       "Servere"
     IDS_SV_SERVERINFO       "Info server"
-    IDS_SV_LOG              "Log"
+    IDS_SV_LOG              "Raport"
     IDS_SV_NEWSERVER        "Server nou"
     IDS_SV_ADDRESS          "IP sau adresã"
-    IDS_SV_PORT             "Port"
+    IDS_SV_PORT             "Port" //!
     IDS_SV_ADD              "Adaugã server"
     IDS_SV_MET              "Actualizare server.met din URL"
     IDS_SV_UPDATE           "Actualizeazã"
@@ -457,7 +457,7 @@ STRINGTABLE
 BEGIN
     IDS_SPEED_LIMITS        "Limite de vitezã"
     IDS_CAPACITY_LIMITS     "Limite de bandã"
-    IDS_ADMIN               "Administrator"
+    IDS_ADMIN               "Administrator" //!
     IDS_ACCESSDENIED        "Acces interzis!"
     IDS_WEB_LOWUSER         "Client"
     IDS_WEB_ERR_CANTLOAD    "Nu pot încãrca template-uri: nu pot deschide fiºierul %s"
@@ -489,7 +489,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_SF_TOTAL            "Total"
+    IDS_SF_TOTAL            "Total" //!
     IDS_SF_TRANS            "Transferat:"
     IDS_SF_ACCEPTED         "Trimiteri acceptate:"
     IDS_SF_REQUESTED        "Cereri:"
@@ -503,7 +503,7 @@ BEGIN
     IDS_CW_FRIENDS          "Prieteni"
     IDS_CW_SEND             "Trimite"
     IDS_CW_CLOSE            "Închide"
-    IDS_PW_GENERAL          "General"
+    IDS_PW_GENERAL          "General" //!
 END
 
 STRINGTABLE 
@@ -521,7 +521,7 @@ BEGIN
     IDS_PW_CLIENTPORT       "Port client"
     IDS_PW_AUTOCON          "Conectare automatã la pornire"
     IDS_PW_RECON            "Reconectare dacã s-a deconectat"
-    IDS_PW_SERVER           "Server"
+    IDS_PW_SERVER           "Server" //!
 END
 
 STRINGTABLE 
@@ -551,7 +551,7 @@ BEGIN
     IDS_PW_EVER             "Tuturor"
     IDS_PW_FRIENDS          "Prietenilor"
     IDS_PW_NOONE            "Nimãnui"
-    IDS_PW_RESET            "Reset"
+    IDS_PW_RESET            "Reset" //!
     IDS_PW_APPLY            "Aplicã"
     IDS_EM_TRANS            "&Transferuri"
     IDS_EM_SERVER           "Ser&vere"
@@ -565,24 +565,24 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_FD_GENERAL          "General"
+    IDS_FD_GENERAL          "General" //!
     IDS_FD_MET              "Fiºier part.met:"
-    IDS_FD_HASH             "Hash:"
+    IDS_FD_HASH             "Hash:" //!
     IDS_FD_SIZE             "Mãrime fiºier:"
-    IDS_FD_TRANSFER         "Transfer"
+    IDS_FD_TRANSFER         "Transfer" //!
     IDS_FD_PARTS            "Pãrþi:"
     IDS_FD_TRANS            "Transferaþi:"
     IDS_FD_DATARATE         "Vitezã:"
     IDS_FD_COMPSIZE         "Completat:"
     IDS_FD_CLOSE            "Închide"
     IDS_FD_TITLE            "Detalii fiºier"
-    IDS_CD_GENERAL          "General"
+    IDS_CD_GENERAL          "General" //!
 END
 
 STRINGTABLE 
 BEGIN
     IDS_CD_UNAME            "Nume utilizator:"
-    IDS_CD_UHASH            "Userhash:"
+    IDS_CD_UHASH            "Userhash:" //!
     IDS_CD_CSOFT            "Soft client"
     IDS_CD_UIP              "Adresã IP:"
     IDS_CD_SIP              "IP server:"
@@ -595,7 +595,7 @@ BEGIN
     IDS_CD_UP               "Trimiºi (sesiunea asta):"
     IDS_CD_AUP              "Vitezã medie trimitere:"
     IDS_CD_TUP              "Trimiºi în total:"
-    IDS_CD_TRANS            "Transfer"
+    IDS_CD_TRANS            "Transfer" //!
 END
 
 STRINGTABLE 
@@ -605,7 +605,7 @@ BEGIN
     IDS_CD_RATING           "Punctaj (total):"
     IDS_CD_USCORE           "Punctaj rînd:"
     IDS_CD_TITLE            "Detalii client"
-    IDS_EMULEW              "Click"
+    IDS_EMULEW              "Click" //!
     IDS_EMULEW2             "pentru a verifica dacã a apãrut o versiune nouã"
     IDS_EMULEW3             "AICI"
     IDS_PW_MAXSOURCES       "Maxim surse/fiºier"
@@ -676,7 +676,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ADDED2SSF           "Adãugat la lista de servere statice"
-    IDS_STATICSERVER        "Static"
+    IDS_STATICSERVER        "Static" //!
     IDS_ERROR_SSF           "Nu pot deschide fiºierul 'staticservers.dat'"
     IDS_SF_ACTIVECON        "Conexiuni active (circa)"
     IDS_SF_MAXCONLIMITREACHED "Limita maximã conexiuni atinsã"
@@ -687,18 +687,18 @@ BEGIN
     IDS_SF_DELCOUNT         "Servere ºterse"
     IDS_QUEUEFULL           "Rînd plin"
     IDS_AVG                 "Medie"
-    IDS_BYTES               "Bytes"
-    IDS_KBYTES              "KB"
-    IDS_MBYTES              "MB"
+    IDS_BYTES               "Bytes" //!
+    IDS_KBYTES              "KB" //!
+    IDS_MBYTES              "MB" //!
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_GBYTES              "GB"
-    IDS_TBYTES              "TB"
+    IDS_GBYTES              "GB" //!
+    IDS_TBYTES              "TB" //!
     IDS_SECS                "sec"
     IDS_MINS                "min"
-    IDS_HOURS               "h"
+    IDS_HOURS               "h" //!
     IDS_DAYS                "Z"
     IDS_ED2KLINKFIX         "link-uri eD2k"
     IDS_RECONNECT           "Conectarea automatã la server se va repeta în %u secunde"
@@ -799,7 +799,7 @@ BEGIN
     IDS_DL_TRY_TO_GET_PREVIEW_PARTS 
                             "Descarc întîi pãrþi necesare pre-vizualizãrii"
     IDS_IRC_KICK            "Alungã"
-    IDS_IRC_SLAP            "Slap"
+    IDS_IRC_SLAP            "Slap" //!
     IDS_IRC_JOIN            "Intrã"
     IDS_IRC_CHANNELLIST     "Listã canale"
     IDS_IRC_CONNECT         "Conectare"
@@ -886,15 +886,15 @@ BEGIN
     IDS_REMOVEFRIEND        "ªterge prieten"
     IDS_REMOVEFROMSTATIC    "ªterge din lista de servere statice"
     IDS_LENGTH              "Duratã"
-    IDS_VIDEO               "Video"
-    IDS_AUDIO               "Audio"
+    IDS_VIDEO               "Video" //!
+    IDS_AUDIO               "Audio" //!
     IDS_FILEINFO            "Date &tehnice fiºier"
-    IDS_CODEC               "Codec"
-    IDS_BITRATE             "Bitrate"
+    IDS_CODEC               "Codec" //!
+    IDS_BITRATE             "Bitrate" //!
     IDS_WIDTH               "Lãþime"
     IDS_FPS                 "Cadre/sec"
     IDS_CHANNELS            "Canale"
-    IDS_SAMPLERATE          "Samplerate"
+    IDS_SAMPLERATE          "Samplerate" //!
 END
 
 STRINGTABLE 
@@ -935,7 +935,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_PRIOAUTONORMAL      "Auto [No]"
+    IDS_PRIOAUTONORMAL      "Auto [No]" //!
     IDS_PRIOAUTOHIGH        "Auto [Ma]"
     IDS_PRIOAUTORELEASE     "Auto [Ge]"
     IDS_PRIOAUTOLOW         "Auto [Mi]"
@@ -977,9 +977,9 @@ BEGIN
     IDS_CMT_EXCELLENT       "Excelent"
     IDS_CMT_NOTRATED        "Necotat"
     IDS_KILO                "K"
-    IDS_MEGA                "M"
-    IDS_GIGA                "G"
-    IDS_TERRA               "T"
+    IDS_MEGA                "M" //!
+    IDS_GIGA                "G" //!
+    IDS_TERRA               "T" //!
     IDS_IRC_EMULEPROTO_IGNOREINFOMESSAGE "Ignorã mesajele de protocol eMule"
     IDS_SMARTLOWIDCHECK     "Verific atent IDmic la conectare"
     IDS_SF_SRVOCC           "Ocupare server: %.2f%%"
@@ -992,7 +992,7 @@ STRINGTABLE
 BEGIN
     IDS_ERR_NOHELP          "Vino, te rog, în secþia de Download a paginii noastre de Net ptr. un nou fiºier de Ajutor!\n\nVrei sã rãsfoieºti ajutorul online acum, în schimb?"
     IDS_SHOWOVERHEAD        "Aratã consum adiþional bandã"
-    IDS_UPDOWNSMALL         "Up: %.1f | Down: %.1f"
+    IDS_UPDOWNSMALL         "Tr: %.1f | Desc: %.1f"
     IDS_EDITLIST            "Lista..."
     IDS_SP_ICONBAR          "Bara de vitezã icon din SysTray"
     IDS_RATINGRECV          "Votul fiºierului '%s' primit: %u"
@@ -1017,7 +1017,7 @@ BEGIN
     IDS_PW_VIDEOPLAYER      "Player pentru pre-vizualizare:"
     IDS_VIDEOBACKUP         "Creeazã copie de pre-vizualizare"
     IDS_MYINFO              "Datele mele"
-    IDS_ID                  "ID"
+    IDS_ID                  "ID" //!
     IDS_IDLOW               "IDmic"
     IDS_IDHIGH              "IDmare"
     IDS_UPSTATUS            "Pãrþi obþinute"
@@ -1059,7 +1059,6 @@ BEGIN
     IDS_USECREDITSYSTEM     "Folosesc sistemul de credite (Favorizezi clienþii ce oferã)"
     IDS_FIRSTAUTODOWN       "Activeazã dacã vrei ca eMule sã gestioneze prioritatea fiºierelor la descãrcare.\n\nActivarea acestei opþiuni permite ca eMule sã verifice ca fiºierele cu multe surse sã nu interfereze cu cele cu surse puþine. Opþiunea va opera numai asupra viitoarelor descãrcãri. (Implicit: Activat)"
     IDS_FIRSTAUTOUP         "Activeazã dacã vrei ca eMule sã gestioneze prioritatea fiºierelor la trimitere.\n\nActivarea acestei opþiuni permite ca eMule sã accelereze difuzarea fiºierelor rare, cele populare devenind mai greu accesibile. Dezactivarea acestei opþiuni permite ca eMule sã trimitã fiºierele populare mai des, în detrimentul celor rare. Opþiunea va opera numai asupra viitoarelor fiºiere share. (Implicit: Activat)"
-    IDS_FIRSTFULLCHUNK      "Activeazã dacã vrei sã trimiþi pãrþi întregi.\n\nActivarea opþiunii va da clienþilor posibilitatea de a completa pãrþi întregi. Dezactivînd-o, vor trece mai mulþi clienþi pe la rînd. Dacã eºti un 'ofertant', vei activa aceastã opþiune. (Implicit: Activat)"
     IDS_FIRSTSAFECON        "Activeazã dacã vrei ca eMule sã se conecteze prin metoda 'Safe Connect'?\n\nDezactivarea acestei opþiuni permite conectarea eMule mai rapidã la servere, dar creºte posibilitatea de a primi un fals ID mic.(Implicit: Dezactivat)"
     IDS_FIRSTAUTOCON        "Activeazã dacã vrei ca eMule sã se conecteze la pornirea sistemului? (Implicit: Dezactivat)"
     IDS_FIRSTCOMPLETE       "Ai încheiat procesul de setare pas cu pas.\n\nAceste opþiuni ºi altele vor putea fi ulterior modificate apãsînd butonul 'Preferinþe'. Pentru explicaþii ºi suport vezi Ajutorul, apãsînd  F1 în eMule!"
@@ -1095,7 +1094,7 @@ BEGIN
     IDS_WEB_GZIP_COMMENT    "Economie de trafic,mai ales la graficã."
     IDS_WEB_REFRESH_TIME    "Actualizare ferestre la"
     IDS_WEB_REFRESH_COMMENT "Timp în secunde (zero = dezactivat):"
-    IDS_SV_URL              "URL"
+    IDS_SV_URL              "URL" //!
     IDS_WS_RELOAD_TMPL      "Stil interfaþã Web"
     IDS_SV_DEBUGLOG         "Log de depanare"
     IDS_WS_PASS             "Parolã"
@@ -1132,7 +1131,7 @@ BEGIN
     IDS_WEBSRV              "Interfaþa Web"
     IDS_SW_REFETCHRES       "Adu rezultatele"
     IDS_FILEHASH            "Hash fiºier"
-    IDS_PW_PROXY            "Proxy"
+    IDS_PW_PROXY            "Proxy" //!
     IDS_PROXY_ENABLE        "Activare Proxy"
     IDS_PROXY_TYPE          "Tip Proxy:"
     IDS_PROXY_HOST          "Adresã Proxy:"
@@ -1250,7 +1249,7 @@ BEGIN
     IDS_STATS_DSPF          "Fiºier part"
     IDS_STATS_DATASOURCE    "Sursã date"
     IDS_STATS_DSFILE        "Fiºier complet"
-    IDS_STATS_GENERAL       "General"
+    IDS_STATS_GENERAL       "General" //!
     IDS_STATS_TRANSTIME     "Duratã transfer"
     IDS_STATS_DOWNTIME      "Duratã descãrcare"
     IDS_STATS_UPTIME        "Duratã trimitere"
@@ -1318,14 +1317,14 @@ STRINGTABLE
 BEGIN
     IDS_VERSION             "Versiune"
     IDS_PASTE               "Adaugã"
-    IDS_A4AF                "Gestionarea"
-    IDS_MOBILEMULE          "MobileMule"
+    IDS_A4AF                "Gestionare"
+    IDS_MOBILEMULE          "MobileMule" //!
     IDS_ENABLEMM            "Activare MobileMule"
     IDS_AUTOCAT_LABEL       "Recunoaºtere automatã categorie (exemple separate cu |)"
     IDS_SHOWEXTSETTINGS     "Mai multe controale (mod avansat)"
     IDS_TREEOPTIONS_TRUE    "Adevãrat"
     IDS_TREEOPTIONS_FALSE   "Fals"
-    IDS_TREEOPTIONS_OK      "OK"
+    IDS_TREEOPTIONS_OK      "OK" //!
     IDS_HYPERTEXT_FONT_HINT "Caracterele ferestrei server, mesaje ºi IRC"
 END
 
@@ -1345,8 +1344,8 @@ BEGIN
     IDS_MMSTARTED           "Serverul MobileMule pornit pe portul %u. Versiune protocol: %s"
     IDS_SHOWDWLPERCENTAGE   "Aratã procentul completat în bara de progres"
     IDS_TBN_ONNEWDOWNLOAD   "S-a adãugat o descãrcare"
-    IDS_ARTIST              "Artist"
-    IDS_ALBUM               "Album"
+    IDS_ARTIST              "Artist" //!
+    IDS_ALBUM               "Album" //!
     IDS_MMGUIDELINK         "Ghidul MobileMule"
 END
 
@@ -1480,9 +1479,9 @@ BEGIN
     IDS_OPENFOLDER          "Deschide dosar"
     IDS_RUNASUSER           "Porneºte eMule ca utilizator fãrã privilegii"
     IDS_DELETE              "ªterge de pe disc"
-    IDS_BOOTSTRAP           "Bootstrap"
+    IDS_BOOTSTRAP           "Bootstrap" //!
     IDS_VIAED2KSQ           "prin server eD2k"
-    IDS_EM_KADEMLIA         "&Kad"
+    IDS_EM_KADEMLIA         "&Kad" //!
     IDS_VIAKAD              "prin Kad"
     IDS_VIASE               "prin Schimb de surse"
     IDS_SELECTTOOLBARBITMAP "Selecteazã bitmap pentru bara de unelte"
@@ -1501,7 +1500,7 @@ BEGIN
     IDS_KAD_RECHECKFW       "Reverificã Firewall"
     IDS_SHAREDTITLE         "Share eD2k|Kad"
     IDS_FIREWALLED          "cu Firewall"
-    IDS_KADEMLIA            "Kad"
+    IDS_KADEMLIA            "Kad" //!
     IDS_KADCONTACTLAB       "Contacte"
     IDS_KADDISTANCE         "Distanþã"
     IDS_KEY                 "Cheie"
@@ -1533,7 +1532,7 @@ STRINGTABLE
 BEGIN
     IDS_LOG_A4AF            "Logheazã acþiunile A4AF"
     IDS_A4AF_SAVE_CPU       "Dezactivez verificãrile A4AF ptr. economie CPU"
-    IDS_SEARCH_DOC          "Document"
+    IDS_SEARCH_DOC          "Document" //!
     IDS_INSTALL_SKIN        "Instalare Skin eMule"
     IDS_INSTALL_SKIN_NODIR  "Dosar Skin neselectat sau inaccesibil!"
     IDS_INSTALL_SKIN_DIR_ERROR 
@@ -1605,10 +1604,10 @@ BEGIN
     IDS_KAD_TOOMANDYKADLKPS "Prea multe cãutãri Kad"
     IDS_PCDS_CLIENTWAIT     "Aºtept Client"
     IDS_PCDS_CACHEWAIT      "Aºtept Cache"
-    IDS_CACHE               "Cache"
+    IDS_CACHE               "Cache" //!
     IDS_INDEXED             "Indexat"
     IDS_KADINFO_SRC         "\tSursã: %u\r\n"
-    IDS_KADINFO_KEYW        "\tKeyword: %u\r\n"
+    IDS_KADINFO_KEYW        "\tKeyword: %u\r\n" //!
 END
 
 STRINGTABLE 
@@ -1617,12 +1616,12 @@ BEGIN
     IDS_ADDSRCMANUALLY      "Adaugã sursã manual"
     IDS_BUDDY               "Partener"
     IDS_BUDDYNONE           "Fãrã"
-    IDS_INFO                "Info"
+    IDS_INFO                "Info" //!
     IDS_HALF                "Semi"
-    IDS_CONCOMPL            "Compl"
+    IDS_CONCOMPL            "Compl" //!
     IDS_KADSTATUS_STOPPING  "Opresc"
     IDS_KADSTATUS_ACTIVE    "Activã"
-    IDS_FORMAT              "Format"
+    IDS_FORMAT              "Format" //!
     IDS_META_COLLECTION     "Colecþie"
     IDS_META_PARTPATH       "Cale Part"
     IDS_META_PARTHASH       "Hash Part"
@@ -1651,17 +1650,17 @@ BEGIN
     IDS_LD_COPYCLIPBOARD    "Copiazã în Agendã"
     IDS_LD_HOSTNAME         "Foloseºte hostname (din preferinþe) în loc de IP la crearea unui link sursã"
     IDS_SAVEACFAILED        "Nu pot salva AICH Hashset!"
-    IDS_IACHHASH            "AICH Hash"
-    IDS_BYTESPERSEC         "B/s"
-    IDS_KBYTESPERSEC        "KB/s"
-    IDS_MBYTESPERSEC        "MB/s"
-    IDS_GBYTESPERSEC        "GB/s"
-    IDS_TBYTESPERSEC        "TB/s"
+    IDS_IACHHASH            "AICH Hash" //!
+    IDS_BYTESPERSEC         "B/s" //!
+    IDS_KBYTESPERSEC        "KB/s" //!
+    IDS_MBYTESPERSEC        "MB/s" //!
+    IDS_GBYTESPERSEC        "GB/s" //!
+    IDS_TBYTESPERSEC        "TB/s" //!
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_STATS_MINORCLIENTS  "Minor"
+    IDS_STATS_MINORCLIENTS  "Minor" //!
     IDS_LD_BASICOPT         "Opþiuni de bazã"
     IDS_LD_ADDSOURCE        "Adaugã-te ca sursã"
     IDS_LD_EMULEHASH        "Adaugã eMule AICH Hash pentru gestionarea avansatã a coruperilor"
@@ -1675,7 +1674,7 @@ BEGIN
     IDS_AICH_CALCFILE       "Calculez AICH Hash fiºierului %s"
     IDS_AICH_WARNUSER       "Începînd cu versiunea 0.44a, eMule foloseºte un filehash adiþional care ajutã la reducerea drasticã a pierderilor de date în caz de corupere. Fãcînd update de la o versiune anterioarã, eMule va face rehash tuturor fiºierelor shared pentru a calcula noul hash. Va dura ceva, dar se face doar o datã.  "
     IDS_AICH_WORKED         "AICH a recuperat cu succes %s din %s a pãrþii %u din %s"
-    IDS_TRICKLING           "Standby"
+    IDS_TRICKLING           "Standby" //!
     IDS_SOURCECLIENT        "Client sursã"
     IDS_USERSIP             "IP useri"
     IDS_FEATURES            "Opþiuni"
@@ -1937,10 +1936,48 @@ END
 STRINGTABLE 
 BEGIN
     IDS_SHAREEMULEWARNING   "Aceastã opþiune permite ca eMule sã foloseascã o altã configuraþie. Setãrile dvs. curente vor fi ignorate iar descãrcãrile în curs ar putea deveni indisponibile. Puteþi reveni oricînd la configuraþia curentã, modificînd din nou aceastã opþiune.\n\nPentru ca aceastã modificare sã aibã efect, trebuie sã reporniþi eMule."
-    IDS_SPAM                "Spam"
-    IDS_MARKSPAM            "Mark as Spam"
-    IDS_MARKNOTSPAM         "Mark as not Spam"
-    IDS_SEARCHSPAMFILTER    "Enable Spam Filter for search results"
+    IDS_SPAM                "Spam" //!
+    IDS_MARKSPAM            "Marcheazã ca Spam"
+    IDS_MARKNOTSPAM         "Marcheazã ca ne-Spam"
+    IDS_SEARCHSPAMFILTER    "Activare Filtru Spam ptr. rezultatele cãutãrii"
+    IDS_SHOWSMILEYS         "Aratã emoticonuri"
+    IDS_CAPTCHAREQUEST      "Pentru a evita mesajele spam, acest utilizator cere sã rezolvi un captcha înainte de a-i putea trimite un mesaj. Te rog tasteazã literele din aceastã imagine ca rãspuns:"
+    IDS_CAPTCHAFAILED       "Rãspunsul tãu la captcha a fost greºit, deci mesajul þi-a fost ignorat. Poþi cere un nou captcha trimiþînd un alt mesaj."
+    IDS_CAPTCHASOLVED       "Ai trecut testul captcha iar utilizatorul a primit mesajul tãu."
+    IDS_USECAPTCHAS         "Cere autentificare captcha"
+    IDS_BOOTSRAPNODESDAT    "Nodes.dat de la URL:"
+    IDS_DOWNLOADING_NODESDAT_FROM "Descarc nodes.dat de la %s"
+    IDS_DOWNLOADING_NODESDAT "Descarc nodes.dat..."
+    IDS_ERR_FAILEDDOWNLOADNODES "Nu pot descãrca nodes.dat de la %s"
+    IDS_PREVENTSTANDBY      "Previne modul Standby cînd ruleazã eMule"
+    IDS_KADID               "KadID" //!
+    IDS_SEARCHINGFRIENDKAD  "Caut prieten în reþeaua Kad"
+    IDS_FOUND               "gãsit"
+    IDS_EXTERNUDPPORT       "Port UDP extern"
+    IDS_STORESEARCHES       "Þine minte cãutãrile în curs între sesiuni"
+    IDS_WRN_INCFILE_EXISTS  "Dosarul ales pentru fiºierele primite nu e gol. Toate fiºierele din acel dosar vor fi automat partajate de cãtre eMule."
+    IDS_EDITSPAMFILTER      "Editare filtru spam..."
+    IDS_EDITSPAMFILTERCOMMENTS "Editare filtru spam ptr. comentarii"
+    IDS_WIZZARDOBFUSCATION  "Activeazã aceastã opþiune pentru a activa mascarea de protocol\n\nDacã prividerul tãu încearcã sã limiteze sau blocheze eMule, activarea mascãrii ajutã la depãºirea acestor restricþii."
+    IDS_BETANAG             "Aceasta este o versiune beta a eMule. Te rugãm sã raportezi orice problemã ºi sã verifici regulat dacã sînt noutãþi în forumul nostru (http://forum.emule-project.net)."
+    IDS_CONFIRMNODESDOWNLOAD 
+                            "Vrei sã descarci ºi sã foloseºti contacte Kad (nodes.dat) de la aceastã adresã:\n%s ?"
+    IDS_AUTOMATIC           "Automat"
+    IDS_NOTCONNECTEDANY     "Nu eºti conectat la nici un server ºi nici la reþeaua Kad!"
+    IDS_ERR_SHARED_DIR      "Nu pot citi dosarul share ""%s"" - %s"
+    IDS_FILE_WARNING_DRM    "Fiºierul ""%s"" pare protejat cu Digital Rights Management.\r\n\r\nNu-l vei putea folosi fãrã licenþã de la creatorul lui. Deschiderea fiºierului va deschide browserul la pagina creatorului unde þi se va cere sã achiziþionezi o licenþã.\r\n\r\nChiar vrei sã deschizi acest fiºier?"
+    IDS_CHECK_FILE_OPEN     "Avertizeazã la deschiderea fiºierelor dubioase"
+    IDS_BOOTABLE            "boot-abil"
+    IDS_UNSUPPORTEDIMAGE    "imagine nesuportatã"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_UNSHARE             "Scoate din share"
+    IDS_WEBUPNPINCLUDE      "Include port în setãrile UPnP"
+    IDS_ADDEDON             "Adãugat"
+    IDS_RESOLVELINKS        "Resolve shell links in shared directories"
 END
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1958,4 +1995,3 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-

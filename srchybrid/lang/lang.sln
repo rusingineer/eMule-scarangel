@@ -81,6 +81,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "languages - Vietnamese", "v
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "languages - Valencian", "va_ES.vcproj", "{506A62DC-BB66-4686-BCBE-E1BBB0B1E27A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "languages - Valencian (RACV)", "va_ES_RACV.vcproj", "{506A62DC-BB66-4686-BCBE-E1BBB0B1E27A}"
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		ConfigName.0 = Dynamic

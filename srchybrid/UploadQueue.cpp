@@ -68,7 +68,7 @@ static char THIS_FILE[] = __FILE__;
 
 /* Xman moved down
 static uint32 counter, sec, statsave;
-static UINT _uSaveStatistics = 0;
+static UINT s_uSaveStatistics = 0;
 // -khaos--+++> Added iupdateconnstats...
 static uint32 igraph, istats, iupdateconnstats;
 // <-----khaos-
@@ -361,8 +361,8 @@ CUpDownClient* CUploadQueue::FindBestClientInQueue(bool bCheckOnly)
 		return bestaddpowerclient;
 	}
 	//Xman end
-	else
-		return waitinglist.GetAt(toadd);
+    else
+	    return waitinglist.GetAt(toadd);
 	*/
 	if(lowclientSup && toaddSup) // both chosen clients are superior
 	{
@@ -414,7 +414,7 @@ void CUploadQueue::InsertInUploadingList(CUpDownClient* newclient)
     // Add it last
     theApp.uploadBandwidthThrottler->AddToStandardList(uploadinglist.GetCount(), newclient->GetFileUploadSocket());
 	uploadinglist.AddTail(newclient);
-	newclient->SetSlotNumber(uploadinglist.GetCount());
+    newclient->SetSlotNumber(uploadinglist.GetCount());
 	*/
 	// ==> Superior Client Handling [Stulle] - Stulle
 	/*
@@ -442,7 +442,6 @@ bool CUploadQueue::AddUpNextClient(LPCTSTR pszReason, CUpDownClient* directadd){
 	// select next client or use given client
 	if (!directadd)
 	{
-
 		// ==> Spread Credits Slot [Stulle] - Stulle
 		if(	thePrefs.GetSpreadCreditsSlot() && thePrefs.TransferFullChunks() && m_bSpreadCreditsSlotActive)
 	        newclient = FindBestSpreadClientInQueue();
@@ -487,11 +486,13 @@ bool CUploadQueue::AddUpNextClient(LPCTSTR pszReason, CUpDownClient* directadd){
 	}
 	else
 	{
+#if defined(_DEBUG) || defined(USE_DEBUG_DEVICE) //zz_fly :: DummyCut :: 090213
 		if (thePrefs.GetDebugClientTCPLevel() > 0)
 			DebugSend("OP__AcceptUploadReq", newclient);
+#endif //zz_fly :: DummyCut
 		Packet* packet = new Packet(OP_ACCEPTUPLOADREQ,0);
 		theStats.AddUpDataOverheadFileRequest(packet->size);
-		newclient->socket->SendPacket(packet,true);
+		newclient->SendPacket(packet, true);
 		newclient->SetUploadState(US_UPLOADING);
 		//Xman find best sources
 		//Xman: in every case, we add this client to our downloadqueue
@@ -570,11 +571,11 @@ void CUploadQueue::UpdateActiveClientsInfo(DWORD curTick) {
     if(thePrefs.GetLogUlDlEvents() && theApp.uploadBandwidthThrottler->GetStandardListSize() > (uint32)uploadinglist.GetSize()) {
         // debug info, will remove this when I'm done.
         //AddDebugLogLine(false, _T("UploadQueue: Error! Throttler has more slots than UploadQueue! Throttler: %i UploadQueue: %i Tick: %i"), theApp.uploadBandwidthThrottler->GetStandardListSize(), uploadinglist.GetSize(), ::GetTickCount());
-
-		if(tempHighest > (uint32)uploadinglist.GetSize()+1) {
-        	tempHighest = uploadinglist.GetSize()+1;
-		}
     }
+	
+	if(tempHighest > (uint32)uploadinglist.GetSize()+1) {
+        tempHighest = uploadinglist.GetSize()+1;
+	}
 
     m_iHighestNumberOfFullyActivatedSlotsSinceLastCall = tempHighest;
 
@@ -653,6 +654,11 @@ void CUploadQueue::Process() {
 	while(pos != NULL){
         // Get the client. Note! Also updates pos as a side effect.
 		CUpDownClient* cur_client = uploadinglist.GetNext(pos);
+//zz_fly :: possible fix crash :: start
+#if defined(_DEBUG) || defined(_BETA)
+		CUpDownClient* next_client = (pos) ? uploadinglist.GetAt(pos) : NULL;
+#endif
+//zz_fly :: possible fix crash :: end
 		if (thePrefs.m_iDbgHeap >= 2)
 			ASSERT_VALID(cur_client);
 		//It seems chatting or friend slots can get stuck at times in upload.. This needs looked into..
@@ -670,6 +676,29 @@ void CUploadQueue::Process() {
 		} else {
             cur_client->SendBlockData();
         }
+//zz_fly :: possible fix crash :: start
+//note: uploadinglist may be changed by other threads, we have to make sure the pos is valid.
+//		this fix will sightly increase the cpu useage of big uploaders, and nearly not happen.
+//		final version do not add it. perform more test.
+#if defined(_DEBUG) || defined(_BETA)
+		POSITION posTemp = NULL;
+		if (next_client) {
+			posTemp = uploadinglist.Find(next_client);
+		}
+		if (posTemp == NULL && next_client) { //next_client has been deleted
+			posTemp = uploadinglist.Find(cur_client);
+			if (posTemp != NULL)
+				uploadinglist.GetNext(posTemp);
+			else //next_client and cur_client have been deleted, it is better to break
+			{
+				AddLogLine(false, _T("CUploadQueue::Process() happened a exception, break this loop."));
+				break;
+			}
+		}
+		if (posTemp != NULL)
+			pos = posTemp;
+#endif
+//zz_fly :: possible fix crash :: end
 	}
 
 	//Xman
@@ -1141,15 +1170,19 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 		Packet* replypacket = new Packet(OP_FILEREQANSNOFIL, 16);
 		md4cpy(replypacket->pBuffer, client->GetUploadFileID());
 		theStats.AddUpDataOverheadFileRequest(replypacket->size);
-		client->socket->SendPacket(replypacket, true);
+		client->SendPacket(replypacket, true);
 		return;
 	}
 	//Xman end
 
 	client->AddAskedCount();
 	client->SetLastUpRequest();
+	//zz_fly :: move to CListenSocket::ProcessPacket(), it is better in there :: start
+	///* //test code
 	if (!bIgnoreTimelimit)
 		client->AddRequestCount(client->GetUploadFileID());
+	//*/
+	//zz_fly :: end
 	if (client->IsBanned())
 		return;
 
@@ -1320,14 +1353,16 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 	if (reqfile)
 	*/
 	//Xman end
-	reqfile->statistic.AddRequest();
+		reqfile->statistic.AddRequest();
 
 	//Xman
 	if (client->IsDownloading())
 	{
 		// he's already downloading and wants probably only another file
+#if defined(_DEBUG) || defined(USE_DEBUG_DEVICE) //zz_fly :: DummyCut :: 090213
 		if (thePrefs.GetDebugClientTCPLevel() > 0)
 			DebugSend("OP__AcceptUploadReq", client);
+#endif //zz_fly :: DummyCut
 		
 		//Xman Close Backdoor v2
 		//a downloading client can simply request an other file during downloading
@@ -1362,7 +1397,7 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 
 		Packet* packet = new Packet(OP_ACCEPTUPLOADREQ,0);
 		theStats.AddUpDataOverheadFileRequest(packet->size);
-		client->socket->SendPacket(packet,true);
+		client->SendPacket(packet, true);
 		//AddDebugLogLine(false,_T("-->sending ACCEPTUPLOADREQ a second time: %s"), client->DbgGetClientInfo());
 		return;
 	}
@@ -1386,11 +1421,11 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 	else
 		client->SetCollectionUploadSlot(false);
 
-	// cap the list
-	// the queue limit in prefs is only a soft limit. Hard limit is 25% higher, to let in powershare clients and other
-	// high ranking clients after soft limit has been reached
-	uint32 softQueueLimit = thePrefs.GetQueueSize();
-	uint32 hardQueueLimit = thePrefs.GetQueueSize() + max(thePrefs.GetQueueSize()/4, 200);
+   // cap the list
+    // the queue limit in prefs is only a soft limit. Hard limit is 25% higher, to let in powershare clients and other
+    // high ranking clients after soft limit has been reached
+    uint32 softQueueLimit = thePrefs.GetQueueSize();
+    uint32 hardQueueLimit = thePrefs.GetQueueSize() + max(thePrefs.GetQueueSize()/4, 200);
 
     // if soft queue limit has been reached, only let in high ranking clients
     if ((uint32)waitinglist.GetCount() >= hardQueueLimit ||
@@ -1422,7 +1457,7 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 			DebugSend("OP__AcceptUploadReq", client);
 		Packet* packet = new Packet(OP_ACCEPTUPLOADREQ,0);
 		theStats.AddUpDataOverheadFileRequest(packet->size);
-		client->socket->SendPacket(packet,true);
+		client->SendPacket(packet, true);
 		return;
 	}
 	*/
@@ -1956,7 +1991,7 @@ UINT CUploadQueue::GetWaitingPosition(CUpDownClient* client){
 	/*
 	if (!IsOnUploadQueue(client))
 	*/
-	ASSERT((client->GetUploadState() == US_ONUPLOADQUEUE) == IsOnUploadQueue(client));
+	//ASSERT((client->GetUploadState() == US_ONUPLOADQUEUE) == IsOnUploadQueue(client)); //zz_fly
 	if (client->GetUploadState() != US_ONUPLOADQUEUE)
 		return 0;
 
@@ -2151,10 +2186,10 @@ UINT CUploadQueue::GetWaitingPosition(CUpDownClient* client){
 					theApp.ResetStandByIdleTimer(); // Reset Windows idle standby timer if necessary
 			}
 
-			_uSaveStatistics++;
-			if (_uSaveStatistics >= thePrefs.GetStatsSaveInterval())
+			s_uSaveStatistics++;
+			if (s_uSaveStatistics >= thePrefs.GetStatsSaveInterval())
 			{
-				_uSaveStatistics = 0;
+				s_uSaveStatistics = 0;
 				thePrefs.SaveStats();
 			}
 		}
@@ -2186,10 +2221,21 @@ void CUploadQueue::UploadTimer()
 		//Xman 5.1
 		//Xman skip High-CPU-Load
 		static uint32 lastprocesstime;
+		//zz_fly :: fix possible overflow :: start
+#if defined(_DEBUG) || defined(_BETA) //this is the core of whole program, need more test
+		uint32 deltaTime = 30000 + ::GetTickCount() - lastprocesstime;
+		if (deltaTime > 30000)
+			deltaTime -= 30000;
+		else
+			return;
+		lastprocesstime += deltaTime;
+#else
 		if((::GetTickCount() - lastprocesstime) <=0)
 			return;
 		else
 			lastprocesstime=::GetTickCount();
+#endif
+		//zz_fly :: end
 
 		static uint16 counter;
 
@@ -2351,10 +2397,10 @@ void CUploadQueue::UploadTimer()
 					theApp.ResetStandByIdleTimer(); // Reset Windows idle standby timer if necessary
 			}
 
-			static UINT _uSaveStatistics; _uSaveStatistics++;
-			if (_uSaveStatistics >= thePrefs.GetStatsSaveInterval())
+			static UINT s_uSaveStatistics; s_uSaveStatistics++;
+			if (s_uSaveStatistics >= thePrefs.GetStatsSaveInterval())
 			{
-				_uSaveStatistics = 0;
+				s_uSaveStatistics = 0;
 				thePrefs.SaveStats();
 			}
 
@@ -2529,8 +2575,7 @@ void CUploadQueue::ChangeSendBufferSize(int newValue)
 			//AddDebugLogLine(false,_T("new socketbuffer: %u "), setValue);
 		}
 	}
-}
-// ==> Spread Credits Slot [Stulle] - Stulle
+}// ==> Spread Credits Slot [Stulle] - Stulle
 CUpDownClient* CUploadQueue::FindBestSpreadClientInQueue()
 {
 	POSITION toadd = 0;

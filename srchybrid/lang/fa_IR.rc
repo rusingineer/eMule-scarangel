@@ -1,6 +1,6 @@
 // Microsoft Visual C++ generated resource script.
 //
-#include "de_DE.h"
+#include "fa_IR.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@ LANGUAGE LANG_FARSI, SUBLANG_DEFAULT
 
 1 TEXTINCLUDE 
 BEGIN
-    "de_DE.h\0"
+    "fa_IR.h\0"
 END
 
 2 TEXTINCLUDE 
@@ -169,7 +169,7 @@ BEGIN
     IDS_FILE                "Ё«нб"
     IDS_DOWNLOAD            "ѕ«дбжѕ"
     IDS_SL_SERVERNAME       "д«г ”—жн” ѕедѕе "
-    IDS_IP                  "IP"
+    IDS_IP                  "IP" //!
     IDS_DESCRIPTION         "ћ“∆н«  ”—жн” ѕедѕе"
     IDS_PING                "БндР"
     IDS_FILES               "Ё«нбе«"
@@ -188,7 +188,7 @@ BEGIN
     IDS_UPDOWN              "Ё—” «ѕе ‘ѕе: %.1f(%.1f) | ѕ—н«Ё  ‘ѕе: %.1f(%.1f)"
     IDS_CONNECTED           "ж’б ‘ѕе"
     IDS_LINKNOTADDED        "дгн ж«д бндя —« «÷«Ёе я—ѕ"
-    IDS_MAIN_EXIT           "¬н« ж«ёЏ« гн ќж«енѕ  ѕ— Ўжнбе «нгжб —« »»дѕнѕ!њ"
+    IDS_MAIN_EXIT           "¬н« ж«ёЏ« гн ќж«енѕ «нгжб —« »»дѕнѕ!њ"
     IDS_MAIN_POPUP_RESTORE  "»«“¬ж—н"
     IDS_CONNECTTOANYSERVER  "« ’«б »е е— ”—жн” ѕедѕе"
     IDS_EXIT                "ќ—жћ"
@@ -711,14 +711,14 @@ BEGIN
     IDS_QUEUEFULL           "’Ё Б— ‘ѕе"
     IDS_AVG                 "гн«дРнд"
     IDS_BYTES               "»«н "
-    IDS_KBYTES              "KB"
-    IDS_MBYTES              "MB"
-    IDS_GBYTES              "GB"
-    IDS_TBYTES              "TB"
-    IDS_SECS                "s"
-    IDS_MINS                "m"
-    IDS_HOURS               "h"
-    IDS_DAYS                "day"
+    IDS_KBYTES              "KB" //!
+    IDS_MBYTES              "MB" //!
+    IDS_GBYTES              "GB" //!
+    IDS_TBYTES              "TB" //!
+    IDS_SECS                "s" //!
+    IDS_MINS                "m" //!
+    IDS_HOURS               "h" //!
+    IDS_DAYS                "day" //!
     IDS_ED2KLINKFIX         "eD2K бндя"
 END
 
@@ -809,10 +809,10 @@ BEGIN
     IDS_CMT_FAIR            "д”» « ќж»"
     IDS_CMT_EXCELLENT       "Џ«бн"
     IDS_CMT_NOTRATED        "»ѕжд —«н"
-    IDS_KILO                "k"
-    IDS_MEGA                "M"
-    IDS_GIGA                "G"
-    IDS_TERRA               "T"
+    IDS_KILO                "k" //!
+    IDS_MEGA                "M" //!
+    IDS_GIGA                "G" //!
+    IDS_TERRA               "T" //!
     IDS_IRC_EMULEPROTO_IGNOREINFOMESSAGE "Бнџ«ге«н ѕ” ж—н «нгжб —« д«ѕнѕе »Рн—"
     IDS_SMARTLOWIDCHECK     "«“ Џгбн«   ”  Ш«—»— ”ЎЌ Б«ннд »—«н « ’«б »е ”—ж— «” Ё«ѕе яд"
     IDS_SF_SRVOCC           "«‘џ«б »жѕд ”—жн” ѕедѕе : %.2f%%"
@@ -1113,7 +1113,6 @@ BEGIN
     IDS_USECREDITSYSTEM     "«“ ”н” г «Џ »«—н «” Ё«ѕе яд (яе »е «Ё—«ѕн яе »н‘ — ¬Ббжѕ яддѕ «Џ »«— Б«ѕ«‘  гн ѕеѕ)у"
     IDS_FIRSTAUTODOWN       "«Р— гн ќж«енѕ «нгжб яд —б «жбжн е«н Ё«нбе«н ѕ«дбжѕн ‘г« —« »— Џеѕе »Рн—ѕ «нд Р“нде —« ЁЏ«б яднѕ.у\n\n«Р— «нд Р“нде —« ЁЏ«б яднѕ »е «нгжб «ћ«“е гнѕенѕ яе  ѕ— «жбжн  Ё«нбе«нн яе »«  Џѕ«ѕ »«б«н гд»Џ гж«ће е” дѕ гѕ«ќбе ядѕ ж ѕ— гё«»б Ё«нбе«нн яе »«  Џѕ«ѕ гд«»Џ яг —ж»—ж е” дѕ «“ «жбжн  Б«ннд —н »—ќж—ѕ«— ‘ждѕ. «нд Р“нде ЁёЎ »е ѕ«дбжѕ е«нн яе »Џѕ« «÷«Ёе гн яднѕ «Џг«б гн‘жѕ.у"
     IDS_FIRSTAUTOUP         "«Р— гн ќж«енѕ «нгжб яд —б «жбжн е«н Ё«нбе«н ¬Ббжѕн ‘г« —« »— Џеѕе »Рн—ѕ «нд Р“нде —« ЁЏ«б яднѕ.у\n\n «Р— «нд Р“нде —« ЁЏ«б яднѕ ”—Џ  ѕ—н«Ё   Ё«нб “н«ѕ гн ‘жѕ жбн  Ё«нбе«нн яе »«  Џѕ«ѕ »«б«н ѕ—ќж«”  гж«ће е” дѕ »« г‘яб ’Ё Ўжб«дн гж«ће гн ‘ждѕ ж ћ«»ћ«нн ѕ— ’Ё ядѕ гн‘жѕ  . Б” Ё«нбе«нн яе »«  Џѕ«ѕ гд«»Џ яг —ж»—ж е” дѕ »« «нд Р“нде »е — я«— гняддѕ. «нд Р“нде ЁёЎ »е Ё«нбе«н «‘ —«ян яе »Џѕ« «÷«Ёе гн яднѕ «Џг«б гн‘жѕ.у"
-    IDS_FIRSTFULLCHUNK      "«Р— гнќж«енѕ яе Ё«нбе« »’ж—  ѕ” е е«н »“—Р ¬Ббжѕ ‘ждѕ «нд Р“нде —« ЁЏ«б яднѕ.\n\«Р— «нд Р“нде —« ЁЏ«б яднѕ ”—Џ  ѕ—н«Ё  ж ‘«д” ѕ—н«Ё  я«гб Ё«нб »—«н ѕнР—«д “н«ѕ гн ‘жѕ ж Ё«нбе«»’ж—  я«гб Ё—” «ѕе гн ‘ждѕ жбн »« г‘яб ћ«»ћ«нн ѕ— ’Ё ѕ—ќж«”  яддѕе е« гж«ће гн‘жнѕ  . Б” Ё«нбе«нн яе »«  Џѕ«ѕ гд«»Џ яг —ж»—ж е” дѕ »« «нд Р“нде »е — я«— гняддѕ. «нд Р“нде ЁёЎ »е Ё«нбе«н «‘ —«ян яе »Џѕ« «÷«Ёе гн яднѕ «Џг«б гн‘жѕ.у"
     IDS_FIRSTSAFECON        "«Р— гн ќж«енѕ яе «нгжб ѕ— Ќ«б  «гд ж гЎг∆д « ’«б Бнѕ« ядѕ «нд Р“нде —« ЁЏ«б яднѕ.у\n\nЁЏ«б я—ѕд «нд Р“нде »«ЏЋ гн‘жѕ яе »« ”—Џ  »н‘ —н »е ”—жн” ѕедѕе ж’б ‘жнѕ , жбн ггяд «”  »«ЏЋ ‘жѕ ”—жн” ѕедѕе »е «‘ »«е ‘г« —« я«—»— ”ЎЌ Б«ннд ‘д«”«нн ядѕ."
     IDS_FIRSTAUTOCON        "«Р— гн ќж«енѕ ѕ— едР«г ‘—жЏ »е я«— «нгжб »е Ўж— ќжѕ я«— « ’«б »—ё—«— ‘жѕ «нд Р“нде —« ЁЏ«б яднѕ.у"
     IDS_FIRSTCOMPLETE       "‘г«  дўнг«  ”—нЏ «жбне —« »« гжЁён  »е « г«г —”«дѕнѕ.\n\n г«г «нд  дўнг«  жР“нде е«н »н‘ — —« гн  ж«днѕ ѕ—  дўнг«  «’бн «нгжб Бнѕ« яднѕ. »—«н ¬гж“‘ ж  ‘—нЌ »н‘ — ж ѕнѕд я «» —«едг« ябнѕ «Ё ня —« Ё‘«— ѕенѕ!у"
@@ -1146,7 +1145,7 @@ BEGIN
     IDS_WEB_GZIP_COMMENT    "–ќн—е ѕ«ѕ ж ” ѕ «Ўб«Џ« , »ќ’ж’ ѕ— дгжѕ«—е«.у"
     IDS_WEB_REFRESH_TIME    "“г«д »«“¬ж—н ’ЁЌе е«"
     IDS_WEB_REFRESH_COMMENT "“г«д »е Ћ«дне (’Ё—=џн—ЁЏ«б)у:"
-    IDS_SV_URL              "URL"
+    IDS_SV_URL              "URL" //!
     IDS_WS_RELOAD_TMPL      "ё«б»"
     IDS_SV_DEBUGLOG         "Р“«—‘ «‘я«б “ѕ«нн"
 END
@@ -1551,7 +1550,7 @@ BEGIN
     IDS_KAD_RECHECKFW       "НШ Ш—ѕд гћѕѕ ѕнж«— ¬ ‘"
     IDS_SHAREDTITLE         "»е «‘ —«Ш Р–«‘ е ‘ѕе eD2K|Kad"
     IDS_FIREWALLED          "ЌЁ«ў  ‘ѕе  ж”Ў ѕнж«— ¬ ‘ н« Ё«н—ж«б"
-    IDS_KADEMLIA            "Kad"
+    IDS_KADEMLIA            "Kad" //!
     IDS_KADCONTACTLAB       " г«” е«"
     IDS_KADDISTANCE         "Ё«’бе"
     IDS_KEY                 "Шбнѕ"
@@ -1593,7 +1592,7 @@ BEGIN
     IDS_DELETE              "Ќ–Ё Ш—ѕд «“ ѕн”Ш"
     IDS_BOOTSTRAP           "»«“¬ж—н »н ж«”Ўе"
     IDS_VIAED2KSQ           " ж”Ў eD2K ”—ж—"
-    IDS_EM_KADEMLIA         "&Kad"
+    IDS_EM_KADEMLIA         "&Kad" //!
     IDS_VIAKAD              " ж”Ў Kad"
     IDS_VIASE               "«“ Ў—нё г»«ѕбе гд»Џ"
     IDS_SELECTTOOLBARBITMAP "—««д ќ«» Шднѕ Bitmap ћЏ»е «»“«—"
@@ -1678,11 +1677,11 @@ BEGIN
     IDS_LD_HOSTNAME         "«“ «жбжн  е« ѕ— едР«г «нћ«ѕ Ш—ѕд гд»Џ бндШ »е ћ«н ¬н Бн «“ д«г гн“»«д «” Ё«ѕе Шднѕ"
     IDS_SAVEACFAILED        "!AICHќЎ« ѕ— –ќн—е Ш—ѕд Шѕ Р–«—н"
     IDS_IACHHASH            "AICH ШѕР–«—н"
-    IDS_BYTESPERSEC         "B/s"
-    IDS_KBYTESPERSEC        "KB/s"
-    IDS_MBYTESPERSEC        "MB/s"
-    IDS_GBYTESPERSEC        "GB/s"
-    IDS_TBYTESPERSEC        "TB/s"
+    IDS_BYTESPERSEC         "B/s" //!
+    IDS_KBYTESPERSEC        "KB/s" //!
+    IDS_MBYTESPERSEC        "MB/s" //!
+    IDS_GBYTESPERSEC        "GB/s" //!
+    IDS_TBYTESPERSEC        "TB/s" //!
 END
 
 STRINGTABLE 
@@ -1871,6 +1870,7 @@ BEGIN
     IDS_SERVERFEATURE_INTTYPETAGS "джЏ »—Н”» Ш«гб"
     IDS_FILLGRAPHS          "дгжѕ«— е«н Б—‘ѕе —« —”г Шд"
     IDS_PARAMETER           "‘«ќ’"
+    IDS_TEST                "¬“г«н‘"
 END
 
 
@@ -1884,7 +1884,7 @@ BEGIN
     IDS_UPNP_NOSERVICE      "UPnP ѕ” Р«е ”—жн” гн“»«д ѕ— Ќ«б «ћ—« дн” , д«ѕнѕе Р—Ё д  дўнг«  UPnP"
     IDS_DELAYEDBYUPNP       " дўнг«  Бж—  Ё—” «ѕе ‘ѕе »н ћж«» г«дѕе UPnP « ’«б »е ‘»Ше »е  «ќн— «Ё «ѕ  »ѕбнб «ндШе"
     IDS_DELAYEDBYUPNP2      "Б«н«д н«»ѕ «нгжб г ’б ќж«еѕ ‘ѕ UPnP бЎЁ« Ндѕ Ћ«дне ’»— Шднѕ е— “г«д Ше Џгбн«  "
-    IDS_UPNP                "UPnP"
+    IDS_UPNP                "UPnP" //!
     IDS_UPNPCLOSEONEXIT     "—« Б«Ш Шд UPnP ѕ— “г«д ќ—жћ Бж—  Ё—” «ѕе ‘ѕе"
     IDS_UPNPSKIPWANIP       "—« д«ѕнѕе »Рн— WAN IP  дўнг« "
     IDS_UPNPSKIPWANPPP      "—« д«ѕнѕе »Рн— WAN PPP  дўнг« "
@@ -1897,10 +1897,48 @@ END
 STRINGTABLE 
 BEGIN
     IDS_SHAREEMULEWARNING   " џнн— «нд «д ќ«» »е «нгжб «ћ«“е гн ѕеѕ  «  дўнг«  ѕнР—н —« ѕ«‘ е »«‘ѕ.  »«  џнн— ѕ«ѕд «нд «д ќ«» ѕ— ¬ндѕе ‘г« гн ж«днѕ »—Р—ѕнѕ »е  дўнг«  Ќ«б Ќ«ў—  »—«н «Ћ—Р–«—н «нд  дўнг«  ‘г« »«нѕ «нгжб —« ѕж»«—е —«е «дѕ«“н Шднѕ. \n\n"
-    IDS_SPAM                "Spam"
-    IDS_MARKSPAM            "Mark as Spam"
-    IDS_MARKNOTSPAM         "Mark as not Spam"
-    IDS_SEARCHSPAMFILTER    "Enable Spam Filter for search results"
+    IDS_SPAM                "Бнџ«г г“«Ќг"
+    IDS_MARKSPAM            "»Џдж«д Бнџ«г г“«Ќг Џб«г  »“д"
+    IDS_MARKNOTSPAM         "»Џдж«д џн— г“«Ќг Џб«г  »“д"
+    IDS_SEARCHSPAMFILTER    "ЁЏ«б ”«“н Ёнб — Бнџ«г е«н г“«Ќг ѕ— д «нћ ћ” ћж"
+    IDS_SHOWSMILEYS         "дг«н‘ ‘ШбШ е«"
+    IDS_CAPTCHAREQUEST      "»—«н ћбжРн—н «“ ѕ—н«Ё  Бнџ«г д«ќж«” е »—«н Ё—” «ѕд Бнџ«г »«нѕ Шѕ ШБН« —« ж«—ѕ Шднѕ. бЎЁ« »е Џдж«д Б«”ќ Ќ—жЁн Ше ѕ—  ’жн— гн»нднѕ ж«—ѕ Шднѕ:"
+    IDS_CAPTCHAFAILED       "Шѕ Ё—” «ѕе ‘ѕе  ж”Ў ‘г« «‘ »«е »жѕ ж Бнџ«г Ё—” «ѕе д‘ѕ. ‘г« гн ж«днѕ »« Ё—” «ѕд Бнџ«г ѕж»«—е Шѕ ШБН« —« ѕж»«—е ж«—ѕ Шднѕ."
+    IDS_CAPTCHASOLVED       "Шѕ ж«—ѕ ‘ѕе ’ЌнЌ »жѕ ж Бнџ«г ‘г« »—«н Ш«—»— Ё—” «ѕе ‘ѕ."
+    IDS_USECAPTCHAS         "дн«“ »е  «ннѕ Шѕ ШБН«"
+    IDS_BOOTSRAPNODESDAT    "Nodes.dat «“ URL:"
+    IDS_DOWNLOADING_NODESDAT_FROM "ѕ«дбжѕ nodes.dat from %s"
+    IDS_DOWNLOADING_NODESDAT "ѕ—н«Ё  nodes.dat..."
+    IDS_ERR_FAILEDDOWNLOADNODES "ѕ«дбжѕ д« гжЁё nodes.dat from %s"
+    IDS_PREVENTSTANDBY      "жё н «нгжб ѕ— Ќ«б «ћ—« е”  ”н” г »е Ќ«б  ќ«гж‘н гжё  д—жѕ"
+    IDS_KADID               "KadID" //!
+    IDS_SEARCHINGFRIENDKAD  "ћ” ћж »—«н н«Ё д ѕж”  ѕ— ‘»Ше Шѕ"
+    IDS_FOUND               "Бнѕ« ‘ѕ"
+    IDS_EXTERNUDPPORT       " UDP Бж—  ќ—жћн"
+    IDS_STORESEARCHES       "н«ѕ ¬ж—н ћ” ћж е«н »«“ ѕ— едР«г —«е «дѕ«“н ѕж»«—е"
+    IDS_WRN_INCFILE_EXISTS  "Ёжбѕ— ћѕнѕн Ше »—«н ѕ—н«Ё  Ё«нб «д ќ«» Ш—ѕе «нѕ ќ«бн дн” .  г«г Ё«нб е«нн Ше ѕ— «нд Ёжбѕ— жћжѕ ѕ«—дѕ »е ’ж—  ќжѕШ«— »е «‘ —«Ш Р–«‘ е ќж«едѕ ‘ѕ."
+    IDS_EDITSPAMFILTER      "жн—«н‘ Ёнб — «”Бг..."
+    IDS_EDITSPAMFILTERCOMMENTS ",жн—«н‘ Ёнб — «”Бг »—«н дў—« "
+    IDS_WIZZARDOBFUSCATION  " «Р— ‘—Ш  ”—жн” ѕедѕе «нд —д  ‘г« ћбжн «— »«Ў «нгжб »« ”—ж— —« Р—Ё е »«‘ѕ Р“ндеobfuscation —« ЁЏ«б Шднѕ \n\n, ЁЏ«б Ш—ѕд obfuscation »«ЏЋ гн‘жѕ ‘г« » ж«днѕ Ёнб — ‘—Ш  ”—жн” ѕедѕе «нд —д  —« Ржб »“днѕ."
+    IDS_BETANAG             "«нд нШ д”ќе ¬“г«н‘н - » « - «нгжб гн»«‘ѕ. бЎЁ« г‘Шб«   д—г «Ё“«— —« Р“«—‘ »ѕенѕ ж егНднд »—«н НШ Ш—ѕд д”ќе ћѕнѕ «“ «нд ¬ѕ—” «” Ё«ѕе Шднѕ (http://forum.emule-project.net)."
+    IDS_CONFIRMNODESDOWNLOAD 
+                            "¬н« гнќж«енѕ Ё«нб  г«” Шѕ —« «“ «нд ¬ѕ—” ѕ«дбжѕ Шднѕ (nodes.dat):\n%s ?"
+    IDS_AUTOMATIC           "ќжѕШ«—"
+    IDS_NOTCONNECTEDANY     "‘г« »е ”—ж— ж н« ‘»Ше Шѕ г ’б д‘ѕе «нѕ"
+    IDS_ERR_SHARED_DIR      "Failed to read shared directory ""%s"" - %s"
+    IDS_FILE_WARNING_DRM    "The file ""%s"" seems to be protected with Digital Rights Management.\r\n\r\nYou will most likely not be able to use that file without a license from the originator. You should be aware that opening this file will most likely cause your media player to open a web browser which will transfer you automatically to the site of the originator of that file where you will get asked to acquire a license.\r\n\r\nDo you really want to continue opening the file?"
+    IDS_CHECK_FILE_OPEN     "Warn when opening untrusted files"
+    IDS_BOOTABLE            "bootable"
+    IDS_UNSUPPORTEDIMAGE    "unsupported image"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_UNSHARE             "Unshare"
+    IDS_WEBUPNPINCLUDE      "Include port into UPnP setup"
+    IDS_ADDEDON             "Added On"
+    IDS_RESOLVELINKS        "Resolve shell links in shared directories"
 END
 
 #endif

@@ -614,7 +614,7 @@ END
 
 STRINGTABLE FIXED IMPURE 
 BEGIN
-	IDS_GBYTES	"Mont da"
+	IDS_GBYTES	"Ge"
 	IDS_TBYTES	"Da"
 	IDS_SECS	"eil"
 	IDS_MINS	"mun"
@@ -993,7 +993,6 @@ BEGIN
 	IDS_USECREDITSYSTEM	"Implijout ar reizhiad dleoù (Goprañ ar c'hasadennoù)"
     IDS_FIRSTAUTODOWN	"Aotreañ an dibab-mañ ma fell deoc’h ma vefe meret gant eMule an tevetoù pellgargañ.\n\nTurning this on will allow eMule to make sure downloads with a lot of sources do not interfere with downloads that have few sources. This option will only affect future downloads."
     IDS_FIRSTAUTOUP	"Aotreañ an dibab-mañ ma fell deoc’h ma vefe meret gant eMule an tevetoù diskargañ.\n\nTurning this on will allow eMule to boost rare files meaning popular files will be harder for other people to get. Turning this off will allow eMule to upload popular files more often meaning rare files will be harder for other people to get. This option will only affect future shared files."
-    IDS_FIRSTFULLCHUNK	"Aotreañ an dibab-mañ ma fell deoc’h diskargañ lodennoù leun.\n\nUsing full chunk gives the client a better chance to complete a chunk. Turning this off will help rotate your queue faster. If you are a dedicated releaser, you will want to turn this on."
     IDS_FIRSTSAFECON	"Aotreañ an dibab-mañ ma fell deoc’h ma vefe kennasket eMule en ur implijout ur c’hennaskañ sur.\n\nGant an dibab-mañ e vo herrekoc’h kennaskañ eMule ouzh ar servijerioù, met muioc’h a LowIDoù fals a c’hell bezañ dastumet ivez."
     IDS_FIRSTAUTOCON	"Aotreañ an dibab-mañ ma fell deoc’h ma vefe kennasket ent-emgefreek eMule e penn-kentañ."
 	IDS_FIRSTCOMPLETE	"Echu eo gant ar skoazeller-mañ.\r\rGallout a reer kemmañ an holl zibaboù-mañ ha lod all er voest Dibaboù Gwellañ. Evit lenn muioc'h a zisplegadennoù, sellit ouzh ar skoazell en ur bouezañ war F1 e-barzh eMule !"
@@ -1711,6 +1710,7 @@ END
 
 STRINGTABLE 
 BEGIN
+
     IDS_ERR_CONFIGCORRUPT	"%s a zo gwastet war ar seblant hag e vo erlec'hiet"
     IDS_UPLOADING	"O kargañ"
     IDS_CANCELLED	"Nullet"
@@ -1900,6 +1900,44 @@ BEGIN
     IDS_MARKSPAM            "Mark as Spam"
     IDS_MARKNOTSPAM         "Mark as not Spam"
     IDS_SEARCHSPAMFILTER    "Enable Spam Filter for search results"
+    IDS_SHOWSMILEYS         "Show Smileys"
+    IDS_CAPTCHAREQUEST      "In order to avoid spam messages, this user requires you to solve a captcha before you can send him a message. Please enter the letters you see on this image as response:"
+    IDS_CAPTCHAFAILED       "Your response to the captcha was wrong and your message has been ignored. You can request a new captcha by sending a new message."
+    IDS_CAPTCHASOLVED       "You have passed the captcha check and the user has received your message."
+    IDS_USECAPTCHAS         "Require captcha authentication"
+    IDS_BOOTSRAPNODESDAT    "Nodes.dat from URL:"
+    IDS_DOWNLOADING_NODESDAT_FROM "Downloading nodes.dat from %s"
+    IDS_DOWNLOADING_NODESDAT "Downloading nodes.dat..."
+    IDS_ERR_FAILEDDOWNLOADNODES "Failed to download nodes.dat from %s"
+    IDS_PREVENTSTANDBY      "Prevent Standby mode while eMule is running"
+    IDS_KADID               "KadID"
+    IDS_SEARCHINGFRIENDKAD  "Searching in Kad Network for friend"
+    IDS_FOUND               "found"
+    IDS_EXTERNUDPPORT       "Extern UDP Port"
+    IDS_STORESEARCHES       "Remember open searches between restarts"
+    IDS_WRN_INCFILE_EXISTS  "You have selected a new directory for your incoming files which is not empty. All existing files in this directory will be automatically shared by eMule."
+    IDS_EDITSPAMFILTER      "Edit spam filter..."
+    IDS_EDITSPAMFILTERCOMMENTS "Edit spam filter for comments"
+    IDS_WIZZARDOBFUSCATION  "Enable this option if you want to enable protocol obfuscation\n\nIf your ISP tries throttle or block eMule, enabling obfuscation will help to circumvent such restrictions."
+    IDS_BETANAG             "This is a beta version of eMule. Please report problems and check regulary for updates in our forum (http://forum.emule-project.net)."
+    IDS_CONFIRMNODESDOWNLOAD 
+                            "Do you want to download and use Kad contacts (nodes.dat) from this address:\n%s ?"
+    IDS_AUTOMATIC           "Automatic"
+    IDS_NOTCONNECTEDANY     "You are not connected to a server or the Kad network!"
+    IDS_ERR_SHARED_DIR      "Failed to read shared directory ""%s"" - %s"
+    IDS_FILE_WARNING_DRM    "The file ""%s"" seems to be protected with Digital Rights Management.\r\n\r\nYou will most likely not be able to use that file without a license from the originator. You should be aware that opening this file will most likely cause your media player to open a web browser which will transfer you automatically to the site of the originator of that file where you will get asked to acquire a license.\r\n\r\nDo you really want to continue opening the file?"
+    IDS_CHECK_FILE_OPEN     "Warn when opening untrusted files"
+    IDS_BOOTABLE            "bootable"
+    IDS_UNSUPPORTEDIMAGE    "unsupported image"
+END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_UNSHARE             "Unshare"
+    IDS_WEBUPNPINCLUDE      "Include port into UPnP setup"
+    IDS_ADDEDON             "Added On"
+    IDS_RESOLVELINKS        "Resolve shell links in shared directories"
 END
 
 #endif    // Breton (France) resources
@@ -1918,4 +1956,3 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-

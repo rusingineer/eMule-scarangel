@@ -353,10 +353,15 @@ CPPgScar::CPPgScar()
 	m_htiEmuLphant = NULL;
 	m_htiLogEmulator = NULL;
 	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	// ==> Automatic shared files updater [MoNKi] - Stulle
+	m_htiAutoSharedGroup = NULL;
+	m_htiAutoSharedUpdater = NULL;
+	m_htiSingleSharedDirUpdater = NULL;
+	m_htiTimeBetweenReloads = NULL;
+	// <== Automatic shared files updater [MoNKi] - Stulle
 	m_htiSUQWT = NULL; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	m_htiStartupSound = NULL; // Startupsound [Commander] - mav744
 	m_htiCompressLevel = NULL; // Adjust Compress Level [Stulle] - Stulle
-	m_htiAutoSharedUpdater = NULL; // Automatic shared files updater [MoNKi] - Stulle
 
 	// ==> Advanced Options [Official/MorphXT] - Stulle
 	m_bInitializedAdvTreeOpts = false;
@@ -465,6 +470,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		int iImgMisc = 8;
 		int iImgGlobal = 8;
 		int iImgEmulate = 8;
+		int iImgASFU = 8;
 
 		CImageList* piml = m_ctrlTreeOptions.GetImageList(TVSIL_NORMAL);
 		if (piml){
@@ -493,6 +499,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 			iImgMisc = piml->Add(CTempIconLoader(_T("SRCUNKNOWN")));
 			iImgGlobal = piml->Add(CTempIconLoader(_T("SEARCHMETHOD_GLOBAL")));
 			iImgEmulate = piml->Add(CTempIconLoader(_T("EMULATEICON")));
+			iImgASFU = piml->Add(CTempIconLoader(_T("SHAREDFILESLIST")));
 		}
 		
 		CString Buffer;
@@ -778,13 +785,19 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiEmuLphant = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_EMULATE_PHANT), m_htiEmulatorGroup, m_bEmuLphant);
 		m_htiLogEmulator = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_EMULATE_LOG), m_htiEmulatorGroup, m_bLogEmulator);
 		// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+		// ==> Automatic shared files updater [MoNKi] - Stulle
+		m_htiAutoSharedGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_AUTO_SHARED_UPDATER), iImgASFU, m_htiMisc);
+		m_htiAutoSharedUpdater = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ENABLE), m_htiAutoSharedGroup, m_bAutoSharedUpdater);
+		m_htiSingleSharedDirUpdater = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ASFU_SINGLE), m_htiAutoSharedGroup, m_bSingleSharedDirUpdater);
+		m_htiTimeBetweenReloads = m_ctrlTreeOptions.InsertItem(GetResString(IDS_ASFU_TIMEBETWEEN), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiAutoSharedGroup);
+		m_ctrlTreeOptions.AddEditBox(m_htiTimeBetweenReloads, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		// <== Automatic shared files updater [MoNKi] - Stulle
 		m_htiSUQWT = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SUQWT), m_htiMisc, m_bSUQWT); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 		m_htiStartupSound = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_STARTUPSOUND), m_htiMisc, m_bStartupSound); // Startupsound [Commander] - mav744
 		// ==> Adjust Compress Level [Stulle] - Stulle
 		m_htiCompressLevel = m_ctrlTreeOptions.InsertItem(GetResString(IDS_COMPRESS_LVL), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiMisc);
 		m_ctrlTreeOptions.AddEditBox(m_htiCompressLevel, RUNTIME_CLASS(CNumTreeOptionsEdit));
 		// <== Adjust Compress Level [Stulle] - Stulle
-		m_htiAutoSharedUpdater = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_AUTO_SHARED_UPDATER), m_htiMisc, m_bAutoSharedUpdater); // Automatic shared files updater [MoNKi] - Stulle
 
 		m_ctrlTreeOptions.SendMessage(WM_VSCROLL, SB_TOP);
 		m_bInitializedTreeOpts = true;
@@ -992,13 +1005,18 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiEmuLphant, m_bEmuLphant);
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiLogEmulator, m_bLogEmulator);
 	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	// ==> Automatic shared files updater [MoNKi] - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiAutoSharedUpdater, m_bAutoSharedUpdater);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSingleSharedDirUpdater, m_bSingleSharedDirUpdater);
+	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiTimeBetweenReloads, m_iTimeBetweenReloads);
+	DDV_MinMaxInt(pDX, m_iTimeBetweenReloads, 0, 1800);
+	// <== Automatic shared files updater [MoNKi] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSUQWT, m_bSUQWT); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiStartupSound, m_bStartupSound); // Startupsound [Commander] - mav744
 	// ==> Adjust Compress Level [Stulle] - Stulle
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiCompressLevel, m_iCompressLevel);
 	DDV_MinMaxInt(pDX, m_iCompressLevel, 0, 9);
 	// <== Adjust Compress Level [Stulle] - Stulle
-	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiAutoSharedUpdater, m_bAutoSharedUpdater); // Automatic shared files updater [MoNKi] - Stulle
 
 	// ==> FunnyNick [SiRoB/Stulle] - Stulle
 	if(m_htiFnTagMode)	m_ctrlTreeOptions.SetGroupEnable(m_htiFnTagMode, m_bFnActive);
@@ -1012,6 +1030,9 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	// ==> CPU/MEM usage [$ick$/Stulle] - Max
 	if (m_htiSysInfoGlobal)	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiSysInfoGlobal, m_bSysInfo);
 	// <== CPU/MEM usage [$ick$/Stulle] - Max
+	// ==> Automatic shared files updater [MoNKi] - Stulle
+	if (m_htiSingleSharedDirUpdater)	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiSingleSharedDirUpdater, m_bAutoSharedUpdater);
+	// <== Automatic shared files updater [MoNKi] - Stulle
 
 	// ==> Advanced Options [Official/MorphXT] - Stulle
 	DDX_Control(pDX, IDC_ADVANCED_OPTS, m_ctrlAdvTreeOptions);
@@ -1352,10 +1373,14 @@ BOOL CPPgScar::OnInitDialog()
 	m_bEmuLphant = thePrefs.IsEmuLphant();
 	m_bLogEmulator = thePrefs.IsEmuLog();
 	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	// ==> Automatic shared files updater [MoNKi] - Stulle
+	m_bAutoSharedUpdater = thePrefs.GetDirectoryWatcher();
+	m_bSingleSharedDirUpdater = thePrefs.GetSingleSharedDirWatcher();
+	m_iTimeBetweenReloads = thePrefs.GetTimeBetweenReloads();
+	// <== Automatic shared files updater [MoNKi] - Stulle
 	m_bSUQWT = thePrefs.SaveUploadQueueWaitTime(); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	m_bStartupSound = thePrefs.UseStartupSound(); // Startupsound [Commander] - mav744
 	m_iCompressLevel = thePrefs.GetCompressLevel(); // Adjust Compress Level [Stulle] - Stulle
-	m_bAutoSharedUpdater = thePrefs.GetDirectoryWatcher(); // Automatic shared files updater [MoNKi] - Stulle
 
 	// ==> Advanced Options [Official/MorphXT] - Stulle
 	bMiniMuleAutoClose=thePrefs.bMiniMuleAutoClose;
@@ -1829,6 +1854,17 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_bEmuLphant = m_bEmuLphant;
 	thePrefs.m_bLogEmulator = m_bLogEmulator;
 	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	// ==> Automatic shared files updater [MoNKi] - Stulle
+	if(m_bAutoSharedUpdater != thePrefs.GetDirectoryWatcher() ||
+		m_bSingleSharedDirUpdater != thePrefs.GetSingleSharedDirWatcher() ||
+		(uint32)m_iTimeBetweenReloads != thePrefs.GetTimeBetweenReloads())
+	{
+		thePrefs.SetDirectoryWatcher(m_bAutoSharedUpdater);
+		thePrefs.SetSingleSharedDirWatcher(m_bSingleSharedDirUpdater);
+		thePrefs.SetTimeBetweenReloads((uint32)m_iTimeBetweenReloads);
+		theApp.ResetDirectoryWatcher();
+	}
+	// <== Automatic shared files updater [MoNKi] - Stulle
 	// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	if(thePrefs.m_bSaveUploadQueueWaitTime != m_bSUQWT)
 	{
@@ -1842,12 +1878,6 @@ BOOL CPPgScar::OnApply()
 	if(m_iCompressLevel == 0)
 		thePrefs.m_bUseCompression = false;
 	// <=== Adjust Compress Level [Stulle] - Stulle
-	// ==> Automatic shared files updater [MoNKi] - Stulle
-	if(m_bAutoSharedUpdater != thePrefs.GetDirectoryWatcher()){
-		thePrefs.SetDirectoryWatcher(m_bAutoSharedUpdater);
-		theApp.ResetDirectoryWatcher();
-	}
-	// <== Automatic shared files updater [MoNKi] - Stulle
 
 	// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 	thePrefs.m_bAutoBackup = m_AutoBackup.GetCheck() == BST_CHECKED;
@@ -2205,10 +2235,14 @@ void CPPgScar::Localize(void)
 		if (m_htiEmuLphant) m_ctrlTreeOptions.SetItemText(m_htiEmuLphant, GetResString(IDS_EMULATE_PHANT));
 		if (m_htiLogEmulator) m_ctrlTreeOptions.SetItemText(m_htiLogEmulator, GetResString(IDS_EMULATE_LOG));
 		// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+		// ==> Automatic shared files updater [MoNKi] - Stulle
+		if (m_htiAutoSharedUpdater) m_ctrlTreeOptions.SetItemText(m_htiAutoSharedUpdater, GetResString(IDS_ENABLE));
+		if (m_htiSingleSharedDirUpdater) m_ctrlTreeOptions.SetItemText(m_htiSingleSharedDirUpdater,GetResString(IDS_ASFU_SINGLE));
+		if (m_htiTimeBetweenReloads) m_ctrlTreeOptions.SetEditLabel(m_htiTimeBetweenReloads, GetResString(IDS_ASFU_TIMEBETWEEN));
+		// <== Automatic shared files updater [MoNKi] - Stulle
 		if (m_htiSUQWT) m_ctrlTreeOptions.SetItemText(m_htiSUQWT, GetResString(IDS_SUQWT)); // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 		if (m_htiStartupSound) m_ctrlTreeOptions.SetItemText(m_htiStartupSound, GetResString(IDS_STARTUPSOUND)); // Startupsound [Commander] - mav744
 		if (m_htiCompressLevel) m_ctrlTreeOptions.SetEditLabel(m_htiCompressLevel, GetResString(IDS_COMPRESS_LVL)); // Adjust Compress Level [Stulle] - Stulle
-		if (m_htiAutoSharedUpdater) m_ctrlTreeOptions.SetItemText(m_htiAutoSharedUpdater, GetResString(IDS_AUTO_SHARED_UPDATER)); // Automatic shared files updater [MoNKi] - Stulle
 
 		// ==> TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 		m_BackupBox.SetWindowText( GetResString(IDS_BACKUP_FILEFRAME) );
@@ -2595,10 +2629,15 @@ void CPPgScar::OnDestroy()
 	m_htiEmuLphant = NULL;
 	m_htiLogEmulator = NULL;
 	// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+	// ==> Automatic shared files updater [MoNKi] - Stulle
+	m_htiAutoSharedGroup = NULL;
+	m_htiAutoSharedUpdater = NULL;
+	m_htiSingleSharedDirUpdater = NULL;
+	m_htiTimeBetweenReloads = NULL;
+	// <== Automatic shared files updater [MoNKi] - Stulle
 	m_htiSUQWT = NULL; // SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	m_htiStartupSound = NULL; // Startupsound [Commander] - mav744
 	m_htiCompressLevel = NULL; // Adjust Compress Level [Stulle] - Stulle
-	m_htiAutoSharedUpdater = NULL; // Automatic shared files updater [MoNKi] - Stulle
 
 	// ==> Advanced Options [Official/MorphXT] - Stulle
 	m_hti_AdvMiniMule=NULL;
@@ -2736,6 +2775,16 @@ LRESULT CPPgScar::OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam)
 			}
 		}
 		// <== Invisible Mode [TPT/MoNKi] - Stulle
+
+		// ==> Automatic shared files updater [MoNKi] - Stulle
+		if (m_htiAutoSharedUpdater && pton->hItem == m_htiAutoSharedUpdater)
+		{
+			if (m_ctrlTreeOptions.GetCheckBox(m_htiAutoSharedUpdater, bCheck))
+			{
+				if (m_htiSingleSharedDirUpdater)	m_ctrlTreeOptions.SetCheckBoxEnable(m_htiSingleSharedDirUpdater, bCheck);
+			}
+		}
+		// <== Automatic shared files updater [MoNKi] - Stulle
 
 		SetModified();
 	}
@@ -3905,6 +3954,7 @@ void CPPgScar::InitSubStyleCombo()
 			iItem = m_SubCombo.AddString(strTemp + GetResString(IDS_PRIOHIGH));		m_SubCombo.SetItemData(iItem, style_s_high);
 			iItem = m_SubCombo.AddString(strTemp + GetResString(IDS_PRIORELEASE));	m_SubCombo.SetItemData(iItem, style_s_release);
 			iItem = m_SubCombo.AddString(strTemp + GetResString(IDS_POWERRELEASE));	m_SubCombo.SetItemData(iItem, style_s_powerrelease);
+			iItem = m_SubCombo.AddString(GetResString(IDS_COLOR_S3));		m_SubCombo.SetItemData(iItem, style_s_shareable);
 		}break;
 		case server_styles: // server styles
 		{

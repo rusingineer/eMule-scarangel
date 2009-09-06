@@ -187,7 +187,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_IP                  "IP"
+    IDS_IP                  "IP"//!
     IDS_DESCRIPTION         "描述"
     IDS_PING                "反應"
     IDS_FILES               "檔案數"
@@ -614,14 +614,14 @@ BEGIN
     IDS_QUEUEFULL           "等候區已滿"
     IDS_AVG                 "平均"
     IDS_BYTES               "位元組"
-    IDS_KBYTES              "KB"
-    IDS_MBYTES              "MB"
+    IDS_KBYTES              "KB"//!
+    IDS_MBYTES              "MB"//!
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_GBYTES              "GB"
-    IDS_TBYTES              "TB"
+    IDS_GBYTES              "GB"//!
+    IDS_TBYTES              "TB"//!
     IDS_SECS                "秒"
     IDS_MINS                "分"
     IDS_HOURS               "時"
@@ -679,7 +679,7 @@ STRINGTABLE
 BEGIN
     IDS_PW_CON_CAPFRM       "能力"
     IDS_IRC_PRIVATECHANSTART "* 私人的聊天會議已開始"
-    IDS_IRC_SLAPMSG         "* %s 用大隻的巴比倫魚打了 %s 一巴掌!"
+    IDS_IRC_SLAPMSG         "* %s 用大隻的巴別魚打了 %s 一巴掌!"
     IDS_IRC_PRIVMESSAGE     "私人訊息"
     IDS_WEB_REMOTE_LINK_ADDED "連結已被加入: "
     IDS_WEB_REMOTE_LINK_NOT_ADDED "連結未被加入. 不正確的密碼."
@@ -706,7 +706,7 @@ BEGIN
     IDS_IRC_NICK            "暱稱"
     IDS_IRC_SEND            "送出"
     IDS_IRC_NAME            "名稱"
-    IDS_IRC_SLAPMSGSEND     "PRIVMSG %s :\001ACTION 用大隻的巴比倫魚掌了 %s!\001"
+    IDS_IRC_SLAPMSGSEND     "PRIVMSG %s :\001ACTION 用大隻的巴別魚掌了 %s!\001"
     IDS_IRC_ADDTIMESTAMP    "在訊息上加時間標籤"
 END
 
@@ -860,10 +860,10 @@ BEGIN
     IDS_CMT_FAIR            "尚可"
     IDS_CMT_EXCELLENT       "優良"
     IDS_CMT_NOTRATED        "沒有等級"
-    IDS_KILO                "K"
-    IDS_MEGA                "M"
-    IDS_GIGA                "G"
-    IDS_TERRA               "T"
+    IDS_KILO                "K"//!
+    IDS_MEGA                "M"//!
+    IDS_GIGA                "G"//!
+    IDS_TERRA               "T"//!
     IDS_IRC_EMULEPROTO_IGNOREINFOMESSAGE "忽略 eMule 協定訊息"
     IDS_SMARTLOWIDCHECK     "在連線時使用智慧型 低-ID 檢查"
     IDS_SF_SRVOCC           "伺服器佔有期間: %.2f%%"
@@ -920,7 +920,7 @@ BEGIN
     IDS_PW_VIDEOPLAYER      "影像播放器"
     IDS_VIDEOBACKUP         "建立備份來預覽"
     IDS_MYINFO              "我的資訊"
-    IDS_ID                  "ID"
+    IDS_ID                  "ID"//!
     IDS_IDLOW               "低-ID"
     IDS_IDHIGH              "高-ID"
     IDS_UPSTATUS            "已獲得部分"
@@ -999,7 +999,6 @@ BEGIN
     IDS_USECREDITSYSTEM     "使用額度系統 (獎賞上載者)"
     IDS_FIRSTAUTODOWN       "假如您想要讓 eMule 管理您的下載優先權, 啟用這個選項.\n\n開啟這項功能將會允許 eMule 使一個檔案下載有大量的來源但不會影響到少量來源檔案的下載. 這項功能將只會影響未來的下載."
     IDS_FIRSTAUTOUP         "假如您想要讓 eMule 管理您的上載優先權, 啟用這個選項.\n\n開啟這項功能將會允許 eMule 去增進稀有檔案的流通率將會幫助不易取得的人得到它. 關閉這項功能將會允許 eMule 去上載一個流通的檔案優先於稀有的檔案. 這項功能將只會影響未來的分享檔案."
-    IDS_FIRSTFULLCHUNK      "假如您想要上載完整區塊, 啟用這個選項.\n\n使用完整區塊給客戶端一個好的完整的區塊. 關閉這項功能將會幫助你的等候區快速輪流. 假如您專注於釋放檔案者, 您將會想要開啟這個功能."
     IDS_FIRSTSAFECON        "假如您想要讓 eMule 使用安全的方式連線, 啟用這個選項.\n\n關閉這項功能將允許 eMule 加快一些連線到伺服器的速度, 但或許會造成您得到 低-ID 或連線失敗的機會."
     IDS_FIRSTAUTOCON        "假如您想要 eMule 在啟動時連線, 啟用這個選項."
     IDS_FIRSTCOMPLETE       "您現在已完成第一次的精靈設定.\n\n所有的設定值都能由按下選項圖示來改變. 如需解釋及說明請在 eMule 按 F1 !"
@@ -1145,7 +1144,7 @@ BEGIN
     IDS_HM_SCHED_ON         "啟用時間表"
     IDS_HM_SCHED_OFF        "停用時間表"
     IDS_HM_LINKHP           "eMule 首頁"
-    IDS_HM_LINKFAQ          "eMule FAQ"
+    IDS_HM_LINKFAQ          "eMule FAQ"//!
     IDS_HM_LINKVC           "eMule 版本檢查"
     IDS_DEBUG_SOURCE_EXCHANGE "記錄客戶端來源交換及伺服器來源查詢/回覆"
     IDS_SHAREDREQ1          "使用者 %s (%u) 要求您的已分享資料夾清單 -> %s"
@@ -1291,7 +1290,7 @@ BEGIN
     IDS_VERSION             "版本"
     IDS_PASTE               "貼上"
     IDS_A4AF                "來源處理"
-    IDS_MOBILEMULE          "MobileMule"
+    IDS_MOBILEMULE          "MobileMule"//!
     IDS_ENABLEMM            "啟用 MobileMule"
     IDS_AUTOCAT_LABEL       "自動 類別-分配 (樣式, 以 | 做分隔)"
     IDS_SHOWEXTSETTINGS     "顯示更多控制 (進階的模式控制)"
@@ -1449,7 +1448,7 @@ BEGIN
     IDS_KAD_RECHECKFW       "重新檢查防火牆"
     IDS_SHAREDTITLE         "分享 eD2K|Kad"
     IDS_FIREWALLED          "防火牆內"
-    IDS_KADEMLIA            "Kad"
+    IDS_KADEMLIA            "Kad"//!
     IDS_KADCONTACTLAB       "聯繫"
     IDS_KADDISTANCE         "距離"
     IDS_KEY                 "鍵"
@@ -1897,7 +1896,7 @@ BEGIN
     IDS_UPNP_NOSERVICE      "UPnP 裝置主機服務沒有執行, 略過 UPnP 設定"
     IDS_DELAYEDBYUPNP       "連線到網路有點延遲, 因為 UPnP 仍然忙於連接埠轉向的設定."
     IDS_DELAYEDBYUPNP2      "請稍候, eMule 將儘快完成 UPnP 連線."
-    IDS_UPNP                "UPnP"
+    IDS_UPNP                "UPnP"//!
     IDS_UPNPCLOSEONEXIT     "在離開時移除 UPnP 連接埠的轉向"
     IDS_UPNPSKIPWANIP       "略過 WAN IP 設定"
     IDS_UPNPSKIPWANPPP      "略過 WAN PPP 設定"
@@ -1914,7 +1913,269 @@ BEGIN
     IDS_MARKSPAM            "標記為廣告"
     IDS_MARKNOTSPAM         "標記為非廣告"
     IDS_SEARCHSPAMFILTER    "啟用搜尋結果廣告過濾"
+    IDS_SHOWSMILEYS         "顯示表情符號"
+    IDS_CAPTCHAREQUEST      "為了避免廣告訊息, 這個使用者需要您回覆正確的 Captcha 您才可以傳送訊息給他. 請在這個圖片中輸入您所看到的字母:"
+    IDS_CAPTCHAFAILED       "您回覆的 Captcha 不正確且您的訊息將被忽略. 您可以再提出一個新的 Captcha 請求來傳送新訊息."
+    IDS_CAPTCHASOLVED       "您通過 Captcha 檢查且這個使用者也接收了您的訊息."
+    IDS_USECAPTCHAS         "要求 Captcha 認證"
+    IDS_BOOTSRAPNODESDAT    "Nodes.dat 來自 URL:"
+    IDS_DOWNLOADING_NODESDAT_FROM "Nodes.dat 從 %s 下載中"
+    IDS_DOWNLOADING_NODESDAT "Nodes.dat 下載中..."
+    IDS_ERR_FAILEDDOWNLOADNODES "Nodes.dat 從 %s 下載失敗"
+    IDS_PREVENTSTANDBY      "當 eMule 執行時避免進入休眠模式"
+    IDS_KADID               "KadID"//!
+    IDS_SEARCHINGFRIENDKAD  "正在 Kad 網路搜尋好友"
+    IDS_FOUND               "發現"
+    IDS_EXTERNUDPPORT       "外部 UDP 連接埠"
+    IDS_STORESEARCHES       "在重新啟動時記住開啟的搜尋"
+    IDS_WRN_INCFILE_EXISTS  "您已經選擇做為新進檔案的一個新資料夾並不是空的. 所有已經存在於這個資料夾的檔案將會被 eMule 自動地分享."
+    IDS_EDITSPAMFILTER      "編輯廣告過濾器..."
+    IDS_EDITSPAMFILTERCOMMENTS "編輯用於註解的廣告過濾器"
+    IDS_WIZZARDOBFUSCATION  "假如您想要啟用模糊化協定請啟用這個選項\n\n如果您的 ISP 嘗試壓制或封鎖 eMule, 啟用模糊化將會幫助改善像這樣的限制."
+    IDS_BETANAG             "這是一個測試版的 eMule. 請回報問題並經常地在我們的論壇檢查是否有更新 (http://forum.emule-project.net)."
+    IDS_CONFIRMNODESDOWNLOAD 
+                            "您想要下載並使用 Kad 聯繫 (nodes.dat) 來自這個位址:\n%s ?"
+    IDS_AUTOMATIC           "自動的"
+    IDS_NOTCONNECTEDANY     "您尚未連線到一個伺服器或 Kad 網路!"
+    IDS_ERR_SHARED_DIR      "讀取已分享資料夾 ""%s"" 失敗 - %s"
+    IDS_FILE_WARNING_DRM    "檔案 ""%s"" 似乎被數位版權管理保護(DRM).\r\n\r\n在沒有創作者的授權下大部分情況下您將不能使用這個檔案. 您必須注意到當開啟這個檔案大部分情況下會使您的多媒體播放器去開啟一個 Web 瀏覽器且將會自動連接到檔案的創作者網站並且要求獲得一個授權.\r\n\r\n您真的想要繼續開啟這檔案?"
+    IDS_CHECK_FILE_OPEN     "當開啟未信任檔案時提出警告"
+    IDS_BOOTABLE            "可啟動的"
+    IDS_UNSUPPORTEDIMAGE    "未知援的影像"
 END
+
+
+STRINGTABLE 
+BEGIN
+    IDS_UNSHARE             "解除分享"
+    IDS_WEBUPNPINCLUDE      "包含連接埠至 UPnP 設定"
+    IDS_ADDEDON             "已加入在"
+    IDS_RESOLVELINKS        "解析在已分享資內的捷徑"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DROPNONEEDEDSRCS    "剔除無需求的來源"
+    IDS_DROPQUEUEFULLSRCS   "剔除佇列已滿的來源"
+    IDS_DROPQUEUETOOMANY    "剔除過多的來源"
+    IDS_DROPQUEUEUNKNOWN    "剔除未知的來源"
+    IDS_DROP_ASKING         "剔除正在詢問的來源"
+    IDS_DROPCONNECTING      "剔除正在連接的來源"
+    IDS_STOP_CLIENT         "斷開此客戶"
+    IDS_SubMenu_Drop        "剔除(僅在""請求佇列""中)"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_13RATIO             "使用1:3的比例限制下載(當上傳 < 11KB/s)"
+    IDS_PPG_MAELLA_MTU_STATIC "MTU (500..1500, 默認:1340)"
+    IDS_PPG_MAELLA_NAFC_CHECK02 "使用""NAFC""監控上傳/下載"
+    IDS_OPENMORESLOTS       "開啟更多的上傳槽 (推薦)"
+    IDS_AVG_DATARATE_TIME   "平均速率顯示間隔: %u 秒"
+    IDS_XTREMESETTINGS      "Xtreme"
+    IDS_ZOOMSTATIC          "放大: %u 倍"
+    IDS_AVGQR               "平均佇列"
+    IDS_USEDOUBLESENDSIZE   "雙倍發送尺寸"
+    IDS_LOGDROP             "記錄剔除動作"
+    IDS_ANTILEECHER_GROUP   "Anti-Leecher"
+    IDS_ANTILEECHER_CHECK   "啟用 Anti-Leecher 保護"
+    IDS_ANTILEECHERNAME_CHECK "檢測: 不良的用戶名"
+    IDS_POWERRELEASE        "強力發佈"
+    IDS_DONTREMOVESTATICSERVER "禁止自動移除靜態伺服器"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_LISTREQUESTED       "被請求檔列表"
+    IDS_HIGHPRIOPROCESS     "高"
+    IDS_ABOVENORMALPROCESS  "中高"
+    IDS_NORMALPROCESS       "正常"
+    IDS_PROCESSGROUP        "程式優先順序"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_COUNTRYNAME_SHORT   "顯示2字母簡稱"
+    IDS_COUNTRYNAME_MID     "顯示3字母簡稱"
+    IDS_COUNTRYNAME_LONG    "顯示國家全稱"
+    IDS_COUNTRYNAME_SHOWFLAG "顯示旗幟"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_IP2COUNTRY_MSG1     "IP2Country uses the IP-to-Country Database provided by WebHosting.Info"
+    IDS_IP2COUNTRY_MSG2     "(http://www.webhosting.info), available from http://ip-to-country.webhosting.info"
+    IDS_IP2COUNTRY_LOADED   "IP2Country 數據已載入"
+    IDS_IP2COUNTRY_UNLOADED "IP2Country 數據已卸載"
+    IDS_IP2COUNTRY_ERROR1   "在第 %i 行發生錯誤"
+    IDS_IP2COUNTRY_ERROR3   "無法載入"
+    IDS_IP2COUNTRY_ERROR4   "因為國家旗幟未啟用, 無法載入"
+    IDS_IP2COUNTRY_ERROR5   "非法的資源ID, 可能你需要更新國家旗幟檔(CountryFlag.dll),"
+    IDS_IP2COUNTRY_INFO     "Parsed lines:%u  Found IPCountry ranges:%u  Duplicate:%u  Merged:%u"
+    IDS_IP2COUNTRY_FLAGLOAD "國家旗幟已載入"
+    IDS_IP2COUNTRY_FILELOAD "IP2Country 文件已卸載"
+    IDS_IP2COUNTRY_FLAGUNLD "國家旗幟已卸載"
+    IDS_IP2COUNTRY_NALONG   "不適用"
+    IDS_IP2COUNTRY_NASHORT  "N/A"
+    IDS_IP2COUNTRY_LOADED2  "從檔 %s 中載入 IP2Country 資料, 用時 %u 毫秒"
+    IDS_ACCURATEGRAPH       "精確顯示"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_SMOOTHGRAPH         "平滑顯示"
+    IDS_MULTIQUEUE          "每個檔一個佇列 (多佇列)"
+    IDS_RETRYCONNECTIONATTEMPTS "嘗試重新請求失敗的TCP連接"
+    IDS_ANTIGHOST           "檢測: 幽靈用戶端"
+    IDS_REMEMBERAICH        "保留未使用的 AICH-Hashes (known2.met)"
+    IDS_MARKCANCELLED       "標記為""已取消"""
+    IDS_DOWNHISTORY_CHECK1  "eMule發現曾經下載過同樣的檔 ID:\n"
+    IDS_DOWNHISTORY_CHECK2  "eMule發現檔 %i 曾經下載過且檔案名相同 (%s):\n"
+    IDS_DOWNHISTORY_CHECK3  "無論如何您都要下載這個檔嗎？"
+    IDS_DOWNHISTORY_CHECK4  "eMule發現曾經取消了此檔的下載 ID:\n"
+    IDS_DOWNHISTORY         "下載歷史"
+    IDS_DOWNHISTORY_REMOVE  "清除此記錄"
+    IDS_DOWNHISTORY_REMOVE_QUESTION "您真的想把 ""%s"" 從下載歷史中清除嗎？"
+    IDS_DOWNHISTORY_REMOVE_QUESTION_MULTIPLE 
+                            "您真的想要把所選的檔從下載歷史中清除嗎？"
+    IDS_DOWNHISTORY_SHARED  "共用"
+    IDS_DOWNHISTORY_CLEAR   "清除所有下載記錄"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DOWNHISTORY_SHOWSHARED "顯示共用中的檔"
+    IDS_DOWNHISTORY_ACTIONS "選項"
+    IDS_DOWNHISTORY_CLEAR_QUESTION "您確定想要清除所有的下載記錄嗎？"
+    IDS_SENDBUFFER          "  發送緩存:"
+    IDS_LEERCHERLOGTITLE    "吸血驢過濾記錄"
+    IDS_ALL_A4AF_TO_THIS    "立刻交換全部來源到此檔"
+    IDS_ALL_A4AF_TO_OTHER   "立刻交換全部來源到其他檔"
+    IDS_SWAP_A4AF_TO_THIS   "立刻交換(A4AF)來源到此檔"
+    IDS_SWAP_A4AF_TO_OTHER  "立刻交換(A4AF)來源到其他檔"
+    IDS_ALL_A4AF_AUTO       "自動交換全部(A4AF)來源到此檔"
+    IDS_LEECHER_ACTION_BAN  "遮罩"
+    IDS_LEECHER_ACTION_REDUCE "減少積分"
+    IDS_ANTILEECHERBADHELLO_CHECK "檢測: 錯誤的握手標誌"
+    IDS_ANTILEECHERSNAFU_CHECK "檢測: 錯誤的檔標誌"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ANTILEECHERMOD_CHECK "檢測: 不良的用戶端標示"
+    IDS_ANTILEECHERTHIEF_CHECK "檢測: 昵稱/用戶端標示竊賊"
+    IDS_ANTILEECHERSPAMMER_CHECK "檢測: 垃圾資訊發送者"
+    IDS_ANTILEECHERXSEXPLOITER_CHECK "檢測: XS-Exploiter"
+    IDS_STATIC_LEECHERCOMMUNITY "社區用戶端"
+    IDS_STATIC_LEECHERGHOST "幽靈用戶端"
+    IDS_STATIC_LEECHERTHIEF "昵稱/用戶端標示竊賊"
+    IDS_NEWXTREMEVERSION    "發現新版 Xtreme 可用"
+    IDS_NEWXTREMEVERSIONDOWNLOAD "發現新版 Xtreme 可用 \n 您想現在下載它嗎？"
+    IDS_NEWDLP              "發現新版 antiLeech.dll (DLP) 可用"
+    IDS_NEWDLPDOWNLOAD      "發現新版 antiLeech.dll (DLP) 可用 \n 您想現在下載它嗎？"
+    IDS_DROPLEECHER         "剔除吸血驢"
+    IDS_ACTIVEDOWNLOADSBOLD "對正在下載的任務使用黑體字顯示"
+    IDS_UPDOWNUPLOADLIST    "上傳 / 下載"
+    IDS_MAXGLOBALSOURCES    "全球來源限制:"
+    IDS_ACCEPTSOURCES       "使用全球來源限制"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ACCEPTRATIO         "如果找到的源多於源限制時使用1:3的上傳/下載限制"
+    IDS_SHOWADDITIONALGRAPH "顯示附加統計曲線"
+    IDS_CHECK4UPDATEMOD     "啟動時檢查 Xtreme 的新版本"
+    IDS_ANTILEECHEREMCRYPT_CHECK "檢測: 加密用戶端"
+    IDS_UPLOADMANAGEMENT_FRAME "上傳管理"
+    IDS_UPLOADSLOTSPEED_LABEL "上傳槽速度:"
+    IDS_USENARROWFONT       "在傳輸視窗使用纖體字顯示"
+    IDS_SHOWBLOCKINGRATIO   "顯示Socket阻塞率"
+    IDS_FUNNYNICK           "使用隨機昵稱[FN]"
+    IDS_AUTOUPDATEIPFILTER  "自動升級IP過濾檔(IPFilter.dat)"
+    IDS_DROPBLOCKINGSOCKETS "剔除頻繁阻塞的Sockets"
+    IDS_LOGPARTMISMATCH     "記錄大小不匹配的被請求檔"
+    IDS_CN_UPNPTRYRANDOM    "對UPnP閘道使用隨機埠"
+    IDS_CN_UPNPNAT          "啟用 UPnP"
+    IDS_CHUNKCHOOSER        "檔塊選擇方式:"
+    IDS_UPLOADINSTABLE      "警告: 你的上傳值設置似乎太高了. 請檢查你的設置!\n查看上傳統計曲線, 那白色或者黃色(使用NAFC時)的線應該是比較平整的.\n 此消息只提示一次"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_CLIENTPERCENTAGE    "顯示用戶端百分比"
+    IDS_ONERELEASESLOT      "預留上傳槽給發佈級檔"
+    IDS_A_UPPRIO            "使用全自動上傳優先順序"
+    IDS_SHAREFACTOR         "共用係數"
+    IDS_MASSRENAME1         "檔案名過濾 (此設置將會被應用到以下所有的檔案名)"
+    IDS_FILENAMELEFT        "左對齊檔案名"
+    IDS_FILENAMERIGHT       "右對齊檔案名"
+    IDS_RESETFILENAMES      "復位"
+    IDS_SIMPLECLEANUP       "簡單清除"
+    IDS_INSERTTEXTCOLUMN    "從剪切板插入文字"
+    IDS_MASSRENAME2         "原始檔案名:"
+    IDS_MASSRENAME3         "新檔案名:"
+    IDS_NOTENOUGHFILENAMES  "新檔案名列表裏沒有足夠的檔案名可用. 不能重命名."
+    IDS_IDENTICALFILENAMES  "不允許兩個或多個相同的檔案名在同一目錄裏 (第 %d 行). 不能重命名."
+    IDS_MR                  "批量重命名..."
+    IDS_MASSRENAME_TITLE    "批量重命名"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STATIC_DOWNINFO     "下載 0 = 無限制"
+    IDS_ANTILEECHERUSERHASH_CHECK "檢測: 不良的用戶Hash"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_UPNPSTATUS          "UPnP 狀態:"
+    IDS_UPNPSTATUS_OK       "綁定成功"
+    IDS_UPNPSTATUS_NOTINLAN "你並不在某個硬體防火牆或者路由器之後"
+    IDS_UPNPSTATUS_ERROR    "無法找到支持 UPnP 的路由器"
+    IDS_UPNPSTATUS_PORTINUSE "外部 NAT 埠被佔用"
+    IDS_UPNPSTATUS_PORTINUSE2 "經過多次重試, 外部 NAT 埠均被佔用"
+    IDS_UPNP_REBINDTEXT     "當 IP 改變時重新綁定 UPnP"
+    IDS_IMPORTPARTS         "導入文件塊..."
+    IDS_IMPORTPARTS_STOP    "停止導入檔塊"
+    IDS_SR13_IMPORTPARTS_ERR_ALREADYCOMPLETE "導入終止: 不能導入已完成檔."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_SR13_IMPORTPARTS_ERR_HASHSETINCOMPLETE 
+                            "導入終止: 檔 %s 的 hashset 不完整 (只有 %i 個hashes, 總共有 %i 個分塊)."
+    IDS_SR13_IMPORTPARTS_ERR_CANTOPENFILE "導入終止: 無法打開文件 %s."
+    IDS_SR13_IMPORTPARTS_IMPORTSTART "正在導入 %i 個分塊到文件 %s."
+    IDS_SR13_IMPORTPARTS_PARTIMPORTEDGOOD "分塊 %i: 已導入."
+    IDS_SR13_IMPORTPARTS_PARTIMPORTEDBAD "分塊 %i: 已導入並交由 ICH 處理."
+    IDS_SR13_IMPORTPARTS_PARTSKIPPEDDONTMATCH 
+                            "分塊 %i: 跳過, 導入內容和已下載部分不匹配."
+    IDS_SR13_IMPORTPARTS_BADPARTSREHASH 
+                            "%i 個不完整的分塊已導入, 準備 A/ICH. 正在重新 Hash."
+    IDS_SR13_IMPORTPARTS_ERR_FILETOOSMALL 
+                            "檔比 AICH 能處理的最小分塊還要小 - 導入不會有任何效果."
+    IDS_SR13_IMPORTPARTS_IMPORTFINISH "導入完成. %i 個分塊被導入到文件 %s."
+    IDS_OBFUSCATION_PADDING_LENGTH "協定加密附加長度 [10-254]"
+    IDS_PUSH_SMALL          "推送小文件"
+    IDS_SMALL               "小文件"
+    IDS_PUSH_SMALL_FILE_SIZE "小文件大小上限 [1-2048 kb] "
+END
+
+STRINGTABLE 
+BEGIN
+	IDS_GETFRIENDED2KLINK   "將好友鏈結複製到剪貼板"
+    IDS_GETHTMLFRIENDED2KLINK "將好友鏈結複製到剪貼板 (HTML)"
+    IDS_ERR_FAILEDDOWNLOADEMFRIENDS "從 %s 下載好友列表檔失敗"
+    IDS_GETMYFRIENDED2KLINK "將我的鏈結複製到剪貼板"
+    IDS_GETMYHTMLFRIENDED2KLINK "將我的鏈結複製到剪貼板 (HTML)"
+    IDS_FRIENDLINKMENUTITLE "好友鏈結"
+	IDS_DOWNLOADEMFRIENDSMET "下載 emfriends.met"
+    IDS_EMFRIENDSMETURL     "請輸入 emfriends.met 的 URL:"
+	IDS_USER_ALREADY_FRIEND "用戶 ""%s"" 已經存在于你的好友列表之中"
+	IDS_TRUSTEVERYHASH      "信任每一個AICHHash (只在本次任務有效, 不保存, 不推薦)"
+END
+
+
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // Chinese (Taiwan) resources
