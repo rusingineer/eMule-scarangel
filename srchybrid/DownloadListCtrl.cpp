@@ -2984,6 +2984,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 						selectedList.GetHead()->SetFollowTheMajority(wParam - MP_FOLLOWTHEMAJORITY_0);
 						selectedList.RemoveHead();
 					}
+					theApp.downloadqueue->SaveFileSettings();
 					SetRedraw(true);
 					break;
 				}

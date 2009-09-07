@@ -5987,7 +5987,7 @@ BEGIN
     IDS_COLOR_W9            "Statusbar"
     IDS_COLOR_MASTER6       "Window styles"
     IDS_COLOR_W10           "Toolbar"
-    IDS_COLOR_WARNING       "You are using Windows XP. The statusbar and the toolbar will only change colors when the classic style is enabled."
+    IDS_COLOR_WARNING       "You are using Windows XP or higher. The statusbar and the toolbar will only change colors when the classic style is enabled."
     IDS_COLOR_S3            "Shareable"
     // <== Design Settings [eWombat/Stulle] - Stulle
     // ==> Limit PS by amount of data uploaded [Stulle] - Stulle

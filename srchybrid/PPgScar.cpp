@@ -1471,7 +1471,12 @@ BOOL CPPgScar::OnInitDialog()
 	// <== Design Settings [eWombat/Stulle] - Stulle
 
 	// ==> push small files [sivka] - Stulle
-//	InitWindowStyles(this);
+	InitWindowStyles(this);
+	m_ctlPushSmallSize.SetRange(1, PARTSIZE>>10, TRUE);
+	m_ctlPushSmallSize.SetPos(thePrefs.GetPushSmallFileSize()>>10);
+	m_ctlPushSmallSize.SetTicFreq(1024);
+	m_ctlPushSmallSize.SetPageSize(1024);
+	ShowPushSmallFileValues();
 	LoadSettings();
 	// <== push small files [sivka] - Stulle
 
@@ -1493,8 +1498,10 @@ void CPPgScar::LoadSettings(void)
 		((CSliderCtrl*)GetDlgItem(IDC_PUSHSMALL_SLIDER))->SetPos(thePrefs.GetPushSmallFileSize());
 		ShowPushSmallFileValues();
 		*/
-		m_iPushSmall.SetPos(thePrefs.GetPushSmallFileSize());
+		/*
+		m_ctlPushSmallSize.SetPos(thePrefs.GetPushSmallFileSize());
 		ShowPushSmallFileValues();
+		*/
 		// <== Tabbed Preferences [TPT] - Stulle
 		// <== push small files [sivka] - Stulle
 
@@ -1586,7 +1593,7 @@ BOOL CPPgScar::OnApply()
 	((CSliderCtrl*)GetDlgItem(IDC_PUSHSMALL_SLIDER))->SetRange(1, PARTSIZE, TRUE);
 	thePrefs.m_iPushSmallFiles = ((CSliderCtrl*)GetDlgItem(IDC_PUSHSMALL_SLIDER))->GetPos();
 	*/
-	thePrefs.m_iPushSmallFiles = m_iPushSmall.GetPos();
+	thePrefs.m_iPushSmallFiles = m_ctlPushSmallSize.GetPos()<<10;
 	// <== Tabbed Preferences [TPT] - Stulle
 	// <== push small files [sivka] - Stulle
 	thePrefs.enablePushRareFile = m_bEnablePushRareFile; // push rare file - Stulle
@@ -2798,16 +2805,16 @@ LRESULT CPPgScar::OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-void CPPgScar::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) 
+void CPPgScar::OnHScroll(UINT /*nSBCode*/, UINT /*nPos*/, CScrollBar* pScrollBar)
 {
 	// ==> push small files [sivka] - Stulle
-	if( pScrollBar == (CScrollBar*)GetDlgItem(IDC_PUSHSMALL_SLIDER) )
+	if( pScrollBar->GetSafeHwnd() == m_ctlPushSmallSize.m_hWnd )
 		ShowPushSmallFileValues();
 	// <== push small files [sivka] - Stulle
 
 	SetModified(TRUE);
-	UpdateData(false); 
-	CPropertyPage::OnHScroll(nSBCode, nPos, pScrollBar);
+	//UpdateData(false); 
+	//CPropertyPage::OnHScroll(nSBCode, nPos, pScrollBar);
 }
 
 // ==> push small files [sivka] - Stulle
@@ -2817,7 +2824,7 @@ void CPPgScar::ShowPushSmallFileValues()
 	/*
 	GetDlgItem(IDC_PUSHSMALL)->SetWindowText(CastItoXBytes(float(((CSliderCtrl*)GetDlgItem(IDC_PUSHSMALL_SLIDER))->GetPos())));
 	*/
-	m_iPushSmallLabel.SetWindowText(CastItoXBytes(float(m_iPushSmall.GetPos())));
+	m_iPushSmallLabel.SetWindowText(CastItoXBytes(float(m_ctlPushSmallSize.GetPos()<<10)));
 	// <== Tabbed Preferences [TPT] - Stulle
 }
 // <== push small files [sivka] - Stulle
@@ -2898,12 +2905,11 @@ void CPPgScar::InitControl()
 							CRect(right-50, bottom-34, right, bottom-16), this, IDC_PUSHSMALL);
 	m_iPushSmallLabel.SetFont(GetFont());	
 
-	m_iPushSmall.CreateEx(WS_EX_STATICEDGE,
+	m_ctlPushSmallSize.CreateEx(WS_EX_STATICEDGE,
 							  WS_CHILD /*| WS_VISIBLE*/ | WS_TABSTOP | WS_BORDER |
 							  /*TBS_TOOLTIPS | */TBS_BOTH/* | TBS_VERT*/ | TBS_NOTICKS | WS_TABSTOP,
 							  CRect(left, bottom-16, right, bottom), this, IDC_PUSHSMALL_SLIDER);
-	m_iPushSmall.SetFont(GetFont());
-	m_iPushSmall.SetRange(1, PARTSIZE);	
+	m_ctlPushSmallSize.SetFont(GetFont());
 
 	// Backup
 	m_BackupBox.CreateEx(0, _T("BUTTON"), _T("Select File Types to Backup"), 
@@ -3043,7 +3049,7 @@ void CPPgScar::InitControl()
 
 	m_ColorWarning.CreateEx(0, _T("STATIC"), _T(""), 
 							WS_CHILD /*| WS_VISIBLE*/, 
-							CRect(left+10, top+175, right-10, top+204), this, IDC_COLOR_WARNING);
+							CRect(left+10, top+175, right-10, top+214), this, IDC_COLOR_WARNING);
 	m_ColorWarning.SetFont(GetFont());	
 
 	// Advanced
@@ -3238,8 +3244,8 @@ void CPPgScar::SetTab(eTab tab){
 				m_strPushSmall.EnableWindow(FALSE);
 				m_iPushSmallLabel.ShowWindow(SW_HIDE);
 				m_iPushSmallLabel.EnableWindow(FALSE);
-				m_iPushSmall.ShowWindow(SW_HIDE);
-				m_iPushSmall.EnableWindow(FALSE);
+				m_ctlPushSmallSize.ShowWindow(SW_HIDE);
+				m_ctlPushSmallSize.EnableWindow(FALSE);
 				break;
 			case BACKUP:
 				m_BackupBox.ShowWindow(SW_HIDE);
@@ -3378,8 +3384,8 @@ void CPPgScar::SetTab(eTab tab){
 				m_strPushSmall.EnableWindow(TRUE);
 				m_iPushSmallLabel.ShowWindow(SW_SHOW);
 				m_iPushSmallLabel.EnableWindow(TRUE);
-				m_iPushSmall.ShowWindow(SW_SHOW);
-				m_iPushSmall.EnableWindow(TRUE);
+				m_ctlPushSmallSize.ShowWindow(SW_SHOW);
+				m_ctlPushSmallSize.EnableWindow(TRUE);
 				break;
 			case BACKUP:
 				m_BackupBox.ShowWindow(SW_SHOW);
@@ -4030,7 +4036,7 @@ void CPPgScar::UpdateStyles()
 		{
 				m_ColorWarning.ShowWindow(SW_SHOW);
 				m_ColorWarning.EnableWindow(TRUE);
-				m_ColorBox.MoveWindow(CRect(left, top, right, top+214),TRUE);
+				m_ColorBox.MoveWindow(CRect(left, top, right, top+224),TRUE);
 		}
 		else
 		{

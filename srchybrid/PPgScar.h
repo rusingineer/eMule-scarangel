@@ -479,7 +479,7 @@ private:
 	// ScarAngel
 	CStatic		m_strWarning;
 	CStatic		m_strPushSmall, m_iPushSmallLabel;
-	CSliderCtrl m_iPushSmall;
+	CSliderCtrl m_ctlPushSmallSize;
 
 	// Backup
 	CButton		m_BackupBox;

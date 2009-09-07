@@ -2915,8 +2915,13 @@ void CDownloadQueue::SaveFileSettings(bool bStart)
 			m_SaveSettingsThread = new CSaveSettingsThread();
 			m_dwLastSave = ::GetTickCount();
 		}
-		else if((::GetTickCount() - m_dwLastSave) < SEC2MS(SAVE_WAIT_TIME))
-			m_bSaveAgain = true;
+		else
+		{
+			if((m_dwLastSave + SEC2MS(SAVE_WAIT_TIME)) < ::GetTickCount())
+				m_bSaveAgain = true;
+			m_dwLastSave = ::GetTickCount();
+			m_SaveSettingsThread->KeepWaiting();
+		}
 	}
 	else
 	{
@@ -2938,8 +2943,11 @@ void CDownloadQueue::SaveFileSettings(bool bStart)
 CSaveSettingsThread::CSaveSettingsThread(void) {
 	threadEndedEvent = new CEvent(0, 1);
 	pauseEvent = new CEvent(TRUE, TRUE);
+	waitEvent = new CEvent(TRUE, FALSE);
 
 	bDoRun = true;
+	bDoWait = true;
+	m_dwLastWait = 0;
 	AfxBeginThread(RunProc,(LPVOID)this,THREAD_PRIORITY_LOWEST);
 }
 
@@ -2947,13 +2955,19 @@ CSaveSettingsThread::~CSaveSettingsThread(void) {
 	EndThread();
 	delete threadEndedEvent;
 	delete pauseEvent;
+	delete waitEvent;
 }
 
 void CSaveSettingsThread::EndThread() {
+	if(!bDoRun) // we are trying to stop already
+		return;
+
 	// signal the thread to stop looping and exit.
 	bDoRun = false;
+	bDoWait = false;
 
 	Pause(false);
+	waitEvent->SetEvent();
 
 	// wait for the thread to signal that it has stopped looping.
 	threadEndedEvent->Lock();
@@ -2978,18 +2992,26 @@ UINT AFX_CDECL CSaveSettingsThread::RunProc(LPVOID pParam)
 
 UINT CSaveSettingsThread::RunInternal()
 {
-	bool bWait = true; // only wait on the first run
-//	int iCount = 0;
+	while (bDoWait)
+	{
+		if(m_dwLastWait == 0) // initial wait
+			waitEvent->Lock(SEC2MS(SAVE_WAIT_TIME));
+		else if(m_dwLastWait + SEC2MS(SAVE_WAIT_TIME) > ::GetTickCount()) // we have not waited enough since last keep message
+			waitEvent->Lock(m_dwLastWait + SEC2MS(SAVE_WAIT_TIME) - ::GetTickCount()); // so wait until the time is up
+		else // we waited enough, do the actual run now
+		{
+			bDoWait = false;
+			if(bDoRun == false) // what? canceling this thread before saving
+				m_SettingsSaver.SaveSettings(); // save!
+		}
+	}
+
 	while(bDoRun) 
 	{
-		if(bWait)
-			Sleep(SEC2MS(SAVE_WAIT_TIME));
-		bWait = false; // no more waiting henceforth
-
 		if(m_SettingsSaver.SaveSettings()) // if this fails we need to run again
 		{
-			PostMessage(theApp.emuledlg->m_hWnd,TM_SAVEDONE,0,0);
 			Pause(true);
+			PostMessage(theApp.emuledlg->m_hWnd,TM_SAVEDONE,0,0);
 		}
 		pauseEvent->Lock();
 	}

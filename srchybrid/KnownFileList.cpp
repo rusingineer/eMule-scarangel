@@ -855,6 +855,9 @@ CSaveKnownThread::~CSaveKnownThread(void) {
 }
 
 void CSaveKnownThread::EndThread() {
+	if(!bDoRun) // we are trying to stop already
+		return;
+
 	// signal the thread to stop looping and exit.
 	bDoRun = false;
 
@@ -886,10 +889,9 @@ UINT CSaveKnownThread::RunInternal()
 	while(bDoRun) 
 	{
 		theApp.knownfiles->Save();
-
-		PostMessage(theApp.emuledlg->m_hWnd,TM_SAVEKNOWNDONE,0,0);
 		Pause(true);
-        pauseEvent->Lock();
+		PostMessage(theApp.emuledlg->m_hWnd,TM_SAVEKNOWNDONE,0,0);
+		pauseEvent->Lock();
 	}
 
 	threadEndedEvent->SetEvent();
