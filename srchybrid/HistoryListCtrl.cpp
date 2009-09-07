@@ -519,7 +519,7 @@ int CHistoryListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort
 				break;
 
 			case 8: //acc requests asc
-				iResult=item1->statistic.GetAllTimeAccepts() - item2->statistic.GetAllTimeAccepts();
+				iResult=item1->statistic.GetAllTimeRequests() - item2->statistic.GetAllTimeRequests();
 				break;
 		
 			case 9: //acc accepts asc

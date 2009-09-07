@@ -5645,6 +5645,7 @@ END
 
 STRINGTABLE 
 BEGIN
+	IDS_OBFUSCATION_PADDING_LENGTH	"Obfuscation-Padding-Length [10-254]"
 	//Friendlinks
 	IDS_GETFRIENDED2KLINK   "Copy friend link to clipboard"
     IDS_GETHTMLFRIENDED2KLINK "Copy friend link to clipboard (HTML)"

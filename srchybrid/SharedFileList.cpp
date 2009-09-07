@@ -846,41 +846,6 @@ void CSharedFileList::FileHashingFinished(CKnownFile* file)
 	ASSERT( !IsFilePtrInList(file) );
 	ASSERT( !theApp.knownfiles->IsFilePtrInList(file) );
 
-	//Xman
-	// BEGIN SLUGFILLER: SafeHash
-	//Borschtsch
-	bool dontadd = true;
-	if (!CompareDirectories(thePrefs.GetMuleDirectory(EMULE_INCOMINGDIR), file->GetPath()))
-		dontadd = false;
-	if (dontadd) {
-		for (int i = 0; i < thePrefs.GetCatCount(); i++) {
-			Category_Struct* pCatStruct = thePrefs.GetCategory(i);
-			if (pCatStruct != NULL){
-				if (CompareDirectories(pCatStruct->strIncomingPath, file->GetPath()))
-					continue;
-				dontadd = false;
-				break;
-			}
-		}
-	}
-	if (dontadd) {
-		for (POSITION pos = thePrefs.shareddir_list.GetHeadPosition(); pos != 0; ) {
-			if (CompareDirectories(thePrefs.shareddir_list.GetNext(pos), file->GetPath()))
-				continue;
-			dontadd = false;
-			break;
-		}
-	}
-	if (dontadd) {
-		RemoveFromHashing(file);
-		if (!IsFilePtrInList(file) && !theApp.knownfiles->IsFilePtrInList(file))
-			delete file;
-		else
-			ASSERT(0);
-		return;
-	}
-	// END SLUGFILLER: SafeHash
-
 	CKnownFile* found_file = GetFileByID(file->GetFileHash());
 	if (found_file == NULL)
 	{

@@ -755,7 +755,21 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 					data.ReadHash16(cfilehash);
 					CPartFile* file = theApp.downloadqueue->GetFileByID(cfilehash);
 					if (file == NULL)
+						//Xman Code Fix
+						//following situation: we are downloading a cue file (100 bytes) from many sources
+						//this file will be finished earlier than our sources are answering
+						//throwing an exception will filter good sources
+						//added by zz_fly. this situation can also happen here. thanks Enig123
+					{
+						CKnownFile* reqfiletocheck = theApp.sharedfiles->GetFileByID(cfilehash);
+						if(reqfiletocheck!=NULL){ 
+							AddDebugLogLine(false, _T("client send NULL FileStatus: %s"), client->DbgGetClientInfo());
+							break;
+						}
+						else
+						//Xman end
 						client->CheckFailedFileIdReqs(cfilehash);
+					} //Xman
 					client->ProcessFileStatus(false, &data, file);
 					break;
 				}
