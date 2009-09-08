@@ -1049,6 +1049,8 @@ void CClientCreditsList::LoadList()
 					*/
 					ClientCreditContainer* newcstruct_parent = new ClientCreditContainer;
 					CreditStruct* newcstruct = &newcstruct_parent->theCredit;
+					memset(newcstruct, 0, sizeof(CreditStruct_30c_SUQWTv2));
+					newcstruct_parent->clientCredit = NULL;
 					//zz_fly :: Optimized :: Enig123, DolphinX :: End
 					file.Read(newcstruct, sizeof(CreditStruct_30c_SUQWTv2));
 					if (newcstruct->nLastSeen < dwExpired){
@@ -1077,6 +1079,8 @@ void CClientCreditsList::LoadList()
 					*/
 					ClientCreditContainer* newcstruct_parent = new ClientCreditContainer;
 					CreditStruct* newcstruct = &newcstruct_parent->theCredit;
+					memset(newcstruct, 0, sizeof(CreditStruct_30c));
+					newcstruct_parent->clientCredit = NULL;
 					//zz_fly :: Optimized :: Enig123, DolphinX :: End
 					newcstruct->nSecuredWaitTime = 0;
 					newcstruct->nUnSecuredWaitTime = 0;
@@ -1107,6 +1111,8 @@ void CClientCreditsList::LoadList()
 					*/
 					ClientCreditContainer* newcstruct_parent = new ClientCreditContainer;
 					CreditStruct* newcstruct = &newcstruct_parent->theCredit;
+					memset(newcstruct, 0, sizeof(CreditStruct_30c_SUQWTv1));
+					newcstruct_parent->clientCredit = NULL;
 					//zz_fly :: Optimized :: Enig123, DolphinX :: End
 					file.Read(((uint8*)newcstruct) + 8, sizeof(CreditStruct_30c_SUQWTv1) - 8);
 					file.Read(((uint8*)newcstruct), 8);
@@ -1133,11 +1139,13 @@ void CClientCreditsList::LoadList()
 					//zz_fly :: Optimized :: Enig123, DolphinX :: Start
 					/*
 					CreditStruct* newcstruct = new CreditStruct;
+					memset(newcstruct, 0, sizeof(CreditStruct));
 					*/
 					ClientCreditContainer* newcstruct_parent = new ClientCreditContainer;
 					CreditStruct* newcstruct = &newcstruct_parent->theCredit;
+					memset(newcstruct, 0, sizeof(CreditStruct_29a));
+					newcstruct_parent->clientCredit = NULL;
 					//zz_fly :: Optimized :: Enig123, DolphinX :: End
-					memset(newcstruct, 0, sizeof(CreditStruct));
 					newcstruct_parent->clientCredit = NULL; //zz_fly :: Optimized :: Enig123, DolphinX
 					file.Read(((uint8*)newcstruct) + 8, sizeof(CreditStruct_29a));
 					if (newcstruct->nLastSeen < dwExpired){

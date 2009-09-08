@@ -654,9 +654,9 @@ void CUploadListCtrl::GetItemDisplayText(const CUpDownClient *client, int iSubIt
 					Sbuffer.Append(_T(",PBF II"));
 
 				Sbuffer.AppendFormat(_T(" (%s)"),CastItoXBytes(client->credits->GetDownloadedTotal()-client->credits->GetUploadedTotal()));
+			}
 			// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 			_tcsncpy(pszText, Sbuffer, cchTextMax);
-			}
 		}
 			// <== PowerShare [ZZ/MorphXT] - Stulle
 			break;
