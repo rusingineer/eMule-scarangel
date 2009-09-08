@@ -435,7 +435,9 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					{ //Xman
 						cur_rec.bottom--;
 						cur_rec.top++;
+						COLORREF crOldBackColor = dc->GetBkColor(); //Xman Code Improvement: FillSolidRect
 						client->DrawStatusBar(dc, &cur_rec, false, thePrefs.UseFlatBar());
+						dc.SetBkColor(crOldBackColor); //Xman Code Improvement: FillSolidRect
 						//Xman client percentage (font idea by morph)
 						CString buffer;
 						// ==> Show Client Percentage optional [Stulle] - Stulle

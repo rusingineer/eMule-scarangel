@@ -1144,7 +1144,6 @@ void CClientCreditsList::LoadList()
 					ClientCreditContainer* newcstruct_parent = new ClientCreditContainer;
 					CreditStruct* newcstruct = &newcstruct_parent->theCredit;
 					memset(newcstruct, 0, sizeof(CreditStruct_29a));
-					newcstruct_parent->clientCredit = NULL;
 					//zz_fly :: Optimized :: Enig123, DolphinX :: End
 					newcstruct_parent->clientCredit = NULL; //zz_fly :: Optimized :: Enig123, DolphinX
 					file.Read(((uint8*)newcstruct) + 8, sizeof(CreditStruct_29a));
@@ -1263,7 +1262,7 @@ void CClientCreditsList::SaveList()
 		*/
 		CreditStruct* credit = &cur_credit->theCredit;
 		if(m_bSaveUploadQueueWaitTime){
-			if (cur_credit->clientCredit->IsActive(dwExpired))	// Moonlight: SUQWT - Also save records if there is wait time.
+			if (cur_credit->clientCredit && cur_credit->clientCredit->IsActive(dwExpired))	// Moonlight: SUQWT - Also save records if there is wait time.
 			{
 				cur_credit->clientCredit->SaveUploadQueueWaitTime();	// Moonlight: SUQWT
 				memcpy(pBufferSUQWT+(count*sizeof(CreditStruct)), credit, sizeof(CreditStruct));
@@ -2005,8 +2004,9 @@ void CClientCreditsList::ResetCheckScoreRatio(){
 		*/
 		m_mapClients.GetNextAssoc(pos, tempkey, cstruct_parent);
 		CClientCredits* cur_credit = cstruct_parent->clientCredit;
+		if(cur_credit)
 		//zz_fly :: Optimized :: Enig123, DolphinX :: End
-		cur_credit->m_bCheckScoreRatio = true;
+			cur_credit->m_bCheckScoreRatio = true;
 	}
 }
 // <== CreditSystems [EastShare/ MorphXT] - Stulle

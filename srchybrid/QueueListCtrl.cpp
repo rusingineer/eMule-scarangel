@@ -495,7 +495,9 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						if (client->GetUpPartCount()) {
 							cur_rec.bottom--;
 							cur_rec.top++;
+							COLORREF crOldBackColor = dc->GetBkColor(); //Xman Code Improvement: FillSolidRect
 							client->DrawUpStatusBar(dc, &cur_rec, false, thePrefs.UseFlatBar());
+							dc.SetBkColor(crOldBackColor); //Xman Code Improvement: FillSolidRect
 							//Xman client percentage (font idea by morph)
 							CString buffer;
 							// ==> Show Client Percentage optional [Stulle] - Stulle

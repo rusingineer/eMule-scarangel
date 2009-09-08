@@ -1387,6 +1387,8 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, UIN
 			break;
 		}
 
+		// ==> Design Settings [eWombat/Stulle] - Stulle
+		/*
 		//Xman show LowIDs
 		case 6:
 		{
@@ -1398,6 +1400,9 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, UIN
 			break;
 		}
 		//Xman end
+		*/
+		// <== Design Settings [eWombat/Stulle] - Stulle
+
 
 		//Xman show LowIDs
 		case 8:
