@@ -764,6 +764,8 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 			{
 				TCHAR szItem[1024];
 				GetItemDisplayText(file, iColumn, szItem, _countof(szItem));
+				// ==> Design Settings [eWombat/Stulle] - Stulle
+				/*
 				//Xman PowerRelease
 				if(pKnownFile)
 				{
@@ -771,6 +773,8 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						dc->SetTextColor((COLORREF)RGB(255,210,210));
 				}
 				//Xman end
+				*/
+				// <== Design Settings [eWombat/Stulle] - Stulle
 				switch (iColumn)
 				{
 					case 0: {
@@ -863,6 +867,8 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 					// ==> Spread bars [Slugfiller/MorphXT] - Stulle
 					case 20:
+						if(pKnownFile == NULL)
+							break;
 						cur_rec.bottom--;
 						cur_rec.top++;
 						pKnownFile->statistic.DrawSpreadBar(dc,&cur_rec,thePrefs.UseFlatBar());
