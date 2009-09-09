@@ -1262,12 +1262,23 @@ void CClientCreditsList::SaveList()
 		*/
 		CreditStruct* credit = &cur_credit->theCredit;
 		if(m_bSaveUploadQueueWaitTime){
-			if (cur_credit->clientCredit && cur_credit->clientCredit->IsActive(dwExpired))	// Moonlight: SUQWT - Also save records if there is wait time.
+			bool bRemoveClientCredit = false;
+			if (cur_credit->clientCredit == NULL)
+			{
+				bRemoveClientCredit = true;
+				cur_credit->clientCredit = new CClientCredits(&cur_credit->theCredit);
+			}
+			if (cur_credit->clientCredit->IsActive(dwExpired))	// Moonlight: SUQWT - Also save records if there is wait time.
 			{
 				cur_credit->clientCredit->SaveUploadQueueWaitTime();	// Moonlight: SUQWT
 				memcpy(pBufferSUQWT+(count*sizeof(CreditStruct)), credit, sizeof(CreditStruct));
 				memcpy(pBuffer+(count*sizeof(CreditStruct_30c)), (uint8 *)credit + 8, sizeof(CreditStruct_30c));	// Moonlight: SUQWT - Save 0.30c CreditStruct
 				count++; 
+			}
+			if (bRemoveClientCredit)
+			{
+				delete cur_credit->clientCredit;
+				cur_credit->clientCredit = NULL;
 			}
 		}else 
 		if (credit->nUploadedHi || credit->nUploadedLo || credit->nDownloadedHi || credit->nDownloadedLo)
@@ -1436,18 +1447,28 @@ void CClientCreditsList::Process()
 					m_mapClients.RemoveKey(CCKey(cur_credit->GetKey()));
 					*/
 					//zz_fly :: End
+					// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
+					bool bCanRemoveStruct = !m_bSaveUploadQueueWaitTime || !(credit->nSecuredWaitTime || credit->nUnSecuredWaitTime);
+					// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 					unused_count++; //zz_fly :: debug only
 					if(cur_credit){
-					delete cur_credit;
-					//zz_fly :: Optimized on table-arragement :: Enig123 :: Start
-					/*
-					delete result;
-					*/
-					cur_credit = NULL;
-					result->clientCredit = NULL; //fix crash
+						delete cur_credit;
+						//zz_fly :: Optimized on table-arragement :: Enig123 :: Start
+						/*
+						delete result;
+						*/
+						cur_credit = NULL;
+						result->clientCredit = NULL; //fix crash
+						AddDebugLogLine(false, _T("CClientCredits::Process --> Removed clientCredit"));
 					}
+					// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
+					/*
 					if(ul==0 && dl==0)
+					*/
+					if(ul==0 && dl==0 && bCanRemoveStruct)
+					// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 					{
+						AddDebugLogLine(false, _T("CClientCredits::Process --> Removed entirely"));
 						m_mapClients.RemoveKey(tmpkey);
 						delete result;
 					}
@@ -1915,15 +1936,6 @@ void CClientCredits::SetSecWaitStartTime(uint32 dwForIP, int iKeepPct)
 	}
 	m_dwWaitTimeIP = dwForIP;
 }
-
-//zz_fly :: Optimized :: Enig123, DolphinX :: Start
-// credit set is only deleteable when we have SUQWT disabled
-bool CClientCredits::isDeletable() const
-{
-	return (m_nReferredTimes == 0
-		&& theApp.clientcredits->IsSaveUploadQueueWaitTime() == false);
-}
-//zz_fly :: Optimized :: Enig123, DolphinX :: End
 // <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 
 void CClientCredits::ClearWaitStartTime()

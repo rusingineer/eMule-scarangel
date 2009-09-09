@@ -1748,7 +1748,7 @@ void CUploadQueue::RemoveFromWaitingQueue(POSITION pos, bool updatewindow){
 		theApp.emuledlg->transferwnd->queuelistctrl.RemoveClient(todelete);
 	//Xman end
 	// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-	if (theApp.clientcredits->IsSaveUploadQueueWaitTime())
+	if (theApp.clientcredits->IsSaveUploadQueueWaitTime() && todelete->Credits())
 		todelete->Credits()->SaveUploadQueueWaitTime();
 	// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	todelete->SetUploadState(US_NONE);

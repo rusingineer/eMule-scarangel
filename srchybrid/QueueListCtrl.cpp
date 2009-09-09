@@ -655,6 +655,11 @@ void CQueueListCtrl::GetItemDisplayText(const CUpDownClient *client, int iSubIte
 					case PR_VERYHIGH : {
 						Sbuffer = GetResString(IDS_PRIORELEASE);
 						break; }
+					//Xman PowerRelease
+					case PR_POWER: {
+						Sbuffer = GetResString(IDS_POWERRELEASE);
+						break; }
+					//Xman end
 					default:
 						Sbuffer.Empty();
 				}

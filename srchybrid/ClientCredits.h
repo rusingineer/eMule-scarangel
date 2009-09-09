@@ -207,12 +207,7 @@ public:
 	*/
 	void	DecReferredTimes() { if (m_nReferredTimes) m_nReferredTimes = m_nReferredTimes - 1; }
 	void	IncReferredTimes() { m_nReferredTimes = m_nReferredTimes + 1; }
-	// ==> SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
-	/*
 	bool	isDeletable() const { return (m_nReferredTimes == 0); }
-	*/
-	bool	isDeletable() const;
-	// <== SUQWT [Moonlight/EastShare/ MorphXT] - Stulle
 	//zz_fly :: End
 	uint32	GetLastSeen() const {return m_pCredits->nLastSeen;}
 	//Xman end
