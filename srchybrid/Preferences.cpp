@@ -6063,8 +6063,10 @@ void CPreferences::LoadStylePrefs(CIni &ini)
 
 // import v2 settings
 // this will ensure the new font mask is set properly
+// Note: The old font mask was 0x0003, the new is 0x0007. So basically the old one was the last two bits
+// while the new one is the last 3 bits. The result of the following will be equivalent! The STYLE_USED
+// bit will be removed for the check so only those two bits at the end set to 1 will be regarded
 #define STYLE_ITALIC_OLD	0x0003
-#define STYLE_FONTMASK_OLD	0x0003
 void CPreferences::LoadStylePrefsV2(CIni &ini)
 {
 	// client styles
@@ -6075,7 +6077,7 @@ void CPreferences::LoadStylePrefsV2(CIni &ini)
 
 	for (int i=0;i<style_c_count;i++)
 	{
-		if ((nClientStyleFlags[i] & STYLE_FONTMASK_OLD) == STYLE_ITALIC_OLD)
+		if ((nClientStyleFlags[i] & STYLE_FONTMASK) == STYLE_ITALIC_OLD)
 			nClientStyleFlags[i] = STYLE_ITALIC|STYLE_USED;
 	}
 
@@ -6087,7 +6089,7 @@ void CPreferences::LoadStylePrefsV2(CIni &ini)
 
 	for (int i=0;i<style_d_count;i++)
 	{
-		if ((nDownloadStyleFlags[i] & STYLE_FONTMASK_OLD) == STYLE_ITALIC_OLD)
+		if ((nDownloadStyleFlags[i] & STYLE_FONTMASK) == STYLE_ITALIC_OLD)
 			nDownloadStyleFlags[i] = STYLE_ITALIC|STYLE_USED;
 	}
 
@@ -6099,7 +6101,7 @@ void CPreferences::LoadStylePrefsV2(CIni &ini)
 
 	for (int i=0;i<style_s_count;i++)
 	{
-		if ((nShareStyleFlags[i] & STYLE_FONTMASK_OLD) == STYLE_ITALIC_OLD)
+		if ((nShareStyleFlags[i] & STYLE_FONTMASK) == STYLE_ITALIC_OLD)
 			nShareStyleFlags[i] = STYLE_ITALIC|STYLE_USED;
 	}
 
@@ -6111,7 +6113,7 @@ void CPreferences::LoadStylePrefsV2(CIni &ini)
 
 	for (int i=0;i<style_se_count;i++)
 	{
-		if ((nServerStyleFlags[i] & STYLE_FONTMASK_OLD) == STYLE_ITALIC_OLD)
+		if ((nServerStyleFlags[i] & STYLE_FONTMASK) == STYLE_ITALIC_OLD)
 			nServerStyleFlags[i] = STYLE_ITALIC|STYLE_USED;
 	}
 

@@ -662,14 +662,18 @@ BOOL CemuleDlg::OnInitDialog()
 	toolbar->GetClientRect(&rect);
 
 	// set updateintervall of graphic rate display (in seconds)
-	rect1.top = rect.top+2;
+	//rect1.top = rect.top+2;
+	rect1.top = 2; // we need to make it clear on startup...
 	rect1.right = rect.right-2;
-	rect1.bottom = rect.top+(rect.Height()/2)-1;
+	//rect1.bottom = rect.top+(rect.Height()/2)-1;
+	rect1.bottom = 26; // we need to make it clear on startup...
 	rect1.left = rect.right-150;
 
-	rect2.top = rect.top+(rect.Height()/2)+1;
+	//rect2.top = rect.top+(rect.Height()/2)+1;
+	rect2.top = 28; // we need to make it clear on startup...
 	rect2.right = rect.right-2;
-	rect2.bottom = rect.bottom-2;
+	//rect2.bottom = rect.bottom-2;
+	rect2.bottom = 52; // we need to make it clear on startup...
 	rect2.left = rect.right-150;
 
 	CSize	csMaxSize;
@@ -5585,7 +5589,7 @@ void CemuleDlg::Update_TrafficGraph()
 	m_co_DownTrafficGraph.Set_TrafficValue(downratekb);
 }
 
-void CemuleDlg::Resize_TrafficGraph()
+void CemuleDlg::Reposition_TrafficGraph()
 {
 	if (m_co_UpTrafficGraph.m_hWnd &&
 		m_co_DownTrafficGraph.m_hWnd &&
@@ -5596,14 +5600,18 @@ void CemuleDlg::Resize_TrafficGraph()
 		toolbar->GetClientRect(&rect);
 
 		// set updateintervall of graphic rate display (in seconds)
-		rect1.top = rect.top+2;
+		//rect1.top = rect.top+2;
+		rect1.top = 2;
 		rect1.right = rect.right-2;
-		rect1.bottom = rect.top+(rect.Height()/2)-1;
+		//rect1.bottom = rect.top+(rect.Height()/2)-1;
+		rect1.bottom = 26;
 		rect1.left = rect.right-150;
 
 		rect2.top = rect.top+(rect.Height()/2)+1;
+		rect2.top = 28;
 		rect2.right = rect.right-2;
-		rect2.bottom = rect.bottom-2;
+		//rect2.bottom = rect.bottom-2;
+		rect2.bottom = 52;
 		rect2.left = rect.right-150;
 
 		CSize	csMaxSize;
