@@ -373,6 +373,7 @@ CPPgScar::CPPgScar()
 	m_hti_sMediaInfo_MediaInfoDllPath=NULL;
 	m_hti_bMediaInfo_RIFF=NULL;
 	m_hti_bMediaInfo_ID3LIB=NULL;
+	m_hti_MediaInfo_MediaDet=NULL;
 
 	m_hti_AdvDisplay=NULL;
 	m_hti_m_iMaxChatHistory=NULL;
@@ -1061,6 +1062,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_ctrlAdvTreeOptions.AddFileEditBox(m_hti_sMediaInfo_MediaInfoDllPath,RUNTIME_CLASS(CTreeOptionsEdit), RUNTIME_CLASS(CTreeOptionsBrowseButton));
 		m_hti_bMediaInfo_RIFF=m_ctrlAdvTreeOptions.InsertCheckBox(GetResString(IDS_MEDIAINFO_RIFF),m_hti_MediaInfo,bMediaInfo_RIFF);
 		m_hti_bMediaInfo_ID3LIB=m_ctrlAdvTreeOptions.InsertCheckBox(GetResString(IDS_MEDIAINFO_ID3LIB),m_hti_MediaInfo,bMediaInfo_ID3LIB);
+		m_hti_MediaInfo_MediaDet=m_ctrlAdvTreeOptions.InsertCheckBox(GetResString(IDS_MEDIAINFO_MEDIADET),m_hti_MediaInfo,m_bMediaInfo_MediaDet);
 
 		m_hti_AdvDisplay = m_ctrlAdvTreeOptions.InsertGroup(GetResString(IDS_PW_DISPLAY), iImgAdvDisplay, TVI_ROOT);
 		m_hti_m_iMaxChatHistory= m_ctrlAdvTreeOptions.InsertItem(GetResString(IDS_MAXCHATHISTORY),TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT,m_hti_AdvDisplay);
@@ -1135,6 +1137,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 
 	DDX_TreeCheck(pDX,IDC_ADVANCED_OPTS,m_hti_bMediaInfo_RIFF,bMediaInfo_RIFF);
 	DDX_TreeCheck(pDX,IDC_ADVANCED_OPTS,m_hti_bMediaInfo_ID3LIB,bMediaInfo_ID3LIB);
+	DDX_TreeCheck(pDX,IDC_ADVANCED_OPTS,m_hti_MediaInfo_MediaDet,m_bMediaInfo_MediaDet);
 
 	DDX_TreeEdit(pDX, IDC_ADVANCED_OPTS, m_hti_m_iMaxChatHistory, m_iMaxChatHistory);
 	DDV_MinMaxInt(pDX, m_iMaxChatHistory, 3, 2048);
@@ -1392,6 +1395,7 @@ BOOL CPPgScar::OnInitDialog()
 	sMediaInfo_MediaInfoDllPath=thePrefs.sMediaInfo_MediaInfoDllPath;
 	bMediaInfo_RIFF=thePrefs.bMediaInfo_RIFF;
 	bMediaInfo_ID3LIB=thePrefs.bMediaInfo_ID3LIB;
+	m_bMediaInfo_MediaDet=thePrefs.m_bMediaInfo_MediaDet;
 	iMaxLogBuff=thePrefs.GetMaxLogBuff()/1024;
 	m_iMaxChatHistory=thePrefs.m_iMaxChatHistory;
 	m_iPreviewSmallBlocks=thePrefs.m_iPreviewSmallBlocks;
@@ -1460,9 +1464,6 @@ BOOL CPPgScar::OnInitDialog()
 	m_underlined.SetIcon((HICON)::LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE((int)IDI_FONTUL), IMAGE_ICON, 16, 16, 0));
 	m_italic.SetWindowText(_T(""));
 	m_italic.SetIcon((HICON)::LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE((int)IDI_FONTI), IMAGE_ICON, 16, 16, 0));
-	m_bold.SetFont(theApp.GetBoldFont());
-	m_underlined.SetFont(theApp.GetULFont());
-	m_italic.SetFont(theApp.GetItalicFont());
 
 	m_FontColor.SetColor(GetSysColor(COLOR_WINDOWTEXT));
 	m_FontColor.SetDefaultColor(GetSysColor(COLOR_WINDOWTEXT));
@@ -1960,6 +1961,7 @@ BOOL CPPgScar::OnApply()
 	thePrefs.sMediaInfo_MediaInfoDllPath=sMediaInfo_MediaInfoDllPath;
 	thePrefs.bMediaInfo_RIFF=bMediaInfo_RIFF;
 	thePrefs.bMediaInfo_ID3LIB=bMediaInfo_ID3LIB;
+	thePrefs.m_bMediaInfo_MediaDet=m_bMediaInfo_MediaDet;
 	thePrefs.iMaxLogBuff=iMaxLogBuff*1024;
 	thePrefs.m_iMaxChatHistory=m_iMaxChatHistory;
 	thePrefs.m_iPreviewSmallBlocks=m_iPreviewSmallBlocks;
@@ -2293,6 +2295,7 @@ void CPPgScar::Localize(void)
 		if (m_hti_sMediaInfo_MediaInfoDllPath) m_ctrlAdvTreeOptions.SetEditLabel(m_hti_sMediaInfo_MediaInfoDllPath, GetResString(IDS_MEDIAINFO_MEDIAINFODLLPATH));
 		if (m_hti_bMediaInfo_RIFF) m_ctrlAdvTreeOptions.SetItemText(m_hti_bMediaInfo_RIFF, GetResString(IDS_MEDIAINFO_RIFF));
 		if (m_hti_bMediaInfo_ID3LIB) m_ctrlAdvTreeOptions.SetItemText(m_hti_bMediaInfo_ID3LIB, GetResString(IDS_MEDIAINFO_ID3LIB));
+		if (m_hti_MediaInfo_MediaDet) m_ctrlAdvTreeOptions.SetItemText(m_hti_MediaInfo_MediaDet, GetResString(IDS_MEDIAINFO_MEDIADET));
 
 		if (m_hti_m_iMaxChatHistory) m_ctrlAdvTreeOptions.SetEditLabel(m_hti_m_iMaxChatHistory, GetResString(IDS_MAXCHATHISTORY));
 		if (m_hti_m_bRestoreLastMainWndDlg) m_ctrlAdvTreeOptions.SetItemText(m_hti_m_bRestoreLastMainWndDlg, GetResString(IDS_RESTORELASTMAINWNDDLG));
@@ -2665,6 +2668,7 @@ void CPPgScar::OnDestroy()
 	m_hti_sMediaInfo_MediaInfoDllPath=NULL;
 	m_hti_bMediaInfo_RIFF=NULL;
 	m_hti_bMediaInfo_ID3LIB=NULL;
+	m_hti_MediaInfo_MediaDet=NULL;
 
 	m_hti_AdvDisplay=NULL;
 	m_hti_m_iMaxChatHistory=NULL;
