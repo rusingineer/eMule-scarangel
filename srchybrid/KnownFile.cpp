@@ -3003,7 +3003,7 @@ void CKnownFile::CheckAUPFilestats(bool allowUpdatePrio)
 }
 
 // ==> push rare file - Stulle
-float CKnownFile::GetFileRatio() const
+float CKnownFile::GetFileRatio() /*const*/
 {
 	if(!thePrefs.GetEnablePushRareFile())
 		return 1.0f;

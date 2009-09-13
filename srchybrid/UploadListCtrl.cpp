@@ -639,6 +639,10 @@ void CUploadListCtrl::GetItemDisplayText(const CUpDownClient *client, int iSubIt
 		{
 			CString Sbuffer;
 			Sbuffer.Format(client->GetUploadStateDisplayString());
+			// ==> Display friendslot [Stulle] - Stulle
+			if (client->IsFriend() && client->GetFriendSlot())
+				Sbuffer.Append(_T(",FS"));
+			// <== Display friendslot [Stulle] - Stulle
 			if (client->GetPowerShared())
 				Sbuffer.Append(_T(",PS"));
 			// ==> Fair Play [AndCycle/Stulle] - Stulle

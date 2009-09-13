@@ -2502,6 +2502,7 @@ int CSharedFilesCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort
 				// ==> push rare file - Stulle
 				case 24:
 					iResult=CompareFloat(kitem1->GetFileRatio(),kitem2->GetFileRatio());
+					break;
 				// <== push rare file - Stulle
 
 				// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
