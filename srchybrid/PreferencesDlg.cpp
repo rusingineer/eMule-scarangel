@@ -209,7 +209,7 @@ void CPreferencesDlg::Localize()
 		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_PW_TWEAK)));
 		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_XTREMESETTINGS)) + _T(" I")); //Xman Xtreme Mod
 		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_XTREMESETTINGS)) + _T(" II")); //Xman Xtreme Mod
-		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(_T("ScarAngel"))); // ScarAngel Preferences window - Stulle
+		pTree->SetItemText(GetPageTreeItem(c++), RemoveAmbersand(GetResString(IDS_SCARANGEL))); // ScarAngel Preferences window - Stulle
 	#if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 		pTree->SetItemText(GetPageTreeItem(c++), _T("Debug"));
 	#endif
