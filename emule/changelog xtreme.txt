@@ -38,6 +38,7 @@ Xtreme 7.2
 - improved: simply unsharing single shared files instead of excluding them
 - improved: greatly simplified remove unused AICH-hashes code while keeping original idea
 - fixed: official problem with downloading from webserver
+- fixed: Don't reset Connection Settings for Webserver/CML/MM (Stulle)
 partially updated to 7.2 by zz_fly:
 - change: switch to official UPnP lib
 - add: support Ctrl+C and Delete handling in downloaded history list (Stulle)
