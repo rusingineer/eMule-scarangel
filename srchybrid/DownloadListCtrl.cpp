@@ -2463,6 +2463,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 									// CString.Format+AddLogLine, because if "%"-characters are
 									// in the string they would be misinterpreted as control sequences!
 									AddLogLine(false,_T("Successfully renamed '%s' to '%s'"), file->GetFilePath(), newpath);
+									file->SetFollowTheMajority(false); // Follow The Majority [AndCycle/Stulle] - Stulle
 									file->SetFileName(newname);
 									file->SetFilePath(newpath);
 									file->SetFullName(newpath);
@@ -2471,6 +2472,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 									// CString.Format+AddLogLine, because if "%"-characters are
 									// in the string they would be misinterpreted as control sequences!
 									AddLogLine(false,_T("Successfully renamed .part file '%s' to '%s'"), file->GetFileName(), newname);
+									file->SetFollowTheMajority(false); // Follow The Majority [AndCycle/Stulle] - Stulle
 									file->SetFileName(newname, true);
 									file->SetFilePath(newpath);
 									file->SavePartFile(); 
@@ -2778,6 +2780,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 							while (!selectedList.IsEmpty()){
 								CPartFile *partfile = selectedList.GetHead();
 								if (partfile->IsPartFile()) {
+									file->SetFollowTheMajority(false); // Follow The Majority [AndCycle/Stulle] - Stulle
 									partfile->SetFileName(CleanupFilename(partfile->GetFileName()));
 								}
 								selectedList.RemoveHead();
@@ -2792,6 +2795,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 							inputbox.SetEditFilenameMode();
 							if (inputbox.DoModal()==IDOK && !inputbox.GetInput().IsEmpty() && IsValidEd2kString(inputbox.GetInput()))
 							{
+								file->SetFollowTheMajority(false); // Follow The Majority [AndCycle/Stulle] - Stulle
 								file->SetFileName(inputbox.GetInput(), true);
 								file->UpdateDisplayedInfo();
 								file->SavePartFile();
