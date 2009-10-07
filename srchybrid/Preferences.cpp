@@ -5462,7 +5462,7 @@ DWORD CPreferences::GetStyleFlags(int nMaster, int nStyle)
 
 COLORREF CPreferences::GetStyleFontColor(int nMaster, int nStyle)
 {
-	COLORREF crTemp = 0;
+	COLORREF crTemp = CLR_DEFAULT;
 	switch(nMaster)
 	{
 		case client_styles:
@@ -5496,7 +5496,7 @@ COLORREF CPreferences::GetStyleFontColor(int nMaster, int nStyle)
 
 COLORREF CPreferences::GetStyleBackColor(int nMaster, int nStyle)
 {
-	COLORREF crTemp = 0;
+	COLORREF crTemp = CLR_DEFAULT;
 	switch(nMaster)
 	{
 		case client_styles:
@@ -5566,7 +5566,7 @@ bool CPreferences::GetStyle(int nMaster, int nStyle, StylesStruct *style)
 {
 	if (!style)
 		return false;
-	if (nMaster < master_count)
+	if (nMaster > client_styles && nMaster < master_count)
 	{
 		style->nFlags = GetStyleFlags(nMaster,nStyle);
 		style->nFontColor = GetStyleFontColor(nMaster,nStyle);
@@ -5713,7 +5713,7 @@ void CPreferences::SetStyleOnOff(int nMaster, int nStyle, short sNew)
 
 bool CPreferences::SetStyle(int nMaster, int nStyle, StylesStruct *style)
 {
-	if (nMaster < master_count)
+	if (nMaster > client_styles && nMaster < master_count)
 	{
 		if (style == NULL)
 		{
