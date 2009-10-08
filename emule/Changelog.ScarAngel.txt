@@ -10,6 +10,8 @@ based on eMule 0.49c Xtreme 7.2 compiled with vs2008 SP1
 Changed: Disable FollowTheMajority per file when file is renamed manually [AndCycle] - Stulle
 
 Fixed: Sorting priority descending failed for powershared files [Stulle] - Stulle
+Fixed: UPnP setting in First Runtime Wizard [leuk_he] - Stulle
+Fixed: Port settings in First Runtime Wizard for Random Ports feature [leuk_he] - Stulle
 
 
 eMule v0.49c ScarAngel v3.2:
