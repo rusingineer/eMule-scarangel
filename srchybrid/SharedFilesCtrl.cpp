@@ -1645,7 +1645,6 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 
 						if (pKnownFile->IsKindOf(RUNTIME_CLASS(CPartFile)))
 						{
-							((CPartFile*) file)->SetFollowTheMajority(false); // Follow The Majority [AndCycle/Stulle] - Stulle
 							pKnownFile->SetFileName(newname);
 							STATIC_DOWNCAST(CPartFile, pKnownFile)->SetFullName(newpath); 
 						}
