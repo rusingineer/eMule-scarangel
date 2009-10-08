@@ -8,6 +8,8 @@ eMule v0.49c ScarAngel v3.3:
 based on eMule 0.49c Xtreme 7.2 compiled with vs2008 SP1
 
 Changed: Disable FollowTheMajority per file when file is renamed manually [AndCycle] - Stulle
+Changed: Disable ASFU if too many folders are shared [Stulle] - Stulle
+	+ fixes related crashes; increases ASFU version number to 3.5
 
 Fixed: Sorting priority descending failed for powershared files [Stulle] - Stulle
 Fixed: UPnP setting in First Runtime Wizard [leuk_he] - Stulle
