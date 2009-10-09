@@ -5566,7 +5566,7 @@ bool CPreferences::GetStyle(int nMaster, int nStyle, StylesStruct *style)
 {
 	if (!style)
 		return false;
-	if (nMaster > client_styles && nMaster < master_count)
+	if (nMaster >= client_styles && nMaster < master_count)
 	{
 		style->nFlags = GetStyleFlags(nMaster,nStyle);
 		style->nFontColor = GetStyleFontColor(nMaster,nStyle);
@@ -5713,7 +5713,7 @@ void CPreferences::SetStyleOnOff(int nMaster, int nStyle, short sNew)
 
 bool CPreferences::SetStyle(int nMaster, int nStyle, StylesStruct *style)
 {
-	if (nMaster > client_styles && nMaster < master_count)
+	if (nMaster >= client_styles && nMaster < master_count)
 	{
 		if (style == NULL)
 		{
