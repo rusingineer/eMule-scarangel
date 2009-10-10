@@ -2898,6 +2898,11 @@ void CemuleDlg::OnTrayRButtonUp(CPoint pt)
 										//Xman end
 	if (m_pSystrayDlg)
 	{
+		// ==> Don't reset Connection Settings for Webserver/CML/MM [Stulle] - Stulle
+		float fMaxUploadOld = thePrefs.GetMaxUpload();
+		float fMaxDownloadOld = thePrefs.GetMaxDownload();
+		// <== Don't reset Connection Settings for Webserver/CML/MM [Stulle] - Stulle
+
 		UINT nResult = m_pSystrayDlg->DoModal();
 		delete m_pSystrayDlg;
 		m_pSystrayDlg = NULL;
@@ -2925,6 +2930,11 @@ void CemuleDlg::OnTrayRButtonUp(CPoint pt)
 				ShowPreferences();
 				break;
 		}
+		// ==> Don't reset Connection Settings for Webserver/CML/MM [Stulle] - Stulle
+		if (nResult != IDC_PREFERENCES && 
+			(fMaxUploadOld != thePrefs.GetMaxUpload() || fMaxDownloadOld != thePrefs.GetMaxDownload()))
+			theApp.scheduler->SaveOriginals();
+		// <== Don't reset Connection Settings for Webserver/CML/MM [Stulle] - Stulle
 	}
 }
 
@@ -3611,6 +3621,7 @@ void CemuleDlg::QuickSpeedUpload(UINT nID)
 		case MP_QS_UP10: thePrefs.SetMaxUpload(GetRecMaxUpload()); break ;
 	}
 	thePrefs.CheckSlotSpeed(); //Xman Xtreme Upload
+	theApp.scheduler->SaveOriginals(); // Don't reset Connection Settings for Webserver/CML/MM [Stulle] - Stulle
 }
 
 void CemuleDlg::QuickSpeedDownload(UINT nID)
@@ -3643,6 +3654,7 @@ void CemuleDlg::QuickSpeedDownload(UINT nID)
 		//Xman end
 //		case MP_QS_DC: thePrefs.SetMaxDownload(UNLIMITED); break ;
 	}
+	theApp.scheduler->SaveOriginals(); // Don't reset Connection Settings for Webserver/CML/MM [Stulle] - Stulle
 }
 // quick-speed changer -- based on xrmb
 
