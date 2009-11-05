@@ -991,6 +991,8 @@ bool	CPreferences::m_bColorFeedback; // Feedback personalization [Stulle] - Stul
 
 bool	CPreferences::m_bSplitWindow; // Advanced Transfer Window Layout [Stulle] - Stulle
 
+bool	CPreferences::m_bDateFileNameLog; // Date File Name Log [AndCycle] - Stulle
+
 CPreferences::CPreferences()
 {
 #ifdef _DEBUG
@@ -2971,6 +2973,8 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("SplitWindow"), m_bSplitWindow);
 	// <== Advanced Transfer Window Layout [Stulle] - Stulle
 
+	ini.WriteBool(_T("DateFileNameLog"), m_bDateFileNameLog); // Date File Name Log [AndCycle] - Stulle
+
 	SaveStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
 
@@ -4236,6 +4240,8 @@ void CPreferences::LoadPreferences()
 	m_uTransferWnd2 = ini.GetInt(L"TransferWnd2",1);
 	m_bSplitWindow = ini.GetBool(_T("SplitWindow"), true);
 	// <== Advanced Transfer Window Layout [Stulle] - Stulle
+
+	m_bDateFileNameLog=ini.GetBool(_T("DateFileNameLog"), true); // Date File Name Log [AndCycle] - Stulle
 
 	LoadStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }

@@ -6247,6 +6247,7 @@ BEGIN
     IDS_COLOR_F8            "Clients on queue"
     // <== Feedback personalization [Stulle] - Stulle
     IDS_STATIC_ICON         "Always display Tray Icon" // Static Tray Icon - MyTh88
+    IDS_DATEFILENAMELOG     "Date as part of File Name of log file." // Date File Name Log [AndCycle] - Stulle
 END
 
 #endif    // English (U.S.) resources
