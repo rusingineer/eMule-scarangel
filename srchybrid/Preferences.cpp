@@ -993,6 +993,8 @@ bool	CPreferences::m_bSplitWindow; // Advanced Transfer Window Layout [Stulle] -
 
 bool	CPreferences::m_bDateFileNameLog; // Date File Name Log [AndCycle] - Stulle
 
+bool	CPreferences::m_bIonixWebsrv; // Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he] - Stulle
+
 CPreferences::CPreferences()
 {
 #ifdef _DEBUG
@@ -2975,6 +2977,8 @@ void CPreferences::SavePreferences()
 
 	ini.WriteBool(_T("DateFileNameLog"), m_bDateFileNameLog); // Date File Name Log [AndCycle] - Stulle
 
+	ini.WriteBool(_T("UseIonixWebsrv"), m_bIonixWebsrv); // Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he] - Stulle
+
 	SaveStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
 
@@ -4242,6 +4246,8 @@ void CPreferences::LoadPreferences()
 	// <== Advanced Transfer Window Layout [Stulle] - Stulle
 
 	m_bDateFileNameLog=ini.GetBool(_T("DateFileNameLog"), true); // Date File Name Log [AndCycle] - Stulle
+
+	m_bIonixWebsrv = ini.GetBool(_T("UseIonixWebsrv"), false); // Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he] - Stulle
 
 	LoadStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
