@@ -13,6 +13,8 @@ Added: Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he] - 
 Added: Multiuser WebInterface Cookie settings [Aireoreion] - Stulle
 Added: MorphXT's failed login handling for WebInterface [MorphXT/leuk_he/dreamwalker] - Stulle
 Added: Failed login screen for WebInterface [SiRoB/CommanderGer] - Stulle
+Added: Tabbed WebInterface settings panel [Stulle] - Stulle
+	+ For multiuser settings
 
 Changed: Disable FollowTheMajority per file when file is renamed manually [AndCycle] - Stulle
 Changed: Disable ASFU if too many folders are shared [Stulle] - Stulle
