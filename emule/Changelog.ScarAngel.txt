@@ -10,10 +10,11 @@ based on eMule 0.49c Xtreme 7.2 compiled with vs2008 SP1
 Added: Date File Name Log (enabled by default) [AndCycle] - Stulle
 Added: Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he] - Stulle
 	+ You must select the multi user template to enable the multi user settings.
-Added: Multiuser WebInterface Cookie settings [Aireoreion] - Stulle
+Added: Multiuser WebInterface (WI) Cookie settings [Aireoreion] - Stulle
 	+ added code missing in MorphXT so it works
-Added: MorphXT's failed login handling for WebInterface [MorphXT/leuk_he/dreamwalker] - Stulle
-Added: Failed login screen for WebInterface [SiRoB/CommanderGer] - Stulle
+Added: New failed login handling for WI [MorphXT/leuk_he/dreamwalker/Stulle] - Stulle
+Added: Failed login screen for WebInterface [SiRoB/CommanderGer/Stulle] - Stulle
+	+ Also for multiuser WI
 Added: Tabbed WebInterface settings panel [Stulle] - Stulle
 	+ For multiuser settings
 Added: Extra logging to notify of missing webserver files [leuk_he] - Stulle
