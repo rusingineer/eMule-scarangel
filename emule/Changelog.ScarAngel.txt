@@ -18,6 +18,8 @@ Added: Failed login screen for WebInterface [SiRoB/CommanderGer/Stulle] - Stulle
 Added: Tabbed WebInterface settings panel [Stulle] - Stulle
 	+ For multiuser settings
 Added: Extra logging to notify of missing webserver files [leuk_he] - Stulle
+Added: PowerShare support for WebInterface [Stulle] - Stulle
+	+ fixed missing tick in menu and improper table display from StulleMule
 
 Changed: Disable FollowTheMajority per file when file is renamed manually [AndCycle] - Stulle
 Changed: Disable ASFU if too many folders are shared [Stulle] - Stulle
