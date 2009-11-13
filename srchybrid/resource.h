@@ -3394,6 +3394,7 @@
 #define IDS_TAB_WEB_SERVER              61551
 #define IDS_TAB_MULTI_USER              61552
 // <== Tabbed WebInterface settings panel [Stulle] - Stulle
+#define IDS_WS_FAILED_LOGIN             61560 // Failed login screen for WebInterface [SiRoB/CommanderGer/Stulle] - Stulle
 
 // Next default values for new objects
 // 

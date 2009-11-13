@@ -6365,6 +6365,7 @@ BEGIN
     IDS_TAB_WEB_SERVER       "Web Server"
     IDS_TAB_MULTI_USER       "Multi User"
     // <== Tabbed WebInterface settings panel [Stulle] - Stulle
+    IDS_WS_FAILED_LOGIN      "You have been banned for 15 min due to failed login attempts!" // Failed login screen for WebInterface [SiRoB/CommanderGer/Stulle] - Stulle
 END
 
 #endif    // English (U.S.) resources
