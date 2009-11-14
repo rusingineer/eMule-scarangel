@@ -8,7 +8,7 @@ eMule v0.49c ScarAngel v3.3:
 based on eMule 0.49c Xtreme 7.2 compiled with vs2008 SP1
 
 Added: Date File Name Log (enabled by default) [AndCycle] - Stulle
-Added: Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he] - Stulle
+Added: Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he/Stulle] - Stulle
 	+ You must select the multi user template to enable the multi user settings.
 Added: Multiuser WebInterface (WI) Cookie settings [Aireoreion] - Stulle
 	+ added code missing in MorphXT so it works
@@ -29,6 +29,7 @@ Fixed: Sorting priority descending failed for powershared files [Stulle] - Stull
 Fixed: UPnP setting in First Runtime Wizard [leuk_he] - Stulle
 Fixed: Port settings in First Runtime Wizard for Random Ports feature [leuk_he] - Stulle
 Fixed: Missing checkmark for PS limited by amount context menu [Stulle] - Stulle
+Fixed: (Official) Malfunctioning search results in eMule Light template [Stulle] - Stulle
 
 
 eMule v0.49c ScarAngel v3.2:

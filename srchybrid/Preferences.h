@@ -1167,7 +1167,7 @@ public:
 
 	static bool		m_bDateFileNameLog; // Date File Name Log [AndCycle] - Stulle
 
-	static	bool	m_bIonixWebsrv; // Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he] - Stulle
+	static	bool	m_bIonixWebsrv; // Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he/Stulle] - Stulle
 
 	enum Table
 	{
@@ -2594,7 +2594,7 @@ public:
 
 	static	bool	DateFileNameLog()		{ return m_bDateFileNameLog;} // Date File Name Log [AndCycle] - Stulle
 
-	static	bool	UseIonixWebsrv()		{ return m_bIonixWebsrv; } // Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he] - Stulle
+	static	bool	UseIonixWebsrv()		{ return m_bIonixWebsrv; } // Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he/Stulle] - Stulle
 
 protected:
 	static	CString m_strFileCommentsFilePath;
