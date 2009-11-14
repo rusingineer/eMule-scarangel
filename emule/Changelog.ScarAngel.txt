@@ -20,6 +20,7 @@ Added: Tabbed WebInterface settings panel [Stulle] - Stulle
 Added: Extra logging to notify of missing webserver files [leuk_he] - Stulle
 Added: PowerShare support for WebInterface [Stulle] - Stulle
 	+ fixed missing tick in menu and improper table display from StulleMule
+Added: Rebind UPnP mappings (UDP, TCP and Webserver for now) like official [Stulle] - Stulle
 
 Changed: Disable FollowTheMajority per file when file is renamed manually [AndCycle] - Stulle
 Changed: Disable ASFU if too many folders are shared [Stulle] - Stulle
