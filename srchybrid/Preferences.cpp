@@ -995,6 +995,13 @@ bool	CPreferences::m_bDateFileNameLog; // Date File Name Log [AndCycle] - Stulle
 
 bool	CPreferences::m_bIonixWebsrv; // Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he/Stulle] - Stulle
 
+int		CPreferences::m_iServiceStartupMode; //  Run eMule as NT Service [leuk_he] - Stulle
+// ==> Adjustable NT Service Strings [Stulle] - Stulle
+CString	CPreferences::m_strServiceName;
+CString	CPreferences::m_strServiceDispName;
+CString	CPreferences::m_strServiceDescr;
+// <== Adjustable NT Service Strings [Stulle] - Stulle
+
 CPreferences::CPreferences()
 {
 #ifdef _DEBUG
@@ -2979,6 +2986,13 @@ void CPreferences::SavePreferences()
 
 	ini.WriteBool(_T("UseIonixWebsrv"), m_bIonixWebsrv); // Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he/Stulle] - Stulle
 
+	ini.WriteInt(_T("ServiceStartupMode"),m_iServiceStartupMode); // Run eMule as NT Service [leuk_he] - Stulle
+	// ==> Adjustable NT Service Strings [Stulle] - Stulle
+	ini.WriteString(L"ServiceName", m_strServiceName);
+	ini.WriteString(L"ServiceDispName", m_strServiceDispName);
+	ini.WriteString(L"ServiceDescr", m_strServiceDescr);
+	// <== Adjustable NT Service Strings [Stulle] - Stulle
+
 	SaveStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
 
@@ -4245,9 +4259,16 @@ void CPreferences::LoadPreferences()
 	m_bSplitWindow = ini.GetBool(_T("SplitWindow"), true);
 	// <== Advanced Transfer Window Layout [Stulle] - Stulle
 
-	m_bDateFileNameLog=ini.GetBool(_T("DateFileNameLog"), true); // Date File Name Log [AndCycle] - Stulle
+	m_bDateFileNameLog = ini.GetBool(_T("DateFileNameLog"), true); // Date File Name Log [AndCycle] - Stulle
 
 	m_bIonixWebsrv = ini.GetBool(_T("UseIonixWebsrv"), false); // Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he/Stulle] - Stulle
+
+	m_iServiceStartupMode = ini.GetInt(L"ServiceStartupMode",1); // Run eMule as NT Service [leuk_he] - Stulle
+	// ==> Adjustable NT Service Strings [Stulle] - Stulle
+	m_strServiceName = ini.GetString(L"ServiceName",NULL);
+	m_strServiceDispName = ini.GetString(L"ServiceDispName",NULL);
+	m_strServiceDescr = ini.GetString(L"ServiceDescr",NULL);
+	// <== Adjustable NT Service Strings [Stulle] - Stulle
 
 	LoadStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
@@ -6296,3 +6317,19 @@ void CPreferences::SetBindAddr(CStringW bindip)
 	m_pszBindAddrA = m_strBindAddrA.IsEmpty() ? NULL : (LPCSTR)m_strBindAddrA;
 }
 // <== Advanced Options [Official/MorphXT] - Stulle
+
+// ==> Run eMule as NT Service [leuk_he] - Stulle
+int CPreferences::GetServiceStartupMode()
+{
+	if (m_iServiceStartupMode == 0) // may be called before LoadPreferences()
+		m_iServiceStartupMode=theApp.GetProfileInt(_T("ScarAngel"), _T("ServiceStartupMode"),2); // default = stop service and start
+	return m_iServiceStartupMode;
+}
+
+uint16	CPreferences::GetWSPort()							
+{
+	if (m_nWebPort==0)
+		m_nWebPort=(WORD) theApp.GetProfileInt(_T("WebServer"), _T("Port"),4711);
+	return m_nWebPort; 
+}
+// <== Run eMule as NT Service [leuk_he] - Stulle

@@ -21,6 +21,8 @@ Added: Extra logging to notify of missing webserver files [leuk_he] - Stulle
 Added: PowerShare support for WebInterface [Stulle] - Stulle
 	+ fixed missing tick in menu and improper table display from StulleMule
 Added: Rebind UPnP mappings (UDP, TCP and Webserver for now) like official [Stulle] - Stulle
+Added: Run eMule as NT Service [leuk_he] - Stulle
+Added: Adjustable NT Service Strings [Stulle] - Stulle
 
 Changed: Disable FollowTheMajority per file when file is renamed manually [AndCycle] - Stulle
 Changed: Disable ASFU if too many folders are shared [Stulle] - Stulle
@@ -31,6 +33,16 @@ Fixed: UPnP setting in First Runtime Wizard [leuk_he] - Stulle
 Fixed: Port settings in First Runtime Wizard for Random Ports feature [leuk_he] - Stulle
 Fixed: Missing checkmark for PS limited by amount context menu [Stulle] - Stulle
 Fixed: (Official) Malfunctioning search results in eMule Light template [Stulle] - Stulle
+
+Run as NT Service:
++ No need to login into windows
++ keeps running after logging out/ switching users
++ new command line options:
+	- "emule install"   --> install as a service
+	- "emule uninstall" --> uninstall as a service.
++ make sure all settings are correct before installing as a service
++ links as passed to webservice
++ See Preferences->Webserver->NTservice tab
 
 
 eMule v0.49c ScarAngel v3.2:

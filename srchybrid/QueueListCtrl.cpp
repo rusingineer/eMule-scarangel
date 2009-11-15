@@ -1168,6 +1168,11 @@ void CQueueListCtrl::AddClient(/*const*/ CUpDownClient *client, bool resetclient
 		client->SetAskedCount(1);
 	}
 
+	// ==> Run eMule as NT Service [leuk_he] - Stulle
+	if (theApp.IsRunningAsService(SVC_LIST_OPT))
+		return;
+	// <== Run eMule as NT Service [leuk_he] - Stulle
+
 	if (!theApp.emuledlg->IsRunning())
 		return;
 	if (thePrefs.IsQueueListDisabled())
@@ -1196,6 +1201,11 @@ void CQueueListCtrl::RemoveClient(const CUpDownClient *client)
 
 void CQueueListCtrl::RefreshClient(const CUpDownClient *client)
 {
+	// ==> Run eMule as NT Service [leuk_he] - Stulle
+	if (theApp.IsRunningAsService(SVC_LIST_OPT))
+		return;
+	// <== Run eMule as NT Service [leuk_he] - Stulle
+
 	if (!theApp.emuledlg->IsRunning())
 		return;
 

@@ -244,7 +244,16 @@ CSharedFilesCtrl::CSharedFilesCtrl()
 	nAICHHashing = 0;
 	m_pDirectoryFilter = NULL;
 	SetGeneralPurposeFind(true);
+	// ==> Run eMule as NT Service [leuk_he] - Stulle
+	/*
 	m_pToolTip = new CToolTipCtrlX;
+	*/
+	// workaround running MFC as service
+	if (!theApp.IsRunningAsService())
+		m_pToolTip = new CToolTipCtrlX;
+	else
+		m_pToolTip = NULL;
+	// <== Run eMule as NT Service [leuk_he] - Stulle
 	SetSkinKey(L"SharedFilesLv");
 	m_pHighlightedItem = NULL;
 }
@@ -253,7 +262,11 @@ CSharedFilesCtrl::~CSharedFilesCtrl()
 {
 	while (!liTempShareableFilesInDir.IsEmpty())	// delete shareble files
 		delete liTempShareableFilesInDir.RemoveHead();
-	delete m_pToolTip;
+	// ==> Run eMule as NT Service [leuk_he] - Stulle
+	// workaround running MFC as service
+	if (!theApp.IsRunningAsService())
+	// <== Run eMule as NT Service [leuk_he] - Stulle
+		delete m_pToolTip;
 	// ==> PowerShare [ZZ/MorphXT] - Stulle
 	if (m_PowershareMenu) VERIFY( m_PowershareMenu.DestroyMenu() );
 	if (m_PowerShareLimitMenu) VERIFY( m_PowerShareLimitMenu.DestroyMenu() );
@@ -332,14 +345,20 @@ void CSharedFilesCtrl::Init()
 	SortItems(SortProc, GetSortItem() + (GetSortAscending() ? 0 : 30)  + (GetSortSecondValue() ? 100 : 0));
 	// <== PowerShare [ZZ/MorphXT] - Stulle
 
-	CToolTipCtrl* tooltip = GetToolTips();
-	if (tooltip){
-		m_pToolTip->SetFileIconToolTip(true);
-		m_pToolTip->SubclassWindow(*tooltip);
-		tooltip->ModifyStyle(0, TTS_NOPREFIX);
-		tooltip->SetDelayTime(TTDT_AUTOPOP, 20000);
-		tooltip->SetDelayTime(TTDT_INITIAL, thePrefs.GetToolTipDelay()*1000);
-	}
+	// ==> Run eMule as NT Service [leuk_he] - Stulle
+	// workaround running MFC as service
+	if (!theApp.IsRunningAsService())
+	{
+	// <== Run eMule as NT Service [leuk_he] - Stulle
+		CToolTipCtrl* tooltip = GetToolTips();
+		if (tooltip){
+			m_pToolTip->SetFileIconToolTip(true);
+			m_pToolTip->SubclassWindow(*tooltip);
+			tooltip->ModifyStyle(0, TTS_NOPREFIX);
+			tooltip->SetDelayTime(TTDT_AUTOPOP, 20000);
+			tooltip->SetDelayTime(TTDT_INITIAL, thePrefs.GetToolTipDelay()*1000);
+		}
+	} // Run eMule as NT Service [leuk_he] - Stulle
 
 	m_ShareDropTarget.SetParent(this);
 	VERIFY( m_ShareDropTarget.Register(this) );
@@ -526,6 +545,11 @@ void CSharedFilesCtrl::Localize()
 
 void CSharedFilesCtrl::AddFile(const CShareableFile* file)
 {
+	// ==> Run eMule as NT Service [leuk_he] - Stulle
+	if (theApp.IsRunningAsService(SVC_LIST_OPT))
+		return;
+	// <== Run eMule as NT Service [leuk_he] - Stulle
+
 	if (!theApp.emuledlg->IsRunning())
 		return;
 	// check filter conditions if we should show this file right now
@@ -649,6 +673,11 @@ void CSharedFilesCtrl::UpdateFile(const CShareableFile* file, bool bUpdateFileSu
 void CSharedFilesCtrl::UpdateFile(const CShareableFile* file, bool bUpdateFileSummary, bool force)
 //Xman end
 {
+	// ==> Run eMule as NT Service [leuk_he] - Stulle
+	if (theApp.IsRunningAsService(SVC_LIST_OPT))
+		return;
+	// <== Run eMule as NT Service [leuk_he] - Stulle
+
 	if (!file || !theApp.emuledlg->IsRunning())
 		return;
 
@@ -2192,8 +2221,8 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 								// in the string they would be misinterpreted as control sequences!
 									AddLogLine(false,_T("Successfully renamed '%s' to '%s'"), ((CKnownFile*)file)->GetFilePath(), newpath);
 									((CKnownFile*)file)->SetFileName(newname);
-								if (file->IsKindOf(RUNTIME_CLASS(CPartFile)))
-									((CPartFile*) file)->SetFullName(newpath);
+									if (file->IsKindOf(RUNTIME_CLASS(CPartFile)))
+										((CPartFile*) file)->SetFullName(newpath);
 							} else {
 								// Use the "Format"-Syntax of AddLogLine here instead of
 								// CString.Format+AddLogLine, because if "%"-characters are
