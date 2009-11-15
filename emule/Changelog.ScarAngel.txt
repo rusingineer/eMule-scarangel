@@ -23,6 +23,7 @@ Added: PowerShare support for WebInterface [Stulle] - Stulle
 Added: Rebind UPnP mappings (UDP, TCP and Webserver for now) like official [Stulle] - Stulle
 Added: Run eMule as NT Service [leuk_he] - Stulle
 Added: Adjustable NT Service Strings [Stulle] - Stulle
+Added: Extended Prompt on Exit dialog [leuk_he] - Stulle
 
 Changed: Disable FollowTheMajority per file when file is renamed manually [AndCycle] - Stulle
 Changed: Disable ASFU if too many folders are shared [Stulle] - Stulle
