@@ -33,6 +33,7 @@ Fixed: UPnP setting in First Runtime Wizard [leuk_he] - Stulle
 Fixed: Port settings in First Runtime Wizard for Random Ports feature [leuk_he] - Stulle
 Fixed: Missing checkmark for PS limited by amount context menu [Stulle] - Stulle
 Fixed: (Official) Malfunctioning search results in eMule Light template [Stulle] - Stulle
+Fixed: Show last tab in ScarAngel prefs panel on reopening prefs dialog [Stulle] - Stulle
 
 Run as NT Service:
 + No need to login into windows

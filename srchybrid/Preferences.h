@@ -1209,6 +1209,7 @@ public:
 
 	friend class CPPgScar; // ScarAngel Preferences window - Stulle
 	friend class CSivkaFileSettings; // File Settings [sivka/Stulle] - Stulle
+	friend class CPPgWebServer; // Run eMule as NT Service [leuk_he] - Stulle
 
 	CPreferences();
 	~CPreferences();

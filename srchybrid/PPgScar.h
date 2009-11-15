@@ -455,9 +455,7 @@ public:
 	void Localize(void);	
 
 	// ==> Tabbed Preferences [TPT] - Stulle
-private:
 	enum eTab{
-	NONE,
 	SCAR,
 	BACKUP,
 	COLOR,
@@ -465,6 +463,7 @@ private:
 	UPDATE,
 	SUPPORT
 	};
+private:
 	void SetTab(eTab tab);
 
 	void InitTab();
