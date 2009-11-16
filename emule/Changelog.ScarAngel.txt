@@ -21,7 +21,7 @@ Added: Extra logging to notify of missing webserver files [leuk_he] - Stulle
 Added: PowerShare support for WebInterface [Stulle] - Stulle
 	+ fixed missing tick in menu and improper table display from StulleMule
 Added: Rebind UPnP mappings (UDP, TCP and Webserver for now) like official [Stulle] - Stulle
-Added: Run eMule as NT Service [leuk_he] - Stulle
+Added: Run eMule as NT Service [leuk_he/Stulle] - Stulle
 Added: Adjustable NT Service Strings [Stulle] - Stulle
 Added: Extended Prompt on Exit dialog [leuk_he] - Stulle
 
@@ -44,6 +44,7 @@ Run as NT Service:
 	- "emule uninstall" --> uninstall as a service.
 + make sure all settings are correct before installing as a service
 + links as passed to webservice
++ option to set level of optimization (Full may cause errors!)
 + See Preferences->Webserver->NTservice tab
 
 
