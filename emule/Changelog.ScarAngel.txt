@@ -9,7 +9,6 @@ based on eMule 0.49c Xtreme 7.2 compiled with vs2008 SP1
 
 Added: Date File Name Log (enabled by default) [AndCycle] - Stulle
 Added: Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he/Stulle] - Stulle
-	+ You must select the multi user template to enable the multi user settings.
 Added: Multiuser WebInterface (WI) Cookie settings [Aireoreion] - Stulle
 	+ added code missing in MorphXT so it works
 Added: New failed login handling for WI [MorphXT/leuk_he/dreamwalker/Stulle] - Stulle
@@ -35,6 +34,18 @@ Fixed: Port settings in First Runtime Wizard for Random Ports feature [leuk_he] 
 Fixed: Missing checkmark for PS limited by amount context menu [Stulle] - Stulle
 Fixed: (Official) Malfunctioning search results in eMule Light template [Stulle] - Stulle
 Fixed: Show last tab in ScarAngel prefs panel on reopening prefs dialog [Stulle] - Stulle
+
+Ionix advanced (multiuser) webserver:
++ You must select the multi user template to enable the multi user settings.
++ Changed user privileges (see below)
++ Added option to restrict user from downloading files via webserver.
++ Multiuser is enabled/disabled automatically on changing template.
+
+Ionix advanced (multiuser) webserver user privileges:
++ Guest: Viewing information from webinterface
++ Operator: Adding/Removing downloads and according to other settings
++ Admin: Like Operator plus privilege to close eMule
++ Hi-Admin: Like Admin plus privilege to shutdown/reboot windows
 
 Run as NT Service:
 + No need to login into windows
