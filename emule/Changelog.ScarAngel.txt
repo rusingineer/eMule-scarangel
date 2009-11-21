@@ -21,6 +21,7 @@ Added: PowerShare support for WebInterface [Stulle] - Stulle
 	+ fixed missing tick in menu and improper table display from StulleMule
 Added: Rebind UPnP mappings (UDP, TCP and Webserver for now) like official [Stulle] - Stulle
 Added: Run eMule as NT Service [leuk_he/Stulle] - Stulle
+	+ localized logging, cleaned up code
 Added: Adjustable NT Service Strings [Stulle] - Stulle
 Added: Extended Prompt on Exit dialog [leuk_he] - Stulle
 Added: Friendslot support for WebInterface [Stulle] - Stulle
@@ -53,10 +54,10 @@ Run as NT Service:
 + No need to login into windows
 + keeps running after logging out/ switching users
 + new command line options:
-	- "emule install"   --> install as a service
-	- "emule uninstall" --> uninstall as a service.
+	- "emule -install"   --> install as a service
+	- "emule -uninstall" --> uninstall as a service.
 + make sure all settings are correct before installing as a service
-+ links as passed to webservice
++ links are passed to webservice
 + option to set level of optimization (Full may cause errors!)
 + See Preferences->Webserver->NTservice tab
 
