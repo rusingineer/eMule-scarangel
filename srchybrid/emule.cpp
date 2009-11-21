@@ -1077,7 +1077,13 @@ bool CemuleApp::ProcessCommandline()
 	// NOTE: This will not prevent from some other application using that port!
 	UINT uTcpPort = GetProfileInt(_T("eMule"), _T("Port"), DEFAULT_TCP_PORT_OLD);
 	CString strMutextName;
-	strMutextName.Format(_T("%s:%u"), EMULE_GUID, uTcpPort);
+	// ==> Run eMule as NT Service [leuk_he/Stulle] - Stulle
+	// for vista
+	if (Is_Terminal_Services()) // Terminal services active? use global\ prefix for ts awareness. 
+		strMutextName.Format(_T("Global\\%s:%u"), EMULE_GUID, uTcpPort);
+	else
+	// <== Run eMule as NT Service [leuk_he/Stulle] - Stulle
+		strMutextName.Format(_T("%s:%u"), EMULE_GUID, uTcpPort);
 	m_hMutexOneInstance = ::CreateMutex(NULL, FALSE, strMutextName);
 	
 	HWND maininst = NULL;

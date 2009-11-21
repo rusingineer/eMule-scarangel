@@ -1177,6 +1177,7 @@ public:
 	static CString	m_strServiceName;
 	static CString	m_strServiceDispName;
 	static CString	m_strServiceDescr;
+	static bool		m_bServiceStringsLoaded;
 	// <== Adjustable NT Service Strings - Stulle
 
 	enum Table
@@ -2618,7 +2619,7 @@ public:
 	static int		GetServiceOptLvl()		{ return m_iServiceOptLvl; }
 	// <== Run eMule as NT Service [leuk_he/Stulle] - Stulle
 	// ==> Adjustable NT Service Strings [Stulle] - Stulle
-	static	CString	GetServiceName()				{ return m_strServiceName; }
+	static	CString	GetServiceName();
 	static	void	SetServiceName(CString in)		{ m_strServiceName = in; }
 	static	CString	GetServiceDispName()			{ return m_strServiceDispName; }
 	static	void	SetServiceDispName(CString in)	{ m_strServiceDispName = in; }
