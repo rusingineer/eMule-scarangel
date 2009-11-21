@@ -23,6 +23,7 @@ Added: Rebind UPnP mappings (UDP, TCP and Webserver for now) like official [Stul
 Added: Run eMule as NT Service [leuk_he/Stulle] - Stulle
 Added: Adjustable NT Service Strings [Stulle] - Stulle
 Added: Extended Prompt on Exit dialog [leuk_he] - Stulle
+Added: Friendslot support for WebInterface [Stulle] - Stulle
 
 Changed: Disable FollowTheMajority per file when file is renamed manually [AndCycle] - Stulle
 Changed: Disable ASFU if too many folders are shared [Stulle] - Stulle
@@ -34,6 +35,7 @@ Fixed: Port settings in First Runtime Wizard for Random Ports feature [leuk_he] 
 Fixed: Missing checkmark for PS limited by amount context menu [Stulle] - Stulle
 Fixed: (Official) Malfunctioning search results in eMule Light template [Stulle] - Stulle
 Fixed: Show last tab in ScarAngel prefs panel on reopening prefs dialog [Stulle] - Stulle
+Fixed: Show friend menu in Friendlist of Webinterface [Stulle] - Stulle
 
 Ionix advanced (multiuser) webserver:
 + You must select the multi user template to enable the multi user settings.

@@ -6481,6 +6481,7 @@ BEGIN
     IDS_YESSERVICE          "Yes, and start eMule service"
     IDS_NOMINIMIZE          "No, To tray"
     // <== Extended Prompt on Exit dialog [leuk_he] - Stulle
+    IDS_WS_FRIENDSLOT       "Friendslot" // Friendslot support for WebInterface [Stulle] - Stulle
 END
 
 #endif    // English (U.S.) resources

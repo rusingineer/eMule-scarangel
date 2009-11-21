@@ -3468,6 +3468,7 @@
 #define IDS_YESSERVICE                  61634
 #define IDS_NOMINIMIZE                  61635
 // <== Extended Prompt on Exit dialog [leuk_he] - Stulle
+#define IDS_WS_FRIENDSLOT               61670 // Friendslot support for WebInterface [Stulle] - Stulle
 
 // Next default values for new objects
 // 
