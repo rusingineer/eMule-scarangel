@@ -25,6 +25,8 @@ Added: Run eMule as NT Service [leuk_he/Stulle] - Stulle
 Added: Adjustable NT Service Strings [Stulle] - Stulle
 Added: Extended Prompt on Exit dialog [leuk_he] - Stulle
 Added: Friendslot support for WebInterface [Stulle] - Stulle
+Added: Installer for eMule ScarAngel [leuk_he/Stulle] - Stulle
+	+ translations taken from eMule Morph so credits to the respective creators
 
 Changed: Disable FollowTheMajority per file when file is renamed manually [AndCycle] - Stulle
 Changed: Disable ASFU if too many folders are shared [Stulle] - Stulle
