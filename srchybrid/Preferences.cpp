@@ -6344,6 +6344,7 @@ uint16	CPreferences::GetWSPort()
 	return m_nWebPort; 
 }
 // <== Run eMule as NT Service [leuk_he/Stulle] - Stulle
+
 // ==> Adjustable NT Service Strings [Stulle] - Stulle
 CString CPreferences::GetServiceName()
 {
