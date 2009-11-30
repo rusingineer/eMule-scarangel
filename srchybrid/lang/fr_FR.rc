@@ -1911,18 +1911,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_UPNPSTART           "Configurer les ports grâce à l'UPnP"
-    IDS_UPNPSETUP           "Tentative de mappage des ports avec l'UPnP..."
-    IDS_UPNPFAILED          "Echec du mappage des ports avec l'UPnP, veuillez paramétrer le mappage manuellement !"
-    IDS_UPNPSUCCESS         "L'UPnP a effectué avec succès le mappage des ports %u (TCP) et %u (UDP)"
     IDS_FO_PREFBUTTON_NEW   "Ouvrir les ports dans le Pare-feu de WinXP SP1"
-    IDS_UPNP_NOSERVICE      "Le service système UPnP n'est pas activé, paramétrage UPnP ignoré"
-    IDS_DELAYEDBYUPNP       "La connexion au réseau est retardée car l'UPnP est toujours occupé à configurer le mappage des ports."
-    IDS_DELAYEDBYUPNP2      "Veuillez patienter, eMule se connectera dès que l'UPnP aura terminé."
-    IDS_UPNP                "UPnP" //!
-    IDS_UPNPCLOSEONEXIT     "Supprimer le mappage des ports UPnP à la fermeture"
-    IDS_UPNPSKIPWANIP       "Ignorer le paramétrage WAN IP"
-    IDS_UPNPSKIPWANPPP      "Ignorer le paramétrage WAN PPP"
     IDS_SHAREEMULELABEL     "Partager eMule avec les autres comptes utilisateurs de l'ordinateur"
     IDS_SHAREEMULEMULTI     "Chaque utilisateur possède sa propre configuration et ses propres téléchargements"
     IDS_SHAREEMULEPUBLIC    "Tous les utilisateurs partagent la même configuration et leurs téléchargements"
@@ -2120,7 +2109,6 @@ BEGIN
     IDS_AUTOUPDATEIPFILTER  "Mise à jour automatique de l'IPFilter.dat"
     IDS_DROPBLOCKINGSOCKETS "Abandon des sockets bloquant trop souvent"
     IDS_LOGPARTMISMATCH     "Journaliser les erreurs de taille sur les fichiers demandés"
-    IDS_CN_UPNPTRYRANDOM    "Tester des ports aléatoire sur les passerelles UPnP"
     IDS_CN_UPNPNAT          "Activer le support de l'UPnP"
     IDS_CHUNKCHOOSER        "Méthode de sélection des parties"
     IDS_UPLOADINSTABLE      "Attention: votre limite en émission semble étre trop haute. Veuillez revoir votre configuration! \n Regardez le graphique de la vitesse d'émission dans les statistiques, les ligne blanches et jaunes (avec NAFC) doivent étre planent \n ce message ne sera affiché qu'une seule fois."
