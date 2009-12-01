@@ -40,6 +40,7 @@ Fixed: (Official) Malfunctioning search results in eMule Light template [Stulle]
 Fixed: Show last tab in ScarAngel prefs panel on reopening prefs dialog [Stulle] - Stulle
 Fixed: Show friend menu in Friendlist of Webinterface [Stulle] - Stulle
 Fixed: Design settings font colors overridden in UploadListCtrl [Stulle] - Stulle
+Fixed: Personalize Feedback could not be turned off [Stulle] - Stulle
 
 Ionix advanced (multiuser) webserver:
 + You must select the multi user template to enable the multi user settings.
