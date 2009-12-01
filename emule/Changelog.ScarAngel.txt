@@ -42,6 +42,10 @@ Fixed: Show friend menu in Friendlist of Webinterface [Stulle] - Stulle
 Fixed: Design settings font colors overridden in UploadListCtrl [Stulle] - Stulle
 Fixed: Personalize Feedback could not be turned off [Stulle] - Stulle
 
+Note: Following languages updated/added: German [Stulle]; French [Heaven]; 
+Chinese (P.R.C.) [jason_jiang]; Italian [Idro182]; Turkish [omeringen]; 
+Spanish [guijarrelson]
+
 Ionix advanced (multiuser) webserver:
 + You must select the multi user template to enable the multi user settings.
 + Changed user privileges (see below)
