@@ -61,14 +61,14 @@ Ionix advanced (multiuser) webserver user privileges:
 
 Run as NT Service:
 + No need to login into windows
-+ keeps running after logging out/ switching users
-+ new command line options:
++ Keeps running after logging out/ switching users
++ New command line options:
 	- "emule -install"   --> install as a service
-	- "emule -uninstall" --> uninstall as a service.
-+ make sure all settings are correct before installing as a service
-+ links are passed to webservice
-+ option to set level of optimization (Full may cause errors!)
-+ See Preferences->Webserver->NTservice tab
+	- "emule -uninstall" --> uninstall as a service
++ Make sure all settings are correct before installing as a service
++ Links are passed to webservice
++ Option to set level of optimization (Full may cause errors!)
++ See Preferences->Web Server->NTservice tab
 
 
 eMule v0.49c ScarAngel v3.2:
