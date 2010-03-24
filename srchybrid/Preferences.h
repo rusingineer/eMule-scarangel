@@ -1173,12 +1173,12 @@ public:
 	static int		m_iServiceStartupMode;
 	static int		m_iServiceOptLvl;
 	// <== Run eMule as NT Service [leuk_he/Stulle] - Stulle
-	// ==> Adjustable NT Service Strings - Stulle
+	// ==> Adjustable NT Service Strings [Stulle] - Stulle
 	static CString	m_strServiceName;
 	static CString	m_strServiceDispName;
 	static CString	m_strServiceDescr;
 	static bool		m_bServiceStringsLoaded;
-	// <== Adjustable NT Service Strings - Stulle
+	// <== Adjustable NT Service Strings [Stulle] - Stulle
 
 	enum Table
 	{
