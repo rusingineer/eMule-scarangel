@@ -1,6 +1,15 @@
 CHANGELOG FOR EMULE ScarAngel MOD
 
 
+eMule v0.49c ScarAngel v3.x:
+------------------------
+- XX.XX.2010 -
+-------------------------------------------------------------------------------
+based on eMule 0.49c Xtreme 7.2 compiled with vs2008 SP1
+
+Fixed: Reboot in webserver invoked shutdown instead of reboot [Stulle] - Stulle
+
+
 eMule v0.49c ScarAngel v3.3:
 ------------------------
 - 03.12.2009 -
