@@ -30,6 +30,14 @@
 #include "stdafx.h"
 #include "DLP.h"
 #include "Log.h"
+//X-Ray :: Fincan Hash Detection :: Start
+#include "opcodes.h"
+#include "resource.h"
+#include "friend.h"
+#include "OtherFunctions.h"
+#include "HttpDownloadDlg.h"
+#include "SafeFile.h"
+//X-Ray :: Fincan Hash Detection :: End
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -147,3 +155,92 @@ void CDLP::Reload()
 		dlpavailable=true;
 	}
 }
+
+//X-Ray :: Fincan Hash Detection :: Start
+bool CDLP::CheckForFincanHash(CString strHash)
+{
+	return !m_FincanHashList.IsEmpty() && (m_FincanHashList.Find(strHash) != NULL);
+}
+
+void CDLP::LoadFincanHashes(CString strURL, bool forced)
+{
+	if(!forced && !m_FincanHashList.IsEmpty())
+		return;
+
+	m_FincanHashList.RemoveAll();
+
+	if(strURL.IsEmpty()) 
+		strURL = L"http://www.e-sipa.de/fincan/emfriends.met";
+
+	if(strURL.Find(L"://") == -1){ // not a valid URL
+		AddLogLine(true, L"%s: %s", GetResString(IDS_INVALIDURL), strURL);
+		return;
+	}
+
+	CString strTempFilename;
+	strTempFilename.Format(L"%stemp-%d-FincanHashes.met", appdir, ::GetTickCount());
+
+	CHttpDownloadDlg dlgDownload;
+	dlgDownload.m_strTitle = L"Downloading Fincan emfirends.met";
+	dlgDownload.m_sURLToDownload = strURL;
+	dlgDownload.m_sFileToDownloadInto = strTempFilename;
+
+	if (dlgDownload.DoModal() != IDOK){
+		AddDebugLogLine(false, L"Failed to load Fincan emfriends.met!");
+		return;
+	}
+
+	CSafeBufferedFile file;
+	CFileException fexp;
+	if (!file.Open(strTempFilename, CFile::modeRead | CFile::osSequentialScan | CFile::typeBinary | CFile::shareDenyWrite, &fexp)){
+		if (fexp.m_cause != CFileException::fileNotFound){
+			CString strError(GetResString(IDS_ERR_READEMFRIENDS));
+			TCHAR szError[MAX_CFEXP_ERRORMSG];
+			if (fexp.GetErrorMessage(szError, _countof(szError)))
+				strError.AppendFormat(L" - %s", szError);
+			AddDebugLogLine(false, L"%s", strError);
+		}
+		_tremove(strTempFilename);
+		return;
+	}
+
+	try {
+		uint8 header = file.ReadUInt8();
+		if (header != MET_HEADER){
+			file.Close();
+			_tremove(strTempFilename);
+			return;
+		}
+
+		UINT nRecordsNumber = file.ReadUInt32();
+		for (UINT i = 0; i < nRecordsNumber; ++i){
+			CFriend* Record = new CFriend();
+			Record->LoadFromFile(&file);
+			if(Record->HasUserhash()){
+				const CString strHash = md4str(Record->m_abyUserhash);
+				if(!m_FincanHashList.Find(strHash))
+					m_FincanHashList.AddTail(strHash);
+			}
+			delete Record;
+		}
+		file.Close();
+		_tremove(strTempFilename);
+	}
+	
+	catch(CFileException* error){
+		if (error->m_cause == CFileException::endOfFile)
+			AddDebugLogLine(false, GetResString(IDS_ERR_EMFRIENDSINVALID));
+		else {
+			TCHAR buffer[MAX_CFEXP_ERRORMSG];
+			error->GetErrorMessage(buffer, _countof(buffer));
+			AddDebugLogLine(false, GetResString(IDS_ERR_READEMFRIENDS), buffer);
+		}
+		error->Delete();
+		_tremove(strTempFilename);
+		return;
+	}
+
+	if(!m_FincanHashList.IsEmpty())
+		AddDebugLogLine(false, L"Loaded %u Fincan Userhashes!", m_FincanHashList.GetCount());
+}
+//X-Ray :: Fincan Hash Detection :: End

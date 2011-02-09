@@ -2125,6 +2125,7 @@ BEGIN
     IDS_AUTOUPDATEIPFILTER  "Aggiornamento automatico IPFilter.dat"
     IDS_DROPBLOCKINGSOCKETS "Rimuovi i socket che si bloccano troppo spesso"
     IDS_LOGPARTMISMATCH     "Visualizza registro  disparità dimensione dei file richiesti"
+    IDS_CN_UPNPTRYRANDOM    "Prova ad usare porta casuale per gateway UPnP"
     IDS_CN_UPNPNAT          "Attiva Supporto UPnP"
     IDS_CHUNKCHOOSER        "Metodo di scelta Chunk"
     IDS_UPLOADINSTABLE      "Attenzione: i tuoi settaggi di upload sembrano essere troppo alti. Ricontrolla i tuoi settaggi! \n Controlla il grafico dell'upload, la linea bianca o la gialla(con NAFC) dovrebbero essere dritte \n questo messaggio viene generato solo una volta."

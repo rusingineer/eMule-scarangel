@@ -2085,6 +2085,7 @@ BEGIN
     IDS_AUTOUPDATEIPFILTER  "Auto-update IPFilter.dat"
     IDS_DROPBLOCKINGSOCKETS "Entferne zu häufig blockierende Sockets"
     IDS_LOGPARTMISMATCH     "Logge Größendifferenz der angeforderten Dateien"
+    IDS_CN_UPNPTRYRANDOM    "Versuche einen zufälligen Port am UPNP Gateway zu verwenden falls der eingestellte Port schon belegt"
     IDS_CN_UPNPNAT          "Aktiviere UPnP support"
     IDS_CHUNKCHOOSER        "Download Chunk Auswahlmethode"
     IDS_UPLOADINSTABLE      "Warnung: Dein Uploadlimit scheint zu hoch gewählt zu sein. Bitte überprüfe Deine Uploadeinstellungen! \n Schaue auf Deinen Uploadgraphen, die weiße oder gelbe (mit NAFC) Linie sollte möglichst gerade sein \n Diese Nachricht wird nur einmal generiert."

@@ -198,7 +198,12 @@ public:
 	void	StopUDPRequests();
 
 	// check diskspace
+	//zz_fly :: remove useless code :: Enig123 :: start
+	//note: not needed, because priority have been handled in CDownloadQueue::Process(), thanks Enig123
+	/*
 	void	SortByPriority();
+	*/
+	//zz_fly :: end
 	void	CheckDiskspace(bool bNotEnoughSpaceLeft = false);
 	void	CheckDiskspaceTimed();
 
@@ -239,20 +244,25 @@ protected:
 	bool	IsMaxFilesPerUDPServerPacketReached(uint32 nFiles, uint32 nIncludedLargeFiles) const;
 	bool	SendGlobGetSourcesUDPPacket(CSafeMemFile* data, bool bExt2Packet, uint32 nFiles, uint32 nIncludedLargeFiles);
 
+	//zz_fly :: remove useless code :: Enig123 :: start
+	//note: not needed, because priority have been handled in CDownloadQueue::Process(), thanks Enig123
+	/*
 private:
 	bool	CompareParts(POSITION pos1, POSITION pos2);
 	void	SwapParts(POSITION pos1, POSITION pos2);
 	void	HeapSort(UINT first, UINT last);
+	*/
+	//zz_fly :: end
 
 //Xman see all sources
 public:
-	CTypedPtrList<CPtrList, CPartFile*> filelist;  
+	CTypedPtrList<CPtrList, CPartFile*> filelist;
 private:
 //Xman end
 	
 	CTypedPtrList<CPtrList, CPartFile*> m_localServerReqQueue;
 	uint16	filesrdy;
-	
+
 	// Maella -Pseudo overhead datarate control-
 	/*
 	uint32	datarate;
@@ -269,7 +279,6 @@ private:
 	uint8 m_maxdownprio;
 	uint8 m_maxdownprionew;
 	//Xman end
-
 
 	CPartFile*	lastfile;
 	uint32		lastcheckdiskspacetime;
@@ -293,10 +302,6 @@ private:
 	uint32		m_FailedTCPFileReask;
 	//Xman end
 
-	//Xman GlobalMaxHarlimit for fairness
-	uint32		m_uGlobsources;
-	uint8		m_limitstate;
-
 	//Xman
 	/*
 	// By BadWolf - Accurate Speed Measurement
@@ -309,9 +314,14 @@ private:
 	*/
 	//Xman end
 
+	//Xman GlobalMaxHarlimit for fairness
+	uint32		m_uGlobsources;
+	uint8		m_limitstate;
+
 	CSourceHostnameResolveWnd m_srcwnd;
 
-	CCriticalSection srcLock;	//zz_fly :: make source add action thread safe :: Enig123
+	//is it necessary to use these codes to fix such a minor bug?
+	//CCriticalSection srcLock;	//zz_fly :: make source add action thread safe :: Enig123
 
     //Xman
     /*

@@ -353,7 +353,7 @@ BOOL CStatisticsDlg::OnInitDialog()
 	if(rcStat.top > rcStat.bottom)
 		rcStat.top = rcStat.bottom;
 	m_Statistics.MoveWindow(rcStat);
-
+	//Xman end
 	DoResize_V(PosStatVnewX - PosStatVinitX);
 	// Xman statistic fix 
 	/*
@@ -1020,7 +1020,6 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 	CString	cbuffer;
 	// Set Tree Values
 
-
 	//Xman
 	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 	//cache needed values
@@ -1367,7 +1366,7 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 					cbuffer.Format(_T("%s: %s, %s: %s (%.1f%%)"), GetResString(IDS_UDPREASKS), CastItoIShort(theApp.downloadqueue->GetUDPFileReasks()), GetResString(IDS_UFAILED), CastItoIShort(theApp.downloadqueue->GetFailedUDPFileReasks()), theApp.downloadqueue->GetUDPFileReasks() ? (theApp.downloadqueue->GetFailedUDPFileReasks() * 100.0 / theApp.downloadqueue->GetUDPFileReasks()) : 0.0 );
 					stattree.SetItemText( down_sources[i] , cbuffer );
 					i++;
-					
+
 					//Xman x4 Xtreme Mod: count failed tcp-connections:
 					cbuffer.Format(_T("%s: %s, %s: %s (%.1f%%)"), _T("TCP-connections"), CastItoIShort(theApp.downloadqueue->GetTCPFileReasks()), _T("failed"), CastItoIShort(theApp.downloadqueue->GetFailedTCPFileReasks()), theApp.downloadqueue->GetTCPFileReasks() ? (theApp.downloadqueue->GetFailedTCPFileReasks() * 100.0 / theApp.downloadqueue->GetTCPFileReasks()) : 0.0 );
 					stattree.SetItemText( down_sources[i] , cbuffer );
@@ -1424,7 +1423,7 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
                         cbuffer += details;
 					}
 					// Maella end
-					
+
 					stattree.SetItemText( down_ssessions[0] , cbuffer ); // Set Succ Sessions
 					// Set Failed Download Sessions (Avoid Division)
 					if (percentSessions != 0 && statBadSessions > 0) 
@@ -1455,7 +1454,7 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 									   CUpDownClient::GetDownStopCount(true, CUpDownClient::DSR_EXCEPTION));
                         cbuffer += details;
 					}
-					// Maella end					
+					// Maella end
 					stattree.SetItemText( down_ssessions[1] , cbuffer );
 					// Set Average Download Time
 					cbuffer.Format(_T("%s: %s"), GetResString(IDS_STATS_AVGDLTIME), CastSecondsToLngHM(thePrefs.GetDownS_AvgTime()));
@@ -2821,7 +2820,6 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 										   CastItoIShort((uint64)((theStats.GetUpDataOverheadKadPackets() + 
 																  thePrefs.GetUpOverheadKadPackets()
 																 ) * avgModifier[mx])));
-
 										   //Xman end
 							stattree.SetItemText(time_aap_up_oh[mx][i], cbuffer);
 							i++;
@@ -3606,7 +3604,7 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		
 		cbuffer.Format(GetResString(IDS_STATS_FILTEREDCLIENTS), theStats.filteredclients);
 		stattree.SetItemText(cligen[2], cbuffer);
-	
+
 		//Xman Anti-Leecher
 		cbuffer.Format(_T("Leecher-Hits: %u"), theStats.leecherclients);
 		stattree.SetItemText(cligen[6], cbuffer);
@@ -4346,7 +4344,7 @@ void CStatisticsDlg::OnStnDblclickStatsscope()
 
 LRESULT CStatisticsDlg::OnOscopePositionMsg(WPARAM /*wParam*/, LPARAM lParam)
 {
-	//zz_fly, moved to COScopeCtrl::OnMouseMove(), thanks dolphin87 
+	//zz_fly, moved to COScopeCtrl::OnMouseMove(), thanks DolphinX
 	/*
 	lParam/=thePrefs.GetZoomFactor(); //Xman Maella Statistik-Zoom
 	*/
@@ -4389,17 +4387,21 @@ HBRUSH CStatisticsDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return __super::OnCtlColor(pDC, pWnd, nCtlColor);
 }
 */
-	hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+	HBRUSH hbr = theApp.emuledlg->GetCtlColor(pDC, pWnd, nCtlColor);
+	if (hbr)
+		return hbr;
+	hbr = __super::OnCtlColor(pDC, pWnd, nCtlColor);
 
-	if (nCtlColor == CTLCOLOR_DLG)
-		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
-	else if(nCtlColor != CTLCOLOR_EDIT)
+	switch(nCtlColor)
 	{
-		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+	case CTLCOLOR_EDIT:
+		break;
+	default:
 		pDC->SetBkMode(TRANSPARENT);
+	case CTLCOLOR_DLG:
+		hbr = (HBRUSH) m_brMyBrush.GetSafeHandle();
+		break;
 	}
-	else
-		hbr = (HBRUSH) WHITE_BRUSH;
 
 	return hbr;
 }

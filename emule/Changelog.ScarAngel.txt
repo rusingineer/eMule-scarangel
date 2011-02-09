@@ -1,11 +1,17 @@
 CHANGELOG FOR EMULE ScarAngel MOD
 
 
-eMule v0.49c ScarAngel v3.x:
+eMule v0.50a ScarAngel v4.x:
 ------------------------
-- XX.XX.2010 -
+- XX.XX.2011 -
 -------------------------------------------------------------------------------
-based on eMule 0.49c Xtreme 7.2 compiled with vs2008 SP1
+based on eMule 0.50a Xtreme 8.0 compiled with vs2010
+Merged to eMule v0.49c [Stulle]
+Updated with code from zz_fly's Xtreme
+
+Added: Possibility to directly add incoming of removed cat to shared folders [Stulle] - Stulle
+
+Changed: Reworked coloring of windows (fixes some tab controls on Vista/7) [Stulle] - Stulle
 
 Fixed: Reboot in webserver invoked shutdown instead of reboot [Stulle] - Stulle
 

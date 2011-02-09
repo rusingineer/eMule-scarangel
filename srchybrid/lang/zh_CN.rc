@@ -198,7 +198,8 @@ BEGIN
     IDS_AUTOUPDATEIPFILTER  "自动升级IP过滤文件(IPFilter.dat)"
     IDS_DROPBLOCKINGSOCKETS "剔除频繁阻塞的Sockets"
     IDS_LOGPARTMISMATCH     "记录大小不匹配的被请求文件"
-    IDS_CN_UPNPNAT          "启用 UPnP" //"Enable UPnP support"
+    IDS_CN_UPNPTRYRANDOM    "对UPnP网关使用随机端口"
+    IDS_CN_UPNPNAT          "启用 UPnP"
     IDS_CHUNKCHOOSER        "文件块选择方式:"
     IDS_UPLOADINSTABLE      "警告: 你的上传值设置似乎太高了. 请检查你的设置!\n查看上传统计曲线, 白色或者黄色(使用NAFC时)的线应该是比较平整的.\n 此消息只提示一次"
 END
@@ -206,6 +207,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_CLIENTPERCENTAGE    "显示客户端百分比"
+    IDS_ONERELEASESLOT      "预留上传槽给发布级文件"
     IDS_A_UPPRIO            "使用全自动上传优先级"
     IDS_SHAREFACTOR         "共享系数"
     IDS_MASSRENAME1         "文件名过滤 (此设置将会被应用到以下所有的文件名)"

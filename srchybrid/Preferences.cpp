@@ -55,7 +55,9 @@
 /*
 #include <crypto51/osrng.h>
 */
+#pragma warning(disable:4189) // local variable is initialized but not referenced
 #include <cryptopp/osrng.h>
+#pragma warning(default:4189) // local variable is initialized but not referenced
 //Xman end
 #pragma warning(default:4702) // unreachable code
 #pragma warning(default:4100) // unreferenced formal parameter
@@ -70,6 +72,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 CPreferences thePrefs;
+
 //-------------------------------------------------------------------------------
 //Xman Xtreme Mod:
 
@@ -98,6 +101,10 @@ bool CPreferences::m_antileecheruserhash;
 bool CPreferences::m_antileechercommunity_action;
 bool CPreferences::m_antileecherghost_action;
 bool CPreferences::m_antileecherthief_action;
+//X-Ray :: Fincan Hash Detection :: Start
+bool CPreferences::m_antileecherFincan;
+CString CPreferences::m_antileecherFincanURL;
+//X-Ray :: Fincan Hash Detection :: End
 //Xman end
 
 //Xman narrow font at transferwindow
@@ -163,13 +170,14 @@ uint8	CPreferences::zoomFactor;                   // -Graph: display zoom-
 
 uint16	CPreferences::MTU;                          // -MTU Configuration-
 bool	CPreferences::usedoublesendsize;
+bool	CPreferences::retrieveMTUFromSocket; // netfinity: Maximum Segment Size (MSS - Vista only) //added by zz_fly
 
 bool	CPreferences::NAFCFullControl;	          // -Network Adapter Feedback Control-
 uint32	CPreferences::forceNAFCadapter;
 uint8	CPreferences::datarateSamples;              // -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 
 bool    CPreferences::enableMultiQueue;             // -One-queue-per-file- (idea bloodymad)
-bool    CPreferences::enableReleaseMultiQueue;
+//bool    CPreferences::enableReleaseMultiQueue;
 // Maella end
 
 // Mighty Knife: Static server handling
@@ -266,6 +274,7 @@ DWORD	CPreferences::m_adwStatsColors[15];
 */
 DWORD	CPreferences::m_adwStatsColors[16];
 // <== Source Graph - Stulle
+bool	CPreferences::bHasCustomTaskIconColor;
 bool	CPreferences::splashscreen;
 bool	CPreferences::filterLANIPs;
 bool	CPreferences::m_bAllocLocalHostIP;
@@ -591,6 +600,13 @@ int		CPreferences::m_iDynUpNumberOfPings;
 int		CPreferences::m_iDynUpPingToleranceMilliseconds;
 bool	CPreferences::m_bDynUpUseMillisecondPingTolerance;
 bool    CPreferences::m_bAllocFull;
+bool	CPreferences::m_bShowSharedFilesDetails;
+bool	CPreferences::m_bShowUpDownIconInTaskbar;
+bool	CPreferences::m_bShowWin7TaskbarGoodies;
+bool	CPreferences::m_bForceSpeedsToKB;
+bool	CPreferences::m_bAutoShowLookups;
+bool	CPreferences::m_bExtraPreviewWithMenu;
+
 // ZZ:DownloadManager -->
 //Xman
 /*
@@ -600,6 +616,7 @@ bool    CPreferences::m_bA4AFSaveCpu;
 // ZZ:DownloadManager <--
 bool    CPreferences::m_bHighresTimer;
 bool	CPreferences::m_bResolveSharedShellLinks;
+bool	CPreferences::m_bKeepUnavailableFixedSharedDirs;
 CStringList CPreferences::shareddir_list;
 CStringList CPreferences::addresses_list;
 CString CPreferences::m_strFileCommentsFilePath;
@@ -629,6 +646,7 @@ CString	CPreferences::m_strNotifierMailSender;
 CString	CPreferences::m_strNotifierMailReceiver;
 
 bool	CPreferences::m_bWinaTransToolbar;
+bool	CPreferences::m_bShowDownloadToolbar;
 
 bool	CPreferences::m_bCryptLayerRequested;
 bool	CPreferences::m_bCryptLayerSupported;
@@ -645,6 +663,20 @@ bool	CPreferences::m_bCloseUPnPOnExit;
 bool	CPreferences::m_bIsWinServImplDisabled;
 bool	CPreferences::m_bIsMinilibImplDisabled;
 int		CPreferences::m_nLastWorkingImpl;
+
+#ifdef DUAL_UPNP //zz_fly :: dual upnp
+//UPnP chooser
+bool	CPreferences::m_bUseACATUPnPCurrent;
+bool	CPreferences::m_bUseACATUPnPNextStart;
+
+//ACAT UPnP
+bool	CPreferences::m_bUPnPNat; // UPnP On/Off
+bool	CPreferences::m_bUPnPTryRandom; // Try to use random external port if already in use On/Off
+uint16	CPreferences::m_iUPnPTCPExternal = 0; // TCP External Port
+uint16	CPreferences::m_iUPnPUDPExternal = 0; // UDP External Port
+#endif //zz_fly :: dual upnp
+
+bool	CPreferences::m_bUPnPRebindOnIPChange; //zz_fly :: Rebind UPnP on IP-change
 */
 // <== UPnP support [MoNKi] - leuk_he
 
@@ -656,6 +688,14 @@ bool	CPreferences::m_bMessageEnableSmileys;
 BOOL	CPreferences::m_bIsRunningAeroGlass;
 bool	CPreferences::m_bPreventStandby;
 bool	CPreferences::m_bStoreSearches;
+
+bool	CPreferences::m_bShowCountryFlagInKad; //zz_fly :: show country flag in KAD
+bool	CPreferences::m_bKnown2Buffer; //zz_fly :: known2 buffer
+bool	CPreferences::m_bKnown2Split; //zz_fly :: known2 split
+bool	CPreferences::m_bKnown2Split_next; //zz_fly :: known2 split
+uint64	CPreferences::m_uAutoPreviewLimit; //zz_fly :: do not auto preview big archive
+
+CString CPreferences::m_strBrokenURLs; //MORPH - Added by WiZaRd, Fix broken HTTP downloads
 
 // ==> Advanced Options [Official/MorphXT] - Stulle
 bool CPreferences::bMiniMuleAutoClose;
@@ -816,6 +856,7 @@ uint8	CPreferences::m_iStartDLInEmptyCats;
 bool	CPreferences::m_bRespectMaxSources;
 bool	CPreferences::m_bUseAutoCat;
 uint8	CPreferences::dlMode;
+bool	CPreferences::m_bAddRemovedInc;
 // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 bool	CPreferences::m_bSpreadbarSetStatus; // Spread bars [Slugfiller/MorphXT] - Stulle
@@ -1093,12 +1134,7 @@ void CPreferences::Init()
 	userhash[5] = 0;
 	userhash[14] = 0;
 
-	//Xman Bugfix by ilmira, right place
-	/*
-	if (((int*)userhash[0]) == 0 && ((int*)userhash[1]) == 0 && ((int*)userhash[2]) == 0 && ((int*)userhash[3]) == 0)
-	*/
-	if (((int*)userhash)[0] == 0 && ((int*)userhash)[1] == 0 && ((int*)userhash)[2] == 0 && ((int*)userhash)[3] == 0)
-	//Xman end
+	if (isnulmd4(userhash))
 		CreateUserHash();
 
 	userhash[5] = 14;
@@ -1140,7 +1176,7 @@ void CPreferences::Init()
 				if (iDrive >= 0 && iDrive <= 25) {
 					WCHAR szRootPath[4] = L" :\\";
 					szRootPath[0] = (WCHAR)(L'A' + iDrive);
-					if (GetDriveType(szRootPath) == DRIVE_FIXED) {
+					if (GetDriveType(szRootPath) == DRIVE_FIXED && !m_bKeepUnavailableFixedSharedDirs) {
 						if (_taccess(toadd, 0) != 0)
 							continue;
 					}
@@ -1238,7 +1274,7 @@ void CPreferences::Init()
 
 	//zz_fly :: move up
 	/*
-	if (((int*)userhash[0]) == 0 && ((int*)userhash[1]) == 0 && ((int*)userhash[2]) == 0 && ((int*)userhash[3]) == 0)
+	if (isnulmd4(userhash))
 		CreateUserHash();
 	*/
 	//zz_fly :: end
@@ -1991,8 +2027,8 @@ bool CPreferences::LoadStats(int loadBackUp)
 		CString sINIBackUp;
 		sINIBackUp.Format(L"%sstatbkuptmp.ini", GetMuleDirectory(EMULE_CONFIGDIR));
 		if (findBackUp.FindFile(sINIBackUp)){
-			CFile::Remove(sINI);				// Remove the backup that we just restored from
-			CFile::Rename(sINIBackUp, sINI);	// Rename our temporary backup to the normal statbkup.ini filename.
+			::DeleteFile(sINI);				// Remove the backup that we just restored from
+			::MoveFile(sINIBackUp, sINI);	// Rename our temporary backup to the normal statbkup.ini filename.
 		}
 
 		// Since we know this is a restore, now we should call ShowStatistics to update the data items to the new ones we just loaded.
@@ -2231,7 +2267,7 @@ void CPreferences::SavePreferences()
 	// Maella end
 	ini.WriteInt(L"DeadServerRetry",m_uDeadServerRetries);
 	ini.WriteInt(L"ServerKeepAliveTimeout",m_dwServerKeepAliveTimeout);
-	ini.WriteInt(L"SplitterbarPosition",splitterbarPosition+2);
+	ini.WriteInt(L"SplitterbarPosition",splitterbarPosition);
 	ini.WriteInt(L"SplitterbarPositionServer",splitterbarPositionSvr);
 	ini.WriteInt(L"SplitterbarPositionStat",splitterbarPositionStat+1);
 	//Xman BlueSonicBoy-Stats-Fix
@@ -2271,7 +2307,6 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(L"Splashscreen",splashscreen);
 	ini.WriteBool(L"BringToFront",bringtoforeground);
 	ini.WriteBool(L"TransferDoubleClick",transferDoubleclick);
-	ini.WriteBool(L"BeepOnError",beepOnError);
 	ini.WriteBool(L"ConfirmExit",confirmExit);
 	ini.WriteBool(L"FilterBadIPs",filterLANIPs);
     ini.WriteBool(L"Autoconnect",autoconnect);
@@ -2291,6 +2326,7 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(L"ResolveSharedShellLinks",m_bResolveSharedShellLinks);
 	ini.WriteString(L"YourHostname",m_strYourHostname);
 	ini.WriteBool(L"CheckFileOpen",m_bCheckFileOpen);
+	ini.WriteBool(L"ShowWin7TaskbarGoodies", m_bShowWin7TaskbarGoodies );
 
 	// Barry - New properties...
     ini.WriteBool(L"AutoConnectStaticOnly", m_bAutoConnectToStaticServersOnly);
@@ -2370,7 +2406,6 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(L"DebugClientKadUDP",m_iDebugClientKadUDPLevel);
 #endif
 	ini.WriteBool(L"PreviewPrio", m_bpreviewprio);
-	ini.WriteBool(L"UpdateQueueListPref", m_bupdatequeuelist);
 	ini.WriteBool(L"ManualHighPrio", m_bManualAddedServersHighPriority);
 	ini.WriteBool(L"FullChunkTransfers", m_btransferfullchunks);
 	ini.WriteBool(L"ShowOverhead", m_bshowoverhead);
@@ -2398,10 +2433,8 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(L"SaveDebugToDisk",debug2disk);
 	ini.WriteBool(L"EnableScheduler",scheduler);
 	ini.WriteBool(L"MessagesFromFriendsOnly",msgonlyfriends);
-	ini.WriteBool(L"MessageFromValidSourcesOnly",msgsecure);
 	ini.WriteBool(L"MessageUseCaptchas", m_bUseChatCaptchas);
 	ini.WriteBool(L"ShowInfoOnCatTabs",showCatTabInfos);
-	ini.WriteBool(L"DontRecreateStatGraphsOnResize",dontRecreateGraphs);
 	ini.WriteBool(L"AutoFilenameCleanup",autofilenamecleanup);
 	ini.WriteBool(L"ShowExtControls",m_bExtControls);
 	ini.WriteBool(L"UseAutocompletion",m_bUseAutocompl);
@@ -2411,6 +2444,8 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(L"TransflstRemainOrder",m_bTransflstRemain);
 	ini.WriteBool(L"UseSimpleTimeRemainingcomputation",m_bUseOldTimeRemaining);
 	ini.WriteBool(L"AllocateFullFile",m_bAllocFull);
+	ini.WriteBool(L"ShowSharedFilesDetails", m_bShowSharedFilesDetails);
+	ini.WriteBool(L"AutoShowLookups", m_bAutoShowLookups);
 
 	ini.WriteInt(L"VersionCheckLastAutomatic", versioncheckLastAutomatic);
 	//Xman versions check
@@ -2460,6 +2495,7 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(L"WinXPSP2OrHigher", IsRunningXPSP2OrHigher());
 	ini.WriteBool(L"RememberCancelledFiles", m_bRememberCancelledFiles);
 	ini.WriteBool(L"RememberDownloadedFiles", m_bRememberDownloadedFiles);
+	ini.WriteBool(L"PartiallyPurgeOldKnownFiles", m_bPartiallyPurgeOldKnownFiles);
 
 	ini.WriteBool(L"NotifierSendMail", m_bNotifierSendMail);
 	ini.WriteString(L"NotifierMailSender", m_strNotifierMailSender);
@@ -2467,6 +2503,7 @@ void CPreferences::SavePreferences()
 	ini.WriteString(L"NotifierMailRecipient", m_strNotifierMailReceiver);
 
 	ini.WriteBool(L"WinaTransToolbar", m_bWinaTransToolbar);
+	ini.WriteBool(L"ShowDownloadToolbar", m_bShowDownloadToolbar);
 
 	ini.WriteBool(L"CryptLayerRequested", m_bCryptLayerRequested);
 	ini.WriteBool(L"CryptLayerRequired", m_bCryptLayerRequired);
@@ -2507,6 +2544,7 @@ void CPreferences::SavePreferences()
 		buffer2.Format(L"StatColor%i",i);
 		ini.WriteString(buffer2,buffer,L"Statistics" );
 	}
+	ini.WriteBool(L"HasCustomTaskIconColor", bHasCustomTaskIconColor, L"Statistics");
 
 
 	///////////////////////////////////////////////////////////////////////////
@@ -2537,7 +2575,6 @@ void CPreferences::SavePreferences()
 	//
 	ini.WriteInt(L"LastSearch", m_uPeerCacheLastSearch, L"PeerCache");
 	ini.WriteBool(L"Found", m_bPeerCacheWasFound);
-	ini.WriteBool(L"EnabledDeprecated", m_bPeerCacheEnabled);
 	ini.WriteInt(L"PCPort", m_nPeerCachePort);
 
 	///////////////////////////////////////////////////////////////////////////
@@ -2550,6 +2587,18 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(L"SkipWANPPPSetup", m_bSkipWANPPPSetup);
 	ini.WriteBool(L"CloseUPnPOnExit", m_bCloseUPnPOnExit);
 	ini.WriteInt(L"LastWorkingImplementation", m_nLastWorkingImpl);
+
+#ifdef DUAL_UPNP //zz_fly :: dual upnp
+	//UPnP chooser
+	ini.WriteBool(L"UseACATUPnPNextStart", m_bUseACATUPnPNextStart, L"UPnP");
+
+	//ACAT UPnP
+	ini.WriteBool(L"UPnPNAT", m_bUPnPNat, L"UPnP");
+	ini.WriteBool(L"UPnPNAT_TryRandom", m_bUPnPTryRandom, L"UPnP");
+#endif //zz_fly :: dual upnp
+
+	ini.WriteBool(L"UPnPNAT_RebindOnIPChange", m_bUPnPRebindOnIPChange, L"UPnP"); //zz_fly :: rebind UPnP on ip-change
+
 	*/
 	// <== UPnP support [MoNKi] - leuk_he
 	
@@ -2588,6 +2637,10 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(L"AntiLeecherCommunity_Action", m_antileechercommunity_action);
 	ini.WriteBool(L"AntiLeecherGhost_Action", m_antileecherghost_action);
 	ini.WriteBool(L"AntiLeecherThief_Action", m_antileecherthief_action);
+	//X-Ray :: Fincan Hash Detection :: Start
+	ini.WriteBool(L"AntiLeecherFincan", m_antileecherFincan);
+	ini.WriteString(_T("AntiLeecherFincanURL"), m_antileecherFincanURL);
+	//X-Ray :: Fincan Hash Detection :: End
 	//Xman end
 
 	//Xman narrow font at transferwindow
@@ -2651,6 +2704,8 @@ void CPreferences::SavePreferences()
 	// Maella end
 
 	ini.WriteBool(L"usedoublesendsize",usedoublesendsize);
+	// netfinity: Maximum Segment Size (MSS - Vista only) //added by zz_fly
+	ini.WriteBool(L"retrieveMTUFromSocket", retrieveMTUFromSocket);
 
 	// Maella -Network Adapter Feedback Control-
 	ini.WriteBool(L"NAFCFullControl", NAFCFullControl);
@@ -2663,7 +2718,7 @@ void CPreferences::SavePreferences()
 
 	// Maella -One-queue-per-file- (idea bloodymad)
 	ini.WriteBool(L"EnableMultiQueue", enableMultiQueue);
-	ini.WriteBool(L"EnableReleaseMultiQueue", enableReleaseMultiQueue);
+	//ini.WriteBool(L"EnableReleaseMultiQueue", enableReleaseMultiQueue);
 	// Maella end
 
 	// Mighty Knife: Static server handling
@@ -2680,6 +2735,12 @@ void CPreferences::SavePreferences()
 	//Xman don't overwrite bak files if last sessions crashed
 	ini.WriteBool(L"last_session_aborted_in_an_unnormal_way", m_this_session_aborted_in_an_unnormal_way);
 
+	ini.WriteBool(L"ShowCountryFlagInKad", m_bShowCountryFlagInKad); //zz_fly :: show country flag in KAD
+	ini.WriteBool(L"EnableKnown2Buffer", m_bKnown2Buffer); //zz_fly :: known2 buffer
+	ini.WriteBool(L"SplitKnown2DotMet", m_bKnown2Split_next); //zz_fly :: known2 split
+	ini.WriteUInt64(L"AutoPreviewLimit", m_uAutoPreviewLimit); //zz_fly :: do not auto preview big archive
+
+	ini.WriteString(L"BrokenURLs", m_strBrokenURLs); //MORPH - Added by WiZaRd, Fix broken HTTP downloads
 	//Xman end
 	//--------------------------------------------------------------------------
 
@@ -2846,6 +2907,7 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("StartDLInEmptyCats"), m_iStartDLInEmptyCats);
 	ini.WriteBool(_T("UseAutoCat"), m_bUseAutoCat);
 	ini.WriteInt(_T("dlMode"),dlMode);
+	ini.WriteBool(L"AddRemovedInc", m_bAddRemovedInc,L"eMule");
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	ini.WriteBool(_T("SpreadbarSetStatus"), m_bSpreadbarSetStatus); // Spread bars [Slugfiller/MorphXT] - Stulle
@@ -3018,7 +3080,7 @@ void CPreferences::ResetStatsColor(int index)
 		case  8: m_adwStatsColors[ 8]=RGB(150,150,255);break;
 		case  9: m_adwStatsColors[ 9]=RGB(192,  0,192);break;
 		case 10: m_adwStatsColors[10]=RGB(255,255,128);break;
-		case 11: m_adwStatsColors[11]=RGB(  0,  0,  0);break;
+		case 11: m_adwStatsColors[11]=RGB(  0,  0,  0); bHasCustomTaskIconColor = false; break;
 		case 12: m_adwStatsColors[12]=RGB(255,255,255);break;
 		case 13: m_adwStatsColors[13]=RGB(255,255,255);break;
 		case 14: m_adwStatsColors[14]=RGB(255,190,190);break;
@@ -3042,6 +3104,8 @@ bool CPreferences::SetAllStatsColors(int iCount, const DWORD* pdwColors)
 		{
 			m_adwStatsColors[i] = pdwColors[i];
 			bModified = true;
+			if (i == 11)
+				bHasCustomTaskIconColor = true;
 		}
 	}
 	return bModified;
@@ -3078,7 +3142,7 @@ void CPreferences::LoadPreferences()
 
 	m_bFirstStart = false;
 
-	if (strCurrVersion != strPrefsVersion){
+	if (strPrefsVersion.IsEmpty()){
 		m_bFirstStart = true;
 	}
 
@@ -3138,7 +3202,6 @@ void CPreferences::LoadPreferences()
 	//Xman Xtreme Mod
 	m_wLanguageID=ini.GetWORD(L"Language",0);	//thx [MoNKi: -FIX: ini.GetFloat needs Language- ]
 	SetLanguage();
-
 
 	//Xman Xtreme Upload
 	/*
@@ -3206,10 +3269,8 @@ void CPreferences::LoadPreferences()
 		m_internetdownreactiontime=1;
 	if(m_internetdownreactiontime>10)
 		m_internetdownreactiontime=10;
-
 	//Xman end
 	//-------------------------------------------------------------------	
-
 
 	maxconnections=ini.GetInt(L"MaxConnections",GetRecommendedMaxConnections());
 	maxhalfconnections=ini.GetInt(L"MaxHalfConnections",9);
@@ -3334,6 +3395,7 @@ void CPreferences::LoadPreferences()
 	m_uMinFreeDiskSpace=ini.GetInt(L"MinFreeDiskSpace",20*1024*1024);
 	m_bSparsePartFiles=ini.GetBool(L"SparsePartFiles",false);
 	m_bResolveSharedShellLinks=ini.GetBool(L"ResolveSharedShellLinks",false);
+	m_bKeepUnavailableFixedSharedDirs = ini.GetBool(L"KeepUnavailableFixedSharedDirs", false);
 	m_strYourHostname=ini.GetString(L"YourHostname", L"");
 
 	// Barry - New properties...
@@ -3448,7 +3510,13 @@ void CPreferences::LoadPreferences()
 	m_bPreviewCopiedArchives=ini.GetBool(L"PreviewCopiedArchives", true);
 	m_iInspectAllFileTypes=ini.GetInt(L"InspectAllFileTypes", 0);
 	m_bAllocFull=ini.GetBool(L"AllocateFullFile",0);
-	m_bAutomaticArcPreviewStart=ini.GetBool(L"AutoArchivePreviewStart", true );
+	m_bAutomaticArcPreviewStart=ini.GetBool(L"AutoArchivePreviewStart", true);
+	m_bShowSharedFilesDetails = ini.GetBool(L"ShowSharedFilesDetails", true);
+	m_bAutoShowLookups = ini.GetBool(L"AutoShowLookups", true);
+	m_bShowUpDownIconInTaskbar = ini.GetBool(L"ShowUpDownIconInTaskbar", false );
+	m_bShowWin7TaskbarGoodies  = ini.GetBool(L"ShowWin7TaskbarGoodies", true);
+	m_bForceSpeedsToKB = ini.GetBool(L"ForceSpeedsToKB", false);
+	m_bExtraPreviewWithMenu = ini.GetBool(L"ExtraPreviewWithMenu", false);
 
 	// read file buffer size (with backward compatibility)
 	m_iFileBufferSize=ini.GetInt(L"FileBufferSizePref",0); // old setting
@@ -3531,10 +3599,11 @@ void CPreferences::LoadPreferences()
 	}
 
 	//messageFilter=ini.GetStringLong(L"MessageFilter",L"fastest download speed|fastest eMule");
-	messageFilter=ini.GetStringLong(L"MessageFilter",L"Your client has an infinite queue|Your client is connecting too fast|fastest download speed");
+	messageFilter=ini.GetStringLong(L"MessageFilter",L"angelm|autore|boomerang|Candide|connecting too fast|CoPeerRight|detected|DI-Emule|emule fx|fastest|havefuntonight|http://|https://|illecita|infinite queue|ketamine|penali|RIAA|scambi|slot|te@m|trade|Your MOD|zambor");
 	commentFilter = ini.GetStringLong(L"CommentFilter",L"http://|https://|ftp://|www.|ftp.");
 	commentFilter.MakeLower();
-	filenameCleanups=ini.GetStringLong(L"FilenameCleanups",L"http|www.|.com|.de|.org|.net|shared|powered|sponsored|sharelive|filedonkey|");
+	//filenameCleanups=ini.GetStringLong(L"FilenameCleanups",L"http|www.|.com|.de|.org|.net|shared|powered|sponsored|sharelive|filedonkey|");
+	filenameCleanups=ini.GetStringLong(L"FilenameCleanups",L".com|.it|.net|.org|32|33|34|$|€|abc|arica|berlus|cache|cambi|cerco|dagna|destra|downl|dwn|emul|fasci|global|govern|gratis|http|kad|legge|munis|negr|politi|prima|priorit|razor|rinomin|ronzi|slot|soldi|tepay|terron|unipol|usate|veloc|visit|vota|wc|www.|zambor|albania|alema|comuni|dinero|donkey|duce|glion|inter|juve|ladium|milan|moggi|money|napoli|prodi|referend|roia|sinistra|ttana|unione|zapatero|mulo|mule");
 	m_iExtractMetaData = ini.GetInt(L"ExtractMetaData", 1); // 0=disable, 1=mp3, 2=MediaDet
 	if (m_iExtractMetaData > 1)
 		m_iExtractMetaData = 1;
@@ -3628,14 +3697,20 @@ void CPreferences::LoadPreferences()
 	m_strNotifierMailReceiver = ini.GetString(L"NotifierMailRecipient", L"");
 
 	m_bWinaTransToolbar = ini.GetBool(L"WinaTransToolbar", true);
+	m_bShowDownloadToolbar = ini.GetBool(L"ShowDownloadToolbar", true);
 
 	m_bCryptLayerRequested = ini.GetBool(L"CryptLayerRequested", false);
 	m_bCryptLayerRequired = ini.GetBool(L"CryptLayerRequired", false);
 	m_bCryptLayerSupported = ini.GetBool(L"CryptLayerSupported", true);
 	m_dwKadUDPKey = ini.GetInt(L"KadUDPKey", GetRandomUInt32());
 
+	//zz_fly :: hardlimit on CryptTCPPaddingLength
+	/*
 	uint32 nTmp = ini.GetInt(L"CryptTCPPaddingLength", 128);
 	m_byCryptTCPPaddingLength = (uint8)min(nTmp, 254);
+	*/
+	SetCryptTCPPaddingLength(ini.GetInt(L"CryptTCPPaddingLength", 128));
+	//zz_fly :: end
 
 	m_bEnableSearchResultFilter = ini.GetBool(L"EnableSearchResultSpamFilter", true);
 
@@ -3664,6 +3739,7 @@ void CPreferences::LoadPreferences()
 		if (_stscanf(ini.GetString(buffer2, L"", L"Statistics"), L"%i", &m_adwStatsColors[i]) != 1)
 			ResetStatsColor(i);
 	}
+	bHasCustomTaskIconColor = ini.GetBool(L"HasCustomTaskIconColor",false, L"Statistics");
 	m_bShowVerticalHourMarkers = ini.GetBool(L"ShowVerticalHourMarkers", true, L"Statistics");
 
 	// -khaos--+++> Load Stats
@@ -3725,6 +3801,18 @@ void CPreferences::LoadPreferences()
 	m_nLastWorkingImpl = ini.GetInt(L"LastWorkingImplementation", 1 /*MiniUPnPLib*//*);
 	m_bIsMinilibImplDisabled = ini.GetBool(L"DisableMiniUPNPLibImpl", false);
 	m_bIsWinServImplDisabled = ini.GetBool(L"DisableWinServImpl", false);
+
+#ifdef DUAL_UPNP //zz_fly :: dual upnp
+	//UPnP chooser
+	m_bUseACATUPnPNextStart = ini.GetBool(L"UseACATUPnPNextStart", false, L"UPnP"); 
+	m_bUseACATUPnPCurrent = m_bUseACATUPnPNextStart;
+
+	//ACAT UPnP
+	m_bUPnPNat = ini.GetBool(L"UPnPNAT", false, L"UPnP");
+	m_bUPnPTryRandom = ini.GetBool(L"UPnPNAT_TryRandom", false, L"UPnP");
+#endif //zz_fly :: dual upnp
+
+	m_bUPnPRebindOnIPChange = ini.GetBool(L"UPnPNAT_RebindOnIPChange", false, L"UPnP"); //zz_fly :: Rebind UPnP on IP-change
 	*/
 	// <== UPnP support [MoNKi] - leuk_he
 
@@ -3746,13 +3834,13 @@ void CPreferences::LoadPreferences()
 	m_sendbuffersize=ini.GetInt(L"sendbuffersize", 8192);
 	switch (m_sendbuffersize)
 	{
-	case 6000:
-	case 8192:
-	case 12000:
-	case 24000: //zz_fly :: support 24k send buffer
-		break;
-	default:
-		m_sendbuffersize=8192;
+		case 6000:
+		case 8192:
+		case 12000:
+		case 24000: //zz_fly :: support 24k send buffer
+			break;
+		default:
+			m_sendbuffersize=8192;
 	}
 
 	retryconnectionattempts=ini.GetBool(L"retryconnectionattempts",true);
@@ -3808,6 +3896,10 @@ void CPreferences::LoadPreferences()
 	// Maella end
 
 	usedoublesendsize=ini.GetBool(L"usedoublesendsize",false);
+	// netfinity: Maximum Segment Size (MSS - Vista only) //added by zz_fly
+	retrieveMTUFromSocket = ini.GetBool(L"retrieveMTUFromSocket", false);
+	if(retrieveMTUFromSocket && GetWindowsVersion() < _WINVER_VISTA_)
+		retrieveMTUFromSocket = false;
 
 	// Maella -Network Adapter Feedback Control-
 	NAFCFullControl=ini.GetBool(L"NAFCFullControl", false);
@@ -3822,7 +3914,7 @@ void CPreferences::LoadPreferences()
 
 	// Maella -One-queue-per-file- (idea bloodymad)
 	enableMultiQueue=ini.GetBool(L"EnableMultiQueue", false);
-	enableReleaseMultiQueue=ini.GetBool(L"EnableReleaseMultiQueue", false);
+	//enableReleaseMultiQueue=ini.GetBool(L"EnableReleaseMultiQueue", false);
 	// Maella end
 
 	//Xman Anti-Leecher
@@ -3840,7 +3932,10 @@ void CPreferences::LoadPreferences()
 	m_antileechercommunity_action= ini.GetBool(L"AntiLeecherCommunity_Action", true);
 	m_antileecherghost_action= ini.GetBool(L"AntiLeecherGhost_Action", true);
 	m_antileecherthief_action= ini.GetBool(L"AntiLeecherThief_Action", true);
-
+	//X-Ray :: Fincan Hash Detection :: Start
+	m_antileecherFincan = ini.GetBool(L"AntiLeecherFincan", false);
+	m_antileecherFincanURL = ini.GetString(_T("AntiLeecherFincanURL"), _T(""));
+	//X-Ray :: Fincan Hash Detection :: End
 	//Xman end
 
 	//Xman narrow font at transferwindow
@@ -3913,12 +4008,17 @@ void CPreferences::LoadPreferences()
 	//Xman end
 
 	//Xman versions check
-	updatenotifymod = ini.GetBool(L"updatenotifymod",false); //zz_fly :: no needed, you know why....
-
+	updatenotifymod = ini.GetBool(L"updatenotifymod",true);
 
 	//Xman don't overwrite bak files if last sessions crashed
 	m_last_session_aborted_in_an_unnormal_way = ini.GetBool(L"last_session_aborted_in_an_unnormal_way",false);
 
+	m_bShowCountryFlagInKad = ini.GetBool(L"ShowCountryFlagInKad", false); //zz_fly :: show country flag in KAD
+	m_bKnown2Buffer = ini.GetBool(L"EnableKnown2Buffer", false); //zz_fly :: known2 buffer
+	m_bKnown2Split = m_bKnown2Split_next = ini.GetBool(L"SplitKnown2DotMet", false); //zz_fly :: known2 split
+	m_uAutoPreviewLimit = ini.GetUInt64(L"AutoPreviewLimit", ((uint64)64)<<20); //zz_fly :: do not auto preview big archive
+
+	m_strBrokenURLs = ini.GetStringLong(L"BrokenURLs", L"sourceforge"); //MORPH - Added by WiZaRd, Fix broken HTTP downloads
 	//Xman end
 	//--------------------------------------------------------------------------
 
@@ -4079,6 +4179,7 @@ void CPreferences::LoadPreferences()
 	m_iStartDLInEmptyCats=(uint8)ini.GetInt(_T("StartDLInEmptyCats"), 0);
 	m_bUseAutoCat=ini.GetBool(_T("UseAutoCat"), true);
 	dlMode = (uint8)ini.GetInt(_T("dlMode"),0);
+	m_bAddRemovedInc=ini.GetBool(L"AddRemovedInc",true);
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	m_bSpreadbarSetStatus = ini.GetBool(_T("SpreadbarSetStatus"), true); // Spread bars [Slugfiller/MorphXT] - Stulle
@@ -4283,7 +4384,6 @@ void CPreferences::LoadPreferences()
 
 	LoadStylePrefs(ini); // Design Settings [eWombat/Stulle] - Stulle
 }
-#pragma warning(default:4296) // expression is always true // Disable Pragma warning [Stulle] - Stulle
 
 //Xman Xtreme Upload
 void CPreferences::CheckSlotSpeed()
@@ -4294,6 +4394,7 @@ void CPreferences::CheckSlotSpeed()
 	if (maxupload<6) maxSlotSpeed=2.0f;
 	if (maxupload>=10)
 		maxSlotSpeed=maxupload/(3+(maxupload-10)/20);
+
 	if (maxSlotSpeed>XTREME_MAX_SLOTSPEED)
 		maxSlotSpeed=XTREME_MAX_SLOTSPEED;
 	maxSlotSpeed*=1.25f; // Increase Slotspeed [Stulle] - Stulle
@@ -4308,8 +4409,6 @@ void CPreferences::CheckSlotSpeed()
 	m_uMaxGlobalSources=(uint32)(maxupload*400 - (maxupload-10.0f)*100);
 }
 //Xman end
-
-
 
 WORD CPreferences::GetWindowsVersion(){
 	static bool bWinVerAlreadyDetected = false;
@@ -4349,7 +4448,6 @@ void CPreferences::SaveCats()
 	ini.WriteInt(L"Count", catMap.GetCount() - 1, L"General");
 	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	/*
-	ini.WriteInt(_T("CategoryVersion"), 2, _T("General")); // Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	for (int i = 0; i < catMap.GetCount(); i++)
 	{
 		CString strSection;
@@ -4413,8 +4511,8 @@ void CPreferences::SaveCats()
 		ini.WriteBool(_T("scFileSize"), catMap.GetAt(i)->selectioncriteria.bFileSize!=FALSE);
 		ini.WriteBool(_T("scAdvancedFilterMask"), catMap.GetAt(i)->selectioncriteria.bAdvancedFilterMask!=FALSE);
 		ini.WriteBool(_T("ResumeFileOnlyInSameCat"), catMap.GetAt(i)->bResumeFileOnlyInSameCat!=FALSE); //MORPH - Added by SiRoB, Resume file only in the same category
-	}
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	}
 }
 
 // ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
@@ -4434,21 +4532,24 @@ void CPreferences::LoadCats()
 		Category_Struct* newcat = new Category_Struct;
 		newcat->filter = 0;
 		newcat->strTitle = ini.GetStringUTF8(L"Title");
-		newcat->strIncomingPath = ini.GetStringUTF8(L"Incoming");
-		MakeFoldername(newcat->strIncomingPath);
-		// SLUGFILLER: SafeHash remove - removed installation dir unsharing
-		/*
-		if (!IsShareableDirectory(newcat->strIncomingPath)
-			|| (!PathFileExists(newcat->strIncomingPath) && !::CreateDirectory(newcat->strIncomingPath, 0)))
-		*//*
-		if(!PathFileExists(newcat->strIncomingPath) && !::CreateDirectory(newcat->strIncomingPath, 0))
-		// SLUGFILLER: SafeHash remove - removed installation dir unsharing
+		if (i != 0) // All category
 		{
-			newcat->strIncomingPath = GetMuleDirectory(EMULE_INCOMINGDIR);
+			newcat->strIncomingPath = ini.GetStringUTF8(L"Incoming");
 			MakeFoldername(newcat->strIncomingPath);
+			// SLUGFILLER: SafeHash remove - removed installation dir unsharing
+			/*
+			if (!IsShareableDirectory(newcat->strIncomingPath)
+				|| (!PathFileExists(newcat->strIncomingPath) && !::CreateDirectory(newcat->strIncomingPath, 0)))
+			*//*
+			if(!PathFileExists(newcat->strIncomingPath) && !::CreateDirectory(newcat->strIncomingPath, 0))
+			// SLUGFILLER: SafeHash remove - removed installation dir unsharing
+			{
+				newcat->strIncomingPath = GetMuleDirectory(EMULE_INCOMINGDIR);
+				MakeFoldername(newcat->strIncomingPath);
+			}
 		}
-		*//*
-		// SLUGFILLER: SafeHash remove - removed installation dir unsharing
+		else
+			newcat->strIncomingPath.Empty();
 		newcat->strComment = ini.GetStringUTF8(L"Comment");
 		newcat->prio = ini.GetInt(L"a4afPriority", PR_NORMAL); // ZZ:DownloadManager
 		newcat->filter = ini.GetInt(L"Filter", 0);
@@ -4585,7 +4686,10 @@ void CPreferences::LoadCats() {
 
 		AddCat(newcat);
 		if (!PathFileExists(newcat->strIncomingPath))
-			::CreateDirectory(newcat->strIncomingPath, 0);
+			if (::CreateDirectory(newcat->strIncomingPath, 0)!= 0 ){
+				newcat->strIncomingPath = GetMuleDirectory(EMULE_INCOMINGDIR); // MORPH
+				theApp.QueueLogLine(true,L"incoming directory  %s of category %s not found " , newcat->strIncomingPath, newcat->strTitle );  // Note that  queue need to be used because logwindow is not initialized (logged time is wrong)
+			}
 	}
 }
 // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
@@ -4877,7 +4981,7 @@ bool CPreferences::IsDynUpEnabled()	{
 */
 //Xman end
 
-bool CPreferences::CanFSHandleLargeFiles()	{
+bool CPreferences::CanFSHandleLargeFiles(int nForCat)	{
 	bool bResult = false;
 	for (int i = 0; i != tempdir.GetCount(); i++){
 		if (!IsFileOnFATVolume(tempdir.GetAt(i))){
@@ -4885,7 +4989,7 @@ bool CPreferences::CanFSHandleLargeFiles()	{
 			break;
 		}
 	}
-	return bResult && !IsFileOnFATVolume(GetMuleDirectory(EMULE_INCOMINGDIR));
+	return bResult && !IsFileOnFATVolume((nForCat > 0) ? GetCatPath(nForCat) : GetMuleDirectory(EMULE_INCOMINGDIR));
 }
 
 uint16 CPreferences::GetRandomTCPPort()
@@ -5073,12 +5177,12 @@ CString CPreferences::GetDefaultDirectory(EDefaultDirectory eDirectory, bool bCr
 
 		// Do we need to get SystemFolders or do we use our old Default anyway? (Executable Dir)
 		if (   nRegistrySetting == 0
-			|| (nRegistrySetting == 1 && GetWindowsVersion() == _WINVER_VISTA_)
-			|| (nRegistrySetting == -1 && (!bConfigAvailableExecuteable || GetWindowsVersion() == _WINVER_VISTA_)))
+			|| (nRegistrySetting == 1 && GetWindowsVersion() >= _WINVER_VISTA_)
+			|| (nRegistrySetting == -1 && (!bConfigAvailableExecuteable || GetWindowsVersion() >= _WINVER_VISTA_)))
 		{
 			HMODULE hShell32 = LoadLibrary(_T("shell32.dll"));
 			if (hShell32){
-				if (GetWindowsVersion() == _WINVER_VISTA_){
+				if (GetWindowsVersion() >= _WINVER_VISTA_){
 					
 					PWSTR pszLocalAppData = NULL;
 					PWSTR pszPersonalDownloads = NULL;
@@ -5158,7 +5262,7 @@ CString CPreferences::GetDefaultDirectory(EDefaultDirectory eDirectory, bool bCr
 						CoTaskMemFree(pszPublicDownloads);
 						CoTaskMemFree(pszProgrammData);
 				}
-				else { // GetWindowsVersion() == _WINVER_VISTA_
+				else { // GetWindowsVersion() >= _WINVER_VISTA_
 
 					CString strAppData = ShellGetFolderPath(CSIDL_APPDATA);
 					CString strPersonal = ShellGetFolderPath(CSIDL_PERSONAL);
@@ -5277,7 +5381,7 @@ void CPreferences::SetMuleDirectory(EDefaultDirectory eDirectory, CString strNew
 void CPreferences::ChangeUserDirMode(int nNewMode){
 	if (m_nCurrentUserDirMode == nNewMode)
 		return;
-	if (nNewMode == 1 && GetWindowsVersion() != _WINVER_VISTA_)
+	if (nNewMode == 1 && GetWindowsVersion() < _WINVER_VISTA_)
 	{
 		ASSERT( false );
 		return;
@@ -5304,6 +5408,8 @@ bool CPreferences::GetSparsePartFiles()	{
 	// make much sense for a sparse file implementation nevertheless.
 	// Due to the fact that eMule wirtes a lot small blocks into sparse files and flushs them every 6 seconds,
 	// this problem pops up sooner or later for all big files. I don't see any way to walk arround this for now
+	// Update: This problem seems to be fixed on Win7, possibly on earlier Vista ServicePacks too
+	//		   In any case, we allow sparse files for vesions earlier and later than Vista
 	return m_bSparsePartFiles && (GetWindowsVersion() != _WINVER_VISTA_);
 }
 
@@ -5316,7 +5422,7 @@ bool CPreferences::IsRunningAeroGlassTheme(){
 	if (!bAeroAlreadyDetected){
 		bAeroAlreadyDetected = true;
 		m_bIsRunningAeroGlass = FALSE;
-		if (GetWindowsVersion() == _WINVER_VISTA_){
+		if (GetWindowsVersion() >= _WINVER_VISTA_){
 			HMODULE hDWMAPI = LoadLibrary(_T("dwmapi.dll"));
 			if (hDWMAPI){
 				HRESULT (WINAPI *pfnDwmIsCompositionEnabled)(BOOL*);
@@ -5328,19 +5434,6 @@ bool CPreferences::IsRunningAeroGlassTheme(){
 		}
 	}
 	return m_bIsRunningAeroGlass == TRUE ? true : false;
-}
-
-//Xman
-//Xman NAFC -> Statisticgraph
-void CPreferences::SetNAFCFullControl(bool flag)
-{
-	if(NAFCFullControl!=flag && theApp.emuledlg && theApp.emuledlg->m_hWnd && theApp.m_app_state == APP_STATE_RUNNING)
-	{
-		NAFCFullControl = flag;
-		theApp.emuledlg->statisticswnd->RepaintMeters();
-	}
-	else
-		NAFCFullControl = flag;
 }
 
 // SLUGFILLER: SafeHash
@@ -5391,6 +5484,42 @@ bool CPreferences::IsConfigFile(const CString& rstrDirectory, const CString& rst
 	return false;
 }
 // SLUGFILLER: SafeHash
+
+// ==> UPnP support [MoNKi] - leuk_he
+/*
+#ifdef DUAL_UPNP //zz_fly :: dual upnp
+//ACAT UPnP
+uint16 CPreferences::GetPort(){
+	if (m_bUseACATUPnPCurrent && (m_iUPnPTCPExternal != 0))
+		return m_iUPnPTCPExternal;
+	else
+		return port;
+}
+
+uint16 CPreferences::GetUDPPort(){
+	if (udpport == 0)
+		return 0;
+
+	if(m_bUseACATUPnPCurrent && (m_iUPnPUDPExternal != 0))
+		return m_iUPnPUDPExternal;
+	else
+		return udpport;
+}
+#endif //zz_fly :: dual upnp
+*/
+// <== UPnP support [MoNKi] - leuk_he
+
+//Xman NAFC -> Statisticgraph
+void CPreferences::SetNAFCFullControl(bool flag)
+{
+	if(NAFCFullControl!=flag && theApp.emuledlg && theApp.emuledlg->m_hWnd && theApp.m_app_state == APP_STATE_RUNNING)
+	{
+		NAFCFullControl = flag;
+		theApp.emuledlg->statisticswnd->RepaintMeters();
+	}
+	else
+		NAFCFullControl = flag;
+}
 //Xman end
 
 // ==> ScarAngel Version Check - Stulle
@@ -6248,23 +6377,25 @@ void CPreferences::SetInvisibleMode(bool on, UINT keymodifier, char key)
 // <== Invisible Mode [TPT/MoNKi] - Stulle
 
 // ==> UPnP support [MoNKi] - leuk_he
-
 void CPreferences::SetUpnpDetect(int on)//autodetect upnp in wizard
-  { m_iDetectuPnP=on; 
-    if (theApp.emuledlg->GetSafeHwnd()!= NULL)
+{
+	m_iDetectuPnP=on; 
+	if (theApp.emuledlg->GetSafeHwnd()!= NULL)
 		PostMessage(theApp.emuledlg->GetSafeHwnd(),WEB_GUI_INTERACTION,WEBGUIIA_UPDATEMYINFO,0); // update myinfo if device detected. (from different thread!)
-  } 
+} 
 
-void CPreferences::SetUpnpBindAddr(DWORD bindip) {
-		if ( GetBindAddrA() != NULL || bindip== ntohl(inet_addr(GetBindAddrA())))
-			m_dwUpnpBindAddr =0;
-		else 
-	    	m_dwUpnpBindAddr= bindip;
-	}
+void CPreferences::SetUpnpBindAddr(DWORD bindip)
+{
+	if ( GetBindAddrA() != NULL || bindip== ntohl(inet_addr(GetBindAddrA())))
+		m_dwUpnpBindAddr =0;
+	else 
+	m_dwUpnpBindAddr= bindip;
+}
 // <== UPnP support [MoNKi] - leuk_he
 
 // ==> Random Ports [MoNKi] - Stulle
-uint16	CPreferences::GetPort(bool newPort, bool original, bool reset){
+uint16	CPreferences::GetPort(bool newPort, bool original, bool reset)
+{
 	if(original)
 		return port;
 
@@ -6283,7 +6414,8 @@ uint16	CPreferences::GetPort(bool newPort, bool original, bool reset){
 	return m_iCurrentTCPRndPort;
 }
 
-uint16	CPreferences::GetUDPPort(bool newPort, bool original, bool reset){
+uint16	CPreferences::GetUDPPort(bool newPort, bool original, bool reset)
+{
 	if(original)
 		return udpport;
 

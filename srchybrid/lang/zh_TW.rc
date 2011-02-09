@@ -1930,7 +1930,7 @@ BEGIN
     IDS_FILE_WARNING_DRM    "檔案 ""%s"" 似乎被數位版權管理保護(DRM).\r\n\r\n在沒有創作者的授權下大部分情況下您將不能使用這個檔案. 您必須注意到當開啟這個檔案大部分情況下會使您的多媒體播放器去開啟一個 Web 瀏覽器且將會自動連接到檔案的創作者網站並且要求獲得一個授權.\r\n\r\n您真的想要繼續開啟這檔案?"
     IDS_CHECK_FILE_OPEN     "當開啟未信任檔案時提出警告"
     IDS_BOOTABLE            "可啟動的"
-    IDS_UNSUPPORTEDIMAGE    "未支援的影像"
+    IDS_UNSUPPORTEDIMAGE    "未知援的影像"
 END
 
 
@@ -1963,23 +1963,23 @@ BEGIN
     IDS_AVG_DATARATE_TIME   "平均速率顯示間隔: %u 秒"
     IDS_XTREMESETTINGS      "Xtreme"
     IDS_ZOOMSTATIC          "放大: %u 倍"
-    IDS_AVGQR               "平均隊列"
-    IDS_USEDOUBLESENDSIZE   "一次發送兩個封包"//orignial："雙倍發送尺寸" //"Use Double Sendsize"
+    IDS_AVGQR               "平均佇列"
+    IDS_USEDOUBLESENDSIZE   "雙倍發送尺寸"
     IDS_LOGDROP             "記錄剔除動作"
     IDS_ANTILEECHER_GROUP   "Anti-Leecher"
     IDS_ANTILEECHER_CHECK   "啟用 Anti-Leecher 保護"
-    IDS_ANTILEECHERNAME_CHECK "檢測: Leecher by UserName"//"檢測: 不良的用戶名"
-    IDS_POWERRELEASE        "強力分享"
+    IDS_ANTILEECHERNAME_CHECK "檢測: 不良的用戶名"
+    IDS_POWERRELEASE        "強力發佈"
     IDS_DONTREMOVESTATICSERVER "禁止自動移除靜態伺服器"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_LISTREQUESTED       "被請求文件列表"//"被請求檔列表"
+    IDS_LISTREQUESTED       "被請求檔列表"
     IDS_HIGHPRIOPROCESS     "高"
-    IDS_ABOVENORMALPROCESS  "中"//"中高"
-    IDS_NORMALPROCESS       "一般"//"正常"
-    IDS_PROCESSGROUP        "程式優先級"//"程式優先順序"
+    IDS_ABOVENORMALPROCESS  "中高"
+    IDS_NORMALPROCESS       "正常"
+    IDS_PROCESSGROUP        "程式優先順序"
 END
 
 STRINGTABLE 
@@ -1987,26 +1987,26 @@ BEGIN
     IDS_COUNTRYNAME_SHORT   "顯示2字母簡稱"
     IDS_COUNTRYNAME_MID     "顯示3字母簡稱"
     IDS_COUNTRYNAME_LONG    "顯示國家全稱"
-    IDS_COUNTRYNAME_SHOWFLAG "顯示國旗標幟"
+    IDS_COUNTRYNAME_SHOWFLAG "顯示旗幟"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_IP2COUNTRY_MSG1     "國籍判斷 使用 WebHosting.Info 所提供的 IP-to-Country 資料庫"//"IP2Country uses the IP-to-Country Database provided by WebHosting.Info"
-    IDS_IP2COUNTRY_MSG2     "(http://www.webhosting.info), 可得於 http://ip-to-country.webhosting.info"//"(http://www.webhosting.info), available from http://ip-to-country.webhosting.info"
-    IDS_IP2COUNTRY_LOADED   "國籍判斷 載入"//"IP2Country 數據已載入"
-    IDS_IP2COUNTRY_UNLOADED "國籍判斷 卸載"//"IP2Country 數據已卸載"
-    IDS_IP2COUNTRY_ERROR1   "錯誤行號: %i"//"在第 %i 行發生錯誤"
-    IDS_IP2COUNTRY_ERROR3   "載入失敗"//"無法載入"
-    IDS_IP2COUNTRY_ERROR4   "國旗停用，載入失敗"//"因為國家旗幟未啟用, 無法載入"
-    IDS_IP2COUNTRY_ERROR5   "錯誤 resID，或許您該更新國旗圖檔DLL,"//"非法的資源ID, 可能你需要更新國家旗幟檔(CountryFlag.dll),"
-    IDS_IP2COUNTRY_INFO     "讀取行數:%u  找到 國籍判斷 範圍:%u  重複:%u  合併:%u"//"Parsed lines:%u  Found IPCountry ranges:%u  Duplicate:%u  Merged:%u"
-    IDS_IP2COUNTRY_FLAGLOAD "國旗已載入"//"國家旗幟已載入"
-    IDS_IP2COUNTRY_FILELOAD "國籍判斷 已卸載"//"IP2Country 文件已卸載"
-    IDS_IP2COUNTRY_FLAGUNLD "國旗已卸載"//"國家旗幟已卸載"
+    IDS_IP2COUNTRY_MSG1     "IP2Country uses the IP-to-Country Database provided by WebHosting.Info"
+    IDS_IP2COUNTRY_MSG2     "(http://www.webhosting.info), available from http://ip-to-country.webhosting.info"
+    IDS_IP2COUNTRY_LOADED   "IP2Country 數據已載入"
+    IDS_IP2COUNTRY_UNLOADED "IP2Country 數據已卸載"
+    IDS_IP2COUNTRY_ERROR1   "在第 %i 行發生錯誤"
+    IDS_IP2COUNTRY_ERROR3   "無法載入"
+    IDS_IP2COUNTRY_ERROR4   "因為國家旗幟未啟用, 無法載入"
+    IDS_IP2COUNTRY_ERROR5   "非法的資源ID, 可能你需要更新國家旗幟檔(CountryFlag.dll),"
+    IDS_IP2COUNTRY_INFO     "Parsed lines:%u  Found IPCountry ranges:%u  Duplicate:%u  Merged:%u"
+    IDS_IP2COUNTRY_FLAGLOAD "國家旗幟已載入"
+    IDS_IP2COUNTRY_FILELOAD "IP2Country 文件已卸載"
+    IDS_IP2COUNTRY_FLAGUNLD "國家旗幟已卸載"
     IDS_IP2COUNTRY_NALONG   "不適用"
     IDS_IP2COUNTRY_NASHORT  "N/A"
-    IDS_IP2COUNTRY_LOADED2  "從檔 %s 中載入 國籍判斷 資料, 用時 %u 毫秒"//"從檔 %s 中載入 IP2Country 資料, 用時 %u 毫秒"
+    IDS_IP2COUNTRY_LOADED2  "從檔 %s 中載入 IP2Country 資料, 用時 %u 毫秒"
     IDS_ACCURATEGRAPH       "精確顯示"
 END
 
@@ -2015,55 +2015,55 @@ BEGIN
     IDS_SMOOTHGRAPH         "平滑顯示"
     IDS_MULTIQUEUE          "每個檔一個佇列 (多佇列)"
     IDS_RETRYCONNECTIONATTEMPTS "嘗試重新請求失敗的TCP連接"
-    IDS_ANTIGHOST           "檢測: Ghost-Mods"//"檢測: 幽靈用戶端"
+    IDS_ANTIGHOST           "檢測: 幽靈用戶端"
     IDS_REMEMBERAICH        "保留未使用的 AICH-Hashes (known2.met)"
     IDS_MARKCANCELLED       "標記為""已取消"""
-    IDS_DOWNHISTORY_CHECK1  "eMule發現一個同切細值的已下載檔案:\n"//"eMule發現曾經下載過同樣的檔 ID:\n"
-    IDS_DOWNHISTORY_CHECK2  "eMule發現 %i 個同檔名的已下載檔案 (%s):\n"//"eMule發現檔 %i 曾經下載過且檔案名相同 (%s):\n"
-    IDS_DOWNHISTORY_CHECK3  "無論如何還是要下載這個檔案嗎?"//"無論如何您都要下載這個檔嗎？"
-    IDS_DOWNHISTORY_CHECK4  "eMule發現一個同切細值的已取消檔案:\n"//"eMule發現曾經取消了此檔的下載 ID:\n"
-    IDS_DOWNHISTORY         "下載歷史紀錄"//"下載歷史"
-    IDS_DOWNHISTORY_REMOVE  "由記錄中刪除"//"清除此記錄"
+    IDS_DOWNHISTORY_CHECK1  "eMule發現曾經下載過同樣的檔 ID:\n"
+    IDS_DOWNHISTORY_CHECK2  "eMule發現檔 %i 曾經下載過且檔案名相同 (%s):\n"
+    IDS_DOWNHISTORY_CHECK3  "無論如何您都要下載這個檔嗎？"
+    IDS_DOWNHISTORY_CHECK4  "eMule發現曾經取消了此檔的下載 ID:\n"
+    IDS_DOWNHISTORY         "下載歷史"
+    IDS_DOWNHISTORY_REMOVE  "清除此記錄"
     IDS_DOWNHISTORY_REMOVE_QUESTION "您真的想把 ""%s"" 從下載歷史中清除嗎？"
     IDS_DOWNHISTORY_REMOVE_QUESTION_MULTIPLE 
                             "您真的想要把所選的檔從下載歷史中清除嗎？"
-    IDS_DOWNHISTORY_SHARED  "分享中"//"共用"
-    IDS_DOWNHISTORY_CLEAR   "清除下載歷史記錄"//"清除所有下載記錄"
+    IDS_DOWNHISTORY_SHARED  "共用"
+    IDS_DOWNHISTORY_CLEAR   "清除所有下載記錄"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_DOWNHISTORY_SHOWSHARED "顯示分享中檔案"//"顯示共用中的檔"
-    IDS_DOWNHISTORY_ACTIONS "指令"//"選項"
-    IDS_DOWNHISTORY_CLEAR_QUESTION "您確定要清除下載歷史記錄嗎？"//"您確定想要清除所有的下載記錄嗎？"
+    IDS_DOWNHISTORY_SHOWSHARED "顯示共用中的檔"
+    IDS_DOWNHISTORY_ACTIONS "選項"
+    IDS_DOWNHISTORY_CLEAR_QUESTION "您確定想要清除所有的下載記錄嗎？"
     IDS_SENDBUFFER          "  發送緩存:"
-    IDS_LEERCHERLOGTITLE    "吸血騾過濾記錄"//"吸血驢過濾記錄"
-    IDS_ALL_A4AF_TO_THIS    "立刻交換全部來源到此檔案"//"立刻交換全部來源到此檔"
-    IDS_ALL_A4AF_TO_OTHER   "立刻交換全部來源到其他檔案"//"立刻交換全部來源到其他檔"
-    IDS_SWAP_A4AF_TO_THIS   "立刻交換(A4AF)來源到此檔案"//"立刻交換(A4AF)來源到此檔"
-    IDS_SWAP_A4AF_TO_OTHER  "立刻交換(A4AF)來源到其他檔案"//"立刻交換(A4AF)來源到其他檔"
-    IDS_ALL_A4AF_AUTO       "自動交換全部(A4AF)來源到此檔案"//"自動交換全部(A4AF)來源到此檔"
-    IDS_LEECHER_ACTION_BAN  "封鎖"//"遮罩"
+    IDS_LEERCHERLOGTITLE    "吸血驢過濾記錄"
+    IDS_ALL_A4AF_TO_THIS    "立刻交換全部來源到此檔"
+    IDS_ALL_A4AF_TO_OTHER   "立刻交換全部來源到其他檔"
+    IDS_SWAP_A4AF_TO_THIS   "立刻交換(A4AF)來源到此檔"
+    IDS_SWAP_A4AF_TO_OTHER  "立刻交換(A4AF)來源到其他檔"
+    IDS_ALL_A4AF_AUTO       "自動交換全部(A4AF)來源到此檔"
+    IDS_LEECHER_ACTION_BAN  "遮罩"
     IDS_LEECHER_ACTION_REDUCE "減少積分"
-    IDS_ANTILEECHERBADHELLO_CHECK "檢測: wrong Hello-Tag"//"檢測: 錯誤的握手標誌"
-    IDS_ANTILEECHERSNAFU_CHECK "檢測: bad Tags"//"檢測: 錯誤的檔標誌"
+    IDS_ANTILEECHERBADHELLO_CHECK "檢測: 錯誤的握手標誌"
+    IDS_ANTILEECHERSNAFU_CHECK "檢測: 錯誤的檔標誌"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_ANTILEECHERMOD_CHECK "檢測: Leecher by Modstring"//"檢測: 不良的用戶端標示"
-    IDS_ANTILEECHERTHIEF_CHECK "檢測: Nick-/ Modthiefs"//"檢測: 昵稱/用戶端標示竊賊"
-    IDS_ANTILEECHERSPAMMER_CHECK "檢測: Spammers"//"檢測: 垃圾資訊發送者"
-    IDS_ANTILEECHERXSEXPLOITER_CHECK "檢測: XS-Exploiter"//"檢測: XS-Exploiter"
-    IDS_STATIC_LEECHERCOMMUNITY "Community Mods"//"社區用戶端"
-    IDS_STATIC_LEECHERGHOST "Ghost-Mods"//"幽靈用戶端"
-    IDS_STATIC_LEECHERTHIEF "Nick- / Modthiefs"//"昵稱/用戶端標示竊賊"
+    IDS_ANTILEECHERMOD_CHECK "檢測: 不良的用戶端標示"
+    IDS_ANTILEECHERTHIEF_CHECK "檢測: 昵稱/用戶端標示竊賊"
+    IDS_ANTILEECHERSPAMMER_CHECK "檢測: 垃圾資訊發送者"
+    IDS_ANTILEECHERXSEXPLOITER_CHECK "檢測: XS-Exploiter"
+    IDS_STATIC_LEECHERCOMMUNITY "社區用戶端"
+    IDS_STATIC_LEECHERGHOST "幽靈用戶端"
+    IDS_STATIC_LEECHERTHIEF "昵稱/用戶端標示竊賊"
     IDS_NEWXTREMEVERSION    "發現新版 Xtreme 可用"
     IDS_NEWXTREMEVERSIONDOWNLOAD "發現新版 Xtreme 可用 \n 您想現在下載它嗎？"
     IDS_NEWDLP              "發現新版 antiLeech.dll (DLP) 可用"
     IDS_NEWDLPDOWNLOAD      "發現新版 antiLeech.dll (DLP) 可用 \n 您想現在下載它嗎？"
-    IDS_DROPLEECHER         "踢除吸血騾"//"剔除吸血驢"
-    IDS_ACTIVEDOWNLOADSBOLD "正在下載任務以粗體字顯示"//"對正在下載的任務使用黑體字顯示"
+    IDS_DROPLEECHER         "剔除吸血驢"
+    IDS_ACTIVEDOWNLOADSBOLD "對正在下載的任務使用黑體字顯示"
     IDS_UPDOWNUPLOADLIST    "上傳 / 下載"
     IDS_MAXGLOBALSOURCES    "全球來源限制:"
     IDS_ACCEPTSOURCES       "使用全球來源限制"
@@ -2072,25 +2072,26 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ACCEPTRATIO         "如果找到的源多於源限制時使用1:3的上傳/下載限制"
-    IDS_SHOWADDITIONALGRAPH "顯示額外的統計曲線"//"顯示附加統計曲線"
+    IDS_SHOWADDITIONALGRAPH "顯示附加統計曲線"
     IDS_CHECK4UPDATEMOD     "啟動時檢查 Xtreme 的新版本"
-    IDS_ANTILEECHEREMCRYPT_CHECK "檢測: emcrypt"//"檢測: 加密用戶端"
+    IDS_ANTILEECHEREMCRYPT_CHECK "檢測: 加密用戶端"
     IDS_UPLOADMANAGEMENT_FRAME "上傳管理"
     IDS_UPLOADSLOTSPEED_LABEL "上傳槽速度:"
-    IDS_USENARROWFONT       "傳輸視窗使用細體字"//"在傳輸視窗使用纖體字顯示"
+    IDS_USENARROWFONT       "在傳輸視窗使用纖體字顯示"
     IDS_SHOWBLOCKINGRATIO   "顯示Socket阻塞率"
-    IDS_FUNNYNICK           "暱稱標記[FunnyNick]"//"使用隨機昵稱[FN]"
+    IDS_FUNNYNICK           "使用隨機昵稱[FN]"
     IDS_AUTOUPDATEIPFILTER  "自動升級IP過濾檔(IPFilter.dat)"
-    IDS_DROPBLOCKINGSOCKETS "踢除頻繁阻塞的Sockets"
+    IDS_DROPBLOCKINGSOCKETS "剔除頻繁阻塞的Sockets"
     IDS_LOGPARTMISMATCH     "記錄大小不匹配的被請求檔"
+    IDS_CN_UPNPTRYRANDOM    "對UPnP閘道使用隨機埠"
     IDS_CN_UPNPNAT          "啟用 UPnP"
-    IDS_CHUNKCHOOSER        "檔案區塊選擇方式:"//"檔塊選擇方式:"
+    IDS_CHUNKCHOOSER        "檔塊選擇方式:"
     IDS_UPLOADINSTABLE      "警告: 你的上傳值設置似乎太高了. 請檢查你的設置!\n查看上傳統計曲線, 那白色或者黃色(使用NAFC時)的線應該是比較平整的.\n 此消息只提示一次"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_CLIENTPERCENTAGE    "顯示用戶端檔案完成百分率"//"顯示用戶端百分比"
+    IDS_CLIENTPERCENTAGE    "顯示用戶端百分比"
     IDS_ONERELEASESLOT      "預留上傳槽給發佈級檔"
     IDS_A_UPPRIO            "使用全自動上傳優先順序"
     IDS_SHAREFACTOR         "共用係數"
@@ -2111,7 +2112,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_STATIC_DOWNINFO     "下載 0 = 無限制"
-    IDS_ANTILEECHERUSERHASH_CHECK "檢測: bad userhashes"//"檢測: 不良的用戶Hash"
+    IDS_ANTILEECHERUSERHASH_CHECK "檢測: 不良的用戶Hash"
 END
 
 STRINGTABLE 
@@ -2141,16 +2142,16 @@ END
 
 STRINGTABLE 
 BEGIN
-	IDS_GETFRIENDED2KLINK   "將好友連結複製至剪貼簿"//"將好友鏈結複製到剪貼板"
-    IDS_GETHTMLFRIENDED2KLINK "將好友連結複製至剪貼簿 (HTML)"//"將好友鏈結複製到剪貼板 (HTML)"
-    IDS_ERR_FAILEDDOWNLOADEMFRIENDS "無法自 %s 下載好友列表"//"從 %s 下載好友列表檔失敗"
-    IDS_GETMYFRIENDED2KLINK "將我的連結複製至剪貼簿"//"將我的鏈結複製到剪貼板"
-    IDS_GETMYHTMLFRIENDED2KLINK "將我的連結複製至剪貼簿 (HTML)"//"將我的鏈結複製到剪貼板 (HTML)"
-    IDS_FRIENDLINKMENUTITLE "好友連結"//"好友鏈結"
-	IDS_DOWNLOADEMFRIENDSMET "下載 emfriends.met (好友列表)"//"下載 emfriends.met"
-    IDS_EMFRIENDSMETURL     "請輸入 emfriends.met (好友列表) 的下載網址"//"請輸入 emfriends.met 的 URL:"
-	IDS_USER_ALREADY_FRIEND "使用者 ""%s"" 已在您的好友名單中"//"用戶 ""%s"" 已經存在于你的好友列表之中"
-	IDS_TRUSTEVERYHASH      "信任每個人告訴我們的AICH切細值"//"信任每一個AICHHash (只在本次任務有效, 不保存, 不推薦)"
+	IDS_GETFRIENDED2KLINK   "將好友鏈結複製到剪貼板"
+    IDS_GETHTMLFRIENDED2KLINK "將好友鏈結複製到剪貼板 (HTML)"
+    IDS_ERR_FAILEDDOWNLOADEMFRIENDS "從 %s 下載好友列表檔失敗"
+    IDS_GETMYFRIENDED2KLINK "將我的鏈結複製到剪貼板"
+    IDS_GETMYHTMLFRIENDED2KLINK "將我的鏈結複製到剪貼板 (HTML)"
+    IDS_FRIENDLINKMENUTITLE "好友鏈結"
+	IDS_DOWNLOADEMFRIENDSMET "下載 emfriends.met"
+    IDS_EMFRIENDSMETURL     "請輸入 emfriends.met 的 URL:"
+	IDS_USER_ALREADY_FRIEND "用戶 ""%s"" 已經存在于你的好友列表之中"
+	IDS_TRUSTEVERYHASH      "信任每一個AICHHash (只在本次任務有效, 不保存, 不推薦)"
 END
 
 

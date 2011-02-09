@@ -2108,6 +2108,7 @@ BEGIN
     IDS_AUTOUPDATEIPFILTER  "Automatická aktualizace IPFilter.dat"
     IDS_DROPBLOCKINGSOCKETS "Pøeruš èasto blokující spojení"
     IDS_LOGPARTMISMATCH     "Zaznamenej nesouhlas velikosti požadovaných souborù"
+    IDS_CN_UPNPTRYRANDOM    "Zkus použít náhodný port v UPnP bránì"
     IDS_CN_UPNPNAT          "Povol UPnP podporu"
     IDS_CHUNKCHOOSER        "Metoda výbìru chunku"
     IDS_UPLOADINSTABLE      "Varování: Limit uploadu je asi pøíliš vysoký. Zkontroluj nastavení! \n Podívej se na graf uploadu, bílá nebo žlutá (s NAFC) èára má být rovná \n Tato zpráva je zobrazena pouze jednou"

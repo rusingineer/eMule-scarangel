@@ -2109,6 +2109,7 @@ BEGIN
     IDS_AUTOUPDATEIPFILTER  "Mise à jour automatique de l'IPFilter.dat"
     IDS_DROPBLOCKINGSOCKETS "Abandon des sockets bloquant trop souvent"
     IDS_LOGPARTMISMATCH     "Journaliser les erreurs de taille sur les fichiers demandés"
+    IDS_CN_UPNPTRYRANDOM    "Tester des ports aléatoire sur les passerelles UPnP"
     IDS_CN_UPNPNAT          "Activer le support de l'UPnP"
     IDS_CHUNKCHOOSER        "Méthode de sélection des parties"
     IDS_UPLOADINSTABLE      "Attention: votre limite en émission semble étre trop haute. Veuillez revoir votre configuration! \n Regardez le graphique de la vitesse d'émission dans les statistiques, les ligne blanches et jaunes (avec NAFC) doivent étre planent \n ce message ne sera affiché qu'une seule fois."

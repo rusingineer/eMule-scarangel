@@ -64,10 +64,15 @@ public:
 	//typedef void (WINAPI*TESTFUNC)();
 	//TESTFUNC testfunc;
 
-	
+	//X-Ray :: Fincan Hash Detection :: Start	
+	bool	CheckForFincanHash(CString strHash);
+	void	LoadFincanHashes(CString strURL, bool forced = true);
+	//X-Ray :: Fincan Hash Detection :: End
 
 private:
 	HINSTANCE dlpInstance;
 	bool	dlpavailable;
 	CString appdir;
+
+	CStringList m_FincanHashList; //X-Ray :: Fincan Hash Detection
 };

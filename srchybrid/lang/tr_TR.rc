@@ -2110,6 +2110,7 @@ BEGIN
     IDS_AUTOUPDATEIPFILTER  "IPFilter.dat dosyasýný otomatik güncelle"
     IDS_DROPBLOCKINGSOCKETS "Çok sýk engellenen soketleri düþür"
     IDS_LOGPARTMISMATCH     "Talep edilen dosyalarda boyut uyuþmazlýðý varsa günlükle"
+    IDS_CN_UPNPTRYRANDOM    "UPnP aktifken rastgele port kullan"
     IDS_CN_UPNPNAT          "UPnP desteðini etkinleþtir"
     IDS_CHUNKCHOOSER        "Ýri parça seçim methodu"
     IDS_UPLOADINSTABLE      "Uyarý: Gönderme ayarlarýnýz çok yüksek görünüyor. Lütfen ayarlarýnýzý gözden geçirin! \n Gönderme çizelgesinndeki beyaz veya sarý(NAFC ile) çizgi düz olmalýdýr. \n Bu uyarý mesajý sadece bir kerelik oluþturulur."

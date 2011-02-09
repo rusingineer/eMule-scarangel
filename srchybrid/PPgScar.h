@@ -148,6 +148,7 @@ protected:
 	bool m_bSmallFileDLPush;
 	int m_iResumeFileInNewCat;
 	bool m_bUseAutoCat;
+	bool m_bAddRemovedInc;
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	// ==> PowerShare [ZZ/MorphXT] - Stulle
@@ -369,6 +370,7 @@ protected:
 	HTREEITEM m_htiSmallFileDLPush;
 	HTREEITEM m_htiResumeFileInNewCat;
 	HTREEITEM m_htiUseAutoCat;
+	HTREEITEM m_htiAddRemovedInc;
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	HTREEITEM m_htiSharedPrefs; // Shared Files Management [Stulle] - Stulle

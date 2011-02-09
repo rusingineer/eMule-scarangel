@@ -2113,6 +2113,7 @@ BEGIN
     IDS_AUTOUPDATEIPFILTER  "Auto-actualizar IPFilter.dat"
     IDS_DROPBLOCKINGSOCKETS "eliminar conexiones muy bloqueadas"
     IDS_LOGPARTMISMATCH     "Logear solicitados con tamaños incorrectos"
+    IDS_CN_UPNPTRYRANDOM    "Intentar puertos aleatorios en UPnP"
     IDS_CN_UPNPNAT          "Activar soporte UPnP "
     IDS_CHUNKCHOOSER        "Método de selección de parte"
     IDS_UPLOADINSTABLE      "Advertencia: La configuración de subida parece ser demasiado elevada. Por favor, revise la configuración! \n Mire el gráfico de subida, la línea blanca o amarilla (con NAFC) debería ser plana \n Este mensaje se genera una única vez"

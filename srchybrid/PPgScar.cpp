@@ -13,7 +13,7 @@
 #include "ClientCredits.h" // CreditSystems [EastShare/ MorphXT] - Stulle
 #include "log.h"
 #include "DownloadQueue.h" // Global Source Limit [Max/Stulle] - Stulle
-#include "TransferWnd.h" // CPU/MEM usage [$ick$/Stulle] - Max
+#include "TransferDlg.h" // CPU/MEM usage [$ick$/Stulle] - Max
 #include "XMessageBox.h" // TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 #include "sharedfilelist.h" // PowerShare [ZZ/MorphXT] - Stulle
 // ==> Design Settings [eWombat/Stulle] - Stulle
@@ -302,6 +302,7 @@ CPPgScar::CPPgScar()
 	m_htiSmallFileDLPush = NULL;
 	m_htiResumeFileInNewCat = NULL;
 	m_htiUseAutoCat = NULL;
+	m_htiAddRemovedInc = NULL;
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	m_htiSharedPrefs = NULL; // Shared Files Management [Stulle] - Stulle
@@ -724,6 +725,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiSmallFileDLPush = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CAT_SMALLFILEDLPUSH), m_htiSCC, m_bSmallFileDLPush);
 		m_htiResumeFileInNewCat = m_ctrlTreeOptions.InsertItem(GetResString(IDS_CAT_STARTFILESONADD), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiSCC);
 		m_ctrlTreeOptions.AddEditBox(m_htiResumeFileInNewCat, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_htiAddRemovedInc = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ADD_REMOVED_INC), m_htiSCC, m_bAddRemovedInc);
 		// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 		m_htiSharedPrefs = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_SHARED_PREFS), iImgSharedPrefs, TVI_ROOT); // Shared Files Management [Stulle] - Stulle
@@ -960,6 +962,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiAutoSetResOrder, m_bAutoSetResOrder);
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSmallFileDLPush, m_bSmallFileDLPush);
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiUseAutoCat, m_bUseAutoCat);
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiAddRemovedInc, m_bAddRemovedInc);
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	// ==> PowerShare [ZZ/MorphXT] - Stulle
@@ -1341,6 +1344,7 @@ BOOL CPPgScar::OnInitDialog()
 	m_bSmallFileDLPush = thePrefs.SmallFileDLPush();
 	m_iResumeFileInNewCat = thePrefs.StartDLInEmptyCats();
 	m_bUseAutoCat = thePrefs.UseAutoCat();
+	m_bAddRemovedInc = thePrefs.UseAddRemoveInc();
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	// ==> PowerShare [ZZ/MorphXT] - Stulle
@@ -1846,6 +1850,7 @@ BOOL CPPgScar::OnApply()
 	thePrefs.m_bSmallFileDLPush = m_bSmallFileDLPush;
 	thePrefs.m_iStartDLInEmptyCats = (uint8)m_iResumeFileInNewCat;
 	thePrefs.m_bUseAutoCat = m_bUseAutoCat;
+	thePrefs.m_bAddRemovedInc = m_bAddRemovedInc;
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	// ==> PowerShare [ZZ/MorphXT] - Stulle
@@ -2251,6 +2256,7 @@ void CPPgScar::Localize(void)
 		if (m_htiAutoSetResOrder) m_ctrlTreeOptions.SetItemText(m_htiAutoSetResOrder, GetResString(IDS_CAT_AUTORESUMEORD));
 		if (m_htiSmallFileDLPush) m_ctrlTreeOptions.SetItemText(m_htiSmallFileDLPush, GetResString(IDS_CAT_SMALLFILEDLPUSH));
 		if (m_htiResumeFileInNewCat) m_ctrlTreeOptions.SetEditLabel(m_htiResumeFileInNewCat, GetResString(IDS_CAT_STARTFILESONADD));
+		if (m_bAddRemovedInc) m_ctrlTreeOptions.SetItemText(m_htiAddRemovedInc, GetResString(IDS_ADD_REMOVED_INC));
 		// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 		// ==> PowerShare [ZZ/MorphXT] - Stulle
@@ -2640,6 +2646,7 @@ void CPPgScar::OnDestroy()
 	m_htiSmallFileDLPush = NULL;
 	m_htiResumeFileInNewCat = NULL;
 	m_htiUseAutoCat = NULL;
+	m_htiAddRemovedInc = NULL;
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	m_htiSharedPrefs = NULL; // Shared Files Management [Stulle] - Stulle
