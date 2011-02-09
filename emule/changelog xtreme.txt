@@ -53,6 +53,7 @@ Xtreme 8.0
 - fixed: Possibly crash fix on ShowComment (WiZaRd)
 - fixed: Fix broken HTTP downloads from SourceForge (WiZaRd)
 - fixed: Only resolve hostnames for downloads if partfile found (WiZaRd)
+- fixed: Remove client from DownloadClientsList on RemoveSource (WiZaRd)
 - removed: Send user agent for http downloads only when obfusc enabled code (redundant) (Xman)
 partially updated to 8.0 by zz_fly:
 - add: Fincan community hash detection (WiZaRd)

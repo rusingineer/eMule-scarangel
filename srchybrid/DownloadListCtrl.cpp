@@ -552,6 +552,7 @@ void CDownloadListCtrl::RemoveSource(CUpDownClient* source, CPartFile* owner)
 			it++;
 		}
 	}
+	theApp.emuledlg->transferwnd->GetDownloadClientsList()->RemoveClient(source); //MORPH - Added by Stulle, Remove client from DownloadClientsList on RemoveSource [WiZaRd]
 }
 
 bool CDownloadListCtrl::RemoveFile(const CPartFile* toremove)
