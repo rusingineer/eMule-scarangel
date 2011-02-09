@@ -969,7 +969,14 @@ void CSharedFileList::SendListToServer(){
 		m_Files_map.GetNextAssoc(pos, bufKey, cur_file);
 		added=false;
 		//insertsort into sortedList
+		// ==> Don't publish incomplete small files [WiZaRd] - Stulle
+		/*
 		if(!cur_file->GetPublishedED2K() && (!cur_file->IsLargeFile() || (pCurServer != NULL && pCurServer->SupportsLargeFilesTCP())))
+		*/
+		if(cur_file->GetFileSize() <= PARTSIZE && cur_file->IsPartFile())
+			added=true;
+		if(!added && !cur_file->GetPublishedED2K() && (!cur_file->IsLargeFile() || (pCurServer != NULL && pCurServer->SupportsLargeFilesTCP())))
+		// <== Don't publish incomplete small files [WiZaRd] - Stulle
 		{
 			for (pos2 = sortedList.GetHeadPosition();pos2 != 0 && !added;sortedList.GetNext(pos2))
 			{
