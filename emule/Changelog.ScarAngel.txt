@@ -10,10 +10,14 @@ Merged to eMule v0.49c [Stulle]
 Updated with code from zz_fly's Xtreme
 
 Added: Possibility to directly add incoming of removed cat to shared folders [Stulle] - Stulle
+Added: Queue progress bar in Webserver (not in Light) [unknown/Stulle] - Stulle
+Added: File Percentage in title of progress images in WebServer [unknown/Stulle] - Stulle
 
 Changed: Reworked coloring of windows (fixes some tab controls on Vista/7) [Stulle] - Stulle
 
 Fixed: Reboot in webserver invoked shutdown instead of reboot [Stulle] - Stulle
+
+Removed: New official Ask-On-Exit Dlg in favor of ScarAngel one (NTService) [Stulle] - Stulle
 
 
 eMule v0.49c ScarAngel v3.3:

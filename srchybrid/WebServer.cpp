@@ -1346,6 +1346,16 @@ CString CWebServer::_GetHeader(ThreadData Data, long lSession)
 	Out.Replace(_T("[CurConnection]"), HTTPHeader);
 	//Xman end
 
+	// ==> Queue progress bar in Webserver (not in Light) [unknown/Stulle] - Stulle
+	/*QueueBar*/_stprintf(HTTPHeader, _T("%.1f"), (static_cast<double>(theApp.uploadqueue->GetWaitingUserCount()))/(thePrefs.GetQueueSize()+max(thePrefs.GetQueueSize()/4, 200))*100.0); 
+	/*QueueBar*/Out.Replace(_T("[QueueValue]"), HTTPHeader);
+	/*QueueBar*/_stprintf(HTTPHeader, _T("%.0f"), (static_cast<double>(theApp.uploadqueue->GetWaitingUserCount()))); 
+	/*QueueBar*/Out.Replace(_T("[CurQueue]"), HTTPHeader);
+	/*QueueBar*/_stprintf(HTTPHeader, _T("%.0f"), (static_cast<double>(thePrefs.GetQueueSize()+max(thePrefs.GetQueueSize()/4, 200)))); 
+	/*QueueBar*/Out.Replace(_T("[MaxQueue]"), HTTPHeader);
+	/*QueueBar*/Out.Replace(_T("[Queue]"),_GetPlainResString(IDS_ONQUEUE, true));
+	// <== Queue progress bar in Webserver (not in Light) [unknown/Stulle] - Stulle
+	
 	//Xman
 	// Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 	float		dwMax;
@@ -5281,6 +5291,13 @@ CString CWebServer::_GetDownloadGraph(ThreadData Data, CString filehash)
 		}
 		Out.AppendFormat(pThis->m_Templates.sProgressbarImgs, progresscolor[lastcolor], pThis->m_Templates.iProgressbarWidth-lastindex);
 	}
+	// ==> File Percentage in title of progress images in WebServer [unknown/Stulle] - Stulle
+	/**/if (pPartFile != NULL) {
+	/**/	TCHAR HTTPHeader[100] = _T("");
+	/**/	_stprintf(HTTPHeader, _T("%.1f%%"), (static_cast<double>(pPartFile->GetPercentCompleted())));   
+	/**/	Out.Replace(_T("[FilePercentage]"), HTTPHeader);
+	/**/}
+	// <== File Percentage in title of progress images in WebServer [unknown/Stulle] - Stulle
 	return Out;
 }
 
