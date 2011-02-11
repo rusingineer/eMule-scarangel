@@ -16,6 +16,7 @@ Added: File Percentage in title of progress images in WebServer [unknown/Stulle]
 Changed: Reworked coloring of windows (fixes some tab controls on Vista/7) [Stulle] - Stulle
 
 Fixed: Reboot in webserver invoked shutdown instead of reboot [Stulle] - Stulle
+Fixed: TxtEditor option in Advanced Preferences [Stulle] - Stulle
 
 Removed: New official Ask-On-Exit Dlg in favor of ScarAngel one (NTService) [Stulle] - Stulle
 

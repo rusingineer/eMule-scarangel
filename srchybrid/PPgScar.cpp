@@ -1180,6 +1180,7 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX,IDC_ADVANCED_OPTS,m_hti_m_bPreviewOnIconDblClk,m_bPreviewOnIconDblClk);
 	DDX_TreeEdit(pDX, IDC_ADVANCED_OPTS, m_hti_sInternetSecurityZone, sInternetSecurityZone);
 	DDX_TreeEdit(pDX, IDC_ADVANCED_OPTS, m_hti_sNotifierMailEncryptCertName, sNotifierMailEncryptCertName);
+	DDX_TreeEdit(pDX, IDC_ADVANCED_OPTS, m_hti_sTxtEditor, sTxtEditor); 
 	DDX_TreeEdit(pDX, IDC_ADVANCED_OPTS, m_hti_iServerUDPPort, iServerUDPPort);
 	DDV_MinMaxInt(pDX, iServerUDPPort, 0,65535);
 	DDX_TreeCheck(pDX,IDC_ADVANCED_OPTS,m_hti_m_bRemoveFilesToBin,m_bRemoveFilesToBin);
