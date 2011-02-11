@@ -1490,7 +1490,7 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	// <== XP Style Menu [Xanatos] - Stulle
 	m_PowershareMenu.CheckMenuRadioItem(MP_POWERSHARE_DEFAULT, MP_POWERSHARE_LIMITED, uPowershareMenuItem, 0);
 	m_PowershareMenu.EnableMenuItem((UINT_PTR)m_PowerShareLimitMenu.m_hMenu, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
-	if (iPowerShareLimit==0)
+	if (thePrefs.GetPowerShareLimit()==0)
 		buffer.Format(_T(" (%s)"),GetResString(IDS_DISABLED));
 	else
 		buffer.Format(_T(" (%u)"),thePrefs.GetPowerShareLimit());
@@ -1950,7 +1950,7 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 					if (!file->IsKindOf(RUNTIME_CLASS(CKnownFile)))
 						continue;
 					if  (newHideOS == ((CKnownFile*)file)->GetHideOS())
-						break;
+						continue;
 					((CKnownFile*)file)->SetHideOS(newHideOS);
 					UpdateFile(file);
 				}

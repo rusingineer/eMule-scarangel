@@ -17,6 +17,8 @@ Changed: Reworked coloring of windows (fixes some tab controls on Vista/7) [Stul
 
 Fixed: Reboot in webserver invoked shutdown instead of reboot [Stulle] - Stulle
 Fixed: TxtEditor option in Advanced Preferences [Stulle] - Stulle
+Fixed: Setting HOS was cancled when setting remained unchanged for one file [Stulle] - Stulle
+Fixed: Minor display bug around default for PowerShare limit [Stulle] - Stulle
 
 Removed: New official Ask-On-Exit Dlg in favor of ScarAngel one (NTService) [Stulle] - Stulle
 
