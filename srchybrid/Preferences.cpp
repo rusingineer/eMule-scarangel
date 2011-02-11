@@ -6464,15 +6464,18 @@ void CPreferences::SetBindAddr(CStringW bindip)
 // ==> Run eMule as NT Service [leuk_he/Stulle] - Stulle
 int CPreferences::GetServiceStartupMode()
 {
-	if (m_iServiceStartupMode == 0) // may be called before LoadPreferences()
-		m_iServiceStartupMode=theApp.GetProfileInt(_T("ScarAngel"), _T("ServiceStartupMode"),2); // default = stop service and start
+	// ==> Adjustable NT Service Strings [Stulle] - Stulle
+	if (m_strServiceName.IsEmpty()) // may be called before LoadPreferences() 
+		m_strServiceName = theApp.GetProfileStringW(L"ScarAngel", L"ServiceName",NULL); 
+	// <== Adjustable NT Service Strings [Stulle] - Stulle
+		m_iServiceStartupMode=theApp.GetProfileInt(L"ScarAngel", L"ServiceStartupMode",2); // default = stop service and start
 	return m_iServiceStartupMode;
 }
 
 uint16	CPreferences::GetWSPort()							
 {
 	if (m_nWebPort==0)
-		m_nWebPort=(WORD) theApp.GetProfileInt(_T("WebServer"), _T("Port"),4711);
+		m_nWebPort=(WORD) theApp.GetProfileInt(L"WebServer", L"Port",4711);
 	return m_nWebPort; 
 }
 // <== Run eMule as NT Service [leuk_he/Stulle] - Stulle
@@ -6482,7 +6485,7 @@ CString CPreferences::GetServiceName()
 {
 	// if the strings have not been loaded yet we need to load the name directly from the .ini
 	if (!m_bServiceStringsLoaded)
-		m_strServiceName = theApp.GetProfileString(_T("ScarAngel"), _T("ServiceName"), NULL);
+		m_strServiceName = theApp.GetProfileString(L"ScarAngel", L"ServiceName", NULL);
 	return m_strServiceName;
 }
 // <== Adjustable NT Service Strings [Stulle] - Stulle
