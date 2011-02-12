@@ -707,7 +707,9 @@ CString CPreferences::sNotifierMailEncryptCertName;
 CString CPreferences::sMediaInfo_MediaInfoDllPath ;
 bool CPreferences::bMediaInfo_RIFF;
 bool CPreferences::bMediaInfo_ID3LIB ;
+#ifdef HAVE_QEDIT_H
 bool CPreferences::m_bMediaInfo_MediaDet;
+#endif//HAVE_QEDIT_H
 bool CPreferences::m_bMediaInfo_RM;
 #ifdef HAVE_WMSDK_H
 bool CPreferences::m_bMediaInfo_WM;
@@ -2355,6 +2357,7 @@ void CPreferences::SavePreferences()
 	ini.WriteString(L"CommentFilter",commentFilter);
 	ini.WriteString(L"DateTimeFormat",GetDateTimeFormat());
 	ini.WriteString(L"DateTimeFormat4Log",GetDateTimeFormat4Log());
+	ini.WriteString(L"DateTimeFormat4Lists",GetDateTimeFormat4Lists());
 	ini.WriteString(L"WebTemplateFile",m_strTemplateFile);
 	ini.WriteString(L"FilenameCleanups",filenameCleanups);
 	ini.WriteInt(L"ExtractMetaData",m_iExtractMetaData);
@@ -2759,7 +2762,9 @@ void CPreferences::SavePreferences()
 	}
 	ini.WriteBool(_T("MediaInfo_RIFF"),bMediaInfo_RIFF);
 	ini.WriteBool(_T("MediaInfo_ID3LIB"),bMediaInfo_ID3LIB);
+#ifdef HAVE_QEDIT_H
 	ini.WriteBool(_T("MediaInfo_MediaDet"),m_bMediaInfo_MediaDet);
+#endif//HAVE_QEDIT_H
 	ini.WriteBool(_T("MediaInfo_RM"),m_bMediaInfo_RM);
 #ifdef HAVE_WMSDK_H
 	ini.WriteBool(_T("MediaInfo_WM"),m_bMediaInfo_WM);
@@ -2779,11 +2784,26 @@ void CPreferences::SavePreferences()
     ini.WriteInt(L"MaxMessageSessions",maxmsgsessions);
     ini.WriteBool(L"PreferRestrictedOverUser",m_bPreferRestrictedOverUser);
 	ini.WriteBool(L"UserSortedServerList",m_bUseUserSortedServerList);
+    ini.WriteBool(L"AdjustNTFSDaylightFileTime",m_bAdjustNTFSDaylightFileTime); 
     ini.WriteBool(L"DontCompressAvi",dontcompressavi);
     ini.WriteBool(L"ShowCopyEd2kLinkCmd",m_bShowCopyEd2kLinkCmd);
     ini.WriteBool(L"IconflashOnNewMessage",m_bIconflashOnNewMessage);
     ini.WriteBool(L"ReBarToolbar",m_bReBarToolbar);
+	ini.WriteBool(L"ICH",IsICHEnabled());	// 10.5
+	ini.WriteInt(L"FileBufferTimeLimit", m_uFileBufferTimeLimit/1000);
+	ini.WriteBool(L"RearrangeKadSearchKeywords",m_bRearrangeKadSearchKeywords);
+	ini.WriteBool(L"UpdateQueueListPref", m_bupdatequeuelist);
+	ini.WriteBool(L"DontRecreateStatGraphsOnResize",dontRecreateGraphs);
+	ini.WriteBool(L"BeepOnError",beepOnError);
+	ini.WriteBool(L"MessageFromValidSourcesOnly",msgsecure);
+	ini.WriteBool(L"ShowUpDownIconInTaskbar",m_bShowUpDownIconInTaskbar);
+	ini.WriteBool(L"ForceSpeedsToKB",m_bForceSpeedsToKB);
+	ini.WriteBool(L"ExtraPreviewWithMenu",m_bExtraPreviewWithMenu);
+	ini.WriteBool(L"KeepUnavailableFixedSharedDirs",m_bKeepUnavailableFixedSharedDirs);
 	ini.WriteString(L"BindAddr",m_pszBindAddrW);
+	ini.WriteColRef(L"LogErrorColor",m_crLogError);
+	ini.WriteColRef(L"LogWarningColor",m_crLogWarning);
+	ini.WriteColRef(L"LogSuccessColor",m_crLogSuccess);
 	ini.WriteInt(L"MaxFileUploadSizeMB",m_iWebFileUploadSizeLimitMB, L"WebServer" );//section WEBSERVER start
 	CString WriteAllowedIPs ;
 	if (GetAllowedRemoteAccessIPs().GetCount() > 0)
@@ -2791,6 +2811,7 @@ void CPreferences::SavePreferences()
            WriteAllowedIPs = WriteAllowedIPs  + _T(";") + ipstr(GetAllowedRemoteAccessIPs()[i]);
     ini.WriteString(L"AllowedIPs",WriteAllowedIPs);  // End Seciotn Webserver
     ini.WriteBool(L"ShowVerticalHourMarkers",m_bShowVerticalHourMarkers,L"Statistics");
+	ini.WriteBool(L"EnabledDeprecated", m_bPeerCacheEnabled, L"PeerCache");
 	// <== Advanced Options [Official/MorphXT] - Stulle
 
 	// ==> Global Source Limit [Max/Stulle] - Stulle
@@ -4032,7 +4053,9 @@ void CPreferences::LoadPreferences()
 	sMediaInfo_MediaInfoDllPath=ini.GetString(L"MediaInfo_MediaInfoDllPath",_T("MEDIAINFO.DLL")) ;
 	bMediaInfo_RIFF=ini.GetBool(_T("MediaInfo_RIFF"),true);
 	bMediaInfo_ID3LIB =ini.GetBool(_T("MediaInfo_ID3LIB"),true);
+#ifdef HAVE_QEDIT_H
 	m_bMediaInfo_MediaDet =ini.GetBool(_T("MediaInfo_MediaDet"),true);
+#endif//HAVE_QEDIT_H
 	m_bMediaInfo_RM =ini.GetBool(_T("MediaInfo_RM"),true);
 #ifdef HAVE_WMSDK_H
 	m_bMediaInfo_WM =ini.GetBool(_T("MediaInfo_WM"),true);

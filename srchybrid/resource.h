@@ -3297,6 +3297,18 @@
 #define IDS_MEDIAINFO_MEDIADET          61259
 #define IDS_MEDIAINFO_RM                61260
 #define IDS_MEDIAINFO_WM                61261
+#define IDS_X_DATETIMEFORMAT4LIST       61262
+#define IDS_UPDATEQUEUE                 61263
+#define IDS_REPAINTGRAPHS               61264
+#define IDS_EXTRAPREVIEWWITHMENU        61265
+#define IDS_SHOWUPDOWNICONINTASKBAR     61266
+#define IDS_FORCESPEEDSTOKB             61267
+#define IDS_X_FILE_BUFFER_TIME_LIMIT    61268
+#define IDS_X_REARRANGEKADSEARCH        61269
+#define IDS_PW_BEEP                     61270
+#define IDS_MSGONLYSEC                  61271
+#define IDS_DISABLEPEERACHE             61272
+#define IDS_KEEPUNAVAILABLEFIXEDSHAREDDIRS 61273
 // <== Advanced Options [Official/MorphXT] - Stulle
 // ==> Advanced Updates [MorphXT/Stulle] - Stulle
 #define IDC_ANTI_LEECH_BOX              61300

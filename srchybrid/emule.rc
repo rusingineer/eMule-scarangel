@@ -5764,6 +5764,18 @@ BEGIN
     IDS_MEDIAINFO_MEDIADET  "Use Media Detector (MediaDet) to retrieve information about media files"
     IDS_MEDIAINFO_RM        "Use mediainfo.dll to recognise Real Media files"
     IDS_MEDIAINFO_WM        "Use mediainfo.dll to recognise Windows Media files"
+    IDS_X_DATETIMEFORMAT4LIST "Date&Time format for lists"
+    IDS_UPDATEQUEUE         "Don't update Queue list in real time"
+    IDS_REPAINTGRAPHS       "Don't recreate statistic graphs on resize"
+    IDS_EXTRAPREVIEWWITHMENU "Display Preview With menu in root context menu"
+    IDS_SHOWUPDOWNICONINTASKBAR "Use overlay to indicate up/down in taskbar"
+    IDS_FORCESPEEDSTOKB     "Display all speed values in KB/s"
+    IDS_X_FILE_BUFFER_TIME_LIMIT "File Buffer Time Limit (in sec)"
+    IDS_X_REARRANGEKADSEARCH "Rearrange KAD search keywords"
+    IDS_PW_BEEP             "Beep on errors"
+    IDS_MSGONLYSEC          "Accept messages from valid clients only"
+    IDS_DISABLEPEERACHE     "Disable downloading from PeerCache"
+    IDS_KEEPUNAVAILABLEFIXEDSHAREDDIRS "Keep unavailable directories on fixed drives"
     // <== Advanced Options [Official/MorphXT] - Stulle
     // ==> Advanced Updates [MorphXT/Stulle] - Stulle
     IDS_UPDATEANTILEECHERONSTART "Update antiLeech.dll on startup"
