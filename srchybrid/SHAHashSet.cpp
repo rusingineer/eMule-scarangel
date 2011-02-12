@@ -106,17 +106,14 @@ CAICHHashTree&	CAICHHashTree::operator=(const CAICHHashTree& k1){
 }
 
 void CAICHHashTree::ClearSubTree(){
+	//if this tree is buffered, the subtrees are buffered too, just return. 
 	if(m_bIsBuffered)
 		return;
-	//if this tree is buffered, the subtree should be cleared up in somewhere else. so, only clear the subtree we not buffered
-	if(m_pLeftTree && (!m_pLeftTree->m_bIsBuffered)){
-		delete m_pLeftTree;
-		m_pLeftTree = NULL;
-	}
-	if(m_pRightTree && (!m_pRightTree->m_bIsBuffered)){
-		delete m_pRightTree;
-		m_pRightTree = NULL;
-	}
+	//otherwise, clear all subtrees.
+	delete m_pLeftTree;
+	m_pLeftTree = NULL;
+	delete m_pRightTree;
+	m_pRightTree = NULL;
 }
 
 void CAICHHashTree::MarkBuffered(){
@@ -822,7 +819,7 @@ bool CAICHRecoveryHashSet::SaveHashSet(){
 	m_pHashTree.m_pLeftTree = NULL;
 	m_pHashTree.m_pRightTree = NULL;
 	//write to file if needed
-	return CAICHRecoveryHashSet::SaveHashSetToFile(!thePrefs.m_bKnown2Buffer || theApp.m_app_state != APP_STATE_RUNNING); // X: [BF] - [Bug Fix]
+	return CAICHRecoveryHashSet::SaveHashSetToFile(!thePrefs.m_bKnown2Buffer || theApp.m_app_state != APP_STATE_RUNNING); //DolphinX - [Bug Fix]
 }
 
 //get the lock of m_mutSaveHashSet before call this method. otherwise you may got synchronization problem

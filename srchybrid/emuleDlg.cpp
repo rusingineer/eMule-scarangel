@@ -5492,8 +5492,7 @@ LRESULT CemuleDlg::OnDLPVersionCheckResponse(WPARAM /*wParam*/, LPARAM lParam)
 					Log(LOG_SUCCESS|LOG_STATUSBAR,GetResString(IDS_NEWDLP));
 					ShowNotifier(GetResString(IDS_NEWDLP), TBN_NEWMVERSION);
 					if (m_bCheckwasDone==false && AfxMessageBox(GetResString(IDS_NEWDLPDOWNLOAD),MB_YESNO)==IDYES) {
-						//ShellExecute(NULL, NULL, MOD_HPLINK, NULL, thePrefs.GetMuleDirectory(EMULE_EXECUTEABLEDIR), SW_SHOWDEFAULT);
-						ShellExecute(NULL, NULL, MOD_DLPLINK, NULL, thePrefs.GetMuleDirectory(EMULE_EXECUTEABLEDIR), SW_SHOWDEFAULT); //zz_fly :: update DLP link
+						ShellExecute(NULL, NULL, MOD_HPLINK, NULL, thePrefs.GetMuleDirectory(EMULE_EXECUTEABLEDIR), SW_SHOWDEFAULT);
 					}
 					m_bCheckwasDone=false;
 				}

@@ -41,8 +41,7 @@
 
 //Xman Links:
 #define MOD_FORUMLINK _T("http://www.emule-web.de/board/forum34.html")
-#define MOD_HPLINK _T("http://www.emule-mods.de/?mods=xtreme") //zz_fly :: new homepage
-#define MOD_DLPLINK _T("http://sourceforge.net/project/showfiles.php?group_id=129450&package_id=164798") //zz_fly :: update DLP link
+#define MOD_HPLINK _T("http://xtreme-mod.net")
 #define MOD_VOTELINK _T("http://www.emule-mods.de/?comment=xtreme#addentry")
 //---------------------------------------
 
