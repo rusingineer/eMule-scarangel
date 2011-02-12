@@ -4374,7 +4374,7 @@ void CPreferences::LoadPreferences()
 	else
 		memset(&m_IP2CountryVersion, 0, sizeof m_IP2CountryVersion);
 	delete[] pst;
-	AutoUpdateIP2Country=ini.GetBool(_T("AutoUPdateIP2Country"),true);
+	AutoUpdateIP2Country=ini.GetBool(_T("AutoUpdateIP2Country"),true);
 	UpdateURLIP2Country=ini.GetString(L"UpdateURLIP2Country", _T("http://ip-to-country.webhosting.info/downloads/ip-to-country.csv.zip"));
 	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
