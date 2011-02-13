@@ -2928,7 +2928,7 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("StartDLInEmptyCats"), m_iStartDLInEmptyCats);
 	ini.WriteBool(_T("UseAutoCat"), m_bUseAutoCat);
 	ini.WriteInt(_T("dlMode"),dlMode);
-	ini.WriteBool(L"AddRemovedInc", m_bAddRemovedInc,L"eMule");
+	ini.WriteBool(L"AddRemovedInc", m_bAddRemovedInc);
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
 	ini.WriteBool(_T("SpreadbarSetStatus"), m_bSpreadbarSetStatus); // Spread bars [Slugfiller/MorphXT] - Stulle
