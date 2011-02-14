@@ -160,6 +160,11 @@ protected:
 	bool m_bSpreadCreditsSlot;
 	int m_iSpreadCreditsSlotCounter;
 	// <== Spread Credits Slot [Stulle] - Stulle
+	// ==> Release Bonus [sivka] - Stulle
+	int m_iReleaseBonus;
+	int m_iReleaseBonusDays;
+	// <== Release Bonus [sivka] - Stulle
+	bool m_bReleaseScoreAssurance; // Release Score Assurance [Stulle] - Stulle
 	bool m_bSpreadBars; // Spread bars [Slugfiller/MorphXT] - Stulle
 	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 	int m_iHideOS;
@@ -167,12 +172,6 @@ protected:
 	int m_iShareOnlyTheNeed;
 	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 	int m_iFairPlay; // Fair Play [AndCycle/Stulle] - Stulle
-
-	// ==> Release Bonus [sivka] - Stulle
-	int m_iReleaseBonus;
-	int m_iReleaseBonusDays;
-	// <== Release Bonus [sivka] - Stulle
-	bool m_bReleaseScoreAssurance; // Release Score Assurance [Stulle] - Stulle
 
 	// ==> Global Source Limit [Max/Stulle] - Stulle
 	bool m_bGlobalHL;
@@ -388,14 +387,6 @@ protected:
 	HTREEITEM m_htiSpreadCreditsSlot;
 	HTREEITEM m_htiSpreadCreditsSlotCounter;
 	// <== Spread Credits Slot [Stulle] - Stulle,
-	HTREEITEM m_htiSpreadBars; // Spread bars [Slugfiller/MorphXT] - Stulle
-	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
-	HTREEITEM m_htiHideOS;
-	HTREEITEM m_htiSelectiveShare;
-	HTREEITEM m_htiShareOnlyTheNeed;
-	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
-	HTREEITEM m_htiFairPlay; // Fair Play [AndCycle/Stulle] - Stulle
-
 	// ==> Release Bonus [sivka] - Stulle
 	HTREEITEM m_htiReleaseBonusGroup;
 	HTREEITEM m_htiReleaseBonus0;
@@ -404,6 +395,13 @@ protected:
 	HTREEITEM m_htiReleaseBonusDaysEdit;
 	// <== Release Bonus [sivka] - Stulle
 	HTREEITEM m_htiReleaseScoreAssurance; // Release Score Assurance [Stulle] - Stulle
+	HTREEITEM m_htiSpreadBars; // Spread bars [Slugfiller/MorphXT] - Stulle
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	HTREEITEM m_htiHideOS;
+	HTREEITEM m_htiSelectiveShare;
+	HTREEITEM m_htiShareOnlyTheNeed;
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	HTREEITEM m_htiFairPlay; // Fair Play [AndCycle/Stulle] - Stulle
 
 	HTREEITEM m_htiMisc;
 	// ==> Global Source Limit [Max/Stulle] - Stulle

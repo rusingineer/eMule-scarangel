@@ -320,14 +320,6 @@ CPPgScar::CPPgScar()
 	m_htiSpreadCreditsSlot = NULL;
 	m_htiSpreadCreditsSlotCounter = NULL;
 	// <== Spread Credits Slot [Stulle] - Stulle
-	m_htiSpreadBars = NULL; // Spread bars [Slugfiller/MorphXT] - Stulle
-	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
-	m_htiHideOS = NULL;
-	m_htiSelectiveShare = NULL;
-	m_htiShareOnlyTheNeed = NULL;
-	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
-	m_htiFairPlay = NULL; // Fair Play [AndCycle/Stulle] - Stulle
-
 	// ==> Release Bonus [sivka] - Stulle
 	m_htiReleaseBonusGroup = NULL;
 	m_htiReleaseBonus0 = NULL;
@@ -336,6 +328,13 @@ CPPgScar::CPPgScar()
 	m_htiReleaseBonusDaysEdit = NULL;
 	// <== Release Bonus [sivka] - Stulle
 	m_htiReleaseScoreAssurance = NULL; // Release Score Assurance [Stulle] - Stulle
+	m_htiSpreadBars = NULL; // Spread bars [Slugfiller/MorphXT] - Stulle
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	m_htiHideOS = NULL;
+	m_htiSelectiveShare = NULL;
+	m_htiShareOnlyTheNeed = NULL;
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	m_htiFairPlay = NULL; // Fair Play [AndCycle/Stulle] - Stulle
 
 	m_htiMisc = NULL;
 	// ==> Global Source Limit [Max/Stulle] - Stulle
@@ -758,10 +757,20 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		// <== Limit PS by amount of data uploaded [Stulle] - Stulle
 		// ==> Spread Credits Slot [Stulle] - Stulle
 		m_htiSpreadCreditsSlotGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_SPREAD_CREDITS_SLOT), iImgSpreadCredits, m_htiSharedPrefs);
-		m_htiSpreadCreditsSlot = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SPREAD_CREDITS_SLOT), m_htiSpreadCreditsSlotGroup, m_bSpreadCreditsSlot);
+		m_htiSpreadCreditsSlot = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ENABLE), m_htiSpreadCreditsSlotGroup, m_bSpreadCreditsSlot);
 		m_htiSpreadCreditsSlotCounter = m_ctrlTreeOptions.InsertItem(GetResString(IDS_SPREAD_CREDITS_SLOT_COUNTER), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiSpreadCreditsSlotGroup);
 		m_ctrlTreeOptions.AddEditBox(m_htiSpreadCreditsSlotCounter, RUNTIME_CLASS(CNumTreeOptionsEdit));
 		// <== Spread Credits Slot [Stulle] - Stulle
+		// ==> Release Bonus [sivka] - Stulle
+		m_htiReleaseBonusGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_RELEASE_BONUS_GROUP), iImgReleaseBonus, m_htiSharedPrefs);
+		m_htiReleaseBonus0 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_POWERSHARE_DISABLED), m_htiReleaseBonusGroup, m_iReleaseBonus == 0);
+		m_htiReleaseBonus1 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_RELEASE_BONUS_12), m_htiReleaseBonusGroup, m_iReleaseBonus == 1);
+		m_htiReleaseBonusDays = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_DAYS2), m_htiReleaseBonusGroup, m_iReleaseBonus == 2);
+		m_htiReleaseBonusDaysEdit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_RELEASE_BONUS_EDIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiReleaseBonusDays);
+		m_ctrlTreeOptions.AddEditBox(m_htiReleaseBonusDaysEdit, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_ctrlTreeOptions.Expand(m_htiReleaseBonusDays, TVE_EXPAND);
+		// <== Release Bonus [sivka] - Stulle
+		m_htiReleaseScoreAssurance = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_RELEASE_SCORE_ASSURANCE), m_htiReleaseBonusGroup, m_bReleaseScoreAssurance); // Release Score Assurance [Stulle] - Stulle
 		m_htiSpreadBars = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SPREAD_BARS), m_htiSharedPrefs, m_bSpreadBars); // Spread bars [Slugfiller/MorphXT] - Stulle
 		// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 		m_htiHideOS = m_ctrlTreeOptions.InsertItem(GetResString(IDS_HIDEOVERSHARES), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiSpreadBars);
@@ -775,17 +784,6 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 		m_htiFairPlay = m_ctrlTreeOptions.InsertItem(GetResString(IDS_FAIR_PLAY), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiSharedPrefs);
 		m_ctrlTreeOptions.AddEditBox(m_htiFairPlay, RUNTIME_CLASS(CNumTreeOptionsEdit));
 		// <== Fair Play [AndCycle/Stulle] - Stulle
-
-		// ==> Release Bonus [sivka] - Stulle
-		m_htiReleaseBonusGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_RELEASE_BONUS_GROUP), iImgReleaseBonus, m_htiMisc);
-		m_htiReleaseBonus0 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_POWERSHARE_DISABLED), m_htiReleaseBonusGroup, m_iReleaseBonus == 0);
-		m_htiReleaseBonus1 = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_RELEASE_BONUS_12), m_htiReleaseBonusGroup, m_iReleaseBonus == 1);
-		m_htiReleaseBonusDays = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_DAYS2), m_htiReleaseBonusGroup, m_iReleaseBonus == 2);
-		m_htiReleaseBonusDaysEdit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_RELEASE_BONUS_EDIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiReleaseBonusDays);
-		m_ctrlTreeOptions.AddEditBox(m_htiReleaseBonusDaysEdit, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		m_ctrlTreeOptions.Expand(m_htiReleaseBonusDays, TVE_EXPAND);
-		// <== Release Bonus [sivka] - Stulle
-		m_htiReleaseScoreAssurance = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_RELEASE_SCORE_ASSURANCE), m_htiReleaseBonusGroup, m_bReleaseScoreAssurance); // Release Score Assurance [Stulle] - Stulle
 
 		m_htiMisc = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_MISC), iImgMisc, TVI_ROOT);
 		// ==> Global Source Limit [Max/Stulle] - Stulle
@@ -993,6 +991,12 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiSpreadCreditsSlotCounter, m_iSpreadCreditsSlotCounter);
 	DDV_MinMaxInt(pDX, m_iSpreadCreditsSlotCounter, 3, 20);
 	// <== Spread Credits Slot [Stulle] - Stulle
+	// ==> Release Bonus [sivka] - Stulle
+	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiReleaseBonusGroup, m_iReleaseBonus);
+	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiReleaseBonusDaysEdit, m_iReleaseBonusDays);
+	DDV_MinMaxInt(pDX, m_iReleaseBonusDays, 1, 16);
+	// <== Release Bonus [sivka] - Stulle
+	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiReleaseScoreAssurance, m_bReleaseScoreAssurance); // Release Score Assurance [Stulle] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiSpreadBars, m_bSpreadBars); // Spread bars [Slugfiller/MorphXT] - Stulle
 	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiHideOS, m_iHideOS);
@@ -1004,13 +1008,6 @@ void CPPgScar::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiFairPlay, m_iFairPlay);
 	DDV_MinMaxInt(pDX, m_iFairPlay, 0, 10);
 	// <== Fair Play [AndCycle/Stulle] - Stulle
-
-	// ==> Release Bonus [sivka] - Stulle
-	DDX_TreeRadio(pDX, IDC_SCAR_OPTS, m_htiReleaseBonusGroup, m_iReleaseBonus);
-	DDX_TreeEdit(pDX, IDC_SCAR_OPTS, m_htiReleaseBonusDaysEdit, m_iReleaseBonusDays);
-	DDV_MinMaxInt(pDX, m_iReleaseBonusDays, 1, 16);
-	// <== Release Bonus [sivka] - Stulle
-	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiReleaseScoreAssurance, m_bReleaseScoreAssurance); // Release Score Assurance [Stulle] - Stulle
 
 	// ==> Global Source Limit [Max/Stulle] - Stulle
 	DDX_TreeCheck(pDX, IDC_SCAR_OPTS, m_htiGlobalHL, m_bGlobalHL);
@@ -1399,14 +1396,6 @@ BOOL CPPgScar::OnInitDialog()
 	m_bSpreadCreditsSlot = thePrefs.GetSpreadCreditsSlot();
 	m_iSpreadCreditsSlotCounter = (int)(thePrefs.GetSpreadCreditsSlotCounter());
 	// <== Spread Credits Slot [Stulle] - Stulle
-	m_bSpreadBars = thePrefs.GetSpreadbarSetStatus(); // Spread bars [Slugfiller/MorphXT] - Stulle
-	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
-	m_iHideOS = thePrefs.hideOS;
-	m_bSelectiveShare = thePrefs.selectiveShare;
-	m_iShareOnlyTheNeed = thePrefs.ShareOnlyTheNeed;
-	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
-	m_iFairPlay = thePrefs.GetFairPlay(); // Fair Play [AndCycle/Stulle] - Stulle
-
 	// ==> Release Bonus [sivka] - Stulle
 	if (thePrefs.GetReleaseBonus() <= 1)
 	{
@@ -1420,6 +1409,13 @@ BOOL CPPgScar::OnInitDialog()
 	}
 	// <== Release Bonus [sivka] - Stulle
 	m_bReleaseScoreAssurance = thePrefs.GetReleaseScoreAssurance(); // Release Score Assurance [Stulle] - Stulle
+	m_bSpreadBars = thePrefs.GetSpreadbarSetStatus(); // Spread bars [Slugfiller/MorphXT] - Stulle
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	m_iHideOS = thePrefs.hideOS;
+	m_bSelectiveShare = thePrefs.selectiveShare;
+	m_iShareOnlyTheNeed = thePrefs.ShareOnlyTheNeed;
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	m_iFairPlay = thePrefs.GetFairPlay(); // Fair Play [AndCycle/Stulle] - Stulle
 
 	// ==> Global Source Limit [Max/Stulle] - Stulle
 	m_bGlobalHL = thePrefs.IsUseGlobalHL();
@@ -1926,14 +1922,6 @@ BOOL CPPgScar::OnApply()
 	thePrefs.SpreadCreditsSlot = m_bSpreadCreditsSlot;
 	thePrefs.SpreadCreditsSlotCounter = (uint16)m_iSpreadCreditsSlotCounter;
 	// <== Spread Credits Slot [Stulle] - Stulle
-	thePrefs.m_bSpreadbarSetStatus = m_bSpreadBars; // Spread bars [Slugfiller/MorphXT] - Stulle
-	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
-	thePrefs.hideOS = m_iHideOS;
-	thePrefs.selectiveShare = m_bSelectiveShare;
-	thePrefs.ShareOnlyTheNeed = m_iShareOnlyTheNeed!=0;
-	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
-	thePrefs.m_iFairPlay = m_iFairPlay; // Fair Play [AndCycle/Stulle] - Stulle
-
 	// ==> Release Bonus [sivka] - Stulle
 	if (m_iReleaseBonus <= 1)
         thePrefs.m_uReleaseBonus = (uint8)m_iReleaseBonus;
@@ -1941,6 +1929,13 @@ BOOL CPPgScar::OnApply()
 		thePrefs.m_uReleaseBonus = (uint8)(m_iReleaseBonusDays*2);
 	// <== Release Bonus [sivka] - Stulle
 	thePrefs.m_bReleaseScoreAssurance = m_bReleaseScoreAssurance; // Release Score Assurance [Stulle] - Stulle
+	thePrefs.m_bSpreadbarSetStatus = m_bSpreadBars; // Spread bars [Slugfiller/MorphXT] - Stulle
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	thePrefs.hideOS = m_iHideOS;
+	thePrefs.selectiveShare = m_bSelectiveShare;
+	thePrefs.ShareOnlyTheNeed = m_iShareOnlyTheNeed!=0;
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	thePrefs.m_iFairPlay = m_iFairPlay; // Fair Play [AndCycle/Stulle] - Stulle
 
 	// ==> Global Source Limit [Max/Stulle] - Stulle
 	if (thePrefs.GetGlobalHL() != (UINT)m_iGlobalHL ||
@@ -2187,6 +2182,7 @@ void CPPgScar::Localize(void)
 		// <== Tabbed Preferences [TPT] - Stulle
 
 		// ==> push small files [sivka] - Stulle
+		if (m_htiPush) m_ctrlTreeOptions.SetItemText(m_htiPush, GetResString(IDS_PUSH));
 		if (m_htiEnablePushSmallFile) m_ctrlTreeOptions.SetItemText(m_htiEnablePushSmallFile, GetResString(IDS_PUSH_SMALL));
 		if (m_htiPushSmallFileBoost) m_ctrlTreeOptions.SetEditLabel(m_htiPushSmallFileBoost, GetResString(IDS_PUSH_SMALL_BOOST));
 		GetDlgItem(IDC_PUSHSMALL_LABEL)->SetWindowText(GetResString(IDS_PUSH_SMALL));
@@ -2194,12 +2190,20 @@ void CPPgScar::Localize(void)
 		if (m_htiEnablePushRareFile) m_ctrlTreeOptions.SetItemText(m_htiEnablePushRareFile, GetResString(IDS_PUSH_RARE)); // push rare file - Stulle
 
 		// ==> FunnyNick [SiRoB/Stulle] - Stulle
+		if (m_htiFnTag) m_ctrlTreeOptions.SetItemText(m_htiFnTag, GetResString(IDS_FUNNYNICK));
 		if (m_htiFnActive) m_ctrlTreeOptions.SetItemText(m_htiFnActive,GetResString(IDS_ENABLE));
+		if (m_htiFnTagMode) m_ctrlTreeOptions.SetItemText(m_htiFnTagMode, GetResString(IDS_FN_TAG));
+		if (m_htiNoTag) m_ctrlTreeOptions.SetItemText(m_htiNoTag, GetResString(IDS_NO_TAG));
+		if (m_htiShortTag) m_ctrlTreeOptions.SetItemText(m_htiShortTag, GetResString(IDS_SHORT_TAG));
+		if (m_htiFullTag) m_ctrlTreeOptions.SetItemText(m_htiFullTag, GetResString(IDS_FULL_TAG));
+		if (m_htiCustomTag) m_ctrlTreeOptions.SetItemText(m_htiCustomTag, GetResString(IDS_CUSTOM_TAG));
 		if (m_htiFnCustomTag) m_ctrlTreeOptions.SetEditLabel(m_htiFnCustomTag, GetResString(IDS_SET_CUSTOM_TAG));
 		if (m_htiFnTagAtEnd) m_ctrlTreeOptions.SetItemText(m_htiFnTagAtEnd, GetResString(IDS_FN_TAG_AT_END));
 		// <== FunnyNick [SiRoB/Stulle] - Stulle
 
+		if (m_htiConTweaks) m_ctrlTreeOptions.SetItemText(m_htiConTweaks, GetResString(IDS_CON_TWEAKS));
 		// ==> Quick start [TPT] - Max
+		if (m_htiQuickStartGroup) m_ctrlTreeOptions.SetItemText(m_htiQuickStartGroup, GetResString(IDS_QUICK_START_GROUP));
 		if (m_htiQuickStart) m_ctrlTreeOptions.SetItemText(m_htiQuickStart, GetResString(IDS_QUICK_START));
 		if (m_htiQuickStartMaxTime) m_ctrlTreeOptions.SetEditLabel(m_htiQuickStartMaxTime, GetResString(IDS_QUICK_START_MAX_TIME));
 		if (m_htiQuickStartMaxConnPerFive) m_ctrlTreeOptions.SetEditLabel(m_htiQuickStartMaxConnPerFive, GetResString(IDS_QUICK_START_MAX_CONN_PER_FIVE));
@@ -2209,6 +2213,7 @@ void CPPgScar::Localize(void)
 		if (m_htiQuickStartAfterIPChange) m_ctrlTreeOptions.SetItemText(m_htiQuickStartAfterIPChange, GetResString(IDS_QUICK_START_AFTER_IP_CHANGE));
 		// <== Quick start [TPT] - Max
 		// ==> Enforce Ratio [Stulle] - Stulle
+		if (m_htiRatioGroup) m_ctrlTreeOptions.SetItemText(m_htiRatioGroup, GetResString(IDS_RATIO_GROUP));
 		if (m_htiEnforceRatio) m_ctrlTreeOptions.SetItemText(m_htiEnforceRatio, GetResString(IDS_ENFORCE_RATIO));
 		if (m_htiRatioValue) m_ctrlTreeOptions.SetEditLabel(m_htiRatioValue, GetResString(IDS_RATIO_VALUE));
 		// <== Enforce Ratio [Stulle] - Stulle
@@ -2242,8 +2247,24 @@ void CPPgScar::Localize(void)
 
 		// ==> Anti Uploader Ban [Stulle] - Stulle
 		if (m_htiAntiUploaderBanLimit) m_ctrlTreeOptions.SetEditLabel(m_htiAntiUploaderBanLimit, GetResString(IDS_UNBAN_UPLOADER));
+		if (m_htiAntiCase1) m_ctrlTreeOptions.SetItemText(m_htiAntiCase1, GetResString(IDS_ANTI_CASE_1));
+		if (m_htiAntiCase2) m_ctrlTreeOptions.SetItemText(m_htiAntiCase2, GetResString(IDS_ANTI_CASE_2));
+		if (m_htiAntiCase3) m_ctrlTreeOptions.SetItemText(m_htiAntiCase3, GetResString(IDS_ANTI_CASE_3));
 		// <== Anti Uploader Ban [Stulle] - Stulle
 
+		// ==> CreditSystems [EastShare/ MorphXT] - Stulle
+		if (m_htiCreditSystem) m_ctrlTreeOptions.SetItemText(m_htiCreditSystem, GetResString(IDS_CREDIT_SYSTEM));
+		if (m_htiOfficialCredit) m_ctrlTreeOptions.SetItemText(m_htiOfficialCredit, GetResString(IDS_OFFICIAL_CREDIT));
+		if (m_htiLovelaceCredit) m_ctrlTreeOptions.SetItemText(m_htiLovelaceCredit, GetResString(IDS_LOVELACE_CREDIT));
+		if (m_htiRatioCredit) m_ctrlTreeOptions.SetItemText(m_htiRatioCredit, GetResString(IDS_RATIO_CREDIT));
+		if (m_htiPawcioCredit) m_ctrlTreeOptions.SetItemText(m_htiPawcioCredit, GetResString(IDS_PAWCIO_CREDIT));
+		if (m_htiESCredit) m_ctrlTreeOptions.SetItemText(m_htiESCredit, GetResString(IDS_EASTSHARE_CREDIT));
+		if (m_htiSivkaCredit) m_ctrlTreeOptions.SetItemText(m_htiSivkaCredit, GetResString(IDS_SIVKA_CREDIT));
+		if (m_htiSwatCredit) m_ctrlTreeOptions.SetItemText(m_htiSwatCredit, GetResString(IDS_SWAT_CREDIT));
+		if (m_htiXmanCredit) m_ctrlTreeOptions.SetItemText(m_htiXmanCredit, GetResString(IDS_XMAN_CREDIT));
+		if (m_htiTk4Credit) m_ctrlTreeOptions.SetItemText(m_htiTk4Credit, GetResString(IDS_TK4_CREDIT));
+		if (m_htiZzulCredit) m_ctrlTreeOptions.SetItemText(m_htiZzulCredit, GetResString(IDS_ZZUL_CREDIT));
+		// <== CreditSystems [EastShare/ MorphXT] - Stulle
 		if (m_htiFineCS) m_ctrlTreeOptions.SetItemText(m_htiFineCS, GetResString(IDS_FINECS)); // Modified FineCS [CiccioBastardo/Stulle] - Stulle
 		// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 		if (m_htiIsPayBackFirst) m_ctrlTreeOptions.SetItemText(m_htiIsPayBackFirst, GetResString(IDS_PAYBACKFIRST));
@@ -2252,7 +2273,9 @@ void CPPgScar::Localize(void)
 		if (m_htiPayBackFirstLimit2) m_ctrlTreeOptions.SetEditLabel(m_htiPayBackFirstLimit2, GetResString(IDS_PAYBACKFIRSTLIMIT2));
 		// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 
+		if (m_htiDisplay) m_ctrlTreeOptions.SetItemText(m_htiDisplay, GetResString(IDS_PW_DISPLAY));
 		// ==> CPU/MEM usage [$ick$/Stulle] - Max
+		if (m_htiSysInfoGroup) m_ctrlTreeOptions.SetItemText(m_htiSysInfoGroup, GetResString(IDS_SYS_INFO_GROUP));
 		if (m_htiSysInfo) m_ctrlTreeOptions.SetItemText(m_htiSysInfo, GetResString(IDS_ENABLED));
 		if (m_htiSysInfoGlobal) m_ctrlTreeOptions.SetItemText(m_htiSysInfoGlobal, GetResString(IDS_SYS_INFO_GLOBAL));
 		// <== CPU/MEM usage [$ick$/Stulle] - Max
@@ -2304,6 +2327,7 @@ void CPPgScar::Localize(void)
 		// <== Static Tray Icon [MorphXT] - MyTh88
 
 		// ==> File Settings [sivka/Stulle] - Stulle
+		if (m_htiFileDefaults) m_ctrlTreeOptions.SetItemText(m_htiFileDefaults, GetResString(IDS_FILE_DEFAULTS));
 		if (m_htiAutoNNS) m_ctrlTreeOptions.SetItemText(m_htiAutoNNS, GetResString(IDS_AUTO_NNS));
 		if (m_htiAutoNNSTimer) m_ctrlTreeOptions.SetEditLabel(m_htiAutoNNSTimer, GetResString(IDS_NNS_TIMERLABEL));
 		if (m_htiAutoNNSLimit) m_ctrlTreeOptions.SetEditLabel(m_htiAutoNNSLimit, GetResString(IDS_REMOVENNSLIMITLABEL));
@@ -2318,7 +2342,7 @@ void CPPgScar::Localize(void)
 		// <== File Settings [sivka/Stulle] - Stulle
 
 		// ==> TBH: minimule - Max
-		if (m_htiMMGroup) m_ctrlTreeOptions.SetItemText(m_htiMMGroup, _T("TBH Mini-Mule"));
+		if (m_htiMMGroup) m_ctrlTreeOptions.SetItemText(m_htiMMGroup, GetResString(IDS_MM_GROUP));
 		if (m_htiShowMM) m_ctrlTreeOptions.SetItemText(m_htiShowMM, GetResString(IDS_MM_SHOW));
 		if (m_htiMMLives) m_ctrlTreeOptions.SetItemText(m_htiMMLives, GetResString(IDS_MM_LIVES));
 		if (m_htiMMUpdateTime) m_ctrlTreeOptions.SetEditLabel(m_htiMMUpdateTime, GetResString(IDS_MM_UPDATE_TIME));
@@ -2327,7 +2351,25 @@ void CPPgScar::Localize(void)
 		if (m_htiMMOpen) m_ctrlTreeOptions.SetItemText(m_htiMMOpen, GetResString(IDS_MM_OPEN));
 		// <== TBH: minimule - Max
 
+		// ==> Control download priority [tommy_gun/iONiX] - MyTh88
+		if (m_htiAutoDownPrioGroup) m_ctrlTreeOptions.SetItemText(m_htiAutoDownPrioGroup, GetResString(IDS_AUTO_DOWN_GROUP));
+		if (m_htiAutoDownPrioOff) m_ctrlTreeOptions.SetItemText(m_htiAutoDownPrioOff, GetResString(IDS_POWERSHARE_DISABLED));
+		if (m_htiAutoDownPrioPerc) m_ctrlTreeOptions.SetItemText(m_htiAutoDownPrioPerc, GetResString(IDS_AUTO_DOWN_PERC));
+		if (m_htiAutoDownPrioPercVal) m_ctrlTreeOptions.SetEditLabel(m_htiAutoDownPrioPercVal, GetResString(IDS_AUTO_DOWN_PERC_VAL));
+		if (m_htiAutoDownPrioSize) m_ctrlTreeOptions.SetItemText(m_htiAutoDownPrioSize, GetResString(IDS_AUTO_DOWN_SIZE));
+		if (m_htiAutoDownPrioSizeVal) m_ctrlTreeOptions.SetEditLabel(m_htiAutoDownPrioSizeVal, GetResString(IDS_AUTO_DOWN_SIZE_VAL));
+		if (m_htiAutoDownPrioValGroup) m_ctrlTreeOptions.SetItemText(m_htiAutoDownPrioValGroup, GetResString(IDS_AUTO_DOWN_PRIO));
+		if (m_htiAutoDownPrioLow) m_ctrlTreeOptions.SetItemText(m_htiAutoDownPrioLow, GetResString(IDS_PRIOLOW));
+		if (m_htiAutoDownPrioNormal) m_ctrlTreeOptions.SetItemText(m_htiAutoDownPrioNormal, GetResString(IDS_PRIONORMAL));
+		if (m_htiAutoDownPrioHigh) m_ctrlTreeOptions.SetItemText(m_htiAutoDownPrioHigh, GetResString(IDS_PRIOHIGH));
+		// <== Control download priority [tommy_gun/iONiX] - MyTh88
+
 		// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+		if (m_htiSCC) m_ctrlTreeOptions.SetItemText(m_htiSCC, GetResString(IDS_SCC));
+		if (m_htiDlMode) m_ctrlTreeOptions.SetItemText(m_htiDlMode, GetResString(IDS_DL_MODE_DEFAULT));
+		if (m_htiDlNone) m_ctrlTreeOptions.SetItemText(m_htiDlNone, GetResString(IDS_DL_NONE));
+		if (m_htiDlAlph) m_ctrlTreeOptions.SetItemText(m_htiDlAlph, GetResString(IDS_DOWNLOAD_ALPHABETICAL));
+		if (m_htiDlLP) m_ctrlTreeOptions.SetItemText(m_htiDlLP, GetResString(IDS_LP));
 		if (m_htiShowCatNames) m_ctrlTreeOptions.SetItemText(m_htiShowCatNames, GetResString(IDS_CAT_SHOWCATNAME));
 		if (m_htiSelectCat) m_ctrlTreeOptions.SetItemText(m_htiSelectCat, GetResString(IDS_CAT_SHOWSELCATDLG));
 		if (m_htiUseAutoCat) m_ctrlTreeOptions.SetItemText(m_htiUseAutoCat, GetResString(IDS_CAT_USEAUTOCAT));
@@ -2338,6 +2380,7 @@ void CPPgScar::Localize(void)
 		if (m_bAddRemovedInc) m_ctrlTreeOptions.SetItemText(m_htiAddRemovedInc, GetResString(IDS_ADD_REMOVED_INC));
 		// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
+		if (m_htiSharedPrefs) m_ctrlTreeOptions.SetItemText(m_htiSharedPrefs, GetResString(IDS_SHARED_PREFS));
 		// ==> PowerShare [ZZ/MorphXT] - Stulle
 		if (m_htiPowershareMode) m_ctrlTreeOptions.SetItemText(m_htiPowershareMode, GetResString(IDS_POWERSHARE));
 		if (m_htiPowershareDisabled) m_ctrlTreeOptions.SetItemText(m_htiPowershareDisabled, GetResString(IDS_POWERSHARE_DISABLED));
@@ -2350,9 +2393,18 @@ void CPPgScar::Localize(void)
 		if (m_htiPsAmountLimit) m_ctrlTreeOptions.SetEditLabel(m_htiPsAmountLimit, GetResString(IDS_PS_AMOUNT_LIMIT));
 		// <== Limit PS by amount of data uploaded [Stulle] - Stulle
 		// ==> Spread Credits Slot [Stulle] - Stulle
-		if (m_htiSpreadCreditsSlot) m_ctrlTreeOptions.SetItemText(m_htiSpreadCreditsSlot, GetResString(IDS_SPREAD_CREDITS_SLOT));
+		if (m_htiSpreadCreditsSlotGroup) m_ctrlTreeOptions.SetItemText(m_htiSpreadCreditsSlotGroup, GetResString(IDS_SPREAD_CREDITS_SLOT));
+		if (m_htiSpreadCreditsSlot) m_ctrlTreeOptions.SetItemText(m_htiSpreadCreditsSlot, GetResString(IDS_ENABLE));
 		if (m_htiSpreadCreditsSlotCounter) m_ctrlTreeOptions.SetEditLabel(m_htiSpreadCreditsSlotCounter, GetResString(IDS_SPREAD_CREDITS_SLOT_COUNTER));
 		// <== Spread Credits Slot [Stulle] - Stulle
+		// ==> Release Bonus [sivka] - Stulle
+		if (m_htiReleaseBonusGroup) m_ctrlTreeOptions.SetItemText(m_htiReleaseBonusGroup, GetResString(IDS_RELEASE_BONUS_GROUP));
+		if (m_htiReleaseBonus0) m_ctrlTreeOptions.SetItemText(m_htiReleaseBonus0, GetResString(IDS_POWERSHARE_DISABLED));
+		if (m_htiReleaseBonus1) m_ctrlTreeOptions.SetItemText(m_htiReleaseBonus1, GetResString(IDS_RELEASE_BONUS_12));
+		if (m_htiReleaseBonusDays) m_ctrlTreeOptions.SetItemText(m_htiReleaseBonusDays, GetResString(IDS_DAYS2));
+		if (m_htiReleaseBonusDaysEdit) m_ctrlTreeOptions.SetEditLabel(m_htiReleaseBonusDaysEdit, GetResString(IDS_RELEASE_BONUS_EDIT));
+		// <== Release Bonus [sivka] - Stulle
+		if (m_htiReleaseScoreAssurance) m_ctrlTreeOptions.SetItemText(m_htiReleaseScoreAssurance, GetResString(IDS_RELEASE_SCORE_ASSURANCE)); // Release Score Assurance [Stulle] - Stulle
 		if (m_htiSpreadBars) m_ctrlTreeOptions.SetItemText(m_htiSpreadBars, GetResString(IDS_SPREAD_BARS)); // Spread bars [Slugfiller/MorphXT] - Stulle
 		// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 		if (m_htiHideOS) m_ctrlTreeOptions.SetEditLabel(m_htiHideOS, GetResString(IDS_HIDEOVERSHARES));
@@ -2361,15 +2413,16 @@ void CPPgScar::Localize(void)
 		// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 		if (m_htiFairPlay) m_ctrlTreeOptions.SetEditLabel(m_htiFairPlay, GetResString(IDS_FAIR_PLAY)); // Fair Play [AndCycle/Stulle] - Stulle
 
-		if (m_htiReleaseScoreAssurance) m_ctrlTreeOptions.SetItemText(m_htiReleaseScoreAssurance, GetResString(IDS_RELEASE_SCORE_ASSURANCE)); // Release Score Assurance [Stulle] - Stulle
-
+		if (m_htiMisc) m_ctrlTreeOptions.SetItemText(m_htiMisc, GetResString(IDS_MISC));
 		// ==> Global Source Limit [Max/Stulle] - Stulle
+		if (m_htiGlobalHlGroup) m_ctrlTreeOptions.SetItemText(m_htiGlobalHlGroup, GetResString(IDS_GLOBAL_HL));
 		if (m_htiGlobalHL) m_ctrlTreeOptions.SetItemText(m_htiGlobalHL, GetResString(IDS_ENABLE));
 		if (m_htiGlobalHlLimit) m_ctrlTreeOptions.SetEditLabel(m_htiGlobalHlLimit, GetResString(IDS_GLOBAL_HL_LIMIT));
 		if (m_htiGlobalHlAll) m_ctrlTreeOptions.SetItemText(m_htiGlobalHlAll, GetResString(IDS_GLOBAL_HL_ALL));
 		if (m_htiGlobalHlDefault) m_ctrlTreeOptions.SetItemText(m_htiGlobalHlDefault, GetResString(IDS_GLOBAL_HL_DEFAULT));
 		// <== Global Source Limit [Max/Stulle] - Stulle
 		// ==> Emulate others [WiZaRd/Spike/shadow2004] - Stulle
+		if (m_htiEmulatorGroup) m_ctrlTreeOptions.SetItemText(m_htiEmulatorGroup, GetResString(IDS_EMULATOR_GROUP));
 		if (m_htiEmuMLDonkey) m_ctrlTreeOptions.SetItemText(m_htiEmuMLDonkey, GetResString(IDS_EMULATE_ML));
 		if (m_htiEmueDonkey) m_ctrlTreeOptions.SetItemText(m_htiEmueDonkey, GetResString(IDS_EMULATE_DONK));
 		if (m_htiEmueDonkeyHybrid) m_ctrlTreeOptions.SetItemText(m_htiEmueDonkeyHybrid, GetResString(IDS_EMULATE_DONK_HYB));
@@ -2378,6 +2431,7 @@ void CPPgScar::Localize(void)
 		if (m_htiLogEmulator) m_ctrlTreeOptions.SetItemText(m_htiLogEmulator, GetResString(IDS_EMULATE_LOG));
 		// <== Emulate others [WiZaRd/Spike/shadow2004] - Stulle
 		// ==> Automatic shared files updater [MoNKi] - Stulle
+		if (m_htiAutoSharedGroup) m_ctrlTreeOptions.SetItemText(m_htiAutoSharedGroup, GetResString(IDS_AUTO_SHARED_UPDATER));
 		if (m_htiAutoSharedUpdater) m_ctrlTreeOptions.SetItemText(m_htiAutoSharedUpdater, GetResString(IDS_ENABLE));
 		if (m_htiSingleSharedDirUpdater) m_ctrlTreeOptions.SetItemText(m_htiSingleSharedDirUpdater,GetResString(IDS_ASFU_SINGLE));
 		if (m_htiTimeBetweenReloads) m_ctrlTreeOptions.SetEditLabel(m_htiTimeBetweenReloads, GetResString(IDS_ASFU_TIMEBETWEEN));
@@ -2412,9 +2466,11 @@ void CPPgScar::Localize(void)
 		// <== Design Settings [eWombat/Stulle] - Stulle
 
 		// ==> Advanced Options [Official/MorphXT] - Stulle
+		if (m_hti_AdvMiniMule) m_ctrlTreeOptions.SetItemText(m_hti_AdvMiniMule, GetResString(IDS_MINIMULE));
 		if (m_hti_bMiniMuleAutoClose) m_ctrlAdvTreeOptions.SetItemText(m_hti_bMiniMuleAutoClose, GetResString(IDS_MINIMULEAUTOCLOSE));
 		if (m_hti_iMiniMuleTransparency) m_ctrlAdvTreeOptions.SetEditLabel(m_hti_iMiniMuleTransparency, GetResString(IDS_MINIMULETRANSPARENCY));
 
+		if (m_hti_MediaInfo) m_ctrlTreeOptions.SetItemText(m_hti_MediaInfo, GetResString(IDS_FILEINFO));
 		if (m_hti_sMediaInfo_MediaInfoDllPath) m_ctrlAdvTreeOptions.SetEditLabel(m_hti_sMediaInfo_MediaInfoDllPath, GetResString(IDS_MEDIAINFO_MEDIAINFODLLPATH));
 		if (m_hti_bMediaInfo_RIFF) m_ctrlAdvTreeOptions.SetItemText(m_hti_bMediaInfo_RIFF, GetResString(IDS_MEDIAINFO_RIFF));
 		if (m_hti_bMediaInfo_ID3LIB) m_ctrlAdvTreeOptions.SetItemText(m_hti_bMediaInfo_ID3LIB, GetResString(IDS_MEDIAINFO_ID3LIB));
@@ -2426,6 +2482,7 @@ void CPPgScar::Localize(void)
 		if (m_hti_MediaInfo_WM) m_ctrlAdvTreeOptions.SetItemText(m_hti_MediaInfo_WM, GetResString(IDS_MEDIAINFO_WM));
 #endif//HAVE_WMSDK_H
 
+		if (m_hti_AdvDisplay) m_ctrlTreeOptions.SetItemText(m_hti_AdvDisplay, GetResString(IDS_PW_DISPLAY));
 		if (m_hti_m_bRestoreLastMainWndDlg) m_ctrlAdvTreeOptions.SetItemText(m_hti_m_bRestoreLastMainWndDlg, GetResString(IDS_RESTORELASTMAINWNDDLG));
 		if (m_hti_m_bRestoreLastLogPane) m_ctrlAdvTreeOptions.SetItemText(m_hti_m_bRestoreLastLogPane, GetResString(IDS_RESTORELASTLOGPANE));
 		if (m_hti_m_iStraightWindowStyles) m_ctrlAdvTreeOptions.SetEditLabel(m_hti_m_iStraightWindowStyles, GetResString(IDS_STRAIGHTWINDOWSTYLES));
@@ -2444,6 +2501,7 @@ void CPPgScar::Localize(void)
 		if (m_htiShowUpDownIconInTaskbar) m_ctrlAdvTreeOptions.SetItemText(m_htiShowUpDownIconInTaskbar, GetResString(IDS_SHOWUPDOWNICONINTASKBAR));
 		if (m_htiForceSpeedsToKB) m_ctrlAdvTreeOptions.SetItemText(m_htiForceSpeedsToKB, GetResString(IDS_FORCESPEEDSTOKB));
 
+		if (m_hti_Log) m_ctrlTreeOptions.SetItemText(m_hti_Log, GetResString(IDS_SV_LOG));
 		if (m_hti_m_iLogFileFormat) m_ctrlAdvTreeOptions.SetItemText(m_hti_m_iLogFileFormat, GetResString(IDS_LOGFILEFORMAT));
 		if (m_hti_iMaxLogBuff) m_ctrlAdvTreeOptions.SetEditLabel(m_hti_iMaxLogBuff, GetResString(IDS_MAXLOGBUFF));
 		if (m_htidatetimeformat4log) m_ctrlAdvTreeOptions.SetEditLabel(m_htidatetimeformat4log, GetResString(IDS_X_DATETIMEFORMAT4LOG));
@@ -2757,14 +2815,6 @@ void CPPgScar::OnDestroy()
 	m_htiSpreadCreditsSlot = NULL;
 	m_htiSpreadCreditsSlotCounter = NULL;
 	// <== Spread Credits Slot [Stulle] - Stulle
-	m_htiSpreadBars = NULL; // Spread bars [Slugfiller/MorphXT] - Stulle
-	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
-	m_htiHideOS = NULL;
-	m_htiSelectiveShare = NULL;
-	m_htiShareOnlyTheNeed = NULL;
-	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
-	m_htiFairPlay = NULL; // Fair Play [AndCycle/Stulle] - Stulle
-
 	// ==> Release Bonus [sivka] - Stulle
 	m_htiReleaseBonusGroup = NULL;
 	m_htiReleaseBonus0 = NULL;
@@ -2773,6 +2823,13 @@ void CPPgScar::OnDestroy()
 	m_htiReleaseBonusDaysEdit = NULL;
 	// <== Release Bonus [sivka] - Stulle
 	m_htiReleaseScoreAssurance = NULL; // Release Score Assurance [Stulle] - Stulle
+	m_htiSpreadBars = NULL; // Spread bars [Slugfiller/MorphXT] - Stulle
+	// ==> HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	m_htiHideOS = NULL;
+	m_htiSelectiveShare = NULL;
+	m_htiShareOnlyTheNeed = NULL;
+	// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
+	m_htiFairPlay = NULL; // Fair Play [AndCycle/Stulle] - Stulle
 
 	m_htiMisc = NULL;
 	// ==> Global Source Limit [Max/Stulle] - Stulle
