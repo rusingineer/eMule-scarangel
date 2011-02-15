@@ -57,6 +57,7 @@ Xtreme 8.0
 - fixed: Remove client from DownloadClientsList on RemoveSource (WiZaRd)
 - fixed: Don't publish incomplete small files (WiZaRd)
 - fixed: Fix for setting buddy state on removing buddy (WiZaRd)
+- fixed: Potential devision by zero in UploadBandwidthThrottler (Stulle)
 - removed: Send user agent for http downloads only when obfusc enabled code (redundant) (Xman)
 partially updated to 8.0 by zz_fly:
 - add: Fincan community hash detection (WiZaRd)

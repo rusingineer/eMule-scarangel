@@ -394,7 +394,7 @@ bool UploadBandwidthThrottler::RemoveFromStandardListNoLock(ThrottledFileSocket*
 			realallowedDatarate -= ( counttrickles * 500);
 			const uint16 savedbytes = counttrickles > 1 ? 500 : 0;
 			//calculate the wanted slots
-			uint16 slots=(uint16)(realallowedDatarate/slotspeed);
+			uint16 slots=(uint16)max(realallowedDatarate/slotspeed,1);
 			if((realallowedDatarate-slots*slotspeed) > ((slots+1)*slotspeed-realallowedDatarate) - savedbytes)
 			{
 				slots++;
@@ -859,7 +859,7 @@ UINT UploadBandwidthThrottler::RunInternal() {
 			const uint16 savedbytes = counttrickles > 1 ? 500 : 0;
 
 			//calculate the wanted slots
-			uint16 slots=(uint16)(realallowedDatarate/slotspeed);
+			uint16 slots=(uint16)(max(realallowedDatarate/slotspeed,1));
 			if(slots>=m_StandardOrder_list.GetSize())
 			{	//we don't have enough slots
 				needslot=true;
