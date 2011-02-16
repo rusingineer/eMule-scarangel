@@ -23,6 +23,7 @@ Fixed: Setting HOS was cancled when setting remained unchanged for one file [Stu
 Fixed: Minor display bug around default for PowerShare limit [Stulle] - Stulle
 Fixed: AutoUpdateIP2Country differed on loading and saving preferences [jerryBG] - Stulle
 Fixed: Localization of ScarAngel Settings was incomplete [Stulle] - Stulle
+Fixed: Bad graph label display when Source Graph was disabled [Stulle] - Stulle
 
 Removed: New official Ask-On-Exit Dlg in favor of ScarAngel one (NTService) [Stulle] - Stulle
 

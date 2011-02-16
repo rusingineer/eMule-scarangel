@@ -41,6 +41,9 @@ Xtreme 8.0
 - add: Some more countries to country flags feature (tomchen1989)
 - add: ATL Server code for VS2008/2010 compilation (Stulle)
 - add: added VS10 solution and project files (Stulle)
+- add: Ability to translate "Network Adapter" and "eMule control + data" for graphs (Stulle)
+- add: Own color option for Network Adapter graph line (Stulle)
+	requires Network Adapter color to be configured on update
 - improved: Made SafeHash ready for new AICH based file identifier (like official) (Stulle)
 - improved: update SafeHash from Morph (Stulle)
 - improved: update Flush Thread and Read Block From File Thread (Morph/Sirob)

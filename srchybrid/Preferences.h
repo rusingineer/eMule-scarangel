@@ -359,11 +359,17 @@ public:
 	static	bool	beepOnError;
 	static	bool	confirmExit;
 
-	// ==> Source Graph - Stulle
+	//Xman Xtreme Upload: this graph isn't shown at xtreme
+	//Maella Bandwidth control
 	/*
 	static	DWORD	m_adwStatsColors[15];
 	*/
-	static	DWORD	m_adwStatsColors[16];
+	// ==> Source Graph - Stulle
+	/*
+	static	DWORD	m_adwStatsColors[14];
+	//Xman end
+	*/
+	static	DWORD	m_adwStatsColors[15];
 	// <== Source Graph - Stulle
 	static	bool	bHasCustomTaskIconColor;
 	static  bool	m_bIconflashOnNewMessage;

@@ -2637,6 +2637,8 @@
 #define IDC_BTN_MENU                    5104 //Friendlinks
 #define IDC_RETRIEVEMTUFROMSOCKET		5105 // netfinity: Maximum Segment Size (MSS - Vista only) //added by zz_fly
 #define IDC_ANTILEECHERFINCAN_CHECK		5106 //X-Ray :: Fincan Hash Detection
+#define IDS_EMULE_CTRL_DATA             5107
+#define IDS_NETWORK_ADAPTER             5108
 #define IDA_ENTER                       32771
 // ==> ScarAngel Preferences window - Stulle
 #define IDD_PPG_SCAR                    60000

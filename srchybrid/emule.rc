@@ -5266,6 +5266,8 @@ BEGIN
     IDS_ANTILEECHERFINCAN_CHECK 
                             "Detect Fincan Community Hash (CPU intensive!)"
     IDS_ENABLEKNOWN2SPLIT   "Split Known2_64.met, let unshared AICHHashsets in a single file"
+    IDS_EMULE_CTRL_DATA     "eMule control + data"
+    IDS_NETWORK_ADAPTER     "Network Adapter"
 END
 
 STRINGTABLE 

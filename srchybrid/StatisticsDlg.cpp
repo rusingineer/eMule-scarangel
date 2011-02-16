@@ -813,12 +813,12 @@ void CStatisticsDlg::RepaintMeters()
 	m_DownloadOMeter.SetPlotColor(thePrefs.GetStatsColor(3), MINUTE);
 	m_DownloadOMeter.SetPlotColor(thePrefs.GetStatsColor(4), SESSION);
 	m_DownloadOMeter.SetPlotColor(thePrefs.GetStatsColor(12), OVERALL);
-	m_DownloadOMeter.SetPlotColor(thePrefs.GetStatsColor(10), ADAPTER);
+	m_DownloadOMeter.SetPlotColor(thePrefs.GetStatsColor(13), ADAPTER);
 	m_DownloadOMeter.SetBarsPlot(thePrefs.GetFillGraphs(), CURRENT);
 	m_DownloadOMeter.SetBarsPlot(thePrefs.GetFillGraphs() && !thePrefs.GetNAFCFullControl(), OVERALL);
 	m_DownloadOMeter.SetBarsPlot(thePrefs.GetFillGraphs() && thePrefs.GetNAFCFullControl(), ADAPTER);
 	// ==> Source Graph - Stulle
-	m_DownloadOMeter.SetPlotColor(thePrefs.GetStatsColor(15) ,5) ;
+	m_DownloadOMeter.SetPlotColor(thePrefs.GetStatsColor(14) ,5) ;
 	// <== Source Graph - Stulle
 
 	m_UploadOMeter.SetBackgroundColor(thePrefs.GetStatsColor(0)) ;
@@ -847,8 +847,8 @@ void CStatisticsDlg::RepaintMeters()
 	Buffer.Format(_T(" (%u %s)"),thePrefs.GetStatsAverageMinutes(),GetResString(IDS_MINS));
 	m_DownloadOMeter.SetLegendLabel(GetResString(IDS_AVG)+Buffer,MINUTE);
 	m_DownloadOMeter.SetLegendLabel(GetResString(IDS_ST_SESSION),SESSION);
-	m_DownloadOMeter.SetLegendLabel(_T("eMule control + data"),OVERALL);
-	m_DownloadOMeter.SetLegendLabel(_T("Network Adapter"),ADAPTER);
+	m_DownloadOMeter.SetLegendLabel(GetResString(IDS_EMULE_CTRL_DATA),OVERALL);
+	m_DownloadOMeter.SetLegendLabel(GetResString(IDS_NETWORK_ADAPTER),ADAPTER);
 	// ==> Source Graph - Stulle
 	if (thePrefs.GetSrcGraph())
 	{
@@ -858,7 +858,7 @@ void CStatisticsDlg::RepaintMeters()
 	else
 	{
 		Buffer.Format(_T(" (%s)"),GetResString(IDS_DISABLED));
-		m_DownloadOMeter.SetLegendLabel(GetResString(IDS_SP_SRCGRAPH)+Buffer,3);
+		m_DownloadOMeter.SetLegendLabel(GetResString(IDS_SP_SRCGRAPH)+Buffer,5);
 	}
 	// <== Source Graph - Stulle
 
@@ -868,8 +868,8 @@ void CStatisticsDlg::RepaintMeters()
 	Buffer.Format(_T(" (%u %s)"),thePrefs.GetStatsAverageMinutes(),GetResString(IDS_MINS));
 	m_UploadOMeter.SetLegendLabel(GetResString(IDS_AVG)+Buffer,MINUTE);
 	m_UploadOMeter.SetLegendLabel(GetResString(IDS_ST_SESSION),SESSION);
-	m_UploadOMeter.SetLegendLabel(_T("eMule control + data"),OVERALL);
-	m_UploadOMeter.SetLegendLabel(_T("Network Adapter"),ADAPTER);
+	m_UploadOMeter.SetLegendLabel(GetResString(IDS_EMULE_CTRL_DATA),OVERALL);
+	m_UploadOMeter.SetLegendLabel(GetResString(IDS_NETWORK_ADAPTER),ADAPTER);
 	
 
 	m_Statistics.SetYUnits(GetResString(IDS_FSTAT_CONNECTION)); //Connections
