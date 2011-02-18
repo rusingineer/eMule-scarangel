@@ -862,9 +862,24 @@ void CUpDownClient::CreateNextBlockPackage(){
 			//-->we first have to check if we have unprocessed data (can happen if full chunk is disabled)
 			//-->first process it, then check for timeOver
 			//-->in case of an exception, allow to throw it
-			if(m_abyfiledata == NULL || m_readblockthread == NULL)
+			// Stulle remarks:
+			// This used to be "filedata==null" but then it was only filedata. Now we distinguish
+			// in m_abyfiledata and filedata_ReadFromDisk. So back then we reset the filedata member
+			// variable to NULL when we created new block packages from the read data. Now we use
+			// m_abyfiledata to read blocks from disk to memory. The pointer to that data is then
+			// copied to the local filedata_ReadFromDisk inside this function (see below). At that
+			// point we request new data to be read and later on proceed to create the new packages
+			// using the data filedata_ReadFromDisk is pointing to. When this is done we set that
+			// pointer back to NULL and we begin anew.
+			// So what can we gather from this? Well, first of all, m_abyfiledata is only getting NULL
+			// when we get to ClearUploadBlockRequests() or have an exception. So we can't just check
+			// for m_abyfiledata==NULL because this will seldomly ever return true. In order to adapt
+			// our best bet is to check whenever we don't read at this time or have an error. We can
+			// then break if m_abyfiledata is empty and if it isn't we will at least stop new requests
+			// from being carried out.
+			if(m_abyfiledata != (byte*)-1) // we don't get here if m_abyfiledata != (byte*)-2 returns true
 				upendsoon = theApp.uploadqueue->CheckForTimeOver(this);
-			if(upendsoon)
+			if(upendsoon && m_abyfiledata == NULL)
 				break;
 			//Xman end
 
@@ -894,7 +909,13 @@ void CUpDownClient::CreateNextBlockPackage(){
 				if (pos) //if we have more than one block in queue get the second one
 					currentBlock = m_BlockRequests_queue.GetAt(pos);
 			}
+			//Xman Full Chunk
+			/*
 			if (filedata_ReadFromDisk == NULL || m_BlockRequests_queue.GetCount()>1) {
+			*/
+			// We don't read new data if we are about to end the upload
+			if (!upendsoon && (filedata_ReadFromDisk == NULL || m_BlockRequests_queue.GetCount()>1)) {
+			//Xman end
 				CKnownFile* srcFile = theApp.sharedfiles->GetFileByID(currentBlock->FileID);
 				if (!srcFile)
 					throw GetResString(IDS_ERR_REQ_FNF);
