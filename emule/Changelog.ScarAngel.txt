@@ -24,6 +24,7 @@ Fixed: Minor display bug around default for PowerShare limit [Stulle] - Stulle
 Fixed: AutoUpdateIP2Country differed on loading and saving preferences [jerryBG] - Stulle
 Fixed: Localization of ScarAngel Settings was incomplete [Stulle] - Stulle
 Fixed: Bad graph label display when Source Graph was disabled [Stulle] - Stulle
+Fixed: Crashfix for reloading share via ASFU under certain circumstances [WiZaRd] - Stulle
 
 Removed: New official Ask-On-Exit Dlg in favor of ScarAngel one (NTService) [Stulle] - Stulle
 

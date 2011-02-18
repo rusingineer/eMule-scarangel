@@ -3324,7 +3324,8 @@ UINT CemuleApp::CheckDirectoryForChangesThread(LPVOID /*pParam*/)
 
 							m_directoryWatcherReloadEvent->ResetEvent();
 //							theApp.sharedfiles->Reload();
-							theApp.emuledlg->sharedfileswnd->Reload(true);
+//							theApp.emuledlg->sharedfileswnd->Reload(true);
+							theApp.emuledlg->sharedfileswnd->SendMessage(WM_COMMAND, IDC_RELOADSHAREDFILES); // fix by Wiz
 							lastReloadTime = ::GetTickCount();
 						}
 					}
