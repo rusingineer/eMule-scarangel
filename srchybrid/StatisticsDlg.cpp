@@ -827,7 +827,7 @@ void CStatisticsDlg::RepaintMeters()
 	m_UploadOMeter.SetPlotColor(thePrefs.GetStatsColor(6), MINUTE);
 	m_UploadOMeter.SetPlotColor(thePrefs.GetStatsColor(7), SESSION);
 	m_UploadOMeter.SetPlotColor(thePrefs.GetStatsColor(12), OVERALL);
-	m_UploadOMeter.SetPlotColor(thePrefs.GetStatsColor(10), ADAPTER);
+	m_UploadOMeter.SetPlotColor(thePrefs.GetStatsColor(13), ADAPTER);
 	m_UploadOMeter.SetBarsPlot(thePrefs.GetFillGraphs(), CURRENT);
 	m_UploadOMeter.SetBarsPlot(thePrefs.GetFillGraphs() && !thePrefs.GetNAFCFullControl(), OVERALL);
 	m_UploadOMeter.SetBarsPlot(thePrefs.GetFillGraphs() && thePrefs.GetNAFCFullControl(), ADAPTER);
