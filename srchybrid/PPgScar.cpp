@@ -2042,7 +2042,7 @@ BOOL CPPgScar::OnApply()
 		theApp.emuledlg->toolbar->UpdateBackground();
 		theApp.emuledlg->toolbar->RedrawWindow();
 
-		theApp.emuledlg->activewnd->RedrawWindow();//redraw only the active Wnd after color change - Max
+		theApp.emuledlg->activewnd->RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE | RDW_FRAME | RDW_ALLCHILDREN);//redraw only the active Wnd after color change - Max
 	}
 	// <== Design Settings [eWombat/Stulle] - Stulle
 

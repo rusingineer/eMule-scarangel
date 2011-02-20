@@ -25,6 +25,7 @@ Fixed: AutoUpdateIP2Country differed on loading and saving preferences [jerryBG]
 Fixed: Localization of ScarAngel Settings was incomplete [Stulle] - Stulle
 Fixed: Bad graph label display when Source Graph was disabled [Stulle] - Stulle
 Fixed: Crashfix for reloading share via ASFU under certain circumstances [WiZaRd] - Stulle
+Fixed: Current window was not entirely redrawn on changing window color [Stulle] - Stulle
 
 Removed: New official Ask-On-Exit Dlg in favor of ScarAngel one (NTService) [Stulle] - Stulle
 
