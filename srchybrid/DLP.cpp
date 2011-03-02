@@ -38,6 +38,12 @@
 #include "HttpDownloadDlg.h"
 #include "SafeFile.h"
 //X-Ray :: Fincan Hash Detection :: End
+// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+#include "emule.h"
+#include "emuleDlg.h"
+#include "PreferencesDlg.h"
+#include "PPgScar.h"
+// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -45,9 +51,10 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-CDLP::CDLP(CString appdir_in)
+CDLP::CDLP(CString appdir_in, CString configdir_in)
 {
 	appdir=appdir_in;
+	configdir=configdir_in;
 
 	dlpavailable=false;
 	dlpInstance=NULL;
@@ -67,10 +74,13 @@ void CDLP::Reload()
 	dlpavailable=false;
 	bool waserror=false;
 
-	CString newdll=appdir + _T("antiLeech.dll.new");
-	CString olddll=appdir + _T("antiLeech.dll.old");
-	CString currentdll=appdir + _T("antiLeech.dll");
+	CString newdll=configdir + _T("antiLeech.dll.new");
+	CString olddll=configdir + _T("antiLeech.dll.old");
+	CString currentdll=configdir + _T("antiLeech.dll");
 
+	CString newdll_legacy=appdir + _T("antiLeech.dll.new");
+	CString olddll_legacy=appdir + _T("antiLeech.dll.old");
+	CString currentdll_legacy=appdir + _T("antiLeech.dll");
 
 	if(PathFileExists(newdll))
 	{
@@ -99,6 +109,76 @@ void CDLP::Reload()
 		}
 		if(waserror)
 			AddLogLine(false,_T("error during copying the antiLeech.dll's, try to load the old one"));
+
+		if(PathFileExists(newdll_legacy) && _tremove(newdll_legacy)!=0)
+			AddLogLine(true,_T("Also found new version of antiLeech.dll in appdir but couldn't remove antiLeech.dll.new from there. Please remove it manually from %s!"),appdir);
+		if(PathFileExists(currentdll_legacy) && _tremove(currentdll_legacy)!=0)
+			AddLogLine(true,_T("Couldn't remove antiLeech.dll from appdir after importing. Please remove it manually from %s!"),appdir);
+		if(PathFileExists(olddll_legacy) && _tremove(olddll_legacy)!=0)
+			AddLogLine(true,_T("Couldn't remove antiLeech.dll.old from appdir after importing. Please remove it manually from %s!"),appdir);
+	}
+	else if(PathFileExists(newdll_legacy))
+	{
+		AddLogLine(false,_T("found new version of antiLeech.dll in appdir, attempting import"));
+		//new version exists in appdir, try to unload the old and load the new one
+		if(dlpInstance!=NULL)
+		{
+			::FreeLibrary(dlpInstance);
+			dlpInstance=NULL;
+		}
+		if(PathFileExists(currentdll))
+		{
+			if(PathFileExists(olddll))
+			{
+				if(_tremove(olddll)!=0)
+					waserror=true;
+			}
+			if(waserror==false)
+				if(_trename(currentdll,olddll)!=0)
+					waserror=true;
+		}
+		if(waserror==false)
+		{
+			if(CopyFile(newdll_legacy,currentdll,TRUE)==0)
+				waserror=true;
+		}
+		if(waserror)
+			AddLogLine(false,_T("error during copying the antiLeech.dll's, try to load the old one"));
+		else
+		{
+			if(_tremove(newdll_legacy)!=0)
+				AddLogLine(true,_T("Couldn't remove newly imported antiLeech.dll.new from appdir after importing. Please remove it manually from %s!"),appdir);
+			if(PathFileExists(currentdll_legacy) && _tremove(currentdll_legacy)!=0)
+				AddLogLine(true,_T("Couldn't remove antiLeech.dll from appdir after importing. Please remove it manually from %s!"),appdir);
+			if(PathFileExists(olddll_legacy) && _tremove(olddll_legacy)!=0)
+				AddLogLine(true,_T("Couldn't remove antiLeech.dll.old from appdir after importing. Please remove it manually from %s!"),appdir);
+		}
+	}
+
+	if(PathFileExists(currentdll_legacy) && !PathFileExists(currentdll))
+	{
+		AddLogLine(false,_T("found antiLeech.dll in appdir but not in configdir, attempting import"));
+		//found dll in appdir but not in configdir, trying to import
+		if(dlpInstance!=NULL)
+		{
+			::FreeLibrary(dlpInstance);
+			dlpInstance=NULL;
+			AddLogLine(false,_T("dlpInstance was available when importing antileech.dll from appdir (%s) into configdir (%s), shouldn't happen"),appdir,configdir);
+		}
+		if(waserror==false)
+		{
+			if(CopyFile(currentdll_legacy,currentdll,TRUE)==0)
+				waserror=true;
+		}
+		if(waserror)
+			AddLogLine(false,_T("error during copying the antiLeech.dll's, try copying it from appdir to configdir, manually"));
+		else
+		{
+			if(_tremove(currentdll_legacy)!=0)
+				AddLogLine(true,_T("Couldn't remove newly imported antiLeech.dll from appdir after importing. Please remove it manually from %s!"),appdir);
+			if(PathFileExists(olddll_legacy) && _tremove(olddll_legacy)!=0)
+				AddLogLine(true,_T("Couldn't remove antiLeech.dll.old from appdir after importing. Please remove it manually from %s!"),appdir);
+		}
 	}
 
 	if(dlpInstance==NULL)
@@ -135,6 +215,15 @@ void CDLP::Reload()
 			{
 				dlpavailable=true;
 				AddLogLine(false,_T("Dynamic Anti-Leecher Protection v %u loaded"), GetDLPVersion());
+				// ==> Advanced Updates [MorphXT/Stulle] - Stulle
+				CString strBuffer=NULL;
+				strBuffer.Format(_T("v%u"),GetDLPVersion());
+				if(theApp.emuledlg &&
+				   theApp.emuledlg->preferenceswnd &&
+				   theApp.emuledlg->preferenceswnd->m_wndScar &&
+				   theApp.emuledlg->preferenceswnd->m_wndScar.m_AntiLeechVersion)
+					theApp.emuledlg->preferenceswnd->m_wndScar.m_AntiLeechVersion.SetWindowText(strBuffer);
+				// <== Advanced Updates [MorphXT/Stulle] - Stulle
 			}
 			else
 			{

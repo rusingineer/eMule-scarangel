@@ -515,7 +515,9 @@ private:
 	CButton		m_AntiLeechWeek;
 	CButton		m_AntiLeechURLStatic;
 	CEdit		m_AntiLeechURL;
+public:
 	CButton		m_AntiLeechVersion;
+private:
 	CButton		m_AntiLeechReset;
 	CButton		m_AntiLeechUpdate;
 	CButton		m_IpFilterBox;

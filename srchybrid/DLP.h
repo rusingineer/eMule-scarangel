@@ -29,7 +29,7 @@
 class CDLP
 {
 public:
-	CDLP(CString appdir_in);
+	CDLP(CString appdir_in, CString configdir_in);
 	~CDLP();
 	bool IsDLPavailable()		{return dlpavailable;}
 	void Reload();
@@ -73,6 +73,7 @@ private:
 	HINSTANCE dlpInstance;
 	bool	dlpavailable;
 	CString appdir;
+	CString configdir;
 
 	CStringList m_FincanHashList; //X-Ray :: Fincan Hash Detection
 };

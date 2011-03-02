@@ -936,7 +936,7 @@ BOOL CemuleApp::InitInstance()
 	// ZZ:UploadSpeedSense <--
 
 	UpdateSplash(_T("Loading DLP ...")); //Xman new slpash-screen arrangement
-	dlp = new CDLP(thePrefs.GetMuleDirectory(EMULE_EXECUTEABLEDIR)); //Xman DLP
+	dlp = new CDLP(thePrefs.GetMuleDirectory(EMULE_EXECUTEABLEDIR),thePrefs.GetMuleDirectory(EMULE_CONFIGDIR)); //Xman DLP
 	UpdateSplash(_T("Loading IP to Country ...")); //Xman new slpash-screen arrangement
 	ip2country = new CIP2Country(); //EastShare - added by AndCycle, IP to Country
 	UpdateSplash(_T("Loading lists ...")); //Xman new slpash-screen arrangement

@@ -53,6 +53,8 @@ Xtreme 8.0
 - improved: Also include modstring when sorting by software for aMule (Stulle)
 - improved: Optimize Process Kad client list (WiZaRd)
 - changed: only use narrow font in TransferWnd if enabled (like in 6.1) (Stulle)
+- changed: Store antiLeech.dll in config directory (Stulle)
+	antiLeech.dll.new should henceforth also be placed in config dir
 - fixed: Reset for BkColor after coloring LowID clients was broken (zz_fly)
 - fixed: Possibly crash fix on ShowComment (WiZaRd)
 - fixed: Fix broken HTTP downloads from SourceForge (WiZaRd)
