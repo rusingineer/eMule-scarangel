@@ -84,6 +84,22 @@ private:
 };
 // <== File Settings [sivka/Stulle] - Stulle
 
+// ==> Enforce Ratio [Stulle] - Stulle
+enum DownLimitReason
+{
+	DLR_NONE	= 0,	// no limit
+	DLR_NOUL	= 1,	// unlimited because no UL possible
+	DLR_13RATIO	= 2,	// unlimited because < 1:3 ratio
+	DLR_NAFC13	= 4,	// NAFC limit 1:3
+	DLR_NAFC14	= 8,	// NAFC limit 1:4
+	DLR_SESLIM	= 16,	// Will be session limited by sources
+	DLR_ENFLIM	= 32,	// Will be session limited by enforce
+	DLR_SOURCE	= 64,	// Forced 1:3 by sources
+	DLR_ENF11	= 128,	// Enforce 1:1 Ratio
+	DLR_ENF1X	= 256	// Enforce 1:x Reatio
+};
+// <== Enforce Ratio [Stulle] - Stulle
+
 class CDownloadQueue
 {
 	friend class CAddFileThread;
@@ -231,7 +247,12 @@ public:
 	void	IncGlobSources() {m_uGlobsources++;	}
 	void	DecGlobSources() {m_uGlobsources--;	}
 	uint32	GetGlobalSources() const {return m_uGlobsources;	}
+	// ==> Enforce Ratio [Stulle] - Stulle
+	/*
 	uint8	GetLimitState() const {return m_limitstate;}
+	*/
+	uint16	GetLimitState() const {return m_limitstate;}
+	// <== Enforce Ratio [Stulle] - Stulle
 	//Xman end
 
 #ifdef PRINT_STATISTIC
@@ -316,7 +337,12 @@ private:
 
 	//Xman GlobalMaxHarlimit for fairness
 	uint32		m_uGlobsources;
+	// ==> Enforce Ratio [Stulle] - Stulle
+	/*
 	uint8		m_limitstate;
+	*/
+	uint16		m_limitstate;
+	// <== Enforce Ratio [Stulle] - Stulle
 
 	CSourceHostnameResolveWnd m_srcwnd;
 

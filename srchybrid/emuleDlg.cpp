@@ -1703,10 +1703,18 @@ void CemuleDlg::ShowTransferRate(bool bForceAll)
 	if (IsWindowVisible() || bForceAll)
 	{
 		//Xman GlobalMaxHarlimit for fairness
+		// ==> Enforce Ratio [Stulle] - Stulle
+		/*
 		if(theApp.downloadqueue->GetLimitState()==1)
 			strTransferRate.Append(_T(" r"));
 		else if(theApp.downloadqueue->GetLimitState()>=2)
 			strTransferRate.Append(_T(" R"));
+		*/
+		if(theApp.downloadqueue->GetLimitState()>=DLR_SOURCE)
+			strTransferRate.Append(_T(" R"));
+		else if(theApp.downloadqueue->GetLimitState()>=DLR_SESLIM)
+			strTransferRate.Append(_T(" r"));
+		// <== Enforce Ratio [Stulle] - Stulle
 		//Xman end
 		statusbar->SetText(strTransferRate, SBarUpDown, 0);
 		ShowTransferStateIcon();
@@ -5988,7 +5996,7 @@ void CemuleDlg::DownloadDLP()
 	CString sbuffer;
 	CString strURL = thePrefs.GetAntiLeechURL();
 	TCHAR szTempFilePath[_MAX_PATH];
-	_tmakepath(szTempFilePath, NULL, thePrefs.GetMuleDirectory(EMULE_EXECUTEABLEDIR), _T("antiLeech.dll"), _T("new"));
+	_tmakepath(szTempFilePath, NULL, thePrefs.GetMuleDirectory(EMULE_CONFIGDIR), _T("antiLeech.dll"), _T("new"));
 
 	CHttpDownloadDlg dlgDownload;
 	dlgDownload.m_strTitle = GetResString(IDS_ANTILEECH_DWNFILE);

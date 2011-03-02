@@ -857,22 +857,16 @@ void CDownloadQueue::Process(){
 		const bool limitbysources=GetGlobalSources()> thePrefs.m_uMaxGlobalSources && thePrefs.m_bAcceptsourcelimit==false;
 		const float maxDownload = theApp.pBandWidthControl->GetMaxDownloadEx(limitbysources); //in [kb/s]
 		if(limitbysources)
+			m_limitstate=1; //at least session ratio
+		else
+			m_limitstate=0; //no limit
 		*/
 		uint8 limitbysources = 0;
+		uint8 uReason = 0;
 		if(thePrefs.GetEnforceRatio())
-		{
-			if(GetGlobalSources() > thePrefs.m_uMaxGlobalSources && thePrefs.m_bAcceptsourcelimit == false)
-			{
-				if(thePrefs.GetRatioValue() < 4)
-					limitbysources = 2;
-				else 
-					limitbysources = 1;
-			}
-			else
-				limitbysources = 2;
-		}
-		else if(GetGlobalSources() > thePrefs.m_uMaxGlobalSources && thePrefs.m_bAcceptsourcelimit == false)
-			limitbysources = 1;
+			limitbysources |= 2;
+		if(GetGlobalSources() > thePrefs.m_uMaxGlobalSources && thePrefs.m_bAcceptsourcelimit == false)
+			limitbysources |= 1;
 		// ==> Do not restrict download if no upload possible [Stulle] - Stulle
 		/*
 		const float maxDownload = theApp.pBandWidthControl->GetMaxDownloadEx(limitbysources); //in [kb/s]
@@ -885,13 +879,19 @@ void CDownloadQueue::Process(){
 			limitbysources = 0xFF;
 		}
 		else
-			maxDownload = theApp.pBandWidthControl->GetMaxDownloadEx(limitbysources);
+			maxDownload = theApp.pBandWidthControl->GetMaxDownloadEx(limitbysources,uReason);
 		// <== Do not restrict download if no upload possible [Stulle] - Stulle
-		if(limitbysources > 0)
-		// <== Enforce Ratio [Stulle] - Stulle
-			m_limitstate=1; //at least session ratio
+		m_limitstate=DLR_NONE; // reset
+		if(limitbysources == 0xFF)
+			m_limitstate = DLR_NOUL; // unlimited because no UL possible
 		else
-			m_limitstate=0; //no limit
+		{
+			if(limitbysources&1)
+				m_limitstate |= DLR_SESLIM; // Will be session limited by sources
+			if(limitbysources&2)
+				m_limitstate |= DLR_ENFLIM; // Will be session limited by enforce
+		}
+		// <== Enforce Ratio [Stulle] - Stulle
 		//Xman end
 		//Xman end
 
@@ -900,6 +900,10 @@ void CDownloadQueue::Process(){
 		if(isLimited == false)
 		{
 			m_nDownloadSlopeControl = 0;
+			// ==> Enforce Ratio [Stulle] - Stulle
+			if(uReason&8)
+				m_limitstate |= DLR_13RATIO; // unlimited because < 1:3 ratio
+			// <== Enforce Ratio [Stulle] - Stulle
 		}
 		else 
 		{
@@ -913,23 +917,25 @@ void CDownloadQueue::Process(){
 			/*
 			if(limitbysources && maxDownload < theApp.pBandWidthControl->GetMaxDownloadEx(false))
 				m_limitstate=2; //session ratio is reached->full limitation 
-			*/
-			if(limitbysources == 1 && maxDownload < theApp.pBandWidthControl->GetMaxDownloadEx(0))
-				m_limitstate=2; //session ratio is reached->full limitation
-			else if(limitbysources == 2 && maxDownload < theApp.pBandWidthControl->GetMaxDownloadEx(0))
-				m_limitstate=5;
-			// <== Enforce Ratio [Stulle] - Stulle
 			//Xman end
 
-			// ==> Do not restrict download if no upload possible [Stulle] - Stulle
-			/*
 			else if (thePrefs.Is13Ratio()) //downloadlimit although it should be unlimited => we have a ratio
-			*/
-			else if (limitbysources != 0xFF && thePrefs.Is13Ratio()) //downloadlimit although it should be unlimited => we have a ratio
-			// <== Do not restrict download if no upload possible [Stulle] - Stulle
 				m_limitstate=3;
 			else if (maxDownload < thePrefs.GetMaxDownload()) //can only be NAFC
 				m_limitstate=4;
+			*/
+			if(uReason&1)
+				m_limitstate |= DLR_SOURCE; // Forced 1:3 by sources
+			if(uReason&2)
+				m_limitstate |= DLR_ENF11; // Enforce 1:1 Ratio
+			else if(uReason&4)
+				m_limitstate |= DLR_ENF1X; // Enforce 1:x Reatio
+			else if (uReason&16)
+				m_limitstate |= DLR_NAFC13; // NAFC limit 1:3
+			else if (uReason&32)
+				m_limitstate |= DLR_NAFC14; // NAFC limit 1:4
+			// <== Enforce Ratio [Stulle] - Stulle
+			//Xman end
 
 			//Xman changed sint32 to sint64
 			// Bandwidth control

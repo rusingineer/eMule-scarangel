@@ -3143,20 +3143,21 @@
 #define IDS_RATIO_GROUP                 61010
 #define IDS_ENFORCE_RATIO               61011
 #define IDS_RATIO_VALUE                 61012
-#define IDS_RATIO_REASON                61013
-#define IDS_RATIO_REASON2               61014
-#define IDS_RATIO_REASON3               61015
-#define IDS_RATIO_REASON4               61016
-#define IDS_RATIO_REASON5               61017
-#define IDS_RATIO_ACTIVATION            61018
-#define IDS_RATIO_LIMIT                 61019
+#define IDS_DL_SES_RATIO                61013
+#define IDS_DL_LIMIT_DEF                61014
+#define IDS_DL_UNL_NOUL                 61015
+#define IDS_DL_UNL_13RATIO              61016
+#define IDS_DL_NAFC_LIMIT               61017
+#define IDS_DL_RATIO_SRC                61018
+#define IDS_DL_RATIO_ENF                61019
+#define IDS_DL_RATIO_LIMIT              61020
 // <== Enforce Ratio [Stulle] - Stulle
-#define IDS_ERR_HIDDENSOURCE            61020 // Anti Anti HideOS & SOTN [SiRoB] - Stulle
+#define IDS_ERR_HIDDENSOURCE            61025 // Anti Anti HideOS & SOTN [SiRoB] - Stulle
 // ==> Improved ICS-Firewall support [MoNKi]-Max
-#define IDS_ICF 61021
-#define IDS_ICFSUPPORT 61022
-#define IDS_ICF_SERVERUDP 61023
-#define IDS_ICFSUPPORTFIRST 61024
+#define IDS_ICF 61026
+#define IDS_ICFSUPPORT 61027
+#define IDS_ICF_SERVERUDP 61028
+#define IDS_ICFSUPPORTFIRST 61029
 // <== Improved ICS-Firewall support [MoNKi]-Max
 // ==> Invisible Mode [TPT/MoNKi] - Stulle
 #define IDS_CTRLKEY                     61030
