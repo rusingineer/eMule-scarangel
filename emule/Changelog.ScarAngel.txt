@@ -17,6 +17,7 @@ Added: More advanced official settings [Stulle] - Stulle
 Changed: Reworked coloring of windows (fixes some tab controls on Vista/7) [Stulle] - Stulle
 Changed: Grouping of advanced official settings [Stulle] - Stulle
 Changed: Refined dislpaying reasons for download limits in StatusBar [Stulle] - Stulle
+Changed: Auto join Morph IRC help channel [Stulle] - Stulle
 
 Fixed: Reboot in webserver invoked shutdown instead of reboot [Stulle] - Stulle
 Fixed: TxtEditor option in Advanced Preferences [Stulle] - Stulle
