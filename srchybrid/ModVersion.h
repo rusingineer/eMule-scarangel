@@ -20,7 +20,7 @@
 //START - This part should not be changed in anyway
 #define MOD_VERSION_MJR		4
 #define MOD_VERSION_MIN		0
-#define MOD_VERSION_BUILD   3
+#define MOD_VERSION_BUILD   4
 #define	MOD_VERSION			_T("ScarAngel") // remark: last sign != ' ' (space) !!!
 #define	MOD_VERSION_LONG	_T("ScarAngel v")
 //END - This part should not be changed in anyway

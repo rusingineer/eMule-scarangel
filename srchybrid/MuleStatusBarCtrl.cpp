@@ -133,9 +133,9 @@ CString CMuleStatusBarCtrl::GetPaneToolTipText(EStatusBarPane iPane) const
 			if(uLimitState > DLR_SOURCE)
 				strText.AppendFormat(_T("\n\r\x2022 ")+GetResString(IDS_DL_RATIO_LIMIT)+_T(":%i"),(uLimitState&DLR_SOURCE?4:(uLimitState&DLR_ENF11?1:thePrefs.GetRatioValue())));
 			else if(uLimitState&DLR_NAFC13)
-				strText.AppendFormat(_T("\n\r\x2022 ")+GetResString(IDS_DL_RATIO_LIMIT)+_T(":%3"));
+				strText.AppendFormat(_T("\n\r\x2022 ")+GetResString(IDS_DL_RATIO_LIMIT)+_T(":3"));
 			else if(uLimitState&DLR_NAFC14)
-				strText.AppendFormat(_T("\n\r\x2022 ")+GetResString(IDS_DL_RATIO_LIMIT)+_T(":%4"));
+				strText.AppendFormat(_T("\n\r\x2022 ")+GetResString(IDS_DL_RATIO_LIMIT)+_T(":4"));
 			break;
 		}
 	// <== Enforce Ratio [Stulle] - Stulle
