@@ -461,7 +461,6 @@ BEGIN
     IDS_PW_USS              "¦b±Ò°Ê®É¦Û°Ê§ó·s¦øªA¾¹²M³æ"
     IDS_PW_MISC             "¦h¤è­±ªº"
     IDS_PW_TRAY             "³Ì¤p¤Æ®ÉÁY¨ì¨t²Î¦C"
-    IDS_PW_BEEP             "¿ù»~®Éµo¥XÁn­µ"
     IDS_PW_PROMPT           "Â÷¶}®É´£¥Ü"
     IDS_PW_SPLASH           "Åã¥Ü±Ò°Êµe­±"
     IDS_PW_DBLCLICK         "¤U¸ü²M³æÂI¤G¤U¨ÓÂX®i"
@@ -875,7 +874,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_DOWNLOADMOVIECHUNKS "¹Á¸Õ­º¥ý¤U¸ü¹wÄý°Ï¶ô"
-    IDS_UPDATEQUEUE         "¤£­n§Y®É§ó·sµ¥­Ô¤¤²M³æ"
     IDS_RECOVER_SINGLE      "1 ­ÓÀÉ®×¤wÁÙ­ì."
     IDS_RECOVER_MULTIPLE    "%u ­ÓÀÉ®×¤wÁÙ­ì."
     IDS_ATTEMPTING_RECOVERY "¹Á¸ÕÁÙ­ìÀÉ®×¤¤..."
@@ -1083,7 +1081,6 @@ BEGIN
     IDS_WEB_BADLOGINATTEMPT "Web-¬É­±: µn¤J¹Á¸Õ¤w¸g¥¢±Ñ"
     IDS_ERR_TOOLARGEFILE    "ÀÉ®×¶W¹L eDonkey ¨ó©w¤ä´©ªº¤j¤p (>=256GB)"
     IDS_MSGONLYFRIENDS      "¥u±µ¨ü¦n¤Í°T®§"
-    IDS_MSGONLYSEC          "¥u±µ¨ü¦³®Äªº«È¤áºÝ°T®§"
     IDS_DAY_MO_SA           "¤@-¤»"
     IDS_LIMITSOURCES        "­­¨î¨Ó·½¼Æ"
     IDS_LIMITCONS5SEC       "­­¨î³s½u¼Æ/5¬í"
@@ -1132,7 +1129,6 @@ BEGIN
     IDS_DL_RESUMENEXT       "Ä~Äò¤U¤@­Ó¤w¼È°±"
     IDS_STARTPRIO           "§ïÅÜ·s¤À°tÀÉ®×ªºÀu¥ýÅv"
     IDS_PREF_STARTNEXTFILECAT "°¾¦n¨Ï¥Î¬Û¦PÃþ§O"
-    IDS_REPAINTGRAPHS       "¦b§ïÅÜµøµ¡¤j¤p®É¤£­«·s«Ø¥ß²Î­p¹Ï§Î"
     IDS_SOFTFILES           "³n©ÊÀÉ®×­­¨î"
 END
 
@@ -1544,7 +1540,6 @@ BEGIN
     IDS_FO_PREF_FAILED      "¦b WinXP ¤º³¡¨¾¤õÀð³]©w¤w¿ï¾Üªº³s±µ°ð¥¢±Ñ!"
     IDS_FO_PREF_STARTUP     "·í ±Ò°Ê/Â÷¶} eMule ®É ¶}±Ò/Ãö³¬ ¦b WinXP ¨¾¤õÀðªº³s±µ°ð"
     IDS_LOG_LEVEL           "°O¿ý¼Ð·Ç"
-    IDS_DISABLEPEERACHE     "°±¥Î±q PeerCache ¤U¸ü"
     IDS_NEWMSG              "·sªº°T®§¨Ó¦Û '%s' (IP:%s)"
     IDS_PREF_STARTNEXTFILECATONLY "¥u¦b¬Û¦PªºÃþ§O"
     IDS_LOG_ULDL_EVENTS     "°O¿ý ¤W¸ü/¤U¸ü ¨Æ¥ó"
@@ -1639,7 +1634,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_IACHHASH            "AICH ¤Á²Ó­È"
+    IDS_AICHHASH            "AICH ¤Á²Ó­È"
     IDS_BYTESPERSEC         "¦ì¤¸²Õ/¬í"
     IDS_KBYTESPERSEC        "KB/¬í"
     IDS_MBYTESPERSEC        "MB/¬í"
@@ -1942,6 +1937,33 @@ BEGIN
     IDS_RESOLVELINKS        "¸ÑªR¦b¤w¤À¨É¸ê¤ºªº±¶®|"
 END
 
+
+STRINGTABLE 
+BEGIN
+    IDS_DOWNLOADCOMMANDS    "¤U¸ü«ü¥O"
+    IDS_CLOSETOOLBAR        "Ãö³¬¤u¨ã¦C"
+    IDS_SHOWTOOLBAR         "Åã¥Ü¤u¨ã¦C"
+    IDS_SEARCH_BADOPERATORCOMBINATION 
+                            "±z¤£¯à¦b Kad ·j´Mªº²Ä¤@­ÓÃöÁä¦r¨Ï¥Î OR ¹Bºâ¤¸!\n\n¨Ò¦p ""ÃöÁä¦r1 OR ÃöÁä¦r2"" ¬O¤£³Q¤¹³\. ¸ÕµÛ¨Ï¥Î ""ÃöÁä¦r1 AND (ÃöÁä¦r2 OR ÃöÁä¦r3)"" ©Î¬O¨Ï¥Î¦h¦¸·j´M¨Ó´À¥N³o­Ó°Ê§@."
+    IDS_DISCOVEREDBY        "±´¯Á¸g¥Ñ"
+    IDS_NODES               "¸`ÂI"
+    IDS_ROUTINGTABLE        "¸ô¥Ñªí"
+    IDS_PROTOCOLVERSION     "¨ó©wª©¥»"
+    IDS_FOUNDNODESUSEFUL    "µo²{¸`ÂI (¦³¥Îªº)"
+    IDS_NORESPONSE          "¨S¦³¦^À³"
+    IDS_NOTASKED            "©|¥¼¸ß°Ý"
+    IDS_LOOKUPGRAPH         "·j´M©ú²Ó"
+    IDS_AUTOKADLOOKUPGRAPH  "¦Û°Ê¦aÅã¥Ü§@¥Î¤¤·j´M"
+    IDS_PAUSEONPREVIEW      "¦b¦³¥i¯à¹wÄý®É¼È°±"
+    IDS_PREVIEWWITH         "¹wÄý¨Ï¥Î"
+    IDS_CLOSEEMULE          "Ãö³¬ eMule"
+    IDS_DONOTASKAGAIN       "¤£­n¦A¦¸¸ß°Ý§Ú"
+    IDS_POPULARITY          "¤H®ð±Æ¦W"
+    IDS_SHOWWIN7TASKBARGOODIES "±Ò¥Î Windows 7 ¤u§@¦C®ÄªG"
+    IDS_LANMODE             "LAN ¼Ò¦¡"
+    IDS_OPENPREFINI         "¶}? preferences.ini"
+END
+
 STRINGTABLE 
 BEGIN
     IDS_DROPNONEEDEDSRCS    "­ç°£µL»Ý¨Dªº¨Ó·½"
@@ -2083,8 +2105,6 @@ BEGIN
     IDS_AUTOUPDATEIPFILTER  "¦Û°Ê¤É¯ÅIP¹LÂoÀÉ(IPFilter.dat)"
     IDS_DROPBLOCKINGSOCKETS "­ç°£ÀWÁcªý¶ëªºSockets"
     IDS_LOGPARTMISMATCH     "°O¿ý¤j¤p¤£¤Ç°tªº³Q½Ð¨DÀÉ"
-    IDS_CN_UPNPTRYRANDOM    "¹ïUPnP¹h¹D¨Ï¥ÎÀH¾÷°ð"
-    IDS_CN_UPNPNAT          "±Ò¥Î UPnP"
     IDS_CHUNKCHOOSER        "ÀÉ¶ô¿ï¾Ü¤è¦¡:"
     IDS_UPLOADINSTABLE      "Äµ§i: §Aªº¤W¶Ç­È³]¸m¦ü¥G¤Ó°ª¤F. ½ÐÀË¬d§Aªº³]¸m!\n¬d¬Ý¤W¶Ç²Î­p¦±½u, ¨º¥Õ¦â©ÎªÌ¶À¦â(¨Ï¥ÎNAFC®É)ªº½uÀ³¸Ó¬O¤ñ¸û¥­¾ãªº.\n ¦¹®ø®§¥u´£¥Ü¤@¦¸"
 END
@@ -2138,6 +2158,9 @@ BEGIN
                             "ÀÉ¤ñ AICH ¯à³B²zªº³Ì¤p¤À¶ôÁÙ­n¤p - ¾É¤J¤£·|¦³¥ô¦ó®ÄªG."
     IDS_SR13_IMPORTPARTS_IMPORTFINISH "¾É¤J§¹¦¨. %i ­Ó¤À¶ô³Q¾É¤J¨ì¤å¥ó %s."
     IDS_OBFUSCATION_PADDING_LENGTH "¨ó©w¥[±Kªþ¥[ªø«× [10-254]"
+//    IDS_PUSH_SMALL          "±À°e¤p¤å¥ó"
+//    IDS_SMALL               "¤p¤å¥ó"
+//    IDS_PUSH_SMALL_FILE_SIZE "¤p¤å¥ó¤j¤p¤W­­ [1-2048 kb] "
 END
 
 STRINGTABLE 
@@ -2151,11 +2174,22 @@ BEGIN
 	IDS_DOWNLOADEMFRIENDSMET "¤U¸ü emfriends.met"
     IDS_EMFRIENDSMETURL     "½Ð¿é¤J emfriends.met ªº URL:"
 	IDS_USER_ALREADY_FRIEND "¥Î¤á ""%s"" ¤w¸g¦s¦b¤_§Aªº¦n¤Í¦Cªí¤§¤¤"
-	IDS_TRUSTEVERYHASH      "«H¥ô¨C¤@­ÓAICHHash (¥u¦b¥»¦¸¥ô°È¦³®Ä, ¤£«O¦s, ¤£±ÀÂË)"
+//	IDS_TRUSTEVERYHASH      "«H¥ô¨C¤@­ÓAICHHash (¥u¦b¥»¦¸¥ô°È¦³®Ä, ¤£«O¦s, ¤£±ÀÂË)"
 END
 
+STRINGTABLE 
+BEGIN
+	IDS_PROGRESSHASHDONE    "HashÀÉ®×§¹¦¨: %s"
+    IDS_USEACATUPNPNEXTSTART1 "¦b¤U¦¸ eMule ¹B¦æ®ÉÄ~Äò¨Ï¥Î ACAT UPnP"
+    IDS_USEACATUPNPNEXTSTART2 "¦b¤U¦¸ eMule ¹B¦æ®É¤Á´«¦Ü ACAT UPnP"
+    IDS_RETRIEVEMTUFROMSOCKET "¦Û°ÊÀò¨ú MTU"
+	IDS_ENABLEKNOWN2BUFFER	"¦b Hashing ÀÉ®×®É´î¤Ö Known2_64.met ªºÅª¼gÀW²v"
+	IDS_ANTILEECHERFINCAN_CHECK "ÀË´ú: Fincan ªÀ°Ï¥Î¤á (·|¼W¥[ CPU ¦û¥Î)"
+    IDS_ENABLEKNOWN2SPLIT   "±N¤w§R°£ÀÉ®×ªº Hashset ±q Known2_64.met ¤¤¤ÀÂ÷, ³æ¿W«O¦s"
+    IDS_EMULE_CTRL_DATA     "eMule ±±¨î«Ê¥]+¸ê®Æ¶Ç¿é"
+    IDS_NETWORK_ADAPTER     "ºô¸ô¥d"
+END
 
-//other code base on ScarAngel v3.2 zh_CN.rc(tomchen1989) & Mephisto v2.2 zh_TW.rc(DargonD) 
 STRINGTABLE 
 BEGIN
 // ==> ScarAngel Preferences window - Stulle
@@ -2271,7 +2305,7 @@ IDS_BACKUP_MESSAGE      "¦WºÙ¬°¡uBackup¡vªº¸ê®Æ§¨«Ø¥ß©ó±zªº¡uconfig¡v¸ê®Æ§¨¤º¥Î©
 IDS_BACKUP_AUTOBACKUP2  "Âù­«³Æ¥÷"
 IDS_ABORT               "¤¤Â_?"
 IDS_CONTINUE            "Ä~Äò(&C)"
-IDS_DONOTASKAGAIN       "¤£­n¦A¸ß°Ý§Ú"
+//IDS_DONOTASKAGAIN       "¤£­n¦A¸ß°Ý§Ú"
 IDS_DONOTSHOWAGAIN      "¤£­n¦A§iª¾§Ú"
 IDS_DONOTTELLAGAIN      "¤£­n¦AÅã¥Ü"
 IDS_HELP                "À°§U(&H)"
@@ -2393,6 +2427,9 @@ IDS_CAT_STARTFILESONADD "¥[¤J·sÃþ§O®É¶}©l # ÀÉ®×"
 IDS_DL_MODE_DEFAULT     "Àq»{«ì´_¼Ò¦¡"
 IDS_DL_NONE             "µL"
 IDS_SEARCH_INVALIDMINMAX "³]¸mªº³Ì¤p/³Ì¤j¤å¥ó¤j¤p¤¤¨Ï¥Î¤FµL®Äªº³æ¦ì"
+    IDS_KEEPCATINCSHARED    "·í²¾°£Ãþ§Oªº·s¶iÀÉ®×¸ê®Æ§¨®É¬O§_¸Ó±N¥L¥[¶i¤À¨É?"
+    IDS_KEEPCATINCSHARED_TITLE "²¾°£Ãþ§O"
+    IDS_ADD_REMOVED_INC     "¸ß°Ý·í²¾°£Ãþ§Oªº·s¶iÀÉ®×¸ê®Æ§¨®É¬O§_¸Ó±N¥L¥[¶i¤À¨É"
 // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 IDS_SHARED_PREFS        "¤w¤À¨ÉÀÉ®×ºÞ²z" // Shared Files Management [Stulle] - Stulle
 // ==> Spread bars [Slugfiller/MorphXT] - Stulle
@@ -2490,13 +2527,14 @@ IDS_PS_AMOUNT_LIMIT_WRONG   "µL®Äªº­È."
 IDS_RATIO_GROUP             "¤W¸ü¤U¸ü¤ñ²v"
 IDS_ENFORCE_RATIO           "Á`¬O¨Ï¥Î±j¨î¤ñ²v"
 IDS_RATIO_VALUE             "³Ì¤j¤ñ²v1"
-IDS_RATIO_REASON            "­ì¦]"
-IDS_RATIO_REASON2           "¥þ§½³Ì¤jµw­­¨î(¬°¤F¤½¥­)"
-IDS_RATIO_REASON3           "·í¤W¸ü³t«×§C©ó11K/s®É¡A¨Ï¥Î±j¨î1:3¤ñ²v"
-IDS_RATIO_REASON4           "NAFC°ÊºA¤U¸ü­­¨î"
-IDS_RATIO_REASON5           "¤w±j¨î¤ñ²v"
-IDS_RATIO_ACTIVATION        "¤U¸ü³t«×­­¨î¤w±Ò¥Î"
-IDS_RATIO_LIMIT             "¤W¸ü¤U¸ü¤ñ²v±N³Q­­¨î¦b³Ì¤j1:1"
+    IDS_DL_SES_RATIO            "¹F¦¹¤u§@¶¥¬q¤W¤U¶Ç¤ñ¨Òªº­­¨î"
+    IDS_DL_LIMIT_DEF            "¹F³]©wªº¤U¸ü­­¨î"
+    IDS_DL_UNL_NOUL             "¤£¨ü­­¨îªº¤U¸ü (¤£»Ý­n¤W¶Ç)"
+    IDS_DL_UNL_13RATIO          "¦]¤W¤U¶Ç¤ñ < 1:3 ¬G¤U¸ü¤£¨ü­­"
+    IDS_DL_NAFC_LIMIT           "¦] ºô¸ô¥d¦^õX±±¨î(NAFC) ¬G¤U¸ü¨ü­­"
+    IDS_DL_RATIO_SRC            "¤£±µ¨ü¦¹¥þ°ìµw©Ê¤W­­"
+    IDS_DL_RATIO_ENF            "±j¨î¤ñ¨Ò"
+    IDS_DL_RATIO_LIMIT          "¥Ø«eªº UL:DL ¤ñ¬°³Ì¤j­È 1"
 // <== Enforce Ratio [Stulle] - Stulle
 // ==> Tabbed Preferences [TPT] - Stulle
 IDS_SCARANGEL               "ScarAngel"
@@ -2641,6 +2679,18 @@ IDS_BINDADDR            "¥»¦aºÝªºIP¦ì§}"
 IDS_MEDIAINFO_MEDIADET  "¨Ï¥ÎMedia Detector(MediaDet)Àò¨ú´CÅéÀÉ®×ªº¸ê°T"
 IDS_MEDIAINFO_RM        "¨Ï¥Îmediainfo.dllÃÑ§OReal´CÅéÀÉ®×"
 IDS_MEDIAINFO_WM        "¨Ï¥Îmediainfo.dllÃÑ§OWindows MediaÀÉ®×"
+	IDS_X_DATETIMEFORMAT4LIST "®É¶¡®æ¦¡(²M³æ)"
+    IDS_UPDATEQUEUE         "¤£­n§Y®É§ó·sµ¥­Ô¤¤²M³æ"
+    IDS_REPAINTGRAPHS       "¦b§ïÅÜµøµ¡¤j¤p®É¤£­«·s«Ø¥ß²Î­p¹Ï§Î"
+    IDS_EXTRAPREVIEWWITHMENU "¦b¥kÁä®Ú¿ï³æÅã¥Ü¹wÄý"
+    IDS_SHOWUPDOWNICONINTASKBAR "¦b¤u¨ã¦C¤W¥H¹Ï¼hÅã¥Ü¤W¶Ç»P¤U¸ü"
+    IDS_FORCESPEEDSTOKB     "¥H KB/s Åã¥Ü©Ò¦³ªº³t«×¼Æ¾Ú"
+	IDS_X_FILE_BUFFER_TIME_LIMIT "¤U¸ü§Ö¨ú°±¯d®É¶¡(¬í)"
+	IDS_X_REARRANGEKADSEARCH "­«·s²Õ¦XKAD·j´MÃöÁä¦r"
+    IDS_PW_BEEP             "¿ù»~®Éµo¥XÁn­µ"
+    IDS_MSGONLYSEC          "¥u±µ¨ü¦³®Äªº«È¤áºÝ°T®§"
+    IDS_DISABLEPEERACHE     "°±¥Î±q PeerCache ¤U¸ü"
+    IDS_KEEPUNAVAILABLEFIXEDSHAREDDIRS "«O¯d©T©wºÏºÐ¤WªºµL®Ä¥Ø¿ý"
 // <== Advanced Options [Official/MorphXT] - Stulle
 // ==> Advanced Updates [MorphXT/Stulle] - Stulle
 IDS_UPDATEANTILEECHERONSTART "±Ò°Ê®É§ó·santiLeech.dll"
