@@ -33,7 +33,7 @@ Fixed: DLP version number was not updated on manual update in settings [Stulle] 
 Removed: New official Ask-On-Exit Dlg in favor of ScarAngel one (NTService) [Stulle] - Stulle
 
 Note: Following languages updated: German [Stulle]; Chinese (P.R.C.) [zz_fly];
-	Chinese (Taiwan) [AndCycle]; French [jamjam]; Spanish (partially) [Rajil];
+	Chinese (Taiwan) [AndCycle]; French [jamjam]; Spanish [Rajil/mself563];
 	Italian [xilolee/EvolutionCrazy]; Turkish (partially) [omeringen]
 Note: Added existing Czech ScarAngel translations to Czech translation file
 
