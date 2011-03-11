@@ -101,6 +101,7 @@ CDownloadQueue::CDownloadQueue()
 	//Xman GlobalMaxHarlimit for fairness
 	m_uGlobsources=0;
 	m_limitstate=0;
+	m_limitratio=0; // Enforce Ratio [Stulle] - Stulle
 
 	//Xman
 	/*
@@ -863,6 +864,7 @@ void CDownloadQueue::Process(){
 		*/
 		uint8 limitbysources = 0;
 		uint8 uReason = 0;
+		m_limitratio = 0; // reset
 		if(thePrefs.GetEnforceRatio())
 			limitbysources |= 2;
 		if(GetGlobalSources() > thePrefs.m_uMaxGlobalSources && thePrefs.m_bAcceptsourcelimit == false)
@@ -879,7 +881,7 @@ void CDownloadQueue::Process(){
 			limitbysources = 0xFF;
 		}
 		else
-			maxDownload = theApp.pBandWidthControl->GetMaxDownloadEx(limitbysources,uReason);
+			maxDownload = theApp.pBandWidthControl->GetMaxDownloadEx(limitbysources,uReason,m_limitratio);
 		// <== Do not restrict download if no upload possible [Stulle] - Stulle
 		m_limitstate=DLR_NONE; // reset
 		if(limitbysources == 0xFF)
@@ -901,7 +903,7 @@ void CDownloadQueue::Process(){
 		{
 			m_nDownloadSlopeControl = 0;
 			// ==> Enforce Ratio [Stulle] - Stulle
-			if(uReason&8)
+			if(uReason&4)
 				m_limitstate |= DLR_13RATIO; // unlimited because < 1:3 ratio
 			// <== Enforce Ratio [Stulle] - Stulle
 		}
@@ -927,13 +929,9 @@ void CDownloadQueue::Process(){
 			if(uReason&1)
 				m_limitstate |= DLR_SOURCE; // Forced 1:3 by sources
 			if(uReason&2)
-				m_limitstate |= DLR_ENF11; // Enforce 1:1 Ratio
-			else if(uReason&4)
-				m_limitstate |= DLR_ENF1X; // Enforce 1:x Reatio
-			else if (uReason&16)
-				m_limitstate |= DLR_NAFC13; // NAFC limit 1:3
-			else if (uReason&32)
-				m_limitstate |= DLR_NAFC14; // NAFC limit 1:4
+				m_limitstate |= DLR_ENFORCE; // Enforce
+			if (uReason&8)
+				m_limitstate |= DLR_NAFC; // NAFC limit
 			// <== Enforce Ratio [Stulle] - Stulle
 			//Xman end
 

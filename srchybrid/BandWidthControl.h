@@ -106,7 +106,7 @@ public:
 	/*
 	float GetMaxDownloadEx(bool force);
 	*/
-	float GetMaxDownloadEx(uint8 force, uint8 &uReason);
+	float GetMaxDownloadEx(uint8 force, uint8 &uReason, uint8 &uRatio);
 	// <== Enforce Ratio [Stulle] - Stulle
 	float GetForcedDownloadlimit() const {return m_maxforcedDownloadlimit;}
 

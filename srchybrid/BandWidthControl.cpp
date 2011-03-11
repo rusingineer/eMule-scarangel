@@ -633,12 +633,10 @@ float CBandWidthControl::GetMaxDownloadEx(bool force)
 }
 */
 // 1 = Forced 1:3 by sources
-// 2 = Enforce 1:1 Ratio
-// 4 = Enforce 1:x Reatio
-// 8 = Unlimited under 1:3
-// 16 = NAFC 1:3
-// 32 = NAFC 1:4
-float CBandWidthControl::GetMaxDownloadEx(uint8 force, uint8 &uReason)
+// 2 = Enforce
+// 4 = Unlimited under 1:3
+// 8 = NAFC
+float CBandWidthControl::GetMaxDownloadEx(uint8 force, uint8 &uReason, uint8 &uRatio)
 {
 	uint64 ueMuleOut = GeteMuleOut();
 	uint64 ueMuleIn = GeteMuleIn();
@@ -647,42 +645,49 @@ float CBandWidthControl::GetMaxDownloadEx(uint8 force, uint8 &uReason)
 	if(force&1 && ueMuleIn>ueMuleOut*3) //session/amount based ratio
 	{
 		uReason |= 1;
+		uRatio = 4;
 		fMaxDownload = GetForcedDownloadlimit();
 	}
 
-	if(force&2 && (thePrefs.GetRatioValue() < 4 || force&1))
+	if(force&2)
 	{
 		if(ueMuleIn > (ueMuleOut*thePrefs.GetRatioValue()))
 		{
 			uReason |= 2;
-			if(fMaxDownload == -1.0f && thePrefs.GetRatioValue() < 4)
+			if(fMaxDownload == -1.0f || thePrefs.GetRatioValue() < 4)
+			{
+				uRatio = 1;
 				fMaxDownload = GetMaxDownloadEqualUploadLimit();
+			}
 		}
 		else if(ueMuleIn > (ueMuleOut*((float)(thePrefs.GetRatioValue()-0.1f))))
 		{
-			uReason |= 4;
-			if(fMaxDownload == -1.0f && thePrefs.GetRatioValue() < 4)
+			uReason |= 2;
+			if(fMaxDownload == -1.0f || thePrefs.GetRatioValue() < 4)
+			{
+				uRatio = thePrefs.GetRatioValue();
 				fMaxDownload = GetForcedDownloadlimitEnforced();
+			}
 		}
 	}
 
-	if(thePrefs.Is13Ratio() && ueMuleIn<=ueMuleOut*3) 
+	if(thePrefs.Is13Ratio() && ueMuleIn<=ueMuleOut*3 && fMaxDownload == -1.0f)
 	{
-		uReason |= 8;
-		if(fMaxDownload == -1.0f)
-			fMaxDownload = UNLIMITED;
+		uReason |= 4;
+		fMaxDownload = UNLIMITED;
 	}
-	else if(fMaxDownload == -1.0f)
+	else
 	{
-		if(thePrefs.GetNAFCFullControl()==true)
+		// Note: the NAFC limit can go below the enforced limits so we check if we should rather apply NAFC limit
+		if(thePrefs.GetNAFCFullControl()==true && (fMaxDownload == -1.0f || fMaxDownload > GetMaxDownload()))
 		{
-			uReason |= (m_uNAFCRatio==3)?16:32;
+			uReason |= 8;
+			uRatio = m_uNAFCRatio;
 			fMaxDownload = GetMaxDownload();
 		}
-		else
+		else if(fMaxDownload == -1.0f)
 			fMaxDownload = thePrefs.GetMaxDownload();
 	}
-
 	return fMaxDownload;
 }
 // <== Enforce Ratio [Stulle] - Stulle
