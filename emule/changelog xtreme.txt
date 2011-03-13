@@ -32,6 +32,10 @@ DirectX SDK
 MiniUPnP Lib (as of official)
 
 
+Xtreme 8.0 second source edit
+* this version is modded by Stulle
+- improved: Check if upload should be ended frequently called twice (Stulle)
+
 Xtreme 8.0
 * this version is modded by Stulle
 - updated to 0.50a codebase
