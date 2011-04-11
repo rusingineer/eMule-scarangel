@@ -2789,6 +2789,8 @@ TRAYCONNECTEDPLUS       ICON                    "res\\ScarTrayConnectedPlus.ico"
 TRAYNOTCONNECTEDPLUS    ICON                    "res\\ScarTrayDisconnectedPlus.ico"
 TRAYLOWIDPLUS           ICON                    "res\\ScarTrayLowIDPlus.ico"
 FILEADDSRC              ICON                    "res\\FileAddSrc.ico"
+FILEDOWNLOAD            ICON                    "res\\FileDownload.ico"
+FILEDOWNLOADPAUSED      ICON                    "res\\FileDownloadPaused.ico"
 FILEDOWNLOADPREVIEWFIRST ICON                    "res\\FileDownloadPreviewFirst.ico"
 FILEDOWNLOADPREVIEWPAUSE ICON                    "res\\FileDownloadPreviewPause.ico"
 
