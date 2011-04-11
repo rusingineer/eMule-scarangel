@@ -6,6 +6,15 @@ eMule v0.50a ScarAngel v4.0:
 - 11.03.2011 -
 -------------------------------------------------------------------------------
 based on eMule 0.50a Xtreme 8.0 compiled with vs2010 SP1
+
+Added: Some more icons in DownloadListCtrl context menu [SiRoB] - Stulle
+
+
+eMule v0.50a ScarAngel v4.0:
+------------------------
+- 11.03.2011 -
+-------------------------------------------------------------------------------
+based on eMule 0.50a Xtreme 8.0 compiled with vs2010 SP1
 Merged to eMule v0.50a [Stulle]
 Updated with code from zz_fly's Xtreme
 

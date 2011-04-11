@@ -2788,6 +2788,9 @@ SHAREDIR                ICON                    "res\\ShareDir.ico"
 TRAYCONNECTEDPLUS       ICON                    "res\\ScarTrayConnectedPlus.ico"
 TRAYNOTCONNECTEDPLUS    ICON                    "res\\ScarTrayDisconnectedPlus.ico"
 TRAYLOWIDPLUS           ICON                    "res\\ScarTrayLowIDPlus.ico"
+FILEADDSRC              ICON                    "res\\FileAddSrc.ico"
+FILEDOWNLOADPREVIEWFIRST ICON                    "res\\FileDownloadPreviewFirst.ico"
+FILEDOWNLOADPREVIEWPAUSE ICON                    "res\\FileDownloadPreviewPause.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //

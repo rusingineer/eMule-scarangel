@@ -3947,9 +3947,16 @@ void CDownloadListCtrl::CreateMenues()
 		m_PreviewMenu.AddMenuTitle(GetResString(IDS_MENU_PREVIEW), true, false);
 		// <== XP Style Menu [Xanatos] - Stulle
 		m_PreviewMenu.AppendMenu(MF_STRING, MP_PREVIEW, GetResString(IDS_DL_PREVIEW), _T("PREVIEW"));
+    	// ==> XP Style Menu [Xanatos] - Stulle
+    	/*
 		m_PreviewMenu.AppendMenu(MF_STRING, MP_PAUSEONPREVIEW, GetResString(IDS_PAUSEONPREVIEW));
 		if (!thePrefs.GetPreviewPrio())
     		m_PreviewMenu.AppendMenu(MF_STRING, MP_TRY_TO_GET_PREVIEW_PARTS, GetResString(IDS_DL_TRY_TO_GET_PREVIEW_PARTS));
+    	*/
+		m_PreviewMenu.AppendMenu(MF_STRING, MP_PAUSEONPREVIEW, GetResString(IDS_PAUSEONPREVIEW), _T("FILEDOWNLOADPREVIEWPAUSE"));
+		if (!thePrefs.GetPreviewPrio())
+	    	m_PreviewMenu.AppendMenu(MF_STRING, MP_TRY_TO_GET_PREVIEW_PARTS, GetResString(IDS_DL_TRY_TO_GET_PREVIEW_PARTS), _T("FILEDOWNLOADPREVIEWFIRST"));
+    	// <== XP Style Menu [Xanatos] - Stulle
 		m_FileMenu.AppendMenu(MF_STRING|MF_POPUP, (UINT_PTR)m_PreviewMenu.m_hMenu, GetResString(IDS_DL_PREVIEW), _T("PREVIEW"));
 	}
 	else
@@ -3982,7 +3989,12 @@ void CDownloadListCtrl::CreateMenues()
 		m_SourcesMenu.AppendMenu(MF_STRING, MP_ALL_A4AF_TO_THIS, GetResString(IDS_ALL_A4AF_TO_THIS)); 
 		m_SourcesMenu.AppendMenu(MF_STRING, MP_ALL_A4AF_TO_OTHER, GetResString(IDS_ALL_A4AF_TO_OTHER)); 
 		//Xman end
+		// ==> XP Style Menu [Xanatos] - Stulle
+		/*
 		m_SourcesMenu.AppendMenu(MF_STRING, MP_ADDSOURCE, GetResString(IDS_ADDSRCMANUALLY));
+		*/
+		m_SourcesMenu.AppendMenu(MF_STRING, MP_ADDSOURCE, GetResString(IDS_ADDSRCMANUALLY), _T("FILEADDSRC"));
+		// <== XP Style Menu [Xanatos] - Stulle		
 		// ==> File Settings [sivka/Stulle] - Stulle
 		/*
 		m_SourcesMenu.AppendMenu(MF_STRING, MP_SETSOURCELIMIT, GetResString(IDS_SETPFSLIMIT));
