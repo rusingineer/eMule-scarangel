@@ -3947,16 +3947,16 @@ void CDownloadListCtrl::CreateMenues()
 		m_PreviewMenu.AddMenuTitle(GetResString(IDS_MENU_PREVIEW), true, false);
 		// <== XP Style Menu [Xanatos] - Stulle
 		m_PreviewMenu.AppendMenu(MF_STRING, MP_PREVIEW, GetResString(IDS_DL_PREVIEW), _T("PREVIEW"));
-    	// ==> XP Style Menu [Xanatos] - Stulle
-    	/*
+		// ==> XP Style Menu [Xanatos] - Stulle
+		/*
 		m_PreviewMenu.AppendMenu(MF_STRING, MP_PAUSEONPREVIEW, GetResString(IDS_PAUSEONPREVIEW));
 		if (!thePrefs.GetPreviewPrio())
     		m_PreviewMenu.AppendMenu(MF_STRING, MP_TRY_TO_GET_PREVIEW_PARTS, GetResString(IDS_DL_TRY_TO_GET_PREVIEW_PARTS));
-    	*/
+		*/
 		m_PreviewMenu.AppendMenu(MF_STRING, MP_PAUSEONPREVIEW, GetResString(IDS_PAUSEONPREVIEW), _T("FILEDOWNLOADPREVIEWPAUSE"));
 		if (!thePrefs.GetPreviewPrio())
 	    	m_PreviewMenu.AppendMenu(MF_STRING, MP_TRY_TO_GET_PREVIEW_PARTS, GetResString(IDS_DL_TRY_TO_GET_PREVIEW_PARTS), _T("FILEDOWNLOADPREVIEWFIRST"));
-    	// <== XP Style Menu [Xanatos] - Stulle
+		// <== XP Style Menu [Xanatos] - Stulle
 		m_FileMenu.AppendMenu(MF_STRING|MF_POPUP, (UINT_PTR)m_PreviewMenu.m_hMenu, GetResString(IDS_DL_PREVIEW), _T("PREVIEW"));
 	}
 	else
