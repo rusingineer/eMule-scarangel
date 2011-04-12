@@ -5406,6 +5406,13 @@ BEGIN
     IDS_SKIPALL             "S&kip All"
     IDS_TRYAGAIN            "&Try Again"
     IDS_YESTOALL            "Y&es to All"
+    IDS_OVERWRITE1          "File %s Already Exists. OverWrite It?"
+    IDS_OVERWRITE2          "OverWrite?"    
+    IDS_BACKUPERROR         "Error encountered during backup"
+    IDS_BACKUP_PART         "Because of their size, backing up *.part files may take a few minutes.\nAre you sure you want to do this?"
+    IDS_BACKUP_PART_W       "Are you sure?"
+    IDS_BACKUP_COMPLETE     "File(s) Copied Successfully."
+    IDS_BACKUP_COMPLETE_W   "Backup complete"
     // <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
     // ==> TBH: minimule - Max
     IDS_MM_SHOW             "Use TBH Mini-Mule instead"
