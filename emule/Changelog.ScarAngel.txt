@@ -1,9 +1,9 @@
 CHANGELOG FOR EMULE ScarAngel MOD
 
 
-eMule v0.50a ScarAngel v4.0:
+eMule v0.50a ScarAngel v4.1:
 ------------------------
-- 11.03.2011 -
+- xx.xx.2011 -
 -------------------------------------------------------------------------------
 based on eMule 0.50a Xtreme 8.0 compiled with vs2010 SP1
 
@@ -12,6 +12,7 @@ Added: "No to all" option for backup nagging dialog in Backup window [Stulle] - 
 
 Changed: Download icons in SearchListCtrl context menu [SiRoB] - Stulle
 Changed: Backup dialog strings can now be localized [Stulle] - Stulle
+Changed: Show Client UL and DL in Transferred column of DownloadListCtrl [SiRoB] - Stulle
 
 
 eMule v0.50a ScarAngel v4.0:

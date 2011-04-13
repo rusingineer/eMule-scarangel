@@ -996,6 +996,14 @@ void CDownloadListCtrl::GetSourceItemDisplayText(const CtrlItem_Struct *pCtrlIte
 			break;
 
 		case 2:		// transferred
+			// ==> Show Client UL and DL in Transferred column of DownloadListCtrl [SiRoB] - Stulle
+			if(pClient->Credits() && (pClient->Credits()->GetUploadedTotal() || pClient->Credits()->GetDownloadedTotal())){
+				_sntprintf(pszText, cchTextMax, _T("%s/%s"),
+				CastItoXBytes(pClient->Credits()->GetUploadedTotal(), false, false),
+				CastItoXBytes(pClient->Credits()->GetDownloadedTotal(), false, false));
+			}
+			break;
+			// <== Show Client UL and DL in Transferred column of DownloadListCtrl [SiRoB] - Stulle
 		case 3:		// completed
 			// - 'Transferred' column: Show transferred data
 			// - 'Completed' column: If 'Transferred' column is hidden, show the amount of transferred data
@@ -3729,6 +3737,13 @@ int CDownloadListCtrl::Compare(const CUpDownClient *client1, const CUpDownClient
 			return client1->GetSourceFrom() - client2->GetSourceFrom();
 
 		case 2://transferred asc
+			// ==> Show Client UL and DL in Transferred column of DownloadListCtrl [SiRoB] - Stulle
+			if (!client1->Credits())
+				return 1;
+			else if (!client2->Credits())
+				return -1;
+			return CompareUnsigned64(client2->Credits()->GetDownloadedTotal(), client1->Credits()->GetDownloadedTotal());
+			// <== Show Client UL and DL in Transferred column of DownloadListCtrl [SiRoB] - Stulle
 		case 3://completed asc
 			return CompareUnsigned(client1->GetTransferredDown(), client2->GetTransferredDown());
 
