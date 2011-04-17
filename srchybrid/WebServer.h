@@ -90,6 +90,7 @@ typedef struct
 	bool	bIsPartFile;
 	CString	sFileState;
 	CString	sFileName;
+	bool	bShowFileName; // Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he/Stulle] - Stulle
 	CString sFileType;
 	uint64	m_qwFileSize;
 	uint64	nFileTransferred;

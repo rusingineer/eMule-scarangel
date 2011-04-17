@@ -4253,6 +4253,7 @@ CString CWebServer::_GetSharedFilesList(ThreadData Data)
 			dFile.sFileName = cur_file->GetFileName();
 		else
 			dFile.sFileName = _GetPlainResString(IDS_WS_HIDDEN);
+		dFile.bShowFileName = bAllowed;
 		// <== Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he/Stulle] - Stulle
 		if(bPartFile)
 			dFile.sFileState = _T("filedown");
@@ -4574,7 +4575,7 @@ CString CWebServer::_GetSharedFilesList(ThreadData Data)
 					HTTPProcessData.Replace(_T("[FileIsPriority]"), _T("none"));
 				downloadable = !cur_file->IsPartFile() && (thePrefs.GetMaxWebUploadFileSizeMB() == 0 || SharedArray[i].m_qwFileSize < thePrefs.GetMaxWebUploadFileSizeMB()*1024*1024);
 				// ==> Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he/Stulle] - Stulle
-				downloadable &= !thePrefs.UseIonixWebsrv() || Rights.RightsToDownloadFiles;
+				downloadable &= !thePrefs.UseIonixWebsrv() || Rights.RightsToDownloadFiles && SharedArray[i].bShowFileName;
 				// <== Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he/Stulle] - Stulle
 			}
 		}
