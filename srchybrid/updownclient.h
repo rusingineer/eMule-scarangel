@@ -26,6 +26,7 @@
 #include <map>
 #include "IP2Country.h" //EastShare - added by AndCycle, IP to Country
 #include "Preferences.h" //Xman Funny-Nick (Stulle/Morph)
+#include "opcodes.h" // Downloading Chunk Detail Display [SiRoB] - Stulle
 
 class CTag; //Xman Anti-Leecher
 class CClientReqSocket;
@@ -1189,5 +1190,11 @@ public:
 	uint8 GetSpreadClient() const	{return m_uSpreadClient;}
 	void SetSpreadClient(uint8 in){m_uSpreadClient = in;};
 	// <== Spread Credits Slot [Stulle] - Stulle
+
+	// ==> Downloading Chunk Detail Display [SiRoB] - Stulle
+	void			DrawStatusBarChunk(CDC* dc, LPCRECT rect,const CPartFile* file, bool  bFlat) const;
+	float			GetDownChunkProgressPercent() const;
+	UINT			GetCurrentDownloadingChunk() const { return (m_nLastBlockOffset!=(uint64)-1)?(UINT)(m_nLastBlockOffset/PARTSIZE):(UINT)-1;}
+	// <== Downloading Chunk Detail Display [SiRoB] - Stulle
 };
 //#pragma pack()

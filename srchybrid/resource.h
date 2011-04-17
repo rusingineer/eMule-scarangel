@@ -3565,6 +3565,7 @@
 #define IDS_NOMINIMIZE                  61665
 // <== Extended Prompt on Exit dialog [leuk_he] - Stulle
 #define IDS_WS_FRIENDSLOT               61670 // Friendslot support for WebInterface [Stulle] - Stulle
+#define IDS_CHUNK                       61680 // Downloading Chunk Detail Display [SiRoB] - Stulle
 
 // Next default values for new objects
 // 

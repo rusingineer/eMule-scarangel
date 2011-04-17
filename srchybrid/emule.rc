@@ -5961,6 +5961,7 @@ BEGIN
     IDS_NOMINIMIZE          "No, To tray"
     // <== Extended Prompt on Exit dialog [leuk_he] - Stulle
     IDS_WS_FRIENDSLOT       "Friend Slot" // Friendslot support for WebInterface [Stulle] - Stulle
+    IDS_CHUNK               "Chunk Detail" // Downloading Chunk Detail Display [SiRoB] - Stulle
 END
 
 #endif    // English (U.S.) resources
