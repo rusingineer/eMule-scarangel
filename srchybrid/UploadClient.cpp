@@ -2864,3 +2864,62 @@ void CUpDownClient::DrawUpStatusBarChunkText(CDC* dc, RECT* cur_rec) const
 	dc->SetTextColor(oldclr);
 }
 // <== Uploading Chunk Detail Display [SiRoB/Fafner] - Stulle
+
+// ==> Display remaining upload time [Stulle] - Stulle
+CString CUpDownClient::GetRemainingUploadTime() const
+{
+	if(IsFriend() && GetFriendSlot() || GetUploadDatarate() <= 0 || upendsoon)
+		return _T("?");
+
+	sint64 sTogo = 0;
+
+	if(IsPBFClient() && Credits())
+	{
+		sTogo = sint64(Credits()->GetDownloadedTotal()) - sint64(Credits()->GetUploadedTotal());
+		if(sTogo > 0)
+			return CastSecondsToHM(time_t(UINT(sTogo)/GetUploadDatarate()));
+		else
+			return _T("?");
+	}
+
+	// This is way too expensive! We just use usual way and have the sTogo <= 0 fallback to _T("?")
+	/*
+	if(IsSuperiorClient())
+	{
+		CUpDownClient* bestClient = theApp.uploadqueue->FindBestClientInQueue(true);
+		if(!bestClient || bestClient->IsSuperiorClient()==false)
+			return _T("?");
+	}
+	*/
+
+	if(!m_DoneBlocks_list.IsEmpty())
+	{
+		CKnownFile* currentReqFile = theApp.sharedfiles->GetFileByID(GetUploadFileID());
+		if(currentReqFile)
+		{
+			Requested_Block_Struct* lastBlock = m_DoneBlocks_list.GetHead();
+			const uint32 lastDone = (uint32)(lastBlock->StartOffset / PARTSIZE);
+
+			// Bytes to go for current part
+			sTogo = (lastDone+1)*PARTSIZE-1;
+			if((uint64)sTogo > currentReqFile->GetFileSize())
+				sTogo = (sint64)currentReqFile->GetFileSize();
+			sTogo -= lastBlock->EndOffset;
+
+			if(GetSessionUp() + sTogo < 3145728) // If the part ends too early
+				sTogo = SESSIONMAXTRANS - GetQueueSessionPayloadUp(); // we assume full SESSIONMAXTRANS will be sent.
+			else if(GetQueueSessionPayloadUp() > SESSIONMAXTRANS) // If we Uploaded too much already
+				sTogo = -1; // we don't display anything anymore.
+			else if(GetSessionUp() + sTogo > SESSIONMAXTRANS) // If we uploaded too much to finish the current chunk
+				sTogo = SESSIONMAXTRANS - GetQueueSessionPayloadUp(); // we will send SESSIONMAXTRANS at the most.
+		}
+	}
+	else // Fallback when we haven't finished uploading any block
+		sTogo = SESSIONMAXTRANS - GetQueueSessionPayloadUp();
+	
+	if(sTogo>0)
+		return CastSecondsToHM(time_t(UINT(sTogo)/GetUploadDatarate()));
+
+	return _T("?");
+}
+// <== Display remaining upload time [Stulle] - Stulle

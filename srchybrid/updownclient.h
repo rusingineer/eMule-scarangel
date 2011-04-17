@@ -1202,5 +1202,9 @@ public:
 	float			GetUpChunkProgressPercent() const;
 	void			DrawUpStatusBarChunkText(CDC* dc, RECT* cur_rec) const;
 	// <== Uploading Chunk Detail Display [SiRoB/Fafner] - Stulle
+
+	// ==> Display remaining upload time [Stulle] - Stulle
+	CString GetRemainingUploadTime() const;
+	// <== Display remaining upload time [Stulle] - Stulle
 };
 //#pragma pack()

@@ -11,6 +11,7 @@ Added: Some more icons in DownloadListCtrl context menu [SiRoB] - Stulle
 Added: "No to all" option for backup nagging dialog in Backup window [Stulle] - Stulle
 Added: Downloading Chunk Detail Display (idea for usage in DlClients by JvA) [SiRoB] - Stulle
 Added: Uploading Chunk Detail Display [SiRoB/Fafner] - Stulle
+Added: Display remaining upload time (estimation!) [Stulle] - Stulle
 
 Changed: Download icons in SearchListCtrl context menu [SiRoB] - Stulle
 Changed: Backup dialog strings can now be localized [Stulle] - Stulle
