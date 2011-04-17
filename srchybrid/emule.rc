@@ -5882,7 +5882,8 @@ BEGIN
     IDS_ADVADMIN_HIADMIN    "Hi-Admin"
     IDS_ADVADMINENABLED     "Enable multi user Webinterface right management"
     IDS_ADVADMIN_GUEST      "Guest"
-    IDS_ADVADMIN_DFILES     "Acces - Download files?"
+    IDS_ADVADMIN_DFILES     "Access - Download files?"
+    IDS_WS_HIDDEN           "Filename hidden"
     // <== Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he/Stulle] - Stulle
     // ==> Tabbed WebInterface settings panel [Stulle] - Stulle
     IDS_TAB_WEB_SERVER      "Web Server"

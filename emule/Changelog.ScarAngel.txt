@@ -18,6 +18,7 @@ Changed: Backup dialog strings can now be localized [Stulle] - Stulle
 Changed: Show Client UL and DL in Transferred column of DownloadListCtrl [SiRoB] - Stulle
 Changed: Show all clients that are not banned in On Queue list of WebInterface [Stulle] - Stulle
 Changed: Display if a client has credits in On Queue list of WebInterface [Stulle] - Stulle
+Changed: Hide file names in Multi WebInterface if file shared in unaccessable cat [Stulle] - Stulle
 
 Fixed: On setting new Friendslots via WebInterface old Friendslots were not removed [Stulle] - Stulle
 

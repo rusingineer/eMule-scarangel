@@ -431,7 +431,12 @@ private:
 private:
 	static void		SaveWIConfigArray(BOOL array[], int size, LPCTSTR key);
 	static CString	GetWebImageNameForFileType(CString filename);
+	// ==> Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he/Stulle] - Stulle
+	/*
 	static CString  GetClientSummary(CUpDownClient* client);
+	*/
+	static CString  GetClientSummary(CUpDownClient* client, bool bShowFilename);
+	// <== Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he/Stulle] - Stulle
 	static CString	_GetMyInfo(ThreadData Data);
 	static CString	GetClientversionImage(CUpDownClient* client);
 	// ==> New failed login handling for WebInterface [MorphXT/leuk_he/dreamwalker/Stulle] - Stulle

@@ -3461,6 +3461,7 @@
 #define IDC_STATIC_ADVADMIN_USERLEVEL   61544
 #define IDC_ADVADMIN_NOTE               61545
 #define IDC_ADVADMIN_DFILES             61546
+#define IDS_WS_HIDDEN                   61547
 // <== Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he/Stulle] - Stulle
 // ==> Tabbed WebInterface settings panel [Stulle] - Stulle
 #define IDC_TAB_WEBSERVER               61550
