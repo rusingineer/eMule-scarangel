@@ -113,6 +113,9 @@ void CUploadListCtrl::Init()
 	InsertColumn(7, GetResString(IDS_UPSTATUS),		LVCFMT_LEFT,  DFLT_PARTSTATUS_COL_WIDTH);
 	InsertColumn(8,	GetResString(IDS_CD_CSOFT),		LVCFMT_LEFT, 90); //Xman version see clientversion in every window
 	InsertColumn(9, GetResString(IDS_UPDOWNUPLOADLIST),	LVCFMT_LEFT, 90); //Xman show complete up/down in uploadlist
+	// ==> Uploading Chunk Detail Display [SiRoB/Fafner] - Stulle
+	InsertColumn(10,GetResString(IDS_CHUNK),LVCFMT_LEFT,100);
+	// <== Uploading Chunk Detail Display [SiRoB/Fafner] - Stulle
 	
 
 	SetAllIcons();
@@ -181,6 +184,12 @@ void CUploadListCtrl::Localize()
 	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
 	pHeaderCtrl->SetItem(9, &hdi);
 	//Xman end
+
+	// ==> Uploading Chunk Detail Display [SiRoB/Fafner] - Stulle
+	strRes = GetResString(IDS_CHUNK);
+	hdi.pszText = const_cast<LPTSTR>((LPCTSTR)strRes);
+	pHeaderCtrl->SetItem(10, &hdi);
+	// <== Uploading Chunk Detail Display [SiRoB/Fafner] - Stulle
 
 	// ==> Design Settings [eWombat/Stulle] - Stulle
 	theApp.emuledlg->transferwnd->SetBackgroundColor(style_b_uploadlist);
@@ -571,6 +580,17 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						break;
 					}
 
+					// ==> Uploading Chunk Detail Display [SiRoB/Fafner] - Stulle
+					case 10:
+						cur_rec.bottom--;
+						cur_rec.top++;
+						client->DrawUpStatusBarChunk(dc,&cur_rec,false,thePrefs.UseFlatBar());
+						client->DrawUpStatusBarChunkText(dc,&cur_rec);
+						cur_rec.bottom++;
+						cur_rec.top--;
+						break;
+					// <== Uploading Chunk Detail Display [SiRoB/Fafner] - Stulle
+
 					default:
 						// ==> Design Settings [eWombat/Stulle] - Stulle
 						/*
@@ -718,6 +738,12 @@ void CUploadListCtrl::GetItemDisplayText(const CUpDownClient *client, int iSubIt
 				_tcsncpy(pszText, _T("?"), cchTextMax);
 			break;
 		//Xman end
+
+		// ==> Uploading Chunk Detail Display [SiRoB/Fafner] - Stulle
+		case 10:
+			_tcsncpy(pszText, _T("Chunk Details"), cchTextMax);
+			break;
+		// <== Uploading Chunk Detail Display [SiRoB/Fafner] - Stulle
 	}
 	pszText[cchTextMax - 1] = _T('\0');
 }
@@ -915,6 +941,15 @@ int CUploadListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 				iResult=0;
 			break;
 		//Xman end
+
+		// ==> Uploading Chunk Detail Display [SiRoB/Fafner] - Stulle
+		case 10:
+			if (item1->GetUpChunkProgressPercent() == item2->GetUpChunkProgressPercent())
+				iResult=0;
+			else
+				iResult=item1->GetUpChunkProgressPercent() > item2->GetUpChunkProgressPercent()?1:-1;
+			break;
+		// <== Uploading Chunk Detail Display [SiRoB/Fafner] - Stulle
 	}
 
 	if (lParamSort >= 100)

@@ -2638,3 +2638,229 @@ bool CUpDownClient::IsSecure() const
 	return credits && theApp.clientcredits->CryptoAvailable() && credits->GetCurrentIdentState(GetIP()) == IS_IDENTIFIED;
 }
 // <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
+
+// ==> Uploading Chunk Detail Display [SiRoB/Fafner] - Stulle
+void CUpDownClient::DrawUpStatusBarChunk(CDC* dc, RECT* rect, bool /*onlygreyrect*/, bool  bFlat) const
+{
+	COLORREF crNeither;
+	COLORREF crNextSending;
+	COLORREF crBoth;
+	COLORREF crSending;
+	COLORREF crBuffer;
+	COLORREF crProgress;
+	COLORREF crDot;
+    if(GetFileUploadSocket() && GetFileUploadSocket()->IsTrickle()) {
+        crNeither = RGB(224, 224, 224);
+	    crNextSending = RGB(255,208,0);
+	    crBoth = bFlat ? RGB(0, 0, 0) : RGB(104, 104, 104);
+	    crSending = RGB(0, 150, 0);
+		crBuffer = RGB(255, 100, 100);
+		crDot = RGB(255, 255, 255);
+		crProgress = RGB(0, 224, 0);
+    } else {
+        // grayed out
+        crNeither = RGB(248, 248, 248);
+	    crNextSending = RGB(255,244,191);
+	    crBoth = bFlat ? RGB(191, 191, 191) : RGB(191, 191, 191);
+	    crSending = RGB(191, 229, 191);
+		crBuffer = RGB(255, 216, 216);
+		crDot = RGB(255, 255, 255);
+		crProgress = RGB(191, 255, 191);
+    }
+
+	// wistily: UpStatusFix
+	CKnownFile* currequpfile = theApp.sharedfiles->GetFileByID(requpfileid);
+	EMFileSize filesize;
+	uint64 chunksize = PARTSIZE;
+	if (currequpfile)
+		filesize=currequpfile->GetFileSize();
+	else
+		filesize = (uint64)(PARTSIZE * (uint64)m_nUpPartCount);
+	// wistily: UpStatusFix
+
+	if(filesize <= (uint64)0)
+		return;
+
+	CBarShader statusBar;
+
+	if (!m_BlockRequests_queue.IsEmpty() || !m_DoneBlocks_list.IsEmpty()) {
+		uint32 cur_chunk = (uint32)-1;
+		uint64 start = (uint64)-1;
+		uint64 end = (uint64)-1;
+		const Requested_Block_Struct* block;
+		if (!m_DoneBlocks_list.IsEmpty()){
+			block = m_DoneBlocks_list.GetHead();
+			if (cur_chunk == (uint32)-1) {
+				cur_chunk = (uint32)(block->StartOffset/PARTSIZE);
+				start = end = cur_chunk*PARTSIZE;
+				end += PARTSIZE-1;
+				if (end > filesize)
+				{
+					end = filesize;
+					chunksize = end - start;
+					if(chunksize <= 0) chunksize = PARTSIZE;
+				}
+				statusBar.SetFileSize(chunksize);
+				statusBar.SetHeight(rect->bottom - rect->top); 
+				statusBar.SetWidth(rect->right - rect->left); 
+				/*
+				if (end > filesize) {
+					end = filesize;
+					s_UpStatusBar.Reset();
+					s_UpStatusBar.FillRange(0, end%PARTSIZE, crNeither);
+				} else
+				*/
+					statusBar.Fill(crNeither);
+			}
+		}
+		if (!m_BlockRequests_queue.IsEmpty()){
+			for(POSITION pos=m_BlockRequests_queue.GetHeadPosition();pos!=0;){
+				block = m_BlockRequests_queue.GetNext(pos);
+				if (cur_chunk == (uint32)-1) {
+					cur_chunk = (uint32)(block->StartOffset/PARTSIZE);
+					start = end = cur_chunk*PARTSIZE;
+					end += PARTSIZE-1;
+					if (end > filesize)
+					{
+						end = filesize;
+						chunksize = end - start;
+						if(chunksize <= 0) chunksize = PARTSIZE;
+					}
+					statusBar.SetFileSize(chunksize);
+					statusBar.SetHeight(rect->bottom - rect->top); 
+					statusBar.SetWidth(rect->right - rect->left); 
+					/*
+					if (end > filesize) {
+						end = filesize;
+						s_UpStatusBar.Reset();
+						s_UpStatusBar.FillRange(0, end%PARTSIZE, crNeither);
+					} else
+					*/
+						statusBar.Fill(crNeither);
+				}
+				if (block->StartOffset <= end && block->EndOffset >= start) {
+					statusBar.FillRange((block->StartOffset > start)?block->StartOffset%PARTSIZE:(uint64)0, ((block->EndOffset < end)?block->EndOffset+1:end)%PARTSIZE, crNextSending);
+				}
+			}
+		}
+		
+		if (!m_DoneBlocks_list.IsEmpty() && cur_chunk != (uint32)-1){
+			// Also show what data is buffered (with color crBuffer)
+            uint64 total = 0;
+    
+		    for(POSITION pos=m_DoneBlocks_list.GetTailPosition();pos!=0; ){
+			    block = m_DoneBlocks_list.GetPrev(pos);
+				if (block->StartOffset <= end && block->EndOffset >= start) {
+					if(total + (block->EndOffset-block->StartOffset) <= GetQueueSessionPayloadUp()) {
+						// block is sent
+						statusBar.FillRange((block->StartOffset > start)?block->StartOffset%PARTSIZE:(uint64)0, ((block->EndOffset < end)?block->EndOffset+1:end)%PARTSIZE, crProgress);
+						total += block->EndOffset-block->StartOffset;
+					}
+					else if (total < GetQueueSessionPayloadUp()){
+						// block partly sent, partly in buffer
+						total += block->EndOffset-block->StartOffset;
+						uint64 rest = total -  GetQueueSessionPayloadUp();
+						uint64 newEnd = (block->EndOffset-rest);
+						if (newEnd>=start) {
+							if (newEnd<=end) {
+								uint64 uNewEnd = newEnd%PARTSIZE;
+								statusBar.FillRange(block->StartOffset%PARTSIZE, uNewEnd, crSending);
+								if (block->EndOffset <= end)
+									statusBar.FillRange(uNewEnd, block->EndOffset%PARTSIZE, crBuffer);
+								else
+									statusBar.FillRange(uNewEnd, end%PARTSIZE, crBuffer);
+							} else 
+								statusBar.FillRange(block->StartOffset%PARTSIZE, end%PARTSIZE, crSending);
+						} else if (block->EndOffset <= end)
+							statusBar.FillRange((uint64)0, block->EndOffset%PARTSIZE, crBuffer);
+					}
+					else{
+						// entire block is still in buffer
+						total += block->EndOffset-block->StartOffset;
+						statusBar.FillRange((block->StartOffset>start)?block->StartOffset%PARTSIZE:(uint64)0, ((block->EndOffset < end)?block->EndOffset:end)%PARTSIZE, crBuffer);
+					}
+				} else
+					total += block->EndOffset-block->StartOffset;
+		    }
+	    }
+   	    statusBar.Draw(dc, rect->left, rect->top, bFlat);
+	}
+}
+
+float CUpDownClient::GetUpChunkProgressPercent() const
+{
+	CKnownFile* currequpfile = theApp.sharedfiles->GetFileByID(requpfileid);
+	EMFileSize filesize;
+	uint64 chunksize = PARTSIZE;
+	if (currequpfile)
+		filesize=currequpfile->GetFileSize();
+	else
+		filesize = (uint64)(PARTSIZE * (uint64)m_nUpPartCount);
+
+	if(filesize <= (uint64)0)
+		return 0.0f;
+
+	if (!m_DoneBlocks_list.IsEmpty()) {
+		uint32 cur_chunk = (uint32)-1;
+		uint64 start = (uint64)-1;
+		uint64 end = (uint64)-1;
+		const Requested_Block_Struct* block;
+		block = m_DoneBlocks_list.GetHead();
+		cur_chunk = (uint32)(block->StartOffset/PARTSIZE);
+		start = end = cur_chunk*PARTSIZE;
+		end += PARTSIZE-1;
+		if (end > filesize)
+		{
+			chunksize = end - start;
+			if(chunksize <= 0) chunksize = PARTSIZE;
+		}
+		return (float)(((double)(block->EndOffset%PARTSIZE)/(double)chunksize)*100.0f);
+	}
+	return 0.0f;
+}
+
+void CUpDownClient::DrawUpStatusBarChunkText(CDC* dc, RECT* cur_rec) const
+{
+//	if (!thePrefs.GetShowClientPercentage())
+//		return;
+	CString Sbuffer;
+	CRect rcDraw = cur_rec;
+	rcDraw.top--;rcDraw.bottom--;
+	COLORREF oldclr = dc->SetTextColor(RGB(0,0,0));
+	int iOMode = dc->SetBkMode(TRANSPARENT);
+	if (!m_DoneBlocks_list.IsEmpty())
+		Sbuffer.Format(_T("%u"), (UINT)(m_DoneBlocks_list.GetHead()->StartOffset/PARTSIZE));
+	else if (!m_BlockRequests_queue.IsEmpty())
+		Sbuffer.Format(_T("%u"), (UINT)(m_BlockRequests_queue.GetHead()->StartOffset/PARTSIZE));
+	else
+		Sbuffer.Format(_T("?"));
+
+	Sbuffer.AppendFormat(_T(" @ %.1f%%"),GetUpChunkProgressPercent());
+	
+	#define	DrawChunkText	dc->DrawText(Sbuffer, Sbuffer.GetLength(), &rcDraw, DT_LEFT|DT_SINGLELINE|DT_VCENTER|DT_NOPREFIX|DT_END_ELLIPSIS)
+	DrawChunkText;
+	rcDraw.left+=1;rcDraw.right+=1;
+	DrawChunkText;
+	rcDraw.left+=1;rcDraw.right+=1;
+	DrawChunkText;
+	
+	rcDraw.top+=1;rcDraw.bottom+=1;
+	DrawChunkText;
+	rcDraw.top+=1;rcDraw.bottom+=1;
+	DrawChunkText;
+	
+	rcDraw.left-=1;rcDraw.right-=1;
+	DrawChunkText;
+	rcDraw.left-=1;rcDraw.right-=1;
+	DrawChunkText;
+	
+	rcDraw.top-=1;rcDraw.bottom-=1;
+	DrawChunkText;
+	
+	rcDraw.left++;rcDraw.right++;
+	dc->SetTextColor(RGB(255,255,255));
+	DrawChunkText;
+	dc->SetBkMode(iOMode);
+	dc->SetTextColor(oldclr);
+}
+// <== Uploading Chunk Detail Display [SiRoB/Fafner] - Stulle
