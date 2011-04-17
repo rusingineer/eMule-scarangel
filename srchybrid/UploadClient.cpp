@@ -2649,7 +2649,7 @@ void CUpDownClient::DrawUpStatusBarChunk(CDC* dc, RECT* rect, bool /*onlygreyrec
 	COLORREF crBuffer;
 	COLORREF crProgress;
 	COLORREF crDot;
-    if(GetFileUploadSocket() && GetFileUploadSocket()->IsTrickle()) {
+    if(GetFileUploadSocket() && GetFileUploadSocket()->IsFull()) {
         crNeither = RGB(224, 224, 224);
 	    crNextSending = RGB(255,208,0);
 	    crBoth = bFlat ? RGB(0, 0, 0) : RGB(104, 104, 104);

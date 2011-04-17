@@ -582,12 +582,16 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 					// ==> Uploading Chunk Detail Display [SiRoB/Fafner] - Stulle
 					case 10:
+					{
 						cur_rec.bottom--;
 						cur_rec.top++;
 						client->DrawUpStatusBarChunk(dc,&cur_rec,false,thePrefs.UseFlatBar());
+						CFont *pOldFont = dc.SelectObject(&m_fontBoldSmaller);
 						client->DrawUpStatusBarChunkText(dc,&cur_rec);
+						dc.SelectObject(pOldFont);
 						cur_rec.bottom++;
 						cur_rec.top--;
+					}
 						break;
 					// <== Uploading Chunk Detail Display [SiRoB/Fafner] - Stulle
 

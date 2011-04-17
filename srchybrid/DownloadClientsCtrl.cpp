@@ -502,7 +502,7 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						} else
 							buffer.Format(_T("%u"), client->GetCurrentDownloadingChunk());
 						buffer.AppendFormat(_T(" @ %.1f%%"), client->GetDownChunkProgressPercent());
-						CFont *pOldFont = dc.SelectObject(&theApp.emuledlg->transferwnd->GetDownloadList()->m_fontBoldSmaller);
+						CFont *pOldFont = dc.SelectObject(&m_fontBoldSmaller);
 #define	DrawClientPercentTextLeft		dc.DrawText(buffer, buffer.GetLength(),&cur_rec, MLC_DT_TEXT)
 						cur_rec.top-=1;cur_rec.bottom-=1;
 						cur_rec.left+=1;cur_rec.right-=3;
