@@ -2997,6 +2997,10 @@ CString CWebServer::_CreateTransferList(CString Out, CWebServer *pThis, ThreadDa
 			dUser.sClientExtra = _T("friendslot");
 			nCountQueueFriend++;
 			if (bSecure) nCountQueueFriendSecure++;
+			// ==> Show all clients that are not banned in On Queue list of WebInterface [Stulle] - Stulle
+			nCountQueue++;
+			if (bSecure) nCountQueueSecure++;
+			// <== Show all clients that are not banned in On Queue list of WebInterface [Stulle] - Stulle
 		}
 		// <== Friendslot support for WebInterface [Stulle] - Stulle
 		else if (cur_client->IsFriend())
@@ -3004,6 +3008,10 @@ CString CWebServer::_CreateTransferList(CString Out, CWebServer *pThis, ThreadDa
 			dUser.sClientExtra = _T("friend");
 			nCountQueueFriend++;
 			if (bSecure) nCountQueueFriendSecure++;
+			// ==> Show all clients that are not banned in On Queue list of WebInterface [Stulle] - Stulle
+			nCountQueue++;
+			if (bSecure) nCountQueueSecure++;
+			// <== Show all clients that are not banned in On Queue list of WebInterface [Stulle] - Stulle
 		}
 		else
 		{
@@ -3404,7 +3412,12 @@ CString CWebServer::_CreateTransferList(CString Out, CWebServer *pThis, ThreadDa
 		for(int i = 0; i < QueueArray.GetCount(); i++)
 		{
             TCHAR HTTPTempC[100] = _T("");
+			// ==> Show all clients that are not banned in On Queue list of WebInterface [Stulle] - Stulle
+			/*
 			if (QueueArray[i].sClientExtra == _T("none"))
+			*/
+			if (QueueArray[i].sClientExtra != _T("banned"))
+			// <== Show all clients that are not banned in On Queue list of WebInterface [Stulle] - Stulle
 			{
 				HTTPProcessData = OutE;
 				pcTmp = (!WSqueueColumnHidden[0]) ? QueueArray[i].sUserName.GetString() : _T("");

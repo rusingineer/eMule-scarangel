@@ -16,6 +16,7 @@ Added: Display remaining upload time (estimation!) [Stulle] - Stulle
 Changed: Download icons in SearchListCtrl context menu [SiRoB] - Stulle
 Changed: Backup dialog strings can now be localized [Stulle] - Stulle
 Changed: Show Client UL and DL in Transferred column of DownloadListCtrl [SiRoB] - Stulle
+Changed: Show all clients that are not banned in On Queue list of WebInterface [Stulle] - Stulle
 
 
 eMule v0.50a ScarAngel v4.0:
