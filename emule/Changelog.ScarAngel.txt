@@ -19,6 +19,8 @@ Changed: Show Client UL and DL in Transferred column of DownloadListCtrl [SiRoB]
 Changed: Show all clients that are not banned in On Queue list of WebInterface [Stulle] - Stulle
 Changed: Display if a client has credits in On Queue list of WebInterface [Stulle] - Stulle
 
+Fixed: On setting new Friendslots via WebInterface old Friendslots were not removed [Stulle] - Stulle
+
 
 eMule v0.50a ScarAngel v4.0:
 ------------------------

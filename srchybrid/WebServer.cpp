@@ -2200,7 +2200,10 @@ CString CWebServer::_GetTransferList(ThreadData Data)
 							cur_client->SetFriendSlot(false);
 						}
 						if (sOp.CompareNoCase(_T("addfriendslot")) == 0)
+						{
+							theApp.friendlist->RemoveAllFriendSlots();
 							cur_client->SetFriendSlot(true);
+						}
 						else if (sOp.CompareNoCase(_T("removefriendslot")) == 0) {
 							cur_client->SetFriendSlot(false);
 						// <== Friendslot support for WebInterface [Stulle] - Stulle
