@@ -2648,14 +2648,12 @@ void CUpDownClient::DrawUpStatusBarChunk(CDC* dc, RECT* rect, bool /*onlygreyrec
 	COLORREF crSending;
 	COLORREF crBuffer;
 	COLORREF crProgress;
-	COLORREF crDot;
     if(GetFileUploadSocket() && GetFileUploadSocket()->IsFull()) {
         crNeither = RGB(224, 224, 224);
 	    crNextSending = RGB(255,208,0);
 	    crBoth = bFlat ? RGB(0, 0, 0) : RGB(104, 104, 104);
 	    crSending = RGB(0, 150, 0);
 		crBuffer = RGB(255, 100, 100);
-		crDot = RGB(255, 255, 255);
 		crProgress = RGB(0, 224, 0);
     } else {
         // grayed out
@@ -2664,7 +2662,6 @@ void CUpDownClient::DrawUpStatusBarChunk(CDC* dc, RECT* rect, bool /*onlygreyrec
 	    crBoth = bFlat ? RGB(191, 191, 191) : RGB(191, 191, 191);
 	    crSending = RGB(191, 229, 191);
 		crBuffer = RGB(255, 216, 216);
-		crDot = RGB(255, 255, 255);
 		crProgress = RGB(191, 255, 191);
     }
 
