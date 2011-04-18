@@ -771,10 +771,10 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 					} //Xman
 					//zz_fly :: test code
 					//note: the easyMule client may send unexpect OP_FILESTATUS packet. from its src, it will send OP_FILESTATUS when CPartFile::FlushBuffer().
-					//		ignore those unexpect packets. thanks Enig123
-					//if(StrStrI(client->GetClientModVer(), L"easyMule") && client->GetDownloadState() == DS_DOWNLOADING)
-					//	AddDebugLogLine(false, _T("easyMule client send unexpect OP_FILESTATUS packet: %s"), client->DbgGetClientInfo());
-					//else
+					//		ignore those unexpect packets. thanks Enig123.
+					if(StrStrI(client->GetClientModVer(), L"easyMule") && client->GetDownloadState() == DS_DOWNLOADING)
+						AddDebugLogLine(false, _T("easyMule client send unexpect OP_FILESTATUS packet: %s"), client->DbgGetClientInfo());
+					else
 					//zz_fly :: test code
 					client->ProcessFileStatus(false, &data, file);
 					break;
@@ -2281,12 +2281,25 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 
 						uint32 ip = data.ReadUInt32();
 						uint16 tcp = data.ReadUInt16();
+						//Enig123 :: don't reconnect to banned clients
+						uint32 nClientIP = ntohl(ip);
+						if (theApp.clientlist->IsBannedClient(nClientIP)) {
+							if (thePrefs.GetLogBannedClients())
+								AddDebugLogLine(false, _T("Banned client IP=%s asked me to callback, rejected!"), ipstr(nClientIP));
+							break;
+						}
+						//End
 						CUpDownClient* callback;
 						callback = theApp.clientlist->FindClientByIP(ntohl(ip), tcp);
 						if( callback == NULL )
 						{
 							callback = new CUpDownClient(NULL,tcp,ip,0,0);
+							//Enig123 :: Optimizations - SkipDupCheck
+							/*
 							theApp.clientlist->AddClient(callback);
+							*/
+							theApp.clientlist->AddClient(callback, true);
+							//End
 						}
 						callback->TryToConnect(true);
 					}

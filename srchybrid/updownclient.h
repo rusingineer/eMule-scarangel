@@ -1125,6 +1125,8 @@ protected: // File Settings [sivka/Stulle] - Stulle
 	*/
 	//Xman end
 
+	bool	m_bACATHelloAnswerPending;	//zz_fly :: Client is always highid if we are connecting to them - by Enig123, idea from ACAT
+
 //EastShare Start - added by AndCycle, IP to Country
 public:
 	CString			GetCountryName(bool longName = true) const; //Xman changed 

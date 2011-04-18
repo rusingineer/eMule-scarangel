@@ -103,9 +103,8 @@ void CDirectDownloadDlg::OnOK()
 					/*
 					//Xman [MoNKi: -Check already downloaded files-]
 					if(theApp.knownfiles->CheckAlreadyDownloadedFileQuestion(pLink->GetFileLink()->GetHashKey(),pLink->GetFileLink()->GetName()))
-					{
+					//Xman end
 						theApp.downloadqueue->AddFileLinkToDownload(pLink->GetFileLink(), (thePrefs.GetCatCount() == 0) ? 0 : m_cattabs.GetCurSel());
-					}
 					//Xman end
 					*/
 					CED2KFileLink* pFileLink = (CED2KFileLink*)CED2KLink::CreateLinkFromUrl(strTok.Trim());

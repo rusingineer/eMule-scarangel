@@ -5,7 +5,7 @@ eMule v0.50a ScarAngel v4.1:
 ------------------------
 - xx.xx.2011 -
 -------------------------------------------------------------------------------
-based on eMule 0.50a Xtreme 8.0 compiled with vs2010 SP1
+based on eMule 0.50a Xtreme 8.1 compiled with vs2010 SP1
 
 Added: Some more icons in DownloadListCtrl context menu [SiRoB] - Stulle
 Added: "No to all" option for backup nagging dialog in Backup window [Stulle] - Stulle

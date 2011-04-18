@@ -293,6 +293,7 @@ void CUpDownClient::Init()
     m_lastRefreshedULDisplay = ::GetTickCount();
 	m_bGPLEvildoer = false;
 	m_bHelloAnswerPending = false;
+	m_bACATHelloAnswerPending = false;	//zz_fly :: Client is always highid if we are connecting to them - by Enig123, idea from ACAT
 	m_fNoViewSharedFiles = 0;
 	m_bMultiPacket = 0;
 	md4clr(requpfileid);
@@ -527,7 +528,6 @@ CUpDownClient::~CUpDownClient(){
 	}
 	//Xman end
 
-
 	//Xman end -----------------
 }
 
@@ -574,11 +574,11 @@ bool CUpDownClient::ProcessHelloPacket(const uchar* pachPacket, uint32 nSize)
 	//Xman end
 	// reset all client properties; a client may not send a particular emule tag any longer
 	ClearHelloProperties();
- 	//Xman Anti-Leecher
+	//Xman Anti-Leecher
 	/*
 	return ProcessHelloTypePacket(&data);
 	*/
-	return ProcessHelloTypePacket(&data,true);
+	return ProcessHelloTypePacket(&data, true);
 	//Xman end
 }
 
@@ -588,13 +588,14 @@ bool CUpDownClient::ProcessHelloAnswer(const uchar* pachPacket, uint32 nSize)
 	uhashsize=16;
 	//Xman end
 	CSafeMemFile data(pachPacket, nSize);
- 	//Xman Anti-Leecher
+	//Xman Anti-Leecher
 	/*
 	bool bIsMule = ProcessHelloTypePacket(&data);
 	*/
 	bool bIsMule = ProcessHelloTypePacket(&data, false);
 	//Xman end
 	m_bHelloAnswerPending = false;
+	m_bACATHelloAnswerPending = false;	//zz_fly :: Client is always highid if we are connecting to them - by Enig123, idea from ACAT
 	return bIsMule;
 }
 
@@ -974,7 +975,14 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 	//(b)Some older clients will not send a ID, these client are HighID users that are not connected to a server.
 	//(c)Kad users with a *.*.*.0 IPs will look like a lowID user they are actually a highID user.. They can be detected easily
 	//because they will send a ID that is the same as their IP..
+	//zz_fly :: Client is always highid if we are connecting to them - by Enig123, idea from ACAT
+	//note: if we can receive his hello answer, whatever the situation is, he must be a HighID. 
+	//		if we and he send hello packet concurrent, only one instance will survive. this fix will not cause trouble in this case.
+	/*
 	if(!HasLowID() || m_nUserIDHybrid == 0 || m_nUserIDHybrid == m_dwUserIP ) 
+	*/
+	if(!HasLowID() || m_nUserIDHybrid == 0 || m_nUserIDHybrid == m_dwUserIP || m_bACATHelloAnswerPending)
+	//zz_fly :: end
 		m_nUserIDHybrid = ntohl(m_dwUserIP);
 
 	//zz_fly :: Optimized on table-arragement :: Enig123 :: Start
@@ -1043,7 +1051,6 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 		credits->SetLastSeen(); //Enig123::refresh is neccessary here to avoid wrong judgement
 	}
 	//zz_fly :: End
-
 
 	if (GetFriend() != NULL && GetFriend()->HasUserhash() && md4cmp(GetFriend()->m_abyUserhash, m_achUserHash) != 0)
 	{
@@ -1125,6 +1132,7 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 			BanLeecher(strBanReason, 15);
 			return bIsMule;
 		}
+
 		//zz_fly :: Fake Shareaza Detection
 		//note: clients based on Shareaza send UDPPort tag AFTER Misc Options tag
 		if(bIsFakeShareaza && m_clientSoft==SO_EMULE)
@@ -1134,6 +1142,7 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data, bool isHelloPacke
 			return bIsMule;
 		}
 		//zz_fly :: Fake Shareaza Detection end
+
 		if(thePrefs.GetAntiLeecherBadHello() && (m_clientSoft==SO_EMULE || (m_clientSoft==SO_XMULE && m_byCompatibleClient!=SO_XMULE)))
 		{
 			if(wronghello)
@@ -1269,6 +1278,7 @@ void CUpDownClient::SendHelloPacket(){
 	SendPacket(packet, true);
 
 	m_bHelloAnswerPending = true;
+	m_bACATHelloAnswerPending = true;	//zz_fly :: Client is always highid if we are connecting to them - by Enig123, idea from ACAT
 	return;
 }
 
@@ -1918,6 +1928,7 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 		tagMODVersion.WriteTagToFile(data);
 	}
 	//Xman end - modID
+
 	uint32 dwIP;
 	uint16 nPort;
 	if (theApp.serverconnect->IsConnected()){
@@ -2189,7 +2200,6 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket, UpStopReas
 	*/
 	//Xman end
 
-	
 	if(m_nUploadState!=US_BANNED) //Xman DLP - Anti-Leecher / Code-Improvement
 	switch(m_nDownloadState){
 		case DS_CONNECTING:
@@ -2292,6 +2302,7 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket, UpStopReas
 		m_fHashsetRequestingAICH = 0;
 		SetSentCancelTransfer(0);
 		m_bHelloAnswerPending = false;
+		m_bACATHelloAnswerPending = false;	//zz_fly :: Client is always highid if we are connecting to them - by Enig123, idea from ACAT
 		m_fQueueRankPending = 0;
 		m_fFailedFileIdReqs = 0;
 		m_fUnaskQueueRankRecv = 0;
@@ -2527,7 +2538,7 @@ bool CUpDownClient::TryToConnect(bool bIgnoreMaxCon, bool bNoCallbacks, CRuntime
 		DebugLogError( _T("LowID and US_CONNECTING (%s)"), DbgGetClientInfo());
 	}
 
-	if (theApp.serverconnect->IsLocalServer(m_dwServerIP,m_nServerPort))
+	if (theApp.serverconnect->IsLocalServer(m_dwServerIP, m_nServerPort))
 	{
 		m_nConnectingState = CCS_SERVERCALLBACK;
 		Packet* packet = new Packet(OP_CALLBACKREQUEST,4);
@@ -3110,11 +3121,11 @@ void CUpDownClient::SendPublicKeyPacket()
 {
 	// send our public key to the client who requested it
 	if (socket == NULL || credits == NULL || m_SecureIdentState != IS_KEYANDSIGNEEDED){
-		//zz_fly :: see the changes in clientcreditlist
+		//zz_fly :: see the optimizes in clientcreditlist
 		/*
 		ASSERT ( false );
 		*/
-		//zz_fly :: see the changes in clientcreditlist
+		//zz_fly :: see the optimizes in clientcreditlist
 		return;
 	}
 	if (!theApp.clientcredits->CryptoAvailable())
@@ -3134,11 +3145,11 @@ void CUpDownClient::SendSignaturePacket()
 {
 	// signate the public key of this client and send it
 	if (socket == NULL || credits == NULL || m_SecureIdentState == 0){
-		//zz_fly :: see the changes in clientcreditlist
+		//zz_fly :: see the optimizes in clientcreditlist
 		/*
 		ASSERT ( false );
 		*/
-		//zz_fly :: see the changes in clientcreditlist
+		//zz_fly :: see the optimizes in clientcreditlist
 		return;
 	}
 
@@ -3198,11 +3209,11 @@ void CUpDownClient::ProcessPublicKeyPacket(const uchar* pachPacket, uint32 nSize
 
 	if (socket == NULL || credits == NULL || pachPacket[0] != nSize-1
 		|| nSize < 10 || nSize > 250){
-		//zz_fly :: see the changes in clientcreditlist
+		//zz_fly :: see the optimizes in clientcreditlist
 		/*
 		ASSERT ( false );
 		*/
-		//zz_fly :: see the changes in clientcreditlist
+		//zz_fly :: see the optimizes in clientcreditlist
 		return;
 	}
 	if (!theApp.clientcredits->CryptoAvailable())
@@ -3232,11 +3243,11 @@ void CUpDownClient::ProcessSignaturePacket(const uchar* pachPacket, uint32 nSize
 	// here we spread the good guys from the bad ones ;)
 
 	if (socket == NULL || credits == NULL || nSize > 250 || nSize < 10){
-		//zz_fly :: see the changes in clientcreditlist
+		//zz_fly :: see the optimizes in clientcreditlist
 		/*
 		ASSERT ( false );
 		*/
-		//zz_fly :: see the changes in clientcreditlist
+		//zz_fly :: see the optimizes in clientcreditlist
 		return;
 	}
 
@@ -3332,7 +3343,11 @@ void CUpDownClient::ProcessSecIdentStatePacket(const uchar* pachPacket, uint32 n
 	if (nSize != 5)
 		return;
 	if (!credits){
+		//zz_fly :: see the optimizes in clientcreditlist
+		/*
 		ASSERT ( false );
+		*/
+		//zz_fly :: see the optimizes in clientcreditlist
 		return;
 	}
 	switch(pachPacket[0]){

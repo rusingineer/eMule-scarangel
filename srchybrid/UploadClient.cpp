@@ -840,11 +840,10 @@ void CUpDownClient::CreateNextBlockPackage(){
 	//Xman end
 
 	// See if we can do an early return. There may be no new blocks to load from disk and add to buffer, or buffer may be large enough allready.
-	const uint32 nBufferLimit = theApp.uploadqueue->UseHighSpeedUpload() ? (800 * 1024) : (160 * 1024); //Xman changed - 160 was 50
     if(m_BlockRequests_queue.IsEmpty() || // There is no new blocks requested
        m_abyfiledata == (byte*)-2 || //we are still waiting for a block read from disk
 	   m_abyfiledata != (byte*)-1 && //Make sur we don't have something to do
-	    m_addedPayloadQueueSession > GetQueueSessionPayloadUp() && GetPayloadInBuffer() > nBufferLimit) { // the buffered data is large enough already according to client datarate
+	    m_addedPayloadQueueSession > GetQueueSessionPayloadUp() && GetPayloadInBuffer() > max(GetUploadDatarate()<<1, 50*1024)) { // the buffered data is large enough already according to client datarate
 		return;
 	}
 
@@ -853,8 +852,7 @@ void CUpDownClient::CreateNextBlockPackage(){
 
 	try{
 		// Buffer new data if current buffer is less than 180 KBytes
-		while (!m_BlockRequests_queue.IsEmpty() && m_abyfiledata != (byte*)-2 &&
-				(m_addedPayloadQueueSession <= GetQueueSessionPayloadUp() || m_addedPayloadQueueSession-GetQueueSessionPayloadUp() < EMBLOCKSIZE)) { //Xman changed  
+		while (!m_BlockRequests_queue.IsEmpty() && m_abyfiledata != (byte*)-2) {
 			//Xman Full Chunk
 			//at this point we do the check if it is time to kick the client
 			//if we kick soon, we don't add new packages

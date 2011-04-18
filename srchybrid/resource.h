@@ -2529,6 +2529,7 @@
 #define IDS_ENABLEKNOWN2BUFFER		4188
 #define IDS_ANTILEECHERFINCAN_CHECK	4189
 #define IDS_ENABLEKNOWN2SPLIT		4190
+#define IDC_KNOWN2SPLIT_PPGFILES		4195 //Known2Split checkbox in ppgfiles
 //zz_fly :: End
 #define IDD_PPG_Xtreme                  5000
 #define IDC_13RATIO                     5001

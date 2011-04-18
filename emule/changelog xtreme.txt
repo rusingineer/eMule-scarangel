@@ -32,9 +32,15 @@ DirectX SDK
 MiniUPnP Lib (as of official)
 
 
-Xtreme 8.0 second source edit
+Xtreme 8.1
 * this version is modded by Stulle
 - improved: Check if upload should be ended frequently called twice (Stulle)
+- changed: Moved Known2Split setting to Files preferences panel (zz_fly)
+- changed: Determine read buffer limit based on slot speed (SiRoB)
+partially updated to 8.1 by zz_fly:
+- fixed: Client is always highid if we are connecting to them (Enig123)
+- fixed: Collection double extension (leuk_he)
+- fixed: don't reconnect to banned clients (Enig123)
 
 Xtreme 8.0
 * this version is modded by Stulle
