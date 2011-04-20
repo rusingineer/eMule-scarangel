@@ -2049,7 +2049,12 @@ BOOL CTransferWnd::OnCommand(WPARAM wParam, LPARAM /*lParam*/)
 			break;
 		}
 		case MP_HM_OPENINC:
-			ShellExecute(NULL, _T("open"), curCat->strIncomingPath,NULL, NULL, SW_SHOW);
+			// ==> Open Incoming Folder Fix [CommanderGER] - Stulle
+			/*
+			ShellExecute(NULL, _T("open"), thePrefs.GetCategory(m_isetcatmenu)->strIncomingPath,NULL, NULL, SW_SHOW);
+			*/
+			ShellExecute(NULL, _T("open"), thePrefs.GetCategory(rightclickindex)->strIncomingPath,NULL, NULL, SW_SHOW);
+			// <== Open Incoming Folder Fix [CommanderGER] - Stulle
 			break;
 	}
 
