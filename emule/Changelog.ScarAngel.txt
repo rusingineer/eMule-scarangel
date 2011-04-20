@@ -21,6 +21,7 @@ Changed: Display if a client has credits in On Queue list of WebInterface [Stull
 Changed: Hide file names in Multi WebInterface if file shared in unaccessable cat [Stulle] - Stulle
 Changed: Do not allow downloading of files with hidden file name in WebInterface [Stulle] - Stulle
 Changed: Clipboard ed2k link file watch now queues into category selection [leuk_he] - Stulle
+Changed: Allow incoming folder of default cat to be customized [Stulle] - Stulle
 
 Fixed: On setting new Friendslots via WebInterface old Friendslots were not removed [Stulle] - Stulle
 

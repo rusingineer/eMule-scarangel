@@ -362,9 +362,16 @@ void CPPgScheduler::OnNmRClickActionlist(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 
 	if (!isParameterless) { // Advanced Updates [MorphXT/Stulle] - Stulle
 	if (isCatAction) {
+		// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+		/*
 		if (thePrefs.GetCatCount()>1) m_CatActionSel.AppendMenu(MF_STRING,MP_SCHACTIONS+20,GetResString(IDS_ALLUNASSIGNED));
 		m_CatActionSel.AppendMenu(MF_STRING,MP_SCHACTIONS+21,GetResString(IDS_ALL));
 		for (int i=1;i<thePrefs.GetCatCount();i++)
+		*/
+		m_CatActionSel.AppendMenu(MF_STRING,MP_SCHACTIONS+21,GetResString(IDS_ALL));
+		m_CatActionSel.AppendMenu(MF_SEPARATOR);
+		for (int i=0;i<thePrefs.GetCatCount();i++)
+		// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 			m_CatActionSel.AppendMenu(MF_STRING,MP_SCHACTIONS+22+i,thePrefs.GetCategory(i)->strTitle);
 		// ==> more icons - Stulle
 		/*

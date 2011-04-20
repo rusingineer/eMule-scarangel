@@ -93,12 +93,17 @@ BOOL CSelCategoryDlg::OnInitDialog()
 	
 
 	// 'All' is always an option.
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 	((CComboBox*)GetDlgItem(IDC_CATCOMBO))->AddString(GetResString(IDS_ALL) + _T("/") + GetResString(IDS_CAT_UNASSIGN));
 
 	// If there are more categories, add them to the list.
 	if (thePrefs.GetCatCount() > 1)
 		for (int i=1; i < thePrefs.GetCatCount(); i++)
-					((CComboBox*)GetDlgItem(IDC_CATCOMBO))->AddString(thePrefs.GetCategory(i)->strTitle);
+	*/
+		for (int i=0; i < thePrefs.GetCatCount(); i++)
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+			((CComboBox*)GetDlgItem(IDC_CATCOMBO))->AddString(thePrefs.GetCategory(i)->strTitle);
 
 	// Select the category that is currently visible in the transfer dialog as default, or 0 if they are
 	// not using "New Downloads Default To Active Category"
@@ -133,7 +138,12 @@ void CSelCategoryDlg::OnOK()
 		((CComboBox*)GetDlgItem(IDC_CATCOMBO))->GetWindowText(comboText);
 		comboText.Trim();
 
+		// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+		/*
 		if (catTitle->CompareNoCase(comboText) == 0 || (comboIndex == 0 && comboText.Compare(GetResString(IDS_ALL) + _T("/") + GetResString(IDS_CAT_UNASSIGN)) == 0))
+		*/
+		if (catTitle->CompareNoCase(comboText) == 0 || (comboIndex == 0 && comboText.Compare(thePrefs.GetCategory(0)->strTitle) == 0))
+		// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 			m_Return = comboIndex;
 		else {
 			m_bCreatedNew = true;

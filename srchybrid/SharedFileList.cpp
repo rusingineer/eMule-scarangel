@@ -600,7 +600,12 @@ void CSharedFileList::FindSharedFiles()
 	tempDir.MakeLower();
 	l_sAdded.AddHead( tempDir );
 
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 	for (int ix=1;ix<thePrefs.GetCatCount();ix++)
+	*/
+	for (int ix=0;ix<thePrefs.GetCatCount();ix++)
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	{
 		tempDir=CString( thePrefs.GetCatPath(ix) );
 		if (tempDir.Right(1)!=_T("\\"))
@@ -1670,7 +1675,12 @@ bool CSharedFileList::ShouldBeShared(CString strPath, CString strFilePath, bool 
 	if (CompareDirectories(strPath, thePrefs.GetMuleDirectory(EMULE_INCOMINGDIR)) == 0)
 		return true;
 
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 	for (int ix=1;ix<thePrefs.GetCatCount();ix++)
+	*/
+	for (int ix=0;ix<thePrefs.GetCatCount();ix++)
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	{
 		if (CompareDirectories(strPath, thePrefs.GetCatPath(ix)) == 0)
 			return true;		
