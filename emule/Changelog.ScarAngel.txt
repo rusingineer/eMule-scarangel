@@ -22,6 +22,8 @@ Changed: Hide file names in Multi WebInterface if file shared in unaccessable ca
 Changed: Do not allow downloading of files with hidden file name in WebInterface [Stulle] - Stulle
 Changed: Clipboard ed2k link file watch now queues into category selection [leuk_he] - Stulle
 Changed: Allow incoming folder of default cat to be customized [Stulle] - Stulle
+Changed: Show cat name for scheduler cat actions [Stulle] - Stulle
+Changed: Cat related scheduler items are added with -1 (All) value [Stulle]
 Changed: Open Incoming Folder Fix [CommanderGER] - Stulle
 
 Fixed: On setting new Friendslots via WebInterface old Friendslots were not removed [Stulle] - Stulle
