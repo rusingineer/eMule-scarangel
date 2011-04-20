@@ -4501,7 +4501,7 @@ void CPreferences::SaveCats()
         ini.WriteBool(L"downloadInAlphabeticalOrder", catMap.GetAt(i)->downloadInAlphabeticalOrder!=FALSE);
 		ini.WriteBool(L"Care4All", catMap.GetAt(i)->care4all);
 	*/
-	ini.WriteInt(_T("CategoryVersion"), 2, _T("General"));
+	ini.WriteInt(L"CategoryVersion", 2, _T("General"));
 	for (int i = 0; i < catMap.GetCount(); i++)
 	{
 		CString strSection;
@@ -4511,40 +4511,40 @@ void CPreferences::SaveCats()
 		ini.WriteStringUTF8(L"Incoming",catMap.GetAt(i)->strIncomingPath);
 		ini.WriteStringUTF8(L"Comment",catMap.GetAt(i)->strComment);
 		ini.WriteInt(L"Color", catMap.GetAt(i)->color);
-		ini.WriteInt(_T("a4afPriority"),catMap.GetAt(i)->prio);
-		ini.WriteInt(_T("ResumeMode"), catMap.GetAt(i)->m_iDlMode);
+		ini.WriteInt(L"a4afPriority",catMap.GetAt(i)->prio);
+		ini.WriteInt(L"ResumeMode", catMap.GetAt(i)->m_iDlMode);
 //      ini.WriteBool(_T("downloadInAlphabeticalOrder"), catMap.GetAt(i)->downloadInAlphabeticalOrder!=FALSE, ixStr);
 
 		// Save View Filters
-		ini.WriteInt(_T("vfFromCats"), catMap.GetAt(i)->viewfilters.nFromCats);
-		ini.WriteBool(_T("vfVideo"), catMap.GetAt(i)->viewfilters.bVideo!=FALSE);
-		ini.WriteBool(_T("vfAudio"), catMap.GetAt(i)->viewfilters.bAudio!=FALSE);
-		ini.WriteBool(_T("vfArchives"), catMap.GetAt(i)->viewfilters.bArchives!=FALSE);
-		ini.WriteBool(_T("vfImages"), catMap.GetAt(i)->viewfilters.bImages!=FALSE);
-		ini.WriteBool(_T("vfWaiting"), catMap.GetAt(i)->viewfilters.bWaiting!=FALSE);
-		ini.WriteBool(_T("vfTransferring"), catMap.GetAt(i)->viewfilters.bTransferring!=FALSE);
-		ini.WriteBool(_T("vfPaused"), catMap.GetAt(i)->viewfilters.bPaused!=FALSE);
-		ini.WriteBool(_T("vfStopped"), catMap.GetAt(i)->viewfilters.bStopped!=FALSE);
-		ini.WriteBool(_T("vfComplete"), catMap.GetAt(i)->viewfilters.bComplete!=FALSE);
-		ini.WriteBool(_T("vfHashing"), catMap.GetAt(i)->viewfilters.bHashing!=FALSE);
-		ini.WriteBool(_T("vfErrorUnknown"), catMap.GetAt(i)->viewfilters.bErrorUnknown!=FALSE);
-		ini.WriteBool(_T("vfCompleting"), catMap.GetAt(i)->viewfilters.bCompleting!=FALSE);
-		ini.WriteBool(_T("vfSeenComplet"), catMap.GetAt(i)->viewfilters.bSeenComplet!=FALSE); //MORPH - Added by SiRoB, Seen Complet filter
-		ini.WriteUInt64(_T("vfFSizeMin"), catMap.GetAt(i)->viewfilters.nFSizeMin);
-		ini.WriteUInt64(_T("vfFSizeMax"), catMap.GetAt(i)->viewfilters.nFSizeMax);
-		ini.WriteUInt64(_T("vfRSizeMin"), catMap.GetAt(i)->viewfilters.nRSizeMin);
-		ini.WriteUInt64(_T("vfRSizeMax"), catMap.GetAt(i)->viewfilters.nRSizeMax);
-		ini.WriteInt(_T("vfTimeRemainingMin"), catMap.GetAt(i)->viewfilters.nTimeRemainingMin);
-		ini.WriteInt(_T("vfTimeRemainingMax"), catMap.GetAt(i)->viewfilters.nTimeRemainingMax);
-		ini.WriteInt(_T("vfSourceCountMin"), catMap.GetAt(i)->viewfilters.nSourceCountMin);
-		ini.WriteInt(_T("vfSourceCountMax"), catMap.GetAt(i)->viewfilters.nSourceCountMax);
-		ini.WriteInt(_T("vfAvailSourceCountMin"), catMap.GetAt(i)->viewfilters.nAvailSourceCountMin);
-		ini.WriteInt(_T("vfAvailSourceCountMax"), catMap.GetAt(i)->viewfilters.nAvailSourceCountMax);
-		ini.WriteString(_T("vfAdvancedFilterMask"), catMap.GetAt(i)->viewfilters.sAdvancedFilterMask);
+		ini.WriteInt(L"vfFromCats", catMap.GetAt(i)->viewfilters.nFromCats);
+		ini.WriteBool(L"vfVideo", catMap.GetAt(i)->viewfilters.bVideo!=FALSE);
+		ini.WriteBool(L"vfAudio", catMap.GetAt(i)->viewfilters.bAudio!=FALSE);
+		ini.WriteBool(L"vfArchives", catMap.GetAt(i)->viewfilters.bArchives!=FALSE);
+		ini.WriteBool(L"vfImages", catMap.GetAt(i)->viewfilters.bImages!=FALSE);
+		ini.WriteBool(L"vfWaiting", catMap.GetAt(i)->viewfilters.bWaiting!=FALSE);
+		ini.WriteBool(L"vfTransferring", catMap.GetAt(i)->viewfilters.bTransferring!=FALSE);
+		ini.WriteBool(L"vfPaused", catMap.GetAt(i)->viewfilters.bPaused!=FALSE);
+		ini.WriteBool(L"vfStopped", catMap.GetAt(i)->viewfilters.bStopped!=FALSE);
+		ini.WriteBool(L"vfComplete", catMap.GetAt(i)->viewfilters.bComplete!=FALSE);
+		ini.WriteBool(L"vfHashing", catMap.GetAt(i)->viewfilters.bHashing!=FALSE);
+		ini.WriteBool(L"vfErrorUnknown", catMap.GetAt(i)->viewfilters.bErrorUnknown!=FALSE);
+		ini.WriteBool(L"vfCompleting", catMap.GetAt(i)->viewfilters.bCompleting!=FALSE);
+		ini.WriteBool(L"vfSeenComplet", catMap.GetAt(i)->viewfilters.bSeenComplet!=FALSE); //MORPH - Added by SiRoB, Seen Complet filter
+		ini.WriteUInt64(L"vfFSizeMin", catMap.GetAt(i)->viewfilters.nFSizeMin);
+		ini.WriteUInt64(L"vfFSizeMax", catMap.GetAt(i)->viewfilters.nFSizeMax);
+		ini.WriteUInt64(L"vfRSizeMin", catMap.GetAt(i)->viewfilters.nRSizeMin);
+		ini.WriteUInt64(L"vfRSizeMax", catMap.GetAt(i)->viewfilters.nRSizeMax);
+		ini.WriteInt(L"vfTimeRemainingMin", catMap.GetAt(i)->viewfilters.nTimeRemainingMin);
+		ini.WriteInt(L"vfTimeRemainingMax", catMap.GetAt(i)->viewfilters.nTimeRemainingMax);
+		ini.WriteInt(L"vfSourceCountMin", catMap.GetAt(i)->viewfilters.nSourceCountMin);
+		ini.WriteInt(L"vfSourceCountMax", catMap.GetAt(i)->viewfilters.nSourceCountMax);
+		ini.WriteInt(L"vfAvailSourceCountMin", catMap.GetAt(i)->viewfilters.nAvailSourceCountMin);
+		ini.WriteInt(L"vfAvailSourceCountMax", catMap.GetAt(i)->viewfilters.nAvailSourceCountMax);
+		ini.WriteString(L"vfAdvancedFilterMask", catMap.GetAt(i)->viewfilters.sAdvancedFilterMask);
 		// Save Selection Criteria
-		ini.WriteBool(_T("scFileSize"), catMap.GetAt(i)->selectioncriteria.bFileSize!=FALSE);
-		ini.WriteBool(_T("scAdvancedFilterMask"), catMap.GetAt(i)->selectioncriteria.bAdvancedFilterMask!=FALSE);
-		ini.WriteBool(_T("ResumeFileOnlyInSameCat"), catMap.GetAt(i)->bResumeFileOnlyInSameCat!=FALSE); //MORPH - Added by SiRoB, Resume file only in the same category
+		ini.WriteBool(L"scFileSize", catMap.GetAt(i)->selectioncriteria.bFileSize!=FALSE);
+		ini.WriteBool(L"scAdvancedFilterMask", catMap.GetAt(i)->selectioncriteria.bAdvancedFilterMask!=FALSE);
+		ini.WriteBool(L"ResumeFileOnlyInSameCat", catMap.GetAt(i)->bResumeFileOnlyInSameCat!=FALSE); //MORPH - Added by SiRoB, Resume file only in the same category
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	}
 }
@@ -4613,7 +4613,7 @@ void CPreferences::LoadCats() {
 	else
 	{
 		//ini.SetFileName(strCatIniFilePath);
-		if (ini.GetInt(_T("CategoryVersion"), 0, L"General") == 0)
+		if (ini.GetInt(L"CategoryVersion", 0, L"General") == 0)
 			bCreateDefault = true;
 	}
 
@@ -4621,11 +4621,11 @@ void CPreferences::LoadCats() {
 	{
 		Category_Struct* defcat=new Category_Struct;
 
-		defcat->strTitle = _T("Default");
+		defcat->strTitle=L"Default";
     	defcat->prio=PR_NORMAL; // ZZ:DownloadManager
 		defcat->m_iDlMode = 0;
 		defcat->strIncomingPath = GetMuleDirectory(EMULE_INCOMINGDIR);
-		defcat->strComment = _T("The default category.  It can't be merged or deleted.");
+		defcat->strComment = L"The default category.  It can't be merged or deleted.";
 		defcat->color = 0;
 		defcat->viewfilters.bArchives = true;
 		defcat->viewfilters.bAudio = true;
@@ -4677,46 +4677,46 @@ void CPreferences::LoadCats() {
 		MakeFoldername(newcat->strIncomingPath);
 		// SLUGFILLER: SafeHash remove - removed installation dir unsharing
 		newcat->strComment = ini.GetStringUTF8(L"Comment");
-		newcat->prio =ini.GetInt(_T("a4afPriority"),PR_NORMAL); // ZZ:DownloadManager
+		newcat->prio =ini.GetInt(L"a4afPriority",PR_NORMAL); // ZZ:DownloadManager
 		newcat->color = ini.GetInt(L"Color", (DWORD)-1 );
 		/*
-		newcat->autocat=catini.GetString(_T("Autocat"),_T(""),ixStr);
+		newcat->autocat=catini.GetString(L"Autocat",_T(""),ixStr);
 		*/
-//      newcat->downloadInAlphabeticalOrder = ini.GetBool(_T("downloadInAlphabeticalOrder"), FALSE, ixStr); // ZZ:DownloadManager
+//      newcat->downloadInAlphabeticalOrder = ini.GetBool(L"downloadInAlphabeticalOrder", FALSE, ixStr); // ZZ:DownloadManager
 
-		newcat->m_iDlMode = ini.GetInt(_T("ResumeMode"), 0);
-		//newcat->autocat = ini.GetString(_T("AutoCatString"),_T(""),ixStr);
+		newcat->m_iDlMode = ini.GetInt(L"ResumeMode", 0);
+		//newcat->autocat = ini.GetString(L"AutoCatString",_T(""),ixStr);
 		// Load View Filters
-		newcat->viewfilters.nFromCats = ini.GetInt(_T("vfFromCats"), i==0?0:2);
+		newcat->viewfilters.nFromCats = ini.GetInt(L"vfFromCats", i==0?0:2);
 		newcat->viewfilters.bSuspendFilters = false;
-		newcat->viewfilters.bVideo = ini.GetBool(_T("vfVideo"), true);
-		newcat->viewfilters.bAudio = ini.GetBool(_T("vfAudio"), true);
-		newcat->viewfilters.bArchives = ini.GetBool(_T("vfArchives"), true);
-		newcat->viewfilters.bImages = ini.GetBool(_T("vfImages"), true);
-		newcat->viewfilters.bWaiting = ini.GetBool(_T("vfWaiting"), true);
-		newcat->viewfilters.bTransferring = ini.GetBool(_T("vfTransferring"), true);
-		newcat->viewfilters.bPaused = ini.GetBool(_T("vfPaused"), true);
-		newcat->viewfilters.bStopped = ini.GetBool(_T("vfStopped"), true);
-		newcat->viewfilters.bComplete = ini.GetBool(_T("vfComplete"), true);
-		newcat->viewfilters.bHashing = ini.GetBool(_T("vfHashing"), true);
-		newcat->viewfilters.bErrorUnknown = ini.GetBool(_T("vfErrorUnknown"), true);
-		newcat->viewfilters.bCompleting = ini.GetBool(_T("vfCompleting"), true);
-		newcat->viewfilters.bSeenComplet = ini.GetBool(_T("vfSeenComplet"), true); //MORPH - Added by SiRoB, Seen Complet filter
-		newcat->viewfilters.nFSizeMin = ini.GetInt(_T("vfFSizeMin"), 0);
-		newcat->viewfilters.nFSizeMax = ini.GetInt(_T("vfFSizeMax"), 0);
-		newcat->viewfilters.nRSizeMin = ini.GetInt(_T("vfRSizeMin"), 0);
-		newcat->viewfilters.nRSizeMax = ini.GetInt(_T("vfRSizeMax"), 0);
-		newcat->viewfilters.nTimeRemainingMin = ini.GetInt(_T("vfTimeRemainingMin"), 0);
-		newcat->viewfilters.nTimeRemainingMax = ini.GetInt(_T("vfTimeRemainingMax"), 0);
-		newcat->viewfilters.nSourceCountMin = ini.GetInt(_T("vfSourceCountMin"), 0);
-		newcat->viewfilters.nSourceCountMax = ini.GetInt(_T("vfSourceCountMax"), 0);
-		newcat->viewfilters.nAvailSourceCountMin = ini.GetInt(_T("vfAvailSourceCountMin"), 0);
-		newcat->viewfilters.nAvailSourceCountMax = ini.GetInt(_T("vfAvailSourceCountMax"), 0);
-		newcat->viewfilters.sAdvancedFilterMask = ini.GetString(_T("vfAdvancedFilterMask"), _T(""));
+		newcat->viewfilters.bVideo = ini.GetBool(L"vfVideo", true);
+		newcat->viewfilters.bAudio = ini.GetBool(L"vfAudio", true);
+		newcat->viewfilters.bArchives = ini.GetBool(L"vfArchives", true);
+		newcat->viewfilters.bImages = ini.GetBool(L"vfImages", true);
+		newcat->viewfilters.bWaiting = ini.GetBool(L"vfWaiting", true);
+		newcat->viewfilters.bTransferring = ini.GetBool(L"vfTransferring", true);
+		newcat->viewfilters.bPaused = ini.GetBool(L"vfPaused", true);
+		newcat->viewfilters.bStopped = ini.GetBool(L"vfStopped", true);
+		newcat->viewfilters.bComplete = ini.GetBool(L"vfComplete", true);
+		newcat->viewfilters.bHashing = ini.GetBool(L"vfHashing", true);
+		newcat->viewfilters.bErrorUnknown = ini.GetBool(L"vfErrorUnknown", true);
+		newcat->viewfilters.bCompleting = ini.GetBool(L"vfCompleting", true);
+		newcat->viewfilters.bSeenComplet = ini.GetBool(L"vfSeenComplet", true); //MORPH - Added by SiRoB, Seen Complet filter
+		newcat->viewfilters.nFSizeMin = ini.GetInt(L"vfFSizeMin", 0);
+		newcat->viewfilters.nFSizeMax = ini.GetInt(L"vfFSizeMax", 0);
+		newcat->viewfilters.nRSizeMin = ini.GetInt(L"vfRSizeMin", 0);
+		newcat->viewfilters.nRSizeMax = ini.GetInt(L"vfRSizeMax", 0);
+		newcat->viewfilters.nTimeRemainingMin = ini.GetInt(L"vfTimeRemainingMin", 0);
+		newcat->viewfilters.nTimeRemainingMax = ini.GetInt(L"vfTimeRemainingMax", 0);
+		newcat->viewfilters.nSourceCountMin = ini.GetInt(L"vfSourceCountMin", 0);
+		newcat->viewfilters.nSourceCountMax = ini.GetInt(L"vfSourceCountMax", 0);
+		newcat->viewfilters.nAvailSourceCountMin = ini.GetInt(L"vfAvailSourceCountMin", 0);
+		newcat->viewfilters.nAvailSourceCountMax = ini.GetInt(L"vfAvailSourceCountMax", 0);
+		newcat->viewfilters.sAdvancedFilterMask = ini.GetString(L"vfAdvancedFilterMask", L"");
 		// Load Selection Criteria
-		newcat->selectioncriteria.bFileSize = ini.GetBool(_T("scFileSize"), true);
-		newcat->selectioncriteria.bAdvancedFilterMask = ini.GetBool(_T("scAdvancedFilterMask"), true);
-		newcat->bResumeFileOnlyInSameCat = ini.GetBool(_T("ResumeFileOnlyInSameCat"), false); //MORPH - Added by SiRoB, Resume file only in the same category
+		newcat->selectioncriteria.bFileSize = ini.GetBool(L"scFileSize", true);
+		newcat->selectioncriteria.bAdvancedFilterMask = ini.GetBool(L"scAdvancedFilterMask", true);
+		newcat->bResumeFileOnlyInSameCat = ini.GetBool(L"ResumeFileOnlyInSameCat", false); //MORPH - Added by SiRoB, Resume file only in the same category
 
 		AddCat(newcat);
 		if (!PathFileExists(newcat->strIncomingPath))
