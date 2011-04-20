@@ -194,7 +194,12 @@ public:
 	/*
 	void		AddEd2kLinksToDownload(CString strLinks, int cat);
 	*/
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 	void		AddEd2kLinksToDownload(CString strLinks, int cat, bool askIfAlreadyDownloaded = false);
+	*/
+	void		AddEd2kLinksToDownload(CString strLinks, int cat, bool fromclipboard=false, bool askIfAlreadyDownloaded = false);
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	//Xman end
 
 	//Xman new slpash-screen arrangement

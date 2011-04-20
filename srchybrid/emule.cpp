@@ -2106,7 +2106,12 @@ CTempIconLoader::~CTempIconLoader()
 /*
 void CemuleApp::AddEd2kLinksToDownload(CString strLinks, int cat)
 */
+// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+/*
 void CemuleApp::AddEd2kLinksToDownload(CString strLinks, int cat, bool askIfAlreadyDownloaded)
+*/
+void CemuleApp::AddEd2kLinksToDownload(CString strLinks, int cat, bool fromclipboard, bool askIfAlreadyDownloaded)
+// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 //Xman end
 {
 	int curPos = 0;
@@ -2141,10 +2146,10 @@ void CemuleApp::AddEd2kLinksToDownload(CString strLinks, int cat, bool askIfAlre
 					if ( askIfAlreadyDownloaded )
 					{
 						if ( knownfiles->CheckAlreadyDownloadedFileQuestion(pLink->GetFileLink()->GetHashKey(), pLink->GetFileLink()->GetName()) )
-							downloadqueue->AddFileLinkToDownload(pFileLink->GetFileLink(),cat, true);
+							downloadqueue->AddFileLinkToDownload(pFileLink->GetFileLink(), cat, fromclipboard, true);
 					}
 					else
-						theApp.downloadqueue->AddFileLinkToDownload(pFileLink->GetFileLink(),cat, true);
+						theApp.downloadqueue->AddFileLinkToDownload(pFileLink->GetFileLink(), cat, fromclipboard, true);
 					// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 				}
 				else
@@ -2202,7 +2207,7 @@ void CemuleApp::SearchClipboard()
 			/*
 			AddEd2kLinksToDownload(pszTrimmedLinks, 0, true);
 			*/
-			AddEd2kLinksToDownload(strLinks, -1, true);
+			AddEd2kLinksToDownload(strLinks, -1, true, true);
 			// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 			//Xman end
 	}
@@ -2221,7 +2226,12 @@ void CemuleApp::PasteClipboard(int cat)
 	/*
 	AddEd2kLinksToDownload(strLinks, cat);
 	*/
+	// ==> Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
+	/*
 	AddEd2kLinksToDownload(strLinks, cat, true);
+	*/
+	AddEd2kLinksToDownload(strLinks, cat, true, true);
+	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	//Xman end
 }
 
