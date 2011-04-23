@@ -111,6 +111,10 @@ BOOL CTBHMM::OnInitDialog()
 // [TPT] - Improved minimule
 void CTBHMM::RunMiniMule(bool resetMiniMule)
 {
+	// ==> Run eMule as NT Service [leuk_he/Stulle] - Stulle
+	if(theApp.IsRunningAsService(SVC_GUI_OPT))
+		return;
+	// <== Run eMule as NT Service [leuk_he/Stulle] - Stulle
 	reset = resetMiniMule;
 	if (!running)
 	{

@@ -3532,6 +3532,7 @@
 #define IDS_SVC_STRTUP_OPN_FAIL         61625
 #define IDS_SVC_STRTUP_CTRL_FAIL        61626
 #define IDS_SVC_LINK_PASS_FAIL          60627
+#define IDS_SERVICE_OPT_GUI             60628
 // <== Run eMule as NT Service [leuk_he/Stulle] - Stulle
 // ==> Adjustable NT Service Strings [Stulle] - Stulle
 #define IDC_SERVICE_STR_GROUP           61630

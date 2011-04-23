@@ -5942,6 +5942,7 @@ BEGIN
     IDS_SVC_STRTUP_OPN_FAIL "Failed to open service to change startup mode: %s"
     IDS_SVC_STRTUP_CTRL_FAIL "Failed to connect to service control to change startup mode: %s"
     IDS_SVC_LINK_PASS_FAIL  "Pass link to webservice: Internetopen error"
+    IDS_SERVICE_OPT_GUI     "Mod GUI addons"
     // <== Run eMule as NT Service [leuk_he/Stulle] - Stulle
     // ==> Adjustable NT Service Strings [Stulle] - Stulle
     IDS_SERVICE_STR_GROUP   "NT Service strings (empty = default)"

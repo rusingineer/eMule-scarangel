@@ -1393,6 +1393,7 @@ void CPPgWebServer::InitOptLvlCbn(bool bFirstInit)
 	m_cbOptLvl.ResetContent();
 	iItem = m_cbOptLvl.AddString(_T("0: ") + GetResString(IDS_SERVICE_OPT_NONE));		m_cbOptLvl.SetItemData(iItem, SVC_NO_OPT);
 	iItem = m_cbOptLvl.AddString(_T("2: ") + GetResString(IDS_SERVICE_OPT_BASIC));		m_cbOptLvl.SetItemData(iItem, SVC_BASIC_OPT);
+	iItem = m_cbOptLvl.AddString(_T("4: ") + GetResString(IDS_SERVICE_OPT_GUI));		m_cbOptLvl.SetItemData(iItem, SVC_GUI_OPT);
 	iItem = m_cbOptLvl.AddString(_T("6: ") + GetResString(IDS_SERVICE_OPT_LISTS));		m_cbOptLvl.SetItemData(iItem, SVC_LIST_OPT);
 	iItem = m_cbOptLvl.AddString(_T("10: ") + GetResString(IDS_SERVICE_OPT_FULL));		m_cbOptLvl.SetItemData(iItem, SVC_FULL_OPT);
 
@@ -1406,11 +1407,14 @@ void CPPgWebServer::InitOptLvlCbn(bool bFirstInit)
 			case SVC_BASIC_OPT:
 				m_cbOptLvl.SetCurSel(1);
 				break;
-			case SVC_LIST_OPT:
+			case SVC_GUI_OPT:
 				m_cbOptLvl.SetCurSel(2);
 				break;
-			case SVC_FULL_OPT:
+			case SVC_LIST_OPT:
 				m_cbOptLvl.SetCurSel(3);
+				break;
+			case SVC_FULL_OPT:
+				m_cbOptLvl.SetCurSel(4);
 				break;
 		}
 	}

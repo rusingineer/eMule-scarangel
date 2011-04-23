@@ -1112,13 +1112,18 @@ void CDownloadQueue::Process(){
 	}
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 
-	// ==> CPU/MEM usage [$ick$/Stulle] - Max 
-	if(::GetTickCount() > m_dwResTimer) 
-		{
-			theApp.emuledlg->transferwnd->ShowRessources();
-			m_dwResTimer = ::GetTickCount() + 1000; // update ever 1 sec
-		}
-	// <== CPU/MEM usage [$ick$/Stulle] - Max 
+	// ==> CPU/MEM usage [$ick$/Stulle] - Max
+	// ==> Run eMule as NT Service [leuk_he/Stulle] - Stulle
+	/*
+	if(::GetTickCount() > m_dwResTimer)
+	*/
+	if(!theApp.IsRunningAsService(SVC_GUI_OPT) && ::GetTickCount() > m_dwResTimer)
+	// <== Run eMule as NT Service [leuk_he/Stulle] - Stulle
+	{
+		theApp.emuledlg->transferwnd->ShowRessources();
+		m_dwResTimer = ::GetTickCount() + 1000; // update ever 1 sec
+	}
+	// <== CPU/MEM usage [$ick$/Stulle] - Max
 
 	CheckDiskspaceTimed();
 }

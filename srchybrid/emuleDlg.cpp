@@ -6066,6 +6066,10 @@ void CemuleDlg::CheckIPFilter()
 // ==> High resolution speedmeter on toolbar [eFMod/Stulle] - Myth88
 void CemuleDlg::Update_TrafficGraph()
 {
+	// ==> Run eMule as NT Service [leuk_he/Stulle] - Stulle
+	if(theApp.IsRunningAsService(SVC_GUI_OPT))
+		return;
+	// <== Run eMule as NT Service [leuk_he/Stulle] - Stulle
 	//Xman
 	// Maella -Accurate measure of bandwidth: eDonkey data + control, network adapter-
 	// Retrieve the current datarates

@@ -312,6 +312,10 @@ void CTransferWnd::OnInitialUpdate()
 
 void CTransferWnd::ShowQueueCount(uint32 number)
 {
+	// ==> Run eMule as NT Service [leuk_he/Stulle] - Stulle
+	if(theApp.IsRunningAsService(SVC_BASIC_OPT))
+		return;
+	// <== Run eMule as NT Service [leuk_he/Stulle] - Stulle
 	TCHAR buffer[100];
 	_sntprintf(buffer, _countof(buffer), _T("%u (%u ") + GetResString(IDS_BANNED).MakeLower() + _T(")"), number, theApp.clientlist->GetBannedCount());
 	buffer[_countof(buffer) - 1] = _T('\0');

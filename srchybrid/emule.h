@@ -403,6 +403,7 @@ public:
 	// ==> Run eMule as NT Service [leuk_he/Stulle] - Stulle
 #define  SVC_NO_OPT 0
 #define	 SVC_BASIC_OPT 2
+#define  SVC_GUI_OPT 4
 #define  SVC_LIST_OPT 6
 #define  SVC_FULL_OPT 10
 	bool	IsRunningAsService(int OptimizeLevel = SVC_BASIC_OPT );
