@@ -17,7 +17,7 @@ class ThrottledControlSocket
 public:
     virtual SocketSentBytes SendControlData(uint32 maxNumberOfBytesToSend, uint32 minFragSize) = 0;
 	//Xman 
-	virtual bool IsSocketUploading() const = false;
+	virtual bool IsSocketUploading() const = 0;
 };
 
 class ThrottledFileSocket : public ThrottledControlSocket
@@ -35,7 +35,7 @@ public:
 	virtual bool	UseBigSendBuffer()								{ return false; }
 
 	//Xman Full chunk:
-	virtual bool StandardPacketQueueIsEmpty() const = false ;
+	virtual bool StandardPacketQueueIsEmpty() const = 0;
 
 	//Xman count block/success send
 	virtual float GetBlockRatio() const =0;
