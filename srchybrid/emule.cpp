@@ -2146,10 +2146,10 @@ void CemuleApp::AddEd2kLinksToDownload(CString strLinks, int cat, bool fromclipb
 					if ( askIfAlreadyDownloaded )
 					{
 						if ( knownfiles->CheckAlreadyDownloadedFileQuestion(pLink->GetFileLink()->GetHashKey(), pLink->GetFileLink()->GetName()) )
-							downloadqueue->AddFileLinkToDownload(pFileLink->GetFileLink(), cat, fromclipboard, true);
+							downloadqueue->AddFileLinkToDownload(pFileLink->GetFileLink(), cat, true, fromclipboard);
 					}
 					else
-						theApp.downloadqueue->AddFileLinkToDownload(pFileLink->GetFileLink(), cat, fromclipboard, true);
+						theApp.downloadqueue->AddFileLinkToDownload(pFileLink->GetFileLink(), cat, true, fromclipboard);
 					// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 				}
 				else
