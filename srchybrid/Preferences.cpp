@@ -4407,7 +4407,29 @@ void CPreferences::LoadPreferences()
 
 	// ==> Run eMule as NT Service [leuk_he/Stulle] - Stulle
 	GetServiceName();
-	m_iServiceOptLvl = ini.GetInt(L"ServiceOptLvl",SVC_SVR_OPT);
+	m_iServiceOptLvl = ini.GetInt(L"ServiceOptLvlNew",-1);
+	if(m_iServiceOptLvl < 0) // import old settings
+	{
+		m_iServiceOptLvl = ini.GetInt(L"ServiceOptLvl",-1);
+		switch(m_iServiceOptLvl)
+		{
+		case 0:
+			m_iServiceOptLvl = SVC_NO_OPT;
+			break;
+		case 4:
+			m_iServiceOptLvl = SVC_BASIC_OPT;
+			break;
+		case 6:
+			m_iServiceOptLvl = SVC_LIST_OPT;
+			break;
+		case 10:
+			m_iServiceOptLvl = SVC_FULL_OPT;
+			break;
+		default: // this will be the default in case there was nothing to import
+			m_iServiceOptLvl = SVC_LIST_OPT;
+			break;
+		}
+	}
 	// <== Run eMule as NT Service [leuk_he/Stulle] - Stulle
 	// ==> Adjustable NT Service Strings [Stulle] - Stulle
 	m_strServiceName = ini.GetString(L"ServiceName",NULL);

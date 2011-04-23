@@ -3464,10 +3464,9 @@ void CemuleApp::RebindUPnP()
 // <== UPnP support [MoNKi] - leuk_he
 
 // ==> Run eMule as NT Service [leuk_he/Stulle] - Stulle
-bool CemuleApp::IsRunningAsService(int OptimizeLevel )
+bool CemuleApp::IsRunningAsService(int OptimizeLevel)
 {
-	//if (OptimizeLevel < 5)	// 5: all optmization except server list : need an option for preferneces. 
-	if (OptimizeLevel < thePrefs.GetServiceOptLvl())
+	if (thePrefs.GetServiceOptLvl() > SVC_NO_OPT && OptimizeLevel <= thePrefs.GetServiceOptLvl())
 		return RunningAsService();
 	else
 		return false;  // disable optimizations
