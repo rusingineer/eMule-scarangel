@@ -772,9 +772,9 @@ void CUploadQueue::Process() {
 	{
 		AvgOverhead=eMuleOutOverall-eMuleOut;
 	}
+	/*
 	uint32 realallowedDatarate = (uint32)(theApp.pBandWidthControl->GetMaxUpload()*1024)-AvgOverhead;
 
-	/*
 	if (realallowedDatarate > HIGHSPEED_UPLOADRATE_START)
 		m_bUseHighSpeedUpload = true;
 	else if (realallowedDatarate < HIGHSPEED_UPLOADRATE_END)
