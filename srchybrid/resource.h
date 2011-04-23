@@ -3039,6 +3039,8 @@
 #define IDS_KEEPCATINCSHARED            60852
 #define IDS_KEEPCATINCSHARED_TITLE      60853
 #define IDS_ADD_REMOVED_INC             60854
+#define IDC_SELFILES                    60855
+#define IDS_DONOTWATCHCLIP              60856
 // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 #define IDS_SHARED_PREFS                60860 // Shared Files Management [Stulle] - Stulle
 // ==> Spread bars [Slugfiller/MorphXT] - Stulle

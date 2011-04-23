@@ -8,6 +8,8 @@
 #include "OtherFunctions.h"
 #include "emuleDlg.h"
 #include "TransferDlg.h"
+#include "DownloadQueue.h"
+#include "ED2KLink.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -19,7 +21,7 @@ static char THIS_FILE[]=__FILE__;
 
 IMPLEMENT_DYNAMIC(CSelCategoryDlg, CDialog)
 
-CSelCategoryDlg::CSelCategoryDlg(CWnd* /*pWnd*/)
+CSelCategoryDlg::CSelCategoryDlg(CWnd* /*pWnd*/,bool bFromClipboard)
     :CPropertyPage(CSelCategoryDlg::IDD)
 {
 	// If they have selected to use the active category as the default
@@ -73,8 +75,6 @@ BOOL CSelCategoryDlg::OnInitDialog()
 	}
 	else // no need to display empty box
 		GetDlgItem(IDC_SELFILES)->ShowWindow(SW_HIDE);
-
-
 
 	if (m_bFromClipboard) {
 		GetDlgItem(IDC_DONTASKMEAGAINCB)->SetWindowText(GetResString(IDS_DONOTWATCHCLIP    ));
