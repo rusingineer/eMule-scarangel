@@ -550,7 +550,7 @@ void CDownloadQueue::AddFileLinkToDownload(CED2KFileLink* pLink, int cat)
 // NEW PARAM:  bool AllocatedLink = false by default, bFromClipboard  false by default
 void CDownloadQueue::AddFileLinkToDownload(CED2KFileLink* pLink, int theCat, bool AllocatedLink,bool bFromClipboard)
 {
-	if (thePrefs.SelectCatForNewDL() && theCat==-1  ||bFromClipboard  )   // TODO: ask if keep watching clipboard
+	if (thePrefs.SelectCatForNewDL() && theCat==-1  || bFromClipboard)
 	{
 		m_ED2KLinkQueue.AddTail(pLink);
 		m_bClipboardLinkInQueue = bFromClipboard ;
@@ -3332,6 +3332,7 @@ bool CDownloadQueue::PurgeED2KLinkQueue()
 	int		addedFiles = 0;
 	bool	bCreatedNewCat = false;
 	bool	bCanceled = false;
+	bool	bCurClipboardLinkInQueue = m_bClipboardLinkInQueue;
 	if ((thePrefs.SelectCatForNewDL() || m_bClipboardLinkInQueue) && thePrefs.GetCatCount()>1)
 	{
 		CSelCategoryDlg* getCatDlg = new CSelCategoryDlg((CWnd*)theApp.emuledlg,m_bClipboardLinkInQueue);
@@ -3344,7 +3345,7 @@ bool CDownloadQueue::PurgeED2KLinkQueue()
 		bCreatedNewCat = getCatDlg->CreatedNewCat();
 		bCanceled = getCatDlg->WasCancelled();
 		delete getCatDlg;
-		// m_bClipboardLinkInQueue=false; // What is this doing here??? We don't want our choice to be ignored later
+		m_bClipboardLinkInQueue=false;
 	}
 	else if (thePrefs.UseActiveCatForLinks())
 		useCat = theApp.emuledlg->transferwnd->GetActiveCategory();
@@ -3359,7 +3360,7 @@ bool CDownloadQueue::PurgeED2KLinkQueue()
 			pLink = NULL;
 			continue;
 		}
-		if (!(thePrefs.SelectCatForNewDL()|| m_bClipboardLinkInQueue) && thePrefs.UseAutoCat())
+		if (!(thePrefs.SelectCatForNewDL() || bCurClipboardLinkInQueue) && thePrefs.UseAutoCat())
 		{
 			useCat = GetAutoCat(CString(pLink->GetName()), pLink->GetSize());
 			if (!useCat && thePrefs.UseActiveCatForLinks())
