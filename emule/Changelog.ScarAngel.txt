@@ -32,6 +32,7 @@ Changed: Rewrote the code determining if a NTService optimization should be done
 Changed: Add superior clients after last superior client in upload [Stulle] - Stulle
 	+ Until now superior clients were added in first position, regardlessly
 Changed: Move Superior clients down in upload when they hit a chunk border [Stulle] - Stulle
+Changed: Do not display PowerShare or Fair Play for bad clients [Stulle] - Stulle
 
 Fixed: On setting new Friendslots via WebInterface old Friendslots were not removed [Stulle] - Stulle
 Fixed: Potential NULL-pointer around TBH: MiniMule in TrayDialog [Stulle] - Stulle

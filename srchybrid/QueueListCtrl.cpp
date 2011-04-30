@@ -658,6 +658,13 @@ void CQueueListCtrl::GetItemDisplayText(const CUpDownClient *client, int iSubIte
 					default:
 						Sbuffer.Empty();
 				}
+				// ==> Do not display PowerShare or Fair Play for bad clients [Stulle] - Stulle
+				if(client->GetUploadState()==US_BANNED || client->IsGPLEvildoer() || client->IsLeecher())
+				{
+					_tcsncpy(pszText, Sbuffer, cchTextMax);
+					break;
+				}
+				// <== Do not display PowerShare or Fair Play for bad clients [Stulle] - Stulle
 				if(client->GetPowerShared(file)) {
 					CString tempString = GetResString(IDS_POWERSHARE_PREFIX);
 					tempString.Append(_T(","));

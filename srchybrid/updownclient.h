@@ -1199,19 +1199,23 @@ public:
 	// <== Spread Credits Slot [Stulle] - Stulle
 
 	// ==> Downloading Chunk Detail Display [SiRoB] - Stulle
-	void			DrawStatusBarChunk(CDC* dc, LPCRECT rect,const CPartFile* file, bool  bFlat) const;
-	float			GetDownChunkProgressPercent() const;
-	UINT			GetCurrentDownloadingChunk() const { return (m_nLastBlockOffset!=(uint64)-1)?(UINT)(m_nLastBlockOffset/PARTSIZE):(UINT)-1;}
+	void DrawStatusBarChunk(CDC* dc, LPCRECT rect,const CPartFile* file, bool  bFlat) const;
+	float GetDownChunkProgressPercent() const;
+	UINT GetCurrentDownloadingChunk() const { return (m_nLastBlockOffset!=(uint64)-1)?(UINT)(m_nLastBlockOffset/PARTSIZE):(UINT)-1;}
 	// <== Downloading Chunk Detail Display [SiRoB] - Stulle
 
 	// ==> Uploading Chunk Detail Display [SiRoB/Fafner] - Stulle
-	void			DrawUpStatusBarChunk(CDC* dc, RECT* rect, bool onlygreyrect, bool  bFlat) const;
-	float			GetUpChunkProgressPercent() const;
-	void			DrawUpStatusBarChunkText(CDC* dc, RECT* cur_rec) const;
+	void DrawUpStatusBarChunk(CDC* dc, RECT* rect, bool onlygreyrect, bool  bFlat) const;
+	float GetUpChunkProgressPercent() const;
+	void DrawUpStatusBarChunkText(CDC* dc, RECT* cur_rec) const;
 	// <== Uploading Chunk Detail Display [SiRoB/Fafner] - Stulle
 
 	// ==> Display remaining upload time [Stulle] - Stulle
 	CString GetRemainingUploadTime() const;
 	// <== Display remaining upload time [Stulle] - Stulle
+
+	// ==> Do not display PowerShare or Fair Play for bad clients [Stulle] - Stulle
+	bool IsGPLEvildoer() const	{return m_bGPLEvildoer;}
+	// <== Do not display PowerShare or Fair Play for bad clients [Stulle] - Stulle
 };
 //#pragma pack()
