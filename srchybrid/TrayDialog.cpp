@@ -149,7 +149,7 @@ BOOL CTrayDialog::TrayShow(BOOL bMiniMule)
 		// ==> TBH: minimule - Max
 		if (bMiniMule == TRUE)
 		{
-			if (thePrefs.IsMiniMuleEnabled() &&	thePrefs.GetMMOpen())
+			if (thePrefs.IsMiniMuleEnabled() &&	thePrefs.GetMMOpen() && theApp.minimule)
 			{
 				if (thePrefs.GetMiniMuleLives())
 					theApp.minimule->RunMiniMule();
@@ -179,7 +179,7 @@ BOOL CTrayDialog::TrayHide()
 			m_bTrayIconVisible = FALSE;
 
 		// ==> TBH: minimule - Max
-		if ((theApp.minimule!= NULL) &&theApp.minimule->IsWindowVisible())
+		if (theApp.minimule && theApp.minimule->IsWindowVisible())
 			theApp.minimule->ShowWindow(SW_HIDE);
 		// <== TBH: minimule - Max
 	}
@@ -415,7 +415,7 @@ void CTrayDialog::RestoreWindow()
 	// <== Static Tray Icon [MorphXT] - MyTh88
 
 	// ==> TBH: minimule - Stulle
-	if (theApp.minimule->IsWindowVisible())
+	if (theApp.minimule && theApp.minimule->IsWindowVisible())
 		theApp.minimule->ShowWindow(SW_HIDE);
 	// <== TBH: minimule - Stulle
 }

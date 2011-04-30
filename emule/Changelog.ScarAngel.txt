@@ -34,6 +34,7 @@ Changed: Add superior clients after last superior client in upload [Stulle] - St
 Changed: Move Superior clients down in upload when they hit a chunk border [Stulle] - Stulle
 
 Fixed: On setting new Friendslots via WebInterface old Friendslots were not removed [Stulle] - Stulle
+Fixed: Potential NULL-pointer around TBH: MiniMule in TrayDialog [Stulle] - Stulle
 
 
 eMule v0.50a ScarAngel v4.0:
