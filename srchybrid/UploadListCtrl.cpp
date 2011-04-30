@@ -705,6 +705,13 @@ void CUploadListCtrl::GetItemDisplayText(const CUpDownClient *client, int iSubIt
 			if (client->IsFriend() && client->GetFriendSlot())
 				Sbuffer.Append(_T(",FS"));
 			// <== Display friendslot [Stulle] - Stulle
+			// ==> Do not display PowerShare or Fair Play for bad clients [Stulle] - Stulle
+			if(client->GetUploadState()==US_BANNED || client->IsGPLEvildoer() || client->IsLeecher())
+			{
+				_tcsncpy(pszText, Sbuffer, cchTextMax);
+				break;
+			}
+			// <== Do not display PowerShare or Fair Play for bad clients [Stulle] - Stulle
 			if (client->GetPowerShared())
 				Sbuffer.Append(_T(",PS"));
 			// ==> Fair Play [AndCycle/Stulle] - Stulle
