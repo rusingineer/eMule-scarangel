@@ -440,9 +440,6 @@ void CUploadQueue::InsertInUploadingList(CUpDownClient* newclient)
 	// ==> Superior Client Handling [Stulle] - Stulle
 	/*
 	if (newclient->GetFriendSlot())
-	*/
-	if(newclient->IsSuperiorClient())
-	// <== Superior Client Handling [Stulle] - Stulle
 	{
 		theApp.uploadBandwidthThrottler->AddToStandardList(true, newclient->GetFileUploadSocket());
 		theApp.uploadBandwidthThrottler->RecalculateOnNextLoop();
@@ -455,6 +452,49 @@ void CUploadQueue::InsertInUploadingList(CUpDownClient* newclient)
 			theApp.uploadBandwidthThrottler->RecalculateOnNextLoop();
 	}
 	uploadinglist.AddTail(newclient);
+	*/
+	if(newclient->GetFriendSlot()) // add to head
+	{
+		theApp.uploadBandwidthThrottler->AddToStandardList(0, newclient->GetFileUploadSocket());
+		uploadinglist.AddHead(newclient);
+		theApp.uploadBandwidthThrottler->RecalculateOnNextLoop();
+	}
+	else if(newclient->IsSuperiorClient()) // add to head or after last superior
+	{
+		POSITION lastSupPosition = NULL;
+		POSITION pos = uploadinglist.GetHeadPosition();
+		int posCounter = 0;
+		bool foundposition = false;
+
+		while(pos != NULL && foundposition == false)
+		{
+			CUpDownClient* uploadingClient = uploadinglist.GetAt(pos);
+
+			if(uploadingClient->IsSuperiorClient()==false)
+				foundposition = true;
+			else
+			{
+				lastSupPosition = pos;
+				uploadinglist.GetNext(pos);
+				posCounter++;
+			}
+		}
+
+		if(lastSupPosition != NULL) // add after last superior
+			uploadinglist.InsertAfter(lastSupPosition, newclient);
+		else // add to head
+			uploadinglist.AddHead(newclient);
+		theApp.uploadBandwidthThrottler->AddToStandardList(posCounter, newclient->GetFileUploadSocket());
+		theApp.uploadBandwidthThrottler->RecalculateOnNextLoop();
+	}
+	else // add to tail
+	{
+		theApp.uploadBandwidthThrottler->AddToStandardList(-1, newclient->GetFileUploadSocket());
+		if(uploadinglist.GetCount()==0)
+			theApp.uploadBandwidthThrottler->RecalculateOnNextLoop();
+		uploadinglist.AddTail(newclient);
+	}
+	// <== Superior Client Handling [Stulle] - Stulle
 	//Xman end
 }
 

@@ -29,6 +29,8 @@ Changed: Show cat name for scheduler cat actions [Stulle] - Stulle
 Changed: Cat related scheduler items are added with -1 (All) value [Stulle]
 Changed: Open Incoming Folder Fix [CommanderGER] - Stulle
 Changed: Rewrote the code determining if a NTService optimization should be done [Stulle] - Stulle
+Changed: Add superior clients after last superior client in upload [Stulle] - Stulle
+	+ Until now superior clients were added in first position, regardlessly
 
 Fixed: On setting new Friendslots via WebInterface old Friendslots were not removed [Stulle] - Stulle
 
