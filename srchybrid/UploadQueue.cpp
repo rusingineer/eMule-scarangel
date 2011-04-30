@@ -1945,22 +1945,18 @@ bool CUploadQueue::CheckForTimeOver(CUpDownClient* client){
 
 	// ==> Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 	// ScarAngel always does nothing if uPrevenTimeOver > 0... easier merging. ;)
-	uint8 uPreventTimeOver = 0; // 0 = not prevent; 1 = test move down; 2 = do nothing
-	// ==> Keep friends in upload like PBF clients [Stulle] - Stulle
-	if (client->IsFriend() && client->GetFriendSlot())
-		uPreventTimeOver = 2;
-	// <== Keep friends in upload like PBF clients [Stulle] - Stulle
+	bool bPreventTimeOver = false;
 	// ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 	if(client->IsPBFClient())
-		uPreventTimeOver = 1; // PBF should stay in upload no matter what
+		bPreventTimeOver = true; // PBF should stay in upload no matter what
 	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 	else if(client->IsSuperiorClient())
 	{
 		CUpDownClient* bestClient = FindBestClientInQueue(true);
 		if(!bestClient || bestClient->IsSuperiorClient()==false)
-			uPreventTimeOver = 1;
+			bPreventTimeOver = true;
 	}
-	if(uPreventTimeOver == 0){
+	if(bPreventTimeOver == false){
 	// <== Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 		if( client->GetUpStartTimeDelay() > SESSIONMAXTIME){ // Try to keep the clients from downloading for ever
 			if (thePrefs.GetLogUlDlEvents())
@@ -1968,15 +1964,7 @@ bool CUploadQueue::CheckForTimeOver(CUpDownClient* client){
 			returnvalue=true;
 		}
 	} // Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
-
-
-	// ==> Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
-	if(uPreventTimeOver > 0)
-	{
-		; // do nothing
-	}
-	else
-	// <== Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
+	
 	//not full chunk method:
 	if (!thePrefs.TransferFullChunks() 
 		// ==> Superior Client Handling [Stulle] - Stulle
@@ -1987,6 +1975,16 @@ bool CUploadQueue::CheckForTimeOver(CUpDownClient* client){
 		)
 	{
 		//Xman: we allow a min of 2.0 MB
+		// ==> Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
+		if(bPreventTimeOver)
+		{
+			// ==> Superior Client Handling [Stulle] - Stulle
+			if(bPreventTimeOver && client->IsDifferentPartBlock(true))
+				MoveDownInUpload(client);// move down
+			// <== Superior Client Handling [Stulle] - Stulle
+		}
+		else
+		// <== Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 		if( client->GetSessionUp() >= 2097152
 		&& m_dwnextallowedscoreremove < ::GetTickCount() //Xman avoid to short upload-periods
 		)
@@ -2020,6 +2018,16 @@ bool CUploadQueue::CheckForTimeOver(CUpDownClient* client){
 		}
 	}
 	else //full chunk method
+	// ==> Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
+	if(bPreventTimeOver)
+	{
+		// ==> Superior Client Handling [Stulle] - Stulle
+		if(bPreventTimeOver && client->IsDifferentPartBlock(true))
+			MoveDownInUpload(client);// move down
+		// <== Superior Client Handling [Stulle] - Stulle
+	}
+	else
+	// <== Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 	if( (client->IsDifferentPartBlock() || client->GetQueueSessionPayloadUp() > SESSIONMAXTRANS))
 	{	
 		// Allow the client to download a specified amount per session
@@ -2840,3 +2848,27 @@ CUpDownClient* CUploadQueue::FindBestSpreadClientInQueue()
 	return ToAddClient;
 }
 // <== Spread Credits Slot [Stulle] - Stulle
+
+// ==> Superior Client Handling [Stulle] - Stulle
+void CUploadQueue::MoveDownInUpload(CUpDownClient* client)
+{
+	POSITION pos = uploadinglist.Find(client);
+	if(pos != NULL)
+	{
+		// remove from uploadlist
+		uploadinglist.RemoveAt(pos);
+
+		// remove socket
+		bool removed = theApp.uploadBandwidthThrottler->RemoveFromStandardList(client->socket);
+		bool pcRemoved = theApp.uploadBandwidthThrottler->RemoveFromStandardList((CClientReqSocket*)client->m_pPCUpSocket);
+		(void)removed;
+		(void)pcRemoved;
+
+		// reinstate the client at his new position
+		InsertInUploadingList(client);
+
+		if (thePrefs.GetLogUlDlEvents())
+			AddDebugLogLine(DLP_LOW, false, _T("%s: Moved down in Upload after one chunk finished."), client->GetUserName());
+	} 
+}
+// <== Superior Client Handling [Stulle] - Stulle

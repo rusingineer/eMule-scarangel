@@ -2087,7 +2087,12 @@ void CUpDownClient::SetCollectionUploadSlot(bool bValue){
 // [Returns] 
 //   true : Next requested block is from another different chunk or file than last downloaded block 
 //   false: Next requested block is from same chunk that last downloaded block 
+// ==> Superior Client Handling [Stulle] - Stulle
+/*
 bool CUpDownClient::IsDifferentPartBlock()
+*/
+bool CUpDownClient::IsDifferentPartBlock(bool bCheckForMulti)
+// <== Superior Client Handling [Stulle] - Stulle
 { 
 	Requested_Block_Struct* lastBlock;
 	Requested_Block_Struct* currBlock;
@@ -2098,7 +2103,12 @@ bool CUpDownClient::IsDifferentPartBlock()
 	
 	//try {
 		// Check if we have good lists and proceed to check for different chunks
+		// ==> Superior Client Handling [Stulle] - Stulle
+		/*
 		if (GetSessionUp() >= 3145728 //Xman-Full-Chunk: Client is allowed to get min 3.0 MB
+		*/
+		if ((GetSessionUp() >= 3145728 || bCheckForMulti)
+		// <== Superior Client Handling [Stulle] - Stulle
 			&& !m_BlockRequests_queue.IsEmpty() && !m_DoneBlocks_list.IsEmpty())
 		{
 			// Calculate corresponding parts to blocks
@@ -2110,22 +2120,34 @@ bool CUpDownClient::IsDifferentPartBlock()
              
 			// Test is we are asking same file and same part
 			//
-			if ( lastDone != currRequested )  
-			{ 
-				different = true;
+			// ==> Superior Client Handling [Stulle] - Stulle
+			if(!bCheckForMulti)
+			{
+			// <== Superior Client Handling [Stulle] - Stulle
+				if ( lastDone != currRequested )  
+				{ 
+					different = true;
 				
-				if(thePrefs.GetLogUlDlEvents()){
-					AddDebugLogLine(false, _T("%s: Upload session will end soon due to new chunk."), this->GetUserName());
-				}				
-			}
-			if (md4cmp(lastBlock->FileID, currBlock->FileID) != 0 ) 
-			{ 
-				different = true;
-				
-				if(thePrefs.GetLogUlDlEvents()){
-					AddDebugLogLine(false, _T("%s: Upload session will end soon due to different file."), this->GetUserName());
+					if(thePrefs.GetLogUlDlEvents()){
+						AddDebugLogLine(false, _T("%s: Upload session will end soon due to new chunk."), this->GetUserName());
+					}				
 				}
+				if (md4cmp(lastBlock->FileID, currBlock->FileID) != 0 ) 
+				{ 
+					different = true;
+				
+					if(thePrefs.GetLogUlDlEvents()){
+						AddDebugLogLine(false, _T("%s: Upload session will end soon due to different file."), this->GetUserName());
+					}
+				}
+			// ==> Superior Client Handling [Stulle] - Stulle
 			}
+			else
+			{
+				if (lastDone != currRequested || md4cmp(lastBlock->FileID, currBlock->FileID) != 0) 
+					different = true;
+			}
+			// <== Superior Client Handling [Stulle] - Stulle
 		} 
    /*
 	}

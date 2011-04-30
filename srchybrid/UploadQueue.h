@@ -159,6 +159,7 @@ private:
 	CUpDownClient* releaseslotclient;
 	//Xman end
 	*/
+	void MoveDownInUpload(CUpDownClient* client);
 	// <== Superior Client Handling [Stulle] - Stulle
 
     void InsertInUploadingList(CUpDownClient* newclient);

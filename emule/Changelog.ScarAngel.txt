@@ -31,6 +31,7 @@ Changed: Open Incoming Folder Fix [CommanderGER] - Stulle
 Changed: Rewrote the code determining if a NTService optimization should be done [Stulle] - Stulle
 Changed: Add superior clients after last superior client in upload [Stulle] - Stulle
 	+ Until now superior clients were added in first position, regardlessly
+Changed: Move Superior clients down in upload when they hit a chunk border [Stulle] - Stulle
 
 Fixed: On setting new Friendslots via WebInterface old Friendslots were not removed [Stulle] - Stulle
 

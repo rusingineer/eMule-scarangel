@@ -620,7 +620,12 @@ public:
 	
 	//Xman Full Chunk
 	bool upendsoon;
+	// ==> Superior Client Handling [Stulle] - Stulle
+	/*
 	bool 			IsDifferentPartBlock();
+	*/
+	bool 			IsDifferentPartBlock(bool bCheckForMulti = false);
+	// <== Superior Client Handling [Stulle] - Stulle
 	//Xman end
 	
 	//Xman Dynamic block request (netfinity/Xman)
