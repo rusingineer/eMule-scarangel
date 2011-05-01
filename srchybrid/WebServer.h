@@ -140,6 +140,7 @@ typedef struct
 	CString	sFileName;
 	CString	sClientNameVersion;
 	uint32	nScore;
+	bool bSuperior; // Superior Client Handling [Stulle] - Stulle
 	CString sIndex;	//SyruS CQArray-Sorting element
 } QueueUsers;
 

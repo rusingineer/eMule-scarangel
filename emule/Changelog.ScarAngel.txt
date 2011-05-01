@@ -34,6 +34,7 @@ Changed: Add superior clients after last superior client in upload [Stulle] - St
 Changed: Move Superior clients down in upload when they hit a chunk border [Stulle] - Stulle
 Changed: Do not display PowerShare or Fair Play for bad clients [Stulle] - Stulle
 Changed: Scale both upload and download to max in speed graph of TBH MiniMule [Stulle] - Stulle
+Changed: Display if client is superior in WebInterface and sort accordingly [Stulle] - Stulle
 
 Fixed: On setting new Friendslots via WebInterface old Friendslots were not removed [Stulle] - Stulle
 Fixed: Potential NULL-pointer around TBH: MiniMule in TrayDialog [Stulle] - Stulle

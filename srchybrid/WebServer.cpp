@@ -3169,6 +3169,7 @@ CString CWebServer::_CreateTransferList(CString Out, CWebServer *pThis, ThreadDa
 		dUser.sClientState = dUser.sClientExtra;
 		dUser.sClientStateSpecial = _T("connecting");
 		dUser.nScore = cur_client->GetScore(false);
+		dUser.bSuperior = cur_client->IsSuperiorClient(); // Superior Client Handling [Stulle] - Stulle
 
 		sTemp=GetClientversionImage(cur_client);
 		dUser.sClientSoft = sTemp;
@@ -3189,7 +3190,15 @@ CString CWebServer::_CreateTransferList(CString Out, CWebServer *pThis, ThreadDa
 			dUser.sIndex = dUser.sFileName;
 			break;
 		case QU_SORT_SCORE:
+			// ==> Superior Client Handling [Stulle] - Stulle
+			/*
 			dUser.sIndex.Format(_T("%09u"), dUser.nScore);
+			*/
+			if(dUser.bSuperior)
+				dUser.sIndex.Format(_T("1%09u"), dUser.nScore);
+			else
+				dUser.sIndex.Format(_T("%09u"), dUser.nScore);
+			// <== Superior Client Handling [Stulle] - Stulle
 			break;
 		default:
 			dUser.sIndex.Empty();
@@ -3199,10 +3208,18 @@ CString CWebServer::_CreateTransferList(CString Out, CWebServer *pThis, ThreadDa
 
 	int nNextPos = 0;	// position in queue of the user with the highest score -> next upload user
 	uint32 nNextScore = 0;	// highest score -> next upload user
+	bool bNextSuperior = false; // Superior Client Handling [Stulle] - Stulle
 	for(int i = 0; i < QueueArray.GetCount(); i++)
 	{
+		// ==> Superior Client Handling [Stulle] - Stulle
+		/*
 		if (QueueArray[i].nScore > nNextScore)
 		{
+		*/
+		if (QueueArray[i].bSuperior && (!bNextSuperior || QueueArray[i].nScore > nNextScore) ||
+			!QueueArray[i].bSuperior && !bNextSuperior && QueueArray[i].nScore > nNextScore)
+		{
+		// <== Superior Client Handling [Stulle] - Stulle
 			nNextPos = i;
 			nNextScore = QueueArray[i].nScore;
 		}
@@ -3562,7 +3579,12 @@ CString CWebServer::_CreateTransferList(CString Out, CWebServer *pThis, ThreadDa
 				pcTmp = _T("");
 				if (!WSqueueColumnHidden[3])
 				{
-					_stprintf(HTTPTempC, _T("%i") , QueueArray[i].nScore);
+					// ==> Superior Client Handling [Stulle] - Stulle
+					if(QueueArray[i].bSuperior)
+						_stprintf(HTTPTempC, _T("Sup, %i") , QueueArray[i].nScore);
+					else
+					// <== Superior Client Handling [Stulle] - Stulle
+						_stprintf(HTTPTempC, _T("%i") , QueueArray[i].nScore);
 					pcTmp = HTTPTempC;
 				}
 				HTTPProcessData.Replace(_T("[Score]"), pcTmp);
@@ -3607,7 +3629,12 @@ CString CWebServer::_CreateTransferList(CString Out, CWebServer *pThis, ThreadDa
 				pcTmp = _T("");
 				if (!WSqueueColumnHidden[3])
 				{
-					_stprintf(HTTPTempC, _T("%i") , QueueArray[i].nScore);
+					// ==> Superior Client Handling [Stulle] - Stulle
+					if(QueueArray[i].bSuperior)
+						_stprintf(HTTPTempC, _T("Sup, %i") , QueueArray[i].nScore);
+					else
+					// <== Superior Client Handling [Stulle] - Stulle
+						_stprintf(HTTPTempC, _T("%i") , QueueArray[i].nScore);
 					pcTmp = HTTPTempC;
 				}
 				HTTPProcessData.Replace(_T("[Score]"), pcTmp);
@@ -3659,7 +3686,12 @@ CString CWebServer::_CreateTransferList(CString Out, CWebServer *pThis, ThreadDa
 				pcTmp = _T("");
 				if (!WSqueueColumnHidden[3])
 				{
-					_stprintf(HTTPTempC, _T("%i") , QueueArray[i].nScore);
+					// ==> Superior Client Handling [Stulle] - Stulle
+					if(QueueArray[i].bSuperior)
+						_stprintf(HTTPTempC, _T("Sup, %i") , QueueArray[i].nScore);
+					else
+					// <== Superior Client Handling [Stulle] - Stulle
+						_stprintf(HTTPTempC, _T("%i") , QueueArray[i].nScore);
 					pcTmp = HTTPTempC;
 				}
 				HTTPProcessData.Replace(_T("[Score]"), pcTmp);
