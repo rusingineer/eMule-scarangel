@@ -222,7 +222,12 @@ CUpDownClient* CUploadQueue::FindBestClientInQueue(bool bCheckOnly)
 		CUpDownClient* cur_client =	waitinglist.GetAt(pos2);
 		//While we are going through this list.. Lets check if a client appears to have left the network..
 		ASSERT ( cur_client->GetLastUpRequest() );
+		// ==> requpfile optimization [SiRoB] - Stulle
+		/*
 		if ((::GetTickCount() - cur_client->GetLastUpRequest() > MAX_PURGEQUEUETIME) || !theApp.sharedfiles->GetFileByID(cur_client->GetUploadFileID()) )
+		*/
+		if ((::GetTickCount() - cur_client->GetLastUpRequest() > MAX_PURGEQUEUETIME) || !cur_client->CheckAndGetReqUpFile() )
+		// <== requpfile optimization [SiRoB] - Stulle
 		{
 			//This client has either not been seen in a long time, or we no longer share the file he wanted anymore..
 			cur_client->ClearWaitStartTime();
@@ -535,7 +540,12 @@ bool CUploadQueue::AddUpNextClient(LPCTSTR pszReason, CUpDownClient* directadd){
         return false;
 
 	//Fafner: copying lets clients stuck in CReadBlockFromFileThread::Run because file is locked - 080421
+	// ==> requpfile optimization [SiRoB] - Stulle
+	/*
 	CKnownFile* reqfile = theApp.sharedfiles->GetFileByID(newclient->GetUploadFileID());
+	*/
+	CKnownFile* reqfile = newclient->CheckAndGetReqUpFile();
+	// <== requpfile optimization [SiRoB] - Stulle
 	if (reqfile->IsPartFile()
 		&& ((CPartFile*)reqfile)->GetFileOp() == PFOP_COPYING)
 		return false;
@@ -1210,7 +1220,12 @@ CUpDownClient* CUploadQueue::GetWaitingClientByIP(uint32 dwIP){
 //Xman uploading problem client
 void CUploadQueue::AddClientDirectToQueue(CUpDownClient* client)
 {
+	// ==> requpfile optimization [SiRoB] - Stulle
+	/*
 	CKnownFile* reqfile = theApp.sharedfiles->GetFileByID(client->GetUploadFileID());
+	*/
+	CKnownFile* reqfile = client->CheckAndGetReqUpFile();
+	// <== requpfile optimization [SiRoB] - Stulle
 	if(reqfile)
 	{
 		theApp.uploadqueue->waitinglist.AddTail(client);
@@ -1256,7 +1271,12 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 		return;
 
 	//Xman Code Improvement
+	// ==> requpfile optimization [SiRoB] - Stulle
+	/*
 	CKnownFile* reqfile = theApp.sharedfiles->GetFileByID(client->GetUploadFileID());
+	*/
+	CKnownFile* reqfile = client->CheckAndGetReqUpFile();
+	// <== requpfile optimization [SiRoB] - Stulle
 	if (!reqfile){
 		AddDebugLogLine(false,_T("AddClientToQueue: Client is asking for a unknown file, %s"),client->DbgGetClientInfo());
 		// send file request no such file packet (0x48)
@@ -1301,7 +1321,12 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 		{	
 			//Xman see OnUploadqueue
 			//look if the client is now asking for another file
+			// ==> requpfile optimization [SiRoB] - Stulle
+			/*
 			CKnownFile* newreqfile = theApp.sharedfiles->GetFileByID(client->GetUploadFileID());
+			*/
+			CKnownFile* newreqfile = client->CheckAndGetReqUpFile();
+			// <== requpfile optimization [SiRoB] - Stulle
 			CKnownFile* oldreqfile = theApp.sharedfiles->GetFileByID(client->GetOldUploadFileID());
 			if(newreqfile != oldreqfile)
 			{
@@ -1669,7 +1694,12 @@ bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReaso
 				theApp.emuledlg->transferwnd->GetUploadList()->RemoveClient(client);
 
 			if (thePrefs.GetLogUlDlEvents())
+				// ==> requpfile optimization [SiRoB] - Stulle
+				/*
                 AddDebugLogLine(DLP_DEFAULT, true,_T("Removing client from upload list: %s Client: %s Transferred: %s SessionUp: %s QueueSessionPayload: %s In buffer: %s Req blocks: %i File: %s"), pszReason==NULL ? _T("") : pszReason, client->DbgGetClientInfo(), CastSecondsToHM( client->GetUpStartTimeDelay()/1000), CastItoXBytes(client->GetSessionUp(), false, false), CastItoXBytes(client->GetQueueSessionPayloadUp(), false, false), CastItoXBytes(client->GetPayloadInBuffer()), client->GetNumberOfRequestedBlocksInQueue(), (theApp.sharedfiles->GetFileByID(client->GetUploadFileID())?theApp.sharedfiles->GetFileByID(client->GetUploadFileID())->GetFileName():_T("")));
+				*/
+                AddDebugLogLine(DLP_DEFAULT, true,_T("Removing client from upload list: %s Client: %s Transferred: %s SessionUp: %s QueueSessionPayload: %s In buffer: %s Req blocks: %i File: %s"), pszReason==NULL ? _T("") : pszReason, client->DbgGetClientInfo(), CastSecondsToHM( client->GetUpStartTimeDelay()/1000), CastItoXBytes(client->GetSessionUp(), false, false), CastItoXBytes(client->GetQueueSessionPayloadUp(), false, false), CastItoXBytes(client->GetPayloadInBuffer()), client->GetNumberOfRequestedBlocksInQueue(), (client->CheckAndGetReqUpFile()?client->CheckAndGetReqUpFile()->GetFileName():_T("")));
+				// <== requpfile optimization [SiRoB] - Stulle
             client->m_bAddNextConnect = false;
 			uploadinglist.RemoveAt(pos);
 			
@@ -1719,7 +1749,12 @@ bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReaso
 			client->SetCollectionUploadSlot(false);
 			// <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 
+			// ==> requpfile optimization [SiRoB] - Stulle
+			/*
             CKnownFile* requestedFile = theApp.sharedfiles->GetFileByID(client->GetUploadFileID());
+			*/
+			CKnownFile* requestedFile = client->CheckAndGetReqUpFile();
+			// <== requpfile optimization [SiRoB] - Stulle
             if(requestedFile != NULL) {
                 requestedFile->UpdatePartsInfo();
             }
@@ -1941,7 +1976,12 @@ bool CUploadQueue::CheckForTimeOver(CUpDownClient* client){
 		return false;
 
 	if(client->HasCollectionUploadSlot()){
+		// ==> requpfile optimization [SiRoB] - Stulle
+		/*
 		CKnownFile* pDownloadingFile = theApp.sharedfiles->GetFileByID(client->requpfileid);
+		*/
+		CKnownFile* pDownloadingFile = client->CheckAndGetReqUpFile();
+		// <== requpfile optimization [SiRoB] - Stulle
 		if(pDownloadingFile == NULL)
 			return true;
 		if (pDownloadingFile->HasCollectionExtenesion_Xtreme() /*CCollection::HasCollectionExtention(pDownloadingFile->GetFileName())*/ && pDownloadingFile->GetFileSize() < (uint64)MAXPRIORITYCOLL_SIZE) //Xman Code Improvement for HasCollectionExtention
@@ -2790,7 +2830,12 @@ CUpDownClient* CUploadQueue::FindBestSpreadClientInQueue()
 	{
 		waitinglist.GetNext(pos1);
 		CUpDownClient* cur_client =	waitinglist.GetAt(pos2);
+		// ==> requpfile optimization [SiRoB] - Stulle
+		/*
 		CKnownFile* queueNewReqfile = theApp.sharedfiles->GetFileByID(cur_client->GetUploadFileID());
+		*/
+		CKnownFile* queueNewReqfile = cur_client->CheckAndGetReqUpFile();
+		// <== requpfile optimization [SiRoB] - Stulle
 		//While we are going through this list.. Lets check if a client appears to have left the network..
 		ASSERT ( cur_client->GetLastUpRequest() );
 		if ((::GetTickCount() - cur_client->GetLastUpRequest() > MAX_PURGEQUEUETIME) || !queueNewReqfile )

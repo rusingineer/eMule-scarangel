@@ -691,7 +691,12 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 						//Xman Filefaker Detection		
 						if(client->GetUploadState()!=US_NONE && reqfile->GetFileSize()>PARTSIZE)
 						{
+							// ==> requpfile optimization [SiRoB] - Stulle
+							/*
 							CKnownFile* upfile = theApp.sharedfiles->GetFileByID(client->GetUploadFileID());
+							*/
+							CKnownFile* upfile = client->CheckAndGetReqUpFile();
+							// <== requpfile optimization [SiRoB] - Stulle
 							if(upfile && upfile == reqfile) //we speak about the same file
 							{
 								AddDebugLogLine(false,_T("Dropped src: (%s) does not seem to have own reqfile!(TCP)"), DbgGetClientInfo()); 
@@ -880,7 +885,12 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 					//         With this a client might be in a waiting queue with a high 
 					//         priority but download block of a file set to a lower priority.
 					CKnownFile* reqfileNr1 = theApp.sharedfiles->GetFileByID(reqfilehash);
+					// ==> requpfile optimization [SiRoB] - Stulle
+					/*
 					CKnownFile* reqfileNr2 = theApp.sharedfiles->GetFileByID(client->GetUploadFileID());
+					*/
+					CKnownFile* reqfileNr2 = client->CheckAndGetReqUpFile();
+					// <== requpfile optimization [SiRoB] - Stulle
 					if(reqfileNr1==NULL) 
 					{
 						//We don't know the requesting file, this can happen when we delete the file during upload
@@ -2548,7 +2558,12 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 					//         With this a client might be in a waiting queue with a high 
 					//         priority but download block of a file set to a lower priority.
 					CKnownFile* reqfileNr1 = theApp.sharedfiles->GetFileByID(reqfilehash);
+					// ==> requpfile optimization [SiRoB] - Stulle
+					/*
 					CKnownFile* reqfileNr2 = theApp.sharedfiles->GetFileByID(client->GetUploadFileID());
+					*/
+					CKnownFile* reqfileNr2 = client->CheckAndGetReqUpFile();
+					// <== requpfile optimization [SiRoB] - Stulle
 					if(reqfileNr1==NULL) 
 					{
 						//We don't know the requesting file, this can happen when we delete the file during upload

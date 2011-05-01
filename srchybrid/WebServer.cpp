@@ -2870,7 +2870,12 @@ CString CWebServer::_GetTransferList(ThreadData Data)
 		if(cun.GetLength() > SHORT_LENGTH_MIN)
 			dUser.sUserName = _SpecialChars(cun.Left(SHORT_LENGTH_MIN-3)) + _T("...");
 		
+		// ==> requpfile optimization [SiRoB] - Stulle
+		/*
 		CKnownFile* file = theApp.sharedfiles->GetFileByID(cur_client->GetUploadFileID() );
+		*/
+		CKnownFile* file = cur_client->CheckAndGetReqUpFile();
+		// <== requpfile optimization [SiRoB] - Stulle
 		// ==> Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he/Stulle] - Stulle
 		/*
 		if (file)
@@ -3094,7 +3099,12 @@ CString CWebServer::_CreateTransferList(CString Out, CWebServer *pThis, ThreadDa
 			dUser.sUserName = _SpecialChars(usn);
 
 		dUser.sClientNameVersion = cur_client->GetClientSoftVer();
+		// ==> requpfile optimization [SiRoB] - Stulle
+		/*
 		CKnownFile* file = theApp.sharedfiles->GetFileByID(cur_client->GetUploadFileID() );
+		*/
+		CKnownFile* file = cur_client->CheckAndGetReqUpFile();
+		// <== requpfile optimization [SiRoB] - Stulle
 		// ==> Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he/Stulle] - Stulle
 		/*
 		if (file)
@@ -6276,7 +6286,12 @@ CString CWebServer::GetClientSummary(CUpDownClient* client, bool bShowFilename) 
 	
 	// uploading file
 	buffer+= GetResString(IDS_CD_UPLOADREQ) + _T(" ");
+	// ==> requpfile optimization [SiRoB] - Stulle
+	/*
 	CKnownFile* file = theApp.sharedfiles->GetFileByID(client->GetUploadFileID() );
+	*/
+	CKnownFile* file = client->CheckAndGetReqUpFile();
+	// <== requpfile optimization [SiRoB] - Stulle
 	ASSERT(file);
 	// ==> Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he/Stulle] - Stulle
 	/*

@@ -185,7 +185,12 @@ BOOL CClientDetailPage::OnSetActive()
 			GetDlgItem(IDC_LEECHERINFO)->SetWindowText(_T(" "));
 		//Xman end
 
+		// ==> requpfile optimization [SiRoB] - Stulle
+		/*
 		CKnownFile* file = theApp.sharedfiles->GetFileByID(client->GetUploadFileID());
+		*/
+		CKnownFile* file = client->CheckAndGetReqUpFile();
+		// <== requpfile optimization [SiRoB] - Stulle
 		if (file)
 			GetDlgItem(IDC_DDOWNLOADING)->SetWindowText(file->GetFileName());
 		else

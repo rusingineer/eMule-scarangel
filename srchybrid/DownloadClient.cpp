@@ -2234,7 +2234,12 @@ void CUpDownClient::UDPReaskFNF()
 		*/
 		if(reqfile && GetUploadState()!=US_NONE)
 		{
+			// ==> requpfile optimization [SiRoB] - Stulle
+			/*
 			CKnownFile* upfile = theApp.sharedfiles->GetFileByID(GetUploadFileID());
+			*/
+			CKnownFile* upfile = CheckAndGetReqUpFile();
+			// <== requpfile optimization [SiRoB] - Stulle
 			if(upfile && upfile == reqfile) //we speak about the same file
 			{
 				AddDebugLogLine(false,_T("Dropped src: (%s) does not seem to have own reqfile!(UDP)"), DbgGetClientInfo()); 

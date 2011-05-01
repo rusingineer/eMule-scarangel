@@ -642,7 +642,12 @@ void CUploadListCtrl::GetItemDisplayText(const CUpDownClient *client, int iSubIt
 			break;
 
 		case 1: {
+			// ==> requpfile optimization [SiRoB] - Stulle
+			/*
 			const CKnownFile *file = theApp.sharedfiles->GetFileByID(client->GetUploadFileID());
+			*/
+			const CKnownFile *file = client->CheckAndGetReqUpFile();
+			// <== requpfile optimization [SiRoB] - Stulle
 			_tcsncpy(pszText, file != NULL ? file->GetFileName() : _T(""), cchTextMax);
 			break;
 		}
@@ -715,7 +720,12 @@ void CUploadListCtrl::GetItemDisplayText(const CUpDownClient *client, int iSubIt
 			if (client->GetPowerShared())
 				Sbuffer.Append(_T(",PS"));
 			// ==> Fair Play [AndCycle/Stulle] - Stulle
+			// ==> requpfile optimization [SiRoB] - Stulle
+			/*
 			const CKnownFile *file = theApp.sharedfiles->GetFileByID(client->GetUploadFileID());
+			*/
+			const CKnownFile *file = client->CheckAndGetReqUpFile();
+			// <== requpfile optimization [SiRoB] - Stulle
 			if (file && file->statistic.GetFairPlay()) {
 				Sbuffer.Append(_T(",FairPlay"));
 			}
@@ -808,7 +818,12 @@ void CUploadListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 		{
 			CString strInfo;
 			strInfo.Format(GetResString(IDS_USERINFO), client->GetUserName());
+			// ==> requpfile optimization [SiRoB] - Stulle
+			/*
 			const CKnownFile* file = theApp.sharedfiles->GetFileByID(client->GetUploadFileID());
+			*/
+			const CKnownFile* file = client->CheckAndGetReqUpFile();
+			// <== requpfile optimization [SiRoB] - Stulle
 			if (file)
 			{
 				strInfo += GetResString(IDS_SF_REQUESTED) + _T(' ') + file->GetFileName() + _T('\n');
@@ -876,8 +891,14 @@ int CUploadListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 			break;
 
 		case 1: {
+			// ==> requpfile optimization [SiRoB] - Stulle
+			/*
 			const CKnownFile *file1 = theApp.sharedfiles->GetFileByID(item1->GetUploadFileID());
 			const CKnownFile *file2 = theApp.sharedfiles->GetFileByID(item2->GetUploadFileID());
+			*/
+			const CKnownFile *file1 = item1->CheckAndGetReqUpFile();
+			const CKnownFile *file2 = item2->CheckAndGetReqUpFile();
+			// <== requpfile optimization [SiRoB] - Stulle
 			if (file1 != NULL && file2 != NULL)
 				iResult = CompareLocaleStringNoCase(file1->GetFileName(), file2->GetFileName());
 			else if (file1 == NULL)

@@ -416,6 +416,11 @@ void CUpDownClient::Init()
 	m_bAntiUploaderCaseThree = false; // Anti Uploader Ban [Stulle] - Stulle
 
 	m_uSpreadClient = 0; // Spread Credits Slot [Stulle] - Stulle
+
+	// ==> requpfile optimization [SiRoB] - Stulle
+	requpfile = NULL;
+	requpfileid_lasttimeupdated = 0;
+	// <== requpfile optimization [SiRoB] - Stulle
 }
 
 CUpDownClient::~CUpDownClient(){
@@ -4737,7 +4742,12 @@ void CUpDownClient::ShowRequestedFiles()
 		fileList += _T("You have not requested a file from this user.");
 	fileList += _T("\n\n\nList of Uploading Files:\n");
 	fileList += _T("__________________________\n\n") ; 
+	// ==> requpfile optimization [SiRoB] - Stulle
+	/*
 	CKnownFile* uploadfile = theApp.sharedfiles->GetFileByID(GetUploadFileID());
+	*/
+	CKnownFile* uploadfile = CheckAndGetReqUpFile();
+	// <== requpfile optimization [SiRoB] - Stulle
 	if(uploadfile)
 		fileList += uploadfile->GetFileName();
 	else
@@ -5346,7 +5356,12 @@ CString CUpDownClient::GetZeroScoreString() const
 	if (credits == 0){
 		return _T("NULL credits");
 	}
+	// ==> requpfile optimization [SiRoB] - Stulle
+	/*
 	CKnownFile* currequpfile = theApp.sharedfiles->GetFileByID(requpfileid);
+	*/
+	CKnownFile* currequpfile = CheckAndGetReqUpFile();
+	// <== requpfile optimization [SiRoB] - Stulle
 	if(!currequpfile)
 		return _T("NULL reqfile");
 

@@ -1217,5 +1217,12 @@ public:
 	// ==> Do not display PowerShare or Fair Play for bad clients [Stulle] - Stulle
 	bool IsGPLEvildoer() const	{return m_bGPLEvildoer;}
 	// <== Do not display PowerShare or Fair Play for bad clients [Stulle] - Stulle
+
+	// ==> requpfile optimization [SiRoB] - Stulle
+	CKnownFile*		CheckAndGetReqUpFile() const;
+protected:
+	CKnownFile* requpfile;
+	DWORD		requpfileid_lasttimeupdated;
+	// <== requpfile optimization [SiRoB] - Stulle
 };
 //#pragma pack()

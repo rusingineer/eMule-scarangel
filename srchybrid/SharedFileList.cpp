@@ -468,6 +468,7 @@ CSharedFileList::CSharedFileList(CServerConnect* in_server)
 	FindSharedFiles();
 	*/
 	// SLUGFILLER End
+	m_dwFile_map_updated = 0; // requpfile optimization [SiRoB] - Stulle
 }
 
 CSharedFileList::~CSharedFileList(){
@@ -547,6 +548,7 @@ void CSharedFileList::FindSharedFiles()
 			m_UnsharedFiles_map.SetAt(CSKey(cur_file->GetFileHash()), true);
 			listlock.Lock();
 			m_Files_map.RemoveKey(key);
+			m_dwFile_map_updated = GetTickCount(); // requpfile optimization [SiRoB] - Stulle
 			listlock.Unlock();
 			theApp.uploadqueue->SetSuperiorInQueueDirty(); // Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 		}
@@ -800,6 +802,7 @@ bool CSharedFileList::AddFile(CKnownFile* pFile)
 	CSingleLock listlock(&m_mutWriteList);
 	listlock.Lock();	
 	m_Files_map.SetAt(key, pFile);
+	m_dwFile_map_updated = GetTickCount(); // requpfile optimization [SiRoB] - Stulle
 	listlock.Unlock();
 	theApp.uploadqueue->SetSuperiorInQueueDirty(); // Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 
@@ -900,6 +903,7 @@ bool CSharedFileList::RemoveFile(CKnownFile* pFile, bool bDeleted)
 		theApp.knownfiles->m_nAcceptedTotal -= pFile->statistic.GetAllTimeAccepts();
 		theApp.knownfiles->m_nTransferredTotal -= pFile->statistic.GetAllTimeTransferred();
 	}
+	m_dwFile_map_updated = GetTickCount(); // requpfile optimization [SiRoB] - Stulle
 	theApp.uploadqueue->SetSuperiorInQueueDirty(); // Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 	return bResult;
 }

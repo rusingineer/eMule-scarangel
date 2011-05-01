@@ -14,6 +14,7 @@ Added: Uploading Chunk Detail Display [SiRoB/Fafner] - Stulle
 Added: Display remaining upload time (estimation!) [Stulle] - Stulle
 Added: Option to optimize mod GUI addons & more feature optimization for NT Service [Stulle] - Stulle
 	+ CPU/MEM information, TBH: MiniMule, Toolbar Speedmeter, Show queue count/progress bar
+Added: requpfile optimization [SiRoB] - Stulle
 
 Changed: Download icons in SearchListCtrl context menu [SiRoB] - Stulle
 Changed: Backup dialog strings can now be localized [Stulle] - Stulle

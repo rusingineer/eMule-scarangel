@@ -103,7 +103,12 @@ void CUpDownClient::DrawUpStatusBar(CDC* dc, RECT* rect, bool onlygreyrect, bool
     }
 
 	// wistily: UpStatusFix
+	// ==> requpfile optimization [SiRoB] - Stulle
+	/*
 	CKnownFile* currequpfile = theApp.sharedfiles->GetFileByID(requpfileid);
+	*/
+	CKnownFile* currequpfile = CheckAndGetReqUpFile();
+	// <== requpfile optimization [SiRoB] - Stulle
 	EMFileSize filesize;
 	if (currequpfile)
 		filesize = currequpfile->GetFileSize();
@@ -337,7 +342,12 @@ int CUpDownClient::GetFilePrioAsNumber() const {
 }
 */
 int CUpDownClient::GetFilePrioAsNumber() const {
+	// ==> requpfile optimization [SiRoB] - Stulle
+	/*
 	CKnownFile* currequpfile = theApp.sharedfiles->GetFileByID(requpfileid);
+	*/
+	CKnownFile* currequpfile = CheckAndGetReqUpFile();
+	// <== requpfile optimization [SiRoB] - Stulle
 	if(!currequpfile)
 		return 0;
 	
@@ -441,7 +451,12 @@ uint32 CUpDownClient::GetScore(bool sysvalue, bool isdownloading, bool onlybasev
 		return 0;
 
 	//Xman Code Improvement
+	// ==> requpfile optimization [SiRoB] - Stulle
+	/*
 	CKnownFile* currequpfile = theApp.sharedfiles->GetFileByID(requpfileid);
+	*/
+	CKnownFile* currequpfile = CheckAndGetReqUpFile();
+	// <== requpfile optimization [SiRoB] - Stulle
 	if(!currequpfile)
 		return 0;
 	//Xman end
@@ -1280,7 +1295,12 @@ void CUpDownClient::CreateStandartPackets(byte* data,uint32 togo, Requested_Bloc
 			CSafeMemFile dataHttp(10240);
 			if (m_iHttpSendState == 0)
 			{
+				// ==> requpfile optimization [SiRoB] - Stulle
+				/*
 				CKnownFile* srcfile = theApp.sharedfiles->GetFileByID(GetUploadFileID());
+				*/
+				CKnownFile* srcfile = CheckAndGetReqUpFile();
+				// <== requpfile optimization [SiRoB] - Stulle
 				CStringA str;
 				str.AppendFormat("HTTP/1.0 206\r\n");
 				str.AppendFormat("Content-Range: bytes %I64u-%I64u/%I64u\r\n", currentblock->StartOffset, currentblock->EndOffset - 1, srcfile->GetFileSize());
@@ -1470,11 +1490,17 @@ void CUpDownClient::CreatePackedPackets(byte* data, uint32 togo, Requested_Block
 
 void CUpDownClient::SetUploadFileID(CKnownFile* newreqfile)
 {
+	// ==> requpfile optimization [SiRoB] - Stulle
+	/*
 	CKnownFile* oldreqfile;
 	//We use the knownfilelist because we may have unshared the file..
 	//But we always check the download list first because that person may have decided to redownload that file.
 	//Which will replace the object in the knownfilelist if completed.
 	if ((oldreqfile = theApp.downloadqueue->GetFileByID(requpfileid)) == NULL)
+	*/
+	CKnownFile* oldreqfile = requpfile;
+	if (!theApp.downloadqueue->IsPartFile(requpfile))
+	// <== requpfile optimization [SiRoB] - Stulle
 		oldreqfile = theApp.knownfiles->FindKnownFileByID(requpfileid);
 	else
 	{
@@ -1507,6 +1533,11 @@ void CUpDownClient::SetUploadFileID(CKnownFile* newreqfile)
 	}
 	else
 		md4clr(requpfileid);
+
+	// ==> requpfile optimization [SiRoB] - Stulle
+	requpfile = newreqfile;
+	requpfileid_lasttimeupdated = theApp.sharedfiles->GetLastTimeFileMapUpdated();
+	// <== requpfile optimization [SiRoB] - Stulle
 
 	if (oldreqfile)
 	{ //Xman
@@ -2493,7 +2524,12 @@ int CReadBlockFromFileThread::Run() {
 // ==> push small files [sivka] - Stulle
 bool CUpDownClient::GetSmallFilePush() const
 {
+	// ==> requpfile optimization [SiRoB] - Stulle
+	/*
 	CKnownFile* currequpfile = theApp.sharedfiles->GetFileByID(requpfileid);
+	*/
+	CKnownFile* currequpfile = CheckAndGetReqUpFile();
+	// <== requpfile optimization [SiRoB] - Stulle
 	return(currequpfile &&
 		currequpfile->IsPushSmallFile());
 }
@@ -2503,7 +2539,12 @@ bool CUpDownClient::GetSmallFilePush() const
 float CUpDownClient::GetRareFilePushRatio() const {
 	if(!thePrefs.GetEnablePushRareFile())
 		return 1.0f;
-	CKnownFile* srcfile = theApp.sharedfiles->GetFileByID(/*(uchar*)*/GetUploadFileID());
+	// ==> requpfile optimization [SiRoB] - Stulle
+	/*
+	CKnownFile* srcfile = theApp.sharedfiles->GetFileByID(GetUploadFileID());
+	*/
+	CKnownFile* srcfile = CheckAndGetReqUpFile();
+	// <== requpfile optimization [SiRoB] - Stulle
 	if (srcfile == (CKnownFile*)NULL)
 		return 4.0f;
 	
@@ -2552,7 +2593,12 @@ void CUpDownClient::GetUploadingAndUploadedPart(uint8* m_abyUpPartUploadingAndUp
 /* FairPlay                                                             */
 bool CUpDownClient::IsSuperiorClient() const
 {
+	// ==> requpfile optimization [SiRoB] - Stulle
+	/*
 	CKnownFile* currentReqFile = theApp.sharedfiles->GetFileByID(GetUploadFileID());
+	*/
+	CKnownFile* currentReqFile = CheckAndGetReqUpFile();
+	// <== requpfile optimization [SiRoB] - Stulle
 
 	// only clients requesting a valid file can be superior
 	if(currentReqFile == NULL)
@@ -2610,7 +2656,12 @@ bool CUpDownClient::IsSuperiorClient() const
 
 // ==> PowerShare [ZZ/MorphXT] - Stulle
 bool CUpDownClient::GetPowerShared() const {
+	// ==> requpfile optimization [SiRoB] - Stulle
+	/*
 	CKnownFile* currentReqFile = theApp.sharedfiles->GetFileByID(GetUploadFileID());
+	*/
+	CKnownFile* currentReqFile = CheckAndGetReqUpFile();
+	// <== requpfile optimization [SiRoB] - Stulle
 	return currentReqFile && currentReqFile->GetPowerShared();
 }
 
@@ -2621,7 +2672,12 @@ bool CUpDownClient::GetPowerShared(const CKnownFile* file) const {
 
 // ==> Design Settings [eWombat/Stulle] - Stulle
 bool CUpDownClient::GetPowerReleased() const {
+	// ==> requpfile optimization [SiRoB] - Stulle
+	/*
 	CKnownFile* currentReqFile = theApp.sharedfiles->GetFileByID(GetUploadFileID());
+	*/
+	CKnownFile* currentReqFile = CheckAndGetReqUpFile();
+	// <== requpfile optimization [SiRoB] - Stulle
 	return currentReqFile && currentReqFile->GetUpPriority()==PR_POWER;
 }
 // <== Design Settings [eWombat/Stulle] - Stulle
@@ -2629,7 +2685,12 @@ bool CUpDownClient::GetPowerReleased() const {
 // ==> Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 bool CUpDownClient::IsPBFClient() const
 {
+	// ==> requpfile optimization [SiRoB] - Stulle
+	/*
 	CKnownFile* currentReqFile = theApp.sharedfiles->GetFileByID(GetUploadFileID());
+	*/
+	CKnownFile* currentReqFile = CheckAndGetReqUpFile();
+	// <== requpfile optimization [SiRoB] - Stulle
 
 	// only clients requesting a valid file, which is not PartFile can be superior
 	if(currentReqFile == NULL || currentReqFile->IsPartFile())
@@ -2686,7 +2747,12 @@ void CUpDownClient::DrawUpStatusBarChunk(CDC* dc, RECT* rect, bool /*onlygreyrec
     }
 
 	// wistily: UpStatusFix
+	// ==> requpfile optimization [SiRoB] - Stulle
+	/*
 	CKnownFile* currequpfile = theApp.sharedfiles->GetFileByID(requpfileid);
+	*/
+	CKnownFile* currequpfile = CheckAndGetReqUpFile();
+	// <== requpfile optimization [SiRoB] - Stulle
 	EMFileSize filesize;
 	uint64 chunksize = PARTSIZE;
 	if (currequpfile)
@@ -2806,7 +2872,12 @@ void CUpDownClient::DrawUpStatusBarChunk(CDC* dc, RECT* rect, bool /*onlygreyrec
 
 float CUpDownClient::GetUpChunkProgressPercent() const
 {
+	// ==> requpfile optimization [SiRoB] - Stulle
+	/*
 	CKnownFile* currequpfile = theApp.sharedfiles->GetFileByID(requpfileid);
+	*/
+	CKnownFile* currequpfile = CheckAndGetReqUpFile();
+	// <== requpfile optimization [SiRoB] - Stulle
 	EMFileSize filesize;
 	uint64 chunksize = PARTSIZE;
 	if (currequpfile)
@@ -2911,7 +2982,12 @@ CString CUpDownClient::GetRemainingUploadTime() const
 
 	if(!m_DoneBlocks_list.IsEmpty())
 	{
+		// ==> requpfile optimization [SiRoB] - Stulle
+		/*
 		CKnownFile* currentReqFile = theApp.sharedfiles->GetFileByID(GetUploadFileID());
+		*/
+		CKnownFile* currentReqFile = CheckAndGetReqUpFile();
+		// <== requpfile optimization [SiRoB] - Stulle
 		if(currentReqFile)
 		{
 			Requested_Block_Struct* lastBlock = m_DoneBlocks_list.GetHead();
@@ -2940,3 +3016,14 @@ CString CUpDownClient::GetRemainingUploadTime() const
 	return _T("?");
 }
 // <== Display remaining upload time [Stulle] - Stulle
+
+// ==> requpfile optimization [SiRoB] - Stulle
+CKnownFile* CUpDownClient::CheckAndGetReqUpFile() const
+{
+	if (requpfileid_lasttimeupdated < theApp.sharedfiles->GetLastTimeFileMapUpdated()) {
+		return theApp.sharedfiles->GetFileByID(requpfileid);
+		//requpfileid_lasttimeupdated = theApp.sharedfiles->GetLastTimeFileMapUpdated();
+	}
+	return requpfile;
+}
+// <== requpfile optimization [SiRoB] - Stulle
