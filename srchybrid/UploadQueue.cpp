@@ -253,6 +253,11 @@ CUpDownClient* CUploadQueue::FindBestClientInQueue(bool bCheckOnly)
 					{
 						bestscoreSup = cur_score;
 						toaddSup = pos2;
+						// ==> Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
+						// If we found any superior client on queue we don't need to search any further when just checking
+						if(bCheckOnly)
+							break;
+						// <== Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 					}
                 } 
 				else if(!cur_client->m_bAddNextConnect) 
