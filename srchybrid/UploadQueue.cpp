@@ -2144,10 +2144,17 @@ UINT CUploadQueue::GetWaitingPosition(CUpDownClient* client){
 
 	UINT rank = 1;
 	const UINT myscore = client->GetScore(false);
+	const bool mysuperior = client->IsSuperiorClient(); // Superior Client Handling [Stulle] - Stulle
 
 	if(thePrefs.GetEnableMultiQueue() == false){
 		for(POSITION pos = waitinglist.GetHeadPosition(); pos != NULL; ){
+			// ==> Superior Client Handling [Stulle] - Stulle
+			/*
 			if(waitinglist.GetNext(pos)->GetScore(false) > myscore)
+			*/
+			if(waitinglist.GetNext(pos)->GetScore(false) > myscore ||
+				waitinglist.GetNext(pos)->IsSuperiorClient() && !mysuperior)
+			// <== Superior Client Handling [Stulle] - Stulle
 				rank++;
 		}
 	}
@@ -2155,8 +2162,15 @@ UINT CUploadQueue::GetWaitingPosition(CUpDownClient* client){
 		// Compare score only with others clients waiting for the same file
 		for(POSITION pos = waitinglist.GetHeadPosition(); pos != NULL; ){
 			CUpDownClient* pOtherClient = waitinglist.GetNext(pos);
+			// ==> Superior Client Handling [Stulle] - Stulle
+			/*
 			if(md4cmp(client->GetUploadFileID(), pOtherClient->GetUploadFileID()) == 0 && 
 				pOtherClient->GetScore(false) > myscore){
+			*/
+			// superior overrules same file
+			if(pOtherClient->IsSuperiorClient() && !mysuperior ||
+				md4cmp(client->GetUploadFileID(), pOtherClient->GetUploadFileID()) == 0 && pOtherClient->GetScore(false) > myscore){
+			// <== Superior Client Handling [Stulle] - Stulle
 					rank++;
 				}
 		}

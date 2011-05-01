@@ -39,6 +39,7 @@ Changed: Display if client is superior in WebInterface and sort accordingly [Stu
 Changed: Optimized code that checks if sup clients are on queue [Stulle] - Stulle
 Changed: Stop searching for sup clients on queue if one was found [Stulle] - Stulle
 	+ concerns: Keep Sup clients in up if there is no other sup client in queue
+Changed: Take sup state into account when retrieving queue rank of enqueued clients [Stulle] - Stulle
 
 Fixed: On setting new Friendslots via WebInterface old Friendslots were not removed [Stulle] - Stulle
 Fixed: Potential NULL-pointer around TBH: MiniMule in TrayDialog [Stulle] - Stulle
