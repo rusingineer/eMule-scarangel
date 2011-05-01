@@ -3336,7 +3336,10 @@ void CKnownFile::SetPowerShared(int newValue)
 		UpdatePartsInfo();
 	// ==> Superior Client Handling [Stulle] - Stulle
 	if(theApp.uploadqueue && oldValue != newValue)
+	{
 		theApp.uploadqueue->ReSortUploadSlots(true);
+		theApp.uploadqueue->SetSuperiorInQueueDirty(); // Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
+	}
 	// <== Superior Client Handling [Stulle] - Stulle
 }
 
@@ -3350,7 +3353,10 @@ void CKnownFile::UpdatePowerShareLimit(bool authorizepowershare,bool autopowersh
 	m_bpowershared = ((temppowershared&1) || ((temppowershared == 2) && m_bPowerShareAuto)) && m_bPowerShareAuthorized && !((temppowershared == 3) && m_bPowerShareLimited);
 	// ==> Superior Client Handling [Stulle] - Stulle
 	if(theApp.uploadqueue && oldPowershare != m_bpowershared)
+	{
 		theApp.uploadqueue->ReSortUploadSlots(true);
+		theApp.uploadqueue->SetSuperiorInQueueDirty(); // Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
+	}
 	// <== Superior Client Handling [Stulle] - Stulle
 }
 bool CKnownFile::GetPowerShared() const

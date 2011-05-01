@@ -46,6 +46,7 @@
 #include "IPFilter.h"
 #include "DLP.h"
 // <== Advanced Updates [MorphXT/Stulle] - Stulle
+#include "UploadQueue.h" // Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -2143,6 +2144,8 @@ BOOL CPPgScar::OnApply()
 	// <== Advanced Updates [MorphXT/Stulle] - Stulle
 
 	LoadSettings();
+
+	theApp.uploadqueue->SetSuperiorInQueueDirty(); // Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 
 	// ==> Show sources on title - Stulle
 	TCHAR buffer[510];

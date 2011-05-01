@@ -214,9 +214,15 @@ private:
 	bool	m_bStatisticsWaitingListDirty;
 
 	// ==> Spread Credits Slot [Stulle] - Stulle
-public:
 	int		m_slotcounter;
 	bool	m_bSpreadCreditsSlotActive;
 	CUpDownClient* FindBestSpreadClientInQueue();
 	// <== Spread Credits Slot [Stulle] - Stulle
+
+	// ==> Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
+	bool	m_bSuperiorInQueue;
+	bool	m_bSuperiorInQueueDirty;
+public:
+	void	SetSuperiorInQueueDirty()	{m_bSuperiorInQueueDirty = true;}
+	// <== Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 };

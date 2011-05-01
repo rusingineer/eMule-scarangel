@@ -548,6 +548,7 @@ void CSharedFileList::FindSharedFiles()
 			listlock.Lock();
 			m_Files_map.RemoveKey(key);
 			listlock.Unlock();
+			theApp.uploadqueue->SetSuperiorInQueueDirty(); // Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 		}
 		
 		ASSERT( theApp.downloadqueue );
@@ -800,6 +801,7 @@ bool CSharedFileList::AddFile(CKnownFile* pFile)
 	listlock.Lock();	
 	m_Files_map.SetAt(key, pFile);
 	listlock.Unlock();
+	theApp.uploadqueue->SetSuperiorInQueueDirty(); // Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 
 	bool bKeywordsNeedUpdated = true;
 
@@ -898,6 +900,7 @@ bool CSharedFileList::RemoveFile(CKnownFile* pFile, bool bDeleted)
 		theApp.knownfiles->m_nAcceptedTotal -= pFile->statistic.GetAllTimeAccepts();
 		theApp.knownfiles->m_nTransferredTotal -= pFile->statistic.GetAllTimeTransferred();
 	}
+	theApp.uploadqueue->SetSuperiorInQueueDirty(); // Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 	return bResult;
 }
 

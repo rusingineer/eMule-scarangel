@@ -149,6 +149,11 @@ CUploadQueue::CUploadQueue()
 	m_bSpreadCreditsSlotActive = false;
 	m_slotcounter = 1;
 	// <== Spread Credits Slot [Stulle] - Stulle
+
+	// ==> Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
+	m_bSuperiorInQueue = false;
+	m_bSuperiorInQueueDirty = false;
+	// <== Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 }
 
 CUploadQueue::~CUploadQueue(){
@@ -1336,7 +1341,7 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 				}
 				else if (client->isupprob) //Xman uploading problem client
 				{
-					AddUpNextClient(_T("Adding ~~~problematic client (second change) on reconnect"),client);
+					AddUpNextClient(_T("Adding ~~~problematic client (second chance) on reconnect"),client);
 				}
 				else
 					AddUpNextClient(_T("Adding ****lowid on reconnecting."), client);
@@ -1567,6 +1572,7 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 	else
 	{
 		m_bStatisticsWaitingListDirty = true;
+		SetSuperiorInQueueDirty(); // Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 		waitinglist.AddTail(client);
 		client->SetUploadState(US_ONUPLOADQUEUE);
 		theApp.emuledlg->transferwnd->GetQueueList()->AddClient(client,true);
@@ -1794,6 +1800,7 @@ bool CUploadQueue::RemoveFromWaitingQueue(CUpDownClient* client, bool updatewind
 
 void CUploadQueue::RemoveFromWaitingQueue(POSITION pos, bool updatewindow){	
 	m_bStatisticsWaitingListDirty = true;
+	SetSuperiorInQueueDirty(); // Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
 	CUpDownClient* todelete = waitinglist.GetAt(pos);
 	
 	//Xman see OnUploadqueue
@@ -1952,8 +1959,19 @@ bool CUploadQueue::CheckForTimeOver(CUpDownClient* client){
 	// <== Pay Back First [AndCycle/SiRoB/Stulle] - Stulle
 	else if(client->IsSuperiorClient())
 	{
-		CUpDownClient* bestClient = FindBestClientInQueue(true);
-		if(!bestClient || bestClient->IsSuperiorClient()==false)
+		if(m_bSuperiorInQueueDirty)
+		{
+			CUpDownClient* bestClient = FindBestClientInQueue(true);
+			if(!bestClient || bestClient->IsSuperiorClient()==false)
+			{
+				bPreventTimeOver = true;
+				m_bSuperiorInQueue = true;
+			}
+			else
+				m_bSuperiorInQueue = false;
+			m_bSuperiorInQueueDirty = false;
+		}
+		else if(m_bSuperiorInQueue)
 			bPreventTimeOver = true;
 	}
 	if(bPreventTimeOver == false){

@@ -1250,6 +1250,11 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState, LPCTSTR pszReason
                     AddDebugLogLine(DLP_VERYLOW, false, _T("Download session ended: %s User: %s in SetDownloadState(). New State: %i, Length: %s, Payload: %s, Transferred: %s, Req blocks not yet completed: %i."), pszReason, DbgGetClientInfo(), nNewState, CastSecondsToHM(GetDownTimeDifference(false)/1000), CastItoXBytes(GetSessionPayloadDown(), false, false), CastItoXBytes(GetSessionDown(), false, false), m_PendingBlocks_list.GetCount());
 			}
 
+			// ==> Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
+			// We declare the list dirty at this point so we might catch on if a client is now eligible for PBF
+			theApp.uploadqueue->SetSuperiorInQueueDirty();
+			// <== Keep Sup clients in up if there is no other sup client in queue [Stulle] - Stulle
+
 			//Xman filter clients with failed downloads
 			/*
 			ResetSessionDown();
