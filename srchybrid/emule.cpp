@@ -2230,7 +2230,7 @@ void CemuleApp::PasteClipboard(int cat)
 	/*
 	AddEd2kLinksToDownload(strLinks, cat, true);
 	*/
-	AddEd2kLinksToDownload(strLinks, cat, true, true);
+	AddEd2kLinksToDownload(strLinks, cat, false, true);
 	// <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 	//Xman end
 }
