@@ -830,8 +830,6 @@ bool	CPreferences::m_bAutoBackup2;
 // <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 
 // ==> TBH: minimule - Max
-int	    CPreferences::speedmetermin;
-int	    CPreferences::speedmetermax;
 bool    CPreferences::m_bMiniMule;
 uint32  CPreferences::m_iMiniMuleUpdate;
 bool    CPreferences::m_bMiniMuleLives;
@@ -2899,8 +2897,6 @@ void CPreferences::SavePreferences()
 	// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 
 	// ==> TBH: minimule - Max
-	ini.WriteInt(_T("SpeedMeterMin"), speedmetermin);
-	ini.WriteInt(_T("SpeedMeterMax"), speedmetermax);	
 	ini.WriteBool(_T("ShowMiniMule"),m_bMiniMule);
 	ini.WriteInt(_T("MiniMuleUpdate"),m_iMiniMuleUpdate);
 	ini.WriteBool(_T("MiniMuleLives"),m_bMiniMuleLives);
@@ -4172,8 +4168,6 @@ void CPreferences::LoadPreferences()
 	// <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 
 	// ==> TBH: minimule - Max
-	speedmetermin = ini.GetInt(_T("SpeedMeterMin"),0);
-	speedmetermax = ini.GetInt(_T("SpeedMeterMax"),(int)GetMaxGraphDownloadRate());	
 	m_bMiniMule = ini.GetBool(_T("ShowMiniMule"), false);
 	m_iMiniMuleUpdate = ini.GetInt(_T("MiniMuleUpdate"), 2);
 	m_bMiniMuleLives = ini.GetBool(_T("MiniMuleLives"), true);
