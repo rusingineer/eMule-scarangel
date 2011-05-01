@@ -529,7 +529,7 @@ BOOL CemuleDlg::OnInitDialog()
 		/*
 		TrayShow();
 		*/
-		TrayShow(FALSE);
+		TrayShow(false);
 		// <== TBH: minimule - Stulle
 	// <== Static Tray Icon [MorphXT] - MyTh88
 
@@ -5839,7 +5839,7 @@ void CemuleDlg::ToggleHide()
 	// ==> Static Tray Icon [MorphXT] - MyTh88
 	m_bMaximized = IsZoomed();
 	// <== Static Tray Icon [MorphXT] - MyTh88
-	m_bTbhMiniMuleVis = theApp.minimule->IsWindowVisible(); // TBH: minimule - Stulle
+	m_bTbhMiniMuleVis = theApp.minimule->IsWindowVisible()?true:false; // TBH: minimule - Stulle
 	b_HideApp = true;
 	b_TrayWasVisible = TrayHide();
 	b_WindowWasVisible = IsWindowVisible();

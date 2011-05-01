@@ -37,6 +37,7 @@ Changed: Scale both upload and download to max in speed graph of TBH MiniMule [S
 
 Fixed: On setting new Friendslots via WebInterface old Friendslots were not removed [Stulle] - Stulle
 Fixed: Potential NULL-pointer around TBH: MiniMule in TrayDialog [Stulle] - Stulle
+Fixed: MiniMule did not open when minimizing to tray with Static Tray activated [Stulle] - Stulle
 
 
 eMule v0.50a ScarAngel v4.0:

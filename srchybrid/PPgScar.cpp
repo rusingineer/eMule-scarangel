@@ -1860,7 +1860,7 @@ BOOL CPPgScar::OnApply()
 			/*
 			theApp.emuledlg->TrayShow();
 			*/
-			theApp.emuledlg->TrayShow(FALSE);
+			theApp.emuledlg->TrayShow(false);
 			// <== TBH: minimule - Stulle
 		else if(theApp.emuledlg->IsWindowVisible()) //only hide when window visible
 			theApp.emuledlg->TrayHide();
