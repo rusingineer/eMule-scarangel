@@ -1,4 +1,4 @@
-Xtreme 8.0
+Xtreme 8.1
 ----------------
 
 Main Features:
