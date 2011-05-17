@@ -3044,6 +3044,7 @@ void CKnownFile::CalcPartSpread(CArray<uint64>& partspread, CUpDownClient* clien
 		partsavail[i] = true;
 	}
 
+	/*
 	if (IsPartFile()) {
 		uint32 somethingtoshare = 0;
 		for (i = 0; i < parts; i++)
@@ -3055,6 +3056,7 @@ void CKnownFile::CalcPartSpread(CArray<uint64>& partspread, CUpDownClient* clien
 		if (somethingtoshare<=2)
 			return;
 	}
+	*/
 	if (client->m_abyUpPartStatus) {
 		uint32 somethingtoshare = 0;
 		for (i = 0; i < parts; i++)
@@ -3116,7 +3118,7 @@ void CKnownFile::CalcPartSpread(CArray<uint64>& partspread, CUpDownClient* clien
 			if (partspread[i] >= hideOS && client->m_abyUpPartStatus)
 				client->m_abyUpPartStatus[i] |= SC_HIDDENBYHIDEOS;
 	}
-	UINT SOTN = ((GetShareOnlyTheNeed()>=0)?GetShareOnlyTheNeed():thePrefs.GetShareOnlyTheNeed()); 
+	UINT SOTN = SotnInWork();
 	if (SOTN) {
 		/*
 		if (IsPartFile()) {
@@ -3288,7 +3290,7 @@ bool CKnownFile::HideOvershares(CSafeMemFile* file, CUpDownClient* client){
 		if (partspread[i] > max)
 			max = partspread[i];
 	UINT hideOS = HideOSInWork();
-	UINT SOTN = ((GetShareOnlyTheNeed()>=0)?GetShareOnlyTheNeed():thePrefs.GetShareOnlyTheNeed());
+	UINT SOTN = SotnInWork();
 	if (!hideOS && SOTN)
 		hideOS = 1;
 	if (max < hideOS || !hideOS)
@@ -3314,7 +3316,7 @@ bool CKnownFile::HideOvershares(CSafeMemFile* file, CUpDownClient* client){
 	return TRUE;
 }
 
-UINT	CKnownFile::HideOSInWork() const
+UINT CKnownFile::HideOSInWork() const
 {
 	// ==> Spread bars [Slugfiller/MorphXT] - Stulle
 	if(thePrefs.GetSpreadbarSetStatus() == false)
@@ -3324,6 +3326,14 @@ UINT	CKnownFile::HideOSInWork() const
 		return 0;
 
 	return  (m_iHideOS>=0)?m_iHideOS:thePrefs.GetHideOvershares();
+}
+
+UINT CKnownFile::SotnInWork() const
+{
+	if(IsPartFile() == true) // not for partfiles
+		return 0;
+
+	return  (GetShareOnlyTheNeed()>=0)?GetShareOnlyTheNeed():thePrefs.GetShareOnlyTheNeed();
 }
 // <== HideOS & SOTN [Slugfiller/ MorphXT] - Stulle
 
