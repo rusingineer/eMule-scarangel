@@ -2319,6 +2319,12 @@ IDS_SKIP                "跳過(&S)"
 IDS_SKIPALL             "全部跳過(&K)"
 IDS_TRYAGAIN            "再試一次(&T)"
 IDS_YESTOALL            "全部皆是(&E)"
+IDS_OVERWRITE1          "檔案 %s 已經存在. 要將它取代嗎?"
+IDS_OVERWRITE2          "取代?"
+IDS_BACKUPERROR         "備份過程出現錯誤"
+IDS_BACKUP_PART         "因為他們的檔案大小，備份 *.part 檔案可能須花費一些時間.\n您確定要這樣作嗎?"
+IDS_BACKUP_PART_W       "您確定嗎?"
+IDS_BACKUP_COMPLETE     "檔案複製成功."
 // <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 // ==> TBH: minimule - Max
 IDS_MM_SHOW             "使用 TBH 迷你騾 替代"//"使用新式迷你驢"
@@ -2430,6 +2436,7 @@ IDS_SEARCH_INVALIDMINMAX "設置的最小/最大文件大小中使用了無效的單位"
     IDS_KEEPCATINCSHARED    "當移除類別的新進檔案資料夾時是否該將他加進分享?"
     IDS_KEEPCATINCSHARED_TITLE "移除類別"
     IDS_ADD_REMOVED_INC     "詢問當移除類別的新進檔案資料夾時是否該將他加進分享"
+IDS_DONOTWATCHCLIP      "停止監視剪貼簿"
 // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
 IDS_SHARED_PREFS        "已分享檔案管理" // Shared Files Management [Stulle] - Stulle
 // ==> Spread bars [Slugfiller/MorphXT] - Stulle
@@ -2860,6 +2867,7 @@ IDS_STATIC_ICON         "總是顯示托盤圖示" // Static Tray Icon - MyTh88
     IDS_NOMINIMIZE          "否，縮至系統列"//"No, To tray"
     // <== Extended Prompt on Exit dialog [leuk_he] - Stulle
     IDS_WS_FRIENDSLOT       "好友通道"//"Friendslot" // Friendslot support for WebInterface [Stulle] - Stulle
+    IDS_CHUNK               "區塊資訊" // Downloading Chunk Detail Display [SiRoB] - Stulle
 END
 
 /////////////////////////////////////////////////////////////////////////////

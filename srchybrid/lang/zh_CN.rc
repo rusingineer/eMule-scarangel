@@ -2309,6 +2309,12 @@ BEGIN
     IDS_SKIPALL             "全部跳过"
     IDS_TRYAGAIN            "重试"
     IDS_YESTOALL            "全部是"
+    IDS_OVERWRITE1          "文件 %s 已经存在. 是否覆盖?"
+    IDS_OVERWRITE2          "是否覆盖?"
+    IDS_BACKUPERROR         "备份发生错误"
+    IDS_BACKUP_PART         "备份 *.part 文件可能需要几分钟的时间, 视文件大小而定.\n是否确定要备份这些文件?"
+    IDS_BACKUP_PART_W       "是否确定?"
+    IDS_BACKUP_COMPLETE     "文件备份完成"
     // <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
     // ==> TBH: minimule - Max
     IDS_MM_SHOW             "使用TBH迷你骡"
@@ -2424,6 +2430,7 @@ BEGIN
    IDS_KEEPCATINCSHARED    "移除分类后, 是否将分类的下载目录设置为共享目录?" //"Should incoming directory of removed category be added as share?"
    IDS_KEEPCATINCSHARED_TITLE "已移除分类" //"Category removed"
    IDS_ADD_REMOVED_INC     "当移除分类时, 询问用户是否将分类下载目录设置为共享目录" //"Ask if incoming dir of removed cat should be added as share"
+   IDS_DONOTWATCHCLIP "停止监视剪贴板"
     // <== Smart Category Control (SCC) [khaos/SiRoB/Stulle] - Stulle
     IDS_SHARED_PREFS        "共享文件管理" // Shared Files Management [Stulle] - Stulle
     // ==> Spread bars [Slugfiller/MorphXT] - Stulle
@@ -2857,6 +2864,7 @@ BEGIN
     IDS_NOMINIMIZE          "否，缩小到系统托盘"
     // <== Extended Prompt on Exit dialog [leuk_he] - Stulle
     IDS_WS_FRIENDSLOT       "好友通道" // Friendslot support for WebInterface [Stulle] - Stulle
+    IDS_CHUNK               "文件段详情" // Downloading Chunk Detail Display [SiRoB] - Stulle
 END
 
 #endif    // 中文(中华人民共和国) resources
