@@ -2325,6 +2325,7 @@ IDS_BACKUPERROR         "備份過程出現錯誤"
 IDS_BACKUP_PART         "因為他們的檔案大小，備份 *.part 檔案可能須花費一些時間.\n您確定要這樣作嗎?"
 IDS_BACKUP_PART_W       "您確定嗎?"
 IDS_BACKUP_COMPLETE     "檔案複製成功."
+IDS_BACKUP_COMPLETE_W   "備份完成"
 // <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
 // ==> TBH: minimule - Max
 IDS_MM_SHOW             "使用 TBH 迷你騾 替代"//"使用新式迷你驢"
@@ -2788,6 +2789,7 @@ IDS_STATIC_ICON         "總是顯示托盤圖示" // Static Tray Icon - MyTh88
     IDS_ADVADMINENABLED     "啟用多使用者的Web介面管理"//"Enable multi user Webinterface right management"
     IDS_ADVADMIN_GUEST      "客人"//"Guest"
     IDS_ADVADMIN_DFILES     "存取權限 - 下載檔案?"//"Acces - Download files?"
+    IDS_WS_HIDDEN           "隱藏檔案名稱"
     // <== Ionix advanced (multiuser) webserver [iOniX/Aireoreion/wizard/leuk_he/Stulle] - Stulle
     // ==> Tabbed WebInterface settings panel [Stulle] - Stulle
     IDS_TAB_WEB_SERVER      "Web伺服器介面"//"Web Server"
@@ -2861,6 +2863,7 @@ IDS_STATIC_ICON         "總是顯示托盤圖示" // Static Tray Icon - MyTh88
     IDS_SVC_DESCR_FAIL      "無法改變服務已顯示的敘述: %s"//"Unable to change displayed description of service: %s"
     IDS_SVC_STR_OPN_FAIL    "服務開啟失敗,改變已顯示的字串狀態: %s"//"Failed to open service to change displayed strings mode: %s"
     IDS_SVC_STR_CTRL_FAIL   "連接服務控制失敗,改變已顯示的字串: %s"//"Failed to connect to service control to change displayed strings: %s"
+    IDS_SERVICE_OPT_GUI     "Mod GUI 附加元件" 
     // <== Adjustable NT Service Strings - Stulle
     // ==> Extended Prompt on Exit dialog [leuk_he] - Stulle
     IDS_YESSERVICE          "確定，並啟動電騾服務"//"Yes, and start eMule service"
