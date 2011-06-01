@@ -726,7 +726,7 @@ void CUploadListCtrl::GetItemDisplayText(const CUpDownClient *client, int iSubIt
 			*/
 			const CKnownFile *file = client->CheckAndGetReqUpFile();
 			// <== requpfile optimization [SiRoB] - Stulle
-			if (file && file->statistic.GetFairPlay()) {
+			if (file && !file->IsPartFile() && file->statistic.GetFairPlay()) {
 				Sbuffer.Append(_T(",FairPlay"));
 			}
 			// <== Fair Play [AndCycle/Stulle] - Stulle
