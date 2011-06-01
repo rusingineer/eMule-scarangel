@@ -2980,7 +2980,14 @@ CString CUpDownClient::GetRemainingUploadTime() const
 	}
 	*/
 
-	if(!m_DoneBlocks_list.IsEmpty())
+	if(!thePrefs.TransferFullChunks())
+	{
+		if(GetSessionUp() < 2097152)
+			return CastSecondsToHM(time_t(UINT(GetSessionUp())/GetUploadDatarate()));
+		else
+			return _T("?");
+	}
+	else if(!m_DoneBlocks_list.IsEmpty())
 	{
 		// ==> requpfile optimization [SiRoB] - Stulle
 		/*
