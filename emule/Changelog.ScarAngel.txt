@@ -46,6 +46,7 @@ Fixed: Potential NULL-pointer around TBH: MiniMule in TrayDialog [Stulle] - Stul
 Fixed: MiniMule did not open when minimizing to tray with Static Tray activated [Stulle] - Stulle
 Fixed: SOTN could be activated for partfiles when enabled in preferences [Stulle] - Stulle
 Fixed: FairPlay was displayed for partfiles in Upload List [Stulle] - Stulle
+Fixed: WebServer progress text did not work when file completed [Stulle] - Stulle
 
 Note: Following languages updated: German [Stulle]; Chinese (P.R.C.) [zz_fly];
 	Chinese (Taiwan) [AndCycle]; French [jamjam]; Spanish [Rajil/mself563];

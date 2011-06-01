@@ -5551,6 +5551,8 @@ CString CWebServer::_GetDownloadGraph(ThreadData Data, CString filehash)
 	/**/	_stprintf(HTTPHeader, _T("%.1f%%"), (static_cast<double>(pPartFile->GetPercentCompleted())));   
 	/**/	Out.Replace(_T("[FilePercentage]"), HTTPHeader);
 	/**/}
+	/**/else
+	/**/	Out.Replace(_T("[FilePercentage]"), _T("100%"));
 	// <== File Percentage in title of progress images in WebServer [unknown/Stulle] - Stulle
 	return Out;
 }
