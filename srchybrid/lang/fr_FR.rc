@@ -2720,6 +2720,7 @@ BEGIN
     IDS_MSGONLYSEC          "Autoriser seulement les clients valides"
     IDS_DISABLEPEERACHE    "Désactiver le téléchargement à partir du PeerCache"
     IDS_KEEPUNAVAILABLEFIXEDSHAREDDIRS  "Gardez les annuaires indisponibles sur les commandes fixes"
+    // <== Advanced Options [Official/MorphXT] - Stulle
     // ==> Advanced Updates [MorphXT/Stulle] - Stulle
     IDS_UPDATEANTILEECHERONSTART "Mettre à jour antiLeech.dll au démarrage"
     IDS_AUTOUPWEEK          "MAJ hebdomadaire"
@@ -2731,7 +2732,7 @@ BEGIN
     IDS_AUTOUPIP2COUNTRY    "Mise à jour des drapeaux de pays au démarrage"
     IDS_SCHED_UPDATE_IPCONFIG_LOG "Mise à jour planifiée de ipfilter.dat"
     IDS_SCHED_UPDATE_ANTILEECH_LOG "Mise à jour programmée de antiLeech.dll en cours"
-    IDS_SCHEDTEXT           "Ajouté par Morph pour la mise à jour auto"
+    IDS_SCHEDTEXT           "Ajouté par ScarAngel pour la mise à jour auto"
     IDS_SCHED_UPDATE_IPCONFIG  "Mettre à jour fichier IPFILTER.DAT"
     IDS_SCHED_UPDATE_ANTILEECH "Mise à jour du fichier antiLeech.dll"
     IDS_SCHED_UPDATE_WARNING "Evitez de planifier les mises à jour trop fréquemment pour limiter le trafic réseau.\nUne mise à jour hebdomadaire devrait suffire"

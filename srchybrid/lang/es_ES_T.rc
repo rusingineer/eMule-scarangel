@@ -2860,7 +2860,7 @@ BEGIN
     IDS_SVC_STRTUP_OPN_FAIL "Error al abrir el servicio para cambiar el modo de arranque: %s"
     IDS_SVC_STRTUP_CTRL_FAIL "Error al conectarse con el Control de Servicios para cambiar el modo de arranque: %s"
     IDS_SVC_LINK_PASS_FAIL  "Link del servicio web: No abierto hacia Internet"
-    IDS_SERVICE_OPT_GUI     "Complementos para la GUI"
+    IDS_SERVICE_OPT_GUI     "Complementos GUI del Mod"
     // <== Run eMule as NT Service [leuk_he/Stulle] - Stulle
     // ==> Adjustable NT Service Strings - Stulle
     IDS_SERVICE_STR_GROUP   "Comandos Servicio NT (Vacío = Por Defecto)"

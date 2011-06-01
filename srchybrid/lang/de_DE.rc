@@ -2315,10 +2315,11 @@ BEGIN
     IDS_YESTOALL            "J&a zu Allem"
     IDS_OVERWRITE1          "Datei %s besteht bereits. Überschreiben?"
     IDS_OVERWRITE2          "Überschreiben?"    
-    IDS_BACKUPERROR         "ein Fehler ist während des Backups aufgetreten"
+    IDS_BACKUPERROR         "Ein Fehler ist während des Backups aufgetreten"
     IDS_BACKUP_PART         "Wegen Ihrer Größe, kann die Sicherung der *.part Datei einige Minuten dauern.\nMöchten sie dies trotzdem?"
-    IDS_BACKUP_PART_W       "sind sie sicher?"
-    IDS_BACKUP_COMPLETE     "Datei(enà wurde(nà erfolgreich kopiert."
+    IDS_BACKUP_PART_W       "Sind sie sicher?"
+    IDS_BACKUP_COMPLETE     "Datei(en) wurde(n) erfolgreich kopiert."
+    IDS_BACKUP_COMPLETE_W   "Backup fertig"
     // <== TBH: Backup [TBH/EastShare/MorphXT] - Stulle
     // ==> TBH: minimule - Max
     IDS_MM_SHOW             "Nutze TBH Mini-Mule stattdessen"
