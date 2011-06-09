@@ -2939,6 +2939,7 @@ CUpDownClient* CUploadQueue::FindBestSpreadClientInQueue()
 // ==> Superior Client Handling [Stulle] - Stulle
 void CUploadQueue::MoveDownInUpload(CUpDownClient* client)
 {
+	theApp.uploadBandwidthThrottler->Pause(true);
 	POSITION pos = uploadinglist.Find(client);
 	if(pos != NULL)
 	{
@@ -2957,5 +2958,6 @@ void CUploadQueue::MoveDownInUpload(CUpDownClient* client)
 		if (thePrefs.GetLogUlDlEvents())
 			AddDebugLogLine(DLP_LOW, false, _T("%s: Moved down in Upload after one chunk finished."), client->GetUserName());
 	} 
+	theApp.uploadBandwidthThrottler->Pause(false);
 }
 // <== Superior Client Handling [Stulle] - Stulle

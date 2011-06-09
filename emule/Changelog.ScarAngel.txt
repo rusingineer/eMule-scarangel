@@ -1,6 +1,15 @@
 CHANGELOG FOR EMULE ScarAngel MOD
 
 
+eMule v0.50a ScarAngel v4.2:
+------------------------
+- XX.XX.2011 -
+-------------------------------------------------------------------------------
+based on eMule 0.50a Xtreme 8.1 compiled with vs2010 SP1
+
+Changed: Pause UBT when moving down slots in upload [Stulle]
+
+
 eMule v0.50a ScarAngel v4.1:
 ------------------------
 - 01.06.2011 -
