@@ -10,6 +10,7 @@ based on eMule 0.50a Xtreme 8.1 compiled with vs2010 SP1
 Changed: Pause UBT when moving down slots in upload [Stulle] - Stulle
 Changed: Schedule blocking clients for removal [Stulle] - Stulle
 Changed: Schedule clients for moving down [Stulle] - Stulle
+Changed: Show ModID in systray dialog sidebar [Stulle] - Stulle
 
 Note: The schedule changes will delay removal of blocking or moving down clients so the action will
 	be done when going through the uploading sockets the next time to avoid exceptions due to
