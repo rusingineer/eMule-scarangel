@@ -421,6 +421,10 @@ void CUpDownClient::Init()
 	requpfile = NULL;
 	requpfileid_lasttimeupdated = 0;
 	// <== requpfile optimization [SiRoB] - Stulle
+
+	m_bScheduleForMoveDown = false; // Superior Client Handling [Stulle] - Stulle
+
+	m_bScheduleForRemoval = false; // Schedule blocking clients for removal [Stulle] - Stulle
 }
 
 CUpDownClient::~CUpDownClient(){
