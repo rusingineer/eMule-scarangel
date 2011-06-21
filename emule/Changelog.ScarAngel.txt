@@ -13,6 +13,8 @@ Changed: Schedule clients for moving down [Stulle] - Stulle
 Changed: Show ModID in systray dialog sidebar [Stulle] - Stulle
 Changed: Display ratio activation in WebInterface [Stulle] - Stulle
 
+Fixed: Potential NULL-pointer bugs in Upload Bandwidth Throttler [Stulle] - Stulle
+
 Note: The schedule changes will delay removal of blocking or moving down clients so the action will
 	be done when going through the uploading sockets the next time to avoid exceptions due to
 	changes in the upload list done by another thread while going through the sockets.
