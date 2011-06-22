@@ -3,7 +3,7 @@ CHANGELOG FOR EMULE ScarAngel MOD
 
 eMule v0.50a ScarAngel v4.2:
 ------------------------
-- XX.XX.2011 -
+- 22.06.2011 -
 -------------------------------------------------------------------------------
 based on eMule 0.50a Xtreme 8.1 compiled with vs2010 SP1
 
